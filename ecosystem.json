@@ -1,0 +1,54 @@
+{
+  "apps": [
+    {
+      "name": "web",
+      "script": "web.js",
+      "exec_mode": "cluster_mode",
+      "wait_ready": true,
+      "instances": "max",
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    },
+    {
+      "name": "api",
+      "script": "api.js",
+      "exec_mode": "cluster_mode",
+      "wait_ready": true,
+      "instances": "max",
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    },
+    {
+      "name": "bull",
+      "script": "bull.js",
+      "exec_mode": "cluster_mode",
+      "wait_ready": true,
+      "instances": "max",
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    },
+    {
+      "name": "proxy",
+      "script": "proxy.js",
+      "exec_mode": "cluster_mode",
+      "wait_ready": true,
+      "instances": "max",
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    }
+  ],
+  "deploy": {
+    "production": {
+      "user": "deploy",
+      "host": "forwardemail-net-deploy",
+      "ref": "origin/master",
+      "repo": "git@github.com:forwardemail/forwardemail-net.git",
+      "path": "/var/www/production",
+      "post-deploy": "yarn && NODE_ENV=production yarn start build && yarn start publish-assets && pm2 startOrGracefulReload ecosystem.json --env production --update-env"
+    }
+  }
+}

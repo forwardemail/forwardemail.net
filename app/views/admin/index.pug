@@ -1,0 +1,15 @@
+
+extends ../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../_breadcrumbs
+        p.lead
+          if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
+            = t('Good afternoon')
+          else if (moment().format('HH') >= 17)
+            = t('Good evening')
+          else
+            = t('Good morning')

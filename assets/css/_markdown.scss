@@ -1,0 +1,16 @@
+@import 'node_modules/github-markdown-css/github-markdown';
+@import 'node_modules/@primer/css/markdown/index.scss';
+
+.markdown-body {
+  margin-left: 20px;
+  margin-right: 20px;
+  @for $index from 1 through 6 {
+    h#{$index} {
+      .anchor {
+        float: left;
+        padding-right: 5px;
+        margin-left: -20px;
+      }
+    }
+  }
+}

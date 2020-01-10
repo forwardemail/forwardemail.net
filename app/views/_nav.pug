@@ -1,0 +1,107 @@
+- const isHelp = ctx.pathWithoutLocale === '/help'
+- const isRegisterOrLogin = ['/register', '/login'].includes(ctx.pathWithoutLocale)
+
+if !isHelp
+  #modal-help.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-help-title', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header.text-center.d-block
+          h4.modal-title.d-inline-block.ml-4#modal-help-title= t('Ask a question')
+          button(type='button', data-dismiss='modal', aria-label='Close').close
+            span(aria-hidden='true') &times;
+        .modal-body
+          form.ajax-form.confirm-prompt(action=l('/help'), method="POST")
+            input(type="hidden", name="_csrf", value=ctx.csrf)
+            if ctx.pathWithoutLocale !== '/faq'
+              p.text-center.font-weight-bold!= t(`Have you read our <a href="${l('/faq')}" target="_blank" rel="noopener">FAQ</a> yet?`)
+            .form-group.floating-label
+              input#input-email.form-control(required, autocomplete="email", name="email", type="email", value=user ? user.email : '', placeholder='name@example.com')
+              label(for="input-email")= t('Email address')
+            .form-group.floating-label
+              textarea#input-message.form-control(rows="3", maxlength=config.supportRequestMaxLength, name="message", placeholder=t('Write your message'))
+              label(for="input-message")= t('Message')
+            button.btn.btn-block.btn-success.btn-lg(type="submit", data-toggle="tooltip", data-placement="bottom", title=t("We'll be in contact with you!"))= t('Send message')
+
+if !user && !registerOrLogin
+  include _register-or-login
+  each verb in [ 'sign up', 'sign in' ]
+    .modal.fade(tabindex='-1', role='dialog', id=`modal-${dashify(verb)}`, aria-labelledby=`modal-${dashify(verb)}-title`, aria-hidden='true')
+      .modal-dialog(role='document')
+        .modal-content
+          .modal-header.text-center.d-block
+            h4.modal-title.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
+              if verb === 'sign up'
+                = t('Sign up now')
+                = ' '
+                = emoji('sparkles')
+              else
+                = t('Welcome back!')
+                = ' '
+                = emoji('wave')
+            button(type='button', data-dismiss='modal', aria-label='Close').close
+              span(aria-hidden='true') &times;
+          .modal-body
+            +registerOrLogin(verb, true)
+if ctx.pathWithoutLocale === '/'
+  h3.h6.text-monospace.py-3.px-3.bg-dark.text-white.mb-0.d-none.d-md-block.text-center!= t(`${emoji('wave')} We're the email forwarding service that <u class="font-weight-bold">doesn\'t track you</u>. Period. ${emoji('tada')}`)
+nav(class=['/register', '/login', config.verificationPath].includes(ctx.pathWithoutLocale) ? '' : ctx.pathWithoutLocale === '/' ? 'bg-white' : 'fixed-top bg-light border border-top-0 border-left-0 border-right-0').navbar.navbar-expand-lg.navbar-light
+  button.navbar-toggler.bg-light.hidden-lg-up(type="button", data-toggle="collapse", data-target="#navbar-header", aria-controls="navbar-header", aria-expanded="false", aria-label=t('Toggle navigation'))
+    span.navbar-toggler-icon
+  a.navbar-brand.d-inline-block.m-0(href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l())
+    img.d-inline-block(src=manifest('img/logo-square.svg'), width=50, height=50, alt="").mr-1
+    h1.h2.m-0.align-middle.d-none.d-sm-inline-block
+      span.text-primary.font-weight-bold Forward
+      span.text-info.font-weight-normal Email
+      span.text-success.font-weight-light .net
+
+  //- once we have responsive border utilities added to bootstrap
+  //- then we can apply them to the anchor tags inside the navbar
+  //- so that on mobile devices there is no border around the links
+  //- <https://github.com/twbs/bootstrap/issues/25030>
+  #navbar-header.collapse.navbar-collapse
+    ul.navbar-nav.ml-auto
+      li.nav-item.ml-md-1.mt-1.mt-md-0
+        a.btn.text-success.btn-lg.d-block.text-left.text-md-center(href=l('/faq'))= t('FAQ')
+      li.nav-item.ml-md-1.mt-1.mt-md-0
+        a.btn.text-success.btn-lg.d-block.text-left.text-md-center(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Help')
+      //- links that show only if you're logged in
+      if user
+        li.nav-item.ml-md-1.mt-3.mt-md-0
+          a.btn.btn-lg.d-block.text-left.text-md-center(href=l('/dashboard'), class=ctx.pathWithoutLocale.startsWith('/dashboard') ? 'btn-dark' : 'btn-outline-dark')
+            = t('Dashboard')
+        li.nav-item.dropdown.ml-md-1.mt-1.mt-md-0
+          a#navbar-dropdown-my-account.btn.btn-lg.dropdown-toggle.d-block.text-left.text-md-center(href=l('/my-account'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/my-account') ? 'btn-dark' : 'btn-outline-dark')
+            = t('My Account')
+          .dropdown-menu(aria-labelledby='navbar-dropdown-admin')
+            a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Profile')
+            a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account/security' ? 'active' : '', href=l('/my-account/security'))= t('Security')
+        //- links that show if you're an admin
+        if user.group === 'admin'
+          li.nav-item.dropdown.ml-md-1.mt-1.mt-md-0
+            a#navbar-dropdown-admin.btn.btn-lg.dropdown-toggle.d-block.text-left.text-md-center(href=l('/admin'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/admin') ? 'btn-dark' : 'btn-outline-dark')
+              = t('Admin')
+            .dropdown-menu(aria-labelledby='navbar-dropdown-admin')
+              a.dropdown-item(class=ctx.pathWithoutLocale === '/admin' ? 'active' : '', href=l('/admin'))= t('Dashboard')
+              a.dropdown-item(class=ctx.pathWithoutLocale.startsWith('/admin/users') ? 'active' : '', href=l('/admin/users'))= t('Users')
+      if user
+        li.nav-item.ml-md-1.mt-1.mt-md-0
+          a.btn.btn-lg.btn-outline-secondary.d-block.text-left.text-md-center(href=l('/logout'))
+            = t('Log out')
+      //- links that show only if you're logged out
+      else
+        li.nav-item.ml-md-1.mt-1.mt-md-0
+          a.btn.btn-lg.d-block.text-left.text-md-center(
+            role=isRegisterOrLogin ? 'link' : 'button',
+            href=l('/login'),
+            data-toggle=isRegisterOrLogin ? '': 'modal-anchor',
+            data-target=isRegisterOrLogin ? '' : '#modal-sign-in',
+            class=ctx.pathWithoutLocale === '/login' ? 'btn-success' : 'text-success'
+          )= t('Sign in')
+        li.nav-item.ml-md-1.mt-1.mt-md-0
+          a.btn.btn-lg.d-block.text-left.text-md-center(
+            role=isRegisterOrLogin ? 'link' : 'button',
+            href=l('/register'),
+            data-toggle=isRegisterOrLogin ? '' : 'modal-anchor',
+            data-target=isRegisterOrLogin ? '' : '#modal-sign-up',
+            class=ctx.pathWithoutLocale === '/register' ? 'btn-success' : 'btn-outline-success'
+          )= t('Create an account')

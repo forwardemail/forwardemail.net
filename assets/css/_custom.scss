@@ -1,0 +1,9 @@
+// put your custom styles here
+.text-monospace {
+  font-family: $font-family-monospace;
+}
+
+// https://github.com/twbs/bootstrap/issues/24374
+.min-vh-80 {
+  min-height: 80vh !important;
+}

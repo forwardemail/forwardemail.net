@@ -1,0 +1,39 @@
+if pageCount && pageCount > 0
+  nav(aria-label="Page navigation").d-flex.justify-content-center
+    ul.pagination
+      if paginate.hasPreviousPages
+        li.page-item
+          a.page-link(href=paginate.href(true), aria-label=t('Previous'))
+            span(aria-hidden="true")
+              i.fa.fa-angle-double-left
+            span.sr-only= t('Previous')
+      else
+        li.page-item.disabled
+          span.page-link(aria-label=t('Previous'))
+            span(aria-hidden="true")
+              i.fa.fa-angle-double-left
+            span.sr-only= t('Previous')
+      if pages
+        each page in pages
+          if page.number === 1 && pageCount === 1
+            li.page-item.disabled
+              span.page-link= page.number
+          else
+            if page.number === ctx.query.page
+              li.page-item.active
+                a.page-link(href=page.url)= page.number
+            else
+              li.page-item
+                a.page-link(href=page.url)= page.number
+      if paginate.hasNextPages(pageCount)
+        li.page-item
+          a.page-link(href=paginate.href({ page: ctx.query.page + 1 }), aria-label=t('Next'))
+            span(aria-hidden="true")
+              i.fa.fa-angle-double-right
+            span.sr-only= t('Next')
+      else
+        li.page-item.disabled
+          span.page-link(aria-label=t('Next'))
+            span(aria-hidden="true")
+              i.fa.fa-angle-double-right
+            span.sr-only= t('Next')

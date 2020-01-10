@@ -1,0 +1,48 @@
+
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        if users.length === 0
+          .alert.alert-info= t('No users exist yet')
+        else
+          .table-responsive
+            table.table.table-hover.table-bordered
+              thead.thead-dark
+                tr
+                  th(scope='col')= t('First Name')
+                  th(scope='col')= t('Last Name')
+                  th(scope='col')= t('Email')
+                  th(scope='col')= t('Group')
+                  th(scope='col')= t('Created')
+                  th(scope='col')= t('Updated')
+                  th(scope='col')= t('Last Login')
+                  th(scope='col')= t('Last IP')
+                  th(scope='col')= t('Last Locale')
+                  th(scope='col')= t('Actions')
+              tbody
+                each user in users
+                  tr
+                    td.align-middle= user[config.passport.fields.givenName]
+                    td.align-middle= user[config.passport.fields.familyName]
+                    td.align-middle: a(href=`mailto:${user.email}`, target='_blank', rel='noopener')= user.email
+                    td.align-middle= titleize(user.group)
+                    td.align-middle= moment(user.created_at).format('M/D/YY h:mm A')
+                    td.align-middle= moment(user.updated_at).format('M/D/YY h:mm A')
+                    td.align-middle= moment(user.last_login_at).format('M/D/YY h:mm A')
+                    td.align-middle: code= user[config.storeIPAddress.ip]
+                    td.align-middle: code= user[config.lastLocaleField]
+                    td.align-middle
+                      .btn-group(role='group', aria-label=t('Actions'))
+                        a(href=l(`/admin/users/${user.id}`), data-toggle='tooltip', data-title=t('Edit')).btn.btn-secondary: i.fa.fa-fw.fa-edit
+                        form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}/login`), method="POST", autocomplete="off")
+                          input(type="hidden", name="_csrf", value=ctx.csrf)
+                          button(type='submit', data-toggle='tooltip', data-title=t('Log in as user')).btn.btn-secondary: i.fa.fa-fw.fa-user-secret
+                        form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}`), method="POST", autocomplete="off")
+                          input(type="hidden", name="_csrf", value=ctx.csrf)
+                          input(type="hidden", name="_method", value="DELETE")
+                          button(type='submit', data-toggle='tooltip', data-title=t('Remove')).btn.btn-secondary: i.fa.fa-fw.fa-remove
+          include ../../_pagination

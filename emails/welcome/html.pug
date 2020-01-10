@@ -1,0 +1,19 @@
+
+extends ../layout
+
+block content
+  .container
+    .row
+      .col-12
+        .jumbotron.jumbotron-fluid.rounded.my-2.text-center
+          .container
+            h1.display-4.font-weight-bold.mb-3.text-uppercase
+              = emoji('tada')
+              br
+              = t('Thank you!')
+            p.lead.font-weight-normal.text-black-50.mb-3!= t("You have successfully registered for our service!  Please let us know if you have any issues or feature requests.")
+            a.btn.btn-lg.btn-primary.text-uppercase.font-weight-bold(href=`${config.urls.web}/faq`)
+              .d-inline-block.align-middle
+                = t('Read our FAQ')
+                = ' '
+              != fa.png2x('angle-double-right', '#fff', 20, 20, [ [ 'class', 'd-inline-block align-middle' ] ])

@@ -1,0 +1,17 @@
+
+extends ../layout
+
+block body
+  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
+    h1.display-3.font-weight-bold.text-white.my-3.text-uppercase= t('FAQ')
+  .container.py-5
+    .row
+      .col
+        case locale
+          when 'es'
+            include:md index-es.md
+          when 'zh'
+            include:md index-zh.md
+          when 'en'
+          default
+            include:md index.md

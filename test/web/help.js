@@ -1,0 +1,53 @@
+const test = require('ava');
+
+test('creates inquiry', async t => {
+  const res = await global.web.post('/en/help', {
+    body: { email: 'test@example.com', message: 'Test message!' }
+  });
+  t.is(res.status, 200);
+  t.is(
+    res.body.message,
+    'Your help request has been sent successfully.  You should hear from us soon.  Thank you!'
+  );
+});
+
+test('fails creating inquiry if last inquiry was within last 24 hours (HTML)', async t => {
+  await global.web.post('/en/help', {
+    body: { email: 'test2@example.com', message: 'Test message!' }
+  });
+
+  const res = await global.web.post('/en/help', {
+    body: {
+      email: 'test2@example.com',
+      message: 'Test message!'
+    },
+    headers: {
+      Accept: 'text/html'
+    }
+  });
+
+  t.is(res.status, 400);
+  t.snapshot(res.text);
+});
+
+test('fails creating inquiry if last inquiry was within last 24 hours (JSON)', async t => {
+  await global.web.post('/en/help', {
+    body: {
+      email: 'test3@example.com',
+      message: 'Test message!'
+    }
+  });
+
+  const res = await global.web.post('/en/help', {
+    body: {
+      email: 'test3@example.com',
+      message: 'Test message!'
+    }
+  });
+
+  t.is(res.status, 400);
+  t.is(
+    res.body.message,
+    'You have reached the limit for sending help requests.  Please try again.'
+  );
+});
