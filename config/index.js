@@ -8,15 +8,14 @@ const consolidate = require('consolidate');
 const manifestRev = require('manifest-rev');
 const ms = require('ms');
 const nodemailer = require('nodemailer');
-const pino = require('pino');
 const strength = require('strength');
-const { Signale } = require('signale');
 const { boolean } = require('boolean');
 
 const pkg = require('../package');
 const env = require('./env');
 const filters = require('./filters');
 const i18n = require('./i18n');
+const loggerConfig = require('./logger');
 const meta = require('./meta');
 const phrases = require('./phrases');
 const polyfills = require('./polyfills');
@@ -53,21 +52,7 @@ const config = {
     lastLocaleField: 'last_locale',
     i18n
   },
-  logger: {
-    showStack: env.SHOW_STACK,
-    showMeta: env.SHOW_META,
-    name: env.APP_NAME,
-    level: 'debug',
-    capture: false,
-    logger:
-      env.NODE_ENV === 'production'
-        ? pino({
-            customLevels: {
-              log: 30
-            }
-          })
-        : new Signale()
-  },
+  logger: loggerConfig,
   livereload: {
     port: env.LIVERELOAD_PORT
   },
