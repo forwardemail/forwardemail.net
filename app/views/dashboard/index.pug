@@ -8,15 +8,8 @@ block body
         include ../_breadcrumbs
     .row
       .mt-1
-        .col
+        .col.text-center
           = emoji('wave')
-          = ' '
-          if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
-            = t('Good afternoon!')
-          else if (moment().format('HH') >= 17)
-            = t('Good evening!')
-          else
-            = t('Good morning!')
           = ' '
           = t('Our new and refined dashboard is a work in progress, but you can still follow our legacy instructions:')
   .container-fluid.pb-5.position-relative
