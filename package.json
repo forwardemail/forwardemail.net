@@ -85,7 +85,7 @@
     "markdown-it-highlightjs": "^3.0.0",
     "markdown-it-task-checkbox": "^1.0.6",
     "moment": "^2.24.0",
-    "mongoose": "5.6",
+    "mongoose": "5.7",
     "mongoose-common-plugin": "0.1.1",
     "mongoose-json-select": "^0.2.1",
     "mongoose-unique-validator": "^2.0.3",
