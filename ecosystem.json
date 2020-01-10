@@ -46,7 +46,7 @@
       "user": "deploy",
       "host": "forwardemail-net-deploy",
       "ref": "origin/master",
-      "repo": "git@github.com:forwardemail/forwardemail-net.git",
+      "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",
       "post-deploy": "yarn && NODE_ENV=production yarn start build && yarn start publish-assets && pm2 startOrGracefulReload ecosystem.json --env production --update-env"
     }
