@@ -19,7 +19,6 @@ router
   })
   .get(
     '/:provider',
-    policies.ensureLoggedOut,
     web.auth.catchError,
     (ctx, next) =>
       passport.authenticate(
@@ -29,7 +28,6 @@ router
   )
   .get(
     '/:provider/ok',
-    policies.ensureLoggedOut,
     web.auth.catchError,
     (ctx, next) => {
       const redirect = ctx.session.returnTo
@@ -45,7 +43,6 @@ router
 if (boolean(process.env.AUTH_GOOGLE_ENABLED)) {
   router.get(
     '/google/consent',
-    policies.ensureLoggedOut,
     web.auth.catchError,
     passport.authenticate('google', {
       accessType: 'offline',
