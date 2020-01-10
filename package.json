@@ -43,7 +43,7 @@
     "@ladjs/policies": "^2.0.1",
     "@ladjs/proxy": "^1.0.3",
     "@ladjs/store-ip-address": "^0.0.7",
-    "@ladjs/web": "^0.4.13",
+    "@ladjs/web": "^0.4.14",
     "@primer/css": "^14.1.0",
     "@tkrotoff/bootstrap-floating-label": "^0.5.0",
     "accounting": "^0.4.1",
