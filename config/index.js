@@ -119,6 +119,10 @@ const config = {
   // @ladjs/passport configuration (see defaults in package)
   // <https://github.com/ladjs/passport>
   passport: {
+    google: {
+      accessType: 'online',
+      prompt: 'none'
+    },
     fields: {
       // you may want to make this "full_name" instead
       displayName: 'display_name',
