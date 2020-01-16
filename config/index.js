@@ -133,6 +133,17 @@ const config = {
       githubProfileID: 'github_profile_id',
       githubAccessToken: 'github_access_token',
       githubRefreshToken: 'github_refresh_token'
+    },
+    google: {
+      accessType: 'offline',
+      prompt: 'consent',
+      scope: [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile'
+      ]
+    },
+    github: {
+      scope: ['user:email']
     }
   },
 
