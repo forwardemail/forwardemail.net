@@ -77,7 +77,7 @@ async function faq(ctx, next) {
     };
     query[config.userFields.hasVerifiedEmail] = false;
     query[config.userFields.hasSetPassword] = false;
-    const user = await Users.register(query);
+    const user = await Users.create(query);
     await Domains.create({
       members: [{ user: user._id, group: 'admin' }],
       name: ctx.request.body.domain
