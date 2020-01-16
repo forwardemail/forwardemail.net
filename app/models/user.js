@@ -1,5 +1,4 @@
 const Boom = require('@hapi/boom');
-const StoreIPAddress = require('@ladjs/store-ip-address');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
 const moment = require('moment');
@@ -17,11 +16,6 @@ const config = require('../../config');
 const i18n = require('../../helpers/i18n');
 const logger = require('../../helpers/logger');
 const bull = require('../../bull');
-
-const storeIPAddress = new StoreIPAddress({
-  logger,
-  ...config.storeIPAddress
-});
 
 if (config.passportLocalMongoose.usernameField !== 'email')
   throw new Error(
@@ -165,9 +159,10 @@ User.pre('validate', function(next) {
   }
 
   // set the user's full email address (incl display name)
-  this[config.userFields.fullEmail] = this[fields.displayName]
-    ? `${this[fields.displayName]} <${this.email}>`
-    : this.email;
+  this[config.userFields.fullEmail] =
+    this[fields.displayName] && this[fields.displayName] !== this.email
+      ? `${this[fields.displayName]} <${this.email}>`
+      : this.email;
 
   next();
 });
@@ -277,6 +272,5 @@ User.plugin(mongooseCommonPlugin, {
   ]
 });
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);
-User.plugin(storeIPAddress.plugin);
 
 module.exports = mongoose.model('User', User);

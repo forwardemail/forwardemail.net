@@ -1,0 +1,29 @@
+extends ../layout
+
+block body
+  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
+    .row
+      .col-md-12
+        p.lead.mb-0.text-white.font-weight-bold!= t("Our privacy policy is simple: We don't store logs nor emails.  We don't track you.")
+  .py-5
+    .text-center.mb-5
+      .h2.display-3.mb-1= emoji('lock')
+      h2.display-5.font-weight-light.mb-0.text-uppercase= t('Zero Tolerance Policy')
+      small.text-black-50.text-uppercase= t('Regain your right to privacy')
+    .container
+      p.lead.mb-0.font-weight-bold.text-center
+        mark
+          strong TLDR;
+          = ' '
+          != t('We store only the essential information required for the service to be functional for you.')
+  .container.pt-0.pb-5
+    .row
+      .col
+        case locale
+          when 'es'
+            include:md index-es.md
+          when 'zh'
+            include:md index-zh.md
+          when 'en'
+          default
+            include:md index.md

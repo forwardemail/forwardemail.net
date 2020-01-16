@@ -9,6 +9,7 @@ const isSANB = require('is-string-and-not-blank');
 const moment = require('moment');
 const pluralize = require('pluralize');
 const titleize = require('titleize');
+const validator = require('validator');
 const { boolean } = require('boolean');
 
 const json = (str, replacer = null, space = 2) =>
@@ -28,5 +29,6 @@ module.exports = {
   boolean,
   titleize,
   dashify,
-  humanize
+  humanize,
+  validator
 };

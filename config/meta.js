@@ -28,6 +28,10 @@ module.exports = function(config) {
     // in the title bar in the user's browser
     '/': [config.appName, config.pkg.description],
     '/about': [`About ${lad}`, `Learn more about ${config.appName}`],
+    '/features': [
+      `Features ${lad}`,
+      'Our features include Custom Domain Email Forwarding, Disposable Addresses, Multiple Recipients, Wildcards, and more!'
+    ],
     '/faq': [`FAQ ${lad}`, 'Read frequently asked questions about our service'],
     '/donate': [
       `Donate ${lad}`,
@@ -43,14 +47,13 @@ module.exports = function(config) {
     '/logout': [`Sign out of ${lad}`, 'Sign out of your account'],
     '/register': [`Sign up ${lad}`, `Create a ${config.appName} account`],
     '/verify': [`Verify email ${lad}`, `Verify your ${config.appName} email`],
+    '/domain-registration': [
+      `Register a domain name ${lad}`,
+      'Buy a custom domain name for email forwarding'
+    ],
     '/my-account': [
       `My Account ${lad}`,
       `Manage your ${config.appName} profile`
-    ],
-    '/my-account/api': [`API ${lad}`, 'Manage your API credentials'],
-    '/dashboard': [
-      `Dashboard ${lad}`,
-      `Access your ${config.appName} account dashboard`
     ],
     '/admin': [`Admin ${lad}`, `Access your ${config.appName} admin`],
     '/forgot-password': [

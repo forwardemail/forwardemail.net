@@ -1,4 +1,5 @@
-const Users = require('./user');
+const Domains = require('./domain');
 const Inquiries = require('./inquiry');
+const Users = require('./user');
 
-module.exports = { Users, Inquiries };
+module.exports = { Domains, Inquiries, Users };

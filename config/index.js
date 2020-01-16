@@ -119,10 +119,6 @@ const config = {
   // @ladjs/passport configuration (see defaults in package)
   // <https://github.com/ladjs/passport>
   passport: {
-    google: {
-      accessType: 'online',
-      prompt: 'none'
-    },
     fields: {
       // you may want to make this "full_name" instead
       displayName: 'display_name',
@@ -178,18 +174,14 @@ const config = {
 
   // passport callback options
   passportCallbackOptions: {
-    successReturnToOrRedirect: '/dashboard',
+    successReturnToOrRedirect: '/my-account',
     failureRedirect: '/login',
     successFlash: true,
     failureFlash: true
   },
 
-  // store IP address
   // <https://github.com/ladjs/store-ip-address>
-  storeIPAddress: {
-    ip: 'ip',
-    lastIps: 'last_ips'
-  },
+  storeIPAddress: false,
 
   // field name for a user's last locale
   // (this gets re-used by email-templates and @ladjs/i18n; see below)

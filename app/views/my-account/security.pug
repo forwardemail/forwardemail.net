@@ -3,10 +3,10 @@ extends ../layout
 
 block body
   .container-fluid.py-3
-    .row.mt-1
+    .row
       .col
         include ../_breadcrumbs
-        .card.card-bg-light
+        .card.mb-3
           h4.card-header= t('Credentials')
           .card-body
             .form-group.row
@@ -25,3 +25,21 @@ block body
               input(type='hidden', name='_method', value='DELETE')
               input(type="hidden", name="_csrf", value=ctx.csrf)
               button(type='submit').btn.btn-danger= t('Reset API Token')
+        .card
+          h4.card-header= t('Delete Account')
+          - const adminDomains = domains.filter(domain => domain.group === 'admin')
+          if adminDomains.length > 0
+            .card-body
+              p= t('Your account is currently an admin of these domains:')
+              ul
+                each domain in adminDomains
+                  li: a(href=`/my-account/domains/${domain.id}`, target='_blank', rel='noopener')= domain.name
+              p.mb-0= t('You must remove yourself from or delete these domains before you can delete your account.')
+          else
+            .card-body
+              p= t('Deleting your account is irreversable.  Please take extreme caution when deleting your account.')
+            .card-footer.text-right
+              form(action=l('/my-account'), method='POST').ajax-form.confirm-prompt
+                input(type='hidden', name='_method', value='DELETE')
+                input(type="hidden", name="_csrf", value=ctx.csrf)
+                button(type='submit').btn.btn-danger= t('Delete Account')

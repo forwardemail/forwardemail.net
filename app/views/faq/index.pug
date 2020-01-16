@@ -1,9 +1,41 @@
 
 extends ../layout
 
+append scripts
+  script(defer, src=manifest('js/faq.js'))
+
 block body
-  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
-    h1.display-3.font-weight-bold.text-white.my-3.text-uppercase= t('FAQ')
+  .bg-light.py-5.d-block.border-bottom
+    .container-fluid
+      .row
+        .col
+          h1.text-center= t(`${emoji('alarm_clock')} Save Yourself Time`)
+          p.text-center.mb-0.text-muted= t('Want to make the entire FAQ below tailored for you and easier to read?')
+          form(action=ctx.path, method='POST').ajax-form.pt-4.mb-3
+            input(type='hidden', name='_csrf', value=csrf)
+            .form-row
+              .col-12.col-md-6.offset-md-3
+                .form-group.floating-label
+                  input#input-domain.form-control.form-control-lg(type='text', name='domain', value=domain, required, placeholder='example.com')
+                  label(for='input-domain')= t('Enter your domain')
+                .form-group.floating-label
+                  input#input-email.form-control.form-control-lg(type='email', autocomplete="email", name="email", value=email, placeholder='name@gmail.com', required)
+                  label(for='input-email')= t('Enter your email')
+                if user
+                  .form-check.form-group
+                    input#input-create-domain(type='checkbox', name='create_domain', checked, value='true').form-check-input
+                    label.form-check-label(for='input-create-domain')= t('Add this domain to your account (if it does not exist)')
+                else
+                  .form-check.form-group.d-flex
+                    input#input-create-account(type='checkbox', name='create_account', checked, value='true', aria-describedby='help-create-account').form-check-input
+                    label.form-check-label(for='input-create-account').mr-2= t('Create your free account now')
+                    small#help-create-account.text-black-50.align-self-center.flex-grow-1.text-right
+                      != t(`Read our <a href="${l('/privacy')}" target="_blank" rel="noopener">Privacy Policy</a> and <a href="${l('/terms')}" target="_blank" rel="noopener">Terms</a>`)
+                button.btn.btn-success.btn-lg.btn-block(type="submit")
+                  = t('Continue')
+                  = ' '
+                  i.fa.fa-angle-double-right
+          p.text-center.mb-0: small: a(href='#frequently-asked-questions').text-black-50= t('Not interested?  Click here to keep reading')
   .container.py-5
     .row
       .col

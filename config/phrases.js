@@ -4,6 +4,7 @@ const env = require('./env');
 /* eslint max-len: 0 */
 
 module.exports = {
+  HELLO: 'Hello',
   INVALID_API_CREDENTIALS: 'Invalid API credentials.',
   INVALID_API_TOKEN: 'Invalid API token.',
   INVALID_EMAIL: 'Email address was invalid.',
@@ -33,11 +34,21 @@ module.exports = {
   IS_NOT_ADMIN: 'You do not belong to the administrative user group.',
   LOGIN_REQUIRED: 'Please log in to view the page you requested.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
+  NO_DOMAINS_EXIST: 'Add a domain name to your account to continue.',
+  INVALID_DOMAIN: 'Domain name was invalid (must be an IP or FQDN).',
+  DOMAIN_IS_VERIFIED: "Domain's DNS records have been verified.",
+  DOMAIN_DOES_NOT_EXIST: 'Domain does not exist on your account.',
+  DOMAIN_ALREADY_EXISTS: 'Domain already exists on your account.',
+  ACCOUNT_DELETE_HAS_DOMAINS:
+    'Your account is currently an admin of one or more domain names.  Please delete these domains or remove yourself from them to continue.',
+  ACCOUNT_DELETE_SUCCESSFUL: 'Your account was successfully deleted.',
   PASSWORD_RESET_LIMIT:
     'You can only request a password reset every 30 minutes.  Please try again %s.',
   PASSWORD_RESET_SENT:
     'We have sent you an email with a link to reset your password.',
   REGISTERED: 'You have successfully registered.',
+  SIGNED_IN: 'You have successfully signed in.',
+  ALREADY_SIGNED_IN: 'You are already signed in.',
   REQUEST_OK: 'Your request was successfully completed.',
   REQUEST_TIMED_OUT:
     'Sorry, your request has timed out.  We have been alerted of this issue.  Please try again.',

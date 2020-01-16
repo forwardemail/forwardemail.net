@@ -59,14 +59,29 @@ function parseReturnOrRedirectTo(ctx, next) {
 }
 
 async function registerOrLogin(ctx) {
+  if (ctx.isAuthenticated()) {
+    let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+
+    if (ctx.session && ctx.session.returnTo) {
+      redirectTo = ctx.session.returnTo;
+      delete ctx.session.returnTo;
+    }
+
+    ctx.flash('success', ctx.translate('ALREADY_SIGNED_IN'));
+
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
+  }
+
   ctx.state.verb =
     ctx.pathWithoutLocale === '/register' ? 'sign up' : 'sign in';
 
   await ctx.render('register-or-login');
 }
 
-async function homeOrDashboard(ctx) {
-  // If the user is logged in then take them to their dashboard
+async function homeOrDomains(ctx) {
+  // If the user is logged in then take them to their account
   if (ctx.isAuthenticated())
     return ctx.redirect(
       `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`
@@ -84,6 +99,21 @@ async function homeOrDashboard(ctx) {
 }
 
 async function login(ctx, next) {
+  if (ctx.isAuthenticated()) {
+    let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+
+    if (ctx.session && ctx.session.returnTo) {
+      redirectTo = ctx.session.returnTo;
+      delete ctx.session.returnTo;
+    }
+
+    ctx.flash('success', ctx.translate('ALREADY_SIGNED_IN'));
+
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
+  }
+
   await passport.authenticate('local', async (err, user, info) => {
     if (err) throw err;
 
@@ -116,16 +146,9 @@ async function login(ctx, next) {
       throw err_;
     }
 
-    let greeting = 'Good morning';
-    if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
-      greeting = 'Good afternoon';
-    else if (moment().format('HH') >= 17) greeting = 'Good evening';
-
     ctx.flash('custom', {
-      title: `${ctx.request.t('Hello')} ${ctx.state.emoji('wave')}`,
-      text: user[config.passport.fields.givenName]
-        ? `${greeting} ${user[config.passport.fields.givenName]}`
-        : greeting,
+      title: `${ctx.translate('HELLO')} ${ctx.state.emoji('wave')}`,
+      text: ctx.translate('SIGNED_IN'),
       type: 'success',
       toast: true,
       showConfirmButton: false,
@@ -413,7 +436,7 @@ async function verify(ctx) {
 module.exports = {
   logout,
   registerOrLogin,
-  homeOrDashboard,
+  homeOrDomains,
   login,
   register,
   forgotPassword,

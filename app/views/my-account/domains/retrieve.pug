@@ -1,0 +1,80 @@
+
+extends ../../layout
+
+block body
+  .container-fluid.pt-3
+    .row
+      .col
+        include ../../_breadcrumbs
+  .py-5.bg-dark.text-center.text-white
+    h2.display-5.font-weight-light.mb-3.text-uppercase= t('Verification Status')
+    p.px-5= t('Follow the steps below and then click "Verify Records" to verify your setup.')
+    ul.list-inline
+      li.list-inline-item
+        button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_mx_record ? 'Verified' : 'Not Verified', class=domain.has_mx_record ? 'text-success' : 'text-danger').btn.btn-link
+          i.fa.fa-4x(class=domain.has_mx_record ? 'fa-check' : 'fa-times')
+        .text-monospace.text-uppercase= t('MX Records')
+      li.list-inline-item
+        button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_txt_record ? 'Verified' : 'Not Verified', class=domain.has_txt_record ? 'text-success' : 'text-danger').btn.btn-link
+          i.fa.fa-4x(class=domain.has_txt_record ? 'fa-check' : 'fa-times')
+        .text-monospace.text-uppercase= t('TXT Records')
+    if domain.group === 'admin'
+      form.ajax-form(action=l(`/my-account/domains/${domain.id}/verify-records`), method="POST")
+        input(type="hidden", name="_csrf", value=ctx.csrf)
+        button(type='submit').btn.btn-success.btn-lg
+          i.fa.fa-refresh
+          = ' '
+          = t('Verify Records')
+  .container-fluid.py-5
+    .position-relative
+      .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
+        .col-12.col-lg-6.d-flex
+          .p-5.m-2.mt-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t('1. Set up your domain for email forwarding')
+            p.lead.mb-3= t("Do you need to configure (or re-configure) this domain name for email forwarding?")
+            a.mt-auto(href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`), target='_blank', rel='noopener').stretched-link.btn.btn-lg.btn-outline-dark
+              = t('Configure your domain')
+              = ' '
+              i.fa.fa-angle-double-right
+        .col-12.col-lg-6.d-flex
+          .p-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t('2. Send emails with your domain using Gmail (optional)')
+            p.lead.mb-3!= t('Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.')
+            a.mt-auto(href=l(`/faq?domain=${domain.name}#how-to-send-mail-as-using-gmail`), target='_blank', rel='noopener').stretched-link.btn.btn-lg.btn-outline-dark
+              = t('Setup your Gmail')
+              = ' '
+              i.fa.fa-angle-double-right
+        .col-12.col-lg-6.d-flex
+          .p-5.m-2.mb-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t('3. Purge Cache and Send a Test Email to Yourself')
+            p.lead.mb-3!= t('Once you have followed the previous step(s), you will need to "purge" the DNS cache using the "Purge Cache" tool.  Make sure to purge both the "TXT" and the "MX" records for your domain name.  Wait a few minutes (or sometimes hours), and then try sending a test email to yourself.')
+            a.mt-auto(href='https://1.1.1.1/purge-cache/', target='_blank', rel='noopener').stretched-link.btn.btn-lg.btn-outline-dark
+              = t('Purge DNS cache')
+              = ' '
+              i.fa.fa-angle-double-right
+        .col-12.col-lg-6.d-flex
+          .p-5.m-2.mb-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t('4. Still need help with something?')
+            p.lead.mb-3!= t(`We are here to answer your questions, but before asking us, please be sure to <a href="${l('/faq')}">read our FAQ section</a>.`)
+            a.mt-auto(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help').stretched-link.btn.btn-lg.btn-outline-dark
+              = t('Ask us a question')
+              = ' '
+              i.fa.fa-angle-double-right
+    if domain.group === 'admin'
+      .row.mt-5
+        .col
+          .card
+            h4.card-header= t('Delete Domain')
+            .card-body
+              = t('Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.')
+            .card-footer.text-right
+              form(action=l(`/my-account/domains/${domain.id}`), method='POST').ajax-form.confirm-prompt
+                input(type='hidden', name='_method', value='DELETE')
+                input(type="hidden", name="_csrf", value=ctx.csrf)
+                button(type='submit').btn.btn-danger= t('Delete Domain')
+    .row.text-center.mt-5
+      .col
+        a(href=l('/my-account/domains')).btn.btn-outline-secondary
+          i.fa.fa-angle-double-left
+          = ' '
+          = t('Back to Domains')

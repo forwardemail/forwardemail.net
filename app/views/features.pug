@@ -1,0 +1,126 @@
+
+extends layout
+
+block body
+  .py-5.bg-light
+    .text-center.mb-5
+      .h2.display-3.mb-1= emoji('tada')
+      h2.display-5.font-weight-light.mb-0.text-uppercase= t('Our Features')
+      small.text-black-50.text-uppercase= t('We strive for perfection')
+    .container
+      .row.mb-5
+        .col
+          h2.text-center.font-weight-bold
+            = emoji('zap')
+            = ' '
+            = t('Lightning fast email deliverability.')
+      .row.row-cols-1.row-cols-sm-2
+        .col
+          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-black-50.border
+            .px-3.py-4
+              h1.h3.text-center.font-weight-bold
+                = t('Free')
+              p.text-center.mb-0= t('Basic plan to get started')
+            ul.list-group.list-group-flush
+              li.list-group-item.d-flex.align-items-center.border-top!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited custom domain names')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited email addresses')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('"Send mail as" with Gmail, Outlook, and Yahoo')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Catch-all email addresses')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Multiple recipients per email address')}`
+              li.list-group-item.d-flex.align-items-center
+                != `<i class="fa fa-fw fa-paperclip text-primary mr-3"></i> ${t('25MB attachment limit')}`
+                small.ml-1.text-black-50= t('(Gmail\'s limit too!)')
+            .d-flex.flex-column.flex-grow-1.justify-content-end
+              h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
+                small.d-inline-block.text-monospace $
+                span.d-inline-block.text-monospace 0
+                sup.d-inline-block.h6.text-black-50
+                  = '/'
+                  = t('month')
+              .p-2
+                a(href='/my-account/domains/new').btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
+                  = t('Add Domain')
+                  = ' '
+                  i.fa.fa-angle-double-right
+        .col.mt-3.mt-sm-0
+          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
+            .px-3.py-4
+              h1.h3.text-center.font-weight-bold
+                i.fa.fa-shield.d-block.d-sm-inline.mb-2.mb-sm-0
+                = ' '
+                = t('Enhanced Protection')
+              p.text-center.mb-0= t('Advanced features and support')
+            ul.list-group.list-group-flush
+              li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.text-white.font-weight-bold
+                i.fa.fa-fw.fa-arrow-left.mr-3
+                = ' '
+                = t('Everything included in the Free, plus:')
+              li.list-group-item.d-flex.align-items-center
+                != `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Enhanced privacy and forwarding protection')}`
+                = ' '
+                button(role='button', data-toggle='tooltip', data-placement='bottom', title=t('No publicly searchable TXT records are used.  Instead we store your configuration in a secure and backed-up database.')).btn.btn-link.text-dark.py-0
+                  i.fa.fa-question-circle
+              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited disposable email addresses')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Priority technical email support')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('99.99% Uptime Service Level Agreement ("SLA")')}`
+              li.list-group-item.d-flex.align-items-center.border-bottom
+                != `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Browser Extension')}`
+                button(role='button', data-toggle='tooltip', data-placement='bottom', title='Chrome').btn.btn-link.text-dark.py-0.px-1: i.fab.fa-chrome
+                button(role='button', data-toggle='tooltip', data-placement='bottom', title='Firefox').btn.btn-link.text-dark.py-0.px-1.ml-1: i.fab.fa-firefox-browser
+                button(role='button', data-toggle='tooltip', data-placement='bottom', title='Safari').btn.btn-link.text-dark.py-0.px-1.ml-1: i.fab.fa-safari
+            .d-flex.flex-column.flex-grow-1.justify-content-end
+              h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
+                small.d-inline-block.text-monospace $
+                span.d-inline-block.text-monospace ?
+                sup.d-inline-block.h6.text-black-50
+                  = '/'
+                  = t('month')
+              .p-2
+                button(type='button', disabled).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
+                  = t('Coming Soon')
+        .col.mt-3
+          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
+            .px-3.py-4
+              h1.h3.text-center.font-weight-bold
+                i.fa.fa-users.d-block.d-sm-inline.mb-2.mb-sm-0
+                = ' '
+                = t('Team')
+              p.text-center.mb-0= t('For small groups and organizations')
+            ul.list-group.list-group-flush
+              li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.font-weight-bold.text-white
+                i.fa.fa-fw.fa-arrow-left.mr-3
+                = ' '
+                = t('Everything included in Enhanced Protection, plus:')
+              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Organization account with shared domain access')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited member access control management')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Premium support with 24 hour response time')}`
+            .d-flex.flex-column.flex-grow-1.justify-content-end
+              h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
+                small.d-inline-block.text-monospace $
+                span.d-inline-block.text-monospace ?
+                sup.d-inline-block.h6.text-black-50
+                  = '/'
+                  = t('month')
+              .p-2
+                button(type='button', disabled).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
+                  = t('Coming Soon')
+        .col.mt-3
+          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
+            .px-3.py-4
+              h1.h3.text-center.font-weight-bold
+                = t('Enterprise')
+              p.text-center.mb-0= t('Custom solutions and licensing')
+            ul.list-group.list-group-flush
+              li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.font-weight-bold.text-white
+                i.fa.fa-fw.fa-arrow-left.mr-3
+                = ' '
+                = t('Everything included in Team, plus:')
+              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Custom licensing agreement')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Technical infrastructure design and support')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('White-label and custom-branded solutions')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Managed deployment and maintenance')}`
+            .d-flex.flex-column.flex-grow-1.justify-content-end
+              .p-2
+                a(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help').btn.btn-lg.btn-block.btn-dark.text-uppercase.font-weight-bold= t('Contact Sales')
+    .text-center.mt-5.text-truncate
+      img(src=manifest('img/logo-square.svg'), width=400, height=400, alt="")

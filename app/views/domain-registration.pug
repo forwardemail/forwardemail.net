@@ -1,0 +1,17 @@
+
+extends layout
+
+block body
+  .container.py-3
+    .row
+      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3
+        .card
+          .card-body
+            .text-center
+              h1.card-title.h4= t('Register a domain name')
+              p= t('Enter a custom domain name below to register.')
+            form(target="_blank", action="https://www.anrdoezrs.net/links/9237059/type/dlg/https://www.namecheap.com/domains/registration/results.aspx")
+              .form-group.floating-label
+                input#input-domain(name='domain', autocomplete="off", placeholder="example.com", autocorrect="off", spellcheck="false", autocapitalize="off", type="text").form-control.form-control-lg
+                label(for="input-domain")= t('Domain name')
+              button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')

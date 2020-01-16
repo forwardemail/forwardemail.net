@@ -1,0 +1,44 @@
+
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row
+      .col
+        include ../../_breadcrumbs
+        if domains.length === 0
+          .alert.alert-info= t('No domains exist yet')
+        else
+          .table-responsive
+            table.table.table-hover.table-bordered
+              thead.thead-dark
+                tr
+                  th(scope='col')= t('Domain Name')
+                  th(scope='col').text-center= t('MX Records')
+                  th(scope='col').text-center= t('TXT Records')
+                  th(scope='col').text-center.text-md-left= t('Actions')
+              tbody
+                each domain in domains
+                  tr
+                    td.align-middle= domain.name
+                    td.align-middle.text-center
+                      button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_mx_record ? 'Verified' : 'Not Verified', class=domain.has_mx_record ? 'text-success' : 'text-danger').btn.btn-link
+                        i.fa.fa-2x(class=domain.has_mx_record ? 'fa-check' : 'fa-times')
+                    td.align-middle.text-center
+                      button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_txt_record ? 'Verified' : 'Not Verified', class=domain.has_txt_record ? 'text-success' : 'text-danger').btn.btn-link
+                        i.fa.fa-2x(class=domain.has_txt_record ? 'fa-check' : 'fa-times')
+                    td.align-middle
+                      ul.list-inline.mb-0
+                        li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-lg-1.mb-2.mb-lg-0
+                          a(href=l(`/my-account/domains/${domain.id}`)).btn.btn-dark.btn-block
+                            i.fa.fa-cog.d-block.d-lg-inline
+                            = ' '
+                            = t('Manage Domain')
+                        if domain.group === 'admin'
+                          li.list-inline-item.d-block.d-lg-inline-block
+                            form.ajax-form(action=l(`/my-account/domains/${domain.id}/verify-records`), method="POST").d-block.d-lg-inline-block
+                              input(type="hidden", name="_csrf", value=ctx.csrf)
+                              button(type='submit').btn.btn-dark.btn-block
+                                i.fa.fa-refresh.d-block.d-lg-inline
+                                = ' '
+                                = t('Verify Records')

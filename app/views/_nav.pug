@@ -13,7 +13,7 @@ if !isHelp
           form.ajax-form.confirm-prompt(action=l('/help'), method="POST")
             input(type="hidden", name="_csrf", value=ctx.csrf)
             if ctx.pathWithoutLocale !== '/faq'
-              p.text-center.font-weight-bold!= t(`Have you read our <a href="${l('/faq')}" target="_blank" rel="noopener">FAQ</a> yet?`)
+              p.text-center.font-weight-bold!= t(`Have you read our <a href="${domain && domain.name ? t(`/faq?domain=${domain.name}`) : l('/faq')}" target="_blank" rel="noopener">FAQ</a> yet?`)
             .form-group.floating-label
               input#input-email.form-control(required, autocomplete="email", name="email", type="email", value=user ? user.email : '', placeholder='name@example.com')
               label(for="input-email")= t('Email address')
@@ -42,10 +42,8 @@ if !user && !registerOrLogin
               span(aria-hidden='true') &times;
           .modal-body
             +registerOrLogin(verb, true)
-if ctx.pathWithoutLocale === '/'
-  h3.h6.text-monospace.py-3.px-3.bg-dark.text-white.mb-0.d-none.d-md-block.text-center!= t(`${emoji('wave')} We're the email forwarding service that <u class="font-weight-bold">doesn\'t track you</u>. Period. ${emoji('tada')}`)
-nav(class=['/register', '/login', config.verificationPath].includes(ctx.pathWithoutLocale) ? '' : ctx.pathWithoutLocale === '/' ? 'bg-white' : 'fixed-top bg-light border border-top-0 border-left-0 border-right-0').navbar.navbar-expand-lg.navbar-light
-  button.navbar-toggler.bg-light.hidden-lg-up(type="button", data-toggle="collapse", data-target="#navbar-header", aria-controls="navbar-header", aria-expanded="false", aria-label=t('Toggle navigation'))
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bottom
+  button.navbar-toggler.hidden-lg-up(type="button", data-toggle="collapse", data-target="#navbar-header", aria-controls="navbar-header", aria-expanded="false", aria-label=t('Toggle navigation'))
     span.navbar-toggler-icon
   a.navbar-brand.d-inline-block.m-0(href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l())
     img.d-inline-block(src=manifest('img/logo-square.svg'), width=50, height=50, alt="").mr-1
@@ -53,7 +51,6 @@ nav(class=['/register', '/login', config.verificationPath].includes(ctx.pathWith
       span.text-primary.font-weight-bold Forward
       span.text-info.font-weight-normal Email
       span.text-success.font-weight-light .net
-
   //- once we have responsive border utilities added to bootstrap
   //- then we can apply them to the anchor tags inside the navbar
   //- so that on mobile devices there is no border around the links
@@ -61,47 +58,51 @@ nav(class=['/register', '/login', config.verificationPath].includes(ctx.pathWith
   #navbar-header.collapse.navbar-collapse
     ul.navbar-nav.ml-auto
       li.nav-item.ml-md-1.mt-1.mt-md-0
-        a.btn.text-success.btn-lg.d-block.text-left.text-md-center(href=l('/faq'))= t('FAQ')
+        a.btn.btn-lg.d-block.text-left.text-lg-center(href=l('/features'), class=ctx.pathWithoutLocale.startsWith('/features') ? 'btn-outline-light' : 'text-light')= t('Features')
       li.nav-item.ml-md-1.mt-1.mt-md-0
-        a.btn.text-success.btn-lg.d-block.text-left.text-md-center(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Help')
+        a.btn.btn-lg.d-block.text-left.text-lg-center(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'), class=ctx.pathWithoutLocale.startsWith('/faq') ? 'btn-outline-light' : 'text-light')= t('FAQ')
+      li.nav-item.ml-md-1.mt-1.mt-md-0
+        a.btn.btn-lg.d-block.text-left.text-lg-center(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help', class=ctx.pathWithoutLocale.startsWith('/help') ? 'btn-outline-light' : 'text-light')= t('Help')
       //- links that show only if you're logged in
       if user
-        li.nav-item.ml-md-1.mt-3.mt-md-0
-          a.btn.btn-lg.d-block.text-left.text-md-center(href=l('/dashboard'), class=ctx.pathWithoutLocale.startsWith('/dashboard') ? 'btn-dark' : 'btn-outline-dark')
-            = t('Dashboard')
-        li.nav-item.dropdown.ml-md-1.mt-1.mt-md-0
-          a#navbar-dropdown-my-account.btn.btn-lg.dropdown-toggle.d-block.text-left.text-md-center(href=l('/my-account'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/my-account') ? 'btn-dark' : 'btn-outline-dark')
-            = t('My Account')
-          .dropdown-menu(aria-labelledby='navbar-dropdown-admin')
-            a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Profile')
-            a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account/security' ? 'active' : '', href=l('/my-account/security'))= t('Security')
         //- links that show if you're an admin
         if user.group === 'admin'
           li.nav-item.dropdown.ml-md-1.mt-1.mt-md-0
-            a#navbar-dropdown-admin.btn.btn-lg.dropdown-toggle.d-block.text-left.text-md-center(href=l('/admin'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/admin') ? 'btn-dark' : 'btn-outline-dark')
+            a#navbar-dropdown-admin.btn.btn-lg.dropdown-toggle.d-block.text-left.text-lg-center(href=l('/admin'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/admin') ? 'btn-outline-light' : 'text-light')
               = t('Admin')
             .dropdown-menu(aria-labelledby='navbar-dropdown-admin')
               a.dropdown-item(class=ctx.pathWithoutLocale === '/admin' ? 'active' : '', href=l('/admin'))= t('Dashboard')
               a.dropdown-item(class=ctx.pathWithoutLocale.startsWith('/admin/users') ? 'active' : '', href=l('/admin/users'))= t('Users')
-      if user
-        li.nav-item.ml-md-1.mt-1.mt-md-0
-          a.btn.btn-lg.btn-outline-secondary.d-block.text-left.text-md-center(href=l('/logout'))
-            = t('Log out')
+        li.nav-item.dropdown.ml-md-1.mt-1.mt-md-0
+          a#navbar-dropdown-my-account.btn.btn-lg.dropdown-toggle.d-block.text-left.text-lg-center(href=l('/my-account'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/my-account') ? 'btn-outline-light' : 'text-light')
+            = t('My Account')
+          .dropdown-menu(aria-labelledby='navbar-dropdown-admin')
+            //- a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Dashboard')
+            a.dropdown-item(class=ctx.pathWithoutLocale.startsWith('/my-account/domains') ? 'active' : '', href=l('/my-account/domains'))= t('Domains')
+            a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account/profile' ? 'active' : '', href=l('/my-account/profile'))= t('Profile')
+            a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account/security' ? 'active' : '', href=l('/my-account/security'))= t('Security')
+            a.dropdown-item(href=l('/logout'))= t('Log out')
       //- links that show only if you're logged out
       else
         li.nav-item.ml-md-1.mt-1.mt-md-0
-          a.btn.btn-lg.d-block.text-left.text-md-center(
+          a.btn.btn-lg.d-block.text-left.text-lg-center(
             role=isRegisterOrLogin ? 'link' : 'button',
             href=l('/login'),
             data-toggle=isRegisterOrLogin ? '': 'modal-anchor',
             data-target=isRegisterOrLogin ? '' : '#modal-sign-in',
-            class=ctx.pathWithoutLocale === '/login' ? 'btn-success' : 'text-success'
+            class=ctx.pathWithoutLocale === '/login' ? 'btn-outline-light' : 'text-light'
           )= t('Sign in')
         li.nav-item.ml-md-1.mt-1.mt-md-0
-          a.btn.btn-lg.d-block.text-left.text-md-center(
+          a.btn.btn-lg.d-block.text-uppercase.font-weight-bold(
             role=isRegisterOrLogin ? 'link' : 'button',
             href=l('/register'),
             data-toggle=isRegisterOrLogin ? '' : 'modal-anchor',
             data-target=isRegisterOrLogin ? '' : '#modal-sign-up',
-            class=ctx.pathWithoutLocale === '/register' ? 'btn-success' : 'btn-outline-success'
-          )= t('Create an account')
+          ).btn-primary
+            = t('Sign up for free')
+            = ' '
+            i.fa.fa-angle-double-right
+if ctx.pathWithoutLocale === '/'
+  h3.h6.text-monospace.py-3.px-3.mb-0.text-center.d-none.d-sm-block
+    .d-none.d-md-block!= t(`${emoji('wave')} We <u class="font-weight-bold">don't store logs nor emails</u>. We don't track you. Regain your right to privacy. ${emoji('tada')}`)
+    .d-none.d-sm-block.d-md-none!= t(`${emoji('wave')} We <u class="font-weight-bold">don't store logs nor emails</u>. Period. ${emoji('tada')}`)

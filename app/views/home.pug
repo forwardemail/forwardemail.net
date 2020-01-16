@@ -3,21 +3,20 @@ extends layout
 
 block body
   .min-vh-80.text-center.d-flex.flex-column
-    .container.my-auto
+    .container.my-auto.py-2.py-sm-3.py-md-5
       .row
-        .col-12.col-lg-8.offset-lg-2
-          h1.display-4.font-weight-bold.mb-3.d-inline-block.text-uppercase
-            = t('Free Email Forwarding for Custom Domains')
+        .col-12.col-lg-10.offset-lg-1
+          h1.display-4.font-weight-bold.mb-3.text-uppercase!= t('Free Email Forwarding<span class="d-none d-md-block"> for Custom Domains</span>')
           //- h2.h3.font-weight-light.mb-3= t('Set up email forwarding for your custom domain in seconds.')
           p.lead.font-weight-normal.mb-3.text-black-50
-            != t('Create and forward an <u class="font-weight-bold">unlimited</u> amount of email addresses with your domain name. Plus get wildcard addresses, disposable aliases, and more!')
+            != t('Create and forward an <u class="font-weight-bold">unlimited</u> amount of email addresses with your domain name. Plus get catch-all, wildcard, and disposable forwarding addresses!')
           a.btn.btn-primary.btn-lg.text-uppercase.font-weight-bold.mb-2(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')
-            = t('Sign up now for free!')
+            = t('Sign up for free')
             = ' '
             i.fa.fa-angle-double-right
           small.d-block.text-muted.text-uppercase.text-black-50.font-weight-bold
             u!= t('No credit card required')
-    a(href='#learn-more').text-decoration-none.text-black-50.py-1.py-md-4.d-block.text-monospace.text-uppercase
+    a(href='#learn-more').text-decoration-none.text-black-50.pt-1.pb-4.pt-md-4.d-block.text-monospace.text-uppercase
       i.fa.fa-angle-down
       = ' '
       = t('Learn more')
@@ -42,40 +41,56 @@ block body
   .container-fluid.bg-light.pb-5.position-relative
     .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
       .col-12.col-lg-6.d-flex
-        .p-5.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+        .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
           h2.display-5.font-weight-bold.mb-3= t('Privacy First')
           p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption and a zero-tolerance policy for logs of any kind.")
-          a.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-lg.btn-outline-dark
+          a.d-none.d-md-block.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-lg.btn-outline-dark
+            = t('Regain your privacy')
+            = ' '
+            i.fa.fa-angle-double-right
+          a.d-md-none.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-sm.btn-dark
             = t('Regain your privacy')
             = ' '
             i.fa.fa-angle-double-right
       .col-12.col-lg-6.d-flex
-        .p-5.mt-5.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+        .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
           h2.display-5.font-weight-bold.mb-3= t('Disposable Addresses')
           p.lead.mb-3!= t('Create a specific or an anonymous email address that forwards to you.  You can even assign it a label and enable or disable it at any time to keep your inbox tidy.  Your actual email address is never exposed.')
-          a.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-lg.btn-outline-dark
+          a.d-none.d-md-block.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-lg.btn-outline-dark
+            = t('Disposable addresses')
+            = ' '
+            i.fa.fa-angle-double-right
+          a.d-md-none.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-sm.btn-dark
             = t('Disposable addresses')
             = ' '
             i.fa.fa-angle-double-right
       .col-12.col-lg-6.d-flex
-        .p-5.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+        .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
           h2.display-5.font-weight-bold.mb-3= t('Multiple Recipients and Wildcards')
           p.lead.mb-3!= t('You can forward a single address to multiple, and even use wildcard addresses &ndash; also known as catch-all\'s.  Managing your company\'s inboxes has never been easier.')
-          a.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-lg.btn-outline-dark
+          a.d-none.d-md-block.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-lg.btn-outline-dark
+            = t('Start forwarding now')
+            = ' '
+            i.fa.fa-angle-double-right
+          a.d-md-none.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-sm.btn-dark
             = t('Start forwarding now')
             = ' '
             i.fa.fa-angle-double-right
       .col-12.col-lg-6.d-flex
-        .p-5.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+        .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
           h2.display-5.font-weight-bold.mb-3= t('"Send mail as" with Gmail')
           p.lead.mb-3= t("You'll never have to leave your inbox to send out emails as if they're from your company.  Send and reply-to messages as if they're from you@company.com directly from you@gmail.com.")
-          a.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-lg.btn-outline-dark
+          a.d-none.d-md-block.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-lg.btn-outline-dark
+            = t('Configure your inbox')
+            = ' '
+            i.fa.fa-angle-double-right
+          a.d-md-none.mt-auto(href=l('/register'), role='button', data-toggle='modal-anchor', data-target='#modal-sign-up').stretched-link.btn.btn-sm.btn-dark
             = t('Configure your inbox')
             = ' '
             i.fa.fa-angle-double-right
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block
     h2.display-3.font-weight-bold.text-white.my-3.my-md-3.text-uppercase
-      = emoji('100')
+      = emoji('heart')
       = ' '
       = t('100% open-source.')
     .row

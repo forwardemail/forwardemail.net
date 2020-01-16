@@ -1,11 +1,26 @@
 if breadcrumbs.length > 1
   nav(aria-label='breadcrumb')
-    ol.breadcrumb.justify-content-center.justify-content-md-start
+    ol.breadcrumb.justify-content-center.justify-content-md-start.mb-3
       each breadcrumb, i in breadcrumbs
         if i === breadcrumbs.length - 1
-          li.breadcrumb-item.active(aria-current='page')= t(titleize(humanize(breadcrumb)))
+          li.breadcrumb-item.active(aria-current='page')
+            = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
         else
-          li.breadcrumb-item: a(href=`/${breadcrumbs.slice(0, i + 1).join('/')}/`)= t(titleize(humanize(breadcrumb)))
-.text-center.text-md-left
-  h1.text-muted= t(titleize(humanize(breadcrumbs[1] ? breadcrumbs[1] : breadcrumbs[0])))
-hr
+          li.breadcrumb-item
+            a(href=_.isObject(breadcrumb) ? breadcrumb.href : `/${breadcrumbs.slice(0, i + 1).join('/')}/`).text-dark
+              = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
+  .text-center.text-md-left.d-md-flex
+    h1.text-muted.mb-3
+      if breadcrumbs.length > 0
+        = _.isObject(breadcrumbs[1]) ? breadcrumbs[1].header || breadcrumbs[1].name : t(titleize(humanize(breadcrumbs[1])))
+      else
+        = _.isObject(breadcrumbs[0]) ? breadcrumbs[0].header || breadcrumbs[0].name : t(titleize(humanize(breadcrumbs[0])))
+    .flex-grow-1.ml-md-5.d-md-flex.align-items-center.justify-content-md-end.justify-content-center.mt-3.mt-md-0
+      case ctx.pathWithoutLocale
+        when '/my-account/domains'
+          a(href=l('/my-account/domains/new')).btn.btn-primary.text-uppercase.font-weight-bold
+            = t('Add New Domain')
+            = ' '
+            i.fa.fa-angle-double-right
+        default
+          = ' '

@@ -6,7 +6,7 @@ footer.mt-auto
           if !user
             .col-6
               a.btn.btn-outline-light.text-uppercase.font-weight-bold(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')
-                = t('Sign up now')
+                = t('Sign up')
                 = ' '
                 i.fa.fa-angle-double-right
           div(class=user ? 'col-12' : 'col-6')
@@ -30,8 +30,9 @@ footer.mt-auto
         .flex-wrap.flex-fill
           h5.mb-2= t('Resources')
           ul.list-unstyled
-            li: a.d-block.text-light(href=l('/faq'))= t('FAQ')
+            li: a.d-block.text-light(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'))= t('FAQ')
             li: a.d-block.text-light(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Help')
+            li: a.d-block.text-light(href=l('/domain-registration'))= t('Domain Registration')
             li: a.d-block.text-light(href=l('/donate'))= t('Donate')
         hr.d-md-none
         .flex-wrap.flex-fill

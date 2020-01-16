@@ -11,7 +11,7 @@ test('creates new user', async t => {
       password: '@!#SAL:DMA:SKLM!@'
     }
   });
-  t.is(res.body.redirectTo, '/en/dashboard');
+  t.is(res.body.redirectTo, '/en/my-account');
   // Should be 201 for success on create
   t.is(res.status, 200);
 });

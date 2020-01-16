@@ -3,7 +3,7 @@ extends ../../layout
 
 block body
   .container-fluid.py-3
-    .row.mt-1
+    .row
       .col
         include ../../_breadcrumbs
         if users.length === 0
@@ -20,7 +20,6 @@ block body
                   th(scope='col')= t('Created')
                   th(scope='col')= t('Updated')
                   th(scope='col')= t('Last Login')
-                  th(scope='col')= t('Last IP')
                   th(scope='col')= t('Last Locale')
                   th(scope='col')= t('Actions')
               tbody
@@ -33,15 +32,14 @@ block body
                     td.align-middle= moment(user.created_at).format('M/D/YY h:mm A')
                     td.align-middle= moment(user.updated_at).format('M/D/YY h:mm A')
                     td.align-middle= moment(user.last_login_at).format('M/D/YY h:mm A')
-                    td.align-middle: code= user[config.storeIPAddress.ip]
                     td.align-middle: code= user[config.lastLocaleField]
                     td.align-middle
                       .btn-group(role='group', aria-label=t('Actions'))
                         a(href=l(`/admin/users/${user.id}`), data-toggle='tooltip', data-title=t('Edit')).btn.btn-secondary: i.fa.fa-fw.fa-edit
-                        form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}/login`), method="POST", autocomplete="off")
+                        form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}/login`), method="POST")
                           input(type="hidden", name="_csrf", value=ctx.csrf)
                           button(type='submit', data-toggle='tooltip', data-title=t('Log in as user')).btn.btn-secondary: i.fa.fa-fw.fa-user-secret
-                        form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}`), method="POST", autocomplete="off")
+                        form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}`), method="POST")
                           input(type="hidden", name="_csrf", value=ctx.csrf)
                           input(type="hidden", name="_method", value="DELETE")
                           button(type='submit', data-toggle='tooltip', data-title=t('Remove')).btn.btn-secondary: i.fa.fa-fw.fa-remove

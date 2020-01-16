@@ -3,13 +3,13 @@ extends ../../layout
 
 block body
   .container-fluid.py-3
-    .row.mt-1
+    .row
       .col
         include ../../_breadcrumbs
         form(action=ctx.path, method='POST').ajax-form.confirm-prompt
           input(type='hidden', name='_method', value='PUT')
           input(type="hidden", name="_csrf", value=ctx.csrf)
-          .card.card-bg-light
+          .card
             h4.card-header= result.id
             .card-body
               .form-group.floating-label

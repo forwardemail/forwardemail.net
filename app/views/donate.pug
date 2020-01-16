@@ -3,10 +3,10 @@ extends layout
 
 block body
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
-    h1.display-3.font-weight-bold.text-white.my-3.text-uppercase= t('Donate')
     .row
-      .col-md-6.offset-md-3
-        p.lead.text-white-50= t('Dozens of people like you help to reimburse our hosting costs, efforts, and time.  We thank you for your generosity and time in considering a donation of any amount.')
+      .col-md-12
+        p.lead.mb-0.text-white.font-weight-bold
+          = t('We thank you for your generosity and time in considering a donation.')
   .py-5
     .text-center.mb-5
       .h2.display-3.mb-1= emoji('open_hands')
@@ -27,7 +27,7 @@ block body
               a(href='https://www.patreon.com/niftylettuce', target='blank', rel='nopener').btn.btn-lg.btn-link.btn-block
                 i.fa.fa-patreon
                 = 'Patreon'
-      p.text-muted= t('We would also appreciate your donation to the following organizations:')
+      p.text-muted= t('We would also appreciate your donation to:')
       ul.list-unstyled
         li: a(href="https://donate.mozilla.org/en-US/thunderbird/", target="_blank", rel="noopener").btn.btn-sm.btn-link.btn-block Thunderbird
         li: a(href='https://github.com/sponsors/andris9', target="_blank", rel="noopener").btn.btn-sm.btn-link.btn-block Andris Reisman (@andris9)

@@ -1,0 +1,14 @@
+extends ../layout
+
+block body
+  .container.py-5
+    .row
+      .col
+        case locale
+          when 'es'
+            include:md index-es.md
+          when 'zh'
+            include:md index-zh.md
+          when 'en'
+          default
+            include:md index.md
