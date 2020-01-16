@@ -1321,10 +1321,10 @@
     delay "^4.3.0"
     lodash "^4.17.15"
 
-"@ladjs/passport@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@ladjs/passport/-/passport-0.0.5.tgz#64ebd87a7b3a2f5cc08fbc7395357345e21d43b0"
-  integrity sha512-+JxeVw6kEz8hbKw2sVHDf+JwassD/sCkZIgYOYtqrCeFJk3E2tGePhkpAYOJB9nLjMZvW2S8pfY42S58aC0H2A==
+"@ladjs/passport@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@ladjs/passport/-/passport-0.0.6.tgz#e45de731a3c672177fac9aff8fce18454aa753bd"
+  integrity sha512-2+PkujeOcVms1feWsHoEPutofqqcPD2xqYMdkQIjJkO9hxeqmdPgfsd83sYWjNPq2SzLDZ9q4q4QrSvyiTw4mw==
   dependencies:
     boolean "^3.0.0"
     koa-passport "^4.1.3"

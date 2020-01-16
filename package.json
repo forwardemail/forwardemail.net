@@ -40,7 +40,7 @@
     "@ladjs/i18n": "^3.0.1",
     "@ladjs/mongoose": "^2.0.1",
     "@ladjs/mongoose-error-messages": "^0.0.3",
-    "@ladjs/passport": "^0.0.5",
+    "@ladjs/passport": "^0.0.6",
     "@ladjs/policies": "^2.0.1",
     "@ladjs/proxy": "^1.0.3",
     "@ladjs/web": "^0.4.16",
