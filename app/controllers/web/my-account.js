@@ -110,8 +110,7 @@ async function retrieveDomains(ctx, next) {
       timer: 5000,
       position: 'top'
     });
-    ctx.redirect('/my-account/domains/new');
-    return;
+    return ctx.redirect('/my-account/domains/new');
   }
 
   return next();

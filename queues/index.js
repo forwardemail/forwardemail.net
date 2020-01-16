@@ -21,7 +21,7 @@ const queues = [
       attempts: 1,
       defaultJobOptions: {
         repeat: {
-          every: ms('15m')
+          every: process.env.NODE_ENV === 'production' ? ms('15s') : ms('15m')
         }
       }
     },
@@ -38,7 +38,7 @@ const queues = [
       attempts: 1,
       defaultJobOptions: {
         repeat: {
-          every: ms('30m')
+          every: process.env.NODE_ENV === 'production' ? ms('30s') : ms('30m')
         }
       }
     },
