@@ -3,7 +3,6 @@ const path = require('path');
 const { boolean } = require('boolean');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
 const { isEmail, isFQDN, isIP } = require('validator');
@@ -78,8 +77,7 @@ async function faq(ctx, next) {
     };
     query[config.userFields.hasVerifiedEmail] = false;
     query[config.userFields.hasSetPassword] = false;
-    const password = cryptoRandomString({ length: 10 });
-    const user = await Users.register(query, password);
+    const user = await Users.register(query);
     await Domains.create({
       members: [{ user: user._id, group: 'admin' }],
       name: ctx.request.body.domain
