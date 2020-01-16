@@ -96,7 +96,14 @@ async function getVerificationResults(domain) {
     txt = true;
   } catch (err) {
     logger.error(err);
-    if (err.code === 'ENOTFOUND') errors.push(ENOTFOUND);
+    if (
+      err.message &&
+      err.message.includes(
+        'is not configured properly and does not contain any valid'
+      )
+    )
+      txt = true;
+    else if (err.code === 'ENOTFOUND') errors.push(ENOTFOUND);
     else if (err.code === 'ENODATA')
       errors.push(
         new Error(`${domain.name} is missing the required DNS TXT records.`)
