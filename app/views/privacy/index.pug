@@ -19,11 +19,13 @@ block body
   .container.pt-0.pb-5
     .row
       .col
-        case locale
-          when 'es'
-            include:md index-es.md
-          when 'zh'
-            include:md index-zh.md
-          when 'en'
-          default
-            include:md index.md
+        include:md index.md
+        //-.
+          case locale
+            when 'es'
+              include:md index-es.md
+            when 'zh'
+              include:md index-zh.md
+            when 'en'
+            default
+              include:md index.md
