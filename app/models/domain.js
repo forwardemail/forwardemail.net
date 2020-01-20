@@ -31,6 +31,8 @@ const Domain = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    lowercase: true,
+    trim: true,
     // must be IP or FQDN
     validate: {
       validator: name => isFQDN(name) || isIP(name),

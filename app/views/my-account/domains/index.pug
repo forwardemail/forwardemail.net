@@ -22,10 +22,10 @@ block body
                   tr
                     td.align-middle= domain.name
                     td.align-middle.text-center
-                      button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_mx_record ? 'Verified' : 'Not Verified', class=domain.has_mx_record ? 'text-success' : 'text-danger').btn.btn-link
+                      button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_mx_record ? t('Verified') : t('Not Verified'), class=domain.has_mx_record ? 'text-success' : 'text-danger').btn.btn-link
                         i.fa.fa-2x(class=domain.has_mx_record ? 'fa-check' : 'fa-times')
                     td.align-middle.text-center
-                      button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_txt_record ? 'Verified' : 'Not Verified', class=domain.has_txt_record ? 'text-success' : 'text-danger').btn.btn-link
+                      button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_txt_record ? t('Verified') : t('Not Verified'), class=domain.has_txt_record ? 'text-success' : 'text-danger').btn.btn-link
                         i.fa.fa-2x(class=domain.has_txt_record ? 'fa-check' : 'fa-times')
                     td.align-middle
                       ul.list-inline.mb-0
