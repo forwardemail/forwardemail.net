@@ -33,7 +33,7 @@ block body
               p= t('Your account is currently an admin of these domains:')
               ul
                 each domain in adminDomains
-                  li: a(href=`/my-account/domains/${domain.id}`, target='_blank', rel='noopener')= domain.name
+                  li: a(href=l(`/my-account/domains/${domain.id}`), target='_blank', rel='noopener')= domain.name
               p.mb-0= t('You must remove yourself from or delete these domains before you can delete your account.')
           else
             .card-body
