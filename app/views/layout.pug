@@ -48,6 +48,24 @@ html(lang=locale).h-100
     block stylesheets
       link(rel="stylesheet", href=manifest('css/app.css'))
 
+  body(role='document').d-flex.flex-column.h-100
+
+    //- spinner
+    block spinner
+      include spinner/spinner
+
+    //- navigation
+    block navigation
+      include _nav
+
+    //- body
+    main(role='main').flex-shrink-0
+      block body
+
+    //- footer
+    block footer
+      include _footer
+
     block scripts
       //- flash messaging (with koa-better-flash and sweetalert2)
       script.
@@ -99,31 +117,13 @@ html(lang=locale).h-100
           };
 
       //- polyfill environment
-      script(defer, src=`https://polyfill.io/v3/polyfill${config.env === 'production' ? '.min' : ''}.js?features=${polyfills.join(',')}`)
+      script(src=`https://polyfill.io/v3/polyfill${config.env === 'production' ? '.min' : ''}.js?features=${polyfills.join(',')}`)
 
       //- factor bundle (common shared assets across all files)
-      script(defer, src=manifest('js/factor-bundle.js'))
+      script(src=manifest('js/factor-bundle.js'))
 
       //- uncaught (handles errors, similar to TraceKit but with CabinJS + StackTrace.JS)
-      script(defer, src=manifest('js/uncaught.js'))
+      script(src=manifest('js/uncaught.js'))
 
       //- scripts
-      script(defer, src=manifest('js/core.js'))
-
-  body(role='document').d-flex.flex-column.h-100
-
-    //- spinner
-    block spinner
-      include spinner/spinner
-
-    //- navigation
-    block navigation
-      include _nav
-
-    //- body
-    main(role='main').flex-shrink-0
-      block body
-
-    //- footer
-    block footer
-      include _footer
+      script(src=manifest('js/core.js'))
