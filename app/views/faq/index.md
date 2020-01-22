@@ -49,6 +49,7 @@ Be sure to replace the email address of `niftylettuce@gmail.com` with the email 
 | [Amazon Route 53](https://console.aws.amazon.com/route53/)                | Sign in > Hosted Zones > (Select your domain)                                                                           |
 | [Cloudflare](https://dash.cloudflare.com/login)                           | Sign in > DNS                                                                                                           |
 | [DNS Made Easy](https://cp.dnsmadeeasy.com/)                              | Sign in > DNS > (Select your domain)                                                                                    |
+| [DNSimple](https://dnsimple.com/dashboard)                              | Sign in > (Select your domain)  > DNS > Manage                                                                                   |
 | [Digital Ocean](https://cloud.digitalocean.com/login)                     | Sign in > Networking > Domains > (Select your domain) > More > Manage Domain                                            |
 | [DreamHost](https://panel.dreamhost.com/)                                 | Sign in > Panel > Domains > Manage Domains > DNS                                                                        |
 | [Dyn](https://portal.dynect.net/login/)                                   | Sign in > Overview > Manage > Simple Editor > Records                                                                   |
