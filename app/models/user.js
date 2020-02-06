@@ -42,6 +42,10 @@ const User = new mongoose.Schema({
     lowercase: true,
     unique: true,
     validate: val => validator.isEmail(val)
+  },
+  is_banned: {
+    type: Boolean,
+    default: false
   }
 });
 

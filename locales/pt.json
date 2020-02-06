@@ -977,5 +977,7 @@
   "Have you read our <a href=\"/fr/faq\" target=\"_blank\" rel=\"noopener\">FAQ</a> yet?": "Have you read our <a href=\"/fr/faq\" target=\"_blank\" rel=\"noopener\">FAQ</a> yet?",
   "Français": "Français",
   "DNSimple": "DNSimple",
-  "Sign in > (Select your domain)  > DNS > Manage": "Sign in > (Select your domain)  > DNS > Manage"
+  "Sign in > (Select your domain)  > DNS > Manage": "Sign in > (Select your domain)  > DNS > Manage",
+  "Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS TXT record and prefix the alias with an exclamation mark.  Note that you must preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing in our paid plans).": "Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS TXT record and prefix the alias with an exclamation mark.  Note that you must preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing in our paid plans).",
+  "If you prefix an alias with \"!\" (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole.": "If you prefix an alias with \"!\" (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole."
 }

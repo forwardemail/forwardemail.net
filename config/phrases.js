@@ -101,5 +101,6 @@ module.exports = {
   FREE_PLAN: 'You have successfully downgraded to the Free Plan.',
   ENHANCED_PROTECTION_PLAN:
     'You have successfully upgraded to the Enhanced Protection Plan.',
-  TEAM_PLAN: 'You have successfully upgraded to the Team Plan.'
+  TEAM_PLAN: 'You have successfully upgraded to the Team Plan.',
+  ACCOUNT_BANNED: 'Your account has been banned.'
 };

@@ -7,6 +7,7 @@ const web = require('../../app/controllers/web');
 const router = new Router({ prefix: '/my-account' });
 
 router.use(policies.ensureLoggedIn);
+router.use(web.myAccount.ensureNotBanned);
 router.use(web.breadcrumbs);
 router.use(web.myAccount.retrieveDomains);
 router.get('/', ctx => {

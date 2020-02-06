@@ -978,6 +978,12 @@ async function removeMember(ctx) {
   else ctx.body = { reloadPage: true };
 }
 
+function ensureNotBanned(ctx, next) {
+  if (ctx.state.user.is_banned)
+    return ctx.throw(Boom.forbidden(ctx.translate('ACCOUNT_BANNED')));
+  return next();
+}
+
 module.exports = {
   update,
   resetAPIToken,
@@ -1004,5 +1010,6 @@ module.exports = {
   createInvite,
   removeInvite,
   updateMember,
-  removeMember
+  removeMember,
+  ensureNotBanned
 };
