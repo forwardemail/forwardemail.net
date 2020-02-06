@@ -53,7 +53,6 @@ const Domain = new mongoose.Schema({
         index: true,
         trim: true,
         lowercase: true,
-        unique: true,
         validate: val => isEmail(val)
       },
       group: {
