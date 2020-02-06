@@ -9,18 +9,57 @@ if breadcrumbs.length > 1
           li.breadcrumb-item
             a(href=_.isObject(breadcrumb) ? breadcrumb.href : `/${breadcrumbs.slice(0, i + 1).join('/')}/`).text-dark
               = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
-  .text-center.text-md-left.d-md-flex
-    h1.text-muted.mb-3
+  .text-center.text-md-left.d-md-flex.mb-3
+    h1.text-muted.mb-0(class=breadcrumbHeaderCentered ? 'flex-grow-1 text-center' : '')
       if breadcrumbs.length > 0
-        = _.isObject(breadcrumbs[1]) ? breadcrumbs[1].header || breadcrumbs[1].name : t(titleize(humanize(breadcrumbs[1])))
+        = _.isObject(breadcrumbs[breadcrumbs.length - 1]) ? breadcrumbs[breadcrumbs.length - 1].header || breadcrumbs[breadcrumbs.length - 1].name : t(titleize(humanize(breadcrumbs[breadcrumbs.length - 1])))
       else
         = _.isObject(breadcrumbs[0]) ? breadcrumbs[0].header || breadcrumbs[0].name : t(titleize(humanize(breadcrumbs[0])))
-    .flex-grow-1.ml-md-5.d-md-flex.align-items-center.justify-content-md-end.justify-content-center.mt-3.mt-md-0
-      case ctx.pathWithoutLocale
-        when '/my-account/domains'
-          a(href=l('/my-account/domains/new')).btn.btn-primary.text-uppercase.font-weight-bold
-            = t('Add New Domain')
-            = ' '
-            i.fa.fa-angle-double-right
-        default
-          = ' '
+    if !breadcrumbHeaderCentered
+      .flex-grow-1.ml-md-5.d-md-flex.align-items-center.justify-content-md-end.justify-content-center.mt-3.mt-md-0
+        if domain && ctx.pathWithoutLocale === `/my-account/domains/${domain.id}`
+          ul.list-inline.mb-0
+            li.list-inline-item
+              a(href=l(`/my-account/domains/${domain.id}/aliases`)).btn.btn-dark
+                i.fa.fa-fw.fa-users
+                = ' '
+                = t('Aliases')
+            //-.
+              if domain.group === 'admin'
+                li.list-inline-item
+                  a(href=l(`/my-account/domains/${domain.id}/billing`)).btn.btn-dark
+                    i.fa.fa-fw.fa-receipt
+                    = ' '
+                    = t('Billing')
+        else if domain && ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases`
+          ul.list-inline.mb-0
+            if !domain.is_global && ctx.state.domain.group === 'admin'
+              li.list-inline-item
+                form(action=l(`/my-account/domains/${domain.id}/aliases/import`), method='POST').ajax-form.confirm-prompt.d-inline-block
+                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  button(type='submit').btn.btn-dark.text-uppercase.font-weight-bold
+                    = t('Import TXT Records')
+                    = ' '
+                    i.fa.fa-cloud-download-alt
+            li.list-inline-item
+              a(href=l(`/my-account/domains/${domain.id}/aliases/new`), role='button', data-toggle='modal-anchor', data-target='#modal-alias').btn.btn-primary.text-uppercase.font-weight-bold
+                = t('Add New Alias')
+                = ' '
+                i.fa.fa-angle-double-right
+        else
+          case ctx.pathWithoutLocale
+            when '/my-account/domains'
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  a(href=l('/my-account/domains/new'), role='button', data-toggle='modal-anchor', data-target='#modal-domain').btn.btn-primary.text-uppercase.font-weight-bold
+                    = t('Add New Domain')
+                    = ' '
+                    i.fa.fa-angle-double-right
+                if domains.length > 0
+                  li.list-inline-item
+                    a(href=l('/my-account/domains/aliases/new'), role='button', data-toggle='modal-anchor', data-target='#modal-alias').btn.btn-primary.text-uppercase.font-weight-bold
+                      = t('Add New Alias')
+                      = ' '
+                      i.fa.fa-angle-double-right
+            default
+              = ' '

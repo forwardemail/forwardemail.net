@@ -32,6 +32,12 @@ const config = {
     api: env.API_URL
   },
 
+  // vanity domains
+  vanityDomains: env.VANITY_DOMAINS.sort(),
+
+  // record prefix (matches `forward-email` package)
+  recordPrefix: env.TXT_RECORD_PREFIX,
+
   // app
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
   email: {

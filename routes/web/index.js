@@ -15,13 +15,24 @@ const localeRouter = new Router({ prefix: '/:locale' });
 
 localeRouter
   .get('/', web.auth.homeOrDomains)
+  // status page crawlers often send `HEAD /` requests
+  .head('/', ctx => {
+    ctx.body = 'OK';
+  })
   .get('/dashboard', ctx => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));
   })
   .get('/about', render('about'))
+  .get('/free-disposable-addresses', render('free-disposable-addresses'))
   .get('/domain-registration', render('domain-registration'))
-  .get('/features', render('features'))
+  .get('/reserved-email-addresses', render('reserved-email-addresses'))
+  .get(
+    '/features',
+    web.myAccount.retrieveDomains,
+    web.myAccount.sortedDomains,
+    render('features')
+  )
   .get('/faq', web.myAccount.retrieveDomains, web.faq)
   .post('/faq', web.myAccount.retrieveDomains, web.faq)
   .get('/donate', render('donate'))

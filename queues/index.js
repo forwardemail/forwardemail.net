@@ -4,6 +4,16 @@ const ms = require('ms');
 
 const queues = [
   {
+    name: 'migration',
+    options: { attempts: 1 },
+    processors: [
+      {
+        processor: path.join(__dirname, 'migration.js'),
+        concurrency: 1
+      }
+    ]
+  },
+  {
     name: 'email',
     options: {
       attempts: 2
@@ -16,12 +26,24 @@ const queues = [
     ]
   },
   {
+    name: 'vanity-domains',
+    options: {
+      attempts: 1
+    },
+    processors: [
+      {
+        processor: path.join(__dirname, 'vanity-domains.js'),
+        concurrency: 1
+      }
+    ]
+  },
+  {
     name: 'translate-phrases',
     options: {
       attempts: 1,
       defaultJobOptions: {
         repeat: {
-          every: process.env.NODE_ENV === 'production' ? ms('15s') : ms('15m')
+          every: ms('1hr')
         }
       }
     },
@@ -38,7 +60,7 @@ const queues = [
       attempts: 1,
       defaultJobOptions: {
         repeat: {
-          every: process.env.NODE_ENV === 'production' ? ms('30s') : ms('30m')
+          every: ms('30m')
         }
       }
     },

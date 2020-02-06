@@ -1,10 +1,11 @@
 const path = require('path');
 
-const { boolean } = require('boolean');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const emailAddresses = require('email-addresses');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
+const { boolean } = require('boolean');
 const { isEmail, isFQDN, isIP } = require('validator');
 
 const config = require('../../../config');
@@ -37,13 +38,37 @@ async function faq(ctx, next) {
     if (isSANB(ctx.query.email) && isEmail(ctx.query.email))
       ctx.state.email = ctx.query.email;
 
+    if (ctx.state.domain && ctx.state.domain.startsWith('www.'))
+      ctx.flash(
+        'error',
+        ctx
+          .translate('WWW_WARNING')
+          .replace('example.com', ctx.state.domain.replace('www.', ''))
+      );
+
     let html = pug.renderFile(filename, ctx.state);
-    if (ctx.state.domain) html = html.replace(/example.com/g, ctx.state.domain);
+    if (ctx.state.domain)
+      html = html.replace(
+        /example.com/g,
+        ctx.state.domain.startsWith('www.')
+          ? ctx.state.domain.replace('www.', '')
+          : ctx.state.domain
+      );
+
     if (ctx.state.email) {
-      const [localPart, domainName] = ctx.state.email.split('@');
-      html = html
-        .replace(/niftylettuce/g, localPart)
-        .replace(/@gmail.com/g, `@${domainName}`);
+      const parsed = emailAddresses.parseOneAddress(ctx.state.email);
+      if (parsed === null) {
+        const index = ctx.state.email.lastIndexOf('@');
+        const local = ctx.state.email.slice(0, index);
+        const domain = ctx.state.email.slice(index + 1);
+        html = html
+          .replace(/niftylettuce/g, local)
+          .replace(/@gmail.com/g, `@${domain}`);
+      } else {
+        html = html
+          .replace(/niftylettuce/g, parsed.local)
+          .replace(/@gmail.com/g, `@${parsed.domain}`);
+      }
     }
 
     ctx.body = html;
@@ -85,19 +110,32 @@ async function faq(ctx, next) {
     ctx.login(user);
   }
 
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('REQUEST_OK'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
-
-  const redirectTo = ctx.state.l(
+  // TODO: flash messages logic in @ladjs/assets doesn't support both
+  // custom and regular flash message yet
+  let redirectTo = ctx.state.l(
     `/faq?domain=${ctx.request.body.domain.toLowerCase()}&email=${ctx.request.body.email.toLowerCase()}#how-do-i-get-started-and-set-up-email-forwarding`
   );
+  if (ctx.request.body.domain.startsWith('www.')) {
+    ctx.flash(
+      'error',
+      ctx
+        .translate('WWW_WARNING')
+        .replace('example.com', ctx.request.body.domain.replace('www.', ''))
+    );
+    redirectTo = ctx.state.l(
+      `/faq?domain=${ctx.request.body.domain.toLowerCase()}&email=${ctx.request.body.email.toLowerCase()}`
+    );
+  } else {
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('REQUEST_OK'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
+  }
 
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };

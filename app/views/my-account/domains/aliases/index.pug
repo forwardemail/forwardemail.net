@@ -1,0 +1,80 @@
+
+extends ../../../layout
+
+block body
+  #modal-alias.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-alias-title', aria-hidden='true', data-backdrop='static')
+    .modal-dialog.modal-lg(role='document')
+      .modal-content
+        .modal-header.text-center.d-block
+          h4.modal-title.d-inline-block.ml-4#modal-alias-title= t('Add New Alias')
+          button(type='button', data-dismiss='modal', aria-label='Close').close
+            span(aria-hidden='true') &times;
+        .modal-body
+          form.ajax-form(action=l(`/my-account/domains/${domain.id}/aliases/new`), method="POST")
+            include _form
+            button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+
+  .container-fluid.pt-3
+    .row
+      .col
+        include ../../../_breadcrumbs
+        if domain.aliases.length === 0
+          .alert.alert-info= t('No aliases exist yet')
+        else
+          .table-responsive
+            table.table.table-hover.table-bordered
+              thead.thead-dark
+                tr
+                  th(scope='col')= t('Alias')
+                  if domain.group === 'admin' && domain.plan === 'team'
+                    th(scope='col')= t('Team Member')
+                  if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
+                    th(scope='col')= t('Description & Labels')
+                  th(scope='col').text-center= t('Active')
+                  th(scope='col')= t('Recipients')
+                  th(scope='col').text-center.text-md-left= t('Quick Links')
+              tbody
+                each alias in domain.aliases
+                  tr
+                    td.align-middle
+                      p.mb-0.markdown-body.ml-0.mr-0: code= `${alias.name}@${domain.name}`
+                    if domain.group === 'admin' && domain.plan === 'team'
+                      td.align-middle= alias.user.email
+                    if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
+                      td.align-middle
+                        if isSANB(alias.description)
+                          p.mb-0: small= alias.description
+                        if Array.isArray(alias.labels)
+                          ul.list-inline.mb-0
+                            each label in alias.labels
+                              li.list-inline-item.h4
+                                span(class=label === 'catch-all' ? 'badge-success': 'badge-primary').badge.text-monospace.font-weight-normal= label === 'catch-all' ? t('catch-all') : label
+                    td.align-middle.text-center
+                      button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=alias.is_enabled ? t('Enabled') : t('Disabled'), class=alias.is_enabled ? 'text-success' : 'text-danger').btn.btn-link
+                        i.fa.fa-2x(class=alias.is_enabled ? 'fa-check' : 'fa-times')
+                    td.align-middle
+                      ul.list-inline.mb-0
+                        each recipient in alias.recipients
+                          li.list-inline-item.h3
+                            span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal= validator.isEmail(recipient) ? recipient : `${alias.name}@${recipient}`
+                    td.align-middle(style='width:20%')
+                      ul.list-inline.mb-0
+                        li.list-inline-item
+                          a(href=`/my-account/domains/${domain.id}/aliases/${alias.id}`).btn.btn-dark
+                            i.fa.fa-pencil
+                            = ' '
+                            = t('Edit Alias')
+                        li.list-inline-item
+                          form(action=l(`/my-account/domains/${domain.id}/aliases/${alias.id}`), method='POST').ajax-form.confirm-prompt.d-inline-block
+                            input(type="hidden", name="_csrf", value=ctx.csrf)
+                            input(type='hidden', name='_method', value='DELETE')
+                            button(type='submit').btn.btn-danger
+                              i.fa.fa-trash
+                              = ' '
+                              = t('Delete Alias')
+    .row.text-center.my-5
+      .col
+        a(href=l(domain.group === 'admin' ? `/my-account/domains/${domain.id}` : '/my-account/domains')).btn.btn-outline-secondary
+          i.fa.fa-angle-double-left
+          = ' '
+          = domain.group === 'admin' ? t('Back to Domain') : t('Back to Domains')

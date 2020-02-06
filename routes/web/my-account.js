@@ -14,21 +14,133 @@ router.get('/', ctx => {
 });
 router.delete('/', web.myAccount.remove);
 router.get('/domains', render('my-account/domains'));
+router.post(
+  '/aliases',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  web.myAccount.validateAlias,
+  web.myAccount.createAlias
+);
 router.get('/domains/new', web.myAccount.createDomain);
 router.post('/domains/new', web.myAccount.createDomain);
-router.delete(
-  '/domains/:id',
-  web.myAccount.retrieveDomain,
-  web.myAccount.removeDomain
-);
+
+router.get('/domains/:domain_id/invites', web.myAccount.retrieveInvite);
+
 router.post(
-  '/domains/:id/verify-records',
+  '/domains/:domain_id/invites',
   web.myAccount.retrieveDomain,
-  web.myAccount.verifyRecords
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.createInvite
+);
+
+router.delete(
+  '/domains/:domain_id/invites',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.removeInvite
+);
+
+router.put(
+  '/domains/:domain_id/members/:member_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.updateMember
+);
+
+router.delete(
+  '/domains/:domain_id/members/:member_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.removeMember
+);
+
+router.get(
+  '/domains/:domain_id/aliases',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  web.myAccount.retrieveAliases,
+  render('my-account/domains/aliases')
 );
 router.get(
-  '/domains/:id',
+  '/domains/aliases/new',
+  web.myAccount.createAliasForm,
+  render('my-account/domains/aliases/form')
+);
+router.post(
+  '/domains/aliases/new',
   web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  web.myAccount.validateAlias,
+  web.myAccount.createAlias
+);
+router.get(
+  '/domains/:domain_id/aliases/new',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  render('my-account/domains/aliases/form')
+);
+router.post(
+  '/domains/:domain_id/aliases/new',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  web.myAccount.validateAlias,
+  web.myAccount.createAlias
+);
+router.post(
+  '/domains/:domain_id/aliases/import',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.ensureUpgradedPlan,
+  web.myAccount.importAliases
+);
+router.get(
+  '/domains/:domain_id/aliases/:alias_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  render('my-account/domains/aliases/form')
+);
+router.put(
+  '/domains/:domain_id/aliases/:alias_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.validateAlias,
+  web.myAccount.updateAlias
+);
+router.delete(
+  '/domains/:domain_id/aliases/:alias_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.removeAlias
+);
+router.get(
+  '/domains/:domain_id/billing',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.retrieveBilling
+  // render('my-account/domains/billing')
+);
+router.post(
+  '/domains/:domain_id/verify-records',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.verifyRecords
+);
+router.delete(
+  '/domains/:domain_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.removeDomain
+);
+router.get(
+  '/domains/:domain_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
   render('my-account/domains/retrieve')
 );
 router.get('/profile', render('my-account/profile'));

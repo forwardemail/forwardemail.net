@@ -22,14 +22,22 @@ block body
                 = t('Free')
               p.text-center.mb-0= t('Basic plan to get started')
             ul.list-group.list-group-flush
-              li.list-group-item.d-flex.align-items-center.border-top!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited custom domain names')}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited email addresses')}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold.border-top!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited custom domain names')}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited email addresses')}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                != `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited disposable email addresses')}`
+                = ' '
+                a(href=l('/free-disposable-addresses'), data-toggle='tooltip', data-placement='bottom', title=`${t('Use a custom domain or one of our free vanity domains:')} ${ajc(config.vanityDomains)}`).btn.btn-link.text-dark.py-0
+                  i.fa.fa-info-circle
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('"Send mail as" with Gmail, Outlook, and Yahoo')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Catch-all email addresses')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Multiple recipients per email address')}`
               li.list-group-item.d-flex.align-items-center
                 != `<i class="fa fa-fw fa-paperclip text-primary mr-3"></i> ${t('25MB attachment limit')}`
-                small.ml-1.text-black-50= t('(Gmail\'s limit too!)')
+                small.ml-1.text-black-50
+                  = '('
+                  = t('same as Gmail')
+                  = ')'
             .d-flex.flex-column.flex-grow-1.justify-content-end
               h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
                 small.d-inline-block.text-monospace $
@@ -55,29 +63,49 @@ block body
                 i.fa.fa-fw.fa-arrow-left.mr-3
                 = ' '
                 = t('Everything included in Free, plus:')
-              li.list-group-item.d-flex.align-items-center
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
                 != `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Enhanced privacy and forwarding protection')}`
                 = ' '
                 button(role='button', data-toggle='tooltip', data-placement='bottom', title=t('No publicly searchable TXT records are used.  Instead we store your configuration in a secure and backed-up database.')).btn.btn-link.text-dark.py-0
                   i.fa.fa-question-circle
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited disposable email addresses')}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Instant aliases and zero wait-time for DNS propagation')}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Easy to use email alias manager')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Priority technical email support')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('99.99% Uptime Service Level Agreement ("SLA")')}`
               li.list-group-item.d-flex.align-items-center.border-bottom
-                != `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Browser Extension')}`
+                != `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Browser Extension (coming soon)')}`
                 button(role='button', data-toggle='tooltip', data-placement='bottom', title='Chrome').btn.btn-link.text-dark.py-0.px-1: i.fab.fa-chrome
                 button(role='button', data-toggle='tooltip', data-placement='bottom', title='Firefox').btn.btn-link.text-dark.py-0.px-1.ml-1: i.fab.fa-firefox-browser
                 button(role='button', data-toggle='tooltip', data-placement='bottom', title='Safari').btn.btn-link.text-dark.py-0.px-1.ml-1: i.fab.fa-safari
             .d-flex.flex-column.flex-grow-1.justify-content-end
               h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
                 small.d-inline-block.text-monospace $
-                span.d-inline-block.text-monospace ?
+                span.d-inline-block.text-monospace 3
                 sup.d-inline-block.h6.text-black-50
                   = '/'
                   = t('month')
               .p-2
-                button(type='button', disabled).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
-                  = t('Coming Soon')
+                if sortedDomains.length === 0
+                  a(href=l('/my-account/domains/new?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
+                    = t('Add Domain')
+                    = ' '
+                    i.fa.fa-angle-double-right
+                else
+                  .btn-group.btn-block
+                    button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold.dropdown-toggle= t('Select Domain')
+                    .dropdown-menu.w-100
+                      each domain in sortedDomains
+                        a.dropdown-item(href=l(`/my-account/domains/${domain.id}/billing?plan=enhanced_protection`), class=domain.plan === 'enhanced_protection' ? 'disabled' : '', aria-disabled=domain.plan === 'enhanced_protection' ? 'true' : 'false')
+                          = domain.name
+                          if domain.plan === 'enhanced_protection'
+                            = ' ('
+                            = t('already on this plan')
+                            = ')'
+                      .dropdown-divider
+                      a.dropdown-item(href=l('/my-account/domains/new?plan=enhanced_protection'))
+                        i.fa.fa-plus
+                        = ' '
+                        = t('Add New Custom Domain')
         .col.mt-3
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
             .px-3.py-4
@@ -97,13 +125,32 @@ block body
             .d-flex.flex-column.flex-grow-1.justify-content-end
               h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
                 small.d-inline-block.text-monospace $
-                span.d-inline-block.text-monospace ?
+                span.d-inline-block.text-monospace 9
                 sup.d-inline-block.h6.text-black-50
                   = '/'
                   = t('month')
               .p-2
-                button(type='button', disabled).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
-                  = t('Coming Soon')
+                if sortedDomains.length === 0
+                  a(href=l('/my-account/domains/new?plan=team')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
+                    = t('Add Domain')
+                    = ' '
+                    i.fa.fa-angle-double-right
+                else
+                  .btn-group.btn-block
+                    button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold.dropdown-toggle= t('Select Domain')
+                    .dropdown-menu.w-100
+                      each domain in sortedDomains
+                        a.dropdown-item(href=l(`/my-account/domains/${domain.id}/billing?plan=team`), class=domain.plan === 'team' ? 'disabled' : '', aria-disabled=domain.plan === 'team' ? 'true' : 'false')
+                          = domain.name
+                          if domain.plan === 'team'
+                            = ' ('
+                            = t('already on this plan')
+                            = ')'
+                      .dropdown-divider
+                      a.dropdown-item(href=l('/my-account/domains/new?plan=team'))
+                        i.fa.fa-plus
+                        = ' '
+                        = t('Add New Custom Domain')
         .col.mt-3
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
             .px-3.py-4

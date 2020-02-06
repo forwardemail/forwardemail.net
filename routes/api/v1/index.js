@@ -8,6 +8,7 @@ const router = new Router({
 });
 
 router.get('/test', api.v1.test);
+router.get('/lookup', api.v1.lookup);
 router.post('/log', api.v1.log.checkToken, api.v1.log.parseLog);
 router.post('/account', api.v1.users.create);
 router.get('/account', policies.ensureApiToken, api.v1.users.retrieve);

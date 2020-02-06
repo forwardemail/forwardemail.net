@@ -2,6 +2,41 @@
 extends ../../layout
 
 block body
+  if domains.length > 0
+    #modal-alias.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-alias-title', aria-hidden='true', data-backdrop='static')
+      .modal-dialog.modal-lg(role='document')
+        .modal-content
+          .modal-header.text-center.d-block
+            h4.modal-title.d-inline-block.ml-4#modal-alias-title= t('Add New Alias')
+            button(type='button', data-dismiss='modal', aria-label='Close').close
+              span(aria-hidden='true') &times;
+          .modal-body
+            form.ajax-form(action=l('/my-account/aliases'), method="POST")
+              include aliases/_form
+              button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+
+  #modal-domain.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-domain-title', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header.text-center.d-block
+          h4.modal-title.d-inline-block.ml-4#modal-domain-title= t('Add Custom Domain Name')
+          button(type='button', data-dismiss='modal', aria-label='Close').close
+            span(aria-hidden='true') &times;
+        .modal-body
+          form.ajax-form(action=l('/my-account/domains/new'), method="POST")
+            input(type="hidden", name="_csrf", value=ctx.csrf)
+            .form-group.floating-label
+              input#input-domain(required, name='domain', autocomplete="off", placeholder="example.com", autocorrect="off", spellcheck="false", autocapitalize="off", type="text").form-control.form-control-lg
+              label(for="input-domain")= t('Domain name')
+            if user.group === 'admin'
+              .form-group.form-check
+                input#input-is-global(type='checkbox', name='is_global', value='true').form-check-input
+                label(for='input-is-global').form-check-label= t('Global domain')
+            button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+        .modal-footer.justify-content-center
+          a(href=l('/domain-registration'), target='_blank', rel='noopener')
+            = t('Need to register a domain?')
+
   .container-fluid.py-3
     .row
       .col
@@ -9,36 +44,104 @@ block body
         if domains.length === 0
           .alert.alert-info= t('No domains exist yet')
         else
-          .table-responsive
-            table.table.table-hover.table-bordered
-              thead.thead-dark
+          table.table.table-hover.table-bordered
+            thead.thead-dark
+              tr
+                th(scope='col')= t('Domain Name')
+                if user.group === 'admin'
+                  th(scope='col').text-center= t('Global')
+                th(scope='col').d-none.d-md-table-cell= t('Plan')
+                th(scope='col').d-none.d-md-table-cell.text-center= t('Aliases')
+                th(scope='col').d-none.d-md-table-cell.text-center= t('MX Records')
+                th(scope='col').d-none.d-md-table-cell.text-center= t('TXT Records')
+                th(scope='col').text-center.text-md-left= t('Quick Links')
+            tbody
+              each domain in domains
                 tr
-                  th(scope='col')= t('Domain Name')
-                  th(scope='col').text-center= t('MX Records')
-                  th(scope='col').text-center= t('TXT Records')
-                  th(scope='col').text-center.text-md-left= t('Actions')
-              tbody
-                each domain in domains
-                  tr
-                    td.align-middle= domain.name
+                  td.align-middle
+                    .markdown-body.ml-0.mr-0: code= domain.name
+                    if domain.is_global
+                      .h4.mb-0.mt-2: span.badge.badge-success.font-weight-bold.text-uppercase= t('Free Vanity Domain')
+                  if user.group === 'admin'
                     td.align-middle.text-center
-                      button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_mx_record ? t('Verified') : t('Not Verified'), class=domain.has_mx_record ? 'text-success' : 'text-danger').btn.btn-link
-                        i.fa.fa-2x(class=domain.has_mx_record ? 'fa-check' : 'fa-times')
-                    td.align-middle.text-center
-                      button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_txt_record ? t('Verified') : t('Not Verified'), class=domain.has_txt_record ? 'text-success' : 'text-danger').btn.btn-link
-                        i.fa.fa-2x(class=domain.has_txt_record ? 'fa-check' : 'fa-times')
-                    td.align-middle
+                      if domain.is_global
+                        i.fa.fa-fw.fa-check.fa-2x.text-success
+                  td.align-middle.d-none.d-md-table-cell
+                    - domain.plan = domain.plan || 'free'
+                    if domain.group === 'admin'
+                      .btn-group
+                        button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-outline-dark.dropdown-toggle
+                          case domain.plan
+                            when 'enhanced_protection'
+                              i.fa.fa-fw.fa-shield
+                              = ' '
+                              = t('Enhanced Protection')
+                            when 'team'
+                              i.fa.fa-fw.fa-users
+                              = ' '
+                              = t('Team')
+                            default
+                              = t('Free')
+                        .dropdown-menu
+                          h6.dropdown-header.text-uppercase= t('Change plan to:')
+                          each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
+                            a(href=l(`/my-account/domains/${domain.id}/billing?plan=${plan}`)).dropdown-item
+                              case plan
+                                when 'enhanced_protection'
+                                  i.fa.fa-fw.fa-shield
+                                  = ' '
+                                  = t('Enhanced Protection')
+                                when 'team'
+                                  i.fa.fa-fw.fa-users
+                                  = ' '
+                                  = t('Team')
+                                default
+                                  = t('Free')
+                          .dropdown-divider
+                          a(href=l(`/features?domain=${domain.name}`)).dropdown-item
+                            small.text-muted= t('See all plan features')
+                    else
+                      = t(titleize(humanize(domain.plan)))
+                  td.align-middle.d-none.d-md-table-cell.text-center.h4: a(href=l(`/my-account/domains/${domain.id}/aliases`), data-toggle='tooltip', title=t('Manage Aliases')).badge.badge-pill.badge-dark.px-3.py-2.font-weight-normal= domain.aliases.length
+                  td.align-middle.d-none.d-md-table-cell.text-center
+                    if !domain.is_global || domain.is_global && domain.group === 'admin'
                       ul.list-inline.mb-0
+                        li.list-inline-item
+                          button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_mx_record ? t('Verified') : t('Not Verified'), class=domain.has_mx_record ? 'text-success' : 'text-danger').btn.btn-link
+                            i.fa.fa-fw.fa-2x(class=domain.has_mx_record ? 'fa-check' : 'fa-times')
+                        li.list-inline-item
+                          form(action=l(`/my-account/domains/${domain.id}/verify-records`), method="POST").ajax-form.d-inline-block
+                            input(type="hidden", name="_csrf", value=ctx.csrf)
+                            button(type='submit').btn.btn-outline-dark
+                              i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
+                  td.align-middle.d-none.d-md-table-cell.text-center
+                    if !domain.is_global || domain.is_global && domain.group === 'admin'
+                      ul.list-inline.mb-0
+                        li.list-inline-item
+                          button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_txt_record ? t('Verified') : t('Not Verified'), class=domain.has_txt_record ? 'text-success' : 'text-danger').btn.btn-link
+                            i.fa.fa-fw.fa-2x(class=domain.has_txt_record ? 'fa-check' : 'fa-times')
+                        li.list-inline-item
+                          form(action=l(`/my-account/domains/${domain.id}/verify-records`), method="POST").ajax-form.d-inline-block
+                            input(type="hidden", name="_csrf", value=ctx.csrf)
+                            button(type='submit').btn.btn-outline-dark
+                              i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
+                  td.align-middle
+                    ul.list-inline.mb-0
+                      if domain.group === 'admin'
                         li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-lg-1.mb-2.mb-lg-0
                           a(href=l(`/my-account/domains/${domain.id}`)).btn.btn-dark.btn-block
-                            i.fa.fa-cog.d-block.d-lg-inline
+                            i.fa.fa-fw.fa-cog
                             = ' '
-                            = t('Manage Domain')
+                            = t('Setup')
+                      li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-lg-1.mb-2.mb-lg-0
+                        a(href=l(`/my-account/domains/${domain.id}/aliases`)).btn.btn-dark.btn-block
+                          i.fa.fa-fw.fa-users
+                          = ' '
+                          = t('Aliases')
+                      //-.
                         if domain.group === 'admin'
                           li.list-inline-item.d-block.d-lg-inline-block
-                            form.ajax-form(action=l(`/my-account/domains/${domain.id}/verify-records`), method="POST").d-block.d-lg-inline-block
-                              input(type="hidden", name="_csrf", value=ctx.csrf)
-                              button(type='submit').btn.btn-dark.btn-block
-                                i.fa.fa-refresh.d-block.d-lg-inline
-                                = ' '
-                                = t('Verify Records')
+                            a(href=l(`/my-account/domains/${domain.id}/billing`)).btn.btn-dark.btn-block
+                              i.fa.fa-fw.fa-receipt
+                              = ' '
+                              = t('Billing')
