@@ -52,7 +52,7 @@ async function lookup(ctx) {
 
   ctx.body = aliases
     .filter(alias => !alias.user.is_banned)
-    .aliases.map(alias => {
+    .map(alias => {
       // alias.name = "*" (wildcard catchall) otherwise an alias
       // alias.is_enabled = "!" prefixed alias name
       // alias.recipients = comma separated (split with a colon)
