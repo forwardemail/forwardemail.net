@@ -975,5 +975,7 @@
   "You have successfully upgraded to the Team Plan.": "You have successfully upgraded to the Team Plan.",
   "Enhanced Protection and Team plans are currently free and in our final testing and beta program phase.  Once they are released, you will be emailed and will have 30 days to enter your billing information.  Thank you!": "Enhanced Protection and Team plans are currently free and in our final testing and beta program phase.  Once they are released, you will be emailed and will have 30 days to enter your billing information.  Thank you!",
   "Have you read our <a href=\"/fr/faq\" target=\"_blank\" rel=\"noopener\">FAQ</a> yet?": "Have you read our <a href=\"/fr/faq\" target=\"_blank\" rel=\"noopener\">FAQ</a> yet?",
-  "Français": "Français"
+  "Français": "Français",
+  "DNSimple": "DNSimple",
+  "Sign in > (Select your domain)  > DNS > Manage": "Sign in > (Select your domain)  > DNS > Manage"
 }

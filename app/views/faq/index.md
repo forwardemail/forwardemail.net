@@ -223,9 +223,9 @@ If you use Google Business for email, and want to use our server as a fallback s
 
 ## Can I disable specific aliases
 
-Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS TXT record and prefix the alias with an exclamation mark.  Note that you must preserve the `:` mapping, as this is required if you ever decide to toggle this off (and it's also used for importing in our paid plans).
+Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS TXT record and prefix the alias with an exclamation mark.  Note that you must preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing in our paid plans).
 
-If you prefix an alias with `!` (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole.
+If you prefix an alias with "!" (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole.
 
 For example, if I want all emails that go to `alias@example.com` to stop flowing through to `niftylettuce@gmail.com`:
 
@@ -394,7 +394,7 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
 
-## 
+##
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

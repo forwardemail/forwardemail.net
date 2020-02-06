@@ -696,5 +696,17 @@
   "Add a new alias to continue.": "Add a new alias to continue.",
   "Import TXT Records": "Import TXT Records",
   "Back to Aliases": "Back to Aliases",
-  "You do not belong to the administrative user group.": "You do not belong to the administrative user group."
+  "You do not belong to the administrative user group.": "You do not belong to the administrative user group.",
+  "DNSimple": "DNSimple",
+  "Sign in > (Select your domain)  > DNS > Manage": "Sign in > (Select your domain)  > DNS > Manage",
+  "Terms &#124; <span class=\"notranslate\">ForwardEmail</span>": "Terms &#124; <span class=\"notranslate\">ForwardEmail</span>",
+  "Read our terms and conditions of use": "Read our terms and conditions of use",
+  "Your help request has been sent successfully.  You should hear from us soon.  Thank you!": "Your help request has been sent successfully.  You should hear from us soon.  Thank you!",
+  "You have reached the limit for sending help requests.  Please try again.": "You have reached the limit for sending help requests.  Please try again.",
+  "A user with the given email address is already registered.  Please try to log in or reset the password if this account belongs to you.": "A user with the given email address is already registered.  Please try to log in or reset the password if this account belongs to you.",
+  "We have sent you an email with a link to reset your password.": "We have sent you an email with a link to reset your password.",
+  "You have successfully reset your password.": "You have successfully reset your password.",
+  "Reset token and email were not valid together.": "Reset token and email were not valid together.",
+  "Password was invalid.": "Password was invalid.",
+  "You can only request a password reset every 30 minutes.  Please try again %s.": "You can only request a password reset every 30 minutes.  Please try again %s."
 }
