@@ -8,9 +8,10 @@
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [Why do my emails have "no-reply@forwardemail.net" as part of the FROM address](#why-do-my-emails-have-no-replyforwardemailnet-as-part-of-the-from-address)
 * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+* [Can I disable specific aliases](#can-i-disable-specific-aliases)
 * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
 * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-* [Is there a maximum limit on the number of email addresses I can forward to](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to)
+* [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
 * [Can I recursively forward emails](#can-i-recursively-forward-emails)
 * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
 * [How is it free](#how-is-it-free)
@@ -35,7 +36,7 @@ The guided steps below should take no more than ten minutes of your time to setu
 
 Be sure to replace the email address of `niftylettuce@gmail.com` with the email address you want to forward emails to (only if it is not accurate already).  Similarly be sure to replace `example.com` with your custom domain name (only if it is not accurate already).
 
-<!-- <mark>**IMPORTANT:** If you would like to hide your forwarded addresses from being publicly searchable over DNS record lookups, then please go to <a href="/my-account/domains" target="_blank" rel="noopener">My Account > Domains</a> and upgrade your domain to a paid plan BEFORE starting this guide.</mark> -->
+<mark>**IMPORTANT:** If you would like to hide your forwarded addresses from being publicly searchable over DNS record lookups, then please go to <a href="/my-account/domains" target="_blank" rel="noopener">My Account > Domains</a> and upgrade your domain to a paid plan BEFORE starting this guide.</mark>
 
 **1.** If you have already registered your domain name, then you must completely skip this step and go to step two.  Otherwise you can <a href="/domain-registration" target="_blank" rel="noopener">click here to register your domain name</a>.
 
@@ -43,23 +44,26 @@ Be sure to replace the email address of `niftylettuce@gmail.com` with the email 
 
 > Clicking on a "Provider Name" below will open a link in a new tab for you.  After following the "Steps to Configure DNS" in this tab, do NOT close the tab, but instead return to this tab to proceed to step three.
 
-| Provider Name                                                             | Steps to Configure DNS                                                                                                  |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| [1&1](https://login.ionos.com/)                                           | Sign in > Domain Center > (Select your domain) > Edit DNS Settings                                                      |
-| [Amazon Route 53](https://console.aws.amazon.com/route53/)                | Sign in > Hosted Zones > (Select your domain)                                                                           |
-| [Cloudflare](https://dash.cloudflare.com/login)                           | Sign in > DNS                                                                                                           |
-| [DNS Made Easy](https://cp.dnsmadeeasy.com/)                              | Sign in > DNS > (Select your domain)                                                                                    |
-| [Digital Ocean](https://cloud.digitalocean.com/login)                     | Sign in > Networking > Domains > (Select your domain) > More > Manage Domain                                            |
-| [DreamHost](https://panel.dreamhost.com/)                                 | Sign in > Panel > Domains > Manage Domains > DNS                                                                        |
-| [Dyn](https://portal.dynect.net/login/)                                   | Sign in > Overview > Manage > Simple Editor > Records                                                                   |
-| [Gandi](https://id.gandi.net/en/login)                                    | Sign in > (Select your domain) > Management > Edit the zone                                                             |
-| [GoDaddy](https://sso.godaddy.com)                                        | Sign in > Manage My Domains > (Select your domain) > Manage DNS                                                         |
-| [Google Domains](https://domains.google.com/registrar)                    | Sign in > (Select your domain) > Configure DNS                                                                          |
-| [Namecheap](https://www.namecheap.com/myaccount/login/)                   | Sign in > Domain List > (Select your domain) > Manage > Advanced DNS                                                    |
-| [Netlify](https://app.netlify.com/)                                       | Sign in > (Select your domain) > Setup Netlify DNS                                                                      |
-| [Network Solutions](https://www.networksolutions.com/manage-it/index.jsp) | Sign in > Account Manager > My Domain Names > (Select your domain) > Manage > Change Where Domain Points > Advanced DNS |
-| [Shopify](https://accounts.shopify.com/store-login)                       | Sign in > Managed Domains > (Select your domain) > DNS Settings                                                         |
-| [eNom](https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&) | Sign in > Domains > My Domains                                                                                          |
+| Provider Name                                                             | Steps to Configure DNS                                                                                                                                                                                                                                                                                     |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [1&1](https://login.ionos.com/)                                           | Sign in > Domain Center > (Select your domain) > Edit DNS Settings                                                                                                                                                                                                                                         |
+| [Amazon Route 53](https://console.aws.amazon.com/route53/)                | Sign in > Hosted Zones > (Select your domain)                                                                                                                                                                                                                                                              |
+| [Aplus.net](https://www.aplus.net/)                                       | Sign in > My Servers > Domain Management > DNS Manager                                                                                                                                                                                                                                                     |
+| [Cloudflare](https://dash.cloudflare.com/login)                           | Sign in > DNS                                                                                                                                                                                                                                                                                              |
+| [DNS Made Easy](https://cp.dnsmadeeasy.com/)                              | Sign in > DNS > (Select your domain)                                                                                                                                                                                                                                                                       |
+| [Digital Ocean](https://cloud.digitalocean.com/login)                     | Sign in > Networking > Domains > (Select your domain) > More > Manage Domain                                                                                                                                                                                                                               |
+| [Domains.com](https://www.domains.com/)                                   | Sign in > (Select your domain) > Manage > (click gear icon) > Click on DNS & Nameservers in left-hand menu                                                                                                                                                                                                 |
+| [DreamHost](https://panel.dreamhost.com/)                                 | Sign in > Panel > Domains > Manage Domains > DNS                                                                                                                                                                                                                                                           |
+| [Dyn](https://portal.dynect.net/login/)                                   | Sign in > Overview > Manage > Simple Editor > Records                                                                                                                                                                                                                                                      |
+| [Gandi](https://id.gandi.net/en/login)                                    | Sign in > (Select your domain) > Management > Edit the zone                                                                                                                                                                                                                                                |
+| [GoDaddy](https://sso.godaddy.com)                                        | Sign in > Manage My Domains > (Select your domain) > Manage DNS                                                                                                                                                                                                                                            |
+| [Google Domains](https://domains.google.com/registrar)                    | Sign in > (Select your domain) > Configure DNS                                                                                                                                                                                                                                                             |
+| [Namecheap](https://www.namecheap.com/myaccount/login/)                   | Sign in > Domain List > (Select your domain) > Manage > Advanced DNS                                                                                                                                                                                                                                       |
+| [Netlify](https://app.netlify.com/)                                       | Sign in > (Select your domain) > Setup Netlify DNS                                                                                                                                                                                                                                                         |
+| [Network Solutions](https://www.networksolutions.com/manage-it/index.jsp) | Sign in > Account Manager > My Domain Names > (Select your domain) > Manage > Change Where Domain Points > Advanced DNS                                                                                                                                                                                    |
+| [Shopify](https://accounts.shopify.com/store-login)                       | Sign in > Managed Domains > (Select your domain) > DNS Settings                                                                                                                                                                                                                                            |
+| [eNom](https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&) | Sign in > Domains > My Domains                                                                                                                                                                                                                                                                             |
+| Other                                                                     | <mark>**Don't see your provider name listed here?** Simply search on the Internet for "how to change DNS records on <code>Provider Name</code>" (replacing <code>Provider Name</code> with the name of your provider).  Feel free to <a href="/help">contact us</a> with any questions or comments.</mark> |
 
 **3.** Using your provider's DNS management page (the other tab you have opened), set the following "MX" record types on your domain name:
 
@@ -74,7 +78,7 @@ Be sure to replace the email address of `niftylettuce@gmail.com` with the email 
 
 **4.** Using your provider's DNS management page (the other tab you have opened), set the following "TXT" record types on your domain name:
 
-<!-- <mark>**IMPORTANT**: <u>If you are on a paid plan, then you must completely skip this step and go to step five!</u>  If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener">My Account > Domains</a> and upgrade your domain to a paid plan if desired.</mark> -->
+<mark>**IMPORTANT**: <u>If you are on a paid plan, then you must completely skip this step and go to step five!</u>  If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener">My Account > Domains</a> and upgrade your domain to a paid plan if desired.</mark>
 
 If you are forwarding all emails from your domain, ("all@example.com", "hello@example.com", etc) to a specific address "niftylettuce@gmail.com":
 
@@ -162,6 +166,8 @@ Fortunately **our DNS provider Cloudflare has a nice "Purge Cache" tool availabl
 
 All you need to do is go to that link for both "MX" and "TXT" record types, enter your domain name, and click "Purge Cache".  You'll then need to wait a few minutes and try again!
 
+If you're using Gmail, you should also purge cache on Google's DNS at <https://developers.google.com/speed/public-dns/cache>.
+
 
 ## How to Send Mail As using Gmail
 
@@ -177,7 +183,7 @@ After you've followed the steps above in [How do I get started and set up email 
    > :warning: If you are using Google Apps, visit your admin panel [Apps > G Suite >Settings for Gmail > Advanced settings](https://admin.google.com//AdminHome#ServiceSettings/service=email&subtab=filters) and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait for ~5-10 minutes.
 5. Go to [Gmail](https://gmail.com) and under [Settings > Accounts and Import > Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
 6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. `Elon Musk`)
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. `niftylettuce@gmail.com`)
+7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. `hello@example.com`)
 8. Uncheck "Treat as an alias"
    > Check it if you prefer the recipient to reply (to the mail sent using your custom domain) directly to your Gmail address. [See details](https://support.google.com/a/answer/1710338)
 9. Click "Next Step" to proceed
@@ -212,6 +218,21 @@ If you use Google Business for email, and want to use our server as a fallback s
 | _@ or leave blank_ | 3600 | MX          | 10       | `ALT4.ASPMX.L.GOOGLE.COM` |
 | _@ or leave blank_ | 3600 | MX          | 20       | `mx1.forwardemail.net`    |
 | _@ or leave blank_ | 3600 | MX          | 30       | `mx2.forwardemail.net`    |
+
+
+## Can I disable specific aliases
+
+Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS TXT record and prefix the alias with an exclamation mark.  Note that you must preserve the `:` mapping, as this is required if you ever decide to toggle this off (and it's also used for importing in our paid plans).
+
+If you prefix an alias with `!` (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole.
+
+For example, if I want all emails that go to `alias@example.com` to stop flowing through to `niftylettuce@gmail.com`:
+
+| Name/Host/Alias    |  TTL | Record Type | Value/Answer/Destination                      |
+| ------------------ | :--: | ----------- | --------------------------------------------- |
+| _@ or leave blank_ | 3600 | TXT         | `forward-email=!alias:niftylettuce@gmail.com` |
+
+Emails sent to disabled addresses will respond with a `250` (message queued) status code, but the emails will not actually be delivered to the recipient(s).
 
 
 ## Can I forward emails to multiple recipients
@@ -254,9 +275,9 @@ Or, you could specify them in two separate lines, such as this:
 It's up to you!
 
 
-## Is there a maximum limit on the number of email addresses I can forward to
+## Is there a maximum limit on the number of email addresses I can forward to per alias
 
-Yes, the default limit is 5.  You could have `hello:niftylettuce+1@gmail.com`, `hello:niftylettuce+2@gmail.com`, `hello:niftylettuce+3@gmail.com`, … (from 1-5) – and any emails to `hello@example.com` would get forwarded to `niftylettuce+1@gmail.com`, `niftylettuce+2@gmail.com`, `niftylettuce+3@gmail.com`, … (from 1-5).
+Yes, the default limit is 5.  This does NOT mean that you can only have five aliases on your domain name.  You can have as many as you want (unlimited).  It means that you can only forward one alias to five unique email addresses.  You could have `hello:niftylettuce+1@gmail.com`, `hello:niftylettuce+2@gmail.com`, `hello:niftylettuce+3@gmail.com`, … (from 1-5) – and any emails to `hello@example.com` would get forwarded to `niftylettuce+1@gmail.com`, `niftylettuce+2@gmail.com`, `niftylettuce+3@gmail.com`, … (from 1-5).
 
 
 ## Can I recursively forward emails

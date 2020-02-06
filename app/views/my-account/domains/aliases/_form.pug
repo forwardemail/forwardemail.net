@@ -1,0 +1,63 @@
+- const domainQuery = isSANB(ctx.query.domain) && (validator.isIP(ctx.query.domain) || validator.isFQDN(ctx.query.domain)) ? ctx.query.domain : false
+input(type="hidden", name="_csrf", value=ctx.csrf)
+if alias
+  input(type='hidden', name='_method', value='PUT')
+.form-row
+  .form-group(class=domain ? 'col' : 'col col-md-6')
+    label(for="input-alias-name")
+      = t('Alias Name')
+      = ' '
+      span.text-danger= t('(required)')
+    .input-group
+      .input-group-prepend
+        button(data-target='#input-alias-name', type='button', data-toggle='tooltip', title=t('Generate random alias')).generate-random-alias.btn.btn-dark
+          i.fa.fa-dice
+      input#input-alias-name(required, value=alias ? alias.name : '', name='name', autocomplete="off", placeholder='', autocorrect="off", spellcheck="false", autocapitalize="off", type="text").form-control.form-control-lg
+      .input-group-append
+        .input-group-text
+          if domain
+            input(type='hidden', name='domain', required, value=domain.id)
+            = `@${domain.name}`
+          else
+            i.fa.fa-at
+    p.form-text
+      small.text-black-50
+        = t('Use an asterisk "*" for a catch-all alias.')
+  if !domain
+    .form-group.col-md-6
+      label(for='select-alias-domain')
+        = t('Domain Name')
+      select#select-alias-domain(required, name='domain').form-control.form-control-lg
+        each domain, i in domains
+          option(value=domain.id, disabled=!domain.plan || domain.plan === 'free', selected=domainQuery && domainQuery === domain.name)
+            = domain.name
+            if !domain.plan || domain.plan === 'free'
+              = ' ('
+              = t('Upgrade Plan')
+              = ')'
+            if domain.is_global
+              = ' ('
+              = t('Free Vanity Domain')
+              = ')'
+      p.form-text
+        a(href=l('/my-account/domains/new'), role='button', data-toggle='modal-anchor', data-target='#modal-domain').text-black-50
+          small= t('Need to add a new domain?')
+.form-group
+  label(for='textarea-alias-recipients')
+    = t('Alias Recipients')
+    = ' '
+    span.text-danger= t('(required)')
+  textarea(name='recipients', rows=2)#textarea-alias-recipients.form-control.form-control-lg= alias && Array.isArray(alias.recipients) ? alias.recipients.join(', ') : user.email
+  p.form-text: small.text-black-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), and/or IP addresses.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
+.form-group
+  label(for='textarea-alias-description')= t('Alias Description (optional)')
+  textarea(name='description', maxlength=150, rows=2)#textarea-alias-description.form-control.form-control-lg= alias ? alias.description : ''
+  p.form-text: small.text-black-50= t('Description has a max of 150 characters.')
+.form-group
+  label(for='input-alias-labels')= t('Alias Labels (optional)')
+  textarea(name='labels')#input-alias-labels.form-control.form-control-lg= alias && Array.isArray(alias.labels) ? _.without(alias.labels, 'catch-all').join(', ') : ''
+  p.form-text: small.text-black-50= t('Labels must be a line-break/space/comma separated list with a maximum of 20 characters per label.')
+.form-group.form-check
+  input#input-is-enabled(type='checkbox', name='is_enabled', value='true', checked=alias ? alias.is_enabled : true).form-check-input
+  label(for='input-is-enabled').form-check-label= t('Active')
+  p.form-text: small.text-black-50= t('If you uncheck this, then this email will be deactivated and no emails will flow through.  However emails will NOT bounce until this alias is completely deleted.')

@@ -22,6 +22,12 @@ if (!module.parent) {
 
   (async () => {
     try {
+      const migration = bull.queues.get('migration');
+      await pSeries([() => migration.empty(), () => migration.add()]);
+
+      const vanityDomains = bull.queues.get('vanity-domains');
+      await pSeries([() => vanityDomains.empty(), () => vanityDomains.add()]);
+
       const translateMarkdown = bull.queues.get('translate-markdown');
       await pSeries([
         () => translateMarkdown.empty(),

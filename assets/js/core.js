@@ -1,6 +1,8 @@
 const History = require('html5-history-api');
 const $ = require('jquery');
 const Popper = require('popper.js');
+const Clipboard = require('clipboard');
+const { randomstring } = require('@sidoshi/random-string');
 
 // load jQuery and Bootstrap
 // <https://stackoverflow.com/a/34340392>
@@ -13,6 +15,8 @@ window.Popper = Popper;
 
 // eslint-disable-next-line import/no-unassigned-import
 require('bootstrap');
+
+const $body = $('body');
 
 const {
   ajaxForm,
@@ -99,7 +103,7 @@ $(() => {
   $(window).on('scroll.changeHashOnScroll', changeHashOnScroll);
 
   // Handle hash change when user clicks on links
-  $('body').on('click.handleHashChange', "a[href^='#']", handleHashChange);
+  $body.on('click.handleHashChange', "a[href^='#']", handleHashChange);
 
   // Automatically show tooltips and popovers
   $('[data-toggle="tooltip"]').tooltip();
@@ -113,7 +117,7 @@ $(() => {
   //   <input required="required" data-toggle="custom-file" data-target="#company-logo" type="file" name="company_logo" accept="image/*" class="custom-file-input">
   //   <span id="company-logo" class="custom-file-control custom-file-name" data-btn="{{ t('Select File') }}" data-content="{{ t('Upload company logo...') }}"></span>
   // </label>
-  $('body').on(
+  $body.on(
     'change.customFileInput',
     'input[type="file"][data-toggle="custom-file"]',
     customFileInput
@@ -123,19 +127,19 @@ $(() => {
   clipboard();
 
   // Bind confirm prompt event for clicks and form submissions
-  $('body').on(
+  $body.on(
     'submit.confirmPrompt',
     'form.confirm-prompt, form[data-toggle="confirm-prompt"]',
     confirmPrompt
   );
-  $('body').on(
+  $body.on(
     'click.confirmPrompt',
     'button.confirm-prompt, input.confirm-prompt',
     confirmPrompt
   );
 
   // Bind ajax form submission and handle Stripe tokens in forms
-  $('body').on('submit.ajaxForm', 'form.ajax-form', ajaxForm);
+  $body.on('submit.ajaxForm', 'form.ajax-form', ajaxForm);
 
   // Example for how to detect waypoint scrolling:
   //
@@ -155,4 +159,79 @@ $(() => {
     waypoint.context.refresh();
   }
   */
+
+  // all <code> blocks should have a toggle tooltip and clipboard
+  function errorHandler(ev) {
+    ev.clearSelection();
+    $(ev.trigger)
+      .tooltip('dispose')
+      .tooltip({
+        title: 'Please manually copy to clipboard',
+        html: true,
+        placement: 'bottom'
+      })
+      .tooltip('show');
+    $(ev.trigger).on('hidden.bs.tooltip', () =>
+      $(ev.trigger).tooltip('dispose')
+    );
+  }
+
+  function successHandler(ev) {
+    ev.clearSelection();
+    $(ev.trigger)
+      .tooltip('dispose')
+      .tooltip({
+        title: 'Copied!',
+        placement: 'bottom'
+      })
+      .tooltip('show');
+    $(ev.trigger).on('hidden.bs.tooltip', () => {
+      $(ev.trigger).tooltip('dispose');
+    });
+  }
+
+  if (Clipboard.isSupported()) {
+    $body.on('mouseenter', 'code', function() {
+      $(this)
+        .css('cursor', 'pointer')
+        .tooltip({
+          title: 'Click to copy',
+          placement: 'bottom',
+          trigger: 'manual'
+        })
+        .tooltip('show');
+    });
+    $body.on('mouseleave', 'code', function() {
+      $(this)
+        .tooltip('dispose')
+        .css('cursor', 'initial');
+    });
+    const clipboard = new Clipboard('code', {
+      text(trigger) {
+        return trigger.textContent;
+      },
+      target(trigger) {
+        return trigger;
+      }
+    });
+    clipboard.on('success', successHandler);
+    clipboard.on('error', errorHandler);
+  }
+
+  //
+  // generate random alias
+  //
+  // <https://en.wikipedia.org/wiki/Email_address#Local-part>
+  //
+  $body.on('click', '.generate-random-alias', function() {
+    const target = $(this).data('target');
+    if (!target) return;
+    const $target = $(target);
+    if ($target.lengh === 0) return;
+    const str = randomstring({
+      characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+      length: 10
+    });
+    $target.val(str);
+  });
 });

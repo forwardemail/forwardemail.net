@@ -47,9 +47,17 @@ module.exports = function(config) {
     '/logout': [`Sign out of ${lad}`, 'Sign out of your account'],
     '/register': [`Sign up ${lad}`, `Create a ${config.appName} account`],
     '/verify': [`Verify email ${lad}`, `Verify your ${config.appName} email`],
+    '/free-disposable-addresses': [
+      `Free Disposable Addresses ${lad}`,
+      'Try free and disposable email addresses with our short and memorable vanity domains, or you can use a custom domain name for free disposable addresses.'
+    ],
     '/domain-registration': [
       `Register a domain name ${lad}`,
       'Buy a custom domain name for email forwarding'
+    ],
+    '/reserved-email-addresses': [
+      `Reserved Email Addresses ${lad}`,
+      'List of 1250+ email addresses reserved for security concerns'
     ],
     '/my-account': [
       `My Account ${lad}`,

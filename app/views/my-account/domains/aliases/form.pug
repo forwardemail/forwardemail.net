@@ -1,0 +1,31 @@
+
+extends ../../../layout
+
+block body
+  .container-fluid.pt-3
+    .row
+      .col
+        include ../../../_breadcrumbs
+  .container
+    if domain && domain.group === 'admin'
+      .row.text-center.my-5
+        .col
+          form(action=l(`/my-account/domains/${domain.id}/aliases/import`), method='POST').ajax-form.confirm-prompt.d-inline-block
+            input(type="hidden", name="_csrf", value=ctx.csrf)
+            button(type='submit').btn.btn-lg.btn-dark.text-uppercase.font-weight-bold
+              = t('Import TXT Records')
+              = ' '
+              i.fa.fa-cloud-download-alt
+    .row
+      .col
+        .card
+          .card-body
+            form.ajax-form(action=ctx.path, method="POST")
+              include _form
+              button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+    .row.text-center.my-5
+      .col
+        a(href=l(`/my-account/domains/${domain.id}/aliases`)).btn.btn-outline-secondary
+          i.fa.fa-angle-double-left
+          = ' '
+          = t('Back to Aliases')

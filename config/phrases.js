@@ -5,6 +5,8 @@ const env = require('./env');
 
 module.exports = {
   HELLO: 'Hello',
+  WWW_WARNING:
+    'It looks like you accidentally included "www." in your domain name.  Did you mean example.com instead of www.example.com?',
   INVALID_API_CREDENTIALS: 'Invalid API credentials.',
   INVALID_API_TOKEN: 'Invalid API token.',
   INVALID_EMAIL: 'Email address was invalid.',
@@ -34,10 +36,15 @@ module.exports = {
   IS_NOT_ADMIN: 'You do not belong to the administrative user group.',
   LOGIN_REQUIRED: 'Please log in to view the page you requested.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
+  ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
   NO_DOMAINS_EXIST: 'Add a domain name to your account to continue.',
+  NO_ALIASES_EXIST: 'Add a new alias to continue.',
   INVALID_DOMAIN: 'Domain name was invalid (must be an IP or FQDN).',
+  ADD_ALIAS: 'Add Alias',
   DOMAIN_IS_VERIFIED: "Domain's DNS records have been verified.",
   DOMAIN_DOES_NOT_EXIST: 'Domain does not exist on your account.',
+  INVITE_DOES_NOT_EXIST:
+    'Invite does not exist with your email address for this domain.',
   DOMAIN_ALREADY_EXISTS: 'Domain already exists on your account.',
   ACCOUNT_DELETE_HAS_DOMAINS:
     'Your account is currently an admin of one or more domain names.  Please delete these domains or remove yourself from them to continue.',
@@ -75,5 +82,24 @@ module.exports = {
   PASSPORT_INCORRECT_USERNAME_ERROR: 'Email address or password is incorrect.',
   PASSPORT_MISSING_USERNAME_ERROR: 'Please enter an email address.',
   PASSPORT_USER_EXISTS_ERROR:
-    'A user with the given email address is already registered.  Please try to log in or reset the password if this account belongs to you.'
+    'A user with the given email address is already registered.  Please try to log in or reset the password if this account belongs to you.',
+  UPGRADE_PLAN: 'Upgrade Plan',
+  INVALID_PLAN: 'Invalid plan selected.',
+  PLAN_UPGRADE_REQUIRED:
+    'Please upgrade to a paid plan to unlock this feature.',
+  INVITE_ACCEPTED_ADMIN:
+    'You have successfully accepted the invite to this domain and are an admin.',
+  INVITE_ACCEPTED_USER:
+    'You have successfully accepted the invite to this domain and you can now create your first alias.',
+  INVITE_EMAIL_ERROR:
+    'An error occurred while emailing the invite link.  Please manually copy the the invite link and share it with this person if needed.',
+  INVALID_GROUP: 'Group was invalid, must be either admin or user.',
+  INVITE_ALREADY_SENT:
+    'Invite was already sent to this email address.  Please manually copy the invite link and share it with this person if needed.',
+  BETA_PROGRAM:
+    'Enhanced Protection and Team plans are currently free and in our final testing and beta program phase.  Once they are released, you will be emailed and will have 30 days to enter your billing information.  Thank you!',
+  FREE_PLAN: 'You have successfully downgraded to the Free Plan.',
+  ENHANCED_PROTECTION_PLAN:
+    'You have successfully upgraded to the Enhanced Protection Plan.',
+  TEAM_PLAN: 'You have successfully upgraded to the Team Plan.'
 };

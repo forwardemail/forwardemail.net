@@ -15,3 +15,8 @@ body {
 .text-decoration-underline {
   text-decoration: underline !important;
 }
+
+.dropdown-menu {
+  max-height: 50vh;
+  overflow-y: auto;
+}

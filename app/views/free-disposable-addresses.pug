@@ -1,0 +1,33 @@
+
+extends layout
+
+block body
+  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
+    .row
+      .col-md-12
+        p.lead.mb-0.text-white.font-weight-bold
+          != t('Use your own custom domain name or try one of our free vanity domain names.')
+  .container.py-5
+    .text-center.mb-5
+      .h2.display-3.mb-1= emoji('crystal_ball')
+      h2.display-5.font-weight-light.mb-0.text-uppercase= t('Free Disposable Addresses')
+      small.text-black-50.text-uppercase= t('Short and Memorable Vanity Domains')
+    .row.mt-3
+      .col-md-6.offset-md-3
+        .alert.alert-info.mb-3!= t('<strong>Did you know?</strong> You can use your own custom domain name as a disposable email address.  Just <a href="/my-account/domains/new" class="alert-link">add a new domain</a> today to get started.  You can even "Send mail as" with Gmail, Outlook, and Yahoo using disposable addresses.')
+        ol.mb-0.mt-5
+          each vanityDomain in config.vanityDomains
+            li.py-2
+              ul.list-inline
+                li.list-inline-item
+                  .markdown-body.ml-0.mr-0: code= `${t('name')}@${vanityDomain}`
+                li.list-inline-item
+                  a(href=`/my-account/domains/aliases/new?domain=${vanityDomain}`).btn.btn-dark.btn-sm.text-uppercase
+                    = t('Try it now')
+                    = ' '
+                    i.fa.fa-angle-double-right
+        p.mt-5.mb-0.text-center
+          a(href='/my-account/domains/aliases/new').btn.btn-primary.btn-lg.text-uppercase.font-weight-bold
+            = t('Create your address')
+            = ' '
+            i.fa.fa-angle-double-right
