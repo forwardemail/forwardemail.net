@@ -11,14 +11,15 @@ const myAccount = require('./my-account');
 
 const router = new Router();
 
+// status page crawlers often send `HEAD /` requests
+router.head('/', ctx => {
+  ctx.body = 'OK';
+});
+
 const localeRouter = new Router({ prefix: '/:locale' });
 
 localeRouter
   .get('/', web.auth.homeOrDomains)
-  // status page crawlers often send `HEAD /` requests
-  .head('/', ctx => {
-    ctx.body = 'OK';
-  })
   .get('/dashboard', ctx => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));
