@@ -46,18 +46,21 @@ async function lookup(ctx) {
   const aliases = await Aliases.find({
     domain: domain._id
   })
+    .populate('user', 'is_banned')
     .lean()
     .exec();
 
-  ctx.body = aliases.map(alias => {
-    // alias.name = "*" (wildcard catchall) otherwise an alias
-    // alias.is_enabled = "!" prefixed alias name
-    // alias.recipients = comma separated (split with a colon)
-    if (alias.name === '*') return alias.recipients.join(',');
-    return `${alias.is_enabled ? '' : '!'}${alias.name}:${alias.recipients.join(
-      ','
-    )}`;
-  });
+  ctx.body = aliases
+    .filter(alias => !alias.user.is_banned)
+    .aliases.map(alias => {
+      // alias.name = "*" (wildcard catchall) otherwise an alias
+      // alias.is_enabled = "!" prefixed alias name
+      // alias.recipients = comma separated (split with a colon)
+      if (alias.name === '*') return alias.recipients.join(',');
+      return `${alias.is_enabled ? '' : '!'}${
+        alias.name
+      }:${alias.recipients.join(',')}`;
+    });
 }
 
 module.exports = lookup;
