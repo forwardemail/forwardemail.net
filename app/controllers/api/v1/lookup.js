@@ -1,4 +1,5 @@
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');
 
@@ -51,7 +52,7 @@ async function lookup(ctx) {
     .exec();
 
   ctx.body = aliases
-    .filter(alias => !alias.user.is_banned)
+    .filter(alias => _.isObject(alias.user) && !alias.user.is_banned)
     .map(alias => {
       // alias.name = "*" (wildcard catchall) otherwise an alias
       // alias.is_enabled = "!" prefixed alias name

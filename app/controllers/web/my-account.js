@@ -103,7 +103,7 @@ async function retrieveDomains(ctx, next) {
     .lean()
     .exec();
 
-  const domainAliases = await Aliases.find({
+  let domainAliases = await Aliases.find({
     domain: { $in: _.map(ctx.state.domains, '_id') }
   })
     .populate('domain', 'name')
@@ -111,6 +111,9 @@ async function retrieveDomains(ctx, next) {
     .sort('name')
     .lean()
     .exec();
+
+  // TODO: delete aliases for users when they delete their accounts
+  domainAliases = domainAliases.filter(alias => _.isObject(alias.user));
 
   const aliasesByDomain = _.groupBy(domainAliases, alias => alias.domain.name);
 
