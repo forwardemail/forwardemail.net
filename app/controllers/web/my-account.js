@@ -98,22 +98,37 @@ async function retrieveDomains(ctx, next) {
     });
 
   ctx.state.domains = await Domains.find(query)
-    .populate('members.user', `id email ${config.passport.fields.displayName}`)
+    .populate(
+      'members.user',
+      `id email ${config.passport.fields.displayName} is_banned`
+    )
     .sort('is_global name') // A-Z domains
     .lean()
     .exec();
+
+  ctx.state.domains = ctx.state.domains.map(domain => {
+    domain.members = domain.members.filter(
+      member => _.isObject(member.user) && !member.user.is_banned
+    );
+    return domain;
+  });
 
   let domainAliases = await Aliases.find({
     domain: { $in: _.map(ctx.state.domains, '_id') }
   })
     .populate('domain', 'name')
-    .populate('user', `id email ${config.passport.fields.displayName}`)
+    .populate(
+      'user',
+      `id email ${config.passport.fields.displayName} is_banned`
+    )
     .sort('name')
     .lean()
     .exec();
 
   // TODO: delete aliases for users when they delete their accounts
-  domainAliases = domainAliases.filter(alias => _.isObject(alias.user));
+  domainAliases = domainAliases.filter(
+    alias => _.isObject(alias.user) && !alias.user.is_banned
+  );
 
   const aliasesByDomain = _.groupBy(domainAliases, alias => alias.domain.name);
 
