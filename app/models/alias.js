@@ -120,7 +120,7 @@ Alias.pre('save', async function(next) {
     // domain and user must exist
     // user must be a member of the domain
     // name@domain.name must be unique for given domain
-    const [domain, user, aliases] = await Promise.all([
+    let [domain, user, aliases] = await Promise.all([
       Domains.findOne({
         $or: [
           {
@@ -133,7 +133,7 @@ Alias.pre('save', async function(next) {
           }
         ]
       })
-        .populate('members.user', 'id')
+        .populate('members.user', 'id is_banned')
         .lean()
         .exec(),
       Users.findById(alias.user)
@@ -145,10 +145,18 @@ Alias.pre('save', async function(next) {
           domain: alias.domain
         })
         .select('id user name recipients')
-        .populate('user', 'id')
+        .populate('user', 'id is_banned')
         .lean()
         .exec()
     ]);
+
+    // filter out domains and aliases without users
+    aliases = aliases.filter(
+      alias => _.isObject(alias.user) && !alias.user.is_Banned
+    );
+    domain.members = domain.members.filter(
+      member => _.isObject(member.user) && !member.user.is_banned
+    );
 
     if (!domain) throw new Error('Domain does not exist.');
 
