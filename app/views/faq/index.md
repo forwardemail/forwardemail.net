@@ -1,6 +1,5 @@
 # Frequently Asked Questions
 
-
 ## Table of Contents
 
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
@@ -201,7 +200,7 @@ After you've followed the steps above in [How do I get started and set up email 
 
 ## Why do my emails have "no-reply@forwardemail.net" as part of the FROM address
 
-This is to ensure that emails land in the inbox as opposed to the spam folder.  We DO add a custom "Reply-To" header, so when recipients click "Reply" on your email - they send their email to the correct address and name.  Once we implement ARC signatures (we are waiting on a majority of email providers to adopt it) then we should be able to remove the "Friendly From" rewrite, and your users will no longer see "no-reply" in the FROM.   Subscribe [to this GitHub issue](https://github.com/niftylettuce/forward-email/issues/137) for updates.  You will not need to do any re-configuration once this feature is added.
+This is to ensure that emails land in the inbox as opposed to the spam folder.  We DO add a custom "Reply-To" header, so when recipients click "Reply" on your email - they send their email to the correct address and name.  Once we implement ARC signatures (we are waiting on a majority of email providers to adopt it) then we should be able to remove the "Friendly From" rewrite, and your users will no longer see "no-reply" in the FROM.   Subscribe [to this GitHub issue](https://github.com/forwardemail/free-email-forwarding/issues/137) for updates.  You will not need to do any re-configuration once this feature is added.
 
 
 ## Can I just use this email forwarding service as a "fallback" or "fallover" MX server
