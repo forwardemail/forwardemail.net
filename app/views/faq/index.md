@@ -6,7 +6,6 @@
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-* [Why do my emails have "no-reply@forwardemail.net" as part of the FROM address](#why-do-my-emails-have-no-replyforwardemailnet-as-part-of-the-from-address)
 * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
 * [Can I disable specific aliases](#can-i-disable-specific-aliases)
 * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
@@ -137,9 +136,7 @@ You can also specify a domain name in your TXT record to have global alias forwa
 
 **7.** Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
 
-**8.** Add `no-reply@forwardemail.net` to your contacts.  In the event that someone is attempting to send you an email that has a strict DMARC record policy of "reject" or "quarantine", we will rewrite the email's "From" header with a "friendly-from".  This means the "From" will look like "Sender's Name [no-reply@forwardemail.net](mailto:no-reply@forwardemail.net)" and a "Reply-To" will be added with the original sender's "From" address.  In the event that there is already a "Reply-To" set, we will not overwrite it.
-
-**9.** If you wish to "Send Mail As" from Gmail, then you will need to follow the steps under [How to Send Mail As Using Gmail](#how-to-send-mail-as-using-gmail) below.
+**8.** If you wish to "Send Mail As" from Gmail, then you will need to follow the steps under [How to Send Mail As Using Gmail](#how-to-send-mail-as-using-gmail) below.
 
 ---
 
@@ -197,11 +194,6 @@ After you've followed the steps above in [How do I get started and set up email 
 16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
 17. Once you've done that, go back to the email and click the link to "confirm the request". You need to do this step and the previous step for the email to be correctly configured.
 18. Done!
-
-
-## Why do my emails have "no-reply@forwardemail.net" as part of the FROM address
-
-This is to ensure that emails land in the inbox as opposed to the spam folder.  We DO add a custom "Reply-To" header, so when recipients click "Reply" on your email - they send their email to the correct address and name.  Once we implement ARC signatures (we are waiting on a majority of email providers to adopt it) then we should be able to remove the "Friendly From" rewrite, and your users will no longer see "no-reply" in the FROM.   Subscribe [to this GitHub issue](https://github.com/forwardemail/free-email-forwarding/issues/137) for updates.  You will not need to do any re-configuration once this feature is added.
 
 
 ## Can I just use this email forwarding service as a "fallback" or "fallover" MX server
@@ -365,7 +357,7 @@ Per documentation and suggestions from Google at <https://support.google.com/a/a
 
 7. TXT - through checking if the email address the sender is trying to send to has a TXT DNS record with a valid email forwarding setup. The SSL certificates (main domain name or alternative names) of all MX servers of the forwarding destination must match the MX entry.
 
-8. DMARC - we check if a DMARC record exists from the sender's FQDN, and if so, if it is "reject" or "quarantine" then we re-write the "From" of the email as a "friendly-from".  This means the "From" is set to "$originalName [no-reply@forwardemail.net](mailto:no-reply@forwardemail.net)" ("$originalName" is the original From name, e.g. "John Doe" in "John Doe [john@domain.com](mailto:john@domain.com)").  Furthermore we set a "Reply-To" (if one is not already set) of the original sender's from address.
+8. Sender Rewriting Scheme ("SRS") - we use [SRS][srs], which is a scheme used to rewrite the envelope sender address for email forwarding in order for DKIM/SPF/DMARC to pass with a forwarding mail server (middleman).
 
 
 ## Can I "send mail as" with this
@@ -405,3 +397,5 @@ At no point in time do we write to disk or store emails – everything is done i
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
 
 [nodemailer]: https://github.com/nodemailer/nodemailer
+
+[srs]: https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme
