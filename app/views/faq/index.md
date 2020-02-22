@@ -326,7 +326,7 @@ Yes, absolutely.
 
 ## Is this well-tested
 
-Yes, it has tests written with ava and also has code coverage.
+Yes, it has tests written with Java and also has code coverage.
 
 
 ## Do you pass along SMTP response messages and codes
