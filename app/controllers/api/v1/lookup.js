@@ -58,9 +58,12 @@ async function lookup(ctx) {
       // alias.is_enabled = "!" prefixed alias name
       // alias.recipients = comma separated (split with a colon)
       if (alias.name === '*') return alias.recipients.join(',');
-      return `${alias.is_enabled ? '' : '!'}${
-        alias.name
-      }:${alias.recipients.join(',')}`;
+
+      return alias.recipients
+        .map(recipient => {
+          return `${alias.is_enabled ? '' : '!'}${alias.name}:${recipient}`;
+        })
+        .join(',');
     });
 }
 
