@@ -8,7 +8,7 @@ const consolidate = require('consolidate');
 const manifestRev = require('manifest-rev');
 const ms = require('ms');
 const nodemailer = require('nodemailer');
-const strength = require('strength');
+const zxcvbn = require('zxcvbn');
 const { boolean } = require('boolean');
 
 const pkg = require('../package');
@@ -170,12 +170,8 @@ const config = {
     keylen: 512,
     passwordValidator: (password, fn) => {
       if (env.NODE_ENV === 'development') return fn();
-      const howStrong = strength(password);
-      fn(
-        howStrong < 3
-          ? Boom.badRequest(phrases.INVALID_PASSWORD_STRENGTH)
-          : null
-      );
+      const { score } = zxcvbn(password);
+      fn(score < 3 ? Boom.badRequest(phrases.INVALID_PASSWORD_STRENGTH) : null);
     },
     errorMessages: {
       MissingPasswordError: phrases.PASSPORT_MISSING_PASSWORD_ERROR,
