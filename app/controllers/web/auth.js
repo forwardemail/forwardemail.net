@@ -6,6 +6,8 @@ const moment = require('moment');
 const sanitizeHtml = require('sanitize-html');
 const validator = require('validator');
 const { boolean } = require('boolean');
+const { authenticator } = require('otplib');
+const qrcode = require('qrcode');
 
 const bull = require('../../../bull');
 const Users = require('../../models/user');
@@ -20,6 +22,7 @@ const sanitize = str =>
 
 function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(`/${ctx.locale}`);
+  if (ctx.session.otp && !ctx.session.otp_remember_me) delete ctx.session.otp;
   ctx.logout();
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -140,10 +143,45 @@ async function login(ctx, next) {
       delete ctx.session.returnTo;
     }
 
-    try {
+    let greeting = 'Good morning';
+    if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
+      greeting = 'Good afternoon';
+    else if (moment().format('HH') >= 17) greeting = 'Good evening';
+
+    if (user) {
       await ctx.login(user);
-    } catch (err_) {
-      throw err_;
+
+      ctx.flash('custom', {
+        title: `${ctx.request.t('Hello')} ${ctx.state.emoji('wave')}`,
+        text: user[config.userFields.givenName]
+          ? `${greeting} ${user[config.userFields.givenName]}`
+          : greeting,
+        type: 'success',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        position: 'top'
+      });
+
+      const uri = authenticator.keyuri(
+        user.email,
+        'lad.sh',
+        user[config.passport.fields.twoFactorToken]
+      );
+
+      ctx.state.user.qrcode = await qrcode.toDataURL(uri);
+      await ctx.state.user.save();
+
+      if (user[config.passport.fields.twoFactorEnabled] && !ctx.session.otp)
+        redirectTo = `/${ctx.locale}/2fa/otp/login`;
+
+      if (ctx.accepts('json')) {
+        ctx.body = { redirectTo };
+      } else {
+        ctx.redirect(redirectTo);
+      }
+
+      return;
     }
 
     ctx.flash('custom', {
@@ -159,6 +197,67 @@ async function login(ctx, next) {
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
   })(ctx, next);
+}
+
+async function loginOtp(ctx, next) {
+  await passport.authenticate('otp', (err, user) => {
+    if (err) throw err;
+    if (!user) throw Boom.unauthorized(ctx.translate('INVALID_OTP_PASSCODE'));
+
+    ctx.session.otp_remember_me = boolean(ctx.request.body.otp_remember_me);
+
+    ctx.session.otp = 'totp';
+    const redirectTo = `/${ctx.locale}/dashboard`;
+
+    if (ctx.accepts('json')) {
+      ctx.body = { redirectTo };
+    } else {
+      ctx.redirect(redirectTo);
+    }
+  })(ctx, next);
+}
+
+async function recoveryKey(ctx) {
+  let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+
+  if (ctx.session && ctx.session.returnTo) {
+    redirectTo = ctx.session.returnTo;
+    delete ctx.session.returnTo;
+  }
+
+  ctx.state.redirectTo = redirectTo;
+
+  let recoveryKeys = ctx.state.user[config.userFields.twoFactorRecoveryKeys];
+
+  // ensure recovery matches user list of keys
+  if (
+    !isSANB(ctx.request.body.recovery_passcode) ||
+    !Array.isArray(recoveryKeys) ||
+    recoveryKeys.length === 0 ||
+    !recoveryKeys.includes(ctx.request.body.recovery_passcode)
+  )
+    return ctx.throw(
+      Boom.badRequest(ctx.translate('INVALID_RECOVERY_PASSCODE'))
+    );
+
+  // remove used passcode from recovery key list
+  recoveryKeys = recoveryKeys.filter(
+    key => key !== ctx.request.body.recovery_passcode
+  );
+  ctx.state.user[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
+  await ctx.state.user.save();
+
+  ctx.session.otp = 'totp-recovery';
+
+  // send the user a success message
+  const message = ctx.translate('TWO_FACTOR_RECOVERY_SUCCESS');
+
+  if (ctx.accepts('html')) {
+    ctx.flash('success', message);
+    ctx.redirect(redirectTo);
+  } else {
+    ctx.body = { message, redirectTo };
+  }
 }
 
 async function register(ctx) {
@@ -266,7 +365,7 @@ async function forgotPassword(ctx) {
       },
       locals: {
         user: _.pick(user, [
-          config.passport.fields.displayName,
+          config.userFields.displayName,
           config.userFields.resetTokenExpiresAt
         ]),
         link: `${config.urls.web}/reset-password/${
@@ -342,6 +441,10 @@ async function verify(ctx) {
   }
 
   ctx.state.redirectTo = redirectTo;
+
+  // set has verified to true
+  ctx.state.user[config.userFields.hasVerifiedEmail] = true;
+  await ctx.state.user.save();
 
   if (ctx.state.user[config.userFields.hasVerifiedEmail]) {
     const message = ctx.translate('EMAIL_ALREADY_VERIFIED');
@@ -438,8 +541,10 @@ module.exports = {
   registerOrLogin,
   homeOrDomains,
   login,
+  loginOtp,
   register,
   forgotPassword,
+  recoveryKey,
   resetPassword,
   catchError,
   verify,

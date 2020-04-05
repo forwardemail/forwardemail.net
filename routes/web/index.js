@@ -1,5 +1,6 @@
 const Router = require('@koa/router');
 const render = require('koa-views-render');
+const { boolean } = require('boolean');
 
 const config = require('../../config');
 const { policies } = require('../../helpers');
@@ -8,6 +9,7 @@ const { web } = require('../../app/controllers');
 const admin = require('./admin');
 const auth = require('./auth');
 const myAccount = require('./my-account');
+const twofactor = require('./2fa');
 
 const router = new Router();
 
@@ -67,6 +69,8 @@ localeRouter
 
 localeRouter.use(myAccount.routes());
 localeRouter.use(admin.routes());
+
+if (boolean(process.env.AUTH_OTP_ENABLED)) localeRouter.use(twofactor.routes());
 
 router.use(auth.routes());
 router.use(localeRouter.routes());
