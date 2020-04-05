@@ -113,13 +113,13 @@
     "signale": "^1.4.0",
     "speakingurl": "^14.0.1",
     "stacktrace-js": "^2.0.2",
-    "strength": "^0.1.4",
     "striptags": "^3.1.1",
     "sweetalert2": "8.x",
     "titleize": "^2.1.0",
     "uncaught": "^0.0.5",
     "uuid": "^3.4.0",
-    "validator": "^12.2.0"
+    "validator": "^12.2.0",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
