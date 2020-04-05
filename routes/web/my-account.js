@@ -7,6 +7,7 @@ const web = require('../../app/controllers/web');
 const router = new Router({ prefix: '/my-account' });
 
 router.use(policies.ensureLoggedIn);
+router.use(policies.ensureOtp);
 router.use(web.myAccount.ensureNotBanned);
 router.use(web.breadcrumbs);
 router.use(web.myAccount.retrieveDomains);
@@ -147,6 +148,9 @@ router.get(
 router.get('/profile', render('my-account/profile'));
 router.put('/profile', web.myAccount.update);
 router.delete('/security', web.myAccount.resetAPIToken);
-router.get('/security', render('my-account/security'));
+router.get('/security', web.myAccount.security);
+router.post('/setup-2fa', web.myAccount.setup2fa);
+router.delete('/setup-2fa', web.myAccount.setup2fa);
+router.post('/recovery-keys', web.myAccount.recoveryKeys);
 
 module.exports = router;

@@ -69,6 +69,8 @@ obj[config.userFields.apiToken] = {
   index: true
 };
 
+obj[config.userFields.twoFactorRecoveryKeys] = Array;
+
 // password reset
 obj[config.userFields.resetTokenExpiresAt] = Date;
 obj[config.userFields.resetToken] = String;
@@ -91,6 +93,11 @@ obj[config.userFields.verificationPin] = {
   type: String,
   trim: true,
   validate: val => isSANB(val) && val.replace(/\D/g, '').length === 6
+};
+
+obj[config.userFields.pendingRecovery] = {
+  type: Boolean,
+  default: false
 };
 
 // shared field names with @ladjs/passport for consistency
@@ -131,6 +138,13 @@ obj[fields.githubProfileID] = {
 obj[fields.githubAccessToken] = String;
 obj[fields.githubRefreshToken] = String;
 
+obj[fields.twoFactorEnabled] = {
+  type: Boolean,
+  default: false
+};
+
+obj[fields.twoFactorToken] = String;
+
 // shared field names with @ladjs/i18n and email-templates
 obj[config.lastLocaleField] = {
   type: String,
@@ -168,6 +182,18 @@ User.pre('validate', function(next) {
       ? `${this[fields.displayName]} <${this.email}>`
       : this.email;
 
+  // if two-factor authentication values no longer valid
+  // then disable it completely
+  if (
+    !this[fields.twoFactorEnabled] ||
+    !Array.isArray(
+      this[config.userFields.twoFactorRecoveryKeys] ||
+        this[config.userFields.twoFactorRecoveryKeys].length === 0
+    )
+  ) {
+    this[fields.twoFactorEnabled] = false;
+  }
+
   next();
 });
 
@@ -200,7 +226,11 @@ User.post('save', async user => {
 });
 
 User.methods.sendVerificationEmail = async function(ctx) {
-  if (this[config.userFields.hasVerifiedEmail]) return this;
+  if (
+    this[config.userFields.hasVerifiedEmail] &&
+    boolean(!this[config.userFields.pendingRecovery])
+  )
+    return this;
 
   const diff =
     this[config.userFields.verificationPinExpiresAt] &&
@@ -272,7 +302,9 @@ User.plugin(mongooseCommonPlugin, {
     config.userFields.verificationPinExpiresAt,
     config.userFields.verificationPin,
     config.userFields.verificationPinHasExpired,
-    config.userFields.welcomeEmailSentAt
+    config.userFields.welcomeEmailSentAt,
+    config.userFields.twoFactorRecoveryKeys,
+    fields.twoFactorToken
   ]
 });
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);
