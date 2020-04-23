@@ -40,6 +40,7 @@ module.exports = {
     'Please log in with two-factor authentication to view the page you requested.',
   LOGIN_REQUIRED: 'Please log in to view the page you requested.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
+  PASSWORD_CONFIRM_SUCCESS: 'Password successfully confirmed.',
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
   NO_DOMAINS_EXIST: 'Add a domain name to your account to continue.',
   NO_ALIASES_EXIST: 'Add a new alias to continue.',

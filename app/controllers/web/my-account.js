@@ -1,13 +1,11 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const cryptoRandomString = require('crypto-random-string');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { isEmail, isFQDN, isIP } = require('validator');
-const qrcode = require('qrcode');
 const { authenticator } = require('otplib');
 
 const config = require('../../../config');
@@ -1005,30 +1003,6 @@ function ensureNotBanned(ctx, next) {
   return next();
 }
 
-async function security(ctx) {
-  if (!ctx.state.user[config.passport.fields.twoFactorEnabled]) {
-    ctx.state.user[
-      config.passport.fields.twoFactorToken
-    ] = authenticator.generateSecret();
-
-    // generate 2fa recovery keys list used for fallback
-    const recoveryKeys = new Array(16)
-      .fill()
-      .map(() => cryptoRandomString({ length: 10, characters: '1234567890' }));
-
-    ctx.state.user[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
-    ctx.state.user = await ctx.state.user.save();
-    ctx.state.twoFactorTokenURI = authenticator.keyuri(
-      ctx.state.user.email,
-      process.env.WEB_HOST,
-      ctx.state.user[config.passport.fields.twoFactorToken]
-    );
-    ctx.state.qrcode = await qrcode.toDataURL(ctx.state.twoFactorTokenURI);
-  }
-
-  await ctx.render('my-account/security');
-}
-
 async function recoveryKeys(ctx) {
   const twoFactorRecoveryKeys =
     ctx.state.user[config.userFields.twoFactorRecoveryKeys];
@@ -1110,6 +1084,5 @@ module.exports = {
   removeMember,
   ensureNotBanned,
   recoveryKeys,
-  security,
   setup2fa
 };
