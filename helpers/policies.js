@@ -5,6 +5,7 @@ const {
   passportCallbackOptions,
   verificationPath,
   userFields,
+  passport,
   appName
 } = require('../config');
 const { Users } = require('../app/models');
@@ -15,7 +16,8 @@ const policies = new Policies(
     hasVerifiedEmail: userFields.hasVerifiedEmail,
     verifyRoute: verificationPath,
     loginRoute: passportCallbackOptions.failureRedirect,
-    loginOtpRoute
+    loginOtpRoute,
+    passport
   },
   apiToken => {
     const query = {};

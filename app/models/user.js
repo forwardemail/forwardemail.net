@@ -69,7 +69,7 @@ obj[config.userFields.apiToken] = {
   index: true
 };
 
-obj[config.userFields.twoFactorRecoveryKeys] = Array;
+obj[config.userFields.otpRecoveryKeys] = Array;
 
 // password reset
 obj[config.userFields.resetTokenExpiresAt] = Date;
@@ -138,12 +138,12 @@ obj[fields.githubProfileID] = {
 obj[fields.githubAccessToken] = String;
 obj[fields.githubRefreshToken] = String;
 
-obj[fields.twoFactorEnabled] = {
+obj[fields.otpEnabled] = {
   type: Boolean,
   default: false
 };
 
-obj[fields.twoFactorToken] = String;
+obj[fields.otpToken] = String;
 
 // shared field names with @ladjs/i18n and email-templates
 obj[config.lastLocaleField] = {
@@ -185,13 +185,13 @@ User.pre('validate', function(next) {
   // if two-factor authentication values no longer valid
   // then disable it completely
   if (
-    !this[fields.twoFactorEnabled] ||
+    !this[fields.otpEnabled] ||
     !Array.isArray(
-      this[config.userFields.twoFactorRecoveryKeys] ||
-        this[config.userFields.twoFactorRecoveryKeys].length === 0
+      this[config.userFields.otpRecoveryKeys] ||
+        this[config.userFields.otpRecoveryKeys].length === 0
     )
   ) {
-    this[fields.twoFactorEnabled] = false;
+    this[fields.otpEnabled] = false;
   }
 
   next();
@@ -303,8 +303,8 @@ User.plugin(mongooseCommonPlugin, {
     config.userFields.verificationPin,
     config.userFields.verificationPinHasExpired,
     config.userFields.welcomeEmailSentAt,
-    config.userFields.twoFactorRecoveryKeys,
-    fields.twoFactorToken
+    config.userFields.otpRecoveryKeys,
+    fields.otpToken
   ]
 });
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);
