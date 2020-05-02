@@ -148,9 +148,7 @@ router.get(
 router.get('/profile', render('my-account/profile'));
 router.put('/profile', web.myAccount.update);
 router.delete('/security', web.myAccount.resetAPIToken);
-router.get('/security', web.myAccount.security);
-router.post('/setup-2fa', web.myAccount.setup2fa);
-router.delete('/setup-2fa', web.myAccount.setup2fa);
+router.get('/security', render('my-account/security'));
 router.post('/recovery-keys', web.myAccount.recoveryKeys);
 
 module.exports = router;

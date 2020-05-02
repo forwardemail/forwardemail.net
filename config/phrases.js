@@ -57,7 +57,8 @@ module.exports = {
     'You can only request a password reset every 30 minutes.  Please try again %s.',
   PASSWORD_RESET_SENT:
     'We have sent you an email with a link to reset your password.',
-  TWO_FACTOR_RECOVERY_SUCCESS:
+  PASSWORD_CONFIRM_SUCCESS: 'Password successfully confirmed.',
+  OTP_RECOVERY_SUCCESS:
     'Recovery passcode successful. This passcode will no longer be valid.',
   REGISTERED: 'You have successfully registered.',
   SIGNED_IN: 'You have successfully signed in.',

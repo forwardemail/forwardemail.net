@@ -105,7 +105,7 @@ const config = {
   userFields: {
     fullEmail: 'full_email',
     apiToken: 'api_token',
-    twoFactorRecoveryKeys: 'two_factor_recovery_keys',
+    otpRecoveryKeys: 'otp_recovery_keys',
     resetTokenExpiresAt: 'reset_token_expires_at',
     resetToken: 'reset_token',
     hasSetPassword: 'has_set_password',
@@ -119,7 +119,7 @@ const config = {
   },
 
   // dynamic otp routes
-  loginOtpRoute: '/2fa/otp/login',
+  loginOtpRoute: '/otp/login',
 
   // verification pin
   verificationPath: '/verify',
@@ -144,8 +144,8 @@ const config = {
       githubProfileID: 'github_profile_id',
       githubAccessToken: 'github_access_token',
       githubRefreshToken: 'github_refresh_token',
-      twoFactorToken: 'two_factor_token',
-      twoFactorEnabled: 'two_factor_enabled'
+      otpToken: 'otp_token',
+      otpEnabled: 'otp_enabled'
     },
     google: {
       accessType: 'offline',

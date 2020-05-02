@@ -166,14 +166,14 @@ async function login(ctx, next) {
       const uri = authenticator.keyuri(
         user.email,
         'lad.sh',
-        user[config.passport.fields.twoFactorToken]
+        user[config.passport.fields.otpToken]
       );
 
       ctx.state.user.qrcode = await qrcode.toDataURL(uri);
       await ctx.state.user.save();
 
-      if (user[config.passport.fields.twoFactorEnabled] && !ctx.session.otp)
-        redirectTo = `/${ctx.locale}/2fa/otp/login`;
+      if (user[config.passport.fields.otpEnabled] && !ctx.session.otp)
+        redirectTo = `/${ctx.locale}/otp/login`;
 
       if (ctx.accepts('json')) {
         ctx.body = { redirectTo };
@@ -227,7 +227,7 @@ async function recoveryKey(ctx) {
 
   ctx.state.redirectTo = redirectTo;
 
-  let recoveryKeys = ctx.state.user[config.userFields.twoFactorRecoveryKeys];
+  let recoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];
 
   // ensure recovery matches user list of keys
   if (
@@ -244,13 +244,13 @@ async function recoveryKey(ctx) {
   recoveryKeys = recoveryKeys.filter(
     key => key !== ctx.request.body.recovery_passcode
   );
-  ctx.state.user[config.userFields.twoFactorRecoveryKeys] = recoveryKeys;
+  ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys;
   await ctx.state.user.save();
 
   ctx.session.otp = 'totp-recovery';
 
   // send the user a success message
-  const message = ctx.translate('TWO_FACTOR_RECOVERY_SUCCESS');
+  const message = ctx.translate('OTP_RECOVERY_SUCCESS');
 
   if (ctx.accepts('html')) {
     ctx.flash('success', message);
