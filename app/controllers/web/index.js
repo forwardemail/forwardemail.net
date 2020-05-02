@@ -10,7 +10,7 @@ const auth = require('./auth');
 const help = require('./help');
 const myAccount = require('./my-account');
 const faq = require('./faq');
-const twoFactor = require('./2fa');
+const otp = require('./otp');
 
 function breadcrumbs(ctx, next) {
   // return early if its not a pure path (e.g. ignore static assets)
@@ -41,5 +41,5 @@ module.exports = {
   help,
   myAccount,
   faq,
-  twoFactor
+  otp
 };
