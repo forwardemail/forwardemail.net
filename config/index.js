@@ -220,12 +220,10 @@ const logger = new Axe(config.logger);
 // add manifest helper for rev-manifest.json support
 config.manifest = path.join(config.buildDir, 'rev-manifest.json');
 config.views.locals.manifest = manifestRev({
-  prepend: '/',
-  /*
+  prepend:
     env.AWS_CLOUDFRONT_DOMAIN && env.NODE_ENV === 'production'
       ? `//${env.AWS_CLOUDFRONT_DOMAIN}/`
       : '/',
-  */
   manifest: config.manifest
 });
 
