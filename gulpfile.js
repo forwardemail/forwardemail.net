@@ -7,6 +7,7 @@ const Mandarin = require('mandarin');
 const _ = require('lodash');
 const awscloudfront = require('gulp-awspublish-cloudfront');
 const awspublish = require('gulp-awspublish');
+const babel = require('gulp-babel');
 const browserify = require('browserify');
 const collapser = require('bundle-collapser/plugin');
 const cssnano = require('cssnano');
@@ -36,7 +37,6 @@ const sourcemaps = require('gulp-sourcemaps');
 const stylelint = require('stylelint');
 const terser = require('gulp-terser');
 const unassert = require('gulp-unassert');
-const revSri = require('gulp-rev-sri');
 const { lastRun, watch, series, parallel, src, dest } = require('gulp');
 
 // explicitly set the compiler in case it were to change to dart
@@ -120,7 +120,6 @@ function img() {
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
-    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
@@ -156,7 +155,6 @@ function css() {
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
-    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
@@ -182,36 +180,41 @@ function eslint() {
 async function bundle() {
   // make build/js folder for compile task
   await makeDir(path.join(config.buildBase, 'js'));
-  const ws = fs.createWriteStream(
-    path.join(config.buildBase, 'js', 'factor-bundle.js')
-  );
   const paths = await globby('**/*.js', { cwd: 'assets/js' });
   const b = browserify({
-    entries: paths.map(string => `assets/js/${string}`),
+    entries: paths.map(str => `assets/js/${str}`),
     debug: true
   });
-  return b
-    .plugin(collapser)
-    .plugin('factor-bundle', {
-      outputs: paths.map(string => path.join(config.buildBase, 'js', string))
-    })
-    .bundle()
-    .pipe(ws)
-    .on('finish', compile);
+  return (
+    b
+      .plugin(collapser)
+      .plugin('factor-bundle', {
+        outputs: paths.map(str => path.join(config.buildBase, 'js', str))
+      })
+      .bundle()
+      // .bundle((err, buffer) => {
+      .pipe(
+        fs.createWriteStream(
+          path.join(config.buildBase, 'js', 'factor-bundle.js')
+        )
+      )
+  );
 }
 
-function compile() {
-  return src('build/js/**/*.js', { base: 'build', since: lastRun(compile) })
+async function compile() {
+  return src('build/js/**/*.js', {
+    since: lastRun(compile)
+  })
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(envify(env))
     .pipe(unassert())
+    .pipe(babel())
     .pipe(gulpif(PROD, terser()))
     .pipe(gulpif(PROD, rev()))
     .pipe(sourcemaps.write('./'))
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
-    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
@@ -238,6 +241,8 @@ function clean() {
   return del([config.buildBase]);
 }
 
+const js = series(bundle, compile);
+
 async function markdown() {
   const mandarin = new Mandarin({ i18n, logger });
   const graceful = new Graceful({ redisClients: [mandarin.redisClient] });
@@ -249,13 +254,13 @@ const build = series(
   clean,
   parallel(
     ...(TEST ? [] : [xo, remark]),
-    parallel(img, static, markdown, series(scss, css), series(bundle, eslint))
+    parallel(img, static, markdown, series(scss, css), series(js, eslint))
   )
 );
 
 module.exports = {
   build,
-  bundle,
+  js,
   publish,
   markdown,
   watch: () => {
@@ -264,7 +269,7 @@ module.exports = {
     watch(Mandarin.DEFAULT_PATTERNS, markdown);
     watch('assets/img/**/*', img);
     watch('assets/css/**/*.scss', series(scss, css));
-    watch('assets/js/**/*.js', series(xo, bundle, eslint));
+    watch('assets/js/**/*.js', series(xo, js, eslint));
     watch('app/views/**/*.pug', pug);
     watch(staticAssets, static);
   },
