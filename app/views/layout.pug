@@ -46,10 +46,7 @@ html(lang=locale).h-100
 
     //- css file
     block stylesheets
-      if config.env === 'production'
-        link(rel="stylesheet", href=manifest('css/app.css') integrity=manifest('css/app.css', 'integrity'))
-      else
-        link(rel="stylesheet", href=manifest('css/app.css'))
+      link(rel="stylesheet", href=manifest('css/app.css'))
 
   body(role='document').d-flex.flex-column.h-100
 
@@ -124,10 +121,10 @@ html(lang=locale).h-100
       script(src=`https://polyfill.io/v3/polyfill${config.env === 'production' ? '.min' : ''}.js?features=${polyfills.join(',')}`)
 
       //- factor bundle (common shared assets across all files)
-      script(src=manifest('js/factor-bundle.js') integrity=manifest('js/factor-bundle.js', 'integrity'))
+      script(src=manifest('js/factor-bundle.js'))
 
       //- uncaught (handles errors, similar to TraceKit but with CabinJS + StackTrace.JS)
-      script(src=manifest('js/uncaught.js') integrity=manifest('js/uncaught.js', 'integrity'))
+      script(src=manifest('js/uncaught.js'))
 
       //- scripts
-      script(src=manifest('js/core.js') integrity=manifest('js/core.js', 'integrity'))
+      script(src=manifest('js/core.js'))
