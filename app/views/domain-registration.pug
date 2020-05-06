@@ -1,6 +1,8 @@
 
 extends layout
 
+include _onboard
+
 block body
   .container.py-3
     .row
@@ -15,3 +17,10 @@ block body
                 input#input-domain(name='domain', autocomplete="off", placeholder="example.com", autocorrect="off", spellcheck="false", autocapitalize="off", type="text").form-control.form-control-lg
                 label(for="input-domain")= t('Domain name')
               button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+  +onboard(
+    t('Did you finish registering?'),
+    t('Simply enter your domain below to setup free email forwarding.'),
+    l('/faq?redirect_to_domain=true'),
+    false,
+    'border-top'
+  ).d-flex.flex-column.flex-grow-1.justify-content-end

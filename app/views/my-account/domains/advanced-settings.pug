@@ -1,0 +1,38 @@
+
+extends ../../layout
+
+block body
+  .container-fluid.pt-3
+    .row
+      .col
+        include ../../_breadcrumbs
+    .row
+      .col-6
+        form(action=ctx.path, method='POST').ajax-form.confirm-prompt.card
+          input(type='hidden', name='_method', value='PUT')
+          input(type="hidden", name="_csrf", value=ctx.csrf)
+          h4.card-header= t('Custom SMTP Port Forwarding')
+          .card-body
+            .form-group.floating-label
+              input#input-port(type='port', required, name='port', value=domain.smtp_port, placeholder=' ', aria-describedby='help-port').form-control
+              label(for='input-port')= t('Port number (SMTP)')
+            small#help-port.form-text.text-muted= t('Do not modify this unless you know what you are doing.  This will forward all emails to the specific port for all aliases and their recipients.  For example, if you are forwarding to info@example.com, and input port number 1337 here, then our server will forward email to example.com on port 1337 (as opposed to the standard SMTP port of 25).')
+          .card-footer.text-right
+            button(type='reset').btn.btn-secondary= t('Reset')
+            button(type='submit').btn.btn-primary= t('Save')
+      .col-6
+        .card
+          h4.card-header= t('Maximum Recipients Per Alias')
+          .card-body
+            .card-text
+              strong= t('Current Value:')
+              = ' '
+              = 0
+          .card-footer.text-right
+            a(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help').btn.btn-dark= t('Contact us to increase')
+    .row.text-center.my-5
+      .col
+        a(href=l(domain.group === 'admin' ? `/my-account/domains/${domain.id}` : '/my-account/domains')).btn.btn-outline-secondary
+          i.fa.fa-angle-double-left
+          = ' '
+          = domain.group === 'admin' ? t('Back to Domain') : t('Back to Domains')

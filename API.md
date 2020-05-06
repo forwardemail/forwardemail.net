@@ -4,7 +4,7 @@
 ## Table of Contents
 
 * [On-boarding](#on-boarding)
-* [API](#api)
+* [API](#api-1)
 * [Contributors](#contributors)
 * [License](#license)
 

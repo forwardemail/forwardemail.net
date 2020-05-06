@@ -24,6 +24,11 @@ if breadcrumbs.length > 1
                 i.fa.fa-fw.fa-users
                 = ' '
                 = t('Aliases')
+            li.list-inline-item
+              a(href=l(`/my-account/domains/${domain.id}/advanced-settings`)).btn.btn-dark
+                i.fa.fa-fw.fa-tools
+                = ' '
+                = t('Advanced Settings')
             //-.
               if domain.group === 'admin'
                 li.list-inline-item

@@ -14,8 +14,8 @@ const Users = require('../../models/user');
 const passport = require('../../../helpers/passport');
 const config = require('../../../config');
 
-const sanitize = str =>
-  sanitizeHtml(str, {
+const sanitize = string =>
+  sanitizeHtml(string, {
     allowedTags: [],
     allowedAttributes: []
   });

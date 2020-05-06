@@ -10,6 +10,7 @@ const auth = require('./auth');
 const help = require('./help');
 const myAccount = require('./my-account');
 const faq = require('./faq');
+const onboard = require('./onboard');
 const otp = require('./otp');
 
 function breadcrumbs(ctx, next) {
@@ -41,5 +42,6 @@ module.exports = {
   help,
   myAccount,
   faq,
+  onboard,
   otp
 };

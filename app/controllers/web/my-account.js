@@ -1,11 +1,15 @@
+const path = require('path');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
+const pug = require('pug');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
-const { isEmail, isFQDN, isIP } = require('validator');
+const { isEmail, isFQDN, isIP, isPort } = require('validator');
+const { parse } = require('node-html-parser');
 
 const config = require('../../../config');
 const { Users, Domains, Aliases } = require('../../models');
@@ -255,8 +259,12 @@ async function retrieveDomain(ctx, next) {
     `/my-account/domains/${ctx.state.domain.id}/aliases`
   )
     ctx.state.breadcrumbs.push('aliases');
-
-  if (
+  else if (
+    ctx.pathWithoutLocale ===
+    `/my-account/domains/${ctx.state.domain.id}/advanced-settings`
+  )
+    ctx.state.breadcrumbs.push('advanced-settings');
+  else if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.id}/aliases/new`
   ) {
@@ -268,13 +276,28 @@ async function retrieveDomain(ctx, next) {
     ctx.state.breadcrumbs.push({
       name: ctx.state.t('Add Alias')
     });
-  }
-
-  if (
+  } else if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.id}/billing`
   )
     ctx.state.breadcrumbs.push('billing');
+
+  // dynamically load the DNS Managment by Registrar table from FAQ
+  try {
+    const html = pug.renderFile(
+      path.join(config.views.root, 'faq', 'index.pug'),
+      ctx.state
+    );
+
+    // expose it to the view
+    const root = parse(html);
+    ctx.state.modalFAQTable = root.querySelector(
+      '#table-dns-management-by-registrar'
+    ).outerHTML;
+  } catch (err) {
+    ctx.logger.error(err);
+  }
+
   return next();
 }
 
@@ -610,16 +633,25 @@ function sortedDomains(ctx, next) {
 
 function ensureUpgradedPlan(ctx, next) {
   if (ctx.state.domain.plan !== 'free') return next();
-  ctx.flash('custom', {
+  const swal = {
     title: ctx.translate('UPGRADE_PLAN'),
-    text: ctx.translate('PLAN_UPGRADE_REQUIRED'),
+    html: ctx.translate('PLAN_UPGRADE_REQUIRED'),
     type: 'warning'
-  });
-  const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.id}/billing?plan=enhanced_protection`
-  );
-  if (ctx.accepts('html')) ctx.redirect(redirectTo);
-  else ctx.body = { redirectTo };
+  };
+  if (ctx.method === 'GET' || ctx.accepts('html')) {
+    ctx.flash('custom', swal);
+    /*
+    const redirectTo = ctx.state.l(
+      `/my-account/domains/${ctx.state.domain.id}/billing?plan=enhanced_protection`
+    );
+    */
+    const redirectTo = ctx.state.l('/my-account/domains');
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
+  }
+
+  ctx.body = { swal };
 }
 
 async function retrieveBilling(ctx) {
@@ -631,11 +663,14 @@ async function retrieveBilling(ctx) {
   const domain = await Domains.findById(ctx.state.domain._id);
   domain.plan = ctx.query.plan;
   try {
+    domain.doNotCheckVerificationResults = true;
     await domain.save();
     ctx.flash('success', ctx.translate(`${domain.plan.toUpperCase()}_PLAN`));
     if (domain.plan !== 'free')
       ctx.flash('warning', ctx.translate('BETA_PROGRAM'));
-    const redirectTo = ctx.state.l('/my-account/domains/');
+    // TODO: for some reason the link uncommented doesn't work
+    // specifically the above flash messages do not render when it's uncommented
+    const redirectTo = ctx.state.l(`/my-account/domains`); // /${domain.id}/`);
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
   } catch (err) {
@@ -656,21 +691,36 @@ function createAliasForm(ctx, next) {
   return next();
 }
 
+// eslint-disable-next-line complexity
 async function importAliases(ctx) {
   if (ctx.state.domain.is_global)
     return ctx.throw(Boom.badRequest(ctx.translate('IS_NOT_ADMIN')));
 
-  let {
-    forwardingAddresses,
-    globalForwardingAddresses,
-    ignoredAddresses,
-    errors
-  } = await Domains.getTxtAddresses(ctx.state.domain.name);
+  let forwardingAddresses;
+  let globalForwardingAddresses;
+  let ignoredAddresses;
+  let errors;
+  try {
+    ({
+      forwardingAddresses,
+      globalForwardingAddresses,
+      ignoredAddresses,
+      errors
+    } = await Domains.getTxtAddresses(ctx.state.domain.name));
+  } catch (err) {
+    ctx.logger.error(err);
+    if (err.code === 'ENOTFOUND')
+      throw Boom.badRequest(ctx.translate('ENOTFOUND'));
+    if (err.code === 'ENODATA')
+      throw Boom.badRequest(ctx.translate('MISSING_DNS_TXT'));
+    throw err;
+  }
 
   //
   // NOTE: eventually rewrite this, it was a quick hack
   //
   const aliases = [];
+  const catchAll = [];
 
   for (const element of ignoredAddresses) {
     const match = aliases.find(alias => alias.name === element.name);
@@ -715,44 +765,84 @@ async function importAliases(ctx) {
       });
   }
 
-  for (const element of globalForwardingAddresses.entries()) {
-    const match = aliases.find(alias => alias.name === '*');
-    const existing = ctx.state.domain.aliases.find(alias => alias.name === '*');
-    if (existing)
-      errors.push(
-        new Error(
-          `Could not import catch-all record's recipient of "${element}" since the catch-all already exists as an alias.`
-        )
+  for (const element of globalForwardingAddresses) {
+    // if it was a fqdn, ip, or email address then add global alias
+    // otherwise throw an error that it was an invalid global
+    if (isFQDN(element) || isIP(element) || isEmail(element)) {
+      const match = aliases.find(alias => alias.name === '*');
+      const existing = ctx.state.domain.aliases.find(
+        alias => alias.name === '*'
       );
-    else if (match) match.recipients.push(element);
-    else
-      aliases.push({
+      // try to add to existing catch-all record if it wasn't already there
+      if (existing) {
+        if (existing.recipients.includes(element))
+          errors.push(
+            new Error(
+              `Could not import catch-all record's recipient of "${element}" since the catch-all already includes it as a recipient.`
+            )
+          );
+        else catchAll.push(element);
+      } else if (match) match.recipients.push(element);
+      else
+        aliases.push({
+          user: ctx.state.user._id,
+          domain: ctx.state.domain._id,
+          name: '*',
+          recipients: [element]
+        });
+    } else {
+      ctx.logger.error(
+        new Error(`Invalid global forwarding address of ${element}`),
+        { domain: ctx.state.domain }
+      );
+    }
+  }
+
+  const messages = [];
+
+  if (aliases.length > 0)
+    try {
+      const arr = await Aliases.create(aliases);
+      messages.push(`Successfully imported (${arr.length}) aliases.`);
+    } catch (err) {
+      messages.push('An error occurred while importing aliases.');
+      ctx.logger.error(err);
+      errors.push(err);
+    }
+  else messages.push('No aliases were available to import.');
+
+  if (catchAll.length > 0)
+    try {
+      const alias = await Aliases.findOne({
         user: ctx.state.user._id,
         domain: ctx.state.domain._id,
-        name: '*',
-        recipients: [element]
+        name: '*'
       });
-  }
+      for (const recipient of catchAll) {
+        alias.recipients.push(recipient);
+      }
 
-  let newAliases = [];
-  try {
-    if (aliases.length > 0) newAliases = await Aliases.create(aliases);
-  } catch (err) {
-    ctx.logger.error(err);
-    errors.push(err);
-  }
-
-  let message =
-    newAliases.length > 0
-      ? `A total of (${newAliases.length}) aliases were imported successfully.`
-      : 'No aliases were available for import.';
+      await alias.save();
+      messages.push(
+        `Successfully imported (${catchAll.length}) catch-all recipients.`
+      );
+    } catch (err) {
+      messages.push('An error occurred while importing catch-all recipients.');
+      ctx.logger.error(err);
+      errors.push(err);
+    }
+  else messages.push('No catch-all recipients were available to import.');
 
   errors = _.uniqBy(errors, 'message');
 
-  if (errors.length > 0)
-    message = `<p>${message}</p><p class="font-weight-bold text-danger">The following errors occurred:</p><ul class="mb-0 text-left"><li>${_.uniq(
-      errors.map(err => err.message)
-    ).join('</li><li>')}</li></ul>`;
+  const message =
+    errors.length > 0
+      ? `<p>${messages.join(
+          ' '
+        )}</p><p class="font-weight-bold text-danger">The following errors occurred:</p><ul class="mb-0 text-left"><li>${errors
+          .map(err => err.message)
+          .join('</li><li>')}</li></ul>`
+      : messages.join(' ');
 
   const redirectTo = ctx.state.l(
     `/my-account/domains/${ctx.state.domain.id}/aliases`
@@ -1012,6 +1102,29 @@ async function recoveryKeys(ctx) {
     .replace(/"/g, '');
 }
 
+async function updateAdvancedSettings(ctx) {
+  const domain = await Domains.findById(ctx.state.domain._id);
+
+  if (isSANB(ctx.request.body.port))
+    if (isPort(ctx.request.body.port)) domain.smtp_port = ctx.request.body.port;
+    else return ctx.throw(Boom.badRequest(ctx.translate('INVALID_PORT')));
+
+  await domain.save();
+
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: ctx.translate('REQUEST_OK'),
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
+
+  if (ctx.accepts('html')) ctx.redirect('back');
+  else ctx.body = { reloadPage: true };
+}
+
 module.exports = {
   update,
   resetAPIToken,
@@ -1040,5 +1153,6 @@ module.exports = {
   updateMember,
   removeMember,
   ensureNotBanned,
-  recoveryKeys
+  recoveryKeys,
+  updateAdvancedSettings
 };

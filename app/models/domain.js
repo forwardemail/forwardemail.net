@@ -8,7 +8,7 @@ const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
-const { isFQDN, isIP, isEmail } = require('validator');
+const { isFQDN, isIP, isEmail, isPort } = require('validator');
 
 const logger = require('../../helpers/logger');
 const config = require('../../config');
@@ -29,6 +29,17 @@ const Domain = new mongoose.Schema({
     type: String,
     enum: ['free', 'enhanced_protection', 'team'],
     default: 'free'
+  },
+  max_recipients_per_alias: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 100
+  },
+  smtp_port: {
+    type: String,
+    default: '25',
+    validator: value => isPort(value)
   },
   members: [
     {
@@ -53,7 +64,7 @@ const Domain = new mongoose.Schema({
         index: true,
         trim: true,
         lowercase: true,
-        validate: val => isEmail(val)
+        validate: value => isEmail(value)
       },
       group: {
         type: String,
@@ -94,7 +105,8 @@ const Domain = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: val => isSANB(val) && val.replace(/[^0-9a-z]/gi, '') === val,
+      validator: value =>
+        isSANB(value) && value.replace(/[^\da-z]/gi, '') === value,
       message:
         'Verification record must only use characters A-Z and numbers 0-9.'
     }
@@ -112,6 +124,8 @@ Domain.pre('validate', function(next) {
 Domain.pre('validate', async function(next) {
   try {
     const domain = this;
+    // virtual that can be populated
+    if (domain.doNotCheckVerificationResults) return next();
     if (
       !Array.isArray(domain.members) ||
       domain.members.length === 0 ||
@@ -136,14 +150,6 @@ Domain.plugin(mongooseCommonPlugin, {
 
 // eslint-disable-next-line complexity
 async function getVerificationResults(domain) {
-  const ENOTFOUND = new Error(
-    `Domain is not a registered domain name. <a href="/domain-registration">Click here to register it now</a>.`
-  );
-
-  const MISSING_DNS_TXT = new Error(
-    'Domain is missing required DNS TXT records.'
-  );
-
   const MISSING_DNS_MX = new Error(`
     <p class="mb-0">Domain is missing required DNS MX records of:</p>
     <ul class="markdown-body ml-0 mr-0 mb-3">
@@ -219,14 +225,15 @@ async function getVerificationResults(domain) {
       globalForwardingAddresses.length === 0 &&
       ignoredAddresses.length === 0
     )
-      errors.push(MISSING_DNS_TXT);
+      errors.push(new Error(config.i18n.phrases.MISSING_DNS_TXT));
     else if (errors.length === 0) txt = true;
   } catch (err) {
     logger.error(err);
-    if (err.code === 'ENOTFOUND') errors.push(ENOTFOUND);
+    if (err.code === 'ENOTFOUND')
+      errors.push(new Error(config.i18n.phrases.ENOTFOUND));
     else if (err.code === 'ENODATA') {
       if (isPaidPlan) errors.push(MISSING_VERIFICATION_RECORD);
-      else errors.push(MISSING_DNS_TXT);
+      else errors.push(new Error(config.i18n.phrases.MISSING_DNS_TXT));
     } else errors.push(err);
   }
 
@@ -246,7 +253,8 @@ async function getVerificationResults(domain) {
     logger.error(err);
     const regex = new RegExp(testEmail, 'g');
     err.message = err.message.replace(regex, domain.name);
-    if (err.code === 'ENOTFOUND') errors.push(ENOTFOUND);
+    if (err.code === 'ENOTFOUND')
+      errors.push(new Error(config.i18n.phrases.ENOTFOUND));
     else if (err.code === 'ENODATA') errors.push(MISSING_DNS_MX);
     else errors.push(err);
   }
@@ -272,12 +280,17 @@ async function verifyRecords(_id) {
 
   // TODO: these errors need translated better
   // (e.g. we could use `koa-better-error-handler`'s `no_translate=true`
-  if (errors.length > 0)
-    throw new Error(
-      `<ul class="text-left mb-0"><li class="mb-3">${errors
-        .map(err => err.message)
-        .join('</li><li class="mb-3">')}</li></ul>`
-    );
+  if (errors.length === 0) return;
+
+  if (errors.length === 1) throw errors[0];
+
+  throw new Error(
+    `<ul class="text-left mb-0">${errors
+      .map(
+        err => `<li class="mb-3">${err && err.message ? err.message : err}</li>`
+      )
+      .join('')}</ul>`
+  );
 }
 
 Domain.statics.verifyRecords = verifyRecords;
@@ -349,18 +362,13 @@ async function getTxtAddresses(domainName, allowEmpty = false) {
       if (addr[0].indexOf('!') === 0)
         ignoredAddresses.push({ name: addr[0].slice(1), recipient: addr[1] });
       else forwardingAddresses.push({ name: addr[0], recipient: addr[1] });
-    } else if (isFQDN(addresses[i])) {
-      // TODO: allow domain alias forwarding
+    } else if (isFQDN(addresses[i]) || isIP(addresses[i])) {
+      // allow domain alias forwarding
       // (e.. the record is just "b.com" if it's not a valid email)
-      // globalForwardingAddresses.push(addresses[i]);
-      errors.push(
-        new Error(
-          `Catch-all address that forwards to ${addresses[i]} was ignored (coming soon; please email support@forwardemail.net if you critically need this feature).`
-        )
-      );
+      globalForwardingAddresses.push(addresses[i]);
     } else {
       const domain = app.parseDomain(addresses[i], false);
-      if (isFQDN(domain) && isEmail(addresses[i]))
+      if ((isFQDN(domain) || isIP(domain)) && isEmail(addresses[i]))
         globalForwardingAddresses.push(addresses[i]);
     }
   }

@@ -14,10 +14,10 @@ const toEmoji = require('gemoji/name-to-emoji');
 const validator = require('validator');
 const { boolean } = require('boolean');
 
-const json = (str, replacer = null, space = 2) =>
-  JSON.stringify(str, replacer, space);
+const json = (string, replacer = null, space = 2) =>
+  JSON.stringify(string, replacer, space);
 
-const emoji = str => (toEmoji[str] ? toEmoji[str] : '');
+const emoji = string => (toEmoji[string] ? toEmoji[string] : '');
 
 module.exports = {
   hljs,

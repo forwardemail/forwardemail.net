@@ -1,22 +1,18 @@
 
-extends ../layout
+extends ../../layout
+
+include ../../_onboard
 
 block body
-  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
-    .row
-      .col-md-12
-        p.lead.mb-0.text-white.font-weight-bold!= t('Our service was founded in 2017 by <a class="text-success text-decoration-none" href="https://github.com/niftylettuce" target="_blank" rel="noopener">@niftylettuce</a> and is trusted and relied upon by thousands.')
+  - const hash = 'can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25';
+  +onboard(
+    t('Did your ISP block port 25?'),
+    t('Skip ahead to the instructions to forward emails to a custom SMTP port.'),
+    l(`/faq?hash=${hash}`),
+    l(`/faq#${hash}`),
+    'border-bottom'
+  )
   .container.py-5
-    .text-center.mb-5
-      .h2.display-3.mb-1= emoji('book')
-      h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t('Our Story')
-      small.text-black-50.text-uppercase= t('Why did we create this?')
-    p.lead.mb-0.font-weight-bold.text-center
-      mark
-        strong TLDR;
-        = ' '
-        != t('No email-forwarding service existed that was free, secure, and open-source &ndash; so we built one.')
-  .container.pt-0.pb-5
     .row
       .col
         case locale

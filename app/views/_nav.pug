@@ -3,7 +3,7 @@
 
 if !isHelp
   #modal-help.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-help-title', aria-hidden='true')
-    .modal-dialog(role='document')
+    .modal-dialog.modal-lg(role='document')
       .modal-content
         .modal-header.text-center.d-block
           h4.modal-title.d-inline-block.ml-4#modal-help-title= t('Ask a question')
@@ -18,7 +18,7 @@ if !isHelp
               input#input-email.form-control(required, autocomplete="email", name="email", type="email", value=user ? user.email : '', placeholder='name@example.com')
               label(for="input-email")= t('Email address')
             .form-group.floating-label
-              textarea#input-message.form-control(rows="3", maxlength=config.supportRequestMaxLength, name="message", placeholder=t('Write your message'))
+              textarea#input-message.form-control(rows="8", required, maxlength=config.supportRequestMaxLength, name="message", placeholder=t('Write your message'))
               label(for="input-message")= t('Message')
             button.btn.btn-block.btn-success.btn-lg(type="submit", data-toggle="tooltip", data-placement="bottom", title=t("We'll be in contact with you!"))= t('Send message')
 

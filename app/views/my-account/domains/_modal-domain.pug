@@ -1,0 +1,21 @@
+#modal-domain.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-domain-title', aria-hidden='true')
+  .modal-dialog(role='document')
+    .modal-content
+      .modal-header.text-center.d-block
+        h4.modal-title.d-inline-block.ml-4#modal-domain-title= t('Add Custom Domain Name')
+        button(type='button', data-dismiss='modal', aria-label='Close').close
+          span(aria-hidden='true') &times;
+      .modal-body
+        form.ajax-form(action=l('/my-account/domains/new'), method="POST")
+          input(type="hidden", name="_csrf", value=ctx.csrf)
+          .form-group.floating-label
+            input#input-domain(required, name='domain', autocomplete="off", placeholder="example.com", autocorrect="off", spellcheck="false", autocapitalize="off", type="text").form-control.form-control-lg
+            label(for="input-domain")= t('Domain name')
+          if user.group === 'admin'
+            .form-group.form-check
+              input#input-is-global(type='checkbox', name='is_global', value='true').form-check-input
+              label(for='input-is-global').form-check-label= t('Global domain')
+          button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+      .modal-footer.justify-content-center
+        a(href=l('/domain-registration'), target='_blank', rel='noopener')
+          = t('Need to register a domain?')

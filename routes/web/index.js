@@ -26,24 +26,57 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));
   })
-  .get('/about', render('about'))
-  .get('/free-disposable-addresses', render('free-disposable-addresses'))
-  .get('/domain-registration', render('domain-registration'))
-  .get('/reserved-email-addresses', render('reserved-email-addresses'))
   .get(
     '/features',
     web.myAccount.retrieveDomains,
     web.myAccount.sortedDomains,
     render('features')
   )
-  .get('/faq', web.myAccount.retrieveDomains, web.faq)
-  .post('/faq', web.myAccount.retrieveDomains, web.faq)
+  .get('/faq', web.myAccount.retrieveDomains, web.onboard, web.faq)
+  .post(
+    '/faq',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    web.auth.parseReturnOrRedirectTo,
+    web.faq
+  )
+  .get('/help', render('help'))
+  .get('/about', render('about'))
+  .get(
+    '/domain-registration',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    render('domain-registration')
+  )
+  .get(
+    '/free-disposable-addresses',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    render('free-disposable-addresses')
+  )
+  .get(
+    '/reserved-email-addresses',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    render('reserved-email-addresses')
+  )
+  .get(
+    '/list-of-ports-blocked-by-isps',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    render('list-of-ports-blocked-by-isps')
+  )
+  .get(
+    '/guides/port-25-blocked-by-isp-workaround',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    render('guides/port-25-blocked-by-isp-workaround')
+  )
   .get('/donate', render('donate'))
-  .get('/404', render('404'))
-  .get('/500', render('500'))
   .get('/terms', render('terms'))
   .get('/privacy', render('privacy'))
-  .get('/help', render('help'))
+  .get('/404', render('404'))
+  .get('/500', render('500'))
   .post('/help', web.help)
   .get('/forgot-password', render('forgot-password'))
   .post('/forgot-password', web.auth.forgotPassword)
