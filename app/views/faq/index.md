@@ -158,6 +158,10 @@
       <td>Sign in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
     </tr>
     <tr>
+      <td><a rel="nofollow" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
+      <td>Using <code>now</code> CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+    </tr>
+    <tr>
       <td><a rel="nofollow" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
     </tr>
@@ -1011,7 +1015,7 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
 
-## 
+##
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
