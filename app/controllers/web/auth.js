@@ -442,10 +442,6 @@ async function verify(ctx) {
 
   ctx.state.redirectTo = redirectTo;
 
-  // set has verified to true
-  ctx.state.user[config.userFields.hasVerifiedEmail] = true;
-  await ctx.state.user.save();
-
   if (ctx.state.user[config.userFields.hasVerifiedEmail]) {
     const message = ctx.translate('EMAIL_ALREADY_VERIFIED');
     if (ctx.accepts('html')) {
