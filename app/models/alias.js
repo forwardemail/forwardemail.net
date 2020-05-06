@@ -17,7 +17,11 @@ const config = require('../../config');
 const Domains = require('./domain');
 const Users = require('./user');
 
-const app = new ForwardEmail({ logger, recordPrefix: config.recordPrefix });
+const app = new ForwardEmail({
+  logger,
+  recordPrefix: config.recordPrefix,
+  srs: { secret: 'null' }
+});
 
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
 // eslint-disable-next-line no-control-regex

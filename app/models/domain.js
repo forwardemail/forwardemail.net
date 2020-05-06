@@ -13,7 +13,11 @@ const { isFQDN, isIP, isEmail, isPort } = require('validator');
 const logger = require('../../helpers/logger');
 const config = require('../../config');
 
-const app = new ForwardEmail({ logger, recordPrefix: config.recordPrefix });
+const app = new ForwardEmail({
+  logger,
+  recordPrefix: config.recordPrefix,
+  srs: { secret: 'null' }
+});
 
 dns.setServers(app.config.dns);
 

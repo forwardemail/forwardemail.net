@@ -12,7 +12,11 @@ const env = require('../../../../config/env');
 const config = require('../../../../config');
 const Domains = require('../../../models/domain');
 
-const app = new ForwardEmail({ logger, recordPrefix: config.recordPrefix });
+const app = new ForwardEmail({
+  logger,
+  recordPrefix: config.recordPrefix,
+  srs: { secret: 'null' }
+});
 
 dns.setServers(app.config.dns);
 
