@@ -120,6 +120,7 @@ function img() {
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
+    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
@@ -155,6 +156,7 @@ function css() {
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
+    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
