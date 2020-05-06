@@ -55,7 +55,18 @@ router.delete(
   web.myAccount.ensureDomainAdmin,
   web.myAccount.removeMember
 );
-
+router.get(
+  '/domains/:domain_id/advanced-settings',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  render('my-account/domains/advanced-settings')
+);
+router.put(
+  '/domains/:domain_id/advanced-settings',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
+  web.myAccount.updateAdvancedSettings
+);
 router.get(
   '/domains/:domain_id/aliases',
   web.myAccount.retrieveDomain,

@@ -33,6 +33,16 @@ module.exports = async job => {
           plan: {
             $exists: false
           }
+        },
+        {
+          smtp_port: {
+            $exists: false
+          }
+        },
+        {
+          max_recipients_per_alias: {
+            $exists: false
+          }
         }
       ]
     });

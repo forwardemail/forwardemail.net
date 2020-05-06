@@ -15,6 +15,7 @@ module.exports = {
   INVALID_PASSWORD: 'Password was invalid.',
   INVALID_PASSWORD_CONFIRM: 'Password confirmation did not match new password.',
   INVALID_PASSWORD_STRENGTH: 'Password strength was not strong enough.',
+  INVALID_PORT: 'Invalid port number.',
   INVALID_PROVIDER: 'We do not support this authentication provider.',
   INVALID_RECOVERY_PASSCODE: 'Invalid recovery passcode.',
   INVALID_RESET_PASSWORD: 'Reset token and email were not valid together.',
@@ -38,12 +39,13 @@ module.exports = {
   IS_NOT_ADMIN: 'You do not belong to the administrative user group.',
   TWO_FACTOR_REQUIRED:
     'Please log in with two-factor authentication to view the page you requested.',
-  LOGIN_REQUIRED: 'Please log in to view the page you requested.',
+  LOGIN_REQUIRED: 'Please log in or sign up to view the page you requested.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
   NO_DOMAINS_EXIST: 'Add a domain name to your account to continue.',
   NO_ALIASES_EXIST: 'Add a new alias to continue.',
   INVALID_DOMAIN: 'Domain name was invalid (must be an IP or FQDN).',
+  INVALID_FQDN: 'Domain name was invalid (must be a FQDN).',
   ADD_ALIAS: 'Add Alias',
   DOMAIN_IS_VERIFIED: "Domain's DNS records have been verified.",
   DOMAIN_DOES_NOT_EXIST: 'Domain does not exist on your account.',
@@ -111,5 +113,9 @@ module.exports = {
   ENHANCED_PROTECTION_PLAN:
     'You have successfully upgraded to the Enhanced Protection Plan.',
   TEAM_PLAN: 'You have successfully upgraded to the Team Plan.',
-  ACCOUNT_BANNED: 'Your account has been banned.'
+  ACCOUNT_BANNED: 'Your account has been banned.',
+  ENOTFOUND: `Domain is not a registered domain name. <a href="/domain-registration">Click here to register it now</a>.`,
+  MISSING_DNS_TXT: 'Domain is missing required DNS TXT records.',
+  MULTIPLE_VERIFICATION_RECORDS: `Domain has multiple verification records.  Please ensure there is only one verification record that exists.`,
+  MULTIPLE_PORT_RECORDS: `Domain has multiple port records.  Please ensure there is only one port record that exists.`
 };

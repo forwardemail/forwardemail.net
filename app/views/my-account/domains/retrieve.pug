@@ -2,6 +2,16 @@
 extends ../../layout
 
 block body
+  if modalFAQTable
+    #modal-faq-table.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-faq-table-title', aria-hidden='true')
+      .modal-dialog.modal-lg(role='document')
+        .modal-content
+          .modal-header.text-center.d-block
+            h4.modal-title.d-inline-block.ml-4#modal-faq-table-title= t('DNS Management by Registar')
+            button(type='button', data-dismiss='modal', aria-label='Close').close
+              span(aria-hidden='true') &times;
+          .modal-body!= modalFAQTable
+
   if domain.group === 'admin' && domain.plan === 'team'
     #modal-invite.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-invite-title', aria-hidden='true')
       .modal-dialog(role='document')
@@ -69,7 +79,7 @@ block body
             .card.mt-5
               h5.card-header= t('Enhanced Protection Verification Record')
               .card-body
-                p!= t('Please ensure that a <strong>TXT record</strong> exists for <strong>%s</strong> with the following value:', domain.name)
+                p!= t('Set this <strong>TXT record</strong> as a new DNS entry on your domain:')
                 .input-group
                   input(type='text', readonly, value=`${config.recordPrefix}-site-verification=${domain.verification_record}`).form-control#verification-record
                   .input-group-append
@@ -77,6 +87,9 @@ block body
                       i.fa.fa-clipboard
                       = ' '
                       = t('Copy')
+                if modalFAQTable
+                  .text-center.mt-3
+                    button(type='button', data-toggle='modal', data-target='#modal-faq-table').btn.btn-link.btn-sm Need help navigating to your DNS management page?
   .container-fluid.py-5
     .position-relative
       .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
@@ -99,7 +112,7 @@ block body
         .col-12.col-lg-6.d-flex
           .p-5.m-2.mb-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t('3. Purge Cache and Send a Test Email to Yourself')
-            p.lead.mb-3!= t('Once you have followed the previous step(s), you will need to "purge" the DNS cache using the "Purge Cache" tool by Cloudflare.  You can optionally purge the cache using Google as well if you are using Gmail.  Make sure to purge both the "TXT" and the "MX" records for your domain name.  Wait a few minutes (or sometimes it might take an hour or two), and then click "Verify Records" above and try sending a test email to yourself.')
+            p.lead.mb-3!= t('Once you have followed the previous step(s), you will need to "purge" the DNS cache using the "Purge Cache" tool by Cloudflare.  You can optionally purge the cache using Google as well if you are using Gmail.  Make sure to purge both the "TXT" and the "MX" records on your domain name\'s DNS records.  Wait a few minutes (or sometimes it might take an hour or two), and then click "Verify Records" above and try sending a test email to yourself.')
             ul.list-inline.mt-auto
               li.list-inline-item
                 a(href='https://1.1.1.1/purge-cache/', target='_blank', rel='noopener').btn.btn-lg.btn-outline-dark

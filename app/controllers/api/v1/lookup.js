@@ -23,7 +23,7 @@ async function lookup(ctx) {
       )
     );
 
-  if (!env.LOOKUP_SECRETS.includes(credentials.name))
+  if (!env.API_SECRETS.includes(credentials.name))
     return ctx.throw(
       Boom.unauthorized(
         ctx.translate
@@ -36,7 +36,8 @@ async function lookup(ctx) {
     return ctx.throw(Boom.badRequest(ctx.translate('DOMAIN_DOES_NOT_EXIST')));
 
   const domain = await Domains.findOne({
-    verification_record: ctx.query.verification_record
+    verification_record: ctx.query.verification_record,
+    plan: { $ne: 'free' }
   })
     .lean()
     .exec();

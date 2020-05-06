@@ -14,6 +14,7 @@ temp.md
 *.lcov
 .base64-cache
 .vscode
+package-lock.json
 *-ar.md
 *-AR.md
 *-cs.md

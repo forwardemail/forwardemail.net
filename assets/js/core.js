@@ -228,10 +228,10 @@ $(() => {
     if (!target) return;
     const $target = $(target);
     if ($target.lengh === 0) return;
-    const str = randomstring({
+    const string = randomstring({
       characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
       length: 10
     });
-    $target.val(str);
+    $target.val(string);
   });
 });

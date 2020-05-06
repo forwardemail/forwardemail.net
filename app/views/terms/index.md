@@ -7,8 +7,9 @@ By accessing this web site, you are agreeing to be bound by these web site Terms
 
 * [Disclaimer](#disclaimer)
 * [Limitations](#limitations)
+* [Refunds](#refunds)
 * [Service Level Agreement ("SLA")](#service-level-agreement-sla)
-  * [Terms](#terms)
+  * [Terms](#terms-1)
   * [Agreement](#agreement)
   * [Credits](#credits)
   * [Eligibility](#eligibility)
@@ -27,6 +28,15 @@ The materials on ForwardEmail's web site are provided "as is". ForwardEmail make
 ## Limitations
 
 In no event shall ForwardEmail or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption,) arising out of the use or inability to use the materials on ForwardEmail's Internet site, even if ForwardEmail or a ForwardEmail authorized representative has been notified orally or in writing of the possibility of such damage. Because some jurisdictions do not allow limitations on implied warranties, or limitations of liability for consequential or incidental damages, these limitations may not apply to you.
+
+
+## Refunds
+
+We offer a 30-day money back guarantee on all paid plans if you are not satisfied with our service.
+
+We do not ask any questions and simply process the refund within 5-7 business days.
+
+To request a refund, please send an email from the email address verified on your account to: [refunds@forwardemail.net](mailto:refunds@forwardemail.net)
 
 
 ## Service Level Agreement ("SLA")

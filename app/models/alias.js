@@ -1,3 +1,4 @@
+const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -11,13 +12,16 @@ const { isIP, isFQDN, isEmail } = require('validator');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
+const logger = require('../../helpers/logger');
 const config = require('../../config');
 const Domains = require('./domain');
 const Users = require('./user');
 
+const app = new ForwardEmail({ logger, recordPrefix: config.recordPrefix });
+
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
 // eslint-disable-next-line no-control-regex
-const quotedEmailUserUtf8 = /^([\s\u0001-\u0008\u000B\u000C\u000E-\u001F\u007F\u0021\u0023-\u005B\u005D-\u007E\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B\u000C\u000D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i;
+const quotedEmailUserUtf8 = /^([\s\u0001-\u0008\u000B\u000C\u000E-\u001F\u007F!\u0023-\u005B\u005D-\u007E\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B\u000C\u000D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i;
 
 const Alias = new mongoose.Schema({
   user: {
@@ -39,8 +43,10 @@ const Alias = new mongoose.Schema({
     lowercase: true,
     trim: true,
     validate: {
-      validator: val =>
-        isSANB(val) && quotedEmailUserUtf8.test(val) && val.indexOf('!') !== 0
+      validator: value =>
+        isSANB(value) &&
+        quotedEmailUserUtf8.test(value) &&
+        value.indexOf('!') !== 0
     }
   },
   description: {
@@ -68,7 +74,7 @@ const Alias = new mongoose.Schema({
       lowercase: true,
       // must be IP or FQDN or email
       validate: {
-        validator: val => isIP(val) || isFQDN(val) || isEmail(val),
+        validator: value => isIP(value) || isFQDN(value) || isEmail(value),
         message:
           'Recipient must be a valid email address, fully-qualified domain name ("FQDN"), or IP address'
       }
@@ -78,7 +84,9 @@ const Alias = new mongoose.Schema({
 
 Alias.pre('validate', function(next) {
   // make recipients unique by email address, FQDN, or IP
-  this.recipients = _.compact(_.uniq(this.recipients));
+  this.recipients = _.compact(
+    _.uniq(this.recipients.map(r => r.toLowerCase().trim()))
+  );
   // labels must be slugified and unique
   if (!_.isArray(this.labels)) this.labels = [];
   // description must be plain text
@@ -152,7 +160,7 @@ Alias.pre('save', async function(next) {
 
     // filter out domains and aliases without users
     aliases = aliases.filter(
-      alias => _.isObject(alias.user) && !alias.user.is_Banned
+      alias => _.isObject(alias.user) && !alias.user.is_banned
     );
     domain.members = domain.members.filter(
       member => _.isObject(member.user) && !member.user.is_banned
@@ -198,13 +206,16 @@ Alias.pre('save', async function(next) {
       // (e.g. they could use `"admin@"@example.com` without the `.replace`)
       // <https://github.com/forwardemail/reserved-email-addresses-list>
       //
-      const str = alias.name.replace(/[^0-9a-z]/g, '');
+      const string = alias.name.replace(/[^\da-z]/g, '');
 
-      let reservedMatch = reservedEmailAddressesList.find(addr => addr === str);
+      let reservedMatch = reservedEmailAddressesList.find(
+        addr => addr === string
+      );
 
       if (!reservedMatch)
         reservedMatch = reservedAdminList.find(
-          addr => addr === str || str.startsWith(addr) || str.endsWith(addr)
+          addr =>
+            addr === string || string.startsWith(addr) || string.endsWith(addr)
         );
 
       if (reservedMatch)
@@ -224,6 +235,19 @@ Alias.pre('save', async function(next) {
           );
       }
     }
+
+    // if alias has more than X recipients allowed on the domain
+    // if the value was unset or set to zero then use default
+    // (this is a nice clean way to ensure 1:1 sync with `forward-email`
+    const count =
+      !domain.max_recipients_per_alias || domain.max_recipients_per_alias === 0
+        ? app.config.maxForwardedAddresses
+        : domain.max_recipients_per_alias;
+
+    if (alias.recipients.length > count)
+      throw new Error(
+        `You have exceeded the maximum count of (${count}) recipients per alias.  Please <a href="/help">contact us</a> if you wish to have this limit increased.  We review requests on a unique basis.  Please provide us with information about your forwarding purposes if possible.`
+      );
 
     next();
   } catch (err) {

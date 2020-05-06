@@ -23,11 +23,11 @@ markdown.use(markdownItGitHubHeadings, {
 });
 
 module.exports = {
-  md: (str, options) => {
+  md: (string, options) => {
     if (!isSANB(options.locale))
-      return `<div class="markdown-body">${markdown.render(str)}</div>`;
+      return `<div class="markdown-body">${markdown.render(string)}</div>`;
     return `<div class="markdown-body">${i18n.api.t({
-      phrase: markdown.render(str),
+      phrase: markdown.render(string),
       locale: options.locale
     })}</div>`;
   }

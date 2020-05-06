@@ -51,6 +51,18 @@ module.exports = function(config) {
       `Free Disposable Addresses ${lad}`,
       'Try free and disposable email addresses with our short and memorable vanity domains, or you can use a custom domain name for free disposable addresses.'
     ],
+    '/list-of-ports-blocked-by-isps': [
+      `List of ports blocked by ISPs ${lad}`,
+      'We compiled a list of ports blocked by Internet Service Providers from every country around the world.'
+    ],
+    '/guides': [
+      `Guides ${lad}`,
+      'Follow our easy and simple guides and step by step instructions.'
+    ],
+    '/guides/port-25-blocked-by-isp-workaround': [
+      `Port 25 blocked by ISP workaround ${lad}`,
+      'Our service allows you to workaround port blocking set by your Internet Service Provider on port 25.  Simple follow our guide to workaround this issue in minutes.'
+    ],
     '/domain-registration': [
       `Register a domain name ${lad}`,
       'Buy a custom domain name for email forwarding'

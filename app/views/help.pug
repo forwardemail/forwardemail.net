@@ -16,7 +16,7 @@ block body
                 input#input-email.form-control(required, autocomplete="email", name="email", type="email", value=user ? user.email : '', placeholder='name@example.com')
                 label(for="input-email")= t('Email address')
               .form-group.floating-label
-                textarea#input-message.form-control(rows="3", required, maxlength=config.supportRequestMaxLength, name="message", placeholder=t('Write your message'))
+                textarea#input-message.form-control(rows="10", required, maxlength=config.supportRequestMaxLength, name="message", placeholder=t('Write your message'))
                 label(for="input-message")= t('Message')
             .card-footer
               button.btn.btn-block.btn-success.btn-lg(type="submit", data-toggle="tooltip", data-placement="bottom", title=t("We'll be in contact with you!"))= t('Send message')

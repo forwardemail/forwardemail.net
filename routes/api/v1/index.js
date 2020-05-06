@@ -10,6 +10,7 @@ const router = new Router({
 
 router.get('/test', api.v1.test);
 router.get('/lookup', api.v1.lookup);
+router.get('/port', api.v1.port);
 router.post('/log', api.v1.log.checkToken, api.v1.log.parseLog);
 router.post('/account', api.v1.users.create);
 router.get(

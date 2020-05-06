@@ -12,10 +12,10 @@ footer.mt-auto
           div(class=user ? 'col-12' : 'col-6')
             a.btn.btn-outline-light.text-uppercase.font-weight-bold(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Need help?')
   .bg-dark.text-white-50
-    .container.py-5.text-center.text-md-left
-      .d-flex.flex-column.flex-md-row
-        .flex-nowrap.order-3.order-md-0.d-flex.flex-column.flex-grow-1
-          hr.d-md-none
+    .container.py-5.text-center.text-lg-left
+      .d-flex.flex-column.flex-lg-row
+        .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1
+          hr.d-lg-none.w-100
           .dropdown.dropup
             a(href=ctx.url, role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")#navbar-dropdown-language-btn.btn.btn-outline-light.dropdown-toggle
               = `${titleize(t(currentLanguage))} ${ctx.locale !== 'en' && currentLanguage !== titleize(currentLanguage) ? `(${titleize(currentLanguage)})` : ''}`
@@ -23,37 +23,42 @@ footer.mt-auto
               each language in availableLanguages
                 if language.locale !== locale
                   li: a.dropdown-item(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== 'en' ? `(${titleize(language.name)})` : ''}`
-          hr.d-md-none
+          hr.d-lg-none.w-100
           .mt-auto
-            a(href='#'): img(src=manifest('img/logo-square.svg'), width=50, height=50, alt='').d-inline-block.mr-2
-            .d-inline-block.text-muted!= '&copy; <a class="text-white-50" href="https://niftylettuce.com" target="_blank" rel="noopener">Niftylettuce, LLC.</a>'
+            a(href='#'): img(src=manifest('img/logo-square.svg'), width=50, height=50, alt='').d-inline-block.mx-lg-auto
+            small.d-block.text-muted.mt-3!= '&copy; <a class="text-white-50" href="https://niftylettuce.com" target="_blank" rel="noopener">Niftylettuce, LLC.</a>'
         .flex-wrap.flex-fill
           h5.mb-2= t('Resources')
-          ul.list-unstyled
+          ul.list-unstyled.mb-0
             li: a.d-block.text-light(href=domain && domain.name ? l(`/features?domain=${domain.name}`) : l('/features'))= t('Features')
             li: a.d-block.text-light(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'))= t('FAQ')
             li: a.d-block.text-light(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Help')
             li: a.d-block.text-light(href=l('/free-disposable-addresses'))= t('Free Disposable Addresses')
             li: a.d-block.text-light(href=l('/domain-registration'))= t('Domain Registration')
             li: a.d-block.text-light(href=l('/reserved-email-addresses'))= t('Reserved Email Addresses')
-        hr.d-md-none
+            li: a.d-block.text-light(href=l('/list-of-ports-blocked-by-isps'))= t("List of ports blocked by ISPs")
+        hr.d-lg-none.w-100
         .flex-wrap.flex-fill
+          h5.mb-2= t('Guides')
+          ul.list-unstyled.mb-0.mb-lg-3
+            li: a.d-block.text-light(href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l('/guides/port-25-blocked-by-isp-workaround'))= t('Port 25 blocked by ISP workaround')
+          hr.d-lg-none.w-100
           h5.mb-2= t('Developers')
-          ul.list-unstyled
+          ul.list-unstyled.mb-0
             li: a.d-block.text-light(data-toggle='tooltip', data-placement='left', title=t('Coming soon'), href='#coming-soon')= t('API Documentation')
             li: a.d-block.text-light(href='https://github.com/forwardemail/free-email-forwarding/releases', target='_blank', rel='noopener')= t('Releases')
             li: a.d-block.text-light(data-toggle='tooltip', data-placement='left', title=t('Coming soon'), href='#coming-soon')= t('Status Page')
             li: a.d-block.text-light(href='https://github.com/forwardemail', target='_blank', rel='noopener')= t('Source Code')
-        hr.d-md-none
+        hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
             h5.mb-2= t('Company')
-            ul.list-unstyled
+            ul.list-unstyled.mb-0
               li: a.d-block.text-light(href=l('/about'))= t('About')
               li: a.d-block.text-light(href=l('/donate'))= t('Donate')
               li: a.d-block.text-light(href=l('/privacy'))= t('Privacy')
               li: a.d-block.text-light(href=l('/terms'))= t('Terms')
-          .mt-auto
+          .mt-lg-auto.mt-3
             ul.list-inline.mb-0
               li.list-inline-item: a(data-toggle='tooltip', title=t('Twitter'), href='https://twitter.com/niftylettuce', target='_blank', rel='noopener').d-inline-block.text-light: i.fa.fa-2x.fa-twitter
               li.list-inline-item: a(data-toggle='tooltip', title=t('GitHub'), href='https://github.com/forwardemail', target='_blank', rel='noopener').d-inline-block.text-light: i.fa.fa-2x.fa-github

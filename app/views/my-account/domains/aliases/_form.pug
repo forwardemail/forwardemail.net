@@ -29,19 +29,35 @@ if alias
         = t('Domain Name')
       select#select-alias-domain(required, name='domain').form-control.form-control-lg
         each domain, i in domains
-          option(value=domain.id, disabled=!domain.plan || domain.plan === 'free', selected=domainQuery && domainQuery === domain.name)
+          option(value=domain.id, selected=domainQuery && domainQuery === domain.name)
             = domain.name
             if !domain.plan || domain.plan === 'free'
-              = ' ('
-              = t('Upgrade Plan')
+              = ' '
+              = '('
+              = t('Upgrade plan')
               = ')'
             if domain.is_global
               = ' ('
               = t('Free Vanity Domain')
               = ')'
-      p.form-text
-        a(href=l('/my-account/domains/new'), role='button', data-toggle='modal-anchor', data-target='#modal-domain').text-black-50
-          small= t('Need to add a new domain?')
+      - const hasFreeDomains = domains.some(domain => !domain.plan || domain.plan === 'free')
+      ul.list-inline.form-text
+        if hasFreeDomains
+          li.list-inline-item
+            a(href=l(`/features${domainQuery ? `?domain=${domainQuery}` : ''}`)).btn.btn-sm.btn-primary
+              i.fa.fa-angle-double-up
+              = ' '
+              = t('Upgrade plan')
+        li.list-inline-item
+          a(href=l('/my-account/domains/new'), role='button', data-toggle='modal-anchor', data-target='#modal-domain').btn.btn-sm.btn-success
+            i.fa.fa-plus
+            = ' '
+            = t('Add new domain')
+        if hasFreeDomains
+          - const match = domains.find(domain => domain.name === domainQuery)
+          if match && match.id
+            li.list-inline-item
+              a(href=l(`/my-account/domains/${match.id}`)).btn.btn-sm.btn-link.text-muted= t('Need free version?')
 .form-group
   label(for='textarea-alias-recipients')
     = t('Alias Recipients')
