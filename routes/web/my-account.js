@@ -58,12 +58,12 @@ router.delete(
 router.get(
   '/domains/:domain_id/advanced-settings',
   web.myAccount.retrieveDomain,
-  web.myAccount.ensureUpgradedPlan,
   render('my-account/domains/advanced-settings')
 );
 router.put(
   '/domains/:domain_id/advanced-settings',
   web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
   web.myAccount.ensureUpgradedPlan,
   web.myAccount.updateAdvancedSettings
 );

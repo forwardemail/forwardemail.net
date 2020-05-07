@@ -117,16 +117,22 @@ block body
                   td.align-middle
                     ul.list-inline.mb-0
                       if domain.group === 'admin'
-                        li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-lg-1.mb-2.mb-lg-0
+                        li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
                           a(href=l(`/my-account/domains/${domain.id}`)).btn.btn-dark.btn-block
                             i.fa.fa-fw.fa-cog
                             = ' '
                             = t('Setup')
-                      li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-lg-1.mb-2.mb-lg-0
+                      li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
                         a(href=l(`/my-account/domains/${domain.id}/aliases`)).btn.btn-dark.btn-block
                           i.fa.fa-fw.fa-users
                           = ' '
                           = t('Aliases')
+                      if domain.group === 'admin'
+                        li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
+                          a(href=l(`/my-account/domains/${domain.id}/advanced-settings`)).btn.btn-dark.btn-block
+                            i.fa.fa-fw.fa-tools
+                            = ' '
+                            = t('Advanced Settings')
                       //-.
                         if domain.group === 'admin'
                           li.list-inline-item.d-block.d-lg-inline-block

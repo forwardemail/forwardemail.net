@@ -22,12 +22,12 @@ By accessing this web site, you are agreeing to be bound by these web site Terms
 
 ## Disclaimer
 
-The materials on ForwardEmail's web site are provided "as is". ForwardEmail makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties, including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights. Further, ForwardEmail does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its Internet web site or otherwise relating to such materials or on any sites linked to this site.
+The materials on Forward Email's web site are provided "as is". Forward Email makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties, including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights. Further, Forward Email does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its Internet web site or otherwise relating to such materials or on any sites linked to this site.
 
 
 ## Limitations
 
-In no event shall ForwardEmail or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption,) arising out of the use or inability to use the materials on ForwardEmail's Internet site, even if ForwardEmail or a ForwardEmail authorized representative has been notified orally or in writing of the possibility of such damage. Because some jurisdictions do not allow limitations on implied warranties, or limitations of liability for consequential or incidental damages, these limitations may not apply to you.
+In no event shall Forward Email or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption,) arising out of the use or inability to use the materials on Forward Email's Internet site, even if Forward Email or a Forward Email authorized representative has been notified orally or in writing of the possibility of such damage. Because some jurisdictions do not allow limitations on implied warranties, or limitations of liability for consequential or incidental damages, these limitations may not apply to you.
 
 
 ## Refunds
@@ -48,7 +48,7 @@ To request a refund, please send an email from the email address verified on you
 
 ### Agreement
 
-ForwardEmail shall use all reasonable commercial efforts (no less than acceptable and reasonable industry standards) to ensure that the ForwardEmail service is available to paying customers 99.99% of the time in any calendar month.  If it is not, then you may be eligible to receive the [Credits](#credits) described below in accordance with [Eligibility](#eligibility).
+Forward Email shall use all reasonable commercial efforts (no less than acceptable and reasonable industry standards) to ensure that the Forward Email service is available to paying customers 99.99% of the time in any calendar month.  If it is not, then you may be eligible to receive the [Credits](#credits) described below in accordance with [Eligibility](#eligibility).
 
 ### Credits
 
@@ -62,27 +62,27 @@ ForwardEmail shall use all reasonable commercial efforts (no less than acceptabl
 
 ### Eligibility
 
-Minimum credit amount must be at least $1.00 to be eligible.  Maximum credit is capped at the 30 days or the total amount the customer is paying per the most recent calendar month with respect to Downtime (whichever is greater).  Paying customers affected for any Downtime must request Credits by filing a [Help request](/help) within 30 days from the date of Downtime.  Credits only apply for Downtime factors that are within the primary control of ForwardEmail.
+Minimum credit amount must be at least $1.00 to be eligible.  Maximum credit is capped at the 30 days or the total amount the customer is paying per the most recent calendar month with respect to Downtime (whichever is greater).  Paying customers affected for any Downtime must request Credits by filing a [Help request](/help) within 30 days from the date of Downtime.  Credits only apply for Downtime factors that are within the primary control of Forward Email.
 
 
 ## Revisions and Errata
 
-The materials appearing on ForwardEmail's web site could include technical, typographical, or photographic errors. ForwardEmail does not warrant that any of the materials on its web site are accurate, complete, or current. ForwardEmail may make changes to the materials contained on its web site at any time without notice. ForwardEmail does not, however, make any commitment to update the materials.
+The materials appearing on Forward Email's web site could include technical, typographical, or photographic errors. Forward Email does not warrant that any of the materials on its web site are accurate, complete, or current. Forward Email may make changes to the materials contained on its web site at any time without notice. Forward Email does not, however, make any commitment to update the materials.
 
 
 ## Links
 
-ForwardEmail has not reviewed all of the sites linked to its Internet web site and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by ForwardEmail of the site. Use of any such linked web site is at the user's own risk.
+Forward Email has not reviewed all of the sites linked to its Internet web site and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Forward Email of the site. Use of any such linked web site is at the user's own risk.
 
 
 ## Site Terms of Use Modifications
 
-ForwardEmail may revise these terms of use for its web site at any time without notice. By using this web site you are agreeing to be bound by the then current version of these Terms and Conditions of Use.
+Forward Email may revise these terms of use for its web site at any time without notice. By using this web site you are agreeing to be bound by the then current version of these Terms and Conditions of Use.
 
 
 ## Governing Law
 
-Any claim relating to ForwardEmail's web site shall be governed by the laws of the State of Delaware without regard to its conflict of law provisions.
+Any claim relating to Forward Email's web site shall be governed by the laws of the State of Delaware without regard to its conflict of law provisions.
 
 General Terms and Conditions applicable to Use of a Web Site.
 

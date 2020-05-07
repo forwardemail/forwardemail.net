@@ -6,7 +6,7 @@
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![made with lad](https://img.shields.io/badge/made_with-lad-95CC28.svg)](https://lad.js.org)
 
-> ForwardEmail.net service
+> Forward Email web service
 
 
 ## Table of Contents
@@ -33,4 +33,4 @@ Visit <https://forwardemail.net> to get started!
 [Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © [Niftylettuce, LLC.](https://niftylettuce.com/)
 
 
-## 
+##
