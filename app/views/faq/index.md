@@ -49,8 +49,8 @@
   <span>
     If you would like to hide your information from being publicly searchable over the Internet, then please go to <a class="alert-link" href="/my-account/domains" target="_blank" rel="noopener">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan before starting this guide.
     Publicly searchable information on free plans includes, but is not limited to: aliases, forwarded addresses, recipients, and advanced settings such as custom port forwarding.
-    If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener" href="/features">Features</a> page &ndash; else keep reading!
-    All plans abide by our <a class="alert-link" href="/privacy">Privacy</a> policy of strictly not storing logs, metadata, nor reading emails
+    If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener" href="/features">Features</a> page &ndash; otherwise keep reading!
+    All plans abide by our <a class="alert-link" href="/privacy">Privacy</a> policy of strictly not storing logs, metadata, nor reading emails.
     We don't track you like other services do.
   </span>
 </div>
@@ -61,7 +61,7 @@
     Getting Started:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>niftylettuce@gmail.com</code> with the email address you want to forward emails to (only if it is not accurate already).  Similarly be sure to replace <code>example.com</code> with your custom domain name (only if it is not accurate already).
+    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>niftylettuce@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
   </span>
 </div>
 
@@ -168,7 +168,7 @@
     <tr>
       <td>Other</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing "$REGISTRAR" with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
       </td>
     </tr>
   </tbody>
@@ -768,6 +768,8 @@ Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS TX
 
 If you prefix an alias with "!" (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole.
 
+Emails sent to disabled addresses will respond with a `250` (message queued) status code, but the emails will not actually be delivered to the recipient(s).
+
 For example, if I want all emails that go to `alias@example.com` to stop flowing through to `niftylettuce@gmail.com`:
 
 <table class="table table-striped table-hover my-3">
@@ -789,8 +791,34 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-Emails sent to disabled addresses will respond with a `250` (message queued) status code, but the emails will not actually be delivered to the recipient(s).
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you want increased security, then you can also remove the ":niftylettuce@gmail.com" part, leaving just "!alias" in the example below.
+  </span>
+</div>
 
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Record Type</th>
+      <th>Value/Answer/Destination</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>@ or leave blank</em></td>
+      <td class="text-center">3600</td>
+      <td>TXT</td>
+      <td><code>forward-email=!alias</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ## Can I forward emails to multiple recipients
 

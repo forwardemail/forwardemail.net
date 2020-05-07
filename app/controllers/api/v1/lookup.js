@@ -62,7 +62,9 @@ async function lookup(ctx) {
 
       return alias.recipients
         .map(recipient => {
-          return `${alias.is_enabled ? '' : '!'}${alias.name}:${recipient}`;
+          return alias.is_enabled
+            ? `${alias.name}:${recipient}`
+            : `!${alias.name}`;
         })
         .join(',');
     });

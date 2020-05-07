@@ -51,47 +51,52 @@ async function port(ctx) {
     // if a verification record was found, then look it up and if it's valid
     // otherwise if use `forward-email-port` value if it exists and valid
     // otherwise return port 25
-    const records = await resolveTxtAsync(ctx.query.domain);
+    try {
+      const records = await resolveTxtAsync(ctx.query.domain);
 
-    const verifications = [];
-    const ports = [];
-    let port = 25;
+      const verifications = [];
+      const ports = [];
+      let port = 25;
 
-    for (const element of records) {
-      const record = element.join(''); // join chunks together
-      if (record.startsWith(`${app.config.recordPrefix}-site-verification=`))
-        verifications.push(
-          record.replace(`${app.config.recordPrefix}-site-verification=`, '')
-        );
+      for (const element of records) {
+        const record = element.join(''); // join chunks together
+        if (record.startsWith(`${app.config.recordPrefix}-site-verification=`))
+          verifications.push(
+            record.replace(`${app.config.recordPrefix}-site-verification=`, '')
+          );
 
-      if (record.startsWith(`${app.config.recordPrefix}-port=`))
-        ports.push(record.replace(`${app.config.recordPrefix}-port=`, ''));
+        if (record.startsWith(`${app.config.recordPrefix}-port=`))
+          ports.push(record.replace(`${app.config.recordPrefix}-port=`, ''));
+      }
+
+      if (verifications.length > 0) {
+        if (verifications.length > 1)
+          throw Boom.badRequest(ctx.translate('MULTIPLE_VERIFICATION_RECORDS'));
+
+        const domain = await Domains.findOne({
+          verification_record: verifications[0],
+          plan: { $ne: 'free' }
+        })
+          .lean()
+          .exec();
+
+        if (!domain)
+          throw Boom.badRequest(ctx.translate('DOMAIN_DOES_NOT_EXIST'));
+
+        port = domain.smtp_port;
+      } else if (ports.length > 0) {
+        if (ports.length > 1)
+          throw Boom.badRequest(ctx.translate('MULTIPLE_PORT_RECORDS'));
+        port = ports[0];
+      }
+
+      if (!isPort(port)) throw Boom.badRequest(ctx.translate('INVALID_PORT'));
+
+      ctx.body = { port };
+    } catch (err) {
+      ctx.logger.error(err);
+      throw Boom.badRequest(err.message);
     }
-
-    if (verifications.length > 0) {
-      if (verifications.length > 1)
-        throw Boom.badRequest(ctx.translate('MULTIPLE_VERIFICATION_RECORDS'));
-
-      const domain = await Domains.findOne({
-        verification_record: verifications[0],
-        plan: { $ne: 'free' }
-      })
-        .lean()
-        .exec();
-
-      if (!domain)
-        throw Boom.badRequest(ctx.translate('DOMAIN_DOES_NOT_EXIST'));
-
-      port = domain.smtp_port;
-    } else if (ports.length > 0) {
-      if (ports.length > 1)
-        throw Boom.badRequest(ctx.translate('MULTIPLE_PORT_RECORDS'));
-      port = ports[0];
-    }
-
-    if (!isPort(port)) throw Boom.badRequest(ctx.translate('INVALID_PORT'));
-
-    ctx.body = { port };
   } catch (err) {
     ctx.throw(err);
   }

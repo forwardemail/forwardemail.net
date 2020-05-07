@@ -67,7 +67,7 @@ block body
               small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase= t('Unlimited domains')
               .p-2
                 a(href=l('/my-account/domains/new')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
-                  = t('Add Domain')
+                  = t('Setup Forwarding')
                   = ' '
                   i.fa.fa-angle-double-right
         .col.mt-3.mt-lg-0
@@ -123,7 +123,7 @@ block body
               .p-2
                 if sortedDomains.length === 0
                   a(href=l('/my-account/domains/new?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
-                    = t('Add Domain')
+                    = t('Setup Forwarding')
                     = ' '
                     i.fa.fa-angle-double-right
                 else
@@ -171,7 +171,7 @@ block body
               .p-2
                 if sortedDomains.length === 0
                   a(href=l('/my-account/domains/new?plan=team')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
-                    = t('Add Domain')
+                    = t('Setup Forwarding')
                     = ' '
                     i.fa.fa-angle-double-right
                 else
