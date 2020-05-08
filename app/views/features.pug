@@ -90,6 +90,13 @@ block body
                   i.fa.fa-question-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-bolt text-primary mr-3"></i> ${t('Instant DNS propagation (zero wait-time)')}`
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-tasks text-primary mr-3"></i> ${t('Easy to use email alias and import manager')}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-bell.text-primary.mr-3
+                = t('Automatic notification system')
+                small.ml-1.text-black-50
+                  = '('
+                  = t('never miss an email')
+                  = ')'
               li.list-group-item.d-flex.align-items-center.font-weight-bold.border-bottom
                 i.fa.fa-fw.fa-tools.text-primary.mr-3
                 = t('Browser extension')
@@ -108,7 +115,6 @@ block body
                   = t('coming soon')
                   = ')'
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('30-day money back guarantee')}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Priority technical email support')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('99.99% Uptime Service Level Agreement ("SLA")')}`
             .d-flex.flex-column.flex-grow-1.justify-content-end
               h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
