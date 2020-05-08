@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const passportLocalMongoose = require('passport-local-mongoose');
 const validator = require('validator');
+const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
 const { select } = require('mongoose-json-select');
 
@@ -16,6 +17,8 @@ const config = require('../../config');
 const i18n = require('../../helpers/i18n');
 const logger = require('../../helpers/logger');
 const bull = require('../../bull');
+
+const opts = { length: 10, characters: '1234567890' };
 
 if (config.passportLocalMongoose.usernameField !== 'email')
   throw new Error(
@@ -41,7 +44,7 @@ const User = new mongoose.Schema({
     trim: true,
     lowercase: true,
     unique: true,
-    validate: value => validator.isEmail(value)
+    validate: val => validator.isEmail(val)
   },
   is_banned: {
     type: Boolean,
@@ -100,6 +103,11 @@ object[config.userFields.pendingRecovery] = {
   default: false
 };
 
+object[config.userFields.pendingRecovery] = {
+  type: Boolean,
+  default: false
+};
+
 // shared field names with @ladjs/passport for consistency
 const { fields } = config.passport;
 object[fields.displayName] = {
@@ -145,6 +153,13 @@ object[fields.otpEnabled] = {
 
 object[fields.otpToken] = String;
 
+object[fields.otpEnabled] = {
+  type: Boolean,
+  default: false
+};
+
+object[fields.otpToken] = String;
+
 // shared field names with @ladjs/i18n and email-templates
 object[config.lastLocaleField] = {
   type: String,
@@ -182,17 +197,26 @@ User.pre('validate', function(next) {
       ? `${this[fields.displayName]} <${this.email}>`
       : this.email;
 
-  // if two-factor authentication values no longer valid
+  // if otp authentication values no longer valid
   // then disable it completely
   if (
-    !this[fields.otpEnabled] ||
-    !Array.isArray(
-      this[config.userFields.otpRecoveryKeys] ||
-        this[config.userFields.otpRecoveryKeys].length === 0
-    )
-  ) {
+    !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
+    !this[config.userFields.otpRecoveryKeys] ||
+    this[config.userFields.otpRecoveryKeys].length === 0 ||
+    !this[config.passport.fields.otpToken]
+  )
     this[fields.otpEnabled] = false;
-  }
+
+  if (
+    !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
+    this[config.userFields.otpRecoveryKeys].length === 0
+  )
+    this[config.userFields.otpRecoveryKeys] = new Array(10)
+      .fill()
+      .map(() => cryptoRandomString(opts));
+
+  if (!this[config.passport.fields.otpToken])
+    this[config.passport.fields.otpToken] = authenticator.generateSecret();
 
   next();
 });
@@ -287,7 +311,7 @@ User.methods.sendVerificationEmail = async function(ctx) {
       user: select(this.toObject(), User.options.toJSON.select),
       expiresAt: this[config.userFields.verificationPinExpiresAt],
       pin: this[config.userFields.verificationPin],
-      link: `${config.urls.web}${config.verificationPath}?pin=${
+      link: `${config.urls.web}${config.verifyRoute}?pin=${
         this[config.userFields.verificationPin]
       }`
     }

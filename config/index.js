@@ -122,7 +122,7 @@ const config = {
   loginOtpRoute: '/otp/login',
 
   // verification pin
-  verificationPath: '/verify',
+  verifyRoute: '/verify',
   verificationPinTimeoutMs: ms(env.VERIFICATION_PIN_TIMEOUT_MS),
   verificationPinEmailIntervalMs: ms(env.VERIFICATION_PIN_EMAIL_INTERVAL_MS),
   verificationPin: { length: 6, characters: '1234567890' },
@@ -219,12 +219,13 @@ const logger = new Axe(config.logger);
 
 // add manifest helper for rev-manifest.json support
 config.manifest = path.join(config.buildDir, 'rev-manifest.json');
+config.srimanifest = path.join(config.buildDir, 'sri-manifest.json');
 config.views.locals.manifest = manifestRev({
   prepend:
     env.AWS_CLOUDFRONT_DOMAIN && env.NODE_ENV === 'production'
       ? `//${env.AWS_CLOUDFRONT_DOMAIN}/`
       : '/',
-  manifest: config.manifest
+  manifest: config.srimanifest
 });
 
 // add global `config` object to be used by views

@@ -59,5 +59,8 @@ $question: theme-color('light');
 // responsive backgrounds
 @import '_responsive-backgrounds';
 
+// responsive rounded
+@import '_responsive-rounded';
+
 // custom app styling
 @import '_custom';

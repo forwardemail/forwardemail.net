@@ -3,7 +3,7 @@ const Policies = require('@ladjs/policies');
 const {
   loginOtpRoute,
   passportCallbackOptions,
-  verificationPath,
+  verifyRoute,
   userFields,
   passport,
   appName
@@ -14,7 +14,7 @@ const policies = new Policies(
   {
     schemeName: appName,
     hasVerifiedEmail: userFields.hasVerifiedEmail,
-    verifyRoute: verificationPath,
+    verifyRoute,
     loginRoute: passportCallbackOptions.failureRedirect,
     loginOtpRoute,
     passport
