@@ -31,6 +31,18 @@ html(lang=locale).h-100
       script.
         window._csrf = "#{ctx.csrf}";
 
+      //- associate with wikipedia
+      script(type='application/ld+json').
+        {
+          "@context": "http://schema.org",
+          "@type": "Organization",
+          "url": "https://forwardemail.net",
+          "name": "Forward Email",
+          "legalName": "Forward Email",
+          "logo": "https://forwardemail.net/img/social.png",
+          "sameAs" : [ "https://en.wikipedia.org/wiki/Forward_Email" ]
+        }
+
     //- add opengraph tags to your structured data pages
     block opengraph
       link(rel='image_src', type='image/png', href=manifest('img/social.png'))
