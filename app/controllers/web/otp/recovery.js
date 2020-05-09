@@ -30,6 +30,7 @@ async function recovery(ctx) {
     return;
   }
 
+  redirectTo = `/${ctx.locale}/otp/recovery/verify`;
   if (ctx.accepts('html')) {
     ctx.redirect(redirectTo);
   } else {
