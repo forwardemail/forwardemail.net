@@ -17,7 +17,7 @@ async function help(ctx) {
   body = _.pick(body, ['email', 'message']);
 
   if (!_.isString(body.email) || !validator.isEmail(body.email))
-    throw Boom.badRequest(ctx.translate('INVALID_EMAIL'));
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   if (!_.isUndefined(body.message) && !_.isString(body.message))
     delete body.message;
@@ -30,9 +30,9 @@ async function help(ctx) {
 
   if (_.isString(body.message)) {
     if (!isSANB(body.message))
-      throw Boom.badRequest(ctx.translate('INVALID_MESSAGE'));
+      throw Boom.badRequest(ctx.translateError('INVALID_MESSAGE'));
     if (body.message.length > config.supportRequestMaxLength)
-      throw Boom.badRequest(ctx.translate('INVALID_MESSAGE'));
+      throw Boom.badRequest(ctx.translateError('INVALID_MESSAGE'));
   } else {
     body.message = ctx.translate('SUPPORT_REQUEST_MESSAGE');
     body.is_email_only = true;
@@ -57,12 +57,13 @@ async function help(ctx) {
   });
 
   if (count > 0 && config.env !== 'development')
-    throw Boom.badRequest(ctx.translate('SUPPORT_REQUEST_LIMIT'));
+    throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_LIMIT'));
 
   try {
     const inquiry = await Inquiries.create({
       ...body,
-      ip: ctx.ip
+      ip: ctx.ip,
+      locale: ctx.locale
     });
 
     ctx.logger.debug('created inquiry', inquiry);
@@ -90,7 +91,7 @@ async function help(ctx) {
     }
   } catch (err) {
     ctx.logger.error(err, { body });
-    throw Boom.badRequest(ctx.translate('SUPPORT_REQUEST_ERROR'));
+    throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_ERROR'));
   }
 }
 

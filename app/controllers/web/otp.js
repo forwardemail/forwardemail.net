@@ -12,10 +12,10 @@ async function keys(ctx) {
   const { body } = ctx.request;
 
   if (!isSANB(body.password))
-    throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+    throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
   const { user } = await ctx.state.user.authenticate(body.password);
-  if (!user) throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+  if (!user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
   const redirectTo = `/${ctx.locale}/otp/setup`;
   const message = ctx.translate('PASSWORD_CONFIRM_SUCCESS');
@@ -63,10 +63,10 @@ async function disable(ctx) {
   const redirectTo = `/${ctx.locale}/my-account/security`;
 
   if (!isSANB(body.password))
-    throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+    throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
   const { user } = await ctx.state.user.authenticate(body.password);
-  if (!user) throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+  if (!user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
   ctx.state.user[config.passport.fields.otpEnabled] = false;
   await ctx.state.user.save();
@@ -99,7 +99,9 @@ async function setup(ctx) {
     });
 
     if (!isValid)
-      return ctx.throw(Boom.badRequest(ctx.translate('INVALID_OTP_PASSCODE')));
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('INVALID_OTP_PASSCODE'))
+      );
 
     ctx.state.user[config.passport.fields.otpEnabled] = true;
   } else {
@@ -232,7 +234,7 @@ async function verify(ctx) {
     pin !== ctx.state.user[config.userFields.verificationPin]
   )
     return ctx.throw(
-      Boom.badRequest(ctx.translate('INVALID_VERIFICATION_PIN'))
+      Boom.badRequest(ctx.translateError('INVALID_VERIFICATION_PIN'))
     );
 
   try {
@@ -270,7 +272,7 @@ async function verify(ctx) {
     }
   } catch (err) {
     ctx.logger.error(err);
-    throw Boom.badRequest(ctx.translate('SUPPORT_REQUEST_ERROR'));
+    throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_ERROR'));
   }
 
   ctx.logout();

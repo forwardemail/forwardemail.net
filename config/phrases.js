@@ -47,8 +47,16 @@ module.exports = {
   INVALID_DOMAIN: 'Domain name was invalid (must be an IP or FQDN).',
   INVALID_FQDN: 'Domain name was invalid (must be a FQDN).',
   ADD_ALIAS: 'Add Alias',
+  CATCHALL_ADMIN_REQUIRED:
+    'User must be a domain admin to create a catch-all alias.',
+  ALIAS_ALREADY_EXISTS: 'Alias already exists for domain.',
   DOMAIN_IS_VERIFIED: "Domain's DNS records have been verified.",
   DOMAIN_DOES_NOT_EXIST: 'Domain does not exist on your account.',
+  RESERVED_WORD_ADMIN_REQUIRED: `User must be a domain admin to create an alias with a reserved word (see the page on <a target="_blank" rel="noopener" href="%s/reserved-email-addresses">Reserved Email Addresses</a>).`,
+  REACHED_MAX_ALIAS_COUNT:
+    'User cannot have more than (5) aliases on global domains.',
+  EXCEEDED_UNIQUE_COUNT: `You have exceeded the maximum count of (%s) recipients per alias.  Please <a href="/help">contact us</a> if you wish to have this limit increased.  We review requests on a unique basis.  Please provide us with information about your forwarding purposes if possible.`,
+  DOMAIN_DOES_NOT_EXIST_ANYWHERE: 'Domain does not exist.',
   INVITE_DOES_NOT_EXIST:
     'Invite does not exist with your email address for this domain.',
   DOMAIN_ALREADY_EXISTS: 'Domain already exists on your account.',
@@ -115,7 +123,18 @@ module.exports = {
   TEAM_PLAN: 'You have successfully upgraded to the Team Plan.',
   ACCOUNT_BANNED: 'Your account has been banned.',
   ENOTFOUND: `Domain is not a registered domain name. <a href="/domain-registration">Click here to register it now</a>.`,
-  MISSING_DNS_TXT: 'Domain is missing required DNS TXT records.',
-  MULTIPLE_VERIFICATION_RECORDS: `Domain has multiple verification records.  Please ensure there is only one verification record that exists.`,
-  MULTIPLE_PORT_RECORDS: `Domain has multiple port records.  Please ensure there is only one port record that exists.`
+  MISSING_DNS_TXT:
+    'Domain is missing required DNS TXT records. <a href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.',
+  SINGLE_VERIFICATION_RECORD_REQUIRED: `Domain has multiple verification records.  Please ensure there is only one verification record that exists.`,
+  MULTIPLE_PORT_RECORDS: `Domain has multiple port records.  Please ensure there is only one port record that exists.`,
+  AT_LEAST_ONE_ADMIN_REQUIRED:
+    'At least one admin user must belong to the domain.',
+  INVALID_VERIFICATION_RECORD:
+    'Verification record must only use characters A-Z and numbers 0-9.',
+  MISSING_DNS_MX: `<p class="mb-0">Domain is missing required DNS MX records of:</p><ul class="markdown-body ml-0 mr-0 mb-3">%s</ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren't the same).<a href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.</p>`,
+  MISSING_VERIFICATION_RECORD: `Domain is missing required DNS TXT record of: %s`,
+  INCORRECT_VERIFICATION_RECORD: `Domain has an incorrect DNS TXT record for verification.  Please ensure %s is the only verification record that exists.`,
+  MULTIPLE_VERIFICATION_RECORDS:
+    'Domain has multiple verification records.  Please ensure %s is the only verification record that exists.',
+  PURGE_CACHE: `If you recently updated your DNS records for %s, then you should purge its cache using <a href="https://1.1.1.1/purge-cache/" rel="noopener" target="_blank">Cloudflare's Purge Cache Tool</a> and optionally <a href="https://developers.google.com/speed/public-dns/cache" rel="noopener" target="_blank">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.`
 };

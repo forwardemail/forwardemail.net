@@ -11,45 +11,6 @@ block body
             button(type='button', data-dismiss='modal', aria-label='Close').close
               span(aria-hidden='true') &times;
           .modal-body!= modalFAQTable
-
-  if domain.group === 'admin' && domain.plan === 'team'
-    #modal-invite.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-invite-title', aria-hidden='true')
-      .modal-dialog(role='document')
-        .modal-content
-          .modal-header.text-center.d-block
-            h4.modal-title.d-inline-block.ml-4#modal-invite-title= t('Invite new team member')
-            button(type='button', data-dismiss='modal', aria-label='Close').close
-              span(aria-hidden='true') &times;
-          .modal-body
-            form.ajax-form.confirm-prompt(action=l(`/my-account/domains/${domain.id}/invites`), method="POST")
-              input(type="hidden", name="_csrf", value=ctx.csrf)
-              .form-group
-                label(for="input-invite-email")= t('Email address')
-                input#input-invite-email.form-control(required, autocomplete="off", name="email", type="email", placeholder='name@example.com')
-              label= t('Group')
-              .form-group
-                .form-check.form-check-inline
-                  input.form-check-input#input-invite-group-user(type='radio', name='group', value='user', checked)
-                  label.form-check-label(for='input-invite-group-user')= t('User')
-                .form-check.form-check-inline
-                  input.form-check-input#input-invite-group-admin(type='radio', name='group', value='admin')
-                  label.form-check-label(for='input-invite-group-admin')= t('Admin')
-              button.btn.btn-block.btn-success.btn-lg(type="submit")= t('Send invitation')
-    #modal-copy-invite.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-copy-invite-title', aria-hidden='true')
-      .modal-dialog.modal-lg(role='document')
-        .modal-content
-          .modal-header.text-center.d-block
-            h4.modal-title.d-inline-block.ml-4#modal-copy-invite-title= t('Share invitation link')
-            button(type='button', data-dismiss='modal', aria-label='Close').close
-              span(aria-hidden='true') &times;
-          .modal-body
-            .input-group.input-group-lg
-              input(type='text', readonly, value=`${config.urls.web}/my-account/domains/${domain.id}/invites`).form-control#invite-link
-              .input-group-append
-                button(type='button', data-toggle="clipboard", data-clipboard-target="#invite-link").btn.btn-primary
-                  i.fa.fa-clipboard
-                  = ' '
-                  = t('Copy Invite Link')
   .container-fluid.pt-3
     .row
       .col

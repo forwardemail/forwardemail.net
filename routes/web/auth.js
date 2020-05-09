@@ -11,7 +11,7 @@ const router = new Router({ prefix: '/auth' });
 router
   .param('provider', (provider, ctx, next) => {
     if (!boolean(process.env[`AUTH_${provider.toUpperCase()}_ENABLED`])) {
-      return ctx.throw(Boom.badRequest(ctx.translate('INVALID_PROVIDER')));
+      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PROVIDER')));
     }
 
     return next();

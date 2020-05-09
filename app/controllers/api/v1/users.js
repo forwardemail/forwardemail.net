@@ -9,13 +9,15 @@ async function create(ctx) {
   const { body } = ctx.request;
 
   if (!isSANB(body.password))
-    return ctx.throw(Boom.badRequest(ctx.translate('INVALID_PASSWORD')));
+    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PASSWORD')));
 
   // register the user
-  const query = { email: body.email };
+  const query = { email: body.email, locale: ctx.locale };
   query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
   query[config.userFields.pendingRecovery] = false;
+  query[config.lastLocaleField] = ctx.locale;
+
   const user = await Users.register(query, body.password);
 
   // send a verification email

@@ -1,7 +1,7 @@
 const dns = require('dns');
 const util = require('util');
 
-const Boom = require('@hapi/boom');
+const RE2 = require('re2');
 const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
@@ -12,6 +12,7 @@ const { isFQDN, isIP, isEmail, isPort } = require('validator');
 
 const logger = require('../../helpers/logger');
 const config = require('../../config');
+const i18n = require('../../helpers/i18n');
 
 const app = new ForwardEmail({
   logger,
@@ -21,12 +22,21 @@ const app = new ForwardEmail({
 
 dns.setServers(app.config.dns);
 
+const EXCHANGES = app.config.exchanges
+  .map(
+    (exchange, i) =>
+      `<li><code>${parseInt((i + 1) * 10, 10)} ${exchange}</code></li>`
+  )
+  .join('');
+
 const resolveTxtAsync = util.promisify(dns.resolveTxt);
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const verificationRecordOptions = require('../../config/verification-record');
+
+const REGEX_VERIFICATION = new RE2(/[^\da-z]/gi);
 
 const Domain = new mongoose.Schema({
   plan: {
@@ -83,13 +93,7 @@ const Domain = new mongoose.Schema({
     type: String,
     required: true,
     lowercase: true,
-    trim: true,
-    // must be IP or FQDN
-    validate: {
-      validator: name => isFQDN(name) || isIP(name),
-      message:
-        'Domain name is not a fully-qualified domain name ("FQDN") nor IP address.'
-    }
+    trim: true
   },
   has_mx_record: {
     type: Boolean,
@@ -107,29 +111,38 @@ const Domain = new mongoose.Schema({
     type: String,
     index: true,
     required: true,
-    unique: true,
-    validate: {
-      validator: value =>
-        isSANB(value) && value.replace(/[^\da-z]/gi, '') === value,
-      message:
-        'Verification record must only use characters A-Z and numbers 0-9.'
-    }
+    unique: true
   }
 });
 
 Domain.pre('validate', function(next) {
-  if (!this.plan) this.plan = 'free';
-  if (this.is_global) this.plan = 'team';
-  if (!isSANB(this.verification_record))
-    this.verification_record = cryptoRandomString(verificationRecordOptions);
-  next();
+  try {
+    const domain = this;
+    if (!domain.plan) domain.plan = 'free';
+    if (domain.is_global) domain.plan = 'team';
+
+    // domain.name must be IP or FQDN
+    if (!isSANB(domain.name) || (!isFQDN(domain.name) && !isIP(domain.name)))
+      throw i18n.translateError('INVALID_DOMAIN', domain.__locale);
+
+    if (!isSANB(this.verification_record))
+      this.verification_record = cryptoRandomString(verificationRecordOptions);
+
+    if (
+      this.verification_record.replace(REGEX_VERIFICATION, '') !==
+      this.verification_record
+    )
+      throw i18n.translateError('INVALID_VERIFICATION_RECORD', domain.__locale);
+
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 Domain.pre('validate', async function(next) {
   try {
     const domain = this;
-    // virtual that can be populated
-    if (domain.doNotCheckVerificationResults) return next();
     if (
       !Array.isArray(domain.members) ||
       domain.members.length === 0 ||
@@ -137,7 +150,7 @@ Domain.pre('validate', async function(next) {
         member => typeof member.user !== 'undefined' && member.group === 'admin'
       )
     )
-      throw new Error('At least one admin user must belong to the domain.');
+      throw i18n.translateError('AT_LEAST_ONE_ADMIN_REQUIRED', domain.__locale);
     const { txt, mx } = await getVerificationResults(domain);
     domain.has_txt_record = txt;
     domain.has_mx_record = mx;
@@ -154,17 +167,12 @@ Domain.plugin(mongooseCommonPlugin, {
 
 // eslint-disable-next-line complexity
 async function getVerificationResults(domain) {
-  const MISSING_DNS_MX = new Error(`
-    <p class="mb-0">Domain is missing required DNS MX records of:</p>
-    <ul class="markdown-body ml-0 mr-0 mb-3">
-      ${app.config.exchanges
-        .map(
-          (exchange, i) =>
-            `<li><code>${parseInt((i + 1) * 10, 10)} ${exchange}</code></li>`
-        )
-        .join(
-          ''
-        )}</ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren't the same).</p>`);
+  const MISSING_DNS_MX = i18n.translateError(
+    'MISSING_DNS_MX',
+    domain.__locale,
+    EXCHANGES,
+    domain.name
+  );
 
   const PAID_PLAN = new Error(
     `Domain is on a paid plan and has "Enhanced Protection".  To proceed with verification, please <a href="${config.urls.web}/my-account/domains/${domain.id}/aliases">configure and import</a> your Aliases.  Once you have configured your Aliases, then please remove all TXT records prefixed with "${app.config.recordPrefix}=" and try again.`
@@ -173,20 +181,31 @@ async function getVerificationResults(domain) {
   const verificationRecord = `${app.config.recordPrefix}-site-verification=${domain.verification_record}`;
   const verificationMarkdown = `<span class="markdown-body ml-0 mr-0"><code>${verificationRecord}</code></span>`;
 
-  const MISSING_VERIFICATION_RECORD = new Error(
-    `Domain is missing required DNS TXT record of: ${verificationMarkdown}`
+  const MISSING_VERIFICATION_RECORD = i18n.translateError(
+    'MISSING_VERIFICATION_RECORD',
+    domain.__locale,
+    verificationMarkdown
+  );
+  const INCORRECT_VERIFICATION_RECORD = i18n.translateError(
+    'INCORRECT_VERIFICATION_RECORD',
+    domain.__locale,
+    verificationMarkdown
+  );
+  const MULTIPLE_VERIFICATION_RECORDS = i18n.translateError(
+    'MULTIPLE_VERIFICATION_RECORDS',
+    domain.__locale,
+    verificationMarkdown
+  );
+  const PURGE_CACHE = i18n.translateError(
+    'PURGE_CACHE',
+    domain.__locale,
+    domain.name
   );
 
-  const INCORRECT_VERIFICATION_RECORD = new Error(
-    `Domain has an incorrect DNS TXT record for verification.  Please ensure ${verificationMarkdown} is the only verification record that exists.`
-  );
-
-  const MULTIPLE_VERIFICATION_RECORDS = new Error(
-    `Domain has multiple verification records.  Please ensure ${verificationMarkdown} is the only verification record that exists.`
-  );
-
-  const PURGE_CACHE = new Error(
-    `If you recently updated your DNS records for ${domain.name}, then you should purge its cache using <a href="https://1.1.1.1/purge-cache/" rel="noopener" target="_blank">Cloudflare's Purge Cache Tool</a> and optionally <a href="https://developers.google.com/speed/public-dns/cache" rel="noopener" target="_blank">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.`
+  const MISSING_DNS_TXT = i18n.translateError(
+    'MISSING_DNS_TXT',
+    domain.__locale,
+    domain.name
   );
 
   const isPaidPlan = _.isString(domain.plan) && domain.plan !== 'free';
@@ -209,7 +228,7 @@ async function getVerificationResults(domain) {
       ignoredAddresses,
       errors,
       verifications
-    } = await getTxtAddresses(domain.name, true));
+    } = await getTxtAddresses(domain.name, domain.__locale, true));
 
     if (isPaidPlan) {
       if (
@@ -229,7 +248,7 @@ async function getVerificationResults(domain) {
       globalForwardingAddresses.length === 0 &&
       ignoredAddresses.length === 0
     )
-      errors.push(new Error(config.i18n.phrases.MISSING_DNS_TXT));
+      errors.push(new Error(MISSING_DNS_TXT));
     else if (errors.length === 0) txt = true;
   } catch (err) {
     logger.error(err);
@@ -237,7 +256,7 @@ async function getVerificationResults(domain) {
       errors.push(new Error(config.i18n.phrases.ENOTFOUND));
     else if (err.code === 'ENODATA') {
       if (isPaidPlan) errors.push(MISSING_VERIFICATION_RECORD);
-      else errors.push(new Error(config.i18n.phrases.MISSING_DNS_TXT));
+      else errors.push(new Error(MISSING_DNS_TXT));
     } else errors.push(err);
   }
 
@@ -272,36 +291,39 @@ async function getVerificationResults(domain) {
 
 Domain.statics.getVerificationResults = getVerificationResults;
 
-async function verifyRecords(_id) {
+async function verifyRecords(_id, locale) {
   const domain = await this.model('Domain').findById(_id);
 
-  if (!domain) throw new Error('Domain does not exist.');
+  if (!domain)
+    throw i18n.translateError(
+      'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
+      domain.__locale
+    );
 
   const { txt, mx, errors } = await getVerificationResults(domain);
   domain.has_txt_record = txt;
   domain.has_mx_record = mx;
+  domain.locale = locale;
   await domain.save();
 
-  // TODO: these errors need translated better
-  // (e.g. we could use `koa-better-error-handler`'s `no_translate=true`
   if (errors.length === 0) return;
-
   if (errors.length === 1) throw errors[0];
 
-  throw new Error(
+  const err = new Error(
     `<ul class="text-left mb-0">${errors
       .map(
         err => `<li class="mb-3">${err && err.message ? err.message : err}</li>`
       )
       .join('')}</ul>`
   );
+  err.no_translate = true;
+  throw err;
 }
 
 Domain.statics.verifyRecords = verifyRecords;
 
-async function getTxtAddresses(domainName, allowEmpty = false) {
-  if (!isFQDN(domainName))
-    throw new Error('Domain must be a fully-qualified domain name ("FQDN")');
+async function getTxtAddresses(domainName, locale, allowEmpty = false) {
+  if (!isFQDN(domainName)) throw i18n.translateError('INVALID_FQDN', locale);
 
   const records = await resolveTxtAsync(domainName);
 
@@ -332,7 +354,7 @@ async function getTxtAddresses(domainName, allowEmpty = false) {
   const addresses = isSANB(record) ? record.split(',').map(a => a.trim()) : [];
 
   if (!allowEmpty && addresses.length === 0)
-    throw Boom.badRequest('Domain did not have any valid TXT records.');
+    throw i18n.translateError('MISSING_DNS_TXT', locale, domainName);
 
   // store if we have a forwarding address or not
   const forwardingAddresses = [];

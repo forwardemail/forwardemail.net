@@ -16,24 +16,16 @@ async function lookup(ctx) {
     !credentials.name
   )
     return ctx.throw(
-      Boom.unauthorized(
-        ctx.translate
-          ? ctx.translate('INVALID_API_CREDENTIALS')
-          : 'Invalid API credentials.'
-      )
+      Boom.badRequest(ctx.translateError('INVALID_API_CREDENTIALS'))
     );
 
   if (!env.API_SECRETS.includes(credentials.name))
-    return ctx.throw(
-      Boom.unauthorized(
-        ctx.translate
-          ? ctx.translate('INVALID_API_TOKEN')
-          : 'Invalid API token.'
-      )
-    );
+    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_API_TOKEN')));
 
   if (!isSANB(ctx.query.verification_record))
-    return ctx.throw(Boom.badRequest(ctx.translate('DOMAIN_DOES_NOT_EXIST')));
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+    );
 
   const domain = await Domains.findOne({
     verification_record: ctx.query.verification_record,
@@ -43,7 +35,9 @@ async function lookup(ctx) {
     .exec();
 
   if (!domain)
-    return ctx.throw(Boom.badRequest(ctx.translate('DOMAIN_DOES_NOT_EXIST')));
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+    );
 
   const aliases = await Aliases.find({
     domain: domain._id

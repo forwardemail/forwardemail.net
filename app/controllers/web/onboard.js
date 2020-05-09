@@ -79,13 +79,13 @@ async function onboard(ctx, next) {
   }
 
   if (!isSANB(ctx.request.body.email) || !isEmail(ctx.request.body.email))
-    return ctx.throw(Boom.badRequest(ctx.translate('INVALID_EMAIL')));
+    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
 
   if (
     !isSANB(ctx.request.body.domain) ||
     (!isFQDN(ctx.request.body.domain) && !isIP(ctx.request.body.domain))
   )
-    return ctx.throw(Boom.badRequest(ctx.translate('INVALID_DOMAIN')));
+    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_DOMAIN')));
 
   if (ctx.isAuthenticated() && boolean(ctx.request.body.create_domain)) {
     const match = ctx.state.domains.find(
@@ -95,21 +95,25 @@ async function onboard(ctx, next) {
     else
       ctx.state.domain = await Domains.create({
         members: [{ user: ctx.state.user._id, group: 'admin' }],
-        name: ctx.request.body.domain
+        name: ctx.request.body.domain,
+        locale: ctx.locale
       });
   } else if (
     !ctx.isAuthenticated() &&
     boolean(ctx.request.body.create_account)
   ) {
     const query = {
-      email: ctx.request.body.email
+      email: ctx.request.body.email,
+      locale: ctx.locale
     };
+    query[config.lastLocaleField] = ctx.locale;
     query[config.userFields.hasVerifiedEmail] = false;
     query[config.userFields.hasSetPassword] = false;
     const user = await Users.create(query);
     ctx.state.domain = await Domains.create({
       members: [{ user: user._id, group: 'admin' }],
-      name: ctx.request.body.domain
+      name: ctx.request.body.domain,
+      locale: ctx.locale
     });
     ctx.login(user);
   }

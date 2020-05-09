@@ -122,7 +122,7 @@ async function login(ctx, next) {
 
     if (!user) {
       if (info) throw info;
-      throw new Error(ctx.translate('UNKNOWN_ERROR'));
+      throw ctx.translateError('UNKNOWN_ERROR');
     }
 
     // redirect user to their last locale they were using
@@ -202,7 +202,8 @@ async function login(ctx, next) {
 async function loginOtp(ctx, next) {
   await passport.authenticate('otp', (err, user) => {
     if (err) throw err;
-    if (!user) throw Boom.unauthorized(ctx.translate('INVALID_OTP_PASSCODE'));
+    if (!user)
+      throw Boom.unauthorized(ctx.translateError('INVALID_OTP_PASSCODE'));
 
     ctx.session.otp_remember_me = boolean(ctx.request.body.otp_remember_me);
 
@@ -237,7 +238,7 @@ async function recoveryKey(ctx) {
     !recoveryKeys.includes(ctx.request.body.recovery_passcode)
   )
     return ctx.throw(
-      Boom.badRequest(ctx.translate('INVALID_RECOVERY_PASSCODE'))
+      Boom.badRequest(ctx.translateError('INVALID_RECOVERY_PASSCODE'))
     );
 
   // remove used passcode from recovery key list
@@ -264,16 +265,21 @@ async function register(ctx) {
   const { body } = ctx.request;
 
   if (!_.isString(body.email) || !validator.isEmail(body.email))
-    throw Boom.badRequest(ctx.translate('INVALID_EMAIL'));
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   if (!isSANB(body.password))
-    throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+    throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
   // register the user
   const count = await Users.countDocuments({ group: 'admin' });
-  const query = { email: body.email, group: count === 0 ? 'admin' : 'user' };
+  const query = {
+    email: body.email,
+    group: count === 0 ? 'admin' : 'user',
+    locale: ctx.locale
+  };
   query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
+  query[config.lastLocaleField] = ctx.locale;
   const user = await Users.register(query, body.password);
 
   await ctx.login(user);
@@ -303,7 +309,7 @@ async function forgotPassword(ctx) {
   const { body } = ctx.request;
 
   if (!_.isString(body.email) || !validator.isEmail(body.email))
-    throw Boom.badRequest(ctx.translate('INVALID_EMAIL'));
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   // lookup the user
   const user = await Users.findOne({ email: body.email });
@@ -333,7 +339,7 @@ async function forgotPassword(ctx) {
     )
   )
     throw Boom.badRequest(
-      ctx.translate(
+      ctx.translateError(
         'PASSWORD_RESET_LIMIT',
         moment(user[config.userFields.resetTokenExpiresAt]).fromNow()
       )
@@ -382,40 +388,46 @@ async function forgotPassword(ctx) {
 async function resetPassword(ctx) {
   const { body } = ctx.request;
 
-  if (!_.isString(body.email) || !validator.isEmail(body.email))
-    throw Boom.badRequest(ctx.translate('INVALID_EMAIL'));
+  try {
+    if (!_.isString(body.email) || !validator.isEmail(body.email))
+      throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
-  if (!isSANB(body.password))
-    throw Boom.badRequest(ctx.translate('INVALID_PASSWORD'));
+    if (!isSANB(body.password))
+      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
-  if (!isSANB(ctx.params.token))
-    throw Boom.badRequest(ctx.translate('INVALID_RESET_TOKEN'));
+    if (!isSANB(ctx.params.token))
+      throw Boom.badRequest(ctx.translateError('INVALID_RESET_TOKEN'));
 
-  // lookup the user that has this token and if it matches the email passed
-  const query = { email: body.email };
-  query[config.userFields.resetToken] = ctx.params.token;
-  // ensure that the reset token expires at value is in the future (hasn't expired)
-  query[config.userFields.resetTokenExpiresAt] = { $gte: new Date() };
-  const user = await Users.findOne(query);
+    // lookup the user that has this token and if it matches the email passed
+    const query = { email: body.email };
+    query[config.userFields.resetToken] = ctx.params.token;
+    // ensure that the reset token expires at value is in the future (hasn't expired)
+    query[config.userFields.resetTokenExpiresAt] = { $gte: new Date() };
+    const user = await Users.findOne(query);
 
-  if (!user) throw Boom.badRequest(ctx.translate('INVALID_RESET_PASSWORD'));
+    if (!user)
+      throw Boom.badRequest(ctx.translateError('INVALID_RESET_PASSWORD'));
 
-  user[config.userFields.resetToken] = null;
-  user[config.userFields.resetTokenExpiresAt] = null;
+    user[config.userFields.resetToken] = null;
+    user[config.userFields.resetTokenExpiresAt] = null;
 
-  await user.setPassword(body.password);
-  await user.save();
-  await ctx.login(user);
-  const message = ctx.translate('RESET_PASSWORD');
-  const redirectTo = `/${ctx.locale}`;
-  if (ctx.accepts('html')) {
-    ctx.flash('success', message);
-    ctx.redirect(redirectTo);
-  } else {
-    ctx.body = {
-      message,
-      redirectTo
-    };
+    await user.setPassword(body.password);
+    await user.save();
+    await ctx.login(user);
+    const message = ctx.translate('RESET_PASSWORD');
+    const redirectTo = `/${ctx.locale}`;
+    if (ctx.accepts('html')) {
+      ctx.flash('success', message);
+      ctx.redirect(redirectTo);
+    } else {
+      ctx.body = {
+        message,
+        redirectTo
+      };
+    }
+  } catch (err) {
+    console.log('err', err);
+    throw err;
   }
 }
 
@@ -514,7 +526,7 @@ async function verify(ctx) {
     pin !== ctx.state.user[config.userFields.verificationPin]
   )
     return ctx.throw(
-      Boom.badRequest(ctx.translate('INVALID_VERIFICATION_PIN'))
+      Boom.badRequest(ctx.translateError('INVALID_VERIFICATION_PIN'))
     );
 
   // set has verified to true

@@ -1,4 +1,5 @@
 const ForwardEmail = require('forward-email');
+const RE2 = require('re2');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -16,6 +17,7 @@ const logger = require('../../helpers/logger');
 const config = require('../../config');
 const Domains = require('./domain');
 const Users = require('./user');
+const i18n = require('../../helpers/i18n');
 
 const app = new ForwardEmail({
   logger,
@@ -24,8 +26,10 @@ const app = new ForwardEmail({
 });
 
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
-// eslint-disable-next-line no-control-regex
-const quotedEmailUserUtf8 = /^([\s\u0001-\u0008\u000B\u000C\u000E-\u001F\u007F!\u0023-\u005B\u005D-\u007E\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B\u000C\u000D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i;
+const quotedEmailUserUtf8 = new RE2(
+  // eslint-disable-next-line no-control-regex
+  /^([\s\u0001-\u0008\u000B\u000C\u000E-\u001F\u007F!\u0023-\u005B\u005D-\u007E\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B\u000C\u000D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i
+);
 
 const Alias = new mongoose.Schema({
   user: {
@@ -170,19 +174,24 @@ Alias.pre('save', async function(next) {
       member => _.isObject(member.user) && !member.user.is_banned
     );
 
-    if (!domain) throw new Error('Domain does not exist.');
+    if (!domain)
+      throw i18n.translateError(
+        'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
+        alias.__locale
+      );
 
-    if (!user) throw new Error('User does not exist.');
+    if (!user) throw i18n.translateError('INVALID_USER', alias.__locale);
 
     // find an existing alias match
     const match = aliases.find(
       _alias => _alias.id !== alias.id && _alias.name === alias.name
     );
 
-    if (match) throw new Error('Alias already exists for this domain.');
+    if (match)
+      throw i18n.translateError('ALIAS_ALREADY_EXISTS', alias.__locale);
 
     if (!isEmail(`${alias.name}@${domain.name}`))
-      throw new Error('Email address was invalid.');
+      throw i18n.translateError('INVALID_EMAIL', alias.__locale);
 
     // determine the domain membership for the user
     let member = domain.members.find(member => member.user.id === user.id);
@@ -199,9 +208,7 @@ Alias.pre('save', async function(next) {
     if (member.group !== 'admin') {
       // alias name cannot be a wildcard "*" if the user is not an admin
       if (alias.name === '*')
-        throw new Error(
-          'User must be a domain admin to create a catch-all alias.'
-        );
+        throw i18n.translateError('CATCHALL_ADMIN_REQUIRED', alias.__locale);
 
       //
       // prevent regular users (non-admins) from registering reserved words
@@ -223,8 +230,10 @@ Alias.pre('save', async function(next) {
         );
 
       if (reservedMatch)
-        throw new Error(
-          `User must be a domain admin to create an alias with a reserved word (see the page on <a target="_blank" rel="noopener" href="${config.urls.web}/reserved-email-addresses">Reserved Email Addresses</a>).`
+        throw i18n.translateError(
+          'RESERVED_WORD_ADMIN_REQUIRED',
+          alias.__locale,
+          config.urls.web
         );
 
       // if user is not admin of the domain and it is a global domain
@@ -234,9 +243,7 @@ Alias.pre('save', async function(next) {
           _alias => _alias.user.id === user.id && _alias.name !== alias.name
         ).length;
         if (aliasCount > 5)
-          throw new Error(
-            'User cannot have more than (5) aliases on global domains.'
-          );
+          throw i18n.translateError('REACHED_MAX_ALIAS_COUNT', alias.__locale);
       }
     }
 
@@ -249,9 +256,7 @@ Alias.pre('save', async function(next) {
         : domain.max_recipients_per_alias;
 
     if (alias.recipients.length > count)
-      throw new Error(
-        `You have exceeded the maximum count of (${count}) recipients per alias.  Please <a href="/help">contact us</a> if you wish to have this limit increased.  We review requests on a unique basis.  Please provide us with information about your forwarding purposes if possible.`
-      );
+      throw i18n.translateError('EXCEEDED_UNIQUE_COUNT', alias.__locale, count);
 
     next();
   } catch (err) {

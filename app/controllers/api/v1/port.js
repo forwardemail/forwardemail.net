@@ -31,21 +31,13 @@ async function port(ctx) {
       typeof credentials.name !== 'string' ||
       !credentials.name
     )
-      throw Boom.unauthorized(
-        ctx.translate
-          ? ctx.translate('INVALID_API_CREDENTIALS')
-          : 'Invalid API credentials.'
-      );
+      throw Boom.unauthorized(ctx.translateError('INVALID_API_CREDENTIALS'));
 
     if (!env.API_SECRETS.includes(credentials.name))
-      throw Boom.unauthorized(
-        ctx.translate
-          ? ctx.translate('INVALID_API_TOKEN')
-          : 'Invalid API token.'
-      );
+      throw Boom.unauthorized(ctx.translateError('INVALID_API_TOKEN'));
 
     if (!isSANB(ctx.query.domain) || !isFQDN(ctx.query.domain))
-      throw Boom.badRequest(ctx.translate('INVALID_FQDN'));
+      throw Boom.badRequest(ctx.translateError('INVALID_FQDN'));
 
     // TXT lookup here to find `forward-email-site-verification`
     // if a verification record was found, then look it up and if it's valid
@@ -56,7 +48,7 @@ async function port(ctx) {
 
       const verifications = [];
       const ports = [];
-      let port = 25;
+      let port = '25';
 
       for (const element of records) {
         const record = element.join(''); // join chunks together
@@ -71,7 +63,9 @@ async function port(ctx) {
 
       if (verifications.length > 0) {
         if (verifications.length > 1)
-          throw Boom.badRequest(ctx.translate('MULTIPLE_VERIFICATION_RECORDS'));
+          throw Boom.badRequest(
+            ctx.translateError('SINGLE_VERIFICATION_RECORD_REQUIRED')
+          );
 
         const domain = await Domains.findOne({
           verification_record: verifications[0],
@@ -81,16 +75,17 @@ async function port(ctx) {
           .exec();
 
         if (!domain)
-          throw Boom.badRequest(ctx.translate('DOMAIN_DOES_NOT_EXIST'));
+          throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
         port = domain.smtp_port;
       } else if (ports.length > 0) {
         if (ports.length > 1)
-          throw Boom.badRequest(ctx.translate('MULTIPLE_PORT_RECORDS'));
+          throw Boom.badRequest(ctx.translateError('MULTIPLE_PORT_RECORDS'));
         port = ports[0];
       }
 
-      if (!isPort(port)) throw Boom.badRequest(ctx.translate('INVALID_PORT'));
+      if (!isPort(port))
+        throw Boom.badRequest(ctx.translateError('INVALID_PORT'));
 
       ctx.body = { port };
     } catch (err) {

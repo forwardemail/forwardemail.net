@@ -254,8 +254,15 @@ User.methods.sendVerificationEmail = async function(ctx) {
         .locale(this[config.lastLocaleField])
         .humanize()
     );
-    if (ctx) throw Boom.badRequest(message);
-    throw new Error(message);
+    if (ctx) {
+      const err = Boom.badRequest(message);
+      err.no_translate = true;
+      throw err;
+    }
+
+    const err = new Error(message);
+    err.no_translate = true;
+    throw err;
   }
 
   if (this[config.userFields.verificationPinHasExpired]) {
