@@ -447,10 +447,18 @@ async function verifyRecords(ctx) {
   // check mx and txt
   try {
     await Domains.verifyRecords(ctx.state.domain._id);
+
+    const text = ctx.translate('DOMAIN_IS_VERIFIED');
+
+    if (ctx.api) {
+      ctx.body = text;
+      return;
+    }
+
     // if everything OK then success
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
-      text: ctx.translate('DOMAIN_IS_VERIFIED'),
+      text,
       type: 'success',
       toast: true,
       showConfirmButton: false,
