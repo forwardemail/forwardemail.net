@@ -51,7 +51,7 @@ async function update(ctx) {
     ctx.state.user.email = body.email;
   }
 
-  await ctx.state.user.save();
+  ctx.state.user = await ctx.state.user.save();
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -69,7 +69,7 @@ async function update(ctx) {
 
 async function resetAPIToken(ctx) {
   ctx.state.user[config.userFields.apiToken] = null;
-  await ctx.state.user.save();
+  ctx.state.user = await ctx.state.user.save();
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -201,6 +201,7 @@ async function retrieveDomains(ctx, next) {
   });
 
   if (
+    !ctx.api &&
     ctx.state.domains.length === 0 &&
     ctx.method === 'GET' &&
     ['/my-account', '/my-account/domains'].includes(ctx.pathWithoutLocale)
@@ -238,6 +239,9 @@ async function retrieveDomain(ctx, next) {
     return ctx.throw(
       Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
+
+  // if it's an API request then return early
+  if (ctx.api) return next();
 
   //
   // set breadcrumbs
@@ -321,6 +325,7 @@ async function createDomain(ctx, next) {
         name: ctx.state.t('Add Domain')
       }
     ];
+    if (ctx.api) return next();
     return ctx.render('my-account/domains/new');
   }
 
@@ -340,7 +345,7 @@ async function createDomain(ctx, next) {
     );
 
   try {
-    const domain = await Domains.create({
+    ctx.state.domain = await Domains.create({
       members: [{ user: ctx.state.user._id, group: 'admin' }],
       name: ctx.request.body.domain,
       is_global:
@@ -351,18 +356,22 @@ async function createDomain(ctx, next) {
     // create a default alias for the user pointing to the admin
     await Aliases.create({
       user: ctx.state.user._id,
-      domain: domain._id,
+      domain: ctx.state.domain._id,
       name: '*',
       recipients: [ctx.state.user.email],
       locale: ctx.locale
     });
+
+    if (ctx.api) return next();
 
     // TODO: flash messages logic in @ladjs/assets doesn't support both
     // custom and regular flash message yet
     if (ctx.request.body.domain.startsWith('www.')) {
       ctx.flash(
         'error',
-        ctx.translate('WWW_WARNING').replace(/example.com/g, domain.name)
+        ctx
+          .translate('WWW_WARNING')
+          .replace(/example.com/g, ctx.state.domain.name)
       );
     } else {
       ctx.flash('custom', {
@@ -376,14 +385,14 @@ async function createDomain(ctx, next) {
       });
     }
 
-    let redirectTo = ctx.state.l(`/my-account/domains/${domain.id}`);
+    let redirectTo = ctx.state.l(`/my-account/domains/${ctx.state.domain.id}`);
 
     if (
       isSANB(ctx.request.body.plan) &&
       ['free', 'enhanced_protection', 'team'].includes(ctx.request.body.plan)
     )
       redirectTo = ctx.state.l(
-        `/my-account/domains/${domain.id}/billing?plan=${ctx.request.body.plan}`
+        `/my-account/domains/${ctx.state.domain.id}/billing?plan=${ctx.request.body.plan}`
       );
 
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
@@ -417,7 +426,7 @@ async function remove(ctx) {
   else ctx.body = { redirectTo };
 }
 
-async function removeDomain(ctx) {
+async function removeDomain(ctx, next) {
   await Domains.findByIdAndRemove(ctx.state.domain._id);
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -428,6 +437,7 @@ async function removeDomain(ctx) {
     timer: 3000,
     position: 'top'
   });
+  if (ctx.api) return next();
   const redirectTo = ctx.state.l('/my-account/domains');
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };
@@ -522,14 +532,15 @@ function validateAlias(ctx, next) {
   return next();
 }
 
-async function createAlias(ctx) {
+async function createAlias(ctx, next) {
   try {
-    await Aliases.create({
+    ctx.state.alias = await Aliases.create({
       ...ctx.state.body,
       user: ctx.state.user._id,
       domain: ctx.state.domain._id,
       locale: ctx.locale
     });
+    if (ctx.api) return next();
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
       text: ctx.translate('REQUEST_OK'),
@@ -562,6 +573,8 @@ function retrieveAlias(ctx, next) {
     return ctx.throw(
       Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST'))
     );
+
+  if (ctx.api) return next();
   if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.id}/aliases/${ctx.state.alias.id}`
@@ -580,12 +593,13 @@ function retrieveAlias(ctx, next) {
   return next();
 }
 
-async function updateAlias(ctx) {
-  let alias = await Aliases.findById(ctx.state.alias._id);
-  alias = _.extend(alias, ctx.state.body);
+async function updateAlias(ctx, next) {
+  ctx.state.alias = await Aliases.findById(ctx.state.alias._id);
+  ctx.state.alias = _.extend(ctx.state.alias, ctx.state.body);
   try {
-    alias.locale = ctx.locale;
-    await alias.save();
+    ctx.state.alias.locale = ctx.locale;
+    ctx.state.alias = await ctx.state.alias.save();
+    if (ctx.api) return next();
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
       text: ctx.translate('REQUEST_OK'),
@@ -606,7 +620,7 @@ async function updateAlias(ctx) {
   }
 }
 
-async function removeAlias(ctx) {
+async function removeAlias(ctx, next) {
   await Aliases.findByIdAndRemove(ctx.state.alias._id);
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -617,6 +631,7 @@ async function removeAlias(ctx) {
     timer: 3000,
     position: 'top'
   });
+  if (ctx.api) return next();
   const redirectTo = ctx.state.l(
     `/my-account/domains/${ctx.state.domain.id}/aliases`
   );
@@ -652,6 +667,12 @@ function ensureUpgradedPlan(ctx, next) {
     html: ctx.translate('PLAN_UPGRADE_REQUIRED'),
     type: 'warning'
   };
+
+  if (ctx.api)
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('PLAN_UPGRADE_REQUIRED'))
+    );
+
   if (ctx.method === 'GET' || ctx.accepts('html')) {
     ctx.flash('custom', swal);
     /*
@@ -678,13 +699,16 @@ async function retrieveBilling(ctx) {
   domain.plan = ctx.query.plan;
   try {
     domain.locale = ctx.locale;
-    await domain.save();
-    ctx.flash('success', ctx.translate(`${domain.plan.toUpperCase()}_PLAN`));
+    ctx.state.domain = await domain.save();
+    ctx.flash(
+      'success',
+      ctx.translate(`${ctx.state.domain.plan.toUpperCase()}_PLAN`)
+    );
     if (domain.plan !== 'free')
       ctx.flash('warning', ctx.translate('BETA_PROGRAM'));
     // TODO: for some reason the link uncommented doesn't work
     // specifically the above flash messages do not render when it's uncommented
-    const redirectTo = ctx.state.l(`/my-account/domains`); // /${domain.id}/`);
+    const redirectTo = ctx.state.l(`/my-account/domains`); // /${ctx.state.domain.id}/`);
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
   } catch (err) {
@@ -743,12 +767,19 @@ async function importAliases(ctx) {
     );
     if (existing)
       errors.push(
-        new Error(
-          `Could not import "${element.name}" record's recipient of "${element.recipient}" since it already exists as an alias.  Note that you may want to disable it since the imported TXT was disabled already.`
+        ctx.translate(
+          'IMPORT_ALIAS_ALREADY_EXISTS',
+          element.name,
+          element.recipient
         )
       );
-    else if (match) match.recipients.push(element.recipient);
-    else
+    else if (match) {
+      if (element.recipient) match.recipients.push(element.recipient);
+      else
+        errors.push(
+          ctx.translate('IMPORT_ALIAS_DISABLED_NOBODY', element.name)
+        );
+    } else {
       aliases.push({
         is_enabled: false,
         user: ctx.state.user._id,
@@ -756,6 +787,7 @@ async function importAliases(ctx) {
         name: element.name,
         recipients: [element.recipient]
       });
+    }
   }
 
   for (const element of forwardingAddresses) {
@@ -765,8 +797,10 @@ async function importAliases(ctx) {
     );
     if (existing)
       errors.push(
-        new Error(
-          `Could not import "${element.name}" record's recipient of "${element.recipient}" since it already exists as an alias.`
+        ctx.translate(
+          'IMPORT_ALIAS_ALREADY_EXISTS',
+          element.name,
+          element.recipient
         )
       );
     else if (match) match.recipients.push(element.recipient);
@@ -791,9 +825,7 @@ async function importAliases(ctx) {
       if (existing) {
         if (existing.recipients.includes(element))
           errors.push(
-            new Error(
-              `Could not import catch-all record's recipient of "${element}" since the catch-all already includes it as a recipient.`
-            )
+            ctx.translate('IMPORT_CATCHALL_ALREADY_INCLUDES', element)
           );
         else catchAll.push(element);
       } else if (match) match.recipients.push(element);
@@ -819,13 +851,13 @@ async function importAliases(ctx) {
       const arr = await Aliases.create(
         aliases.map(alias => ({ ...alias, locale: ctx.locale }))
       );
-      messages.push(`Successfully imported (${arr.length}) aliases.`);
+      messages.push(ctx.translate('IMPORT_SUCCESSFUL', arr.length));
     } catch (err) {
-      messages.push('An error occurred while importing aliases.');
+      messages.push(ctx.translate('IMPORT_ERROR'));
       ctx.logger.error(err);
       errors.push(err);
     }
-  else messages.push('No aliases were available to import.');
+  else messages.push(ctx.translate('IMPORT_NO_ALIASES_AVAILABLE'));
 
   if (catchAll.length > 0)
     try {
@@ -841,14 +873,14 @@ async function importAliases(ctx) {
       alias.locale = ctx.locale;
       await alias.save();
       messages.push(
-        `Successfully imported (${catchAll.length}) catch-all recipients.`
+        ctx.translate('IMPORT_CATCHALL_SUCCESSFUL', catchAll.length)
       );
     } catch (err) {
-      messages.push('An error occurred while importing catch-all recipients.');
+      messages.push(ctx.translate('IMPORT_CATCHALL_ERROR'));
       ctx.logger.error(err);
       errors.push(err);
     }
-  else messages.push('No catch-all recipients were available to import.');
+  else messages.push(ctx.translate('IMPORT_CATCHALL_NONE'));
 
   errors = _.uniqBy(errors, 'message');
 
@@ -880,7 +912,7 @@ function retrieveAliases(ctx, next) {
   // if there aren't any aliases yet
   // then prompt the user to create one and flash a message
   // otherwise take them to the next middleware
-  if (ctx.state.domain.aliases.length > 0) return next();
+  if (ctx.api || ctx.state.domain.aliases.length > 0) return next();
   ctx.flash('custom', {
     title: ctx.translate('ADD_ALIAS'),
     text: ctx.translate('NO_ALIASES_EXIST'),
@@ -924,30 +956,45 @@ async function retrieveInvite(ctx) {
     user: ctx.state.user._id,
     group
   });
+
   // remove invitee from invites list
   domain.invites = domain.invites.filter(
     invite => invite.email !== ctx.state.user.email
   );
+
   // save domain
   domain.locale = ctx.locale;
-  await domain.save();
+  ctx.state.domain = await domain.save();
+
+  // flash a message to the user telling them they've successfully accepted
+  const message =
+    group === 'admin'
+      ? ctx.translate('INVITE_ACCEPTED_ADMIN')
+      : ctx.translate('INVITE_ACCEPTED_USER');
+
+  // edge case if it was an API request to simply send a string in the body
+  if (ctx.api) {
+    ctx.body = message;
+    return;
+  }
+
+  ctx.flash('success', message);
+
   // redirect user to either alias page (if user) or admin page (if admin)
   const redirectTo =
     group === 'admin'
-      ? ctx.state.l(`/my-account/domains/${domain.id}`)
-      : ctx.state.l(`/my-account/domains/${domain.id}/aliases`);
-  // flash a message to the user telling them they've successfully accepted
-  if (group === 'admin')
-    ctx.flash('success', ctx.translate('INVITE_ACCEPTED_ADMIN'));
-  else ctx.flash('success', ctx.translate('INVITE_ACCEPTED_USER'));
+      ? ctx.state.l(`/my-account/domains/${ctx.state.domain.id}`)
+      : ctx.state.l(`/my-account/domains/${ctx.state.domain.id}/aliases`);
 
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };
 }
 
-async function createInvite(ctx) {
+async function createInvite(ctx, next) {
   // ctx.request.body.email
-  if (!isSANB(ctx.request.body.email) || !isEmail(ctx.request.body.email))
+  // ctx.query.email
+  const email = ctx.request.body.email || ctx.query.email;
+  if (!isSANB(email) || !isEmail(email))
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
 
   // ctx.request.body.group
@@ -959,8 +1006,7 @@ async function createInvite(ctx) {
 
   // ensure invite does not already exist
   const invite = ctx.state.domain.invites.find(
-    invite =>
-      invite.email.toLowerCase() === ctx.request.body.email.toLowerCase()
+    invite => invite.email.toLowerCase() === email.toLowerCase()
   );
 
   if (invite)
@@ -969,23 +1015,23 @@ async function createInvite(ctx) {
     );
 
   // create the invite
-  const domain = await Domains.findById(ctx.state.domain._id);
-  domain.invites.push({
-    email: ctx.request.body.email,
+  ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+  ctx.state.domain.invites.push({
+    email: email.toLowerCase(),
     group: ctx.request.body.group
   });
-  domain.locale = ctx.locale;
-  await domain.save();
+  ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain = await ctx.state.domain.save();
 
   // send an email
   try {
     const job = await bull.add('email', {
       template: 'invite',
       message: {
-        to: ctx.request.body.email
+        to: email.toLowerCase()
       },
       locals: {
-        domain: { id: domain.id, name: domain.name }
+        domain: { id: ctx.state.domain.id, name: ctx.state.domain.name }
       }
     });
     ctx.logger.info('added job', bull.getMeta({ job }));
@@ -993,6 +1039,8 @@ async function createInvite(ctx) {
     ctx.flash('error', ctx.translate('INVITE_EMAIL_ERROR'));
     ctx.logger.error(err);
   }
+
+  if (ctx.api) return next();
 
   // send response
   ctx.flash('custom', {
@@ -1009,18 +1057,22 @@ async function createInvite(ctx) {
   else ctx.body = { reloadPage: true };
 }
 
-async function removeInvite(ctx) {
+async function removeInvite(ctx, next) {
   // ctx.request.body.email
-  if (!isSANB(ctx.request.body.email) || !isEmail(ctx.request.body.email))
+  // ctx.query.email
+  const email = ctx.request.body.email || ctx.query.email;
+  if (!isSANB(email) || !isEmail(email))
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
-  const domain = await Domains.findById(ctx.state.domain._id);
+  ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   // remove invite
-  domain.invites = domain.invites.filter(
-    invite =>
-      invite.email.toLowerCase() !== ctx.request.body.email.toLowerCase()
+  ctx.state.domain.invites = ctx.state.domain.invites.filter(
+    invite => invite.email.toLowerCase() !== email.toLowerCase()
   );
-  domain.locale = ctx.locale;
-  await domain.save();
+  ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain = await ctx.state.domain.save();
+
+  if (ctx.api) return next();
+
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
     text: ctx.translate('REQUEST_OK'),
@@ -1035,7 +1087,7 @@ async function removeInvite(ctx) {
   else ctx.body = { reloadPage: true };
 }
 
-async function updateMember(ctx) {
+async function updateMember(ctx, next) {
   // ctx.params.user_id
   if (!isSANB(ctx.params.user_id))
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
@@ -1054,9 +1106,9 @@ async function updateMember(ctx) {
   if (!member)
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
 
-  const domain = await Domains.findById(ctx.state.domain._id);
+  ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   // swap the user group based off ctx.request.body.group
-  domain.members = domain.members.map(member => ({
+  ctx.state.domain.members = ctx.state.domain.members.map(member => ({
     ...member,
     group:
       member.user.toString() === ctx.params.user_id
@@ -1064,8 +1116,11 @@ async function updateMember(ctx) {
         : member.group
   }));
 
-  domain.locale = ctx.locale;
-  await domain.save();
+  ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain = await ctx.state.domain.save();
+
+  if (ctx.api) return next();
+
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
     text: ctx.translate('REQUEST_OK'),
@@ -1080,7 +1135,7 @@ async function updateMember(ctx) {
   else ctx.body = { reloadPage: true };
 }
 
-async function removeMember(ctx) {
+async function removeMember(ctx, next) {
   // ctx.params.user_id
   if (!isSANB(ctx.params.user_id))
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
@@ -1098,12 +1153,15 @@ async function removeMember(ctx) {
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
   */
 
-  const domain = await Domains.findById(ctx.state.domain._id);
-  domain.members = domain.members.filter(
+  ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+  ctx.state.domain.members = ctx.state.domain.members.filter(
     member => member.user.toString() !== ctx.params.user_id
   );
-  domain.locale = ctx.locale;
-  await domain.save();
+  ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain = await ctx.state.domain.save();
+
+  if (ctx.api) return next();
+
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
     text: ctx.translate('REQUEST_OK'),
@@ -1134,15 +1192,18 @@ async function recoveryKeys(ctx) {
     .replace(/"/g, '');
 }
 
-async function updateAdvancedSettings(ctx) {
-  const domain = await Domains.findById(ctx.state.domain._id);
+async function updateDomain(ctx, next) {
+  ctx.state.domain = await Domains.findById(ctx.state.domain._id);
 
   if (isSANB(ctx.request.body.port))
-    if (isPort(ctx.request.body.port)) domain.smtp_port = ctx.request.body.port;
+    if (isPort(ctx.request.body.port))
+      ctx.state.domain.smtp_port = ctx.request.body.port;
     else return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PORT')));
 
-  domain.locale = ctx.locale;
-  await domain.save();
+  ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain = await ctx.state.domain.save();
+
+  if (ctx.api) return next();
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -1187,5 +1248,5 @@ module.exports = {
   removeMember,
   ensureNotBanned,
   recoveryKeys,
-  updateAdvancedSettings
+  updateDomain
 };

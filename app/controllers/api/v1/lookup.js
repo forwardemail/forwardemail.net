@@ -1,27 +1,11 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');
 
-const env = require('../../../../config/env');
 const Domains = require('../../../models/domain');
 const Aliases = require('../../../models/alias');
 
 async function lookup(ctx) {
-  const credentials = auth(ctx.req);
-
-  if (
-    typeof credentials === 'undefined' ||
-    typeof credentials.name !== 'string' ||
-    !credentials.name
-  )
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_API_CREDENTIALS'))
-    );
-
-  if (!env.API_SECRETS.includes(credentials.name))
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_API_TOKEN')));
-
   if (!isSANB(ctx.query.verification_record))
     return ctx.throw(
       Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))

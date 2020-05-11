@@ -5,6 +5,7 @@ const lookup = require('./lookup');
 const port = require('./port');
 const test = require('./test');
 const users = require('./users');
+const restricted = require('./restricted');
 
 module.exports = {
   aliases,
@@ -13,5 +14,6 @@ module.exports = {
   lookup,
   port,
   test,
-  users
+  users,
+  restricted
 };

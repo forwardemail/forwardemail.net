@@ -136,5 +136,16 @@ module.exports = {
   INCORRECT_VERIFICATION_RECORD: `Domain has an incorrect DNS TXT record for verification.  Please ensure %s is the only verification record that exists.`,
   MULTIPLE_VERIFICATION_RECORDS:
     'Domain has multiple verification records.  Please ensure %s is the only verification record that exists.',
-  PURGE_CACHE: `If you recently updated your DNS records for %s, then you should purge its cache using <a href="https://1.1.1.1/purge-cache/" rel="noopener" target="_blank">Cloudflare's Purge Cache Tool</a> and optionally <a href="https://developers.google.com/speed/public-dns/cache" rel="noopener" target="_blank">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.`
+  PURGE_CACHE: `If you recently updated your DNS records for %s, then you should purge its cache using <a href="https://1.1.1.1/purge-cache/" rel="noopener" target="_blank">Cloudflare's Purge Cache Tool</a> and optionally <a href="https://developers.google.com/speed/public-dns/cache" rel="noopener" target="_blank">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.`,
+  IMPORT_ALIAS_ALREADY_EXISTS: `Could not import "%s" record's recipient of "%s" since it already exists as an alias.`,
+  IMPORT_ALIAS_DISABLED_NOBODY:
+    'We successfully imported the disabled address of "%s", but we had to do so with a single recipient of "nobody@forwardemail.net" because it did not have a recipient in the imported DNS entry.',
+  IMPORT_CATCHALL_ALREADY_INCLUDES: `Could not import catch-all record's recipient of "%s" since the catch-all already includes it as a recipient.`,
+  IMPORT_SUCCESSFUL: `Successfully imported (%d) aliases.`,
+  IMPORT_ERROR: 'An error occurred while importing aliases.',
+  IMPORT_NO_ALIASES_AVAILABLE: 'No aliases were available to import.',
+  IMPORT_CATCHALL_SUCCESSFUL: `Successfully imported (%d) catch-all recipients.`,
+  IMPORT_CATCHALL_ERROR:
+    'An error occurred while importing catch-all recipients.',
+  IMPORT_CATCHALL_NONE: 'No catch-all recipients were available to import.'
 };

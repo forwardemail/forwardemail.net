@@ -12,6 +12,7 @@ const myAccount = require('./my-account');
 const faq = require('./faq');
 const onboard = require('./onboard');
 const otp = require('./otp');
+const api = require('./api');
 
 function breadcrumbs(ctx, next) {
   // return early if its not a pure path (e.g. ignore static assets)
@@ -43,5 +44,6 @@ module.exports = {
   myAccount,
   faq,
   onboard,
-  otp
+  otp,
+  api
 };

@@ -319,6 +319,7 @@ async function verifyRecords(_id, locale) {
 
 Domain.statics.verifyRecords = verifyRecords;
 
+// eslint-disable-next-line complexity
 async function getTxtAddresses(domainName, locale, allowEmpty = false) {
   if (!isFQDN(domainName)) throw i18n.translateError('INVALID_FQDN', locale);
 
@@ -371,20 +372,25 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
     if (addresses[i].includes(':')) {
       const addr = addresses[i].split(':');
 
-      if (addr.length !== 2 || !isEmail(addr[1]))
+      // addr[0] = hello (username)
+      // addr[1] = niftylettuce@gmail.com (forwarding email)
+      // check if we have a match (and if it is ignored)
+      if (_.isString(addr[0]) && addr[0].indexOf('!') === 0) {
+        ignoredAddresses.push({
+          name: addr[0].slice(1),
+          recipient: isSANB(addr[1]) ? addr[1] : false
+        });
+        continue;
+      }
+
+      if (addr.length !== 2 || !_.isString(addr[1]) || !isEmail(addr[1]))
         errors.push(
           new Error(
             `Domain has an invalid "${app.config.recordPrefix}" TXT record due to an invalid email address of "${addresses[i]}".`
           )
         );
 
-      // addr[0] = hello (username)
-      // addr[1] = niftylettuce@gmail.com (forwarding email)
-
-      // check if we have a match (and if it is ignored)
-      if (addr[0].indexOf('!') === 0)
-        ignoredAddresses.push({ name: addr[0].slice(1), recipient: addr[1] });
-      else forwardingAddresses.push({ name: addr[0], recipient: addr[1] });
+      forwardingAddresses.push({ name: addr[0], recipient: addr[1] });
     } else if (isFQDN(addresses[i]) || isIP(addresses[i])) {
       // allow domain alias forwarding
       // (e.. the record is just "b.com" if it's not a valid email)
