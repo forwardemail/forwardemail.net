@@ -33,6 +33,10 @@ module.exports = function(config) {
       'Our features include Custom Domain Email Forwarding, Disposable Addresses, Multiple Recipients, Wildcards, and more!'
     ],
     '/faq': [`FAQ ${lad}`, 'Read frequently asked questions about our service'],
+    '/api': [
+      `API ${lad}`,
+      'Programmatic API access to email forwarding aliases, domains, and more.'
+    ],
     '/donate': [
       `Donate ${lad}`,
       'Donate to our service to support our efforts'
