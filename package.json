@@ -133,6 +133,7 @@
     "@lwc/eslint-plugin-lwc": "^0.10.0",
     "ava": "^3.8.2",
     "babel-eslint": "^10.1.0",
+    "babelify": "^10.0.0",
     "browserify": "^16.5.1",
     "bundle-collapser": "^1.4.0",
     "codecov": "^3.6.5",

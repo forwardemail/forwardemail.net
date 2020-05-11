@@ -93,7 +93,7 @@ async function verify(ctx) {
     ctx.logger.debug('created inquiry', inquiry);
 
     const job = await bull.add('email', {
-      template: 'inquiry',
+      template: 'recovery',
       message: {
         to: ctx.state.user.email,
         cc: config.email.message.from
