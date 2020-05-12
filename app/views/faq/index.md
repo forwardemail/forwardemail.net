@@ -182,7 +182,7 @@
     Important:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both of the above records MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly.If there were already MX records that existed, please delete them completely.
+    Note that there should be NO other MX records set.  Both of the above records MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
     The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
   </span>
 </div>
@@ -982,7 +982,7 @@ The service continues to run thanks to [donations](/donate) and users that upgra
 
 ## What is the max email size limit
 
-We default to a 25 MB size limit (the same as Gmail), which includes content, headers, and attachments.
+We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
 
 An error with the proper response code is returned if the file size limit is exceeded.
 
