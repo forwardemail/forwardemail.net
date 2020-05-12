@@ -170,7 +170,7 @@ async function login(ctx, next) {
       );
 
       ctx.state.user.qrcode = await qrcode.toDataURL(uri);
-      await ctx.state.user.save();
+      ctx.state.user = await ctx.state.user.save();
 
       if (user[config.passport.fields.otpEnabled] && !ctx.session.otp)
         redirectTo = ctx.state.l(config.loginOtpRoute);
@@ -259,7 +259,7 @@ async function recoveryKey(ctx) {
   }
 
   ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys;
-  await ctx.state.user.save();
+  ctx.state.user = await ctx.state.user.save();
 
   ctx.session.otp = 'totp-recovery';
 
@@ -336,7 +336,7 @@ async function forgotPassword(ctx) {
     throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   // lookup the user
-  const user = await Users.findOne({ email: body.email });
+  let user = await Users.findOne({ email: body.email });
 
   // to prevent people from being able to find out valid email accounts
   // we always say "a password reset request has been sent to your email"
@@ -375,7 +375,7 @@ async function forgotPassword(ctx) {
     .toDate();
   user[config.userFields.resetToken] = cryptoRandomString({ length: 32 });
 
-  await user.save();
+  user = await user.save();
 
   if (ctx.accepts('html')) {
     ctx.flash('success', ctx.translate('PASSWORD_RESET_SENT'));
@@ -427,7 +427,7 @@ async function resetPassword(ctx) {
     query[config.userFields.resetToken] = ctx.params.token;
     // ensure that the reset token expires at value is in the future (hasn't expired)
     query[config.userFields.resetTokenExpiresAt] = { $gte: new Date() };
-    const user = await Users.findOne(query);
+    let user = await Users.findOne(query);
 
     if (!user)
       throw Boom.badRequest(ctx.translateError('INVALID_RESET_PASSWORD'));
@@ -436,7 +436,7 @@ async function resetPassword(ctx) {
     user[config.userFields.resetTokenExpiresAt] = null;
 
     await user.setPassword(body.password);
-    await user.save();
+    user = await user.save();
     await ctx.login(user);
     const message = ctx.translate('RESET_PASSWORD');
     const redirectTo = `/${ctx.locale}`;
@@ -555,7 +555,7 @@ async function verify(ctx) {
 
   // set has verified to true
   ctx.state.user[config.userFields.hasVerifiedEmail] = true;
-  await ctx.state.user.save();
+  ctx.state.user = await ctx.state.user.save();
 
   // send the user a success message
   const message = ctx.translate('EMAIL_VERIFICATION_SUCCESS');

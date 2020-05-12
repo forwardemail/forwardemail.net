@@ -1,32 +1,24 @@
-// TODO: finish this
+const _ = require('lodash');
+const { select } = require('mongoose-json-select');
+
+const { Domains } = require('../../../models');
+
+function json(domain) {
+  return select(
+    _.isFunction(domain.toObject) ? domain.toObject() : domain,
+    Domains.schema.options.toJSON.select
+  );
+}
+
 async function list(ctx) {
-  ctx.body = 'OK';
+  ctx.body = ctx.state.domains.map(domain => json(domain));
 }
 
-// TODO: finish this
-async function create(ctx) {
-  ctx.body = 'OK';
-}
-
-// TODO: finish this
 async function retrieve(ctx) {
-  ctx.body = 'OK';
-}
-
-// TODO: finish this
-async function update(ctx) {
-  ctx.body = 'OK';
-}
-
-// TODO: finish this
-async function remove(ctx) {
-  ctx.body = 'OK';
+  ctx.body = json(ctx.state.domain);
 }
 
 module.exports = {
   list,
-  create,
-  retrieve,
-  update,
-  remove
+  retrieve
 };

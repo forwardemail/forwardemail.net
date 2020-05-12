@@ -3,12 +3,10 @@ const util = require('util');
 
 const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
-const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');
 const { isFQDN, isPort } = require('validator');
 
 const logger = require('../../../../helpers/logger');
-const env = require('../../../../config/env');
 const config = require('../../../../config');
 const Domains = require('../../../models/domain');
 
@@ -24,18 +22,6 @@ const resolveTxtAsync = util.promisify(dns.resolveTxt);
 
 async function port(ctx) {
   try {
-    const credentials = auth(ctx.req);
-
-    if (
-      typeof credentials === 'undefined' ||
-      typeof credentials.name !== 'string' ||
-      !credentials.name
-    )
-      throw Boom.unauthorized(ctx.translateError('INVALID_API_CREDENTIALS'));
-
-    if (!env.API_SECRETS.includes(credentials.name))
-      throw Boom.unauthorized(ctx.translateError('INVALID_API_TOKEN'));
-
     if (!isSANB(ctx.query.domain) || !isFQDN(ctx.query.domain))
       throw Boom.badRequest(ctx.translateError('INVALID_FQDN'));
 

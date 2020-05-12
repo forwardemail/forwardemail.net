@@ -65,7 +65,7 @@ router.put(
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
   web.myAccount.ensureUpgradedPlan,
-  web.myAccount.updateAdvancedSettings
+  web.myAccount.updateDomain
 );
 router.get(
   '/domains/:domain_id/aliases',

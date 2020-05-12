@@ -797,7 +797,36 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     Tip:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":niftylettuce@gmail.com" part, leaving just "!alias" in the example below.
+    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+  </span>
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Record Type</th>
+      <th>Value/Answer/Destination</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>@ or leave blank</em></td>
+      <td class="text-center">3600</td>
+      <td>TXT</td>
+      <td><code>forward-email=!alias:nobody@forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you want increased security, then you can also remove the ":niftylettuce@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!alias" as in the example below.
   </span>
 </div>
 
@@ -819,6 +848,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     </tr>
   </tbody>
 </table>
+
 
 ## Can I forward emails to multiple recipients
 
@@ -1043,7 +1073,7 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
 
-##
+## 
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
