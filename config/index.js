@@ -32,6 +32,9 @@ const config = {
     api: env.API_URL
   },
 
+  // dns
+  dns: env.DNS_PROVIDERS,
+
   // vanity domains
   vanityDomains: env.VANITY_DOMAINS.sort(),
 
@@ -59,9 +62,6 @@ const config = {
     i18n
   },
   logger: loggerConfig,
-  livereload: {
-    port: env.LIVERELOAD_PORT
-  },
   appName: env.APP_NAME,
   appColor: env.APP_COLOR,
   twitter: env.TWITTER,

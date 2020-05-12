@@ -40,7 +40,7 @@ localeRouter
     web.auth.parseReturnOrRedirectTo,
     web.faq
   )
-  .get('/api', web.api)
+  .get('/api', web.myAccount.retrieveDomains, web.api)
   .get('/help', render('help'))
   .get('/about', render('about'))
   .get(

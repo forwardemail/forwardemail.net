@@ -1,5 +1,4 @@
 const dns = require('dns');
-const util = require('util');
 
 const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
@@ -16,10 +15,6 @@ const app = new ForwardEmail({
   srs: { secret: 'null' }
 });
 
-dns.setServers(app.config.dns);
-
-const resolveTxtAsync = util.promisify(dns.resolveTxt);
-
 async function port(ctx) {
   try {
     if (!isSANB(ctx.query.domain) || !isFQDN(ctx.query.domain))
@@ -30,7 +25,7 @@ async function port(ctx) {
     // otherwise if use `forward-email-port` value if it exists and valid
     // otherwise return port 25
     try {
-      const records = await resolveTxtAsync(ctx.query.domain);
+      const records = await dns.promises.resolveTxt(ctx.query.domain);
 
       const verifications = [];
       const ports = [];

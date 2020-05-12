@@ -1,9 +1,11 @@
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
 const moment = require('moment');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const mongooseOmitCommonFields = require('mongoose-omit-common-fields');
 const passportLocalMongoose = require('passport-local-mongoose');
 const validator = require('validator');
 const { boolean } = require('boolean');
@@ -300,7 +302,9 @@ User.methods.sendVerificationEmail = async function(ctx) {
 
 User.plugin(mongooseCommonPlugin, {
   object: 'user',
+  omitCommonFields: false,
   omitExtraFields: [
+    ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
     config.userFields.apiToken,
     config.userFields.resetTokenExpiresAt,
     config.userFields.resetToken,
@@ -308,10 +312,14 @@ User.plugin(mongooseCommonPlugin, {
     config.userFields.hasVerifiedEmail,
     config.userFields.verificationPinExpiresAt,
     config.userFields.verificationPin,
+    config.userFields.verificationPinSentAt,
     config.userFields.verificationPinHasExpired,
     config.userFields.welcomeEmailSentAt,
     config.userFields.otpRecoveryKeys,
-    fields.otpToken
+    config.userFields.pendingRecovery,
+    fields.otpEnabled,
+    fields.otpToken,
+    'is_banned'
   ]
 });
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);

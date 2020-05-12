@@ -513,7 +513,7 @@
     Optional Add-on:
   </strong>
   <span>
-    Add a DMARC record for your domain name by following the instructions at <https://dmarc.postmarkapp.com> (this will allow DMARC verification to pass and help to prevent people from forging emails as if they were from you).
+    Add a DMARC record for your domain name by following the instructions at <a rel="nofollow" class="alert-link" href="https://dmarc.postmarkapp.com" target="_blank">https://dmarc.postmarkapp.com</a> (this will allow DMARC verification to pass and help to prevent people from forging emails as if they were from you).
     If you intend to use <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a>, you can only set the DMARC policy to "p=none", for example:
     <br /><br />
     <code>v=DMARC1; p=none; pct=100; rua=mailto:re+random-key@dmarc.postmarkapp.com;</code>
@@ -585,7 +585,7 @@
        Tip:
      </strong>
      <span>
-       If you prefer the recipient to reply directly to your Gmail address, then leave this checked. To learn more, <a href="https://support.google.com/a/answer/1710338" rel="nofollow" target="_blank">follow these instructions by Gmail</a> on this topic.
+       If you prefer the recipient to reply directly to your Gmail address, then leave this checked. To learn more, <a class="alert-link" href="https://support.google.com/a/answer/1710338" rel="nofollow" target="_blank">follow these instructions by Gmail</a> on this topic.
      </span>
    </div>
 
@@ -1061,7 +1061,7 @@ If this limit is exceeded we send a "451" response code which tells the senders 
 
 ## How do you perform DNS lookups on domain names
 
-We use CloudFlare's privacy-first consumer DNS service (see [announcement here][cloudflare-dns]).  Note that the Python packages we use (`python-spfcheck2` and `python-dkim-verify`) do not have the means like Node.js does with `dns` and its method `dns.setServers` – therefore we set the server DNS to `1.1.1.1` which it will use as a fallback in this case.
+We use CloudFlare's privacy-first consumer DNS service (see [announcement here][cloudflare-dns]).  We set `1.1.1.1` and `1.0.0.1` as the DNS servers using `netplan` on our servers and test environments.
 
 
 ## How fast is this service

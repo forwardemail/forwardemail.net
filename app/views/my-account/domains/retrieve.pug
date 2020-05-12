@@ -28,7 +28,7 @@ block body
           i.fa.fa-4x(class=domain.has_txt_record ? 'fa-check' : 'fa-times')
         .text-monospace.text-uppercase.text-white= t('TXT Records')
     if domain.group === 'admin'
-      form.ajax-form(action=l(`/my-account/domains/${domain.id}/verify-records`), method="POST")
+      form.ajax-form(action=l(`/my-account/domains/${domain.name}/verify-records`), method="POST")
         input(type="hidden", name="_csrf", value=ctx.csrf)
         button(type='submit').btn.btn-success.btn-lg
           i.fa.fa-refresh

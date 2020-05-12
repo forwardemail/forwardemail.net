@@ -71,7 +71,7 @@ block body
                         .dropdown-menu
                           h6.dropdown-header.text-uppercase= t('Change plan to:')
                           each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
-                            a(href=l(`/my-account/domains/${domain.id}/billing?plan=${plan}`)).dropdown-item
+                            a(href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)).dropdown-item
                               case plan
                                 when 'enhanced_protection'
                                   i.fa.fa-fw.fa-shield
@@ -91,7 +91,7 @@ block body
                   if domain.plan === 'free'
                     td.align-middle.d-none.d-md-table-cell.text-center= t('DNS-based')
                   else
-                    td.align-middle.d-none.d-md-table-cell.text-center.h4: a(href=l(`/my-account/domains/${domain.id}/aliases`), data-toggle='tooltip', title=t('Manage Aliases')).badge.badge-pill.badge-dark.px-3.py-2.font-weight-normal= domain.aliases.length
+                    td.align-middle.d-none.d-md-table-cell.text-center.h4: a(href=l(`/my-account/domains/${domain.name}/aliases`), data-toggle='tooltip', title=t('Manage Aliases')).badge.badge-pill.badge-dark.px-3.py-2.font-weight-normal= domain.aliases.length
                   td.align-middle.d-none.d-md-table-cell.text-center
                     if !domain.is_global || domain.is_global && domain.group === 'admin'
                       ul.list-inline.mb-0
@@ -99,7 +99,7 @@ block body
                           button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_mx_record ? t('Verified') : t('Not Verified'), class=domain.has_mx_record ? 'text-success' : 'text-danger').btn.btn-link
                             i.fa.fa-fw.fa-2x(class=domain.has_mx_record ? 'fa-check' : 'fa-times')
                         li.list-inline-item
-                          form(action=l(`/my-account/domains/${domain.id}/verify-records`), method="POST").ajax-form.d-inline-block
+                          form(action=l(`/my-account/domains/${domain.name}/verify-records`), method="POST").ajax-form.d-inline-block
                             input(type="hidden", name="_csrf", value=ctx.csrf)
                             button(type='submit').btn.btn-outline-dark
                               i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
@@ -110,7 +110,7 @@ block body
                           button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_txt_record ? t('Verified') : t('Not Verified'), class=domain.has_txt_record ? 'text-success' : 'text-danger').btn.btn-link
                             i.fa.fa-fw.fa-2x(class=domain.has_txt_record ? 'fa-check' : 'fa-times')
                         li.list-inline-item
-                          form(action=l(`/my-account/domains/${domain.id}/verify-records`), method="POST").ajax-form.d-inline-block
+                          form(action=l(`/my-account/domains/${domain.name}/verify-records`), method="POST").ajax-form.d-inline-block
                             input(type="hidden", name="_csrf", value=ctx.csrf)
                             button(type='submit').btn.btn-outline-dark
                               i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
@@ -118,25 +118,25 @@ block body
                     ul.list-inline.mb-0
                       if domain.group === 'admin'
                         li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
-                          a(href=l(`/my-account/domains/${domain.id}`)).btn.btn-dark.btn-block
+                          a(href=l(`/my-account/domains/${domain.name}`)).btn.btn-dark.btn-block
                             i.fa.fa-fw.fa-cog
                             = ' '
                             = t('Setup')
                       li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
-                        a(href=l(`/my-account/domains/${domain.id}/aliases`)).btn.btn-dark.btn-block
+                        a(href=l(`/my-account/domains/${domain.name}/aliases`)).btn.btn-dark.btn-block
                           i.fa.fa-fw.fa-users
                           = ' '
                           = t('Aliases')
                       if domain.group === 'admin'
                         li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
-                          a(href=l(`/my-account/domains/${domain.id}/advanced-settings`)).btn.btn-dark.btn-block
+                          a(href=l(`/my-account/domains/${domain.name}/advanced-settings`)).btn.btn-dark.btn-block
                             i.fa.fa-fw.fa-tools
                             = ' '
                             = t('Advanced Settings')
                       //-.
                         if domain.group === 'admin'
                           li.list-inline-item.d-block.d-lg-inline-block
-                            a(href=l(`/my-account/domains/${domain.id}/billing`)).btn.btn-dark.btn-block
+                            a(href=l(`/my-account/domains/${domain.name}/billing`)).btn.btn-dark.btn-block
                               i.fa.fa-fw.fa-receipt
                               = ' '
                               = t('Billing')

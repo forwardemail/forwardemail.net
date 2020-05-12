@@ -1,7 +1,17 @@
 
 extends ../layout
 
+include ../_onboard
+
 block body
+  if !user
+    +onboard(
+      t('Need docs with real data and keys?'),
+      t('Simply sign up or log in to have your API keys and real account data populated below.'),
+      l(`/faq?redirect_to=${l('/api')}&send_verification_email=true`),
+      l(`#email-forwarding-api`),
+      'border-bottom'
+    )
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
     .row
       .col-md-12

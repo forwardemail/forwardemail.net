@@ -12,7 +12,7 @@ block body
           button(type='button', data-dismiss='modal', aria-label='Close').close
             span(aria-hidden='true') &times;
         .modal-body
-          form.ajax-form(action=l(`/my-account/domains/${domain.id}/aliases/new`), method="POST")
+          form.ajax-form(action=l(`/my-account/domains/${domain.name}/aliases/new`), method="POST")
             include _form
             button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
 
@@ -62,12 +62,12 @@ block body
                     td.align-middle(style='width:20%')
                       ul.list-inline.mb-0
                         li.list-inline-item
-                          a(href=`/my-account/domains/${domain.id}/aliases/${alias.id}`).btn.btn-dark
+                          a(href=`/my-account/domains/${domain.name}/aliases/${alias.id}`).btn.btn-dark
                             i.fa.fa-pencil
                             = ' '
                             = t('Edit Alias')
                         li.list-inline-item
-                          form(action=l(`/my-account/domains/${domain.id}/aliases/${alias.id}`), method='POST').ajax-form.confirm-prompt.d-inline-block
+                          form(action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`), method='POST').ajax-form.confirm-prompt.d-inline-block
                             input(type="hidden", name="_csrf", value=ctx.csrf)
                             input(type='hidden', name='_method', value='DELETE')
                             button(type='submit').btn.btn-danger
@@ -76,7 +76,7 @@ block body
                               = t('Delete Alias')
     .row.text-center.my-5
       .col
-        a(href=l(domain.group === 'admin' ? `/my-account/domains/${domain.id}` : '/my-account/domains')).btn.btn-outline-secondary
+        a(href=l(domain.group === 'admin' ? `/my-account/domains/${domain.name}` : '/my-account/domains')).btn.btn-outline-secondary
           i.fa.fa-angle-double-left
           = ' '
           = domain.group === 'admin' ? t('Back to Domain') : t('Back to Domains')

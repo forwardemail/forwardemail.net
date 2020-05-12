@@ -137,7 +137,7 @@ block body
                     button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold.dropdown-toggle= t('Select Domain')
                     .dropdown-menu.w-100
                       each domain in sortedDomains
-                        a.dropdown-item(href=l(`/my-account/domains/${domain.id}/billing?plan=enhanced_protection`), class=domain.plan === 'enhanced_protection' ? 'disabled' : '', aria-disabled=domain.plan === 'enhanced_protection' ? 'true' : 'false')
+                        a.dropdown-item(href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`), class=domain.plan === 'enhanced_protection' ? 'disabled' : '', aria-disabled=domain.plan === 'enhanced_protection' ? 'true' : 'false')
                           = domain.name
                           if domain.plan === 'enhanced_protection'
                             = ' ('
@@ -185,7 +185,7 @@ block body
                     button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold.dropdown-toggle= t('Select Domain')
                     .dropdown-menu.w-100
                       each domain in sortedDomains
-                        a.dropdown-item(href=l(`/my-account/domains/${domain.id}/billing?plan=team`), class=domain.plan === 'team' ? 'disabled' : '', aria-disabled=domain.plan === 'team' ? 'true' : 'false')
+                        a.dropdown-item(href=l(`/my-account/domains/${domain.name}/billing?plan=team`), class=domain.plan === 'team' ? 'disabled' : '', aria-disabled=domain.plan === 'team' ? 'true' : 'false')
                           = domain.name
                           if domain.plan === 'team'
                             = ' ('

@@ -17,37 +17,37 @@ if breadcrumbs.length > 1
         = _.isObject(breadcrumbs[0]) ? breadcrumbs[0].header || breadcrumbs[0].name : t(titleize(humanize(breadcrumbs[0])))
     if !breadcrumbHeaderCentered
       .flex-grow-1.ml-md-5.d-md-flex.align-items-center.justify-content-md-end.justify-content-center.mt-3.mt-md-0
-        if domain && ctx.pathWithoutLocale === `/my-account/domains/${domain.id}`
+        if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
           ul.list-inline.mb-0
             li.list-inline-item
-              a(href=l(`/my-account/domains/${domain.id}/aliases`)).btn.btn-dark
+              a(href=l(`/my-account/domains/${domain.name}/aliases`)).btn.btn-dark
                 i.fa.fa-fw.fa-users
                 = ' '
                 = t('Aliases')
             li.list-inline-item
-              a(href=l(`/my-account/domains/${domain.id}/advanced-settings`)).btn.btn-dark
+              a(href=l(`/my-account/domains/${domain.name}/advanced-settings`)).btn.btn-dark
                 i.fa.fa-fw.fa-tools
                 = ' '
                 = t('Advanced Settings')
             //-.
               if domain.group === 'admin'
                 li.list-inline-item
-                  a(href=l(`/my-account/domains/${domain.id}/billing`)).btn.btn-dark
+                  a(href=l(`/my-account/domains/${domain.name}/billing`)).btn.btn-dark
                     i.fa.fa-fw.fa-receipt
                     = ' '
                     = t('Billing')
-        else if domain && ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases`
+        else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0
             if !domain.is_global && ctx.state.domain.group === 'admin'
               li.list-inline-item
-                form(action=l(`/my-account/domains/${domain.id}/aliases/import`), method='POST').ajax-form.confirm-prompt.d-inline-block
+                form(action=l(`/my-account/domains/${domain.name}/aliases/import`), method='POST').ajax-form.confirm-prompt.d-inline-block
                   input(type="hidden", name="_csrf", value=ctx.csrf)
                   button(type='submit').btn.btn-dark.text-uppercase.font-weight-bold
                     = t('Import TXT Records')
                     = ' '
                     i.fa.fa-cloud-download-alt
             li.list-inline-item
-              a(href=l(`/my-account/domains/${domain.id}/aliases/new`), role='button', data-toggle='modal-anchor', data-target='#modal-alias').btn.btn-primary.text-uppercase.font-weight-bold
+              a(href=l(`/my-account/domains/${domain.name}/aliases/new`), role='button', data-toggle='modal-anchor', data-target='#modal-alias').btn.btn-primary.text-uppercase.font-weight-bold
                 = t('Add New Alias')
                 = ' '
                 i.fa.fa-angle-double-right

@@ -11,7 +11,7 @@ block body
             button(type='button', data-dismiss='modal', aria-label='Close').close
               span(aria-hidden='true') &times;
           .modal-body
-            form.ajax-form.confirm-prompt(action=l(`/my-account/domains/${domain.id}/invites`), method="POST")
+            form.ajax-form.confirm-prompt(action=l(`/my-account/domains/${domain.name}/invites`), method="POST")
               input(type="hidden", name="_csrf", value=ctx.csrf)
               .form-group
                 label(for="input-invite-email")= t('Email address')
@@ -34,7 +34,7 @@ block body
               span(aria-hidden='true') &times;
           .modal-body
             .input-group.input-group-lg
-              input(type='text', readonly, value=`${config.urls.web}/my-account/domains/${domain.id}/invites`).form-control#invite-link
+              input(type='text', readonly, value=`${config.urls.web}/my-account/domains/${domain.name}/invites`).form-control#invite-link
               .input-group-append
                 button(type='button', data-toggle="clipboard", data-clipboard-target="#invite-link").btn.btn-primary
                   i.fa.fa-clipboard
@@ -72,14 +72,14 @@ block body
                           td.align-middle
                             ul.list-inline.mb-0
                               li.list-inline-item
-                                form(action=l(`/my-account/domains/${domain.id}/members/${member.user.id}`), method='POST').ajax-form.confirm-prompt.d-inline-block
+                                form(action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`), method='POST').ajax-form.confirm-prompt.d-inline-block
                                   input(type="hidden", name="_csrf", value=ctx.csrf)
                                   input(type='hidden', name='_method', value='PUT')
                                   input(type='hidden', name='group', value=member.group === 'admin' ? 'user' : 'admin')
                                   button(type='submit').btn.btn-dark= member.group === 'admin' ? t('Make User') : t('Make Admin')
                               //- if member.user.id !== user.id
                               li.list-inline-item
-                                form(action=l(`/my-account/domains/${domain.id}/members/${member.user.id}`), method='POST').ajax-form.confirm-prompt.d-inline-block
+                                form(action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`), method='POST').ajax-form.confirm-prompt.d-inline-block
                                   input(type="hidden", name="_csrf", value=ctx.csrf)
                                   input(type='hidden', name='_method', value='DELETE')
                                   button(type='submit').btn.btn-danger
@@ -110,7 +110,7 @@ block body
                                     = t('Copy Invite Link')
                                 //- delete invite
                                 li.list-inline-item
-                                  form(action=l(`/my-account/domains/${domain.id}/invites`), method='POST').ajax-form.confirm-prompt.d-inline-block
+                                  form(action=l(`/my-account/domains/${domain.name}/invites`), method='POST').ajax-form.confirm-prompt.d-inline-block
                                     input(type="hidden", name="_csrf", value=ctx.csrf)
                                     input(type='hidden', name='_method', value='DELETE')
                                     input(type='hidden', name='email', value=invite.email)
@@ -134,7 +134,7 @@ block body
             h4.card-header= t('Custom SMTP Port Forwarding')
             .card-body
               .form-group.floating-label
-                input#input-port(type='port', required, name='port', value=domain.smtp_port, placeholder=' ', aria-describedby='help-port').form-control
+                input#input-port(type='port', required, name='smtp_port', value=domain.smtp_port, placeholder=' ', aria-describedby='help-port').form-control
                 label(for='input-port')= t('Port number (SMTP)')
               small#help-port.form-text.text-muted= t('Do not modify this unless you know what you are doing.  This will forward all emails to the specific port for all aliases and their recipients.  For example, if you are forwarding to info@example.com, and input port number 1337 here, then our server will forward email to example.com on port 1337 (as opposed to the standard SMTP port of 25).')
             .card-footer.text-right
@@ -156,7 +156,7 @@ block body
             .card-body
               = t('Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.')
             .card-footer.text-right
-              form(action=l(`/my-account/domains/${domain.id}`), method='POST').ajax-form.confirm-prompt
+              form(action=l(`/my-account/domains/${domain.name}`), method='POST').ajax-form.confirm-prompt
                 input(type='hidden', name='_method', value='DELETE')
                 input(type="hidden", name="_csrf", value=ctx.csrf)
                 button(type='submit').btn.btn-danger
@@ -165,7 +165,7 @@ block body
                   = t('Delete Domain')
     .row.text-center.my-5
       .col
-        a(href=l(domain.group === 'admin' ? `/my-account/domains/${domain.id}` : '/my-account/domains')).btn.btn-outline-secondary
+        a(href=l(domain.group === 'admin' ? `/my-account/domains/${domain.name}` : '/my-account/domains')).btn.btn-outline-secondary
           i.fa.fa-angle-double-left
           = ' '
           = domain.group === 'admin' ? t('Back to Domain') : t('Back to Domains')

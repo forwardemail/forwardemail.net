@@ -1,6 +1,7 @@
 const path = require('path');
 
 const Boom = require('@hapi/boom');
+const RE2 = require('re2');
 const _ = require('lodash');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
@@ -200,8 +201,33 @@ async function retrieveDomains(ctx, next) {
     };
   });
 
+  //
+  // search functionality (with RegExp support)
+  //
+  if (isSANB(ctx.query.name))
+    ctx.state.domains = ctx.state.domains.filter(domain =>
+      new RE2(_.escapeRegExp(ctx.query.name)).test(domain.name)
+    );
+
+  if (isSANB(ctx.query.alias)) {
+    const aliasRegex = new RE2(_.escapeRegExp(ctx.query.alias));
+    ctx.state.domains = ctx.state.domains.filter(domain =>
+      domain.aliases.some(alias => aliasRegex.test(alias.name))
+    );
+  }
+
+  if (isSANB(ctx.query.recipient)) {
+    const recipientRegex = new RE2(_.escapeRegExp(ctx.query.recipient));
+    ctx.state.domains = ctx.state.domains.filter(domain =>
+      domain.aliases.some(alias =>
+        alias.recipients.some(recipient => recipientRegex.test(recipient))
+      )
+    );
+  }
+
+  if (ctx.api) return next();
+
   if (
-    !ctx.api &&
     ctx.state.domains.length === 0 &&
     ctx.method === 'GET' &&
     ['/my-account', '/my-account/domains'].includes(ctx.pathWithoutLocale)
@@ -231,7 +257,9 @@ async function retrieveDomain(ctx, next) {
     ? ctx.params.domain_id
     : ctx.request.body.domain;
 
-  ctx.state.domain = ctx.state.domains.find(domain => domain.id === id);
+  ctx.state.domain = ctx.state.domains.find(domain =>
+    [domain.id, domain.name].includes(id)
+  );
 
   // check if domain exists, and f it doesn't then check
   // if we have a pending invite
@@ -257,36 +285,36 @@ async function retrieveDomain(ctx, next) {
       name: ctx.state.domain.name,
       href:
         ctx.state.domain.group === 'admin'
-          ? ctx.state.l(`/my-account/domains/${ctx.state.domain.id}`)
+          ? ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
           : null
     }
   ];
 
   if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.id}/aliases`
+    `/my-account/domains/${ctx.state.domain.name}/aliases`
   )
     ctx.state.breadcrumbs.push('aliases');
   else if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.id}/advanced-settings`
+    `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
   )
     ctx.state.breadcrumbs.push('advanced-settings');
   else if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.id}/aliases/new`
+    `/my-account/domains/${ctx.state.domain.name}/aliases/new`
   ) {
     ctx.state.breadcrumbHeaderCentered = true;
     ctx.state.breadcrumbs.push({
       name: ctx.state.t('Aliases'),
-      href: ctx.state.l(`/my-account/domains/${ctx.state.domain.id}/aliases`)
+      href: ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`)
     });
     ctx.state.breadcrumbs.push({
       name: ctx.state.t('Add Alias')
     });
   } else if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.id}/billing`
+    `/my-account/domains/${ctx.state.domain.name}/billing`
   )
     ctx.state.breadcrumbs.push('billing');
 
@@ -385,14 +413,16 @@ async function createDomain(ctx, next) {
       });
     }
 
-    let redirectTo = ctx.state.l(`/my-account/domains/${ctx.state.domain.id}`);
+    let redirectTo = ctx.state.l(
+      `/my-account/domains/${ctx.state.domain.name}`
+    );
 
     if (
       isSANB(ctx.request.body.plan) &&
       ['free', 'enhanced_protection', 'team'].includes(ctx.request.body.plan)
     )
       redirectTo = ctx.state.l(
-        `/my-account/domains/${ctx.state.domain.id}/billing?plan=${ctx.request.body.plan}`
+        `/my-account/domains/${ctx.state.domain.name}/billing?plan=${ctx.request.body.plan}`
       );
 
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
@@ -467,12 +497,23 @@ async function verifyRecords(ctx) {
     });
 
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.id}`
+      `/my-account/domains/${ctx.state.domain.name}`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
   } catch (err) {
     ctx.logger.error(err);
+
+    if (Array.isArray(err.errors)) {
+      if (ctx.api) {
+        err.message = err.errors.map(e => e.message);
+      } else {
+        err.message = `<ul class="text-left mb-0">${err.errors
+          .map(e => `<li class="mb-3">${e && e.message ? e.message : e}</li>`)
+          .join('')}</ul>`;
+      }
+    }
+
     ctx.throw(Boom.badRequest(err.message));
   }
 }
@@ -559,7 +600,7 @@ async function createAlias(ctx, next) {
       position: 'top'
     });
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.id}/aliases`
+      `/my-account/domains/${ctx.state.domain.name}/aliases`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
@@ -585,12 +626,12 @@ function retrieveAlias(ctx, next) {
   if (ctx.api) return next();
   if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.id}/aliases/${ctx.state.alias.id}`
+    `/my-account/domains/${ctx.state.domain.name}/aliases/${ctx.state.alias.id}`
   ) {
     ctx.state.breadcrumbHeaderCentered = true;
     ctx.state.breadcrumbs.push({
       name: ctx.state.t('Aliases'),
-      href: ctx.state.l(`/my-account/domains/${ctx.state.domain.id}/aliases`)
+      href: ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`)
     });
     ctx.state.breadcrumbs.push({
       header: ctx.state.t('Edit Alias'),
@@ -618,7 +659,7 @@ async function updateAlias(ctx, next) {
       position: 'top'
     });
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.id}/aliases`
+      `/my-account/domains/${ctx.state.domain.name}/aliases`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
@@ -641,7 +682,7 @@ async function removeAlias(ctx, next) {
   });
   if (ctx.api) return next();
   const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.id}/aliases`
+    `/my-account/domains/${ctx.state.domain.name}/aliases`
   );
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };
@@ -685,7 +726,7 @@ function ensureUpgradedPlan(ctx, next) {
     ctx.flash('custom', swal);
     /*
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.id}/billing?plan=enhanced_protection`
+      `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
     );
     */
     const redirectTo = ctx.state.l('/my-account/domains');
@@ -716,7 +757,7 @@ async function retrieveBilling(ctx) {
       ctx.flash('warning', ctx.translate('BETA_PROGRAM'));
     // TODO: for some reason the link uncommented doesn't work
     // specifically the above flash messages do not render when it's uncommented
-    const redirectTo = ctx.state.l(`/my-account/domains`); // /${ctx.state.domain.id}/`);
+    const redirectTo = ctx.state.l(`/my-account/domains`); // /${ctx.state.domain.name}/`);
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
   } catch (err) {
@@ -902,7 +943,7 @@ async function importAliases(ctx) {
       : messages.join(' ');
 
   const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.id}/aliases`
+    `/my-account/domains/${ctx.state.domain.name}/aliases`
   );
 
   if (ctx.accepts('html')) {
@@ -930,7 +971,7 @@ function retrieveAliases(ctx, next) {
     timer: 5000,
     position: 'top'
   });
-  ctx.redirect(`/my-account/domains/${ctx.state.domain.id}/aliases/new`);
+  ctx.redirect(`/my-account/domains/${ctx.state.domain.name}/aliases/new`);
 }
 
 async function retrieveInvite(ctx) {
@@ -991,8 +1032,8 @@ async function retrieveInvite(ctx) {
   // redirect user to either alias page (if user) or admin page (if admin)
   const redirectTo =
     group === 'admin'
-      ? ctx.state.l(`/my-account/domains/${ctx.state.domain.id}`)
-      : ctx.state.l(`/my-account/domains/${ctx.state.domain.id}/aliases`);
+      ? ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
+      : ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`);
 
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };
@@ -1021,6 +1062,20 @@ async function createInvite(ctx, next) {
     return ctx.throw(
       Boom.badRequest(ctx.translateError('INVITE_ALREADY_SENT'))
     );
+
+  // ensure user is not already a member
+  const user = await Users.findOne({ email })
+    .lean()
+    .exec();
+  if (user) {
+    const member = ctx.state.domain.members.find(
+      member => member.user.id === user.id
+    );
+    if (member)
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('USER_ALREADY_MEMBER'))
+      );
+  }
 
   // create the invite
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
@@ -1203,9 +1258,9 @@ async function recoveryKeys(ctx) {
 async function updateDomain(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
 
-  if (isSANB(ctx.request.body.port))
-    if (isPort(ctx.request.body.port))
-      ctx.state.domain.smtp_port = ctx.request.body.port;
+  if (isSANB(ctx.request.body.smtp_port))
+    if (isPort(ctx.request.body.smtp_port))
+      ctx.state.domain.smtp_port = ctx.request.body.smtp_port;
     else return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PORT')));
 
   ctx.state.domain.locale = ctx.locale;

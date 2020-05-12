@@ -14,6 +14,10 @@ $question: theme-color('light');
 // sweetalert2
 @import 'node_modules/sweetalert2/src/sweetalert2';
 
+// highlight.js
+@import 'node_modules/highlight.js/scss/default';
+@import 'node_modules/highlight.js/scss/github';
+
 // font awesome
 @import 'node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
 @import 'node_modules/@fortawesome/fontawesome-free/scss/brands';

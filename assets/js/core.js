@@ -178,21 +178,25 @@ $(() => {
 
   function successHandler(ev) {
     ev.clearSelection();
-    $(ev.trigger)
+    let $container = $(ev.trigger).parents('pre:first');
+    if ($container.length === 0) $container = $(ev.trigger);
+    $container
       .tooltip('dispose')
       .tooltip({
         title: 'Copied!',
         placement: 'bottom'
       })
       .tooltip('show');
-    $(ev.trigger).on('hidden.bs.tooltip', () => {
-      $(ev.trigger).tooltip('dispose');
+    $container.on('hidden.bs.tooltip', () => {
+      $container.tooltip('dispose');
     });
   }
 
   if (Clipboard.isSupported()) {
     $body.on('mouseenter', 'code', function() {
-      $(this)
+      let $container = $(this).parents('pre:first');
+      if ($container.length === 0) $container = $(this);
+      $container
         .css('cursor', 'pointer')
         .tooltip({
           title: 'Click to copy',
@@ -202,16 +206,16 @@ $(() => {
         .tooltip('show');
     });
     $body.on('mouseleave', 'code', function() {
-      $(this)
-        .tooltip('dispose')
-        .css('cursor', 'initial');
+      let $container = $(this).parents('pre:first');
+      if ($container.length === 0) $container = $(this);
+      $container.tooltip('dispose').css('cursor', 'initial');
     });
     const clipboard = new Clipboard('code', {
       text(trigger) {
         return trigger.textContent;
       },
       target(trigger) {
-        return trigger;
+        return trigger.tagName === 'CODE' ? trigger : trigger.closest('code');
       }
     });
     clipboard.on('success', successHandler);

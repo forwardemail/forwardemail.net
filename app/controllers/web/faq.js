@@ -6,7 +6,7 @@ function faq(ctx) {
   const isRedirectToDomain = boolean(ctx.query.redirect_to_domain);
   let redirectTo =
     isRedirectToDomain && ctx.state.domain
-      ? ctx.state.l(`/my-account/domains/${ctx.state.domain.id}`)
+      ? ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
       : ctx.session.returnTo
       ? ctx.session.returnTo
       : ctx.state.l('/faq');

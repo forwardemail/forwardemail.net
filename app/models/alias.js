@@ -49,13 +49,7 @@ const Alias = new mongoose.Schema({
     type: String,
     required: true,
     lowercase: true,
-    trim: true,
-    validate: {
-      validator: value =>
-        isSANB(value) &&
-        quotedEmailUserUtf8.test(value) &&
-        value.indexOf('!') !== 0
-    }
+    trim: true
   },
   description: {
     type: String,
@@ -91,6 +85,29 @@ const Alias = new mongoose.Schema({
 });
 
 Alias.pre('validate', function(next) {
+  // require alias name
+  if (
+    !isSANB(this.name) ||
+    !quotedEmailUserUtf8.test(this.name.trim().toLowerCase())
+  )
+    return next(new Error('Alias name was invalid'));
+
+  // trim and convert to lowercase
+  this.name = this.name.trim().toLowerCase();
+
+  // if alias is wildcards only then convert to single asterisk
+  if ([...new Set(this.name.replace(/[^*]/g, '').split(''))].join('') === '*')
+    this.name = '*';
+
+  // add wildcard as first label
+  if (this.name === '*') this.labels.unshift('catch-all');
+  this.labels = _.compact(_.uniq(this.labels.map(label => slug(label))));
+  if (this.name !== '*') this.labels = _.without(this.labels, 'catch-all');
+
+  // alias must not start with ! exclamation (since that denotes it is ignored)
+  if (this.name.indexOf('!') === 0)
+    return next(new Error('Alias must not start with an exclamation point'));
+
   // make recipients unique by email address, FQDN, or IP
   this.recipients = _.compact(
     _.uniq(this.recipients.map(r => r.toLowerCase().trim()))
@@ -100,21 +117,6 @@ Alias.pre('validate', function(next) {
   // description must be plain text
   if (isSANB(this.description)) this.description = striptags(this.description);
   if (!isSANB(this.description)) this.description = null;
-  if (isSANB(this.name)) {
-    // trim and convert to lowercase
-    this.name = this.name.trim().toLowerCase();
-    // if alias is wildcards only then convert to single asterisk
-    if ([...new Set(this.name.replace(/[^*]/g, '').split(''))].join('') === '*')
-      this.name = '*';
-    // add wildcard as first label
-    if (this.name === '*') this.labels.unshift('catch-all');
-    this.labels = _.compact(_.uniq(this.labels.map(label => slug(label))));
-    if (this.name !== '*') this.labels = _.without(this.labels, 'catch-all');
-  }
-
-  // alias must not start with ! exclamation (since that denotes it is ignored)
-  if (this.name.indexOf('!') === 0)
-    return next(new Error('Alias must not start with an exclamation point'));
 
   // alias must have at least one recipient
   if (!_.isArray(this.recipients) || _.isEmpty(this.recipients))
