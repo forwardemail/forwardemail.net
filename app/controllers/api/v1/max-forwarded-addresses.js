@@ -36,7 +36,7 @@ async function maxForwardedAddresses(ctx) {
           );
       }
 
-      let { maxForwardedAddresses } = app.config.maxForwardedAddresses;
+      let { maxForwardedAddresses } = app.config;
 
       if (verifications.length > 0) {
         if (verifications.length > 1)
@@ -55,11 +55,11 @@ async function maxForwardedAddresses(ctx) {
         if (!domain)
           throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
-        if (domain.max_recipients_per_alias !== 0)
+        if (domain.max_recipients_per_alias > 0)
           maxForwardedAddresses = domain.max_recipients_per_alias;
       }
 
-      ctx.body = { maxForwardedAddresses };
+      ctx.body = { max_forwarded_addresses: maxForwardedAddresses };
     } catch (err) {
       ctx.logger.error(err);
       throw Boom.badRequest(err.message);
