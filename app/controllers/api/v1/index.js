@@ -6,6 +6,7 @@ const port = require('./port');
 const test = require('./test');
 const users = require('./users');
 const restricted = require('./restricted');
+const maxForwardedAddresses = require('./max-forwarded-addresses');
 
 module.exports = {
   aliases,
@@ -15,5 +16,6 @@ module.exports = {
   port,
   test,
   users,
-  restricted
+  restricted,
+  maxForwardedAddresses
 };
