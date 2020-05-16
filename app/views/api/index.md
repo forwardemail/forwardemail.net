@@ -338,13 +338,13 @@ curl -X GET BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 > `POST /v1/domains/DOMAIN_NAME/aliases`
 
-| Body Parameter | Required | Type            | Description                                                                                                                                                        |
-| -------------- | -------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name`         | Yes      | String          | Alias name                                                                                                                                                         |
-| `recipients`   | Yes      | String or Array | List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names ("FQDN"), and/or IP addresses) |
-| `description`  | No       | String          | Alias description                                                                                                                                                  |
-| `labels`       | No       | String or Array | List of labels (must be line-break/space/comma separated String or Array)                                                                                          |
-| `is_enabled`   | No       | Boolean         | Whether to enable to disable this alias (if disabled, emails will be routed nowhere but return successful status codes)                                            |
+| Body Parameter | Required | Type            | Description                                                                                                                                                                       |
+| -------------- | -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | Yes      | String          | Alias name                                                                                                                                                                        |
+| `recipients`   | Yes      | String or Array | List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL's) |
+| `description`  | No       | String          | Alias description                                                                                                                                                                 |
+| `labels`       | No       | String or Array | List of labels (must be line-break/space/comma separated String or Array)                                                                                                         |
+| `is_enabled`   | No       | Boolean         | Whether to enable to disable this alias (if disabled, emails will be routed nowhere but return successful status codes)                                                           |
 
 > Example Request:
 
@@ -357,13 +357,13 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 > `PUT /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID`
 
-| Body Parameter | Required | Type            | Description                                                                                                                                                        |
-| -------------- | -------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name`         | No       | String          | Alias name                                                                                                                                                         |
-| `recipients`   | No       | String or Array | List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names ("FQDN"), and/or IP addresses) |
-| `description`  | No       | String          | Alias description                                                                                                                                                  |
-| `labels`       | No       | String or Array | List of labels (must be line-break/space/comma separated String or Array)                                                                                          |
-| `is_enabled`   | No       | Boolean         | Whether to enable to disable this alias (if disabled, emails will be routed nowhere but return successful status codes)                                            |
+| Body Parameter | Required | Type            | Description                                                                                                                                                                       |
+| -------------- | -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | No       | String          | Alias name                                                                                                                                                                        |
+| `recipients`   | Yes      | String or Array | List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL's) |
+| `description`  | No       | String          | Alias description                                                                                                                                                                 |
+| `labels`       | No       | String or Array | List of labels (must be line-break/space/comma separated String or Array)                                                                                                         |
+| `is_enabled`   | No       | Boolean         | Whether to enable to disable this alias (if disabled, emails will be routed nowhere but return successful status codes)                                                           |
 
 > Example Request:
 

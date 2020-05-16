@@ -64,7 +64,7 @@ if alias
     = ' '
     span.text-danger= t('(required)')
   textarea(name='recipients', rows=2)#textarea-alias-recipients.form-control.form-control-lg= alias && Array.isArray(alias.recipients) ? alias.recipients.join(', ') : user.email
-  p.form-text: small.text-black-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), and/or IP addresses.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
+  p.form-text: small.text-black-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
 .form-group
   label(for='textarea-alias-description')= t('Alias Description (optional)')
   textarea(name='description', maxlength=150, rows=2)#textarea-alias-description.form-control.form-control-lg= alias ? alias.description : ''
