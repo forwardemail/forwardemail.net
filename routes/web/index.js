@@ -62,6 +62,12 @@ localeRouter
     render('reserved-email-addresses')
   )
   .get(
+    '/free-email-webhooks',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    render('free-email-webhooks')
+  )
+  .get(
     '/list-of-ports-blocked-by-isps',
     web.myAccount.retrieveDomains,
     web.onboard,

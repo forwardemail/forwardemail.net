@@ -58,7 +58,11 @@ block body
                       ul.list-inline.mb-0
                         each recipient in alias.recipients
                           li.list-inline-item.h3
-                            span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal= validator.isEmail(recipient) ? recipient : `${alias.name}@${recipient}`
+                            span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal
+                              if validator.isEmail(recipient) || validator.isURL(recipient)
+                                = recipient
+                              else
+                                = `${alias.name}@${recipient}`
                     td.align-middle(style='width:20%')
                       ul.list-inline.mb-0
                         li.list-inline-item

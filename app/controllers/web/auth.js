@@ -44,7 +44,7 @@ function parseReturnOrRedirectTo(ctx, next) {
   } else if (isSANB(ctx.query.redirect_to)) {
     // in case people had a typo, we should support redirect_to as well
     ctx.session.returnTo = ctx.query.redirect_to;
-  } else if (ctx.get('Referrer')) {
+  } else if (ctx.get('Referrer') && ctx.method === 'GET') {
     ctx.session.returnTo = ctx.get('Referrer');
   }
 

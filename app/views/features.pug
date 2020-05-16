@@ -48,6 +48,13 @@ block body
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
                 = ' '
+                = t('Unlimited email webhooks')
+                = ' '
+                a(href=l('/free-email-webhooks')).btn.btn-link.text-dark.py-0
+                  i.fa.fa-link
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
                 = t('Custom port forwarding')
                 = ' '
                 a(href=l('/guides/port-25-blocked-by-isp-workaround')).btn.btn-link.text-dark.py-0
@@ -59,7 +66,7 @@ block body
                 sup.d-inline-block.h6.text-black-50
                   = '/'
                   = t('month')
-              small.bg-primary.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
+              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
               .p-2
                 a(href=l('/my-account/domains/new')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
                   = t('Setup Forwarding')
@@ -101,6 +108,7 @@ block body
                 = ' '
                 a(href=l('/api')).btn.btn-link.text-dark.py-0
                   i.fa.fa-link
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Forward newsletters to a bulk recipient list')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('30-day money back guarantee')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('99.99% Uptime Service Level Agreement ("SLA")')}`
             .d-flex.flex-column.flex-grow-1.justify-content-end
@@ -112,7 +120,7 @@ block body
                   = t('month')
                   = ' '
                   button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  You will be emailed reminders to make payment when it has ended.')).btn.btn-link: i.far.fa-smile
-              small.bg-primary.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
+              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
               .p-2
                 if sortedDomains.length === 0
                   a(href=l('/my-account/domains/new?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
@@ -161,7 +169,7 @@ block body
                   = t('month')
                   = ' '
                   button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  You will be emailed reminders to make payment when it has ended.')).btn.btn-link: i.far.fa-smile
-              small.bg-primary.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
+              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
               .p-2
                 if sortedDomains.length === 0
                   a(href=l('/my-account/domains/new?plan=team')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold

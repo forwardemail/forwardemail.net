@@ -8,7 +8,7 @@ const reservedAdminList = require('reserved-email-addresses-list/admin-list.json
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const slug = require('speakingurl');
 const striptags = require('striptags');
-const { isIP, isFQDN, isEmail } = require('validator');
+const { isIP, isFQDN, isEmail, isURL } = require('validator');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -76,9 +76,13 @@ const Alias = new mongoose.Schema({
       lowercase: true,
       // must be IP or FQDN or email
       validate: {
-        validator: value => isIP(value) || isFQDN(value) || isEmail(value),
+        validator: value =>
+          isIP(value) ||
+          isFQDN(value) ||
+          isEmail(value) ||
+          isURL(value, app.config.isURLOptions),
         message:
-          'Recipient must be a valid email address, fully-qualified domain name ("FQDN"), or IP address'
+          'Recipient must be a valid email address, fully-qualified domain name ("FQDN"), IP address, or webhook URL'
       }
     }
   ]

@@ -10,6 +10,7 @@
 * [Can I remove the "via forwardemail.net" in Gmail](#can-i-remove-the-via-forwardemailnet-in-gmail)
 * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
 * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+* [Do you support webhooks](#do-you-support-webhooks)
 * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
 * [Can I disable specific aliases](#can-i-disable-specific-aliases)
 * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
@@ -661,7 +662,7 @@ Yes, as of May 5, 2020 we have added this feature.  Right now the feature is dom
 
 If you are on the free plan, then simply add a new DNS TXT record as shown below, but change the port from 25 to the port of your choosing.
 
-For example, if I want all emails that go to `alias@example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -690,6 +691,149 @@ Yes!  We offer a 30-day money back guarantee on all paids plans if you are not s
 We do not ask any questions and simply process the refund within 5-7 business days.
 
 To request a refund, please send an email from the email address verified on your account to: [refunds@forwardemail.net](mailto:refunds@forwardemail.net)
+
+
+## Do you support webhooks
+
+Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener" href="/features">Features</a> page.  Otherwise you can continue to follow the instructions below.
+  </span>
+</div>
+
+If you are on the free plan, then simply add a new DNS TXT record as shown below:
+
+For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Record Type</th>
+      <th>Value/Answer/Destination</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>@ or leave blank</em></td>
+      <td class="text-center">3600</td>
+      <td>TXT</td>
+      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Record Type</th>
+      <th>Value/Answer/Destination</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>@ or leave blank</em></td>
+      <td class="text-center">3600</td>
+      <td>TXT</td>
+      <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Curious what the webhook request looks like from forwarded emails?  We've included an example below for you!
+  <span>
+  </span>
+</div>
+
+```json
+{
+  "attachments": [],
+  "headers": {},
+  "headerLines": [
+    {
+      "key": "dkim-signature",
+      "line": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=forwardemail.net;\r\n q=dns/txt; s=default; bh=fdkeB/A0FkbVP2k4J4pNPoeWH6vqBm9+b0C3OY87Cw8=;\r\n h=from:subject:date:message-id:to:mime-version:content-type:content-transfer-encoding;\r\n b=KJZp0q0u/cQhcjwilKMainmlystwHgCZ7/ncK1uBmmdGoaXlQcMHsfenLyn/uribhMVrdfWw6\r\n YhQ5AIOAGoft/fwpGhl3zP1b5qrPwYu0kLMPr2MSwkLo0YVdbHB6xF+VGeg2vaduJk6CipXjMW7\r\n Mlohmvjw0m1tnN6dAYGOkwQ="
+    },
+    {
+      "key": "message-id",
+      "line": "Message-ID: <123.abc@test>"
+    },
+    {
+      "key": "date",
+      "line": "Date: Thu, 9 Nov 2000 10:44:00 -0800 (PST)"
+    },
+    {
+      "key": "to",
+      "line": "To: webhook@spamapi.net"
+    },
+    {
+      "key": "from",
+      "line": "From: Test <test@niftylettuce.com>"
+    },
+    {
+      "key": "subject",
+      "line": "Subject: testing webhooks"
+    },
+    {
+      "key": "mime-version",
+      "line": "Mime-Version: 1.0"
+    },
+    {
+      "key": "content-type",
+      "line": "Content-Type: text/plain; charset=us-ascii"
+    },
+    {
+      "key": "content-transfer-encoding",
+      "line": "Content-Transfer-Encoding: 7bit"
+    }
+  ],
+  "text": "Test\n",
+  "textAsHtml": "<p>Test</p>",
+  "subject": "testing webhooks",
+  "date": "2000-11-09T18:44:00.000Z",
+  "to": {
+    "value": [
+      {
+        "address": "webhook@spamapi.net",
+        "name": ""
+      }
+    ],
+    "html": "<span class=\"mp_address_group\"><a href=\"mailto:webhook@spamapi.net\" class=\"mp_address_email\">webhook@spamapi.net</a></span>",
+    "text": "webhook@spamapi.net"
+  },
+  "from": {
+    "value": [
+      {
+        "address": "test@niftylettuce.com",
+        "name": "Test"
+      }
+    ],
+    "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Test</span> &lt;<a href=\"mailto:test@niftylettuce.com\" class=\"mp_address_email\">test@niftylettuce.com</a>&gt;</span>",
+    "text": "Test <test@niftylettuce.com>"
+  },
+  "messageId": "<123.abc@test>",
+  "html": false,
+  "raw": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=forwardemail.net;\r\n q=dns/txt; s=default; bh=fdkeB/A0FkbVP2k4J4pNPoeWH6vqBm9+b0C3OY87Cw8=;\r\n h=from:subject:date:message-id:to:mime-version:content-type:content-transfer-encoding;\r\n b=KJZp0q0u/cQhcjwilKMainmlystwHgCZ7/ncK1uBmmdGoaXlQcMHsfenLyn/uribhMVrdfWw6\r\n YhQ5AIOAGoft/fwpGhl3zP1b5qrPwYu0kLMPr2MSwkLo0YVdbHB6xF+VGeg2vaduJk6CipXjMW7\r\n Mlohmvjw0m1tnN6dAYGOkwQ=\r\nMessage-ID: <123.abc@test>\r\nDate: Thu, 9 Nov 2000 10:44:00 -0800 (PST)\r\nTo: webhook@spamapi.net\r\nFrom: Test <test@niftylettuce.com>\r\nSubject: testing webhooks\r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\n\r\nTest\r\n"
+}
+```
+
+> Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object, and also append the "raw" property with the raw email message as a String.
 
 
 ## Can I just use this email forwarding service as a "fallback" or "fallover" MX server
