@@ -85,7 +85,7 @@
     "koa-views-render": "^0.0.1",
     "lodash": "^4.17.15",
     "mandarin": "^2.0.5",
-    "manifest-rev": "1.x",
+    "manifest-rev": "0.x",
     "markdown-it": "^10.0.0",
     "markdown-it-emoji": "^1.4.0",
     "markdown-it-github-headings": "^2.0.0",

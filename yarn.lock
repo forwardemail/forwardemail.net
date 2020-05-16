@@ -11526,7 +11526,7 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-loose-envify@tomashanacek/loose-envify:
+"loose-envify@github:tomashanacek/loose-envify":
   version "1.0.0"
   resolved "https://codeload.github.com/tomashanacek/loose-envify/tar.gz/274d08b592bab76b3a7ab099a669ccd1b4a7a34f"
   dependencies:
@@ -11707,10 +11707,10 @@ mandarin@^2.0.5:
     rev-hash "^3.0.0"
     universalify "^1.0.0"
 
-manifest-rev@1.x:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/manifest-rev/-/manifest-rev-1.0.2.tgz#b0bfa8c6f3d4ff881d9a19f7e08cd17c090d2abf"
-  integrity sha512-bZIXwhhK59+u9gXtfYzxQpyte14bWf3YIhC1PDY5N+bM0Tfh0XkTx3cFR/9d2BsYHi/aRPSmVTOoytHOYBKEvQ==
+manifest-rev@0.x:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/manifest-rev/-/manifest-rev-0.0.2.tgz#191b435fc2a6819644838d7d3db0c9b115903ad1"
+  integrity sha512-/zNwXfLdrePcYAR09ajF6EwCrOf/TPZUDtzOKfPTfu3kh98cBtgMn6qzbEpSp1DHV7wJxXDms6MS85zdP873fw==
 
 map-age-cleaner@^0.1.3:
   version "0.1.3"
