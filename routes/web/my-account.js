@@ -32,6 +32,7 @@ router.post(
   '/domains/:domain_id/invites',
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
+  web.myAccount.ensureUpgradedPlan,
   web.myAccount.createInvite
 );
 
@@ -39,6 +40,7 @@ router.delete(
   '/domains/:domain_id/invites',
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
+  web.myAccount.ensureUpgradedPlan,
   web.myAccount.removeInvite
 );
 
@@ -46,6 +48,7 @@ router.put(
   '/domains/:domain_id/members/:member_id',
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
+  web.myAccount.ensureUpgradedPlan,
   web.myAccount.updateMember
 );
 
@@ -53,6 +56,7 @@ router.delete(
   '/domains/:domain_id/members/:member_id',
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
+  web.myAccount.ensureUpgradedPlan,
   web.myAccount.removeMember
 );
 router.get(

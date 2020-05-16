@@ -150,5 +150,8 @@ module.exports = {
   IMPORT_CATCHALL_SUCCESSFUL: `Successfully imported (%d) catch-all recipients.`,
   IMPORT_CATCHALL_ERROR:
     'An error occurred while importing catch-all recipients.',
-  IMPORT_CATCHALL_NONE: 'No catch-all recipients were available to import.'
+  IMPORT_CATCHALL_NONE: 'No catch-all recipients were available to import.',
+  MULTIPLE_VERIFICATION_ERRORS:
+    'Multiple errors occurred during record verification.',
+  USER_ALREADY_MEMBER: 'User is already an accepted member of this domain'
 };

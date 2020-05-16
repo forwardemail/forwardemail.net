@@ -40,7 +40,7 @@ localeRouter
     web.auth.parseReturnOrRedirectTo,
     web.faq
   )
-  .get('/api', web.api)
+  .get('/api', web.myAccount.retrieveDomains, web.api)
   .get('/help', render('help'))
   .get('/about', render('about'))
   .get(
@@ -60,6 +60,12 @@ localeRouter
     web.myAccount.retrieveDomains,
     web.onboard,
     render('reserved-email-addresses')
+  )
+  .get(
+    '/free-email-webhooks',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    render('free-email-webhooks')
   )
   .get(
     '/list-of-ports-blocked-by-isps',

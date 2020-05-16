@@ -19,11 +19,16 @@ router.post('/log', api.v1.log.checkToken, api.v1.log.parseLog);
 //
 router.get('/lookup', api.v1.restricted, api.v1.lookup);
 router.get('/port', api.v1.restricted, api.v1.port);
-router.post('/account', api.v1.restricted, api.v1.users.create);
+router.get(
+  '/max-forwarded-addresses',
+  api.v1.restricted,
+  api.v1.maxForwardedAddresses
+);
 
 //
 // public
 //
+router.post('/account', api.v1.users.create);
 router.get(
   '/account',
   policies.ensureApiToken,
@@ -38,19 +43,22 @@ router.put(
 );
 
 // domains
-router.use('/domains', policies.ensureApiToken, web.myAccount.retrieveDomains);
+router.use(
+  '/domains',
+  policies.ensureApiToken,
+  web.myAccount.ensureNotBanned,
+  web.myAccount.retrieveDomains
+);
 router.get('/domains', api.v1.domains.list);
 router.post('/domains', web.myAccount.createDomain, api.v1.domains.retrieve);
 router.get(
   '/domains/:domain_id',
   web.myAccount.retrieveDomain,
-  web.myAccount.ensureDomainAdmin,
   api.v1.domains.retrieve
 );
 router.get(
   '/domains/:domain_id/verify-records',
   web.myAccount.retrieveDomain,
-  web.myAccount.ensureDomainAdmin,
   web.myAccount.verifyRecords
 );
 router.put(
@@ -77,6 +85,7 @@ router.post(
   '/domains/:domain_id/invites',
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
+  web.myAccount.ensureUpgradedPlan,
   web.myAccount.createInvite,
   web.myAccount.retrieveDomains,
   web.myAccount.retrieveDomain,
@@ -86,6 +95,7 @@ router.delete(
   '/domains/:domain_id/invites',
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
+  web.myAccount.ensureUpgradedPlan,
   web.myAccount.removeInvite,
   web.myAccount.retrieveDomains,
   web.myAccount.retrieveDomain,
@@ -97,6 +107,7 @@ router.put(
   '/domains/:domain_id/members/:member_id',
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
+  web.myAccount.ensureUpgradedPlan,
   web.myAccount.updateMember,
   web.myAccount.retrieveDomains,
   web.myAccount.retrieveDomain,
@@ -106,6 +117,7 @@ router.delete(
   '/domains/:domain_id/members/:member_id',
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
+  web.myAccount.ensureUpgradedPlan,
   web.myAccount.removeMember,
   web.myAccount.retrieveDomains,
   web.myAccount.retrieveDomain,
@@ -125,6 +137,8 @@ router.get(
 );
 router.post(
   '/domains/:domain_id/aliases',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureUpgradedPlan,
   web.myAccount.validateAlias,
   web.myAccount.createAlias,
   api.v1.aliases.retrieve

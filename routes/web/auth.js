@@ -16,11 +16,16 @@ router
 
     return next();
   })
-  .get('/:provider', web.auth.catchError, (ctx, next) =>
-    passport.authenticate(
-      ctx.params.provider,
-      config.passport[ctx.params.provider]
-    )(ctx, next)
+  .get(
+    '/:provider',
+    web.auth.catchError,
+    web.auth.parseReturnOrRedirectTo,
+    (ctx, next) => {
+      passport.authenticate(
+        ctx.params.provider,
+        config.passport[ctx.params.provider]
+      )(ctx, next);
+    }
   )
   .get('/:provider/ok', web.auth.catchError, (ctx, next) => {
     const redirect = ctx.session.returnTo

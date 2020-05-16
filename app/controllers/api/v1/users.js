@@ -1,4 +1,5 @@
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const { select } = require('mongoose-json-select');
 
@@ -38,12 +39,17 @@ async function retrieve(ctx) {
 async function update(ctx) {
   const { body } = ctx.request;
 
-  ctx.state.user.email = body.email;
-  ctx.state.user[config.passport.fields.givenName] =
-    body[config.passport.fields.givenName];
-  ctx.state.user[config.passport.fields.familyName] =
-    body[config.passport.fields.familyName];
-  ctx.state.user.avatar_url = body.avatar_url;
+  if (_.isString(body.email)) ctx.state.user.email = body.email;
+
+  if (_.isString(body[config.passport.fields.givenName]))
+    ctx.state.user[config.passport.fields.givenName] =
+      body[config.passport.fields.givenName];
+
+  if (_.isString(body[config.passport.fields.familyName]))
+    ctx.state.user[config.passport.fields.familyName] =
+      body[config.passport.fields.familyName];
+
+  if (_.isString(body.avatar_url)) ctx.state.user.avatar_url = body.avatar_url;
 
   ctx.body = await ctx.state.user.save();
 }

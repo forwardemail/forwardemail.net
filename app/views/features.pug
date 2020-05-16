@@ -33,7 +33,7 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 != `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited disposable email addresses')}`
                 = ' '
-                a(href=l('/free-disposable-addresses'), data-toggle='tooltip', data-placement='bottom', title=`${t('Use a custom domain or one of our free vanity domains:')} ${ajc(config.vanityDomains)}`).btn.btn-link.text-primary.py-0
+                a(href=l('/free-disposable-addresses'), role='button', data-toggle='tooltip', data-placement='bottom', title=`${t('Use a custom domain or one of our free vanity domains:')} ${ajc(config.vanityDomains)}`).btn.btn-link.text-primary.py-0
                   i.fa.fa-question-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 != `<i class="fa fa-fw fa-shield-alt text-primary mr-3"></i> ${t('Spam and phishing protection')}`
@@ -41,22 +41,24 @@ block body
                 a(href='https://github.com/spamscanner/spamscanner#foreword', target='_blank', rel='nofollow').btn.btn-link.text-dark.py-0
                   i.fa.fa-external-link-alt
               li.list-group-item.d-flex.align-items-center.font-weight-bold
-                != `<i class="fa fa-fw fa-paperclip text-primary mr-3"></i> ${t('25MB attachment limit')}`
-                small.ml-1.text-black-50
-                  = '('
-                  = t('same as Gmail')
-                  = ')'
+                != `<i class="fa fa-fw fa-paperclip text-primary mr-3"></i> ${t('50MB attachment limit')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('"Send mail as" with Gmail, Outlook, and Yahoo')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Catch-all email addresses')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Multiple recipients per email address')}`
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
                 = ' '
+                = t('Unlimited email webhooks')
+                = ' '
+                a(href=l('/free-email-webhooks')).btn.btn-link.text-dark.py-0
+                  i.fa.fa-link
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
                 = t('Custom port forwarding')
-                small.ml-1.text-black-50
-                  = '('
-                  = t('in case your ISP blocks port 25')
-                  = ')'
+                = ' '
+                a(href=l('/guides/port-25-blocked-by-isp-workaround')).btn.btn-link.text-dark.py-0
+                  i.fa.fa-link
             .d-flex.flex-column.flex-grow-1.justify-content-end
               h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
                 small.d-inline-block.text-monospace $
@@ -64,7 +66,7 @@ block body
                 sup.d-inline-block.h6.text-black-50
                   = '/'
                   = t('month')
-              small.bg-primary.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
+              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
               .p-2
                 a(href=l('/my-account/domains/new')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
                   = t('Setup Forwarding')
@@ -80,7 +82,8 @@ block body
               p.text-center.mb-0= t('Advanced features and support')
             ul.list-group.list-group-flush
               li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.text-white.font-weight-bold
-                i.fa.fa-fw.fa-arrow-left.mr-3
+                i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
+                i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = ' '
                 = t('Everything included in Free, plus:')
               li.list-group-item.d-flex.align-items-center.font-weight-bold
@@ -92,28 +95,20 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-tasks text-primary mr-3"></i> ${t('Easy to use email alias and import manager')}`
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-bell.text-primary.mr-3
-                = t('Automatic notification system')
-                small.ml-1.text-black-50
-                  = '('
-                  = t('never miss an email')
-                  = ')'
+                = t('Automatic smart alerting system')
               li.list-group-item.d-flex.align-items-center.font-weight-bold.border-bottom
                 i.fa.fa-fw.fa-tools.text-primary.mr-3
                 = t('Browser extension')
-                small.ml-1.text-black-50
-                  = '('
-                  = t('coming soon')
-                  = ')'
                 button(role='button', data-toggle='tooltip', data-placement='bottom', title='Chrome').btn.btn-link.text-dark.py-0.px-1: i.fab.fa-chrome
                 button(role='button', data-toggle='tooltip', data-placement='bottom', title='Firefox').btn.btn-link.text-dark.py-0.px-1.ml-1: i.fab.fa-firefox-browser
                 button(role='button', data-toggle='tooltip', data-placement='bottom', title='Safari').btn.btn-link.text-dark.py-0.px-1.ml-1: i.fab.fa-safari
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-code.text-primary.mr-3
                 = t('Exclusive access to API features')
-                small.ml-1.text-black-50
-                  = '('
-                  = t('coming soon')
-                  = ')'
+                = ' '
+                a(href=l('/api')).btn.btn-link.text-dark.py-0
+                  i.fa.fa-link
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Forward newsletters to a bulk recipient list')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('30-day money back guarantee')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('99.99% Uptime Service Level Agreement ("SLA")')}`
             .d-flex.flex-column.flex-grow-1.justify-content-end
@@ -124,8 +119,8 @@ block body
                   = '/'
                   = t('month')
                   = ' '
-                  a(href='#', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  You will be emailed reminders to make payment when it has ended.')).text-primary: i.far.fa-smile
-              small.bg-primary.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
+                  button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  You will be emailed reminders to make payment when it has ended.')).btn.btn-link: i.far.fa-smile
+              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
               .p-2
                 if sortedDomains.length === 0
                   a(href=l('/my-account/domains/new?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
@@ -137,7 +132,7 @@ block body
                     button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold.dropdown-toggle= t('Select Domain')
                     .dropdown-menu.w-100
                       each domain in sortedDomains
-                        a.dropdown-item(href=l(`/my-account/domains/${domain.id}/billing?plan=enhanced_protection`), class=domain.plan === 'enhanced_protection' ? 'disabled' : '', aria-disabled=domain.plan === 'enhanced_protection' ? 'true' : 'false')
+                        a.dropdown-item(href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`), class=domain.plan === 'enhanced_protection' ? 'disabled' : '', aria-disabled=domain.plan === 'enhanced_protection' ? 'true' : 'false')
                           = domain.name
                           if domain.plan === 'enhanced_protection'
                             = ' ('
@@ -158,11 +153,12 @@ block body
               p.text-center.mb-0= t('For small groups and organizations')
             ul.list-group.list-group-flush
               li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.font-weight-bold.text-white
-                i.fa.fa-fw.fa-arrow-left.mr-3
+                i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
+                i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = ' '
                 = t('Everything included in Enhanced Protection, plus:')
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited member access control management')}`
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-sitemap text-primary mr-3"></i> ${t('Organization account with shared domain access')}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t('Unlimited member access management')}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-sitemap text-primary mr-3"></i> ${t('Shared organizational access to domain')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Premium support with 24 hour response time')}`
             .d-flex.flex-column.flex-grow-1.justify-content-end
               h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
@@ -172,8 +168,8 @@ block body
                   = '/'
                   = t('month')
                   = ' '
-                  a(href='#', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  You will be emailed reminders to make payment when it has ended.')).text-primary: i.far.fa-smile
-              small.bg-primary.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
+                  button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  You will be emailed reminders to make payment when it has ended.')).btn.btn-link: i.far.fa-smile
+              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
               .p-2
                 if sortedDomains.length === 0
                   a(href=l('/my-account/domains/new?plan=team')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
@@ -185,7 +181,7 @@ block body
                     button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold.dropdown-toggle= t('Select Domain')
                     .dropdown-menu.w-100
                       each domain in sortedDomains
-                        a.dropdown-item(href=l(`/my-account/domains/${domain.id}/billing?plan=team`), class=domain.plan === 'team' ? 'disabled' : '', aria-disabled=domain.plan === 'team' ? 'true' : 'false')
+                        a.dropdown-item(href=l(`/my-account/domains/${domain.name}/billing?plan=team`), class=domain.plan === 'team' ? 'disabled' : '', aria-disabled=domain.plan === 'team' ? 'true' : 'false')
                           = domain.name
                           if domain.plan === 'team'
                             = ' ('
@@ -204,14 +200,15 @@ block body
               p.text-center.mb-0= t('Custom solutions and licensing')
             ul.list-group.list-group-flush
               li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.font-weight-bold.text-white
-                i.fa.fa-fw.fa-arrow-left.mr-3
+                i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
+                i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = ' '
                 = t('Everything included in Team, plus:')
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-file-signature text-primary mr-3"></i> ${t('Custom licensing agreement')}`
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-drafting-compass text-primary mr-3"></i> ${t('Technical infrastructure design and support')}`
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-palette text-primary mr-3"></i> ${t('White-label and custom-branded solutions')}`
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-server text-primary mr-3"></i> ${t('Managed deployment and maintenance')}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Dedicated support from the founder')}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-server text-primary mr-3"></i> ${t('Managed deployment with dedicated IP\'s')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Dedicated support our experts')}`
             .d-flex.flex-column.flex-grow-1.justify-content-end
               .p-2
                 a(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help').btn.btn-lg.btn-block.btn-dark.text-uppercase.font-weight-bold= t('Contact Sales')

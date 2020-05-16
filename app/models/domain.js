@@ -1,13 +1,13 @@
 const dns = require('dns');
-const util = require('util');
 
-const RE2 = require('re2');
 const ForwardEmail = require('forward-email');
+const RE2 = require('re2');
 const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const { boolean } = require('boolean');
 const { isFQDN, isIP, isEmail, isPort } = require('validator');
 
 const logger = require('../../helpers/logger');
@@ -20,8 +20,6 @@ const app = new ForwardEmail({
   srs: { secret: 'null' }
 });
 
-dns.setServers(app.config.dns);
-
 const EXCHANGES = app.config.exchanges
   .map(
     (exchange, i) =>
@@ -29,14 +27,58 @@ const EXCHANGES = app.config.exchanges
   )
   .join('');
 
-const resolveTxtAsync = util.promisify(dns.resolveTxt);
-
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const verificationRecordOptions = require('../../config/verification-record');
 
 const REGEX_VERIFICATION = new RE2(/[^\da-z]/gi);
+
+const Member = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User'
+  },
+  group: {
+    type: String,
+    default: 'user',
+    enum: ['admin', 'user'],
+    lowercase: true,
+    trim: true
+  }
+});
+
+Member.plugin(mongooseCommonPlugin, {
+  object: 'member',
+  omitCommonFields: false,
+  omitExtraFields: ['_id', '__v'],
+  uniqueId: false
+});
+
+const Invite = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    index: true,
+    trim: true,
+    lowercase: true,
+    validate: value => isEmail(value)
+  },
+  group: {
+    type: String,
+    default: 'user',
+    enum: ['admin', 'user'],
+    lowercase: true,
+    trim: true
+  }
+});
+
+Invite.plugin(mongooseCommonPlugin, {
+  object: 'invite',
+  omitCommonFields: false,
+  omitExtraFields: ['_id', '__v'],
+  uniqueId: false
+});
 
 const Domain = new mongoose.Schema({
   plan: {
@@ -55,40 +97,8 @@ const Domain = new mongoose.Schema({
     default: '25',
     validator: value => isPort(value)
   },
-  members: [
-    {
-      user: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User'
-      },
-      group: {
-        type: String,
-        default: 'user',
-        enum: ['admin', 'user'],
-        lowercase: true,
-        trim: true
-      }
-    }
-  ],
-  invites: [
-    {
-      email: {
-        type: String,
-        required: true,
-        index: true,
-        trim: true,
-        lowercase: true,
-        validate: value => isEmail(value)
-      },
-      group: {
-        type: String,
-        default: 'user',
-        enum: ['admin', 'user'],
-        lowercase: true,
-        trim: true
-      }
-    }
-  ],
+  members: [Member],
+  invites: [Invite],
   name: {
     type: String,
     required: true,
@@ -114,6 +124,22 @@ const Domain = new mongoose.Schema({
     unique: true
   }
 });
+
+Domain.virtual('link')
+  .get(function() {
+    return this.__link;
+  })
+  .set(function(link) {
+    this.__link = link;
+  });
+
+Domain.virtual('skip_verification')
+  .get(function() {
+    return this.__skip_verification;
+  })
+  .set(function(skipVerification) {
+    this.__skip_verification = boolean(skipVerification);
+  });
 
 Domain.pre('validate', function(next) {
   try {
@@ -143,6 +169,9 @@ Domain.pre('validate', function(next) {
 Domain.pre('validate', async function(next) {
   try {
     const domain = this;
+    // helper virtual to skip verification results
+    // (e.g. when onboarding a user that's just visiting the API/FAQ page)
+    if (domain.skip_verification) return next();
     if (
       !Array.isArray(domain.members) ||
       domain.members.length === 0 ||
@@ -162,7 +191,7 @@ Domain.pre('validate', async function(next) {
 
 Domain.plugin(mongooseCommonPlugin, {
   object: 'domain',
-  omitExtraFields: []
+  omitExtraFields: ['is_global']
 });
 
 // eslint-disable-next-line complexity
@@ -175,7 +204,7 @@ async function getVerificationResults(domain) {
   );
 
   const PAID_PLAN = new Error(
-    `Domain is on a paid plan and has "Enhanced Protection".  To proceed with verification, please <a href="${config.urls.web}/my-account/domains/${domain.id}/aliases">configure and import</a> your Aliases.  Once you have configured your Aliases, then please remove all TXT records prefixed with "${app.config.recordPrefix}=" and try again.`
+    `Domain is on a paid plan and has "Enhanced Protection".  To proceed with verification, please <a href="${config.urls.web}/my-account/domains/${domain.name}/aliases">configure and import</a> your Aliases.  Once you have configured your Aliases, then please remove all TXT records prefixed with "${app.config.recordPrefix}=" and try again.`
   );
 
   const verificationRecord = `${app.config.recordPrefix}-site-verification=${domain.verification_record}`;
@@ -303,17 +332,16 @@ async function verifyRecords(_id, locale) {
   domain.locale = locale;
   await domain.save();
 
+  // if no errors, return early
   if (errors.length === 0) return;
-  if (errors.length === 1) throw errors[0];
 
   const err = new Error(
-    `<ul class="text-left mb-0">${errors
-      .map(
-        err => `<li class="mb-3">${err && err.message ? err.message : err}</li>`
-      )
-      .join('')}</ul>`
+    errors.length === 1
+      ? errors[0]
+      : i18n.translate('MULTIPLE_VERIFICATION_ERRORS', locale)
   );
   err.no_translate = true;
+  if (errors.length > 1) err.errors = errors;
   throw err;
 }
 
@@ -323,7 +351,8 @@ Domain.statics.verifyRecords = verifyRecords;
 async function getTxtAddresses(domainName, locale, allowEmpty = false) {
   if (!isFQDN(domainName)) throw i18n.translateError('INVALID_FQDN', locale);
 
-  const records = await resolveTxtAsync(domainName);
+  logger.debug('resolveTxt', { domainName });
+  const records = await dns.promises.resolveTxt(domainName);
 
   // verification records that contain `forward-email-site-verification=` prefix
   const verifications = [];
@@ -414,3 +443,5 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
 Domain.statics.getTxtAddresses = getTxtAddresses;
 
 module.exports = mongoose.model('Domain', Domain);
+module.exports.Invite = Invite;
+module.exports.Member = Member;

@@ -8,7 +8,7 @@ const { boolean } = require('boolean');
 const { isEmail, isFQDN, isIP } = require('validator');
 
 const config = require('../../../config');
-const { Users, Domains } = require('../../models');
+const { Users, Domains, Aliases } = require('../../models');
 
 // we're only using this for the exposed `getTemplatePath` method
 const email = new Email({ views: config.views });
@@ -92,12 +92,21 @@ async function onboard(ctx, next) {
       domain => domain.name === ctx.request.body.domain
     );
     if (match) ctx.state.domain = match;
-    else
+    else {
       ctx.state.domain = await Domains.create({
         members: [{ user: ctx.state.user._id, group: 'admin' }],
         name: ctx.request.body.domain,
         locale: ctx.locale
       });
+      // create a default alias for the user pointing to the admin
+      await Aliases.create({
+        user: ctx.state.user._id,
+        domain: ctx.state.domain._id,
+        name: '*',
+        recipients: [ctx.state.user.email],
+        locale: ctx.locale
+      });
+    }
   } else if (
     !ctx.isAuthenticated() &&
     boolean(ctx.request.body.create_account)
@@ -109,13 +118,28 @@ async function onboard(ctx, next) {
     query[config.lastLocaleField] = ctx.locale;
     query[config.userFields.hasVerifiedEmail] = false;
     query[config.userFields.hasSetPassword] = false;
-    const user = await Users.create(query);
+    let user = await Users.create(query);
+    // send verification email if needed
+    if (boolean(ctx.query.send_verification_email)) {
+      user = await user.sendVerificationEmail(ctx);
+      ctx.flash('success', ctx.translate('EMAIL_VERIFICATION_SENT'));
+    }
+
     ctx.state.domain = await Domains.create({
       members: [{ user: user._id, group: 'admin' }],
       name: ctx.request.body.domain,
+      locale: ctx.locale,
+      skip_verification: !boolean(ctx.query.redirect_to_domain)
+    });
+    // create a default alias for the user pointing to the admin
+    await Aliases.create({
+      user: user._id,
+      domain: ctx.state.domain._id,
+      name: '*',
+      recipients: [user.email],
       locale: ctx.locale
     });
-    ctx.login(user);
+    await ctx.login(user);
   }
 
   // TODO: flash messages logic in @ladjs/assets doesn't support both
