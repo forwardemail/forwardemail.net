@@ -90,13 +90,13 @@ localeRouter
   .get('/reset-password/:token', render('reset-password'))
   .post('/reset-password/:token', web.auth.resetPassword)
   .get(
-    config.verificationPath,
+    config.verifyRoute,
     policies.ensureLoggedIn,
     web.auth.parseReturnOrRedirectTo,
     web.auth.verify
   )
   .post(
-    config.verificationPath,
+    config.verifyRoute,
     policies.ensureLoggedIn,
     web.auth.parseReturnOrRedirectTo,
     web.auth.verify

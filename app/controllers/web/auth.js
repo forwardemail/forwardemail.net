@@ -13,6 +13,7 @@ const bull = require('../../../bull');
 const Users = require('../../models/user');
 const passport = require('../../../helpers/passport');
 const config = require('../../../config');
+const { Inquiries } = require('../../models');
 
 const sanitize = string =>
   sanitizeHtml(string, {
@@ -165,7 +166,7 @@ async function login(ctx, next) {
 
       const uri = authenticator.keyuri(
         user.email,
-        'lad.sh',
+        'forwardemail',
         user[config.passport.fields.otpToken]
       );
 
@@ -173,12 +174,12 @@ async function login(ctx, next) {
       ctx.state.user = await ctx.state.user.save();
 
       if (user[config.passport.fields.otpEnabled] && !ctx.session.otp)
-        redirectTo = `/${ctx.locale}/otp/login`;
+        redirectTo = ctx.state.l(config.loginOtpRoute);
 
-      if (ctx.accepts('json')) {
-        ctx.body = { redirectTo };
-      } else {
+      if (ctx.accepts('html')) {
         ctx.redirect(redirectTo);
+      } else {
+        ctx.body = { redirectTo };
       }
 
       return;
@@ -245,19 +246,43 @@ async function recoveryKey(ctx) {
   recoveryKeys = recoveryKeys.filter(
     key => key !== ctx.request.body.recovery_passcode
   );
+
+  const emptyRecoveryKeys = recoveryKeys.length === 0;
+  const type = emptyRecoveryKeys ? 'warning' : 'success';
+  redirectTo = emptyRecoveryKeys
+    ? `/${ctx.locale}/my-account/security`
+    : redirectTo;
+
+  // handle case if the user runs out of keys
+  if (emptyRecoveryKeys) {
+    const opts = { length: 10, characters: '1234567890' };
+    recoveryKeys = new Array(10).fill().map(() => cryptoRandomString(opts));
+  }
+
   ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys;
   ctx.state.user = await ctx.state.user.save();
 
   ctx.session.otp = 'totp-recovery';
 
-  // send the user a success message
-  const message = ctx.translate('OTP_RECOVERY_SUCCESS');
-
+  const message = ctx.translate(
+    type === 'warning' ? 'OTP_RECOVERY_RESET' : 'OTP_RECOVERY_SUCCESS'
+  );
   if (ctx.accepts('html')) {
-    ctx.flash('success', message);
+    ctx.flash(type, message);
     ctx.redirect(redirectTo);
   } else {
-    ctx.body = { message, redirectTo };
+    ctx.body = {
+      ...(emptyRecoveryKeys
+        ? {
+            swal: {
+              title: ctx.translate('EMPTY_RECOVERY_KEYS'),
+              type,
+              text: message
+            }
+          }
+        : { message }),
+      redirectTo
+    };
   }
 }
 
@@ -453,7 +478,10 @@ async function verify(ctx) {
 
   ctx.state.redirectTo = redirectTo;
 
-  if (ctx.state.user[config.userFields.hasVerifiedEmail]) {
+  if (
+    ctx.state.user[config.userFields.hasVerifiedEmail] &&
+    !ctx.state.user[config.userFields.pendingRecovery]
+  ) {
     const message = ctx.translate('EMAIL_ALREADY_VERIFIED');
     if (ctx.accepts('html')) {
       ctx.flash('success', message);
@@ -532,9 +560,39 @@ async function verify(ctx) {
   ctx.state.user[config.userFields.hasVerifiedEmail] = true;
   ctx.state.user = await ctx.state.user.save();
 
-  // send the user a success message
-  const message = ctx.translate('EMAIL_VERIFICATION_SUCCESS');
+  const pendingRecovery = ctx.state.user[config.userFields.pendingRecovery];
+  if (pendingRecovery) {
+    const body = {};
+    body.email = ctx.state.user.email;
+    body.message = ctx.translate('SUPPORT_REQUEST_MESSAGE');
+    body.is_email_only = true;
+    const inquiry = await Inquiries.create({
+      ...body,
+      ip: ctx.ip
+    });
 
+    ctx.logger.debug('created inquiry', inquiry);
+
+    const job = await bull.add('email', {
+      template: 'recovery',
+      message: {
+        to: ctx.state.user.email,
+        cc: config.email.message.from
+      },
+      locals: {
+        locale: ctx.locale,
+        inquiry
+      }
+    });
+
+    ctx.logger.info('added job', bull.getMeta({ job }));
+  }
+
+  const message = pendingRecovery
+    ? ctx.translate('PENDING_RECOVERY_VERIFICATION_SUCCESS')
+    : ctx.translate('EMAIL_VERIFICATION_SUCCESS');
+
+  redirectTo = pendingRecovery ? '/logout' : redirectTo;
   if (ctx.accepts('html')) {
     ctx.flash('success', message);
     ctx.redirect(redirectTo);

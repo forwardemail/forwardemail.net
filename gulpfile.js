@@ -1,13 +1,9 @@
 const path = require('path');
 const fs = require('fs');
 
-const AWS = require('aws-sdk');
 const Graceful = require('@ladjs/graceful');
 const Mandarin = require('mandarin');
-const _ = require('lodash');
-const awscloudfront = require('gulp-awspublish-cloudfront');
-const awspublish = require('gulp-awspublish');
-const babel = require('gulp-babel');
+const babel = require('babelify');
 const browserify = require('browserify');
 const collapser = require('bundle-collapser/plugin');
 const cssnano = require('cssnano');
@@ -23,7 +19,6 @@ const gulpif = require('gulp-if');
 const imagemin = require('gulp-imagemin');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
-const ms = require('ms');
 const nodeSass = require('node-sass');
 const pngquant = require('imagemin-pngquant');
 const postcss = require('gulp-postcss');
@@ -31,6 +26,7 @@ const postcssPresetEnv = require('postcss-preset-env');
 const pugLinter = require('gulp-pug-linter');
 const reporter = require('postcss-reporter');
 const rev = require('gulp-rev');
+const revSri = require('gulp-rev-sri');
 const sass = require('gulp-sass');
 const scssParser = require('postcss-scss');
 const sourcemaps = require('gulp-sourcemaps');
@@ -67,38 +63,6 @@ const manifestOptions = {
   base: config.buildBase
 };
 
-// set aws logger
-AWS.config.logger = logger;
-
-function publish() {
-  // create a new publisher
-  const publisher = awspublish.create(
-    _.merge(config.aws, {
-      params: {
-        Bucket: env.AWS_S3_BUCKET
-      }
-    })
-  );
-  return (
-    src([`${config.buildBase}/**/*`, `!${config.manifest}`])
-      // gzip, Set Content-Encoding headers and add .gz extension
-      .pipe(awspublish.gzip())
-      // publisher will add Content-Length, Content-Type
-      // and headers specified below
-      // If not specified it will set x-amz-acl to public-read by default
-      .pipe(
-        publisher.publish({
-          'Cache-Control': `public, max-age=${ms('1yr')}`
-        })
-      )
-      // create a cache file to speed up consecutive uploads
-      .pipe(publisher.cache())
-      // print upload updates to console
-      .pipe(awspublish.reporter())
-      .pipe(awscloudfront(env.AWS_CLOUDFRONT_DISTRIBUTION_ID))
-  );
-}
-
 function pug() {
   return src('app/views/**/*.pug', { since: lastRun(pug) })
     .pipe(pugLinter({ reporter: 'default', failAfterError: true }))
@@ -120,6 +84,7 @@ function img() {
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
+    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
@@ -155,6 +120,7 @@ function css() {
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
+    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
@@ -180,41 +146,37 @@ function eslint() {
 async function bundle() {
   // make build/js folder for compile task
   await makeDir(path.join(config.buildBase, 'js'));
+  const ws = fs.createWriteStream(
+    path.join(config.buildBase, 'js', 'factor-bundle.js')
+  );
   const paths = await globby('**/*.js', { cwd: 'assets/js' });
   const b = browserify({
-    entries: paths.map(str => `assets/js/${str}`),
+    entries: paths.map(string => `assets/js/${string}`),
     debug: true
   });
-  return (
-    b
-      .plugin(collapser)
-      .plugin('factor-bundle', {
-        outputs: paths.map(str => path.join(config.buildBase, 'js', str))
-      })
-      .bundle()
-      // .bundle((err, buffer) => {
-      .pipe(
-        fs.createWriteStream(
-          path.join(config.buildBase, 'js', 'factor-bundle.js')
-        )
-      )
-  );
+  return b
+    .transform(babel)
+    .plugin(collapser)
+    .plugin('factor-bundle', {
+      outputs: paths.map(string => path.join(config.buildBase, 'js', string))
+    })
+    .bundle()
+    .pipe(ws)
+    .on('finish', compile);
 }
 
-async function compile() {
-  return src('build/js/**/*.js', {
-    since: lastRun(compile)
-  })
+function compile() {
+  return src('build/js/**/*.js', { base: 'build', since: lastRun(compile) })
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(envify(env))
     .pipe(unassert())
-    .pipe(babel())
     .pipe(gulpif(PROD, terser()))
     .pipe(gulpif(PROD, rev()))
     .pipe(sourcemaps.write('./'))
     .pipe(dest(config.buildBase))
     .pipe(gulpif(DEV, lr(config.livereload)))
     .pipe(gulpif(PROD, rev.manifest(config.manifest, manifestOptions)))
+    .pipe(gulpif(PROD, revSri({ base: config.buildBase })))
     .pipe(gulpif(PROD, dest(config.buildBase)));
 }
 
@@ -241,8 +203,6 @@ function clean() {
   return del([config.buildBase]);
 }
 
-const js = series(bundle, compile);
-
 async function markdown() {
   const mandarin = new Mandarin({ i18n, logger });
   const graceful = new Graceful({ redisClients: [mandarin.redisClient] });
@@ -254,14 +214,13 @@ const build = series(
   clean,
   parallel(
     ...(TEST ? [] : [xo, remark]),
-    parallel(img, static, markdown, series(scss, css), series(js, eslint))
+    parallel(img, static, markdown, series(scss, css), series(bundle, eslint))
   )
 );
 
 module.exports = {
   build,
-  js,
-  publish,
+  bundle,
   markdown,
   watch: () => {
     lr.listen(config.livereload);
@@ -269,7 +228,7 @@ module.exports = {
     watch(Mandarin.DEFAULT_PATTERNS, markdown);
     watch('assets/img/**/*', img);
     watch('assets/css/**/*.scss', series(scss, css));
-    watch('assets/js/**/*.js', series(xo, js, eslint));
+    watch('assets/js/**/*.js', series(xo, bundle, eslint));
     watch('app/views/**/*.pug', pug);
     watch(staticAssets, static);
   },

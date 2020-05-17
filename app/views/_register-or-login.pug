@@ -36,10 +36,10 @@ mixin registerOrLogin(verb, isModal = false)
       form.ajax-form(action=l(action), method='POST')
         input(type="hidden", name="_csrf", value=ctx.csrf)
         .form-group.floating-label
-          input.form-control.form-control-lg(id=`input-email-${dashify(verb)}`, autocomplete="email", type="email", required, name="email", placeholder="name@example.com")
+          input.form-control.form-control-lg(id=`input-email-${dashify(verb)}`, type="email", required, name="email", placeholder="name@example.com", autocomplete='email')
           label(for=`input-email-${dashify(verb)}`)= t('Email address')
         .form-group.floating-label
-          input.form-control.form-control-lg(id=`input-password-${dashify(verb)}`, autocomplete=verb === 'sign up' ? 'new-password' : 'current-password',type="password", required, name="password", placeholder=" ")
+          input.form-control.form-control-lg(id=`input-password-${dashify(verb)}`, type="password", required, name="password", placeholder=" ", autocomplete=verb === 'sign up' ? 'off' : 'current-password')
           label(for=`input-password-${dashify(verb)}`)= t('Password')
         if verb === 'sign in'
           .form-group
@@ -48,12 +48,12 @@ mixin registerOrLogin(verb, isModal = false)
       .alert.alert-light.border.mt-3.text-center(class=isModal ? 'mb-0' : '')
         - const isRegisterOrLogin = ['/register', '/login'].includes(ctx.pathWithoutLocale)
         if verb === 'sign up'
-          != t('Registered?')
+          != t('Already have an account?')
           = ' '
           a(href=l('/login'), data-dismiss-modal=isRegisterOrLogin ? false : 'true', data-toggle=isRegisterOrLogin ? '' : 'modal-anchor', data-target=isRegisterOrLogin ? '' : '#modal-sign-in').card-link= t('Sign in')
         else
-          != t("Not registered?")
+          != t("Don't have an account?")
           = ' '
           a(href=l('/register'), data-dismiss-modal=isRegisterOrLogin ? false : 'true', data-toggle=isRegisterOrLogin ? '' : 'modal-anchor', data-target=isRegisterOrLogin ? '' : '#modal-sign-up').card-link= t('Sign up')
-      if verb === 'sign up'
-        p.mt-3.mb-0.text-center: small.text-black-50!= t(`Read our <a href="${l('/privacy')}" target="_blank" rel="noopener">Privacy Policy</a> and <a href="${l('/terms')}" target="_blank" rel="noopener">Terms</a>`)
+        if verb === 'sign up'
+          p.mt-3.mb-0.text-center: small.text-black-50!= t(`Read our <a href="${l('/privacy')}" target="_blank" rel="noopener">Privacy Policy</a> and <a href="${l('/terms')}" target="_blank" rel="noopener">Terms</a>`)
