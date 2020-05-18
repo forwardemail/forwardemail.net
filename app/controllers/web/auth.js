@@ -22,7 +22,7 @@ const sanitize = string =>
   });
 
 function logout(ctx) {
-  if (!ctx.isAuthenticated()) return ctx.redirect(`/${ctx.locale}`);
+  if (!ctx.isAuthenticated()) return ctx.redirect(ctx.state.l());
   if (ctx.session.otp && !ctx.session.otp_remember_me) delete ctx.session.otp;
   ctx.logout();
   ctx.flash('custom', {
@@ -34,7 +34,7 @@ function logout(ctx) {
     timer: 3000,
     position: 'top'
   });
-  ctx.redirect(`/${ctx.locale}`);
+  ctx.redirect(ctx.state.l());
 }
 
 function parseReturnOrRedirectTo(ctx, next) {
@@ -64,7 +64,9 @@ function parseReturnOrRedirectTo(ctx, next) {
 
 async function registerOrLogin(ctx) {
   if (ctx.isAuthenticated()) {
-    let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+    let redirectTo = ctx.state.l(
+      config.passportCallbackOptions.successReturnToOrRedirect
+    );
 
     if (ctx.session && ctx.session.returnTo) {
       redirectTo = ctx.session.returnTo;
@@ -88,7 +90,7 @@ async function homeOrDomains(ctx) {
   // If the user is logged in then take them to their account
   if (ctx.isAuthenticated())
     return ctx.redirect(
-      `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`
+      ctx.state.l(config.passportCallbackOptions.successReturnToOrRedirect)
     );
   // Manually set page title since we don't define Home route in config/meta
   ctx.state.meta = {
@@ -104,7 +106,9 @@ async function homeOrDomains(ctx) {
 
 async function login(ctx, next) {
   if (ctx.isAuthenticated()) {
-    let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+    let redirectTo = ctx.state.l(
+      config.passportCallbackOptions.successReturnToOrRedirect
+    );
 
     if (ctx.session && ctx.session.returnTo) {
       redirectTo = ctx.session.returnTo;
@@ -137,7 +141,9 @@ async function login(ctx, next) {
       ctx.locale = ctx.request.locale;
     }
 
-    let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+    let redirectTo = ctx.state.l(
+      config.passportCallbackOptions.successReturnToOrRedirect
+    );
 
     if (ctx.session && ctx.session.returnTo) {
       redirectTo = ctx.session.returnTo;
@@ -209,7 +215,7 @@ async function loginOtp(ctx, next) {
     ctx.session.otp_remember_me = boolean(ctx.request.body.otp_remember_me);
 
     ctx.session.otp = 'totp';
-    const redirectTo = `/${ctx.locale}/dashboard`;
+    const redirectTo = ctx.state.l('/dashboard');
 
     if (ctx.accepts('json')) {
       ctx.body = { redirectTo };
@@ -220,7 +226,9 @@ async function loginOtp(ctx, next) {
 }
 
 async function recoveryKey(ctx) {
-  let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+  let redirectTo = ctx.state.l(
+    config.passportCallbackOptions.successReturnToOrRedirect
+  );
 
   if (ctx.session && ctx.session.returnTo) {
     redirectTo = ctx.session.returnTo;
@@ -233,24 +241,24 @@ async function recoveryKey(ctx) {
 
   // ensure recovery matches user list of keys
   if (
-    !isSANB(ctx.request.body.recovery_passcode) ||
+    !isSANB(ctx.request.body.recovery_key) ||
     !Array.isArray(recoveryKeys) ||
     recoveryKeys.length === 0 ||
-    !recoveryKeys.includes(ctx.request.body.recovery_passcode)
+    !recoveryKeys.includes(ctx.request.body.recovery_key)
   )
     return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_RECOVERY_PASSCODE'))
+      Boom.badRequest(ctx.translateError('INVALID_RECOVERY_KEY'))
     );
 
-  // remove used passcode from recovery key list
+  // remove used key from recovery key list
   recoveryKeys = recoveryKeys.filter(
-    key => key !== ctx.request.body.recovery_passcode
+    key => key !== ctx.request.body.recovery_key
   );
 
   const emptyRecoveryKeys = recoveryKeys.length === 0;
   const type = emptyRecoveryKeys ? 'warning' : 'success';
   redirectTo = emptyRecoveryKeys
-    ? `/${ctx.locale}/my-account/security`
+    ? ctx.state.l('/my-account/security')
     : redirectTo;
 
   // handle case if the user runs out of keys
@@ -309,7 +317,9 @@ async function register(ctx) {
 
   await ctx.login(user);
 
-  let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+  let redirectTo = ctx.state.l(
+    config.passportCallbackOptions.successReturnToOrRedirect
+  );
 
   if (ctx.session && ctx.session.returnTo) {
     redirectTo = ctx.session.returnTo;
@@ -440,7 +450,7 @@ async function resetPassword(ctx) {
     user = await user.save();
     await ctx.login(user);
     const message = ctx.translate('RESET_PASSWORD');
-    const redirectTo = `/${ctx.locale}`;
+    const redirectTo = ctx.state.l();
     if (ctx.accepts('html')) {
       ctx.flash('success', message);
       ctx.redirect(redirectTo);
@@ -469,7 +479,9 @@ async function catchError(ctx, next) {
 
 // eslint-disable-next-line complexity
 async function verify(ctx) {
-  let redirectTo = `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+  let redirectTo = ctx.state.l(
+    config.passportCallbackOptions.successReturnToOrRedirect
+  );
 
   if (ctx.session && ctx.session.returnTo) {
     redirectTo = ctx.session.returnTo;

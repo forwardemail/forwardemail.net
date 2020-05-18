@@ -24,15 +24,15 @@ const config = {
   // package.json
   pkg,
 
+  // max recipients per alias (matches `forward-email` package)
+  maxForwardedAddresses: env.MAX_FORWARDED_ADDRESSES,
+
   // server
   env: env.NODE_ENV,
   urls: {
     web: env.WEB_URL,
     api: env.API_URL
   },
-
-  // dns
-  dns: env.DNS_PROVIDERS,
 
   // vanity domains
   vanityDomains: env.VANITY_DOMAINS.sort(),
@@ -117,9 +117,13 @@ const config = {
   },
 
   // dynamic otp routes
-  loginOtpRoute: '/otp/login',
+  otpRoutePrefix: '/otp',
+  otpRouteLoginPath: '/login',
 
-  // verification pin
+  // login route
+  loginRoute: '/login',
+
+  // verification
   verifyRoute: '/verify',
   verificationPinTimeoutMs: ms(env.VERIFICATION_PIN_TIMEOUT_MS),
   verificationPinEmailIntervalMs: ms(env.VERIFICATION_PIN_EMAIL_INTERVAL_MS),
@@ -205,6 +209,9 @@ const config = {
   // (this gets re-used by email-templates and @ladjs/i18n; see below)
   lastLocaleField: 'last_locale'
 };
+
+// set dynamic login otp route
+config.loginOtpRoute = `${config.otpRoutePrefix}${config.otpRouteLoginPath}`;
 
 // set build dir based off build base dir name
 config.buildDir = path.join(__dirname, '..', config.buildBase);

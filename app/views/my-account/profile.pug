@@ -44,7 +44,10 @@ block body
                 input#input-family-name(type='text', name=config.passport.fields.familyName, value=user[config.passport.fields.familyName], placeholder=t('Last name')).form-control
                 label(for="input-family-name")= t('Last name')
               .form-group.floating-label
-                button(data-toggle='modal', data-target='#modal-change-password', type='button').btn.btn-secondary.btn-sm.my-auto= t('Change password')
+                if user[config.userFields.hasSetPassword]
+                  button(data-toggle='modal', data-target='#modal-change-password', type='button').btn.btn-secondary.btn-sm.my-auto= t('Change password')
+                else
+                  button(data-toggle='modal', data-target='#modal-change-password', type='button').btn.btn-primary.btn-sm.my-auto= t('Set an account password')
             .card-footer.text-right
               button(type='reset').btn.btn-secondary= t('Reset')
               button(type='submit').btn.btn-primary= t('Save')

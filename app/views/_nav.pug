@@ -1,5 +1,5 @@
 - const isHelp = ctx.pathWithoutLocale === '/help'
-- const isRegisterOrLogin = ['/register', '/login'].includes(ctx.pathWithoutLocale)
+- const isRegisterOrLogin = ['/register', config.loginRoute].includes(ctx.pathWithoutLocale)
 
 if !isHelp
   #modal-help.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-help-title', aria-hidden='true')
@@ -46,6 +46,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
   button.navbar-toggler.hidden-lg-up(type="button", data-toggle="collapse", data-target="#navbar-header", aria-controls="navbar-header", aria-expanded="false", aria-label=t('Toggle navigation'))
     span.navbar-toggler-icon
   a.navbar-brand.d-inline-block.m-0(href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l())
+    span.sr-only.sr-only-focusable Forward Email
     img.d-inline-block(src=manifest('img/logo-square.svg'), width=50, height=50, alt="").mr-1
     h1.h2.m-0.align-middle.d-none.d-sm-inline-block
       span.text-primary.font-weight-bold Forward
@@ -88,10 +89,10 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
         li.nav-item.ml-md-1.mt-1.mt-md-0
           a.btn.btn-lg.d-block.text-left.text-lg-center(
             role=isRegisterOrLogin ? 'link' : 'button',
-            href=l('/login'),
+            href=l(config.loginRoute),
             data-toggle=isRegisterOrLogin ? '': 'modal-anchor',
             data-target=isRegisterOrLogin ? '' : '#modal-sign-in',
-            class=ctx.pathWithoutLocale === '/login' ? 'btn-outline-light' : 'text-light'
+            class=ctx.pathWithoutLocale === config.loginRoute ? 'btn-outline-light' : 'text-light'
           )= t('Sign in')
         li.nav-item.ml-md-1.mt-1.mt-md-0
           a.btn.btn-lg.d-block.text-uppercase.font-weight-bold(

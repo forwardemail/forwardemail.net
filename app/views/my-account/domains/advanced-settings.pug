@@ -147,7 +147,10 @@ block body
             .card-text
               strong= t('Current Value:')
               = ' '
-              = 0
+              if domain.max_recipients_per_alias <= 0
+                = config.maxForwardedAddresses
+              else
+                = domain.max_recipients_per_alias
           .card-footer.text-right
             a(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help').btn.btn-dark= t('Contact us to increase')
         if domain.group === 'admin'

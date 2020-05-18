@@ -2,7 +2,7 @@
   .modal-dialog(role='document')
     .modal-content
       .modal-header.text-center.d-block
-        h4.modal-title.d-inline-block.ml-4#modal-domain-title= t('Add Custom Domain Name')
+        h4.modal-title.d-inline-block.ml-4#modal-domain-title= t('Add New Domain')
         button(type='button', data-dismiss='modal', aria-label='Close').close
           span(aria-hidden='true') &times;
       .modal-body
@@ -16,6 +16,8 @@
               input#input-is-global(type='checkbox', name='is_global', value='true').form-check-input
               label(for='input-is-global').form-check-label= t('Global domain')
           button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
-      .modal-footer.justify-content-center
-        a(href=l('/domain-registration'), target='_blank', rel='noopener')
-          = t('Need to register a domain?')
+        .alert.alert-warning.mt-3.mb-0.text-center
+          ul.list-inline.mb-0
+            li.list-inline-item= t("Don't have a domain name?")
+            li.list-inline-item
+              a(href=l('/domain-registration')).alert-link= t('Register a domain')

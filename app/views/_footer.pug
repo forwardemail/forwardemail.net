@@ -25,7 +25,8 @@ footer.mt-auto
                   li: a.dropdown-item(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== 'en' ? `(${titleize(language.name)})` : ''}`
           hr.d-lg-none.w-100
           .mt-auto
-            a(href='#'): img(src=manifest('img/logo-square.svg'), width=50, height=50, alt='').d-inline-block.mx-lg-auto
+            a(href='#')
+              img(src=manifest('img/logo-square.svg'), width=50, height=50 alt='Go to top').d-inline-block.mx-lg-auto
             small.d-block.text-muted.mt-3!= '&copy; <a class="text-white-50" href="https://niftylettuce.com" target="_blank" rel="noopener">Niftylettuce, LLC.</a>'
         .flex-wrap.flex-fill
           h5.mb-2= t('Resources')
@@ -61,6 +62,21 @@ footer.mt-auto
               li: a.d-block.text-light(href=l('/terms'))= t('Terms')
           .mt-lg-auto.mt-3
             ul.list-inline.mb-0
-              li.list-inline-item: a(data-toggle='tooltip', title=t('Twitter'), href='https://twitter.com/niftylettuce', target='_blank', rel='noopener').d-inline-block.text-light: i.fa.fa-2x.fa-twitter
-              li.list-inline-item: a(data-toggle='tooltip', title=t('GitHub'), href='https://github.com/forwardemail', target='_blank', rel='noopener').d-inline-block.text-light: i.fa.fa-2x.fa-github
-              li.list-inline-item: a(data-toggle='tooltip', title=t('Email'), href='mailto:support@forwardemail.net', target='_blank', rel='noopener').d-inline-block.text-light: i.fa.fa-2x.fa-envelope
+              li.list-inline-item
+                a(data-toggle='tooltip', title=t('Twitter'), href='https://twitter.com/niftylettuce', target='_blank', rel='noopener').d-inline-block.text-light
+                  i.fa.fa-2x.fa-twitter
+                  span.sr-only.sr-only-focusable
+                    = ' '
+                    = t('Twitter')
+              li.list-inline-item
+                a(data-toggle='tooltip', title=t('GitHub'), href='https://github.com/forwardemail', target='_blank', rel='noopener').d-inline-block.text-light
+                  i.fa.fa-2x.fa-github
+                  span.sr-only.sr-only-focusable
+                    = ' '
+                    = t('GitHub')
+              li.list-inline-item
+                a(data-toggle='tooltip', title=t('Email'), href='mailto:support@forwardemail.net', target='_blank', rel='noopener').d-inline-block.text-light
+                  i.fa.fa-2x.fa-envelope
+                  span.sr-only.sr-only-focusable
+                    = ' '
+                    = t('Email')

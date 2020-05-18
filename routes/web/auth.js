@@ -30,7 +30,7 @@ router
   .get('/:provider/ok', web.auth.catchError, (ctx, next) => {
     const redirect = ctx.session.returnTo
       ? ctx.session.returnTo
-      : `/${ctx.locale}${config.passportCallbackOptions.successReturnToOrRedirect}`;
+      : ctx.state.l(config.passportCallbackOptions.successReturnToOrRedirect);
     return passport.authenticate(ctx.params.provider, {
       ...config.passportCallbackOptions,
       successReturnToOrRedirect: redirect

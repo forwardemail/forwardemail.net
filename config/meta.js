@@ -22,7 +22,7 @@ module.exports = function(config) {
   // so instead we need to use `&#124;` which is the html entity
   // which gets decoded to a `|` in the helper.meta function
   const lad = `&#124; <span class="notranslate">${config.appName}</span>`;
-  return {
+  const meta = {
     // note that we don't do `Home ${lad}` because if we forget to define
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
@@ -51,10 +51,8 @@ module.exports = function(config) {
       `Help ${lad}`,
       `Ask ${config.appName} your questions or leave comments`
     ],
-    '/login': [`Sign in ${lad}`, 'Sign in to your account'],
     '/logout': [`Sign out of ${lad}`, 'Sign out of your account'],
     '/register': [`Sign up ${lad}`, `Create a ${config.appName} account`],
-    '/verify': [`Verify email ${lad}`, `Verify your ${config.appName} email`],
     '/free-disposable-addresses': [
       `Free Disposable Addresses ${lad}`,
       'Try free and disposable email addresses with our short and memorable vanity domains, or you can use a custom domain name for free disposable addresses.'
@@ -93,14 +91,20 @@ module.exports = function(config) {
       'Confirm your password reset token'
     ],
     '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in'],
-    '/otp': [
-      `Two Factor Auth ${lad}`,
-      'Authenticate yourself with optional OTP to log in'
-    ],
     '/404': [
       `Page not found ${lad}`,
       'The page you requested could not be found'
     ],
     '/500': [`Server error ${lad}`, 'A server error has unfortunately occurred']
   };
+  meta[config.loginRoute] = [`Sign in ${lad}`, 'Sign in to your account'];
+  meta[config.verifyRoute] = [
+    `Verify email ${lad}`,
+    `Verify your ${config.appName} email`
+  ];
+  meta[config.otpRoutePrefix] = [
+    `Two Factor Auth ${lad}`,
+    'Authenticate yourself with optional OTP to log in'
+  ];
+  return meta;
 };

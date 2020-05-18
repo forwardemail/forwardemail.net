@@ -10,7 +10,7 @@ if breadcrumbs.length > 1
             a(href=_.isObject(breadcrumb) ? breadcrumb.href : `/${breadcrumbs.slice(0, i + 1).join('/')}/`).text-dark
               = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
   .text-center.text-md-left.d-md-flex.mb-3
-    h1.text-muted.mb-0(class=breadcrumbHeaderCentered ? 'flex-grow-1 text-center' : '')
+    h1.mb-0(class=breadcrumbHeaderCentered ? 'flex-grow-1 text-center' : '')
       if breadcrumbs.length > 0
         = _.isObject(breadcrumbs[breadcrumbs.length - 1]) ? breadcrumbs[breadcrumbs.length - 1].header || breadcrumbs[breadcrumbs.length - 1].name : t(titleize(humanize(breadcrumbs[breadcrumbs.length - 1])))
       else

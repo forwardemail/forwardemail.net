@@ -1,3 +1,4 @@
+const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
 const _ = require('lodash');
@@ -181,19 +182,25 @@ Alias.pre('save', async function(next) {
     );
 
     if (!domain)
-      throw i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale);
+      throw Boom.badRequest(
+        i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+      );
 
-    if (!user) throw i18n.translateError('INVALID_USER', alias.locale);
+    if (!user)
+      throw Boom.badRequest(i18n.translateError('INVALID_USER', alias.locale));
 
     // find an existing alias match
     const match = aliases.find(
       _alias => _alias.id !== alias.id && _alias.name === alias.name
     );
 
-    if (match) throw i18n.translateError('ALIAS_ALREADY_EXISTS', alias.locale);
+    if (match)
+      throw Boom.badRequest(
+        i18n.translateError('ALIAS_ALREADY_EXISTS', alias.locale)
+      );
 
     if (!isEmail(`${alias.name}@${domain.name}`))
-      throw i18n.translateError('INVALID_EMAIL', alias.locale);
+      throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
 
     // determine the domain membership for the user
     let member = domain.members.find(member => member.user.id === user.id);
@@ -210,7 +217,9 @@ Alias.pre('save', async function(next) {
     if (member.group !== 'admin') {
       // alias name cannot be a wildcard "*" if the user is not an admin
       if (alias.name === '*')
-        throw i18n.translateError('CATCHALL_ADMIN_REQUIRED', alias.locale);
+        throw Boom.badRequest(
+          i18n.translateError('CATCHALL_ADMIN_REQUIRED', alias.locale)
+        );
 
       //
       // prevent regular users (non-admins) from registering reserved words
@@ -232,10 +241,12 @@ Alias.pre('save', async function(next) {
         );
 
       if (reservedMatch)
-        throw i18n.translateError(
-          'RESERVED_WORD_ADMIN_REQUIRED',
-          alias.locale,
-          config.urls.web
+        throw Boom.badRequest(
+          i18n.translateError(
+            'RESERVED_WORD_ADMIN_REQUIRED',
+            alias.locale,
+            config.urls.web
+          )
         );
 
       // if user is not admin of the domain and it is a global domain
@@ -245,7 +256,9 @@ Alias.pre('save', async function(next) {
           _alias => _alias.user.id === user.id && _alias.name !== alias.name
         ).length;
         if (aliasCount > 5)
-          throw i18n.translateError('REACHED_MAX_ALIAS_COUNT', alias.locale);
+          throw Boom.badRequest(
+            i18n.translateError('REACHED_MAX_ALIAS_COUNT', alias.locale)
+          );
       }
     }
 
@@ -258,7 +271,9 @@ Alias.pre('save', async function(next) {
         : domain.max_recipients_per_alias;
 
     if (alias.recipients.length > count)
-      throw i18n.translateError('EXCEEDED_UNIQUE_COUNT', alias.locale, count);
+      throw Boom.badRequest(
+        i18n.translateError('EXCEEDED_UNIQUE_COUNT', alias.locale, count)
+      );
 
     next();
   } catch (err) {

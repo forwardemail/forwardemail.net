@@ -1,7 +1,7 @@
 const config = require('../../../../config');
 
 async function recovery(ctx) {
-  const redirectTo = `/${ctx.locale}/verify`;
+  const redirectTo = ctx.state.l(config.verifyRoute);
 
   ctx.state.redirectTo = redirectTo;
 
@@ -17,7 +17,7 @@ async function recovery(ctx) {
     ctx.logger.warn(err);
     if (ctx.accepts('html')) {
       ctx.flash('warning', err.message);
-      ctx.redirect('/login');
+      ctx.redirect(ctx.state.l(config.loginRoute));
     } else {
       ctx.body = { message: err.message };
     }

@@ -102,8 +102,12 @@ localeRouter
     web.auth.verify
   )
   .get('/logout', web.auth.logout)
-  .get('/login', web.auth.parseReturnOrRedirectTo, web.auth.registerOrLogin)
-  .post('/login', web.auth.login)
+  .get(
+    config.loginRoute,
+    web.auth.parseReturnOrRedirectTo,
+    web.auth.registerOrLogin
+  )
+  .post(config.loginRoute, web.auth.login)
   .get('/register', web.auth.parseReturnOrRedirectTo, web.auth.registerOrLogin)
   .post('/register', web.auth.register);
 

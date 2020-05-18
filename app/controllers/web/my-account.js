@@ -451,7 +451,7 @@ async function remove(ctx) {
     timer: 3000,
     position: 'top'
   });
-  const redirectTo = `/${ctx.locale}`;
+  const redirectTo = ctx.state.l();
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };
 }

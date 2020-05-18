@@ -1,5 +1,6 @@
 const dns = require('dns');
 
+const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
 const _ = require('lodash');
@@ -149,7 +150,9 @@ Domain.pre('validate', function(next) {
 
     // domain.name must be IP or FQDN
     if (!isSANB(domain.name) || (!isFQDN(domain.name) && !isIP(domain.name)))
-      throw i18n.translateError('INVALID_DOMAIN', domain.locale);
+      throw Boom.badRequest(
+        i18n.translateError('INVALID_DOMAIN', domain.locale)
+      );
 
     if (!isSANB(this.verification_record))
       this.verification_record = cryptoRandomString(verificationRecordOptions);
@@ -158,7 +161,9 @@ Domain.pre('validate', function(next) {
       this.verification_record.replace(REGEX_VERIFICATION, '') !==
       this.verification_record
     )
-      throw i18n.translateError('INVALID_VERIFICATION_RECORD', domain.locale);
+      throw Boom.badRequest(
+        i18n.translateError('INVALID_VERIFICATION_RECORD', domain.locale)
+      );
 
     next();
   } catch (err) {
@@ -179,7 +184,9 @@ Domain.pre('validate', async function(next) {
         member => typeof member.user !== 'undefined' && member.group === 'admin'
       )
     )
-      throw i18n.translateError('AT_LEAST_ONE_ADMIN_REQUIRED', domain.locale);
+      throw Boom.badRequest(
+        i18n.translateError('AT_LEAST_ONE_ADMIN_REQUIRED', domain.locale)
+      );
     const { txt, mx } = await getVerificationResults(domain);
     domain.has_txt_record = txt;
     domain.has_mx_record = mx;
@@ -196,45 +203,44 @@ Domain.plugin(mongooseCommonPlugin, {
 
 // eslint-disable-next-line complexity
 async function getVerificationResults(domain) {
-  const MISSING_DNS_MX = i18n.translateError(
-    'MISSING_DNS_MX',
-    domain.locale,
-    EXCHANGES,
-    domain.name
+  const MISSING_DNS_MX = Boom.badRequest(
+    i18n.translateError('MISSING_DNS_MX', domain.locale, EXCHANGES, domain.name)
   );
 
-  const PAID_PLAN = new Error(
+  const PAID_PLAN = Boom.badRequest(
     `Domain is on a paid plan and has "Enhanced Protection".  To proceed with verification, please <a href="${config.urls.web}/my-account/domains/${domain.name}/aliases">configure and import</a> your Aliases.  Once you have configured your Aliases, then please remove all TXT records prefixed with "${app.config.recordPrefix}=" and try again.`
   );
 
   const verificationRecord = `${app.config.recordPrefix}-site-verification=${domain.verification_record}`;
   const verificationMarkdown = `<span class="markdown-body ml-0 mr-0"><code>${verificationRecord}</code></span>`;
 
-  const MISSING_VERIFICATION_RECORD = i18n.translateError(
-    'MISSING_VERIFICATION_RECORD',
-    domain.locale,
-    verificationMarkdown
+  const MISSING_VERIFICATION_RECORD = Boom.badRequest(
+    i18n.translateError(
+      'MISSING_VERIFICATION_RECORD',
+      domain.locale,
+      verificationMarkdown
+    )
   );
-  const INCORRECT_VERIFICATION_RECORD = i18n.translateError(
-    'INCORRECT_VERIFICATION_RECORD',
-    domain.locale,
-    verificationMarkdown
+  const INCORRECT_VERIFICATION_RECORD = Boom.badRequest(
+    i18n.translateError(
+      'INCORRECT_VERIFICATION_RECORD',
+      domain.locale,
+      verificationMarkdown
+    )
   );
-  const MULTIPLE_VERIFICATION_RECORDS = i18n.translateError(
-    'MULTIPLE_VERIFICATION_RECORDS',
-    domain.locale,
-    verificationMarkdown
+  const MULTIPLE_VERIFICATION_RECORDS = Boom.badRequest(
+    i18n.translateError(
+      'MULTIPLE_VERIFICATION_RECORDS',
+      domain.locale,
+      verificationMarkdown
+    )
   );
-  const PURGE_CACHE = i18n.translateError(
-    'PURGE_CACHE',
-    domain.locale,
-    domain.name
+  const PURGE_CACHE = Boom.badRequest(
+    i18n.translateError('PURGE_CACHE', domain.locale, domain.name)
   );
 
-  const MISSING_DNS_TXT = i18n.translateError(
-    'MISSING_DNS_TXT',
-    domain.locale,
-    domain.name
+  const MISSING_DNS_TXT = Boom.badRequest(
+    i18n.translateError('MISSING_DNS_TXT', domain.locale, domain.name)
   );
 
   const isPaidPlan = _.isString(domain.plan) && domain.plan !== 'free';
@@ -324,7 +330,9 @@ async function verifyRecords(_id, locale) {
   const domain = await this.model('Domain').findById(_id);
 
   if (!domain)
-    throw i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale);
+    throw Boom.badRequest(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
+    );
 
   const { txt, mx, errors } = await getVerificationResults(domain);
   domain.has_txt_record = txt;
@@ -349,7 +357,8 @@ Domain.statics.verifyRecords = verifyRecords;
 
 // eslint-disable-next-line complexity
 async function getTxtAddresses(domainName, locale, allowEmpty = false) {
-  if (!isFQDN(domainName)) throw i18n.translateError('INVALID_FQDN', locale);
+  if (!isFQDN(domainName))
+    throw Boom.badRequest(i18n.translateError('INVALID_FQDN', locale));
 
   logger.debug('resolveTxt', { domainName });
   const records = await dns.promises.resolveTxt(domainName);
@@ -381,7 +390,9 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
   const addresses = isSANB(record) ? record.split(',').map(a => a.trim()) : [];
 
   if (!allowEmpty && addresses.length === 0)
-    throw i18n.translateError('MISSING_DNS_TXT', locale, domainName);
+    throw Boom.badRequest(
+      i18n.translateError('MISSING_DNS_TXT', locale, domainName)
+    );
 
   // store if we have a forwarding address or not
   const forwardingAddresses = [];
