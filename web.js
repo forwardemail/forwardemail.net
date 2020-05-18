@@ -16,10 +16,7 @@ const web = new Web({
   i18n,
   meta: config.meta,
   views: config.views,
-  passport,
-  helmet: {
-    contentSecurityPolicy: false
-  }
+  passport
 });
 
 if (!module.parent) {

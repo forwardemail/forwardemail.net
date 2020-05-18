@@ -14,10 +14,7 @@ const api = new API({
   routes: routes.api,
   logger,
   i18n,
-  passport,
-  helmet: {
-    contentSecurityPolicy: false
-  }
+  passport
 });
 
 if (!module.parent) {
