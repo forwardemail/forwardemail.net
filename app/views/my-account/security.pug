@@ -84,6 +84,6 @@ block body
       .col
         a(href=l('/my-account/profile')).btn.btn-outline-secondary
           if user[config.userFields.hasSetPassword]
-            = t('Need to set a password?')
-          else
             = t('Need to change your password?')
+          else
+            = t('Need to set a password?')

@@ -1,16 +1,24 @@
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
+const Redis = require('@ladjs/redis');
 const Web = require('@ladjs/web');
 const _ = require('lodash');
 const ip = require('ip');
+const safeStringify = require('fast-safe-stringify');
+const sharedConfig = require('@ladjs/shared-config');
 
+const env = require('./config/env');
 const config = require('./config');
 const routes = require('./routes');
 const i18n = require('./helpers/i18n');
 const logger = require('./helpers/logger');
 const passport = require('./helpers/passport');
 
+const webSharedConfig = sharedConfig('WEB');
+const client = new Redis(webSharedConfig.redis);
+
 const web = new Web({
+  ...webSharedConfig,
   routes: routes.web,
   logger,
   i18n,
@@ -32,7 +40,41 @@ const web = new Web({
       includeSubDomains: true,
       preload: true
     }
-  }
+  },
+  koaCash: env.CACHE_RESPONSES
+    ? {
+        maxAge: 0,
+        threshold: 0,
+        async get(key) {
+          let value;
+          try {
+            value = await client.get(key);
+            if (value) value = JSON.parse(value);
+          } catch (err) {
+            logger.error(err);
+          }
+
+          return value;
+        },
+        set(key, value, maxAge) {
+          if (maxAge <= 0) return client.set(key, safeStringify(value));
+          return client.set(key, safeStringify(value), 'EX', maxAge);
+        }
+      }
+    : false,
+  cacheResponses: env.CACHE_RESPONSES
+    ? {
+        routes: [
+          '/css/(.*)',
+          '/img/(.*)',
+          '/js/(.*)',
+          '/browserconfig.xml',
+          '/robots.txt',
+          '/site.manifest',
+          '/favicon.ico'
+        ]
+      }
+    : false
 });
 
 if (!module.parent) {
@@ -43,7 +85,7 @@ if (!module.parent) {
   const graceful = new Graceful({
     mongooses: [mongoose],
     servers: [web],
-    redisClients: [web.client],
+    redisClients: [web.client, client],
     logger
   });
 

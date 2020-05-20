@@ -49,7 +49,7 @@ mixin registerOrLogin(verb, isModal = false)
         - const isRegisterOrLogin = ['/register', config.loginRoute].includes(ctx.pathWithoutLocale)
         ul.list-inline.mb-0
           if verb === 'sign up'
-            li.list-inline-item!= t('Already have an account?')
+            li.list-inline-item!= t('Have an account?')
             li.list-inline-item
               a(href=l(config.loginRoute), data-dismiss-modal=isRegisterOrLogin ? false : 'true', data-toggle=isRegisterOrLogin ? '' : 'modal-anchor', data-target=isRegisterOrLogin ? '' : '#modal-sign-in').alert-link= t('Sign in')
           else
