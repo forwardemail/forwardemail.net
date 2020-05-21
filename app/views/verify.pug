@@ -14,6 +14,6 @@ block body
             label(for="input-pin")= t('Verification code')
           button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
         .alert.alert-warning.mt-3.text-center
-          = t("Didn't receive the email?")
+          = t("Didn't receive it?")
           = ' '
           a.alert-link(href=redirectTo ? `${ctx.path}?resend=true&redirect_to=${redirectTo}` : `${ctx.path}?resend=true`)= t('Resend now')

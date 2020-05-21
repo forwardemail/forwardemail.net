@@ -118,7 +118,7 @@ function css() {
           // also modify the font awesome fonts in css folder
           // <https://caniuse.com/#feat=woff2>
           formats: 'woff ttf',
-          hosted: [path.join(__dirname, config.buildBase, 'fonts'), '/fonts'],
+          hosted: [path.join(__dirname, config.buildBase, 'fonts'), '../fonts'],
           display: 'swap'
         }),
         postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
