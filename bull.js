@@ -44,6 +44,11 @@ if (!module.parent) {
 
       if (process.send) process.send('ready');
       logger.info('Lad job scheduler started');
+
+      // <https://github.com/OptimalBits/bull/issues/870>
+      // const failedEmailJobs = await bull.queues.get('email').getFailed();
+      // logger.info('Failed email jobs', { failedEmailJobs });
+      // await Promise.all(failedEmailJobs.map(job => job.retry()));
     } catch (err) {
       logger.error(err);
       // eslint-disable-next-line unicorn/no-process-exit

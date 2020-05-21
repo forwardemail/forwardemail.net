@@ -426,7 +426,10 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
       if (
         addr.length !== 2 ||
         !_.isString(addr[1]) ||
-        (!isEmail(addr[1]) && !isURL(addr[1], app.config.isURLOptions))
+        (!isFQDN(addr[1]) &&
+          !isIP(addr[1]) &&
+          !isEmail(addr[1]) &&
+          !isURL(addr[1], app.config.isURLOptions))
       )
         errors.push(
           new Error(
