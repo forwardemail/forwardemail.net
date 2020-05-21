@@ -3,8 +3,10 @@ const fs = require('fs');
 
 const Graceful = require('@ladjs/graceful');
 const Mandarin = require('mandarin');
+const RevAll = require('gulp-rev-all');
 const babel = require('gulp-babel');
 const browserify = require('browserify');
+const concat = require('gulp-concat');
 const cssnano = require('cssnano');
 const del = require('del');
 const envify = require('gulp-envify');
@@ -23,7 +25,6 @@ const postcss = require('gulp-postcss');
 const postcssPresetEnv = require('postcss-preset-env');
 const pugLinter = require('gulp-pug-linter');
 const reporter = require('postcss-reporter');
-const RevAll = require('gulp-rev-all');
 const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
 const sass = require('gulp-sass');
@@ -144,47 +145,70 @@ function xo() {
 // TODO: in the future use merge-streams and return a stream w/o through2
 async function bundle() {
   const since = lastRun(bundle);
+  const polyfillPath = path.join(config.buildBase, 'js', 'polyfill.js');
+  const factorBundlePath = path.join(
+    config.buildBase,
+    'js',
+    'factor-bundle.js'
+  );
 
   await makeDir(path.join(config.buildBase, 'js'));
 
-  const paths = await globby('**/*.js', { cwd: 'assets/js' });
-
-  const factorBundle = await new Promise((resolve, reject) => {
-    browserify({
-      entries: paths.map(string => `assets/js/${string}`),
-      debug: true
-    })
-      .plugin('bundle-collapser/plugin')
-      .plugin('factor-bundle', {
-        outputs: paths.map(string => path.join(config.buildBase, 'js', string))
+  async function getFactorBundle() {
+    const paths = await globby('**/*.js', { cwd: 'assets/js' });
+    const factorBundle = await new Promise((resolve, reject) => {
+      browserify({
+        entries: paths.map(string => `assets/js/${string}`),
+        debug: true
       })
-      .bundle((err, data) => {
-        if (err) return reject(err);
-        resolve(data);
-      });
-  });
+        .plugin('bundle-collapser/plugin')
+        .plugin('factor-bundle', {
+          outputs: paths.map(string =>
+            path.join(config.buildBase, 'js', string)
+          )
+        })
+        .bundle((err, data) => {
+          if (err) return reject(err);
+          resolve(data);
+        });
+    });
+    await fs.promises.writeFile(factorBundlePath, factorBundle);
+  }
 
-  await fs.promises.writeFile(
-    path.join(config.buildBase, 'js', 'factor-bundle.js'),
-    factorBundle
-  );
-
-  await fs.promises.copyFile(
-    path.join(
-      __dirname,
-      'node_modules',
-      '@babel',
-      'polyfill',
-      'dist',
-      'polyfill.js'
+  await Promise.all([
+    fs.promises.copyFile(
+      path.join(
+        __dirname,
+        'node_modules',
+        '@babel',
+        'polyfill',
+        'dist',
+        'polyfill.js'
+      ),
+      polyfillPath
     ),
-    path.join(config.buildBase, 'js', 'polyfill.js')
+    getFactorBundle()
+  ]);
+
+  // concatenate files
+  await getStream(
+    src([
+      'build/js/polyfill.js',
+      'build/js/factor-bundle.js',
+      'build/js/uncaught.js',
+      'build/js/core.js'
+    ])
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(concat('build.js'))
+      .pipe(sourcemaps.write('./'))
+      .pipe(dest(path.join(config.buildBase, 'js')))
+      .pipe(through2.obj((chunk, enc, cb) => cb()))
   );
 
   let stream = src('build/js/**/*.js', { base: 'build', since })
     .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(envify(env))
     .pipe(unassert())
+    .pipe(envify(env))
     .pipe(babel());
 
   if (PROD) stream = stream.pipe(terser());
@@ -281,9 +305,11 @@ const build = series(
   clean,
   parallel(
     ...(TEST ? [] : [xo, remark]),
-    parallel(img, static, markdown, series(fonts, scss, css), bundle)
-  ),
-  sri
+    series(
+      parallel(img, static, markdown, series(fonts, scss, css), bundle),
+      sri
+    )
+  )
 );
 
 module.exports = {

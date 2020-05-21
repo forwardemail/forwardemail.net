@@ -4125,6 +4125,13 @@ concat-stream@^2.0.0:
     readable-stream "^3.0.2"
     typedarray "^0.0.6"
 
+concat-with-sourcemaps@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/concat-with-sourcemaps/-/concat-with-sourcemaps-1.1.0.tgz#d4ea93f05ae25790951b99e7b3b09e3908a4082e"
+  integrity sha512-4gEjHJFT9e+2W/77h/DS5SGUgwDaOwprX8L/gl5+3ixnzkVJJsZWDSelmN3Oilw3LNDZjZV0yqH1hLG3k6nghg==
+  dependencies:
+    source-map "^0.6.1"
+
 concordance@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/concordance/-/concordance-4.0.0.tgz#5932fdee397d129bdbc3a1885fbe69839b1b7e15"
@@ -5218,11 +5225,6 @@ denque@^1.1.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/denque/-/denque-1.4.1.tgz#6744ff7641c148c3f8a69c307e51235c1f4a37cf"
   integrity sha512-OfzPuSZKGcgr96rf1oODnfjqBFmr1DVoc/TrItj3Ohe0Ah1C5WX5Baquw/9U9KovnQ88EqmJbD66rKYUQYN1tQ==
-
-dense@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/dense/-/dense-0.0.1.tgz#e688b922f01e888e0d54ab8d449387c776e4486f"
-  integrity sha1-5oi5IvAeiI4NVKuNRJOHx3bkSG8=
 
 depd@2.0.0, depd@~2.0.0:
   version "2.0.0"
@@ -7812,6 +7814,15 @@ gulp-cli@^2.2.0, gulp-cli@^2.2.1:
     v8flags "^3.0.1"
     yargs "^7.1.0"
 
+gulp-concat@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/gulp-concat/-/gulp-concat-2.6.1.tgz#633d16c95d88504628ad02665663cee5a4793353"
+  integrity sha1-Yz0WyV2IUEYorQJmVmPO5aR5M1M=
+  dependencies:
+    concat-with-sourcemaps "^1.0.0"
+    through2 "^2.0.0"
+    vinyl "^2.0.0"
+
 gulp-envify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/gulp-envify/-/gulp-envify-1.0.0.tgz#380b1f4de69c18030e9e5ab931d50b9098407d47"
@@ -8346,11 +8357,6 @@ html-to-text@5.1.1, html-to-text@^5.1.1:
     htmlparser2 "^3.10.1"
     lodash "^4.17.11"
     minimist "^1.2.0"
-
-html5-history-api@^4.2.10:
-  version "4.2.10"
-  resolved "https://registry.yarnpkg.com/html5-history-api/-/html5-history-api-4.2.10.tgz#fa8d0ddd2f11711b624e8e4f79ea6dc271ab672b"
-  integrity sha512-ZSytVcNmzpaOiLhBppxYPYK+LIYIZTkELeXOa6MbJwbZIDLPkWIEZRKQ+YQj8yVap37vda+SSesqgU1Ld8QCvA==
 
 htmlescape@^1.1.0:
   version "1.1.1"
@@ -9561,6 +9567,11 @@ isbinaryfile@^4.0.5:
   resolved "https://registry.yarnpkg.com/isbinaryfile/-/isbinaryfile-4.0.6.tgz#edcb62b224e2b4710830b67498c8e4e5a4d2610b"
   integrity sha512-ORrEy+SNVqUhrCaal4hA4fBzhggQQ+BaLntyPOdoEiwlKZW9BZiJXjg3RMiruE4tPEI3pyVPpySHQF/dKWperg==
 
+isbot@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/isbot/-/isbot-3.0.1.tgz#a4f06935bb89b560a72296337f077aa757086411"
+  integrity sha512-dhkVSwf+uyokrBnUcNcZFOc5Eq9Kwu4z5UvZ+Pk9qcQnNxpvvW1K2ungM9dxpFOVJmUarZcnNs5Qdu58vQpY4w==
+
 iserror@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/iserror/-/iserror-0.0.2.tgz#bd53451fe2f668b9f2402c1966787aaa2c7c0bf5"
@@ -10066,24 +10077,7 @@ jmespath@0.15.0:
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
   integrity sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=
 
-jquery-lazy@^1.7.10:
-  version "1.7.10"
-  resolved "https://registry.yarnpkg.com/jquery-lazy/-/jquery-lazy-1.7.10.tgz#aa3d43d058bf1ea89284214f4521f6d9a162d051"
-  integrity sha512-1vBpU+igfZJ58BrQrk2OFl3TMriGeIfZUg35uSIajZF4GcxF96NtdS3LbWk5a72rH2ypz0odTsAkqhUsICknhw==
-  dependencies:
-    jquery ">=1.7.2"
-
-jquery-placeholder@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/jquery-placeholder/-/jquery-placeholder-2.3.1.tgz#6025a1241019c08a8fb3ab8ed076285c05ba5e91"
-  integrity sha1-YCWhJBAZwIqPs6uO0HYoXAW6XpE=
-
-jquery.pointer-events-polyfill@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/jquery.pointer-events-polyfill/-/jquery.pointer-events-polyfill-0.2.4.tgz#cb289398a5fb376d74e95cd343699d35c6172b3b"
-  integrity sha1-yyiTmKX7N2106VzTQ2mdNcYXKzs=
-
-jquery@3.5.1, jquery@>=1.7.2:
+jquery@3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.1.tgz#d7b4d08e1bfdb86ad2f1a3d039ea17304717abb5"
   integrity sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==

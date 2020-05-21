@@ -88,7 +88,6 @@ html(lang=locale).h-100
       include _nav
 
     //- body
-    //- main(role='main').flex-shrink-0
     main(role='main').flex-grow-1.d-flex.flex-column.flex-grow-1
       block body
 
@@ -96,6 +95,7 @@ html(lang=locale).h-100
     block footer
       include _footer
 
+    //- scripts
     block scripts
       //- flash messaging (with koa-better-flash and sweetalert2)
       script.
@@ -146,14 +146,6 @@ html(lang=locale).h-100
             id: "#{ctx.sessionId}"
           };
 
-      //- polyfill
-      script(src=manifest('js/polyfill.js'), integrity=manifest('js/polyfill.js', 'integrity'), crossorigin='anonymous')
-
-      //- factor bundle (common shared assets across all files)
-      script(src=manifest('js/factor-bundle.js'), integrity=manifest('js/factor-bundle.js', 'integrity'), crossorigin='anonymous')
-
-      //- uncaught (handles errors, similar to TraceKit but with CabinJS + StackTrace.JS)
-      script(src=manifest('js/uncaught.js'), integrity=manifest('js/uncaught.js', 'integrity'), crossorigin='anonymous')
-
-      //- scripts
-      script(src=manifest('js/core.js'), integrity=manifest('js/core.js', 'integrity'), crossorigin='anonymous')
+      //- build
+      if !isBot(ctx.get('User-Agent'))
+        script(async, src=manifest('js/build.js'), integrity=manifest('js/build.js', 'integrity'), crossorigin='anonymous')
