@@ -1392,10 +1392,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^1.0.16":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-1.0.16.tgz#ae50067b8b9a50ee4db25c1a2cff32bb22a9877c"
-  integrity sha512-vJHdqpwasr4QggTXPWtZfNOYYCIqZyh7vlFIMzTJUZO9tyzfpN+1Xw+f1BuLk9E7YM37GREYYsICkaj+Lc5jzQ==
+"@ladjs/web@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-2.0.0.tgz#20eff1972eaa4e8e7a28f7428da1c2d9b4d51919"
+  integrity sha512-qczFK+Y4bk64ZJYPFuZNHJ8IWq6xkhfH/MFm7oSQ5tcaHV2u6h7nJr2ee6L6R/GPZ4mTPGiU37Gvga1vMetGvg==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "8.x"
