@@ -9,7 +9,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const { boolean } = require('boolean');
-const { isFQDN, isIP, isEmail, isPort } = require('validator');
+const { isFQDN, isIP, isEmail, isPort, isURL } = require('validator');
 
 const logger = require('../../helpers/logger');
 const config = require('../../config');
@@ -423,7 +423,11 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
         continue;
       }
 
-      if (addr.length !== 2 || !_.isString(addr[1]) || !isEmail(addr[1]))
+      if (
+        addr.length !== 2 ||
+        !_.isString(addr[1]) ||
+        (!isEmail(addr[1]) && !isURL(addr[1], app.config.isURLOptions))
+      )
         errors.push(
           new Error(
             `Domain has an invalid "${app.config.recordPrefix}" TXT record due to an invalid email address of "${addresses[i]}".`
@@ -435,10 +439,12 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
       // allow domain alias forwarding
       // (e.. the record is just "b.com" if it's not a valid email)
       globalForwardingAddresses.push(addresses[i]);
-    } else {
+    } else if (isEmail(addresses[i])) {
       const domain = app.parseDomain(addresses[i], false);
-      if ((isFQDN(domain) || isIP(domain)) && isEmail(addresses[i]))
+      if (isFQDN(domain) || isIP(domain))
         globalForwardingAddresses.push(addresses[i]);
+    } else if (isURL(addresses[i], app.config.isURLOptions)) {
+      globalForwardingAddresses.push(addresses[i]);
     }
   }
 

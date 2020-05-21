@@ -90,7 +90,7 @@ const config = {
       // Even though pug deprecates this, we've added `pretty`
       // in `koa-views` package, so this option STILL works
       // <https://github.com/queckezz/koa-views/pull/111>
-      pretty: true,
+      pretty: env.NODE_ENV === 'development',
       cache: env.NODE_ENV !== 'development',
       // debug: env.NODE_ENV === 'development',
       // compileDebug: env.NODE_ENV === 'development',

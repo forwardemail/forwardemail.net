@@ -23,6 +23,7 @@ const postcss = require('gulp-postcss');
 const postcssPresetEnv = require('postcss-preset-env');
 const pugLinter = require('gulp-pug-linter');
 const reporter = require('postcss-reporter');
+const RevAll = require('gulp-rev-all');
 const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
 const sass = require('gulp-sass');
@@ -57,10 +58,6 @@ const staticAssets = [
   '!assets/img/**/*',
   '!assets/js/**/*'
 ];
-const manifestOptions = {
-  merge: true,
-  base: config.buildBase
-};
 
 function pug() {
   let stream = src('app/views/**/*.pug', { since: lastRun(pug) }).pipe(
@@ -87,11 +84,6 @@ function img() {
     .pipe(dest(config.buildBase));
 
   if (DEV) stream = stream.pipe(lr(config.livereload));
-  if (PROD)
-    stream = stream
-      .pipe(rev.manifest(config.manifest, manifestOptions))
-      .pipe(revSri({ base: config.buildBase }))
-      .pipe(dest(config.buildBase));
   return stream;
 }
 
@@ -120,6 +112,11 @@ function css() {
     .pipe(
       postcss([
         fontMagician({
+          foundries: ['custom', 'hosted'],
+          // note if you modify this then you will have to
+          // also modify the font awesome fonts in css folder
+          // <https://caniuse.com/#feat=woff2>
+          formats: 'woff ttf',
           hosted: [path.join(__dirname, config.buildBase, 'fonts'), '/fonts'],
           display: 'swap'
         }),
@@ -130,17 +127,9 @@ function css() {
       ])
     );
 
-  if (PROD) stream = stream.pipe(rev());
-
   stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
 
   if (DEV) stream = stream.pipe(lr(config.livereload));
-
-  if (PROD)
-    stream = stream
-      .pipe(rev.manifest(config.manifest, manifestOptions))
-      .pipe(revSri({ base: config.buildBase }))
-      .pipe(dest(config.buildBase));
 
   return stream;
 }
@@ -198,17 +187,13 @@ async function bundle() {
     .pipe(unassert())
     .pipe(babel());
 
-  if (PROD) stream = stream.pipe(terser()).pipe(rev());
+  if (PROD) stream = stream.pipe(terser());
 
   stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
 
   if (DEV) stream = stream.pipe(lr(config.livereload));
 
-  if (PROD)
-    stream = stream
-      .pipe(rev.manifest(config.manifest, manifestOptions))
-      .pipe(revSri({ base: config.buildBase }))
-      .pipe(dest(config.buildBase));
+  stream = stream.pipe(dest(config.buildBase));
 
   // convert to conventional stream
   stream = stream.pipe(through2.obj((chunk, enc, cb) => cb()));
@@ -235,10 +220,6 @@ function static() {
   }).pipe(dest(config.buildBase));
 }
 
-function clean() {
-  return del([config.buildBase]);
-}
-
 async function markdown() {
   const mandarin = new Mandarin({ i18n, logger });
   const graceful = new Graceful({ redisClients: [mandarin.redisClient] });
@@ -246,17 +227,70 @@ async function markdown() {
   await graceful.stopRedisClients();
 }
 
+async function sri() {
+  await getStream(
+    src('build/**/*.{css,js}')
+      .pipe(RevAll.revision())
+      .pipe(dest(config.buildBase))
+      .pipe(RevAll.manifestFile())
+      .pipe(dest(config.buildBase))
+      .pipe(revSri({ base: config.buildBase }))
+      .pipe(dest(config.buildBase))
+      // convert to conventional stream
+      .pipe(through2.obj((chunk, enc, cb) => cb()))
+  );
+
+  //
+  // get all non css and non js files since rev-all ignores others
+  // and merge rev-manifest.json with fonts and other non rev-all assets
+  //
+  // <https://github.com/smysnk/gulp-rev-all/blob/7fc61344df3b4377bf54b70d938cda8771096ebb/revisioner.js#L24
+  // <https://github.com/smysnk/gulp-rev-all/issues/106>
+  // <https://github.com/smysnk/gulp-rev-all/issues/165#issuecomment-338064409>
+  //
+  // note that we don't pipe fonts through gulp rev due to binary issues
+  //
+  await getStream(
+    src([
+      'build/**/*',
+      '!build/**/*.{css,js}',
+      '!build/fonts/**/*',
+      '!build/robots.txt',
+      '!build/browserconfig.xml'
+    ])
+      .pipe(rev())
+      .pipe(dest(config.buildBase))
+      .pipe(
+        rev.manifest(config.manifest, {
+          merge: true,
+          base: config.buildBase
+        })
+      )
+      .pipe(revSri({ base: config.buildBase }))
+      .pipe(dest(config.buildBase))
+      // convert to conventional stream
+      .pipe(through2.obj((chunk, enc, cb) => cb()))
+  );
+}
+
+function clean() {
+  return del([config.buildBase]);
+}
+
 const build = series(
   clean,
   parallel(
     ...(TEST ? [] : [xo, remark]),
     parallel(img, static, markdown, series(fonts, scss, css), bundle)
-  )
+  ),
+  sri
 );
 
 module.exports = {
+  clean,
   build,
   bundle,
+  sri,
   markdown,
   watch: () => {
     lr.listen(config.livereload);
@@ -275,8 +309,7 @@ module.exports = {
   remark,
   fonts,
   scss,
-  css,
-  clean
+  css
 };
 
 exports.default = build;

@@ -4,8 +4,9 @@ const Redis = require('@ladjs/redis');
 const Web = require('@ladjs/web');
 const _ = require('lodash');
 const ip = require('ip');
-const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
+const ms = require('ms');
+const safeStringify = require('fast-safe-stringify');
 
 const env = require('./config/env');
 const config = require('./config');
@@ -16,6 +17,37 @@ const passport = require('./helpers/passport');
 
 const webSharedConfig = sharedConfig('WEB');
 const client = new Redis(webSharedConfig.redis);
+
+const koaCash = {
+  maxAge: ms('1y') / 1000,
+  async get(key) {
+    const [buffer, data] = await Promise.all([
+      client.getBuffer(`buffer:${key}`),
+      client.get(key)
+    ]);
+    if (buffer) data.body = buffer;
+    return data;
+  },
+  async set(key, value, maxAge) {
+    //
+    // we must detect if the `value.body` is a buffer
+    // and if so, we need to store it in redis as a buffer
+    // and fetch it as a buffer using `getBuffer` as well
+    //
+    if (Buffer.isBuffer(value.body)) {
+      const { body, ...data } = value;
+      await client.mset(
+        new Map([
+          [`buffer:${key}`, body, ...(maxAge > 0 ? ['EX', maxAge] : [])],
+          [key, safeStringify(data), ...(maxAge > 0 ? ['EX', maxAge] : [])]
+        ])
+      );
+    } else {
+      if (maxAge <= 0) return client.set(key, safeStringify(value));
+      client.set(key, Buffer.from(safeStringify(value)), 'EX', maxAge);
+    }
+  }
+};
 
 const web = new Web({
   ...webSharedConfig,
@@ -29,49 +61,30 @@ const web = new Web({
     expectCt: {
       enforce: true,
       // https://httpwg.org/http-extensions/expect-ct.html#maximum-max-age
-      maxAge: 30 * 24 * 60 * 60 * 1000
+      maxAge: ms('30d') / 1000
     },
     // <https://hstspreload.org/>
     // <https://helmetjs.github.io/docs/hsts/#preloading-hsts-in-chrome>
     hsts: {
       // must be at least 1 year to be approved
-      maxAge: 31536000,
+      maxAge: ms('1y') / 1000,
       // must be enabled to be approved
       includeSubDomains: true,
       preload: true
     }
   },
-  koaCash: env.CACHE_RESPONSES
-    ? {
-        maxAge: 0,
-        threshold: 0,
-        async get(key) {
-          let value;
-          try {
-            value = await client.get(key);
-            if (value) value = JSON.parse(value);
-          } catch (err) {
-            logger.error(err);
-          }
-
-          return value;
-        },
-        set(key, value, maxAge) {
-          if (maxAge <= 0) return client.set(key, safeStringify(value));
-          return client.set(key, safeStringify(value), 'EX', maxAge);
-        }
-      }
-    : false,
+  koaCash: env.CACHE_RESPONSES ? koaCash : false,
   cacheResponses: env.CACHE_RESPONSES
     ? {
         routes: [
           '/css/(.*)',
           '/img/(.*)',
           '/js/(.*)',
-          '/browserconfig.xml',
-          '/robots.txt',
-          '/site.manifest',
-          '/favicon.ico'
+          '/fonts/(.*)',
+          '/browserconfig(.*)',
+          '/robots(.*)',
+          '/site(.*)',
+          '/favicon(.*)'
         ]
       }
     : false

@@ -16,11 +16,11 @@ html(lang=locale).h-100
         link(rel="alternate", href=`${config.urls.web}/${language.locale}${ctx.pathWithoutLocale}`, hreflang=language.locale)
 
       //- generated with https://realfavicongenerator.net
-      link(rel="apple-touch-icon", sizes="152x152", href=manifest('img/apple-touch-icon.png'))
-      link(rel="icon", type="image/png", href=manifest('img/favicon-32x32.png'), sizes="32x32")
-      link(rel="icon", type="image/png", href=manifest('img/favicon-16x16.png'), sizes="16x16")
-      link(rel="manifest", href='/site.webmanifest')
-      link(rel="mask-icon", href=manifest('img/safari-pinned-tab.svg'), color=config.appColor)
+      link(rel="apple-touch-icon", sizes="152x152", href=manifest('img/apple-touch-icon.png'), integrity=manifest('img/apple-touch-icon.png', 'integrity'), crossorigin='anonymous')
+      link(rel="icon", type="image/png", href=manifest('img/favicon-32x32.png'), sizes="32x32", integrity=manifest('img/favicon-32x32.png', 'integrity'), crossorigin='anonymous')
+      link(rel="icon", type="image/png", href=manifest('img/favicon-16x16.png'), sizes="16x16", integrity=manifest('img/favicon-16x16.png', 'integrity'), crossorigin='anonymous')
+      link(rel="manifest", href=manifest('site.webmanifest'), integrity=manifest('site.webmanifest', 'integrity'), crossorigin='anonymous')
+      link(rel="mask-icon", href=manifest('img/safari-pinned-tab.svg'), integrity=manifest('img/safari-pinned-tab.svg', 'integrity'), color=config.appColor, crossorigin='anonymous')
       meta(name="apple-mobile-web-app-title", content=config.appName)
       meta(name="application-name", content=config.appName)
       meta(name="msapplication-TileColor", content=config.appColor)
@@ -45,7 +45,7 @@ html(lang=locale).h-100
 
     //- add opengraph tags to your structured data pages
     block opengraph
-      link(rel='image_src', type='image/png', href=manifest('img/social.png'))
+      link(rel='image_src', type='image/png', href=manifest('img/social.png'), integrity=manifest('img/social.png', 'integrity'), crossorigin='anonymous')
       meta(property='og:title', content=meta.title)
       meta(property='og:url', content=`${config.urls.web}${ctx.pathWithoutLocale}`)
       meta(property='og:description', content=meta.description)
@@ -59,6 +59,23 @@ html(lang=locale).h-100
     //- css file
     block stylesheets
       link(rel="stylesheet", href=manifest('css/app.css'), integrity=manifest('css/app.css', 'integrity'), crossorigin='anonymous')
+
+    //- preload and prefetch content
+    //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content>
+    //- <https://developers.google.com/speed/pagespeed/insights/>
+    block preload
+      each asset in [ 'fonts/fa-brands-400.woff', 'fonts/fa-solid-900.woff' ]
+        //- integrity attribute not currently supported
+        //- <https://crbug.com/981419>
+        link(rel='preload', href=manifest(asset), as='font', crossorigin='anonymous')
+
+    block prefetch
+      each asset in ['img/github-logo.svg', 'img/google-logo.svg']
+        link(rel='prefetch', href=manifest(asset), as='image', crossorigin='anonymous')
+      each asset in [ 'fonts/fa-brands-400.ttf', 'fonts/fa-solid-900.ttf' ]
+        //- integrity attribute not currently supported
+        //- <https://crbug.com/981419>
+        link(rel='prefetch', href=manifest(asset), as='font', crossorigin='anonymous')
 
   body(role='document').d-flex.flex-column.min-h-100
 

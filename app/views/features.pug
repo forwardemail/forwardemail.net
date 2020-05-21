@@ -17,9 +17,9 @@ block body
       .row.my-3
         .col
           .alert.alert-primary.text-center.mb-0(role='alert')
-            i.far.fa-smile
+            i.fa.fa-thumbs-up
             = ' '
-            != t('All paid plans are completely free during our beta program.  You will be emailed reminders to make payment when it has ended.')
+            != t('All paid plans are completely free during our beta program.  We\'ll send reminders to make payment when it has ended.')
       .row.row-cols-1.row-cols-lg-2
         .col
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-black-50.border
@@ -119,7 +119,7 @@ block body
                   = '/'
                   = t('month')
                   = ' '
-                  button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  You will be emailed reminders to make payment when it has ended.')).btn.btn-link: i.far.fa-smile
+                  button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  We\'ll send reminders to make payment when it has ended.')).btn.btn-link: i.fa.fa-thumbs-up
               small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
               .p-2
                 if sortedDomains.length === 0
@@ -168,7 +168,7 @@ block body
                   = '/'
                   = t('month')
                   = ' '
-                  button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  You will be emailed reminders to make payment when it has ended.')).btn.btn-link: i.far.fa-smile
+                  button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  We\'ll send reminders to make payment when it has ended.')).btn.btn-link: i.fa.fa-thumbs-up
               small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
               .p-2
                 if sortedDomains.length === 0
