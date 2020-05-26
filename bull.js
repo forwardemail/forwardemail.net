@@ -30,25 +30,33 @@ if (!module.parent) {
 
       const translateMarkdown = bull.queues.get('translate-markdown');
       await pSeries([
+        // clear any existing jobs
         () => translateMarkdown.empty(),
-        () => translateMarkdown.add()
+        // add the recurring job
+        () => translateMarkdown.add(),
+        // add an initial job when the process starts
+        () => translateMarkdown.add(null, { repeat: false })
       ]);
 
       const translatePhrases = bull.queues.get('translate-phrases');
       await pSeries([
+        // clear any existing jobs
         () => translatePhrases.empty(),
-        () => translatePhrases.add()
+        // add the recurring job
+        () => translatePhrases.add(),
+        // add an initial job when the process starts
+        () => translatePhrases.add(null, { repeat: false })
       ]);
 
-      await Promise.all([bull.start(), graceful.listen()]);
+      // <https://github.com/OptimalBits/bull/issues/870>
+      const failedEmailJobs = await bull.queues.get('email').getFailed();
+      logger.info('Failed email jobs', { failedEmailJobs });
+      await Promise.all(failedEmailJobs.map(job => job.retry()));
 
+      // start it up
+      await Promise.all([bull.start(), graceful.listen()]);
       if (process.send) process.send('ready');
       logger.info('Lad job scheduler started');
-
-      // <https://github.com/OptimalBits/bull/issues/870>
-      // const failedEmailJobs = await bull.queues.get('email').getFailed();
-      // logger.info('Failed email jobs', { failedEmailJobs });
-      // await Promise.all(failedEmailJobs.map(job => job.retry()));
     } catch (err) {
       logger.error(err);
       // eslint-disable-next-line unicorn/no-process-exit

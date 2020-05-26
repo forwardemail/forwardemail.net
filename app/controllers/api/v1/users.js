@@ -3,6 +3,7 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const { select } = require('mongoose-json-select');
 
+const sendVerificationEmail = require('../../../../helpers/send-verification-email');
 const config = require('../../../../config');
 const { Users } = require('../../../models');
 
@@ -19,14 +20,18 @@ async function create(ctx) {
   query[config.userFields.pendingRecovery] = false;
   query[config.lastLocaleField] = ctx.locale;
 
-  const user = await Users.register(query, body.password);
+  ctx.state.user = await Users.register(query, body.password);
 
   // send a verification email
-  await user.sendVerificationEmail();
+  ctx.state.user = await sendVerificationEmail(ctx);
 
   // send the response
-  const object = select(user.toObject(), Users.schema.options.toJSON.select);
-  object[config.userFields.apiToken] = user[config.userFields.apiToken];
+  const object = select(
+    ctx.state.user.toObject(),
+    Users.schema.options.toJSON.select
+  );
+  object[config.userFields.apiToken] =
+    ctx.state.user[config.userFields.apiToken];
   ctx.body = object;
 }
 

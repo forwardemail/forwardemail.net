@@ -1,4 +1,5 @@
 const config = require('../../../../config');
+const sendVerificationEmail = require('../../../../helpers/send-verification-email');
 
 async function recovery(ctx) {
   const redirectTo = ctx.state.l(config.verifyRoute);
@@ -9,7 +10,7 @@ async function recovery(ctx) {
   await ctx.state.user.save();
 
   try {
-    ctx.state.user = await ctx.state.user.sendVerificationEmail(ctx);
+    ctx.state.user = await sendVerificationEmail(ctx);
   } catch (err) {
     // wrap with try/catch to prevent redirect looping
     // (even though the koa redirect loop package will help here)

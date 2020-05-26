@@ -79,10 +79,12 @@ html(lang=locale).h-100
 
   body(role='document').d-flex.flex-column.min-h-100
 
+    - const isHelp = ctx.pathWithoutLocale === '/help'
+    - const isRegisterOrLogin = ['/register', config.loginRoute].includes(ctx.pathWithoutLocale)
+
     //- spinner
     block spinner
       include spinner/spinner
-
     //- navigation
     block navigation
       include _nav

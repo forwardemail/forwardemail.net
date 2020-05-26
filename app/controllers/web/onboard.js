@@ -7,6 +7,7 @@ const pug = require('pug');
 const { boolean } = require('boolean');
 const { isEmail, isFQDN, isIP } = require('validator');
 
+const sendVerificationEmail = require('../../../helpers/send-verification-email');
 const config = require('../../../config');
 const { Users, Domains, Aliases } = require('../../models');
 
@@ -118,28 +119,28 @@ async function onboard(ctx, next) {
     query[config.lastLocaleField] = ctx.locale;
     query[config.userFields.hasVerifiedEmail] = false;
     query[config.userFields.hasSetPassword] = false;
-    let user = await Users.create(query);
+    ctx.state.user = await Users.create(query);
     // send verification email if needed
     if (boolean(ctx.query.send_verification_email)) {
-      user = await user.sendVerificationEmail(ctx);
+      ctx.state.user = await sendVerificationEmail(ctx);
       ctx.flash('success', ctx.translate('EMAIL_VERIFICATION_SENT'));
     }
 
     ctx.state.domain = await Domains.create({
-      members: [{ user: user._id, group: 'admin' }],
+      members: [{ user: ctx.state.user._id, group: 'admin' }],
       name: ctx.request.body.domain,
       locale: ctx.locale,
       skip_verification: !boolean(ctx.query.redirect_to_domain)
     });
     // create a default alias for the user pointing to the admin
     await Aliases.create({
-      user: user._id,
+      user: ctx.state.user._id,
       domain: ctx.state.domain._id,
       name: '*',
-      recipients: [user.email],
+      recipients: [ctx.state.user.email],
       locale: ctx.locale
     });
-    await ctx.login(user);
+    await ctx.login(ctx.state.user);
   }
 
   // TODO: flash messages logic in @ladjs/assets doesn't support both

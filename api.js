@@ -5,17 +5,10 @@ const _ = require('lodash');
 const ip = require('ip');
 
 const config = require('./config');
-const routes = require('./routes');
-const i18n = require('./helpers/i18n');
 const logger = require('./helpers/logger');
-const passport = require('./helpers/passport');
+const apiConfig = require('./config/api');
 
-const api = new API({
-  routes: routes.api,
-  logger,
-  i18n,
-  passport
-});
+const api = new API(apiConfig);
 
 if (!module.parent) {
   const mongoose = new Mongoose(

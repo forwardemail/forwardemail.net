@@ -3,7 +3,7 @@ const render = require('koa-views-render');
 const { boolean } = require('boolean');
 
 const config = require('../../config');
-const { policies } = require('../../helpers');
+const policies = require('../../helpers/policies');
 const { web } = require('../../app/controllers');
 
 const admin = require('./admin');

@@ -3,15 +3,16 @@ const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
 const moment = require('moment');
+const qrcode = require('qrcode');
 const sanitizeHtml = require('sanitize-html');
 const validator = require('validator');
-const { boolean } = require('boolean');
 const { authenticator } = require('otplib');
-const qrcode = require('qrcode');
+const { boolean } = require('boolean');
+const { select } = require('mongoose-json-select');
 
-const bull = require('../../../bull');
 const Users = require('../../models/user');
 const passport = require('../../../helpers/passport');
+const sendVerificationEmail = require('../../../helpers/send-verification-email');
 const config = require('../../../config');
 const { Inquiries } = require('../../models');
 
@@ -399,7 +400,7 @@ async function forgotPassword(ctx) {
 
   // queue password reset email
   try {
-    const job = await bull.add('email', {
+    const job = await ctx.bull.add('email', {
       template: 'reset-password',
       message: {
         to: user[config.userFields.fullEmail]
@@ -414,7 +415,7 @@ async function forgotPassword(ctx) {
         }`
       }
     });
-    ctx.logger.info('added job', bull.getMeta({ job }));
+    ctx.logger.info('added job', ctx.bull.getMeta({ job }));
   } catch (err) {
     ctx.logger.error(err);
   }
@@ -516,7 +517,7 @@ async function verify(ctx) {
     resend
   ) {
     try {
-      ctx.state.user = await ctx.state.user.sendVerificationEmail(ctx);
+      ctx.state.user = await sendVerificationEmail(ctx);
     } catch (err) {
       // wrap with try/catch to prevent redirect looping
       // (even though the koa redirect loop package will help here)
@@ -572,6 +573,29 @@ async function verify(ctx) {
   ctx.state.user[config.userFields.hasVerifiedEmail] = true;
   ctx.state.user = await ctx.state.user.save();
 
+  // add welcome email job
+  if (!ctx.state.user[config.userFields.welcomeEmailSentAt]) {
+    try {
+      const job = await ctx.bull.add('email', {
+        template: 'welcome',
+        message: {
+          to: ctx.state.user[config.userFields.fullEmail]
+        },
+        locals: {
+          user: select(
+            ctx.state.user.toObject(),
+            Users.schema.options.toJSON.select
+          )
+        }
+      });
+      ctx.logger.info('added job', ctx.bull.getMeta({ job }));
+      ctx.state.user[config.userFields.welcomeEmailSentAt] = new Date();
+      ctx.state.user = await ctx.state.user.save();
+    } catch (err) {
+      ctx.logger.error(err);
+    }
+  }
+
   const pendingRecovery = ctx.state.user[config.userFields.pendingRecovery];
   if (pendingRecovery) {
     const body = {};
@@ -585,7 +609,7 @@ async function verify(ctx) {
 
     ctx.logger.debug('created inquiry', inquiry);
 
-    const job = await bull.add('email', {
+    const job = await ctx.bull.add('email', {
       template: 'recovery',
       message: {
         to: ctx.state.user.email,
@@ -597,7 +621,7 @@ async function verify(ctx) {
       }
     });
 
-    ctx.logger.info('added job', bull.getMeta({ job }));
+    ctx.logger.info('added job', ctx.bull.getMeta({ job }));
   }
 
   const message = pendingRecovery

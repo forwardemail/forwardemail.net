@@ -58,7 +58,12 @@ const config = {
       preservePseudos: false
     },
     lastLocaleField: 'last_locale',
-    i18n
+    i18n: {
+      ...i18n,
+      autoReload: false,
+      updateFiles: false,
+      syncFiles: false
+    }
   },
   logger: loggerConfig,
   appName: env.APP_NAME,

@@ -1,18 +1,18 @@
-const sharedConfig = require('@ladjs/shared-config');
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const Redis = require('@ladjs/redis');
 const Web = require('@ladjs/web');
 const _ = require('lodash');
 const ip = require('ip');
+const sharedConfig = require('@ladjs/shared-config');
+
 const config = require('./config');
 const logger = require('./helpers/logger');
+const webConfig = require('./config/web');
 
 const webSharedConfig = sharedConfig('WEB');
 const client = new Redis(webSharedConfig.redis);
-
-const webConfig = require('./config/web')(client);
-const web = new Web(webConfig);
+const web = new Web(webConfig(client));
 
 if (!module.parent) {
   const mongoose = new Mongoose(

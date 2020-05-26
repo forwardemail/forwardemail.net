@@ -10,15 +10,12 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
-const { select } = require('mongoose-json-select');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
-const logger = require('../../helpers/logger');
-const bull = require('../../bull');
 
 const opts = { length: 10, characters: '1234567890' };
 
@@ -223,34 +220,11 @@ User.pre('validate', function(next) {
   next();
 });
 
-User.post('save', async user => {
-  // return early if the user already received welcome email
-  // or if they have not yet verified their email address
-  if (
-    user[config.userFields.welcomeEmailSentAt] ||
-    !user[config.userFields.hasVerifiedEmail]
-  )
-    return;
-
-  // add welcome email job
-  try {
-    const job = await bull.add('email', {
-      template: 'welcome',
-      message: {
-        to: user[config.userFields.fullEmail]
-      },
-      locals: {
-        user: select(user.toObject(), User.options.toJSON.select)
-      }
-    });
-    logger.info('added job', bull.getMeta({ job }));
-    user[config.userFields.welcomeEmailSentAt] = new Date();
-    await user.save();
-  } catch (err) {
-    logger.error(err);
-  }
-});
-
+//
+// NOTE: you should not call this method directly
+// instead you should use the helper located at
+// `../helpers/send-verification-email.js`
+//
 User.methods.sendVerificationEmail = async function(ctx) {
   if (
     this[config.userFields.hasVerifiedEmail] &&
@@ -302,24 +276,6 @@ User.methods.sendVerificationEmail = async function(ctx) {
 
   this[config.userFields.verificationPinSentAt] = new Date();
   await this.save();
-
-  // attempt to send them an email
-  const job = await bull.add('email', {
-    template: 'verify',
-    message: {
-      to: this[config.userFields.fullEmail]
-    },
-    locals: {
-      user: select(this.toObject(), User.options.toJSON.select),
-      expiresAt: this[config.userFields.verificationPinExpiresAt],
-      pin: this[config.userFields.verificationPin],
-      link: `${config.urls.web}${config.verifyRoute}?pin=${
-        this[config.userFields.verificationPin]
-      }`
-    }
-  });
-
-  logger.info('added job', bull.getMeta({ job }));
 
   return this;
 };

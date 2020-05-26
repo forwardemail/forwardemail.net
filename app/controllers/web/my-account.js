@@ -14,7 +14,6 @@ const { parse } = require('node-html-parser');
 
 const config = require('../../../config');
 const { Users, Domains, Aliases } = require('../../models');
-const bull = require('../../../bull');
 
 async function update(ctx) {
   const { body } = ctx.request;
@@ -1088,7 +1087,7 @@ async function createInvite(ctx, next) {
 
   // send an email
   try {
-    const job = await bull.add('email', {
+    const job = await ctx.bull.add('email', {
       template: 'invite',
       message: {
         to: email.toLowerCase()
@@ -1097,7 +1096,7 @@ async function createInvite(ctx, next) {
         domain: { id: ctx.state.domain.id, name: ctx.state.domain.name }
       }
     });
-    ctx.logger.info('added job', bull.getMeta({ job }));
+    ctx.logger.info('added job', ctx.bull.getMeta({ job }));
   } catch (err) {
     ctx.flash('error', ctx.translate('INVITE_EMAIL_ERROR'));
     ctx.logger.error(err);

@@ -29,7 +29,11 @@ module.exports = async job => {
     })
       .lean()
       .exec();
-    if (admins.length === 0) throw new Error('No admins exist yet');
+    if (admins.length === 0) {
+      logger.info('No admins exist yet');
+      return;
+    }
+
     // go through all config.vanityDomains and create them assigned to admin
     await Promise.all(
       config.vanityDomains.map(async vanityDomain => {
