@@ -10,6 +10,7 @@ module.exports = async job => {
   try {
     const obj = {};
     obj[config.userFields.welcomeEmailSentAt] = { $exists: false };
+    obj[config.userFields.hasVerifiedEmail] = true;
     const users = await Users.find(obj)
       .lean()
       .exec();
