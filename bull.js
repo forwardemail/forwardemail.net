@@ -28,6 +28,9 @@ if (!module.parent) {
       const vanityDomains = bull.queues.get('vanity-domains');
       await pSeries([() => vanityDomains.empty(), () => vanityDomains.add()]);
 
+      const welcomeEmail = bull.queues.get('welcome-email');
+      await pSeries([() => welcomeEmail.empty(), () => welcomeEmail.add()]);
+
       const translateMarkdown = bull.queues.get('translate-markdown');
       await pSeries([
         // clear any existing jobs

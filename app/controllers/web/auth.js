@@ -8,7 +8,6 @@ const sanitizeHtml = require('sanitize-html');
 const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
-const { select } = require('mongoose-json-select');
 
 const Users = require('../../models/user');
 const passport = require('../../../helpers/passport');
@@ -572,29 +571,6 @@ async function verify(ctx) {
   // set has verified to true
   ctx.state.user[config.userFields.hasVerifiedEmail] = true;
   ctx.state.user = await ctx.state.user.save();
-
-  // add welcome email job
-  if (!ctx.state.user[config.userFields.welcomeEmailSentAt]) {
-    try {
-      const job = await ctx.bull.add('email', {
-        template: 'welcome',
-        message: {
-          to: ctx.state.user[config.userFields.fullEmail]
-        },
-        locals: {
-          user: select(
-            ctx.state.user.toObject(),
-            Users.schema.options.toJSON.select
-          )
-        }
-      });
-      ctx.logger.info('added job', ctx.bull.getMeta({ job }));
-      ctx.state.user[config.userFields.welcomeEmailSentAt] = new Date();
-      ctx.state.user = await ctx.state.user.save();
-    } catch (err) {
-      ctx.logger.error(err);
-    }
-  }
 
   const pendingRecovery = ctx.state.user[config.userFields.pendingRecovery];
   if (pendingRecovery) {

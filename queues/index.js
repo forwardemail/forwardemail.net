@@ -26,6 +26,23 @@ const queues = [
     ]
   },
   {
+    name: 'welcome-email',
+    options: {
+      attempts: 1,
+      defaultJobOptions: {
+        repeat: {
+          every: ms('1m')
+        }
+      }
+    },
+    processors: [
+      {
+        processor: path.join(__dirname, 'welcome-email.js'),
+        concurrency: 1
+      }
+    ]
+  },
+  {
     name: 'vanity-domains',
     options: {
       attempts: 1
