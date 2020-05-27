@@ -17,6 +17,8 @@ const router = new Router();
 router.head('/', ctx => {
   ctx.body = 'OK';
 });
+// report URI support (not locale specific)
+router.post('/report', web.report);
 
 const localeRouter = new Router({ prefix: '/:locale' });
 

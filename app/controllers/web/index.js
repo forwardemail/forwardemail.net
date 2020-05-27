@@ -13,6 +13,7 @@ const faq = require('./faq');
 const onboard = require('./onboard');
 const otp = require('./otp');
 const api = require('./api');
+const report = require('./report');
 
 function breadcrumbs(ctx, next) {
   // return early if its not a pure path (e.g. ignore static assets)
@@ -45,5 +46,6 @@ module.exports = {
   faq,
   onboard,
   otp,
-  api
+  api,
+  report
 };
