@@ -1247,21 +1247,21 @@
     path-to-regexp "1.x"
     urijs "^1.19.2"
 
-"@ladjs/api@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.4.tgz#6f1bf7e8918e23414a95f2b97fc1619f06597d50"
-  integrity sha512-zCnG6Zs4KSqcaHe6f/psVUDAAbAy4MsAnZThnj6qJnruJC2VpGPXz8T0Sn/ULgWekFEpy07rD1qZj4F5DzLLMg==
+"@ladjs/api@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.5.tgz#52c3e6179a04cb48aa49590e027668b90847a4e3"
+  integrity sha512-ebAxs14rTk/GJvvitPrKCmJtkdAGEI8/smqhpc49iYT2raRGSUeGMw/3+ZNeAia9zR6bSSkUNzvV1gYaOtpiNQ==
   dependencies:
     "@koa/router" "8.x"
     "@ladjs/i18n" "^3.0.12"
-    "@ladjs/redis" "^1.0.3"
-    "@ladjs/shared-config" "^2.0.13"
+    "@ladjs/redis" "^1.0.4"
+    "@ladjs/shared-config" "^3.0.1"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
-    cabin "^6.1.1"
+    cabin "^6.1.4"
     express-request-id "^1.4.1"
     kcors "^2.2.2"
-    koa "^2.11.0"
+    koa "^2.12.0"
     koa-404-handler "^0.0.2"
     koa-basic-auth "^4.0.0"
     koa-better-error-handler "^4.0.2"
@@ -1274,7 +1274,7 @@
     koa-helmet "^5.2.0"
     koa-json "^2.0.2"
     koa-no-trailing-slash "^2.1.0"
-    koa-simple-ratelimit "^4.0.1"
+    koa-simple-ratelimit "^4.0.2"
     lodash "^4.17.15"
     request-received "^0.0.3"
     response-time "^2.3.2"
@@ -1426,10 +1426,10 @@
     is-string-and-not-blank "^0.0.2"
     ms "^2.1.2"
 
-"@ladjs/shared-config@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.0.tgz#3b724a306c6e41f667aed769eed3b04ef302c23f"
-  integrity sha512-vM1e2MPgho7W0RCI0i52JOQvMfAPuGbWB3EcQkqxohVp8BlXkNzaGCLKPVuSy0CmDX57pjLv0JZTMTxZbAfxGg==
+"@ladjs/shared-config@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.1.tgz#0f678c1928f45d12602f679f54ce40e097604e4a"
+  integrity sha512-hmm6v+DPPqlHnq2Z91/NyTj90lmTROAcQ4LaGdG/8lu0GVV4cA0yTi6Xj9jmuxBmhKefC7IdGo48xJ4Qwy8TPw==
   dependencies:
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
@@ -1450,10 +1450,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-3.0.4.tgz#0af38003a3bdb77190c22fcf930e046c149b0f53"
-  integrity sha512-BaYFDgri/SztIeEJEkp4ovJ5iBc5o7EUW2acPYN8tEventIqSWy9aC8yd+ZgQzm7okuDYh7ZASvFQdqjAqul1w==
+"@ladjs/web@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-3.0.5.tgz#ffc7f2118559b5ffaa5d7f284081164c291e9d5b"
+  integrity sha512-KKlN+V9xlRDZGk4YNpVmJ7YxwONkkSSmNtTKKubsAsV9zaf2P9ajMQ77KeCPjkW8nXO+oxEtZUXz9rvKXBT4UQ==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "8.x"
@@ -1461,7 +1461,7 @@
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/koa-cache-responses" "^0.0.1"
     "@ladjs/redis" "^1.0.4"
-    "@ladjs/shared-config" "^3.0.0"
+    "@ladjs/shared-config" "^3.0.1"
     "@ladjs/state-helper" "^0.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
@@ -7122,10 +7122,10 @@ formidable@^1.2.1:
   resolved "https://registry.yarnpkg.com/formidable/-/formidable-1.2.2.tgz#bf69aea2972982675f00865342b982986f6b8dd9"
   integrity sha512-V8gLm+41I/8kguQ4/o1D3RIHRmhYFG4pnNyonvua+40rqcEmT4+V71yaZ3B457xbbgCsCfjSPi65u/W6vK1U5Q==
 
-forward-email@^6.1.25:
-  version "6.1.25"
-  resolved "https://registry.yarnpkg.com/forward-email/-/forward-email-6.1.25.tgz#e316db088c9041a1c4bb7539b982acd9e3531ba3"
-  integrity sha512-G7/DSA0vuzidZ9JTM9jV1figtGM0XwXxoF8mKYqFhb1EG1uzatC70APQbrMCzW91pu4NnLWevwh4cli+0cXF4Q==
+forward-email@^6.1.27:
+  version "6.1.27"
+  resolved "https://registry.yarnpkg.com/forward-email/-/forward-email-6.1.27.tgz#5804d3e3efcc7eab2e84b3d2ebc4fa5128c2ed9a"
+  integrity sha512-7OPtHM3st4PS6BZYy9M3K4oX4tjXl59cz9Z0D1Bw5e42g7+/wL0HesD/7Zbo2mvYKpVhDH5Xm5UEF9d+aF9zDA==
   dependencies:
     "@ladjs/env" "^1.0.0"
     "@ladjs/graceful" "^1.0.0"
@@ -10786,7 +10786,7 @@ koa-send@^5.0.0:
     mz "^2.7.0"
     resolve-path "^1.4.0"
 
-koa-simple-ratelimit@^4.0.1, koa-simple-ratelimit@^4.0.2:
+koa-simple-ratelimit@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/koa-simple-ratelimit/-/koa-simple-ratelimit-4.0.2.tgz#a1c9da056dd25ed023299852d3630fb46ac04d38"
   integrity sha512-gTPrZlWg5k+elqRkt7sSq0q1G8uFuB+kk5v2qGBOdHj6lm381r99WNSkpGpHn6QyFIYltyOXHxFVPuF0w6pzzQ==
@@ -10811,7 +10811,7 @@ koa-views@^6.2.3:
     mz "^2.4.0"
     pretty "^2.0.0"
 
-koa@^2.0.0, koa@^2.11.0, koa@^2.12.0:
+koa@^2.0.0, koa@^2.12.0:
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/koa/-/koa-2.12.0.tgz#c92bfb42defd86f365c31bf63fe918db11fc5c74"
   integrity sha512-WlUBj6PXoVhjI5ljMmlyK+eqkbVFW5XQu8twz6bd4WM2E67IwKgPMu5wIFXGxAsZT7sW5xAB54KhY8WAEkLPug==
@@ -11514,7 +11514,7 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-"loose-envify@github:tomashanacek/loose-envify":
+loose-envify@tomashanacek/loose-envify:
   version "1.0.0"
   resolved "https://codeload.github.com/tomashanacek/loose-envify/tar.gz/274d08b592bab76b3a7ab099a669ccd1b4a7a34f"
   dependencies:
