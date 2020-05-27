@@ -1247,15 +1247,15 @@
     path-to-regexp "1.x"
     urijs "^1.19.2"
 
-"@ladjs/api@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.5.tgz#52c3e6179a04cb48aa49590e027668b90847a4e3"
-  integrity sha512-ebAxs14rTk/GJvvitPrKCmJtkdAGEI8/smqhpc49iYT2raRGSUeGMw/3+ZNeAia9zR6bSSkUNzvV1gYaOtpiNQ==
+"@ladjs/api@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.6.tgz#59945192c0547ac69b818fab063705a702abed0a"
+  integrity sha512-iogcIFeqzU5pXDrYpouBPwiprlOXkOqH6V71gGbIF+ZbQ1AfOtmRZH9dGcLOL5yI9gOXkzPkX4RsQymOrqlarA==
   dependencies:
     "@koa/router" "8.x"
     "@ladjs/i18n" "^3.0.12"
     "@ladjs/redis" "^1.0.4"
-    "@ladjs/shared-config" "^3.0.1"
+    "@ladjs/shared-config" "^3.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
     cabin "^6.1.4"
@@ -1426,10 +1426,10 @@
     is-string-and-not-blank "^0.0.2"
     ms "^2.1.2"
 
-"@ladjs/shared-config@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.1.tgz#0f678c1928f45d12602f679f54ce40e097604e4a"
-  integrity sha512-hmm6v+DPPqlHnq2Z91/NyTj90lmTROAcQ4LaGdG/8lu0GVV4cA0yTi6Xj9jmuxBmhKefC7IdGo48xJ4Qwy8TPw==
+"@ladjs/shared-config@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.2.tgz#88c7c85172ef3469777d9adaabc0896f435a3025"
+  integrity sha512-ZOmf4MWTrOduqm4NLkBW6iALuvum1ygG7gQCeqLjDNF3GCzYbVSMESGle7Hlrys4A3jAUfKwNr9nuVGGdjTeMA==
   dependencies:
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
@@ -1450,10 +1450,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-3.0.5.tgz#ffc7f2118559b5ffaa5d7f284081164c291e9d5b"
-  integrity sha512-KKlN+V9xlRDZGk4YNpVmJ7YxwONkkSSmNtTKKubsAsV9zaf2P9ajMQ77KeCPjkW8nXO+oxEtZUXz9rvKXBT4UQ==
+"@ladjs/web@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-3.0.6.tgz#f073b8e107386b7c3c8691f773c40f5e12d67681"
+  integrity sha512-I1nWps5l/tbuMFO2nI0nSROBvdwos+H1FKNSPSGadHbcKaLGfVJFhOsxQtnzzqZwQvaU0e7n5xRHzCYTd1JwlQ==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "8.x"
@@ -1461,7 +1461,7 @@
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/koa-cache-responses" "^0.0.1"
     "@ladjs/redis" "^1.0.4"
-    "@ladjs/shared-config" "^3.0.1"
+    "@ladjs/shared-config" "^3.0.2"
     "@ladjs/state-helper" "^0.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
