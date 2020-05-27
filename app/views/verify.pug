@@ -6,7 +6,7 @@ block body
     .text-center: h1.my-3.py-3= t('Verify email')
     .row
       .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
-        .alert.alert-primary.text-center.mb-4!= t('Enter the verification code emailed to: <strong>%s</strong>', user.email)
+        .alert.alert-primary.text-center.mb-4!= t('Enter the verification code emailed to: <strong><span class="notranslate">%s</span></strong>', user.email)
         form.ajax-form(action=redirectTo ? `${ctx.path}?redirect_to=${redirectTo}` : ctx.path, method="POST")
           input(type="hidden", name="_csrf", value=ctx.csrf)
           .form-group.floating-label
