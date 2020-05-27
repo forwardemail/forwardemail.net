@@ -409,7 +409,10 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
   for (let i = 0; i < addresses.length; i++) {
     // convert addresses to lowercase
     addresses[i] = addresses[i].toLowerCase();
-    if (addresses[i].includes(':')) {
+    if (
+      addresses[i].includes(':') &&
+      !isURL(addresses[i], app.config.isURLOptions)
+    ) {
       const addr = addresses[i].split(':');
 
       // addr[0] = hello (username)
