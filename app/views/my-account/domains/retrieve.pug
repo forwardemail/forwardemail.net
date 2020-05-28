@@ -88,7 +88,7 @@ block body
         .col-12.col-lg-6.d-flex
           .p-5.m-2.mb-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t('4. Still need help with something?')
-            p.lead.mb-3!= t(`We are here to answer your questions, but before asking us, please be sure to <a href="${l('/faq')}">read our FAQ section</a>.`)
+            p.lead.mb-3!= t('We are here to answer your questions, but before asking us, please be sure to <a href="%s">read our FAQ section</a>.', l('/faq'))
             a.mt-auto(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help').stretched-link.btn.btn-lg.btn-outline-dark
               = t('Ask us a question')
               = ' '

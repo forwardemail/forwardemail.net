@@ -10,7 +10,8 @@ if !isHelp
           form.ajax-form.confirm-prompt(action=l('/help'), method="POST")
             input(type="hidden", name="_csrf", value=ctx.csrf)
             if ctx.pathWithoutLocale !== '/faq'
-              p.text-center.font-weight-bold!= t(`Have you read our <a href="${domain && domain.name ? t(`/faq?domain=${domain.name}`) : l('/faq')}" target="_blank" rel="noopener">FAQ</a> yet?`)
+              p.text-center.font-weight-bold
+                != t(`Have you read our <a href="%s" target="_blank" rel="noopener">FAQ</a> yet?`, domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'))
             .form-group.floating-label
               input#input-email.form-control(required, autocomplete="email", name="email", type="email", value=user ? user.email : '', placeholder='name@example.com')
               label(for="input-email")= t('Email address')
