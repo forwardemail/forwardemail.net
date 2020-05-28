@@ -1629,6 +1629,16 @@
     router "^1.3.3"
     url-parse "^1.4.7"
 
+"@ladjs/proxy@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ladjs/proxy/-/proxy-2.0.0.tgz#1787c0ed005456e3631b65b46fb8d26fd7cb3d74"
+  integrity sha512-0LZtPV+Oa/ZcxmQ0Q4wxh9HzPiIWLCHi0c3o5p8lMU+F4dbFRbzZJmR0MzELq5yumq2kXtzrRNpsJSONgKhvxw==
+  dependencies:
+    finalhandler "^1.1.2"
+    lodash "^4.17.15"
+    router "^1.3.3"
+    url-parse "^1.4.7"
+
 "@ladjs/redis@^1.0.3", "@ladjs/redis@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@ladjs/redis/-/redis-1.0.4.tgz#b225d508943d6a5b65e757e1fe4c19adda41f6c3"
@@ -1654,6 +1664,15 @@
     is-string-and-not-blank "^0.0.2"
     ms "^2.1.2"
 
+"@ladjs/shared-config@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.4.tgz#e39be99c88ba30d3b982b35a0be641f80dda9dc8"
+  integrity sha512-h3cHSFvoXr3JMULACurVde33pCGbzD1KbXIAClqMWsk3o8rcJujFz2xm4ADt0hxRPeJYPNxYHdsbawxuUcszKA==
+  dependencies:
+    boolean "^3.0.1"
+    is-string-and-not-blank "^0.0.2"
+    ms "^2.1.2"
+
 "@ladjs/state-helper@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@ladjs/state-helper/-/state-helper-0.0.2.tgz#e25300ab24824304c2fdfb9d0f0380f55582d700"
@@ -1669,10 +1688,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-3.0.6.tgz#f073b8e107386b7c3c8691f773c40f5e12d67681"
-  integrity sha512-I1nWps5l/tbuMFO2nI0nSROBvdwos+H1FKNSPSGadHbcKaLGfVJFhOsxQtnzzqZwQvaU0e7n5xRHzCYTd1JwlQ==
+"@ladjs/web@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-4.0.1.tgz#06035e6d4d12004edaf47fe93329a01fc2ee46ac"
+  integrity sha512-u934xP3DmOgRqtsQSxyBN8COyIKl7Y11MFphtX1c+fXt3JzbYR9h20xugCzqedoypGXMNjuttYXDVdtDut6mBA==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "8.x"
@@ -1680,7 +1699,7 @@
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/koa-cache-responses" "^0.0.1"
     "@ladjs/redis" "^1.0.4"
-    "@ladjs/shared-config" "^3.0.2"
+    "@ladjs/shared-config" "^3.0.4"
     "@ladjs/state-helper" "^0.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
@@ -1706,7 +1725,6 @@
     koa-helmet "^5.2.0"
     koa-isajax "^1.0.5"
     koa-json "^2.0.2"
-    koa-livereload "^0.2.0"
     koa-meta "^0.2.2"
     koa-methodoverride "^2.0.0"
     koa-no-trailing-slash "^2.1.0"
@@ -10992,14 +11010,6 @@ koa-json@^2.0.2:
     koa-is-json "1"
     streaming-json-stringify "3"
 
-koa-livereload@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/koa-livereload/-/koa-livereload-0.2.0.tgz#6eb4ca910a5c78f4050cb28306958a1b7160ab2e"
-  integrity sha1-brTKkQpcePQFDLKDBpWKG3Fgqy4=
-  dependencies:
-    koa "^2.0.0"
-    stream-injecter "0.0.1"
-
 koa-meta@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/koa-meta/-/koa-meta-0.2.2.tgz#78b81af621c65be74529b91d511f45a659dd58eb"
@@ -11073,7 +11083,7 @@ koa-views@^6.2.3:
     mz "^2.4.0"
     pretty "^2.0.0"
 
-koa@^2.0.0, koa@^2.12.0:
+koa@^2.12.0:
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/koa/-/koa-2.12.0.tgz#c92bfb42defd86f365c31bf63fe918db11fc5c74"
   integrity sha512-WlUBj6PXoVhjI5ljMmlyK+eqkbVFW5XQu8twz6bd4WM2E67IwKgPMu5wIFXGxAsZT7sW5xAB54KhY8WAEkLPug==
@@ -18005,11 +18015,6 @@ stream-http@^3.0.0:
     inherits "^2.0.4"
     readable-stream "^3.6.0"
     xtend "^4.0.2"
-
-stream-injecter@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/stream-injecter/-/stream-injecter-0.0.1.tgz#7507ae5eab9836536665e81ad8ce31b40fe3d455"
-  integrity sha1-dQeuXquYNlNmZega2M4xtA/j1FU=
 
 stream-shift@^1.0.0:
   version "1.0.1"
