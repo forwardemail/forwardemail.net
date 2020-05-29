@@ -11,7 +11,7 @@ block body
             h4.card-header.text-center= t('Ask a question')
             .card-body
               if ctx.pathWithoutLocale !== '/faq'
-                p.card-text.font-weight-bold.text-center!= t(`Have you read our <a href="${l('/faq')}" target="_blank" rel="noopener">FAQ</a> yet?`)
+                p.card-text.font-weight-bold.text-center!= t(`Have you read our <a href="%s" target="_blank" rel="noopener">FAQ</a> yet?`, l('/faq'))
               .form-group.floating-label
                 input#input-email.form-control(required, autocomplete="email", name="email", type="email", value=user ? user.email : '', placeholder='name@example.com')
                 label(for="input-email")= t('Email address')
