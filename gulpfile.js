@@ -6,6 +6,7 @@ const Mandarin = require('mandarin');
 const RevAll = require('gulp-rev-all');
 const babel = require('gulp-babel');
 const browserify = require('browserify');
+const browserSync = require('browser-sync').create();
 const concat = require('gulp-concat');
 const cssnano = require('cssnano');
 const del = require('del');
@@ -17,7 +18,6 @@ const globby = require('globby');
 const gulpRemark = require('gulp-remark');
 const gulpXo = require('gulp-xo');
 const imagemin = require('gulp-imagemin');
-const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
 const nodeSass = require('node-sass');
 const pngquant = require('imagemin-pngquant');
@@ -51,7 +51,6 @@ const logger = require('./helpers/logger');
 const i18n = require('./helpers/i18n');
 
 const PROD = config.env === 'production';
-const DEV = config.env === 'development';
 const TEST = config.env === 'test';
 const staticAssets = [
   'assets/**/*',
@@ -61,17 +60,15 @@ const staticAssets = [
 ];
 
 function pug() {
-  let stream = src('app/views/**/*.pug', { since: lastRun(pug) }).pipe(
+  const stream = src('app/views/**/*.pug', { since: lastRun(pug) }).pipe(
     pugLinter({ reporter: 'default', failAfterError: true })
   );
-
-  if (DEV) stream = stream.pipe(lr(config.livereload));
 
   return stream;
 }
 
 function img() {
-  let stream = src('assets/img/**/*', {
+  const stream = src('assets/img/**/*', {
     base: 'assets',
     since: lastRun(img)
   })
@@ -84,7 +81,6 @@ function img() {
     )
     .pipe(dest(config.buildBase));
 
-  if (DEV) stream = stream.pipe(lr(config.livereload));
   return stream;
 }
 
@@ -129,8 +125,6 @@ function css() {
     );
 
   stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
-
-  if (DEV) stream = stream.pipe(lr(config.livereload));
 
   return stream;
 }
@@ -215,8 +209,6 @@ async function bundle() {
 
   stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
 
-  if (DEV) stream = stream.pipe(lr(config.livereload));
-
   stream = stream.pipe(dest(config.buildBase));
 
   // convert to conventional stream
@@ -234,6 +226,14 @@ function remark() {
       })
     )
     .pipe(dest('.'));
+}
+
+function serve() {
+  browserSync.init({
+    proxy: env.WEB_URL,
+    port: env.BROWSERSYNC_SERVER_PORT,
+    ui: { port: env.BROWSERSYNC_UI_PORT }
+  });
 }
 
 function static() {
@@ -319,18 +319,20 @@ module.exports = {
   sri,
   markdown,
   watch: () => {
-    lr.listen(config.livereload);
+    serve();
     watch(['**/*.js', '!assets/js/**/*.js'], xo);
     watch(Mandarin.DEFAULT_PATTERNS, markdown);
     watch('assets/img/**/*', img);
     watch('assets/css/**/*.scss', series(fonts, scss, css));
     watch('assets/js/**/*.js', series(xo, bundle));
-    watch('app/views/**/*.pug', pug);
+    watch('app/views/**/*.pug', series(pug, browserSync.reload));
     watch(staticAssets, static);
+    watch(config.buildBase, browserSync.reload);
   },
   pug,
   img,
   xo,
+  serve,
   static,
   remark,
   fonts,
