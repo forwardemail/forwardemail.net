@@ -1246,7 +1246,7 @@ If this limit is exceeded we send a "451" response code which tells the senders 
 
 ## How do you perform DNS lookups on domain names
 
-We use CloudFlare's privacy-first consumer DNS service (see [announcement here][cloudflare-dns]).  We set `1.1.1.1` and `1.0.0.1` as the DNS servers using `netplan` on our servers and test environments.
+We use CloudFlare's privacy-first consumer DNS service (see [announcement here][cloudflare-dns]).  We set `1.1.1.3` and `1.0.0.3` as the DNS servers (see <https://developers.cloudflare.com/1.1.1.1/1.1.1.1-for-families/>) using `/etc/resolv.conf` on our servers and test environments.
 
 
 ## How fast is this service
