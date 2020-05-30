@@ -1673,6 +1673,15 @@
     is-string-and-not-blank "^0.0.2"
     ms "^2.1.2"
 
+"@ladjs/shared-config@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.5.tgz#7822693a32254f918aa913c09e7f6edad86cb70d"
+  integrity sha512-ZBIanK1S6cL/1pWwB87mQq9JBrUNEpqEBq0E9X0m2OOs9Nszxee6uJN6Iw4RL2pI4pNK+G4F5pkPdnlVibE8Cg==
+  dependencies:
+    boolean "^3.0.1"
+    is-string-and-not-blank "^0.0.2"
+    ms "^2.1.2"
+
 "@ladjs/state-helper@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@ladjs/state-helper/-/state-helper-0.0.2.tgz#e25300ab24824304c2fdfb9d0f0380f55582d700"

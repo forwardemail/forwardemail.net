@@ -45,7 +45,7 @@
     "@ladjs/policies": "^3.1.0",
     "@ladjs/proxy": "^2.0.0",
     "@ladjs/redis": "^1.0.4",
-    "@ladjs/shared-config": "^3.0.4",
+    "@ladjs/shared-config": "^3.0.5",
     "@ladjs/web": "^4.0.1",
     "@primer/css": "^14.4.0",
     "@sidoshi/random-string": "^1.0.0",
