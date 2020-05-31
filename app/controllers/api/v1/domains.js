@@ -2,8 +2,9 @@ const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 const pickOriginal = require('@ladjs/pick-original');
 
-const logger = require('../../../../helpers/logger');
 const config = require('../../../../config');
+const logger = require('../../../../helpers/logger');
+const toObject = require('../../../../helpers/to-object');
 const { Users, Aliases, Domains } = require('../../../models');
 
 const app = new ForwardEmail({
@@ -13,45 +14,44 @@ const app = new ForwardEmail({
 });
 
 function json(domain) {
-  const obj = _.isFunction(domain.toObject)
-    ? domain.toObject()
-    : pickOriginal(new Domains(domain).toObject(), domain);
+  const obj = toObject(Domains, domain);
   // map max recipients per alias
   if (obj.max_recipients_per_alias === 0)
     obj.max_recipients_per_alias = app.config.maxForwardedAddresses;
   // members
-  if (Array.isArray(obj.members))
-    obj.members = obj.members.map(m => {
-      m = _.isFunction(m.toObject)
+  if (Array.isArray(domain.members))
+    obj.members = domain.members.map(m => {
+      const member = _.isFunction(m.toObject)
         ? m.toObject()
-        : pickOriginal(new Domains().members.create(m).toObject(), m);
-      m.user = _.isFunction(m.user.toObject)
-        ? m.user.toObject()
-        : pickOriginal(new Users(m.user).toObject(), m.user);
-      return m;
+        : new Domains().members.create(m).toObject();
+      member.user = toObject(Users, m.user);
+      if (_.isFinite(m.alias_count)) member.alias_count = m.alias_count;
+      return member;
     });
   // invites
-  if (Array.isArray(obj.invites))
-    obj.invites = obj.invites.map(i =>
+  if (Array.isArray(domain.invites))
+    obj.invites = domain.invites.map(i =>
       _.isFunction(i.toObject)
         ? i.toObject()
-        : pickOriginal(new Domains().invites.create(i).toObject(), i)
+        : new Domains().invites.create(i).toObject()
     );
   // aliases
-  if (Array.isArray(obj.aliases))
-    obj.aliases = obj.aliases.map(a => {
-      a = _.isFunction(a)
-        ? a.toObject()
-        : pickOriginal(new Aliases(a).toObject(), a);
-      a.user = _.isFunction(a.user.toObject)
-        ? a.user.toObject()
-        : pickOriginal(new Users(a.user).toObject(), a.user);
-      a.domain = json(a.domain);
-      return a;
+  if (Array.isArray(domain.aliases))
+    obj.aliases = domain.aliases.map(a => {
+      const alias = toObject(Aliases, a);
+      alias.user = toObject(Users, a.user);
+      alias.domain = json(a.domain);
+      if (_.isString(a.group)) alias.group = a.group;
+      return alias;
     });
-  // add a helper url
-  obj.link = `${config.urls.web}/my-account/domains/${domain.name}`;
-  return obj;
+  return {
+    ...pickOriginal(
+      obj,
+      _.isFunction(domain.toObject) ? domain.toObject() : domain
+    ),
+    // add a helper url
+    link: `${config.urls.web}/my-account/domains/${domain.name}`
+  };
 }
 
 async function list(ctx) {

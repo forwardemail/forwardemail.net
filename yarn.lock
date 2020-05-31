@@ -3288,6 +3288,11 @@ bson-objectid@^1.3.0:
   version "1.3.0"
   resolved "git+https://github.com/niftylettuce/bson-objectid.git#510810d7b9fac2d8c25ab57e3f38e8af25b4e1e0"
 
+"bson-objectid@https://github.com/niftylettuce/bson-objectid.git":
+  version "1.3.0"
+  uid "510810d7b9fac2d8c25ab57e3f38e8af25b4e1e0"
+  resolved "https://github.com/niftylettuce/bson-objectid.git#510810d7b9fac2d8c25ab57e3f38e8af25b4e1e0"
+
 bson@^1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/bson/-/bson-1.1.4.tgz#f76870d799f15b854dffb7ee32f0a874797f7e89"
@@ -3604,9 +3609,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30001059:
-  version "1.0.30001070"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001070.tgz#eacb9a6924d43daabfda13cfde4e67c5b9469dff"
-  integrity sha512-Nw0DXzrXSN7Ex8gkOOFCZWnG8+GCj51Lpad+PZWBqn5JRpqBV0Ees3lji87sKm+Re5HU5SUsg+MB4ULYA/VV6g==
+  version "1.0.30001072"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001072.tgz#27b22a0b521c2c5cfb50ce500a101d9f2ee90d49"
+  integrity sha512-eq399BkQ22B+Li+U4L+j5+a6CiEm+buhNsGGli6vEote1Vb86VzV9rXOWG9Nax0Wdd4FuraOTGTn2HvkhZli3Q==
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001043, caniuse-lite@^1.0.30001061:
   version "1.0.30001066"
@@ -11553,7 +11558,7 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-loose-envify@tomashanacek/loose-envify:
+"loose-envify@github:tomashanacek/loose-envify":
   version "1.0.0"
   resolved "https://codeload.github.com/tomashanacek/loose-envify/tar.gz/274d08b592bab76b3a7ab099a669ccd1b4a7a34f"
   dependencies:

@@ -13,6 +13,7 @@ const { isEmail, isFQDN, isIP, isPort } = require('validator');
 const { parse } = require('node-html-parser');
 
 const config = require('../../../config');
+const toObject = require('../../../helpers/to-object');
 const { Users, Domains, Aliases } = require('../../models');
 
 async function update(ctx) {
@@ -389,7 +390,11 @@ async function createDomain(ctx, next) {
       locale: ctx.locale
     });
 
-    if (ctx.api) return next();
+    if (ctx.api) {
+      ctx.state.domain = toObject(Domains, ctx.state.domain);
+      ctx.state.domain.members[0].user = toObject(Users, ctx.state.user);
+      return next();
+    }
 
     // TODO: flash messages logic in @ladjs/assets doesn't support both
     // custom and regular flash message yet
@@ -588,7 +593,16 @@ async function createAlias(ctx, next) {
       domain: ctx.state.domain._id,
       locale: ctx.locale
     });
-    if (ctx.api) return next();
+
+    if (ctx.api) {
+      ctx.state.alias = toObject(Aliases, ctx.state.alias);
+      ctx.state.alias.user = toObject(Users, ctx.state.user);
+      ctx.state.alias.domain = toObject(Domains, ctx.state.domain);
+      ctx.state.alias.domain.members = ctx.state.domain.members;
+      ctx.state.alias.domain.invites = ctx.state.domain.invites;
+      return next();
+    }
+
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
       text: ctx.translate('REQUEST_OK'),
@@ -647,7 +661,15 @@ async function updateAlias(ctx, next) {
   try {
     ctx.state.alias.locale = ctx.locale;
     ctx.state.alias = await ctx.state.alias.save();
-    if (ctx.api) return next();
+    if (ctx.api) {
+      ctx.state.alias = toObject(Aliases, ctx.state.alias);
+      ctx.state.alias.user = toObject(Users, ctx.state.user);
+      ctx.state.alias.domain = toObject(Domains, ctx.state.domain);
+      ctx.state.alias.domain.members = ctx.state.domain.members;
+      ctx.state.alias.domain.invites = ctx.state.domain.invites;
+      return next();
+    }
+
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
       text: ctx.translate('REQUEST_OK'),

@@ -58,6 +58,7 @@
     "basic-auth": "^2.0.1",
     "boolean": "3.0.1",
     "bootstrap": "4.5.0",
+    "bson-objectid": "https://github.com/niftylettuce/bson-objectid.git",
     "cabin": "^6.1.4",
     "captain-hook": "^0.0.3",
     "clipboard": "^2.0.6",
