@@ -1,19 +1,17 @@
 const _ = require('lodash');
-const { select } = require('mongoose-json-select');
+const pickOriginal = require('@ladjs/pick-original');
 
 const { Aliases, Users } = require('../../../models');
 
 const { _domainJSON } = require('./domains');
 
 function json(alias) {
-  const obj = select(
-    _.isFunction(alias) ? alias.toObject() : alias,
-    Aliases.schema.options.toJSON.select
-  );
-  obj.user = select(
-    _.isFunction(obj.user.toObject) ? obj.user.toObject() : obj.user,
-    Users.schema.options.toJSON.select
-  );
+  const obj = _.isFunction(alias)
+    ? alias.toObject()
+    : pickOriginal(new Aliases(alias).toObject(), alias);
+  obj.user = _.isFunction(obj.user.toObject)
+    ? obj.user.toObject()
+    : pickOriginal(new Users(obj.user).toObject(), obj.user);
   obj.domain = _domainJSON(obj.domain);
   return obj;
 }

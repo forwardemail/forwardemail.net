@@ -1,6 +1,6 @@
 const ForwardEmail = require('forward-email');
 const _ = require('lodash');
-const { select } = require('mongoose-json-select');
+const pickOriginal = require('@ladjs/pick-original');
 
 const logger = require('../../../../helpers/logger');
 const config = require('../../../../config');
@@ -13,45 +13,39 @@ const app = new ForwardEmail({
 });
 
 function json(domain) {
-  const obj = select(
-    _.isFunction(domain.toObject) ? domain.toObject() : domain,
-    Domains.schema.options.toJSON.select
-  );
+  const obj = _.isFunction(domain.toObject)
+    ? domain.toObject()
+    : pickOriginal(new Domains(domain).toObject(), domain);
   // map max recipients per alias
   if (obj.max_recipients_per_alias === 0)
     obj.max_recipients_per_alias = app.config.maxForwardedAddresses;
   // members
   if (Array.isArray(obj.members))
     obj.members = obj.members.map(m => {
-      m = select(
-        _.isFunction(m.toObject) ? m.toObject() : m,
-        Domains.Member.options.toJSON.select
-      );
-      m.user = select(
-        _.isFunction(m.user.toObject) ? m.user.toObject() : m.user,
-        Users.schema.options.toJSON.select
-      );
+      m = _.isFunction(m.toObject)
+        ? m.toObject()
+        : pickOriginal(new Domains().members.create(m).toObject(), m);
+      m.user = _.isFunction(m.user.toObject)
+        ? m.user.toObject()
+        : pickOriginal(new Users(m.user).toObject(), m.user);
       return m;
     });
   // invites
   if (Array.isArray(obj.invites))
     obj.invites = obj.invites.map(i =>
-      select(
-        _.isFunction(i.toObject) ? i.toObject() : i,
-        Domains.Invite.options.toJSON.select
-      )
+      _.isFunction(i.toObject)
+        ? i.toObject()
+        : pickOriginal(new Domains().invites.create(i).toObject(), i)
     );
   // aliases
   if (Array.isArray(obj.aliases))
     obj.aliases = obj.aliases.map(a => {
-      a = select(
-        _.isFunction(a) ? a.toObject() : a,
-        Aliases.schema.options.toJSON.select
-      );
-      a.user = select(
-        _.isFunction(a.user.toObject) ? a.user.toObject() : a.user,
-        Users.schema.options.toJSON.select
-      );
+      a = _.isFunction(a)
+        ? a.toObject()
+        : pickOriginal(new Aliases(a).toObject(), a);
+      a.user = _.isFunction(a.user.toObject)
+        ? a.user.toObject()
+        : pickOriginal(new Users(a.user).toObject(), a.user);
       a.domain = json(a.domain);
       return a;
     });

@@ -1,5 +1,3 @@
-const { select } = require('mongoose-json-select');
-
 const bull = require('../bull');
 const config = require('../config');
 const logger = require('../helpers/logger');
@@ -24,7 +22,7 @@ module.exports = async job => {
               to: user[config.userFields.fullEmail]
             },
             locals: {
-              user: select(user.toObject(), Users.schema.options.toJSON.select)
+              user: user.toObject()
             }
           });
           logger.info('added job', bull.getMeta({ job }));

@@ -466,5 +466,3 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
 Domain.statics.getTxtAddresses = getTxtAddresses;
 
 module.exports = mongoose.model('Domain', Domain);
-module.exports.Invite = Invite;
-module.exports.Member = Member;

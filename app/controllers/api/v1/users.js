@@ -1,7 +1,6 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
-const { select } = require('mongoose-json-select');
 
 const sendVerificationEmail = require('../../../../helpers/send-verification-email');
 const config = require('../../../../config');
@@ -26,10 +25,7 @@ async function create(ctx) {
   ctx.state.user = await sendVerificationEmail(ctx);
 
   // send the response
-  const object = select(
-    ctx.state.user.toObject(),
-    Users.schema.options.toJSON.select
-  );
+  const object = ctx.state.user.toObject();
   object[config.userFields.apiToken] =
     ctx.state.user[config.userFields.apiToken];
   ctx.body = object;
