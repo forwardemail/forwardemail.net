@@ -118,7 +118,8 @@ const config = {
     verificationPinSentAt: 'verification_pin_sent_at',
     verificationPin: 'verification_pin',
     verificationPinHasExpired: 'verification_pin_has_expired',
-    welcomeEmailSentAt: 'welcome_email_sent_at'
+    welcomeEmailSentAt: 'welcome_email_sent_at',
+    isBanned: 'is_banned'
   },
 
   // dynamic otp routes

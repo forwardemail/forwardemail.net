@@ -132,10 +132,7 @@ Alias.pre('validate', function(next) {
 
 // this must be kept before other `pre('save')` hooks as
 // it populates "id" String automatically for comparisons
-Alias.plugin(mongooseCommonPlugin, {
-  object: 'alias',
-  omitExtraFields: []
-});
+Alias.plugin(mongooseCommonPlugin, { object: 'alias' });
 
 Alias.pre('save', async function(next) {
   const alias = this;
@@ -156,7 +153,7 @@ Alias.pre('save', async function(next) {
           }
         ]
       })
-        .populate('members.user', 'id is_banned')
+        .populate('members.user', `id ${config.userFields.isBanned}`)
         .lean()
         .exec(),
       Users.findById(alias.user)
@@ -168,17 +165,18 @@ Alias.pre('save', async function(next) {
           domain: alias.domain
         })
         .select('id user name recipients')
-        .populate('user', 'id is_banned')
+        .populate('user', `id ${config.userFields.isBanned}`)
         .lean()
         .exec()
     ]);
 
     // filter out domains and aliases without users
     aliases = aliases.filter(
-      alias => _.isObject(alias.user) && !alias.user.is_banned
+      alias => _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
     );
     domain.members = domain.members.filter(
-      member => _.isObject(member.user) && !member.user.is_banned
+      member =>
+        _.isObject(member.user) && !member.user[config.userFields.isBanned]
     );
 
     if (!domain)

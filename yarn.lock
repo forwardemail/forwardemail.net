@@ -11553,7 +11553,7 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-"loose-envify@github:tomashanacek/loose-envify":
+loose-envify@tomashanacek/loose-envify:
   version "1.0.0"
   resolved "https://codeload.github.com/tomashanacek/loose-envify/tar.gz/274d08b592bab76b3a7ab099a669ccd1b4a7a34f"
   dependencies:
@@ -12341,6 +12341,13 @@ mongoose-omit-common-fields@^0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/mongoose-omit-common-fields/-/mongoose-omit-common-fields-0.0.5.tgz#8dad83ed4454b0365780b3ea00616daca8f718fe"
   integrity sha512-01nJjyJZ/acK+awpRjYeeMFl7F4ehdcH7iP76d46V9cRCREphbwETclwNfJupXn8R+ALGovJQObHIlOYedrgxA==
+  dependencies:
+    camelcase "^6.0.0"
+
+mongoose-omit-common-fields@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/mongoose-omit-common-fields/-/mongoose-omit-common-fields-0.0.6.tgz#6e69e03eb125a430cd31e5cbcc841c7b40b7d21c"
+  integrity sha512-1KZtgcy1sdYntPV+/LrDksPUdrs+Oket1mgQiVy+rqv9jH7UowP8AlJT2+hecnG6WXF+bTGgU2qhRFmL1YCu8A==
   dependencies:
     camelcase "^6.0.0"
 

@@ -17,12 +17,30 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
 
-const opts = { length: 10, characters: '1234567890' };
-
 if (config.passportLocalMongoose.usernameField !== 'email')
   throw new Error(
     'User model and @ladjs/passport requires that the usernameField is email'
   );
+
+const opts = { length: 10, characters: '1234567890' };
+const { fields } = config.passport;
+const omitExtraFields = [
+  ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
+  config.userFields.apiToken,
+  config.userFields.resetTokenExpiresAt,
+  config.userFields.resetToken,
+  config.userFields.hasSetPassword,
+  config.userFields.hasVerifiedEmail,
+  config.userFields.verificationPinExpiresAt,
+  config.userFields.verificationPin,
+  config.userFields.verificationPinSentAt,
+  config.userFields.welcomeEmailSentAt,
+  config.userFields.otpRecoveryKeys,
+  config.userFields.pendingRecovery,
+  config.userFields.isBanned,
+  fields.otpEnabled,
+  fields.otpToken
+];
 
 // set relative threshold for messages
 moment.relativeTimeThreshold('ss', 5);
@@ -44,10 +62,6 @@ const User = new mongoose.Schema({
     lowercase: true,
     unique: true,
     validate: val => validator.isEmail(val)
-  },
-  is_banned: {
-    type: Boolean,
-    default: false
   }
 });
 
@@ -55,6 +69,11 @@ const User = new mongoose.Schema({
 const object = {};
 
 // user fields
+object[config.userFields.isBanned] = {
+  type: Boolean,
+  default: false
+};
+
 object[config.userFields.fullEmail] = {
   type: String,
   required: true,
@@ -108,7 +127,6 @@ object[config.userFields.pendingRecovery] = {
 };
 
 // shared field names with @ladjs/passport for consistency
-const { fields } = config.passport;
 object[fields.displayName] = {
   type: String,
   required: true,
@@ -283,24 +301,12 @@ User.methods.sendVerificationEmail = async function(ctx) {
 User.plugin(mongooseCommonPlugin, {
   object: 'user',
   omitCommonFields: false,
-  omitExtraFields: [
-    ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
-    config.userFields.apiToken,
-    config.userFields.resetTokenExpiresAt,
-    config.userFields.resetToken,
-    config.userFields.hasSetPassword,
-    config.userFields.hasVerifiedEmail,
-    config.userFields.verificationPinExpiresAt,
-    config.userFields.verificationPin,
-    config.userFields.verificationPinSentAt,
-    config.userFields.verificationPinHasExpired,
-    config.userFields.welcomeEmailSentAt,
-    config.userFields.otpRecoveryKeys,
-    config.userFields.pendingRecovery,
-    fields.otpEnabled,
-    fields.otpToken,
-    'is_banned'
-  ]
+  omitExtraFields,
+  mongooseHidden: {
+    virtuals: {
+      [config.userFields.verificationPinHasExpired]: 'hide'
+    }
+  }
 });
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);
 

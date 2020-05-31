@@ -94,7 +94,7 @@
     "moment": "^2.26.0",
     "mongoose": "5.9",
     "mongoose-common-plugin": "^2.0.1",
-    "mongoose-omit-common-fields": "^0.0.5",
+    "mongoose-omit-common-fields": "^0.0.6",
     "mongoose-unique-validator": "^2.0.3",
     "node-html-parser": "^1.2.18",
     "nodemailer": "^6.4.8",

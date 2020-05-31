@@ -104,7 +104,7 @@ async function retrieveDomains(ctx, next) {
   ctx.state.domains = await Domains.find(query)
     .populate(
       'members.user',
-      `id email ${config.passport.fields.displayName} is_banned`
+      `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
     )
     .sort('is_global name') // A-Z domains
     .lean()
@@ -112,7 +112,8 @@ async function retrieveDomains(ctx, next) {
 
   ctx.state.domains = ctx.state.domains.map(domain => {
     domain.members = domain.members.filter(
-      member => _.isObject(member.user) && !member.user.is_banned
+      member =>
+        _.isObject(member.user) && !member.user[config.userFields.isBanned]
     );
     return domain;
   });
@@ -123,15 +124,14 @@ async function retrieveDomains(ctx, next) {
     .populate('domain', 'name')
     .populate(
       'user',
-      `id email ${config.passport.fields.displayName} is_banned`
+      `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
     )
     .sort('name')
     .lean()
     .exec();
 
-  // TODO: delete aliases for users when they delete their accounts
   domainAliases = domainAliases.filter(
-    alias => _.isObject(alias.user) && !alias.user.is_banned
+    alias => _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
   );
 
   const aliasesByDomain = _.groupBy(domainAliases, alias => alias.domain.name);
@@ -1239,7 +1239,7 @@ async function removeMember(ctx, next) {
 }
 
 function ensureNotBanned(ctx, next) {
-  if (ctx.state.user.is_banned)
+  if (ctx.state.user[config.userFields.isBanned])
     return ctx.throw(Boom.forbidden(ctx.translateError('ACCOUNT_BANNED')));
   return next();
 }

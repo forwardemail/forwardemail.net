@@ -2,6 +2,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 
+const config = require('../../../../config');
 const Domains = require('../../../models/domain');
 const Aliases = require('../../../models/alias');
 
@@ -26,12 +27,14 @@ async function lookup(ctx) {
   const aliases = await Aliases.find({
     domain: domain._id
   })
-    .populate('user', 'is_banned')
+    .populate('user', config.userFields.isBanned)
     .lean()
     .exec();
 
   ctx.body = aliases
-    .filter(alias => _.isObject(alias.user) && !alias.user.is_banned)
+    .filter(
+      alias => _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
+    )
     .map(alias => {
       // alias.name = "*" (wildcard catchall) otherwise an alias
       // alias.is_enabled = "!" prefixed alias name
