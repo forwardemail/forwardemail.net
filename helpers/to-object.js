@@ -8,7 +8,7 @@ function toObject(Model, doc) {
     ? doc
     : _.isFunction(doc.toObject)
     ? doc.toObject()
-    : Model.hydrate(doc).toObject();
+    : new Model(doc).toObject();
 }
 
 module.exports = toObject;
