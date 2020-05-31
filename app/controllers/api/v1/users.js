@@ -34,7 +34,7 @@ async function create(ctx) {
 async function retrieve(ctx) {
   // since we already have the user object
   // just send it over as a response
-  ctx.body = ctx.state.user;
+  ctx.body = ctx.state.user.toObject();
 }
 
 async function update(ctx) {
@@ -52,7 +52,8 @@ async function update(ctx) {
 
   if (_.isString(body.avatar_url)) ctx.state.user.avatar_url = body.avatar_url;
 
-  ctx.body = await ctx.state.user.save();
+  ctx.state.user = await ctx.state.user.save();
+  ctx.body = ctx.state.user.toObject();
 }
 
 module.exports = { create, retrieve, update };
