@@ -31,6 +31,12 @@ if (!module.parent) {
       const welcomeEmail = bull.queues.get('welcome-email');
       await pSeries([() => welcomeEmail.empty(), () => welcomeEmail.add()]);
 
+      const removeUnverifiedUsers = bull.queues.get('remove-unverified-users');
+      await pSeries([
+        () => removeUnverifiedUsers.empty(),
+        () => removeUnverifiedUsers.add()
+      ]);
+
       const translateMarkdown = bull.queues.get('translate-markdown');
       await pSeries([
         // clear any existing jobs

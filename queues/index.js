@@ -87,6 +87,23 @@ const queues = [
         concurrency: 1
       }
     ]
+  },
+  {
+    name: 'remove-unverified-users',
+    options: {
+      attempts: 1,
+      defaultJobOptions: {
+        repeat: {
+          every: ms('1h')
+        }
+      }
+    },
+    processors: [
+      {
+        processor: path.join(__dirname, 'remove-unverified-users.js'),
+        concurrency: 1
+      }
+    ]
   }
 ];
 
