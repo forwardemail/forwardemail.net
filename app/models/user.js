@@ -167,14 +167,6 @@ object[fields.otpEnabled] = {
   type: Boolean,
   default: false
 };
-
-object[fields.otpToken] = String;
-
-object[fields.otpEnabled] = {
-  type: Boolean,
-  default: false
-};
-
 object[fields.otpToken] = String;
 
 // shared field names with @ladjs/i18n and email-templates
