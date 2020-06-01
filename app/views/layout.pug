@@ -150,4 +150,4 @@ html(lang=locale).h-100
 
       //- build
       if !isBot(ctx.get('User-Agent'))
-        script(src=manifest('js/build.js'), integrity=manifest('js/build.js', 'integrity'), crossorigin='anonymous')
+        script(async, src=manifest('js/build.js'), integrity=manifest('js/build.js', 'integrity'), crossorigin='anonymous')
