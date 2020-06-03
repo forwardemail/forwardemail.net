@@ -57,7 +57,7 @@
 </div>
 
 <div class="alert my-3 alert-success">
-  <i class="fa fa-play-circle font-weight-bold"></i>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
     Getting Started:
   </strong>
@@ -575,7 +575,7 @@
 </div>
 
 <div class="alert my-3 alert-success">
-  <i class="fa fa-play-circle font-weight-bold"></i>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
     Getting Started:
   </strong>
