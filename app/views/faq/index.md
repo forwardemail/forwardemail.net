@@ -183,7 +183,7 @@
     Important:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both of the above records MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
+    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
     The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
   </span>
 </div>
