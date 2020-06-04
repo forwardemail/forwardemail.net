@@ -96,7 +96,7 @@ module.exports = async job => {
     const domainIds = await Domains.distinct('_id', {});
     await Promise.all(
       domainIds.map(async domainId => {
-        const count = await Aliases.count({ domain: domainId });
+        const count = await Aliases.countDocuments({ domain: domainId });
         if (count > 0) return;
         const domain = await Domains.findById(domainId)
           .lean()

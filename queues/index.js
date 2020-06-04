@@ -31,7 +31,9 @@ const queues = [
       attempts: 1,
       defaultJobOptions: {
         repeat: {
-          every: ms('1m')
+          // every day at 10am
+          // <https://crontab.guru/>
+          cron: '0 10 * * *'
         }
       }
     },
