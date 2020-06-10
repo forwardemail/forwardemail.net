@@ -50,7 +50,7 @@
   <span>
     If you would like to hide your information from being publicly searchable over the Internet, then please go to <a class="alert-link" href="/my-account/domains" target="_blank" rel="noopener">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan before starting this guide.
     Publicly searchable information on free plans includes, but is not limited to: aliases, forwarded addresses, recipients, and advanced settings such as custom port forwarding.
-    If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener" href="/features">Features</a> page &ndash; otherwise keep reading!
+    If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener" href="/pricing">Pricing</a> page &ndash; otherwise keep reading!
     All plans abide by our <a class="alert-link" href="/privacy">Privacy</a> policy of strictly not storing logs, metadata, nor reading emails.
     We don't track you like other services do.
   </span>
@@ -224,7 +224,7 @@
     Important:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener" href="/features" class="alert-link">Features</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener" href="/pricing" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
   </span>
 </div>
 
@@ -527,7 +527,7 @@
   </div>
 </div>
 
-<div class="text-muted">Now you can <a href="https://www.youtube.com/watch?v=hvuzUasjFAo" target="_blank" rel="nofollow">start dancing</a>, <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="nofollow">sing a song</a>, and start forwarding emails!  If you have enjoyed these instructions, then please consider <a rel="noopener" href="/features">upgrading to a paid plan</a> or sending us a <a href="/donate">donation</a>.  Additional tips and optional add-ons are described below:</div>
+<div class="text-muted">Now you can <a href="https://www.youtube.com/watch?v=hvuzUasjFAo" target="_blank" rel="nofollow">start dancing</a>, <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="nofollow">sing a song</a>, and start forwarding emails!  If you have enjoyed these instructions, then please consider <a rel="noopener" href="/pricing">upgrading to a paid plan</a> or sending us a <a href="/donate">donation</a>.  Additional tips and optional add-ons are described below:</div>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -687,7 +687,7 @@ Yes, as of May 5, 2020 we have added this feature.  Right now the feature is dom
     Enhanced Privacy Protection:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Advanced Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener" href="/features">Features</a> page.  Otherwise you can continue to follow the instructions below.
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Advanced Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener" href="/pricing">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
   </span>
 </div>
 
@@ -734,7 +734,7 @@ Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(
     Enhanced Privacy Protection:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener" href="/features">Features</a> page.  Otherwise you can continue to follow the instructions below.
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener" href="/pricing">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
   </span>
 </div>
 
@@ -1258,7 +1258,7 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
 
-## 
+##
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

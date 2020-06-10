@@ -84,7 +84,7 @@ block body
                                 default
                                   = t('Free')
                           .dropdown-divider
-                          a(href=l(`/features?domain=${domain.name}`)).dropdown-item
+                          a(href=l(`/pricing?domain=${domain.name}`)).dropdown-item
                             small.text-muted= t('See all plan features')
                     else
                       = t(titleize(humanize(domain.plan)))

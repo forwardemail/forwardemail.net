@@ -31,7 +31,7 @@ footer.mt-auto
         .flex-wrap.flex-fill
           h5.mb-2= t('Resources')
           ul.list-unstyled.mb-0
-            li: a.d-block.text-light(href=domain && domain.name ? l(`/features?domain=${domain.name}`) : l('/features'))= t('Features')
+            li: a.d-block.text-light(href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l('/pricing'))= t('Pricing')
             li: a.d-block.text-light(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'))= t('FAQ')
             li: a.d-block.text-light(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Help')
             li: a.d-block.text-light(href=l('/free-disposable-addresses'))= t('Free Disposable Addresses')

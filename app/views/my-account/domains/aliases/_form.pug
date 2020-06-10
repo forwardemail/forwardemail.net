@@ -44,7 +44,7 @@ if alias
       ul.list-inline.form-text
         if hasFreeDomains
           li.list-inline-item
-            a(href=l(`/features${domainQuery ? `?domain=${domainQuery}` : ''}`)).btn.btn-sm.btn-primary
+            a(href=l(`/pricing${domainQuery ? `?domain=${domainQuery}` : ''}`)).btn.btn-sm.btn-primary
               i.fa.fa-angle-double-up
               = ' '
               = t('Upgrade plan')

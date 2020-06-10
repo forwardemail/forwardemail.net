@@ -28,11 +28,15 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));
   })
+  .get('/features', ctx => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/pricing'));
+  })
   .get(
-    '/features',
+    '/pricing',
     web.myAccount.retrieveDomains,
     web.myAccount.sortedDomains,
-    render('features')
+    render('pricing')
   )
   .get('/faq', web.myAccount.retrieveDomains, web.onboard, web.faq)
   .post(
