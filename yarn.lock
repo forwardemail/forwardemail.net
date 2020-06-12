@@ -1521,13 +1521,6 @@
     request-received "^0.0.3"
     response-time "^2.3.2"
 
-"@lwc/eslint-plugin-lwc@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@lwc/eslint-plugin-lwc/-/eslint-plugin-lwc-0.10.0.tgz#e282910b01b3b403d8fec03d34c4c853e29c4676"
-  integrity sha512-UsosUow0xWrzzcSK1fWDWHKBT81/pJz1/icfv7w8T+BCE9G4Kb4TwJexHLOIZvY7e/dv4Fjme4lTOWehuNE5Sg==
-  dependencies:
-    minimatch "^3.0.4"
-
 "@marionebl/sander@^0.6.0":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@marionebl/sander/-/sander-0.6.1.tgz#1958965874f24bc51be48875feb50d642fc41f7b"

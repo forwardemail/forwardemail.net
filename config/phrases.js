@@ -163,5 +163,8 @@ module.exports = {
   THURSDAY: 'Thursday',
   FRIDAY: 'Friday',
   SATURDAY: 'Saturday',
-  WEEK: 'Week'
+  WEEK: 'Week',
+  USERS: 'Users',
+  DOMAINS: 'Domains',
+  ALIASES: 'Aliases'
 };
