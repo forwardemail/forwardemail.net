@@ -230,11 +230,6 @@ module.exports = async job => {
       api.client.set('open-startup:heatmap', JSON.stringify(heatmap)),
       api.client.set('open-startup:piechart', JSON.stringify(pieChart))
     ]);
-
-    // delete all localized versions
-    await Promise.all(
-      locales.map(locale => api.client.del(`open-startup:${locale}`))
-    );
   } catch (err) {
     logger.error(err);
     throw err;
