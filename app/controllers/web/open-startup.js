@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const dayjs = require('dayjs');
 const numeral = require('numeral');
+const revHash = require('rev-hash');
+const safeStringify = require('fast-safe-stringify');
 
 const locales = require('../../../config/locales');
 
@@ -110,6 +112,9 @@ async function openStartup(ctx) {
       { selector: '#pie-chart', options: _.merge({}, options, pieChart || {}) }
     ]
   };
+
+  // store a hash so we know if data changes to refresh
+  body.hash = revHash(safeStringify(body));
 
   ctx.body = body;
 }
