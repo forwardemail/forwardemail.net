@@ -1,30 +1,26 @@
-const API = require('@ladjs/api');
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
+const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const advancedFormat = require('dayjs/plugin/advancedFormat');
 const dayjs = require('dayjs');
+const safeStringify = require('fast-safe-stringify');
+const sharedConfig = require('@ladjs/shared-config');
 const weekOfYear = require('dayjs/plugin/weekOfYear');
 
 const config = require('../config');
 const logger = require('../helpers/logger');
-
-// <https://day.js.org/docs/en/plugin/advanced-format>
-dayjs.extend(advancedFormat);
-// <https://day.js.org/docs/en/plugin/week-of-year>
-dayjs.extend(weekOfYear);
-
 const { Users, Domains, Aliases } = require('../app/models');
 
 const models = { Users, Domains, Aliases };
-const api = new API({ logger });
-const mongoose = new Mongoose(
-  _.merge({ logger }, api.config.mongoose, config.mongoose)
-);
+const bullSharedConfig = sharedConfig('BULL');
+const client = new Redis(bullSharedConfig.redis);
+
+const mongoose = new Mongoose({ ...bullSharedConfig.mongoose, logger });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
-  redisClients: [api.client],
+  redisClients: [client],
   logger
 });
 
@@ -36,11 +32,16 @@ const DAYS_OF_WEEK = [
   'Thursday',
   'Friday',
   'Saturday'
-].reverse();
+];
+
+// <https://day.js.org/docs/en/plugin/advanced-format>
+dayjs.extend(advancedFormat);
+// <https://day.js.org/docs/en/plugin/week-of-year>
+dayjs.extend(weekOfYear);
 
 module.exports = async job => {
-  logger.info('starting open startup', { job });
   try {
+    logger.info('starting open startup', { job });
     await Promise.all([mongoose.connect(), graceful.listen()]);
     const [
       totalUsers,
@@ -216,18 +217,12 @@ module.exports = async job => {
     ]);
 
     await Promise.all([
-      api.client.set('open-startup:total-users', JSON.stringify(totalUsers)),
-      api.client.set(
-        'open-startup:total-domains',
-        JSON.stringify(totalDomains)
-      ),
-      api.client.set(
-        'open-startup:total-aliases',
-        JSON.stringify(totalAliases)
-      ),
-      api.client.set('open-startup:linechart', JSON.stringify(lineChart)),
-      api.client.set('open-startup:heatmap', JSON.stringify(heatmap)),
-      api.client.set('open-startup:piechart', JSON.stringify(pieChart))
+      client.set('open-startup:total-users', safeStringify(totalUsers)),
+      client.set('open-startup:total-domains', safeStringify(totalDomains)),
+      client.set('open-startup:total-aliases', safeStringify(totalAliases)),
+      client.set('open-startup:linechart', safeStringify(lineChart)),
+      client.set('open-startup:heatmap', safeStringify(heatmap)),
+      client.set('open-startup:piechart', safeStringify(pieChart))
     ]);
   } catch (err) {
     logger.error(err);

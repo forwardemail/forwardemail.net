@@ -1,17 +1,14 @@
-const API = require('@ladjs/api');
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
-const _ = require('lodash');
+const sharedConfig = require('@ladjs/shared-config');
 
 const logger = require('../helpers/logger');
-const config = require('../config');
 
 const { Aliases, Users, Domains } = require('../app/models');
 
-const api = new API({ logger });
-const mongoose = new Mongoose(
-  _.merge({ logger }, api.config.mongoose, config.mongoose)
-);
+const bullSharedConfig = sharedConfig('BULL');
+
+const mongoose = new Mongoose({ ...bullSharedConfig.mongoose, logger });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -19,8 +16,8 @@ const graceful = new Graceful({
 });
 
 module.exports = async job => {
-  logger.info('migration', { job });
   try {
+    logger.info('migration', { job });
     await Promise.all([mongoose.connect(), graceful.listen()]);
 
     const domainsWithPortNumber = await Domains.find({

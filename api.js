@@ -1,25 +1,15 @@
 const API = require('@ladjs/api');
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
-const _ = require('lodash');
 const ip = require('ip');
 
-const config = require('./config');
 const logger = require('./helpers/logger');
 const apiConfig = require('./config/api');
 
 const api = new API(apiConfig);
 
 if (!module.parent) {
-  const mongoose = new Mongoose(
-    _.merge(
-      {
-        logger
-      },
-      api.config.mongoose,
-      config.mongoose
-    )
-  );
+  const mongoose = new Mongoose({ ...api.config.mongoose, logger });
 
   const graceful = new Graceful({
     mongooses: [mongoose],
