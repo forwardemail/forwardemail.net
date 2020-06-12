@@ -113,7 +113,7 @@ const queues = [
       attempts: 1,
       defaultJobOptions: {
         repeat: {
-          every: ms('45s')
+          every: ms('30s')
         }
       }
     },
