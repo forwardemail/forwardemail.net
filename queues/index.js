@@ -106,6 +106,23 @@ const queues = [
         concurrency: 1
       }
     ]
+  },
+  {
+    name: 'open-startup',
+    options: {
+      attempts: 1,
+      defaultJobOptions: {
+        repeat: {
+          every: ms('45s')
+        }
+      }
+    },
+    processors: [
+      {
+        processor: path.join(__dirname, 'open-startup.js'),
+        concurrency: 1
+      }
+    ]
   }
 ];
 

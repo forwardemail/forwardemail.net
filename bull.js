@@ -57,6 +57,16 @@ if (!module.parent) {
         () => translatePhrases.add(null, { repeat: false })
       ]);
 
+      const openStartup = bull.queues.get('open-startup');
+      await pSeries([
+        // clear any existing jobs
+        () => openStartup.empty(),
+        // add the recurring job
+        () => openStartup.add(),
+        // add an initial job when the process starts
+        () => openStartup.add(null, { repeat: false })
+      ]);
+
       // <https://github.com/OptimalBits/bull/issues/870>
       const failedEmailJobs = await bull.queues.get('email').getFailed();
       logger.info('Failed email jobs', { failedEmailJobs });
