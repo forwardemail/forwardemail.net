@@ -1,0 +1,62 @@
+const $ = require('jquery');
+const Apex = require('apexcharts');
+const _ = require('lodash');
+const ms = require('ms');
+const superagent = require('superagent');
+
+const logger = require('./logger');
+
+const charts = {};
+
+async function getData() {
+  const res = await superagent
+    .get(window.location.pathname)
+    .set('Accept', 'json')
+    .timeout(ms('5s'))
+    .retry(3)
+    .send();
+  return res;
+}
+
+async function loadCharts() {
+  try {
+    const { body } = await getData();
+
+    for (const metric of body.metrics) {
+      try {
+        const $el = $(metric.selector);
+        $el.text(metric.value);
+      } catch (err) {
+        logger.error(err);
+      }
+    }
+
+    for (const chart of body.charts) {
+      try {
+        if (charts[chart.selector]) {
+          charts[chart.selector].updateOptions(_.omit(chart.options, 'series'));
+          charts[chart.selector].updateSeries(chart.options.series);
+          continue;
+        }
+
+        const $el = $(chart.selector);
+        const apex = new Apex($el.get(0), chart.options);
+        $el.empty();
+        apex.render();
+        charts[chart.selector] = apex;
+      } catch (err) {
+        logger.error(err);
+      }
+    }
+  } catch (err) {
+    logger.error(err);
+  }
+}
+
+(async () => {
+  await loadCharts();
+})();
+
+setInterval(async () => {
+  await loadCharts();
+}, ms('1m'));

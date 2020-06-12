@@ -5,14 +5,16 @@ const humanize = require('humanize-string');
 const titleize = require('titleize');
 
 const config = require('../../../config');
+
 const admin = require('./admin');
+const api = require('./api');
 const auth = require('./auth');
+const faq = require('./faq');
 const help = require('./help');
 const myAccount = require('./my-account');
-const faq = require('./faq');
 const onboard = require('./onboard');
+const openStartup = require('./open-startup');
 const otp = require('./otp');
-const api = require('./api');
 const report = require('./report');
 
 function breadcrumbs(ctx, next) {
@@ -39,13 +41,14 @@ function breadcrumbs(ctx, next) {
 
 module.exports = {
   admin,
+  api,
   auth,
   breadcrumbs,
+  faq,
   help,
   myAccount,
-  faq,
   onboard,
+  openStartup,
   otp,
-  api,
   report
 };

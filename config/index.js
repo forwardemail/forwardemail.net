@@ -263,7 +263,7 @@ config.email.juiceResources.webResources = {
 config.email.transport.use(
   'compile',
   base64ToS3({
-    aws: _.merge(config.aws, {
+    aws: _.merge({}, config.aws, {
       params: {
         Bucket: env.AWS_S3_BUCKET
       }

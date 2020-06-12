@@ -1245,19 +1245,20 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@ladjs/api@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-1.1.8.tgz#de851a5691c646b966265d3e0609694c0b0f649a"
-  integrity sha512-nkpRys2USbS40bRghQjcNmvMjVvReR9rcTeprweflvExQ9p9VQJk0AhcIHvmkC/MZkKNgPRpHZZVEKFJ49YTUA==
+"@ladjs/api@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@ladjs/api/-/api-2.0.2.tgz#b2bd6502d3e9c637d563ab8ec3488ca099bdebbf"
+  integrity sha512-fbpvTp6rEf6WBCJrjBlQBVoOBHfO5bRXyxukLjpnoF+n9sQOl9gpmVVCv1VJLyWpL6UzGulOOJbTjdfsDQvi4g==
   dependencies:
     "@koa/router" "^9.0.1"
     "@ladjs/i18n" "^3.0.12"
     "@ladjs/redis" "^1.0.4"
-    "@ladjs/shared-config" "^3.0.7"
+    "@ladjs/shared-config" "^3.0.8"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
     cabin "^7.0.0"
     express-request-id "^1.4.1"
+    kcors "^2.2.2"
     koa "^2.12.0"
     koa-404-handler "^0.0.2"
     koa-basic-auth "^4.0.0"
@@ -1447,10 +1448,10 @@
     is-string-and-not-blank "^0.0.2"
     ms "^2.1.2"
 
-"@ladjs/shared-config@^3.0.2", "@ladjs/shared-config@^3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.7.tgz#f9ab641b8e7af4b20115a41f6cea7ce3b94b3880"
-  integrity sha512-GTIhVjbLFoV1mY0EO3/ngIp4PF80YNIKl3XZKuFma0SNgJLNiNipxHustXCOeta349XN5qCHXEW/rkcOhSZfUg==
+"@ladjs/shared-config@^3.0.2", "@ladjs/shared-config@^3.0.8":
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-3.0.8.tgz#b367748364727eb0e40a42e2673e880746a93634"
+  integrity sha512-W5XIf7GmALfxTJ5W4IPbVxIZr4xuSP6QAWL81Ac07MyKYx0HHE75pZOtFMH/hvKRr3qehT4NYqK037vyx/9H4w==
   dependencies:
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
@@ -1470,10 +1471,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-4.0.4.tgz#029ff08da9e8517e01a35bb19b3e99de55e45739"
-  integrity sha512-3eX2XrElzgaxnhAxYXwTY24TvgGQCvxH/OLVgvcCnaw7zvXD97kwn+M8O/RiKxupmJ/c9+H9vf8q11/w1yYysg==
+"@ladjs/web@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-5.0.2.tgz#86d323398ba7ee4f881c59febf1a18f996793d5e"
+  integrity sha512-CqBn28nFn7yglmPtfPk00ZIigubdzBLFxCPZudvjDdVoq4xj3YzflBufBGRpK64pD0GOT8KHaRPjtQnGt8lRKw==
   dependencies:
     "@hapi/boom" "^9.1.0"
     "@koa/router" "^9.0.1"
@@ -1481,7 +1482,7 @@
     "@ladjs/koa-better-static" "^2.0.0"
     "@ladjs/koa-cache-responses" "^0.0.1"
     "@ladjs/redis" "^1.0.4"
-    "@ladjs/shared-config" "^3.0.7"
+    "@ladjs/shared-config" "^3.0.8"
     "@ladjs/state-helper" "^0.0.2"
     "@ladjs/store-ip-address" "^0.0.7"
     boolean "3.0.1"
@@ -2014,11 +2015,6 @@ accepts@^1.3.5:
     mime-types "~2.1.24"
     negotiator "0.6.2"
 
-accounting@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/accounting/-/accounting-0.4.1.tgz#87dd4103eff7f4460f1e186f5c677ed6cf566883"
-  integrity sha1-h91BA+/39EYPHhhvXGd+1s9WaIM=
-
 acorn-globals@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/acorn-globals/-/acorn-globals-3.1.0.tgz#fd8270f71fbb4996b004fa880ee5d46573a731bf"
@@ -2261,6 +2257,18 @@ anymatch@~3.1.1:
   dependencies:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
+
+apexcharts@^3.19.2:
+  version "3.19.2"
+  resolved "https://registry.yarnpkg.com/apexcharts/-/apexcharts-3.19.2.tgz#d46113bf253e79f15e67d00721e5bb12af73914e"
+  integrity sha512-hMFLRE2Lyx4WrN9pYfQLvBDcn+HOodZrqRwc+kucxM+hcUmI2NHY4z+GI14+VcSFmD4aKiMbS3z3Q2jiBxUrcg==
+  dependencies:
+    svg.draggable.js "^2.2.2"
+    svg.easing.js "^2.0.0"
+    svg.filter.js "^2.0.2"
+    svg.pathmorphing.js "^0.1.3"
+    svg.resize.js "^1.4.3"
+    svg.select.js "^3.0.1"
 
 append-buffer@^1.0.2:
   version "1.0.2"
@@ -2699,10 +2707,10 @@ ava@^3.8.2:
     write-file-atomic "^3.0.3"
     yargs "^15.3.1"
 
-aws-sdk@^2.588.0, aws-sdk@^2.693.0:
-  version "2.693.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.693.0.tgz#46363d32fb2e23c6eeda049998ce8205a4ebf463"
-  integrity sha512-/0zy5IlE8wHrTXCxPYMSJGaqTKN1ulBBOSuWYeGxHU8pnTT6ZHpDdHlS83DHrVbsXnO/zq9prEf1nXRWlwgARw==
+aws-sdk@^2.588.0, aws-sdk@^2.694.0:
+  version "2.694.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.694.0.tgz#2112fe1be74a8d7bf52db01a05086ca95fb5effa"
+  integrity sha512-wGPQCf8pWO0UzPsWUfzAFA6KY+VMB8+qfj17QIccmLHS6S59vXxRh3J7V4UiMpl3ixd9FoXw5heAG9d6bRzFZg==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -5116,7 +5124,7 @@ dateformat@^2.0.0:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-2.2.0.tgz#4065e2013cf9fb916ddfd82efb506ad4c6769062"
   integrity sha1-QGXiATz5+5Ft39gu+1Bq1MZ2kGI=
 
-dayjs@^1.8.16:
+dayjs@^1.8.16, dayjs@^1.8.28:
   version "1.8.28"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.28.tgz#37aa6201df483d089645cb6c8f6cef6f0c4dbc07"
   integrity sha512-ccnYgKC0/hPSGXxj7Ju6AV/BP4HUkXC2u15mikXT5mX9YorEaoi1bEKOmAqdkJHN4EEkmAf97SpH66Try5Mbeg==
@@ -5804,9 +5812,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.413:
-  version "1.3.466"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.466.tgz#89f716db3afc4bb482ea2aaaa16c4808f89f762a"
-  integrity sha512-eieqkoM2hCkZZRhETKyCouMziDV3l4XEKHRLuzcHG+HV+P7PeODU/z9HAmBgMQkzvHg2DoyQhfIDmmeguLZT/Q==
+  version "1.3.467"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.467.tgz#84eeb332134d49f0e49b88588824e56b20af9e27"
+  integrity sha512-U+QgsL8TZDU/n+rDnYDa3hY5uy3C4iry9mrJS0PNBBGwnocuQ+aHSfgY44mdlaK9744X5YqrrGUvD9PxCLY1HA==
 
 elliptic@^6.0.0, elliptic@^6.5.2:
   version "6.5.2"
@@ -8511,9 +8519,9 @@ helmet-csp@2.10.0:
     dasherize "2.0.0"
 
 helmet@^3.21.1:
-  version "3.22.0"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.22.0.tgz#3a6f11d931799145f0aff15dbc563cff9e13131f"
-  integrity sha512-Xrqicn2nm1ZIUxP3YGuTBmbDL04neKsIT583Sjh0FkiwKDXYCMUqGqC88w3NUvVXtA75JyR2Jn6jw6ZEMOD+ZA==
+  version "3.22.1"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.22.1.tgz#6e1023f4f60b25ee729f535813407d4d37a623e2"
+  integrity sha512-6/mBacEbbskpmZiNg6rqfC8obo4n8+w7cofaJkQjqQevq+Hlz9ocIUupFLNLnCCtVkThDS8ov+StHMQ8mM/Jjw==
   dependencies:
     depd "2.0.0"
     dns-prefetch-control "0.2.0"
@@ -11677,7 +11685,7 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-"loose-envify@github:tomashanacek/loose-envify":
+loose-envify@tomashanacek/loose-envify:
   version "1.0.0"
   resolved "https://codeload.github.com/tomashanacek/loose-envify/tar.gz/274d08b592bab76b3a7ab099a669ccd1b4a7a34f"
   dependencies:
@@ -13086,6 +13094,11 @@ number-to-words@^1.2.3:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/number-to-words/-/number-to-words-1.2.4.tgz#e0f124de9628f8d86c4eeb89bac6c07699264501"
   integrity sha512-/fYevVkXRcyBiZDg6yzZbm0RuaD6i0qRfn8yr+6D0KgBMOndFPxuW10qCHpzs50nN8qKuv78k8MuotZhcVX6Pw==
+
+numeral@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/numeral/-/numeral-2.0.6.tgz#4ad080936d443c2561aed9f2197efffe25f4e506"
+  integrity sha1-StCAk21EPCVhrtnyGX7//iX05QY=
 
 nwsapi@^2.0.7, nwsapi@^2.2.0:
   version "2.2.0"
@@ -18503,6 +18516,61 @@ svg-tags@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/svg-tags/-/svg-tags-1.0.0.tgz#58f71cee3bd519b59d4b2a843b6c7de64ac04764"
   integrity sha1-WPcc7jvVGbWdSyqEO2x95krAR2Q=
+
+svg.draggable.js@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/svg.draggable.js/-/svg.draggable.js-2.2.2.tgz#c514a2f1405efb6f0263e7958f5b68fce50603ba"
+  integrity sha512-JzNHBc2fLQMzYCZ90KZHN2ohXL0BQJGQimK1kGk6AvSeibuKcIdDX9Kr0dT9+UJ5O8nYA0RB839Lhvk4CY4MZw==
+  dependencies:
+    svg.js "^2.0.1"
+
+svg.easing.js@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/svg.easing.js/-/svg.easing.js-2.0.0.tgz#8aa9946b0a8e27857a5c40a10eba4091e5691f12"
+  integrity sha1-iqmUawqOJ4V6XEChDrpAkeVpHxI=
+  dependencies:
+    svg.js ">=2.3.x"
+
+svg.filter.js@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/svg.filter.js/-/svg.filter.js-2.0.2.tgz#91008e151389dd9230779fcbe6e2c9a362d1c203"
+  integrity sha1-kQCOFROJ3ZIwd5/L5uLJo2LRwgM=
+  dependencies:
+    svg.js "^2.2.5"
+
+svg.js@>=2.3.x, svg.js@^2.0.1, svg.js@^2.2.5, svg.js@^2.4.0, svg.js@^2.6.5:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/svg.js/-/svg.js-2.7.1.tgz#eb977ed4737001eab859949b4a398ee1bb79948d"
+  integrity sha512-ycbxpizEQktk3FYvn/8BH+6/EuWXg7ZpQREJvgacqn46gIddG24tNNe4Son6omdXCnSOaApnpZw6MPCBA1dODA==
+
+svg.pathmorphing.js@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/svg.pathmorphing.js/-/svg.pathmorphing.js-0.1.3.tgz#c25718a1cc7c36e852ecabc380e758ac09bb2b65"
+  integrity sha512-49HWI9X4XQR/JG1qXkSDV8xViuTLIWm/B/7YuQELV5KMOPtXjiwH4XPJvr/ghEDibmLQ9Oc22dpWpG0vUDDNww==
+  dependencies:
+    svg.js "^2.4.0"
+
+svg.resize.js@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/svg.resize.js/-/svg.resize.js-1.4.3.tgz#885abd248e0cd205b36b973c4b578b9a36f23332"
+  integrity sha512-9k5sXJuPKp+mVzXNvxz7U0uC9oVMQrrf7cFsETznzUDDm0x8+77dtZkWdMfRlmbkEEYvUn9btKuZ3n41oNA+uw==
+  dependencies:
+    svg.js "^2.6.5"
+    svg.select.js "^2.1.2"
+
+svg.select.js@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/svg.select.js/-/svg.select.js-2.1.2.tgz#e41ce13b1acff43a7441f9f8be87a2319c87be73"
+  integrity sha512-tH6ABEyJsAOVAhwcCjF8mw4crjXSI1aa7j2VQR8ZuJ37H2MBUbyeqYr5nEO7sSN3cy9AR9DUwNg0t/962HlDbQ==
+  dependencies:
+    svg.js "^2.2.5"
+
+svg.select.js@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/svg.select.js/-/svg.select.js-3.0.1.tgz#a4198e359f3825739226415f82176a90ea5cc917"
+  integrity sha512-h5IS/hKkuVCbKSieR9uQCj9w+zLHoPh+ce19bBYyqF53g6mnPB8sAtIbe1s9dh2S2fCmYX2xel1Ln3PJBbK4kw==
+  dependencies:
+    svg.js "^2.6.5"
 
 svg2png@^4.0.0:
   version "4.1.1"

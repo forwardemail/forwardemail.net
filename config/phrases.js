@@ -153,5 +153,15 @@ module.exports = {
   IMPORT_CATCHALL_NONE: 'No catch-all recipients were available to import.',
   MULTIPLE_VERIFICATION_ERRORS:
     'Multiple errors occurred during record verification.',
-  USER_ALREADY_MEMBER: 'User is already an accepted member of this domain'
+  USER_ALREADY_MEMBER: 'User is already an accepted member of this domain',
+  METRICS_NOT_AVAILABLE:
+    'Our metrics are not available, please check back later.',
+  SUNDAY: 'Sunday',
+  MONDAY: 'Monday',
+  TUESDAY: 'Tuesday',
+  WEDNESDAY: 'Wednesday',
+  THURSDAY: 'Thursday',
+  FRIDAY: 'Friday',
+  SATURDAY: 'Saturday',
+  WEEK: 'Week'
 };

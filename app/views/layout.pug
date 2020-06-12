@@ -71,31 +71,11 @@ html(lang=locale).h-100
 
     block prefetch
       each asset in ['img/github-logo.svg', 'img/google-logo.svg']
-        link(rel='prefetch', href=manifest(asset), as='image', crossorigin='anonymous')
+        link(rel='preload', href=manifest(asset), as='image', crossorigin='anonymous')
       each asset in [ 'fonts/fa-brands-400.ttf', 'fonts/fa-solid-900.ttf' ]
         //- integrity attribute not currently supported
         //- <https://crbug.com/981419>
         link(rel='prefetch', href=manifest(asset), as='font', crossorigin='anonymous')
-
-  body(role='document').d-flex.flex-column.min-h-100
-
-    - const isHelp = ctx.pathWithoutLocale === '/help'
-    - const isRegisterOrLogin = ['/register', config.loginRoute].includes(ctx.pathWithoutLocale)
-
-    //- spinner
-    block spinner
-      include spinner/spinner
-    //- navigation
-    block navigation
-      include _nav
-
-    //- body
-    main(role='main').flex-grow-1.d-flex.flex-column.flex-grow-1
-      block body
-
-    //- footer
-    block footer
-      include _footer
 
     //- scripts
     block scripts
@@ -150,4 +130,24 @@ html(lang=locale).h-100
 
       //- build
       if !isBot(ctx.get('User-Agent'))
-        script(async, src=manifest('js/build.js'), integrity=manifest('js/build.js', 'integrity'), crossorigin='anonymous')
+        script(defer, src=manifest('js/build.js'), integrity=manifest('js/build.js', 'integrity'), crossorigin='anonymous')
+
+  body(role='document').d-flex.flex-column.min-h-100
+
+    - const isHelp = ctx.pathWithoutLocale === '/help'
+    - const isRegisterOrLogin = ['/register', config.loginRoute].includes(ctx.pathWithoutLocale)
+
+    //- spinner
+    block spinner
+      include spinner/spinner
+    //- navigation
+    block navigation
+      include _nav
+
+    //- body
+    main(role='main').flex-grow-1.d-flex.flex-column.flex-grow-1
+      block body
+
+    //- footer
+    block footer
+      include _footer
