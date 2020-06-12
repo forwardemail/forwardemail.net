@@ -117,6 +117,7 @@
     "qs": "^6.9.4",
     "re2": "^1.15.0",
     "reserved-email-addresses-list": "^0.0.8",
+    "rev-hash": "^3.0.0",
     "sanitize-html": "^1.26.0",
     "signale": "^1.4.0",
     "speakingurl": "^14.0.1",

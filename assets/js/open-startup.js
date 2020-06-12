@@ -7,6 +7,7 @@ const superagent = require('superagent');
 const logger = require('./logger');
 
 const charts = {};
+let hash;
 
 async function getData() {
   const res = await superagent
@@ -21,6 +22,11 @@ async function getData() {
 async function loadCharts() {
   try {
     const { body } = await getData();
+
+    // return early if no data changed
+    if (hash === body.hash) return;
+
+    hash = body.hash;
 
     for (const metric of body.metrics) {
       try {
