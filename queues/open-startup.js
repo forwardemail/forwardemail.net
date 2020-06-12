@@ -8,7 +8,6 @@ const weekOfYear = require('dayjs/plugin/weekOfYear');
 
 const config = require('../config');
 const logger = require('../helpers/logger');
-const locales = require('../config/locales');
 
 // <https://day.js.org/docs/en/plugin/advanced-format>
 dayjs.extend(advancedFormat);
