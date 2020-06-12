@@ -12,11 +12,11 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
             .form-row
               .col-12.col-md-6.offset-md-3
                 .form-group.floating-label
-                  input#input-domain.form-control.form-control-lg(type='text', name='domain', value=domain, required, placeholder='example.com')
-                  label(for='input-domain')= t('Enter your domain')
+                  input#input-onboard-domain.form-control.form-control-lg(type='text', name='domain', value=domain, required, placeholder='example.com')
+                  label(for='input-onboard-domain')= t('Enter your domain')
                 .form-group.floating-label
-                  input#input-email.form-control.form-control-lg(type='email', autocomplete="email", name="email", value=email, placeholder='name@gmail.com', required)
-                  label(for='input-email')= t('Enter your email')
+                  input#input-onboard-email.form-control.form-control-lg(type='email', autocomplete="email", name="email", value=email, placeholder='name@gmail.com', required)
+                  label(for='input-onboard-email')= t('Enter your email')
                 if user
                   .form-check.form-group
                     input#input-create-domain(type='checkbox', name='create_domain', checked, value='true').form-check-input

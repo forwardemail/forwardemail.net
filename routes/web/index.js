@@ -88,6 +88,7 @@ localeRouter
   .get('/donate', render('donate'))
   .get('/terms', render('terms'))
   .get('/privacy', render('privacy'))
+  .get('/open-startup', web.openStartup)
   .get('/404', render('404'))
   .get('/500', render('500'))
   .post('/help', web.help)

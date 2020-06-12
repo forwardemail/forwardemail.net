@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const accounting = require('accounting');
 const ajc = require('array-join-conjunction');
 const dashify = require('dashify');
 const fa = require('font-awesome-assets');
@@ -8,6 +7,7 @@ const humanize = require('humanize-string');
 const isBot = require('isbot');
 const isSANB = require('is-string-and-not-blank');
 const moment = require('moment');
+const numeral = require('numeral');
 const pluralize = require('pluralize');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const striptags = require('striptags');
@@ -22,22 +22,22 @@ const json = (string, replacer = null, space = 2) =>
 const emoji = string => (toEmoji[string] ? toEmoji[string] : '');
 
 module.exports = {
-  hljs,
   _,
-  isSANB,
-  moment,
-  accounting,
-  fa,
-  pluralize,
-  json,
-  emoji,
-  boolean,
-  titleize,
-  dashify,
-  humanize,
-  validator,
-  reservedEmailAddressesList,
   ajc,
+  boolean,
+  dashify,
+  emoji,
+  fa,
+  hljs,
+  humanize,
   isBot,
-  striptags
+  isSANB,
+  json,
+  moment,
+  numeral,
+  pluralize,
+  reservedEmailAddressesList,
+  striptags,
+  titleize,
+  validator
 };
