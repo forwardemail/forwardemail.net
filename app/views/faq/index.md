@@ -6,8 +6,9 @@
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-* [Why are my test emails sent to myself in Gmail showing as "suspicuious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicuious)
+* [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
 * [Can I remove the "via forwardemail.net" in Gmail](#can-i-remove-the-via-forwardemailnet-in-gmail)
+* [Why are some emails showing up as from no-reply@forwardemail.net?](#why-are-some-emails-showing-up-as-from-no-reply-forwardemail-net)
 * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
 * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
 * [Do you support webhooks](#do-you-support-webhooks)
@@ -508,7 +509,7 @@
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicuious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
 </div>
 
 </li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
@@ -665,7 +666,7 @@ If you're using Gmail, you should check your spam folder for test messages (some
 Still having issues?  Please file a <a href="/help">Help request</a> so we can help investigate the issue and find a quick resolution.
 
 
-## Why are my test emails sent to myself in Gmail showing as "suspicuious"
+## Why are my test emails sent to myself in Gmail showing as "suspicious"
 
 If you see this error message in Gmail when you send a test to yourself (see picture below), then **please do not worry** – as this is a built-in safety feature of Gmail that only you will see when you send a test to yourself.  You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
 
@@ -676,6 +677,9 @@ If you see this error message in Gmail when you send a test to yourself (see pic
 
 Not yet!  We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).
 
+## Why are some emails showing up as from no-reply@forwardemail.net?
+
+This only happens to some emails, and it is due to DMARC compliance. If a sender has configured DMARC on their domain such that usual forwarding would fail, then we use this "friendly from" rewrite approach to ensure the email lands in your inbox instead of being rejected.
 
 ## Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)
 
