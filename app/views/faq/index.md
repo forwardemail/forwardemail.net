@@ -7,8 +7,8 @@
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
 * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-* [Can I remove the "via forwardemail.net" in Gmail](#can-i-remove-the-via-forwardemailnet-in-gmail)
-* [Why are some emails showing up as from no-reply@forwardemail.net?](#why-are-some-emails-showing-up-as-from-no-reply-forwardemail-net)
+* [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Why are some emails showing up as from no-reply at forwardemail dot net](#why-are-some-emails-showing-up-as-from-no-reply-at-forwardemail-dot-net)
 * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
 * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
 * [Do you support webhooks](#do-you-support-webhooks)
@@ -24,7 +24,7 @@
 * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
 * [Do you store logs of emails](#do-you-store-logs-of-emails)
 * [Do you read my emails](#do-you-read-my-emails)
-* [Does it support the "+" symbol (e.g. for Gmail aliases)](#does-it-support-the--symbol-eg-for-gmail-aliases)
+* [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
 * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
 * [Is this well-tested](#is-this-well-tested)
 * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
@@ -673,13 +673,15 @@ If you see this error message in Gmail when you send a test to yourself (see pic
 <img src="/img/faq/gmail-suspicious.png" width="546" height="148" alt="Gmail Suspicious Message Warning" />
 
 
-## Can I remove the "via forwardemail.net" in Gmail
+## Can I remove the via forwardemail dot net in Gmail
 
 Not yet!  We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).
 
-## Why are some emails showing up as from no-reply@forwardemail.net?
+
+## Why are some emails showing up as from no-reply at forwardemail dot net
 
 This only happens to some emails, and it is due to DMARC compliance. If a sender has configured DMARC on their domain such that usual forwarding would fail, then we use this "friendly from" rewrite approach to ensure the email lands in your inbox instead of being rejected.
+
 
 ## Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)
 
@@ -1195,7 +1197,7 @@ Many other email forwarding services unethically read your email.  This is not w
 The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail).
 
 
-## Does it support the "+" symbol (e.g. for Gmail aliases)
+## Does it support the plus + symbol for Gmail aliases
 
 Yes, absolutely.
 
@@ -1262,7 +1264,7 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
 
-##
+## 
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
