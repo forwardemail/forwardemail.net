@@ -34,7 +34,7 @@ const {
 // Resize navbar padding on load, window resize, and navbar collapse/show
 resizeNavbarPadding($);
 
-// import waypoints (see below example for how to use + `yarn add waypoints`)
+// import waypoints (see below example for how to use + `npm install waypoints`)
 // require('waypoints/lib/jquery.waypoints.js');
 
 // highlight.js
