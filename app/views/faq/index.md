@@ -29,8 +29,11 @@
 * [Is this well-tested](#is-this-well-tested)
 * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
 * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-* [Can I "send mail as" with this](#can-i-send-mail-as-with-this)
+* [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
+* [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
+* [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
 * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
+* [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
 * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 * [How fast is this service](#how-fast-is-this-service)
 
@@ -1238,9 +1241,25 @@ Per documentation and suggestions from Google at <https://support.google.com/a/a
 8. **Sender Rewriting Scheme:** we use the [Sender Rewriting Scheme][srs] ("SRS"), which is a scheme used to rewrite the envelope from address for email forwarding in order for DKIM/SPF/DMARC to pass with a forwarding mail server.
 
 
-## Can I "send mail as" with this
+## Can I "send mail as" in Gmail with this
 
 Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
+
+
+## Can I "send mail as" in Outlook with this
+
+Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+
+* <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
+* <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
+
+
+## Can I "send mail as" in Apple Mail and iCloud Mail with this
+
+Unfortunately Apple does not allow this, regardless of which service you use.  However you can use the Mail app along with your domain's email account.
+
+* <https://discussions.apple.com/thread/8316291>
+* <https://discussions.apple.com/thread/6876839>
 
 
 ## Can I forward unlimited emails with this
@@ -1248,6 +1267,26 @@ Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As
 Practically yes - the only current restriction is that senders **by unique email address** are limited to sending (300) emails per hour through the system.
 
 If this limit is exceeded we send a "451" response code which tells the senders mail server to retry later.
+
+
+## How do I add a profile picture to my email address
+
+If you're using Gmail, then follow these steps below:
+
+1. Go to <https://google.com> and sign out of all email accounts
+2. Click "Sign In" and on the drop-down click on "other account"
+3. Select "Use another account"
+4. Select "Create account"
+5. Select "Use my current email address instead"
+6. Enter your custom domain name email address
+7. Retrieve the verification email sent to your email address
+8. Enter the verification code from this email
+9. Complete profile information for your new Google account
+10. Agree to all Privacy and Terms of Use policies
+11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
+12. Upload a new photo or avatar for your account
+13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
+14. Send a test email and the profile photo should appear.
 
 
 ## How do you perform DNS lookups on domain names
