@@ -99,7 +99,7 @@ module.exports = {
   PASSPORT_TOO_MANY_ATTEMPTS_ERROR:
     'Account is currently locked due to too many failed login attempts.  Please try again later.',
   PASSPORT_NO_SALT_VALUE_STORED_ERROR:
-    'Authentication is not possible.  No salt value was stored for the account.',
+    'Please log in with Google or GitHub and set your password in order to be able to log in with your email address.',
   PASSPORT_INCORRECT_PASSWORD_ERROR: 'Email address or password is incorrect.',
   PASSPORT_INCORRECT_USERNAME_ERROR: 'Email address or password is incorrect.',
   PASSPORT_MISSING_USERNAME_ERROR: 'Please enter an email address.',
