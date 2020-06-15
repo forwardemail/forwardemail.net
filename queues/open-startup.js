@@ -116,10 +116,10 @@ module.exports = async job => {
       })(),
       (async () => {
         const start = dayjs()
-          .subtract(1, 'year')
           .endOf('week')
           .add(1, 'day')
           .startOf('day')
+          .subtract(52, 'week')
           .toDate();
         const end = dayjs()
           .endOf('week')
@@ -191,7 +191,7 @@ module.exports = async job => {
 
         return {
           // make Sunday start of the week
-          series: _.sortBy(series, s => DAYS_OF_WEEK.indexOf(s.name)),
+          series: _.sortBy(series, s => DAYS_OF_WEEK.indexOf(s.name)).reverse(),
           chart,
           colors
         };
