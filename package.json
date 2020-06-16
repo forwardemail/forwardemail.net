@@ -47,7 +47,7 @@
     "@ladjs/proxy": "^2.0.0",
     "@ladjs/redis": "^1.0.4",
     "@ladjs/shared-config": "^3.0.8",
-    "@ladjs/web": "^6.0.0",
+    "@ladjs/web": "^6.0.2",
     "@primer/css": "^14.4.0",
     "@sidoshi/random-string": "^1.0.0",
     "@tkrotoff/bootstrap-floating-label": "^0.7.0",
