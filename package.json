@@ -82,7 +82,6 @@
     "isbot": "^3.0.3",
     "jquery": "3.5.1",
     "jsdom": "^16.2.2",
-    "koa-cash": "^4.0.3",
     "koa-ctx-paginate": "^0.0.5",
     "koa-views-render": "^0.0.1",
     "lodash": "^4.17.15",
