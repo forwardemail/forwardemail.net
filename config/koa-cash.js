@@ -4,6 +4,7 @@ const logger = require('../helpers/logger');
 
 module.exports = client => ({
   maxAge: ms('1y') / 1000,
+  hash: ctx => `koa-cash:${ctx.request.url}`,
   async get(key) {
     let [buffer, data] = await Promise.all([
       client.getBuffer(`buffer:${key}`),
