@@ -65,7 +65,11 @@ module.exports = async job => {
         await Promise.all(
           Object.keys(models).map(async name => {
             const docs = await models[name]
-              .find({})
+              .find({
+                ...(name === 'Users'
+                  ? { [config.userFields.hasVerifiedEmail]: true }
+                  : {})
+              })
               .select('created_at')
               .sort('created_at')
               .lean()
