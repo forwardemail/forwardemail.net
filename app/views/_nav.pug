@@ -57,8 +57,14 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
   //- <https://github.com/twbs/bootstrap/issues/25030>
   #navbar-header.collapse.navbar-collapse
     ul.navbar-nav.ml-auto
+      if !isBot(ctx.get('User-Agent'))
+        li.nav-item.ml-md-1.mt-1.mt-md-0.d-md-none
+          a.btn.btn-lg.d-block.text-left.text-lg-center(href=l('/'), class=ctx.pathWithoutLocale === '/' ? 'btn-outline-light' : 'text-light')= t('Home')
       li.nav-item.ml-md-1.mt-1.mt-md-0
         a.btn.btn-lg.d-block.text-left.text-lg-center(href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l('/pricing'), class=ctx.pathWithoutLocale.startsWith('/pricing') ? 'btn-outline-light' : 'text-light')= t('Pricing')
+      if !isBot(ctx.get('User-Agent'))
+        li.nav-item.ml-md-1.mt-1.mt-md-0
+          a.btn.btn-lg.d-block.text-left.text-lg-center(href=l('/about'), class=ctx.pathWithoutLocale.startsWith('/about') ? 'btn-outline-light' : 'text-light')= t('About')
       li.nav-item.ml-md-1.mt-1.mt-md-0
         a.btn.btn-lg.d-block.text-left.text-lg-center(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'), class=ctx.pathWithoutLocale.startsWith('/faq') ? 'btn-outline-light' : 'text-light')= t('FAQ')
       li.nav-item.ml-md-1.mt-1.mt-md-0
@@ -103,5 +109,5 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
             i.fa.fa-angle-double-right
 if ctx.pathWithoutLocale === '/'
   h3.h6.py-3.px-3.mb-0.text-center.d-none.d-sm-block
-    .d-none.d-md-block!= t(`${emoji('wave')} We <u class="font-weight-bold">don't store logs nor emails</u>. We don't track you. Period. ${emoji('tada')}`)
-    .d-none.d-sm-block.d-md-none!= t(`${emoji('wave')} We <u class="font-weight-bold">don't store logs nor emails</u>. Period. ${emoji('tada')}`)
+    .d-none.d-md-block!= t(`${emoji('wave')} We <u class="font-weight-bold">do not keep logs nor store emails</u>. We don't track you. ${emoji('tada')}`)
+    .d-none.d-sm-block.d-md-none!= t(`${emoji('wave')} We <u class="font-weight-bold">do not keep logs nor store emails</u>. Period. ${emoji('tada')}`)
