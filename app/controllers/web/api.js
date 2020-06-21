@@ -56,9 +56,9 @@ async function api(ctx) {
     .replace(REGEX_BASE_URI, config.urls.api)
     .replace(
       REGEX_EMAIL,
-      encodeURIComponent(ctx.state.email || 'niftylettuce@gmail.com')
+      encodeURIComponent(ctx.state.email || 'user@gmail.com')
     )
-    .replace(REGEX_DOMAIN_NAME, ctx.state.domain_name || 'niftylettuce.com')
+    .replace(REGEX_DOMAIN_NAME, ctx.state.domain_name || 'example.com')
     .replace(REGEX_ALIAS_ID, ':alias_id')
     .replace(REGEX_MEMBER_ID, ':member_id');
 

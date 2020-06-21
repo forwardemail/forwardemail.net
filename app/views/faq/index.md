@@ -66,7 +66,7 @@
     Getting Started:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>niftylettuce@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
   </span>
 </div>
 
@@ -240,7 +240,7 @@
     Option A:
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "niftylettuce@gmail.com":
+    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
   </span>
 </div>
 
@@ -258,7 +258,7 @@
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=niftylettuce@gmail.com</code></td>
+      <td><code>forward-email=user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -281,7 +281,7 @@
     Option B:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. "hello@example.com" to "niftylettuce@gmail.com"; this will also forward "hello+test@example.com" to "niftylettuce+test@gmail.com" automatically):
+    If you just need to forward a single email address (e.g. "hello@example.com" to "user@gmail.com"; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
   </span>
 </div>
 
@@ -299,7 +299,7 @@
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:niftylettuce@gmail.com</code></td>
+      <td><code>forward-email=hello:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -330,7 +330,7 @@
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:niftylettuce@gmail.com,support:niftylettuce@gmail.com</code></td>
+      <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -361,31 +361,31 @@
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:niftylettuce@gmail.com,support:niftylettuce@gmail.com</code></td>
+      <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=help:niftylettuce@gmail.com,foo:niftylettuce@gmail.com</code></td>
+      <td><code>forward-email=help:user@gmail.com,foo:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=orders:niftylettuce@gmail.com,baz:niftylettuce@gmail.com</code></td>
+      <td><code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=info:niftylettuce@gmail.com,beep:niftylettuce@gmail.com</code></td>
+      <td><code>forward-email=info:user@gmail.com,beep:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=errors:niftylettuce@gmail.com,boop:niftylettuce@gmail.com</code></td>
+      <td><code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -629,7 +629,7 @@
 
 10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
 
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "niftylettuce" if my email is <span>[niftylettuce@gmail.com](mailto:niftylettuce@gmail.com)</span>)
+11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span>[user@gmail.com](mailto:user@gmail.com)</span>)
 
 12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
 
@@ -820,11 +820,11 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
     },
     {
       "key": "to",
-      "line": "To: webhook@spamapi.net"
+      "line": "To: webhook@example.com"
     },
     {
       "key": "from",
-      "line": "From: Test <test@niftylettuce.com>"
+      "line": "From: Test <test@user.com>"
     },
     {
       "key": "subject",
@@ -850,26 +850,26 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   "to": {
     "value": [
       {
-        "address": "webhook@spamapi.net",
+        "address": "webhook@example.com",
         "name": ""
       }
     ],
-    "html": "<span class=\"mp_address_group\"><a href=\"mailto:webhook@spamapi.net\" class=\"mp_address_email\">webhook@spamapi.net</a></span>",
-    "text": "webhook@spamapi.net"
+    "html": "<span class=\"mp_address_group\"><a href=\"mailto:webhook@example.com\" class=\"mp_address_email\">webhook@example.com</a></span>",
+    "text": "webhook@example.com"
   },
   "from": {
     "value": [
       {
-        "address": "test@niftylettuce.com",
+        "address": "test@example.com",
         "name": "Test"
       }
     ],
-    "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Test</span> &lt;<a href=\"mailto:test@niftylettuce.com\" class=\"mp_address_email\">test@niftylettuce.com</a>&gt;</span>",
-    "text": "Test <test@niftylettuce.com>"
+    "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Test</span> &lt;<a href=\"mailto:test@example.com\" class=\"mp_address_email\">test@example.com</a>&gt;</span>",
+    "text": "Test <test@examplecom>"
   },
   "messageId": "<123.abc@test>",
   "html": false,
-  "raw": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=forwardemail.net;\r\n q=dns/txt; s=default; bh=fdkeB/A0FkbVP2k4J4pNPoeWH6vqBm9+b0C3OY87Cw8=;\r\n h=from:subject:date:message-id:to:mime-version:content-type:content-transfer-encoding;\r\n b=KJZp0q0u/cQhcjwilKMainmlystwHgCZ7/ncK1uBmmdGoaXlQcMHsfenLyn/uribhMVrdfWw6\r\n YhQ5AIOAGoft/fwpGhl3zP1b5qrPwYu0kLMPr2MSwkLo0YVdbHB6xF+VGeg2vaduJk6CipXjMW7\r\n Mlohmvjw0m1tnN6dAYGOkwQ=\r\nMessage-ID: <123.abc@test>\r\nDate: Thu, 9 Nov 2000 10:44:00 -0800 (PST)\r\nTo: webhook@spamapi.net\r\nFrom: Test <test@niftylettuce.com>\r\nSubject: testing webhooks\r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\n\r\nTest\r\n"
+  "raw": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=forwardemail.net;\r\n q=dns/txt; s=default; bh=fdkeB/A0FkbVP2k4J4pNPoeWH6vqBm9+b0C3OY87Cw8=;\r\n h=from:subject:date:message-id:to:mime-version:content-type:content-transfer-encoding;\r\n b=KJZp0q0u/cQhcjwilKMainmlystwHgCZ7/ncK1uBmmdGoaXlQcMHsfenLyn/uribhMVrdfWw6\r\n YhQ5AIOAGoft/fwpGhl3zP1b5qrPwYu0kLMPr2MSwkLo0YVdbHB6xF+VGeg2vaduJk6CipXjMW7\r\n Mlohmvjw0m1tnN6dAYGOkwQ=\r\nMessage-ID: <123.abc@test>\r\nDate: Thu, 9 Nov 2000 10:44:00 -0800 (PST)\r\nTo: webhook@example.com\r\nFrom: Test <test@example.com>\r\nSubject: testing webhooks\r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\n\r\nTest\r\n"
 }
 ```
 
@@ -954,7 +954,7 @@ If you prefix an alias with "!" (exclamation mark) then it will still return suc
 
 Emails sent to disabled addresses will respond with a `250` (message queued) status code, but the emails will not actually be delivered to the recipient(s).
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `niftylettuce@gmail.com`:
+For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com`:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -970,7 +970,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=!alias:niftylettuce@gmail.com</code></td>
+      <td><code>forward-email=!alias:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -1010,7 +1010,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     Tip:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":niftylettuce@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!alias" as in the example below.
+    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!alias" as in the example below.
   </span>
 </div>
 
@@ -1038,7 +1038,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 
 Yes, absolutely.  Just specify multiple recipients in your TXT records.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `niftylettuce+a@gmail.com` and `niftylettuce+b@gmail.com`, then my TXT record would look like this:
+For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my TXT record would look like this:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -1054,7 +1054,7 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code style="cursor: initial;" data-original-title="" title="" aria-describedby="tooltip885348">forward-email=hello:niftylettuce+a@gmail.com,hello:niftylettuce+b@gmail.com</code></td>
+      <td><code style="cursor: initial;" data-original-title="" title="" aria-describedby="tooltip885348">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -1075,13 +1075,13 @@ Or, you could specify them in two separate lines, such as this:
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:niftylettuce+a@gmail.com</code></td>
+      <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:niftylettuce+b@gmail.com</code></td>
+      <td><code>forward-email=hello:user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -1093,7 +1093,7 @@ It's up to you!
 
 Yes, you can. Just specify multiple global catch-all recipients in your TXT records.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `niftylettuce+a@gmail.com` and `niftylettuce+b@gmail.com`, then my TXT record would look like this:
+For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my TXT record would look like this:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -1109,7 +1109,7 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=niftylettuce+a@gmail.com,niftylettuce+b@gmail.com</code></td>
+      <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -1130,13 +1130,13 @@ Or, you could specify them in two separate lines, such as this:
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=niftylettuce+a@gmail.com</code></td>
+      <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=niftylettuce+b@gmail.com</code></td>
+      <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -1146,7 +1146,7 @@ It's up to you!
 
 ## Is there a maximum limit on the number of email addresses I can forward to per alias
 
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:niftylettuce+1@gmail.com`, `hello:niftylettuce+2@gmail.com`, `hello:niftylettuce+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `niftylettuce+1@gmail.com`, `niftylettuce+2@gmail.com`, `niftylettuce+3@gmail.com`, … (from 1-10).
+Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1161,7 +1161,7 @@ Yes, the default limit is 10.  This does NOT mean that you can only have 10 alia
 
 ## Can I recursively forward emails
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:elon@example.com` and `elon:niftylettuce@gmail.com`, then emails to `hello@example.com` would get forwarded to `elon@example.com` and `niftylettuce@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails.
+Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:elon@example.com` and `elon:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `elon@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails.
 
 
 ## Can people unregister or register my email forwarding without my permission
@@ -1217,7 +1217,7 @@ Yes, it has tests written with [ava](https://github.com/avajs/ava/pull/2323) and
 
 ## Do you pass along SMTP response messages and codes
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `niftylettuce@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
 
 
 ## How do you prevent spammers and ensure good email forwarding reputation
@@ -1303,7 +1303,7 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
 
-## 
+##
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

@@ -5,13 +5,13 @@ footer.mt-auto
         .row
           if !user
             .col-6
-              a.btn.btn-outline-light.text-uppercase.font-weight-bold(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')
+              a.btn.btn-dark.text-uppercase.font-weight-bold(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')
                 = t('Sign up')
                 = ' '
                 i.fa.fa-angle-double-right
           div(class=user ? 'col-12' : 'col-6')
-            a.btn.btn-outline-light.text-uppercase.font-weight-bold(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Need help?')
-  .bg-dark.text-white-50
+            a.btn.btn-dark.text-uppercase.font-weight-bold(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Need help?')
+  .bg-dark.text-white
     .container.py-5.text-center.text-lg-left
       .d-flex.flex-column.flex-lg-row
         .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1
@@ -27,40 +27,40 @@ footer.mt-auto
           .mt-auto
             a(href='#')
               img(src=manifest('img/logo-square.svg'), width=50, height=50 alt='Go to top').d-inline-block.mx-lg-auto
-            small.d-block.text-muted.mt-3!= '&copy; <a class="text-white-50" href="https://niftylettuce.com" target="_blank" rel="noopener">Niftylettuce, LLC.</a>'
+            small.d-block.text-muted.mt-3!= '&copy; <a class="text-white" href="https://niftylettuce.com" target="_blank" rel="noopener">Niftylettuce, LLC.</a>'
         .flex-wrap.flex-fill
           h5.mb-2= t('Resources')
           ul.list-unstyled.mb-0
-            li: a.d-block.text-light(href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l('/pricing'))= t('Pricing')
-            li: a.d-block.text-light(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'))= t('FAQ')
-            li: a.d-block.text-light(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Help')
-            li: a.d-block.text-light(href=l('/free-disposable-addresses'))= t('Free Disposable Addresses')
-            li: a.d-block.text-light(href=l('/domain-registration'))= t('Domain Registration')
-            li: a.d-block.text-light(href=l('/reserved-email-addresses'))= t('Reserved Email Addresses')
-            li: a.d-block.text-light(href=l('/list-of-ports-blocked-by-isps'))= t("List of ports blocked by ISPs")
+            li: a.d-block.text-light.py-2.py-md-0(href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l('/pricing'))= t('Pricing')
+            li: a.d-block.text-light.py-2.py-md-0(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'))= t('FAQ')
+            li: a.d-block.text-light.py-2.py-md-0(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Help')
+            li: a.d-block.text-light.py-2.py-md-0(href=l('/free-disposable-addresses'))= t('Free Disposable Addresses')
+            li: a.d-block.text-light.py-2.py-md-0(href=l('/domain-registration'))= t('Domain Registration')
+            li: a.d-block.text-light.py-2.py-md-0(href=l('/reserved-email-addresses'))= t('Reserved Email Addresses')
+            li: a.d-block.text-light.py-2.py-md-0(href=l('/list-of-ports-blocked-by-isps'))= t("List of ports blocked by ISPs")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill
           h5.mb-2= t('Guides')
           ul.list-unstyled.mb-0.mb-lg-3
-            li: a.d-block.text-light(href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l('/guides/port-25-blocked-by-isp-workaround'))= t('Port 25 blocked by ISP workaround')
+            li: a.d-block.text-light.py-2.py-md-0(href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l('/guides/port-25-blocked-by-isp-workaround'))= t('Port 25 blocked by ISP workaround')
           hr.d-lg-none.w-100
           h5.mb-2= t('Developers')
           ul.list-unstyled.mb-0
-            li: a.d-block.text-light(href=l('/free-email-webhooks'))= t('Free Email Webhooks')
-            li: a.d-block.text-light(href=l('/api'))= t('API Documentation')
-            li: a.d-block.text-light(href='https://github.com/forwardemail/free-email-forwarding/releases', target='_blank', rel='noopener')= t('Releases')
-            li: a.d-block.text-light(data-toggle='tooltip', data-placement='left', title=t('Coming soon'), href='#coming-soon')= t('Status Page')
-            li: a.d-block.text-light(href='https://github.com/forwardemail', target='_blank', rel='noopener')= t('Source Code')
+            li: a.d-block.text-light.py-2.py-md-0(href=l('/free-email-webhooks'))= t('Free Email Webhooks')
+            li: a.d-block.text-light.py-2.py-md-0(href=l('/api'))= t('API Documentation')
+            li: a.d-block.text-light.py-2.py-md-0(href='https://github.com/forwardemail/free-email-forwarding/releases', target='_blank', rel='noopener')= t('Releases')
+            li: a.d-block.text-light.py-2.py-md-0(data-toggle='tooltip', data-placement='left', title=t('Coming soon'), href='#coming-soon')= t('Status Page')
+            li: a.d-block.text-light.py-2.py-md-0(href='https://github.com/forwardemail', target='_blank', rel='noopener')= t('Source Code')
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
             h5.mb-2= t('Company')
             ul.list-unstyled.mb-0
-              li: a.d-block.text-light(href=l('/about'))= t('About')
-              li: a.d-block.text-light(href=l('/open-startup'))= t('Open Startup')
-              li: a.d-block.text-light(href=l('/donate'))= t('Donate')
-              li: a.d-block.text-light(href=l('/privacy'))= t('Privacy')
-              li: a.d-block.text-light(href=l('/terms'))= t('Terms')
+              li: a.d-block.text-light.py-2.py-md-0(href=l('/about'))= t('About')
+              li: a.d-block.text-light.py-2.py-md-0(href=l('/open-startup'))= t('Open Startup')
+              li: a.d-block.text-light.py-2.py-md-0(href=l('/donate'))= t('Donate')
+              li: a.d-block.text-light.py-2.py-md-0(href=l('/privacy'))= t('Privacy')
+              li: a.d-block.text-light.py-2.py-md-0(href=l('/terms'))= t('Terms')
           .mt-lg-auto.mt-3
             ul.list-inline.mb-0
               li.list-inline-item

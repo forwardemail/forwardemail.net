@@ -8,18 +8,18 @@ block body
         .col-12.col-lg-10.offset-lg-1
           h1.display-4.font-weight-bold.mb-3!= t('Free Email Forwarding')
           //- h2.h3.font-weight-light.mb-3= t('Set up email forwarding for your custom domain in seconds.')
-          p.lead.font-weight-normal.mb-3.text-black-50
+          p.lead.font-weight-normal.mb-3
             != t('Create and forward an <u class="font-weight-bold">unlimited</u> amount of email addresses with your domain name.')
             span.d-none.d-lg-block
             span.d-lg-none= ' '
             = t('Plus get catch-all, wildcard, and disposable forwarding addresses!')
-          a.btn.btn-primary.btn-lg.text-uppercase.font-weight-bold.mb-2(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')
+          a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')
             = t('Sign up for free')
             = ' '
             i.fa.fa-angle-double-right
-          small.d-block.text-muted.text-uppercase.text-black-50.font-weight-bold
+          small.d-block.text-muted.text-uppercase.font-weight-bold
             u!= t('No credit card required')
-    a(href='#learn-more').text-decoration-none.text-black-50.pt-1.pb-4.pt-md-4.d-block.text-monospace.text-uppercase
+    a(href='#learn-more').text-decoration-none.pt-1.pb-4.pt-md-4.d-block.text-monospace.text-uppercase.text-dark
       i.fa.fa-angle-down
       = ' '
       = t('Learn more')
@@ -39,8 +39,8 @@ block body
       .d-flex.col-md-3.col-lg-6.pt-3
         img(src=manifest('img/logo-square.svg'), width=200, height=200, alt="").mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0
   .pt-5.pb-lg-5.text-center.bg-light
-    .h2.display-3.mb-1= emoji('clap')
-    h2.display-5.font-weight-light.text-black-50.mb-0.text-uppercase= t('Our Features')
+    .h2.display-3.mb-1= emoji('tada')
+    h2.display-5.font-weight-light.mb-0.text-uppercase= t('Our Features')
   .container-fluid.bg-light.pb-5.position-relative
     .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
       .col-12.col-lg-6.d-flex
@@ -99,7 +99,7 @@ block body
     .row
       .col-12.col-md-9.col-lg-6
         p.lead.text-white.mb-3.mb-md-5
-          != t('Unlike other services, we <u>don\'t</u> store logs, <u>never</u> read emails, and are <u>100%</u> open-source.  Made by <a href="https://github.com/niftylettuce" class="text-white" target="_blank" rel="noopener">@niftylettuce</a>, an open-source enthusiast and privacy advocate.')
+          != t('Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.  Made by <a href="https://github.com/niftylettuce" class="text-white" target="_blank" rel="noopener">@niftylettuce</a>, an open-source enthusiast and privacy advocate.')
         a.btn.btn-outline-light.btn-lg.mb-md-5(href='https://github.com/forwardemail', target='_blank', rel='noopener')
           = t('View source code')
           = ' '
@@ -108,18 +108,18 @@ block body
         img(src=manifest('img/github-logo-white.svg'), width=200, height=200, alt="").mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0
   .py-3.py-md-5.text-center.bg-light
     .h2.display-3.mb-1= emoji('zap')
-    h2.display-5.font-weight-light.text-black-50.mb-3.text-uppercase= t('Our Numbers')
+    h2.display-5.font-weight-light.mb-3.text-uppercase= t('Our Numbers')
     .container-fluid
       .row
         .col-12.col-md-4.py-3.py-md-5
           .h2.display-4= t('99.99%')
-          .text-monospace.text-uppercase.text-black-50= t('Service Uptime')
+          .text-monospace.text-uppercase= t('Service Uptime')
         .col-12.col-md-4.py-3.py-md-5
           .h2.display-4= t('3')
-          .text-monospace.text-uppercase.text-black-50= t('Global Servers')
+          .text-monospace.text-uppercase= t('Global Servers')
         .col-12.col-md-4.py-3.py-md-5
           .h2.display-4= t('20K+')
-          .text-monospace.text-uppercase.text-black-50= t('Active Users')
+          .text-monospace.text-uppercase= t('Active Users')
     .display-3.my-3
       = emoji('star')
       = ' '
@@ -130,5 +130,5 @@ block body
       = emoji('star')
       = ' '
       = emoji('star')
-    .text-monospace.text-uppercase.text-black-50.mb-1= t('Trusted by the community')
+    .text-monospace.text-uppercase.mb-1= t('Trusted by the community')
     h2.display-5.font-weight-light.text-uppercase= t('1,000+ Stars')

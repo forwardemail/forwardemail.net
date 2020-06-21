@@ -66,11 +66,11 @@ async function onboard(ctx, next) {
         const local = ctx.state.email.slice(0, index);
         const domain = ctx.state.email.slice(index + 1);
         html = html
-          .replace(/niftylettuce/g, local)
+          .replace(/admin/g, local)
           .replace(/@gmail.com/g, `@${domain}`);
       } else {
         html = html
-          .replace(/niftylettuce/g, parsed.local)
+          .replace(/admin/g, parsed.local)
           .replace(/@gmail.com/g, `@${parsed.domain}`);
       }
     }
