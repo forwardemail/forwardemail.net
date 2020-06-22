@@ -102,8 +102,6 @@ if (env.SLACK_API_TOKEN) {
       axe.error(err, { callback: false });
     }
   });
-
-  axe.error(new Error('oh snap'));
 }
 
 module.exports = {
