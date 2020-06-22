@@ -28,8 +28,8 @@ module.exports = function(config) {
     // in the title bar in the user's browser
     '/': [config.appName, config.pkg.description],
     '/about': [`About ${lad}`, `Learn more about ${config.appName}`],
-    '/pricing': [
-      `Pricing ${lad}`,
+    '/features': [
+      `Features ${lad}`,
       'Free email forwarding for domains with features including Custom Domain Email Forwarding, Disposable Addresses, Multiple Recipients, Wildcards, and more!'
     ],
     '/faq': [`FAQ ${lad}`, 'Read frequently asked questions about our service'],

@@ -432,8 +432,7 @@ async function createDomain(ctx, next) {
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
   } catch (err) {
-    ctx.logger.error(err);
-    ctx.throw(Boom.badRequest(err.message));
+    ctx.throw(Boom.badRequest(err));
   }
 }
 
