@@ -70,7 +70,7 @@ async function port(ctx) {
 
       ctx.body = { port };
     } catch (err) {
-      ctx.logger.error(err);
+      ctx.logger.warn(err);
       throw Boom.badRequest(err.message);
     }
   } catch (err) {
