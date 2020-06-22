@@ -50,6 +50,7 @@
     "@ladjs/web": "^6.0.7",
     "@primer/css": "^14.4.0",
     "@sidoshi/random-string": "^1.0.0",
+    "@slack/web-api": "^5.10.0",
     "@tkrotoff/bootstrap-floating-label": "^0.7.0",
     "apexcharts": "^3.19.2",
     "array-join-conjunction": "^1.0.0",
