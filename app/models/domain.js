@@ -308,7 +308,7 @@ async function getVerificationResults(domain) {
     if (hasAllExchanges) mx = true;
     else errors.push(MISSING_DNS_MX);
   } catch (err) {
-    logger.error(err);
+    logger.warn(err);
     const regex = new RegExp(testEmail, 'g');
     err.message = err.message.replace(regex, domain.name);
     if (err.code === 'ENOTFOUND')
