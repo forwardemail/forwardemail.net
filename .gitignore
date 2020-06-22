@@ -66,3 +66,4 @@ package-lock.json
 *-zh.md
 *-ZH.md
 locales
+yarn.lock
