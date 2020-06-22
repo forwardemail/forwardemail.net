@@ -61,7 +61,7 @@ async function maxForwardedAddresses(ctx) {
 
       ctx.body = { max_forwarded_addresses: maxForwardedAddresses };
     } catch (err) {
-      ctx.logger.error(err);
+      ctx.logger.warn(err);
       throw Boom.badRequest(err.message);
     }
   } catch (err) {
