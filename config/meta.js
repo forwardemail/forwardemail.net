@@ -113,5 +113,7 @@ module.exports = function(config) {
     `Two Factor Auth ${lad}`,
     'Authenticate yourself with optional OTP to log in'
   ];
+  // legacy support
+  meta['/pricing'] = meta['/features'];
   return meta;
 };
