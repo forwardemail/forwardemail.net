@@ -286,7 +286,7 @@ async function getVerificationResults(domain) {
       errors.push(new Error(MISSING_DNS_TXT));
     else if (errors.length === 0) txt = true;
   } catch (err) {
-    logger.error(err);
+    logger.warn(err);
     if (err.code === 'ENOTFOUND')
       errors.push(new Error(config.i18n.phrases.ENOTFOUND));
     else if (err.code === 'ENODATA') {
