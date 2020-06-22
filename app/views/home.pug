@@ -8,11 +8,20 @@ block body
         .col-12.col-lg-10.offset-lg-1
           h1.display-4.font-weight-bold.mb-3!= t('Free Email Forwarding')
           //- h2.h3.font-weight-light.mb-3= t('Set up email forwarding for your custom domain in seconds.')
-          p.lead.font-weight-normal.mb-3
-            != t('Create and forward an <u><strong>unlimited</strong></u> amount of email addresses with your domain name.')
-            br.d-none.d-lg-block
-            = ' '
-            = t('Plus get catch-all, wildcard, and disposable forwarding addresses!')
+          if isBot(ctx.get('User-Agent'))
+            p.lead.mb-3
+              = t('Create and forward an unlimited amount of email addresses with your domain name.')
+              = ' '
+              = t('Plus get catch-all, wildcard, and disposable email addresses!')
+          else
+            p.lead.mb-3.d-block.d-lg-none
+              = t('Create and forward an unlimited amount of email addresses with your domain name.')
+              = ' '
+              = t('Plus get catch-all, wildcard, and disposable email addresses!')
+            p.lead.mb-0.d-none.d-lg-block
+              = t('Create and forward an unlimited amount of email addresses with your domain name.')
+            p.lead.mb-3.d-none.d-lg-block
+              = t('Plus get catch-all, wildcard, and disposable email addresses!')
           a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')
             = t('Sign up for free')
             = ' '
