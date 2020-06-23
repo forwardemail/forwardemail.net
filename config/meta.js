@@ -33,8 +33,8 @@ module.exports = function(config) {
       'Free email forwarding for domains with features including Custom Domain Email Forwarding, Disposable Addresses, Multiple Recipients, Wildcards, and more!'
     ],
     '/faq': [`FAQ ${lad}`, 'Read frequently asked questions about our service'],
-    '/api': [
-      `API ${lad}`,
+    '/email-forwarding-api': [
+      `Email Forwarding API ${lad}`,
       'Programmatic API access to email forwarding aliases, domains, and more.'
     ],
     '/free-email-webhooks': [
@@ -115,5 +115,6 @@ module.exports = function(config) {
   ];
   // legacy support
   meta['/pricing'] = meta['/features'];
+  meta['/api'] = meta['/email-forwarding-api'];
   return meta;
 };

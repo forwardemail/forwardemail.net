@@ -60,7 +60,7 @@ block body
                   input(type="hidden", name="_csrf", value=ctx.csrf)
                   button(type='submit').btn.btn-danger= t('Reset API Token')
               li.list-inline-item
-                a(href=l('/api')).btn.btn-dark= t('Learn more')
+                a(href=l('/email-forwarding-api')).btn.btn-dark= t('Learn more')
         .card
           h4.card-header= t('Delete Account')
           - const adminDomains = domains.filter(domain => domain.group === 'admin')
