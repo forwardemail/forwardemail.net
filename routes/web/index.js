@@ -46,7 +46,11 @@ localeRouter
     web.auth.parseReturnOrRedirectTo,
     web.faq
   )
-  .get('/api', web.myAccount.retrieveDomains, web.api)
+  .get('/api', ctx => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/email-forwarding-api'));
+  })
+  .get('/email-forwarding-api', web.myAccount.retrieveDomains, web.api)
   .get('/help', render('help'))
   .get('/about', render('about'))
   .get(
