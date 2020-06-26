@@ -10,7 +10,19 @@ function faq(ctx) {
       : ctx.session.returnTo
       ? ctx.session.returnTo
       : ctx.state.l('/faq');
-  const qs = `domain=${ctx.request.body.domain.toLowerCase()}&email=${ctx.request.body.email.toLowerCase()}`;
+  let qs = '';
+  if (!isSANB(ctx.request.body.domain) && !isSANB(ctx.request.body.email)) {
+    qs = '';
+  } else {
+    qs = '?';
+    if (isSANB(ctx.request.body.domain))
+      qs += `domain=${ctx.request.body.domain.toLowerCase()}`;
+    if (isSANB(ctx.request.body.email)) {
+      if (qs.length > 1) qs += '&';
+      qs += `email=${ctx.request.body.email.toLowerCase()}`;
+    }
+  }
+
   if (ctx.session.returnTo) {
     redirectTo += `?${qs}`;
     delete ctx.session.returnTo;
@@ -19,9 +31,7 @@ function faq(ctx) {
       ? slug(ctx.query.hash)
       : 'how-do-i-get-started-and-set-up-email-forwarding';
     redirectTo = ctx.state.l(
-      `/faq?${qs}${
-        ctx.request.body.domain.startsWith('www.') ? '' : `#${hash}`
-      }`
+      `/faq${qs}${ctx.request.body.domain.startsWith('www.') ? '' : `#${hash}`}`
     );
   }
 
