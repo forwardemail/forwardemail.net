@@ -31,7 +31,12 @@ function faq(ctx) {
       ? slug(ctx.query.hash)
       : 'how-do-i-get-started-and-set-up-email-forwarding';
     redirectTo = ctx.state.l(
-      `/faq${qs}${ctx.request.body.domain.startsWith('www.') ? '' : `#${hash}`}`
+      `/faq${qs}${
+        isSANB(ctx.request.body.domain) &&
+        ctx.request.body.domain.startsWith('www.')
+          ? ''
+          : `#${hash}`
+      }`
     );
   }
 
