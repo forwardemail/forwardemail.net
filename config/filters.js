@@ -17,10 +17,12 @@ function fixTableOfContents(content) {
   if ($a.length === 0) return content;
   $a.attr('id', 'top');
   $a.attr('href', '#top');
+  const $a2 = $h2.find('a').first();
+  if ($a2.length === 0) return content;
+  $a2.attr('id', 'table-of-contents');
+  $a2.attr('href', '#table-of-contents');
   const $ul = $h2.next('ul');
   if ($ul.length === 0) return content;
-  $h2.attr('id', 'table-of-contents');
-  $h2.attr('href', '#table-of-contents');
   const $links = $ul.find('a');
   if ($links.length === 0) return content;
   const $h2s = $('h2');
