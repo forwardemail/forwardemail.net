@@ -406,14 +406,14 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
   // store errors
   const errors = [];
 
-  for (let i = 0; i < addresses.length; i++) {
+  for (const element of addresses) {
     // convert addresses to lowercase
-    addresses[i] = addresses[i].toLowerCase();
+    const lowerCaseAddress = element.toLowerCase();
     if (
-      addresses[i].includes(':') &&
-      !isURL(addresses[i], app.config.isURLOptions)
+      lowerCaseAddress.includes(':') &&
+      !isURL(element, app.config.isURLOptions)
     ) {
-      const addr = addresses[i].split(':');
+      const addr = lowerCaseAddress.split(':');
 
       // addr[0] = hello (username)
       // addr[1] = niftylettuce@gmail.com (forwarding email)
@@ -436,21 +436,21 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
       )
         errors.push(
           new Error(
-            `Domain has an invalid "${app.config.recordPrefix}" TXT record due to an invalid email address of "${addresses[i]}".`
+            `Domain has an invalid "${app.config.recordPrefix}" TXT record due to an invalid email address of "${element}".`
           )
         );
 
       forwardingAddresses.push({ name: addr[0], recipient: addr[1] });
-    } else if (isFQDN(addresses[i]) || isIP(addresses[i])) {
+    } else if (isFQDN(lowerCaseAddress) || isIP(lowerCaseAddress)) {
       // allow domain alias forwarding
       // (e.. the record is just "b.com" if it's not a valid email)
-      globalForwardingAddresses.push(addresses[i]);
-    } else if (isEmail(addresses[i])) {
-      const domain = app.parseDomain(addresses[i], false);
+      globalForwardingAddresses.push(lowerCaseAddress);
+    } else if (isEmail(lowerCaseAddress)) {
+      const domain = app.parseDomain(lowerCaseAddress, false);
       if (isFQDN(domain) || isIP(domain))
-        globalForwardingAddresses.push(addresses[i]);
-    } else if (isURL(addresses[i], app.config.isURLOptions)) {
-      globalForwardingAddresses.push(addresses[i]);
+        globalForwardingAddresses.push(lowerCaseAddress);
+    } else if (isURL(element, app.config.isURLOptions)) {
+      globalForwardingAddresses.push(element);
     }
   }
 

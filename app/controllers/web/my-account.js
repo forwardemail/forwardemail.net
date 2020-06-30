@@ -573,7 +573,7 @@ function validateAlias(ctx, next) {
             .split(',')
             .join(' ')
             .split(' '),
-          recipient => recipient.toLowerCase().trim()
+          recipient => recipient.trim()
         )
       )
     );
