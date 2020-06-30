@@ -16,4 +16,7 @@ const cabin = new Cabin({
 // set the user if we're logged in
 if (_.isObject(window.USER)) cabin.setUser(window.USER);
 
+// expose it to the global window object
+window.console = cabin;
+
 module.exports = cabin;

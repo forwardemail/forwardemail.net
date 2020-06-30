@@ -1,0 +1,27 @@
+{
+  "apps": [
+    {
+      "name": "bull",
+      "script": "bull.js",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    }
+  ],
+  "deploy": {
+    "production": {
+      "user": "deploy",
+      "host": [
+        "1.2.3.4"
+      ],
+      "ref": "origin/master",
+      "repo": "git@github.com:forwardemail/forwardemail.net.git",
+      "path": "/var/www/production",
+      "pre-deploy": "git reset --hard",
+      "post-deploy": "npm install --production && pm2 startOrGracefulReload ecosystem-bull.json --env production --update-env"
+    }
+  }
+}
