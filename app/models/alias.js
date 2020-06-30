@@ -74,7 +74,6 @@ const Alias = new mongoose.Schema({
     {
       type: String,
       trim: true,
-      lowercase: true,
       // must be IP or FQDN or email
       validate: {
         validator: value =>
@@ -115,7 +114,13 @@ Alias.pre('validate', function(next) {
 
   // make recipients unique by email address, FQDN, or IP
   this.recipients = _.compact(
-    _.uniq(this.recipients.map(r => r.toLowerCase().trim()))
+    _.uniq(
+      this.recipients.map(r => {
+        // some webhooks are case-sensitive
+        if (isURL(r)) return r.trim();
+        return r.toLowerCase().trim();
+      })
+    )
   );
   // labels must be slugified and unique
   if (!_.isArray(this.labels)) this.labels = [];

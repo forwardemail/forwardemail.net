@@ -33,6 +33,7 @@ In May 2020, we [allowed](https://github.com/forwardemail/free-email-forwarding/
 
 In June 2020, we publicly released our real-time metrics and revenue on our [Open Startup](/open-startup) page (also available as a link in the footer of our site).
 
+
 ## Service
 
 As of May 2020, we operate from 3 server locations across 2 countries.  We have future plans to move our servers to a country such as Iceland, which has [championed itself as a beacon of net neutrality and online privacy](https://www.ivpn.net/internet-privacy-laws-in-iceland).

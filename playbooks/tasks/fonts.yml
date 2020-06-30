@@ -1,0 +1,9 @@
+---
+- name: accept fonts license
+  shell:
+    cmd: 'echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections'
+- name: install fonts
+  apt:
+    name:
+      - ttf-mscorefonts-installer
+      - libfontconfig
