@@ -77,11 +77,11 @@ if (!module.parent) {
           ]),
           pSeries([
             // clear any existing jobs
-            () => openStartup.empty(),
-            // add the recurring job
-            () => openStartup.add(),
-            // add an initial job when the process starts
-            () => openStartup.add(null, { repeat: false })
+            () => openStartup.empty()
+            // // add the recurring job
+            // () => openStartup.add(),
+            // // add an initial job when the process starts
+            // () => openStartup.add(null, { repeat: false })
           ])
         ]);
 
