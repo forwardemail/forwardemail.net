@@ -41,6 +41,7 @@ if (!module.parent) {
       if (cluster.isMaster) {
         const migration = bull.queues.get('migration');
         const vanityDomains = bull.queues.get('vanity-domains');
+        const accountUpdates = bull.queues.get('account-updates');
         const welcomeEmail = bull.queues.get('welcome-email');
         const removeUnverifiedUsers = bull.queues.get(
           'remove-unverified-users'
@@ -57,6 +58,7 @@ if (!module.parent) {
           })(),
           pSeries([() => migration.empty(), () => migration.add()]),
           pSeries([() => vanityDomains.empty(), () => vanityDomains.add()]),
+          pSeries([() => accountUpdates.empty(), () => accountUpdates.add()]),
           pSeries([() => welcomeEmail.empty(), () => welcomeEmail.add()]),
           pSeries([
             () => removeUnverifiedUsers.empty(),

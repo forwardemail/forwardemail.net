@@ -57,6 +57,23 @@ const queues = [
     ]
   },
   {
+    name: 'account-updates',
+    options: {
+      attempts: 1,
+      defaultJobOptions: {
+        repeat: {
+          every: ms('1m')
+        }
+      }
+    },
+    processors: [
+      {
+        processor: path.join(__dirname, 'account-updates.js'),
+        concurrency: 1
+      }
+    ]
+  },
+  {
     name: 'translate-phrases',
     options: {
       attempts: 1,
