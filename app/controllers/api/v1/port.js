@@ -12,7 +12,8 @@ const Domains = require('../../../models/domain');
 const app = new ForwardEmail({
   logger,
   recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' }
+  srs: { secret: 'null' },
+  redis: false
 });
 
 async function port(ctx) {

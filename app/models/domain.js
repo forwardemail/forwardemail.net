@@ -18,7 +18,8 @@ const i18n = require('../../helpers/i18n');
 const app = new ForwardEmail({
   logger,
   recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' }
+  srs: { secret: 'null' },
+  redis: false
 });
 
 const EXCHANGES = app.config.exchanges
