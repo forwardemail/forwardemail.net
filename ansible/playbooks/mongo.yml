@@ -30,6 +30,8 @@
   roles:
     # https://github.com/holms/ansible-fqdn
     - role: fqdn
+    # https://github.com/UnderGreen/ansible-role-mongodb
+    - role: mongo
   tasks:
     # security
     - name: increase nproc and nofile for mongodb
