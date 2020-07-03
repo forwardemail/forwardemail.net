@@ -194,7 +194,7 @@
     "pug-lint": "^2.6.0",
     "rc": "^1.2.8",
     "remark-cli": "^8.0.0",
-    "remark-preset-github": "^2.0.0",
+    "remark-preset-github": "^2.0.1",
     "shelljs": "^0.8.4",
     "stylelint": "^13.6.1",
     "stylelint-config-recommended-scss": "^4.2.0",
