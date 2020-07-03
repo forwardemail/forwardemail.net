@@ -9,19 +9,27 @@
       "env_production": {
         "NODE_ENV": "production"
       }
+    },
+    {
+      "name": "proxy",
+      "script": "proxy.js",
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "instances": "max",
+      "env_production": {
+        "NODE_ENV": "production"
+      }
     }
   ],
   "deploy": {
     "production": {
       "user": "deploy",
-      "host": [
-        "1.2.3.4"
-      ],
+      "host": ["45.33.30.147"],
       "ref": "origin/master",
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",
       "pre-deploy": "git reset --hard",
-      "post-deploy": "npm install --production && pm2 startOrGracefulReload ecosystem-api.json --env production --update-env"
+      "post-deploy": "npm install && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-api.json --env production --update-env"
     }
   }
 }

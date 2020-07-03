@@ -14,9 +14,9 @@
   "deploy": {
     "production": {
       "user": "deploy",
-      "host": ["45.79.27.59"],
+      "host": [{% for host in groups['bull'] %}"{{ hostvars[host].ansible_host }}"{% if not loop.last %}, {% endif %}{% endfor %}],
       "ref": "origin/master",
-      "repo": "git@github.com:forwardemail/forwardemail.net.git",
+      "repo": "{{ lookup('env', 'GITHUB_REPO') }}",
       "path": "/var/www/production",
       "pre-deploy": "git reset --hard",
       "post-deploy": "npm install --production && pm2 startOrGracefulReload ecosystem-bull.json --env production --update-env"

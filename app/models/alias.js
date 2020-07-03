@@ -16,9 +16,9 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const logger = require('../../helpers/logger');
 const config = require('../../config');
+const i18n = require('../../helpers/i18n');
 const Domains = require('./domain');
 const Users = require('./user');
-const i18n = require('../../helpers/i18n');
 
 const app = new ForwardEmail({
   logger,
@@ -28,8 +28,8 @@ const app = new ForwardEmail({
 
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
 const quotedEmailUserUtf8 = new RE2(
-  // eslint-disable-next-line no-control-regex
-  /^([\s\u0001-\u0008\u000B\u000C\u000E-\u001F\u007F!\u0023-\u005B\u005D-\u007E\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B\u000C\u000D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i
+  // eslint-disable-next-line no-control-regex,prefer-named-capture-group
+  /^([\s\u0001-\u0008\u000E-\u001F!\u0023-\u005B\u005D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i
 );
 
 const Alias = new mongoose.Schema({

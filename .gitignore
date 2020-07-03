@@ -67,3 +67,11 @@ package-lock.json
 *-ZH.md
 locales
 yarn.lock
+.env.production
+hosts.yml
+!ansible/playbooks/templates/hosts.yml
+deployment-keys
+*.csr
+*.key
+*.ca-bundle
+*.crt

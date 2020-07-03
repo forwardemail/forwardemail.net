@@ -8,13 +8,13 @@ const toObject = require('../../../../helpers/to-object');
 const { _domainJSON } = require('./domains');
 
 function json(alias) {
-  const obj = toObject(Aliases, alias);
-  obj.user = toObject(Users, alias.user);
-  obj.domain = ObjectID.isValid(alias.domain)
+  const object = toObject(Aliases, alias);
+  object.user = toObject(Users, alias.user);
+  object.domain = ObjectID.isValid(alias.domain)
     ? alias.domain
     : _domainJSON(alias.domain);
   return pickOriginal(
-    obj,
+    object,
     _.isFunction(alias.toObject) ? alias.toObject() : alias
   );
 }

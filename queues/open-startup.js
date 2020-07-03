@@ -150,7 +150,7 @@ module.exports = async job => {
         const weekIndex = [];
         for (let week = 0; week < 52; week++) {
           weekIndex.push(
-            parseInt(
+            Number.parseInt(
               dayjs(start)
                 .add(week, 'week')
                 .startOf('day')
@@ -165,9 +165,9 @@ module.exports = async job => {
             .add(day, 'day')
             .startOf('day')
             .toDate();
-          const d = parseInt(dayjs(date).format('d'), 10);
+          const d = Number.parseInt(dayjs(date).format('d'), 10);
           const w = weekIndex.indexOf(
-            parseInt(dayjs(date).format('w'), 10) - 1
+            Number.parseInt(dayjs(date).format('w'), 10) - 1
           );
 
           if (!series[d])
@@ -186,9 +186,9 @@ module.exports = async job => {
         }
 
         for (const user of users) {
-          const d = parseInt(dayjs(user.created_at).format('d'), 10);
+          const d = Number.parseInt(dayjs(user.created_at).format('d'), 10);
           const w = weekIndex.indexOf(
-            parseInt(dayjs(user.created_at).format('w'), 10) - 1
+            Number.parseInt(dayjs(user.created_at).format('w'), 10) - 1
           );
           series[d].data[w].y++;
         }

@@ -5,8 +5,7 @@ const path = require('path');
 const env = require('@ladjs/env')({
   path: path.join(__dirname, '..', '.env'),
   defaults: path.join(__dirname, '..', '.env.defaults'),
-  schema: path.join(__dirname, '..', '.env.schema'),
-  errorOnExtra: false
+  schema: path.join(__dirname, '..', '.env.schema')
 });
 
 module.exports = env;

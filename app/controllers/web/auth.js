@@ -263,8 +263,8 @@ async function recoveryKey(ctx) {
 
   // handle case if the user runs out of keys
   if (emptyRecoveryKeys) {
-    const opts = { length: 10, characters: '1234567890' };
-    recoveryKeys = new Array(10).fill().map(() => cryptoRandomString(opts));
+    const options = { length: 10, characters: '1234567890' };
+    recoveryKeys = new Array(10).fill().map(() => cryptoRandomString(options));
   }
 
   ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys;
@@ -423,45 +423,41 @@ async function forgotPassword(ctx) {
 async function resetPassword(ctx) {
   const { body } = ctx.request;
 
-  try {
-    if (!_.isString(body.email) || !validator.isEmail(body.email))
-      throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
+  if (!_.isString(body.email) || !validator.isEmail(body.email))
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
-    if (!isSANB(body.password))
-      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+  if (!isSANB(body.password))
+    throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
-    if (!isSANB(ctx.params.token))
-      throw Boom.badRequest(ctx.translateError('INVALID_RESET_TOKEN'));
+  if (!isSANB(ctx.params.token))
+    throw Boom.badRequest(ctx.translateError('INVALID_RESET_TOKEN'));
 
-    // lookup the user that has this token and if it matches the email passed
-    const query = { email: body.email };
-    query[config.userFields.resetToken] = ctx.params.token;
-    // ensure that the reset token expires at value is in the future (hasn't expired)
-    query[config.userFields.resetTokenExpiresAt] = { $gte: new Date() };
-    let user = await Users.findOne(query);
+  // lookup the user that has this token and if it matches the email passed
+  const query = { email: body.email };
+  query[config.userFields.resetToken] = ctx.params.token;
+  // ensure that the reset token expires at value is in the future (hasn't expired)
+  query[config.userFields.resetTokenExpiresAt] = { $gte: new Date() };
+  let user = await Users.findOne(query);
 
-    if (!user)
-      throw Boom.badRequest(ctx.translateError('INVALID_RESET_PASSWORD'));
+  if (!user)
+    throw Boom.badRequest(ctx.translateError('INVALID_RESET_PASSWORD'));
 
-    user[config.userFields.resetToken] = null;
-    user[config.userFields.resetTokenExpiresAt] = null;
+  user[config.userFields.resetToken] = null;
+  user[config.userFields.resetTokenExpiresAt] = null;
 
-    await user.setPassword(body.password);
-    user = await user.save();
-    await ctx.login(user);
-    const message = ctx.translate('RESET_PASSWORD');
-    const redirectTo = ctx.state.l();
-    if (ctx.accepts('html')) {
-      ctx.flash('success', message);
-      ctx.redirect(redirectTo);
-    } else {
-      ctx.body = {
-        message,
-        redirectTo
-      };
-    }
-  } catch (err) {
-    throw err;
+  await user.setPassword(body.password);
+  user = await user.save();
+  await ctx.login(user);
+  const message = ctx.translate('RESET_PASSWORD');
+  const redirectTo = ctx.state.l();
+  if (ctx.accepts('html')) {
+    ctx.flash('success', message);
+    ctx.redirect(redirectTo);
+  } else {
+    ctx.body = {
+      message,
+      redirectTo
+    };
   }
 }
 

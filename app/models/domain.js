@@ -24,7 +24,7 @@ const app = new ForwardEmail({
 const EXCHANGES = app.config.exchanges
   .map(
     (exchange, i) =>
-      `<li><code>${parseInt((i + 1) * 10, 10)} ${exchange}</code></li>`
+      `<li><code>${Number.parseInt((i + 1) * 10, 10)} ${exchange}</code></li>`
   )
   .join('');
 
@@ -301,9 +301,9 @@ async function getVerificationResults(domain) {
   const testEmail = `test@${domain.name}`;
   try {
     const addresses = await app.validateMX(testEmail);
-    const exchanges = addresses.map(mxAddress => mxAddress.exchange);
+    const exchanges = new Set(addresses.map(mxAddress => mxAddress.exchange));
     const hasAllExchanges = app.config.exchanges.every(exchange =>
-      exchanges.includes(exchange)
+      exchanges.has(exchange)
     );
     if (hasAllExchanges) mx = true;
     else errors.push(MISSING_DNS_MX);

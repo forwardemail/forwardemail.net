@@ -917,10 +917,10 @@ async function importAliases(ctx) {
 
   if (aliases.length > 0)
     try {
-      const arr = await Aliases.create(
+      const array = await Aliases.create(
         aliases.map(alias => ({ ...alias, locale: ctx.locale }))
       );
-      messages.push(ctx.translate('IMPORT_SUCCESSFUL', arr.length));
+      messages.push(ctx.translate('IMPORT_SUCCESSFUL', array.length));
     } catch (err) {
       messages.push(ctx.translate('IMPORT_ERROR'));
       ctx.logger.error(err);

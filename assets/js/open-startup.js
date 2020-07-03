@@ -30,8 +30,8 @@ async function loadCharts() {
 
     for (const metric of body.metrics) {
       try {
-        const $el = $(metric.selector);
-        $el.text(metric.value);
+        const $element = $(metric.selector);
+        $element.text(metric.value);
       } catch (err) {
         logger.error(err);
       }
@@ -45,9 +45,9 @@ async function loadCharts() {
           continue;
         }
 
-        const $el = $(chart.selector);
-        const apex = new Apex($el.get(0), chart.options);
-        $el.empty();
+        const $element = $(chart.selector);
+        const apex = new Apex($element.get(0), chart.options);
+        $element.empty();
         apex.render();
         charts[chart.selector] = apex;
       } catch (err) {

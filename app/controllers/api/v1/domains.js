@@ -14,13 +14,13 @@ const app = new ForwardEmail({
 });
 
 function json(domain) {
-  const obj = toObject(Domains, domain);
+  const object = toObject(Domains, domain);
   // map max recipients per alias
-  if (obj.max_recipients_per_alias === 0)
-    obj.max_recipients_per_alias = app.config.maxForwardedAddresses;
+  if (object.max_recipients_per_alias === 0)
+    object.max_recipients_per_alias = app.config.maxForwardedAddresses;
   // members
   if (Array.isArray(domain.members))
-    obj.members = domain.members.map(m => {
+    object.members = domain.members.map(m => {
       const member = _.isFunction(m.toObject)
         ? m.toObject()
         : new Domains().members.create(m).toObject();
@@ -30,14 +30,14 @@ function json(domain) {
     });
   // invites
   if (Array.isArray(domain.invites))
-    obj.invites = domain.invites.map(i =>
+    object.invites = domain.invites.map(i =>
       _.isFunction(i.toObject)
         ? i.toObject()
         : new Domains().invites.create(i).toObject()
     );
   // aliases
   if (Array.isArray(domain.aliases))
-    obj.aliases = domain.aliases.map(a => {
+    object.aliases = domain.aliases.map(a => {
       const alias = toObject(Aliases, a);
       alias.user = toObject(Users, a.user);
       alias.domain = json(a.domain);
@@ -46,7 +46,7 @@ function json(domain) {
     });
   return {
     ...pickOriginal(
-      obj,
+      object,
       _.isFunction(domain.toObject) ? domain.toObject() : domain
     ),
     // add a helper url

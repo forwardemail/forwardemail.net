@@ -35,7 +35,7 @@ test('successfully registers with strong password', async t => {
       password: 'Thi$i$@$r0ng3rP@$$W0rdMyDude'
     }
   });
-  t.is(res.body.message, undefined);
+  t.is(res.body.message);
   t.is(res.status, 200);
 });
 
@@ -46,7 +46,7 @@ test('successfully registers with stronger password', async t => {
       password: cryptoRandomString({ length: 50 })
     }
   });
-  t.is(res.body.message, undefined);
+  t.is(res.body.message);
   t.is(res.status, 200);
 });
 
