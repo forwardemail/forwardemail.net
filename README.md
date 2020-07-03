@@ -242,6 +242,21 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-bull.json production
     ```
 
+16. Save the process list on the servers so when if the server were to reboot, it will automaticall boot back up the processes:
+
+    ```sh
+    pm2 deploy ecosystem-web.json production exec "pm2 save"
+    ```
+
+    ```sh
+    pm2 deploy ecosystem-api.json production exec "pm2 save"
+    ```
+
+    ```sh
+    pm2 deploy ecosystem-bull.json production exec "pm2 save"
+    ```
+
+
 16. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
 
 17. Configure your DNS records for the web and API server hostnames and respective IP addresses.
