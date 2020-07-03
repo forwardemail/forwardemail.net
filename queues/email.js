@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-unassigned-import
+require('../config/env');
+
 const Email = require('email-templates');
 const _ = require('lodash');
 

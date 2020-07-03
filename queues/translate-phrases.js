@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-unassigned-import
+require('../config/env');
+
 const Mandarin = require('mandarin');
 const I18N = require('@ladjs/i18n');
 
