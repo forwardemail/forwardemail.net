@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-unassigned-import
+require('../config/env');
+
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const sharedConfig = require('@ladjs/shared-config');
