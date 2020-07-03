@@ -11,7 +11,10 @@ const webConfig = require('./config/web');
 
 const webSharedConfig = sharedConfig('WEB');
 const client = new Redis(webSharedConfig.redis);
-const web = new Web(webConfig(client));
+const web = new Web({
+  ...webSharedConfig,
+  ...webConfig(client)
+});
 
 if (!module.parent) {
   const mongoose = new Mongoose({ ...web.config.mongoose, logger });

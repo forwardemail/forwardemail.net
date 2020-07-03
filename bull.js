@@ -4,6 +4,7 @@ const os = require('os');
 const Bull = require('@ladjs/bull');
 const Graceful = require('@ladjs/graceful');
 const pSeries = require('p-series');
+const sharedConfig = require('@ladjs/shared-config');
 
 const config = require('./config');
 const queues = require('./queues');
@@ -12,6 +13,7 @@ const logger = require('./helpers/logger');
 const cpus = os.cpus().length;
 
 const bull = new Bull({
+  ...sharedConfig('BULL'),
   logger,
   queues,
   queue: {
