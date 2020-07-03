@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-unassigned-import
+require('./config/env');
+
 const path = require('path');
 const fs = require('fs');
 
@@ -29,7 +32,6 @@ const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
 const sass = require('gulp-sass');
 const scssParser = require('postcss-scss');
-const sharedConfig = require('@ladjs/shared-config');
 const sourcemaps = require('gulp-sourcemaps');
 const stylelint = require('stylelint');
 const terser = require('gulp-terser');
@@ -46,7 +48,6 @@ process.env.I18N_SYNC_FILES = true;
 process.env.I18N_AUTO_RELOAD = false;
 process.env.I18N_UPDATE_FILES = true;
 
-const env = require('./config/env');
 const config = require('./config');
 const logger = require('./helpers/logger');
 const i18n = require('./helpers/i18n');
@@ -60,8 +61,6 @@ const staticAssets = [
   '!assets/img/**/*',
   '!assets/js/**/*'
 ];
-
-const mandarinSharedConfig = sharedConfig('MANDARIN');
 
 function pug() {
   let stream = src('app/views/**/*.pug', { since: lastRun(pug) }).pipe(
@@ -211,7 +210,7 @@ async function bundle() {
   let stream = src('build/js/**/*.js', { base: 'build', since })
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(unassert())
-    .pipe(envify(env))
+    .pipe(envify())
     .pipe(babel());
 
   if (PROD) stream = stream.pipe(terser());
@@ -250,8 +249,7 @@ function static() {
 async function markdown() {
   const mandarin = new Mandarin({
     i18n,
-    logger,
-    redis: mandarinSharedConfig.redis
+    logger
   });
   const graceful = new Graceful({ redisClients: [mandarin.redisClient] });
   await mandarin.markdown();
