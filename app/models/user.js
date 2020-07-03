@@ -22,7 +22,7 @@ if (config.passportLocalMongoose.usernameField !== 'email')
     'User model and @ladjs/passport requires that the usernameField is email'
   );
 
-const opts = { length: 10, characters: '1234567890' };
+const options = { length: 10, characters: '1234567890' };
 const { fields } = config.passport;
 const omitExtraFields = [
   ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
@@ -61,7 +61,7 @@ const User = new mongoose.Schema({
     trim: true,
     lowercase: true,
     unique: true,
-    validate: val => validator.isEmail(val)
+    validate: value => validator.isEmail(value)
   }
 });
 
@@ -222,7 +222,7 @@ User.pre('validate', function(next) {
   )
     this[config.userFields.otpRecoveryKeys] = new Array(10)
       .fill()
-      .map(() => cryptoRandomString(opts));
+      .map(() => cryptoRandomString(options));
 
   if (!this[config.passport.fields.otpToken])
     this[config.passport.fields.otpToken] = authenticator.generateSecret();

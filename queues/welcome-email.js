@@ -24,16 +24,16 @@ module.exports = async job => {
   try {
     logger.info('welcome email', { job });
     await Promise.all([mongoose.connect(), graceful.listen()]);
-    const obj = {
+    const object = {
       created_at: {
         $lte: dayjs()
           .subtract(24, 'hours')
           .toDate()
       }
     };
-    obj[config.userFields.welcomeEmailSentAt] = { $exists: false };
-    obj[config.userFields.hasVerifiedEmail] = true;
-    const users = await Users.find(obj);
+    object[config.userFields.welcomeEmailSentAt] = { $exists: false };
+    object[config.userFields.hasVerifiedEmail] = true;
+    const users = await Users.find(object);
     await Promise.all(
       users.map(async user => {
         // add welcome email job

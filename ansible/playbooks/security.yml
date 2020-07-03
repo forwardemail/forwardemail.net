@@ -1,38 +1,106 @@
 ---
-- import_playbook: deps.yml
-- hosts: all
+- hosts: "{{ hostlist }}"
   become: true
-  # TODO: do we need to refine this handler
-  # since it was already defined here?
-  # https://github.com/Oefenweb/ansible-ufw/blob/master/handlers/main.yml
+  become_user: root
   handlers:
-    - name: reload ufw
-      ufw:
-        state: reloaded
+    - name: restart ssh
+      service: name=ssh state=restarted
   vars:
-    # ufw
-    ufw_etc_default_default_forward_policy: 'ACCEPT'
-    ufw_rules:
-      - rule: allow
-        to_port: 22
-        protocol: tcp
-        comment: ssh
-      - rule: allow
-        to_port: 80
-        protocol: tcp
-        comment: http
-      - rule: allow
-        to_port: 443
-        protocol: tcp
-        comment: https
+    copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+  tasks:
+    # update deps
+    - name: update apt
+      apt:
+        update_cache: true
 
-    # node.js
-    nvm_version: 'v0.35.3'
-    node_version: '12.18.1'
+    # upgrade deps
+    - name: upgrade deps
+      apt:
+        upgrade: safe
+        update_cache: true
 
-    # python3
-    pip_python_version: 3
+    # install deps
+    - name: install deps
+      apt:
+        name:
+          - build-essential
+          - curl
+          - git
+          - vim
+        update_cache: true
 
+    # create devops group
+    - name: create devops group
+      group:
+        name: devops
+        state: present
+
+    - name: set devops group to have sudo access
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: ^%devops
+        line: '%devops ALL=(ALL) NOPASSWD: ALL'
+        validate: /usr/sbin/visudo -cf %s
+
+    # create devops user (with sudo)
+    - name: create a devops user with sudo privileges
+      user:
+        name: devops
+        state: present
+        groups: devops,www-data
+        append: true
+        create_home: true
+        shell: /bin/bash
+
+    - name: set authorized key for devops user
+      authorized_key:
+        user: devops
+        state: present
+        key: '{{ copy_local_key }}'
+
+    # create deploy user
+    - name: create a deploy user
+      user:
+        name: deploy
+        state: present
+        groups: www-data
+        append: true
+        create_home: true
+        shell: /bin/bash
+        generate_ssh_key: true
+        ssh_key_bits: 4096
+
+    - name: set authorized key for deploy user
+      authorized_key:
+        user: deploy
+        state: present
+        key: '{{ copy_local_key }}'
+
+    # TODO: change root password to randomly generated value
+
+    # configure ssh
+    - name: disable root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PermitRootLogin'
+        line: PermitRootLogin no
+      notify: restart ssh
+
+    - name: disable password authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+      notify: restart ssh
+
+
+- hosts: "{{ hostlist }}"
+  become: true
+  become_user: root
+  vars:
     #
     # kernel tuning and performance optimizations
     #
@@ -111,8 +179,12 @@
         value: 30
       - name: net.ipv4.tcp_keepalive_intvl
         value: 5
-      - name: net.ipv4.tcp_keepalive_probe
-        value: 6
+      #
+      # NOTE: it seems like this was removed in newer kernels
+      # `sysctl: cannot stat /proc/sys/net/ipv4/tcp_tw_recycle: No such file or directory`
+      #
+      # - name: net.ipv4.tcp_keepalive_probe
+      # - value: 6
 
       # max remembered connection requests which did not yet receive ACK (default: 1024)
       - name: net.ipv4.tcp_max_syn_backlog
@@ -154,8 +226,11 @@
       # and it also was removed from linux in v4.12
       # https://stackoverflow.com/questions/6426253/tcp-tw-reuse-vs-tcp-tw-recycle-which-to-use-or-both
       #
-      - name: net.ipv4.tcp_tw_recycle
-        value: 0
+      # NOTE: this was removed/deprecated in newer kernels
+      # `sysctl: cannot stat /proc/sys/net/ipv4/tcp_tw_recycle: No such file or directory`
+      #
+      # - name: net.ipv4.tcp_tw_recycle
+      #   value: 0
 
       # allow to reuse TIME_WAIT sockets for new connections when safe from protocol
       - name: net.ipv4.tcp_tw_reuse
@@ -217,7 +292,7 @@
         value: 1024
 
       #
-      # make the system resistent to out of memory scenarios
+      # make the system resistant to out of memory scenarios
       # https://www.linbit.com/kernel-min_free_kbytes/
       #
       # (e.g. 8GB ram = 128MB = 131072)
@@ -240,100 +315,40 @@
         value: 262144
 
   roles:
-    # https://github.com/Oefenweb/ansible-ufw
-    - role: ufw
-
-    # https://galaxy.ansible.com/leonidas/nvm
-    - role: nvm
-      nvm:
-        user: deploy
-        version: '{{ nvm_version }}'
-        node_version: '{{ node_version }}'
-
-    # https://github.com/Oefenweb/ansible-pip
-    - role: pip
-
     # https://github.com/Oefenweb/ansible-sysctl
     - role: sysctl
 
-  tasks:
-    #
-    # modify ufw setup
-    # https://github.com/Oefenweb/ansible-ufw/issues/21
-    #
-    # TODO: finish this
-    - name: 'update ufw until #21 is resolved'
-      copy:
-        src: playbooks/before.rules
-        dest: /etc/ufw/before.rules
-        owner: root
-        group: root
-        mode: 0644
-      notify: reload ufw
+    # https://github.com/Oefenweb/ansible-swapfile
+    - role: swapfile
+      swapfile_size: 4GB
+      swapfile_swappiness: '10'
+      swapfile_vfs_cache_pressure: '50'
 
-    # install fonts
-    - include: tasks/fonts.yml
+    # https://github.com/Oefenweb/ansible-dns
+    - role: dns
+      dns_nameservers:
+        # cloudflare
+        - '1.1.1.1'
+        - '1.0.0.1'
 
-    # install deps
-    - name: install deps
-      apt:
-        name:
-          - build-essential
-          - curl
-          - git
-          - vim
-          - ripgrep
+    # https://github.com/Oefenweb/ansible-ntp
+    - role: ntp
+      ntp_servers:
+        - 'time.cloudflare.com'
 
-    #
-    # install pip3 deps
-    # https://github.com/Oefenweb/ansible-pip/issues/10
-    #
-    - name: install pyspf
-      pip:
-        name: pyspf
-        executable: pip3
-    - name: install dnspython
-      pip:
-        name: dnspython
-        executable: pip3
-    - name: install dkimpy
-      pip:
-        name: dkimpy
-        executable: pip3
+    # https://github.com/Oefenweb/ansible-timezone
+    - role: timezone
+      timezone_zone: 'America/Chicago'
 
-    # create deploy user
-    - name: create a deploy user
-      user:
-        name: deploy
-        state: present
-        groups: www-data
-        append: true
-        create_home: true
-        shell: /bin/bash
+    # https://github.com/Oefenweb/ansible-fail2ban
+    - role: fail2ban
 
-    - name: set authorized key for deploy user
-      authorized_key:
-        user: deploy
-        state: present
-        key: '{{ copy_local_key }}'
+    # https://github.com/jnv/ansible-role-unattended-upgrades
+    - role: unattended-upgrades
 
-    # configure pm2
-    - name: create pm2 directory
-      file: path=/var/www state=directory owner=www-data group=www-data
+    # https://github.com/fubarhouse/ansible-role-rust
+    # https://github.com/fubarhouse/ansible-role-rust/issues/20
+    # - role: rust
 
-    - name: install pm2
-      become: true
-      become_user: deploy
-      npm:
-        name: pm2
-        global: true
-
-    - name: check that pm2 startup script exists
-      stat:
-        path: /etc/systemd/system/pm2-deploy.service
-        register: pm2_startup_result
-
-    - name: install pm2 startup script
-      shell:
-        cmd: 'sudo su -c "env PATH=$PATH:/home/deploy/.nvm/versions/node/{{ node_version }}/bin pm2 startup ubuntu -u deploy --hp /home/deploy'
-      when: not pm2_startup_result.stat.exists
+    # TODO: set up logrotate for all roles/deps
+    #       https://github.com/Oefenweb/ansible-logrotated

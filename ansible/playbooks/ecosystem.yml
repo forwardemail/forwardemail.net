@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  tasks:
+    #
+    # https://stackoverflow.com/a/24959173
+    #
+    - name: create ecosystem-web.json
+      template:
+        src: '{{ playbook_dir }}/templates/ecosystem-web.json.j2'
+        dest: "{{ lookup('env', 'PWD')}}/ecosystem-web.json"
+      delegate_to: localhost
+    - name: create ecosystem-api.json
+      template:
+        src: '{{ playbook_dir }}/templates/ecosystem-api.json.j2'
+        dest: "{{ lookup('env', 'PWD')}}/ecosystem-api.json"
+      delegate_to: localhost
+    - name: create ecosystem-bull.json
+      template:
+        src: '{{ playbook_dir }}/templates/ecosystem-bull.json.j2'
+        dest: "{{ lookup('env', 'PWD')}}/ecosystem-bull.json"
+      delegate_to: localhost

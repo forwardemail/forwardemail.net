@@ -17,15 +17,27 @@
 - name: unattended-upgrades
   src: jnv.unattended-upgrades
   version: v1.8.0
-- name: ufw
-  src: oefenweb.ufw
-  version: v4.1.1
-- name: nvm
-  src: leonidas.nvm
-  version: v1.0.0
+- name: nodejs
+  src: oefenweb.nodejs
+  version: v6.0.3
+- name: yarn
+  src: oefenweb.yarn
+  version: v1.0.42
 - name: pip
   src: oefenweb.pip
   version: v2.1.1
 - name: sysctl
   src: oefenweb.sysctl
   version: v1.0.36
+- name: redis
+  src: oefenweb.redis
+  version: v3.0.29
+- name: mongo
+  src: undergreen.mongodb
+  version: v2.6.1
+- name: ssh-keys
+  src: oefenweb.ssh_keys
+  version: v2.1.4
+- name: fqdn
+  src: holms.fqdn
+  version: '1.1'
