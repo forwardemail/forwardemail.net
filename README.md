@@ -162,14 +162,6 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
    ```sh
    node ansible-playbook ansible/playbooks/mongo.yml -e 'ansible_user=root'
-
-   #
-   # NOTE: If you have output on the console of `failed=1` after running this, see this issue:
-   #       <https://github.com/UnderGreen/ansible-role-mongodb/issues/225>
-   #
-   # You can just re-run this command and it should resolve itself.
-   #
-   node ansible-playbook ansible/playbooks/mongo.yml -e 'ansible_user=root'
    ```
 
 10. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.
