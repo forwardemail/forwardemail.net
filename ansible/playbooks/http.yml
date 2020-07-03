@@ -6,6 +6,12 @@
     - name: set hostname
       hostname:
         name: "{{ lookup('env', 'WEB_HOST') }}"
+    # TODO: deprecate this in Jan 1st 2021
+    - name: allow legacy api
+      ufw:
+        rule: allow
+        port: 4000
+        proto: tcp
   roles:
     # https://github.com/holms/ansible-fqdn
     - role: fqdn
@@ -65,6 +71,16 @@
       ufw:
         rule: allow
         port: 443
+        proto: tcp
+    - name: allow http forwarder
+      ufw:
+        rule: allow
+        port: "{{ lookup('env', 'PROXY_PORT') }}"
+        proto: tcp
+    - name: allow https forwarder
+      ufw:
+        rule: allow
+        port: "{{ lookup('env', 'HTTP_PORT') }}"
         proto: tcp
     - name: reload ufw
       ufw:

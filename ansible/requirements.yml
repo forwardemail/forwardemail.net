@@ -33,8 +33,10 @@
   src: oefenweb.redis
   version: v3.0.29
 - name: mongo
-  src: undergreen.mongodb
-  version: v2.6.1
+  src: https://github.com/niftylettuce/ansible-role-mongodb.git
+  version: master
+  # src: undergreen.mongodb
+  # version: v2.6.1
 - name: ssh-keys
   src: oefenweb.ssh_keys
   version: v2.1.4

@@ -6,7 +6,7 @@
   vars:
     # https://github.com/UnderGreen/ansible-role-mongodb
     mongodb_version: "4.2"
-    mongodb_pymongo_from_pip: false
+    mongodb_pymongo_from_pip: true
     mongodb_daemon_name: mongod
     mongodb_net_port: "{{ lookup('env', 'MONGO_PORT') }}"
     mongodb_security_authorization: 'enabled'
