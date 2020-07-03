@@ -27,6 +27,10 @@
           - curl
           - git
           - vim
+          - libtool
+          - automake
+          - autoconf
+          - nasm
         update_cache: true
 
     # create devops group
