@@ -10,9 +10,9 @@
     mongodb_daemon_name: mongod
     mongodb_net_port: "{{ lookup('env', 'MONGO_PORT') }}"
     mongodb_security_authorization: 'enabled'
-    mongodb_user_admin_name: "{{ lookup('env', 'MONGO_USER') }}"
+    mongodb_user_admin_name: admin_user
     mongodb_user_admin_password: "{{ lookup('env', 'MONGO_PASS') }}"
-    mongodb_root_admin_name: admin_root
+    mongodb_root_admin_name: "{{ lookup('env', 'MONGO_USER') }}"
     mongodb_root_admin_password: "{{ lookup('env', 'MONGO_PASS') }}"
     mongodb_root_backup_name: admin_backup
     mongodb_root_backup_password: "{{ lookup('env', 'MONGO_PASS') }}"
