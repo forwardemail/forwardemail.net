@@ -29,6 +29,7 @@ const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
 const sass = require('gulp-sass');
 const scssParser = require('postcss-scss');
+const sharedConfig = require('@ladjs/shared-config');
 const sourcemaps = require('gulp-sourcemaps');
 const stylelint = require('stylelint');
 const terser = require('gulp-terser');
@@ -59,6 +60,8 @@ const staticAssets = [
   '!assets/img/**/*',
   '!assets/js/**/*'
 ];
+
+const mandarinSharedConfig = sharedConfig('MANDARIN');
 
 function pug() {
   let stream = src('app/views/**/*.pug', { since: lastRun(pug) }).pipe(
@@ -245,7 +248,11 @@ function static() {
 }
 
 async function markdown() {
-  const mandarin = new Mandarin({ i18n, logger });
+  const mandarin = new Mandarin({
+    i18n,
+    logger,
+    redis: mandarinSharedConfig.redis
+  });
   const graceful = new Graceful({ redisClients: [mandarin.redisClient] });
   await mandarin.markdown();
   await graceful.stopRedisClients();
