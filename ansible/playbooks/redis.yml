@@ -11,6 +11,9 @@
       redis_maxmemory: '2gb'
       redis_maxmemory_policy: 'allkeys-lru'
       redis_requirepass: "{{ lookup('env', 'REDIS_PASSWORD') }}"
+      redis_bind:
+        - 127.0.0.1
+        - "{{ lookup('env', 'REDIS_HOST') }}"
     # https://github.com/holms/ansible-fqdn
     - role: fqdn
   tasks:
