@@ -10,7 +10,8 @@ const { Users, Aliases, Domains } = require('../../../models');
 const app = new ForwardEmail({
   logger,
   recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' }
+  srs: { secret: 'null' },
+  redis: false
 });
 
 function json(domain) {

@@ -23,7 +23,8 @@ const Users = require('./user');
 const app = new ForwardEmail({
   logger,
   recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' }
+  srs: { secret: 'null' },
+  redis: false
 });
 
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
