@@ -19,6 +19,16 @@
       "env_production": {
         "NODE_ENV": "production"
       }
+    },
+    {
+      "name": "api",
+      "script": "api.js",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "env_production": {
+        "NODE_ENV": "production"
+      }
     }
   ],
   "deploy": {
