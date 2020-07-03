@@ -222,7 +222,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-api.json production exec "pm2 reload api"
     ```
 
-14. Copy the `.env.production` file you created to the servers:
+14. Copy the `.env.production` file and create an AWS config file on the servers:
 
     ```sh
     ansible-playbook ansible/playbooks/env.yml
@@ -286,7 +286,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 [Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © [Niftylettuce, LLC.](https://niftylettuce.com/)
 
 
-## 
+##
 
 [ansible]: https://github.com/ansible/ansible
 
