@@ -35,7 +35,11 @@ MONGO_HOST=TODO
 #
 # generate password for mongo
 #
-# openssl rand 60 | openssl base64 -A | pbcopy
+# https://docs.mongodb.com/manual/reference/connection-string/
+# https://github.com/ladjs/mongoose/issues/10
+# https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-linux-openssl.html
+#
+# openssl rand 60 | openssl base64 -A | tr -- '@:/%' '-_~$' | pbcopy
 #
 MONGO_PASS="TODO"
 
