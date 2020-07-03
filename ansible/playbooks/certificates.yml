@@ -40,12 +40,12 @@
       local_action: stat path={{ input_bundle }}
       register: local_bundle_file
       become: false
-      when: input_bundle|bool
+      when: (input_bundle is defined) and (input_bundle|length > 0)
 
     - name: fail when local bundle file does not exist
       fail:
         msg: 'bundle file does not exist: {{ input_bundle }}'
-      when: input_bundle|bool and not local_bundle_file.stat.exists
+      when: (input_bundle is defined) and (input_bundle|length > 0) and (not local_bundle_file.stat.exists)
 
     # remote dir
     - name: check if remote dir exists
@@ -82,9 +82,9 @@
     - name: copy local bundle file to server
       copy:
         src: '{{ input_bundle }}'
-        dest: /var/www/production/.ssl-bundle
+        dest: /var/www/production/.ssl-ca
         owner: www-data
         group: www-data
         # https://chmodcommand.com/chmod-660/
         mode: 0660
-      when: input_bundle|bool
+      when: (input_bundle is defined) and (input_bundle|length > 0)
