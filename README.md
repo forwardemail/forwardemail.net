@@ -85,10 +85,11 @@ Our server alias naming convention consists of the following fields, joined toge
 1. App name
 2. (Optional) App count (starting with 1) of the application (relative to the same provider and region).  Only applicable for apps with potential count > 1.
 3. Provider name (abbreviated to 2 characters)
-4. Region name (this is the region name given by the provider, abbreviated to 3 characters max for region name, and appended with a count for multiple datacenters in the same region).
-5. Project fully-qualified domain name ("FQDN" - this is the main project domain name, e.g. `forwardemail.net` - you do not need to enter `api.forwardemail.net` here, it is up to you, but this should be a [FQDN][])
+4. Region name (this is the region name given by the provider)
+5. Region country (ISO-3166 alpha-2 code)
+6. Project fully-qualified domain name ([FQDN][] - this is the main project domain name; e.g. `forwardemail.net` or `api.forwardemail.net`)
 
-For example, one of our servers might be named `web-1-do-nyc3.forwardemail.net`, which stands for: Web, 1, Digital Ocean, NYC3.
+For example, one of our web servers is named `web-1-do-nyc3-us.forwardemail.net`, and one of our API servers is named `api-1-do-nyc3-us.api.forwardemail.net`.
 
 ### Load Balancing
 
@@ -137,37 +138,37 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 5. Generate [pm2][] [ecosystem files][ecosystem-files] using our automatic template generator. We created an [ansible-playbook.js](ansible-playbook.js) which loads the `.env.production` environment variables rendered with [@ladjs/env][] into `process.env`, which then gets used in the playbooks.  This is a superior, simple, and the only known dotenv approach we know of in Ansible. Newly created `ecosystem-api.json`, `ecosystem-bull.json`, `ecosystem-web.json` files will now be created for you in the root of the repository.  If you ever more add or change IP addresses, you can simply re-run this command.
 
    ```sh
-   node ansible-playbook ansible/playbooks/ecosystem.yml
+   node ansible-playbook ansible/playbooks/ecosystem.yml -l 'localhost'
    ```
 
 6. Set up the web and API server(s) (see [patterns and ansible-playbook flags docs](https://docs.ansible.com/ansible/latest/user_guide/intro_patterns.html#patterns-and-ansible-playbook-flags) if you need help).  If you completely (or partially) run this playbook (or any others below), then the second time you try to run it may not succeed.  This is because we prevent root user access through security hardening.  To workaround this, run the same command but without `-e 'ansible_user=root'` appended as it will default to the `devops` user created.
 
    ```sh
-   node ansible-playbook ansible/playbooks/http.yml -e 'ansible_user=root'
+   node ansible-playbook ansible/playbooks/http.yml -e 'ansible_user=root' -l 'http'
    ```
 
 7. Set up the Bull server(s):
 
    ```sh
-   node ansible-playbook ansible/playbooks/bull.yml -e 'ansible_user=root'
+   node ansible-playbook ansible/playbooks/bull.yml -e 'ansible_user=root' -l 'bull'
    ```
 
 8. Set up the Redis server:
 
    ```sh
-   node ansible-playbook ansible/playbooks/redis.yml -e 'ansible_user=root'
+   node ansible-playbook ansible/playbooks/redis.yml -e 'ansible_user=root' -l 'redis'
    ```
 
 9. Set up the Mongo server:
 
    ```sh
-   node ansible-playbook ansible/playbooks/mongo.yml -e 'ansible_user=root'
+   node ansible-playbook ansible/playbooks/mongo.yml -e 'ansible_user=root' -l 'mongo'
    ```
 
 10. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.
 
     ```sh
-    node ansible-playbook ansible/playbooks/deployment-keys.yml
+    node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'http:bull'
     ```
 
 11. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours:
@@ -214,13 +215,19 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-api.json production exec "pm2 reload api"
     ```
 
-14. Copy the `.env.production` file and create an AWS config file on the servers:
+14. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
 
     ```sh
-    ansible-playbook ansible/playbooks/env.yml
+    ansible-playbook ansible/playbooks/gapp-creds.yml -l 'http:bull'
     ```
 
-15. Run an initial deploy to all the servers:
+15. Copy the `.env.production` file and create an AWS config file on the servers:
+
+    ```sh
+    node ansible-playbook ansible/playbooks/env.yml -l 'http:bull'
+    ```
+
+16. Run an initial deploy to all the servers:
 
     ```sh
     pm2 deploy ecosystem-web.json production
@@ -234,7 +241,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-bull.json production
     ```
 
-16. Save the process list on the servers so when if the server were to reboot, it will automaticall boot back up the processes:
+17. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
 
     ```sh
     pm2 deploy ecosystem-web.json production exec "pm2 save"
@@ -317,3 +324,5 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 [fqdn]: https://en.wikipedia.org/wiki/Fully_qualified_domain_name
 
 [ansible-guide]: https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html
+
+[mandarin]: https://github.com/niftylettuce/mandarin
