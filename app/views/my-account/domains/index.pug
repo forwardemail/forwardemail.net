@@ -15,6 +15,7 @@ block body
               include aliases/_form
               button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
 
+  include _modal-upgrade
   include _modal-domain
 
   .container-fluid.py-3
@@ -68,6 +69,9 @@ block body
                               = t('Team')
                             default
                               = t('Free')
+                              = ' ('
+                              = t('DNS-based')
+                              = ')'
                         .dropdown-menu
                           h6.dropdown-header.text-uppercase= t('Change plan to:')
                           each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
@@ -83,6 +87,9 @@ block body
                                   = t('Team')
                                 default
                                   = t('Free')
+                                  = ' ('
+                                  = t('DNS-based')
+                                  = ')'
                           .dropdown-divider
                           a(href=l(`/pricing?domain=${domain.name}`)).dropdown-item
                             small.text-muted= t('See all plan features')
@@ -123,7 +130,12 @@ block body
                             = ' '
                             = t('Setup')
                       li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
-                        a(href=l(`/my-account/domains/${domain.name}/aliases`)).btn.btn-dark.btn-block
+                        a(
+                          href=domain.plan === 'free' ? '#' : l(`/my-account/domains/${domain.name}/aliases`),
+                          role=domain.plan === 'free' ? 'button' : false,
+                          data-target=domain.plan === 'free' ? '#modal-upgrade' : false,
+                          data-toggle=domain.plan === 'free' ? 'modal' : false
+                        ).btn.btn-dark.btn-block
                           i.fa.fa-fw.fa-users
                           = ' '
                           = t('Aliases')

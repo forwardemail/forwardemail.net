@@ -28,11 +28,7 @@ if (!module.parent) {
 
   (async () => {
     try {
-      await Promise.all([
-        mongoose.connect(),
-        web.listen(web.config.port),
-        graceful.listen()
-      ]);
+      await Promise.all([web.listen(web.config.port), graceful.listen()]);
       if (process.send) process.send('ready');
       const { port } = web.server.address();
       logger.info(
@@ -42,6 +38,7 @@ if (!module.parent) {
         logger.info(
           `Please visit ${config.urls.web} in your browser for testing`
         );
+      await mongoose.connect();
     } catch (err) {
       logger.error(err);
       // eslint-disable-next-line unicorn/no-process-exit

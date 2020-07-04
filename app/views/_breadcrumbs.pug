@@ -20,7 +20,12 @@ if breadcrumbs.length > 1
         if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
           ul.list-inline.mb-0
             li.list-inline-item
-              a(href=l(`/my-account/domains/${domain.name}/aliases`)).btn.btn-dark
+              a(
+                href=domain.plan === 'free' ? '#' : l(`/my-account/domains/${domain.name}/aliases`),
+                role=domain.plan === 'free' ? 'button' : false,
+                data-target=domain.plan === 'free' ? '#modal-upgrade' : false,
+                data-toggle=domain.plan === 'free' ? 'modal' : false
+              ).btn.btn-dark
                 i.fa.fa-fw.fa-users
                 = ' '
                 = t('Aliases')

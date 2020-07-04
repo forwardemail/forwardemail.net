@@ -23,16 +23,13 @@ if (!module.parent) {
 
   (async () => {
     try {
-      await Promise.all([
-        mongoose.connect(),
-        api.listen(api.config.port),
-        graceful.listen()
-      ]);
+      await Promise.all([api.listen(api.config.port), graceful.listen()]);
       if (process.send) process.send('ready');
       const { port } = api.server.address();
       logger.info(
         `Lad API server listening on ${port} (LAN: ${ip.address()}:${port})`
       );
+      await mongoose.connect();
     } catch (err) {
       logger.error(err);
       // eslint-disable-next-line unicorn/no-process-exit
