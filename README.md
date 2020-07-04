@@ -47,7 +47,7 @@ See [Requirements](#requirements) below.
    brew update
    brew upgrade
    brew tap mongodb/brew
-   brew install mongodb-community@3.4 redis python3 ansible-galaxy ansible-lint libtool automake autoconf nasm
+   brew install mongodb-community@3.4 redis python3 ansible ansible-lint libtool automake autoconf nasm
    brew services start mongodb-community@3.4
    brew services start redis
    pip3 install dkimpy pyspf dnspython
