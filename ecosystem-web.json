@@ -27,7 +27,8 @@
       "wait_ready": true,
       "instances": "1",
       "env_production": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "API_PORT": "4000"
       }
     }
   ],
