@@ -37,7 +37,7 @@ block body
                 p= t('One-time passwords ("OTP") allow you to add a layer of Two-Factor Authentication to your account using a device or authenticator app.  If you lose access to your device or authenticator app, then you can use a recovery key provided to you during configuration.')
                 a.btn.btn-primary.btn-lg(href=l(`${config.otpRoutePrefix}/setup`), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')= t('Enable OTP')
             .card-footer.text-right
-              a(href='https://en.wikipedia.org/wiki/One-time_password', rel='nofollow', target='_blank').btn.btn-dark= t('Learn more')
+              a(href='https://en.wikipedia.org/wiki/One-time_password', rel='noreferrer', target='_blank').btn.btn-dark= t('Learn more')
         .card.mb-3
           h4.card-header= t('Developer Access')
           .card-body
@@ -69,7 +69,7 @@ block body
               p= t('Your account is currently an admin of these domains:')
               ul
                 each domain in adminDomains
-                  li: a(href=l(`/my-account/domains/${domain.name}`), target='_blank', rel='noopener')= domain.name
+                  li: a(href=l(`/my-account/domains/${domain.name}`), target='_blank', rel='noopener noreferrer')= domain.name
               p.mb-0= t('You must remove yourself from or delete these domains before you can delete your account.')
           else
             .card-body
