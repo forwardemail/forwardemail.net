@@ -7,7 +7,7 @@
           span(aria-hidden='true') &times;
       .modal-body.lead
         p= t("Please upgrade your domain's plan to use our privacy-focused and encrypted email alias manager (instead of managing your aliases for free with public DNS records).")
-        p!= t('If you would like to learn more about DNS-based aliases (free plan), then please <a href="%s">follow these instructions on our FAQ page</a>.', l('/faq#how-do-i-get-started-and-set-up-email-forwarding'))
+        p!= t('If you would like to learn more about DNS-based aliases (free plan), then please <a href="%s">follow these instructions on our FAQ page</a>.', domain ? l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`) : l('/faq#how-do-i-get-started-and-set-up-email-forwarding'))
         if domain && domain.plan === 'free'
           a(href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)).btn.btn-dark.btn-lg.btn-block
             = t('Upgrade to Enhanced Protection')

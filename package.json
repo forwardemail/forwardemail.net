@@ -47,7 +47,7 @@
     "@ladjs/proxy": "^2.0.0",
     "@ladjs/redis": "^1.0.4",
     "@ladjs/shared-config": "^3.0.8",
-    "@ladjs/web": "^6.0.14",
+    "@ladjs/web": "^6.0.15",
     "@primer/css": "^15.0.0",
     "@sidoshi/random-string": "^1.0.0",
     "@slack/web-api": "^5.10.0",
@@ -200,7 +200,7 @@
     "stylelint-config-recommended-scss": "^4.2.0",
     "stylelint-scss": "^3.18.0",
     "through2": "^4.0.2",
-    "xo": "0.25"
+    "xo": "0.25.0"
   },
   "engines": {
     "node": ">=12.x"

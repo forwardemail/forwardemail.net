@@ -27,7 +27,7 @@ footer.mt-auto
           .mt-auto
             a(href='#')
               img(src=manifest('img/logo-square.svg'), width=50, height=50 alt='Go to top').d-inline-block.mx-lg-auto
-            small.d-block.text-muted.mt-3!= '&copy; <a class="text-white" href="https://niftylettuce.com" target="_blank" rel="noopener">Niftylettuce, LLC.</a>'
+            small.d-block.text-muted.mt-3!= '&copy; <a class="text-white" href="https://niftylettuce.com" target="_blank" rel="noopener noreferrer">Niftylettuce, LLC.</a>'
         .flex-wrap.flex-fill
           h5.mb-2= t('Resources')
           ul.list-unstyled.mb-0
@@ -48,9 +48,9 @@ footer.mt-auto
           ul.list-unstyled.mb-0
             li: a.d-block.text-light.py-2.py-md-0(href=l('/free-email-webhooks'))= t('Free Email Webhooks')
             li: a.d-block.text-light.py-2.py-md-0(href=l('/email-forwarding-api'))= t('Email Forwarding API')
-            li: a.d-block.text-light.py-2.py-md-0(href='https://github.com/forwardemail/free-email-forwarding/releases', target='_blank', rel='noopener')= t('Releases')
+            li: a.d-block.text-light.py-2.py-md-0(href='https://github.com/forwardemail/free-email-forwarding/releases', target='_blank', rel='noopener noreferrer')= t('Releases')
             li: a.d-block.text-light.py-2.py-md-0(data-toggle='tooltip', data-placement='left', title=t('Coming soon'), href='#coming-soon')= t('Status Page')
-            li: a.d-block.text-light.py-2.py-md-0(href='https://github.com/forwardemail', target='_blank', rel='noopener')= t('Source Code')
+            li: a.d-block.text-light.py-2.py-md-0(href='https://github.com/forwardemail', target='_blank', rel='noopener noreferrer')= t('Source Code')
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
@@ -64,19 +64,19 @@ footer.mt-auto
           .mt-lg-auto.mt-3
             ul.list-inline.mb-0
               li.list-inline-item
-                a(data-toggle='tooltip', title=t('Twitter'), href='https://twitter.com/niftylettuce', target='_blank', rel='noopener').d-inline-block.text-light
+                a(data-toggle='tooltip', title=t('Twitter'), href='https://twitter.com/niftylettuce', target='_blank', rel='noopener noreferrer').d-inline-block.text-light
                   i.fa.fa-2x.fa-twitter
                   span.sr-only.sr-only-focusable
                     = ' '
                     = t('Twitter')
               li.list-inline-item
-                a(data-toggle='tooltip', title=t('GitHub'), href='https://github.com/forwardemail', target='_blank', rel='noopener').d-inline-block.text-light
+                a(data-toggle='tooltip', title=t('GitHub'), href='https://github.com/forwardemail', target='_blank', rel='noopener noreferrer').d-inline-block.text-light
                   i.fa.fa-2x.fa-github
                   span.sr-only.sr-only-focusable
                     = ' '
                     = t('GitHub')
               li.list-inline-item
-                a(data-toggle='tooltip', title=t('Email'), href='mailto:support@forwardemail.net', target='_blank', rel='noopener').d-inline-block.text-light
+                a(data-toggle='tooltip', title=t('Email'), href='mailto:support@forwardemail.net', target='_blank', rel='noopener noreferrer').d-inline-block.text-light
                   i.fa.fa-2x.fa-envelope
                   span.sr-only.sr-only-focusable
                     = ' '

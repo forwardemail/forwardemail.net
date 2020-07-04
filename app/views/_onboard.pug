@@ -26,7 +26,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                     input#input-create-account(type='checkbox', name='create_account', checked, value='true', aria-describedby='help-create-account').form-check-input
                     label.form-check-label(for='input-create-account').mr-2= t('Create your free account now')
                     small#help-create-account.text-black-50.align-self-center.flex-grow-1.text-right
-                      != t('Read our <a href="%s" target="_blank" rel="noopener">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener">Terms</a>', l('/privacy'), l('/terms'))
+                      != t('Read our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>', l('/privacy'), l('/terms'))
                 button.btn.btn-success.btn-lg.btn-block(type="submit")
                   = t('Continue')
                   = ' '

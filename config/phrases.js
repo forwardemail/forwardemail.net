@@ -53,7 +53,7 @@ module.exports = {
   ALIAS_ALREADY_EXISTS: 'Alias already exists for domain.',
   DOMAIN_IS_VERIFIED: "Domain's DNS records have been verified.",
   DOMAIN_DOES_NOT_EXIST: 'Domain does not exist on your account.',
-  RESERVED_WORD_ADMIN_REQUIRED: `User must be a domain admin to create an alias with a reserved word (see the page on <a target="_blank" rel="noopener" href="%s/reserved-email-addresses">Reserved Email Addresses</a>).`,
+  RESERVED_WORD_ADMIN_REQUIRED: `User must be a domain admin to create an alias with a reserved word (see the page on <a target="_blank" rel="noopener noreferrer" href="%s/reserved-email-addresses">Reserved Email Addresses</a>).`,
   REACHED_MAX_ALIAS_COUNT:
     'User cannot have more than (5) aliases on global domains.',
   EXCEEDED_UNIQUE_COUNT: `You have exceeded the maximum count of (<span class="notranslate">%s</span>) recipients per alias.  Please <a href="/help">contact us</a> if you wish to have this limit increased.  We review requests on a unique basis.  Please provide us with information about your forwarding purposes if possible.`,
@@ -139,7 +139,7 @@ module.exports = {
   INCORRECT_VERIFICATION_RECORD: `Domain has an incorrect DNS TXT record for verification.  Please ensure <span class="notranslate">%s</span> is the only verification record that exists.`,
   MULTIPLE_VERIFICATION_RECORDS:
     'Domain has multiple verification records.  Please ensure <span class="notranslate">%s</span> is the only verification record that exists.',
-  PURGE_CACHE: `If you recently updated your DNS records for <span class="notranslate">%s</span>, then you should purge its cache using <a href="https://1.1.1.1/purge-cache/" rel="noopener" target="_blank">Cloudflare's Purge Cache Tool</a> and optionally <a href="https://developers.google.com/speed/public-dns/cache" rel="noopener" target="_blank">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.`,
+  PURGE_CACHE: `If you recently updated your DNS records for <span class="notranslate">%s</span>, then you should purge its cache using <a href="https://1.1.1.1/purge-cache/" rel="noopener noreferrer" target="_blank">Cloudflare's Purge Cache Tool</a> and optionally <a href="https://developers.google.com/speed/public-dns/cache" rel="noopener noreferrer" target="_blank">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.`,
   IMPORT_ALIAS_ALREADY_EXISTS: `Could not import "<span class="notranslate">%s</span>" record's recipient of "<span class="notranslate">%s</span>" since it already exists as an alias.`,
   IMPORT_ALIAS_DISABLED_NOBODY:
     'We successfully imported the disabled address of "<span class="notranslate">%s</span>", but we had to do so with a single recipient of "nobody@forwardemail.net" because it did not have a recipient in the imported DNS entry.',

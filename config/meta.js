@@ -29,7 +29,7 @@ module.exports = function(config) {
     '/': [config.appName, config.pkg.description],
     '/about': [`About ${lad}`, `Learn more about ${config.appName}`],
     '/features': [
-      `Features ${lad}`,
+      `Pricing ${lad}`,
       'Free email forwarding for domains with features including Custom Domain Email Forwarding, Disposable Addresses, Multiple Recipients, Wildcards, and more!'
     ],
     '/faq': [`FAQ ${lad}`, 'Read frequently asked questions about our service'],

@@ -59,7 +59,7 @@ block body
           .p-5.m-2.mt-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t('1. Set up your domain for email forwarding')
             p.lead.mb-3= t("Do you need to configure (or re-configure) this domain name for email forwarding?")
-            a.mt-auto(href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`), target='_blank', rel='noopener').stretched-link.btn.btn-lg.btn-outline-dark
+            a.mt-auto(href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`), target='_blank', rel='noopener noreferrer').stretched-link.btn.btn-lg.btn-outline-dark
               = t('Configure your domain')
               = ' '
               i.fa.fa-angle-double-right
@@ -67,7 +67,7 @@ block body
           .p-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t('2. Send emails with your domain using Gmail (optional)')
             p.lead.mb-3!= t('Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.')
-            a.mt-auto(href=l(`/faq?domain=${domain.name}#how-to-send-mail-as-using-gmail`), target='_blank', rel='noopener').stretched-link.btn.btn-lg.btn-outline-dark
+            a.mt-auto(href=l(`/faq?domain=${domain.name}#how-to-send-mail-as-using-gmail`), target='_blank', rel='noopener noreferrer').stretched-link.btn.btn-lg.btn-outline-dark
               = t('Setup your Gmail')
               = ' '
               i.fa.fa-angle-double-right
@@ -77,12 +77,12 @@ block body
             p.lead.mb-3!= t('Once you have followed the previous step(s), you will need to "purge" the DNS cache using the "Purge Cache" tool by Cloudflare.  You can optionally purge the cache using Google as well if you are using Gmail.  Make sure to purge both the "TXT" and the "MX" records on your domain name\'s DNS records.  Wait a few minutes (or sometimes it might take an hour or two), and then click "Verify Records" above and try sending a test email to yourself.')
             ul.list-inline.mt-auto
               li.list-inline-item
-                a(href='https://1.1.1.1/purge-cache/', target='_blank', rel='noopener').btn.btn-lg.btn-outline-dark
+                a(href='https://1.1.1.1/purge-cache/', target='_blank', rel='noopener noreferrer').btn.btn-lg.btn-outline-dark
                   = t('Cloudflare Purge (required)')
                   = ' '
                   i.fa.fa-angle-double-right
               li.list-inline-item
-                a(href='https://developers.google.com/speed/public-dns/cache', target='_blank', rel='noopener').btn.btn-lg.btn-outline-dark
+                a(href='https://developers.google.com/speed/public-dns/cache', target='_blank', rel='noopener noreferrer').btn.btn-lg.btn-outline-dark
                   = t('Google Purge (optional)')
                   = ' '
                   i.fa.fa-angle-double-right
