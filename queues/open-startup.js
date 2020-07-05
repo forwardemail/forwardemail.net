@@ -46,6 +46,7 @@ module.exports = async job => {
   try {
     logger.info('starting open startup', { job });
     await Promise.all([mongoose.connect(), graceful.listen()]);
+    logger.info('open startup connected', { job });
     const [
       totalUsers,
       totalDomains,
@@ -222,6 +223,7 @@ module.exports = async job => {
         };
       })()
     ]);
+    logger.info('open startup retrieved data', { job });
 
     await Promise.all([
       client.set('open-startup:total-users', safeStringify(totalUsers)),
@@ -231,6 +233,7 @@ module.exports = async job => {
       client.set('open-startup:heatmap', safeStringify(heatmap)),
       client.set('open-startup:piechart', safeStringify(pieChart))
     ]);
+    logger.info('open startup writing', { job });
   } catch (err) {
     logger.error(err);
     throw err;
