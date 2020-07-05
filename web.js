@@ -13,7 +13,7 @@ const logger = require('./helpers/logger');
 const webConfig = require('./config/web');
 
 const webSharedConfig = sharedConfig('WEB');
-const client = new Redis(webSharedConfig.redis);
+const client = new Redis(webSharedConfig.redis, logger);
 const web = new Web(webConfig(client));
 
 if (!module.parent) {
