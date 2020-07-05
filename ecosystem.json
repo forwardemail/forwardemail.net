@@ -21,16 +21,6 @@
       }
     },
     {
-      "name": "bull",
-      "script": "bull.js",
-      "exec_mode": "fork",
-      "wait_ready": true,
-      "instances": "1",
-      "env_production": {
-        "NODE_ENV": "production"
-      }
-    },
-    {
       "name": "proxy",
       "script": "proxy.js",
       "exec_mode": "cluster",
