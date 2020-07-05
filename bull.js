@@ -4,9 +4,6 @@ require('./config/env');
 const cluster = require('cluster');
 const os = require('os');
 
-const maxListenersExceededWarning = require('max-listeners-exceeded-warning');
-maxListenersExceededWarning();
-
 const Bull = require('@ladjs/bull');
 const Graceful = require('@ladjs/graceful');
 const pSeries = require('p-series');
