@@ -45,9 +45,8 @@ if (!module.parent) {
         const removeUnverifiedUsers = bull.queues.get(
           'remove-unverified-users'
         );
-        const translateMarkdown = bull.queues.get('translate-markdown');
-        const translatePhrases = bull.queues.get('translate-phrases');
-        const openStartup = bull.queues.get('open-startup');
+        // const translateMarkdown = bull.queues.get('translate-markdown');
+        // const translatePhrases = bull.queues.get('translate-phrases');
 
         await Promise.all([
           (async () => {
@@ -61,31 +60,25 @@ if (!module.parent) {
           pSeries([
             () => removeUnverifiedUsers.empty(),
             () => removeUnverifiedUsers.add()
-          ]),
-          pSeries([
-            // clear any existing jobs
-            () => translateMarkdown.empty()
-            // add the recurring job
-            // () => translateMarkdown.add(),
-            // add an initial job when the process starts
-            // () => translateMarkdown.add(null, { repeat: false })
-          ]),
-          pSeries([
-            // clear any existing jobs
-            () => translatePhrases.empty()
-            // add the recurring job
-            // () => translatePhrases.add(),
-            // add an initial job when the process starts
-            // () => translatePhrases.add(null, { repeat: false })
-          ]),
-          pSeries([
-            // clear any existing jobs
-            () => openStartup.empty()
-            // add the recurring job
-            // () => openStartup.add(),
-            // add an initial job when the process starts
-            // () => openStartup.add(null, { repeat: false })
           ])
+          /*
+          pSeries([
+            // clear any existing jobs
+            () => translateMarkdown.empty(),
+            // add the recurring job
+            () => translateMarkdown.add(),
+            // add an initial job when the process starts
+            () => translateMarkdown.add(null, { repeat: false })
+          ]),
+          pSeries([
+            // clear any existing jobs
+            () => translatePhrases.empty(),
+            // add the recurring job
+            () => translatePhrases.add(),
+            // add an initial job when the process starts
+            () => translatePhrases.add(null, { repeat: false })
+          ])
+          */
         ]);
 
         cluster.on('online', worker => {
