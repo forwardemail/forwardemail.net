@@ -1,0 +1,1230 @@
+{
+  "3": "3",
+  "7": "7",
+  "9": "9",
+  "15": "15",
+  "200": "200",
+  "400": "400",
+  "401": "401",
+  "403": "403",
+  "404": "404",
+  "429": "429",
+  "500": "500",
+  "501": "501",
+  "502": "502",
+  "503": "503",
+  "504": "504",
+  "587": "587",
+  "Forward Email": "إعادة توجيه البريد الإلكتروني",
+  "ForwardEmail.net": "ForwardEmail.net",
+  "Free Email Forwarding for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "إعادة توجيه البريد الإلكتروني للنطاقات المخصصة &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Success": "نجاح",
+  "Error": "خطأ",
+  "Info": "معلومات",
+  "Warning": "تحذير",
+  "Question": "سؤال",
+  "OK": "حسنا",
+  "Cancel": "إلغاء",
+  "Close this dialog": "أغلق مربع الحوار هذا",
+  "Are you sure?": "هل أنت واثق؟",
+  "Please confirm if you wish to continue.": "يرجى تأكيد ما إذا كنت ترغب في المتابعة.",
+  "Ask a question": "طرح سؤال",
+  "Have you read our <a href=\"%s\" target=\"_blank\" rel=\"noopener\">FAQ</a> yet?": "هل قرأت <a href=\"%s\" target=\"_blank\" rel=\"noopener\">الأسئلة الشائعة</a> لدينا حتى الآن؟",
+  "Email address": "عنوان بريد الكتروني",
+  "Write your message": "اكتب رسالتك",
+  "Message": "رسالة",
+  "We'll be in contact with you!": "سنكون على اتصال بك!",
+  "Send message": "أرسل رسالة",
+  "Sign up now": "أفتح حساب الأن",
+  "Sign up with Google": "اشترك مع جوجل",
+  "Sign up with GitHub": "قم بالتسجيل مع جيثب",
+  "or": "أو",
+  "Password": "كلمه السر",
+  "Sign Up": "سجل",
+  "Have an account?": "هل لديك حساب؟",
+  "Sign in": "تسجيل الدخول",
+  "Read our <a href=\"%s\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">Terms</a>": "اقرأ <a href=\"%s\" target=\"_blank\" rel=\"noopener\">سياسة الخصوصية</a> <a href=\"%s\" target=\"_blank\" rel=\"noopener\">وشروطنا</a>",
+  "Welcome back!": "مرحبا بعودتك!",
+  "Sign in with Google": "الدخول مع جوجل",
+  "Sign in with GitHub": "تسجيل الدخول باستخدام GitHub",
+  "Forget your password?": "نسيت كلمة المرور؟",
+  "Sign In": "تسجيل الدخول",
+  "Don't have an account?": "لا تملك حساب؟",
+  "Sign up": "سجل",
+  "Toggle navigation": "تبديل التنقل",
+  "Home": "الصفحة الرئيسية",
+  "Pricing": "التسعير",
+  "About": "حول",
+  "FAQ": "التعليمات",
+  "Help": "مساعدة",
+  "Sign up for free": "سجل مجانا",
+  "👋 We <u class=\"font-weight-bold\">do not keep logs nor store emails</u>. We don't track you. 🎉": "👋 <u class=\"font-weight-bold\">لا نحتفظ</u> بالسجلات <u class=\"font-weight-bold\">ولا نخزن رسائل البريد الإلكتروني</u> . نحن لا نتعقبك. 🎉",
+  "👋 We <u class=\"font-weight-bold\">do not keep logs nor store emails</u>. Period. 🎉": "👋 <u class=\"font-weight-bold\">لا نحتفظ</u> بالسجلات <u class=\"font-weight-bold\">ولا نخزن رسائل البريد الإلكتروني</u> . فترة. 🎉",
+  "Free Email Forwarding": "إعادة توجيه البريد الإلكتروني المجاني",
+  "Create and forward an unlimited amount of email addresses with your domain name.": "إنشاء وإعادة توجيه كمية غير محدودة من عناوين البريد الإلكتروني مع اسم المجال الخاص بك.",
+  "Plus get catch-all, wildcard, and disposable email addresses!": "بالإضافة إلى الحصول على عناوين البريد الإلكتروني الشاملة ، وحرف البدل ، والتخلص منها!",
+  "No credit card required": "بطاقة الإئتمان غير مطالب بها",
+  "Learn more": "أعرف أكثر",
+  "Protect your inbox.": "حماية بريدك الوارد.",
+  "We use industry standard email header validation and signature checks, spam prevention tools, DNS blacklist lookups, and domain verification.  All powered by Cloudflare's <a href=\"https://blog.cloudflare.com/announcing-1111/\" target=\"_blank\" rel=\"noopener\" class=\"text-white\">privacy-first consumer DNS service</a>.": "نحن نستخدم التحقق من رأس البريد الإلكتروني القياسي والتحقق من التوقيع ، وأدوات منع البريد العشوائي ، وعمليات البحث في القائمة السوداء لنظام أسماء النطاقات ، والتحقق من النطاق. كلها مدعومة بخدمة <a href=\"https://blog.cloudflare.com/announcing-1111/\" target=\"_blank\" rel=\"noopener\" class=\"text-white\">DNS المستهلك الخصوصية الأولى</a> .",
+  "Stay protected": "ابق محميًا",
+  "Our Features": "ميزاتنا",
+  "Privacy First": "الخصوصية أولاً",
+  "We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption and a zero-tolerance policy for logs of any kind.": "أنشأنا هذه الخدمة لأن لديك الحق في الخصوصية. الخدمات القائمة لم تحترمها. نستخدم تشفيرًا قويًا وسياسة عدم التسامح مطلقًا مع السجلات من أي نوع.",
+  "Regain your privacy": "استعادة خصوصيتك",
+  "Disposable Addresses": "عناوين يمكن التخلص منها",
+  "Create a specific or an anonymous email address that forwards to you.  You can even assign it a label and enable or disable it at any time to keep your inbox tidy.  Your actual email address is never exposed.": "أنشئ عنوان بريد إلكتروني محددًا أو مجهولًا يعيد توجيهه إليك. يمكنك حتى تعيينه وتمكينه أو تعطيله في أي وقت للحفاظ على بريدك الوارد مرتبًا. لا يتم الكشف عن عنوان بريدك الإلكتروني الفعلي.",
+  "Disposable addresses": "عناوين يمكن التخلص منها",
+  "Multiple Recipients and Wildcards": "مستلمون متعددون وحرف بدل",
+  "You can forward a single address to multiple, and even use wildcard addresses &ndash; also known as catch-all's.  Managing your company's inboxes has never been easier.": "يمكنك إعادة توجيه عنوان واحد إلى عدة ، وحتى استخدام عناوين البدل و ndash ؛ يُعرف أيضًا باسم ميزة الالتقاط. لم تكن إدارة البريد الوارد لشركتك أسهل من أي وقت مضى.",
+  "Start forwarding now": "ابدأ إعادة التوجيه الآن",
+  "\"Send mail as\" with Gmail": "\"إرسال البريد باسم\" مع Gmail",
+  "You'll never have to leave your inbox to send out emails as if they're from your company.  Send and reply-to messages as if they're from you@company.com directly from you@gmail.com.": "لن تضطر أبدًا إلى مغادرة بريدك الوارد لإرسال رسائل البريد الإلكتروني كما لو كانت من شركتك. أرسل الرسائل والرد عليها كما لو كانت من you@company.com مباشرة من you@gmail.com.",
+  "Configure your inbox": "تكوين البريد الوارد الخاص بك",
+  "100% open-source.": "100٪ مفتوح المصدر.",
+  "Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.  Made by <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener\">@niftylettuce</a>, an open-source enthusiast and privacy advocate.": "على عكس الخدمات الأخرى ، نحن <u>لا</u> نحتفظ بالسجلات أو البيانات الوصفية ، <u>ولا</u> نقرأ رسائل البريد الإلكتروني <u>مطلقًا</u> ، ونحن مفتوح المصدر <u>بنسبة 100٪</u> . من <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener\">إعدادniftylettuce</a> ، متحمس مفتوح المصدر ومناصر للخصوصية.",
+  "View source code": "عرض رمز المصدر",
+  "Our Numbers": "أرقامنا",
+  "99.99%": "99.99٪",
+  "Service Uptime": "وقت تشغيل الخدمة",
+  "Global Servers": "خوادم عالمية",
+  "20K+": "20 ألف +",
+  "Active Users": "المستخدمين النشطين",
+  "Trusted by the community": "موثوق به من قبل المجتمع",
+  "1,000+ Stars": "1000+ نجمة",
+  "Need help?": "تحتاج مساعدة؟",
+  "English": "الإنجليزية",
+  "Arabic": "عربى",
+  "Chinese": "صينى",
+  "Czech": "التشيكية",
+  "Danish": "دانماركي",
+  "Dutch": "هولندي",
+  "Finnish": "الفنلندية",
+  "French": "فرنسي",
+  "German": "ألمانية",
+  "Hebrew": "اللغة العبرية",
+  "Hungarian": "المجري",
+  "Indonesian": "الإندونيسية",
+  "Italian": "إيطالي",
+  "Japanese": "اليابانية",
+  "Korean": "الكورية",
+  "Norwegian": "النرويجية",
+  "Polish": "تلميع",
+  "Portuguese": "البرتغالية",
+  "Russian": "الروسية",
+  "Spanish": "الأسبانية",
+  "Swedish": "السويدية",
+  "Thai": "التايلاندية",
+  "Turkish": "اللغة التركية",
+  "Français": "فرنسي",
+  "Ukrainian": "الأوكرانية",
+  "Vietnamese": "الفيتنامية",
+  "Resources": "مصادر",
+  "Free Disposable Addresses": "عناوين مجانية يمكن التخلص منها",
+  "Domain Registration": "تسجيل النطاقات",
+  "Reserved Email Addresses": "عناوين البريد الإلكتروني المحجوزة",
+  "List of ports blocked by ISPs": "قائمة الموانئ المحظورة من قبل ISPs",
+  "Guides": "خطوط إرشاد",
+  "Port 25 blocked by ISP workaround": "تم حظر المنفذ 25 بواسطة حل ISP",
+  "Developers": "المطورين",
+  "Free Email Webhooks": "بريد إلكتروني مجاني",
+  "API Documentation": "وثائق API",
+  "Releases": "إطلاق",
+  "Coming soon": "قريبا",
+  "Status Page": "صفحة الحالة",
+  "Source Code": "مصدر الرمز",
+  "Company": "شركة",
+  "Open Startup": "افتح برنامج بدء التشغيل",
+  "Donate": "تبرع",
+  "Privacy": "خصوصية",
+  "Terms": "شروط",
+  "Twitter": "تويتر",
+  "GitHub": "جيثب",
+  "Email": "البريد الإلكتروني",
+  "Domain does not exist on your account.": "المجال غير موجود في حسابك.",
+  "FAQ &#124; <span class=\"notranslate\">Forward Email</span>": "التعليمات &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Read frequently asked questions about our service": "اقرأ الأسئلة المتداولة حول خدمتنا",
+  "My Account": "حسابي",
+  "Domains": "المجالات",
+  "Profile": "الملف الشخصي",
+  "Security": "الأمان",
+  "Log out": "تسجيل خروج",
+  "⏰ Save Yourself Time": "⏰ وفر نفسك",
+  "Want to make the entire FAQ below tailored for you and easier to read?": "هل تريد جعل الأسئلة الشائعة بالكامل أدناه مصممة خصيصًا لك وتسهل قراءتها؟",
+  "Enter your domain": "أدخل المجال الخاص بك",
+  "Enter your email": "أدخل بريدك الإلكتروني",
+  "Add this domain to your account (if it does not exist)": "أضف هذا المجال إلى حسابك (إذا لم يكن موجودًا)",
+  "Continue": "استمر",
+  "Not interested?  Click here to keep reading": "لست مهتمًا؟ انقر هنا لمواصلة القراءة",
+  "한국어": "الكورية",
+  "Pricing &#124; <span class=\"notranslate\">Forward Email</span>": "التسعير &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Free email forwarding for domains with features including Custom Domain Email Forwarding, Disposable Addresses, Multiple Recipients, Wildcards, and more!": "إعادة توجيه بريد إلكتروني مجانية للنطاقات مع ميزات بما في ذلك إعادة توجيه البريد الإلكتروني للنطاق المخصص وعناوين يمكن التخلص منها ومتلقين متعددين وحرف بدل والمزيد!",
+  "We strive for perfection": "نحن نسعى جاهدين للكمال",
+  "Lightning fast email service.": "خدمة البريد الإلكتروني بسرعة البرق.",
+  "All paid plans are completely free during our beta program.  We'll send reminders to make payment when it has ended.": "جميع الخطط المدفوعة مجانية تمامًا خلال برنامجنا التجريبي. سنرسل تذكيرات لإجراء الدفع عندما ينتهي.",
+  "Free": "مجانا",
+  "Basic plan to get started": "الخطة الأساسية للبدء",
+  "Unlimited custom domain names": "أسماء نطاقات مخصصة غير محدودة",
+  "Unlimited email addresses and aliases": "عدد غير محدود من عناوين البريد الإلكتروني والأسماء المستعارة",
+  "Unlimited disposable email addresses": "عدد غير محدود من عناوين البريد الإلكتروني",
+  "Use a custom domain or one of our free vanity domains:": "استخدم مجالًا مخصصًا أو أحد نطاقاتنا المجانية:",
+  "Spam and phishing protection": "الحماية من البريد الإلكتروني العشوائي والتصيد",
+  "50MB attachment limit": "حد المرفقات 50 ميغابايت",
+  "\"Send mail as\" with Gmail, Outlook, and Yahoo": "\"إرسال البريد باسم\" مع Gmail و Outlook و Yahoo",
+  "Catch-all email addresses": "عناوين البريد الإلكتروني الشاملة",
+  "Multiple recipients per email address": "عدة مستلمين لكل عنوان بريد إلكتروني",
+  "Unlimited email webhooks": "عدد غير محدود من رسائل البريد الإلكتروني",
+  "Custom port forwarding": "إعادة توجيه المنفذ المخصص",
+  "month": "شهر",
+  "Unlimited domains": "مجالات غير محدودة",
+  "Setup Forwarding": "إعادة توجيه الإعداد",
+  "Enhanced Protection": "حماية محسنة",
+  "Advanced features and support": "الميزات والدعم المتقدم",
+  "Everything included in Free, plus:": "كل شيء متضمن في Free ، بالإضافة إلى:",
+  "Enhanced email forwarding privacy": "خصوصية محسنة لإعادة توجيه البريد الإلكتروني",
+  "No publicly searchable TXT records are used.  Instead we store your configuration in a secure and backed-up database.": "لا يتم استخدام سجلات TXT قابلة للبحث بشكل عام. بدلاً من ذلك ، نقوم بتخزين التكوين الخاص بك في قاعدة بيانات آمنة ومدعومة.",
+  "Instant DNS propagation (zero wait-time)": "انتشار DNS الفوري (وقت انتظار صفر)",
+  "Easy to use email alias and import manager": "من السهل استخدام الاسم المستعار للبريد الإلكتروني ومدير الاستيراد",
+  "Automatic smart alerting system": "نظام تنبيه ذكي تلقائي",
+  "Browser extension": "ملحق المستعرض",
+  "Exclusive access to API features": "وصول خاص لميزات API",
+  "Forward newsletters to a bulk recipient list": "إعادة توجيه الرسائل الإخبارية إلى قائمة المستلمين المجمعة",
+  "30-day money back guarantee": "ضمان استرداد الأموال لمدة 30 يومًا",
+  "99.99% Uptime Service Level Agreement (\"SLA\")": "اتفاقية مستوى خدمة وقت التشغيل بنسبة 99.99٪ (\"اتفاقية مستوى الخدمة\")",
+  "Team": "الفريق",
+  "For small groups and organizations": "للمجموعات والمنظمات الصغيرة",
+  "Everything included in Enhanced Protection, plus:": "كل شيء مشمول في الحماية المحسنة ، بالإضافة إلى:",
+  "Unlimited member access management": "إدارة وصول الأعضاء غير محدودة",
+  "Shared organizational access to domain": "الوصول التنظيمي المشترك إلى المجال",
+  "Premium support with 24 hour response time": "دعم متميز بوقت استجابة 24 ساعة",
+  "Enterprise": "مشروع - مغامرة",
+  "Custom solutions and licensing": "حلول مخصصة وترخيص",
+  "Everything included in Team, plus:": "كل شيء مشمول في الفريق ، بالإضافة إلى:",
+  "Custom licensing agreement": "اتفاقية ترخيص جمركي",
+  "Technical infrastructure design and support": "تصميم ودعم البنية التحتية التقنية",
+  "White-label and custom-branded solutions": "حلول البطاقة البيضاء والعلامة التجارية المخصصة",
+  "Managed deployment with dedicated IP's": "النشر المُدار بواسطة عناوين IP المخصصة",
+  "Dedicated support from our team of experts": "دعم مخصص من فريق الخبراء لدينا",
+  "Contact Sales": "مبيعات الاتصال",
+  "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"nofollow\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"nofollow\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "نحن نقبل بطاقات الائتمان باستخدام <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"nofollow\">Stripe</a> والدفع مع <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"nofollow\">PayPal</a> - للمدفوعات لمرة واحدة والاشتراكات الشهرية أو السنوية.",
+  "Türkçe": "اللغة التركية",
+  "Hello": "مرحبا",
+  "It looks like you accidentally included \"www.\" in your domain name.  Did you mean example.com instead of www.example.com?": "يبدو أنك أدرجت بطريق الخطأ \"www\". في اسم المجال الخاص بك. هل تقصد example.com بدلاً من www.example.com؟",
+  "Invalid API credentials.": "بيانات اعتماد API غير صالحة.",
+  "Invalid API token.": "رمز API غير صالح.",
+  "Email address was invalid.": "عنوان البريد الإلكتروني غير صالح.",
+  "File upload was invalid.": "تحميل الملف غير صالح.",
+  "Your message was invalid, as it was either blank or more than (5000) characters.": "رسالتك غير صالحة ، لأنها كانت فارغة أو أكثر من (5000) حرف.",
+  "Password was invalid.": "كلمة المرور غير صالحة.",
+  "Password confirmation did not match new password.": "لم يتطابق تأكيد كلمة المرور مع كلمة المرور الجديدة.",
+  "Password strength was not strong enough.": "لم تكن قوة كلمة المرور قوية بما يكفي.",
+  "Invalid port number.": "رقم منفذ غير صالح.",
+  "We do not support this authentication provider.": "لا ندعم موفر المصادقة هذا.",
+  "Invalid recovery key.": "مفتاح الاسترداد غير صالح.",
+  "Reset token and email were not valid together.": "رمز إعادة الضبط والبريد الإلكتروني لم يكنا صالحين معًا.",
+  "Reset token provided was invalid.": "رمز إعادة التعيين المقدم غير صالح.",
+  "Invalid session secret.": "سر الجلسة غير صالح.",
+  "Please slightly change values to ensure slug uniqueness.": "يرجى تغيير القيم قليلاً لضمان تفرد سبيكة.",
+  "<span class=\"notranslate\">%s</span> was missing or blank.": "<span class=\"notranslate\">%s</span> مفقود أو فارغ.",
+  "User does not exist.": "المستخدم غير موجود.",
+  "Invalid CSRF token.": "رمز CSRF غير صالح.",
+  "The verification code entered was invalid.": "رمز التحقق الذي تم إدخاله غير صالح.",
+  "Please verify your email address to continue.": "يرجى التحقق من عنوان بريدك الإلكتروني للمتابعة.",
+  "Please wait for <span class=\"notranslate\">%s</span> and try again.": "الرجاء الانتظار <span class=\"notranslate\">%s</span> والمحاولة مرة أخرى.",
+  "Your email address has been successfully verified.": "تم التحقق من عنوان بريدك الإلكتروني بنجاح.",
+  "Your email address is already verified.": "تم التحقق من عنوان بريدك الإلكتروني بالفعل.",
+  "A verification code has been sent to your email address.": "تم إرسال رمز التحقق إلى عنوان بريدك الإلكتروني.",
+  "Your current email verification code has expired and we have sent a new one to your email address.": "انتهت صلاحية رمز التحقق من بريدك الإلكتروني الحالي وأرسلنا رمزًا جديدًا إلى عنوان بريدك الإلكتروني.",
+  "Invalid two-factor authentication passcode.": "رمز مرور المصادقة الثنائية غير صالح.",
+  "You do not belong to the administrative user group.": "أنت لا تنتمي إلى مجموعة المستخدمين الإدارية.",
+  "Please log in with two-factor authentication to continue.": "يرجى تسجيل الدخول باستخدام المصادقة ذات العاملين للمتابعة.",
+  "Please log in or sign up to view the page you requested.": "يرجى تسجيل الدخول أو الاشتراك لعرض الصفحة التي طلبتها.",
+  "Please log out to view the page you requested.": "يرجى تسجيل الخروج لعرض الصفحة التي طلبتها.",
+  "Alias does not exist on the domain.": "الاسم المستعار غير موجود على المجال.",
+  "Add a domain name to your account to continue.": "أضف اسم مجال إلى حسابك للمتابعة.",
+  "Add a new alias to continue.": "أضف اسمًا مستعارًا جديدًا للمتابعة.",
+  "Domain name was invalid (must be an IP or FQDN).": "اسم المجال غير صالح (يجب أن يكون IP أو FQDN).",
+  "Domain name was invalid (must be a FQDN).": "اسم المجال غير صالح (يجب أن يكون FQDN).",
+  "Add Alias": "أضف اسم مستعار",
+  "User must be a domain admin to create a catch-all alias.": "يجب أن يكون المستخدم مسؤول مجال لإنشاء اسم مستعار شامل.",
+  "Alias already exists for domain.": "الاسم المستعار موجود بالفعل للنطاق.",
+  "Domain's DNS records have been verified.": "تم التحقق من سجلات DNS للمجال.",
+  "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>).": "يجب أن يكون المستخدم مسؤول مجال لإنشاء اسم مستعار بكلمة محجوزة (راجع الصفحة الموجودة على <a target=\"_blank\" rel=\"noopener\" href=\"%s/reserved-email-addresses\">عناوين البريد الإلكتروني المحجوزة</a> ).",
+  "User cannot have more than (5) aliases on global domains.": "لا يمكن أن يكون لدى المستخدم أكثر من (5) أسماء مستعارة على المجالات العامة.",
+  "You have exceeded the maximum count of (<span class=\"notranslate\">%s</span>) recipients per alias.  Please <a href=\"/help\">contact us</a> if you wish to have this limit increased.  We review requests on a unique basis.  Please provide us with information about your forwarding purposes if possible.": "لقد تجاوزت الحد الأقصى لعدد ( <span class=\"notranslate\">%s</span> ) مستلم لكل اسم مستعار. يرجى <a href=\"/help\">الاتصال بنا</a> إذا كنت ترغب في زيادة هذا الحد. نراجع الطلبات على أساس فريد. يرجى تزويدنا بمعلومات حول أغراض إعادة التوجيه الخاصة بك إن أمكن.",
+  "Domain does not exist.": "المجال غير موجود.",
+  "Invite does not exist with your email address for this domain.": "الدعوة غير موجودة مع عنوان بريدك الإلكتروني لهذا المجال.",
+  "Domain already exists on your account.": "المجال موجود بالفعل في حسابك.",
+  "Your account is currently an admin of one or more domain names.  Please delete these domains or remove yourself from them to continue.": "حسابك حاليًا مسؤول عن اسم نطاق واحد أو أكثر. يرجى حذف هذه المجالات أو إزالة نفسك منها للمتابعة.",
+  "Your account was successfully deleted.": "تم حذف حسابك بنجاح.",
+  "You can only request a password reset every 30 minutes.  Please try again <span class=\"notranslate\">%s</span>.": "يمكنك فقط طلب إعادة تعيين كلمة المرور كل 30 دقيقة. يرجى المحاولة مرة أخرى <span class=\"notranslate\">%s</span> .",
+  "We have emailed you a link to reset your password.": "لقد أرسلنا لك عبر البريد الإلكتروني رابطًا لإعادة تعيين كلمة المرور الخاصة بك.",
+  "Password successfully confirmed.": "تم تأكيد كلمة المرور بنجاح.",
+  "Empty Recovery Keys": "مفاتيح الاسترداد فارغة",
+  "You have run out of recovery keys. Please download the newly generated recovery keys before continuing.": "لقد نفدت مفاتيح الاسترداد. يرجى تنزيل مفاتيح الاسترداد التي تم إنشاؤها حديثًا قبل المتابعة.",
+  "Recovery key successful. This key will no longer be valid.": "نجاح مفتاح الاسترداد. لن يكون هذا المفتاح صالحًا.",
+  "You have successfully registered.": "لقد قمت بالتسجيل بنجاح.",
+  "You have successfully signed in.": "لقد قمت بتسجيل الدخول بنجاح.",
+  "You are already signed in.": "انت مسجل مسبقا.",
+  "Your request was successfully completed.": "تم إكمال طلبك بنجاح.",
+  "Sorry, your request has timed out.  We have been alerted of this issue.  Please try again.": "عذرا ، انتهت مهلة طلبك. لقد تم تنبيهنا بهذه المشكلة. حاول مرة اخرى.",
+  "You have successfully set a new password.": "لقد قمت بتعيين كلمة مرور جديدة بنجاح.",
+  "You have successfully signed out.": "لقد قمت بتسجيل الخروج بنجاح.",
+  "Your email has been successfully verified. You should receive a support email from an admin within the next 3-5 business days.": "تم التحقق من بريدك الإلكتروني بنجاح. من المفترض أن تتلقى بريدًا إلكترونيًا للدعم من أحد المسؤولين خلال 3-5 أيام عمل قادمة.",
+  "We were unable to send your help request.  We have been alerted of this problem.  Please try again.": "لم نتمكن من إرسال طلب المساعدة الخاص بك. لقد تم تنبيهنا من هذه المشكلة. حاول مرة اخرى.",
+  "You have reached the limit for sending help requests.  Please try again.": "لقد وصلت إلى الحد الأقصى لإرسال طلبات المساعدة. حاول مرة اخرى.",
+  "Thank you for contacting us.  We would love to hear more from you.  How can we help?": "أشكركم على الاتصال بنا. نود أن نسمع المزيد منك. كيف يمكن أن نساعد؟",
+  "Your help request has been sent successfully.  You should hear from us soon.  Thank you!": "تم إرسال طلب المساعدة الخاص بك بنجاح. يجب أن تسمع منا قريبًا. شكرا لك!",
+  "An unknown error has occurred. We have been alerted of this issue. Please try again.": "حدث خطأ غير معروف. لقد تم تنبيهنا بهذه المشكلة. حاول مرة اخرى.",
+  "Please enter a password.": "من فضلك أدخل كلمة سر.",
+  "Account is currently locked due to rate limiting.  Please try again later.": "الحساب مغلق حاليًا بسبب تحديد السعر. الرجاء معاودة المحاولة في وقت لاحق.",
+  "Account is currently locked due to too many failed login attempts.  Please try again later.": "الحساب مغلق حاليًا بسبب محاولات تسجيل الدخول الفاشلة. الرجاء معاودة المحاولة في وقت لاحق.",
+  "Please log in with Google or GitHub and set your password in order to be able to log in with your email address.": "يرجى تسجيل الدخول باستخدام Google أو GitHub وتعيين كلمة المرور الخاصة بك لتتمكن من تسجيل الدخول باستخدام عنوان بريدك الإلكتروني.",
+  "Email address or password is incorrect.": "عنوان البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "Please enter an email address.": "الرجاء إدخال عنوان البريد الإلكتروني.",
+  "A user with the given email address is already registered.  Please try to log in or reset the password if this account belongs to you.": "تم تسجيل مستخدم لديه عنوان بريد إلكتروني معين بالفعل. يرجى محاولة تسجيل الدخول أو إعادة تعيين كلمة المرور إذا كان هذا الحساب لك.",
+  "Upgrade Plan": "خطة الترقية",
+  "Invalid plan selected.": "تم تحديد خطة غير صالحة.",
+  "Please upgrade to a paid plan to unlock this feature.": "يرجى الترقية إلى خطة مدفوعة لفتح هذه الميزة.",
+  "You have successfully accepted the invite to this domain and are an admin.": "لقد قبلت الدعوة إلى هذا المجال بنجاح وأنت مسؤول.",
+  "You have successfully accepted the invite to this domain and you can now create your first alias.": "لقد قبلت الدعوة إلى هذا المجال بنجاح ويمكنك الآن إنشاء اسمك المستعار الأول.",
+  "An error occurred while emailing the invite link.  Please manually copy the the invite link and share it with this person if needed.": "حدث خطأ أثناء إرسال رابط الدعوة بالبريد الإلكتروني. يرجى نسخ رابط الدعوة يدويًا ومشاركته مع هذا الشخص إذا لزم الأمر.",
+  "Group was invalid, must be either admin or user.": "المجموعة غير صالحة ، يجب أن تكون إما المشرف أو المستخدم.",
+  "Invite was already sent to this email address.  Please manually copy the invite link and share it with this person if needed.": "تم إرسال الدعوة بالفعل إلى عنوان البريد الإلكتروني هذا. يرجى نسخ رابط الدعوة يدويًا ومشاركته مع هذا الشخص إذا لزم الأمر.",
+  "Enhanced Protection and Team plans are currently free and in our final testing and beta program phase.  Once they are released, you will be emailed and will have 30 days to enter your billing information.  Thank you!": "خطط الحماية المعززة وخطط الفريق مجانية حاليًا وفي مرحلة الاختبار النهائي وبرنامج المرحلة التجريبية. بمجرد الإفراج عنهم ، سيتم إرسال بريد إلكتروني إليك وسيكون لديك 30 يومًا لإدخال معلومات الفواتير الخاصة بك. شكرا لك!",
+  "You have successfully downgraded to the Free Plan.": "لقد نجحت في الرجوع إلى الخطة المجانية بنجاح.",
+  "You have successfully upgraded to the Enhanced Protection Plan.": "لقد نجحت في الترقية إلى خطة الحماية المحسنة.",
+  "You have successfully upgraded to the Team Plan.": "لقد نجحت في الترقية إلى خطة الفريق.",
+  "Your account has been banned.": "تم حظر الحساب الخاص بك.",
+  "Domain is not a registered domain name. <a href=\"/domain-registration\">Click here to register it now</a>.": "المجال ليس اسم مجال مسجل. <a href=\"/domain-registration\">انقر هنا لتسجيله الآن</a> .",
+  "Domain is missing required DNS TXT records. <a href=\"/faq?domain=%s\" target=\"_blank\">Read our FAQ</a> for detailed instructions.": "يفتقد المجال سجلات TXT لنظام أسماء النطاقات المطلوبة. <a href=\"/faq?domain=%s\" target=\"_blank\">اقرأ الأسئلة الشائعة</a> للحصول على تعليمات مفصلة.",
+  "Domain has multiple verification records.  Please ensure there is only one verification record that exists.": "يحتوي المجال على سجلات تحقق متعددة. يرجى التأكد من وجود سجل تحقق واحد فقط.",
+  "Domain has multiple port records.  Please ensure there is only one port record that exists.": "يحتوي المجال على سجلات منفذ متعددة. يرجى التأكد من وجود سجل منفذ واحد فقط.",
+  "At least one admin user must belong to the domain.": "يجب أن ينتمي مستخدم مسؤول واحد على الأقل إلى المجال.",
+  "Verification record must only use characters A-Z and numbers 0-9.": "يجب ألا يستخدم سجل التحقق سوى الأحرف من A إلى Z والأرقام من 0 إلى 9.",
+  "<p class=\"mb-0\">Domain is missing required DNS MX records of:</p><ul class=\"markdown-body ml-0 mr-0 mb-3\"><span class=\"notranslate\">%s</span></ul><p class=\"mb-0\">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren't the same).<a href=\"/faq?domain=%s\" target=\"_blank\">Read our FAQ</a> for detailed instructions.</p>": "<p class=\"mb-0\" style=\";text-align:right;direction:rtl\"> يفتقد المجال سجلات DNS DNS المطلوبة لـ: </p><ul class=\"markdown-body ml-0 mr-0 mb-3\" style=\";text-align:right;direction:rtl\"> <span class=\"notranslate\">%s</span> </ul> <p class=\"mb-0\" style=\";text-align:right;direction:rtl\"> يُرجى التأكد من عدم وجود أي أخطاء إملائية وإضافة كل من السجلات الفريدة (على سبيل المثال ، تأكد من أن كلا السجلين ليسا متطابقين). <a href=\"/faq?domain=%s\" target=\"_blank\">اقرأ الأسئلة الشائعة</a> للحصول على تعليمات مفصلة. </p>",
+  "Domain is missing required DNS TXT record of: <span class=\"notranslate\">%s</span>": "يفتقد المجال سجل TXT لـ DNS المطلوب لـ: <span class=\"notranslate\">%s</span>",
+  "Domain has an incorrect DNS TXT record for verification.  Please ensure <span class=\"notranslate\">%s</span> is the only verification record that exists.": "يحتوي النطاق على سجل TXT DNS غير صحيح للتحقق. يرجى التأكد من أن <span class=\"notranslate\">%s</span> هو سجل التحقق الوحيد الموجود.",
+  "Domain has multiple verification records.  Please ensure <span class=\"notranslate\">%s</span> is the only verification record that exists.": "يحتوي المجال على سجلات تحقق متعددة. يرجى التأكد من أن <span class=\"notranslate\">%s</span> هو سجل التحقق الوحيد الموجود.",
+  "If you recently updated your DNS records for <span class=\"notranslate\">%s</span>, then you should purge its cache using <a href=\"https://1.1.1.1/purge-cache/\" rel=\"noopener\" target=\"_blank\">Cloudflare's Purge Cache Tool</a> and optionally <a href=\"https://developers.google.com/speed/public-dns/cache\" rel=\"noopener\" target=\"_blank\">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.": "إذا قمت مؤخرًا بتحديث سجلات DNS الخاصة بك لـ <span class=\"notranslate\">%s</span> ، فيجب عليك <a href=\"https://1.1.1.1/purge-cache/\" rel=\"noopener\" target=\"_blank\">مسح</a> ذاكرة التخزين المؤقت الخاصة به باستخدام <a href=\"https://1.1.1.1/purge-cache/\" rel=\"noopener\" target=\"_blank\">Cloudflare&#39;s Purge Cache Tool</a> وبشكل اختياري <a href=\"https://1.1.1.1/purge-cache/\" rel=\"noopener\" target=\"_blank\">أداة Purge Cache Tool من</a> <a href=\"https://developers.google.com/speed/public-dns/cache\" rel=\"noopener\" target=\"_blank\">Google</a> . لاحظ أنه في بعض الأحيان قد يستغرق الأمر 30 دقيقة إلى 24 ساعة (اعتمادًا على موقعك ومزود الخدمة) حتى ينتهي نشر DNS على الإنترنت.",
+  "Could not import \"<span class=\"notranslate\">%s</span>\" record's recipient of \"<span class=\"notranslate\">%s</span>\" since it already exists as an alias.": "تعذر استيراد مستلم سجل &quot; <span class=\"notranslate\">%s</span> &quot; لـ &quot; <span class=\"notranslate\">%s</span> &quot; لأنه موجود بالفعل كاسم مستعار.",
+  "We successfully imported the disabled address of \"<span class=\"notranslate\">%s</span>\", but we had to do so with a single recipient of \"nobody@forwardemail.net\" because it did not have a recipient in the imported DNS entry.": "نجحنا في استيراد العنوان المعطل لـ &quot; <span class=\"notranslate\">%s</span> &quot; ، ولكن كان علينا القيام بذلك مع مستلم واحد من &quot;nobody@forwardemail.net&quot; لأنه لم يكن لديه مستلم في إدخال DNS المستورد.",
+  "Could not import catch-all record's recipient of \"<span class=\"notranslate\">%s</span>\" since the catch-all already includes it as a recipient.": "تعذّر استيراد مستلم سجل استقبال الرسائل الخاطئة لـ &quot; <span class=\"notranslate\">%s</span> &quot; حيث أن أداة استقبال الرسائل الخاطئة تتضمنه بالفعل كمستلم.",
+  "Successfully imported (<span class=\"notranslate\">%d</span>) aliases.": "تم استيراد الأسماء المستعارة ( <span class=\"notranslate\">%d</span> ) بنجاح.",
+  "An error occurred while importing aliases.": "حدث خطأ أثناء استيراد الأسماء المستعارة.",
+  "No aliases were available to import.": "لم تكن هناك أسماء مستعارة متاحة للاستيراد.",
+  "Successfully imported (<span class=\"notranslate\">%d</span>) catch-all recipients.": "تم استيراد مستلم ( <span class=\"notranslate\">%d</span> ) بنجاح.",
+  "An error occurred while importing catch-all recipients.": "حدث خطأ أثناء استيراد مستلمي استقبال الرسائل الخاطئة.",
+  "No catch-all recipients were available to import.": "لم يكن هناك مستلمون جميعهم متاحون للاستيراد.",
+  "Multiple errors occurred during record verification.": "حدثت أخطاء متعددة أثناء التحقق من السجل.",
+  "User is already an accepted member of this domain": "المستخدم عضو مقبول بالفعل في هذا المجال",
+  "Our metrics are not available, please check back later.": "مقاييسنا غير متاحة ، يرجى التحقق مرة أخرى لاحقًا.",
+  "Sunday": "الأحد",
+  "Monday": "الإثنين",
+  "Tuesday": "الثلاثاء",
+  "Wednesday": "الأربعاء",
+  "Thursday": "الخميس",
+  "Friday": "يوم الجمعة",
+  "Saturday": "يوم السبت",
+  "Week": "أسبوع",
+  "Users": "المستخدمون",
+  "Aliases": "اسماء مستعارة",
+  "Donate &#124; <span class=\"notranslate\">Forward Email</span>": "تبرع &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Donate to our service to support our efforts": "تبرع لخدمتنا لدعم جهودنا",
+  "Open Startup &#124; <span class=\"notranslate\">Forward Email</span>": "افتح Startup &#124; <span class=\"notranslate\">Forward Email</span>",
+  "We are an \"Open Startup\" and completely transparent business.  You can view our live metrics, monthly revenue, and more.": "نحن \"شركة ناشئة مفتوحة\" وشفافة تماما. يمكنك عرض مقاييسنا المباشرة والعائد الشهري والمزيد.",
+  "Admin": "مشرف",
+  "Dashboard": "لوحة القيادة",
+  "We operate with complete transparency and share our metrics and revenue.": "نعمل بشفافية كاملة ونشارك مقاييسنا وإيراداتنا.",
+  "Our live metrics update every minute": "يتم تحديث مقاييسنا الحية كل دقيقة",
+  "Total users": "إجمالي المستخدمين",
+  "Total domains": "إجمالي المجالات",
+  "Total aliases": "إجمالي الأسماء المستعارة",
+  "Growth since launch": "النمو منذ الإطلاق",
+  "Daily new users": "المستخدمون الجدد يوميًا",
+  "Plan distribution": "توزيع الخطة",
+  "No revenue is available to report during our beta program.": "لا توجد إيرادات متاحة للإبلاغ عنها خلال برنامجنا التجريبي.",
+  "My Account &#124; <span class=\"notranslate\">Forward Email</span>": "حسابي &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Manage your Forward Email profile": "إدارة ملف تعريف البريد الإلكتروني الخاص بك",
+  "My Account - Domains": "حسابي - المجالات",
+  "Add Domain": "أضف المجال",
+  "Domain name": "اسم النطاق",
+  "Don't have a domain name?": "ليس لديك اسم مجال؟",
+  "Register a domain": "تسجيل المجال",
+  "Back to Domains": "العودة إلى المجالات",
+  "DNS Management by Registar": "إدارة DNS بواسطة Registar",
+  "Advanced Settings": "إعدادات متقدمة",
+  "Verification Status": "حالة التحقق",
+  "Follow the steps below and then click \"Verify Records\" to verify your setup.": "اتبع الخطوات أدناه ثم انقر فوق \"التحقق من السجلات\" للتحقق من الإعداد الخاص بك.",
+  "Not Verified": "لم يتم التحقق",
+  "MX Records": "سجلات MX",
+  "TXT Records": "سجلات TXT",
+  "Verify Records": "تحقق من السجلات",
+  "1. Set up your domain for email forwarding": "1. إعداد المجال الخاص بك لإعادة توجيه البريد الإلكتروني",
+  "Do you need to configure (or re-configure) this domain name for email forwarding?": "هل تحتاج إلى تكوين (أو إعادة تكوين) اسم المجال هذا لإعادة توجيه البريد الإلكتروني؟",
+  "Configure your domain": "تكوين المجال الخاص بك",
+  "2. Send emails with your domain using Gmail (optional)": "2. إرسال رسائل البريد الإلكتروني مع المجال الخاص بك باستخدام Gmail (اختياري)",
+  "Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.": "اتبع دليلنا البسيط لإرسال واستقبال رسائل البريد الإلكتروني مع نطاقك ، مباشرة داخل Gmail.",
+  "Setup your Gmail": "قم بإعداد Gmail الخاص بك",
+  "3. Purge Cache and Send a Test Email to Yourself": "3. مسح ذاكرة التخزين المؤقت وإرسال بريد إلكتروني تجريبي إلى نفسك",
+  "Once you have followed the previous step(s), you will need to \"purge\" the DNS cache using the \"Purge Cache\" tool by Cloudflare.  You can optionally purge the cache using Google as well if you are using Gmail.  Make sure to purge both the \"TXT\" and the \"MX\" records on your domain name's DNS records.  Wait a few minutes (or sometimes it might take an hour or two), and then click \"Verify Records\" above and try sending a test email to yourself.": "بمجرد اتباعك للخطوة (الخطوات) السابقة ، ستحتاج إلى \"مسح\" ذاكرة التخزين المؤقت لـ DNS باستخدام أداة \"Purge Cache\" (التخزين المؤقت) بواسطة Cloudflare. يمكنك مسح ذاكرة التخزين المؤقت اختياريًا باستخدام Google أيضًا إذا كنت تستخدم Gmail. تأكد من حذف كل من سجلات \"TXT\" و \"MX\" في سجلات DNS لاسم النطاق الخاص بك. انتظر بضع دقائق (أو قد يستغرق الأمر في بعض الأحيان ساعة أو ساعتين) ، ثم انقر فوق \"التحقق من السجلات\" أعلاه وحاول إرسال بريد إلكتروني تجريبي إلى نفسك.",
+  "Cloudflare Purge (required)": "تطهير Cloudflare (مطلوب)",
+  "Google Purge (optional)": "Google Purge (اختياري)",
+  "4. Still need help with something?": "4. هل ما زلت بحاجة إلى المساعدة بخصوص شيء ما؟",
+  "We are here to answer your questions, but before asking us, please be sure to <a href=\"%s\">read our FAQ section</a>.": "نحن هنا للإجابة على أسئلتك ، ولكن قبل أن تطلب منا ، يرجى التأكد من <a href=\"%s\">قراءة قسم الأسئلة الشائعة</a> .",
+  "Ask us a question": "اسألنا سؤال",
+  "Add New Alias": "إضافة اسم مستعار جديد",
+  "Alias Name": "الاسم المستعار",
+  "(required)": "(مطلوب)",
+  "Generate random alias": "توليد اسم مستعار عشوائي",
+  "Use an asterisk \"*\" for a catch-all alias.": "استخدم علامة النجمة \"*\" للاسم المستعار البديل.",
+  "Domain Name": "اسم النطاق",
+  "Upgrade plan": "خطة الترقية",
+  "Free Vanity Domain": "المجال الغرور الحرة",
+  "Add new domain": "إضافة مجال جديد",
+  "Alias Recipients": "مستلمو الاسم المستعار",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Continue\" below.": "يجب أن يكون المستلمون قائمة مفصولة بفواصل الأسطر / مسافة / فواصل لعناوين البريد الإلكتروني الصالحة ، وأسماء النطاقات المؤهلة بالكامل (\"FQDN\") ، و / أو عناوين IP ، و / أو عناوين URL لخطوات الويب. سنقوم تلقائيًا بإزالة الإدخالات المكررة لك وإجراء التحقق عند النقر فوق \"متابعة\" أدناه.",
+  "Alias Description (optional)": "وصف الاسم المستعار (اختياري)",
+  "Description has a max of 150 characters.": "الوصف يحتوي على 150 حرفًا كحد أقصى.",
+  "Alias Labels (optional)": "تسميات الاسم المستعار (اختياري)",
+  "Labels must be a line-break/space/comma separated list with a maximum of 20 characters per label.": "يجب أن تكون التصنيفات قائمة مفصولة بفواصل أسطر / مسافة / فواصل بحد أقصى 20 حرفًا لكل تصنيف.",
+  "Active": "نشيط",
+  "If you uncheck this, then this email will be deactivated and no emails will flow through.  However emails will NOT bounce until this alias is completely deleted.": "إذا قمت بإلغاء تحديد هذا ، فسيتم إلغاء تنشيط هذا البريد الإلكتروني ولن تتدفق أي رسائل بريد إلكتروني. ومع ذلك ، لن ترتد رسائل البريد الإلكتروني حتى يتم حذف هذا الاسم المستعار بالكامل.",
+  "Add New Domain": "إضافة مجال جديد",
+  "Global domain": "المجال العالمي",
+  "Tip:": "تلميح:",
+  "If you need to upgrade or downgrade your plan on a domain name, then click on the dropdown for it under the column \"Current Plan\" below.": "إذا كنت بحاجة إلى ترقية أو تقليل خطتك على اسم النطاق ، فانقر على القائمة المنسدلة أسفل العمود \"الخطة الحالية\" أدناه.",
+  "Global": "عالمي",
+  "Current Plan": "الخطة الحالية",
+  "Quick Links": "روابط سريعة",
+  "Change plan to:": "تغيير الخطة إلى:",
+  "See all plan features": "شاهد جميع ميزات الخطة",
+  "Manage Aliases": "إدارة الأسماء المستعارة",
+  "Verified": "تم التحقق",
+  "Setup": "اقامة",
+  "DNS-based": "قائم على DNS",
+  "Deutsch": "ألماني",
+  "Alias": "الاسم المستعار",
+  "Recipients": "المستلمون",
+  "Enabled": "ممكّن",
+  "Edit Alias": "خلاف ذلك ، تحرير",
+  "Delete Alias": "حذف الاسم المستعار",
+  "Custom SMTP Port Forwarding": "إعادة توجيه منفذ SMTP المخصص",
+  "Port number (SMTP)": "رقم المنفذ (SMTP)",
+  "Do not modify this unless you know what you are doing.  This will forward all emails to the specific port for all aliases and their recipients.  For example, if you are forwarding to info@example.com, and input port number 1337 here, then our server will forward email to example.com on port 1337 (as opposed to the standard SMTP port of 25).": "لا تقم بتعديل هذا إلا إذا كنت تعرف ما تفعله. سيؤدي هذا إلى إعادة توجيه جميع رسائل البريد الإلكتروني إلى المنفذ المحدد لجميع الأسماء المستعارة والمستلمين. على سبيل المثال ، إذا كنت تعيد التوجيه إلى info@example.com ، وأدخِل منفذ الإدخال رقم 1337 هنا ، فسيقوم خادمنا بإعادة توجيه البريد الإلكتروني إلى example.com على المنفذ 1337 (على عكس منفذ SMTP القياسي البالغ 25).",
+  "Reset": "إعادة تعيين",
+  "Save": "حفظ",
+  "Maximum Recipients Per Alias": "الحد الأقصى للمستلمين لكل اسم مستعار",
+  "Current Value:": "القيمة الحالية:",
+  "Contact us to increase": "اتصل بنا لزيادة",
+  "Delete Domain": "حذف المجال",
+  "Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.": "حذف نطاقك أمر لا رجعة فيه. يرجى توخي الحذر الشديد عند حذف المجال الخاص بك.",
+  "Back to Domain": "العودة إلى المجال",
+  "Auth &#124; <span class=\"notranslate\">Forward Email</span>": "المصادقة &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Authenticate yourself to log in": "قم بمصادقة نفسك لتسجيل الدخول",
+  "My Account - Profile": "حسابي - الملف الشخصي",
+  "Change password": "تغيير كلمة المرور",
+  "Set new password": "قم بتعيين كلمة مرور جديدة",
+  "Confirm new password": "تأكيد كلمة المرور الجديدة",
+  "Set an account password": "قم بتعيين كلمة مرور للحساب",
+  "Update Profile": "تحديث الملف",
+  "First name": "الاسم الاول",
+  "Last name": "الكنية",
+  "We thank you for your generosity and time in considering a donation.": "نشكرك على كرمك ووقتك في التفكير في التبرع.",
+  "How can I donate?": "كيف يمكنني التبرع؟",
+  "We would also appreciate your donation to:": "نقدر أيضًا تبرعك من أجل:",
+  "My Account - Security": "حسابي - الأمان",
+  "Disable OTP": "تعطيل OTP",
+  "Two-Factor Authentication": "توثيق ذو عاملين",
+  "Configure One-time Password": "تكوين كلمة مرور لمرة واحدة",
+  "One-time passwords (\"OTP\") allow you to add a layer of Two-Factor Authentication to your account using a device or authenticator app.  If you lose access to your device or authenticator app, then you can use a recovery key provided to you during configuration.": "تتيح لك كلمات المرور لمرة واحدة (\"OTP\") إضافة طبقة من المصادقة الثنائية إلى حسابك باستخدام جهاز أو تطبيق مصدق. إذا فقدت إمكانية الوصول إلى جهازك أو تطبيق المصدق ، فيمكنك استخدام مفتاح الاسترداد المقدم لك أثناء التكوين.",
+  "Enable OTP": "تمكين OTP",
+  "Developer Access": "وصول المطور",
+  "API token": "واجهة برمجة تطبيقات الرمز المميز",
+  "Copy": "نسخ",
+  "Keep your token secure and never share it publicly": "حافظ على رمزك آمنًا ولا تشاركه أبدًا بشكل عام",
+  "Reset API Token": "إعادة تعيين رمز API",
+  "Delete Account": "حذف الحساب",
+  "Your account is currently an admin of these domains:": "حسابك حاليا مسؤول عن هذه المجالات:",
+  "You must remove yourself from or delete these domains before you can delete your account.": "يجب عليك إزالة نفسك من هذه المجالات أو حذفها قبل أن تتمكن من حذف حسابك.",
+  "Need to set a password?": "هل تحتاج إلى تعيين كلمة مرور؟",
+  "Українська Мова": "اللغة الأوكرانية",
+  "Port 25 blocked by ISP workaround &#124; <span class=\"notranslate\">Forward Email</span>": "تم حظر المنفذ 25 بواسطة حل ISP &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Our service allows you to workaround port blocking set by your Internet Service Provider on port 25.  Simple follow our guide to workaround this issue in minutes.": "تتيح لك خدمتنا حظر منفذ الحل البديل الذي تم تعيينه بواسطة موفر خدمة الإنترنت على المنفذ 25. اتبع ببساطة دليلنا لحل هذه المشكلة في دقائق.",
+  "Did your ISP block port 25?": "هل قام موفر خدمة الإنترنت بحظر المنفذ 25؟",
+  "Skip ahead to the instructions to forward emails to a custom SMTP port.": "انتقل إلى التعليمات لإعادة توجيه رسائل البريد الإلكتروني إلى منفذ SMTP مخصص.",
+  "Create your free account now": "تسمنلاينلاءتملانت",
+  "Русский Язык": "اللغة الروسية",
+  "Thank you": "شكرا لك",
+  "Verify email &#124; <span class=\"notranslate\">Forward Email</span>": "تحقق من البريد الإلكتروني &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Verify your Forward Email email": "تحقق من بريدك الإلكتروني إلى الأمام",
+  "Verify email": "التحقق من البريد الإلكتروني",
+  "Enter the verification code emailed to: <strong><span class=\"notranslate\">%s</span></strong>": "أدخل رمز التحقق بالبريد الإلكتروني إلى: <strong><span class=\"notranslate\">%s</span></strong>",
+  "Please enter a <span class=\"notranslate\">%d</span> digit verification code.": "يرجى إدخال رمز التحقق المكون من <span class=\"notranslate\">%d</span> رقم.",
+  "Verification code": "رمز التحقق",
+  "Didn't receive it?": "لم تستلمه؟",
+  "Resend now": "إعادة إرسال الآن",
+  "العربية": "العربية",
+  "Čeština": "التشيكية",
+  "Dansk": "دانماركي",
+  "Español": "الأسبانية",
+  "Suomi": "فنلندا",
+  "עברית": "أبريت",
+  "Magyar": "المجري",
+  "Bahasa Indonesia": "الإندونيسية",
+  "Italiano": "إيطالي",
+  "日本語 (にほんご)": "اليابانية (اليابانية)",
+  "Nederlands": "هولندي",
+  "Norsk": "النرويجية",
+  "Język Polski": "اللغة البولندية",
+  "Português": "البرتغالية",
+  "Svenska": "السويدية",
+  "ไทย": "التايلاندية",
+  "Tiếng Việt": "الفيتنامية",
+  "中文 (zhōngwén)": "الصينية (zhōngwén)",
+  "Select Domain": "حدد المجال",
+  "Add New Custom Domain": "إضافة مجال مخصص جديد",
+  "Sign in &#124; <span class=\"notranslate\">Forward Email</span>": "تسجيل الدخول &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Sign in to your account": "تسجيل الدخول إلى حسابك",
+  "Sign in now": "قم بتسجيل دخولك الآن",
+  "Description & Labels": "الوصف والعلامات",
+  "Import TXT Records": "استيراد سجلات TXT",
+  "Sign up &#124; <span class=\"notranslate\">Forward Email</span>": "تسجيل &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create a Forward Email account": "إنشاء حساب بريد إلكتروني إلى الأمام",
+  "Terms &#124; <span class=\"notranslate\">Forward Email</span>": "الشروط &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Read our terms and conditions of use": "اقرأ شروط وأحكام الاستخدام الخاصة بنا",
+  "Deleting your account is irreversable.  Please take extreme caution when deleting your account.": "حذف حسابك لا رجعة فيه. يرجى توخي الحذر الشديد عند حذف حسابك.",
+  "Back to Aliases": "عودة إلى الأسماء المستعارة",
+  "Sign out of &#124; <span class=\"notranslate\">Forward Email</span>": "تسجيل الخروج من &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Sign out of your account": "تسجيل الخروج من حسابك",
+  "catch-all": "كل شيء",
+  "Enhanced Protection Verification Record": "سجل التحقق من الحماية المعززة",
+  "Set this <strong>TXT record</strong> as a new DNS entry on your domain:": "قم بتعيين <strong>سجل TXT</strong> هذا كإدخال DNS جديد على المجال الخاص بك:",
+  "API &#124; <span class=\"notranslate\">Forward Email</span>": "API &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Programmatic API access to email forwarding aliases, domains, and more.": "الوصول البرمجي لواجهة برمجة التطبيقات إلى الأسماء المستعارة لإعادة توجيه البريد الإلكتروني والنطاقات والمزيد.",
+  "Need docs with real data and keys?": "هل تحتاج إلى مستندات ببيانات ومفاتيح حقيقية؟",
+  "Simply sign up or log in to have your API keys and real account data populated below.": "ما عليك سوى الاشتراك أو تسجيل الدخول لتعبئة مفاتيح واجهة برمجة التطبيقات وبيانات الحساب الحقيقية أدناه.",
+  "We created an API for programmatic access to domains, aliases, and more.": "لقد أنشأنا واجهة برمجة تطبيقات للوصول الآلي إلى النطاقات والأسماء المستعارة والمزيد.",
+  "Programmatic access to your data": "وصول آلي إلى بياناتك",
+  "already on this plan": "بالفعل على هذه الخطة",
+  "Table of Contents": "جدول المحتويات",
+  "How to workaround ISP blocking inbound SMTP on port 25": "كيفية حل ISP لحظر SMTP الوارد على المنفذ 25",
+  "How to workaround ISP blocking outbound SMTP on port 25": "كيفية حل ISP لحظر SMTP الصادر على المنفذ 25",
+  "How can I check if my ISP blocks ports": "كيف يمكنني التحقق مما إذا كان ISP يحظر المنافذ",
+  "If you do not have port 25 open on your mail server's IP address, then this guide is for you.": "إذا لم يكن لديك منفذ 25 مفتوحًا على عنوان IP لخادم البريد الخاص بك ، فهذا الدليل مناسب لك.",
+  "For example, you're running a custom mail server at home, and your Internet Service Provider (\"ISP\") has blocked outbound port 25.": "على سبيل المثال ، أنت تشغل خادم بريد مخصصًا في المنزل ، وقد حظر مزود خدمة الإنترنت (\"ISP\") المنفذ الصادر 25.",
+  "Since you cannot have outbound traffic on port 25, then you most likely also won't have inbound traffic on port 25 due to this block.": "نظرًا لأنه لا يمكن أن يكون لديك حركة مرور صادرة على المنفذ 25 ، فمن المحتمل أيضًا أنك لن تحصل على حركة مرور واردة على المنفذ 25 بسبب هذا الحظر.",
+  "Assuming you are using our service to forward emails, ": "بافتراض أنك تستخدم خدمتنا لإعادة توجيه رسائل البريد الإلكتروني ،",
+  "you can workaround this issue through our FAQ answer here": "يمكنك حل هذه المشكلة من خلال إجابة الأسئلة الشائعة هنا",
+  ".": ".",
+  "If your ISP blocks outbound port 25, then you will have to find an alternate solution or contact them.": "إذا قام موفر خدمة الإنترنت بحظر المنفذ الصادر 25 ، فسيتعين عليك إيجاد حل بديل أو الاتصال به.",
+  "See our ": "انظر لدينا",
+  "list of ports blocked by Internet Service Providers": "قائمة بالمنافذ المحظورة من قبل مزودي خدمة الإنترنت",
+  "Privacy Policy": "سياسة الخصوصية",
+  "Information Not Collected": "المعلومات التي لم يتم جمعها",
+  "Information Collected": "المعلومات التي تم جمعها",
+  "Information Shared": "المعلومات المشتركة",
+  "Information Removal": "إزالة المعلومات",
+  "We do not store any forwarded emails.": "نحن لا نخزن أي رسائل بريد إلكتروني معاد توجيهها.",
+  "We do not store any metadata about forwarded emails.": "لا نقوم بتخزين أي بيانات تعريف حول رسائل البريد الإلكتروني المُعاد توجيهها.",
+  "We do not store any server-side logs.": "نحن لا نخزن أي سجلات من جانب الخادم.",
+  "We do not store any client-side logs.": "نحن لا نخزن أي سجلات من جانب العميل.",
+  "We do not store any IP addresses.": "نحن لا نخزن أي عناوين IP.",
+  "We do not store any browser information.": "نحن لا نخزن أي معلومات متصفح.",
+  "For transparency, at any time you can ": "من أجل الشفافية ، في أي وقت يمكنك",
+  "view our source code": "عرض رمز المصدر لدينا",
+  " to see how the information below is collected and used:": " لمعرفة كيفية جمع المعلومات الواردة أدناه واستخدامها:",
+  "We store a cookie in a session for your visit (strictly for functionality).  This cookie is stored securely in our Redis database.": "نقوم بتخزين ملف تعريف ارتباط في جلسة لزيارتك (بدقة للوظائف). يتم تخزين ملف تعريف الارتباط هذا بشكل آمن في قاعدة بيانات Redis الخاصة بنا.",
+  "We store your email address (strictly for functionality).  This email address is stored securely in our MongoDB database.": "نقوم بتخزين عنوان بريدك الإلكتروني (حصريًا للوظائف). يتم تخزين عنوان البريد الإلكتروني هذا بشكل آمن في قاعدة بيانات MongoDB.",
+  "We store your domain name(s) and alias(es) you create (strictly for functionality).  This information is stored securely in our MongoDB database.": "نقوم بتخزين اسم (أسماء) المجال الخاص بك والأسماء المستعارة (الأسماء المستعارة) التي تقوم بإنشائها (بدقة للوظائف). يتم تخزين هذه المعلومات بشكل آمن في قاعدة بيانات MongoDB.",
+  "Any additional information you voluntarily provide us, such as comments or questions in a ": "أي معلومات إضافية تقدمها لنا طواعية ، مثل التعليقات أو الأسئلة في",
+  "Help request": "طلب مساعدة",
+  "We do not share your information with any third-party whatsoever (with the exception of ": "نحن لا نشارك معلوماتك مع أي طرف ثالث على الإطلاق (باستثناء",
+  "Postmark": "ختم البريد",
+  ", which we use for transactional emails, e.g. for account verification or password reset emails).": "، التي نستخدمها لرسائل البريد الإلكتروني للمعاملات ، مثل للتحقق من الحساب أو إعادة تعيين رسائل البريد الإلكتروني).",
+  "We may need to and will comply with court ordered legal requests (but keep in mind we do not collect information mentioned above, so we will not be able to provide it to begin with).": "قد نحتاج إلى الطلبات القانونية التي أمرت بها المحكمة وسوف نلتزم بها (ولكن ضع في اعتبارك أننا لا نجمع المعلومات المذكورة أعلاه ، لذلك لن نتمكن من تقديمها في البداية).",
+  "If at any time if you wish to remove information that you have provided us with, then go to ": "إذا أردت في أي وقت إزالة المعلومات التي زودتنا بها ، فانتقل إلى",
+  "My Account > Security": "حسابي> الأمان",
+  " and click \"Delete Account\".": " وانقر على \"حذف الحساب\".",
+  "Email Forwarding API": "واجهة برمجة تطبيقات إعادة توجيه البريد الإلكتروني",
+  "Libraries": "مكتبات",
+  "Base URI": "URI الأساسي",
+  "Authentication": "المصادقة",
+  "Errors": "أخطاء",
+  "Localization": "الموقع",
+  "Pagination": "ترقيم الصفحات",
+  "Account": "الحساب",
+  "Create account": "إنشاء حساب",
+  "Retrieve account": "استرجاع الحساب",
+  "Update account": "تحديث الحساب",
+  "List domains": "قائمة المجالات",
+  "Create domain": "إنشاء مجال",
+  "Retrieve domain": "استرجاع المجال",
+  "Verify domain records": "تحقق من سجلات المجال",
+  "Update domain": "تحديث المجال",
+  "Delete domain": "حذف المجال",
+  "Invites": "تدعو",
+  "Accept domain invite": "قبول دعوة المجال",
+  "Create domain invite": "إنشاء دعوة المجال",
+  "Remove domain invite": "إزالة دعوة المجال",
+  "Members": "أفراد",
+  "Update domain member": "تحديث عضو المجال",
+  "Remove domain member": "إزالة عضو المجال",
+  "Retrieve domain aliases": "استرداد أسماء النطاق المستعارة",
+  "Create new domain alias": "إنشاء اسم نطاق مستعار جديد",
+  "Update domain alias": "تحديث اسم النطاق المستعار",
+  "Delete domain alias": "حذف اسم النطاق المستعار",
+  "Right now we have not yet released any API wrappers, but we plan to do so in the near future. Send an email to ": "في الوقت الحالي ، لم نصدر بعد أي أغلفة API ، ولكننا نخطط للقيام بذلك في المستقبل القريب. إرسال بريد إلكتروني إلى",
+  "api@forwardemail.net": "api@forwardemail.net",
+  " if you would like to be notified when a particular programming language's API wrapper is released. In the meanwhile, you can use these recommended HTTP request libraries in your application, or simply use ": " إذا كنت ترغب في أن يتم إعلامك عند إصدار غلاف واجهة برمجة التطبيقات للغة برمجة معينة. في غضون ذلك ، يمكنك استخدام مكتبات طلبات HTTP الموصى بها في تطبيقك ، أو ببساطة استخدامها",
+  "curl": "لفة",
+  " as in the below examples.": " كما في الأمثلة أدناه.",
+  "Language": "لغة",
+  "Library": "مكتبة",
+  "Ruby": "روبي",
+  "Faraday": "فاراداي",
+  "Python": "بيثون",
+  "requests": "الطلبات",
+  "Java": "جافا",
+  "OkHttp": "حسنًا",
+  "PHP": "بي أتش بي",
+  "guzzle": "أسرف في الشراب",
+  "JavaScript": "جافا سكريبت",
+  "superagent": "superagent",
+  "Node.js": "Node.js",
+  "Go": "اذهب",
+  "net/http": "صافي / http",
+  ".NET": ".شبكة",
+  "RestSharp": "RestSharp",
+  "The current HTTP base URI path is: ": "مسار URI الأساسي HTTP الحالي هو:",
+  ".  It will soon change to ": ". سيتغير قريبا إلى",
+  " with complete backwards compatibility.": " مع التوافق التام للخلف.",
+  "All endpoints require your ": "تتطلب جميع نقاط النهاية الخاصة بك",
+  "free API key": "مفتاح API مجاني",
+  " 🎉 to be set as the \"username\" value of the request's ": " 🎉 سيتم تعيينه كقيمة \"اسم المستخدم\" للطلب",
+  "Basic Authorization": "التفويض الأساسي",
+  " header.  Don't worry – examples are provided below for you if you're not sure what this is.": " العنوان. لا تقلق - يتم تقديم أمثلة أدناه لك إذا لم تكن متأكدًا من هذا.",
+  "If any errors occur, the response body of the API request will contain a detailed error message.  Besides having over ten years of experience writing API's and documenting them, were inspired by ": "في حالة حدوث أي أخطاء ، سيحتوي نص الاستجابة لطلب واجهة برمجة التطبيقات على رسالة خطأ تفصيلية. إلى جانب امتلاك أكثر من عشر سنوات من الخبرة في كتابة API وتوثيقها ، مستوحاة من",
+  "Stripe's": "شرائط",
+  " beautiful API documentation when we crafted ours 😄.": " وثائق API جميلة عندما صممنا 😄.",
+  "Code": "الشفرة",
+  "Name": "اسم",
+  "Bad Request": "اقتراح غير جيد",
+  "Unauthorized": "غير مصرح",
+  "Forbidden": "ممنوع",
+  "Not Found": "غير معثور عليه",
+  "Too Many Requests": "طلبات كثيرة جدا",
+  "Internal Server Error": "خطأ في الخادم الداخلي",
+  "Not Implemented": "لم تنفذ",
+  "Bad Gateway": "مدخل خاطأ",
+  "Service Unavailable": "الخدمة غير متوفرة",
+  "Gateway Time-out": "غمازة",
+  "Our service is translated to over 25 different languages.  All API response messages are translated to the last locale detected of the user making the API request.  You can override this by passing a custom ": "تتم ترجمة خدمتنا إلى أكثر من 25 لغة مختلفة. تتم ترجمة جميع رسائل استجابة واجهة برمجة التطبيقات (API) إلى آخر لغة تم اكتشافها للمستخدم الذي يقوم بطلب واجهة برمجة التطبيقات. يمكنك تجاوز هذا عن طريق تمرير مخصص",
+  " header.  Feel free to try it out using the language drop-down at the bottom of this page.": " العنوان. لا تتردد في تجربتها باستخدام القائمة المنسدلة للغة في أسفل هذه الصفحة.",
+  "If you would like to be notified when pagination is available, then please email ": "إذا كنت تريد أن يتم إعلامك عند توفر ترقيم الصفحات ، فيرجى إرسال بريد إلكتروني",
+  "Body Parameter": "معلمة الجسم",
+  "Required": "مطلوب",
+  "Type": "نوع",
+  "Description": "وصف",
+  "Yes": "نعم",
+  "String (Email)": "سلسلة (البريد الإلكتروني)",
+  "String": "خيط",
+  "Example Request:": "طلب مثال:",
+  "No": "لا",
+  "String (URL)": "سلسلة (URL)",
+  "Link to avatar image": "رابط للصورة الرمزية",
+  "Querystring Parameter": "معلمة Querystring",
+  "String (RegExp supported)": "سلسلة (RegExp مدعومة)",
+  "Search for domains by name": "ابحث عن المجالات بالاسم",
+  "Search for domains by alias name": "ابحث عن المجالات حسب الاسم المستعار",
+  "Search for domains by recipient": "البحث عن المجالات حسب المستلم",
+  "String (FQDN or IP)": "سلسلة (FQDN أو IP)",
+  "Fully qualified domain name (\"FQDN\") or IP address": "اسم المجال المؤهل بالكامل (\"FQDN\") أو عنوان IP",
+  "String (enumerable)": "السلسلة (قابلة للتعداد)",
+  "Plan type (must be ": "نوع الخطة (يجب أن تكون",
+  ", ": "،",
+  ", or ": "أو",
+  ", defaults to ": "، التخلف عن",
+  ")": ")",
+  "String or Number": "سلسلة أو رقم",
+  "Custom port to configure for SMTP forwarding (default is ": "منفذ مخصص لتكوين إعادة توجيه SMTP (الافتراضي هو",
+  "Email address to invite to domain members list": "عنوان البريد الإلكتروني لدعوته إلى قائمة أعضاء المجال",
+  "Group to add the user to the domain membership with (can be one of ": "مجموعة لإضافة المستخدم إلى عضوية المجال مع (يمكن أن يكون أحد",
+  " or ": " أو",
+  "Email address to remove from domain members list": "عنوان البريد الإلكتروني لإزالته من قائمة أعضاء المجال",
+  "Group to update the user to the domain membership with (can be one of ": "مجموعة لتحديث المستخدم إلى عضوية المجال مع (يمكن أن يكون أحد",
+  "Alias name": "اسم مستعار",
+  "String or Array": "سلسلة أو صفيف",
+  "List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's)": "قائمة المستلمين (يجب أن تكون فاصل السطر / مسافة / سلسلة مفصولة بفواصل أو صفيف من عناوين البريد الإلكتروني الصالحة ، وأسماء النطاقات المؤهلة بالكامل (\"FQDN\") ، و / أو عناوين IP ، و / أو عناوين URL الخاصة بشبكة الويب)",
+  "Alias description": "وصف الاسم المستعار",
+  "List of labels (must be line-break/space/comma separated String or Array)": "قائمة التسميات (يجب أن تكون فاصل السطر / مسافة / سلسلة مفصولة بفواصل أو صفيف)",
+  "Boolean": "منطقي",
+  "Whether to enable to disable this alias (if disabled, emails will be routed nowhere but return successful status codes)": "ما إذا كان سيتم تمكين هذا الاسم المستعار (إذا تم تعطيله ، فلن يتم توجيه رسائل البريد الإلكتروني في أي مكان ولكن سيتم عرض رموز الحالة الناجحة)",
+  "Frequently Asked Questions": "أسئلة مكررة",
+  "How do I get started and set up email forwarding": "كيف أبدأ وقم بإعداد إعادة توجيه البريد الإلكتروني",
+  "How to Send Mail As using Gmail": "كيفية إرسال البريد باسم Gmail",
+  "Why am I not receiving my test emails": "لماذا لا أتلقى رسائل البريد الإلكتروني التجريبية الخاصة بي",
+  "Why are my test emails sent to myself in Gmail showing as \"suspicious\"": "لماذا يتم إرسال رسائل البريد الإلكتروني التجريبية الخاصة بي إلى Gmail على أنها \"مريبة\"",
+  "Can I remove the via forwardemail dot net in Gmail": "هل يمكنني إزالة النت عبر البريد الإلكتروني النشط في Gmail",
+  "Why are some emails showing up as from no-reply at forwardemail dot net": "لماذا تظهر بعض رسائل البريد الإلكتروني في حالة عدم الرد على بريد إعادة توجيه دوت نت",
+  "Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)": "هل يمكنني إعادة توجيه رسائل البريد الإلكتروني إلى منافذ أخرى غير 25 (على سبيل المثال إذا قام موفر خدمة الإنترنت بحظر المنفذ 25)",
+  "Do you offer a money back guarantee on paid plans": "هل تقدم ضمان استعادة الاموال على الخطط المدفوعة",
+  "Do you support webhooks": "هل تؤيد الخطاف على شبكة الإنترنت",
+  "Can I just use this email forwarding service as a \"fallback\" or \"fallover\" MX server": "هل يمكنني فقط استخدام خدمة إعادة توجيه البريد الإلكتروني هذه كخادم MX \"احتياطي\" أو \"احتياطي\"",
+  "Can I disable specific aliases": "هل يمكنني تعطيل أسماء مستعارة معينة",
+  "Can I forward emails to multiple recipients": "هل يمكنني إعادة توجيه رسائل البريد الإلكتروني إلى عدة مستلمين",
+  "Can I have multiple global catch-all recipients": "هل يمكنني الحصول على العديد من المستلمين العالميين",
+  "Is there a maximum limit on the number of email addresses I can forward to per alias": "هل هناك حد أقصى لعدد عناوين البريد الإلكتروني التي يمكنني إعادة توجيهها لكل اسم مستعار",
+  "Can I recursively forward emails": "هل يمكنني إعادة توجيه رسائل البريد الإلكتروني بشكل متكرر",
+  "Can people unregister or register my email forwarding without my permission": "يمكن للأشخاص إلغاء تسجيل أو إعادة توجيه البريد الإلكتروني الخاص بي دون إذني",
+  "How is it free": "كيف هي مجانية",
+  "What is the max email size limit": "ما هو الحد الأقصى لحجم البريد الإلكتروني",
+  "Do you store emails and their contents": "هل تقوم بتخزين رسائل البريد الإلكتروني ومحتوياتها",
+  "Do you store logs of emails": "هل تخزن سجلات رسائل البريد الإلكتروني",
+  "Do you read my emails": "هل تقرأ رسائل البريد الإلكتروني الخاصة بي",
+  "Does it support the plus + symbol for Gmail aliases": "هل يدعم رمز plus + للأسماء المستعارة لـ Gmail",
+  "Does this forward my email's headers": "هل يعيد هذا توجيه رؤوس البريد الإلكتروني الخاصة بي",
+  "Is this well-tested": "هل هذا اختبار جيد",
+  "Do you pass along SMTP response messages and codes": "هل تمر على طول رسائل ورموز استجابة SMTP",
+  "How do you prevent spammers and ensure good email forwarding reputation": "كيف تمنع مرسلي البريد العشوائي وتضمن سمعة جيدة لإعادة توجيه البريد الإلكتروني",
+  "Can I \"send mail as\" in Gmail with this": "هل يمكنني \"إرسال البريد كـ\" في Gmail بهذا",
+  "Can I \"send mail as\" in Outlook with this": "هل يمكنني \"إرسال البريد باسم\" في Outlook مع هذا",
+  "Can I \"send mail as\" in Apple Mail and iCloud Mail with this": "هل يمكنني \"إرسال البريد باسم\" في Apple Mail و iCloud Mail مع هذا",
+  "Can I forward unlimited emails with this": "هل يمكنني إعادة توجيه رسائل البريد الإلكتروني غير محدودة مع هذا",
+  "How do I add a profile picture to my email address": "كيف أضيف صورة ملف شخصي إلى عنوان بريدي الإلكتروني",
+  "How do you perform DNS lookups on domain names": "كيف تجري عمليات بحث DNS على أسماء النطاقات",
+  "How fast is this service": "ما مدى سرعة هذه الخدمة",
+  "You need to have ": "تحتاج أن تملك",
+  "Gmail's Two-Factor Authentication": "المصادقة الثنائية من Gmail",
+  " enabled for this to work.  Visit ": " ممكن لهذا العمل. يزور",
+  "https://www.google.com/landing/2step/": "https://www.google.com/landing/2step/",
+  " if you do not have it enabled.": " إذا لم يكن لديك تمكين.",
+  "Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit ": "بمجرد تمكين المصادقة الثنائية (أو إذا قمت بتمكينها بالفعل) ، قم بزيارة",
+  "https://myaccount.google.com/apppasswords": "https://myaccount.google.com/apppasswords",
+  "When prompted for \"Select the app and device you want to generate the app password for\":": "عند المطالبة بـ \"حدد التطبيق والجهاز الذي تريد إنشاء كلمة مرور التطبيق له\":",
+  "Select \"Mail\" under the drop-down for \"Select app\"": "حدد \"البريد\" من القائمة المنسدلة لـ \"تحديد التطبيق\"",
+  "Select \"Other\" under the drop-down for \"Select device\"": "حدد \"أخرى\" ضمن القائمة المنسدلة لـ \"تحديد جهاز\"",
+  "When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. \"": "عندما يُطلب منك إدخال النص ، أدخل عنوان البريد الإلكتروني لنطاقك الخاص الذي تعيد التوجيه منه (على سبيل المثال \"",
+  "hello@example.com": "hello@example.com",
+  "\" - this will help you keep track in case you use this service for multiple accounts)": "\"- سيساعدك هذا في متابعة حال استخدامك هذه الخدمة لحسابات متعددة)",
+  "Copy the password to your clipboard that is automatically generated": "انسخ كلمة المرور إلى الحافظة التي تم إنشاؤها تلقائيًا",
+  "Go to ": "اذهب إلى",
+  "Gmail": "Gmail",
+  " and under ": " و تحت",
+  "Settings ": "الإعدادات",
+  " Accounts and Import ": " الحسابات والاستيراد",
+  " Send mail as": " إرسال بريد باسم",
+  ", click \"Add another email address\"": "، انقر فوق \"إضافة عنوان بريد إلكتروني آخر\"",
+  "When prompted for \"Name\", enter the name that you want your email to be seen as \"From\" (e.g. \"Elon Musk\")": "عند المطالبة بـ \"الاسم\" ، أدخل الاسم الذي تريد أن يظهر فيه بريدك الإلكتروني على أنه \"من\" (مثل \"Elon Musk\")",
+  "When prompted for \"Email address\", enter the email address with the custom domain you used above (e.g. \"": "عندما يُطلب منك \"عنوان البريد الإلكتروني\" ، أدخل عنوان البريد الإلكتروني مع النطاق المخصص الذي استخدمته أعلاه (على سبيل المثال \"",
+  "\")": "\")",
+  "Uncheck \"Treat as an alias\"": "قم بإلغاء تحديد \"معاملة كاسم مستعار\"",
+  "Click \"Next Step\" to proceed": "انقر فوق \"الخطوة التالية\" للمتابعة",
+  "When prompted for \"SMTP Server\", enter ": "عندما يُطلب منك \"خادم SMTP\" ، أدخل",
+  "smtp.gmail.com": "smtp.gmail.com",
+  " and leave the port as ": " وترك المنفذ باسم",
+  "When prompted for \"Username\", enter the portion of your Gmail address without the ": "عند مطالبتك بـ \"اسم المستخدم\" ، أدخل جزء عنوان Gmail الخاص بك بدون",
+  "gmail.com": "gmail.com",
+  " part (e.g. just \"user\" if my email is ": " جزء (مثل \"مستخدم\" فقط إذا كان بريدي الإلكتروني",
+  "user@gmail.com": "user@gmail.com",
+  "When prompted for \"Password\", paste from your clipboard the password you generated in step 2 above": "عند المطالبة بـ \"كلمة المرور\" ، الصق من الحافظة كلمة المرور التي أنشأتها في الخطوة 2 أعلاه",
+  "Leave the radio button checked to \"Secured connection using TLS\"": "اترك زر الاختيار محددًا لـ \"اتصال آمن باستخدام TLS\"",
+  "Click \"Add Account\" to proceed": "انقر فوق \"إضافة حساب\" للمتابعة",
+  "Open a new tab to ": "افتح علامة تبويب جديدة",
+  " and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to \"Send Mail As\")": " وانتظر وصول رسالة التحقق (ستتلقى رمز التحقق الذي يؤكد أنك مالك عنوان البريد الإلكتروني الذي تحاول \"إرسال البريد باسم\")",
+  "Once it arrives, copy and paste the verification code at the prompt you received in the previous step": "بمجرد وصوله ، انسخ رمز التحقق والصقه عند المطالبة التي تلقيتها في الخطوة السابقة",
+  "Once you've done that, go back to the email and click the link to \"confirm the request\". You need to do this step and the previous step for the email to be correctly configured.": "بمجرد القيام بذلك ، ارجع إلى البريد الإلكتروني وانقر على الرابط \"لتأكيد الطلب\". تحتاج إلى القيام بهذه الخطوة والخطوة السابقة لتكوين البريد الإلكتروني بشكل صحيح.",
+  "The most probable cause of your issues with not receiving test emails or with configuration in general is due to DNS propagation and caching.": "يرجع السبب الأكثر احتمالاً لمشكلاتك مع عدم تلقي رسائل البريد الإلكتروني التجريبية أو التكوين بشكل عام إلى نشر DNS والتخزين المؤقت.",
+  "Fortunately ": "لحسن الحظ",
+  "our DNS provider Cloudflare has a nice \"Purge Cache\" tool available for you to use at:": "مزود Cloudflare الخاص بنا مزود بأداة جميلة \"Purge Cache\" متاحة للاستخدام على:",
+  " ": " ",
+  "https://1.1.1.1/purge-cache/": "https://1.1.1.1/purge-cache/",
+  "All you need to do is go to that link, and for both \"MX\" and \"TXT\" records, enter your domain name, and click \"Purge Cache\".  You'll then need to wait a few minutes and try again.": "كل ما عليك فعله هو الذهاب إلى هذا الرابط ، وبالنسبة لكل من سجلات \"MX\" و \"TXT\" ، أدخل اسم المجال الخاص بك ، وانقر فوق \"مسح ذاكرة التخزين المؤقت\". ستحتاج بعد ذلك إلى الانتظار بضع دقائق وإعادة المحاولة.",
+  "If you're using Gmail, you should check your spam folder for test messages (sometimes test messages to yourself get marked as spam), and also purge cache on Google's DNS at ": "إذا كنت تستخدم Gmail ، فيجب عليك التحقق من مجلد الرسائل غير المرغوب فيها بحثًا عن رسائل اختبار (أحيانًا يتم اختبار الرسائل لنفسك كرسائل غير مرغوب فيها) ، وكذلك محو ذاكرة التخزين المؤقت على DNS لـ Google على",
+  "https://developers.google.com/speed/public-dns/cache": "https://developers.google.com/speed/public-dns/cache",
+  "Still having issues?  Please file a ": "هل لا تزال تواجه مشكلات؟ يرجى تقديم ملف",
+  " so we can help investigate the issue and find a quick resolution.": " حتى نتمكن من المساعدة في التحقيق في المشكلة والعثور على حل سريع.",
+  "If you see this error message in Gmail when you send a test to yourself (see picture below), then ": "إذا رأيت رسالة الخطأ هذه في Gmail عندما ترسل اختبارًا إلى نفسك (انظر الصورة أدناه) ، فعندئذٍ",
+  "please do not worry": "من فضلك لا تقلق",
+  " – as this is a built-in safety feature of Gmail that only you will see when you send a test to yourself.  You can simply click \"Looks safe\".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.": " - نظرًا لأن هذه ميزة أمان مضمنة في Gmail ستراها أنت فقط عندما ترسل اختبارًا إلى نفسك. يمكنك ببساطة النقر فوق \"تبدو آمنة\". على سبيل المثال ، إذا كنت تريد إرسال رسالة اختبار باستخدام ميزة إرسال البريد كميزة (إلى شخص آخر) ، فلن يروا هذه الرسالة.",
+  "Not yet!  We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).": "ليس بعد! نخطط لإطلاق خدمة SMTP الخاصة بنا (ليس فقط إعادة التوجيه ، ولكن البريد الإلكتروني بشكل عام) ، مما سيخفف من ذلك. يضيف Gmail هذا تلقائيًا ولا يوجد حل حالي. ستظل خدمات إعادة توجيه البريد الإلكتروني الأخرى التي تتضمن ميزات مشابهة لميزاتنا تواجه نفس المشكلة أيضًا (ولا تقدم حلول إعادة توجيه البريد الإلكتروني الأخرى مستوى الخصوصية الذي نقدمه).",
+  "This only happens to some emails, and it is due to DMARC compliance. If a sender has configured DMARC on their domain such that usual forwarding would fail, then we use this \"friendly from\" rewrite approach to ensure the email lands in your inbox instead of being rejected.": "يحدث هذا فقط لبعض رسائل البريد الإلكتروني ، ويرجع ذلك إلى امتثال DMARC. إذا قام أحد المرسلين بتكوين DMARC على نطاقه بحيث تفشل إعادة التوجيه المعتادة ، فإننا نستخدم نهج إعادة الكتابة \"المألوف من\" هذا لضمان وصول البريد الإلكتروني إلى بريدك الوارد بدلاً من رفضه.",
+  "Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.": "نعم ، اعتبارًا من 5 مايو 2020 ، أضفنا هذه الميزة. في الوقت الحالي ، تكون الميزة خاصة بالمجال ، على عكس الاسم المستعار المحدد. إذا كنت تريد أن يكون خاصًا بالاسم المستعار ، فالرجاء الاتصال بنا لإخبارنا باحتياجاتك.",
+  "If you are on the free plan, then simply add a new DNS TXT record as shown below, but change the port from 25 to the port of your choosing.": "إذا كنت تستخدم الخطة المجانية ، فما عليك سوى إضافة سجل TXT جديد لنظام أسماء النطاقات كما هو موضح أدناه ، ولكن قم بتغيير المنفذ من 25 إلى المنفذ الذي تختاره.",
+  "For example, if I want all emails that go to ": "على سبيل المثال ، إذا كنت أريد جميع رسائل البريد الإلكتروني التي تذهب إليها",
+  " to forward to alias recipients' SMTP port of 1337 instead of 25:": " إعادة التوجيه إلى منفذ SMTP الخاص بالمستلمين 1337 بدلاً من 25:",
+  "Yes!  We offer a 30-day money back guarantee on all paids plans if you are not satisfied with our service.": "نعم! نحن نقدم ضمان استعادة الأموال لمدة 30 يومًا على جميع خطط paids إذا لم تكن راضيًا عن خدمتنا.",
+  "We do not ask any questions and simply process the refund within 5-7 business days.": "نحن لا نطرح أي أسئلة ونعالج ببساطة عملية رد الأموال في غضون 5-7 أيام عمل.",
+  "To request a refund, please send an email from the email address verified on your account to: ": "لطلب استرداد الأموال ، يرجى إرسال بريد إلكتروني من عنوان البريد الإلكتروني الذي تم التحقق منه في حسابك إلى:",
+  "refunds@forwardemail.net": "refunds@forwardemail.net",
+  "Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the \"http\" or \"https\" protocol prefixed in the webhook's URL.": "نعم ، اعتبارًا من 15 مايو 2020 ، أضفنا هذه الميزة. يمكنك ببساطة إضافة webhook (s) تمامًا كما تفعل مع أي مستلم! يُرجى التأكد من أن بروتوكول \"http\" أو \"https\" مسبوقًا في عنوان URL الخاص بالشبكة الإلكترونية.",
+  "If you are on the free plan, then simply add a new DNS TXT record as shown below:": "إذا كنت مشتركًا في الخطة المجانية ، فما عليك سوى إضافة سجل TXT جديد لنظام أسماء النطاقات كما هو موضح أدناه:",
+  " to forward to a new ": " إلى الأمام إلى جديد",
+  "request bin": "طلب بن",
+  " test endpoint:": " اختبار نقطة النهاية:",
+  "Or perhaps you want all emails that go to ": "أو ربما تريد جميع رسائل البريد الإلكتروني التي تذهب إليها",
+  " to forward to this endpoint:": " لإعادة التوجيه إلى نقطة النهاية هذه:",
+  "Note that we use the ": "لاحظ أننا نستخدم",
+  "mailparser": "موزع البريد",
+  " library's \"simpleParser\" method to parse the message into a JSON friendly object, and also append the \"raw\" property with the raw email message as a String.": " طريقة المكتبة \"simpleParser\" لتحليل الرسالة إلى كائن صديق JSON ، وكذلك إلحاق الخاصية \"الأولية\" برسالة البريد الإلكتروني الأولية على شكل سلسلة.",
+  "Yes, but this is ": "نعم ، ولكن هذا هو",
+  "NOT": "ليس",
+  " recommended as this is an incredibly rare edge case.": " يوصى به لأن هذه حالة حافة نادرة بشكل لا يصدق.",
+  "If you use Google Business for email, and want to use our server as a fallback so your mail still gets delivered, then just specify the Google mail servers with a lower priority than our mail servers.  An example is provided below:": "إذا كنت تستخدم Google Business للبريد الإلكتروني ، وترغب في استخدام خادمنا كحل بديل حتى يستمر تسليم بريدك ، فما عليك سوى تحديد خوادم بريد Google بأولوية أقل من خوادم البريد لدينا. يتم توفير مثال أدناه:",
+  "Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS TXT record and prefix the alias with an exclamation mark.  Note that you must preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing in our paid plans).": "نعم! اعتبارًا من 6 فبراير 2020 ، أضفنا هذه الميزة. ببساطة قم بتحرير سجل DNS TXT الخاص بك وقم بادئة الاسم المستعار بعلامة تعجب. لاحظ أنه يجب عليك الاحتفاظ بالتعيين \":\" ، لأن هذا مطلوب إذا قررت في أي وقت إيقاف تشغيل هذا الخيار (ويستخدم أيضًا للاستيراد في خططنا المدفوعة).",
+  "If you prefix an alias with \"!\" (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole.": "إذا قمت بادخال اسم مستعار بـ \"!\" (علامة التعجب) ، فإنها ستستمر في إعادة رموز الاستجابة الناجحة إلى المرسلين الذين يحاولون الإرسال إلى هذا العنوان ، ولكن لن تصل رسائل البريد الإلكتروني نفسها إلى أي مكان ؛ إلى الثقب الأسود.",
+  "Emails sent to disabled addresses will respond with a ": "سوف تستجيب رسائل البريد الإلكتروني المرسلة إلى عناوين معطلة بعلامة",
+  " (message queued) status code, but the emails will not actually be delivered to the recipient(s).": " (وضع الرسائل في قائمة الانتظار) ، ولكن لن يتم تسليم رسائل البريد الإلكتروني فعليًا إلى المستلم (المستلمين).",
+  " to stop flowing through to ": " لوقف التدفق من خلال",
+  ":": ":",
+  "Yes, absolutely.  Just specify multiple recipients in your TXT records.": "نعم بالتاكيد. ما عليك سوى تحديد عدة مستلمين في سجلات TXT الخاصة بك.",
+  "For example, if I want an email that goes to ": "على سبيل المثال ، إذا كنت أريد بريدًا إلكترونيًا يذهب إليه",
+  " to get forwarded to ": " للتقدم إلى",
+  " and ": " و",
+  ", then my TXT record would look like this:": "، سيبدو سجل TXT كما يلي:",
+  "Or, you could specify them in two separate lines, such as this:": "أو يمكنك تحديدها في سطرين منفصلين ، مثل هذا:",
+  "It's up to you!": "الأمر متروك لك!",
+  "Yes, you can. Just specify multiple global catch-all recipients in your TXT records.": "نعم يمكنك ذلك. ما عليك سوى تحديد العديد من المستلمين العالميين في سجلات TXT.",
+  "For example, if I want every email that goes to ": "على سبيل المثال ، إذا كنت أرغب في إرسال كل بريد إلكتروني إليه",
+  " (the asterisk meaning its a wildcard aka catch-all) to get forwarded to ": " (تعني العلامة النجمية أنها حرف بدل يُعرف أيضًا باسم الصيد الشامل) لتوجيهها إلى",
+  "Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have ": "نعم ، الحد الافتراضي هو 10. هذا لا يعني أنه لا يمكن أن يكون لديك سوى 10 أسماء مستعارة على اسم المجال الخاص بك. يمكنك الحصول على العديد من الأسماء المستعارة التي تريدها (كمية غير محدودة). هذا يعني أنه يمكنك إعادة توجيه اسم مستعار واحد فقط إلى 10 عناوين بريد إلكتروني فريدة. يمكن أن يكون لديك",
+  ", … (from 1-10) – and any emails to ": "، ... (من 1-10) - وأي رسائل بريد إلكتروني إلى",
+  " would get forwarded to ": " ستحال إلى",
+  ", … (from 1-10).": "، ... (من 1-10).",
+  "Yes, you can, however you still must adhere to the maximum limit.  If you have ": "نعم ، يمكنك ذلك ، ولكن لا يزال عليك الالتزام بالحد الأقصى. اذا كنت تمتلك",
+  ", then emails to ": "، ثم رسائل البريد الإلكتروني إلى",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails.": ". لاحظ أنه سيظهر خطأ إذا حاولت إعادة توجيه رسائل البريد الإلكتروني بشكل متكرر.",
+  "We use MX and TXT record verification, therefore if you add this service's respective MX and TXT records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.": "نستخدم التحقق من سجلات MX و TXT ، لذلك إذا أضفت سجلات MX و TXT الخاصة بهذه الخدمة ، فأنت مسجل. إذا قمت بإزالتها ، فأنت غير مسجل. لديك ملكية المجال وإدارة DNS ، لذلك إذا كان شخص ما لديه حق الوصول إلى ذلك فهذه مشكلة.",
+  "The service continues to run thanks to ": "تستمر الخدمة في العمل بفضل",
+  "donations": "التبرعات",
+  " and users that upgraded to paid plans.  We want to provide a free alternative (since we feel bad) for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": " والمستخدمين الذين قاموا بالترقية إلى الخطط المدفوعة. نريد توفير بديل مجاني (لأننا نشعر بالسوء) للأشخاص الذين يستخدمون خدمات إعادة توجيه مغلقة المصدر (وبالتالي المخاطرة بخصوصية وأمانهم).",
+  "We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.": "نحن افتراضي إلى حد حجم 50 ميغابايت ، والذي يتضمن المحتوى والعناوين والمرفقات. لاحظ أن خدمات مثل Gmail و Outlook تسمح بحد حجم 25 ميغابايت فقط ، وإذا تجاوزت الحد عند الإرسال إلى العناوين لدى هؤلاء المزودين ، فستتلقى رسالة خطأ.",
+  "An error with the proper response code is returned if the file size limit is exceeded.": "يتم إرجاع خطأ برمز الاستجابة الصحيح إذا تم تجاوز حد حجم الملف.",
+  "No, absolutely not.  See our ": "لا لا على الاطلاق. انظر لدينا",
+  "No, absolutely not.  We do not store logs.  See our ": "لا لا على الاطلاق. نحن لا نخزن السجلات. انظر لدينا",
+  "Many other email forwarding services unethically read your email.  This is not what I'm about.": "تقرأ العديد من خدمات إعادة توجيه البريد الإلكتروني الأخرى بشكل غير أخلاقي بريدك الإلكتروني. ليس هذا ما أنا عليه.",
+  "The code that is deployed to the server is ": "الرمز الذي يتم نشره على الخادم هو",
+  "open-source software on GitHub": "برنامج مفتوح المصدر على جيثب",
+  "Yes, absolutely.": "نعم بالتاكيد.",
+  "Yes, it has tests written with ": "نعم ، لديها اختبارات مكتوبة بها",
+  "ava": "افا",
+  " and also has code coverage.": " ولديه أيضًا تغطية رمز.",
+  "Yes, absolutely.  For example if you're sending an email to ": "نعم بالتاكيد. على سبيل المثال إذا كنت ترسل بريدًا إلكترونيًا إلى",
+  " and it's registered to forward to ": " وتم تسجيله لإعادة التوجيه إليه",
+  ", then the SMTP response message and code from the \"gmail.com\" SMTP server will be returned instead of the proxy server at \"mx1.forwardemail.net\" or \"mx2.forwardemail.net\".": "، ثم سيتم إرجاع رسالة استجابة SMTP والتعليمة البرمجية من خادم SMTP \"gmail.com\" بدلاً من الخادم الوكيل على \"mx1.forwardemail.net\" أو \"mx2.forwardemail.net\".",
+  "Per documentation and suggestions from Google at ": "وفقًا للتوثيق والاقتراحات من Google في",
+  "https://support.google.com/a/answer/175365?hl=en": "https://support.google.com/a/answer/175365؟hl=ar",
+  ", along with best practice, including:": "، إلى جانب أفضل الممارسات ، بما في ذلك:",
+  "DNS Blacklists:": "القوائم السوداء لنظام أسماء النطاقات:",
+  " we test senders IP's against the Spamhaus ": " نحن اختبار IP المرسلين ضد Spamhaus",
+  "DNS blacklists": "القوائم السوداء لنظام أسماء النطاقات",
+  ", if any fail, then the sender is not permitted to send the message and is returned a detailed error message with instructions on how to de-list themselves from the specific blacklists they're listed under.": "، في حالة فشل ، لا يُسمح للمُرسِل بإرسال الرسالة ويتم إرجاع رسالة خطأ تفصيلية تحتوي على تعليمات حول كيفية شطب أنفسهم من القوائم السوداء المحددة التي تم إدراجهم تحتها.",
+  "Anti-Spam and Anti-Phishing Scanner": "مكافحة البريد الإلكتروني العشوائي ومكافحة التصيد",
+  ": we built from scratch and use ": ": بنينا من الصفر والاستخدام",
+  "SpamScanner": "SpamScanner",
+  " for anti-spam prevention (it uses a Naive Bayes classifier under the hood).  We built this because we were not happy with ": " للوقاية من البريد العشوائي (يستخدم مصنف Naive Bayes تحت غطاء المحرك). بنينا هذا لأننا لم نكن سعداء به",
+  "rspamd": "rspamd",
+  " nor ": " ولا",
+  "SpamAssassin": "SpamAssassin",
+  ", nor were we happy with their lack of privacy-focused policies and public corpus datasets.": "، ولم نكن سعداء لافتقارهم لسياسات تركز على الخصوصية ومجموعات بيانات عامة.",
+  "SPF and DKIM:": "نظام التعرف على هوية المرسل (SPF) و DKIM:",
+  " through checking if an SPF record exists for a sender, and if so, we reverse-lookup the SMTP connection's remote address to validate it matches the SPF record, otherwise it's rejected.  If an SPF record does not exist, then we require DKIM verification.  If DKIM headers are passed and fail, then it is rejected as well.  If no DKIM headers are passed, then we assume that DKIM validation passes.": " من خلال التحقق من وجود سجل نظام التعرف على هوية المرسل (SPF) لمرسل ، وإذا كان الأمر كذلك ، فإننا نعاود البحث عن عنوان بعيد لاتصال SMTP للتحقق من تطابقه مع سجل نظام التعرف على هوية المرسل (SPF) ، وإلا فسيتم رفضه. في حالة عدم وجود سجل نظام التعرف على هوية المرسل (SPF) ، فإننا نطلب التحقق من DKIM. إذا تم تمرير رؤوس DKIM وفشلت ، فسيتم رفضها أيضًا. إذا لم يتم تمرير رؤوس DKIM ، فإننا نفترض أن التحقق من صحة DKIM يمر.",
+  "MX Record Test:": "اختبار سجل MX:",
+  " through checking if the sender's from address domain has MX records (so it's actually coming from a mail exchange/SMTP server), otherwise it's rejected.": " من خلال التحقق مما إذا كان لدى المرسل من نطاق العنوان سجلات MX (لذلك فهو في الواقع قادم من خادم بريد / خادم SMTP) ، وإلا فسيتم رفضه.",
+  "Disposable Email Addresses:": "عناوين البريد الإلكتروني المتاح:",
+  " we automatically block senders that are from the ": " نحظر تلقائيا المرسلين من",
+  "disposable-email-domains": "مجالات البريد الإلكتروني المتاح",
+  " list.": " قائمة.",
+  "Fully Qualified Domain Name Test:": "اختبار اسم المجال المؤهل بالكامل:",
+  " validates that senders SMTP connections are from a fully qualified domain name (\"FQDN\"), meaning no IP addresses, they must have a valid domain name resolved.": " يتحقق من أن اتصالات SMTP المرسلين من اسم مجال مؤهل بالكامل (\"FQDN\") ، مما يعني عدم وجود عناوين IP ، يجب أن يكون لديهم اسم مجال صالح تم حله.",
+  "TXT Record Test:": "اختبار سجل TXT:",
+  " through checking if the email address the sender is trying to send to has a TXT DNS record with a valid email forwarding setup. The SSL certificates (main domain name or alternative names) of all MX servers of the forwarding destination must match the MX entry.": " من خلال التحقق مما إذا كان عنوان البريد الإلكتروني الذي يحاول المرسل الإرسال إليه يحتوي على سجل TXT DNS مع إعداد إعادة توجيه بريد إلكتروني صالح. يجب أن تتطابق شهادات SSL (اسم المجال الرئيسي أو الأسماء البديلة) لجميع خوادم MX لوجهة إعادة التوجيه مع إدخال MX.",
+  "Sender Rewriting Scheme:": "نظام إعادة كتابة المرسل:",
+  " we use the ": " نحن نستخدم ال",
+  "Sender Rewriting Scheme": "مخطط إعادة كتابة المرسل",
+  " (\"SRS\"), which is a scheme used to rewrite the envelope from address for email forwarding in order for DKIM/SPF/DMARC to pass with a forwarding mail server.": " (\"SRS\") ، وهو مخطط يُستخدم لإعادة كتابة المغلف من العنوان لإعادة توجيه البريد الإلكتروني حتى يتم تمرير DKIM / SPF / DMARC مع خادم بريد إعادة التوجيه.",
+  "Yes! As of October 2, 2018 we have added this feature.  See ": "نعم! اعتبارًا من 2 أكتوبر 2018 ، أضفنا هذه الميزة. نرى",
+  " above!": " في الاعلى!",
+  "Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:": "نعم! اعتبارًا من 2 أكتوبر 2018 ، أضفنا هذه الميزة. ما عليك سوى عرض هذين الرابطين من Microsoft أدناه:",
+  "https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2": "https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2",
+  "https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e": "https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e",
+  "Unfortunately Apple does not allow this, regardless of which service you use.  However you can use the Mail app along with your domain's email account.": "للأسف ، لا تسمح Apple بذلك ، بغض النظر عن الخدمة التي تستخدمها. ومع ذلك ، يمكنك استخدام تطبيق البريد مع حساب البريد الإلكتروني لنطاقك.",
+  "https://discussions.apple.com/thread/8316291": "https://discussions.apple.com/thread/8316291",
+  "https://discussions.apple.com/thread/6876839": "https://discussions.apple.com/thread/6876839",
+  "Practically yes - the only current restriction is that senders ": "عمليا نعم - القيد الحالي الوحيد هو أن المرسلين",
+  "by unique email address": "عن طريق عنوان بريد إلكتروني فريد",
+  " are limited to sending (300) emails per hour through the system.": " تقتصر على إرسال (300) رسالة بريد إلكتروني في الساعة عبر النظام.",
+  "If this limit is exceeded we send a \"451\" response code which tells the senders mail server to retry later.": "في حالة تجاوز هذا الحد ، نرسل رمز استجابة \"451\" يخبر خادم بريد المرسلين بإعادة المحاولة لاحقًا.",
+  "If you're using Gmail, then follow these steps below:": "إذا كنت تستخدم Gmail ، فاتبع الخطوات التالية:",
+  "https://google.com": "https://google.com",
+  " and sign out of all email accounts": " وتسجيل الخروج من جميع حسابات البريد الإلكتروني",
+  "Click \"Sign In\" and on the drop-down click on \"other account\"": "انقر على \"تسجيل الدخول\" وانقر على \"حساب آخر\" في القائمة المنسدلة",
+  "Select \"Use another account\"": "حدد \"استخدام حساب آخر\"",
+  "Select \"Create account\"": "حدد \"إنشاء حساب\"",
+  "Select \"Use my current email address instead\"": "حدد \"استخدام عنوان بريدي الإلكتروني الحالي بدلاً من ذلك\"",
+  "Enter your custom domain name email address": "أدخل عنوان البريد الإلكتروني لاسم المجال المخصص",
+  "Retrieve the verification email sent to your email address": "استرجع رسالة التحقق المرسلة إلى عنوان بريدك الإلكتروني",
+  "Enter the verification code from this email": "أدخل رمز التحقق من هذا البريد الإلكتروني",
+  "Complete profile information for your new Google account": "معلومات الملف الشخصي الكاملة لحسابك الجديد في Google",
+  "Agree to all Privacy and Terms of Use policies": "وافق على جميع سياسات الخصوصية وشروط الاستخدام",
+  " and in the top right corner, click on your profile icon, and click on the \"change\" button": " وفي الزاوية العلوية اليمنى ، انقر فوق رمز ملف التعريف الخاص بك ، وانقر فوق الزر \"تغيير\"",
+  "Upload a new photo or avatar for your account": "قم بتحميل صورة أو صورة رمزية جديدة لحسابك",
+  "Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.": "ستستغرق التغييرات حوالي ساعة إلى ساعتين تقريبًا ، ولكن في بعض الأحيان قد تكون سريعة جدًا.",
+  "Send a test email and the profile photo should appear.": "أرسل بريدًا إلكترونيًا تجريبيًا وستظهر صورة الملف الشخصي.",
+  "We use CloudFlare's privacy-first consumer DNS service (see ": "نحن نستخدم خدمة DNS للمستهلكين التي تعد أول خصوصية في CloudFlare (انظر",
+  "announcement here": "إعلان هنا",
+  ").  We set ": "). وضعنا",
+  " as the DNS servers (see ": " كخوادم DNS (انظر",
+  "https://developers.cloudflare.com/1.1.1.1/1.1.1.1-for-families/": "https://developers.cloudflare.com/1.1.1.1/1.1.1.1-for-families/",
+  ") using ": ") باستخدام",
+  " on our servers and test environments.": " على خوادمنا وبيئات الاختبار.",
+  "The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and focuses on performance through streams.  ": "أحدث إصدار ، v2 (تم إصداره في 6 مايو 2019) كان إعادة كتابة رئيسية من v1 ويركز على الأداء من خلال التدفقات.",
+  "Nodemailer's": "Nodemailer",
+  " prolific author Andris Reinman (": " المؤلف الغزير أندريس راينمان (",
+  "@andris9": "@ andris9",
+  ") helped us switch off using the ": ") ساعدنا على إيقاف استخدام",
+  " library and use ": " المكتبة والاستخدام",
+  " instead with some custom transform logic to split the header and the body of the message without affecting the body.  This allows us to perform operations on headers very fast (such as security checks and for SPF/DKIM/DMARC compliance).": " بدلاً من ذلك مع بعض منطق التحويل المخصص لتقسيم رأس الرسالة ونص الرسالة دون التأثير على النص الأساسي. يسمح لنا هذا بإجراء العمليات على الرؤوس بسرعة كبيرة (مثل الفحوصات الأمنية وامتثال نظام التعرف على هوية المرسل (SPF) / DKIM / DMARC).",
+  "In other words, the latest version of this service uses streams purely now and is lightning fast.": "بمعنى آخر ، يستخدم أحدث إصدار من هذه الخدمة التدفقات الآن فقط وهو سريع البرق.",
+  "  The older version v1 also had some logic not in the most optimal order of operations – but now v2 does less memory/network intense operations first (and returns early if possible to send a response as quickly as possible to the SMTP client).  We plan to continue to optimize speed, enhance features, and improve this service over time.": "  يحتوي الإصدار الأقدم من v1 أيضًا على بعض المنطق ليس في أفضل ترتيب للعمليات - ولكن الآن يقوم الإصدار 2 بعمليات أقل من الذاكرة / الشبكة أولاً (ويعود مبكرًا إن أمكن لإرسال استجابة بأسرع وقت ممكن إلى عميل SMTP). نخطط للاستمرار في تحسين السرعة وتحسين الميزات وتحسين هذه الخدمة بمرور الوقت.",
+  "At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! 🎉": "لا نكتب في أي وقت من الأوقات على القرص أو نخزن رسائل البريد الإلكتروني - يتم كل شيء في الذاكرة بفضل تدفقات وتحويلات Node.js! 🎉",
+  "About Forward Email": "حول إعادة توجيه البريد الإلكتروني",
+  "Foreword": "مقدمة",
+  "History": "التاريخ",
+  "Service": "الخدمات",
+  "Special Thanks": "شكر خاص",
+  " is a ": " هو",
+  "free and open-source": "مجانية ومفتوحة المصدر",
+  "email forwarding": "إعادة توجيه البريد الإلكتروني",
+  " service focused on a user's ": " ركزت الخدمة على المستخدم",
+  "right to privacy": "الحق في الخصوصية",
+  ", and was launched in November 2017. It is powered by ": "، وتم إطلاقه في نوفمبر 2017. وهو مدعوم من",
+  " and operates using the ": " ويعمل باستخدام",
+  "DNS": "DNS",
+  "HTTPS": "HTTPS",
+  ", and ": "و",
+  "SMTP": "SMTP",
+  " protocols. The service offers unlimited custom domain names, unlimited email addresses and aliases, unlimited disposable email addresses, spam and phishing protection, and other features.  Paid plans are offered for \"Enhanced Privacy Protection\", whereas the email alias configuration is hidden from the public. It accepts conventional payment methods, donations, and also encourages contributions towards the ": " البروتوكولات. تقدم الخدمة أسماء نطاقات مخصصة غير محدودة ، وعناوين بريد إلكتروني وأسماء مستعارة غير محدودة ، وعناوين بريد إلكتروني غير محدودة ، وحماية من البريد الإلكتروني العشوائي والتصيد ، وميزات أخرى. يتم تقديم الخطط المدفوعة لـ \"حماية الخصوصية المحسنة\" ، بينما يتم إخفاء تكوين الاسم المستعار للبريد الإلكتروني عن الجمهور. يقبل طرق الدفع التقليدية ، والتبرعات ، ويشجع أيضا المساهمات في",
+  "Electronic Frontier Foundation": "مؤسسة الحدود الإلكترونية",
+  " (EFF) and ": " (EFF) و",
+  "DuckDuckGo": "DuckDuckGo",
+  "We launched ": "أطلقنا",
+  "in November 2017": "في نوفمبر 2017",
+  " after an initial release by our developer ": " بعد الإصدار الأولي من قبل المطور لدينا",
+  "Niftylettuce": "نيفتيليتوس",
+  "In April 2018 ": "في أبريل 2018",
+  "Cloudflare": "Cloudflare",
+  " launched their ": " أطلقت بهم",
+  "privacy-first consumer DNS service": "خدمة DNS المستهلك الخصوصية الأولى",
+  ", and we switched from using ": "، وتحولنا من استخدام",
+  "OpenDNS": "OpenDNS",
+  " to ": " إلى",
+  " for handling ": " للتعامل",
+  " lookups.": " عمليات البحث.",
+  "In October 2018, we allowed users to \"Send Mail As\" with ": "في أكتوبر 2018 ، سمحنا للمستخدمين بـ \"إرسال البريد باسم\" باستخدام",
+  "Outlook": "الآفاق",
+  "Zoho": "زوهو",
+  "Apple Mail": "Apple Mail",
+  ", and other ": "، وغيرها",
+  "webmail": "بريد الويب",
+  " services.": " خدمات.",
+  "In May 2019, we released ": "في مايو 2019 ، أصدرنا",
+  "v2.0.0": "الإصدار 2.0.0",
+  ", which was a major rewrite from the initial versions v0.x and v1.x, which focused on ": "، والتي كانت إعادة كتابة رئيسية من الإصدارات الأولية v0.x و v1.x ، والتي ركزت عليها",
+  "performance": "أداء",
+  " through the use of ": " من خلال استخدام",
+  "'s ": "'س",
+  "streams": "تيارات",
+  "In February 2020, we ": "في فبراير 2020 ، نحن",
+  "released": "صدر",
+  " the Enhanced Privacy Protection plan.  This plan allows users to switch off setting public DNS record entries with their email forwarding configuration aliases. Through this plan, a user's email alias information is hidden from being publicly searchable over the Internet. We also ": " خطة حماية الخصوصية المحسنة. تسمح هذه الخطة للمستخدمين بإيقاف تعيين إدخالات سجل DNS العام باستخدام الأسماء المستعارة لتكوين إعادة توجيه البريد الإلكتروني. من خلال هذه الخطة ، يتم إخفاء معلومات الاسم المستعار للبريد الإلكتروني الخاص بالمستخدم من البحث العام عبر الإنترنت. نحن أيضا",
+  "released a feature": "أصدرت ميزة",
+  " to enable or disable specific aliases while still allowing them to appear as a valid email address and return a successful ": " لتمكين أو تعطيل أسماء مستعارة معينة مع الاستمرار في السماح لهم بالظهور كعنوان بريد إلكتروني صالح وإرجاع ناجح",
+  "SMTP status code": "رمز حالة SMTP",
+  ", but the emails will be immediately discarded (similar to piping output from a process to ": "، ولكن سيتم تجاهل رسائل البريد الإلكتروني على الفور (على غرار إخراج الأنابيب من العملية إلى",
+  "[": "[",
+  "/dev/null": "/ dev / null",
+  ").": ").",
+  "In April 2020, our developer Niftylettuce ": "في أبريل 2020 ، قام المطور لدينا Niftylettuce",
+  " its initial alpha version of ": " نسخة ألفا الأولية من",
+  "Spam Scanner": "ماسح البريد المزعج",
+  " \"after hitting countless roadblocks with existing spam-detection solutions\" and because \"none of these solutions (": " \"بعد الوصول إلى عدد لا يحصى من حواجز الطرق باستخدام حلول الكشف عن الرسائل غير المرغوب فيها\" ولأن \"أيًا من هذه الحلول (",
+  "Rspamd": "Rspamd",
+  ") honored (our) privacy policy\". Spam Scanner is a completely free and open-source ": ") سياسة الخصوصية الخاصة بنا (.) Spam Scanner هو برنامج مجاني ومفتوح المصدر",
+  "anti-spam filtering": "تصفية مكافحة البريد العشوائي",
+  " solution which uses a ": " الحل الذي يستخدم",
+  "Naive Bayes spam filtering": "Naive Bayes تصفية البريد العشوائي",
+  " approach in combination with ": " النهج بالاشتراك مع",
+  "anti-phishing": "مكافحة التصيد",
+  "IDN homograph attack": "هجوم توقيع IDN",
+  " protection. We also ": " الحماية. نحن أيضا",
+  " a feature to allow ": " ميزة للسماح",
+  "two-factor authentication": "توثيق ذو عاملين",
+  " (2FA) using a ": " (2FA) باستخدام أ",
+  "one-time password": "كلمة السر لمرة واحدة",
+  " (OTP) for enhanced account security.": " (OTP) لتحسين أمان الحساب.",
+  "In May 2020, we ": "في مايو 2020 ، نحن",
+  "allowed": "مسموح",
+  " custom ": " مخصص",
+  "port forwarding": "ميناء الشحن",
+  " as workaround for users to circumvent port blocking by their ": " كحل للمستخدمين للتحايل على حظر المنفذ من قبل",
+  "ISP": "ISP",
+  ".  We also released our ": ". أصدرنا أيضا",
+  "Free Email Forwarding RESTful API": "واجهة برمجة تطبيقات مجانية لإعادة توجيه البريد الإلكتروني",
+  ", with complete documentation and real-time request and response examples.  We also ": "، مع وثائق كاملة وأمثلة على الطلب والاستجابة في الوقت الحقيقي. نحن أيضا",
+  " support for webhooks, due to high demand from users ": " دعم الرد التلقائي على الويب بسبب ارتفاع الطلب من المستخدمين",
+  "switching": "التبديل",
+  " to use our service as a Mailgun webhook alternative.": " لاستخدام خدمتنا كبديل Mailgun webhook.",
+  "In June 2020, we publicly released our real-time metrics and revenue on our ": "في يونيو 2020 ، أصدرنا علنًا مقاييسنا وإيراداتنا في الوقت الفعلي",
+  " page (also available as a link in the footer of our site).": " الصفحة (متوفرة أيضًا كرابط في تذييل موقعنا).",
+  "As of May 2020, we operate from 3 server locations across 2 countries.  We have future plans to move our servers to a country such as Iceland, which has ": "اعتبارًا من مايو 2020 ، نعمل من 3 مواقع خادم في دولتين. لدينا خطط مستقبلية لنقل خوادمنا إلى بلد مثل أيسلندا التي لديها",
+  "championed itself as a beacon of net neutrality and online privacy": "دافعت عن نفسها كمنارة للحياد الصافي والخصوصية عبر الإنترنت",
+  "We have a \"zero tolerance policy\" ": "لدينا \"سياسة عدم التسامح مطلقا\"",
+  "privacy policy": "سياسة الخصوصية",
+  ", which states that we don't store logs nor emails, and we don't track users. Our statement clearly states that we do not collect nor store forwarded emails, metadata, server-side nor client-side logs, IP addresses, or browser information.": "، التي تنص على أننا لا نخزن السجلات ولا رسائل البريد الإلكتروني ، ولا نتتبع المستخدمين. يوضح بياننا بوضوح أننا لا نجمع ولا نخزن رسائل البريد الإلكتروني أو البيانات الوصفية المعاد توجيهها أو السجلات من جانب الخادم أو من جانب العميل أو عناوين IP أو معلومات المتصفح.",
+  "Only an email address is required to create and configure the Enhanced Protection Plan, which hides DNS email alias information on the free plan through a managed and hosted service.": "مطلوب فقط عنوان بريد إلكتروني لإنشاء وتكوين خطة الحماية المحسنة ، والتي تخفي معلومات الاسم المستعار للبريد الإلكتروني DNS على الخطة المجانية من خلال خدمة مُدارة ومستضافة.",
+  "User's accounts, domains, and all related information can be permanently deleted at any time by the user.": "يمكن حذف حسابات المستخدم والنطاقات وجميع المعلومات ذات الصلة نهائيًا في أي وقت بواسطة المستخدم.",
+  "Forward Email's source code is primarily developed by ": "تم تطوير رمز مصدر Forward Email بشكل أساسي بواسطة",
+  ", whom publicly credits immense open-source contributions from the following people:": "، الذي يُنسب علنًا مساهمات ضخمة مفتوحة المصدر من الأشخاص التالين:",
+  "Shaun Warman": "شون وارمان",
+  " for ": " إلى عن على",
+  "integration": "دمج",
+  " of ": " من",
+  " (OTP), ": " (مكتب المدعي العام) ،",
+  "Content Security Policy": "سياسة أمن المحتوى",
+  " (CSP), and ": " (CSP) ، و",
+  "Subresource Integrity": "تكامل الموارد الفرعية",
+  " (SRI) into the ": " (سري) في",
+  "Lad": "دع",
+  " framework, which is ": " الإطار ، وهو",
+  "used internally": "تستخدم داخليا",
+  " in Forward Email.": " في البريد الإلكتروني إلى الأمام.",
+  "Fedor Indutny": "فيدور إندوتي",
+  "questions and answers": "أسئلة وأجوبة",
+  " regarding Forward Email's compliance with strict and modern ": " فيما يتعلق بامتثال Forward Email الصارم والحديث",
+  "TLS": "TLS",
+  "cryptographic ciphers": "شفرات التشفير",
+  "Andris Reisman": "أندريس ريسمان",
+  " (the author of the ": " (مؤلف كتاب",
+  "npm": "asl",
+  " package nodemailer, which is used internally in Forward Email.": " حزمة nodemailer ، التي يتم استخدامها داخليًا في Forward Email.",
+  "Scott Kitterman": "سكوت كيترمان",
+  "Sender Policy Framework": "إطار سياسة المرسل",
+  " (SPF) ": " (SPF)",
+  "RFC 7208": "RFC 7208",
+  " specification) for ": " مواصفات) ل",
+  "questions": "الأسئلة",
+  "answers": "إجابات",
+  " regarding Forward Email's compliance with ": " فيما يتعلق بامتثال Forward Email",
+  " (SRS), ": " (سرس) ،",
+  "DMARC": "DMARC",
+  " (SPF), and ": " (SPF) و",
+  "DKIM": "DKIM",
+  " compliance over ": " الامتثال أكثر",
+  "IRC": "IRC",
+  "By accessing this web site, you are agreeing to be bound by these web site Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site. The materials contained in this web site are protected by applicable copyright and trade mark law.": "من خلال الوصول إلى موقع الويب هذا ، فإنك توافق على الالتزام بشروط وأحكام الاستخدام الخاصة بهذا الموقع ، وجميع القوانين واللوائح المعمول بها ، وتوافق على أنك مسؤول عن الامتثال لأي قوانين محلية سارية. إذا كنت لا توافق على أي من هذه الشروط ، يُحظر عليك استخدام هذا الموقع أو الوصول إليه. المواد الواردة في هذا الموقع محمية بموجب قانون حقوق النشر والعلامات التجارية المعمول به.",
+  "Disclaimer": "تنصل",
+  "Limitations": "محددات",
+  "Refunds": "المبالغ المستردة",
+  "Service Level Agreement (\"SLA\")": "اتفاقية مستوى الخدمة (\"SLA\")",
+  "Agreement": "اتفاق",
+  "Credits": "ائتمانات",
+  "Eligibility": "جدارة - أهلية",
+  "Revisions and Errata": "المراجعات و Errata",
+  "Links": "الروابط",
+  "Site Terms of Use Modifications": "تعديلات شروط استخدام الموقع",
+  "Governing Law": "القانون الذي يحكم",
+  "License": "رخصة",
+  "The materials on Forward Email's web site are provided \"as is\". Forward Email makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties, including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights. Further, Forward Email does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its Internet web site or otherwise relating to such materials or on any sites linked to this site.": "يتم توفير المواد الموجودة على موقع ويب Forward Email \"كما هي\". لا تقدم خدمة Forward Email أية ضمانات ، صريحة أو ضمنية ، وتنفي بموجب هذه الوثيقة وتنفي جميع الضمانات الأخرى ، بما في ذلك على سبيل المثال لا الحصر ، الضمانات الضمنية أو شروط التسويق ، والملاءمة لغرض معين ، أو عدم انتهاك الملكية الفكرية أو أي انتهاك آخر للحقوق. علاوة على ذلك ، لا تضمن Forward Email أو تقدم أي إقرارات تتعلق بالدقة أو النتائج المحتملة أو موثوقية استخدام المواد على موقعها على الإنترنت أو بطريقة أخرى تتعلق بهذه المواد أو على أي مواقع مرتبطة بهذا الموقع.",
+  "In no event shall Forward Email or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption,) arising out of the use or inability to use the materials on Forward Email's Internet site, even if Forward Email or a Forward Email authorized representative has been notified orally or in writing of the possibility of such damage. Because some jurisdictions do not allow limitations on implied warranties, or limitations of liability for consequential or incidental damages, these limitations may not apply to you.": "لن تكون Forward Email أو مورديها مسؤولين بأي حال من الأحوال عن أي أضرار (بما في ذلك ، على سبيل المثال لا الحصر ، الأضرار الناجمة عن فقدان البيانات أو الربح ، أو بسبب انقطاع الأعمال) الناشئة عن استخدام أو عدم القدرة على استخدام المواد على الإنترنت Forward Email's الموقع ، حتى إذا تم إبلاغ ممثل إعادة توجيه البريد الإلكتروني أو ممثل إعادة توجيه البريد الإلكتروني شفهيًا أو كتابيًا بإمكانية حدوث مثل هذا الضرر. نظرًا لأن بعض السلطات القضائية لا تسمح بفرض قيود على الضمانات الضمنية ، أو قيود المسؤولية عن الأضرار التبعية أو العرضية ، فقد لا تنطبق هذه القيود عليك.",
+  "We offer a 30-day money back guarantee on all paid plans if you are not satisfied with our service.": "نقدم ضمان استعادة الأموال لمدة 30 يومًا على جميع الخطط المدفوعة إذا لم تكن راضيًا عن خدمتنا.",
+  "\"Downtime\" refers to a factor of more than a 5% user error rate, determined by a server-side error rate.": "يشير \"وقت التوقف\" إلى عامل يزيد عن معدل خطأ المستخدم بنسبة 5٪ ، والذي يحدده معدل الخطأ من جانب الخادم.",
+  "\"Monthly Uptime Percentage\" refers to the total minutes in a calendar month minus the number of minutes of Downtime suffered in the calendar month, divided by the total minutes in the calendar month.": "تشير \"النسبة المئوية لوقت التشغيل الشهري\" إلى إجمالي الدقائق في الشهر التقويمي مطروحًا منها عدد دقائق التوقف عن العمل التي حدثت في الشهر التقويمي مقسومًا على إجمالي الدقائق في الشهر التقويمي.",
+  "Forward Email shall use all reasonable commercial efforts (no less than acceptable and reasonable industry standards) to ensure that the Forward Email service is available to paying customers 99.99% of the time in any calendar month.  If it is not, then you may be eligible to receive the ": "يجب أن تستخدم خدمة Forward Email جميع الجهود التجارية المعقولة (بما لا يقل عن معايير الصناعة المقبولة والمعقولة) لضمان توفر خدمة Forward Email للعملاء الذين يدفعون 99.99٪ من الوقت في أي شهر تقويمي. إذا لم يكن كذلك ، فقد تكون مؤهلاً لتلقي",
+  " described below in accordance with ": " موضح أدناه وفقًا لـ",
+  "Monthly Uptime Percentage": "نسبة التشغيل الشهرية",
+  "Days of Service": "أيام الخدمة",
+  "*": "*",
+  "<": "<",
+  " 99.99% – >= 99.90%": " 99.99٪ -> = 99.90٪",
+  " 99.90% – >= 95.00%": " 99.90٪ -> = 95.00٪",
+  " 95.50%": " 95.50٪",
+  " Instead of receiving Days of Service being added to your account, you can also choose to have us issue a pro-rated refund.": " بدلاً من تلقي أيام الخدمة التي تتم إضافتها إلى حسابك ، يمكنك أيضًا اختيار جعلنا نصدر رد أموال مقسَّم بالنسب.",
+  "Minimum credit amount must be at least $1.00 to be eligible.  Maximum credit is capped at the 30 days or the total amount the customer is paying per the most recent calendar month with respect to Downtime (whichever is greater).  Paying customers affected for any Downtime must request Credits by filing a ": "يجب أن يكون الحد الأدنى لمبلغ الائتمان 1.00 دولار على الأقل حتى تكون مؤهلاً. يتم تحديد الحد الأقصى للائتمان في الثلاثين يومًا أو إجمالي المبلغ الذي يدفعه العميل في آخر شهر تقويمي فيما يتعلق بالتوقف (أيهما أكبر). يجب على العملاء الذين يتأثرون بأي فترة توقف عن العمل طلب اعتمادات عن طريق تقديم",
+  " within 30 days from the date of Downtime.  Credits only apply for Downtime factors that are within the primary control of Forward Email.": " في غضون 30 يومًا من تاريخ التوقف. يتم تطبيق الأرصدة فقط على عوامل التعطل التي تقع ضمن التحكم الأساسي في إعادة توجيه البريد الإلكتروني.",
+  "The materials appearing on Forward Email's web site could include technical, typographical, or photographic errors. Forward Email does not warrant that any of the materials on its web site are accurate, complete, or current. Forward Email may make changes to the materials contained on its web site at any time without notice. Forward Email does not, however, make any commitment to update the materials.": "يمكن أن تتضمن المواد التي تظهر على موقع Forward Email على الويب أخطاء فنية أو مطبعية أو فوتوغرافية. لا تضمن خدمة Forward Email أن أي من المواد الموجودة على موقعها الإلكتروني دقيقة أو كاملة أو حالية. قد يقوم Forward Email بإجراء تغييرات على المواد الموجودة على موقعه على الويب في أي وقت دون إشعار. ومع ذلك ، فإن البريد الإلكتروني لا يلتزم بتحديث المواد.",
+  "Forward Email has not reviewed all of the sites linked to its Internet web site and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Forward Email of the site. Use of any such linked web site is at the user's own risk.": "لم تقم Forward Email بمراجعة جميع المواقع المرتبطة بموقعها على الإنترنت وهي ليست مسؤولة عن محتويات أي موقع مرتبط. إدراج أي رابط لا يعني المصادقة عليه من قبل البريد الإلكتروني الأمامي للموقع. استخدام أي موقع ويب مرتبط على مسؤولية المستخدم الخاصة.",
+  "Forward Email may revise these terms of use for its web site at any time without notice. By using this web site you are agreeing to be bound by the then current version of these Terms and Conditions of Use.": "قد يقوم Forward Email بمراجعة شروط الاستخدام هذه لموقعه على الويب في أي وقت دون إشعار. باستخدام هذا الموقع فإنك توافق على الالتزام بالإصدار الحالي من هذه الشروط والأحكام.",
+  "Any claim relating to Forward Email's web site shall be governed by the laws of the State of Delaware without regard to its conflict of law provisions.": "تخضع أي مطالبة تتعلق بموقع Forward Email الإلكتروني لقوانين ولاية Delaware بغض النظر عن تعارضها مع أحكام القانون.",
+  "General Terms and Conditions applicable to Use of a Web Site.": "الشروط والأحكام العامة المطبقة على استخدام موقع ويب.",
+  "Business Source License 1.1": "ترخيص مصدر العمل 1.1",
+  " © ": " ©",
+  "Niftylettuce, LLC.": "Niftylettuce، LLC.",
+  "Your request has timed out and we have been alerted of this issue. Please try again or contact us.": "انتهت مهلة طلبك وتم تنبيهنا بهذه المشكلة. يرجى المحاولة مرة أخرى أو الاتصال بنا.",
+  "Need email forwarding?": "هل تحتاج إلى إعادة توجيه البريد الإلكتروني؟",
+  "Skip ahead to the instructions to get started.": "انتقل إلى التعليمات للبدء.",
+  "Reserved Email Addresses &#124; <span class=\"notranslate\">Forward Email</span>": "عناوين البريد الإلكتروني المحجوزة &#124; <span class=\"notranslate\">Forward Email</span>",
+  "List of 1250+ email addresses reserved for security concerns": "قائمة تضم أكثر من 1250 عنوان بريد إلكتروني محفوظة لمخاوف أمنية",
+  "Need email forwarding for your team?": "هل تحتاج إلى إعادة توجيه البريد الإلكتروني لفريقك؟",
+  "Skip ahead to the instructions to setup email forwarding for your team.": "انتقل إلى التعليمات لإعداد إعداد إعادة توجيه البريد الإلكتروني لفريقك.",
+  "We compiled a list of 1250+ email addresses that should be reserved by admins for security concerns.": "قمنا بتجميع قائمة تضم أكثر من 1250 عنوان بريد إلكتروني يجب أن يحفظها المسؤولون لأسباب أمنية.",
+  "Reserved Email Addresses and Words": "عناوين البريد الإلكتروني والكلمات المحجوزة",
+  "Security-Focused List": "قائمة تركز على الأمن",
+  "<strong>Did you know?</strong> In our paid plans, organizations can have members that belong to an \"admin\" or a \"user\" group &ndash; and the \"user\" group is not permitted to add aliases that equal one of the reserved email addresses below.  We also restrict the \"user\" group from having an email address that starts with, ends with, or equals \"admin\", \"administrator\", \"webmaster\", \"hostmaster\", \"postmaster\", and \"ssl\".": "<strong>هل كنت تعلم؟</strong> في خططنا المدفوعة ، يمكن أن يكون للمؤسسات أعضاء ينتمون إلى مجموعة &quot;مشرف&quot; أو &quot;مستخدم&quot; - ولا يُسمح لمجموعة &quot;المستخدم&quot; بإضافة أسماء مستعارة تساوي أحد عناوين البريد الإلكتروني المحجوزة أدناه. نقيّد أيضًا مجموعة &quot;المستخدم&quot; من امتلاك عنوان بريد إلكتروني يبدأ بـ أو ينتهي بـ أو يساوي &quot;admin&quot; و &quot;admin&quot; و &quot;webmaster&quot; و &quot;hostmaster&quot; و &quot;postmaster&quot; و &quot;ssl&quot;.",
+  "View source code on GitHub": "عرض شفرة المصدر على جيثب",
+  "Register a domain name &#124; <span class=\"notranslate\">Forward Email</span>": "تسجيل اسم مجال &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Buy a custom domain name for email forwarding": "شراء اسم مجال مخصص لإعادة توجيه البريد الإلكتروني",
+  "Register a domain name": "تسجيل اسم المجال",
+  "Enter a custom domain name below to register.": "أدخل اسم نطاق مخصص أدناه للتسجيل.",
+  "Did you finish registering?": "هل انتهيت من التسجيل؟",
+  "Simply enter your domain below to setup free email forwarding.": "ما عليك سوى إدخال نطاقك أدناه لإعداد إعادة توجيه البريد الإلكتروني مجانًا.",
+  "Free Disposable Addresses &#124; <span class=\"notranslate\">Forward Email</span>": "عناوين المتاح مجانا &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Try free and disposable email addresses with our short and memorable vanity domains, or you can use a custom domain name for free disposable addresses.": "جرب عناوين البريد الإلكتروني المجانية والقابلة للتخلص منها مع نطاقات الغرور القصيرة التي لا تنسى ، أو يمكنك استخدام اسم نطاق مخصص لعناوين مجانية يمكن التخلص منها.",
+  "Free disposable adddresses": "إضافات مجانية يمكن التخلص منها",
+  "Ready to get started and create a disposable email address?": "هل أنت جاهز للبدء وإنشاء عنوان بريد إلكتروني يمكن التخلص منه؟",
+  "Use your own custom domain name or try one of our free vanity domain names.": "استخدم اسم نطاقك المخصص أو جرب أحد أسماء نطاقاتنا المجانية.",
+  "Short and Memorable Vanity Domains": "مجالات الغرور قصيرة ولا تنسى",
+  "<strong>Did you know?</strong> You can use your own custom domain name as a disposable email address.  Just <a href=\"/my-account/domains/new\" class=\"alert-link\">add a new domain</a> today to get started.  You can even \"Send mail as\" with Gmail, Outlook, and Yahoo using disposable addresses.": "<strong>هل كنت تعلم؟</strong> يمكنك استخدام اسم المجال الخاص بك كعنوان بريد إلكتروني يمكن التخلص منه. ما عليك <a href=\"/my-account/domains/new\" class=\"alert-link\">سوى إضافة مجال جديد</a> اليوم للبدء. يمكنك حتى &quot;إرسال البريد باسم&quot; مع Gmail و Outlook و Yahoo باستخدام عناوين يمكن التخلص منها.",
+  "name": "اسم",
+  "Try it now": "جربه الآن",
+  "Create your address": "أنشئ عنوانك",
+  "List of ports blocked by ISPs &#124; <span class=\"notranslate\">Forward Email</span>": "قائمة الموانئ المحظورة بواسطة ISPs &#124; <span class=\"notranslate\">Forward Email</span>",
+  "We compiled a list of ports blocked by Internet Service Providers from every country around the world.": "قمنا بتجميع قائمة بالمنافذ المحظورة من قبل مزودي خدمة الإنترنت من كل دولة حول العالم.",
+  "We manually curated an open-source list of ports blocked by both Internet Service Provider and residing country.": "نظمنا يدويًا قائمة مفتوحة المصدر بالمنافذ المحظورة من قبل كل من مزود خدمة الإنترنت والبلد المقيم.",
+  "List of ports blocked by ISP and Country": "قائمة الموانئ المحظورة بواسطة ISP و Country",
+  "Check to see if your ISP is listed below": "تحقق لمعرفة ما إذا كان ISP الخاص بك مدرجًا أدناه",
+  "This page is undergoing an update.  Please check back later.": "تخضع هذه الصفحة لتحديث. يرجى التحقق مرة أخرى في وقت لاحق.",
+  "About &#124; <span class=\"notranslate\">Forward Email</span>": "حول &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Learn more about Forward Email": "تعرف على المزيد حول إعادة توجيه البريد الإلكتروني",
+  "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener\">@niftylettuce</a> and is trusted and relied upon by thousands.": "تأسست خدمتنا في عام 2017 من قبل <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener\">niftylettuce</a> وهي موثوقة ويعتمد عليها الآلاف.",
+  "Our Story": "قصتنا",
+  "Why did we create this?": "لماذا خلقنا هذا؟",
+  "No email-forwarding service existed that was free, secure, and open-source &ndash; so we built it.": "لا توجد خدمة إعادة توجيه البريد الإلكتروني التي كانت مجانية وآمنة ومفتوحة المصدر & ndash؛ لذلك بنيناها.",
+  "Confirm old password": "تأكيد كلمة المرور القديمة",
+  "Admin &#124; <span class=\"notranslate\">Forward Email</span>": "المشرف &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Access your Forward Email admin": "الوصول إلى مسؤول البريد الإلكتروني إلى الأمام",
+  "Admin - Users": "المشرف - المستخدمون",
+  "First Name": "الاسم الاول",
+  "Last Name": "الكنية",
+  "Group": "مجموعة",
+  "Created": "خلقت",
+  "Updated": "محدث",
+  "Last Login": "آخر تسجيل دخول",
+  "Last IP": "عنوان IP الأخير",
+  "Last Locale": "اللغة الأخيرة",
+  "OTP Enabled": "تم تمكين OTP",
+  "Actions": "أجراءات",
+  "Edit": "تعديل",
+  "Log in as user": "تسجيل الدخول كمستخدم",
+  "Remove": "إزالة",
+  "Previous": "السابق",
+  "Next": "التالى",
+  "Features &#124; <span class=\"notranslate\">Forward Email</span>": "الميزات &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Privacy Policy &#124; <span class=\"notranslate\">Forward Email</span>": "سياسة الخصوصية &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Read our privacy policy": "قراءة سياسة الخصوصية",
+  "Our privacy policy is simple: We do not keep logs nor store emails. We don't track you.": "سياسة الخصوصية الخاصة بنا بسيطة: نحن لا نحتفظ بالسجلات ولا نقوم بتخزين رسائل البريد الإلكتروني. نحن لا نتعقبك.",
+  "Zero Tolerance Policy": "سياسة عدم التسامح",
+  "Regain your right to privacy": "استعادة حقك في الخصوصية",
+  "We only store the essential information required for the service to be functional for you.": "نقوم فقط بتخزين المعلومات الأساسية المطلوبة لتكون الخدمة فعالة بالنسبة لك.",
+  "Forgot password &#124; <span class=\"notranslate\">Forward Email</span>": "نسيت كلمة المرور &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Reset your account password": "إعادة تعيين كلمة مرور حسابك",
+  "Forgot Password": "هل نسيت كلمة المرور",
+  "Enter your email address to continue.": "أدخل عنوان بريدك الإلكتروني للمتابعة.",
+  "Remember your password?": "تذكر كلمة المرور الخاصة بك؟",
+  "Log in": "تسجيل الدخول",
+  "Reset password &#124; <span class=\"notranslate\">Forward Email</span>": "إعادة تعيين كلمة المرور &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Confirm your password reset token": "تأكيد رمز إعادة تعيين كلمة المرور الخاصة بك",
+  "Reset Password": "إعادة تعيين كلمة المرور",
+  "Confirm your email address and set a new password.": "قم بتأكيد عنوان بريدك الإلكتروني وقم بتعيين كلمة مرور جديدة.",
+  "New password": "كلمة السر الجديدة",
+  "Having trouble?": "واقع في مشكلة؟",
+  "Start over": "ابدأ من جديد",
+  "Help &#124; <span class=\"notranslate\">Forward Email</span>": "مساعدة &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Ask Forward Email your questions or leave comments": "اسأل إلى الأمام أرسل أسئلتك أو اترك تعليقات",
+  "Page not found": "الصفحة غير موجودة",
+  "We're sorry, but the page you requested could not be found.": "عذرًا ، ولكن تعذر العثور على الصفحة التي طلبتها.",
+  "Free email webhooks &#124; <span class=\"notranslate\">Forward Email</span>": "بريد إلكتروني مجاني <span class=\"notranslate\">Forward Email</span>",
+  "Create free email forwarding webhooks.  We are the best alternative to Mailgun.": "إنشاء رسائل بريد إلكتروني مجانية لإعادة توجيه البريد الإلكتروني. نحن أفضل بديل ل Mailgun.",
+  "Need email forwarding webhooks?": "هل تحتاج إلى إعادة توجيه رسائل البريد الإلكتروني على الويب؟",
+  "Skip ahead to the instructions to forward emails to webhooks.": "انتقل إلى التعليمات لإعادة توجيه رسائل البريد الإلكتروني إلى رسائل الويب.",
+  "Easily set up webhooks for email delivery. We are the best alternative to Mailgun.": "يمكنك إعداد عمليات الرد على الويب بسهولة لتسليم البريد الإلكتروني. نحن أفضل بديل ل Mailgun.",
+  "Email webhooks": "إرسال بريد إلكتروني",
+  "Setup an email webhook in minutes": "قم بإعداد بريد إلكتروني للبريد الإلكتروني في دقائق",
+  "Create free email webhooks": "إنشاء بريد إلكتروني مجاني",
+  "Need free version?": "هل تحتاج إلى نسخة مجانية؟",
+  "Two Factor Auth &#124; <span class=\"notranslate\">Forward Email</span>": "عاملان المصادقة &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Authenticate yourself with optional OTP to log in": "قم بمصادقة نفسك باستخدام OTP اختياري لتسجيل الدخول",
+  "Account Recovery": "استرجاع الحساب",
+  "If you can't access your authenticator app or lose your recovery keys, then you can submit a request for your account to be unlocked.": "إذا لم تتمكن من الوصول إلى تطبيق المصادق أو فقدت مفاتيح الاسترداد ، فيمكنك إرسال طلب لفتح حسابك.",
+  "Verify access to your email address with a code emailed to you.": "تحقق من الوصول إلى عنوان بريدك الإلكتروني من خلال رمز يتم إرساله إليك بالبريد الإلكتروني.",
+  "Wait 3-5 business days for an administrative follow-up email.": "انتظر 3-5 أيام عمل لبريد إلكتروني للمتابعة الإدارية.",
+  "Access to your account will be unlocked for you.": "سيتم فتح الوصول إلى حسابك لك.",
+  "Two-Factor Check": "التحقق من عاملين",
+  "Passcode": "رمز عبور",
+  "Don't ask me again in this browser": "لا تسألني مرة أخرى في هذا المتصفح",
+  "Use a recovery key": "استخدم مفتاح الاسترداد",
+  "Lose your recovery keys?": "تفقد مفاتيح الاسترداد الخاصة بك؟",
+  "Request account recovery": "طلب استرداد الحساب",
+  "Invite new team member": "دعوة عضو جديد في الفريق",
+  "User": "المستعمل",
+  "Send invitation": "إرسال دعوة",
+  "Share invitation link": "مشاركة رابط الدعوة",
+  "Copy Invite Link": "نسخ رابط الدعوة",
+  "Manage Team": "إدارة الفريق",
+  "Members have shared access to this domain, and you can invite new members, remove existing members, or manage permissions for them below.": "قام الأعضاء بمشاركة الوصول إلى هذا المجال ، ويمكنك دعوة أعضاء جدد أو إزالة الأعضاء الحاليين أو إدارة الأذونات لهم أدناه.",
+  "Team Member": "أعضاء الفريق",
+  "Alias Count": "عد الاسم المستعار",
+  "Invite New Member": "دعوة عضو جديد",
+  "Server Error": "خطأ في الخادم",
+  "A server error has unfortunately occurred.": "للأسف حدث خطأ في الخادم.",
+  "Confirm Password": "تأكيد كلمة المرور",
+  "Need to change your password?": "بحاجة إلى تغيير كلمة السر؟",
+  "Guides &#124; <span class=\"notranslate\">Forward Email</span>": "أدلة &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Follow our easy and simple guides and step by step instructions.": "اتبع أدلةنا السهلة والبسيطة والتعليمات خطوة بخطوة.",
+  "Good morning": "صباح الخير",
+  "Email Forwarding API &#124; <span class=\"notranslate\">Forward Email</span>": "واجهة برمجة تطبيقات إعادة توجيه البريد الإلكتروني &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Setup OTP": "إعداد OTP",
+  "Download your emergency recovery keys below.": "قم بتنزيل مفاتيح استرداد الطوارئ أدناه.",
+  "Download": "تحميل",
+  "Recommended Authenticator Apps": "تطبيقات Authenticator الموصى بها",
+  "App": "تطبيق",
+  "Open-Source": "المصدر المفتوح",
+  "Google Play": "تطبيقات جوجل",
+  "App Store": "متجر التطبيقات",
+  "F-Droid": "F-Droid",
+  "<strong>Step 1:</strong> Install and open an <a href=\"#\" data-toggle=\"modal-anchor\" data-target=\"#authenticator-apps-modal\">authenticator app</a>.": "<strong>الخطوة 1:</strong> تثبيت <a href=\"#\" data-toggle=\"modal-anchor\" data-target=\"#authenticator-apps-modal\">تطبيق المصدق</a> وفتحه.",
+  "<strong>Step 2:</strong> Scan this QR code and enter its generated token:": "<strong>الخطوة 2:</strong> مسح رمز الاستجابة السريعة هذا وإدخال الرمز المميز الذي تم إنشاؤه:",
+  "Can’t scan the QR code?  Configure with this code": "لا يمكنك مسح رمز الاستجابة السريعة ضوئيًا؟ تكوين مع هذا الرمز",
+  "Complete Setup": "أكمل الإعداد",
+  "Recovery keys": "مفاتيح الاسترداد",
+  "Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.": "تسمح لك مفاتيح الاسترداد بتسجيل الدخول إلى حسابك عندما تفقد الوصول إلى جهاز المصادقة الثنائية أو تطبيق المصادقة. قم بتنزيل مفاتيح الاسترداد الخاصة بك وضعها في مكان آمن لاستخدامها كملاذ أخير.",
+  "Download recovery keys": "تنزيل مفاتيح الاسترداد",
+  "Invalid CSRF token": "رمز CSRF غير صالح",
+  "Disabled": "معاق",
+  "Account locked due to too many failed login attempts": "تم قفل الحساب بسبب محاولات تسجيل الدخول الفاشلة",
+  "Make User": "جعل المستخدم",
+  "Delete Member": "حذف العضو",
+  "Make Admin": "جعل المشرف",
+  "Pending invitations are listed below.": "الدعوات المعلقة مدرجة أدناه.",
+  "Email Address": "عنوان بريد الكتروني",
+  "Delete Invite": "حذف الدعوة",
+  "Good evening": "مساء الخير",
+  "Email is not unique.": "البريد الإلكتروني ليس فريدًا.",
+  ".  The legacy HTTP base URI path of ": ". مسار URI الأساسي HTTP القديم لـ",
+  " will be deprecated on January 1, 2021.": " سيتم إيقاف العمل به في 1 يناير 2021.",
+  "👋 Welcome!": "👋 أهلا وسهلا!",
+  "Have you read our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">FAQ</a> yet?": "هل قرأت <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">الأسئلة الشائعة</a> لدينا حتى الآن؟",
+  "Read our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>": "اقرأ <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">سياسة الخصوصية</a> <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">وشروطنا</a>",
+  "We use industry standard email header validation and signature checks, spam prevention tools, DNS blacklist lookups, and domain verification.  All powered by Cloudflare's <a href=\"https://blog.cloudflare.com/announcing-1111/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-white\">privacy-first consumer DNS service</a>.": "نحن نستخدم التحقق من رأس البريد الإلكتروني القياسي والتحقق من التوقيع ، وأدوات منع البريد العشوائي ، وعمليات البحث في القائمة السوداء لنظام أسماء النطاقات ، والتحقق من النطاق. جميعها مدعومة بخدمة <a href=\"https://blog.cloudflare.com/announcing-1111/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-white\">DNS المستهلك الخصوصية الأولى</a> .",
+  "Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.  Made by <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source enthusiast and privacy advocate.": "على عكس الخدمات الأخرى ، نحن <u>لا</u> نحتفظ بالسجلات أو البيانات الوصفية ، <u>ولا</u> نقرأ رسائل البريد الإلكتروني <u>مطلقًا</u> ، ونكون <u>100٪</u> مفتوح المصدر. من <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener noreferrer\">إعدادniftylettuce</a> ، متحمس مفتوح المصدر ومناصر للخصوصية.",
+  "30K+": "30K+",
+  "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>).": "يجب أن يكون المستخدم مسؤول مجال لإنشاء اسم مستعار بكلمة محجوزة (راجع الصفحة الموجودة على <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">عناوين البريد الإلكتروني المحجوزة</a> ).",
+  "If you recently updated your DNS records for <span class=\"notranslate\">%s</span>, then you should purge its cache using <a href=\"https://1.1.1.1/purge-cache/\" rel=\"noopener noreferrer\" target=\"_blank\">Cloudflare's Purge Cache Tool</a> and optionally <a href=\"https://developers.google.com/speed/public-dns/cache\" rel=\"noopener noreferrer\" target=\"_blank\">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.": "إذا قمت مؤخرًا بتحديث سجلات DNS الخاصة بك لـ <span class=\"notranslate\">%s</span> ، فيجب عليك <a href=\"https://1.1.1.1/purge-cache/\" rel=\"noopener noreferrer\" target=\"_blank\">مسح</a> ذاكرة التخزين المؤقت الخاصة به باستخدام <a href=\"https://1.1.1.1/purge-cache/\" rel=\"noopener noreferrer\" target=\"_blank\">Cloudflare&#39;s Purge Cache Tool</a> و <a href=\"https://developers.google.com/speed/public-dns/cache\" rel=\"noopener noreferrer\" target=\"_blank\">Google Purge Cache Tool بشكل</a> اختياري. لاحظ أنه في بعض الأحيان قد يستغرق الأمر 30 دقيقة إلى 24 ساعة (اعتمادًا على موقعك ومزود الخدمة) حتى ينتهي نشر DNS على الإنترنت.",
+  "Upgrade your domain's plan": "ترقية خطة المجال الخاص بك",
+  "Please upgrade your domain's plan to use our privacy-focused and encrypted email alias manager (instead of managing your aliases for free with public DNS records).": "يُرجى ترقية خطة نطاقك لاستخدام مدير الاسم المستعار للبريد الإلكتروني المشفر الذي يركز على الخصوصية (بدلاً من إدارة الأسماء المستعارة مجانًا مع سجلات DNS العامة).",
+  "If you would like to learn more about DNS-based aliases (free plan), then please <a href=\"%s\">follow these instructions on our FAQ page</a>.": "إذا كنت ترغب في معرفة المزيد حول الأسماء المستعارة المستندة إلى DNS (خطة مجانية) ، فيرجى <a href=\"%s\">اتباع هذه التعليمات في صفحة الأسئلة الشائعة</a> .",
+  "To upgrade your domain's plan, just close this modal and then click on the Current Plan dropdown button.": "لترقية خطة المجال الخاص بك ، فقط أغلق هذا الشكل ثم انقر على زر القائمة الحالية المنسدلة.",
+  "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "نحن نقبل بطاقات الائتمان باستخدام <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> والدفع مع <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> - للمدفوعات لمرة واحدة والاشتراكات الشهرية أو السنوية.",
+  "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> and is trusted and relied upon by thousands.": "تأسست خدمتنا في عام 2017 من قبل <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">niftylettuce</a> وهي موثوقة ويعتمد عليها الآلاف.",
+  "Upgrade to Enhanced Protection": "الترقية إلى الحماية المحسنة"
+}

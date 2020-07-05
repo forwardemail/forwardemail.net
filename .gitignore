@@ -65,7 +65,6 @@ package-lock.json
 *-VI.md
 *-zh.md
 *-ZH.md
-locales
 yarn.lock
 .env.production
 hosts.yml
