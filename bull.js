@@ -64,19 +64,19 @@ if (!module.parent) {
           ]),
           pSeries([
             // clear any existing jobs
-            () => translateMarkdown.empty(),
+            () => translateMarkdown.empty()
             // add the recurring job
-            () => translateMarkdown.add(),
+            // () => translateMarkdown.add(),
             // add an initial job when the process starts
-            () => translateMarkdown.add(null, { repeat: false })
+            // () => translateMarkdown.add(null, { repeat: false })
           ]),
           pSeries([
             // clear any existing jobs
-            () => translatePhrases.empty(),
+            () => translatePhrases.empty()
             // add the recurring job
-            () => translatePhrases.add(),
+            // () => translatePhrases.add(),
             // add an initial job when the process starts
-            () => translatePhrases.add(null, { repeat: false })
+            // () => translatePhrases.add(null, { repeat: false })
           ]),
           pSeries([
             // clear any existing jobs

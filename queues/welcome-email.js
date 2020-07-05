@@ -30,7 +30,7 @@ module.exports = async job => {
     const object = {
       created_at: {
         $lte: dayjs()
-          .subtract(24, 'hours')
+          .subtract(1, 'minute')
           .toDate()
       }
     };
