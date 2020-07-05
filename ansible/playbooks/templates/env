@@ -60,6 +60,7 @@ AWS_CLOUDFRONT_DISTRIBUTION_ID=TODO
 ########################################################################
 ## Leave the section below alone unless you know what you're doing :) ##
 ########################################################################
+NODE_ENV=production
 
 SEND_EMAIL=true
 
@@ -75,7 +76,7 @@ HTTP_PROTOCOL=https
 MONGO_USER=admin_root
 MONGO_NAME=production
 MONGO_PORT=27017
-MONGO_URI="mongodb://{{MONGO_USER}}:{{MONGO_PASS}}@{{MONGO_HOST}}:{{MONGO_PORT}}/?authSource=admin"
+MONGO_URI="mongodb://{{MONGO_USER}}:{{MONGO_PASS}}@{{MONGO_HOST}}:{{MONGO_PORT}}/{{MONGO_NAME}}?authSource=admin"
 
 #GOOGLE_APPLICATION_CREDENTIALS="/var/www/production/.gapp-creds.json"
 
