@@ -4,6 +4,9 @@ require('./config/env');
 const cluster = require('cluster');
 const os = require('os');
 
+const maxListenersExceededWarning = require('max-listeners-exceeded-warning');
+maxListenersExceededWarning();
+
 const Bull = require('@ladjs/bull');
 const Graceful = require('@ladjs/graceful');
 const pSeries = require('p-series');
@@ -80,11 +83,11 @@ if (!module.parent) {
           ]),
           pSeries([
             // clear any existing jobs
-            () => openStartup.empty(),
+            () => openStartup.empty()
             // add the recurring job
-            () => openStartup.add(),
+            // () => openStartup.add(),
             // add an initial job when the process starts
-            () => openStartup.add(null, { repeat: false })
+            // () => openStartup.add(null, { repeat: false })
           ])
         ]);
 

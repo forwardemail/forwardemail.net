@@ -17,7 +17,13 @@ const { Users, Domains, Aliases } = require('../app/models');
 
 const models = { Users, Domains, Aliases };
 const bullSharedConfig = sharedConfig('BULL');
-const client = new Redis(bullSharedConfig.redis);
+const client = new Redis(
+  {
+    ...bullSharedConfig.redis,
+    lazyConnect: true
+  },
+  logger
+);
 
 const mongoose = new Mongoose({ ...bullSharedConfig.mongoose, logger });
 
@@ -225,6 +231,7 @@ module.exports = async job => {
     ]);
     logger.info('open startup retrieved data', { job });
 
+    await client.connect();
     await Promise.all([
       client.set('open-startup:total-users', safeStringify(totalUsers)),
       client.set('open-startup:total-domains', safeStringify(totalDomains)),
@@ -234,6 +241,7 @@ module.exports = async job => {
       client.set('open-startup:piechart', safeStringify(pieChart))
     ]);
     logger.info('open startup writing', { job });
+    await client.quit();
   } catch (err) {
     logger.error(err);
     throw err;
