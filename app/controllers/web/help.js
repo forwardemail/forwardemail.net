@@ -21,11 +21,18 @@ async function help(ctx) {
   if (!_.isUndefined(body.message) && !_.isString(body.message))
     delete body.message;
 
-  if (_.isString(body.message))
+  if (_.isString(body.message)) {
+    // defend against spammer
+    if (body.message === 'Muchas gracias. ?Como puedo iniciar sesion?') {
+      ctx.body = 'OK';
+      return;
+    }
+
     body.message = sanitize(body.message, {
       allowedTags: [],
       allowedAttributes: []
     });
+  }
 
   if (_.isString(body.message)) {
     if (!isSANB(body.message))
