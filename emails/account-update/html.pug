@@ -5,16 +5,17 @@ block content
   .container.mt-3
     .row
       .col-12
-        .card.d-block.text-center
-          h5.card-header= t('Account update')
+        .card.d-block
+          h5.card-header.text-center= t('Account update')
           .card-body
             .card-text
               p= t('You have successfully updated your account with the following changes:')
-              each field of accountUpdates
-                if field.name === config.passport.fields.otpEnabled
-                  p= t(`Two-factor authentication has been ${field.current ? 'enabled' : 'disabled'}.`)
-                else if field.name === config.userFields.apiToken
-                  p= t('API token has been reset.')
-                else
-                  p= t(`${field.text} has changed from ${field.previous} to ${field.current}`)
-          .card-footer: small.text-muted= t('If you did not update your account, then please reach out for support.')
+              ul
+                each field in accountUpdates
+                  if field.name === config.passport.fields.otpEnabled
+                    li= t(`Two-factor authentication has been ${field.current ? 'enabled' : 'disabled'}.`)
+                  else if field.name === config.userFields.apiToken
+                    li= t('API token has been reset.')
+                  else
+                    li= t(`${field.text} has changed from ${field.previous} to ${field.current}`)
+          .card-footer.text-center: small.text-muted= t('If you did not make these changes, then please contact us immediately.')
