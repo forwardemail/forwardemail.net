@@ -9,7 +9,7 @@ block content
           h5.card-header.text-center= t('Account update')
           .card-body
             .card-text
-              p= t('You have successfully updated your account with the following changes:')
+              p= t('You have successfully updated your account:')
               ul
                 each field in accountUpdates
                   if field.name === config.passport.fields.otpEnabled
