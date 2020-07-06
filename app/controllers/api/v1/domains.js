@@ -24,7 +24,7 @@ function json(domain) {
     object.members = domain.members.map(m => {
       const member = _.isFunction(m.toObject)
         ? m.toObject()
-        : new Domains().members.create(m).toObject();
+        : { group: m.group };
       member.user = toObject(Users, m.user);
       if (_.isFinite(m.alias_count)) member.alias_count = m.alias_count;
       return member;
