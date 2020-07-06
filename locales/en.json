@@ -1168,5 +1168,9 @@
   "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> and is trusted and relied upon by thousands.": "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> and is trusted and relied upon by thousands.",
   "Reset token and email were not valid together.": "Reset token and email were not valid together.",
   "Upgrade to Enhanced Protection": "Upgrade to Enhanced Protection",
-  "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>).": "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>)."
+  "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>).": "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>).",
+  "Page not found &#124; <span class=\"notranslate\">Forward Email</span>": "Page not found &#124; <span class=\"notranslate\">Forward Email</span>",
+  "The page you requested could not be found": "The page you requested could not be found",
+  "Server error &#124; <span class=\"notranslate\">Forward Email</span>": "Server error &#124; <span class=\"notranslate\">Forward Email</span>",
+  "A server error has unfortunately occurred": "A server error has unfortunately occurred"
 }

@@ -1226,5 +1226,9 @@
   "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "我们接受使用<a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe的</a>信用卡和使用<a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal的付款</a> -一次性付款以及每月或每年的订阅。",
   "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> and is trusted and relied upon by thousands.": "我们的服务由<a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>于2017年创立，受到<a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">成千上万</a>的信任和依赖。",
   "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>).": "用户必须是域管理员才能使用保留字创建别名（请参见“ <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">保留电子邮件地址”</a>上的页面）。",
-  "Upgrade to Enhanced Protection": "升级到增强保护"
+  "Upgrade to Enhanced Protection": "升级到增强保护",
+  "Page not found &#124; <span class=\"notranslate\">Forward Email</span>": "Page not found &#124; <span class=\"notranslate\">Forward Email</span>",
+  "The page you requested could not be found": "The page you requested could not be found",
+  "Server error &#124; <span class=\"notranslate\">Forward Email</span>": "Server error &#124; <span class=\"notranslate\">Forward Email</span>",
+  "A server error has unfortunately occurred": "A server error has unfortunately occurred"
 }

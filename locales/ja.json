@@ -1226,5 +1226,9 @@
   "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "<a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a>を使用したクレジットカードと<a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a>での支払いを受け付けます–一度限りの支払いと月額または年額のサブスクリプション。",
   "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> and is trusted and relied upon by thousands.": "私たちのサービスは2017年に<a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>によって設立され、数千人から信頼され、信頼されています。",
   "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>).": "予約語を使用してエイリアスを作成するには、ユーザーはドメイン管理者である必要があります（予約済み<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">メールアドレスの</a>ページを参照）。",
-  "Upgrade to Enhanced Protection": "拡張保護へのアップグレード"
+  "Upgrade to Enhanced Protection": "拡張保護へのアップグレード",
+  "Page not found &#124; <span class=\"notranslate\">Forward Email</span>": "Page not found &#124; <span class=\"notranslate\">Forward Email</span>",
+  "The page you requested could not be found": "The page you requested could not be found",
+  "Server error &#124; <span class=\"notranslate\">Forward Email</span>": "Server error &#124; <span class=\"notranslate\">Forward Email</span>",
+  "A server error has unfortunately occurred": "A server error has unfortunately occurred"
 }

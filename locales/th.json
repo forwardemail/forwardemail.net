@@ -1226,5 +1226,9 @@
   "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "เรารับบัตรเครดิตโดยใช้ <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">แถบ</a> และการชำระเงินกับ <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> - สำหรับการชำระเงินแบบครั้งเดียวและการสมัครสมาชิกรายเดือนหรือรายปี",
   "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> and is trusted and relied upon by thousands.": "บริการของเราก่อตั้งขึ้นในปี 2560 โดย <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> และได้รับความไว้วางใจและไว้วางใจจากคนเป็นพัน",
   "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>).": "ผู้ใช้จะต้องเป็นผู้ดูแลระบบโดเมนเพื่อสร้างนามแฝงด้วยคำที่สงวนไว้ (ดูหน้าเกี่ยวกับ <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">ที่อยู่อีเมลสำรอง</a> )",
-  "Upgrade to Enhanced Protection": "อัปเกรดเป็นการป้องกันขั้นสูง"
+  "Upgrade to Enhanced Protection": "อัปเกรดเป็นการป้องกันขั้นสูง",
+  "Page not found &#124; <span class=\"notranslate\">Forward Email</span>": "Page not found &#124; <span class=\"notranslate\">Forward Email</span>",
+  "The page you requested could not be found": "The page you requested could not be found",
+  "Server error &#124; <span class=\"notranslate\">Forward Email</span>": "Server error &#124; <span class=\"notranslate\">Forward Email</span>",
+  "A server error has unfortunately occurred": "A server error has unfortunately occurred"
 }

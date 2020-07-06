@@ -1226,5 +1226,9 @@
   "Please upgrade your domain's plan to use our privacy-focused and encrypted email alias manager (instead of managing your aliases for free with public DNS records).": "Bitte aktualisieren Sie den Plan Ihrer Domain, um unseren datenschutzorientierten und verschlüsselten E-Mail-Alias-Manager zu verwenden (anstatt Ihre Aliase kostenlos mit öffentlichen DNS-Einträgen zu verwalten).",
   "If you would like to learn more about DNS-based aliases (free plan), then please <a href=\"%s\">follow these instructions on our FAQ page</a>.": "Wenn Sie mehr über DNS-basierte Aliase (kostenloser Plan) erfahren möchten, <a href=\"%s\">befolgen Sie diese Anweisungen auf unserer FAQ-Seite</a> .",
   "To upgrade your domain's plan, just close this modal and then click on the Current Plan dropdown button.": "Um den Plan Ihrer Domain zu aktualisieren, schließen Sie einfach dieses Modal und klicken Sie auf die Dropdown-Schaltfläche Aktueller Plan.",
-  "Upgrade to Enhanced Protection": "Upgrade auf erweiterten Schutz"
+  "Upgrade to Enhanced Protection": "Upgrade auf erweiterten Schutz",
+  "Page not found &#124; <span class=\"notranslate\">Forward Email</span>": "Page not found &#124; <span class=\"notranslate\">Forward Email</span>",
+  "The page you requested could not be found": "The page you requested could not be found",
+  "Server error &#124; <span class=\"notranslate\">Forward Email</span>": "Server error &#124; <span class=\"notranslate\">Forward Email</span>",
+  "A server error has unfortunately occurred": "A server error has unfortunately occurred"
 }

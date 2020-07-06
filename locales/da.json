@@ -1226,5 +1226,9 @@
   "To upgrade your domain's plan, just close this modal and then click on the Current Plan dropdown button.": "For at opgradere dit domænes plan skal du bare lukke dette modal og derefter klikke på rullemenuen Aktuel plan.",
   "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "Vi accepterer kreditkort ved hjælp af <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> og betaling med <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> - til engangsbetalinger og månedlige eller årlige abonnementer.",
   "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> and is trusted and relied upon by thousands.": "Vores service blev grundlagt i 2017 af <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> og er betroet og påberåbt af tusinder.",
-  "Upgrade to Enhanced Protection": "Opgrader til forbedret beskyttelse"
+  "Upgrade to Enhanced Protection": "Opgrader til forbedret beskyttelse",
+  "Page not found &#124; <span class=\"notranslate\">Forward Email</span>": "Page not found &#124; <span class=\"notranslate\">Forward Email</span>",
+  "The page you requested could not be found": "The page you requested could not be found",
+  "Server error &#124; <span class=\"notranslate\">Forward Email</span>": "Server error &#124; <span class=\"notranslate\">Forward Email</span>",
+  "A server error has unfortunately occurred": "A server error has unfortunately occurred"
 }

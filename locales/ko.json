@@ -1226,5 +1226,9 @@
   "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "일회성 결제 및 월별 또는 연간 구독의 경우 <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe를</a> 사용한 신용 카드 및 <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal을</a> 통한 결제가 가능 <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">합니다</a> .",
   "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> and is trusted and relied upon by thousands.": "우리의 서비스는 <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce에</a> 의해 2017 년에 설립되었으며 수천 명의 사람들이 신뢰하고 신뢰합니다.",
   "User must be a domain admin to create an alias with a reserved word (see the page on <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">Reserved Email Addresses</a>).": "예약어가있는 별칭을 만들려면 사용자가 도메인 관리자 여야합니다 ( <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s/reserved-email-addresses\">예약 된 전자 메일 주소</a> 페이지 참조).",
-  "Upgrade to Enhanced Protection": "강화 된 보호로 업그레이드"
+  "Upgrade to Enhanced Protection": "강화 된 보호로 업그레이드",
+  "Page not found &#124; <span class=\"notranslate\">Forward Email</span>": "Page not found &#124; <span class=\"notranslate\">Forward Email</span>",
+  "The page you requested could not be found": "The page you requested could not be found",
+  "Server error &#124; <span class=\"notranslate\">Forward Email</span>": "Server error &#124; <span class=\"notranslate\">Forward Email</span>",
+  "A server error has unfortunately occurred": "A server error has unfortunately occurred"
 }

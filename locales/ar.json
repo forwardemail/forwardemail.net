@@ -1226,5 +1226,9 @@
   "To upgrade your domain's plan, just close this modal and then click on the Current Plan dropdown button.": "لترقية خطة المجال الخاص بك ، فقط أغلق هذا الشكل ثم انقر على زر القائمة الحالية المنسدلة.",
   "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "نحن نقبل بطاقات الائتمان باستخدام <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noreferrer\">Stripe</a> والدفع مع <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noreferrer\">PayPal</a> - للمدفوعات لمرة واحدة والاشتراكات الشهرية أو السنوية.",
   "Our service was founded in 2017 by <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a> and is trusted and relied upon by thousands.": "تأسست خدمتنا في عام 2017 من قبل <a class=\"text-success text-decoration-none\" href=\"https://github.com/niftylettuce\" target=\"_blank\" rel=\"noopener noreferrer\">niftylettuce</a> وهي موثوقة ويعتمد عليها الآلاف.",
-  "Upgrade to Enhanced Protection": "الترقية إلى الحماية المحسنة"
+  "Upgrade to Enhanced Protection": "الترقية إلى الحماية المحسنة",
+  "Page not found &#124; <span class=\"notranslate\">Forward Email</span>": "Page not found &#124; <span class=\"notranslate\">Forward Email</span>",
+  "The page you requested could not be found": "The page you requested could not be found",
+  "Server error &#124; <span class=\"notranslate\">Forward Email</span>": "Server error &#124; <span class=\"notranslate\">Forward Email</span>",
+  "A server error has unfortunately occurred": "A server error has unfortunately occurred"
 }
