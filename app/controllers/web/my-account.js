@@ -691,15 +691,16 @@ async function updateAlias(ctx, next) {
 
 async function removeAlias(ctx, next) {
   await Aliases.findByIdAndRemove(ctx.state.alias._id);
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('REQUEST_OK'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
+  if (!ctx.api)
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('REQUEST_OK'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
   if (ctx.api) return next();
   const redirectTo = ctx.state.l(
     `/my-account/domains/${ctx.state.domain.name}/aliases`
@@ -743,7 +744,7 @@ function ensureUpgradedPlan(ctx, next) {
     );
 
   if (ctx.method === 'GET' || ctx.accepts('html')) {
-    ctx.flash('custom', swal);
+    if (!ctx.api) ctx.flash('custom', swal);
     /*
     const redirectTo = ctx.state.l(
       `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
@@ -769,11 +770,12 @@ async function retrieveBilling(ctx) {
   try {
     domain.locale = ctx.locale;
     ctx.state.domain = await domain.save();
-    ctx.flash(
-      'success',
-      ctx.translate(`${ctx.state.domain.plan.toUpperCase()}_PLAN`)
-    );
-    if (domain.plan !== 'free')
+    if (!ctx.api)
+      ctx.flash(
+        'success',
+        ctx.translate(`${ctx.state.domain.plan.toUpperCase()}_PLAN`)
+      );
+    if (!ctx.api && domain.plan !== 'free')
       ctx.flash('warning', ctx.translate('BETA_PROGRAM'));
     // TODO: for some reason the link uncommented doesn't work
     // specifically the above flash messages do not render when it's uncommented
@@ -967,7 +969,7 @@ async function importAliases(ctx) {
   );
 
   if (ctx.accepts('html')) {
-    ctx.flash('info', message);
+    if (!ctx.api) ctx.flash('info', message);
     ctx.redirect(redirectTo);
   } else {
     ctx.body = {
@@ -1119,7 +1121,7 @@ async function createInvite(ctx, next) {
     });
     ctx.logger.info('added job', ctx.bull.getMeta({ job }));
   } catch (err) {
-    ctx.flash('error', ctx.translate('INVITE_EMAIL_ERROR'));
+    if (!ctx.api) ctx.flash('error', ctx.translate('INVITE_EMAIL_ERROR'));
     ctx.logger.error(err);
   }
 
