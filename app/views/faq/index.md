@@ -481,7 +481,7 @@
     Important:
   </strong>
   <span>
-    If you are using Google Apps, you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    If you are using G Suite, you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
     <br /><br />
     <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -604,7 +604,7 @@
        Important:
      </strong>
      <span>
-       If you are using Google Apps, visit your admin panel <a class="alert-link" href="https://admin.google.com//AdminHome#ServiceSettings/service=email&subtab=filters" rel="noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Advanced settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Advanced settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
      </span>
    </div>
 
