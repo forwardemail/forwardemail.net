@@ -100,6 +100,22 @@
         line: 'PasswordAuthentication no'
       notify: restart ssh
 
+    # TODO: we can probably remove the `./templates/security-limits.d-mongod.conf`
+    # modify ulimit for devops and deploy
+    # https://gist.github.com/visualskyrim/8d93a8be0a3ef6dd6598ec8550f6eadd#file-modify_ulimit-yml-L7
+    - name: configure system settings, file descriptors and number of threads
+      pam_limits:
+        domain: '*'
+        limit_type: "{{item.limit_type}}"
+        limit_item: "{{item.limit_item}}"
+        value: "{{item.value}}"
+      with_items:
+        - {limit_type: '-', limit_item: 'nofile', value: 65536}
+        - {limit_type: '-', limit_item: 'nproc', value: 65536}
+        - {limit_type: 'soft', limit_item: 'memlock', value: unlimited}
+        - {limit_type: 'hard', limit_item: 'memlock', value: unlimited}
+    - name: reload settings from all system configuration files
+      shell: sysctl --system
 
 - hosts: "{{ hostlist }}"
   become: true
