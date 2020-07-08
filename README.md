@@ -44,8 +44,6 @@ See [Requirements](#requirements) below.
 2. Install [brew][] dependencies:
 
    ```sh
-   brew update
-   brew upgrade
    brew tap mongodb/brew
    brew install mongodb-community@3.4 redis python3 ansible ansible-lint libtool automake autoconf nasm
    brew services start mongodb-community@3.4
