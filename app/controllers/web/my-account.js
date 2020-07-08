@@ -54,15 +54,16 @@ async function update(ctx) {
 
   ctx.state.user = await ctx.state.user.save();
 
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('REQUEST_OK'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
+  if (!ctx.api)
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('REQUEST_OK'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
 
   if (ctx.accepts('html')) ctx.redirect('back');
   else ctx.body = { reloadPage: true };
@@ -72,15 +73,16 @@ async function resetAPIToken(ctx) {
   ctx.state.user[config.userFields.apiToken] = null;
   ctx.state.user = await ctx.state.user.save();
 
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('REQUEST_OK'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
+  if (!ctx.api)
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('REQUEST_OK'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
 
   if (ctx.accepts('html')) ctx.redirect('back');
   else ctx.body = { reloadPage: true };
@@ -232,15 +234,16 @@ async function retrieveDomains(ctx, next) {
     ctx.method === 'GET' &&
     ['/my-account', '/my-account/domains'].includes(ctx.pathWithoutLocale)
   ) {
-    ctx.flash('custom', {
-      title: ctx.request.t(`${ctx.state.emoji('wave')} Welcome!`),
-      text: ctx.translate('NO_DOMAINS_EXIST'),
-      type: 'success',
-      toast: true,
-      showConfirmButton: false,
-      timer: 5000,
-      position: 'top'
-    });
+    if (!ctx.api)
+      ctx.flash('custom', {
+        title: ctx.request.t(`${ctx.state.emoji('wave')} Welcome!`),
+        text: ctx.translate('NO_DOMAINS_EXIST'),
+        type: 'success',
+        toast: true,
+        showConfirmButton: false,
+        timer: 5000,
+        position: 'top'
+      });
     return ctx.redirect('/my-account/domains/new');
   }
 
@@ -398,14 +401,14 @@ async function createDomain(ctx, next) {
 
     // TODO: flash messages logic in @ladjs/assets doesn't support both
     // custom and regular flash message yet
-    if (ctx.request.body.domain.startsWith('www.')) {
+    if (ctx.request.body.domain.startsWith('www.') && !ctx.api) {
       ctx.flash(
         'error',
         ctx
           .translate('WWW_WARNING')
           .replace(/example.com/g, ctx.state.domain.name)
       );
-    } else {
+    } else if (!ctx.api) {
       ctx.flash('custom', {
         title: ctx.request.t('Success'),
         text: ctx.translate('REQUEST_OK'),
@@ -445,15 +448,16 @@ async function remove(ctx) {
       Boom.badRequest(ctx.translateError('ACCOUNT_DELETE_HAS_DOMAINS'))
     );
   await Users.findByIdAndRemove(ctx.state.user._id);
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('ACCOUNT_DELETE_SUCCESSFUL'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
+  if (!ctx.api)
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('ACCOUNT_DELETE_SUCCESSFUL'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
   const redirectTo = ctx.state.l();
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };
@@ -461,15 +465,16 @@ async function remove(ctx) {
 
 async function removeDomain(ctx, next) {
   await Domains.findByIdAndRemove(ctx.state.domain._id);
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('REQUEST_OK'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
+  if (!ctx.api)
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('REQUEST_OK'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
   if (ctx.api) return next();
   const redirectTo = ctx.state.l('/my-account/domains');
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
