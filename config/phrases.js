@@ -166,5 +166,7 @@ module.exports = {
   WEEK: 'Week',
   USERS: 'Users',
   DOMAINS: 'Domains',
-  ALIASES: 'Aliases'
+  ALIASES: 'Aliases',
+  EMAIL_FAILED_TO_SEND:
+    'Unfortunately an error occurred while sending the email.  Please try again or <a href="/help">contact us</a> for help.'
 };

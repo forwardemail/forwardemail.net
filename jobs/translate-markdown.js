@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('../config/env');
 
+const { parentPort } = require('worker_threads');
+
 const Mandarin = require('mandarin');
 const I18N = require('@ladjs/i18n');
 
@@ -20,12 +22,8 @@ const i18n = new I18N({
 
 const mandarin = new Mandarin({ i18n, logger });
 
-module.exports = async job => {
-  try {
-    logger.info('starting mandarin phrase translation', { job });
-    await mandarin.translate();
-  } catch (err) {
-    logger.error(err);
-    throw err;
-  }
-};
+(async () => {
+  await mandarin.markdown();
+  if (parentPort) parentPort.postMessage('done');
+  else process.exit(0);
+})();

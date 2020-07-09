@@ -1,5 +1,3 @@
-const env = require('./env');
-
 const Axe = require('axe');
 const { WebClient } = require('@slack/web-api');
 const signale = require('signale');
@@ -19,6 +17,8 @@ const pino = require('pino')({
     }
   }
 });
+
+const env = require('./env');
 
 const isProduction = env.NODE_ENV === 'production';
 

@@ -4,9 +4,9 @@ module.exports = {
   scripts: {
     all: series.nps('build', 'apps-and-watch'),
     appsAndWatch: concurrent.nps('apps', 'watch'),
-    apps: concurrent.nps('bull', 'api', 'web'),
+    apps: concurrent.nps('bree', 'api', 'web'),
 
-    bull: 'nodemon bull.js',
+    bree: 'nodemon bree.js',
     api: 'nodemon api.js',
     web: 'nodemon web.js',
 

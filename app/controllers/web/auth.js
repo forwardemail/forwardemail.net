@@ -11,11 +11,12 @@ const { boolean } = require('boolean');
 
 const Users = require('../../models/user');
 const passport = require('../../../helpers/passport');
+const email = require('../../../helpers/email');
 const sendVerificationEmail = require('../../../helpers/send-verification-email');
 const config = require('../../../config');
 const { Inquiries } = require('../../models');
 
-const sanitize = string =>
+const sanitize = (string) =>
   sanitizeHtml(string, {
     allowedTags: [],
     allowedAttributes: []
@@ -252,7 +253,7 @@ async function recoveryKey(ctx) {
 
   // remove used key from recovery key list
   recoveryKeys = recoveryKeys.filter(
-    key => key !== ctx.request.body.recovery_key
+    (key) => key !== ctx.request.body.recovery_key
   );
 
   const emptyRecoveryKeys = recoveryKeys.length === 0;
@@ -399,7 +400,7 @@ async function forgotPassword(ctx) {
 
   // queue password reset email
   try {
-    const job = await ctx.bull.add('email', {
+    await email({
       template: 'reset-password',
       message: {
         to: user[config.userFields.fullEmail]
@@ -414,7 +415,6 @@ async function forgotPassword(ctx) {
         }`
       }
     });
-    ctx.logger.info('added job', ctx.bull.getMeta({ job }));
   } catch (err) {
     ctx.logger.error(err);
   }
@@ -581,7 +581,7 @@ async function verify(ctx) {
 
     ctx.logger.debug('created inquiry', inquiry);
 
-    const job = await ctx.bull.add('email', {
+    await email({
       template: 'recovery',
       message: {
         to: ctx.state.user.email,
@@ -592,8 +592,6 @@ async function verify(ctx) {
         inquiry
       }
     });
-
-    ctx.logger.info('added job', ctx.bull.getMeta({ job }));
   }
 
   const message = pendingRecovery

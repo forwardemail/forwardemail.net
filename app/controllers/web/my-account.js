@@ -13,6 +13,7 @@ const { isEmail, isFQDN, isIP, isPort } = require('validator');
 const { parse } = require('node-html-parser');
 
 const config = require('../../../config');
+const emailHelper = require('../../../helpers/email');
 const toObject = require('../../../helpers/to-object');
 const { Users, Domains, Aliases } = require('../../models');
 
@@ -25,7 +26,7 @@ async function update(ctx) {
   if (hasSetPassword) requiredFields.push('old_password');
 
   if (body.change_password === 'true') {
-    requiredFields.forEach(prop => {
+    requiredFields.forEach((prop) => {
       if (!isSANB(body[prop]))
         throw Boom.badRequest(
           ctx.translateError('INVALID_STRING', ctx.request.t(humanize(prop)))
@@ -113,9 +114,9 @@ async function retrieveDomains(ctx, next) {
     .lean()
     .exec();
 
-  ctx.state.domains = ctx.state.domains.map(domain => {
+  ctx.state.domains = ctx.state.domains.map((domain) => {
     domain.members = domain.members.filter(
-      member =>
+      (member) =>
         _.isObject(member.user) && !member.user[config.userFields.isBanned]
     );
     return domain;
@@ -134,15 +135,18 @@ async function retrieveDomains(ctx, next) {
     .exec();
 
   domainAliases = domainAliases.filter(
-    alias => _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
+    (alias) => _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
   );
 
-  const aliasesByDomain = _.groupBy(domainAliases, alias => alias.domain.name);
+  const aliasesByDomain = _.groupBy(
+    domainAliases,
+    (alias) => alias.domain.name
+  );
 
-  ctx.state.domains = ctx.state.domains.map(domain => {
+  ctx.state.domains = ctx.state.domains.map((domain) => {
     // populate a `group` on the domain based off the user's association
     let member = domain.members.find(
-      member => member.user.id === ctx.state.user.id
+      (member) => member.user.id === ctx.state.user.id
     );
 
     // for all global domains, if the user is not a member
@@ -162,36 +166,28 @@ async function retrieveDomains(ctx, next) {
     const { group } = member;
 
     // populate an `aliases` Array on the domain based off user's aliases
-    let aliases =
-      group === 'admin'
-        ? aliasesByDomain[domain.name]
-          ? aliasesByDomain[domain.name]
-          : []
-        : aliasesByDomain[domain.name]
-        ? aliasesByDomain[domain.name].filter(
-            alias => alias.user.id === ctx.state.user.id
-          )
-        : [];
+    const aliases = [];
 
-    // for each alias set a virtual group helper
-    // (if the user is an admin OR if the user is the owner of the alias)
-    aliases = aliases.map(alias => ({
-      ...alias,
-      group:
-        group === 'admin'
-          ? 'admin'
-          : alias.user.id === ctx.state.user.id
-          ? 'admin'
-          : 'user'
-    }));
+    for (const alias of aliasesByDomain[domain.name]) {
+      if (group === 'admin' || alias.user.id === ctx.state.user.id)
+        aliases.push({
+          ...alias,
+          // for each alias set a virtual group helper
+          // (if the user is an admin OR if the user is the owner of the alias)
+          group:
+            group === 'admin' || alias.user.id === ctx.state.user.id
+              ? 'admin'
+              : 'user'
+        });
+    }
 
     // iterate over domain.members and add `alias_count` virtual property
     // which counts across the aliases for the given member's user id
-    domain.members = domain.members.map(member => ({
+    domain.members = domain.members.map((member) => ({
       ...member,
       alias_count: aliasesByDomain[domain.name]
         ? aliasesByDomain[domain.name].filter(
-            alias => alias.user.id === member.user.id
+            (alias) => alias.user.id === member.user.id
           ).length
         : 0
     }));
@@ -207,22 +203,22 @@ async function retrieveDomains(ctx, next) {
   // search functionality (with RegExp support)
   //
   if (isSANB(ctx.query.name))
-    ctx.state.domains = ctx.state.domains.filter(domain =>
+    ctx.state.domains = ctx.state.domains.filter((domain) =>
       new RE2(_.escapeRegExp(ctx.query.name)).test(domain.name)
     );
 
   if (isSANB(ctx.query.alias)) {
     const aliasRegex = new RE2(_.escapeRegExp(ctx.query.alias));
-    ctx.state.domains = ctx.state.domains.filter(domain =>
-      domain.aliases.some(alias => aliasRegex.test(alias.name))
+    ctx.state.domains = ctx.state.domains.filter((domain) =>
+      domain.aliases.some((alias) => aliasRegex.test(alias.name))
     );
   }
 
   if (isSANB(ctx.query.recipient)) {
     const recipientRegex = new RE2(_.escapeRegExp(ctx.query.recipient));
-    ctx.state.domains = ctx.state.domains.filter(domain =>
-      domain.aliases.some(alias =>
-        alias.recipients.some(recipient => recipientRegex.test(recipient))
+    ctx.state.domains = ctx.state.domains.filter((domain) =>
+      domain.aliases.some((alias) =>
+        alias.recipients.some((recipient) => recipientRegex.test(recipient))
       )
     );
   }
@@ -260,7 +256,7 @@ async function retrieveDomain(ctx, next) {
     ? ctx.params.domain_id
     : ctx.request.body.domain;
 
-  ctx.state.domain = ctx.state.domains.find(domain =>
+  ctx.state.domain = ctx.state.domains.find((domain) =>
     [domain.id, domain.name].includes(id)
   );
 
@@ -367,7 +363,7 @@ async function createDomain(ctx, next) {
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_DOMAIN')));
 
   const match = ctx.state.domains.find(
-    domain => domain.name === ctx.request.body.domain
+    (domain) => domain.name === ctx.request.body.domain
   );
 
   if (match)
@@ -441,7 +437,7 @@ async function createDomain(ctx, next) {
 
 async function remove(ctx) {
   const adminDomains = ctx.state.domains.filter(
-    domain => domain.group === 'admin'
+    (domain) => domain.group === 'admin'
   );
   if (adminDomains.length > 0)
     return ctx.throw(
@@ -514,10 +510,10 @@ async function verifyRecords(ctx) {
 
     if (Array.isArray(err.errors)) {
       if (ctx.api) {
-        err.message = err.errors.map(e => e.message);
+        err.message = err.errors.map((e) => e.message);
       } else {
         err.message = `<ul class="text-left mb-0">${err.errors
-          .map(e => `<li class="mb-3">${e && e.message ? e.message : e}</li>`)
+          .map((e) => `<li class="mb-3">${e && e.message ? e.message : e}</li>`)
           .join('')}</ul>`;
       }
     }
@@ -554,13 +550,8 @@ function validateAlias(ctx, next) {
     body.labels = _.compact(
       _.uniq(
         _.map(
-          body.labels
-            .split('\n')
-            .join(' ')
-            .split(',')
-            .join(' ')
-            .split(' '),
-          label => slug(label)
+          body.labels.split('\n').join(' ').split(',').join(' ').split(' '),
+          (label) => slug(label)
         )
       )
     );
@@ -572,13 +563,8 @@ function validateAlias(ctx, next) {
     body.recipients = _.compact(
       _.uniq(
         _.map(
-          body.recipients
-            .split('\n')
-            .join(' ')
-            .split(',')
-            .join(' ')
-            .split(' '),
-          recipient => recipient.trim()
+          body.recipients.split('\n').join(' ').split(',').join(' ').split(' '),
+          (recipient) => recipient.trim()
         )
       )
     );
@@ -633,7 +619,7 @@ function retrieveAlias(ctx, next) {
       Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST'))
     );
   ctx.state.alias = ctx.state.domain.aliases.find(
-    alias => alias.id === ctx.params.alias_id
+    (alias) => alias.id === ctx.params.alias_id
   );
   if (!ctx.state.alias)
     return ctx.throw(
@@ -717,12 +703,12 @@ async function removeAlias(ctx, next) {
 function sortedDomains(ctx, next) {
   ctx.state.sortedDomains = _.clone(ctx.state.domains);
   ctx.state.sortedDomains = ctx.state.sortedDomains.filter(
-    domain => !domain.is_global
+    (domain) => !domain.is_global
   );
   if (
     isSANB(ctx.query.domain) &&
     (isFQDN(ctx.query.domain) || isIP(ctx.query.domain)) &&
-    ctx.state.sortedDomains.find(domain => domain.name === ctx.query.domain)
+    ctx.state.sortedDomains.find((domain) => domain.name === ctx.query.domain)
   )
     ctx.state.sortedDomains = _.sortBy(
       ctx.state.sortedDomains.map((domain, i) => ({
@@ -837,9 +823,9 @@ async function importAliases(ctx) {
   const catchAll = [];
 
   for (const element of ignoredAddresses) {
-    const match = aliases.find(alias => alias.name === element.name);
+    const match = aliases.find((alias) => alias.name === element.name);
     const existing = ctx.state.domain.aliases.find(
-      alias => alias.name === element.name
+      (alias) => alias.name === element.name
     );
     if (existing)
       errors.push(
@@ -867,9 +853,9 @@ async function importAliases(ctx) {
   }
 
   for (const element of forwardingAddresses) {
-    const match = aliases.find(alias => alias.name === element.name);
+    const match = aliases.find((alias) => alias.name === element.name);
     const existing = ctx.state.domain.aliases.find(
-      alias => alias.name === element.name
+      (alias) => alias.name === element.name
     );
     if (existing)
       errors.push(
@@ -893,9 +879,9 @@ async function importAliases(ctx) {
     // if it was a fqdn, ip, or email address then add global alias
     // otherwise throw an error that it was an invalid global
     if (isFQDN(element) || isIP(element) || isEmail(element)) {
-      const match = aliases.find(alias => alias.name === '*');
+      const match = aliases.find((alias) => alias.name === '*');
       const existing = ctx.state.domain.aliases.find(
-        alias => alias.name === '*'
+        (alias) => alias.name === '*'
       );
       // try to add to existing catch-all record if it wasn't already there
       if (existing) {
@@ -925,7 +911,7 @@ async function importAliases(ctx) {
   if (aliases.length > 0)
     try {
       const array = await Aliases.create(
-        aliases.map(alias => ({ ...alias, locale: ctx.locale }))
+        aliases.map((alias) => ({ ...alias, locale: ctx.locale }))
       );
       messages.push(ctx.translate('IMPORT_SUCCESSFUL', array.length));
     } catch (err) {
@@ -965,7 +951,7 @@ async function importAliases(ctx) {
       ? `<p>${messages.join(
           ' '
         )}</p><p class="font-weight-bold text-danger">The following errors occurred:</p><ul class="mb-0 text-left"><li>${errors
-          .map(err => err.message)
+          .map((err) => err.message)
           .join('</li><li>')}</li></ul>`
       : messages.join(' ');
 
@@ -1019,7 +1005,7 @@ async function retrieveInvite(ctx) {
 
   // convert invitee to a member with the same group as invite had
   const invite = domain.invites.find(
-    invite => invite.email === ctx.state.user.email
+    (invite) => invite.email === ctx.state.user.email
   );
 
   if (!invite)
@@ -1035,7 +1021,7 @@ async function retrieveInvite(ctx) {
 
   // remove invitee from invites list
   domain.invites = domain.invites.filter(
-    invite => invite.email !== ctx.state.user.email
+    (invite) => invite.email !== ctx.state.user.email
   );
 
   // save domain
@@ -1082,7 +1068,7 @@ async function createInvite(ctx, next) {
 
   // ensure invite does not already exist
   const invite = ctx.state.domain.invites.find(
-    invite => invite.email.toLowerCase() === email.toLowerCase()
+    (invite) => invite.email.toLowerCase() === email.toLowerCase()
   );
 
   if (invite)
@@ -1091,12 +1077,10 @@ async function createInvite(ctx, next) {
     );
 
   // ensure user is not already a member
-  const user = await Users.findOne({ email })
-    .lean()
-    .exec();
+  const user = await Users.findOne({ email }).lean().exec();
   if (user) {
     const member = ctx.state.domain.members.find(
-      member => member.user.id === user.id
+      (member) => member.user.id === user.id
     );
     if (member)
       return ctx.throw(
@@ -1115,7 +1099,7 @@ async function createInvite(ctx, next) {
 
   // send an email
   try {
-    const job = await ctx.bull.add('email', {
+    await emailHelper({
       template: 'invite',
       message: {
         to: email.toLowerCase()
@@ -1124,7 +1108,6 @@ async function createInvite(ctx, next) {
         domain: { id: ctx.state.domain.id, name: ctx.state.domain.name }
       }
     });
-    ctx.logger.info('added job', ctx.bull.getMeta({ job }));
   } catch (err) {
     if (!ctx.api) ctx.flash('error', ctx.translate('INVITE_EMAIL_ERROR'));
     ctx.logger.error(err);
@@ -1156,7 +1139,7 @@ async function removeInvite(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   // remove invite
   ctx.state.domain.invites = ctx.state.domain.invites.filter(
-    invite => invite.email.toLowerCase() !== email.toLowerCase()
+    (invite) => invite.email.toLowerCase() !== email.toLowerCase()
   );
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain = await ctx.state.domain.save();
@@ -1190,7 +1173,7 @@ async function updateMember(ctx, next) {
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_GROUP')));
 
   const member = ctx.state.domain.members.find(
-    member => member.user.id === ctx.params.user_id
+    (member) => member.user.id === ctx.params.user_id
   );
 
   if (!member)
@@ -1198,7 +1181,7 @@ async function updateMember(ctx, next) {
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   // swap the user group based off ctx.request.body.group
-  ctx.state.domain.members = ctx.state.domain.members.map(member => ({
+  ctx.state.domain.members = ctx.state.domain.members.map((member) => ({
     ...member,
     group:
       member.user.toString() === ctx.params.user_id
@@ -1231,7 +1214,7 @@ async function removeMember(ctx, next) {
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
 
   const member = ctx.state.domain.members.find(
-    member => member.user.id === ctx.params.user_id
+    (member) => member.user.id === ctx.params.user_id
   );
 
   if (!member)
@@ -1245,7 +1228,7 @@ async function removeMember(ctx, next) {
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   ctx.state.domain.members = ctx.state.domain.members.filter(
-    member => member.user.toString() !== ctx.params.user_id
+    (member) => member.user.toString() !== ctx.params.user_id
   );
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain = await ctx.state.domain.save();
@@ -1276,10 +1259,7 @@ async function recoveryKeys(ctx) {
   const otpRecoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];
 
   ctx.attachment('recovery-keys.txt');
-  ctx.body = otpRecoveryKeys
-    .toString()
-    .replace(/,/g, '\n')
-    .replace(/"/g, '');
+  ctx.body = otpRecoveryKeys.toString().replace(/,/g, '\n').replace(/"/g, '');
 }
 
 async function updateDomain(ctx, next) {

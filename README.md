@@ -95,6 +95,8 @@ All server aliases with the same hostname (with a minimum count of at least 2) a
 
 Unless otherwise noted, all of the servers should have dedicated CPU's and not be running in a shared CPU environment.
 
+If you are using load balancers, then you need to implement PROXY support.  Ensure that `TRUST_PROXY` environment variable is set to `true`, and also that you have set `WEB_PROXY_PROTOCOL` and `API_PROXY_PROTOCOL` set to `true` as well.
+
 ### Provisioning
 
 See the [ansible](ansible/) folder for our [Ansible][] configuration and playbooks, which we use to provision servers with.
@@ -133,7 +135,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    vim .env.production
    ```
 
-5. Generate [pm2][] [ecosystem files][ecosystem-files] using our automatic template generator. We created an [ansible-playbook.js](ansible-playbook.js) which loads the `.env.production` environment variables rendered with [@ladjs/env][] into `process.env`, which then gets used in the playbooks.  This is a superior, simple, and the only known dotenv approach we know of in Ansible. Newly created `ecosystem-api.json`, `ecosystem-bull.json`, `ecosystem-web.json` files will now be created for you in the root of the repository.  If you ever more add or change IP addresses, you can simply re-run this command.
+5. Generate [pm2][] [ecosystem files][ecosystem-files] using our automatic template generator. We created an [ansible-playbook.js](ansible-playbook.js) which loads the `.env.production` environment variables rendered with [@ladjs/env][] into `process.env`, which then gets used in the playbooks.  This is a superior, simple, and the only known dotenv approach we know of in Ansible. Newly created `ecosystem-api.json`, `ecosystem-bree.json`, `ecosystem-web.json` files will now be created for you in the root of the repository.  If you ever more add or change IP addresses, you can simply re-run this command.
 
    ```sh
    node ansible-playbook ansible/playbooks/ecosystem.yml -l 'localhost'
@@ -145,10 +147,10 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    node ansible-playbook ansible/playbooks/http.yml -e 'ansible_user=root' -l 'http'
    ```
 
-7. Set up the Bull server(s):
+7. Set up the Bree server(s):
 
    ```sh
-   node ansible-playbook ansible/playbooks/bull.yml -e 'ansible_user=root' -l 'bull'
+   node ansible-playbook ansible/playbooks/bree.yml -e 'ansible_user=root' -l 'bree'
    ```
 
 8. Set up the Redis server:
@@ -166,7 +168,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 10. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.
 
     ```sh
-    node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'http:bull'
+    node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'http:bree'
     ```
 
 11. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours:
@@ -193,7 +195,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     ```
 
     ```sh
-    pm2 deploy ecosystem-bull.json production setup
+    pm2 deploy ecosystem-bree.json production setup
     ```
 
 13. Create a SSL certificate at [Namecheap][] (we recommend a 5 year wildcard certificate), set up the certificate, and download and extract the ZIP file with the certificate (emailed to you) to your computer. We do not recommend using tools like [LetsEncrypt][] and `certbot` due to complexity when you have (or scale to) a cluster of servers set up behind load balancers.  In other words, we've tried approaches like `lsyncd` in combination with `crontab` for `certbot` renewals and automatic checking.  Furthermore, using this exposes the server(s) to downtime as ports `80` and `443` may need to be shut down so that `certbot` can use them for certificate generation.  This is not a reliable approach, and simply renewing certificates once a year is vastly simpler and also makes using load balancers trivial.  Instead you can use a provider like [Namecheap][] to get a cheap SSL certificate, then run a few commands as we've documented below. This command will prompt you for an absolute file path to the certificates you downloaded. Renewed your certificate after 1 year? Simply follow this step again.  Do not set a password on the certificate files.  When using the `openssl` command (see Namecheap instructions), you need to use `*.example.com` with an asterisk followed by a period if you are registering a wildcard certificate.
@@ -216,13 +218,13 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 14. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
 
     ```sh
-    ansible-playbook ansible/playbooks/gapp-creds.yml -l 'http:bull'
+    ansible-playbook ansible/playbooks/gapp-creds.yml -l 'http:bree'
     ```
 
 15. Copy the `.env.production` file and create an AWS config file on the servers:
 
     ```sh
-    node ansible-playbook ansible/playbooks/env.yml -l 'http:bull'
+    node ansible-playbook ansible/playbooks/env.yml -l 'http:bree'
     ```
 
 16. Run an initial deploy to all the servers:
@@ -236,7 +238,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     ```
 
     ```sh
-    pm2 deploy ecosystem-bull.json production
+    pm2 deploy ecosystem-bree.json production
     ```
 
 17. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
@@ -250,7 +252,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     ```
 
     ```sh
-    pm2 deploy ecosystem-bull.json production exec "pm2 save"
+    pm2 deploy ecosystem-bree.json production exec "pm2 save"
     ```
 
 
@@ -283,7 +285,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 [Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © [Niftylettuce, LLC.](https://niftylettuce.com/)
 
 
-##
+## 
 
 [ansible]: https://github.com/ansible/ansible
 

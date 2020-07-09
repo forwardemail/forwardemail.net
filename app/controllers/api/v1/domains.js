@@ -21,7 +21,7 @@ function json(domain) {
     object.max_recipients_per_alias = app.config.maxForwardedAddresses;
   // members
   if (Array.isArray(domain.members))
-    object.members = domain.members.map(m => {
+    object.members = domain.members.map((m) => {
       const member = _.isFunction(m.toObject)
         ? m.toObject()
         : { group: m.group };
@@ -31,14 +31,14 @@ function json(domain) {
     });
   // invites
   if (Array.isArray(domain.invites))
-    object.invites = domain.invites.map(i =>
+    object.invites = domain.invites.map((i) =>
       _.isFunction(i.toObject)
         ? i.toObject()
         : new Domains().invites.create(i).toObject()
     );
   // aliases
   if (Array.isArray(domain.aliases))
-    object.aliases = domain.aliases.map(a => {
+    object.aliases = domain.aliases.map((a) => {
       const alias = toObject(Aliases, a);
       alias.user = toObject(Users, a.user);
       alias.domain = json(a.domain);
@@ -56,7 +56,7 @@ function json(domain) {
 }
 
 async function list(ctx) {
-  const data = ctx.state.domains.map(d => json(d));
+  const data = ctx.state.domains.map((d) => json(d));
   ctx.body = data;
 }
 

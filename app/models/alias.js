@@ -29,7 +29,7 @@ const app = new ForwardEmail({
 
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
 const quotedEmailUserUtf8 = new RE2(
-  // eslint-disable-next-line no-control-regex,prefer-named-capture-group
+  // eslint-disable-next-line no-control-regex
   /^([\s\u0001-\u0008\u000E-\u001F!\u0023-\u005B\u005D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i
 );
 
@@ -77,7 +77,7 @@ const Alias = new mongoose.Schema({
       trim: true,
       // must be IP or FQDN or email
       validate: {
-        validator: value =>
+        validator: (value) =>
           isIP(value) ||
           isFQDN(value) ||
           isEmail(value) ||
@@ -89,7 +89,7 @@ const Alias = new mongoose.Schema({
   ]
 });
 
-Alias.pre('validate', function(next) {
+Alias.pre('validate', function (next) {
   // require alias name
   if (
     !isSANB(this.name) ||
@@ -106,7 +106,7 @@ Alias.pre('validate', function(next) {
 
   // add wildcard as first label
   if (this.name === '*') this.labels.unshift('catch-all');
-  this.labels = _.compact(_.uniq(this.labels.map(label => slug(label))));
+  this.labels = _.compact(_.uniq(this.labels.map((label) => slug(label))));
   if (this.name !== '*') this.labels = _.without(this.labels, 'catch-all');
 
   // alias must not start with ! exclamation (since that denotes it is ignored)
@@ -116,7 +116,7 @@ Alias.pre('validate', function(next) {
   // make recipients unique by email address, FQDN, or IP
   this.recipients = _.compact(
     _.uniq(
-      this.recipients.map(r => {
+      this.recipients.map((r) => {
         // some webhooks are case-sensitive
         if (isURL(r)) return r.trim();
         return r.toLowerCase().trim();
@@ -140,7 +140,7 @@ Alias.pre('validate', function(next) {
 // it populates "id" String automatically for comparisons
 Alias.plugin(mongooseCommonPlugin, { object: 'alias' });
 
-Alias.pre('save', async function(next) {
+Alias.pre('save', async function (next) {
   const alias = this;
   try {
     // domain and user must exist
@@ -162,10 +162,7 @@ Alias.pre('save', async function(next) {
         .populate('members.user', `id ${config.userFields.isBanned}`)
         .lean()
         .exec(),
-      Users.findById(alias.user)
-        .select('id')
-        .lean()
-        .exec(),
+      Users.findById(alias.user).select('id').lean().exec(),
       alias.constructor
         .find({
           domain: alias.domain
@@ -178,10 +175,11 @@ Alias.pre('save', async function(next) {
 
     // filter out domains and aliases without users
     aliases = aliases.filter(
-      alias => _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
+      (alias) =>
+        _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
     );
     domain.members = domain.members.filter(
-      member =>
+      (member) =>
         _.isObject(member.user) && !member.user[config.userFields.isBanned]
     );
 
@@ -195,7 +193,7 @@ Alias.pre('save', async function(next) {
 
     // find an existing alias match
     const match = aliases.find(
-      _alias => _alias.id !== alias.id && _alias.name === alias.name
+      (_alias) => _alias.id !== alias.id && _alias.name === alias.name
     );
 
     if (match)
@@ -207,7 +205,7 @@ Alias.pre('save', async function(next) {
       throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
 
     // determine the domain membership for the user
-    let member = domain.members.find(member => member.user.id === user.id);
+    let member = domain.members.find((member) => member.user.id === user.id);
 
     if (!member && domain.is_global)
       member = {
@@ -235,12 +233,12 @@ Alias.pre('save', async function(next) {
       const string = alias.name.replace(/[^\da-z]/g, '');
 
       let reservedMatch = reservedEmailAddressesList.find(
-        addr => addr === string
+        (addr) => addr === string
       );
 
       if (!reservedMatch)
         reservedMatch = reservedAdminList.find(
-          addr =>
+          (addr) =>
             addr === string || string.startsWith(addr) || string.endsWith(addr)
         );
 
@@ -257,7 +255,7 @@ Alias.pre('save', async function(next) {
       // then the user can only have up to 5 aliases at a time on the domain
       if (domain.is_global) {
         const aliasCount = aliases.filter(
-          _alias => _alias.user.id === user.id && _alias.name !== alias.name
+          (_alias) => _alias.user.id === user.id && _alias.name !== alias.name
         ).length;
         if (aliasCount > 5)
           throw Boom.badRequest(

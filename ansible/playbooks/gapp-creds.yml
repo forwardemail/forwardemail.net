@@ -1,5 +1,5 @@
 ---
-- hosts: http:bull
+- hosts: http:bree
   become: true
   become_user: root
   vars_prompt:

@@ -57,7 +57,7 @@ async function openStartup(ctx) {
       const series = [];
 
       await Promise.all(
-        Object.keys(models).map(async name => {
+        Object.keys(models).map(async (name) => {
           const docs = await models[name]
             .find({
               ...(name === 'Users'
@@ -70,9 +70,7 @@ async function openStartup(ctx) {
             .exec();
           const mapping = {};
           for (const doc of docs) {
-            const date = dayjs(doc.created_at)
-              .startOf('day')
-              .toDate();
+            const date = dayjs(doc.created_at).startOf('day').toDate();
             if (!mapping[date]) mapping[date] = 0;
             mapping[date]++;
           }
@@ -85,7 +83,7 @@ async function openStartup(ctx) {
 
           series.push({
             name,
-            data: Object.keys(mapping).map(key => [key, mapping[key]])
+            data: Object.keys(mapping).map((key) => [key, mapping[key]])
           });
         })
       );
@@ -119,9 +117,7 @@ async function openStartup(ctx) {
         .startOf('day')
         .subtract(52, 'week')
         .toDate();
-      const end = dayjs()
-        .endOf('week')
-        .toDate();
+      const end = dayjs().endOf('week').toDate();
       const users = await Users.find({
         [config.userFields.hasVerifiedEmail]: true,
         created_at: {
@@ -145,20 +141,14 @@ async function openStartup(ctx) {
       for (let week = 0; week < 52; week++) {
         weekIndex.push(
           Number.parseInt(
-            dayjs(start)
-              .add(week, 'week')
-              .startOf('day')
-              .format('w'),
+            dayjs(start).add(week, 'week').startOf('day').format('w'),
             10
           ) - 1
         );
       }
 
       for (let day = 0; day < 365; day++) {
-        const date = dayjs(start)
-          .add(day, 'day')
-          .startOf('day')
-          .toDate();
+        const date = dayjs(start).add(day, 'day').startOf('day').toDate();
         const d = Number.parseInt(dayjs(date).format('d'), 10);
         const w = weekIndex.indexOf(
           Number.parseInt(dayjs(date).format('w'), 10) - 1
@@ -172,9 +162,7 @@ async function openStartup(ctx) {
 
         if (!series[d].data[w])
           series[d].data[w] = {
-            x: dayjs(start)
-              .add(w, 'week')
-              .toDate(),
+            x: dayjs(start).add(w, 'week').toDate(),
             y: 0
           };
       }
@@ -189,7 +177,7 @@ async function openStartup(ctx) {
 
       return {
         // make Sunday start of the week
-        series: _.sortBy(series, s => DAYS_OF_WEEK.indexOf(s.name)).reverse(),
+        series: _.sortBy(series, (s) => DAYS_OF_WEEK.indexOf(s.name)).reverse(),
         chart,
         colors
       };
@@ -216,7 +204,7 @@ async function openStartup(ctx) {
 
   // localize line chart
   if (lineChart) {
-    lineChart.series = lineChart.series.map(s => ({
+    lineChart.series = lineChart.series.map((s) => ({
       ...s,
       name: ctx.translate(s.name.toUpperCase())
     }));
@@ -224,16 +212,12 @@ async function openStartup(ctx) {
 
   // localize heatmap
   if (heatmap) {
-    heatmap.series = heatmap.series.map(s => ({
+    heatmap.series = heatmap.series.map((s) => ({
       ...s,
-      name: dayjs(s.name)
-        .locale(ctx.locale)
-        .format('dddd'),
-      data: s.data.map(d => ({
+      name: dayjs(s.name).locale(ctx.locale).format('dddd'),
+      data: s.data.map((d) => ({
         ...d,
-        x: dayjs(d.x)
-          .locale(ctx.locale)
-          .format('MMM YY')
+        x: dayjs(d.x).locale(ctx.locale).format('MMM YY')
       }))
     }));
   }

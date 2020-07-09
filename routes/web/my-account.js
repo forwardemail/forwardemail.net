@@ -11,7 +11,7 @@ router.use(policies.ensureOtp);
 router.use(web.myAccount.ensureNotBanned);
 router.use(web.breadcrumbs);
 router.use(web.myAccount.retrieveDomains);
-router.get('/', ctx => {
+router.get('/', (ctx) => {
   ctx.redirect(ctx.state.l('/my-account/domains'));
 });
 router.delete('/', web.myAccount.remove);
