@@ -4,6 +4,7 @@ const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
 const _ = require('lodash');
+const captainHook = require('captain-hook');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -126,6 +127,8 @@ const Domain = new mongoose.Schema({
     unique: true
   }
 });
+
+Domain.plugin(captainHook);
 
 Domain.virtual('link')
   .get(function () {
@@ -465,5 +468,13 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
 }
 
 Domain.statics.getTxtAddresses = getTxtAddresses;
+
+Domain.postCreate((domain, next) => {
+  logger.info(`domain created: ${domain.name}`, {
+    domain: domain.toObject(),
+    slack: true
+  });
+  next();
+});
 
 module.exports = mongoose.model('Domain', Domain);
