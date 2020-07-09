@@ -470,7 +470,7 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
 Domain.statics.getTxtAddresses = getTxtAddresses;
 
 Domain.postCreate((domain, next) => {
-  logger.info(`domain created: ${domain.name}`, {
+  logger.info('domain created', {
     domain: domain.toObject(),
     slack: true
   });
