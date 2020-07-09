@@ -362,7 +362,7 @@ User.pre('save', function (next) {
 });
 
 User.postCreate((user, next) => {
-  logger.info(`user created: ${user.email}`, {
+  logger.info('user created', {
     user: user.toObject(),
     slack: true
   });
