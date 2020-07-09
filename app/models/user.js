@@ -15,6 +15,7 @@ const { boolean } = require('boolean');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
+const logger = require('../../helpers/logger');
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
 
@@ -357,6 +358,14 @@ User.pre('save', function (next) {
     }
   }
 
+  next();
+});
+
+User.postCreate((user, next) => {
+  logger.info(`user created: ${user.email}`, {
+    user: user.toObject(),
+    slack: true
+  });
   next();
 });
 
