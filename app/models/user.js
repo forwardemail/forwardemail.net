@@ -63,7 +63,7 @@ const User = new mongoose.Schema({
     trim: true,
     lowercase: true,
     unique: true,
-    validate: value => validator.isEmail(value)
+    validate: (value) => validator.isEmail(value)
   }
 });
 
@@ -115,7 +115,7 @@ object[config.userFields.verificationPinSentAt] = Date;
 object[config.userFields.verificationPin] = {
   type: String,
   trim: true,
-  validate: value => isSANB(value) && value.replace(/\D/g, '').length === 6
+  validate: (value) => isSANB(value) && value.replace(/\D/g, '').length === 6
 };
 
 object[config.userFields.pendingRecovery] = {
@@ -151,7 +151,7 @@ object[fields.familyName] = {
 object[fields.avatarURL] = {
   type: String,
   trim: true,
-  validate: value => validator.isURL(value)
+  validate: (value) => validator.isURL(value)
 };
 // google
 object[fields.googleProfileID] = {
@@ -185,7 +185,7 @@ User.add(object);
 
 User.plugin(captainHook);
 
-User.virtual(config.userFields.verificationPinHasExpired).get(function() {
+User.virtual(config.userFields.verificationPinHasExpired).get(function () {
   return boolean(
     !this[config.userFields.verificationPinExpiresAt] ||
       new Date(this[config.userFields.verificationPinExpiresAt]).getTime() <
@@ -193,7 +193,7 @@ User.virtual(config.userFields.verificationPinHasExpired).get(function() {
   );
 });
 
-User.pre('validate', function(next) {
+User.pre('validate', function (next) {
   // create api token if doesn't exist
   if (!isSANB(this[config.userFields.apiToken]))
     this[config.userFields.apiToken] = cryptoRandomString({ length: 24 });
@@ -202,9 +202,9 @@ User.pre('validate', function(next) {
   // but if they have a name or surname set then use that
   this[fields.displayName] = this.email;
   if (isSANB(this[fields.givenName]) || isSANB(this[fields.familyName])) {
-    this[fields.displayName] = `${this[fields.givenName] || ''} ${this[
-      fields.familyName
-    ] || ''}`;
+    this[fields.displayName] = `${this[fields.givenName] || ''} ${
+      this[fields.familyName] || ''
+    }`;
   }
 
   // set the user's full email address (incl display name)
@@ -242,12 +242,37 @@ User.pre('validate', function(next) {
 // instead you should use the helper located at
 // `../helpers/send-verification-email.js`
 //
-User.methods.sendVerificationEmail = async function(ctx) {
+User.methods.sendVerificationEmail = async function (ctx, reset = false) {
   if (
     this[config.userFields.hasVerifiedEmail] &&
     boolean(!this[config.userFields.pendingRecovery])
   )
     return this;
+
+  if (reset) {
+    this[config.userFields.verificationPinExpiresAt] = this[
+      `__${config.userFields.verificationPinExpiresAt}`
+    ];
+    this[config.userFields.verificationPinSentAt] = this[
+      `__${config.userFields.verificationPinSentAt}`
+    ];
+    this[config.userFields.verificationPin] = this[
+      `__${config.userFields.verificationPin}`
+    ];
+    await this.save();
+    return this;
+  }
+
+  // store old values in case we have to reset
+  this[`__${config.userFields.verificationPinExpiresAt}`] = this[
+    config.userFields.verificationPinExpiresAt
+  ];
+  this[`__${config.userFields.verificationPinSentAt}`] = this[
+    config.userFields.verificationPinSentAt
+  ];
+  this[`__${config.userFields.verificationPin}`] = this[
+    config.userFields.verificationPin
+  ];
 
   const diff =
     this[config.userFields.verificationPinExpiresAt] &&
@@ -310,14 +335,14 @@ User.plugin(mongooseCommonPlugin, {
 
 User.plugin(passportLocalMongoose, config.passportLocalMongoose);
 
-User.post('init', doc => {
+User.post('init', (doc) => {
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
     doc[`__${fieldName}`] = doc[fieldName];
   }
 });
 
-User.pre('save', function(next) {
+User.pre('save', function (next) {
   // filter by allowed field updates (otp enabled, profile updates, etc)
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);

@@ -64,7 +64,7 @@ const Invite = new mongoose.Schema({
     index: true,
     trim: true,
     lowercase: true,
-    validate: value => isEmail(value)
+    validate: (value) => isEmail(value)
   },
   group: {
     type: String,
@@ -97,7 +97,7 @@ const Domain = new mongoose.Schema({
   smtp_port: {
     type: String,
     default: '25',
-    validator: value => isPort(value)
+    validator: (value) => isPort(value)
   },
   members: [Member],
   invites: [Invite],
@@ -128,22 +128,22 @@ const Domain = new mongoose.Schema({
 });
 
 Domain.virtual('link')
-  .get(function() {
+  .get(function () {
     return this.__link;
   })
-  .set(function(link) {
+  .set(function (link) {
     this.__link = link;
   });
 
 Domain.virtual('skip_verification')
-  .get(function() {
+  .get(function () {
     return this.__skip_verification;
   })
-  .set(function(skipVerification) {
+  .set(function (skipVerification) {
     this.__skip_verification = boolean(skipVerification);
   });
 
-Domain.pre('validate', function(next) {
+Domain.pre('validate', function (next) {
   try {
     const domain = this;
     if (!domain.plan) domain.plan = 'free';
@@ -172,7 +172,7 @@ Domain.pre('validate', function(next) {
   }
 });
 
-Domain.pre('validate', async function(next) {
+Domain.pre('validate', async function (next) {
   try {
     const domain = this;
     // helper virtual to skip verification results
@@ -182,7 +182,8 @@ Domain.pre('validate', async function(next) {
       !Array.isArray(domain.members) ||
       domain.members.length === 0 ||
       !domain.members.find(
-        member => typeof member.user !== 'undefined' && member.group === 'admin'
+        (member) =>
+          typeof member.user !== 'undefined' && member.group === 'admin'
       )
     )
       throw Boom.badRequest(
@@ -302,8 +303,8 @@ async function getVerificationResults(domain) {
   const testEmail = `test@${domain.name}`;
   try {
     const addresses = await app.validateMX(testEmail);
-    const exchanges = new Set(addresses.map(mxAddress => mxAddress.exchange));
-    const hasAllExchanges = app.config.exchanges.every(exchange =>
+    const exchanges = new Set(addresses.map((mxAddress) => mxAddress.exchange));
+    const hasAllExchanges = app.config.exchanges.every((exchange) =>
       exchanges.has(exchange)
     );
     if (hasAllExchanges) mx = true;
@@ -382,13 +383,12 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
   }
 
   // join multi-line TXT records together and replace double w/single commas
-  const record = validRecords
-    .join(',')
-    .replace(/,+/g, ',')
-    .trim();
+  const record = validRecords.join(',').replace(/,+/g, ',').trim();
 
   // remove trailing whitespaces from each address listed
-  const addresses = isSANB(record) ? record.split(',').map(a => a.trim()) : [];
+  const addresses = isSANB(record)
+    ? record.split(',').map((a) => a.trim())
+    : [];
 
   if (!allowEmpty && addresses.length === 0)
     throw Boom.badRequest(

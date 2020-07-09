@@ -39,7 +39,7 @@
         port: "{{ lookup('env', 'REDIS_PORT') }}"
         src: "{{ hostvars[item].ansible_host }}"
         proto: tcp
-      with_items: "{{ groups['web'] + groups['api'] + groups['bull'] }}"
+      with_items: "{{ groups['web'] + groups['api'] + groups['bree'] }}"
     - name: reload ufw
       ufw:
         state: reloaded

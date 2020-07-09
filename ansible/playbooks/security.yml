@@ -372,7 +372,7 @@
 
     # TODO: set up logrotate for all roles/deps
     #       https://github.com/Oefenweb/ansible-logrotated
-- hosts: http:bull
+- hosts: http:bree
   become: true
   become_user: root
   roles:

@@ -33,16 +33,17 @@ async function lookup(ctx) {
 
   ctx.body = aliases
     .filter(
-      alias => _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
+      (alias) =>
+        _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
     )
-    .map(alias => {
+    .map((alias) => {
       // alias.name = "*" (wildcard catchall) otherwise an alias
       // alias.is_enabled = "!" prefixed alias name
       // alias.recipients = comma separated (split with a colon)
       if (alias.name === '*') return alias.recipients.join(',');
 
       return alias.recipients
-        .map(recipient => {
+        .map((recipient) => {
           return alias.is_enabled
             ? `${alias.name}:${recipient}`
             : `!${alias.name}`;

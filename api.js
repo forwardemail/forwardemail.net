@@ -20,10 +20,11 @@ if (!module.parent) {
     redisClients: [api.client],
     logger
   });
+  graceful.listen();
 
   (async () => {
     try {
-      await Promise.all([api.listen(api.config.port), graceful.listen()]);
+      await api.listen(api.config.port);
       if (process.send) process.send('ready');
       const { port } = api.server.address();
       logger.info(

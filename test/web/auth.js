@@ -5,7 +5,7 @@ const cryptoRandomString = require('crypto-random-string');
 const phrases = require('../../config/phrases');
 const { Users } = require('../../app/models');
 
-test('creates new user', async t => {
+test('creates new user', async (t) => {
   const res = await global.web.post('/en/register', {
     body: {
       email: 'test@example.com',
@@ -17,7 +17,7 @@ test('creates new user', async t => {
   t.is(res.status, 200);
 });
 
-test('fails registering with easy password', async t => {
+test('fails registering with easy password', async (t) => {
   const res = await global.web.post('/en/register', {
     body: {
       email: 'test1@example.com',
@@ -28,7 +28,7 @@ test('fails registering with easy password', async t => {
   t.is(res.status, 400);
 });
 
-test('successfully registers with strong password', async t => {
+test('successfully registers with strong password', async (t) => {
   const res = await global.web.post('/en/register', {
     body: {
       email: 'test12@example.com',
@@ -39,7 +39,7 @@ test('successfully registers with strong password', async t => {
   t.is(res.status, 200);
 });
 
-test('successfully registers with stronger password', async t => {
+test('successfully registers with stronger password', async (t) => {
   const res = await global.web.post('/en/register', {
     body: {
       email: 'test123@example.com',
@@ -50,7 +50,7 @@ test('successfully registers with stronger password', async t => {
   t.is(res.status, 200);
 });
 
-test('fails registering invalid email', async t => {
+test('fails registering invalid email', async (t) => {
   const res = await global.web.post('/en/register', {
     body: {
       email: 'test123',
@@ -60,7 +60,7 @@ test('fails registering invalid email', async t => {
   t.is(res.status, 400);
 });
 
-test("doesn't leak used email", async t => {
+test("doesn't leak used email", async (t) => {
   const email = 'test2@example.com';
   const password = '!@K#NLK!#NSADKMSAD:K';
 
@@ -76,7 +76,7 @@ test("doesn't leak used email", async t => {
   t.is(res.body.message, phrases.PASSPORT_USER_EXISTS_ERROR);
 });
 
-test('allows password reset for valid email (HTML)', async t => {
+test('allows password reset for valid email (HTML)', async (t) => {
   const email = 'test3@example.com';
   const password = '!@K#NLK!#N';
 
@@ -92,7 +92,7 @@ test('allows password reset for valid email (HTML)', async t => {
   t.is(res.status, 200);
 });
 
-test('allows password reset for valid email (JSON)', async t => {
+test('allows password reset for valid email (JSON)', async (t) => {
   const email = 'test4@example.com';
   const password = '!@K#NLK!#N';
 
@@ -104,7 +104,7 @@ test('allows password reset for valid email (JSON)', async t => {
   t.is(res.body.message, phrases.PASSWORD_RESET_SENT);
 });
 
-test('resets password with valid email and token (HTML)', async t => {
+test('resets password with valid email and token (HTML)', async (t) => {
   const email = 'test5@example.com';
   const password = '!@K#NLK!#N';
 
@@ -133,7 +133,7 @@ test('resets password with valid email and token (HTML)', async t => {
   t.is(res.status, 200);
 });
 
-test('resets password with valid email and token (JSON)', async t => {
+test('resets password with valid email and token (JSON)', async (t) => {
   const email = 'test6@example.com';
   const password = '!@K#NLK!#N';
 
@@ -160,7 +160,7 @@ test('resets password with valid email and token (JSON)', async t => {
   t.is(res.body.message, phrases.RESET_PASSWORD);
 });
 
-test('fails resetting password for non-existent user', async t => {
+test('fails resetting password for non-existent user', async (t) => {
   const email = 'test7@example.com';
   const password = '!@K#NLK!#N';
 
@@ -172,7 +172,7 @@ test('fails resetting password for non-existent user', async t => {
   t.is(res.body.message, phrases.INVALID_RESET_PASSWORD);
 });
 
-test('fails resetting password with invalid reset token', async t => {
+test('fails resetting password with invalid reset token', async (t) => {
   const email = 'test8@example.com';
   const password = '!@K#NLK!#N';
 
@@ -188,7 +188,7 @@ test('fails resetting password with invalid reset token', async t => {
   t.is(res.body.message, phrases.INVALID_RESET_PASSWORD);
 });
 
-test('fails resetting password with missing new password', async t => {
+test('fails resetting password with missing new password', async (t) => {
   const email = 'test9@example.com';
   const password = '!@K#NLK!#N';
 
@@ -215,7 +215,7 @@ test('fails resetting password with missing new password', async t => {
   t.is(res.body.message, phrases.INVALID_PASSWORD);
 });
 
-test('fails resetting password with invalid email', async t => {
+test('fails resetting password with invalid email', async (t) => {
   const email = 'test10@example.com';
   const password = '!@K#NLK!#N';
 
@@ -242,7 +242,7 @@ test('fails resetting password with invalid email', async t => {
   t.is(res.body.message, phrases.INVALID_EMAIL);
 });
 
-test('fails resetting password with invalid email + reset token match', async t => {
+test('fails resetting password with invalid email + reset token match', async (t) => {
   const email = 'test11@example.com';
   const password = '!@K#NLK!#N';
 
@@ -267,7 +267,7 @@ test('fails resetting password with invalid email + reset token match', async t 
   t.is(res.body.message, phrases.INVALID_RESET_PASSWORD);
 });
 
-test('fails resetting password if new password is too weak', async t => {
+test('fails resetting password if new password is too weak', async (t) => {
   const email = 'test12@example.com';
   const password = '!@K#NLK!#N';
 
@@ -294,7 +294,7 @@ test('fails resetting password if new password is too weak', async t => {
   t.is(res.body.message, phrases.INVALID_PASSWORD_STRENGTH);
 });
 
-test('fails resetting password if reset was already tried in the last 30 mins', async t => {
+test('fails resetting password if reset was already tried in the last 30 mins', async (t) => {
   const email = 'test13@example.com';
   const password = '!@K#NLK!#N';
 

@@ -1,3 +1,4 @@
+const childProcess = require('child_process');
 const path = require('path');
 const util = require('util');
 
@@ -7,7 +8,7 @@ const pug = require('pug');
 const { JSDOM } = require('jsdom');
 const { isFQDN, isIP, isEmail } = require('validator');
 
-const exec = util.promisify(require('child_process').exec);
+const exec = util.promisify(childProcess.exec);
 const config = require('../../../config');
 const markdown = require('../../../helpers/markdown');
 
@@ -75,7 +76,7 @@ async function api(ctx) {
   );
 
   await Promise.all(
-    [...$codeTags].map(async $codeTag => {
+    [...$codeTags].map(async ($codeTag) => {
       const cmd = $codeTag.textContent.trim();
       if (REGEX_CURL_DELETE.test(cmd)) return;
       if (REGEX_DOMAIN_PARAM.test(cmd)) return;

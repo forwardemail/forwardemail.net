@@ -21,7 +21,7 @@ function json(alias) {
 
 async function list(ctx) {
   ctx.body = Array.isArray(ctx.state.domain.aliases)
-    ? ctx.state.domain.aliases.map(alias => json(alias))
+    ? ctx.state.domain.aliases.map((alias) => json(alias))
     : [];
 }
 

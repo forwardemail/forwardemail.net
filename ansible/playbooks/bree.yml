@@ -1,9 +1,9 @@
 ---
-- import_playbook: security.yml hostlist=bull
-- import_playbook: python.yml hostlist=bull
-- import_playbook: node.yml hostlist=bull
-- import_playbook: ssh-keys.yml hostlist=bull
-- hosts: bull
+- import_playbook: security.yml hostlist=bree
+- import_playbook: python.yml hostlist=bree
+- import_playbook: node.yml hostlist=bree
+- import_playbook: ssh-keys.yml hostlist=bree
+- hosts: bree
   become: true
   become_user: root
   roles:

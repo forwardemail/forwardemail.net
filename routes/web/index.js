@@ -14,7 +14,7 @@ const otp = require('./otp');
 const router = new Router();
 
 // status page crawlers often send `HEAD /` requests
-router.head('/', ctx => {
+router.head('/', (ctx) => {
   ctx.body = 'OK';
 });
 // report URI support (not locale specific)
@@ -24,11 +24,11 @@ const localeRouter = new Router({ prefix: '/:locale' });
 
 localeRouter
   .get('/', web.auth.homeOrDomains)
-  .get('/dashboard', ctx => {
+  .get('/dashboard', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));
   })
-  .get('/features', ctx => {
+  .get('/features', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/pricing'));
   })
@@ -46,7 +46,7 @@ localeRouter
     web.auth.parseReturnOrRedirectTo,
     web.faq
   )
-  .get('/api', ctx => {
+  .get('/api', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/email-forwarding-api'));
   })

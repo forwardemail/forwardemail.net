@@ -19,7 +19,7 @@ exports.before = async () => {
 };
 
 // create fixtures before each test
-exports.beforeEach = async t => {
+exports.beforeEach = async (t) => {
   const query = {
     email: 'robertfrost@example.com',
     group: 'admin'
@@ -41,7 +41,7 @@ exports.after = async () => {
   mongod.stop();
 };
 
-exports.login = async web => {
+exports.login = async (web) => {
   await web.post('/en/login').send({
     email: 'robertfrost@example.com',
     password: '?X#8Hn=PbkvTD/{'

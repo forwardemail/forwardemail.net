@@ -90,7 +90,7 @@ async function onboard(ctx, next) {
 
   if (ctx.isAuthenticated() && boolean(ctx.request.body.create_domain)) {
     const match = ctx.state.domains.find(
-      domain => domain.name === ctx.request.body.domain
+      (domain) => domain.name === ctx.request.body.domain
     );
     if (match) ctx.state.domain = match;
     else {

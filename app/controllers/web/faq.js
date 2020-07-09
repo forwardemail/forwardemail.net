@@ -4,12 +4,13 @@ const { boolean } = require('boolean');
 
 function faq(ctx) {
   const isRedirectToDomain = boolean(ctx.query.redirect_to_domain);
-  let redirectTo =
-    isRedirectToDomain && ctx.state.domain
-      ? ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
-      : ctx.session.returnTo
-      ? ctx.session.returnTo
-      : ctx.state.l('/faq');
+
+  let redirectTo = ctx.state.l('/faq');
+
+  if (isRedirectToDomain && ctx.state.domain)
+    redirectTo = ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`);
+  else if (ctx.session.returnTo) redirectTo = ctx.session.returnTo;
+
   let qs = '';
   if (!isSANB(ctx.request.body.domain) && !isSANB(ctx.request.body.email)) {
     qs = '';
