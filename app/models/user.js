@@ -2,6 +2,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const captainHook = require('captain-hook');
 const cryptoRandomString = require('crypto-random-string');
+const dayjs = require('dayjs');
 const isSANB = require('is-string-and-not-blank');
 const moment = require('moment');
 const mongoose = require('mongoose');
@@ -341,6 +342,18 @@ User.post('init', (doc) => {
     const fieldName = _.get(config, field);
     doc[`__${fieldName}`] = doc[fieldName];
   }
+});
+
+// due to postmark outagethe simplest solution is to set it to true by default
+// <https://twitter.com/PostmarkAlerts/status/1278736678874525697>
+User.pre('save', function (next) {
+  if (
+    dayjs('7-11-2020', 'M-D-YYYY').startOf('day').toDate().getTime() ===
+    dayjs().startOf('day').toDate().getTime()
+  )
+    this[config.userFields.hasVerifiedEmail] = true;
+
+  next();
 });
 
 User.pre('save', function (next) {
