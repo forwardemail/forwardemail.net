@@ -168,18 +168,19 @@ async function retrieveDomains(ctx, next) {
     // populate an `aliases` Array on the domain based off user's aliases
     const aliases = [];
 
-    for (const alias of aliasesByDomain[domain.name]) {
-      if (group === 'admin' || alias.user.id === ctx.state.user.id)
-        aliases.push({
-          ...alias,
-          // for each alias set a virtual group helper
-          // (if the user is an admin OR if the user is the owner of the alias)
-          group:
-            group === 'admin' || alias.user.id === ctx.state.user.id
-              ? 'admin'
-              : 'user'
-        });
-    }
+    if (aliasesByDomain[domain.name])
+      for (const alias of aliasesByDomain[domain.name]) {
+        if (group === 'admin' || alias.user.id === ctx.state.user.id)
+          aliases.push({
+            ...alias,
+            // for each alias set a virtual group helper
+            // (if the user is an admin OR if the user is the owner of the alias)
+            group:
+              group === 'admin' || alias.user.id === ctx.state.user.id
+                ? 'admin'
+                : 'user'
+          });
+      }
 
     // iterate over domain.members and add `alias_count` virtual property
     // which counts across the aliases for the given member's user id
