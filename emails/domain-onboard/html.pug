@@ -17,8 +17,7 @@ block content
                 = t('Manage domain')
             if domain.plan === 'free'
               .p-3
-                p.card-text
-                  strong= t('Did you want enhanced privacy and protection?')
+                h2.h4= t('Did you want enhanced privacy and protection?')
                 p.card-text
                   != t('Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.')
                   = ' '
@@ -26,15 +25,14 @@ block content
                   = ' '
                   != t(`<strong><a href="${config.urls.web}/${locale}/pricing">Click here to learn more</a></strong> about our Enhanced Protection and Team plans.`)
             .p-3
-              p.card-text: strong= t('Did you have any questions or feature requests?')
+              h2.h4= t('Did you have any questions or feature requests?')
               p.card-text= t('Our support team is always here to help you. Feel free to reply directly to this email. Our response time is usually within minutes!')
             .p-3
-              p.card-text
-                strong
-                  if mx && txt
-                    = t('Your domain is already verified and ready to go!')
-                  else
-                    = t('Need help with domain verification?')
+              h2.h4
+                if mx && txt
+                  = t('Your domain is already verified!')
+                else
+                  = t('Need help with domain verification?')
               p.card-text
                 if mx && txt
                   = t("Nice work! Let us know if you have any issues or questions. We aim to ensure you're a user of our service for life!")
