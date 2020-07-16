@@ -15,6 +15,16 @@ block content
               p.card-text!= t('<span class="notranslate">%s</span> you added the domain <strong><span class="notranslate">%s</span></strong>.', capitalize(moment(domain.created_at).fromNow()), domain.name)
               a.btn.btn-lg.btn-primary(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`, role="button")
                 = t('Manage domain')
+            if domain.plan === 'free'
+              .p-3
+                p.card-text
+                  strong= t('Did you want enhanced privacy and protection?')
+                p.card-text
+                  != t('Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.')
+                  = ' '
+                  = t('If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.')
+                  = ' '
+                  != t(`<strong><a href="${config.urls.web}/${locale}/pricing">Click here to learn more</a></strong> about our Enhanced Protection and Team plans.`)
             .p-3
               p.card-text: strong= t('Did you have any questions or feature requests?')
               p.card-text= t('Our support team is always here to help you. Feel free to reply directly to this email. Our response time is usually within minutes!')
@@ -33,7 +43,7 @@ block content
                   = ' '
                   = t("If we automatically detect that this changes, then we'll immediately notify you by email.")
                   = ' '
-                  != t(`Please <a href="${config.urls.web}/${locale}/faq#how-do-i-get-started-and-set-up-email-forwarding">read this FAQ section</a> for more information on how to resolve this.`)
+                  != t(`Please <strong><a href="${config.urls.web}/${locale}/faq#how-do-i-get-started-and-set-up-email-forwarding">read this FAQ section</a></strong> for more information on how to resolve this.`)
             .px-3.py-5.bg-dark.mt-3
               h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t('Verification Status')
               ul.list-inline(class=mx && txt ? '' : 'mb-3')
