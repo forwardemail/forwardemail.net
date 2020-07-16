@@ -7,6 +7,7 @@ const { parentPort } = require('worker_threads');
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const _ = require('lodash');
+const dayjs = require('dayjs');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
@@ -16,9 +17,10 @@ const Users = require('../app/models/user');
 const Domains = require('../app/models/domain');
 
 const breeSharedConfig = sharedConfig('BREE');
-const concurrency = os.cpus().length;
+const concurrency = os.cpus().length * 3;
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({ mongooses: [mongoose], logger });
+const fifteenMinutesAgo = dayjs().subtract(15, 'minutes').toDate();
 
 // store boolean if the job is cancelled
 let isCancelled = false;
@@ -50,6 +52,15 @@ async function mapper(_id) {
 
     // store the before state
     const { has_mx_record: mxBefore, has_txt_record: txtBefore } = domain;
+
+    // store when we last checked it
+    const now = new Date();
+    domain.last_checked_at = now;
+    await Domains.findByIdAndUpdate(domain._id, {
+      $set: {
+        last_checked_at: now
+      }
+    });
 
     // get verification results (and any errors too)
     // const { txt, mx, errors } = await Domains.getVerificationResults(domain);
@@ -96,9 +107,6 @@ async function mapper(_id) {
     const locale = users[0].last_locale;
     const to = _.map(users, 'email');
 
-    // store when we sent the emails
-    const now = new Date();
-
     // if verification was not passing and now is
     // then send email (if we haven't sent one yet)
     if (
@@ -144,7 +152,8 @@ async function mapper(_id) {
       // store that we sent this email
       await Domains.findByIdAndUpdate(domain._id, {
         $set: {
-          onboard_email_sent_at: now
+          onboard_email_sent_at: now,
+          ...(mx && txt ? { verified_email_sent_at: now } : {})
         }
       });
     }
@@ -174,6 +183,12 @@ async function mapper(_id) {
         is_api: false,
         onboard_email_sent_at: {
           $exists: false
+        },
+        verified_email_sent_at: {
+          $exists: false
+        },
+        last_checked_at: {
+          $exists: false
         }
       },
       {
@@ -182,6 +197,38 @@ async function mapper(_id) {
         },
         onboard_email_sent_at: {
           $exists: false
+        },
+        verified_email_sent_at: {
+          $exists: false
+        },
+        last_checked_at: {
+          $exists: false
+        }
+      },
+      {
+        is_api: false,
+        onboard_email_sent_at: {
+          $exists: false
+        },
+        verified_email_sent_at: {
+          $exists: false
+        },
+        last_checked_at: {
+          $lte: fifteenMinutesAgo
+        }
+      },
+      {
+        is_api: {
+          $exists: false
+        },
+        onboard_email_sent_at: {
+          $exists: false
+        },
+        verified_email_sent_at: {
+          $exists: false
+        },
+        last_checked_at: {
+          $lte: fifteenMinutesAgo
         }
       }
     ]

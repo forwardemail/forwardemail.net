@@ -92,6 +92,7 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domain = new mongoose.Schema({
+  last_checked_at: Date,
   is_api: {
     type: Boolean,
     default: false
@@ -221,7 +222,8 @@ Domain.plugin(mongooseCommonPlugin, {
     'is_global',
     'is_api',
     'onboard_email_sent_at',
-    'verified_email_sent_at'
+    'verified_email_sent_at',
+    'last_checked_at'
   ]
 });
 
