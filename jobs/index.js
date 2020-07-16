@@ -3,6 +3,7 @@ const jobs = [
   'vanity-domains',
   {
     name: 'check-domains',
+    timeout: '1m', // give migration script time to run
     interval: '1m'
   },
   {

@@ -24,6 +24,32 @@ graceful.listen();
 (async () => {
   await mongoose.connect();
 
+  // any domains that have txt and mx
+  // and onboard_email_sent_at need verified_email_sent_at
+  // to the same date as onboard_email_sent_at if it was not set
+  const results = await Domains.find({
+    has_txt_record: true,
+    has_mx_record: true,
+    onboard_email_sent_at: {
+      $exists: true
+    },
+    verified_email_sent_at: {
+      $exists: false
+    }
+  });
+
+  if (results.length > 0) {
+    await Promise.all(
+      results.map((result) => {
+        return Domains.findByIdAndUpdate(result._id, {
+          $set: {
+            verified_email_sent_at: result.onboard_email_sent_at
+          }
+        });
+      })
+    );
+  }
+
   const domainsWithPortNumber = await Domains.find({
     smtp_port: {
       $type: 'number'
