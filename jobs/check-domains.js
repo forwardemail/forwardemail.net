@@ -17,7 +17,7 @@ const Users = require('../app/models/user');
 const Domains = require('../app/models/domain');
 
 const breeSharedConfig = sharedConfig('BREE');
-const concurrency = os.cpus().length * 3;
+const concurrency = os.cpus().length;
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({ mongooses: [mongoose], logger });
 const fifteenMinutesAgo = dayjs().subtract(15, 'minutes').toDate();
