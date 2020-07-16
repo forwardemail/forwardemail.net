@@ -298,7 +298,7 @@ async function getVerificationResults(domain) {
           })
           .set('Accept', 'json')
           .set('User-Agent', USER_AGENT)
-          .timeout(ms('3s'))
+          .timeout(ms('5s'))
       )
     );
     logger.info('cleared DNS cache for cloudflare', {
