@@ -178,16 +178,34 @@ async function mapper(_id) {
   //
   // get all non-API created domains
   const _ids = await Domains.distinct('_id', {
-    $or: [
+    $and: [
       {
-        last_checked_at: {
-          $exists: false
-        }
+        $or: [
+          {
+            last_checked_at: {
+              $exists: false
+            }
+          },
+          {
+            last_checked_at: {
+              $lte: fifteenMinutesAgo
+            }
+          }
+        ]
       },
       {
-        last_checked_at: {
-          $lte: fifteenMinutesAgo
-        }
+        $or: [
+          {
+            verified_email_sent_at: {
+              $exists: false
+            }
+          },
+          {
+            onboard_email_sent_at: {
+              $exists: false
+            }
+          }
+        ]
       }
     ]
   });
