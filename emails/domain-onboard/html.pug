@@ -9,7 +9,7 @@ block content
           h5.card-header= t('Welcoming your domain!')
           .card-body.text-center.p-0
             a(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`)
-              img(src=manifest('img/emails/domain-onboard.gif'), alt='', data-inline-ignore=true).img-responsive
+              img(src=`${config.urls.web}/img/emails/domain-onboard.gif`, alt='', data-inline-ignore=true).img-responsive
             .p-3
               h1.h3!= t('Woo-hoo!')
               p.card-text!= t('<span class="notranslate">%s</span> you added the domain <strong><span class="notranslate">%s</span></strong>.', capitalize(moment(domain.created_at).fromNow()), domain.name)
