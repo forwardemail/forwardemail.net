@@ -28,6 +28,7 @@ graceful.listen();
 
 (async () => {
   await mongoose.connect();
+
   const object = {
     created_at: {
       $lte: dayjs().subtract(1, 'minute').toDate()
@@ -35,11 +36,18 @@ graceful.listen();
   };
   object[config.userFields.welcomeEmailSentAt] = { $exists: false };
   object[config.userFields.hasVerifiedEmail] = true;
-  const users = await Users.find(object);
+
+  const _ids = await Users.distinct('_id', object);
+
   // send welcome email
   await Promise.all(
-    users.map(async (user) => {
+    _ids.map(async (_id) => {
       try {
+        const user = await Users.findById(_id);
+
+        // in case user deleted their account
+        if (!user) return;
+
         await email({
           template: 'welcome',
           message: {
@@ -49,6 +57,8 @@ graceful.listen();
             user: user.toObject()
           }
         });
+
+        // store that we sent this email
         user[config.userFields.welcomeEmailSentAt] = new Date();
         await user.save();
       } catch (err) {
