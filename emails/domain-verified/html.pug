@@ -9,7 +9,7 @@ block content
           h5.card-header= t('Your domain is verified!')
           .card-body.text-center.p-0
             a(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`)
-              img(src=manifest('img/emails/domain-verified.gif'), alt='').img-responsive
+              img(src=manifest('img/emails/domain-verified.gif'), alt='', data-inline-ignore=true).img-responsive
             .p-3
               h1.h3!= t('Woo-hoo!')
               p.card-text!= t('We detected that your domain <strong><span class="notranslate">%s</span></strong> is now verified.', domain.name)
