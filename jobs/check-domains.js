@@ -180,53 +180,11 @@ async function mapper(_id) {
   const _ids = await Domains.distinct('_id', {
     $or: [
       {
-        is_api: false,
-        onboard_email_sent_at: {
-          $exists: false
-        },
-        verified_email_sent_at: {
-          $exists: false
-        },
         last_checked_at: {
           $exists: false
         }
       },
       {
-        is_api: {
-          $exists: false
-        },
-        onboard_email_sent_at: {
-          $exists: false
-        },
-        verified_email_sent_at: {
-          $exists: false
-        },
-        last_checked_at: {
-          $exists: false
-        }
-      },
-      {
-        is_api: false,
-        onboard_email_sent_at: {
-          $exists: false
-        },
-        verified_email_sent_at: {
-          $exists: false
-        },
-        last_checked_at: {
-          $lte: fifteenMinutesAgo
-        }
-      },
-      {
-        is_api: {
-          $exists: false
-        },
-        onboard_email_sent_at: {
-          $exists: false
-        },
-        verified_email_sent_at: {
-          $exists: false
-        },
         last_checked_at: {
           $lte: fifteenMinutesAgo
         }
