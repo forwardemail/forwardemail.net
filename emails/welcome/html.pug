@@ -9,7 +9,7 @@ block content
           h5.card-header= t("You're ready to go!")
           .card-body.text-center.p-0
             a(href=`${config.urls.web}/${locale}/my-account`)
-              img(src=manifest('img/emails/welcome.gif'), alt='', data-inline-ignore=true).img-responsive
+              img(src=`${config.urls.web}/img/emails/welcome.gif`, alt='', data-inline-ignore=true).img-responsive
             .p-3
               h1.h3!= t('Woo-hoo!')
               p.card-text= t('Now you can add your domains and set up free email forwarding!')
