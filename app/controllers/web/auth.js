@@ -389,15 +389,6 @@ async function forgotPassword(ctx) {
 
   user = await user.save();
 
-  if (ctx.accepts('html')) {
-    ctx.flash('success', ctx.translate('PASSWORD_RESET_SENT'));
-    ctx.redirect('back');
-  } else {
-    ctx.body = {
-      message: ctx.translate('PASSWORD_RESET_SENT')
-    };
-  }
-
   // queue password reset email
   try {
     await email({
@@ -415,8 +406,27 @@ async function forgotPassword(ctx) {
         }`
       }
     });
+
+    if (ctx.accepts('html')) {
+      ctx.flash('success', ctx.translate('PASSWORD_RESET_SENT'));
+      ctx.redirect('back');
+    } else {
+      ctx.body = {
+        message: ctx.translate('PASSWORD_RESET_SENT')
+      };
+    }
   } catch (err) {
     ctx.logger.error(err);
+    // reset if there was an error
+    try {
+      user[config.userFields.resetToken] = null;
+      user[config.userFields.resetTokenExpiresAt] = null;
+      user = await user.save();
+    } catch (err) {
+      ctx.logger.error(err);
+    }
+
+    throw Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));
   }
 }
 
@@ -581,17 +591,22 @@ async function verify(ctx) {
 
     ctx.logger.debug('created inquiry', inquiry);
 
-    await email({
-      template: 'recovery',
-      message: {
-        to: ctx.state.user.email,
-        cc: config.email.message.from
-      },
-      locals: {
-        locale: ctx.locale,
-        inquiry
-      }
-    });
+    try {
+      await email({
+        template: 'recovery',
+        message: {
+          to: ctx.state.user.email,
+          cc: config.email.message.from
+        },
+        locals: {
+          locale: ctx.locale,
+          inquiry
+        }
+      });
+    } catch (err) {
+      ctx.logger.error(err);
+      throw Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));
+    }
   }
 
   const message = pendingRecovery

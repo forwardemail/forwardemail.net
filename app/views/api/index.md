@@ -182,10 +182,11 @@ curl -X GET BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
-| Body Parameter | Required | Type                | Description                                                                              |
-| -------------- | -------- | ------------------- | ---------------------------------------------------------------------------------------- |
-| `domain`       | Yes      | String (FQDN or IP) | Fully qualified domain name ("FQDN") or IP address                                       |
-| `plan`         | No       | String (enumerable) | Plan type (must be `"free"`, `"enhanced_protection"`, or `"team"`, defaults to `"free"`) |
+| Body Parameter | Required | Type                                          | Description                                                                                                                                                                                                                                                                                                       |
+| -------------- | -------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`       | Yes      | String (FQDN or IP)                           | Fully qualified domain name ("FQDN") or IP address                                                                                                                                                                                                                                                                |
+| `plan`         | No       | String (enumerable)                           | Plan type (must be `"free"`, `"enhanced_protection"`, or `"team"`, defaults to `"free"`)                                                                                                                                                                                                                          |
+| `catchall`     | No       | String (delimited email addresses) or Boolean | Create a default catch-all alias, defaults to `true` (if `true` it will use the API user's email address as a recipient, and if `false` no catch-all will be created).  If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma) |
 
 > Example Request:
 

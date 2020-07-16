@@ -337,6 +337,7 @@ async function retrieveDomain(ctx, next) {
   return next();
 }
 
+// eslint-disable-next-line complexity
 async function createDomain(ctx, next) {
   if (!['GET', 'POST'].includes(ctx.method)) return next();
 
@@ -372,23 +373,59 @@ async function createDomain(ctx, next) {
       Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'))
     );
 
+  if (
+    isSANB(ctx.request.body.plan) &&
+    !['free', 'enhanced_protection', 'team'].includes(ctx.request.body.plan)
+  )
+    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PLAN')));
+
+  // check if we're creating a default catchall
+  const recipients = [ctx.state.user.email];
+
+  if (_.isBoolean(ctx.request.body.catchall) && !ctx.request.body.catchall)
+    recipients.pop();
+  else if (isSANB(ctx.request.body.catchall)) {
+    const rcpts = _.compact(
+      _.uniq(
+        _.map(
+          ctx.request.body.catchall
+            .split('\n')
+            .join(' ')
+            .split(',')
+            .join(' ')
+            .split(' '),
+          (recipient) => recipient.trim()
+        )
+      )
+    );
+    for (const rcpt of rcpts) {
+      recipients.push(rcpt);
+    }
+  }
+
+  const plan = isSANB(ctx.request.body.plan) ? ctx.request.body.plan : 'free';
+
   try {
     ctx.state.domain = await Domains.create({
+      is_api: boolean(ctx.api),
       members: [{ user: ctx.state.user._id, group: 'admin' }],
       name: ctx.request.body.domain,
       is_global:
         ctx.state.user.group === 'admin' && boolean(ctx.request.body.is_global),
-      locale: ctx.locale
+      locale: ctx.locale,
+      plan
     });
 
     // create a default alias for the user pointing to the admin
-    await Aliases.create({
-      user: ctx.state.user._id,
-      domain: ctx.state.domain._id,
-      name: '*',
-      recipients: [ctx.state.user.email],
-      locale: ctx.locale
-    });
+    if (recipients.length > 0)
+      await Aliases.create({
+        is_api: boolean(ctx.api),
+        user: ctx.state.user._id,
+        domain: ctx.state.domain._id,
+        name: '*',
+        recipients,
+        locale: ctx.locale
+      });
 
     if (ctx.api) {
       ctx.state.domain = toObject(Domains, ctx.state.domain);
@@ -421,12 +458,9 @@ async function createDomain(ctx, next) {
       `/my-account/domains/${ctx.state.domain.name}`
     );
 
-    if (
-      isSANB(ctx.request.body.plan) &&
-      ['free', 'enhanced_protection', 'team'].includes(ctx.request.body.plan)
-    )
+    if (plan !== 'free')
       redirectTo = ctx.state.l(
-        `/my-account/domains/${ctx.state.domain.name}/billing?plan=${ctx.request.body.plan}`
+        `/my-account/domains/${ctx.state.domain.name}/billing?plan=${plan}`
       );
 
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
@@ -580,6 +614,7 @@ async function createAlias(ctx, next) {
   try {
     ctx.state.alias = await Aliases.create({
       ...ctx.state.body,
+      is_api: boolean(ctx.api),
       user: ctx.state.user._id,
       domain: ctx.state.domain._id,
       locale: ctx.locale
@@ -912,7 +947,11 @@ async function importAliases(ctx) {
   if (aliases.length > 0)
     try {
       const array = await Aliases.create(
-        aliases.map((alias) => ({ ...alias, locale: ctx.locale }))
+        aliases.map((alias) => ({
+          ...alias,
+          is_api: boolean(ctx.api),
+          locale: ctx.locale
+        }))
       );
       messages.push(ctx.translate('IMPORT_SUCCESSFUL', array.length));
     } catch (err) {

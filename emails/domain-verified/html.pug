@@ -1,0 +1,26 @@
+
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.d-block.text-center
+          h5.card-header= t('Your domain is verified!')
+          .card-body.text-center.p-0
+            a(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`)
+              img(src=manifest('img/emails/domain-verified.gif'), alt='').img-responsive
+            .p-3
+              h1.h3!= t('Woo-hoo!')
+              p.card-text!= t('We detected that your domain <strong><span class="notranslate">%s</span></strong> is now verified.', domain.name)
+              a.btn.btn-lg.btn-block.btn-success(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`, role="button")= t('Manage domain')
+            .px-3.py-5.bg-dark.mt-3
+              h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t('Verification Status')
+              ul.list-inline(class=mx && txt ? '' : 'mb-3')
+                li.list-inline-item.mr-5
+                  = emoji(mx ? 'white_check_mark' : 'x')
+                  .mt-2.text-monospace.text-uppercase.text-white= t('MX Records')
+                li.list-inline-item
+                  = emoji(txt ? 'white_check_mark' : 'x')
+                  .mt-2.text-monospace.text-uppercase.text-white= t('TXT Records')
+          .card-footer: small.text-muted= t('If you have any questions, comments, or feature requests, then please let us know.')

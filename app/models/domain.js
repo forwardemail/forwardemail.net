@@ -6,15 +6,23 @@ const RE2 = require('re2');
 const _ = require('lodash');
 const captainHook = require('captain-hook');
 const cryptoRandomString = require('crypto-random-string');
+const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const ms = require('ms');
+const superagent = require('superagent');
 const { boolean } = require('boolean');
 const { isFQDN, isIP, isEmail, isPort, isURL } = require('validator');
 
+const pkg = require('../../package.json');
 const logger = require('../../helpers/logger');
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
+
+const CACHE_TYPES = ['MX', 'TXT'];
+const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
+const USER_AGENT = `${pkg.name}/${pkg.version}`;
 
 const app = new ForwardEmail({
   logger,
@@ -84,6 +92,10 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domain = new mongoose.Schema({
+  is_api: {
+    type: Boolean,
+    default: false
+  },
   plan: {
     type: String,
     enum: ['free', 'enhanced_protection', 'team'],
@@ -125,7 +137,9 @@ const Domain = new mongoose.Schema({
     index: true,
     required: true,
     unique: true
-  }
+  },
+  onboard_email_sent_at: Date,
+  verified_email_sent_at: Date
 });
 
 Domain.plugin(captainHook);
@@ -203,7 +217,12 @@ Domain.pre('validate', async function (next) {
 
 Domain.plugin(mongooseCommonPlugin, {
   object: 'domain',
-  omitExtraFields: ['is_global']
+  omitExtraFields: [
+    'is_global',
+    'is_api',
+    'onboard_email_sent_at',
+    'verified_email_sent_at'
+  ]
 });
 
 // eslint-disable-next-line complexity
@@ -226,6 +245,7 @@ async function getVerificationResults(domain) {
       verificationMarkdown
     )
   );
+
   const INCORRECT_VERIFICATION_RECORD = Boom.badRequest(
     i18n.translateError(
       'INCORRECT_VERIFICATION_RECORD',
@@ -233,6 +253,7 @@ async function getVerificationResults(domain) {
       verificationMarkdown
     )
   );
+
   const MULTIPLE_VERIFICATION_RECORDS = Boom.badRequest(
     i18n.translateError(
       'MULTIPLE_VERIFICATION_RECORDS',
@@ -240,8 +261,13 @@ async function getVerificationResults(domain) {
       verificationMarkdown
     )
   );
+
   const PURGE_CACHE = Boom.badRequest(
     i18n.translateError('PURGE_CACHE', domain.locale, domain.name)
+  );
+
+  const AUTOMATED_CHECK = Boom.badRequest(
+    i18n.translateError('AUTOMATED_CHECK', domain.locale)
   );
 
   const MISSING_DNS_TXT = Boom.badRequest(
@@ -257,6 +283,33 @@ async function getVerificationResults(domain) {
   let verifications = [];
   let txt = false;
   let mx = false;
+
+  //
+  // attempt to purge Cloudflare cache programmatically
+  //
+  try {
+    await Promise.all(
+      CACHE_TYPES.map((type) =>
+        superagent
+          .post(CLOUDFLARE_PURGE_CACHE_URL)
+          .query({
+            domain: domain.name,
+            type
+          })
+          .set('Accept', 'json')
+          .set('User-Agent', USER_AGENT)
+          .timeout(ms('3s'))
+      )
+    );
+    logger.info('cleared DNS cache for cloudflare', {
+      domain,
+      types: CACHE_TYPES
+    });
+    // wait one second for DNS changes to propagate
+    await delay(ms('1s'));
+  } catch (err) {
+    logger.error(err);
+  }
 
   //
   // validate TXT records
@@ -292,12 +345,23 @@ async function getVerificationResults(domain) {
     else if (errors.length === 0) txt = true;
   } catch (err) {
     logger.warn(err);
-    if (err.code === 'ENOTFOUND')
-      errors.push(new Error(config.i18n.phrases.ENOTFOUND));
-    else if (err.code === 'ENODATA') {
-      if (isPaidPlan) errors.push(MISSING_VERIFICATION_RECORD);
-      else errors.push(new Error(MISSING_DNS_TXT));
-    } else errors.push(err);
+    if (err.code === 'ENOTFOUND') {
+      const error = new Error(config.i18n.phrases.ENOTFOUND);
+      error.code = err.code;
+      errors.push(error);
+    } else if (err.code === 'ENODATA') {
+      if (isPaidPlan) {
+        const error = MISSING_VERIFICATION_RECORD;
+        error.code = err.code;
+        errors.push(error);
+      } else {
+        const error = new Error(MISSING_DNS_TXT);
+        error.code = err.code;
+        errors.push(error);
+      }
+    } else {
+      errors.push(err);
+    }
   }
 
   //
@@ -316,13 +380,23 @@ async function getVerificationResults(domain) {
     logger.warn(err);
     const regex = new RegExp(testEmail, 'g');
     err.message = err.message.replace(regex, domain.name);
-    if (err.code === 'ENOTFOUND')
-      errors.push(new Error(config.i18n.phrases.ENOTFOUND));
-    else if (err.code === 'ENODATA') errors.push(MISSING_DNS_MX);
-    else errors.push(err);
+    if (err.code === 'ENOTFOUND') {
+      const error = new Error(config.i18n.phrases.ENOTFOUND);
+      error.code = err.code;
+      errors.push(error);
+    } else if (err.code === 'ENODATA') {
+      const error = MISSING_DNS_MX;
+      error.code = err.code;
+      errors.push(error);
+    } else {
+      errors.push(err);
+    }
   }
 
-  if (!txt || !mx) errors.push(PURGE_CACHE);
+  if (!txt || !mx) {
+    errors.push(PURGE_CACHE);
+    errors.push(AUTOMATED_CHECK);
+  }
 
   errors = _.uniqBy(errors, 'message');
 

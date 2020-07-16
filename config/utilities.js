@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const ajc = require('array-join-conjunction');
+const capitalize = require('capitalize');
 const dashify = require('dashify');
 const hljs = require('highlight.js');
 const humanize = require('humanize-string');
@@ -24,6 +25,7 @@ module.exports = {
   _,
   ajc,
   boolean,
+  capitalize,
   dashify,
   emoji,
   hljs,

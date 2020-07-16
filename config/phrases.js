@@ -140,6 +140,8 @@ module.exports = {
   MULTIPLE_VERIFICATION_RECORDS:
     'Domain has multiple verification records.  Please ensure <span class="notranslate">%s</span> is the only verification record that exists.',
   PURGE_CACHE: `If you recently updated your DNS records for <span class="notranslate">%s</span>, then you should purge its cache using <a href="https://1.1.1.1/purge-cache/" rel="noopener noreferrer" target="_blank">Cloudflare's Purge Cache Tool</a> and optionally <a href="https://developers.google.com/speed/public-dns/cache" rel="noopener noreferrer" target="_blank">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.`,
+  AUTOMATED_CHECK:
+    "If we automatically detect your DNS records are valid (before you do), then we will send you an automated email alert.  Don't worry, we routinely check DNS records for your domain every few minutes!",
   IMPORT_ALIAS_ALREADY_EXISTS: `Could not import "<span class="notranslate">%s</span>" record's recipient of "<span class="notranslate">%s</span>" since it already exists as an alias.`,
   IMPORT_ALIAS_DISABLED_NOBODY:
     'We successfully imported the disabled address of "<span class="notranslate">%s</span>", but we had to do so with a single recipient of "nobody@forwardemail.net" because it did not have a recipient in the imported DNS entry.',

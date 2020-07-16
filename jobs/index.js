@@ -2,6 +2,10 @@ const jobs = [
   'migration',
   'vanity-domains',
   {
+    name: 'check-domains',
+    interval: '1m'
+  },
+  {
     name: 'welcome-email',
     interval: '1m'
   },

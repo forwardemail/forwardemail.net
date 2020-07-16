@@ -34,6 +34,8 @@
         mode: 0770
         recurse: true
     - name: install pm2-logrotate
+      become: true
+      become_user: deploy
       shell:
         cmd: 'pm2 install pm2-logrotate'
     - name: check that pm2 startup script exists

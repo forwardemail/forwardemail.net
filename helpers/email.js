@@ -14,7 +14,7 @@ module.exports = async (data) => {
     const emailLocals = await getEmailLocals();
     Object.assign(data.locals, emailLocals);
     const res = await email.send(data);
-    logger.info('sent email', { res });
+    logger.info('sent email', { data });
     return res;
   } catch (err) {
     logger.error(err);

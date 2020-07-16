@@ -14,7 +14,7 @@ async function getData() {
     .get(window.location.pathname)
     .set('Accept', 'json')
     .timeout(ms('5s'))
-    .retry(3)
+    // .retry(3)
     .send();
   return res;
 }

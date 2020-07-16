@@ -1,0 +1,49 @@
+
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.d-block.text-center
+          h5.card-header= t('Welcoming your domain!')
+          .card-body.text-center.p-0
+            a(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`)
+              img(src=manifest('img/emails/domain-onboard.gif'), alt='').img-responsive
+            .p-3
+              h1.h3!= t('Woo-hoo!')
+              p.card-text!= t('<span class="notranslate">%s</span> you added the domain <strong><span class="notranslate">%s</span></strong>.', capitalize(moment(domain.created_at).fromNow()), domain.name)
+              a.btn.btn-lg.btn-primary(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`, role="button")
+                = t('Manage domain')
+            .p-3
+              p.card-text: strong= t('Did you have any questions or feature requests?')
+              p.card-text= t('Our support team is always here to help you. Feel free to reply directly to this email. Our response time is usually within minutes!')
+            .p-3
+              p.card-text
+                strong
+                  if mx && txt
+                    = t('Your domain is already verified and ready to go!')
+                  else
+                    = t('Need help with domain verification?')
+              p.card-text
+                if mx && txt
+                  = t("Nice work! Let us know if you have any issues or questions. We aim to ensure you're a user of our service for life!")
+                else
+                  = t("Your domain's DNS records haven't yet propagated or may not be configured properly.")
+                  = ' '
+                  = t("If we automatically detect that this changes, then we'll immediately notify you by email.")
+                  = ' '
+                  != t(`Please <a href="${config.urls.web}/${locale}/faq#how-do-i-get-started-and-set-up-email-forwarding">read this FAQ section</a> for more information on how to resolve this.`)
+            .px-3.py-5.bg-dark.mt-3
+              h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t('Verification Status')
+              ul.list-inline(class=mx && txt ? '' : 'mb-3')
+                li.list-inline-item.mr-5
+                  = emoji(mx ? 'white_check_mark' : 'x')
+                  .mt-2.text-monospace.text-uppercase.text-white= t('MX Records')
+                li.list-inline-item
+                  = emoji(txt ? 'white_check_mark' : 'x')
+                  .mt-2.text-monospace.text-uppercase.text-white= t('TXT Records')
+              if !mx || !txt
+                a.btn.btn-lg.btn-success(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`, role="button")
+                  = t('Verify Records')
+          .card-footer: small.text-muted= t('If you have any questions, comments, or feature requests, then please let us know.')

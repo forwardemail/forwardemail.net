@@ -34,6 +34,10 @@ const quotedEmailUserUtf8 = new RE2(
 );
 
 const Alias = new mongoose.Schema({
+  is_api: {
+    type: Boolean,
+    default: false
+  },
   user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
@@ -138,7 +142,10 @@ Alias.pre('validate', function (next) {
 
 // this must be kept before other `pre('save')` hooks as
 // it populates "id" String automatically for comparisons
-Alias.plugin(mongooseCommonPlugin, { object: 'alias' });
+Alias.plugin(mongooseCommonPlugin, {
+  object: 'alias',
+  omitExtraFields: ['is_api']
+});
 
 Alias.pre('save', async function (next) {
   const alias = this;

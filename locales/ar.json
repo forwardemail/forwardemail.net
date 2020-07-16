@@ -1230,5 +1230,11 @@
   "Page not found &#124; <span class=\"notranslate\">Forward Email</span>": "Page not found &#124; <span class=\"notranslate\">Forward Email</span>",
   "The page you requested could not be found": "The page you requested could not be found",
   "Server error &#124; <span class=\"notranslate\">Forward Email</span>": "Server error &#124; <span class=\"notranslate\">Forward Email</span>",
-  "A server error has unfortunately occurred": "A server error has unfortunately occurred"
+  "A server error has unfortunately occurred": "A server error has unfortunately occurred",
+  "String (delimited email addresses) or Boolean": "String (delimited email addresses) or Boolean",
+  "Create a default catch-all alias, defaults to ": "Create a default catch-all alias, defaults to ",
+  " (if ": " (if ",
+  " it will use the API user's email address as a recipient, and if ": " it will use the API user's email address as a recipient, and if ",
+  " no catch-all will be created).  If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma)": " no catch-all will be created).  If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma)",
+  "If we automatically detect your DNS records are valid (before you do), then we will send you an automated email alert.  Don't worry, we routinely check DNS records for your domain every few minutes!": "If we automatically detect your DNS records are valid (before you do), then we will send you an automated email alert.  Don't worry, we routinely check DNS records for your domain every few minutes!"
 }
