@@ -1,7 +1,7 @@
 {
   "name": "forwardemail-net",
   "description": "ForwardEmail.net",
-  "version": "0.1.91",
+  "version": "0.1.92",
   "author": "Niftylettuce, LLC. <niftylettuce@gmail.com> (https://niftylettuce.com/)",
   "ava": {
     "verbose": true,
