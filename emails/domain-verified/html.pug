@@ -16,7 +16,7 @@ block content
               a.btn.btn-lg.btn-success(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`, role="button")= t('Manage domain')
             if domain.plan === 'free'
               .p-3
-                h2.h6= t('Did you want enhanced privacy and protection?')
+                h2.h5= t('Did you want enhanced privacy and protection?')
                 p.card-text
                   != t('Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.')
                   = ' '
