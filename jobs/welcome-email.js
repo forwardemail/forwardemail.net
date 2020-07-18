@@ -48,18 +48,24 @@ graceful.listen();
         // in case user deleted their account
         if (!user) return;
 
+        // in case email was sent for whatever reason
+        if (user[config.userFields.welcomeEmailSentAt]) return;
+
+        // send email
         await email({
           template: 'welcome',
           message: {
             to: user[config.userFields.fullEmail]
           },
-          locals: {
-            user: user.toObject()
-          }
+          locals: { user: user.toObject() }
         });
 
         // store that we sent this email
-        user[config.userFields.welcomeEmailSentAt] = new Date();
+        await Users.findByIdAndUpdate(user._id, {
+          $set: {
+            [config.userFields.welcomeEmailSentAt]: new Date()
+          }
+        });
         await user.save();
       } catch (err) {
         logger.error(err);

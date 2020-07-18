@@ -41,6 +41,7 @@ const omitExtraFields = [
   config.userFields.pendingRecovery,
   config.userFields.isBanned,
   config.userFields.accountUpdates,
+  config.userFields.twoFactorReminderSentAt,
   fields.otpEnabled,
   fields.otpToken
 ];
@@ -70,6 +71,9 @@ const User = new mongoose.Schema({
 
 // additional variable based properties to add to the schema
 const object = {};
+
+// two factor auth reminders
+object[config.userFields.twoFactorReminderSentAt] = Date;
 
 // user fields
 object[config.userFields.isBanned] = {
