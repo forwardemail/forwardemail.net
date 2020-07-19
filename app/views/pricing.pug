@@ -66,7 +66,7 @@ block body
                 sup.d-inline-block.h6.text-black-50
                   = '/'
                   = t('month')
-              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
+              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains for one fee')
               .p-2
                 a(href=l('/my-account/domains/new')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
                   = t('Setup Forwarding')
@@ -100,7 +100,7 @@ block body
                 i.fa.fa-fw.fa-tools.text-primary.mr-3
                 = t('Browser extension')
                 button(role='button', data-toggle='tooltip', data-placement='bottom', title='Chrome').btn.btn-link.text-dark.py-0.px-1: i.fab.fa-chrome
-                button(role='button', data-toggle='tooltip', data-placement='bottom', title='Firefox').btn.btn-link.text-dark.py-0.px-1.ml-1: i.fab.fa-firefox-browser
+                button(role='button', data-toggle='tooltip', data-placement='bottom', title='Firefox').btn.btn-link.text-dark.py-0.px-1.ml-1: i.fab.fa-firefox
                 button(role='button', data-toggle='tooltip', data-placement='bottom', title='Safari').btn.btn-link.text-dark.py-0.px-1.ml-1: i.fab.fa-safari
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-code.text-primary.mr-3
@@ -120,7 +120,7 @@ block body
                   = t('month')
                   = ' '
                   button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  We\'ll send reminders to make payment when it has ended.')).btn.btn-link: i.fa.fa-thumbs-up
-              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
+              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains for one fee')
               .p-2
                 if sortedDomains.length === 0
                   a(href=l('/my-account/domains/new?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold
@@ -169,7 +169,7 @@ block body
                   = t('month')
                   = ' '
                   button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  We\'ll send reminders to make payment when it has ended.')).btn.btn-link: i.fa.fa-thumbs-up
-              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains')
+              small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains for one fee')
               .p-2
                 if sortedDomains.length === 0
                   a(href=l('/my-account/domains/new?plan=team')).btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold

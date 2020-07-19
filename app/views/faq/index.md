@@ -723,6 +723,35 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to `example.com` to go to a different port for `example.com` than the SMTP standard of port 25.  To set this up, simply add the following TXT catch-all record.
+  <span>
+  </span>
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Record Type</th>
+      <th>Value/Answer/Destination</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>@ or leave blank</em></td>
+      <td class="text-center">3600</td>
+      <td>TXT</td>
+      <td><code>forward-email=example.com</code></td>
+    </tr>
+  </tbody>
+</table>
+
 
 ## Do you offer a money back guarantee on paid plans
 
