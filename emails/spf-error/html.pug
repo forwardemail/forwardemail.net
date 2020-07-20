@@ -10,7 +10,7 @@ block content
           .card-body
             p.card-text!= t(`This email is a one-time courtesy message from our free email forwarding service at <strong><a href="${config.urls.web}" class="notranslate">ForwardEmail.net</a></strong>.`)
             p.card-text.mb-3!= t(`We detected that an email from <strong>${from}</strong> sent by <strong>${client_hostname}</strong> (${remote_address}) has <strong><u>failed</u></strong> <a href="https://en.wikipedia.org/wiki/Sender_Policy_Framework">Sender Policy Framework</a> validation.`)
-            p.card-text.mb-3= t(`The email was <span class="notranslate">%s</span> to its intended recipient(s), and we strongly suggest that your organization fixes this DNS configuration issue immediately.`, result === 'fail' ? 'not sent' : 'sent')
+            p.card-text.mb-3!= t(`The email was <span class="notranslate">%s</span> to its intended recipient(s), and we strongly suggest that your organization fixes this DNS configuration issue immediately.`, result === 'fail' ? 'not sent' : 'sent')
             p.card-text!= t(`<strong></u>Please forward this email to your technical administrator</u></strong> or the person or organization in charge of email management at <strong>${org_domain}</strong>.`)
             ul
               li
