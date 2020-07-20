@@ -100,7 +100,7 @@ async function mapper(_id) {
     });
 
     if (users.length === 0) {
-      logger.error(new Error('Domain had zero admins'), { domain });
+      logger.warn(new Error('Domain had zero admins'), { domain });
       return;
     }
 
