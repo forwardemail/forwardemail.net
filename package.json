@@ -74,7 +74,7 @@
     "email-addresses": "^3.1.0",
     "email-templates": "^7.1.0",
     "fast-safe-stringify": "^2.0.7",
-    "forward-email": "^6.2.2",
+    "forward-email": "^6.2.10",
     "frisbee": "^3.1.4",
     "gemoji": "^5.0.1",
     "github-markdown-css": "^4.0.0",
