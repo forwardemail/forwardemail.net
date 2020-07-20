@@ -728,7 +728,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to `example.com` to go to a different port for `example.com` than the SMTP standard of port 25.  To set this up, simply add the following TXT catch-all record.
+    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following TXT catch-all record.
   <span>
   </span>
 </div>
@@ -1224,9 +1224,11 @@ No, absolutely not.  See our [Privacy Policy](/privacy).
 
 No, absolutely not.  We do not store logs.  See our [Privacy Policy](/privacy).
 
-Many other email forwarding services unethically read your email.  This is not what I'm about.
+Many other email forwarding services unethically read your email.  This is not in alignment with our principles and philosophy on software.
 
-The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail).
+We believe you should have a right to privacy and we strictly respect it.
+
+The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
 
 
 ## Does it support the plus + symbol for Gmail aliases
@@ -1332,7 +1334,7 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
 
-## 
+##
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
