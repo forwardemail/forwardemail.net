@@ -35,6 +35,9 @@ async function spfError(ctx) {
     return;
   }
 
+  // store that we sent this in case parallel requests
+  await SPFErrors.create(locals);
+
   const admin = `admin@${locals.org_domain}`;
 
   // include admin@ if not already added
@@ -47,9 +50,6 @@ async function spfError(ctx) {
     message: { to },
     locals
   });
-
-  // store that we sent this
-  await SPFErrors.create(locals);
 
   // send successful response
   ctx.body = 'OK';
