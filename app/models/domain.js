@@ -310,7 +310,7 @@ async function getVerificationResults(domain) {
     // wait one second for DNS changes to propagate
     await delay(ms('1s'));
   } catch (err) {
-    logger.error(err);
+    logger.warn(err);
   }
 
   //
