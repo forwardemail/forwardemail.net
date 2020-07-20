@@ -1178,5 +1178,6 @@
   " (if ": " (if ",
   " it will use the API user's email address as a recipient, and if ": " it will use the API user's email address as a recipient, and if ",
   " no catch-all will be created).  If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma)": " no catch-all will be created).  If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma)",
-  "If we automatically detect your DNS records are valid (before you do), then we will send you an automated email alert.  Don't worry, we routinely check DNS records for your domain every few minutes!": "If we automatically detect your DNS records are valid (before you do), then we will send you an automated email alert.  Don't worry, we routinely check DNS records for your domain every few minutes!"
+  "If we automatically detect your DNS records are valid (before you do), then we will send you an automated email alert.  Don't worry, we routinely check DNS records for your domain every few minutes!": "If we automatically detect your DNS records are valid (before you do), then we will send you an automated email alert.  Don't worry, we routinely check DNS records for your domain every few minutes!",
+  "<span class=\"notranslate\">%s</span> was missing or blank.": "<span class=\"notranslate\">%s</span> was missing or blank."
 }

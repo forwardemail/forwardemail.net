@@ -7,6 +7,7 @@ const test = require('./test');
 const users = require('./users');
 const restricted = require('./restricted');
 const maxForwardedAddresses = require('./max-forwarded-addresses');
+const spfError = require('./spf-error');
 
 module.exports = {
   aliases,
@@ -17,5 +18,6 @@ module.exports = {
   test,
   users,
   restricted,
-  maxForwardedAddresses
+  maxForwardedAddresses,
+  spfError
 };
