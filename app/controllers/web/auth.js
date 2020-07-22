@@ -471,6 +471,50 @@ async function resetPassword(ctx) {
   }
 }
 
+async function changeEmail(ctx) {
+  const { body } = ctx.request;
+
+  if (!isSANB(body.password))
+    throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+
+  if (!isSANB(ctx.params.token))
+    throw Boom.badRequest(ctx.translateError('INVALID_RESET_TOKEN'));
+
+  // lookup the user that has this token and if it matches the email passed
+  const query = { email: body.email };
+  query[config.userFields.changeEmailToken] = ctx.params.token;
+  // ensure that the reset token expires at value is in the future (hasn't expired)
+  query[config.userFields.changeEmailTokenExpiresAt] = { $gte: new Date() };
+  const user = await Users.findOne(query);
+
+  if (!user) throw Boom.badRequest(ctx.translateError('INVALID_SET_EMAIL'));
+
+  const auth = await user.authenticate(body.password);
+  if (!auth.user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+
+  const newEmail = user[config.userFields.changeEmailNewAddress];
+  user[config.passportLocalMongoose.usernameField] = newEmail;
+  await user.save();
+
+  // reset change email info
+  user[config.userFields.changeEmailToken] = null;
+  user[config.userFields.changeEmailTokenExpiresAt] = null;
+  user[config.userFields.changeEmailNewAddress] = null;
+  await user.save();
+
+  const message = ctx.translate('CHANGE_EMAIL');
+  const redirectTo = ctx.state.l();
+  if (ctx.accepts('html')) {
+    ctx.flash('success', message);
+    ctx.redirect(redirectTo);
+  } else {
+    ctx.body = {
+      message,
+      redirectTo
+    };
+  }
+}
+
 async function catchError(ctx, next) {
   try {
     await next();
@@ -632,6 +676,7 @@ module.exports = {
   forgotPassword,
   recoveryKey,
   resetPassword,
+  changeEmail,
   catchError,
   verify,
   parseReturnOrRedirectTo
