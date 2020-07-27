@@ -157,7 +157,7 @@ curl -X PUT BASE_URI/v1/account \
     Tip:
   </strong>
   <span>
-    Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their path are interchangable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+    Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their path are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
   </span>
 </div>
 
