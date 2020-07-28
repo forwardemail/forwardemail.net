@@ -34,6 +34,7 @@
 * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
 * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
 * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Why do my vacation autoresponder messages in the "Sent" folder have an SRS address](#why-do-my-vacation-autoresponder-messages-in-the-sent-folder-have-an-srs-address)
 * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 * [How fast is this service](#how-fast-is-this-service)
 
@@ -1320,6 +1321,11 @@ If you're using Gmail, then follow these steps below:
 14. Send a test email and the profile photo should appear.
 
 
+## Why do my vacation autoresponder messages in the "Sent" folder have an SRS address
+
+This question only applies if you are using Gmail with an auto vacation responder set up, and is a non-issue.  However this is a widely known limitation of Gmail, but note that this is only shown in your "Sent" folder.  If you reply to the message directly from your inbox, everything will work normally.  The reason for this is that we use SRS, and in doing so, Gmail will send the vacation responder to the envelope MAIL FROM address, which is the SRS formatted address.  There is no workaround, but note this is not really an issue as we automatically decode the SRS formatted address and the recipient receives your vacation response normally.
+
+
 ## How do you perform DNS lookups on domain names
 
 We use CloudFlare's privacy-first consumer DNS service (see [announcement here][cloudflare-dns]).  We set `1.1.1.3` and `1.0.0.3` as the DNS servers (see <https://developers.cloudflare.com/1.1.1.1/1.1.1.1-for-families/>) using `/etc/resolv.conf` on our servers and test environments.
@@ -1334,7 +1340,7 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
 
-##
+## 
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
