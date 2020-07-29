@@ -25,6 +25,7 @@ router.get(
   api.v1.maxForwardedAddresses
 );
 router.post('/spf-error', api.v1.restricted, api.v1.spfError);
+router.post('/self-test', api.v1.restricted, api.v1.selfTest);
 
 //
 // public

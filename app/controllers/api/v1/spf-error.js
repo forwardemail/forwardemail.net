@@ -35,6 +35,10 @@ async function spfError(ctx) {
     return;
   }
 
+  //
+  // TODO: we should store `sent_at` and build a queue out of this
+  //
+
   // store that we sent this in case parallel requests
   await SPFErrors.create(locals);
 
@@ -45,11 +49,14 @@ async function spfError(ctx) {
   if (!to.includes(admin)) to.push(admin);
 
   // send an email
-  await email({
+  email({
     template: 'spf-error',
     message: { to },
     locals
-  });
+  })
+    // eslint-disable-next-line promise/prefer-await-to-then
+    .then(() => {})
+    .catch((err) => ctx.logger.error(err));
 
   // send successful response
   ctx.body = 'OK';
