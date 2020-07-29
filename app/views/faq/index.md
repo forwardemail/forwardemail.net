@@ -658,15 +658,11 @@
 
 ## Why am I not receiving my test emails
 
-The most probable cause of your issues with not receiving test emails or with configuration in general is due to DNS propagation and caching.
+If you're sending a test email to yourself using the "Send Mail As" feature, then it will not show up in your inbox due to <a href="https://support.google.com/a/answer/1703601">this widely known official Gmail answer</a>.
 
-Fortunately **our DNS provider Cloudflare has a nice "Purge Cache" tool available for you to use at:** <https://1.1.1.1/purge-cache/>.
+If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your TXT records).
 
-All you need to do is go to that link, and for both "MX" and "TXT" records, enter your domain name, and click "Purge Cache".  You'll then need to wait a few minutes and try again.
-
-If you're using Gmail, you should check your spam folder for test messages (sometimes test messages to yourself get marked as spam), and also purge cache on Google's DNS at <https://developers.google.com/speed/public-dns/cache>.
-
-Still having issues?  Please file a <a href="/help">Help request</a> so we can help investigate the issue and find a quick resolution.
+**Still having issues?**  Please file a <a href="/help">Help request</a> so we can help investigate the issue and find a quick resolution.
 
 
 ## Can I remove the via forwardemail dot net in Gmail
