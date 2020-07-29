@@ -672,10 +672,11 @@ Still having issues?  Please file a <a href="/help">Help request</a> so we can h
 
 ## Why are my test emails sent to myself in Gmail showing as "suspicious"
 
-If you see this error message in Gmail when you send a test to yourself (see picture below), then **please do not worry** – as this is a built-in safety feature of Gmail that only you will see when you send a test to yourself.  You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+If you see this error message in Gmail when you send a test to yourself (see picture below), then **please do not worry** – as this is a built-in safety feature of Gmail that only you will see when you send a test to yourself.  You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they <u>WILL NOT</u> see this message.
 
-<img src="/img/faq/gmail-suspicious.png" width="546" height="148" alt="Gmail Suspicious Message Warning" />
-
+<img src="/img/faq/gmail-suspicious.png" width="100%" alt="Gmail Suspicious Message Warning" />
+<br />
+<br />
 The reason why this occurs is because we handle test emails to yourself in a special way (in order to workaround <a href="<https://support.google.com/a/answer/1703601?hl=en>">this widely known Gmail issue</a>).  First, we rewrite the Message-Id (preserving the original by adding an X-Original-Message-Id) and make sure your replies go in the same thread by adding a In-Reply-To.  Then we strip the DKIM-Signature and add our own, since Gmail signs a DKIM-Signature and altering the Message-Id would cause it to fail.
 
 We do this approach because otherwise you will have to go to your "Sent" folder, and you won't actually get the experience in your own inbox of self-testing.  There are other workarounds such as Bcc'ing yourself, but even that is confusing and pollutes the headers
