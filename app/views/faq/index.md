@@ -676,6 +676,12 @@ If you see this error message in Gmail when you send a test to yourself (see pic
 
 <img src="/img/faq/gmail-suspicious.png" width="546" height="148" alt="Gmail Suspicious Message Warning" />
 
+The reason why this occurs is because we handle test emails to yourself in a special way (in order to workaround <a href="<https://support.google.com/a/answer/1703601?hl=en>">this widely known Gmail issue</a>).  First, we rewrite the Message-Id (preserving the original by adding an X-Original-Message-Id) and make sure your replies go in the same thread by adding a In-Reply-To.  Then we strip the DKIM-Signature and add our own, since Gmail signs a DKIM-Signature and altering the Message-Id would cause it to fail.
+
+We do this approach because otherwise you will have to go to your "Sent" folder, and you won't actually get the experience in your own inbox of self-testing.  There are other workarounds such as Bcc'ing yourself, but even that is confusing and pollutes the headers
+
+**NOTE:** When you send a self-test email to yourself for the first time, we will automatically send you a separate email letting you know about this issue and how we worked around it.  We hope this helps to clear up confusion, as we want your experience to be perfect!
+
 
 ## Can I remove the via forwardemail dot net in Gmail
 
