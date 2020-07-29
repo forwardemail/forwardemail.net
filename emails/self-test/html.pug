@@ -26,13 +26,13 @@ block content
               p.card-text
                 = t('We spent a lot of time researching, testing, and implementing alternatives since 2017.')
                 = ' '
-                = t('Unfortunately we discovered that there is no reasonable alternative that doesn\'t require us to modify headers.')
+                = t('Unfortunately we did not discover any reasonable alternatives that respect privacy and security.')
             .p-3
-              h2.h5= t("Why can't you modify my email headers?")
+              h2.h5= t("What is the technical reason?")
               p.card-text
-                = t('The core reason why this happens is because emails with duplicate "Message-Id" header values should only show up once in the inbox.')
+                = t('The core reason why this happens is because emails with duplicate "Message-Id" headers only show up once in the inbox.')
               p.card-text
-                != t('In the past we had a workaround where we rewrote the "Message-Id" and removed the "DKIM-Signature" header (although this is against best practice).')
+                != t('In the past we had a workaround where we rewrote the "Message-Id" and removed the "DKIM-Signature" header.')
                 = ' '
                 = t('This workaround led to a confusing "Be careful with this message" alert and sometimes marked it as spam in Gmail.')
                 = ' '
@@ -41,4 +41,4 @@ block content
               p.card-text
                 != t('We\'re an <a href="%s">open-startup</a> and have a remarkable story.', `${config.urls.web}/open-startup`)
               a.btn.btn-lg.btn-primary(href=`${config.urls.web}/about`)= t('Learn more about us')
-          .card-footer: small.text-muted= t('If you have any questions, comments, or feature requests, then please let us know.')
+          .card-footer: small.text-muted= t('If you have any questions or comments, then please let us know.')
