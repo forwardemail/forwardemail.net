@@ -22,7 +22,7 @@ block content
                   = ' '
                   = t('If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.')
                   = ' '
-                  != t(`<strong><a href="${config.urls.web}/${locale}/pricing">Click here to learn more</a></strong> about our Enhanced Protection and Team plans.`)
+                  != t('<strong><a href="%s">Click here to learn more</a></strong> about our Enhanced Protection and Team plans.', `${config.urls.web}/${locale}/pricing`)
             .px-3.py-5.bg-dark.mt-3
               h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t('Verification Status')
               ul.list-inline

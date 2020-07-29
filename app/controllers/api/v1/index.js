@@ -2,22 +2,24 @@ const aliases = require('./aliases');
 const domains = require('./domains');
 const log = require('./log');
 const lookup = require('./lookup');
+const maxForwardedAddresses = require('./max-forwarded-addresses');
 const port = require('./port');
+const restricted = require('./restricted');
+const selfTest = require('./self-test');
+const spfError = require('./spf-error');
 const test = require('./test');
 const users = require('./users');
-const restricted = require('./restricted');
-const maxForwardedAddresses = require('./max-forwarded-addresses');
-const spfError = require('./spf-error');
 
 module.exports = {
   aliases,
   domains,
   log,
   lookup,
-  port,
-  test,
-  users,
-  restricted,
   maxForwardedAddresses,
-  spfError
+  port,
+  restricted,
+  selfTest,
+  spfError,
+  test,
+  users
 };
