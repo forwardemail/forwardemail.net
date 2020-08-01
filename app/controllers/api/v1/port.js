@@ -33,7 +33,7 @@ async function port(ctx) {
       let port = '25';
 
       for (const element of records) {
-        const record = element.join(''); // join chunks together
+        const record = element.join('').trim(); // join chunks together
         if (record.startsWith(`${app.config.recordPrefix}-site-verification=`))
           verifications.push(
             record.replace(`${app.config.recordPrefix}-site-verification=`, '')

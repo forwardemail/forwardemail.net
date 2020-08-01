@@ -30,7 +30,7 @@ async function maxForwardedAddresses(ctx) {
       const verifications = [];
 
       for (const element of records) {
-        const record = element.join(''); // join chunks together
+        const record = element.join('').trim(); // join chunks together
         if (record.startsWith(`${app.config.recordPrefix}-site-verification=`))
           verifications.push(
             record.replace(`${app.config.recordPrefix}-site-verification=`, '')

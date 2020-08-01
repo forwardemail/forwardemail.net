@@ -452,7 +452,7 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
 
   // add support for multi-line TXT records
   for (let i = 0; i < records.length; i++) {
-    records[i] = records[i].join(''); // join chunks together
+    records[i] = records[i].join('').trim(); // join chunks together
     if (records[i].startsWith(`${app.config.recordPrefix}=`))
       validRecords.push(records[i].replace(`${app.config.recordPrefix}=`, ''));
     if (records[i].startsWith(`${app.config.recordPrefix}-site-verification=`))
