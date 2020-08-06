@@ -33,8 +33,6 @@ In May 2020, we [allowed](https://github.com/forwardemail/free-email-forwarding/
 
 In June 2020, we publicly released our real-time metrics and revenue on our [Open Startup](/open-startup) page (also available as a link in the footer of our site).
 
-In August 2020, we added support for the [Authenticated Received Chain][arc] ("ARC") email authentication system.
-
 
 ## Service
 
@@ -60,6 +58,4 @@ Forward Email's source code is primarily developed by [Niftylettuce](https://git
 
 * [Andris Reisman](https://github.com/andris9) (the author of the [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") [npm](https://en.wikipedia.org/wiki/Npm_(software) "Npm (software)") package nodemailer, which is used internally in Forward Email.
 
-* [Scott Kitterman](https://kitterman.com/) (the author of the [Sender Policy Framework](https://en.wikipedia.org/wiki/Sender_Policy_Framework "Sender Policy Framework") (SPF) [RFC 7208](https://tools.ietf.org/html/rfc7208) specification) for [questions](https://git.launchpad.net/dkimpy/commit/?id=3e16ceac23672bf336cd6c11a7c9ea1610e353cd) and [answers](https://git.launchpad.net/dkimpy/commit/?id=5b9dc1253d61999a111973a55a7ea79d2a55859b) regarding Forward Email's compliance with [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme "Sender Rewriting Scheme") (SRS) (note we don't use SRS anymore, and instead use [ARC][]), [DMARC](https://en.wikipedia.org/wiki/DMARC "DMARC"), [Sender Policy Framework](https://en.wikipedia.org/wiki/Sender_Policy_Framework "Sender Policy Framework") (SPF), and [DKIM](https://en.wikipedia.org/wiki/DKIM "DKIM") compliance over [IRC](https://en.wikipedia.org/wiki/Internet_Relay_Chat "Internet Relay Chat").
-
-[arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain
+* [Scott Kitterman](https://kitterman.com/) (the author of the [Sender Policy Framework](https://en.wikipedia.org/wiki/Sender_Policy_Framework "Sender Policy Framework") (SPF) [RFC 7208](https://tools.ietf.org/html/rfc7208) specification) for [questions](https://git.launchpad.net/dkimpy/commit/?id=3e16ceac23672bf336cd6c11a7c9ea1610e353cd) and [answers](https://git.launchpad.net/dkimpy/commit/?id=5b9dc1253d61999a111973a55a7ea79d2a55859b) regarding Forward Email's compliance with [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme "Sender Rewriting Scheme") (SRS), [DMARC](https://en.wikipedia.org/wiki/DMARC "DMARC"), [Sender Policy Framework](https://en.wikipedia.org/wiki/Sender_Policy_Framework "Sender Policy Framework") (SPF), and [DKIM](https://en.wikipedia.org/wiki/DKIM "DKIM") compliance over [IRC](https://en.wikipedia.org/wiki/Internet_Relay_Chat "Internet Relay Chat").
