@@ -7,6 +7,7 @@
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
 * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Why are some emails showing up as from no-reply at forwardemail dot net](#why-are-some-emails-showing-up-as-from-no-reply-at-forwardemail-dot-net)
 * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
 * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
 * [Do you support webhooks](#do-you-support-webhooks)
@@ -32,6 +33,7 @@
 * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
 * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
 * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Why do my vacation autoresponder messages in the "Sent" folder have an SRS address](#why-do-my-vacation-autoresponder-messages-in-the-sent-folder-have-an-srs-address)
 * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 * [How fast is this service](#how-fast-is-this-service)
 
@@ -668,6 +670,11 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 Not yet!  We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).
 
 
+## Why are some emails showing up as from no-reply at forwardemail dot net
+
+This only happens to some emails, and it is due to DMARC compliance. If a sender has configured DMARC on their domain such that usual forwarding would fail, then we use this "friendly from" rewrite approach to ensure the email lands in your inbox instead of being rejected.
+
+
 ## Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)
 
 Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
@@ -1245,11 +1252,13 @@ Per documentation and suggestions from Google at <https://support.google.com/a/a
 
 4. **MX Record Test:** through checking if the sender's from address domain has MX records (so it's actually coming from a mail exchange/SMTP server), otherwise it's rejected.
 
-5. **Fully Qualified Domain Name Test:** validates that senders SMTP connections are from a fully qualified domain name ("FQDN"), meaning no IP addresses, they must have a valid domain name resolved.
+5. **Disposable Email Addresses:** we automatically block senders that are from the [disposable-email-domains][] list.
 
-6. **TXT Record Test:** through checking if the email address the sender is trying to send to has a TXT DNS record with a valid email forwarding setup. The SSL certificates (main domain name or alternative names) of all MX servers of the forwarding destination must match the MX entry.
+6. **Fully Qualified Domain Name Test:** validates that senders SMTP connections are from a fully qualified domain name ("FQDN"), meaning no IP addresses, they must have a valid domain name resolved.
 
-7. **ARC:** we use the [Authentication-Results][] header and validate it against the sending domain's DMARC policy.
+7. **TXT Record Test:** through checking if the email address the sender is trying to send to has a TXT DNS record with a valid email forwarding setup. The SSL certificates (main domain name or alternative names) of all MX servers of the forwarding destination must match the MX entry.
+
+8. **Sender Rewriting Scheme:** we use the [Sender Rewriting Scheme][srs] ("SRS"), which is a scheme used to rewrite the envelope from address for email forwarding in order for DKIM/SPF/DMARC to pass with a forwarding mail server.
 
 
 ## Can I "send mail as" in Gmail with this
@@ -1300,6 +1309,11 @@ If you're using Gmail, then follow these steps below:
 14. Send a test email and the profile photo should appear.
 
 
+## Why do my vacation autoresponder messages in the "Sent" folder have an SRS address
+
+This question only applies if you are using Gmail with an auto vacation responder set up, and is a non-issue.  However this is a widely known limitation of Gmail, but note that this is only shown in your "Sent" folder.  If you reply to the message directly from your inbox, everything will work normally.  The reason for this is that we use SRS, and in doing so, Gmail will send the vacation responder to the envelope MAIL FROM address, which is the SRS formatted address.  There is no workaround, but note this is not really an issue as we automatically decode the SRS formatted address and the recipient receives your vacation response normally.
+
+
 ## How do you perform DNS lookups on domain names
 
 We use CloudFlare's privacy-first consumer DNS service (see [announcement here][cloudflare-dns]).  We set `1.1.1.3` and `1.0.0.3` as the DNS servers (see <https://developers.cloudflare.com/1.1.1.1/1.1.1.1-for-families/>) using `/etc/resolv.conf` on our servers and test environments.
@@ -1320,14 +1334,16 @@ At no point in time do we write to disk or store emails – everything is done i
 
 [dns-blacklists]: https://en.wikipedia.org/wiki/Domain_Name_System-based_Blackhole_List
 
+[disposable-email-domains]: https://github.com/ivolo/disposable-email-domains
+
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
 
 [nodemailer]: https://github.com/nodemailer/nodemailer
+
+[srs]: https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme
 
 [spamscanner]: https://github.com/spamscanner/spamscanner
 
 [rspamd]: https://www.rspamd.com/
 
 [spamassassin]: https://spamassassin.apache.org/
-
-[authentication-results]: https://en.wikipedia.org/wiki/Email_authentication#Authentication-Results
