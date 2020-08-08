@@ -3,7 +3,7 @@ if !isHelp
     .modal-dialog.modal-lg(role='document')
       .modal-content
         .modal-header.text-center.d-block
-          h4.modal-title.d-inline-block.ml-4#modal-help-title= t('Ask a question')
+          h1.h4.modal-title.d-inline-block.ml-4#modal-help-title= t('Ask a question')
           button(type='button', data-dismiss='modal', aria-label='Close').close
             span(aria-hidden='true') &times;
         .modal-body
@@ -27,7 +27,7 @@ if !user && !registerOrLogin
       .modal-dialog(role='document')
         .modal-content
           .modal-header.text-center.d-block
-            h4.modal-title.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
+            h1.h4.modal-title.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
               if verb === 'sign up'
                 = t('Sign up now')
                 = ' '
@@ -108,6 +108,6 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
             = ' '
             i.fa.fa-angle-double-right
 if ctx.pathWithoutLocale === '/'
-  h3.h6.py-3.px-3.mb-0.text-center.d-none.d-sm-block
+  h1.h6.py-3.px-3.mb-0.text-center.d-none.d-sm-block
     .d-none.d-md-block!= t(`${emoji('wave')} We <u class="font-weight-bold">do not keep logs nor store emails</u>. We don't track you. ${emoji('tada')}`)
     .d-none.d-sm-block.d-md-none!= t(`${emoji('wave')} We <u class="font-weight-bold">do not keep logs nor store emails</u>. Period. ${emoji('tada')}`)
