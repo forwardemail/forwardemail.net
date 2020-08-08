@@ -29,7 +29,7 @@ footer.mt-auto
               img(src=manifest('img/logo-square.svg'), width=50, height=50 alt='Go to top').d-inline-block.mx-lg-auto
             small.d-block.text-muted.mt-3!= '&copy; <a class="text-white" href="https://niftylettuce.com" target="_blank" rel="noopener noreferrer">Niftylettuce, LLC.</a>'
         .flex-wrap.flex-fill
-          h5.mb-2= t('Resources')
+          h4.h5.mb-2= t('Resources')
           ul.list-unstyled.mb-0
             li: a.d-block.text-light.py-2.py-md-0(href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l('/pricing'))= t('Pricing')
             li: a.d-block.text-light.py-2.py-md-0(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'))= t('FAQ')
@@ -40,11 +40,11 @@ footer.mt-auto
             li: a.d-block.text-light.py-2.py-md-0(href=l('/list-of-ports-blocked-by-isps'))= t("List of ports blocked by ISPs")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill
-          h5.mb-2= t('Guides')
+          h4.h5.mb-2= t('Guides')
           ul.list-unstyled.mb-0.mb-lg-3
             li: a.d-block.text-light.py-2.py-md-0(href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l('/guides/port-25-blocked-by-isp-workaround'))= t('Port 25 blocked by ISP workaround')
           hr.d-lg-none.w-100
-          h5.mb-2= t('Developers')
+          h4.h5.mb-2= t('Developers')
           ul.list-unstyled.mb-0
             li: a.d-block.text-light.py-2.py-md-0(href=l('/free-email-webhooks'))= t('Free Email Webhooks')
             li: a.d-block.text-light.py-2.py-md-0(href=l('/email-forwarding-api'))= t('Email Forwarding API')
@@ -54,7 +54,7 @@ footer.mt-auto
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
-            h5.mb-2= t('Company')
+            h4.h5.mb-2= t('Company')
             ul.list-unstyled.mb-0
               li: a.d-block.text-light.py-2.py-md-0(href=l('/about'))= t('About')
               li: a.d-block.text-light.py-2.py-md-0(href=l('/open-startup'))= t('Open Startup')
