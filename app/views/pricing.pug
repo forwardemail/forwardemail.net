@@ -14,12 +14,6 @@ block body
             = emoji('zap')
             = ' '
             = t('Lightning fast email service.')
-      .row.my-3
-        .col
-          .alert.alert-primary.text-center.mb-0(role='alert')
-            i.fa.fa-thumbs-up
-            = ' '
-            != t('All paid plans are completely free during our beta program.  We\'ll send reminders to make payment when it has ended.')
       .row.row-cols-1.row-cols-lg-2
         .col
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-black-50.border
@@ -212,12 +206,62 @@ block body
             .d-flex.flex-column.flex-grow-1.justify-content-end
               .p-2
                 a(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help').btn.btn-lg.btn-block.btn-dark.text-uppercase.font-weight-bold= t('Contact Sales')
-      .row.my-3
-        .col
-          .alert.alert-secondary.text-center.mb-0(role='alert')
-            != t('We accept credit cards using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noreferrer">Stripe</a> and payment with <a class="alert-link" href="https://paypal.com" target="_blank" rel="noreferrer">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.')
-      .row.my-5
-        .col
-          h2.text-center.font-weight-bold.text-uppercase.text-decoration-underline= t('30-day money back guarantee')
-    .text-center.mt-5.text-truncate
-      img(src=manifest('img/logo-square.svg'), width=400, height=400, alt="")
+      .text-center
+        .row.my-5
+          .col
+            h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t('Frequently Asked Questions')
+            small.text-black-50.text-uppercase!= t('See Q&A below and <a href="%s">read our FAQ</a> for more', l('/faq'))
+        .row.mt-5
+          .col
+            h2.font-weight-bold= t("What is the difference between Free and Enhanced Protection?")
+            p.lead
+              = t('The Free plan requires you to use public DNS records to store your forwarding configuration.')
+              = ' '
+              = t('Anyone with a computer can lookup your forwarding configuration in a terminal if you are on the Free plan.')
+              = ' '
+              = t('Unlike the Free plan, the Enhanced Protection plan uses a cryptographically generated random string to store your forwarding configuration privately.')
+        .row.mb-5
+          .col-12.col-md-6.my-3.my-md-0
+            h2.h3= t('Free Plan')
+            p.lead.text-monospace
+              = 'forward-email='
+              strong.bg-warning= 'user@gmail.com'
+          .col-12.col-md-6
+            h2.h3= t('Enhanced Protection Plan')
+            p.lead.text-monospace
+              = 'forward-email-site-verification='
+              strong.bg-success= 'm8d7o8K4Il'
+        .row.my-5
+          .col
+            h2.font-weight-bold= t('Do you support email best practices?')
+            p.lead
+              != t('Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans.')
+              = ' '
+              = t('We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.')
+        .row.my-5
+          .col
+            h2.font-weight-bold= t('Do you offer unlimited domains for one price?')
+            p.lead!= t('Yes. Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.')
+        .row.my-5
+          .col
+            h2.font-weight-bold= t('Which payment methods do you accept?')
+            p.lead!= t('We accept credit cards using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noreferrer">Stripe</a> and payment with <a class="alert-link" href="https://paypal.com" target="_blank" rel="noreferrer">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.')
+        .row.my-5
+          .col
+            h2.font-weight-bold= t('Will you ever increase prices?')
+            p.lead!= t('No. Prices will never increase. Unlike other companies, we will never shutdown our service either.')
+        .row.my-5
+          .col
+            h2.font-weight-bold= t('Do you offer a money-back guarantee?')
+            p.lead!= t('Yes. We offer a 30 day money-back guarantee &ndash; with no questions asked.')
+        .row.my-5
+          .col
+            h2.font-weight-bold= t('Do you have any other questions?')
+            p= t('We are always available and usually respond within minutes of your help request.')
+            ul.list-inline
+              li.list-inline-item
+                a(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help').btn.btn-lg.btn-dark.text-uppercase.font-weight-bold= t('Contact Help')
+              li.list-inline-item
+                a(href=l('/faq')).btn.btn-lg.btn-primary.text-uppercase.font-weight-bold= t('Read FAQ')
+        .mt-5.text-truncate
+          img(src=manifest('img/logo-square.svg'), width=400, height=400, alt="")
