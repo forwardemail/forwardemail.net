@@ -1,6 +1,6 @@
 {
   "name": "forwardemail-net",
-  "description": "ForwardEmail.net",
+  "description": "The best free email forwarding service for custom domains. We do not keep logs nor store emails and we don't track you. Unlimited aliases, catch-alls, wildcards, API access, disposable addresses, and much more. Support for DKIM, SRS, SPF, ARC, DMARC, and much more. No credit card required.",
   "version": "0.1.95",
   "author": "Niftylettuce, LLC. <niftylettuce@gmail.com> (https://niftylettuce.com/)",
   "ava": {
