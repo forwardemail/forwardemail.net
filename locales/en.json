@@ -1239,5 +1239,6 @@
   "PayPal": "PayPal",
   " – for one-time payments and monthly or yearly subscriptions.": " – for one-time payments and monthly or yearly subscriptions.",
   "The best open-source and free email forwarding service for custom domains. We do not keep logs nor store emails. We don't track you. Unlimited aliases, catch-alls, wildcards, API access, and disposable addresses. Built-in support for DKIM, SRS, SPF, ARC, DMARC, and more. No credit card required.": "The best open-source and free email forwarding service for custom domains. We do not keep logs nor store emails. We don't track you. Unlimited aliases, catch-alls, wildcards, API access, and disposable addresses. Built-in support for DKIM, SRS, SPF, ARC, DMARC, and more. No credit card required.",
-  "Spam/phishing/virus/executable protection": "Spam/phishing/virus/executable protection"
+  "Spam/phishing/virus/executable protection": "Spam/phishing/virus/executable protection",
+  ", nor were we happy with their lack of privacy-focused policies and public corpus datasets.  Spam Scanner checks a message for spam, phishing, executables, viruses, and more, while completely respecting your privacy.": ", nor were we happy with their lack of privacy-focused policies and public corpus datasets.  Spam Scanner checks a message for spam, phishing, executables, viruses, and more, while completely respecting your privacy."
 }
