@@ -1246,7 +1246,7 @@ Per documentation and suggestions from Google at <https://support.google.com/a/a
 
 1. **DNS Blacklists:** we test senders IP's against the Spamhaus [DNS blacklists][dns-blacklists], if any fail, then the sender is not permitted to send the message and is returned a detailed error message with instructions on how to de-list themselves from the specific blacklists they're listed under.
 
-2. **Anti-Spam and Anti-Phishing Scanner**: we built from scratch and use [SpamScanner][] for anti-spam prevention (it uses a Naive Bayes classifier under the hood).  We built this because we were not happy with [rspamd][] nor [SpamAssassin][], nor were we happy with their lack of privacy-focused policies and public corpus datasets.
+2. **Anti-Spam and Anti-Phishing Scanner**: we built from scratch and use [Spam Scanner][spamscanner] for anti-spam prevention (it uses a Naive Bayes classifier under the hood).  We built this because we were not happy with [rspamd][] nor [SpamAssassin][], nor were we happy with their lack of privacy-focused policies and public corpus datasets.  Spam Scanner checks a message for spam, phishing, executables, viruses, and more, while completely respecting your privacy.
 
 3. **SPF and DKIM:** through checking if an SPF record exists for a sender, and if so, we reverse-lookup the SMTP connection's remote address to validate it matches the SPF record, otherwise it's rejected.  If an SPF record does not exist, then we require DKIM verification.  If DKIM headers are passed and fail, then it is rejected as well.  If no DKIM headers are passed, then we assume that DKIM validation passes.
 
