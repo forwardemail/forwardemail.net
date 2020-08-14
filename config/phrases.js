@@ -81,7 +81,7 @@ module.exports = {
   REQUEST_TIMED_OUT:
     'Sorry, your request has timed out.  We have been alerted of this issue.  Please try again.',
   RESET_PASSWORD: 'You have successfully set a new password.',
-  CHANGE_EMAIL: 'You have successfully set a new email.',
+  CHANGE_EMAIL: 'You have successfully changed your email address.',
   SIGNED_OUT: 'You have successfully signed out.',
   PENDING_RECOVERY_VERIFICATION_SUCCESS:
     'Your email has been successfully verified. You should receive a support email from an admin within the next 3-5 business days.',

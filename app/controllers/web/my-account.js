@@ -54,10 +54,11 @@ async function update(ctx) {
       body[config.passport.fields.familyName];
   }
 
-  const currentEmail =
-    ctx.state.user[config.passportLocalMongoose.usernameField];
+  // check if we need to update the email and send an email confirmation
+  const hasNewEmail =
+    ctx.state.user[config.passportLocalMongoose.usernameField] !== body.email;
   // confirm user supplied email is different than current email
-  if (currentEmail !== body.email) {
+  if (hasNewEmail) {
     // set the reset token and expiry
     ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = moment()
       .add(30, 'minutes')
@@ -66,8 +67,13 @@ async function update(ctx) {
       length: 32
     });
     ctx.state.user[config.userFields.changeEmailNewAddress] = body.email;
-    ctx.state.user = await ctx.state.user.save();
+  }
 
+  // save the user
+  ctx.state.user = await ctx.state.user.save();
+
+  // send the email
+  if (hasNewEmail) {
     try {
       await emailHelper({
         template: 'change-email',
@@ -85,15 +91,6 @@ async function update(ctx) {
           }`
         }
       });
-
-      if (ctx.accepts('html')) {
-        ctx.flash('success', ctx.translate('EMAIL_CHANGE_SENT'));
-        ctx.redirect('back');
-      } else {
-        ctx.body = {
-          message: ctx.translate('EMAIL_CHANGE_SENT')
-        };
-      }
     } catch (err) {
       ctx.logger.error(err);
       // reset if there was an error
@@ -110,12 +107,10 @@ async function update(ctx) {
     }
   }
 
-  ctx.state.user = await ctx.state.user.save();
-
   if (!ctx.api)
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
-      text: ctx.translate('REQUEST_OK'),
+      text: ctx.translate(hasNewEmail ? 'EMAIL_CHANGE_SENT' : 'REQUEST_OK'),
       type: 'success',
       toast: true,
       showConfirmButton: false,
