@@ -3,6 +3,8 @@ const path = require('path');
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
+const cryptoRandomString = require('crypto-random-string');
+const moment = require('moment');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
@@ -50,7 +52,62 @@ async function update(ctx) {
       body[config.passport.fields.givenName];
     ctx.state.user[config.passport.fields.familyName] =
       body[config.passport.fields.familyName];
-    ctx.state.user.email = body.email;
+  }
+
+  const currentEmail =
+    ctx.state.user[config.passportLocalMongoose.usernameField];
+  // confirm user supplied email is different than current email
+  if (currentEmail !== body.email) {
+    // set the reset token and expiry
+    ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = moment()
+      .add(30, 'minutes')
+      .toDate();
+    ctx.state.user[config.userFields.changeEmailToken] = cryptoRandomString({
+      length: 32
+    });
+    ctx.state.user[config.userFields.changeEmailNewAddress] = body.email;
+    ctx.state.user = await ctx.state.user.save();
+
+    try {
+      await emailHelper({
+        template: 'change-email',
+        message: {
+          to: body.email
+        },
+        locals: {
+          user: _.pick(ctx.state.user, [
+            config.userFields.changeEmailTokenExpiresAt,
+            config.userFields.changeEmailNewAddress,
+            config.passportLocalMongoose.usernameField
+          ]),
+          link: `${config.urls.web}/change-email/${
+            ctx.state.user[config.userFields.changeEmailToken]
+          }`
+        }
+      });
+
+      if (ctx.accepts('html')) {
+        ctx.flash('success', ctx.translate('EMAIL_CHANGE_SENT'));
+        ctx.redirect('back');
+      } else {
+        ctx.body = {
+          message: ctx.translate('EMAIL_CHANGE_SENT')
+        };
+      }
+    } catch (err) {
+      ctx.logger.error(err);
+      // reset if there was an error
+      try {
+        ctx.state.user[config.userFields.changeEmailToken] = null;
+        ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = null;
+        ctx.state.user[config.userFields.changeEmailNewAddress] = null;
+        ctx.state.user = await ctx.state.user.save();
+      } catch (err) {
+        ctx.logger.error(err);
+      }
+
+      throw Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));
+    }
   }
 
   ctx.state.user = await ctx.state.user.save();

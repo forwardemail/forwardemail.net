@@ -19,6 +19,7 @@ module.exports = {
   INVALID_PROVIDER: 'We do not support this authentication provider.',
   INVALID_RECOVERY_KEY: 'Invalid recovery key.',
   INVALID_RESET_PASSWORD: 'Reset token and email were not valid together.',
+  INVALID_SET_EMAIL: 'Change email token and email were not valid together.',
   INVALID_RESET_TOKEN: 'Reset token provided was invalid.',
   INVALID_SESSION_SECRET: 'Invalid session secret.',
   INVALID_SLUG: 'Please slightly change values to ensure slug uniqueness.',
@@ -80,6 +81,7 @@ module.exports = {
   REQUEST_TIMED_OUT:
     'Sorry, your request has timed out.  We have been alerted of this issue.  Please try again.',
   RESET_PASSWORD: 'You have successfully set a new password.',
+  CHANGE_EMAIL: 'You have successfully set a new email.',
   SIGNED_OUT: 'You have successfully signed out.',
   PENDING_RECOVERY_VERIFICATION_SUCCESS:
     'Your email has been successfully verified. You should receive a support email from an admin within the next 3-5 business days.',
@@ -170,5 +172,6 @@ module.exports = {
   DOMAINS: 'Domains',
   ALIASES: 'Aliases',
   EMAIL_FAILED_TO_SEND:
-    'Unfortunately an error occurred while sending the email.  Please try again or <a href="/help">contact us</a> for help.'
+    'Unfortunately an error occurred while sending the email.  Please try again or <a href="/help">contact us</a> for help.',
+  EMAIL_CHANGE_SENT: 'We have emailed you a link to confirm email change.'
 };
