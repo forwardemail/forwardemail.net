@@ -1,0 +1,15 @@
+
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.d-block.text-center
+          h5.card-header= t('Change Email')
+          .card-body
+          .card-text
+            p.card-text= t(`Change email from: ${user[config.passportLocalMongoose.usernameField]} to ${user[config.userFields.changeEmailNewAddress]}`)
+            p.small.card-text= t(`Click the button below within ${moment(user[config.userFields.resetTokenExpiresAt]).fromNow(true)} to continue.`)
+            a.btn.btn-lg.btn-block.btn-success(href=link, role="button")= t('Confirm email change')
+          .card-footer: small.text-muted= t('If you did not submit this request, then please reply to let us know.')
