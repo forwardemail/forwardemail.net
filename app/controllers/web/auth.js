@@ -487,20 +487,25 @@ async function changeEmail(ctx) {
   query[config.userFields.changeEmailTokenExpiresAt] = { $gte: new Date() };
   const user = await Users.findOne(query);
 
-  if (!user) throw Boom.badRequest(ctx.translateError('INVALID_SET_EMAIL'));
+  try {
+    if (!user) throw Boom.badRequest(ctx.translateError('INVALID_SET_EMAIL'));
 
-  const auth = await user.authenticate(body.password);
-  if (!auth.user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+    const auth = await user.authenticate(body.password);
+    if (!auth.user)
+      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
-  const newEmail = user[config.userFields.changeEmailNewAddress];
-  user[config.passportLocalMongoose.usernameField] = newEmail;
-  await user.save();
+    const newEmail = user[config.userFields.changeEmailNewAddress];
+    user[config.passportLocalMongoose.usernameField] = newEmail;
+    await user.save();
 
-  // reset change email info
-  user[config.userFields.changeEmailToken] = null;
-  user[config.userFields.changeEmailTokenExpiresAt] = null;
-  user[config.userFields.changeEmailNewAddress] = null;
-  await user.save();
+    // reset change email info
+    user[config.userFields.changeEmailToken] = null;
+    user[config.userFields.changeEmailTokenExpiresAt] = null;
+    user[config.userFields.changeEmailNewAddress] = null;
+    await user.save();
+  } catch (err) {
+    ctx.throw(err);
+  }
 
   const message = ctx.translate('CHANGE_EMAIL');
   const redirectTo = ctx.state.l();
