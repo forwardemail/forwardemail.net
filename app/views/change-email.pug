@@ -7,7 +7,6 @@ block body
     .row
       .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
         .alert.alert-warning.text-center.mb-4= t(`Change email from: ${user[config.passportLocalMongoose.usernameField]} to ${user[config.userFields.changeEmailNewAddress]}`)
-        .alert.alert-primary.text-center.mb-4= t('Confirm your password.')
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input#input-email(type="hidden", name="email", value=user[config.passportLocalMongoose.usernameField])
           .form-group.floating-label
