@@ -1303,5 +1303,7 @@
   "Confirm change email": "Confirm change email",
   "Update Email": "Update Email",
   "Confirm Email Update": "Confirm Email Update",
-  "Confirm Email Change": "Confirm Email Change"
+  "Confirm Email Change": "Confirm Email Change",
+  "Change Your Email": "Change Your Email",
+  "You have successfully set a new email.": "You have successfully set a new email."
 }
