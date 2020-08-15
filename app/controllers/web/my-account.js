@@ -54,6 +54,23 @@ async function update(ctx) {
       body[config.passport.fields.familyName];
   }
 
+  // if we've already sent a change email request in the past half hour
+  if (
+    ctx.state.user[config.userFields.changeEmailTokenExpiresAt] &&
+    ctx.state.user[config.userFields.changeEmailToken] &&
+    moment(ctx.state.user[config.userFields.changeEmailTokenExpiresAt]).isAfter(
+      moment().subtract(config.changeEmailTokenTimeoutMs, 'milliseconds')
+    )
+  )
+    throw Boom.badRequest(
+      ctx.translateError(
+        'EMAIL_CHANGE_LIMIT',
+        moment(
+          ctx.state.user[config.userFields.changeEmailTokenExpiresAt]
+        ).fromNow()
+      )
+    );
+
   // check if we need to update the email and send an email confirmation
   const hasNewEmail =
     ctx.state.user[config.passportLocalMongoose.usernameField] !== body.email;
@@ -61,7 +78,7 @@ async function update(ctx) {
   if (hasNewEmail) {
     // set the reset token and expiry
     ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = moment()
-      .add(config.changeEmailTokenTimeoutMs, 'minutes')
+      .add(config.changeEmailTokenTimeoutMs, 'milliseconds')
       .toDate();
     ctx.state.user[config.userFields.changeEmailToken] = cryptoRandomString({
       length: 32
