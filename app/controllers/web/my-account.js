@@ -61,7 +61,7 @@ async function update(ctx) {
   if (hasNewEmail) {
     // set the reset token and expiry
     ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = moment()
-      .add(30, 'minutes')
+      .add(config.changeEmailTokenTimeoutMs, 'minutes')
       .toDate();
     ctx.state.user[config.userFields.changeEmailToken] = cryptoRandomString({
       length: 32
