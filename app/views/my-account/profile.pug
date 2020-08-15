@@ -37,6 +37,8 @@ block body
               .form-group.floating-label
                 input#input-email(type='email', required, name='email', value=user.email, placeholder='name@example.com').form-control
                 label(for='input-email')= t('Email address')
+                if user[config.userFields.changeEmailNewAddress]
+                  small.form-text.text-danger!= t("Pending change to %s, please check your inbox for confirmation link.", user[config.userFields.changeEmailNewAddress])
               .form-group.floating-label
                 input#input-given-name(type='text', name=config.passport.fields.givenName, value=user[config.passport.fields.givenName], placeholder=t('First name')).form-control
                 label(for="input-given-name")= t('First name')
