@@ -81,7 +81,7 @@ module.exports = {
   REQUEST_TIMED_OUT:
     'Sorry, your request has timed out.  We have been alerted of this issue.  Please try again.',
   RESET_PASSWORD: 'You have successfully set a new password.',
-  CHANGE_EMAIL: 'You have successfully changed your email address.',
+  CHANGE_EMAIL: 'You have successfully set a new email address.',
   SIGNED_OUT: 'You have successfully signed out.',
   PENDING_RECOVERY_VERIFICATION_SUCCESS:
     'Your email has been successfully verified. You should receive a support email from an admin within the next 3-5 business days.',
@@ -173,5 +173,5 @@ module.exports = {
   ALIASES: 'Aliases',
   EMAIL_FAILED_TO_SEND:
     'Unfortunately an error occurred while sending the email.  Please try again or <a href="/help">contact us</a> for help.',
-  EMAIL_CHANGE_SENT: 'We have emailed you a link to confirm email change.'
+  EMAIL_CHANGE_SENT: 'Check your email for a link to confirm your email change.'
 };
