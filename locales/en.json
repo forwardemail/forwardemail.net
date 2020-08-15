@@ -1249,5 +1249,7 @@
   "Confirm Email Update": "Confirm Email Update",
   "Confirm Email Change": "Confirm Email Change",
   "Change Your Email": "Change Your Email",
-  "You have successfully set a new email.": "You have successfully set a new email."
+  "You have successfully set a new email.": "You have successfully set a new email.",
+  "Pending change to %s, please check your inbox for confirmation link.": "Pending change to %s, please check your inbox for confirmation link.",
+  "You can only change your email address every 30 minutes.  Please try again <span class=\"notranslate\">%s</span>.": "You can only change your email address every 30 minutes.  Please try again <span class=\"notranslate\">%s</span>."
 }

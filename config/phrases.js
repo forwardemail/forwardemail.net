@@ -173,5 +173,8 @@ module.exports = {
   ALIASES: 'Aliases',
   EMAIL_FAILED_TO_SEND:
     'Unfortunately an error occurred while sending the email.  Please try again or <a href="/help">contact us</a> for help.',
-  EMAIL_CHANGE_SENT: 'Check your email for a link to confirm your email change.'
+  EMAIL_CHANGE_SENT:
+    'Check your inbox for a link to confirm your email change.',
+  EMAIL_CHANGE_LIMIT:
+    'You can only change your email address every 30 minutes.  Please try again <span class="notranslate">%s</span>.'
 };
