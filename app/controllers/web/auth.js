@@ -371,7 +371,7 @@ async function forgotPassword(ctx) {
     user[config.userFields.resetTokenExpiresAt] &&
     user[config.userFields.resetToken] &&
     moment(user[config.userFields.resetTokenExpiresAt]).isAfter(
-      moment().subtract(30, 'minutes')
+      moment().subtract(config.resetTokenTimeoutMs, 'minutes')
     )
   )
     throw Boom.badRequest(
@@ -382,9 +382,9 @@ async function forgotPassword(ctx) {
     );
 
   // set the reset token and expiry
-  user[config.userFields.resetTokenExpiresAt] = moment()
-    .add(30, 'minutes')
-    .toDate();
+  user[config.userFields.resetTokenExpiresAt] = new Date(
+    Date.now() + config.resetTokenTimeoutMs
+  );
   user[config.userFields.resetToken] = cryptoRandomString({ length: 32 });
 
   user = await user.save();

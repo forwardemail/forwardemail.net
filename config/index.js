@@ -149,6 +149,12 @@ const config = {
   verificationPinEmailIntervalMs: ms(env.VERIFICATION_PIN_EMAIL_INTERVAL_MS),
   verificationPin: { length: 6, characters: '1234567890' },
 
+  // reset token
+  resetTokenTimeoutMs: ms(env.RESET_TOKEN_TIMEOUT_MS),
+
+  // change email token
+  changeEmailTokenTimeoutMs: ms(env.CHANGE_EMAIL_TOKEN_TIMEOUT_MS),
+
   // @ladjs/passport configuration (see defaults in package)
   // <https://github.com/ladjs/passport>
   passport: {
