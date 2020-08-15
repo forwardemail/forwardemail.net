@@ -371,7 +371,7 @@ async function forgotPassword(ctx) {
     user[config.userFields.resetTokenExpiresAt] &&
     user[config.userFields.resetToken] &&
     moment(user[config.userFields.resetTokenExpiresAt]).isAfter(
-      moment().subtract(config.resetTokenTimeoutMs, 'minutes')
+      moment().subtract(config.resetTokenTimeoutMs, 'milliseconds')
     )
   )
     throw Boom.badRequest(
