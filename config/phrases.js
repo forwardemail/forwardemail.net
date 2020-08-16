@@ -176,5 +176,7 @@ module.exports = {
   EMAIL_CHANGE_SENT:
     'Check your inbox for a link to confirm your email change.',
   EMAIL_CHANGE_LIMIT:
-    'You can only change your email address every 30 minutes.  Please try again <span class="notranslate">%s</span>.'
+    'You can only change your email address every <span class="notranslate">%s</span> minutes. Please try again <span class="notranslate">%s</span>.',
+  EMAIL_CHANGE_ALREADY_EXISTS:
+    'The email address <span class="notranslate">%s</span> already exists.'
 };
