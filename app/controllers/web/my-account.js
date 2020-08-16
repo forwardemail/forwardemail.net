@@ -65,6 +65,7 @@ async function update(ctx) {
     throw Boom.badRequest(
       ctx.translateError(
         'EMAIL_CHANGE_LIMIT',
+        moment.duration(config.changeEmailLimitMs, 'milliseconds').minutes(),
         moment(
           ctx.state.user[config.userFields.changeEmailTokenExpiresAt]
         ).fromNow()
@@ -76,6 +77,14 @@ async function update(ctx) {
     ctx.state.user[config.passportLocalMongoose.usernameField] !== body.email;
   // confirm user supplied email is different than current email
   if (hasNewEmail) {
+    // short-circuit if email already exists
+    const query = { email: body.email };
+    const user = await Users.findOne(query);
+    if (user)
+      throw Boom.badRequest(
+        ctx.translateError('EMAIL_CHANGE_ALREADY_EXISTS', body.email)
+      );
+
     // set the reset token and expiry
     ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = moment()
       .add(config.changeEmailTokenTimeoutMs, 'milliseconds')
