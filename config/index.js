@@ -154,6 +154,7 @@ const config = {
 
   // change email token
   changeEmailTokenTimeoutMs: ms(env.CHANGE_EMAIL_TOKEN_TIMEOUT_MS),
+  changeEmailLimitMs: ms(env.CHANGE_EMAIL_LIMIT_MS),
 
   // @ladjs/passport configuration (see defaults in package)
   // <https://github.com/ladjs/passport>
