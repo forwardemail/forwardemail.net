@@ -95,7 +95,7 @@
     "markdown-it-highlightjs": "^3.2.0",
     "markdown-it-task-checkbox": "^1.0.6",
     "moment": "^2.27.0",
-    "mongoose": "^5.10.0",
+    "mongoose": "5.9",
     "mongoose-common-plugin": "^2.0.2",
     "mongoose-omit-common-fields": "^0.0.6",
     "mongoose-unique-validator": "^2.0.3",
