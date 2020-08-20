@@ -1310,5 +1310,9 @@
   "You can only change your email address every 30 minutes.  Please try again <span class=\"notranslate\">%s</span>.": "You can only change your email address every 30 minutes.  Please try again <span class=\"notranslate\">%s</span>.",
   "You can only change your email address every %s.  Please try again <span class=\"notranslate\">%s</span>.": "You can only change your email address every %s.  Please try again <span class=\"notranslate\">%s</span>.",
   "You can only change your email address every <span class=\"notranslate\">%s</span>. Please try again <span class=\"notranslate\">%s</span>.": "You can only change your email address every <span class=\"notranslate\">%s</span>. Please try again <span class=\"notranslate\">%s</span>.",
-  "You can only change your email address every <span class=\"notranslate\">%s</span> minutes. Please try again <span class=\"notranslate\">%s</span>.": "You can only change your email address every <span class=\"notranslate\">%s</span> minutes. Please try again <span class=\"notranslate\">%s</span>."
+  "You can only change your email address every <span class=\"notranslate\">%s</span> minutes. Please try again <span class=\"notranslate\">%s</span>.": "You can only change your email address every <span class=\"notranslate\">%s</span> minutes. Please try again <span class=\"notranslate\">%s</span>.",
+  "Ryan Lee Sipes": "Ryan Lee Sipes",
+  " (the driving force to revitalize and modernize ": " (the driving force to revitalize and modernize ",
+  "Mozilla Thunderbird": "Mozilla Thunderbird",
+  ") for serving as an advisor, assisting with growth, and relentlessly contributing feedback on product iterations.": ") for serving as an advisor, assisting with growth, and relentlessly contributing feedback on product iterations."
 }
