@@ -1279,8 +1279,8 @@ async function removeInvite(ctx, next) {
 }
 
 async function updateMember(ctx, next) {
-  // ctx.params.user_id
-  if (!isSANB(ctx.params.user_id))
+  // ctx.params.member_id
+  if (!isSANB(ctx.params.member_id))
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
 
   // ctx.request.body.group
@@ -1291,7 +1291,7 @@ async function updateMember(ctx, next) {
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_GROUP')));
 
   const member = ctx.state.domain.members.find(
-    (member) => member.user.id === ctx.params.user_id
+    (member) => member.user.id === ctx.params.member_id
   );
 
   if (!member)
@@ -1302,7 +1302,7 @@ async function updateMember(ctx, next) {
   ctx.state.domain.members = ctx.state.domain.members.map((member) => ({
     ...member,
     group:
-      member.user.toString() === ctx.params.user_id
+      member.user.toString() === ctx.params.member_id
         ? ctx.request.body.group
         : member.group
   }));
@@ -1327,12 +1327,12 @@ async function updateMember(ctx, next) {
 }
 
 async function removeMember(ctx, next) {
-  // ctx.params.user_id
-  if (!isSANB(ctx.params.user_id))
+  // ctx.params.member_id
+  if (!isSANB(ctx.params.member_id))
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
 
   const member = ctx.state.domain.members.find(
-    (member) => member.user.id === ctx.params.user_id
+    (member) => member.user.id === ctx.params.member_id
   );
 
   if (!member)
@@ -1346,7 +1346,7 @@ async function removeMember(ctx, next) {
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   ctx.state.domain.members = ctx.state.domain.members.filter(
-    (member) => member.user.toString() !== ctx.params.user_id
+    (member) => member.user.toString() !== ctx.params.member_id
   );
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain = await ctx.state.domain.save();
