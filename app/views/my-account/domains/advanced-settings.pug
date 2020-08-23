@@ -6,7 +6,7 @@ mixin planRequired(isTeam = false)
     .alert.alert-warning!= t('Please <a class="alert-link" href="%s">upgrade to the %s plan</a> to unlock this feature.', l(`/my-account/domains/${domain.name}/billing?plan=${isTeam ? 'team' : 'enhanced_protection'}`), isTeam ? 'Team' : 'Enhanced Protection')
 
 block body
-  - const isDisabled = domain.plan === 'free' || (isTeam && domain.plan !== 'team')
+  - const isDisabled = domain.plan === 'free'
   - const isTeamDisabled = domain.plan !== 'team'
   if domain.group === 'admin'
     #modal-invite.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-invite-title', aria-hidden='true')
