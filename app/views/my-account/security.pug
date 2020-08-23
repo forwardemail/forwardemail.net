@@ -37,7 +37,7 @@ block body
                 p= t('One-time passwords ("OTP") allow you to add a layer of Two-Factor Authentication to your account using a device or authenticator app.  If you lose access to your device or authenticator app, then you can use a recovery key provided to you during configuration.')
                 a.btn.btn-primary.btn-lg(href=l(`${config.otpRoutePrefix}/setup`), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')= t('Enable OTP')
             .card-footer.text-right
-              a(href='https://en.wikipedia.org/wiki/One-time_password', rel='noreferrer', target='_blank').btn.btn-dark= t('Learn more')
+              a(href='https://en.wikipedia.org/wiki/One-time_password', rel='noopener noreferrer', target='_blank').btn.btn-dark= t('Learn more')
         .card.mb-3
           h4.card-header= t('Developer Access')
           .card-body

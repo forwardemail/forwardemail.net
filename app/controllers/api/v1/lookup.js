@@ -21,7 +21,7 @@ async function lookup(ctx) {
 
   if (!domain)
     return ctx.throw(
-      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
   const aliases = await Aliases.find({

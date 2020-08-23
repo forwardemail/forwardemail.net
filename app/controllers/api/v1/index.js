@@ -6,6 +6,7 @@ const maxForwardedAddresses = require('./max-forwarded-addresses');
 const port = require('./port');
 const restricted = require('./restricted');
 const selfTest = require('./self-test');
+const settings = require('./settings');
 const spfError = require('./spf-error');
 const test = require('./test');
 const users = require('./users');
@@ -19,6 +20,7 @@ module.exports = {
   port,
   restricted,
   selfTest,
+  settings,
   spfError,
   test,
   users

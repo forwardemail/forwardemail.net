@@ -328,7 +328,7 @@ async function retrieveDomains(ctx, next) {
 async function retrieveDomain(ctx, next) {
   if (!isSANB(ctx.params.domain_id) && !isSANB(ctx.request.body.domain))
     return ctx.throw(
-      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
   const id = isSANB(ctx.params.domain_id)
@@ -343,7 +343,7 @@ async function retrieveDomain(ctx, next) {
   // if we have a pending invite
   if (!ctx.state.domain)
     return ctx.throw(
-      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
   // if it's an API request then return early
@@ -729,16 +729,12 @@ async function createAlias(ctx, next) {
 
 function retrieveAlias(ctx, next) {
   if (!isSANB(ctx.params.alias_id))
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST'))
-    );
+    return ctx.throw(Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST')));
   ctx.state.alias = ctx.state.domain.aliases.find(
     (alias) => alias.id === ctx.params.alias_id
   );
   if (!ctx.state.alias)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST'))
-    );
+    return ctx.throw(Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST')));
 
   if (ctx.api) return next();
   if (
@@ -1108,7 +1104,7 @@ function retrieveAliases(ctx, next) {
 async function retrieveInvite(ctx) {
   if (!isSANB(ctx.params.domain_id))
     return ctx.throw(
-      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
   const domain = await Domains.findOne({
@@ -1118,7 +1114,7 @@ async function retrieveInvite(ctx) {
 
   if (!domain)
     return ctx.throw(
-      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
   // convert invitee to a member with the same group as invite had
@@ -1128,7 +1124,7 @@ async function retrieveInvite(ctx) {
 
   if (!invite)
     return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVITE_DOES_NOT_EXIST'))
+      Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'))
     );
 
   const { group } = invite;
@@ -1281,7 +1277,7 @@ async function removeInvite(ctx, next) {
 async function updateMember(ctx, next) {
   // ctx.params.member_id
   if (!isSANB(ctx.params.member_id))
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
+    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
   // ctx.request.body.group
   if (
@@ -1295,7 +1291,7 @@ async function updateMember(ctx, next) {
   );
 
   if (!member)
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
+    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   // swap the user group based off ctx.request.body.group
@@ -1329,20 +1325,25 @@ async function updateMember(ctx, next) {
 async function removeMember(ctx, next) {
   // ctx.params.member_id
   if (!isSANB(ctx.params.member_id))
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
+    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
   const member = ctx.state.domain.members.find(
     (member) => member.user.id === ctx.params.member_id
   );
 
   if (!member)
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
+    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
-  /*
-  // cannot remove self
-  if (member.user.id === ctx.state.user.id)
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_USER')));
-  */
+  // ensure that no aliases created with this user being removed
+  // (they need re-assigned first before the user can be removed)
+  const memberAliases = ctx.state.domain.aliases.filter(
+    (user) => user.id === member.user.id
+  );
+
+  if (memberAliases.length > 0)
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('ALIASES_NEED_REASSIGNED'))
+    );
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   ctx.state.domain.members = ctx.state.domain.members.filter(
@@ -1383,10 +1384,23 @@ async function recoveryKeys(ctx) {
 async function updateDomain(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
 
-  if (isSANB(ctx.request.body.smtp_port))
+  // Custom SMTP Port Forwarding
+  if (isSANB(ctx.request.body.smtp_port)) {
     if (isPort(ctx.request.body.smtp_port))
       ctx.state.domain.smtp_port = ctx.request.body.smtp_port;
     else return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PORT')));
+  } else {
+    // Spam Scanner Settings
+    ctx.state.domain.has_phishing_protection = boolean(
+      ctx.request.body.has_phishing_protection
+    );
+    ctx.state.domain.has_executable_protection = boolean(
+      ctx.request.body.has_executable_protection
+    );
+    ctx.state.domain.has_virus_protection = boolean(
+      ctx.request.body.has_virus_protection
+    );
+  }
 
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain = await ctx.state.domain.save();

@@ -198,7 +198,7 @@ const config = {
     lastLoginField: 'last_login_at',
     usernameLowerCase: true,
     limitAttempts: true,
-    maxAttempts: env.NODE_ENV === 'development' ? Infinity : 5,
+    maxAttempts: env.NODE_ENV === 'development' ? Infinity : 10,
     digestAlgorithm: 'sha256',
     encoding: 'hex',
     saltlen: 32,
