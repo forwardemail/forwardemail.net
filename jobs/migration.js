@@ -66,6 +66,21 @@ graceful.listen();
   const domains = await Domains.find({
     $or: [
       {
+        has_phishing_protection: {
+          $exists: false
+        }
+      },
+      {
+        has_executable_protection: {
+          $exists: false
+        }
+      },
+      {
+        has_virus_protection: {
+          $exists: false
+        }
+      },
+      {
         verification_record: {
           $exists: false
         }

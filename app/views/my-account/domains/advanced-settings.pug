@@ -2,11 +2,12 @@
 extends ../../layout
 
 mixin planRequired(isTeam = false)
-  if domain.plan === 'free'
+  if domain.plan === 'free' || (isTeam && domain.plan !== 'team')
     .alert.alert-warning!= t('Please <a class="alert-link" href="%s">upgrade to the %s plan</a> to unlock this feature.', l(`/my-account/domains/${domain.name}/billing?plan=${isTeam ? 'team' : 'enhanced_protection'}`), isTeam ? 'Team' : 'Enhanced Protection')
 
 block body
-  - const isDisabled = domain.plan === 'free'
+  - const isDisabled = domain.plan === 'free' || (isTeam && domain.plan !== 'team')
+  - const isTeamDisabled = domain.plan !== 'team'
   if domain.group === 'admin'
     #modal-invite.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-invite-title', aria-hidden='true')
       .modal-dialog(role='document')
@@ -18,20 +19,20 @@ block body
           .modal-body
             .text-center
               +planRequired(true)
-            form.ajax-form.confirm-prompt(action=l(`/my-account/domains/${domain.name}/invites`), method="POST", disabled=isDisabled)
+            form.ajax-form.confirm-prompt(action=l(`/my-account/domains/${domain.name}/invites`), method="POST", disabled=isTeamDisabled)
               input(type="hidden", name="_csrf", value=ctx.csrf)
               .form-group
                 label(for="input-invite-email")= t('Email address')
-                input#input-invite-email.form-control(required, disabled=isDisabled, autocomplete="off", name="email", type="email", placeholder='name@example.com')
+                input#input-invite-email.form-control(required, disabled=isTeamDisabled, autocomplete="off", name="email", type="email", placeholder='name@example.com')
               label= t('Group')
               .form-group
                 .form-check.form-check-inline
-                  input.form-check-input#input-invite-group-user(type='radio', disabled=isDisabled, name='group', value='user', checked)
+                  input.form-check-input#input-invite-group-user(type='radio', disabled=isTeamDisabled, name='group', value='user', checked)
                   label.form-check-label(for='input-invite-group-user')= t('User')
                 .form-check.form-check-inline
-                  input.form-check-input#input-invite-group-admin(type='radio', disabled=isDisabled, name='group', value='admin')
+                  input.form-check-input#input-invite-group-admin(type='radio', disabled=isTeamDisabled, name='group', value='admin')
                   label.form-check-label(for='input-invite-group-admin')= t('Admin')
-              button.btn.btn-block.btn-success.btn-lg(type="submit", disabled=isDisabled)= t('Send invitation')
+              button.btn.btn-block.btn-success.btn-lg(type="submit", disabled=isTeamDisabled)= t('Send invitation')
     #modal-copy-invite.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-copy-invite-title', aria-hidden='true')
       .modal-dialog.modal-lg(role='document')
         .modal-content
@@ -43,9 +44,9 @@ block body
             .text-center
               +planRequired(true)
             .input-group.input-group-lg
-              input(type='text', readonly, value=isDisabled ? '' : `${config.urls.web}/my-account/domains/${domain.name}/invites`).form-control#invite-link
+              input(type='text', readonly, value=isTeamDisabled ? '' : `${config.urls.web}/my-account/domains/${domain.name}/invites`).form-control#invite-link
               .input-group-append
-                button(type='button', data-toggle="clipboard", data-clipboard-target="#invite-link", disabled=isDisabled).btn.btn-primary
+                button(type='button', data-toggle="clipboard", data-clipboard-target="#invite-link", disabled=isTeamDisabled).btn.btn-primary
                   i.fa.fa-clipboard
                   = ' '
                   = t('Copy Invite Link')
@@ -113,17 +114,17 @@ block body
                           td.align-middle
                             ul.list-inline.mb-0
                               li.list-inline-item
-                                form(action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`), method='POST', disabled=isDisabled).ajax-form.confirm-prompt.d-inline-block
+                                form(action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`), method='POST', disabled=isTeamDisabled).ajax-form.confirm-prompt.d-inline-block
                                   input(type="hidden", name="_csrf", value=ctx.csrf)
                                   input(type='hidden', name='_method', value='PUT')
                                   input(type='hidden', name='group', value=member.group === 'admin' ? 'user' : 'admin')
-                                  button(type='submit', disabled=isDisabled).btn.btn-dark= member.group === 'admin' ? t('Make User') : t('Make Admin')
+                                  button(type='submit', disabled=isTeamDisabled).btn.btn-dark= member.group === 'admin' ? t('Make User') : t('Make Admin')
                               //- if member.user.id !== user.id
                               li.list-inline-item
-                                form(action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`), method='POST', disabled=isDisabled).ajax-form.confirm-prompt.d-inline-block
+                                form(action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`), method='POST', disabled=isTeamDisabled).ajax-form.confirm-prompt.d-inline-block
                                   input(type="hidden", name="_csrf", value=ctx.csrf)
                                   input(type='hidden', name='_method', value='DELETE')
-                                  button(type='submit', disabled=isDisabled).btn.btn-danger
+                                  button(type='submit', disabled=isTeamDisabled).btn.btn-danger
                                     i.fa.fa-trash
                                     = ' '
                                     = t('Delete Member')
@@ -145,17 +146,17 @@ block body
                               ul.list-inline.mb-0
                                 //- copy invite link
                                 li.list-inline-item
-                                  button(type='button', data-toggle='modal', data-target='#modal-copy-invite', disabled=isDisabled).btn.btn-primary
+                                  button(type='button', data-toggle='modal', data-target='#modal-copy-invite', disabled=isTeamDisabled).btn.btn-primary
                                     i.fa.fa-clipboard
                                     = ' '
                                     = t('Copy Invite Link')
                                 //- delete invite
                                 li.list-inline-item
-                                  form(action=l(`/my-account/domains/${domain.name}/invites`), method='POST', disabled=isDisabled).ajax-form.confirm-prompt.d-inline-block
+                                  form(action=l(`/my-account/domains/${domain.name}/invites`), method='POST', disabled=isTeamDisabled).ajax-form.confirm-prompt.d-inline-block
                                     input(type="hidden", name="_csrf", value=ctx.csrf)
                                     input(type='hidden', name='_method', value='DELETE')
                                     input(type='hidden', name='email', value=invite.email)
-                                    button(type='submit', disabled=isDisabled).btn.btn-danger
+                                    button(type='submit', disabled=isTeamDisabled).btn.btn-danger
                                       i.fa.fa-trash
                                       = ' '
                                       = t('Delete Invite')
