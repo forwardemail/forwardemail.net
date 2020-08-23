@@ -191,12 +191,12 @@ Alias.pre('save', async function (next) {
     );
 
     if (!domain)
-      throw Boom.badRequest(
+      throw Boom.notFound(
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
       );
 
     if (!user)
-      throw Boom.badRequest(i18n.translateError('INVALID_USER', alias.locale));
+      throw Boom.notFound(i18n.translateError('INVALID_USER', alias.locale));
 
     // find an existing alias match
     const match = aliases.find(

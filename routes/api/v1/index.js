@@ -19,6 +19,7 @@ router.post('/log', api.v1.log.checkToken, api.v1.log.parseLog);
 //
 router.get('/lookup', api.v1.restricted, api.v1.lookup);
 router.get('/port', api.v1.restricted, api.v1.port);
+router.get('/settings', api.v1.restricted, api.v1.settings);
 router.get(
   '/max-forwarded-addresses',
   api.v1.restricted,

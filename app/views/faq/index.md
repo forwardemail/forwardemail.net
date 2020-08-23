@@ -98,79 +98,79 @@
   </thead>
   <tbody>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
       <td>Using <code>now</code> CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
-      <td><a rel="noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
       <td>Sign in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
     </tr>
     <tr>
@@ -272,7 +272,7 @@
     Tip:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value/Answer/Destination" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    Make sure to replace the values above in the "Value/Answer/Destination" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
   </span>
 </div>
 
@@ -534,7 +534,7 @@
   </div>
 </div>
 
-<div class="text-muted">Now you can <a href="https://www.youtube.com/watch?v=hvuzUasjFAo" target="_blank" rel="noreferrer">start dancing</a>, <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noreferrer">sing a song</a>, and start forwarding emails!  If you have enjoyed these instructions, then please consider <a rel="noopener noreferrer" href="/pricing">upgrading to a paid plan</a> or sending us a <a href="/donate">donation</a>.  Additional tips and optional add-ons are described below:</div>
+<div class="text-muted">Now you can <a href="https://www.youtube.com/watch?v=hvuzUasjFAo" target="_blank" rel="noopener noreferrer">start dancing</a>, <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">sing a song</a>, and start forwarding emails!  If you have enjoyed these instructions, then please consider <a rel="noopener noreferrer" href="/pricing">upgrading to a paid plan</a> or sending us a <a href="/donate">donation</a>.  Additional tips and optional add-ons are described below:</div>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -552,7 +552,7 @@
     Optional Add-on:
   </strong>
   <span>
-    Add a DMARC record for your domain name by following the instructions at <a rel="noreferrer" class="alert-link" href="https://dmarc.postmarkapp.com" target="_blank">https://dmarc.postmarkapp.com</a> (this will allow DMARC verification to pass and help to prevent people from forging emails as if they were from you).
+    Add a DMARC record for your domain name by following the instructions at <a rel="noopener noreferrer" class="alert-link" href="https://dmarc.postmarkapp.com" target="_blank">https://dmarc.postmarkapp.com</a> (this will allow DMARC verification to pass and help to prevent people from forging emails as if they were from you).
     If you intend to use <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a>, you can only set the DMARC policy to "p=none", for example:
     <br /><br />
     <code>v=DMARC1; p=none; pct=100; rua=mailto:re+random-key@dmarc.postmarkapp.com;</code>
@@ -568,7 +568,7 @@
     Optional Add-on:
   </strong>
   <span>
-    If you're the <a class="alert-link" href="#how-to-send-mail-as-using-gmial">How to Send Mail As using Gmail</a> feature, then you may want to whitelist yourself.  To do this, simply <a class="alert-link" href="https://support.google.com/a/answer/60751?hl=en&ref_topic=1685627" target="_blank" rel="noreferrer">follow these instructions by Gmail</a> on this topic.
+    If you're the <a class="alert-link" href="#how-to-send-mail-as-using-gmial">How to Send Mail As using Gmail</a> feature, then you may want to whitelist yourself.  To do this, simply <a class="alert-link" href="https://support.google.com/a/answer/60751?hl=en&ref_topic=1685627" target="_blank" rel="noopener noreferrer">follow these instructions by Gmail</a> on this topic.
   </span>
 </div>
 
@@ -607,7 +607,7 @@
        Important:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Advanced settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Advanced settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
      </span>
    </div>
 
@@ -624,7 +624,7 @@
        Tip:
      </strong>
      <span>
-       If you prefer the recipient to reply directly to your Gmail address, then leave this checked. To learn more, <a class="alert-link" href="https://support.google.com/a/answer/1710338" rel="noreferrer" target="_blank">follow these instructions by Gmail</a> on this topic.
+       If you prefer the recipient to reply directly to your Gmail address, then leave this checked. To learn more, <a class="alert-link" href="https://support.google.com/a/answer/1710338" rel="noopener noreferrer" target="_blank">follow these instructions by Gmail</a> on this topic.
      </span>
    </div>
 

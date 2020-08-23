@@ -16,7 +16,7 @@ const app = new ForwardEmail({
   redis: false
 });
 
-async function port(ctx) {
+async function settings(ctx) {
   try {
     if (!isSANB(ctx.query.domain) || !isFQDN(ctx.query.domain))
       throw Boom.badRequest(ctx.translateError('INVALID_FQDN'));
@@ -31,6 +31,9 @@ async function port(ctx) {
       const verifications = [];
       const ports = [];
       let port = '25';
+      let hasPhishingProtection = true;
+      let hasExecutableProtection = true;
+      let hasVirusProtection = true;
 
       for (const element of records) {
         const record = element.join('').trim(); // join chunks together
@@ -45,7 +48,7 @@ async function port(ctx) {
 
       if (verifications.length > 0) {
         if (verifications.length > 1)
-          throw Boom.badRequest(
+          ctx.logger.error(
             ctx.translateError('SINGLE_VERIFICATION_RECORD_REQUIRED')
           );
 
@@ -53,23 +56,37 @@ async function port(ctx) {
           verification_record: verifications[0],
           plan: { $ne: 'free' }
         })
+          .select(
+            'smtp_port has_phishing_protection has_executable_protection has_virus_protection'
+          )
           .lean()
           .exec();
 
-        if (!domain)
-          throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
-
-        port = domain.smtp_port;
+        if (domain) {
+          port = domain.smtp_port;
+          hasPhishingProtection = domain.has_phishing_protection;
+          hasExecutableProtection = domain.has_executable_protection;
+          hasVirusProtection = domain.has_virus_protection;
+        } else {
+          ctx.logger.error(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+        }
       } else if (ports.length > 0) {
         if (ports.length > 1)
-          throw Boom.badRequest(ctx.translateError('MULTIPLE_PORT_RECORDS'));
+          ctx.logger.error(ctx.translateError('MULTIPLE_PORT_RECORDS'));
         port = ports[0];
       }
 
-      if (!isPort(port))
-        throw Boom.badRequest(ctx.translateError('INVALID_PORT'));
+      if (!isPort(port)) {
+        ctx.logger.error(ctx.translateError('INVALID_PORT'));
+        port = '25';
+      }
 
-      ctx.body = { port };
+      ctx.body = {
+        port,
+        has_phishing_protection: hasPhishingProtection,
+        has_executable_protection: hasExecutableProtection,
+        has_virus_protection: hasVirusProtection
+      };
     } catch (err) {
       throw Boom.badRequest(err);
     }
@@ -78,4 +95,4 @@ async function port(ctx) {
   }
 }
 
-module.exports = port;
+module.exports = settings;

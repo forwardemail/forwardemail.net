@@ -92,6 +92,18 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domain = new mongoose.Schema({
+  has_phishing_protection: {
+    type: Boolean,
+    default: true
+  },
+  has_executable_protection: {
+    type: Boolean,
+    default: true
+  },
+  has_virus_protection: {
+    type: Boolean,
+    default: true
+  },
   last_checked_at: Date,
   is_api: {
     type: Boolean,
@@ -411,7 +423,7 @@ async function verifyRecords(_id, locale) {
   const domain = await this.model('Domain').findById(_id);
 
   if (!domain)
-    throw Boom.badRequest(
+    throw Boom.notFound(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
 

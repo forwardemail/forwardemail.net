@@ -178,5 +178,7 @@ module.exports = {
   EMAIL_CHANGE_LIMIT:
     'You can only change your email address every <span class="notranslate">%s</span> minutes. Please try again <span class="notranslate">%s</span>.',
   EMAIL_CHANGE_ALREADY_EXISTS:
-    'The email address <span class="notranslate">%s</span> already exists.'
+    'The email address <span class="notranslate">%s</span> already exists.',
+  ALIASES_NEED_REASSIGNED:
+    'Aliases owned by the member being deleted must be first reassigned or deleted.'
 };

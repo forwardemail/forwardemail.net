@@ -30,10 +30,10 @@ block body
                 a(href=l('/free-disposable-addresses'), role='button', data-toggle='tooltip', data-placement='bottom', title=`${t('Use a custom domain or one of our free vanity domains:')} ${ajc(config.vanityDomains)}`).btn.btn-link.text-primary.py-0
                   i.fa.fa-question-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold
-                != `<i class="fa fa-fw fa-shield-alt text-primary mr-3"></i> ${t('Spam/phishing/virus/executable protection')}`
+                != `<i class="fa fa-fw fa-shield-alt text-primary mr-3"></i> ${t('Phishing, executable, and virus protection')}`
                 = ' '
-                a(href='https://spamscanner.net', target='_blank', rel='noreferrer').btn.btn-link.text-dark.py-0
-                  i.fa.fa-external-link-alt
+                a(href='https://spamscanner.net', target='_blank', rel='noopener noreferrer', role='button', data-toggle='tooltip', data-placement='bottom', title=t('We built our own anti-spam, phishing, and virus protection software called Spam Scanner. It adides by the same privacy-first and zero logging policies.')).btn.btn-link.text-primary.py-0
+                  i.fa.fa-question-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 != `<i class="fa fa-fw fa-paperclip text-primary mr-3"></i> ${t('50MB attachment limit')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('"Send mail as" with Gmail, Outlook, and Yahoo')}`
@@ -240,12 +240,17 @@ block body
               = t('We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.')
         .row.my-5
           .col
+            h2.font-weight-bold!= t('Can I configure <a href="%s" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', 'https://spamscanner.net')
+            p.lead
+              != t('Yes. Just toggle malware, adult-content, phishing, executable, and/or virus protection from your domain\'s <a href="%s">Advanced Settings</a>.', sortedDomains && sortedDomains[0] && sortedDomains[0].name ? l(`/my-account/domains/${sortedDomains[0].name}/advanced-settings`) : l('my-account/domains'))
+        .row.my-5
+          .col
             h2.font-weight-bold= t('Do you offer unlimited domains for one price?')
             p.lead!= t('Yes. Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.')
         .row.my-5
           .col
             h2.font-weight-bold= t('Which payment methods do you accept?')
-            p.lead!= t('We accept credit cards using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noreferrer">Stripe</a> and payment with <a class="alert-link" href="https://paypal.com" target="_blank" rel="noreferrer">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.')
+            p.lead!= t('We accept credit cards using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noopener noreferrer">Stripe</a> and payment with <a class="alert-link" href="https://paypal.com" target="_blank" rel="noopener noreferrer">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.')
         .row.my-5
           .col
             h2.font-weight-bold= t('Will you ever increase prices?')
