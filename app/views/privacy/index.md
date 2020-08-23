@@ -11,10 +11,9 @@
 
 ## Information Not Collected
 
-* We do not store any forwarded emails.
-* We do not store any metadata about forwarded emails.
-* We do not store any server-side logs.
-* We do not store any client-side logs.
+* We do not store any emails.
+* We do not store any metadata about emails.
+* We do not store any logs.
 * We do not store any IP addresses.
 * We do not store any browser information.
 

@@ -831,8 +831,15 @@ function sortedDomains(ctx, next) {
   return next();
 }
 
+function ensureTeamPlan(ctx, next) {
+  ctx.state.isTeamPlanRequired = ctx.state.domain.plan !== 'team';
+  return next();
+}
+
 function ensureUpgradedPlan(ctx, next) {
-  if (ctx.state.domain.plan !== 'free') return next();
+  if (ctx.state.domain.plan !== 'free' && !ctx.state.isTeamPlanRequired)
+    return next();
+
   const swal = {
     title: ctx.translate('UPGRADE_PLAN'),
     html: ctx.translate('PLAN_UPGRADE_REQUIRED'),
@@ -1328,16 +1335,16 @@ async function removeMember(ctx, next) {
     return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
   const member = ctx.state.domain.members.find(
-    (member) => member.user.id === ctx.params.member_id
+    (member) => member.user && member.user.id === ctx.params.member_id
   );
 
-  if (!member)
+  if (!member || !member.user)
     return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
   // ensure that no aliases created with this user being removed
   // (they need re-assigned first before the user can be removed)
   const memberAliases = ctx.state.domain.aliases.filter(
-    (user) => user.id === member.user.id
+    (alias) => alias.user && alias.user.id === member.user.id
   );
 
   if (memberAliases.length > 0)
@@ -1438,6 +1445,7 @@ module.exports = {
   updateAlias,
   removeAlias,
   sortedDomains,
+  ensureTeamPlan,
   ensureUpgradedPlan,
   retrieveBilling,
   createAliasForm,
