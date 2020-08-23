@@ -16,6 +16,7 @@ module.exports = (client) => ({
   views: config.views,
   passport,
   koaCash: env.CACHE_RESPONSES ? koaCashConfig(client) : false,
+  redirectLoop: false,
   cacheResponses: env.CACHE_RESPONSES
     ? {
         routes: [
