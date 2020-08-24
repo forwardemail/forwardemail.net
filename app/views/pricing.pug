@@ -242,7 +242,7 @@ block body
           .col
             h2.font-weight-bold!= t('Can I configure <a href="%s" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', 'https://spamscanner.net')
             p.lead
-              != t('<span class="font-weight-bold">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href="%s">Advanced Settings</a>.', sortedDomains && sortedDomains[0] && sortedDomains[0].name ? l(`/my-account/domains/${sortedDomains[0].name}/advanced-settings`) : l('my-account/domains'))
+              != t('<span class="font-weight-bold">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href="%s">Advanced Settings</a>.', sortedDomains && sortedDomains[0] && sortedDomains[0].name ? l(`/my-account/domains/${sortedDomains[0].name}/advanced-settings`) : l('/my-account/domains'))
         .row.my-5
           .col
             h2.font-weight-bold= t('Do you offer unlimited domains for one price?')
