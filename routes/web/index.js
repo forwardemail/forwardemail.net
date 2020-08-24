@@ -96,12 +96,30 @@ localeRouter
   .get('/404', render('404'))
   .get('/500', render('500'))
   .post('/help', web.help)
-  .get('/forgot-password', render('forgot-password'))
-  .post('/forgot-password', web.auth.forgotPassword)
-  .get('/reset-password/:token', render('reset-password'))
-  .post('/reset-password/:token', web.auth.resetPassword)
-  .get('/change-email/:token', render('change-email'))
-  .post('/change-email/:token', web.auth.changeEmail)
+  .get('/forgot-password', policies.ensureLoggedOut, render('forgot-password'))
+  .post('/forgot-password', policies.ensureLoggedOut, web.auth.forgotPassword)
+  .get(
+    '/reset-password/:token',
+    policies.ensureLoggedOut,
+    render('reset-password')
+  )
+  .post(
+    '/reset-password/:token',
+    policies.ensureLoggedOut,
+    web.auth.resetPassword
+  )
+  .get(
+    '/change-email/:token',
+    policies.ensureLoggedIn,
+    policies.ensureOtp,
+    render('change-email')
+  )
+  .post(
+    '/change-email/:token',
+    policies.ensureLoggedIn,
+    policies.ensureOtp,
+    web.auth.changeEmail
+  )
   .get(
     config.verifyRoute,
     policies.ensureLoggedIn,
@@ -121,8 +139,13 @@ localeRouter
     web.auth.registerOrLogin
   )
   .post(config.loginRoute, web.auth.login)
-  .get('/register', web.auth.parseReturnOrRedirectTo, web.auth.registerOrLogin)
-  .post('/register', web.auth.register);
+  .get(
+    '/register',
+    policies.ensureLoggedOut,
+    web.auth.parseReturnOrRedirectTo,
+    web.auth.registerOrLogin
+  )
+  .post('/register', policies.ensureLoggedOut, web.auth.register);
 
 localeRouter.use(myAccount.routes());
 localeRouter.use(admin.routes());

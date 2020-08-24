@@ -31,6 +31,7 @@ async function settings(ctx) {
       const verifications = [];
       const ports = [];
       let port = '25';
+      let hasAdultContentProtection = true;
       let hasPhishingProtection = true;
       let hasExecutableProtection = true;
       let hasVirusProtection = true;
@@ -57,13 +58,14 @@ async function settings(ctx) {
           plan: { $ne: 'free' }
         })
           .select(
-            'smtp_port has_phishing_protection has_executable_protection has_virus_protection'
+            'smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection'
           )
           .lean()
           .exec();
 
         if (domain) {
           port = domain.smtp_port;
+          hasAdultContentProtection = domain.has_adult_content_protection;
           hasPhishingProtection = domain.has_phishing_protection;
           hasExecutableProtection = domain.has_executable_protection;
           hasVirusProtection = domain.has_virus_protection;
@@ -83,6 +85,7 @@ async function settings(ctx) {
 
       ctx.body = {
         port,
+        has_adult_content_protection: hasAdultContentProtection,
         has_phishing_protection: hasPhishingProtection,
         has_executable_protection: hasExecutableProtection,
         has_virus_protection: hasVirusProtection

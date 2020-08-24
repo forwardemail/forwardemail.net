@@ -92,6 +92,10 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domain = new mongoose.Schema({
+  has_adult_content_protection: {
+    type: Boolean,
+    default: true
+  },
   has_phishing_protection: {
     type: Boolean,
     default: true
