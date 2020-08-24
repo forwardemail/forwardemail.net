@@ -505,11 +505,21 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
   for (const element of addresses) {
     // convert addresses to lowercase
     const lowerCaseAddress = element.toLowerCase();
+
     if (
-      lowerCaseAddress.includes(':') &&
+      (lowerCaseAddress.includes(':') || lowerCaseAddress.indexOf('!') === 0) &&
       !isURL(element, app.config.isURLOptions)
     ) {
-      const addr = lowerCaseAddress.split(':');
+      // > const str = 'foo:https://foo.com'
+      // > str.slice(0, str.indexOf(':'))
+      // 'foo'
+      // > str.slice(str.indexOf(':') + 1)
+      // 'https://foo.com'
+      const index = element.indexOf(':');
+      const addr =
+        index === -1
+          ? [element]
+          : [element.slice(0, index), element.slice(index + 1)];
 
       // addr[0] = hello (username)
       // addr[1] = niftylettuce@gmail.com (forwarding email)
@@ -532,6 +542,7 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
       )
         errors.push(
           new Error(
+            // TODO: we may want to replace this with "Invalid Recipients"
             `Domain has an invalid "${app.config.recordPrefix}" TXT record due to an invalid email address of "${element}".`
           )
         );
