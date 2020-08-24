@@ -70,7 +70,12 @@ async function settings(ctx) {
           hasExecutableProtection = domain.has_executable_protection;
           hasVirusProtection = domain.has_virus_protection;
         } else {
-          ctx.logger.error(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+          ctx.logger.warn(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+          ctx.logger.error(
+            new Error(
+              `${ctx.query.domain} has forward-email-site-verification=${verifications[0]} which is no longer valid and needs fixed`
+            )
+          );
         }
       } else if (ports.length > 0) {
         if (ports.length > 1)
