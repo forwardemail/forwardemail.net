@@ -181,9 +181,13 @@ block body
                 = ' '
                 != t('You can learn more at <a target="_blank" rel="noopener noreferrer" href="%s" class="notranslate">%s</a>.', 'https://spamscanner.net', 'https://spamscanner.net')
               .form-group.form-check
+                input#input-has-adult-protection(type='checkbox', disabled=isDisabled, name='has_adult_content_protection', value='true', checked=domain.has_adult_content_protection).form-check-input
+                label(for='input-has-adult-protection').form-check-label= t('Adult-related content protection')
+                p.form-text: small.text-black-50!= t('If you uncheck this, then links will <u>not be scanned</u> for adult-related content.')
+              .form-group.form-check
                 input#input-has-phishing-protection(type='checkbox', disabled=isDisabled, name='has_phishing_protection', value='true', checked=domain.has_phishing_protection).form-check-input
                 label(for='input-has-phishing-protection').form-check-label= t('Phishing protection')
-                p.form-text: small.text-black-50!= t('If you uncheck this, then links will <u>not be scanned</u> for malware, adult-related content, domain swapping, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor phishing in general.', 'https://en.wikipedia.org/wiki/IDN_homograph_attack')
+                p.form-text: small.text-black-50!= t('If you uncheck this, then links will <u>not be scanned</u> for malware, domain swapping, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor phishing in general.', 'https://en.wikipedia.org/wiki/IDN_homograph_attack')
               .form-group.form-check
                 input#input-has-executable-protection(type='checkbox', disabled=isDisabled, name='has_executable_protection', value='true', checked=domain.has_executable_protection).form-check-input
                 label(for='input-has-executable-protection').form-check-label= t('Executable protection')

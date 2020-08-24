@@ -1398,6 +1398,9 @@ async function updateDomain(ctx, next) {
     else return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PORT')));
   } else {
     // Spam Scanner Settings
+    ctx.state.domain.has_adult_content_protection = boolean(
+      ctx.request.body.has_adult_content_protection
+    );
     ctx.state.domain.has_phishing_protection = boolean(
       ctx.request.body.has_phishing_protection
     );
