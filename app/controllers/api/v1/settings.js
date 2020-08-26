@@ -71,11 +71,14 @@ async function settings(ctx) {
           hasVirusProtection = domain.has_virus_protection;
         } else {
           ctx.logger.warn(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+          /*
+          // TODO: <https://github.com/forwardemail/forwardemail.net/issues/60>
           ctx.logger.error(
             new Error(
               `${ctx.query.domain} has forward-email-site-verification=${verifications[0]} which is no longer valid and needs fixed`
             )
           );
+          */
         }
       } else if (ports.length > 0) {
         if (ports.length > 1)
