@@ -576,7 +576,7 @@ async function verify(ctx) {
       // wrap with try/catch to prevent redirect looping
       // (even though the koa redirect loop package will help here)
       if (!err.isBoom) return ctx.throw(err);
-      ctx.logger.warn(err);
+      ctx.logger.error(err);
       if (ctx.accepts('html')) {
         ctx.flash('warning', err.message);
         ctx.redirect(redirectTo);
