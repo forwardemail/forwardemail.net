@@ -856,5 +856,16 @@
   "Delete Domain": "Delete Domain",
   "Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.": "Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.",
   "Back to Domain": "Back to Domain",
-  "Your request was successfully completed.": "Your request was successfully completed."
+  "Your request was successfully completed.": "Your request was successfully completed.",
+  "Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in ": "Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in ",
+  "Please verify your email address to continue.": "Please verify your email address to continue.",
+  "We have emailed you a link to reset your password.": "We have emailed you a link to reset your password.",
+  "You have successfully set a new password.": "You have successfully set a new password.",
+  "Reset token and email were not valid together.": "Reset token and email were not valid together.",
+  "Password was invalid.": "Password was invalid.",
+  "You can only request a password reset every 30 minutes.  Please try again <span class=\"notranslate\">%s</span>.": "You can only request a password reset every 30 minutes.  Please try again <span class=\"notranslate\">%s</span>.",
+  "Your help request has been sent successfully.  You should hear from us soon.  Thank you!": "Your help request has been sent successfully.  You should hear from us soon.  Thank you!",
+  "You have reached the limit for sending help requests.  Please try again.": "You have reached the limit for sending help requests.  Please try again.",
+  "Help &#124; <span class=\"notranslate\">Forward Email</span>": "Help &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Ask Forward Email your questions or leave comments": "Ask Forward Email your questions or leave comments"
 }

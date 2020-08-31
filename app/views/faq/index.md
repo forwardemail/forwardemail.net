@@ -891,7 +891,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 
 > Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object, and also append the "raw" property with the raw email message as a String.
 
-Webhook HTTP requests will retry up to 3 times, with 20 seconds maximum timeout per request.  We will retry automatically based off the default status and error codes used in [superagent's retry method](https://visionmedia.github.io/superagent/#retrying-requests) (this package is also maintained by the creator of Forward Email).
+Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in [superagent's retry method](https://visionmedia.github.io/superagent/#retrying-requests) (this package is also maintained by the creator of Forward Email).
 
 
 ## Can I just use this email forwarding service as a "fallback" or "fallover" MX server
