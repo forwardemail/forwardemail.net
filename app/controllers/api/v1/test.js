@@ -6,10 +6,8 @@ const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
 async function test(ctx) {
   const label = isSANB(ctx.query.label) ? slug(ctx.query.label) : 'alias';
-  ctx.body = `${label}+${cryptoRandomString({
-    length: 10,
-    characters
-  })}@niftylettuce.com`;
+  const str = await cryptoRandomString.async({ length: 10, characters });
+  ctx.body = `${label}+${str}@niftylettuce.com`;
 }
 
 module.exports = test;
