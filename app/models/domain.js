@@ -177,7 +177,7 @@ Domain.virtual('skip_verification')
     this.__skip_verification = boolean(skipVerification);
   });
 
-Domain.pre('validate', function (next) {
+Domain.pre('validate', async function (next) {
   try {
     const domain = this;
     if (!domain.plan) domain.plan = 'free';
@@ -190,7 +190,9 @@ Domain.pre('validate', function (next) {
       );
 
     if (!isSANB(this.verification_record))
-      this.verification_record = cryptoRandomString(verificationRecordOptions);
+      this.verification_record = await cryptoRandomString.async(
+        verificationRecordOptions
+      );
 
     if (
       this.verification_record.replace(REGEX_VERIFICATION, '') !==

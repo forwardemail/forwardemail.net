@@ -40,10 +40,11 @@ test('successfully registers with strong password', async (t) => {
 });
 
 test('successfully registers with stronger password', async (t) => {
+  const password = await cryptoRandomString.async({ length: 50 });
   const res = await global.web.post('/en/register', {
     body: {
       email: 'test123@example.com',
-      password: cryptoRandomString({ length: 50 })
+      password
     }
   });
   t.is(res.body.message);
