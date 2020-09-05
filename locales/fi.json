@@ -867,5 +867,14 @@
   "Your help request has been sent successfully.  You should hear from us soon.  Thank you!": "Your help request has been sent successfully.  You should hear from us soon.  Thank you!",
   "You have reached the limit for sending help requests.  Please try again.": "You have reached the limit for sending help requests.  Please try again.",
   "Help &#124; <span class=\"notranslate\">Forward Email</span>": "Help &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Ask Forward Email your questions or leave comments": "Ask Forward Email your questions or leave comments"
+  "Ask Forward Email your questions or leave comments": "Ask Forward Email your questions or leave comments",
+  "Invalid API token.": "Invalid API token.",
+  "Sign up with Google": "Sign up with Google",
+  "Sign up with GitHub": "Sign up with GitHub",
+  "or": "or",
+  "Sign in with Google": "Sign in with Google",
+  "Sign in with GitHub": "Sign in with GitHub",
+  "Confirm Password": "Confirm Password",
+  "Need to change your password?": "Need to change your password?",
+  "Multiple errors occurred during record verification.": "Multiple errors occurred during record verification."
 }

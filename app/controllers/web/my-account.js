@@ -1,12 +1,13 @@
 const path = require('path');
 
 const Boom = require('@hapi/boom');
+const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
 const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
-const moment = require('moment');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
+const moment = require('moment');
 const pug = require('pug');
 const slug = require('speakingurl');
 const striptags = require('striptags');
@@ -16,8 +17,16 @@ const { parse } = require('node-html-parser');
 
 const config = require('../../../config');
 const emailHelper = require('../../../helpers/email');
+const logger = require('../../../helpers/logger');
 const toObject = require('../../../helpers/to-object');
 const { Users, Domains, Aliases } = require('../../models');
+
+const app = new ForwardEmail({
+  logger,
+  recordPrefix: config.recordPrefix,
+  srs: { secret: 'null' },
+  redis: false
+});
 
 async function update(ctx) {
   const { body } = ctx.request;
@@ -601,9 +610,22 @@ async function removeDomain(ctx, next) {
 }
 
 async function verifyRecords(ctx) {
-  // check mx and txt
   try {
-    await Domains.verifyRecords(ctx.state.domain._id);
+    await Promise.all([
+      // reset redis cache for smtp servers
+      ctx.client
+        ? ['a', 'mx', 'txt'].map(async (type) => {
+            try {
+              await app.dnsQuery(type, ctx.state.domain.name, true, ctx.client);
+            } catch (err) {
+              ctx.logger.warn(err);
+            }
+          })
+        : Promise.resolve(),
+
+      // check mx and txt
+      Domains.verifyRecords(ctx.state.domain._id, ctx.locale)
+    ]);
 
     const text = ctx.translate('DOMAIN_IS_VERIFIED');
 
