@@ -5,6 +5,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const base64ToS3 = require('nodemailer-base64-to-s3');
 const consolidate = require('consolidate');
+const isSANB = require('is-string-and-not-blank');
 const manifestRev = require('manifest-rev');
 const ms = require('ms');
 const nodemailer = require('nodemailer');
@@ -206,8 +207,21 @@ const config = {
     keylen: 512,
     passwordValidator: (password, fn) => {
       if (env.NODE_ENV === 'development') return fn();
-      const { score } = zxcvbn(password);
-      fn(score < 3 ? Boom.badRequest(phrases.INVALID_PASSWORD_STRENGTH) : null);
+      // TODO: new fork `zxcvbn3`
+      // <https://github.com/hrueger/zxcvbn>
+      // <https://github.com/dropbox/zxcvbn/issues/290
+      const { score, feedback } = zxcvbn(password);
+      if (score >= 2) return fn();
+      let message = phrases.INVALID_PASSWORD_STRENGTH;
+      if (_.isObject(feedback)) {
+        if (isSANB(feedback.warning)) message += ` ${feedback.warning}.`;
+        if (isSANB(feedback.suggestions))
+          message += ` ${feedback.suggestions}.`;
+      }
+
+      const err = Boom.badRequest(message);
+      err.no_translate = true;
+      fn(err);
     },
     errorMessages: {
       MissingPasswordError: phrases.PASSPORT_MISSING_PASSWORD_ERROR,
