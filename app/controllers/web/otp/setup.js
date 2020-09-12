@@ -7,6 +7,11 @@ const config = require('../../../../config');
 
 const options = { width: 500, margin: 0 };
 
+// allow last and current totp passcode
+authenticator.options = {
+  window: 1
+};
+
 async function setup(ctx) {
   const { body } = ctx.request;
 
@@ -27,12 +32,12 @@ async function setup(ctx) {
   }
 
   if (isSANB(body.token)) {
-    const isValid = authenticator.verify({
-      token: ctx.request.body.token,
-      secret: ctx.state.user[config.passport.fields.otpToken]
-    });
+    const { token } = ctx.request.body;
+    const secret = ctx.state.user[config.passport.fields.otpToken];
+    const isValid = authenticator.checkDelta(token, secret);
 
-    if (!isValid) {
+    // delta should be 0 for current, or -1 for last token
+    if (isValid !== 0 && isValid !== -1) {
       ctx.flash('error', ctx.translate('INVALID_OTP_PASSCODE'));
       ctx.state.otpTokenURI = authenticator.keyuri(
         ctx.state.user.email,
