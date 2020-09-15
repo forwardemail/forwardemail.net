@@ -633,6 +633,15 @@
 10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
 
 11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span>[user@gmail.com](mailto:user@gmail.com)</span>)
+    <div class="alert my-3 alert-primary">
+      <i class="fa fa-info-circle font-weight-bold"></i>
+      <strong class="font-weight-bold">
+        Important:
+      </strong>
+      <span>
+        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+      </span>
+    </div>
 
 12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
 
@@ -1270,6 +1279,20 @@ Yes! As of October 2, 2018 we have added this feature.  Simply view these two li
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
+
+You should also set the SPF record for Outlook in your DNS configuration TXT record.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF TXT record, for example:
+    <br /><br />
+    <code>v=spf1 a mx include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
+</div>
 
 
 ## Can I "send mail as" in Apple Mail and iCloud Mail with this

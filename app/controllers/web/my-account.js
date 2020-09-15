@@ -7,7 +7,7 @@ const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const moment = require('moment');
+const dayjs = require('dayjs-with-plugins');
 const pug = require('pug');
 const slug = require('speakingurl');
 const striptags = require('striptags');
@@ -78,17 +78,17 @@ async function update(ctx) {
     if (
       ctx.state.user[config.userFields.changeEmailTokenExpiresAt] &&
       ctx.state.user[config.userFields.changeEmailToken] &&
-      moment(
+      dayjs(
         ctx.state.user[config.userFields.changeEmailTokenExpiresAt]
       ).isAfter(
-        moment().subtract(config.changeEmailTokenTimeoutMs, 'milliseconds')
+        dayjs().subtract(config.changeEmailTokenTimeoutMs, 'milliseconds')
       )
     )
       throw Boom.badRequest(
         ctx.translateError(
           'EMAIL_CHANGE_LIMIT',
-          moment.duration(config.changeEmailLimitMs, 'milliseconds').minutes(),
-          moment(
+          dayjs.duration(config.changeEmailLimitMs, 'milliseconds').minutes(),
+          dayjs(
             ctx.state.user[config.userFields.changeEmailTokenExpiresAt]
           ).fromNow()
         )
@@ -103,7 +103,7 @@ async function update(ctx) {
       );
 
     // set the reset token and expiry
-    ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = moment()
+    ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = dayjs()
       .add(config.changeEmailTokenTimeoutMs, 'milliseconds')
       .toDate();
     ctx.state.user[

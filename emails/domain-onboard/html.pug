@@ -12,7 +12,7 @@ block content
               img(src=`${config.urls.web}/img/emails/domain-onboard.gif`, alt='', data-inline-ignore=true).img-responsive
             .p-3
               h1.h3!= t('Woo-hoo!')
-              p.card-text!= t('<span class="notranslate">%s</span> you added the domain <strong><span class="notranslate">%s</span></strong>.', capitalize(moment(domain.created_at).fromNow()), domain.name)
+              p.card-text!= t('<span class="notranslate">%s</span> you added the domain <strong><span class="notranslate">%s</span></strong>.', capitalize(dayjs(domain.created_at).fromNow()), domain.name)
               a.btn.btn-lg.btn-primary(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`, role="button")
                 = t('Manage domain')
             if domain.plan === 'free'

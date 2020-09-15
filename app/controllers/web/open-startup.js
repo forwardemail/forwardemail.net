@@ -1,10 +1,8 @@
 const _ = require('lodash');
-const advancedFormat = require('dayjs/plugin/advancedFormat');
-const dayjs = require('dayjs');
+const dayjs = require('dayjs-with-plugins');
 const numeral = require('numeral');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
-const weekOfYear = require('dayjs/plugin/weekOfYear');
 
 const config = require('../../../config');
 const { Users, Domains, Aliases } = require('../../models');
@@ -28,11 +26,6 @@ const DAYS_OF_WEEK = [
   'Friday',
   'Saturday'
 ];
-
-// <https://day.js.org/docs/en/plugin/advanced-format>
-dayjs.extend(advancedFormat);
-// <https://day.js.org/docs/en/plugin/week-of-year>
-dayjs.extend(weekOfYear);
 
 async function openStartup(ctx) {
   if (ctx.accepts('html')) return ctx.render('open-startup');

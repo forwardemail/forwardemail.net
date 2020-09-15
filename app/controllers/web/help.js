@@ -1,5 +1,5 @@
 const sanitize = require('sanitize-html');
-const moment = require('moment');
+const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
@@ -57,7 +57,7 @@ async function help(ctx) {
       }
     ],
     created_at: {
-      $gte: moment().subtract(1, 'day').toDate()
+      $gte: dayjs().subtract(1, 'day').toDate()
     }
   });
 

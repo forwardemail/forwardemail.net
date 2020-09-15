@@ -3,7 +3,7 @@ const _ = require('lodash');
 const captainHook = require('captain-hook');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
-const moment = require('moment');
+const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const mongooseOmitCommonFields = require('mongoose-omit-common-fields');
@@ -49,8 +49,10 @@ const omitExtraFields = [
   fields.otpToken
 ];
 
-// set relative threshold for messages
-moment.relativeTimeThreshold('ss', 5);
+// TODO: set relative threshold for messages
+// <https://github.com/niftylettuce/dayjs-with-plugins/issues/2>
+// <https://day.js.org/docs/en/customization/relative-time>
+// moment.relativeTimeThreshold('ss', 5);
 
 const User = new mongoose.Schema({
   // group permissions
@@ -312,8 +314,8 @@ User.methods.sendVerificationEmail = async function (ctx, reset = false) {
         phrase: config.i18n.phrases.EMAIL_VERIFICATION_INTERVAL,
         locale: this[config.lastLocaleField]
       },
-      moment
-        .duration(config.verificationPinEmailIntervalMs - diff)
+      dayjs
+        .duration(config.verificationPinEmailIntervalMs - diff, 'milliseconds')
         .locale(this[config.lastLocaleField])
         .humanize()
     );
