@@ -6,7 +6,7 @@ const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
-const dayjs = require('dayjs');
+const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 

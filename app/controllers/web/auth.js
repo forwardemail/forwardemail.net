@@ -2,7 +2,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
-const moment = require('moment');
+const dayjs = require('dayjs-with-plugins');
 const qrcode = require('qrcode');
 const sanitizeHtml = require('sanitize-html');
 const validator = require('validator');
@@ -154,9 +154,9 @@ async function login(ctx, next) {
     }
 
     let greeting = 'Good morning';
-    if (moment().format('HH') >= 12 && moment().format('HH') <= 17)
+    if (dayjs().format('HH') >= 12 && dayjs().format('HH') <= 17)
       greeting = 'Good afternoon';
-    else if (moment().format('HH') >= 17) greeting = 'Good evening';
+    else if (dayjs().format('HH') >= 17) greeting = 'Good evening';
 
     if (user) {
       await ctx.login(user);
@@ -373,14 +373,14 @@ async function forgotPassword(ctx) {
   if (
     user[config.userFields.resetTokenExpiresAt] &&
     user[config.userFields.resetToken] &&
-    moment(user[config.userFields.resetTokenExpiresAt]).isAfter(
-      moment().subtract(config.resetTokenTimeoutMs, 'milliseconds')
+    dayjs(user[config.userFields.resetTokenExpiresAt]).isAfter(
+      dayjs().subtract(config.resetTokenTimeoutMs, 'milliseconds')
     )
   )
     throw Boom.badRequest(
       ctx.translateError(
         'PASSWORD_RESET_LIMIT',
-        moment(user[config.userFields.resetTokenExpiresAt]).fromNow()
+        dayjs(user[config.userFields.resetTokenExpiresAt]).fromNow()
       )
     );
 
