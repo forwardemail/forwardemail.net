@@ -63,9 +63,9 @@ const staticAssets = [
 ];
 
 function pug() {
-  let stream = src('app/views/**/*.pug', { since: lastRun(pug) }).pipe(
-    pugLinter({ reporter: 'default', failAfterError: true })
-  );
+  let stream = src(['app/views/**/*.pug', 'emails/**/*.pug'], {
+    since: lastRun(pug)
+  }).pipe(pugLinter({ reporter: 'default', failAfterError: true }));
 
   if (DEV) stream = stream.pipe(lr(config.livereload));
 
@@ -330,7 +330,7 @@ module.exports = {
     watch('assets/img/**/*', img);
     watch('assets/css/**/*.scss', series(fonts, scss, css));
     watch('assets/js/**/*.js', series(xo, bundle));
-    watch('app/views/**/*.pug', pug);
+    watch(['app/views/**/*.pug', 'emails/**/*.pug'], pug);
     watch(staticAssets, static);
   },
   pug,
