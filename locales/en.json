@@ -1282,5 +1282,6 @@
   "us": "us",
   "If you need to increase this limit, then please contact %s and include a valid reason.": "If you need to increase this limit, then please contact %s and include a valid reason.",
   "Increase limit": "Increase limit",
-  "Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in ": "Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in "
+  "Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in ": "Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in ",
+  "You should also set the SPF record for Outlook in your DNS configuration TXT record.": "You should also set the SPF record for Outlook in your DNS configuration TXT record."
 }

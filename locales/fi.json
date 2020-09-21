@@ -876,5 +876,12 @@
   "Sign in with GitHub": "Sign in with GitHub",
   "Confirm Password": "Confirm Password",
   "Need to change your password?": "Need to change your password?",
-  "Multiple errors occurred during record verification.": "Multiple errors occurred during record verification."
+  "Multiple errors occurred during record verification.": "Multiple errors occurred during record verification.",
+  "You should also set the SPF record for Outlook in your DNS configuration TXT record.": "You should also set the SPF record for Outlook in your DNS configuration TXT record.",
+  "Forgot password &#124; <span class=\"notranslate\">Forward Email</span>": "Forgot password &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Reset your account password": "Reset your account password",
+  "Forgot Password": "Forgot Password",
+  "Enter your email address to continue.": "Enter your email address to continue.",
+  "Remember your password?": "Remember your password?",
+  "Log in": "Log in"
 }
