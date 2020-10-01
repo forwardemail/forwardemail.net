@@ -126,7 +126,11 @@
       <td>Sign in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
     </tr>
     <tr>
-      <td><a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a></td>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
       <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
     </tr>
     <tr>
@@ -150,7 +154,11 @@
       <td>Sign in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
     </tr>
     <tr>
-      <td><a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a></td>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
       <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
     </tr>
     <tr>
