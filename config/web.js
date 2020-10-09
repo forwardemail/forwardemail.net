@@ -31,5 +31,8 @@ module.exports = (client) => ({
           '/favicon(.*)'
         ]
       }
-    : false
+    : false,
+  serveStatic: {
+    hidden: true
+  }
 });
