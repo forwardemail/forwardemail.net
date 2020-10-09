@@ -20,6 +20,7 @@ module.exports = (client) => ({
   cacheResponses: env.CACHE_RESPONSES
     ? {
         routes: [
+          '/.well-known/(.*)',
           '/css/(.*)',
           '/img/(.*)',
           '/js/(.*)',
