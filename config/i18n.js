@@ -11,7 +11,12 @@ module.exports = {
   phrases,
   defaultLocale: 'en',
   directory: path.join(__dirname, '..', 'locales'),
-  ignoredRedirectGlobs: ['/auth/*', '/auth/**/*'],
+  ignoredRedirectGlobs: [
+    '/auth/*',
+    '/auth/**/*',
+    '/.well-known/*',
+    '/.well-known/**/*'
+  ],
   lastLocaleField: 'last_locale',
   locales
 };
