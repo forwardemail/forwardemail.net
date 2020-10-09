@@ -584,7 +584,7 @@
     Optional Add-on:
   </strong>
   <span>
-    If you're the <a class="alert-link" href="#how-to-send-mail-as-using-gmial">How to Send Mail As using Gmail</a> feature, then you may want to whitelist yourself.  To do this, simply <a class="alert-link" href="https://support.google.com/a/answer/60751?hl=en&ref_topic=1685627" target="_blank" rel="noopener noreferrer">follow these instructions by Gmail</a> on this topic.
+    If you're the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to whitelist yourself.  To do this, simply <a class="alert-link" href="https://support.google.com/a/answer/60751?hl=en&ref_topic=1685627" target="_blank" rel="noopener noreferrer">follow these instructions by Gmail</a> on this topic.
   </span>
 </div>
 
