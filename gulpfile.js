@@ -242,7 +242,8 @@ function static() {
   return src(staticAssets, {
     base: 'assets',
     allowEmpty: true,
-    since: lastRun(static)
+    since: lastRun(static),
+    dot: true
   }).pipe(dest(config.buildBase));
 }
 
