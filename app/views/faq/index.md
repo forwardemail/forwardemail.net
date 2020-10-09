@@ -534,7 +534,7 @@
     If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
 
 </li></ol>
 
@@ -591,6 +591,8 @@
 
 ## How to Send Mail As using Gmail
 
+<iframe style="display:block; margin:0 auto; margin-bottom: 20px;" width="890" height="500" src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 <div class="alert my-3 bg-dark border-dark text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
   <strong class="font-weight-bold">Estimated Setup Time:</strong>
@@ -603,7 +605,7 @@
     Getting Started:
   </strong>
   <span>
-    After you've followed the steps above in <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a> you can follow these steps in Gmail in order to "Send Mail As" using your custom domain.
+    After you've followed the steps above in <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a> you can follow the video above or the steps below &ndash; in order to "Send Mail As" using your custom domain.
   </span>
 </div>
 
