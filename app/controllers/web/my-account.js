@@ -722,6 +722,11 @@ function validateAlias(ctx, next) {
 
 async function createAlias(ctx, next) {
   try {
+    if (ctx.state.body.name.includes('+'))
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('ALIAS_WITH_PLUS_UNSUPPORTED'))
+      );
+
     ctx.state.alias = await Aliases.create({
       ...ctx.state.body,
       is_api: boolean(ctx.api),
