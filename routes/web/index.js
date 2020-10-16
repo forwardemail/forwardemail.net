@@ -109,18 +109,6 @@ localeRouter
     web.auth.resetPassword
   )
   .get(
-    '/change-email/:token',
-    policies.ensureLoggedIn,
-    policies.ensureOtp,
-    render('change-email')
-  )
-  .post(
-    '/change-email/:token',
-    policies.ensureLoggedIn,
-    policies.ensureOtp,
-    web.auth.changeEmail
-  )
-  .get(
     config.verifyRoute,
     policies.ensureLoggedIn,
     web.auth.parseReturnOrRedirectTo,

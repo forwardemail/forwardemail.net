@@ -164,6 +164,18 @@ router.get(
   web.myAccount.ensureDomainAdmin,
   render('my-account/domains/retrieve')
 );
+router.get(
+  '/change-email/:token',
+  policies.ensureLoggedIn,
+  policies.ensureOtp,
+  render('change-email')
+);
+router.post(
+  '/change-email/:token',
+  policies.ensureLoggedIn,
+  policies.ensureOtp,
+  web.auth.changeEmail
+);
 router.get('/profile', render('my-account/profile'));
 router.put('/profile', web.myAccount.update);
 router.delete('/security', web.myAccount.resetAPIToken);
