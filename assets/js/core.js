@@ -2,6 +2,7 @@ const $ = require('jquery');
 const Popper = require('popper.js');
 const Clipboard = require('clipboard');
 const { randomstring } = require('@sidoshi/random-string');
+const debounce = require('lodash/debounce');
 
 // load jQuery and Bootstrap
 // <https://stackoverflow.com/a/34340392>
@@ -199,3 +200,9 @@ $body.on('click', '.generate-random-alias', function () {
   });
   $target.val(string);
 });
+
+function keyup() {
+  if ($(this).val().length >= 6) $(this).parents('form').first().submit();
+}
+
+$body.on('keyup', '.verification-form', debounce(keyup, 500));
