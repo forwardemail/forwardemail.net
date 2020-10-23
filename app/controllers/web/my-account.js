@@ -5,11 +5,12 @@ const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
 const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
+const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const dayjs = require('dayjs-with-plugins');
 const pug = require('pug');
 const slug = require('speakingurl');
+const splitLines = require('split-lines');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { isEmail, isFQDN, isIP, isPort } = require('validator');
@@ -485,8 +486,7 @@ async function createDomain(ctx, next) {
     const rcpts = _.compact(
       _.uniq(
         _.map(
-          ctx.request.body.catchall
-            .split('\n')
+          splitLines(ctx.request.body.catchall)
             .join(' ')
             .split(',')
             .join(' ')
@@ -695,7 +695,7 @@ function validateAlias(ctx, next) {
     body.labels = _.compact(
       _.uniq(
         _.map(
-          body.labels.split('\n').join(' ').split(',').join(' ').split(' '),
+          splitLines(body.labels).join(' ').split(',').join(' ').split(' '),
           (label) => slug(label)
         )
       )
@@ -708,7 +708,7 @@ function validateAlias(ctx, next) {
     body.recipients = _.compact(
       _.uniq(
         _.map(
-          body.recipients.split('\n').join(' ').split(',').join(' ').split(' '),
+          splitLines(body.recipients).join(' ').split(',').join(' ').split(' '),
           (recipient) => recipient.trim()
         )
       )
