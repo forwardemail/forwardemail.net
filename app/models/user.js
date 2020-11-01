@@ -123,7 +123,8 @@ object[config.userFields.hasSetPassword] = {
 };
 object[config.userFields.hasVerifiedEmail] = {
   type: Boolean,
-  default: true // manually set to false during web/API signup
+  default: true, // manually set to false during web/API signup
+  index: true
 };
 object[config.userFields.verificationPinExpiresAt] = Date;
 object[config.userFields.verificationPinSentAt] = Date;
