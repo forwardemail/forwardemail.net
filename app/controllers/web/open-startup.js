@@ -51,18 +51,13 @@ async function openStartup(ctx) {
 
       await Promise.all(
         Object.keys(models).map(async (name) => {
-          const docs = await models[name]
-            .find({
-              ...(name === 'Users'
-                ? { [config.userFields.hasVerifiedEmail]: true }
-                : {})
-            })
-            .select('created_at')
-            .sort('created_at')
-            .lean()
-            .exec();
           const mapping = {};
-          for (const doc of docs) {
+
+          for await (const doc of models[name].find({
+            ...(name === 'Users'
+              ? { [config.userFields.hasVerifiedEmail]: true }
+              : {})
+          })) {
             const date = dayjs(doc.created_at).startOf('day').toDate();
             if (!mapping[date]) mapping[date] = 0;
             mapping[date]++;
@@ -110,17 +105,20 @@ async function openStartup(ctx) {
         .startOf('day')
         .subtract(52, 'week')
         .toDate();
+
       const end = dayjs().endOf('week').toDate();
-      const users = await Users.find({
+
+      const createdAts = [];
+
+      for await (const doc of Users.find({
         [config.userFields.hasVerifiedEmail]: true,
         created_at: {
           $gte: start,
           $lte: end
         }
-      })
-        .select('created_at')
-        .sort('-created_at')
-        .lean();
+      })) {
+        createdAts.push(doc.created_at);
+      }
 
       const series = [];
       const chart = {
@@ -129,7 +127,8 @@ async function openStartup(ctx) {
       };
       const colors = ['#8CC63F'];
 
-      if (users.length === 0) return { series, chart, colors };
+      if (createdAts.length === 0) return { series, chart, colors };
+
       const weekIndex = [];
       for (let week = 0; week < 52; week++) {
         weekIndex.push(
@@ -160,10 +159,10 @@ async function openStartup(ctx) {
           };
       }
 
-      for (const user of users) {
-        const d = Number.parseInt(dayjs(user.created_at).format('d'), 10);
+      for (const createdAt of createdAts) {
+        const d = Number.parseInt(dayjs(createdAt).format('d'), 10);
         const w = weekIndex.indexOf(
-          Number.parseInt(dayjs(user.created_at).format('w'), 10) - 1
+          Number.parseInt(dayjs(createdAt).format('w'), 10) - 1
         );
         series[d].data[w].y++;
       }

@@ -116,7 +116,8 @@ const Domain = new mongoose.Schema({
   plan: {
     type: String,
     enum: ['free', 'enhanced_protection', 'team'],
-    default: 'free'
+    default: 'free',
+    index: true
   },
   max_recipients_per_alias: {
     type: Number,
