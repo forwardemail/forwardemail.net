@@ -53,11 +53,17 @@ async function openStartup(ctx) {
         Object.keys(models).map(async (name) => {
           const mapping = {};
 
-          for await (const doc of models[name].find({
-            ...(name === 'Users'
-              ? { [config.userFields.hasVerifiedEmail]: true }
-              : {})
-          })) {
+          const docs = await models[name]
+            .find({
+              ...(name === 'Users'
+                ? { [config.userFields.hasVerifiedEmail]: true }
+                : {})
+            })
+            .lean()
+            .select('created_at')
+            .exec();
+
+          for (const doc of docs) {
             const date = dayjs(doc.created_at).startOf('day').toDate();
             if (!mapping[date]) mapping[date] = 0;
             mapping[date]++;
@@ -108,17 +114,16 @@ async function openStartup(ctx) {
 
       const end = dayjs().endOf('week').toDate();
 
-      const createdAts = [];
-
-      for await (const doc of Users.find({
+      const users = await Users.find({
         [config.userFields.hasVerifiedEmail]: true,
         created_at: {
           $gte: start,
           $lte: end
         }
-      })) {
-        createdAts.push(doc.created_at);
-      }
+      })
+        .lean()
+        .select('created_at')
+        .exec();
 
       const series = [];
       const chart = {
@@ -127,7 +132,7 @@ async function openStartup(ctx) {
       };
       const colors = ['#8CC63F'];
 
-      if (createdAts.length === 0) return { series, chart, colors };
+      if (users.length === 0) return { series, chart, colors };
 
       const weekIndex = [];
       for (let week = 0; week < 52; week++) {
@@ -159,10 +164,10 @@ async function openStartup(ctx) {
           };
       }
 
-      for (const createdAt of createdAts) {
-        const d = Number.parseInt(dayjs(createdAt).format('d'), 10);
+      for (const user of users) {
+        const d = Number.parseInt(dayjs(user.created_at).format('d'), 10);
         const w = weekIndex.indexOf(
-          Number.parseInt(dayjs(createdAt).format('w'), 10) - 1
+          Number.parseInt(dayjs(user.created_at).format('w'), 10) - 1
         );
         series[d].data[w].y++;
       }
