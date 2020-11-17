@@ -1,0 +1,43 @@
+# paypal
+PAYPAL_ENHANCED_PLAN_30D=P-41H89398Y1002503RL6XL3MQ
+PAYPAL_ENHANCED_PLAN_60D=P-03G580587W697863EL6XL32A
+PAYPAL_ENHANCED_PLAN_90D=P-5D620690PG7583844L6XL4AA
+PAYPAL_ENHANCED_PLAN_180D=P-02F324329B5415028L6XL4MI
+PAYPAL_ENHANCED_PLAN_1Y=P-6JC46072UW2145016L6XL4VY
+PAYPAL_TEAM_PLAN_30D=P-7WY44365Y9238094EL6XL6QA
+PAYPAL_TEAM_PLAN_60D=P-8TS437555G6857143L6XL65A
+PAYPAL_TEAM_PLAN_90D=P-67U942245B077912KL6XL7OA
+PAYPAL_TEAM_PLAN_180D=P-2N782406M71926358L6XL7VY
+PAYPAL_TEAM_PLAN_1Y=P-9AS84098YY5513735L6XL75Y
+PAYPAL_CLIENT_ID=AWnLz6wF1Oj6YkFuYiQnzCvd9bIWNMV7XpT18Vpm3Bz9Ouh7Dyzf3WJXkQxtja0hhWQoF_wRZv31v66X
+PAYPAL_SECRET=EPbC9cHkPdWr5D5NO7hSPN5vxA-pz0NYR1FGy_eq7rz2cUeAzyBnj4gJHDSWnAtb8WLTj4fnTxCVmpfu
+# stripe
+STRIPE_PUBLISHABLE_KEY=pk_test_pqJQK87CYXLZAkf2vdO9ud3P
+STRIPE_SECRET_KEY=sk_test_51Dp8e5LFuf8FuIPJckRgyInALZxNLpr31CkDPy2BclVJ7yHvXH5MoYlgGps4idOdF4SWFpdrZJUL9mfgMcmSeO1000B7m736Fe
+# @ladjs/auth
+AUTH_GOOGLE_ENABLED=true
+AUTH_GITHUB_ENABLED=true
+# your google client ID and secret from:
+# https://console.developers.google.com
+GOOGLE_CLIENT_ID=118989921138-3fqj1bgg0ndsda2htteqeub6vge96431.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=K1S0ko-7hD9iPLpPUVd3FWER
+# your github client ID and secret from:
+# https://github.com/settings/applications
+GITHUB_CLIENT_ID=7b48442d11a234a7b802
+GITHUB_CLIENT_SECRET=3a32c67e15c37c38de595838ff79625eaa650cc8
+# your Postmark token from:
+# https//postmarkapp.com
+POSTMARK_API_TOKEN=a1074b4e-b0d1-4b17-af29-cc98592da1bc
+# aws credentials
+# https://docs.aws.amazon.com/en_pv/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html
+# https://docs.aws.amazon.com/en_pv/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html
+# https://docs.aws.amazon.com/en_pv/sdk-for-javascript/v2/developer-guide/loading-node-credentials-json-file.html
+AWS_PROFILE=default
+AWS_S3_BUCKET=forwardemail.net
+AWS_CLOUDFRONT_DOMAIN=d2qdqnc8yhyxzy.cloudfront.net
+AWS_CLOUDFRONT_DISTRIBUTION_ID=E2GV0MOY90JHBN
+GOOGLE_APPLICATION_CREDENTIALS=/Users/jack/ForwardEmail-d48fde1fb172.json
+TRANSPORT_DEBUG=true
+SRS_SECRET=secret
+AUTH_OTP_ENABLED=true
+CACHE_RESPONSES=false

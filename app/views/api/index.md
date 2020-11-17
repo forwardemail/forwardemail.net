@@ -57,12 +57,12 @@ The current HTTP base URI path is: `BASE_URI`.  It will soon change to `https://
 
 ## Authentication
 
-All endpoints require your [free API key](https://forwardemail.net/my-account/security) :tada: to be set as the "username" value of the request's [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication) header.  Don't worry – examples are provided below for you if you're not sure what this is.
+All endpoints require your [free API key](https://forwardemail.net/my-account/security) to be set as the "username" value of the request's [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication) header.  Don't worry – examples are provided below for you if you're not sure what this is.
 
 
 ## Errors
 
-If any errors occur, the response body of the API request will contain a detailed error message.  Besides having over ten years of experience writing API's and documenting them, were inspired by [Stripe's](https://stripe.com) beautiful API documentation when we crafted ours :smile:.
+If any errors occur, the response body of the API request will contain a detailed error message.  Besides having over ten years of experience writing API's and documenting them, were inspired by [Stripe's](https://stripe.com) beautiful API documentation when we crafted ours.
 
 | Code | Name                  |
 | ---- | --------------------- |

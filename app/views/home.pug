@@ -2,6 +2,33 @@
 extends layout
 
 block body
+  #modal-for-creators.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-for-creators-title', aria-hidden='true')
+    .modal-dialog.modal-lg(role='document')
+      .modal-content
+        .modal-header.text-center.d-block
+          h1.h4.modal-title.d-inline-block.ml-4#modal-for-creators-title= t('For Creators')
+          button(type='button', data-dismiss='modal', aria-label='Close').close
+            span(aria-hidden='true') &times;
+        .modal-body
+          iframe(width='100%', height='450', src='https://www.youtube.com/embed/ql9rtNpTid4?controls=0', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
+  #modal-for-developers.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-for-developers-title', aria-hidden='true')
+      .modal-dialog.modal-lg(role='document')
+        .modal-content
+          .modal-header.text-center.d-block
+            h1.h4.modal-title.d-inline-block.ml-4#modal-for-developers-title= t('For Developers')
+            button(type='button', data-dismiss='modal', aria-label='Close').close
+              span(aria-hidden='true') &times;
+          .modal-body
+            iframe(width='100%', height='450', src='https://www.youtube.com/embed/1e9UyIoFu4Y', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
+  #modal-for-businesses.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-for-businesses-title', aria-hidden='true')
+      .modal-dialog.modal-lg(role='document')
+        .modal-content
+          .modal-header.text-center.d-block
+            h1.h4.modal-title.d-inline-block.ml-4#modal-for-businesses-title= t('For Businesses')
+            button(type='button', data-dismiss='modal', aria-label='Close').close
+              span(aria-hidden='true') &times;
+          .modal-body
+            iframe(width='100%', height='450', src='https://www.youtube.com/embed/--p9LdmVSAw', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
   .min-vh-80.text-center.d-flex.flex-column
     .container.my-auto.py-2.py-sm-3.py-md-5
       .row
@@ -23,7 +50,28 @@ block body
       i.fa.fa-angle-down
       = ' '
       = t('Learn more')
-  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block#learn-more
+  .container-fluid.bg-primary.py-3.px-5.py-md-5.d-block#learn-more   
+    .row.text-center.d-block
+      h1.display-5.font-weight-bold.text-light.mb-2.text-uppercase= t('Email Forwarding for You')
+      p.lead.text-dark.mb-z.mb-md-4
+        != t('Whatever your project or business is, we got you covered. Check out the videos below to see how we can help you succeed!')
+    .row
+      .col-sm.text-center
+        button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-creators')
+          i.fa.fa-play-circle
+          = ' '
+          = t('For Creators')
+      .col-sm.text-center
+        button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-developers')
+          i.fa.fa-play-circle
+          = ' '
+          = t('For Developers')
+      .col-sm.text-center
+        button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-businesses')
+          i.fa.fa-play-circle
+          = ' '
+          = t('For Businesses')
+  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block
     h2.display-3.font-weight-bold.text-white.my-3.my-md-5
       = emoji('lock')
       = ' '
@@ -39,7 +87,7 @@ block body
       .d-flex.col-md-3.col-lg-6.pt-3
         img(src=manifest('img/logo-square.svg'), width=200, height=200, alt="").mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0
   .pt-5.pb-lg-5.text-center.bg-light
-    .h2.display-3.mb-1= emoji('clap')
+    .h2.display-3.mb-1= emoji('tada')
     h2.display-5.font-weight-light.text-black-50.mb-0.text-uppercase= t('Our Features')
   .container-fluid.bg-light.pb-5.position-relative
     .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
