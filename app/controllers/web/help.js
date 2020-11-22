@@ -29,6 +29,11 @@ async function help(ctx) {
       return;
     }
 
+    if (body.message.includes('й') || body.message.includes('ы')) {
+      ctx.body = 'OK';
+      return;
+    }
+
     body.message = sanitize(body.message, {
       allowedTags: [],
       allowedAttributes: []
