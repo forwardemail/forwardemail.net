@@ -696,7 +696,7 @@ async function createDomain(ctx, next) {
 
   const plan = isSANB(ctx.request.body.plan)
     ? ctx.request.body.plan
-    : ctx.user.plan || 'free';
+    : ctx.state.user.plan || 'free';
 
   try {
     ctx.state.domain = await Domains.create({
