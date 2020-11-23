@@ -5,7 +5,7 @@ const config = require('../config');
 const jobs = [
   'migration',
   'vanity-domains',
-  { name: 'billing', cron: '0 7 * * *' },
+  // { name: 'billing', cron: '0 7 * * *' },
   {
     name: 'check-domains',
     timeout: '1m', // give migration script time to run
@@ -16,10 +16,10 @@ const jobs = [
     interval: '1m',
     timeout: 0
   },
-  {
-    name: 'launch-email',
-    date: config.launchDate
-  },
+  // {
+  //   name: 'launch-email',
+  //   date: config.launchDate
+  // },
   {
     name: 'account-updates',
     interval: '1m',
