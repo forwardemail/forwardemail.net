@@ -75,3 +75,4 @@ deployment-keys
 *.key
 *.ca-bundle
 *.crt
+.env.test
