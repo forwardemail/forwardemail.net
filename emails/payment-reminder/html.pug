@@ -1,0 +1,13 @@
+
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.d-block.text-center
+          h5.card-header!= t('<span class="notranslate">%d</span> Day Payment Reminder', diff)
+          .card-body
+            p.card-text= t('If you want to keep your email service for %s, then you to make a payment for your account\'s %s plan.', domain.name, t(titleize(humanize(domain.plan))))
+            a.btn.btn-lg.btn-block.btn-success(href=`${config.urls.web}/${locale}/my-account/billing`, role="button")= t('Pay by card or PayPal')
+          .card-footer: small.text-muted= t('If you no longer use our service, then please let us know.')

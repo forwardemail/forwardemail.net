@@ -86,6 +86,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
             a.dropdown-item(class=ctx.pathWithoutLocale.startsWith('/my-account/domains') ? 'active' : '', href=l('/my-account/domains'))= t('Domains')
             a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account/profile' ? 'active' : '', href=l('/my-account/profile'))= t('Profile')
             a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account/security' ? 'active' : '', href=l('/my-account/security'))= t('Security')
+            a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account/billing' ? 'active' : '', href=l('/my-account/billing'))= t('Billing')
             a.dropdown-item(href=l('/logout'))= t('Log out')
       //- links that show only if you're logged out
       else

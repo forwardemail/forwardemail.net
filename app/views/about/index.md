@@ -35,6 +35,8 @@ In June 2020, we publicly released our real-time metrics and revenue on our [Ope
 
 In August 2020, we added support for the [Authenticated Received Chain][arc] ("ARC") email authentication system.
 
+On November 23, 2020 we publicly launched out of our beta program.
+
 
 ## Service
 
@@ -56,11 +58,11 @@ Forward Email's source code is primarily developed by [Niftylettuce](https://git
 
 * [Ryan Lee Sipes](https://ryanleesipes.me/) (the driving force to revitalize and modernize [Mozilla Thunderbird](https://www.thunderbird.net/)) for serving as an advisor, assisting with growth, and relentlessly contributing feedback on product iterations.
 
-* [Shaun Warman](https://www.shaunwarman.com) for [integration](https://www.shaunwarman.com/posts/enable-2fa-in-ladjs.html) of [two-factor authentication](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) using a [one-time password](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP), [Content Security Policy](https://en.wikipedia.org/wiki/Content_Security_Policy "Content Security Policy") (CSP), and [Subresource Integrity](https://en.wikipedia.org/wiki/Subresource_Integrity "Subresource Integrity") (SRI) into the [Lad](https://en.wikipedia.org/w/index.php?title=Lad_(web_application_framework)&action=edit&redlink=1 "Lad (web application framework) (page does not exist)") framework, which is [used internally](https://github.com/forwardemail/forwardemail.net/commit/b171c9e2e2774c747298d0ecca2d4213f0a9f0c0) in Forward Email.
+* [Shaun Warman](https://www.shaunwarman.com) for [integration](https://www.shaunwarman.com/posts/enable-2fa-in-ladjs.html) of [two-factor authentication](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) using a [one-time password](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP), [Content Security Policy](https://en.wikipedia.org/wiki/Content_Security_Policy "Content Security Policy") (CSP), and [Subresource Integrity](https://en.wikipedia.org/wiki/Subresource_Integrity "Subresource Integrity") (SRI) into the [Lad](https://en.wikipedia.org/w/index.php?title=Lad_\(web_application_framework\)\&action=edit\&redlink=1 "Lad (web application framework) (page does not exist)") framework, which is [used internally](https://github.com/forwardemail/forwardemail.net/commit/b171c9e2e2774c747298d0ecca2d4213f0a9f0c0) in Forward Email.
 
 * [Fedor Indutny](https://github.com/indutny) for [questions and answers](https://github.com/forwardemail/free-email-forwarding/commit/58ea4b8ce7016272e5301a5a3e6ccec940f237fb) regarding Forward Email's compliance with strict and modern [TLS](https://en.wikipedia.org/wiki/TLS "TLS") [cryptographic ciphers](https://en.wikipedia.org/wiki/Cipher "Cipher").
 
-* [Andris Reisman](https://github.com/andris9) (the author of the [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") [npm](https://en.wikipedia.org/wiki/Npm_(software) "Npm (software)") package nodemailer, which is used internally in Forward Email.
+* [Andris Reisman](https://github.com/andris9) (the author of the [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") [npm](https://en.wikipedia.org/wiki/Npm_\(software\) "Npm (software)") package nodemailer, which is used internally in Forward Email.
 
 * [Scott Kitterman](https://kitterman.com/) (the author of the [Sender Policy Framework](https://en.wikipedia.org/wiki/Sender_Policy_Framework "Sender Policy Framework") (SPF) [RFC 7208](https://tools.ietf.org/html/rfc7208) specification) for [questions](https://git.launchpad.net/dkimpy/commit/?id=3e16ceac23672bf336cd6c11a7c9ea1610e353cd) and [answers](https://git.launchpad.net/dkimpy/commit/?id=5b9dc1253d61999a111973a55a7ea79d2a55859b) regarding Forward Email's compliance with [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme "Sender Rewriting Scheme") (SRS), [DMARC](https://en.wikipedia.org/wiki/DMARC "DMARC"), [Sender Policy Framework](https://en.wikipedia.org/wiki/Sender_Policy_Framework "Sender Policy Framework") (SPF), and [DKIM](https://en.wikipedia.org/wiki/DKIM "DKIM") compliance over [IRC](https://en.wikipedia.org/wiki/Internet_Relay_Chat "Internet Relay Chat").
 

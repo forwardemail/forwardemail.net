@@ -34,13 +34,35 @@ if breadcrumbs.length > 1
                 i.fa.fa-fw.fa-tools
                 = ' '
                 = t('Advanced Settings')
-            //-.
-              if domain.group === 'admin'
-                li.list-inline-item
-                  a(href=l(`/my-account/domains/${domain.name}/billing`)).btn.btn-dark
-                    i.fa.fa-fw.fa-receipt
-                    = ' '
-                    = t('Billing')
+            if domain.group === 'admin'
+              li.list-inline-item
+                .btn-group
+                  button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-dark.dropdown-toggle= t('Change Plan')
+                  .dropdown-menu.dropdown-menu-right
+                    h6.dropdown-header.text-uppercase= t('Change Plan')
+                    each plan in [ 'free', 'enhanced_protection', 'team' ]
+                      a(href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`), disabled=plan === domain.plan, class=plan === domain.plan ? 'disabled' : '').dropdown-item
+                        case plan
+                          when 'enhanced_protection'
+                            i.fa.fa-fw.fa-shield
+                            = ' '
+                            = t('Enhanced Protection')
+                          when 'team'
+                            i.fa.fa-fw.fa-users
+                            = ' '
+                            = t('Team')
+                          default
+                            = t('Free')
+                            = ' ('
+                            = t('DNS-based')
+                            = ')'
+                        if plan === domain.plan
+                          = ' ('
+                          = t('Current')
+                          = ')'
+                    .dropdown-divider
+                    a(href=l(`/pricing?domain=${domain.name}`)).dropdown-item
+                      small.text-muted= t('See all plan features')
         else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0
             if !domain.is_global && ctx.state.domain.group === 'admin'

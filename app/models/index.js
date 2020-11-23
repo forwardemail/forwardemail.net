@@ -4,6 +4,7 @@ const Inquiries = require('./inquiry');
 const SPFErrors = require('./spf-errors');
 const SelfTests = require('./self-test');
 const Users = require('./user');
+const Payments = require('./payment');
 
 module.exports = {
   Aliases,
@@ -11,5 +12,6 @@ module.exports = {
   Inquiries,
   SPFErrors,
   SelfTests,
-  Users
+  Users,
+  Payments
 };

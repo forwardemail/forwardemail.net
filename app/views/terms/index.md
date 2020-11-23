@@ -36,7 +36,7 @@ We offer a 30-day money back guarantee on all paid plans if you are not satisfie
 
 We do not ask any questions and simply process the refund within 5-7 business days.
 
-To request a refund, please send an email from the email address verified on your account to: [refunds@forwardemail.net](mailto:refunds@forwardemail.net)
+To request a refund, please send an email from the email address verified on your account to: <refunds@forwardemail.net>
 
 
 ## Service Level Agreement ("SLA")
@@ -52,11 +52,11 @@ Forward Email shall use all reasonable commercial efforts (no less than acceptab
 
 ### Credits
 
-| Monthly Uptime Percentage | Days of Service\* |
-| ------------------------- | ----------------- |
-| &lt; 99.99% – >= 99.90%   | 3                 |
-| &lt; 99.90% – >= 95.00%   | 7                 |
-| &lt; 95.50%               | 15                |
+| Monthly Uptime Percentage | Days of Service* |
+| ------------------------- | ---------------- |
+| < 99.99% – >= 99.90%      | 3                |
+| < 99.90% – >= 95.00%      | 7                |
+| < 95.50%                  | 15               |
 
 \* Instead of receiving Days of Service being added to your account, you can also choose to have us issue a pro-rated refund.
 

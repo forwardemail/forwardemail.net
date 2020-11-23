@@ -13,6 +13,8 @@ const router = new Router({
 //
 router.get('/test', api.v1.test);
 router.post('/log', api.v1.log.checkToken, api.v1.log.parseLog);
+router.post('/stripe', api.v1.stripe);
+router.post('/paypal', api.v1.paypal);
 
 //
 // restricted

@@ -15,6 +15,17 @@ router.get('/', (ctx) => {
   ctx.redirect(ctx.state.l('/my-account/domains'));
 });
 router.delete('/', web.myAccount.remove);
+router.get('/billing', web.myAccount.retrieveBilling);
+router.delete(
+  '/billing',
+  web.myAccount.cancelSubscription,
+  web.myAccount.retrieveBilling
+);
+router.get('/billing/make-payment', web.myAccount.retrieveDomainBilling);
+router.post('/billing/make-payment', web.myAccount.createDomainBilling);
+router.get('/billing/upgrade', web.myAccount.retrieveDomainBilling);
+router.post('/billing/upgrade', web.myAccount.createDomainBilling);
+router.get('/billing/:reference', web.myAccount.retrieveReceipt);
 router.get('/domains', render('my-account/domains'));
 router.post(
   '/aliases',
@@ -143,8 +154,13 @@ router.get(
   '/domains/:domain_id/billing',
   web.myAccount.retrieveDomain,
   web.myAccount.ensureDomainAdmin,
-  web.myAccount.retrieveBilling
-  // render('my-account/domains/billing')
+  web.myAccount.retrieveDomainBilling
+);
+router.post(
+  '/domains/:domain_id/billing',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.createDomainBilling
 );
 router.post(
   '/domains/:domain_id/verify-records',

@@ -27,6 +27,11 @@ module.exports = {
   INVALID_USER: 'User does not exist.',
   INVALID_TOKEN: 'Invalid CSRF token.',
   INVALID_VERIFICATION_PIN: 'The verification code entered was invalid.',
+  INVALID_PAYMENT_METHOD:
+    'Payment method must be either credit card or PayPal.',
+  INVALID_PAYMENT_TYPE: 'Payment type must be either one-time or subscription.',
+  INVALID_PAYMENT_DURATION: 'Payment duration was invalid.',
+  JAVASCRIPT_REQUIRED: 'Please enable JavaScript to continue.',
   EMAIL_VERIFICATION_REQUIRED: 'Please verify your email address to continue.',
   EMAIL_VERIFICATION_INTERVAL:
     'Please wait for <span class="notranslate">%s</span> and try again.',
@@ -107,6 +112,7 @@ module.exports = {
   PASSPORT_MISSING_USERNAME_ERROR: 'Please enter an email address.',
   PASSPORT_USER_EXISTS_ERROR:
     'A user with the given email address is already registered.  Please try to log in or reset the password if this account belongs to you.',
+  PLAN_ALREADY_ACTIVE: 'This plan is already active, please refresh.',
   UPGRADE_PLAN: 'Upgrade Plan',
   INVALID_PLAN: 'Invalid plan selected.',
   PLAN_UPGRADE_REQUIRED:
@@ -120,8 +126,9 @@ module.exports = {
   INVALID_GROUP: 'Group was invalid, must be either admin or user.',
   INVITE_ALREADY_SENT:
     'Invite was already sent to this email address.  Please manually copy the invite link and share it with this person if needed.',
-  BETA_PROGRAM:
-    'Enhanced Protection and Team plans are currently free and in our final testing and beta program phase.  Once they are released, you will be emailed and will have 30 days to enter your billing information.  Thank you!',
+  FREE: 'Free',
+  ENHANCED_PROTECTION: 'Enhanced Protection',
+  TEAM: 'Team',
   FREE_PLAN: 'You have successfully downgraded to the Free Plan.',
   ENHANCED_PROTECTION_PLAN:
     'You have successfully upgraded to the Enhanced Protection Plan.',
@@ -182,5 +189,21 @@ module.exports = {
   EMAIL_CHANGE_ALREADY_EXISTS:
     'The email address <span class="notranslate">%s</span> already exists.',
   ALIASES_NEED_REASSIGNED:
-    'Aliases owned by the member being deleted must be first reassigned or deleted.'
+    'Aliases owned by the member being deleted must be first reassigned or deleted.',
+  PAYMENT_DESCRIPTION:
+    '<span class="notranslate">%s</span> payment for <span class="notranslate">%s</span> of the <span class="notranslate">%s</span> plan.',
+  PAYMENT_REFERENCE_INVALID: 'Payment reference was invalid or did not exist.',
+  RECEIPT: 'Receipt',
+  DOMAIN_PLAN_UPGRADE_REQUIRED:
+    'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan.',
+  UPGRADE: 'Upgrade',
+  BILLING: 'Billing',
+  INVALID_STRIPE_SIGNATURE: 'Invalid Stripe Signature',
+  INVALID_PAYPAL_SIGNATURE: 'Invalid PayPal Signature',
+  SUBSCRIPTION_ALREADY_CANCELLED:
+    'You do not currently have an active subscription, or it was recently cancelled.',
+  SUBSCRIPTION_CANCELLED: 'You have successfully cancelled your subscription.',
+  ONE_TIME_PAYMENT_SUCCESSFUL: 'You have successfully made a one-time payment.',
+  REFUND_PROCESSING:
+    'We will manually process your pro-rated refund in the amount of <span class="notranslate">%s USD</span> and email you when complete.'
 };

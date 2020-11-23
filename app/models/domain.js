@@ -19,6 +19,7 @@ const pkg = require('../../package.json');
 const logger = require('../../helpers/logger');
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
+const Users = require('./user');
 
 const CACHE_TYPES = ['MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
@@ -32,10 +33,7 @@ const app = new ForwardEmail({
 });
 
 const EXCHANGES = app.config.exchanges
-  .map(
-    (exchange, i) =>
-      `<li><code>${Number.parseInt((i + 1) * 10, 10)} ${exchange}</code></li>`
-  )
+  .map((exchange) => `<li><code>10 ${exchange}</code> (10 = Priority)</li>`)
   .join('');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
@@ -48,7 +46,8 @@ const REGEX_VERIFICATION = new RE2(/[^\da-z]/gi);
 const Member = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    index: true
   },
   group: {
     type: String,
@@ -574,6 +573,126 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
 }
 
 Domain.statics.getTxtAddresses = getTxtAddresses;
+
+async function ensureUserHasValidPlan(user, locale) {
+  // if the user was on the team plan
+  // then all of their domains would be valid
+  if (user.plan === 'team') return;
+
+  // get all domains associated with this user
+  const domains = await this.find({
+    plan: { $ne: 'free' },
+    'members.user': user._id
+  })
+    .select('name plan members.user members.group')
+    .populate('members.user')
+    .lean()
+    .exec();
+
+  // if no domains then return early
+  if (domains.length === 0) return;
+
+  const errors = [];
+
+  for (const domain of domains) {
+    // determine what plans are required
+    const validPlans =
+      domain.plan === 'team' ? ['team'] : ['enhanced_protection', 'team'];
+    let isValid = false;
+
+    for (const member of domain.members) {
+      // return early if the member is not an admin (irrelevant)
+      if (member.group !== 'admin') continue;
+
+      // if the user did not exist then return early
+      if (!member.user || !member.user.id) {
+        logger.fatal(new Error(`Member in ${domain.name} no longer exists`));
+        continue;
+      }
+
+      // use the new/latest plan passed in the `user` argument (as opposed to what exists)
+      // (e.g. this method `ensureUserHasValidPlan` is called before saving a user's plan change)
+      const memberPlan =
+        member.user.id === user.id ? user.plan : member.user.plan;
+
+      if (validPlans.includes(memberPlan)) {
+        isValid = true;
+        break;
+      }
+    }
+
+    if (!isValid)
+      errors.push(
+        i18n.translateError(
+          'DOMAIN_PLAN_UPGRADE_REQUIRED',
+          locale,
+          domain.name,
+          i18n.translate(domain.plan.toUpperCase(), locale)
+        )
+      );
+  }
+
+  if (errors.length === 0) return;
+
+  logger.error('Member did not have valid plan', { errors });
+
+  if (errors.length === 1) throw Boom.badRequest(errors[0].message);
+
+  throw Boom.badRequest(`
+    <p class="font-weight-bold text-danger">The following errors occurred:</p>
+    <ul class="mb-0 text-left"><li>${errors
+      .map((e) => e.message)
+      .join('</li><li>')}</li><ul>
+  `);
+}
+
+Domain.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
+
+// prevent new domains from being created with a plan
+// that the user is not yet subscribed to, and also
+// enforce that when domains are saved, they are required
+// to have at least one admin with the plan of the domain
+// (otherwise throw an error that tells them what's wrong)
+Domain.pre('save', async function (next) {
+  try {
+    const domain = this;
+
+    if (domain.plan === 'free') return next();
+
+    const users = await Users.find({
+      _id: { $in: domain.members.map((m) => m.user) }
+    })
+      .lean()
+      .select('plan')
+      .exec();
+
+    const hasValidPlan =
+      users.length > 0 &&
+      users.some((user) => {
+        if (domain.plan === 'team' && user.plan === 'team') return true;
+        if (
+          domain.plan === 'enhanced_protection' &&
+          ['enhanced_protection', 'team'].includes(user.plan)
+        )
+          return true;
+        return false;
+      });
+
+    if (!hasValidPlan)
+      throw Boom.badRequest(
+        i18n.translateError(
+          'DOMAIN_PLAN_UPGRADE_REQUIRED',
+          domain.locale,
+          domain.name,
+          i18n.translate(domain.plan.toUpperCase(), domain.locale)
+        )
+      );
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 Domain.postCreate((domain, next) => {
   logger.info('domain created', {

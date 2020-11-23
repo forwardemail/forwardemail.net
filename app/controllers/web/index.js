@@ -1,7 +1,6 @@
-const { extname } = require('path');
-
 const _ = require('lodash');
 const humanize = require('humanize-string');
+const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const titleize = require('titleize');
 
 const config = require('../../../config');
@@ -18,14 +17,10 @@ const otp = require('./otp');
 const report = require('./report');
 
 function breadcrumbs(ctx, next) {
-  // return early if its not a pure path (e.g. ignore static assets)
-  // and also return early if it's not a GET request
-  // and also return early if it's an XHR request
-  if (ctx.method !== 'GET' || extname(ctx.path) !== '') return next();
-
   const breadcrumbs = _.compact(ctx.path.split('/')).slice(1);
   ctx.state.breadcrumbs = breadcrumbs;
 
+  // TODO: should this titleize(humanize( usage get wrapped with translation?
   // only override the title if the match was not accurate
   if (!config.meta[ctx.pathWithoutLocale])
     ctx.state.meta.title = ctx.request.t(
@@ -36,6 +31,11 @@ function breadcrumbs(ctx, next) {
           )}`
     );
 
+  return next();
+}
+
+function reservedEmailAddresses(ctx, next) {
+  ctx.state.reservedEmailAddressesList = reservedEmailAddressesList;
   return next();
 }
 
@@ -50,5 +50,6 @@ module.exports = {
   onboard,
   openStartup,
   otp,
-  report
+  report,
+  reservedEmailAddresses
 };

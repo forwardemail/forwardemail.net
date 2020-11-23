@@ -2,14 +2,12 @@ const _ = require('lodash');
 const ajc = require('array-join-conjunction');
 const capitalize = require('capitalize');
 const dashify = require('dashify');
-const hljs = require('highlight.js');
+const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isBot = require('isbot');
 const isSANB = require('is-string-and-not-blank');
-const dayjs = require('dayjs-with-plugins');
 const numeral = require('numeral');
 const pluralize = require('pluralize');
-const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const striptags = require('striptags');
 const titleize = require('titleize');
 const toEmoji = require('gemoji/name-to-emoji');
@@ -28,7 +26,6 @@ module.exports = {
   capitalize,
   dashify,
   emoji,
-  hljs,
   humanize,
   isBot,
   isSANB,
@@ -36,7 +33,6 @@ module.exports = {
   dayjs,
   numeral,
   pluralize,
-  reservedEmailAddressesList,
   striptags,
   titleize,
   validator

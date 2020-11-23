@@ -1,0 +1,147 @@
+extends ../../layout
+
+mixin paymentMethod(payment)
+  if payment.method === 'paypal'
+    i.fab.fa-paypal
+    |  PayPal
+  else
+    case payment.method
+      when 'amex'
+        i.fa.fa-cc-amex
+      when 'diners'
+        i.fa.fa-cc-diners-club
+      when 'discover'
+        i.fa.fa-cc-discover
+      when 'jcb'
+        i.fa.fa-cc-jcb
+      when 'mastercard'
+        i.fa.fa-cc-mastercard
+      when 'visa'
+        i.fa.fa-cc-visa
+      default
+        i.fa.fa-credit-card
+    = ' '
+    = titleize(humanize(payment.method))
+    if payment.last4
+      small= ' x'
+      = payment.last4
+    if payment.exp_month && payment.exp_year
+      small.text-muted.text-uppercase= ` ${payment.exp_month}/${payment.exp_year.toString().slice(2)}`
+
+mixin receipt(payment)
+  .btn-group
+    a(href=l(`/my-account/billing/${payment.reference}`), data-toggle='tooltip', data-placement='bottom', title=t('View')).btn.btn-primary
+      i.fa.fa-receipt
+    a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
+      i.fa.fa-file-pdf
+    a(href=l(`/my-account/billing/${payment.reference}.html`), target='_blank', data-toggle='tooltip', data-placement='bottom', title=t('Print')).btn.btn-dark
+      i.fa.fa-print
+
+block body
+
+  #modal-change-plan.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-change-plan-title', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header.text-center.d-block
+          h4.modal-title.d-inline-block.ml-4#modal-change-plan-title= t('Change Plan')
+          button(type='button', data-dismiss='modal', aria-label='Close').close
+            span(aria-hidden='true') &times;
+        .modal-body
+          p.lead.text-center!= t('You are currently on the <span class="notranslate">%s</span> plan.', t(titleize(humanize(user.plan))))
+          if user.plan === 'free'
+            a(href=l('/my-account/billing/upgrade?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-success.mb-3= t('Upgrade to Enhanced Protection')
+            a(href=l('/my-account/billing/upgrade?plan=team')).btn.btn-lg.btn-block.btn-primary= t('Upgrade to Team')
+          else if user.plan === 'enhanced_protection'
+            a(href=l('/my-account/billing/upgrade?plan=team')).btn.btn-lg.btn-block.btn-primary.mb-3= t('Upgrade to Team')
+          else if user.plan === 'team'
+            a(href=l('/my-account/billing/upgrade?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-dark.mb-3= t('Downgrade to Enhanced Protection')
+          if ['enhanced_protection', 'team'].includes(user.plan)
+            form(action=l('/my-account/billing/upgrade?plan=free'), method='GET').ajax-form.confirm-prompt
+              button(type='submit').btn.btn-block.btn-outline-danger= t('Downgrade to Free')
+        .modal-footer
+          button(type='button', data-dismiss='modal', aria-label=t('Cancel')).btn.btn-lg.btn-block.btn-secondary= t('Cancel')
+
+  .container-fluid.py-3
+    .row
+      .col
+        include ../../_breadcrumbs
+
+  .container.pb-5.position-relative
+    .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
+      .col-12.col-lg-6.d-flex
+        .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
+          h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
+          small.text-muted.text-uppercase.mb-3= t('Current Plan')
+          button(type='button', data-toggle='modal', data-target='#modal-change-plan').btn.btn-lg.btn-success= t('Change Plan')
+      .col-12.col-lg-6.d-flex
+        .mt-lg-0.mt-5.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
+          h2.display-5.font-weight-bold
+            if user.plan === 'free'
+              i.fa.fa-infinity
+            else
+              - let str = _.capitalize(dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow())
+              if str.startsWith('A ')
+                - str = str.replace('A ', '1 ')
+              else if str.startsWith('In a')
+                - str = str.replace('In a ', '1 ')
+              else if str.startsWith('In ')
+                - str = str.replace('In ', '')
+              = str
+          small.text-muted.text-uppercase.mb-3
+            = t('Next Payment Due')
+            = ': '
+            if user.plan === 'free'
+              i.fa.fa-infinity
+            else
+              = dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY')
+          a(href=l('/my-account/billing/make-payment'), disabled=user.plan === 'free', class=user.plan === 'free' ? 'disabled' : '').btn.btn-lg.btn-danger= t('Make Payment')
+
+  .container.py-3
+    .row
+      .col
+        h3.text-center.mb-3= t('Payment History')
+        if payments.length === 0
+          p.lead.text-center= t('No payment history is available.')
+        else
+          table.table.table-hover.table-bordered.mb-0
+            thead.thead-dark
+              tr
+                th(scope='col').d-none.d-lg-table-cell= t('Reference')
+                th(scope='col')= t('Date')
+                th(scope='col')
+                  span.d-none.d-lg-inline= t('Description')
+                  span.d-lg-none= t('Payment')
+                th(scope='col').d-none.d-lg-table-cell= t('Method')
+                th(scope='col')= t('Amount')
+                th(scope='col').d-none.d-lg-table-cell.text-center= t('Receipt')
+            tbody
+              each payment in payments
+                tr
+                  td.align-middle.d-none.d-lg-table-cell= payment.reference
+                  td.align-middle= dayjs(payment.created_at).locale(ctx.locale).format('M/D/YY')
+                  td.align-middle
+                    .d-block.d-lg-none.mb-2
+                      strong
+                        = t('Reference')
+                        = ':'
+                      = ' '
+                      = payment.reference
+                    != payment.description
+                    .d-block.d-lg-none.mb-2
+                    .d-block.d-lg-none.mb-2
+                      +paymentMethod(payment)
+                    .d-block.d-lg-none
+                      +receipt(payment)
+                  td.align-middle.d-none.d-lg-table-cell
+                    +paymentMethod(payment)
+                  td.align-middle.text-right= payment.amount_formatted
+                  td.align-middle.d-none.d-lg-table-cell.text-center
+                    +receipt(payment)
+    if isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
+      .row.text-center.my-5
+        .col
+          form(action=l('/my-account/billing'), method='POST').confirm-prompt
+            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(type='hidden', name='_method', value='DELETE')
+            button(type='submit').btn.btn-outline-secondary
+              = t('Cancel Subscription')

@@ -61,7 +61,7 @@ block body
             h4.card-header= t('Current Plan')
             .card-body
               p.card-text
-                != t('You are currently on the %s plan. Visit our <a href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l(`/pricing?domain=${domain.name}`))
+                != t('This domain is currently on the %s plan. Visit your <a href="%s">Billing</a> page and our <a href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l('/my-account/billing'), l(`/pricing?domain=${domain.name}`))
             .card-footer
               .btn-group
                 button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-lg.btn-primary.dropdown-toggle= t('Change plan')

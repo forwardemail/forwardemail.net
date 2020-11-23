@@ -10,8 +10,9 @@ const humanize = require('humanize-string');
 const titleize = require('titleize');
 
 const config = require('../config');
-const logger = require('../helpers/logger');
 const email = require('../helpers/email');
+const i18n = require('../helpers/i18n');
+const logger = require('../helpers/logger');
 
 const bree = require('../bree');
 
@@ -47,7 +48,7 @@ graceful.listen();
           const { fieldName, current, previous } = update;
           return {
             name: fieldName,
-            text: titleize(humanize(fieldName)),
+            text: i18n.t(titleize(humanize(fieldName))),
             current,
             previous
           };

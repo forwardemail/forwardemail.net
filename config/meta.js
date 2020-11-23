@@ -26,7 +26,10 @@ module.exports = function (config) {
     // note that we don't do `Home ${lad}` because if we forget to define
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
-    '/': [config.appName, config.pkg.description],
+    '/': [
+      `The Best Free Email Forwarding Service for Custom Domains ${lad}`,
+      config.pkg.description
+    ],
     '/about': [`About ${lad}`, `Learn more about ${config.appName}`],
     '/features': [
       `Pricing ${lad}`,
