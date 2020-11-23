@@ -1,0 +1,17 @@
+
+extends ../../layout
+
+block spinner
+block navigation
+block footer
+
+append scripts
+  if ctx.params.reference.endsWith('.html')
+    script.
+      window.print();
+
+block body
+  .container.p-5
+    .row
+      .col
+        include _receipt

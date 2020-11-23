@@ -2,6 +2,7 @@ const childProcess = require('child_process');
 const path = require('path');
 const util = require('util');
 
+const Meta = require('koa-meta');
 const RE2 = require('re2');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
@@ -11,6 +12,7 @@ const { isFQDN, isIP, isEmail } = require('validator');
 const exec = util.promisify(childProcess.exec);
 const config = require('../../../config');
 const markdown = require('../../../helpers/markdown');
+const logger = require('../../../helpers/logger');
 
 const REGEX_404 = new RE2(/"statusCode": 404,/g);
 const REGEX_ALIAS_ID = new RE2(/ALIAS_ID/g);
@@ -23,6 +25,8 @@ const REGEX_DOMAIN_PARAM = new RE2(/:domain_name/g);
 const REGEX_EMAIL = new RE2(/EMAIL/g);
 const REGEX_MEMBER_ID = new RE2(/MEMBER_ID/g);
 const REGEX_MEMBER_PARAM = new RE2(/:member_id/g);
+
+const meta = new Meta(config.meta, logger);
 
 // <https://stackoverflow.com/a/494348/3586413>
 function createElementFromHTML(dom, html) {
@@ -51,6 +55,17 @@ async function api(ctx) {
 
   if (isSANB(ctx.query.email) && isEmail(ctx.query.email))
     ctx.state.email = ctx.query.email;
+
+  // load seo metadata
+  let data = {};
+  try {
+    data = meta.getByPath(ctx.pathWithoutLocale || ctx.path, ctx.request.t);
+  } catch (err) {
+    logger.error(err);
+    data = meta.getByPath('/', ctx.request.t);
+  }
+
+  Object.assign(ctx.state.meta, data);
 
   let html = pug
     .renderFile(filePath, ctx.state)

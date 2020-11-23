@@ -1,0 +1,20 @@
+
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.d-block
+          h5.card-header.text-center= t('Your Free Beta Program Ended')
+          .card-body
+            p.card-text
+              = t('We are sending you this email since our free beta program has ended on November 23, 2020 and you were currently a paid plan.')
+              = ' '
+              != t('To keep your emails flowing for <span class="notranslate">%s</span>, we upgraded your account\'s plan to <span class="notranslate">%s</span>.', domain.name, t(titleize(humanize(domain.plan))))
+              = ' '
+              = t('Don\'t worry we haven\'t charged your payment method, but we ask that you please make a payment by clicking the button below.')
+              = ' '
+              = t('We have given you a 30-day grace period, and will be sending you automatic payment reminder emails if needed.')
+            a.btn.btn-lg.btn-block.btn-success(href=`${config.urls.web}/${locale}/my-account/billing`, role="button")= t('Pay by card or PayPal')
+          .card-footer.text-center: small.text-muted= t('If you no longer use our service, then please let us know.')

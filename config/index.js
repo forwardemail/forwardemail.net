@@ -5,6 +5,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const base64ToS3 = require('nodemailer-base64-to-s3');
 const consolidate = require('consolidate');
+const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const manifestRev = require('manifest-rev');
 const ms = require('ms');
@@ -72,6 +73,12 @@ const config = {
   twitter: env.TWITTER,
   i18n,
 
+  // paypal
+  paypal: {
+    clientID: env.PAYPAL_CLIENT_ID,
+    secret: env.PAYPAL_SECRET
+  },
+
   // <https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#constructor-property>
   aws: {},
 
@@ -114,6 +121,12 @@ const config = {
     'userFields.apiToken'
   ],
 
+  // reference crypto random
+  referenceOptions: {
+    length: 6,
+    type: 'alphanumeric'
+  },
+
   // user fields (change these if you want camel case or whatever)
   userFields: {
     accountUpdates: 'account_updates',
@@ -133,8 +146,15 @@ const config = {
     verificationPin: 'verification_pin',
     verificationPinHasExpired: 'verification_pin_has_expired',
     welcomeEmailSentAt: 'welcome_email_sent_at',
+    launchEmailSentAt: 'launch_email_sent_at',
     isBanned: 'is_banned',
-    twoFactorReminderSentAt: 'two_factor_reminder_sent_at'
+    twoFactorReminderSentAt: 'two_factor_reminder_sent_at',
+    planSetAt: 'plan_set_at',
+    planExpiresAt: 'plan_expires_at',
+    stripeCustomerID: 'stripe_customer_id',
+    stripeSubscriptionID: 'stripe_subscription_id',
+    paypalPayerID: 'paypal_payer_id',
+    paypalSubscriptionID: 'paypal_subscription_id'
   },
 
   // dynamic otp routes
@@ -271,8 +291,29 @@ config.views.locals.manifest = manifestRev({
   manifest: config.srimanifest
 });
 
-// add global `config` object to be used by views
-config.views.locals.config = config;
+// add selective `config` object to be used by views
+config.views.locals.config = _.pick(config, [
+  'verificationPin',
+  'vanityDomains',
+  'userFields',
+  'otpRoutePrefix',
+  'passport',
+  'otpRoutePrefix',
+  'urls',
+  'appColor',
+  'appName',
+  'twitter',
+  'env',
+  'loginRoute',
+  'supportRequestMaxLength',
+  'passportLocalMongoose',
+  'passportCallbackOptions',
+  'recordPrefix',
+  'maxForwardedAddresses',
+  'paypal',
+  'storeIPAddress',
+  'lastLocaleField'
+]);
 
 // add `views` to `config.email`
 config.email.transport = nodemailer.createTransport({
@@ -318,5 +359,8 @@ if (
     prepend: `${config.urls.web}/`,
     manifest: config.manifest
   });
+
+// launch date is 11/23/2020 at 10:00 AM
+config.launchDate = dayjs('11/23/2020 10:00 AM', 'MM/DD/YYYY h:mm A').toDate();
 
 module.exports = config;

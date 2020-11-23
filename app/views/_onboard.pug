@@ -8,7 +8,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
           if onboardText
             p.text-center.mb-0.text-muted!= onboardText
           form(action=onboardFormAction, method='POST').ajax-form.pt-4.mb-3
-            input(type='hidden', name='_csrf', value=csrf)
+            input(type='hidden', name='_csrf', value=ctx.csrf)
             .form-row
               .col-12.col-md-6.offset-md-3
                 .form-group.floating-label

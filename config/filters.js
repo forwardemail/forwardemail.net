@@ -1,12 +1,13 @@
-// const { parse } = require('node-html-parser');
 const I18N = require('@ladjs/i18n');
-const cheerio = require('cheerio');
 const isSANB = require('is-string-and-not-blank');
+const { parse } = require('node-html-parser');
 
 const i18nConfig = require('../config/i18n');
 const logger = require('../helpers/logger');
 const markdown = require('../helpers/markdown');
 
+// const cheerio = require('cheerio');
+/*
 function fixTableOfContents(content) {
   const $ = cheerio.load(content);
   const $h1 = $('h1').first();
@@ -44,6 +45,53 @@ function fixTableOfContents(content) {
   });
 
   return $.html();
+}
+*/
+
+function fixTableOfContents(content) {
+  const root = parse(content);
+
+  const h1 = root.querySelector('h1');
+  if (!h1) return content;
+
+  const a = h1.querySelector('a');
+  if (!a) return content;
+
+  const h2 = root.querySelector('h2');
+  if (!h2) return content;
+
+  const a2 = h2.querySelector('a');
+  if (!a2) return content;
+
+  const ul = root.querySelector('ul');
+  if (!ul) return content;
+
+  const links = ul.querySelectorAll('a');
+  if (links.length === 0) return content;
+
+  a.setAttribute('id', 'top');
+  a.setAttribute('href', '#top');
+  a2.setAttribute('id', 'table-of-contents');
+  a2.setAttribute('href', '#table-of-contents');
+
+  const h2s = root.querySelectorAll('h2');
+
+  for (const link of links) {
+    const { text } = link;
+    const href = link.getAttribute('href');
+    const id = href.slice(1);
+    for (const h of h2s) {
+      const anchor = h.querySelector('a');
+      if (!anchor) continue;
+      if (h.text === text) {
+        anchor.setAttribute('href', href);
+        // strip the # so id is accurate
+        anchor.setAttribute('id', id);
+      }
+    }
+  }
+
+  return root.toString();
 }
 
 module.exports = {

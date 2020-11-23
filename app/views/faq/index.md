@@ -9,6 +9,7 @@
 * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
 * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
 * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+* [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
 * [Do you support webhooks](#do-you-support-webhooks)
 * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
 * [Can I disable specific aliases](#can-i-disable-specific-aliases)
@@ -620,7 +621,7 @@
 3. When prompted for "Select the app and device you want to generate the app password for":
    * Select "Mail" under the drop-down for "Select app"
    * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. "[hello@example.com](mailto:hello@example.com)" - this will help you keep track in case you use this service for multiple accounts)
+   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. "<hello@example.com>" - this will help you keep track in case you use this service for multiple accounts)
 
 4. Copy the password to your clipboard that is automatically generated
    <div class="alert my-3 alert-warning">
@@ -637,7 +638,7 @@
 
 6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Elon Musk")
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. "[hello@example.com](mailto:hello@example.com)")
+7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. "<hello@example.com>")
 
 8. Uncheck "Treat as an alias"
    <div class="alert my-3 alert-primary">
@@ -654,7 +655,7 @@
 
 10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
 
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span>[user@gmail.com](mailto:user@gmail.com)</span>)
+11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
@@ -701,7 +702,11 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 
 ## Can I remove the via forwardemail dot net in Gmail
 
-Not yet!  We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).
+This is ONLY applicable if you are using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.  Currently there is no workaround for this, and it affects all service providers (not just us).  The workaround is to use a custom SMTP server.  However we do not offer SMTP yet.
+
+We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workcaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).
+
+If you want to get notified when this is released, you can email <smtp@forwardemail.net> and we'll send you a notification once it's released.  Or just sign up for an account here if you haven't already!
 
 
 ## Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)
@@ -777,7 +782,12 @@ Yes!  We offer a 30-day money back guarantee on all paids plans if you are not s
 
 We do not ask any questions and simply process the refund within 5-7 business days.
 
-To request a refund, please send an email from the email address verified on your account to: [refunds@forwardemail.net](mailto:refunds@forwardemail.net)
+To request a refund, please send an email from the email address verified on your account to: <refunds@forwardemail.net>
+
+
+## If I switch plans do you pro-rate and refund the difference
+
+Yes, we will manually process your refund for you and email you once complete.  You will get a notification regarding the refund amount when you switch plans.
 
 
 ## Do you support webhooks
@@ -1373,7 +1383,11 @@ Yes. Regardless of which plan you are on, you will pay only one monthly rate –
 
 ## Which payment methods do you accept
 
-We accept credit cards using [Stripe](https://stripe.com/global) and payment with [PayPal](https://paypal.com/) – for one-time payments and monthly or yearly subscriptions.
+We accept all major credit cards using [Stripe](https://stripe.com/global).  Unfortunately we identified severe issues with PayPal's API and will not be integrating them until all issues are resolved, we hope you understand.
+
+If you need to make payment with PayPal, Bitcoin, cash, or cheque, then please email us at <support@forwardemail.net> and we would be glad to help you in the interim.
+
+<!-- We accept credit cards using [Stripe](https://stripe.com/global) and payment with [PayPal](https://paypal.com/) – for one-time payments and monthly or yearly subscriptions. -->
 
 
 ## Will you ever increase prices
@@ -1395,7 +1409,7 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
 
-## 
+##
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

@@ -1,0 +1,12 @@
+
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.d-block
+          h5.card-header.text-center= t('System Alert')
+          .card-body
+            p.card-text!= message
+          .card-footer.text-center: small.text-muted= t('This is an automated system alert.')

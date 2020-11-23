@@ -11,14 +11,20 @@ const koaCashConfig = require('./koa-cash');
 const config = require('.');
 
 const defaultSrc = isSANB(process.env.WEB_HOST)
-  ? ["'self'", 'data:', `*.${process.env.WEB_HOST}:*`]
+  ? [
+      "'self'",
+      'data:',
+      `*.${process.env.WEB_HOST}:*`,
+      process.env.WEB_HOST,
+      `${process.env.WEB_HOST}:*`
+    ]
   : null;
 
 const reportUri = isSANB(process.env.WEB_URL)
   ? `${process.env.WEB_URL}/report`
   : null;
 
-module.exports = client => ({
+module.exports = (client) => ({
   routes: routes.web,
   logger,
   i18n,
@@ -27,6 +33,7 @@ module.exports = client => ({
   views: config.views,
   passport,
   koaCash: env.CACHE_RESPONSES ? koaCashConfig(client) : false,
+  // TODO: figure out why this was giving an error about headers already sent
   redirectLoop: false,
   cacheResponses: env.CACHE_RESPONSES
     ? {
@@ -47,16 +54,40 @@ module.exports = client => ({
     hidden: true
   },
   helmet: {
+    // TODO: eventually make the CSP only set on PayPal required pages
     contentSecurityPolicy: defaultSrc
       ? {
           directives: {
             defaultSrc,
-            connectSrc: defaultSrc,
+            connectSrc: [
+              ...defaultSrc,
+              'www.paypal.com',
+              ...(env.NODE_ENV === 'production'
+                ? []
+                : ['www.sandbox.paypal.com'])
+            ],
             fontSrc: defaultSrc,
-            imgSrc: defaultSrc,
+            imgSrc: [...defaultSrc, 'tracking.qa.paypal.com'],
             styleSrc: [...defaultSrc, "'unsafe-inline'"],
-            scriptSrc: [...defaultSrc, "'unsafe-inline'"],
-            frameSrc: [...defaultSrc, '*.youtube-nocookie.com'],
+            scriptSrc: [
+              ...defaultSrc,
+              "'unsafe-inline'",
+              'js.stripe.com',
+              'www.paypal.com',
+              ...(env.NODE_ENV === 'production'
+                ? []
+                : ['www.sandbox.paypal.com'])
+            ],
+            frameSrc: [
+              ...defaultSrc,
+              'www.youtube.com',
+              '*.youtube-nocookie.com',
+              'js.stripe.com',
+              'www.paypal.com',
+              ...(env.NODE_ENV === 'production'
+                ? []
+                : ['www.sandbox.paypal.com'])
+            ],
             reportUri: reportUri ? reportUri : null
           }
         }

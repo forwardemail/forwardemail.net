@@ -73,6 +73,8 @@ See [Requirements](#requirements) below.
 
 Coming soon
 
+<!-- `sudo apt-get install wkhtmltopdf` for PDF receipts) -->
+
 
 ## Server Infrastructure
 
@@ -255,22 +257,21 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-bree.json production exec "pm2 save"
     ```
 
+18. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
 
-16. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
+19. Configure your DNS records for the web and API server hostnames and respective IP addresses.
 
-17. Configure your DNS records for the web and API server hostnames and respective IP addresses.
+20. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
 
-18. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
-
-19. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+21. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
     ```sh
     rm .env.production
     ```
 
-20. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+22. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
-21. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
+23. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
 
 
 ## Contributors
@@ -285,7 +286,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 [Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © [Niftylettuce, LLC.](https://niftylettuce.com/)
 
 
-## 
+##
 
 [ansible]: https://github.com/ansible/ansible
 

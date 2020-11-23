@@ -36,7 +36,7 @@
 
 ## Libraries
 
-Right now we have not yet released any API wrappers, but we plan to do so in the near future. Send an email to [api@forwardemail.net](mailto:api@forwardemail.net) if you would like to be notified when a particular programming language's API wrapper is released. In the meanwhile, you can use these recommended HTTP request libraries in your application, or simply use [curl](https://stackoverflow.com/a/27442239/3586413) as in the below examples.
+Right now we have not yet released any API wrappers, but we plan to do so in the near future. Send an email to <api@forwardemail.net> if you would like to be notified when a particular programming language's API wrapper is released. In the meanwhile, you can use these recommended HTTP request libraries in your application, or simply use [curl](https://stackoverflow.com/a/27442239/3586413) as in the below examples.
 
 | Language   | Library                                                 |
 | ---------- | ------------------------------------------------------- |
@@ -96,7 +96,7 @@ Our service is translated to over 25 different languages.  All API response mess
 
 ## Pagination
 
-If you would like to be notified when pagination is available, then please email [api@forwardemail.net](mailto:api@forwardemail.net).
+If you would like to be notified when pagination is available, then please email <api@forwardemail.net>.
 
 
 ## Account

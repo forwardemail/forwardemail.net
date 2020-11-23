@@ -2,6 +2,15 @@
 extends layout
 
 block body
+  #modal-pricing-video.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-pricing-video-title', aria-hidden='true')
+    .modal-dialog.modal-lg(role='document')
+      .modal-content
+        .modal-header.text-center.d-block
+          h1.h4.modal-title.d-inline-block.ml-4#modal-pricing-video-title= t('Learn about our plans')
+          button(type='button', data-dismiss='modal', aria-label='Close').close
+            span(aria-hidden='true') &times;
+        .modal-body
+          iframe(width='100%', height='450', src='https://www.youtube.com/embed/q7zfEpn2NdA', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
   .py-5.bg-light
     .text-center.mb-5
       .h2.display-3.mb-1= emoji('tada')
@@ -9,11 +18,15 @@ block body
       small.text-black-50.text-uppercase= t('We strive for perfection')
     .container
       .row.mb-5
-        .col
-          h2.text-center.font-weight-bold
+        .col.text-center
+          h2.font-weight-bold.mb-3
             = emoji('zap')
             = ' '
             = t('Lightning fast email service.')
+          button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-pricing-video')
+            i.fa.fa-play-circle
+            = ' '
+            = t('Watch pricing video')
       .row.row-cols-1.row-cols-lg-2
         .col
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-black-50.border
@@ -112,8 +125,6 @@ block body
                 sup.d-inline-block.h6.text-black-50
                   = '/'
                   = t('month')
-                  = ' '
-                  button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  We\'ll send reminders to make payment when it has ended.')).btn.btn-link: i.fa.fa-thumbs-up
               small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains for one fee')
               .p-2
                 if sortedDomains.length === 0
@@ -161,8 +172,6 @@ block body
                 sup.d-inline-block.h6.text-black-50
                   = '/'
                   = t('month')
-                  = ' '
-                  button(type='button', data-toggle='tooltip', data-placement='bottom', title=t('All paid plans are completely free during our beta program.  We\'ll send reminders to make payment when it has ended.')).btn.btn-link: i.fa.fa-thumbs-up
               small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t('Unlimited domains for one fee')
               .p-2
                 if sortedDomains.length === 0

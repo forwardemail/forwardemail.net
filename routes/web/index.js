@@ -69,6 +69,7 @@ localeRouter
     '/reserved-email-addresses',
     web.myAccount.retrieveDomains,
     web.onboard,
+    web.reservedEmailAddresses,
     render('reserved-email-addresses')
   )
   .get(

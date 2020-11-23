@@ -1,5 +1,6 @@
 const Boom = require('@hapi/boom');
 const Email = require('email-templates');
+const Meta = require('koa-meta');
 const _ = require('lodash');
 const emailAddresses = require('email-addresses');
 const isSANB = require('is-string-and-not-blank');
@@ -7,12 +8,15 @@ const pug = require('pug');
 const { boolean } = require('boolean');
 const { isEmail, isFQDN, isIP } = require('validator');
 
-const sendVerificationEmail = require('../../../helpers/send-verification-email');
 const config = require('../../../config');
+const logger = require('../../../helpers/logger');
+const sendVerificationEmail = require('../../../helpers/send-verification-email');
 const { Users, Domains, Aliases } = require('../../models');
 
 // we're only using this for the exposed `getTemplatePath` method
 const email = new Email({ views: config.views });
+
+const meta = new Meta(config.meta, logger);
 
 // eslint-disable-next-line complexity
 async function onboard(ctx, next) {
@@ -50,7 +54,24 @@ async function onboard(ctx, next) {
     const { filePath } = await email.getTemplatePath(
       ctx.pathWithoutLocale.slice(1)
     );
-    let html = pug.renderFile(filePath, ctx.state);
+
+    // load seo metadata
+    let data = {};
+    try {
+      data = meta.getByPath(ctx.pathWithoutLocale || ctx.path, ctx.request.t);
+    } catch (err) {
+      logger.error(err);
+      data = meta.getByPath('/', ctx.request.t);
+    }
+
+    Object.assign(ctx.state.meta, data);
+
+    let html = pug.renderFile(
+      filePath,
+      // make flash a noop so we don't interfere with messages/session
+      { ...ctx.state, flash: () => {} }
+    );
+
     if (ctx.state.domain)
       html = html.replace(
         /example.com/g,

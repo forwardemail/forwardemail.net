@@ -45,6 +45,8 @@ const omitExtraFields = [
   config.userFields.isBanned,
   config.userFields.accountUpdates,
   config.userFields.twoFactorReminderSentAt,
+  config.userFields.planSetAt,
+  config.userFields.planExpiresAt,
   fields.otpEnabled,
   fields.otpToken
 ];
@@ -55,6 +57,12 @@ const omitExtraFields = [
 // moment.relativeTimeThreshold('ss', 5);
 
 const User = new mongoose.Schema({
+  // plan
+  plan: {
+    type: String,
+    enum: ['free', 'enhanced_protection', 'team'],
+    default: 'free'
+  },
   // group permissions
   group: {
     type: String,
@@ -77,8 +85,22 @@ const User = new mongoose.Schema({
 // additional variable based properties to add to the schema
 const object = {};
 
+// stripe
+object[config.userFields.stripeCustomerID] = String;
+object[config.userFields.stripeSubscriptionID] = String;
+
+// paypal
+object[config.userFields.paypalPayerID] = String;
+object[config.userFields.paypalSubscriptionID] = String;
+
 // two factor auth reminders
 object[config.userFields.twoFactorReminderSentAt] = Date;
+
+// when the user upgraded to a paid plan
+object[config.userFields.planSetAt] = Date;
+
+// when the user's plan expires
+object[config.userFields.planExpiresAt] = Date;
 
 // user fields
 object[config.userFields.isBanned] = {
@@ -115,6 +137,9 @@ object[config.userFields.changeEmailNewAddress] = String;
 
 // welcome email
 object[config.userFields.welcomeEmailSentAt] = Date;
+
+// launch email (before 11/23/2020 10:00 AM)
+object[config.userFields.launchEmailSentAt] = Date;
 
 // account verification
 object[config.userFields.hasSetPassword] = {

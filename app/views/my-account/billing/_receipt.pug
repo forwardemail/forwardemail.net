@@ -1,0 +1,98 @@
+.card
+  .card-header.p-0
+    table.table.mb-0
+      tr
+        td.border-0
+          strong
+            = t('Reference')
+            = ':'
+          = ' '
+          = payment.reference
+        td.text-right.border-0
+          strong
+            = t('Payment Status')
+            = ':'
+          = ' '
+          = t('Paid')
+  table.table.mb-0
+    tr
+      td(colspan=2).border-0
+        .text-center.mt-2.mb-3.pb-3.border-bottom
+          img.d-inline-block(src=manifest(ctx.params.reference.endsWith('.pdf') ? 'img/apple-touch-icon.png' : 'img/logo-square.svg'), width=50, height=50, alt='').mr-1
+          h1.h2.m-0.align-middle.d-inline-block
+            span.text-primary.font-weight-bold Forward
+            = ' '
+            span.text-info.font-weight-normal Email
+    tr
+      td.border-0
+        address
+          strong Niftylettuce, LLC.
+          br
+          | 16192 Coastal Hwy
+          br
+          | Lewes, DE 19958
+          br
+          | United States
+          br
+          small: a(href='mailto:support@forwardemail.net') support@forwardemail.net
+          br
+          small: a(href=config.urls.web)= config.urls.web
+      td.border-0.text-right
+        address
+          strong
+            = t('Customer')
+            = ':'
+          br
+          a(href=`mailto:${user.email}`)= user.email
+    tr
+      td.border-0
+        strong
+          = t('Payment Method')
+          = ':'
+        br
+        if payment.method === 'paypal'
+          i.fab.fa-paypal
+          |  PayPal
+        else
+          case payment.method
+            when 'amex'
+              i.fa.fa-cc-amex
+            when 'diners'
+              i.fa.fa-cc-diners-club
+            when 'discover'
+              i.fa.fa-cc-discover
+            when 'jcb'
+              i.fa.fa-cc-jcb
+            when 'mastercard'
+              i.fa.fa-cc-mastercard
+            when 'visa'
+              i.fa.fa-cc-visa
+            default
+              i.fa.fa-credit-card
+          = ' '
+          = titleize(humanize(payment.method))
+          if payment.last4
+            small= ' x'
+            = payment.last4
+          if payment.exp_month && payment.exp_year
+            small.text-muted.text-uppercase= ` ${payment.exp_month}/${payment.exp_year.toString().slice(2)}`
+      td.border-0.text-right
+        strong
+          = t('Payment Date')
+          = ':'
+        br
+        = dayjs(payment.created_at).locale(locale).format('M/D/YY')
+  table.table.table-bordered.mb-0
+    thead.thead-dark
+      tr
+        th(scope='col')= t('Description')
+        th(scope='col').text-right= t('Amount')
+    tbody
+      tr
+        td.align-middle!= payment.description
+        td.align-middle.text-right= payment.amount_formatted
+    tfoot.thead-light
+      tr
+        th.align-middle.text-right: u= t('Total')
+        th.align-middle.text-right= payment.amount_formatted
+  .card-footer.text-center: small.text-muted= t('If you have any questions or comments, then please let us know')

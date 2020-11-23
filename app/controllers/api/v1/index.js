@@ -10,6 +10,8 @@ const settings = require('./settings');
 const spfError = require('./spf-error');
 const test = require('./test');
 const users = require('./users');
+const stripe = require('./stripe');
+const paypal = require('./paypal');
 
 module.exports = {
   aliases,
@@ -23,5 +25,7 @@ module.exports = {
   settings,
   spfError,
   test,
-  users
+  users,
+  stripe,
+  paypal
 };

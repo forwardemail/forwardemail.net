@@ -1,3 +1,9 @@
+// required to disable watching of I18N files in @ladjs/i18n
+// otherwises tasks will fail to exit due to watchers running
+process.env.I18N_SYNC_FILES = true;
+process.env.I18N_AUTO_RELOAD = false;
+process.env.I18N_UPDATE_FILES = true;
+
 // eslint-disable-next-line import/no-unassigned-import
 require('./config/env');
 
@@ -42,12 +48,7 @@ const { lastRun, watch, series, parallel, src, dest } = require('gulp');
 // explicitly set the compiler in case it were to change to dart
 sass.compiler = nodeSass;
 
-// required to disable watching of I18N files in @ladjs/i18n
-// otherwises tasks will fail to exit due to watchers running
-process.env.I18N_SYNC_FILES = true;
-process.env.I18N_AUTO_RELOAD = false;
-process.env.I18N_UPDATE_FILES = true;
-
+const env = require('./config/env');
 const config = require('./config');
 const logger = require('./helpers/logger');
 const i18n = require('./helpers/i18n');
@@ -210,7 +211,7 @@ async function bundle() {
   let stream = src('build/js/**/*.js', { base: 'build', since })
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(unassert())
-    .pipe(envify())
+    .pipe(envify(env))
     .pipe(babel());
 
   if (PROD) stream = stream.pipe(terser());
@@ -252,7 +253,11 @@ async function markdown() {
     i18n,
     logger
   });
-  const graceful = new Graceful({ redisClients: [mandarin.redisClient] });
+  const graceful = new Graceful({
+    redisClients: [mandarin.redisClient],
+    logger
+  });
+  graceful.listen();
   await mandarin.markdown();
   await graceful.stopRedisClients();
 }
