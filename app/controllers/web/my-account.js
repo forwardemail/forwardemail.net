@@ -1970,9 +1970,10 @@ async function retrieveDomainBilling(ctx) {
     // `originalPlan` (if it swapped between team <-> enhanced_protection
     // (do things that don't scale)
     if (
+      isAccountUpgrade &&
+      !isMakePayment &&
       _.isDate(originalPlanExpiresAt) &&
       ctx.query.plan !== originalPlan &&
-      !isMakePayment &&
       originalPlan !== 'free'
     ) {
       // get the total number of days that need pro-rated (if negative then none)
