@@ -32,8 +32,8 @@ mixin receipt(payment)
   .btn-group
     a(href=l(`/my-account/billing/${payment.reference}`), data-toggle='tooltip', data-placement='bottom', title=t('View')).btn.btn-primary
       i.fa.fa-receipt
-    a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
-      i.fa.fa-file-pdf
+    // a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
+    //   i.fa.fa-file-pdf
     a(href=l(`/my-account/billing/${payment.reference}.html`), target='_blank', data-toggle='tooltip', data-placement='bottom', title=t('Print')).btn.btn-dark
       i.fa.fa-print
 
