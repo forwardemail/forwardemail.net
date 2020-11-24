@@ -18,7 +18,7 @@ async function webhook(ctx) {
       throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
 
     const event = stripe.webhooks.constructEvent(
-      ctx.request.body,
+      ctx.request.rawBody,
       sig,
       env.STRIPE_ENDPOINT_SECRET
     );
