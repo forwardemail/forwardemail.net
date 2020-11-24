@@ -229,7 +229,7 @@ block body
             if domain.group === 'admin'
               +planRequired(false)
             p.card-text
-              != t('You are currently limited to forwarding to <strong>%d</strong> recipients per alias.', domain.max_recipients_per_alias <= 0 ? config.maxForwardedAddresses : domain.max_recipients_per_alias)
+              != t('You are currently limited to forwarding to <strong class="notranslate">%d</strong> recipients per alias.', domain.max_recipients_per_alias <= 0 ? config.maxForwardedAddresses : domain.max_recipients_per_alias)
               = ' '
               != t('If you need to increase this limit, then please contact <span class="notranslate">%s</span> and include a valid reason.', domain.group === 'admin' ? t('us') : t("your domain's administrator"))
           if domain.group === 'admin'
