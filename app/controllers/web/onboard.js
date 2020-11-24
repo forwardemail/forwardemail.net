@@ -69,7 +69,12 @@ async function onboard(ctx, next) {
     let html = pug.renderFile(
       filePath,
       // make flash a noop so we don't interfere with messages/session
-      { ...ctx.state, flash: () => {} }
+      {
+        ...ctx.state,
+        flash() {
+          return {};
+        }
+      }
     );
 
     if (ctx.state.domain)
