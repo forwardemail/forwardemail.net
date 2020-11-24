@@ -3,7 +3,7 @@ extends ../../layout
 
 mixin planRequired(isTeam = false)
   if domain.plan === 'free' || (isTeam && domain.plan !== 'team')
-    .alert.alert-warning!= t('Please <a class="alert-link" href="%s">upgrade to the %s plan</a> to unlock this feature.', l(`/my-account/domains/${domain.name}/billing?plan=${isTeam ? 'team' : 'enhanced_protection'}`), isTeam ? 'Team' : 'Enhanced Protection')
+    .alert.alert-warning!= t('Please <a class="alert-link" href="%s">upgrade to the <span class="notranslate">%s</span> plan</a> to unlock this feature.', l(`/my-account/domains/${domain.name}/billing?plan=${isTeam ? 'team' : 'enhanced_protection'}`), isTeam ? 'Team' : 'Enhanced Protection')
 
 block body
   - const isDisabled = domain.plan === 'free'
@@ -61,7 +61,7 @@ block body
             h4.card-header= t('Current Plan')
             .card-body
               p.card-text
-                != t('This domain is currently on the %s plan. Visit your <a href="%s">Billing</a> page and our <a href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l('/my-account/billing'), l(`/pricing?domain=${domain.name}`))
+                != t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a href="%s">Billing</a> page and our <a href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l('/my-account/billing'), l(`/pricing?domain=${domain.name}`))
             .card-footer
               .btn-group
                 button(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false').btn.btn-lg.btn-primary.dropdown-toggle= t('Change plan')
@@ -231,7 +231,7 @@ block body
             p.card-text
               != t('You are currently limited to forwarding to <strong>%d</strong> recipients per alias.', domain.max_recipients_per_alias <= 0 ? config.maxForwardedAddresses : domain.max_recipients_per_alias)
               = ' '
-              = t('If you need to increase this limit, then please contact %s and include a valid reason.', domain.group === 'admin' ? t('us') : t("your domain's administrator"))
+              != t('If you need to increase this limit, then please contact <span class="notranslate">%s</span> and include a valid reason.', domain.group === 'admin' ? t('us') : t("your domain's administrator"))
           if domain.group === 'admin'
             .card-footer
               a(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help', disabled=isDisabled).btn.btn-lg.btn-primary= t('Increase limit')
