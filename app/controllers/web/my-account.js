@@ -614,7 +614,12 @@ async function retrieveDomain(ctx, next) {
     const html = pug.renderFile(
       path.join(config.views.root, 'faq', 'index.pug'),
       // make flash a noop so we don't interfere with messages/session
-      { ...ctx.state, flash: () => {} }
+      {
+        ...ctx.state,
+        flash() {
+          return {};
+        }
+      }
     );
 
     // expose it to the view

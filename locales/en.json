@@ -1497,5 +1497,9 @@
   "Creators": "Creators",
   "Businesses": "Businesses",
   "Watch pricing video": "Watch pricing video",
-  "Learn about our plans": "Learn about our plans"
+  "Learn about our plans": "Learn about our plans",
+  "On November 23, 2020 we publicly launched out of our beta program.": "On November 23, 2020 we publicly launched out of our beta program.",
+  " :tada: to be set as the \"username\" value of the request's ": " :tada: to be set as the \"username\" value of the request's ",
+  " beautiful API documentation when we crafted ours :smile:.": " beautiful API documentation when we crafted ours :smile:.",
+  "At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:": "At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:"
 }
