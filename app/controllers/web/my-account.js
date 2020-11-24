@@ -33,6 +33,11 @@ const logger = require('../../../helpers/logger');
 const toObject = require('../../../helpers/to-object');
 const { Users, Domains, Aliases, Payments } = require('../../models');
 
+const PAYPAL_ENDPOINT =
+  env.NODE_ENV === 'production'
+    ? 'https://api-m.paypal.com'
+    : 'https://api-m.sandbox.paypal.com';
+
 const payPalClient = new checkoutNodeJssdk.core.PayPalHttpClient(
   new checkoutNodeJssdk.core[
     env.NODE_ENV === 'production' ? 'LiveEnvironment' : 'SandboxEnvironment'
@@ -1480,7 +1485,7 @@ async function retrieveDomainBilling(ctx) {
           const token = await promisify(paypal.generateToken)();
           await superagent
             .post(
-              `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${
+              `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${
                 ctx.state.user[config.userFields.paypalSubscriptionID]
               }/cancel`
             )
@@ -1729,7 +1734,7 @@ async function retrieveDomainBilling(ctx) {
           const token = await promisify(paypal.generateToken)();
           await superagent
             .post(
-              `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${
+              `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${
                 ctx.state.user[config.userFields.paypalSubscriptionID]
               }/cancel`
             )
@@ -1759,7 +1764,7 @@ async function retrieveDomainBilling(ctx) {
       const token = await promisify(paypal.generateToken)();
       const { body } = await superagent
         .get(
-          `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${ctx.query.paypal_subscription_id}`
+          `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${ctx.query.paypal_subscription_id}`
         )
         .set('Content-Type', 'application/json')
         .set('Authorization', token)
@@ -1931,7 +1936,7 @@ async function retrieveDomainBilling(ctx) {
                 const token = await promisify(paypal.generateToken)();
                 await superagent
                   .post(
-                    `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${
+                    `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${
                       ctx.state.user[config.userFields.paypalSubscriptionID]
                     }/cancel`
                   )
@@ -2448,7 +2453,7 @@ async function cancelSubscription(ctx, next) {
           const token = await promisify(paypal.generateToken)();
           await superagent
             .post(
-              `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${
+              `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${
                 ctx.state.user[config.userFields.paypalSubscriptionID]
               }/cancel`
             )
