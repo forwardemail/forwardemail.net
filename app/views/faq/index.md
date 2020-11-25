@@ -1383,11 +1383,9 @@ Yes. Regardless of which plan you are on, you will pay only one monthly rate –
 
 ## Which payment methods do you accept
 
-We accept all major credit cards using [Stripe](https://stripe.com/global).  Unfortunately we identified severe issues with PayPal's API and will not be integrating them until all issues are resolved, we hope you understand.
+We accept credit cards using [Stripe](https://stripe.com/global) and payment with [PayPal](https://paypal.com/) – for one-time payments and monthly or yearly subscriptions.
 
-If you need to make payment with PayPal, Bitcoin, cash, or cheque, then please email us at <support@forwardemail.net> and we would be glad to help you in the interim.
-
-<!-- We accept credit cards using [Stripe](https://stripe.com/global) and payment with [PayPal](https://paypal.com/) – for one-time payments and monthly or yearly subscriptions. -->
+If you need to make payment with Bitcoin or other means, please email us at <support@forwardemail.net>.
 
 
 ## Will you ever increase prices
