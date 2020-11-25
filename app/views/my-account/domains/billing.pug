@@ -42,7 +42,7 @@ block body
               .form-group
                 .form-check.form-check-inline
                   input(type='radio', checked, required, name='payment_method', value='credit_card')#input-payment-method-credit-card.form-check-input
-                  label(for='input-payment-method-credit-card').form-check-label.lead= t('Credit Card')
+                  label(for='input-payment-method-credit-card').form-check-label.lead= t('Debit/Credit Card')
                 .form-check.form-check-inline
                   input(type='radio', required, name='payment_method', value='paypal')#input-payment-method-paypal.form-check-input
                   label(for='input-payment-method-paypal').form-check-label.lead= t('PayPal')
@@ -93,6 +93,8 @@ block body
 
               //- Continue (PayPal)
               #paypal-button-container.d-none
+
+              p.text-muted.pt-3.mb-0: small.text-muted= t('We accept all major currencies and card types.')
 
           .card-footer.text-muted.text-center= t("We'll automatically email you if you're late on a payment.")
         if !isMakePayment
