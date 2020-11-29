@@ -205,5 +205,7 @@ module.exports = {
   SUBSCRIPTION_CANCELLED: 'You have successfully cancelled your subscription.',
   ONE_TIME_PAYMENT_SUCCESSFUL: 'You have successfully made a one-time payment.',
   REFUND_PROCESSING:
-    'We will manually process your pro-rated refund in the amount of <span class="notranslate">%s USD</span> and email you when complete.'
+    'We will manually process your pro-rated refund in the amount of <span class="notranslate">%s USD</span> and email you when complete.',
+  CAPTCHA_SERVICE_ERROR: 'Captcha service error.',
+  CAPTCHA_NOT_VERIFIED: 'Captcha not verified.'
 };
