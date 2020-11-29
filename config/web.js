@@ -62,18 +62,27 @@ module.exports = (client) => ({
             connectSrc: [
               ...defaultSrc,
               'www.paypal.com',
+              'https://hcaptcha.com',
+              'https://*.hcaptcha.com',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])
             ],
             fontSrc: defaultSrc,
             imgSrc: [...defaultSrc, 'tracking.qa.paypal.com'],
-            styleSrc: [...defaultSrc, "'unsafe-inline'"],
+            styleSrc: [
+              ...defaultSrc,
+              "'unsafe-inline'",
+              'https://hcaptcha.com',
+              'https://*.hcaptcha.com'
+            ],
             scriptSrc: [
               ...defaultSrc,
               "'unsafe-inline'",
               'js.stripe.com',
               'www.paypal.com',
+              'https://hcaptcha.com',
+              'https://*.hcaptcha.com',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])
@@ -84,6 +93,8 @@ module.exports = (client) => ({
               '*.youtube-nocookie.com',
               'js.stripe.com',
               'www.paypal.com',
+              'https://hcaptcha.com',
+              'https://*.hcaptcha.com',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])

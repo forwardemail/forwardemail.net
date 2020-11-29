@@ -18,6 +18,9 @@ if !isHelp
             .form-group.floating-label
               textarea#input-message.form-control(rows="8", required, maxlength=config.supportRequestMaxLength, name="message", placeholder=t('Write your message'))
               label(for="input-message")= t('Message')
+            if boolean(config.hcaptchaEnabled) && !user
+              .h-captcha(data-sitekey=config.hcaptchaSiteKey)
+              p.text-left.mb-3: small.text-muted= t('If you log in to your account, you will not need to fill out these captchas.')
             button.btn.btn-block.btn-success.btn-lg(type="submit", data-toggle="tooltip", data-placement="bottom", title=t("We'll be in contact with you!"))= t('Send message')
 
 if !user && !registerOrLogin

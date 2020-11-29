@@ -177,6 +177,10 @@ const config = {
   changeEmailTokenTimeoutMs: ms(env.CHANGE_EMAIL_TOKEN_TIMEOUT_MS),
   changeEmailLimitMs: ms(env.CHANGE_EMAIL_LIMIT_MS),
 
+  hcaptchaEnabled: env.HCAPTCHA_ENABLED,
+  hcaptchaSecretKey: env.HCAPTCHA_SECRET_KEY,
+  hcaptchaSiteKey: env.HCAPTCHA_SITE_KEY,
+
   // @ladjs/passport configuration (see defaults in package)
   // <https://github.com/ladjs/passport>
   passport: {
@@ -305,6 +309,8 @@ config.views.locals.config = _.pick(config, [
   'twitter',
   'env',
   'loginRoute',
+  'hcaptchaEnabled',
+  'hcaptchaSiteKey',
   'supportRequestMaxLength',
   'passportLocalMongoose',
   'passportCallbackOptions',
