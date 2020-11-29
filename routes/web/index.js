@@ -96,7 +96,7 @@ localeRouter
   .get('/open-startup', web.openStartup)
   .get('/404', render('404'))
   .get('/500', render('500'))
-  .post('/help', web.help)
+  .post('/help', policies.ensureCaptcha, web.help)
   .get('/forgot-password', policies.ensureLoggedOut, render('forgot-password'))
   .post('/forgot-password', policies.ensureLoggedOut, web.auth.forgotPassword)
   .get(
