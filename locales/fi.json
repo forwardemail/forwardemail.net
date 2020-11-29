@@ -1188,5 +1188,6 @@
   "Reserved Email Addresses and Words": "Reserved Email Addresses and Words",
   "Security-Focused List": "Security-Focused List",
   "<strong>Did you know?</strong> In our paid plans, organizations can have members that belong to an \"admin\" or a \"user\" group &ndash; and the \"user\" group is not permitted to add aliases that equal one of the reserved email addresses below.  We also restrict the \"user\" group from having an email address that starts with, ends with, or equals \"admin\", \"administrator\", \"webmaster\", \"hostmaster\", \"postmaster\", and \"ssl\".": "<strong>Did you know?</strong> In our paid plans, organizations can have members that belong to an \"admin\" or a \"user\" group &ndash; and the \"user\" group is not permitted to add aliases that equal one of the reserved email addresses below.  We also restrict the \"user\" group from having an email address that starts with, ends with, or equals \"admin\", \"administrator\", \"webmaster\", \"hostmaster\", \"postmaster\", and \"ssl\".",
-  "View source code on GitHub": "View source code on GitHub"
+  "View source code on GitHub": "View source code on GitHub",
+  "If you need to make payment with Bitcoin or other means, please email us at ": "If you need to make payment with Bitcoin or other means, please email us at "
 }
