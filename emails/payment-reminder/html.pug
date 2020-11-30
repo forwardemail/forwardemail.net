@@ -26,7 +26,7 @@ block content
                 = ' '
                 = t('All major payment methods are accepted, including debit cards, credit cards, and PayPal.')
               p.card-text
-                != t('If you want to keep your email service for <strong class="notranslate">%s</strong>, then you to make a payment for your account\'s <span class="notranslate">%s</span> plan.', domain.name, t(titleize(humanize(domain.plan))))
+                != t('If you want to keep your email service for <strong class="notranslate">%s</strong>, then you need to make a payment for your account\'s <span class="notranslate">%s</span> plan.', domain.name, t(titleize(humanize(domain.plan))))
                 = ' '
                 != t("Feel free to reach out with any feature requests, questions, or if you need help &ndash; we're here!")
               a.btn.btn-lg.btn-block.btn-success(href=`${config.urls.web}/${locale}/my-account/billing`, role="button")= t('Pay by card or PayPal')
