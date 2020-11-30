@@ -6,7 +6,9 @@ const {
   userFields,
   passport,
   appName,
-  loginRoute
+  loginRoute,
+  hcaptchaEnabled,
+  hcaptchaSecretKey
 } = require('../config');
 const { Users } = require('../app/models');
 
@@ -17,7 +19,9 @@ const policies = new Policies(
     verifyRoute,
     loginRoute,
     loginOtpRoute,
-    passport
+    passport,
+    hcaptchaEnabled,
+    hcaptchaSecretKey
   },
   (apiToken) => {
     const query = {};
