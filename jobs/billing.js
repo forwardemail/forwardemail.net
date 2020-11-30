@@ -1,14 +1,12 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('../config/env');
 
-const os = require('os');
 const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
 const config = require('../config');
@@ -23,8 +21,6 @@ const graceful = new Graceful({
   mongooses: [mongoose],
   logger
 });
-
-const concurrency = os.cpus().length;
 
 // store boolean if the job is cancelled
 let isCancelled = false;
@@ -172,8 +168,15 @@ async function mapper(_id) {
 
 (async () => {
   await mongoose.connect();
-  const _ids = await Domains.distinct('_id', { plan: { $ne: 'free' } });
-  await pMap(_ids, mapper, { concurrency });
+
+  // async iterator cursor (stream)
+  const query = Domains.find({ plan: { $ne: 'free' } })
+    .select('_id')
+    .lean();
+  for await (const _id of query) {
+    await mapper(_id);
+  }
+
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
 })();

@@ -48,7 +48,12 @@ const omitExtraFields = [
   config.userFields.planSetAt,
   config.userFields.planExpiresAt,
   fields.otpEnabled,
-  fields.otpToken
+  fields.otpToken,
+  config.userFields.launchEmailSentAt,
+  config.userFields.stripeCustomerID,
+  config.userFields.stripeSubscriptionID,
+  config.userFields.paypalPayerID,
+  config.userFields.paypalSubscriptionID
 ];
 
 // TODO: set relative threshold for messages

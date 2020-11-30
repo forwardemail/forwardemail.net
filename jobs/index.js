@@ -5,7 +5,7 @@ const { boolean } = require('boolean');
 const jobs = [
   'migration',
   'vanity-domains',
-  // { name: 'billing', cron: '0 7 * * *' },
+  // { name: 'billing', cron: '0 11 * * *' },
   {
     name: 'check-domains',
     timeout: '1m', // give migration script time to run
