@@ -272,7 +272,32 @@ const config = {
 
   // field name for a user's last locale
   // (this gets re-used by email-templates and @ladjs/i18n; see below)
-  lastLocaleField: 'last_locale'
+  lastLocaleField: 'last_locale',
+
+  // bad domains (arbitrary just for Forward Email, not for Lad)
+  // <https://symantec-enterprise-blogs.security.com/blogs/feature-stories/top-20-shady-top-level-domains>
+  // <https://www.spamhaus.org/statistics/tlds/>
+  // <https://krebsonsecurity.com/tag/top-20-shady-top-level-domains/>
+  badDomains: [
+    '.casa',
+    '.cf',
+    '.click',
+    '.email',
+    '.fit',
+    '.ga',
+    '.gdn',
+    '.gq',
+    '.loan',
+    '.london',
+    '.men',
+    '.ml',
+    '.pl',
+    '.rest',
+    '.ru',
+    '.tk',
+    '.top',
+    '.work'
+  ]
 };
 
 // set dynamic login otp route

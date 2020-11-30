@@ -1189,5 +1189,18 @@
   "Security-Focused List": "Security-Focused List",
   "<strong>Did you know?</strong> In our paid plans, organizations can have members that belong to an \"admin\" or a \"user\" group &ndash; and the \"user\" group is not permitted to add aliases that equal one of the reserved email addresses below.  We also restrict the \"user\" group from having an email address that starts with, ends with, or equals \"admin\", \"administrator\", \"webmaster\", \"hostmaster\", \"postmaster\", and \"ssl\".": "<strong>Did you know?</strong> In our paid plans, organizations can have members that belong to an \"admin\" or a \"user\" group &ndash; and the \"user\" group is not permitted to add aliases that equal one of the reserved email addresses below.  We also restrict the \"user\" group from having an email address that starts with, ends with, or equals \"admin\", \"administrator\", \"webmaster\", \"hostmaster\", \"postmaster\", and \"ssl\".",
   "View source code on GitHub": "View source code on GitHub",
-  "If you need to make payment with Bitcoin or other means, please email us at ": "If you need to make payment with Bitcoin or other means, please email us at "
+  "If you need to make payment with Bitcoin or other means, please email us at ": "If you need to make payment with Bitcoin or other means, please email us at ",
+  "Email Forwarding API &#124; <span class=\"notranslate\">Forward Email</span>": "Email Forwarding API &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Programmatic API access to email forwarding aliases, domains, and more.": "Programmatic API access to email forwarding aliases, domains, and more.",
+  "We created an API for programmatic access to domains, aliases, and more.": "We created an API for programmatic access to domains, aliases, and more.",
+  "API Documentation": "API Documentation",
+  "Programmatic access to your data": "Programmatic access to your data",
+  "My Account - Aliases": "My Account - Aliases",
+  "Upgrade Plan": "Upgrade Plan",
+  "Please upgrade to a paid plan to unlock this feature.": "Please upgrade to a paid plan to unlock this feature.",
+  "Domain already exists on your account.": "Domain already exists on your account.",
+  "Domain's DNS records have been verified.": "Domain's DNS records have been verified.",
+  "Debit/Credit Card": "Debit/Credit Card",
+  "We accept all major currencies and card types.": "We accept all major currencies and card types.",
+  "Cancel Subscription": "Cancel Subscription"
 }

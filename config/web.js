@@ -62,27 +62,53 @@ module.exports = (client) => ({
             connectSrc: [
               ...defaultSrc,
               'www.paypal.com',
-              'https://hcaptcha.com',
-              'https://*.hcaptcha.com',
+              'hcaptcha.com',
+              '*.hcaptcha.com',
+              'crisp.chat',
+              '*.crisp.chat',
+              'client.relay.crisp.chat',
+              'wss://*.relay.crisp.chat',
+              'wss://*.crisp.chat',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])
             ],
-            fontSrc: defaultSrc,
-            imgSrc: [...defaultSrc, 'tracking.qa.paypal.com'],
+            fontSrc: [
+              ...defaultSrc,
+              'crisp.chat',
+              '*.crisp.chat',
+              'wss://*.relay.crisp.chat',
+              'wss://*.crisp.chat'
+            ],
+            imgSrc: [
+              ...defaultSrc,
+              'tracking.qa.paypal.com',
+              'crisp.chat',
+              '*.crisp.chat',
+              'wss://*.relay.crisp.chat',
+              'wss://*.crisp.chat'
+            ],
             styleSrc: [
               ...defaultSrc,
               "'unsafe-inline'",
-              'https://hcaptcha.com',
-              'https://*.hcaptcha.com'
+              'hcaptcha.com',
+              '*.hcaptcha.com',
+              'crisp.chat',
+              '*.crisp.chat',
+              'wss://*.relay.crisp.chat',
+              'wss://*.crisp.chat'
             ],
             scriptSrc: [
               ...defaultSrc,
               "'unsafe-inline'",
               'js.stripe.com',
               'www.paypal.com',
-              'https://hcaptcha.com',
-              'https://*.hcaptcha.com',
+              'hcaptcha.com',
+              '*.hcaptcha.com',
+              'crisp.chat',
+              '*.crisp.chat',
+              'wss://*.relay.crisp.chat',
+              'wss://*.crisp.chat',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])
@@ -93,8 +119,12 @@ module.exports = (client) => ({
               '*.youtube-nocookie.com',
               'js.stripe.com',
               'www.paypal.com',
-              'https://hcaptcha.com',
-              'https://*.hcaptcha.com',
+              'hcaptcha.com',
+              '*.hcaptcha.com',
+              'crisp.chat',
+              '*.crisp.chat',
+              'wss://*.relay.crisp.chat',
+              'wss://*.crisp.chat',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])

@@ -17,6 +17,7 @@ const { isFQDN, isIP, isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
 const logger = require('../../helpers/logger');
+const emailHelper = require('../../helpers/email');
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
 const Users = require('./user');
@@ -695,10 +696,32 @@ Domain.pre('save', async function (next) {
 });
 
 Domain.postCreate((domain, next) => {
+  // log that the domain was created
   logger.info('domain created', {
     domain: domain.toObject(),
     slack: true
   });
+
+  //
+  // alert when top 20 shady top-level domains are created via web/api
+  // TODO: also alert on FE SMTP of new domains using these shady domains so we can catch in advance
+  //
+  if (config.badDomains.some((ext) => domain.name.endsWith(ext))) {
+    emailHelper({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: `Potential malicious domain ID ${domain.id} of ${domain.name}`
+      },
+      locals: { message: `Domain ID ${domain.id} has name of ${domain.name}` }
+    })
+      // eslint-disable-next-line promise/prefer-await-to-then
+      .then(() => {})
+      .catch((err) => {
+        logger.fatal(err);
+      });
+  }
+
   next();
 });
 

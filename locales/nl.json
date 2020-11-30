@@ -1566,5 +1566,8 @@
   " :tada: to be set as the \"username\" value of the request's ": " :tada: to be set as the \"username\" value of the request's ",
   " beautiful API documentation when we crafted ours :smile:.": " beautiful API documentation when we crafted ours :smile:.",
   "At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:": "At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:",
-  "If you need to make payment with Bitcoin or other means, please email us at ": "If you need to make payment with Bitcoin or other means, please email us at "
+  "If you need to make payment with Bitcoin or other means, please email us at ": "If you need to make payment with Bitcoin or other means, please email us at ",
+  "My Account - Aliases": "My Account - Aliases",
+  "Debit/Credit Card": "Debit/Credit Card",
+  "We accept all major currencies and card types.": "We accept all major currencies and card types."
 }
