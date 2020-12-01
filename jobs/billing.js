@@ -170,10 +170,12 @@ async function mapper(_id) {
   await mongoose.connect();
 
   // async iterator cursor (stream)
+  logger.info('starting billing');
   const query = Domains.find({ plan: { $ne: 'free' } })
     .select('_id')
     .lean();
   for await (const _id of query) {
+    logger.info('iterating over _id', { _id: _id.toString() });
     await mapper(_id);
   }
 
