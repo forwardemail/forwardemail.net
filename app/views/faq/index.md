@@ -6,6 +6,7 @@
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
+* [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
 * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
 * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
 * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
@@ -591,6 +592,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
+<!--
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
@@ -606,6 +608,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     DMARC requires both "From" and "Return-Path" to match the same domain. When you use "Send Mail As", your Gmail address would be used as the "Return-Path", instead of your custom domain in "From".
   </span>
 </div>
+-->
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -722,6 +725,15 @@ If you're sending a test email to yourself using the "Send Mail As" feature, the
 If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your TXT records).
 
 **Still having issues?**  Please file a <a href="/help">Help request</a> so we can help investigate the issue and find a quick resolution.
+
+
+## Why are my test emails sent to myself in Gmail showing as "suspicious"
+
+If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+
+You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+
+However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
 
 
 ## Can I remove the via forwardemail dot net in Gmail
