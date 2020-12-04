@@ -1,3 +1,4 @@
+const dayjs = require('dayjs-with-plugins');
 const { boolean } = require('boolean');
 
 // const config = require('../config');
@@ -5,7 +6,11 @@ const { boolean } = require('boolean');
 const jobs = [
   'migration',
   'vanity-domains',
-  { name: 'billing', timeout: 0 },
+  {
+    name: 'billing',
+    date: dayjs().startOf('day').add(10, 'hour').toDate(),
+    interval: '1d'
+  },
   {
     name: 'check-domains',
     timeout: '1m', // give migration script time to run

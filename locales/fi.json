@@ -1202,5 +1202,15 @@
   "Domain's DNS records have been verified.": "Domain's DNS records have been verified.",
   "Debit/Credit Card": "Debit/Credit Card",
   "We accept all major currencies and card types.": "We accept all major currencies and card types.",
-  "Cancel Subscription": "Cancel Subscription"
+  "Cancel Subscription": "Cancel Subscription",
+  "Why are my test emails sent to myself in Gmail showing as \"suspicious\"": "Why are my test emails sent to myself in Gmail showing as \"suspicious\"",
+  "If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then ": "If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then ",
+  "please do not worry": "please do not worry",
+  " – as this is a built-in safety feature of Gmail.": " – as this is a built-in safety feature of Gmail.",
+  "You can simply click \"Looks safe\".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.": "You can simply click \"Looks safe\".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.",
+  "However if they do see this message, it's because they were normally used to seeing your emails come from ": "However if they do see this message, it's because they were normally used to seeing your emails come from ",
+  "john@gmail.com": "john@gmail.com",
+  " instead of ": " instead of ",
+  "john@customdomain.com": "john@customdomain.com",
+  " (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.": " (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround."
 }
