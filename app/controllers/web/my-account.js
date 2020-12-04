@@ -12,6 +12,7 @@ const checkoutNodeJssdk = require('@paypal/checkout-server-sdk');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const paypal = require('paypal-rest-sdk');
@@ -23,7 +24,7 @@ const superagent = require('superagent');
 const titleize = require('titleize');
 const wkhtmltopdf = require('wkhtmltopdf');
 const { boolean } = require('boolean');
-const { isEmail, isFQDN, isIP, isPort } = require('validator');
+const { isEmail, isIP, isPort } = require('validator');
 const { parse } = require('node-html-parser');
 
 const env = require('../../../config/env');

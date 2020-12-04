@@ -5,6 +5,7 @@ const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isBot = require('isbot');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const numeral = require('numeral');
 const pluralize = require('pluralize');
@@ -25,12 +26,13 @@ module.exports = {
   boolean,
   capitalize,
   dashify,
+  dayjs,
   emoji,
   humanize,
   isBot,
+  isFQDN,
   isSANB,
   json,
-  dayjs,
   numeral,
   pluralize,
   striptags,

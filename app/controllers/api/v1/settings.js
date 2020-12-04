@@ -2,8 +2,9 @@ const dns = require('dns');
 
 const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const { isFQDN, isPort } = require('validator');
+const { isPort } = require('validator');
 
 const logger = require('../../../../helpers/logger');
 const config = require('../../../../config');

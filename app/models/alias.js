@@ -2,6 +2,7 @@ const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
 const _ = require('lodash');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
@@ -9,7 +10,7 @@ const reservedAdminList = require('reserved-email-addresses-list/admin-list.json
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const slug = require('speakingurl');
 const striptags = require('striptags');
-const { isIP, isFQDN, isEmail, isURL } = require('validator');
+const { isIP, isEmail, isURL } = require('validator');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
