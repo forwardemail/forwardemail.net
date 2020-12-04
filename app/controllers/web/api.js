@@ -4,10 +4,11 @@ const util = require('util');
 
 const Meta = require('koa-meta');
 const RE2 = require('re2');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
 const { JSDOM } = require('jsdom');
-const { isFQDN, isIP, isEmail } = require('validator');
+const { isIP, isEmail } = require('validator');
 
 const exec = util.promisify(childProcess.exec);
 const config = require('../../../config');

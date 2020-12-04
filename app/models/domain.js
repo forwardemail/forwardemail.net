@@ -7,13 +7,14 @@ const _ = require('lodash');
 const captainHook = require('captain-hook');
 const cryptoRandomString = require('crypto-random-string');
 const delay = require('delay');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
 const superagent = require('superagent');
 const { boolean } = require('boolean');
-const { isFQDN, isIP, isEmail, isPort, isURL } = require('validator');
+const { isIP, isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
 const logger = require('../../helpers/logger');

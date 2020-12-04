@@ -3,10 +3,11 @@ const Email = require('email-templates');
 const Meta = require('koa-meta');
 const _ = require('lodash');
 const emailAddresses = require('email-addresses');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
 const { boolean } = require('boolean');
-const { isEmail, isFQDN, isIP } = require('validator');
+const { isEmail, isIP } = require('validator');
 
 const config = require('../../../config');
 const logger = require('../../../helpers/logger');
