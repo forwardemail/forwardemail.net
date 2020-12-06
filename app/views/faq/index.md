@@ -263,7 +263,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>@ or leave blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
-      <td>20</td>
+      <td>10</td>
       <td><code>mx2.forwardemail.net</code></td>
     </tr>
   </tbody>
