@@ -10,7 +10,7 @@ footer.mt-auto
                 = ' '
                 i.fa.fa-angle-double-right
           div(class=user ? 'col-12' : 'col-6')
-            a.btn.btn-dark.text-uppercase.font-weight-bold(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Need help?')
+            a.btn.btn-dark.text-uppercase.font-weight-bold(href=l('/help'), role=isHelp ? 'link' : 'button', data-target=isHelp ? '' : '#modal-help')= t('Need help?')
   .bg-dark.text-white
     .container.py-5.text-center.text-lg-left
       .d-flex.flex-column.flex-lg-row
@@ -33,7 +33,7 @@ footer.mt-auto
           ul.list-unstyled.mb-0
             li: a.d-block.text-light.py-2.py-md-0(href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l('/pricing'))= t('Pricing')
             li: a.d-block.text-light.py-2.py-md-0(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'))= t('FAQ')
-            li: a.d-block.text-light.py-2.py-md-0(href=l('/help'), role=isHelp ? 'link' : 'button', data-toggle=isHelp ? '' : 'modal-anchor', data-target=isHelp ? '' : '#modal-help')= t('Help')
+            li: a.d-block.text-light.py-2.py-md-0(href=l('/help'), role=isHelp ? 'link' : 'button', data-target=isHelp ? '' : '#modal-help')= t('Help')
             li: a.d-block.text-light.py-2.py-md-0(href=l('/free-disposable-addresses'))= t('Free Disposable Addresses')
             li: a.d-block.text-light.py-2.py-md-0(href=l('/domain-registration'))= t('Domain Registration')
             li: a.d-block.text-light.py-2.py-md-0(href=l('/reserved-email-addresses'))= t('Reserved Email Addresses')

@@ -234,7 +234,7 @@ block body
               != t('If you need to increase this limit, then please contact <span class="notranslate">%s</span> and include a valid reason.', domain.group === 'admin' ? t('us') : t("your domain's administrator"))
           if domain.group === 'admin'
             .card-footer
-              a(href=l('/help'), role='button', data-toggle='modal-anchor', data-target='#modal-help', disabled=isDisabled).btn.btn-lg.btn-primary= t('Increase limit')
+              a(href=l('/help'), role='button', data-target='#modal-help', disabled=isDisabled).btn.btn-lg.btn-primary= t('Increase limit')
         if domain.group === 'admin'
           .card.mb-3
             h4.card-header= t('Delete Domain')
