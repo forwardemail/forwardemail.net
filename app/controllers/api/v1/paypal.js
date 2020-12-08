@@ -33,6 +33,9 @@ async function webhook(ctx) {
     // return a response to acknowledge receipt of the event
     ctx.body = { received: true };
 
+    ctx.logger.info('paypal webhook', { response });
+
+    /*
     // email admins here
     try {
       await email({
@@ -52,6 +55,7 @@ async function webhook(ctx) {
     } catch (err) {
       ctx.logger.fatal(err);
     }
+    */
   } catch (err) {
     ctx.throw(err);
   }
