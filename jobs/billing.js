@@ -141,6 +141,9 @@ async function mapper(_id) {
         continue;
       }
 
+      // TODO: Date diff calculation is off
+      // TODO: Group emails to domains and send one email vs multiple (prevent spam)
+
       const diff =
         dayjs(member.user[config.userFields.planExpiresAt]).diff(now, 'day') +
         1;
