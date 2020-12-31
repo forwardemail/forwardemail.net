@@ -17,7 +17,7 @@
 
 ## History
 
-We launched [in November 2017](https://github.com/forwardemail/free-email-forwarding/commit/0769047d51524601949c0622b2a763b83332f0b0) after an initial release by co-founders [Niftylettuce](https://github.com/niftylettuce) and [Shaun Warman](https://github.com/shaunwarman).
+We launched [in November 2017](https://github.com/forwardemail/free-email-forwarding/commit/0769047d51524601949c0622b2a763b83332f0b0) after an initial release by [Niftylettuce](https://github.com/niftylettuce).
 
 In April 2018 [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") launched their [privacy-first consumer DNS service](https://blog.cloudflare.com/announcing-1111/), and we switched from using [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") to [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") for handling [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System") lookups.
 
