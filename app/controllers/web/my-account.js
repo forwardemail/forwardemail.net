@@ -391,6 +391,7 @@ async function retrieveDomains(ctx, next) {
       has_txt_record: true
     });
 
+  // eslint-disable-next-line unicorn/no-array-callback-reference
   ctx.state.domains = await Domains.find(query)
     .populate(
       'members.user',
@@ -1062,7 +1063,7 @@ function sortedDomains(ctx, next) {
   if (
     isSANB(ctx.query.domain) &&
     (isFQDN(ctx.query.domain) || isIP(ctx.query.domain)) &&
-    ctx.state.sortedDomains.find((domain) => domain.name === ctx.query.domain)
+    ctx.state.sortedDomains.some((domain) => domain.name === ctx.query.domain)
   )
     ctx.state.sortedDomains = _.sortBy(
       ctx.state.sortedDomains.map((domain, i) => ({

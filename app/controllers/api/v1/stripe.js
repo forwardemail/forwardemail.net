@@ -3,8 +3,6 @@ const Stripe = require('stripe');
 const isSANB = require('is-string-and-not-blank');
 
 const env = require('../../../../config/env');
-const config = require('../../../../config');
-const email = require('../../../../helpers/email');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 

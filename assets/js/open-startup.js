@@ -65,4 +65,4 @@ async function loadCharts() {
 
 setInterval(async () => {
   await loadCharts();
-}, ms('1m'));
+}, ms('5m'));

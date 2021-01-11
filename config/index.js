@@ -223,7 +223,7 @@ const config = {
     lastLoginField: 'last_login_at',
     usernameLowerCase: true,
     limitAttempts: true,
-    maxAttempts: env.NODE_ENV === 'development' ? Infinity : 10,
+    maxAttempts: env.NODE_ENV === 'development' ? Number.POSITIVE_INFINITY : 10,
     digestAlgorithm: 'sha256',
     encoding: 'hex',
     saltlen: 32,
