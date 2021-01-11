@@ -52,7 +52,7 @@ Right now we have not yet released any API wrappers, but we plan to do so in the
 
 ## Base URI
 
-The current HTTP base URI path is: `BASE_URI`.  The legacy HTTP base URI path of `https://forwardemail.net:4000` will be deprecated on January 1, 2021.
+The current HTTP base URI path is: `BASE_URI`.  The legacy HTTP base URI path of `https://forwardemail.net:4000` is deprecated as of January 1, 2021.
 
 
 ## Authentication
