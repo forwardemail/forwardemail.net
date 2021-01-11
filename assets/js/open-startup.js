@@ -13,7 +13,7 @@ async function getData() {
   const res = await superagent
     .get(window.location.pathname)
     .set('Accept', 'json')
-    .timeout(ms('5s'))
+    .timeout(ms('30s'))
     .retry(3)
     .send();
   return res;
