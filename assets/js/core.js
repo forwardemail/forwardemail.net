@@ -210,7 +210,7 @@ $body.on('keyup', '.verification-form', debounce(keyup, 500));
 //
 // help form with Crisp chat and modal fallback
 //
-$body.on('click', '[data-target="#modal-help"]', function (ev) {
+$body.on('click', '[data-target="#modal-help"]', (ev) => {
   ev.preventDefault();
   if (window.$crisp) {
     window.$crisp.push(['do', 'chat:open']);

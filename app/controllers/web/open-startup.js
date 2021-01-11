@@ -1,5 +1,7 @@
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
+const memoize = require('memoizee');
+const ms = require('ms');
 const numeral = require('numeral');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
@@ -27,9 +29,7 @@ const DAYS_OF_WEEK = [
   'Saturday'
 ];
 
-async function openStartup(ctx) {
-  if (ctx.accepts('html')) return ctx.render('open-startup');
-
+async function getBody(ctx) {
   const [
     totalUsers,
     totalDomains,
@@ -271,7 +271,14 @@ async function openStartup(ctx) {
   // store a hash so we know if data changes to refresh
   body.hash = revHash(safeStringify(body));
 
-  ctx.body = body;
+  return body;
+}
+
+const getBodyMemoized = memoize(getBody, { length: 1, maxAge: ms('5m') });
+
+async function openStartup(ctx) {
+  if (ctx.accepts('html')) return ctx.render('open-startup');
+  ctx.body = await getBodyMemoized(ctx);
 }
 
 module.exports = openStartup;

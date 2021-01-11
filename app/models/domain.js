@@ -219,7 +219,7 @@ Domain.pre('validate', async function (next) {
     if (
       !Array.isArray(domain.members) ||
       domain.members.length === 0 ||
-      !domain.members.find(
+      !domain.members.some(
         (member) =>
           typeof member.user !== 'undefined' && member.group === 'admin'
       )

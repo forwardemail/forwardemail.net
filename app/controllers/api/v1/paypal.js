@@ -2,11 +2,8 @@ const { promisify } = require('util');
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const dayjs = require('dayjs-with-plugins');
 
 const env = require('../../../../config/env');
-const config = require('../../../../config');
-const email = require('../../../../helpers/email');
 const paypal = require('paypal-rest-sdk');
 
 paypal.configure({
