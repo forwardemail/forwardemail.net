@@ -740,7 +740,7 @@ However if they do see this message, it's because they were normally used to see
 
 This is ONLY applicable if you are using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.  Currently there is no workaround for this, and it affects all service providers (not just us).  The workaround is to use a custom SMTP server.  However we do not offer SMTP yet.
 
-We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workcaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).
+We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).
 
 If you want to get notified when this is released, you can email <smtp@forwardemail.net> and we'll send you a notification once it's released.  Or just sign up for an account here if you haven't already!
 
