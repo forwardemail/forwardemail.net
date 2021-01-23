@@ -1506,7 +1506,7 @@
   "Back to Billing": "Tilbage til fakturering",
   "You are currently on the <span class=\"notranslate\">%s</span> plan.": "Du er på <span class=\"notranslate\">%s</span>-planen.",
   "Downgrade to Free": "Nedgrader til Gratis",
-  "Upgrade to Team": "Opgrader to Team",
+  "Upgrade to Team": "Opgrader til Team",
   "Upgrade": "Opgrader",
   "Domain name <span class=\"notranslate\">%s</span> must have at least one admin that is signed up for the <span class=\"notranslate\">%s</span> plan.": "Domain name <span class=\"notranslate\">%s</span> must have at least one admin that is signed up for the <span class=\"notranslate\">%s</span> plan.",
   "This is ONLY applicable if you are using the ": "This is ONLY applicable if you are using the ",
