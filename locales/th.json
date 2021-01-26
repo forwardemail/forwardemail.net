@@ -1606,5 +1606,10 @@
   "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3 privacy add-on)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3 privacy add-on)",
   "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> (premium privacy add-on)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> (premium privacy add-on)",
   "Please <a class=\"alert-link\" href=\"%s\">upgrade to the <span class=\"notranslate\">%s</span> plan</a> to unlock this feature.": "Please <a class=\"alert-link\" href=\"%s\">upgrade to the <span class=\"notranslate\">%s</span> plan</a> to unlock this feature.",
-  "If you are on the free plan, then you can use the <a href=\"%s\">\"forward-email-port\"</a> DNS TXT record.": "If you are on the free plan, then you can use the <a href=\"%s\">\"forward-email-port\"</a> DNS TXT record."
+  "If you are on the free plan, then you can use the <a href=\"%s\">\"forward-email-port\"</a> DNS TXT record.": "If you are on the free plan, then you can use the <a href=\"%s\">\"forward-email-port\"</a> DNS TXT record.",
+  "Does it support sub-domains": "Does it support sub-domains",
+  "Yes, absolutely.  Instead of using \"@\", \".\", or blank as the name/host/alias, you just use the sub-domain name as the value instead.": "Yes, absolutely.  Instead of using \"@\", \".\", or blank as the name/host/alias, you just use the sub-domain name as the value instead.",
+  "If you want ": "If you want ",
+  " to forward emails, then enter ": " to forward emails, then enter ",
+  " as the name/host/alias value in your DNS settings (for both MX and TXT records).": " as the name/host/alias value in your DNS settings (for both MX and TXT records)."
 }
