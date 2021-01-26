@@ -328,6 +328,11 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
+| Querystring Parameter | Required | Type                      | Description                                 |
+| --------------------- | -------- | ------------------------- | ------------------------------------------- |
+| `name`                | No       | String (RegExp supported) | Search for aliases in a domain by name      |
+| `recipient`           | No       | String (RegExp supported) | Search for aliases in a domain by recipient |
+
 > Example Request:
 
 ```sh

@@ -12,12 +12,15 @@ async function lookup(ctx) {
       Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
-  const domain = await Domains.findOne({
+  const query = {
     verification_record: ctx.query.verification_record,
     plan: { $ne: 'free' }
-  })
-    .lean()
-    .exec();
+  };
+
+  // legacy compatibility
+  if (isSANB(ctx.query.domain)) query.name = ctx.query.domain;
+
+  const domain = await Domains.findOne(query).lean().exec();
 
   if (!domain)
     return ctx.throw(
@@ -31,11 +34,16 @@ async function lookup(ctx) {
     .lean()
     .exec();
 
+  const username = isSANB(ctx.query.username) ? ctx.query.username : false;
+
   ctx.body = aliases
-    .filter(
-      (alias) =>
-        _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
-    )
+    .filter((alias) => {
+      if (!_.isObject(alias.user)) return false;
+      if (alias.user[config.userFields.isBanned]) return false;
+      if (alias.name === '*') return true;
+      if (username && username !== alias.name) return false;
+      return true;
+    })
     .map((alias) => {
       // alias.name = "*" (wildcard catchall) otherwise an alias
       // alias.is_enabled = "!" prefixed alias name

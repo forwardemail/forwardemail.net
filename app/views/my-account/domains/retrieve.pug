@@ -35,13 +35,62 @@ block body
           i.fa.fa-refresh
           = ' '
           = t('Verify Records')
-      if domain.plan !== 'free'
+      if !domain.has_mx_record
         .container
           .col-md-8.offset-md-2
             .card.mt-5
-              h5.card-header= t('Enhanced Protection Verification Record')
+              h5.card-header= t('DNS MX Records Required')
               .card-body
-                p!= t('Set this <strong>TXT record</strong> as a new DNS entry on your domain:')
+                p!= t('Set these <strong>MX records</strong> as the <u>only MX records</u> to your domain\'s DNS:')
+                table.table.table-striped.table-hover.mt-2
+                  thead.thead-dark
+                    tr
+                      th Name/Host/Alias
+                      th.text-center TTL
+                      th Record Type
+                      th Priority
+                      th Value/Answer/Destination
+                  tbody
+                    tr
+                      td: em "@", ".", or blank
+                      td.text-center 3600
+                      td MX
+                      td 10
+                      td: code mx1.forwardemail.net
+                    tr
+                      td: em "@", ".", or blank
+                      td.text-center 3600
+                      td MX
+                      td 10
+                      td: code mx2.forwardemail.net
+                if modalFAQTable
+                  .text-center.mt-2
+                    button(type='button', data-toggle='modal', data-target='#modal-faq-table').btn.btn-link.btn-sm Need help navigating to your DNS management page?
+      if domain.plan === 'free' && !domain.has_txt_record
+        .container
+          .col-md-8.offset-md-2
+            .card.mt-5
+              h5.card-header= t('DNS TXT Record Required')
+              .card-body
+                p!= t('Add this <strong>TXT record</strong> to your domain\'s DNS for a global catch-all:')
+                .input-group
+                  input(type='text', readonly, value=`${config.recordPrefix}=${user.email}`).form-control#verification-record
+                  .input-group-append
+                    button(type='button', data-toggle="clipboard", data-clipboard-target="#verification-record").btn.btn-primary
+                      i.fa.fa-clipboard
+                      = ' '
+                      = t('Copy')
+                p.text-center.text-muted.py-2: small!= t('Use "@", ".", or blank for the name/host/alias value. Read <a href="%s" class="notranslate" rel="noopener noreferrer" target="_blank">our FAQ section</a> for more options', l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`))
+                if modalFAQTable
+                  .text-center.mt-3
+                    button(type='button', data-toggle='modal', data-target='#modal-faq-table').btn.btn-link.btn-sm Need help navigating to your DNS management page?
+      else
+        .container
+          .col-md-8.offset-md-2
+            .card.mt-5
+              h5.card-header= t('DNS TXT Record Required')
+              .card-body
+                p!= t('Add your Enhanced Protection Verification <strong>TXT record</strong> to your domain\'s DNS:')
                 .input-group
                   input(type='text', readonly, value=`${config.recordPrefix}-site-verification=${domain.verification_record}`).form-control#verification-record
                   .input-group-append
@@ -49,6 +98,7 @@ block body
                       i.fa.fa-clipboard
                       = ' '
                       = t('Copy')
+                p.text-center.text-muted.py-2: small!= t('Use "@", ".", or blank for the name/host/alias value. You <u>must remove</u> any existing "<span class="notranslate">%s</span><span class="notranslate">=</span>" records.', config.recordPrefix)
                 if modalFAQTable
                   .text-center.mt-3
                     button(type='button', data-toggle='modal', data-target='#modal-faq-table').btn.btn-link.btn-sm Need help navigating to your DNS management page?

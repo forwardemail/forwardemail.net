@@ -253,14 +253,14 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>10</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>10</td>
@@ -304,7 +304,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=user@gmail.com</code></td>
@@ -345,7 +345,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=hello:user@gmail.com</code></td>
@@ -376,7 +376,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
@@ -407,31 +407,31 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=help:user@gmail.com,foo:user@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=info:user@gmail.com,beep:user@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code></td>
@@ -462,7 +462,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=example.net</code></td>
@@ -493,7 +493,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -516,7 +516,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>v=spf1 a mx include:spf.forwardemail.net -all</code></td>
@@ -774,7 +774,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -803,7 +803,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -855,7 +855,7 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -876,7 +876,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -989,49 +989,49 @@ If you use Google Business for email, and want to use our server as a fallback s
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>1</td>
       <td><code>ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>5</td>
       <td><code>ALT1.ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>5</td>
       <td><code>ALT2.ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>10</td>
       <td><code>ALT3.ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>10</td>
       <td><code>ALT4.ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>20</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>30</td>
@@ -1062,7 +1062,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=!alias:user@gmail.com</code></td>
@@ -1091,7 +1091,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=!alias:nobody@forwardemail.net</code></td>
@@ -1120,7 +1120,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=!alias</code></td>
@@ -1146,7 +1146,7 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code style="cursor: initial;" data-original-title="" title="" aria-describedby="tooltip885348">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -1167,13 +1167,13 @@ Or, you could specify them in two separate lines, such as this:
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -1201,7 +1201,7 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -1222,13 +1222,13 @@ Or, you could specify them in two separate lines, such as this:
   </thead>
   <tbody>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@ or leave blank</em></td>
+      <td><em>@, ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
@@ -1301,6 +1301,11 @@ The code that is deployed to the server is [open-source software on GitHub](http
 
 Yes, absolutely.
 
+## Does it support sub-domains
+
+Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+
+If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and TXT records).
 
 ## Does this forward my email's headers
 
