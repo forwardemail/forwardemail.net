@@ -56,7 +56,8 @@ block body
           else if user.plan === 'team'
             a(href=l('/my-account/billing/upgrade?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-dark.mb-3= t('Downgrade to Enhanced Protection')
           if ['enhanced_protection', 'team'].includes(user.plan)
-            form(action=l('/my-account/billing/upgrade?plan=free'), method='GET').ajax-form.confirm-prompt
+            form(action=l('/my-account/billing/upgrade'), method='GET').confirm-prompt
+              input(type='hidden', name='plan', value='free')
               button(type='submit').btn.btn-block.btn-outline-danger= t('Downgrade to Free')
         .modal-footer
           button(type='button', data-dismiss='modal', aria-label=t('Cancel')).btn.btn-lg.btn-block.btn-secondary= t('Cancel')

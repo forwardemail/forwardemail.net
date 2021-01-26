@@ -386,9 +386,10 @@ async function retrieveDomains(ctx, next) {
   if (ctx.state.user.group === 'admin') query.$or.push({ is_global: true });
   else
     query.$or.push({
-      is_global: true,
-      has_mx_record: true,
-      has_txt_record: true
+      is_global: true
+      // NOTE: if we uncomment this then DNS changes could impact global vanity domains
+      // has_mx_record: true,
+      // has_txt_record: true
     });
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
@@ -706,15 +707,38 @@ async function createDomain(ctx, next) {
     }
   }
 
-  const plan = isSANB(ctx.request.body.plan)
-    ? ctx.request.body.plan
-    : ctx.state.user.plan || 'free';
+  const name = ctx.request.body.domain.trim().toLowerCase();
+
+  let plan = ctx.state.user.plan || 'free';
+  let redirectTo = ctx.state.l(`/my-account/domains/${name}`);
+
+  // if the user was not on a valid plan then redirect them to billing post creation
+  if (isSANB(ctx.request.body.plan)) {
+    if (ctx.request.body.plan === 'enhanced_protection') {
+      if (['enhanced_protection', 'team'].includes(ctx.state.user.plan))
+        plan = 'enhanced_protection';
+      else
+        redirectTo = ctx.state.l(
+          `/my-account/domains/${name}/billing?plan=enhanced_protection`
+        );
+    } else if (ctx.request.body.plan === 'team') {
+      if (ctx.state.user.plan === 'team') {
+        plan = 'team';
+      } else {
+        if (ctx.state.user.plan === 'enhanced_protection')
+          plan = 'enhanced_protection';
+        redirectTo = ctx.state.l(
+          `/my-account/domains/${name}/billing?plan=team`
+        );
+      }
+    }
+  }
 
   try {
     ctx.state.domain = await Domains.create({
       is_api: boolean(ctx.api),
       members: [{ user: ctx.state.user._id, group: 'admin' }],
-      name: ctx.request.body.domain,
+      name,
       is_global:
         ctx.state.user.group === 'admin' && boolean(ctx.request.body.is_global),
       locale: ctx.locale,
@@ -740,7 +764,7 @@ async function createDomain(ctx, next) {
 
     // TODO: flash messages logic in @ladjs/assets doesn't support both
     // custom and regular flash message yet
-    if (ctx.request.body.domain.startsWith('www.') && !ctx.api) {
+    if (ctx.state.domain.name.startsWith('www.') && !ctx.api) {
       ctx.flash(
         'error',
         ctx
@@ -758,15 +782,6 @@ async function createDomain(ctx, next) {
         position: 'top'
       });
     }
-
-    let redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}`
-    );
-
-    if (plan !== 'free')
-      redirectTo = ctx.state.l(
-        `/my-account/domains/${ctx.state.domain.name}/billing?plan=${plan}`
-      );
 
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
@@ -1163,6 +1178,8 @@ async function retrieveDomainBilling(ctx) {
       const errors = [];
 
       for (const domain of adminDomains) {
+        if (domain.plan === 'free') continue;
+
         // determine what plans are required
         const validPlans =
           domain.plan === 'team' ? ['team'] : ['enhanced_protection', 'team'];
@@ -1205,6 +1222,7 @@ async function retrieveDomainBilling(ctx) {
 
       if (errors.length > 0) {
         if (errors.length === 1) throw Boom.badRequest(errors[0].message);
+        // TODO: translate stuff like this
         throw Boom.badRequest(`
           <p class="font-weight-bold text-danger">The following errors occurred:</p>
           <ul class="mb-0 text-left"><li>${errors
@@ -1216,6 +1234,9 @@ async function retrieveDomainBilling(ctx) {
 
     // render a page where user can select from a dropdown how long they want to pay for
     if (
+      // TODO: when user downgrades plans, e.g. to free or to e.p.
+      //       then we need to cancel their existing subscription
+      ctx.query.plan !== 'free' &&
       !isSANB(ctx.query.session_id) &&
       !isSANB(ctx.query.paypal_order_id) &&
       !isSANB(ctx.query.paypal_subscription_id) &&
@@ -2440,7 +2461,7 @@ async function retrieveBilling(ctx) {
 async function cancelSubscription(ctx, next) {
   if (
     !isSANB(ctx.state.user[config.userFields.stripeSubscriptionID]) &&
-    !isSANB(ctx.state.user[ctx.state.userFields.paypalSubscriptionID])
+    !isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
   )
     throw Boom.badRequest(ctx.translateError('SUBSCRIPTION_ALREADY_CANCELLED'));
 
@@ -2675,7 +2696,25 @@ function retrieveAliases(ctx, next) {
   // if there aren't any aliases yet
   // then prompt the user to create one and flash a message
   // otherwise take them to the next middleware
-  if (ctx.api || ctx.state.domain.aliases.length > 0) return next();
+  if (ctx.api || ctx.state.domain.aliases.length > 0) {
+    //
+    // search functionality (with RegExp support)
+    //
+    if (isSANB(ctx.query.name))
+      ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
+        new RE2(_.escapeRegExp(ctx.query.name)).test(alias.name)
+      );
+
+    if (isSANB(ctx.query.recipient)) {
+      const recipientRegex = new RE2(_.escapeRegExp(ctx.query.recipient));
+      ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
+        alias.recipients.some((recipient) => recipientRegex.test(recipient))
+      );
+    }
+
+    return next();
+  }
+
   ctx.flash('custom', {
     title: ctx.translate('ADD_ALIAS'),
     text: ctx.translate('NO_ALIASES_EXIST'),
