@@ -14,11 +14,19 @@ block content
               h1.h3!= t("Don't worry &ndash; everything is OK!")
               p.card-text= t('We detected that you successfully sent an email to yourself.')
             .p-3
-              h2.h5= t("Why are emails missing from my inbox?")
+              h2.h5= t('Do you send this every time?')
               p.card-text
-                != t('This is a widely known issue, and it <u>only</u> happens when you send an email to yourself <i>as</i> yourself.')
+                = t('No, we only send it the first time as a courtesy.')
+            .p-3
+              h2.h5= t("Why are you sending this email?")
+              p.card-text
+                != t('It is a widely known issue that <u>only</u> happens when you send an email to yourself <i>as</i> yourself.')
+                = ' '
+                = t('The emails do not show up twice in your inbox because they have the same "Message-ID" value in the email headers.')
                 = ' '
                 = t("If you're using a service such as Gmail, then the email will only be shown in your Sent folder.")
+                = ' '
+                = t('We are simply letting you know in advance of this issue!')
               a.btn.btn-lg.btn-danger(href='https://support.google.com/a/answer/1703601')
                 = t("Read the official Gmail answer")
             .p-3
@@ -35,7 +43,6 @@ block content
                 != t('In the past we had a workaround where we rewrote the "Message-ID" and removed the "DKIM-Signature" header.')
                 = ' '
                 = t('This workaround led to a confusing "Be careful with this message" alert and sometimes marked it as spam in Gmail.')
-                = ' '
             .p-3
               h2.h5= t('Interested in learning more about us?')
               p.card-text
