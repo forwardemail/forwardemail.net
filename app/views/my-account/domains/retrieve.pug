@@ -84,7 +84,7 @@ block body
                 if modalFAQTable
                   .text-center.mt-3
                     button(type='button', data-toggle='modal', data-target='#modal-faq-table').btn.btn-link.btn-sm Need help navigating to your DNS management page?
-      else
+      else if domain.plan !== 'free' && !domain.has_txt_record
         .container
           .col-md-8.offset-md-2
             .card.mt-5
