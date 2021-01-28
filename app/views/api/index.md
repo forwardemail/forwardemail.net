@@ -62,7 +62,7 @@ All endpoints require your [free API key](https://forwardemail.net/my-account/se
 
 ## Errors
 
-If any errors occur, the response body of the API request will contain a detailed error message.  Besides having over ten years of experience writing API's and documenting them, were inspired by [Stripe's](https://stripe.com) beautiful API documentation when we crafted ours :smile:.
+If any errors occur, the response body of the API request will contain a detailed error message.
 
 | Code | Name                  |
 | ---- | --------------------- |
