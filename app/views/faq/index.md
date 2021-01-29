@@ -530,7 +530,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Important:
   </strong>
   <span>
-    If you are using G Suite, you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
     <br /><br />
     <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -547,6 +547,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <code>v=spf1 a mx include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
     Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
   </span>
 </div>
 
