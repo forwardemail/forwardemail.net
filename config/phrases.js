@@ -196,6 +196,8 @@ module.exports = {
   RECEIPT: 'Receipt',
   DOMAIN_PLAN_UPGRADE_REQUIRED:
     'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan.',
+  MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED:
+    'Domain name <span class="notranslate">%s</span> has a potentially malicious domain name extension and must have at least one admin that is signed up for a paid plan.',
   UPGRADE: 'Upgrade',
   BILLING: 'Billing',
   INVALID_STRIPE_SIGNATURE: 'Invalid Stripe Signature',

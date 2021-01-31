@@ -18,7 +18,6 @@ const { isIP, isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
 const logger = require('../../helpers/logger');
-const emailHelper = require('../../helpers/email');
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
 const Users = require('./user');
@@ -26,6 +25,7 @@ const Users = require('./user');
 const CACHE_TYPES = ['MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
+const PAID_PLANS = ['enhanced_protection', 'team'];
 
 const app = new ForwardEmail({
   logger,
@@ -598,8 +598,7 @@ async function ensureUserHasValidPlan(user, locale) {
 
   for (const domain of domains) {
     // determine what plans are required
-    const validPlans =
-      domain.plan === 'team' ? ['team'] : ['enhanced_protection', 'team'];
+    const validPlans = domain.plan === 'team' ? ['team'] : PAID_PLANS;
     let isValid = false;
 
     for (const member of domain.members) {
@@ -668,13 +667,16 @@ Domain.pre('save', async function (next) {
       .select('plan')
       .exec();
 
+    let hasPaidPlan = false;
+
     const hasValidPlan =
       users.length > 0 &&
       users.some((user) => {
+        if (PAID_PLANS.includes(user.plan)) hasPaidPlan = true;
         if (domain.plan === 'team' && user.plan === 'team') return true;
         if (
           domain.plan === 'enhanced_protection' &&
-          ['enhanced_protection', 'team'].includes(user.plan)
+          PAID_PLANS.includes(user.plan)
         )
           return true;
         return false;
@@ -690,6 +692,20 @@ Domain.pre('save', async function (next) {
         )
       );
 
+    // alert when top 20 shady top-level domains are created via web/api
+    const hasBadDomain = config.badDomains.some((ext) =>
+      domain.name.endsWith(ext)
+    );
+
+    if (hasBadDomain && !hasPaidPlan)
+      throw Boom.badRequest(
+        i18n.translateError(
+          'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
+          domain.locale,
+          domain.name
+        )
+      );
+
     next();
   } catch (err) {
     next(err);
@@ -702,26 +718,6 @@ Domain.postCreate((domain, next) => {
     domain: domain.toObject(),
     slack: true
   });
-
-  //
-  // alert when top 20 shady top-level domains are created via web/api
-  // TODO: also alert on FE SMTP of new domains using these shady domains so we can catch in advance
-  //
-  if (config.badDomains.some((ext) => domain.name.endsWith(ext))) {
-    emailHelper({
-      template: 'alert',
-      message: {
-        to: config.email.message.from,
-        subject: `Potential malicious domain ID ${domain.id} of ${domain.name}`
-      },
-      locals: { message: `Domain ID ${domain.id} has name of ${domain.name}` }
-    })
-      // eslint-disable-next-line promise/prefer-await-to-then
-      .then(() => {})
-      .catch((err) => {
-        logger.fatal(err);
-      });
-  }
 
   next();
 });
