@@ -125,24 +125,26 @@ function createOrder() {
           throw response.err;
         }
 
+        //
         // Either display a success message, redirect user, or reload page
+        //
+        // Use the same key name for order ID on the client and server
         if (
           typeof response.body === 'object' &&
           typeof response.body.orderID === 'string'
-        ) {
-          // Use the same key name for order ID on the client and server
+        )
           return response.body.orderID;
-        }
 
+        // Prepare a message
+        const message =
+          response.statusText ||
+          response.text ||
+          'Invalid response, please try again';
         // Hide the spinner
         spinner.hide();
         // Show message
-        Swal.fire(
-          window._types.error,
-          'Invalid response, please try again',
-          'error'
-        );
-        throw new Error('Invalid response, please try again');
+        Swal.fire(window._types.error, message, 'error');
+        throw new Error(message);
       })
   );
 }
@@ -177,6 +179,7 @@ $formBilling.on('submit', async function (ev) {
         response.err = new Error(response.body.message);
       } else if (
         !Array.isArray(response.body) &&
+        typeof response.body === 'object' &&
         // attempt to utilize Stripe-inspired error messages
         typeof response.body.error === 'object'
       ) {
@@ -193,6 +196,17 @@ $formBilling.on('submit', async function (ev) {
 
     // Check if any errors occurred
     if (response.err) throw response.err;
+
+    // Prepare a message if the body is not accurate
+    if (
+      typeof response.body !== 'object' ||
+      typeof response.body.sessionId !== 'string'
+    )
+      throw new Error(
+        response.statusText ||
+          response.text ||
+          'Invalid response, please try again'
+      );
 
     const { sessionId } = response.body;
     const result = await stripe.redirectToCheckout({ sessionId });
