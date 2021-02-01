@@ -96,12 +96,14 @@ function createOrder() {
           );
           if (
             typeof response.body === 'object' &&
+            response.body !== null &&
             typeof response.body.message === 'string'
           ) {
             response.err = new Error(response.body.message);
           } else if (
             !Array.isArray(response.body) &&
             typeof response.body === 'object' &&
+            response.body !== null &&
             // attempt to utilize Stripe-inspired error messages
             typeof response.body.error === 'object'
           ) {
@@ -131,6 +133,7 @@ function createOrder() {
         // Use the same key name for order ID on the client and server
         if (
           typeof response.body === 'object' &&
+          response.body !== null &&
           typeof response.body.orderID === 'string'
         )
           return response.body.orderID;
@@ -174,12 +177,14 @@ $formBilling.on('submit', async function (ev) {
       );
       if (
         typeof response.body === 'object' &&
+        response.body !== null &&
         typeof response.body.message === 'string'
       ) {
         response.err = new Error(response.body.message);
       } else if (
         !Array.isArray(response.body) &&
         typeof response.body === 'object' &&
+        response.body !== null &&
         // attempt to utilize Stripe-inspired error messages
         typeof response.body.error === 'object'
       ) {
@@ -200,6 +205,7 @@ $formBilling.on('submit', async function (ev) {
     // Prepare a message if the body is not accurate
     if (
       typeof response.body !== 'object' ||
+      response.body === null ||
       typeof response.body.sessionId !== 'string'
     )
       throw new Error(
