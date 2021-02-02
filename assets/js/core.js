@@ -218,3 +218,14 @@ $body.on('click', '[data-target="#modal-help"]', (ev) => {
     $('#modal-help').modal('show');
   }
 });
+
+//
+// any modals with embedded <iframe> we can assume need reset
+// <https://stackoverflow.com/a/52315492>
+//
+$body.on('hide.bs.modal', '.modal', function () {
+  const $modal = $(this);
+  if ($modal.find('iframe').length === 0) return;
+  const html = $modal.html();
+  $modal.html(html);
+});
