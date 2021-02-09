@@ -60,10 +60,6 @@ module.exports = function (config) {
       `Free Disposable Addresses ${lad}`,
       'Try free and disposable email addresses with our short and memorable vanity domains, or you can use a custom domain name for free disposable addresses.'
     ],
-    '/list-of-ports-blocked-by-isps': [
-      `List of ports blocked by ISPs ${lad}`,
-      'We compiled a list of ports blocked by Internet Service Providers from every country around the world.'
-    ],
     '/guides': [
       `Guides ${lad}`,
       'Follow our easy and simple guides and step by step instructions.'

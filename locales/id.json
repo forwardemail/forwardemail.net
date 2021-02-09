@@ -1613,5 +1613,14 @@
   " to forward emails, then enter ": " to forward emails, then enter ",
   " as the name/host/alias value in your DNS settings (for both MX and TXT records).": " as the name/host/alias value in your DNS settings (for both MX and TXT records).",
   "We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).": "We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).",
-  "If any errors occur, the response body of the API request will contain a detailed error message.": "If any errors occur, the response body of the API request will contain a detailed error message."
+  "If any errors occur, the response body of the API request will contain a detailed error message.": "If any errors occur, the response body of the API request will contain a detailed error message.",
+  "We built our own anti-spam, phishing, and virus protection software called Spam Scanner. It abides by the same privacy-first and zero logging policies.": "We built our own anti-spam, phishing, and virus protection software called Spam Scanner. It abides by the same privacy-first and zero logging policies.",
+  "Learn about plans": "Learn about plans",
+  "Save Yourself Time": "Save Yourself Time",
+  "Our live metrics update every five minutes": "Our live metrics update every five minutes",
+  "What should I do if I receive spam emails?": "What should I do if I receive spam emails?",
+  "You should unsubscribe from the emailing list (if possible) and block the sender.": "You should unsubscribe from the emailing list (if possible) and block the sender.",
+  "Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.": "Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.",
+  "The email address to forward spam to is:": "The email address to forward spam to is:",
+  "abuse@forwardemail.net": "abuse@forwardemail.net"
 }
