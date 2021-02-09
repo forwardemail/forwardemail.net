@@ -79,12 +79,6 @@ localeRouter
     render('free-email-webhooks')
   )
   .get(
-    '/list-of-ports-blocked-by-isps',
-    web.myAccount.retrieveDomains,
-    web.onboard,
-    render('list-of-ports-blocked-by-isps')
-  )
-  .get(
     '/guides/port-25-blocked-by-isp-workaround',
     web.myAccount.retrieveDomains,
     web.onboard,

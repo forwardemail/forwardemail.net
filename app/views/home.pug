@@ -82,7 +82,7 @@ block body
           = t('Businesses')
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block
     h2.display-3.font-weight-bold.text-white.my-3.my-md-5
-      = emoji('lock')
+      i.fa.fa-fingerprint
       = ' '
       = t('Protect your inbox.')
     .row
@@ -96,7 +96,8 @@ block body
       .d-flex.col-md-3.col-lg-6.pt-3
         img(src=manifest('img/logo-square.svg'), width=200, height=200, alt="").mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0
   .pt-5.pb-lg-5.text-center.bg-light
-    .h2.display-3.mb-1= emoji('tada')
+    .h2.display-3.mb-1.text-danger
+      i.fa.fa-heart
     h2.display-5.font-weight-light.mb-0.text-uppercase= t('Our Features')
   .container-fluid.bg-light.pb-5.position-relative
     .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
@@ -150,7 +151,7 @@ block body
             i.fa.fa-angle-double-right
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block
     h2.display-3.font-weight-bold.text-white.my-3.my-md-3
-      = emoji('heart')
+      i.fa.fa-code
       = ' '
       = t('100% open-source.')
     .row
@@ -164,7 +165,8 @@ block body
       .d-flex.col-md-3.col-lg-6.pt-3
         img(src=manifest('img/github-logo-white.svg'), width=200, height=200, alt="").mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0
   .py-3.py-md-5.text-center.bg-light
-    .h2.display-3.mb-1= emoji('zap')
+    .h2.display-3.mb-1.text-primary
+      i.fa.fa-globe
     h2.display-5.font-weight-light.mb-3.text-uppercase= t('Our Numbers')
     .container-fluid
       .row
@@ -177,15 +179,15 @@ block body
         .col-12.col-md-4.py-3.py-md-5
           .h2.display-4= t('30K+')
           .text-monospace.text-uppercase= t('Active Users')
-    .display-3.my-3
-      = emoji('star')
+    .display-3.my-3.text-warning
+      i.fa.fa-star
       = ' '
-      = emoji('star')
+      i.fa.fa-star
       = ' '
-      = emoji('star')
+      i.fa.fa-star
       = ' '
-      = emoji('star')
+      i.fa.fa-star
       = ' '
-      = emoji('star')
+      i.fa.fa-star
     .text-monospace.text-uppercase.mb-1= t('Trusted by the community')
     h2.display-5.font-weight-light.text-uppercase= t('1,000+ Stars')

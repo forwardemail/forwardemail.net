@@ -25,10 +25,12 @@
 * [Do you store logs of emails](#do-you-store-logs-of-emails)
 * [Do you read my emails](#do-you-read-my-emails)
 * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
+* [Does it support sub-domains](#does-it-support-sub-domains)
 * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
 * [Is this well-tested](#is-this-well-tested)
 * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
 * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+* [What should I do if I receive spam emails?](#what-should-i-do-if-i-receive-spam-emails)
 * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
 * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
 * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
@@ -1303,11 +1305,13 @@ The code that is deployed to the server is [open-source software on GitHub](http
 
 Yes, absolutely.
 
+
 ## Does it support sub-domains
 
 Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
 
 If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and TXT records).
+
 
 ## Does this forward my email's headers
 
@@ -1341,6 +1345,15 @@ Per documentation and suggestions from Google at <https://support.google.com/a/a
 6. **TXT Record Test:** through checking if the email address the sender is trying to send to has a TXT DNS record with a valid email forwarding setup. The SSL certificates (main domain name or alternative names) of all MX servers of the forwarding destination must match the MX entry.
 
 7. **ARC:** we use the [Authentication-Results][] header and validate it against the sending domain's DMARC policy.
+
+
+## What should I do if I receive spam emails?
+
+You should unsubscribe from the emailing list (if possible) and block the sender.
+
+Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+
+**The email address to forward spam to is:** <abuse@forwardemail.net>
 
 
 ## Can I "send mail as" in Gmail with this

@@ -13,20 +13,19 @@ block body
           iframe(width='100%', height='450', src='https://www.youtube.com/embed/q7zfEpn2NdA', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
   .py-5.bg-light
     .text-center.mb-5
-      .h2.display-3.mb-1= emoji('tada')
+      .h2.display-3.mb-1.text-danger
+        i.fa.fa-heart
       h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t('Our Features')
       small.text-black-50.text-uppercase= t('We strive for perfection')
     .container
       .row.mb-5
         .col.text-center
           h2.font-weight-bold.mb-3
-            = emoji('zap')
-            = ' '
             = t('Lightning fast email service.')
           button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-pricing-video')
             i.fa.fa-play-circle
             = ' '
-            = t('Watch pricing video')
+            = t('Learn about plans')
       .row.row-cols-1.row-cols-lg-2
         .col
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-black-50.border
@@ -234,12 +233,12 @@ block body
             h2.h3= t('Free Plan')
             p.lead.text-monospace
               = 'forward-email='
-              strong.bg-warning= 'user@gmail.com'
+              strong.bg-warning= user ? user.email : 'user@gmail.com'
           .col-12.col-md-6
             h2.h3= t('Enhanced Protection Plan')
             p.lead.text-monospace
               = 'forward-email-site-verification='
-              strong.bg-success= 'm8d7o8K4Il'
+              strong.bg-warning!= new Array(8).fill('&bull;').join('')
         .row.my-5
           .col
             h2.font-weight-bold= t('Do you support email best practices?')
