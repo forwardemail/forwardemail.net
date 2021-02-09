@@ -154,7 +154,16 @@ const config = {
     stripeCustomerID: 'stripe_customer_id',
     stripeSubscriptionID: 'stripe_subscription_id',
     paypalPayerID: 'paypal_payer_id',
-    paypalSubscriptionID: 'paypal_subscription_id'
+    paypalSubscriptionID: 'paypal_subscription_id',
+    companyName: 'company_name',
+    addressLine1: 'address_line1',
+    addressLine2: 'address_line2',
+    addressCity: 'address_city',
+    addressState: 'address_state',
+    addressZip: 'address_zip',
+    addressCountry: 'address_country',
+    addressHTML: 'address_html',
+    companyVAT: 'company_vat'
   },
 
   // dynamic otp routes

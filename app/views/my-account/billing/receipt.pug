@@ -14,12 +14,11 @@ block body
         include _receipt
     .row.my-5
       ul.list-inline.mb-0.mx-auto
-        //-.
-          li.list-inline-item
-            a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
-              i.fa.fa-file-pdf
-              = ' '
-              = t('Download')
+        li.list-inline-item
+          a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
+            i.fa.fa-file-pdf
+            = ' '
+            = t('Download')
         li.list-inline-item
           a(href=l(`/my-account/billing/${payment.reference}.html`), target='_blank', data-toggle='tooltip', data-placement='bottom', title=t('Print')).btn.btn-dark
             i.fa.fa-print
