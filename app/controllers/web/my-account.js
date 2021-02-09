@@ -2468,7 +2468,8 @@ async function retrieveReceipt(ctx) {
         images: true,
         svgs: true,
         scripts: false,
-        links: true
+        links: true,
+        relativeTo: config.buildDir
       });
       ctx.body = wkhtmltopdf(inlinedHTML, {
         debug: config.env !== 'production',
