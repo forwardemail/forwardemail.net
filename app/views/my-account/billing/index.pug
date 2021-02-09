@@ -32,8 +32,8 @@ mixin receipt(payment)
   .btn-group
     a(href=l(`/my-account/billing/${payment.reference}`), data-toggle='tooltip', data-placement='bottom', title=t('View')).btn.btn-primary
       i.fa.fa-receipt
-    // a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
-    //   i.fa.fa-file-pdf
+    a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
+      i.fa.fa-file-pdf
     a(href=l(`/my-account/billing/${payment.reference}.html`), target='_blank', data-toggle='tooltip', data-placement='bottom', title=t('Print')).btn.btn-dark
       i.fa.fa-print
 
@@ -69,41 +69,41 @@ block body
 
   .container.pb-5.position-relative
     .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-      .col-12.col-lg-6.d-flex
+      .col-12.d-flex(class=user.plan === 'free' ? '' : 'col-lg-6')
         .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
           h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
           small.text-muted.text-uppercase.mb-3= t('Current Plan')
           button(type='button', data-toggle='modal', data-target='#modal-change-plan').btn.btn-lg.btn-success= t('Change Plan')
-      .col-12.col-lg-6.d-flex
-        .mt-lg-0.mt-5.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-          h2.display-5.font-weight-bold
-            if user.plan === 'free'
-              i.fa.fa-infinity
-            else
-              - let str = _.capitalize(dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow())
-              if str.startsWith('A ')
-                - str = str.replace('A ', '1 ')
-              else if str.startsWith('In a')
-                - str = str.replace('In a ', '1 ')
-              else if str.startsWith('In ')
-                - str = str.replace('In ', '')
-              = str
-          small.text-muted.text-uppercase.mb-3
-            = t('Next Payment Due')
-            = ': '
-            if user.plan === 'free'
-              i.fa.fa-infinity
-            else
-              = dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY')
-          a(href=l('/my-account/billing/make-payment'), disabled=user.plan === 'free', class=user.plan === 'free' ? 'disabled' : '').btn.btn-lg.btn-danger= t('Make Payment')
+      if user.plan !== 'free'
+        .col-12.col-lg-6.d-flex
+          .mt-lg-0.mt-5.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
+            h2.display-5.font-weight-bold
+              if user.plan === 'free'
+                i.fa.fa-infinity
+              else
+                - let str = _.capitalize(dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow())
+                if str.startsWith('A ')
+                  - str = str.replace('A ', '1 ')
+                else if str.startsWith('In a')
+                  - str = str.replace('In a ', '1 ')
+                else if str.startsWith('In ')
+                  - str = str.replace('In ', '')
+                = str
+            small.text-muted.text-uppercase.mb-3
+              = t('Next Payment Due')
+              = ': '
+              if user.plan === 'free'
+                i.fa.fa-infinity
+              else
+                = dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY')
+            a(href=l('/my-account/billing/make-payment'), disabled=user.plan === 'free', class=user.plan === 'free' ? 'disabled' : '').btn.btn-lg.btn-danger= t('Make Payment')
 
-  .container.py-3
-    .row
-      .col
-        h3.text-center.mb-3= t('Payment History')
-        if payments.length === 0
-          p.lead.text-center= t('No payment history is available.')
-        else
+  if payments.length > 0
+    .container.py-3
+      .row
+        .col
+          h3.text-center.mb-3= t('Payment History')
+          p.text-center: small.text-muted!= t('If you want to update company info on receipts, then <a href="%s" class="notranslate">update your profile</a>.', l('/my-account/profile'))
           table.table.table-hover.table-bordered.mb-0
             thead.thead-dark
               tr
@@ -138,7 +138,8 @@ block body
                   td.align-middle.text-right= payment.amount_formatted
                   td.align-middle.d-none.d-lg-table-cell.text-center
                     +receipt(payment)
-    if isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
+  if isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
+    .container(class=payments.length === 0 ? 'py-3' : '')
       .row.text-center.my-5
         .col
           form(action=l('/my-account/billing'), method='POST').confirm-prompt

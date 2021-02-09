@@ -192,8 +192,8 @@ router.post(
   policies.ensureOtp,
   web.auth.changeEmail
 );
-router.get('/profile', render('my-account/profile'));
-router.put('/profile', web.myAccount.update);
+router.get('/profile', web.myAccount.retrieveProfile);
+router.put('/profile', web.myAccount.updateProfile);
 router.delete('/security', web.myAccount.resetAPIToken);
 router.get('/security', render('my-account/security'));
 router.post('/recovery-keys', web.myAccount.recoveryKeys);

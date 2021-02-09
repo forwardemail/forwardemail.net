@@ -69,11 +69,16 @@ See [Requirements](#requirements) below.
    npm install
    ```
 
+6. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html#stable).
+
 ### Ubuntu
 
 Coming soon
 
-<!-- `sudo apt-get install wkhtmltopdf` for PDF receipts) -->
+<!-- Download and install wkhtmltopdf from website (manual deb install) -->
+<!-- sudo apt-get install xfonts-75dpi -->
+<!-- wget wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb -->
+<!-- sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb -->
 
 
 ## Server Infrastructure

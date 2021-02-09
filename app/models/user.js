@@ -1,9 +1,10 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const captainHook = require('captain-hook');
+const countryList = require('country-list');
 const cryptoRandomString = require('crypto-random-string');
-const isSANB = require('is-string-and-not-blank');
 const dayjs = require('dayjs-with-plugins');
+const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const mongooseOmitCommonFields = require('mongoose-omit-common-fields');
@@ -24,6 +25,7 @@ if (config.passportLocalMongoose.usernameField !== 'email')
     'User model and @ladjs/passport requires that the usernameField is email'
   );
 
+const countries = countryList.getNames().sort();
 const options = { length: 10, type: 'numeric' };
 const { fields } = config.passport;
 const omitExtraFields = [
@@ -53,7 +55,8 @@ const omitExtraFields = [
   config.userFields.stripeCustomerID,
   config.userFields.stripeSubscriptionID,
   config.userFields.paypalPayerID,
-  config.userFields.paypalSubscriptionID
+  config.userFields.paypalSubscriptionID,
+  config.userFields.addressHTML
 ];
 
 // TODO: set relative threshold for messages
@@ -228,10 +231,62 @@ object[config.lastLocaleField] = {
   default: i18n.config.defaultLocale
 };
 
+//
+// company information
+//
+for (const prop of [
+  config.userFields.companyName,
+  config.userFields.addressLine1,
+  config.userFields.addressLine2,
+  config.userFields.addressCity,
+  config.userFields.addressState,
+  config.userFields.addressZip,
+  config.userFields.companyVAT
+]) {
+  object[prop] = {
+    type: String,
+    trim: true,
+    maxlength: 255
+  };
+}
+
+object[config.userFields.addressCountry] = {
+  type: String,
+  enum: ['None', ...countries],
+  default: 'None'
+};
+
 // finally add the fields
 User.add(object);
 
 User.plugin(captainHook);
+
+User.virtual(config.userFields.addressHTML).get(function () {
+  const companyName = this[config.userFields.companyName];
+  const name = [
+    this[config.passport.fields.givenName],
+    this[config.passport.fields.familyName]
+  ]
+    .filter(Boolean)
+    .join(' ');
+  const arr = [
+    companyName || name ? `<strong>${companyName || name}</strong>` : null,
+    this[config.userFields.addressLine1],
+    this[config.userFields.addressLine2],
+    [
+      this[config.userFields.addressCity],
+      this[config.userFields.addressState],
+      this[config.userFields.addressZip]
+    ]
+      .filter(Boolean)
+      .join(', '),
+    this[config.userFields.addressCountry] &&
+    this[config.userFields.addressCountry] !== 'None'
+      ? this[config.userFields.addressCountry]
+      : null
+  ];
+  return arr.filter(Boolean).join('<br />');
+});
 
 User.virtual(config.userFields.verificationPinHasExpired).get(function () {
   return boolean(

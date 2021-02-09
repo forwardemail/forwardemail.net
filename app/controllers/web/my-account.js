@@ -9,6 +9,7 @@ const Stripe = require('stripe');
 const _ = require('lodash');
 const accounting = require('accounting');
 const checkoutNodeJssdk = require('@paypal/checkout-server-sdk');
+const countryList = require('country-list');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
@@ -208,6 +209,12 @@ const PAYPAL_PLAN_MAPPING = {
   }
 };
 
+// country list with USA at the top
+const USA = 'United States of America';
+const countries = countryList.getNames().sort();
+countries.splice(countries.indexOf(USA), 1);
+countries.unshift(USA);
+
 const app = new ForwardEmail({
   logger,
   recordPrefix: config.recordPrefix,
@@ -217,7 +224,12 @@ const app = new ForwardEmail({
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-async function update(ctx) {
+function retrieveProfile(ctx) {
+  ctx.state.countries = countries;
+  return ctx.render('my-account/profile');
+}
+
+async function updateProfile(ctx) {
   const { body } = ctx.request;
   const hasSetPassword = ctx.state.user[config.userFields.hasSetPassword];
 
@@ -246,10 +258,29 @@ async function update(ctx) {
     ctx.state.user[config.userFields.resetToken] = null;
     ctx.state.user[config.userFields.resetTokenExpiresAt] = null;
   } else {
+    //
+    // personal information
+    //
     ctx.state.user[config.passport.fields.givenName] =
       body[config.passport.fields.givenName];
     ctx.state.user[config.passport.fields.familyName] =
       body[config.passport.fields.familyName];
+
+    //
+    // company information
+    //
+    for (const prop of [
+      config.userFields.companyName,
+      config.userFields.addressLine1,
+      config.userFields.addressLine2,
+      config.userFields.addressCity,
+      config.userFields.addressState,
+      config.userFields.addressZip,
+      config.userFields.addressCountry,
+      config.userFields.companyVAT
+    ]) {
+      ctx.state.user[prop] = body[prop];
+    }
   }
 
   // check if we need to update the email and send an email confirmation
@@ -3058,7 +3089,8 @@ async function updateDomain(ctx, next) {
 }
 
 module.exports = {
-  update,
+  retrieveProfile,
+  updateProfile,
   resetAPIToken,
   retrieveDomains,
   retrieveDomain,

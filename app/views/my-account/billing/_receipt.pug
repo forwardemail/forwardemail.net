@@ -32,18 +32,14 @@
           br
           | Lewes, DE 19958
           br
-          | United States
+          | United States of America
           br
           small: a(href='mailto:support@forwardemail.net') support@forwardemail.net
-          br
-          small: a(href=config.urls.web)= config.urls.web
       td.border-0.text-right
         address
-          strong
-            = t('Customer')
-            = ':'
+          != user[config.userFields.addressHTML]
           br
-          a(href=`mailto:${user.email}`)= user.email
+          small: a(href=`mailto:${user.email}`)= user.email
     tr
       td.border-0
         strong
@@ -93,6 +89,11 @@
         td.align-middle.text-right= payment.amount_formatted
     tfoot.thead-light
       tr
-        th.align-middle.text-right: u= t('Total')
+        th.align-middle
+          if user[config.userFields.companyVAT]
+            strong= 'VAT #'
+            = ' '
+            = user[config.userFields.companyVAT]
+          .float-right.text-right: u= t('Total')
         th.align-middle.text-right= payment.amount_formatted
   .card-footer.text-center: small.text-muted= t('If you have any questions or comments, then please let us know')
