@@ -17,16 +17,20 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const paypal = require('paypal-rest-sdk');
+const pify = require('pify');
 const pug = require('pug');
 const slug = require('speakingurl');
 const splitLines = require('split-lines');
 const striptags = require('striptags');
 const superagent = require('superagent');
 const titleize = require('titleize');
+const webResourceInliner = require('web-resource-inliner');
 const wkhtmltopdf = require('wkhtmltopdf');
 const { boolean } = require('boolean');
 const { isEmail, isIP, isPort } = require('validator');
 const { parse } = require('node-html-parser');
+
+const inline = pify(webResourceInliner.html);
 
 const env = require('../../../config/env');
 const config = require('../../../config');
@@ -2452,13 +2456,27 @@ async function retrieveReceipt(ctx) {
         // make flash a noop so we don't interfere with messages/session
         { ...ctx.state, flash: () => {} }
       );
-      ctx.body = wkhtmltopdf(html, {
+
+      //
+      // workaround because of these bugs with wkhtmltopdf and HTTPS
+      //
+      // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4935>
+      // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4897>
+      // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4462>
+      const inlinedHTML = await inline({
+        fileContent: html,
+        images: true,
+        svgs: true,
+        scripts: false,
+        links: true
+      });
+      ctx.body = wkhtmltopdf(inlinedHTML, {
         debug: config.env !== 'production',
         pageSize: 'letter',
         background: true,
         'image-dpi': 300,
         'print-media-type': false,
-        'enable-javascript': true,
+        'enable-javascript': false,
         'enable-internal-links': true
       });
       return;
