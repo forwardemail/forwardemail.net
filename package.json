@@ -140,6 +140,7 @@
     "uncaught": "^0.0.5",
     "url-parse": "^1.4.7",
     "validator": "^13.5.2",
+    "web-resource-inliner": "^5.0.0",
     "wkhtmltopdf": "^0.3.4",
     "zxcvbn": "^4.4.2"
   },
