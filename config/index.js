@@ -331,28 +331,27 @@ config.views.locals.manifest = manifestRev({
 
 // add selective `config` object to be used by views
 config.views.locals.config = _.pick(config, [
-  'verificationPin',
-  'vanityDomains',
-  'userFields',
-  'otpRoutePrefix',
-  'passport',
-  'otpRoutePrefix',
-  'urls',
   'appColor',
   'appName',
-  'twitter',
   'env',
-  'loginRoute',
   'hcaptchaEnabled',
   'hcaptchaSiteKey',
-  'supportRequestMaxLength',
-  'passportLocalMongoose',
-  'passportCallbackOptions',
-  'recordPrefix',
+  'lastLocaleField',
+  'loginRoute',
   'maxForwardedAddresses',
+  'otpRoutePrefix',
+  'passport',
+  'passportCallbackOptions',
+  'passportLocalMongoose',
   'paypal',
+  'recordPrefix',
   'storeIPAddress',
-  'lastLocaleField'
+  'supportRequestMaxLength',
+  'twitter',
+  'urls',
+  'userFields',
+  'vanityDomains',
+  'verificationPin'
 ]);
 
 // add `views` to `config.email`

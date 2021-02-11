@@ -1623,5 +1623,6 @@
   "Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.": "Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.",
   "The email address to forward spam to is:": "The email address to forward spam to is:",
   "abuse@forwardemail.net": "abuse@forwardemail.net",
-  "If you want to update company info on receipts, then <a href=\"%s\" class=\"notranslate\">update your profile</a>.": "If you want to update company info on receipts, then <a href=\"%s\" class=\"notranslate\">update your profile</a>."
+  "If you want to update company info on receipts, then <a href=\"%s\" class=\"notranslate\">update your profile</a>.": "If you want to update company info on receipts, then <a href=\"%s\" class=\"notranslate\">update your profile</a>.",
+  "Recovery Key": "Recovery Key"
 }

@@ -1284,5 +1284,21 @@
   "Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.": "Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.",
   "The email address to forward spam to is:": "The email address to forward spam to is:",
   "abuse@forwardemail.net": "abuse@forwardemail.net",
-  "If you want to update company info on receipts, then <a href=\"%s\" class=\"notranslate\">update your profile</a>.": "If you want to update company info on receipts, then <a href=\"%s\" class=\"notranslate\">update your profile</a>."
+  "If you want to update company info on receipts, then <a href=\"%s\" class=\"notranslate\">update your profile</a>.": "If you want to update company info on receipts, then <a href=\"%s\" class=\"notranslate\">update your profile</a>.",
+  "Hello": "Hello",
+  "Invalid two-factor authentication passcode.": "Invalid two-factor authentication passcode.",
+  "Invalid recovery key.": "Invalid recovery key.",
+  "Recovery Key": "Recovery Key",
+  "You have run out of recovery keys. Please download the newly generated recovery keys before continuing.": "You have run out of recovery keys. Please download the newly generated recovery keys before continuing.",
+  "Recommended Authenticator Apps": "Recommended Authenticator Apps",
+  "App": "App",
+  "Open-Source": "Open-Source",
+  "Google Play": "Google Play",
+  "App Store": "App Store",
+  "F-Droid": "F-Droid",
+  "Setup OTP": "Setup OTP",
+  "<strong>Step 1:</strong> Install and open an <a href=\"#\" data-toggle=\"modal-anchor\" data-target=\"#authenticator-apps-modal\">authenticator app</a>.": "<strong>Step 1:</strong> Install and open an <a href=\"#\" data-toggle=\"modal-anchor\" data-target=\"#authenticator-apps-modal\">authenticator app</a>.",
+  "<strong>Step 2:</strong> Scan this QR code and enter its generated token:": "<strong>Step 2:</strong> Scan this QR code and enter its generated token:",
+  "Can’t scan the QR code?  Configure with this code": "Can’t scan the QR code?  Configure with this code",
+  "Complete Setup": "Complete Setup"
 }

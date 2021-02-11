@@ -1,16 +1,12 @@
 const test = require('ava');
 
-const { before, beforeEach, afterEach, after } = require('../_utils');
+const utils = require('../utils');
 
-test.before(before);
-test.after.always(after);
-test.beforeEach(beforeEach);
-test.afterEach.always(afterEach);
+test.beforeEach(utils.setupWebServer);
 
 test('redirects to correct locale', async (t) => {
   const { web } = t.context;
   const res = await web.get('/');
-
   t.is(res.status, 302);
   t.is(res.headers.location, '/en');
 });
@@ -73,4 +69,12 @@ test('GET /:locale/privacy', async (t) => {
 
   t.is(res.status, 200);
   t.assert(res.text.includes('Privacy Policy'));
+});
+
+test('GET /:locale/help', async (t) => {
+  const { web } = t.context;
+  const res = await web.get('/en/help');
+
+  t.is(res.status, 200);
+  t.assert(res.text.includes('Send message'));
 });
