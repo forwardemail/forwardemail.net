@@ -147,18 +147,24 @@ async function onboard(ctx, next) {
     query[config.userFields.hasVerifiedEmail] = false;
     query[config.userFields.hasSetPassword] = false;
     ctx.state.user = await Users.create(query);
+    await ctx.login(ctx.state.user);
+
     // send verification email if needed
-    if (boolean(ctx.query.send_verification_email)) {
+    try {
       ctx.state.user = await sendVerificationEmail(ctx);
       ctx.flash('success', ctx.translate('EMAIL_VERIFICATION_SENT'));
+    } catch (err) {
+      ctx.logger.warn(err);
     }
 
+    // create the domain
     ctx.state.domain = await Domains.create({
       members: [{ user: ctx.state.user._id, group: 'admin' }],
       name: ctx.request.body.domain,
       locale: ctx.locale,
       skip_verification: !boolean(ctx.query.redirect_to_domain)
     });
+
     // create a default alias for the user pointing to the admin
     await Aliases.create({
       user: ctx.state.user._id,
@@ -167,7 +173,6 @@ async function onboard(ctx, next) {
       recipients: [ctx.state.user.email],
       locale: ctx.locale
     });
-    await ctx.login(ctx.state.user);
   }
 
   // TODO: flash messages logic in @ladjs/assets doesn't support both

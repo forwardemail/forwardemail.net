@@ -1,13 +1,13 @@
 const test = require('ava');
 
+const config = require('../../config');
 const phrases = require('../../config/phrases');
 
-const { before, beforeEach, afterEach, after } = require('../_utils');
+const utils = require('../utils');
 
-test.before(before);
-test.after.always(after);
-test.beforeEach(beforeEach);
-test.afterEach.always(afterEach);
+test.before(utils.setupMongoose);
+test.after.always(utils.teardownMongoose);
+test.beforeEach(utils.setupApiServer);
 
 test('fails when no creds are presented', async (t) => {
   const { api } = t.context;
@@ -27,7 +27,7 @@ test("returns current user's account", async (t) => {
 
   res = await api.get('/v1/account').set({
     Authorization: `Basic ${Buffer.from(
-      `${res.body[global.config.userFields.apiToken]}:`
+      `${res.body[config.userFields.apiToken]}:`
     ).toString('base64')}`
   });
   t.is(res.body.message, phrases.EMAIL_VERIFICATION_REQUIRED);
