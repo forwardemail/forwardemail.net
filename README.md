@@ -76,8 +76,11 @@ See [Requirements](#requirements) below.
 Coming soon
 
 <!-- Download and install wkhtmltopdf from website (manual deb install) -->
+
 <!-- sudo apt-get install xfonts-75dpi -->
+
 <!-- wget wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb -->
+
 <!-- sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb -->
 
 
@@ -101,8 +104,6 @@ For example, one of our web servers is named `web-1-do-nyc3-us.forwardemail.net`
 All server aliases with the same hostname (with a minimum count of at least 2) are set in Cloudflare under a geo-located load balancer.
 
 Unless otherwise noted, all of the servers should have dedicated CPU's and not be running in a shared CPU environment.
-
-If you are using load balancers, then you need to implement PROXY support.  Ensure that `TRUST_PROXY` environment variable is set to `true`, and also that you have set `WEB_PROXY_PROTOCOL` and `API_PROXY_PROTOCOL` set to `true` as well.
 
 ### Provisioning
 
