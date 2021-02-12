@@ -201,7 +201,6 @@
     "parse-git-config": "^3.0.0",
     "postcss": "^8.2.6",
     "postcss-font-magician": "^3.0.0",
-    "postcss-font-smoothing": "^0.1.0",
     "postcss-preset-env": "^6.7.0",
     "postcss-reporter": "^7.0.2",
     "postcss-scss": "^3.0.4",
