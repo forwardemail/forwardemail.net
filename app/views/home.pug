@@ -157,7 +157,9 @@ block body
     .row
       .col-12.col-md-9.col-lg-6
         p.lead.text-white.mb-3.mb-md-5
-          != t('Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.  Made by <a href="https://github.com/niftylettuce" class="text-white" target="_blank" rel="noopener noreferrer">@niftylettuce</a>, an open-source enthusiast and privacy advocate.')
+          != t('Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.')
+          != t("We're the only service that <u>never stores nor writes to disk</u> any emails &ndash; it's all done in memory.")
+          != t('Made by <a href="https://github.com/niftylettuce" class="text-white" target="_blank" rel="noopener noreferrer">@niftylettuce</a>, an open-source enthusiast and privacy advocate.')
         a.btn.btn-outline-light.btn-lg.mb-md-5(href='https://github.com/forwardemail', target='_blank', rel='noopener noreferrer')
           = t('View source code')
           = ' '
