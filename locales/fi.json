@@ -1300,5 +1300,9 @@
   "<strong>Step 1:</strong> Install and open an <a href=\"#\" data-toggle=\"modal-anchor\" data-target=\"#authenticator-apps-modal\">authenticator app</a>.": "<strong>Step 1:</strong> Install and open an <a href=\"#\" data-toggle=\"modal-anchor\" data-target=\"#authenticator-apps-modal\">authenticator app</a>.",
   "<strong>Step 2:</strong> Scan this QR code and enter its generated token:": "<strong>Step 2:</strong> Scan this QR code and enter its generated token:",
   "Can’t scan the QR code?  Configure with this code": "Can’t scan the QR code?  Configure with this code",
-  "Complete Setup": "Complete Setup"
+  "Complete Setup": "Complete Setup",
+  "Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.": "Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.",
+  "We're the only service that <u>never stores nor writes to disk</u> any emails &ndash; it's all done in memory.": "We're the only service that <u>never stores nor writes to disk</u> any emails &ndash; it's all done in memory.",
+  "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source enthusiast and privacy advocate.": "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source enthusiast and privacy advocate.",
+  "Download your emergency recovery keys below.": "Download your emergency recovery keys below."
 }
