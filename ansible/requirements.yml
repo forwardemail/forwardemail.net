@@ -17,15 +17,6 @@
 - name: unattended-upgrades
   src: jnv.unattended-upgrades
   version: v1.8.0
-- name: nodejs
-  src: oefenweb.nodejs
-  version: v6.0.3
-- name: yarn
-  src: oefenweb.yarn
-  version: v1.0.42
-- name: pip
-  src: oefenweb.pip
-  version: v2.1.1
 - name: sysctl
   src: oefenweb.sysctl
   version: v1.0.36

@@ -1314,5 +1314,11 @@
   "Plus get catch-all, wildcard, and disposable aliases &ndash; all for free!": "Plus get catch-all, wildcard, and disposable aliases &ndash; all for free!",
   "Unlike other services, we <strong class=\"font-weight-bold\">do not keep logs</strong> nor metadata, <strong class=\"font-weight-bold\">never read</strong> your emails, and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "Unlike other services, we <strong class=\"font-weight-bold\">do not keep logs</strong> nor metadata, <strong class=\"font-weight-bold\">never read</strong> your emails, and are <strong class=\"font-weight-bold\">100% open-source</strong>.",
   "We're the <strong class=\"text-uppercase font-weight-bold border-bottom\">only</strong> service that <strong class=\"font-weight-bold\">never stores nor writes to disk</strong> any emails &ndash; it's all done in-memory.": "We're the <strong class=\"text-uppercase font-weight-bold border-bottom\">only</strong> service that <strong class=\"font-weight-bold\">never stores nor writes to disk</strong> any emails &ndash; it's all done in-memory.",
-  "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-success font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source and privacy advocate.": "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-success font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source and privacy advocate."
+  "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-success font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source and privacy advocate.": "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-success font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source and privacy advocate.",
+  "Unlimited domains": "Unlimited domains",
+  "Create and forward unlimited email addresses for free using your custom domain name.": "Create and forward unlimited email addresses for free using your custom domain name.",
+  "Disposable email addresses, wildcard and catch-all addresses, and unlimited aliases.": "Disposable email addresses, wildcard and catch-all addresses, and unlimited aliases.",
+  "Website Email Service": "Website Email Service",
+  "Startup Email Service": "Startup Email Service",
+  "Shopify Email Service": "Shopify Email Service"
 }

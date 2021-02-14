@@ -2,16 +2,7 @@
 - hosts: "{{ hostlist }}"
   become: true
   become_user: root
-  vars:
-    # node.js
-    nodejs_version: 'nodejs-v12x'
-    nodejs_npm_packages:
-      - name: pm2
-  roles:
-    # https://github.com/Oefenweb/ansible-nodejs
-    - role: nodejs
-    # https://github.com/Oefenweb/ansible-yarn
-    - role: yarn
+  # TODO: install nodejs + yarn + pm2 using n as deploy user
   tasks:
     # install fonts
     - name: accept fonts license
