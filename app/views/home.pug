@@ -59,27 +59,27 @@ block body
       i.fa.fa-angle-down
       = ' '
       = t('Learn more')
-  .container-fluid.bg-primary.p-5.d-block#learn-more
-    .row.text-center.d-block.mb-4
-      h1.display-4.font-weight-bold.text-uppercase.text-white.mb-2= t('Email for Everyone.')
-      p.lead.text-white.font-weight-bold.mb-0
-        != t('Click to watch these videos and learn more about our service:')
+  .container-fluid.bg-light.border-top.p-5.d-block#learn-more
+    .row.text-center.d-block.mb-5
+      .h2.display-3.mb-1.text-danger
+        i.fab.fa-youtube
+      h1.display-4.text-uppercase.font-weight-bold!= t('Made for <u>you</u>.')
     .row
       .col-md.text-center.mb-3.mb-md-0
-        button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-creators')
+        button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-creators')
           i.fa.fa-play-circle
           = ' '
-          = t('Creators')
+          = t('For Creators')
       .col-md.text-center.mb-3.mb-md-0
-        button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-developers')
+        button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-developers')
           i.fa.fa-play-circle
           = ' '
-          = t('Developers')
+          = t('For Developers')
       .col-md.text-center
-        button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-businesses')
+        button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-businesses')
           i.fa.fa-play-circle
           = ' '
-          = t('Businesses')
+          = t('For Businesses')
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block
     h2.display-3.font-weight-bold.text-white.my-3.my-md-5
       i.fa.fa-fingerprint
