@@ -37,20 +37,18 @@ block body
           //- h2.h3.font-weight-light.mb-3= t('Set up email forwarding for your custom domain in seconds.')
           if isBot(ctx.get('User-Agent'))
             p.lead.mb-3
-              = t('Create and forward an unlimited amount of email addresses with your domain name.')
+              = t('Create and forward unlimited email addresses for free using your custom domain name.')
               = ' '
-              = t('Plus get catch-all, wildcard, and disposable email addresses!')
+              = t('Disposable email addresses, wildcard and catch-all addresses, and unlimited aliases.')
           else
             p.lead.mb-3.d-block.d-lg-none
-              = t('Create and forward an unlimited amount of email addresses with your domain name.')
-              = ' '
-              = t('Plus get catch-all, wildcard, and disposable email addresses!')
+              != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses for free using your custom domain name.')
             p.lead.mb-0.d-none.d-lg-block
-              = t('Create and forward an unlimited amount of email addresses with your domain name.')
+              != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses using your custom domain name.')
             p.lead.mb-3.d-none.d-lg-block
-              = t('Plus get catch-all, wildcard, and disposable email addresses!')
+              != t('Plus get catch-all, wildcard, and disposable aliases &ndash; all for free!')
           a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')
-            = t('Sign up for free')
+            = t('Sign up free')
             = ' '
             i.fa.fa-angle-double-right
           small.d-block.text-muted.text-uppercase.font-weight-bold
@@ -69,17 +67,26 @@ block body
         button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-creators')
           i.fa.fa-play-circle
           = ' '
-          = t('For Creators')
+          if isBot(ctx.get('User-Agent'))
+            = t('Website Email Service')
+          else
+            = t('Creators')
       .col-md.text-center.mb-3.mb-md-0
         button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-developers')
           i.fa.fa-play-circle
           = ' '
-          = t('For Developers')
+          if isBot(ctx.get('User-Agent'))
+            = t('Startup Email Service')
+          else
+            = t('Developers')
       .col-md.text-center
         button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-businesses')
           i.fa.fa-play-circle
           = ' '
-          = t('For Businesses')
+          if isBot(ctx.get('User-Agent'))
+            = t('Shopify Email Service')
+          else
+            = t('Businesses')
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block
     h2.display-3.font-weight-bold.text-white.my-3.my-md-5
       i.fa.fa-fingerprint
@@ -157,11 +164,11 @@ block body
     .row
       .col-12.col-md-9.col-lg-6
         p.lead.text-white.mb-3.mb-md-5
-          != t('Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.')
+          != t('Unlike other services, we <strong class="font-weight-bold">do not keep logs</strong> nor metadata, <strong class="font-weight-bold">never read</strong> your emails, and are <strong class="font-weight-bold">100% open-source</strong>.')
           = ' '
-          != t("We're the only service that <u>never stores nor writes to disk</u> any emails &ndash; it's all done in memory.")
+          != t("We're the <strong class=\"text-uppercase font-weight-bold border-bottom\">only</strong> service that <strong class=\"font-weight-bold\">never stores nor writes to disk</strong> any emails &ndash; it's all done in-memory.")
           = ' '
-          != t('Made by <a href="https://github.com/niftylettuce" class="text-white" target="_blank" rel="noopener noreferrer">@niftylettuce</a>, an open-source enthusiast and privacy advocate.')
+          != t('Made by <a href="https://github.com/niftylettuce" class="text-success font-weight-bold" target="_blank" rel="noopener noreferrer">@niftylettuce</a>, an open-source and privacy advocate.')
         a.btn.btn-outline-light.btn-lg.mb-md-5(href='https://github.com/forwardemail', target='_blank', rel='noopener noreferrer')
           = t('View source code')
           = ' '
