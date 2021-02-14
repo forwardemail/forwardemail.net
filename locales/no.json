@@ -1627,5 +1627,6 @@
   "Recovery Key": "Recovery Key",
   "Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.": "Unlike other services, we <u>do not</u> keep logs nor metadata, <u>never</u> read emails, and are <u>100%</u> open-source.",
   "We're the only service that <u>never stores nor writes to disk</u> any emails &ndash; it's all done in memory.": "We're the only service that <u>never stores nor writes to disk</u> any emails &ndash; it's all done in memory.",
-  "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source enthusiast and privacy advocate.": "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source enthusiast and privacy advocate."
+  "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source enthusiast and privacy advocate.": "Made by <a href=\"https://github.com/niftylettuce\" class=\"text-white\" target=\"_blank\" rel=\"noopener noreferrer\">@niftylettuce</a>, an open-source enthusiast and privacy advocate.",
+  "Made for <u>you</u>.": "Made for <u>you</u>."
 }
