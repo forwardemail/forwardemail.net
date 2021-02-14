@@ -62,28 +62,28 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
     ul.navbar-nav.ml-auto
       if !isBot(ctx.get('User-Agent'))
         li.nav-item.ml-lg-1.mt-1.mt-lg-0.d-lg-none
-          a.btn.btn-lg.font-weight-bold.d-block.text-left.text-lg-center(href=l('/'), class=ctx.pathWithoutLocale === '/' ? 'btn-outline-light' : 'btn-dark')= t('Home')
+          a.btn.btn-lg.d-block.text-left.text-lg-center(href=l('/'), class=ctx.pathWithoutLocale === '/' ? 'btn-outline-light' : 'btn-dark')= t('Home')
       li.nav-item.ml-lg-1.mt-1.mt-lg-0
-        a.btn.btn-lg.font-weight-bold.d-block.text-left.text-lg-center(href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l('/pricing'), class=ctx.pathWithoutLocale.startsWith('/pricing') ? 'btn-outline-light' : 'btn-dark')= t('Pricing')
+        a.btn.btn-lg.d-block.text-left.text-lg-center(href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l('/pricing'), class=ctx.pathWithoutLocale.startsWith('/pricing') ? 'btn-outline-light' : 'btn-dark')= t('Pricing')
       if isBot(ctx.get('User-Agent'))
         li.nav-item.ml-lg-1.mt-1.mt-lg-0
-          a.btn.btn-lg.font-weight-bold.d-block.text-left.text-lg-center(href=l('/about'), class=ctx.pathWithoutLocale.startsWith('/about') ? 'btn-outline-light' : 'btn-dark')= t('About')
+          a.btn.btn-lg.d-block.text-left.text-lg-center(href=l('/about'), class=ctx.pathWithoutLocale.startsWith('/about') ? 'btn-outline-light' : 'btn-dark')= t('About')
       li.nav-item.ml-lg-1.mt-1.mt-lg-0
-        a.btn.btn-lg.font-weight-bold.d-block.text-left.text-lg-center(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'), class=ctx.pathWithoutLocale.startsWith('/faq') ? 'btn-outline-light' : 'btn-dark')= t('FAQ')
+        a.btn.btn-lg.d-block.text-left.text-lg-center(href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq'), class=ctx.pathWithoutLocale.startsWith('/faq') ? 'btn-outline-light' : 'btn-dark')= t('FAQ')
       li.nav-item.ml-lg-1.mt-1.mt-lg-0
-        a.btn.btn-lg.font-weight-bold.d-block.text-left.text-lg-center(href=l('/help'), role=isHelp ? 'link' : 'button', data-target=isHelp ? '' : '#modal-help', class=ctx.pathWithoutLocale.startsWith('/help') ? 'btn-outline-light' : 'btn-dark')= t('Help')
+        a.btn.btn-lg.d-block.text-left.text-lg-center(href=l('/help'), role=isHelp ? 'link' : 'button', data-target=isHelp ? '' : '#modal-help', class=ctx.pathWithoutLocale.startsWith('/help') ? 'btn-outline-light' : 'btn-dark')= t('Help')
       //- links that show only if you're logged in
       if user
         //- links that show if you're an admin
         if user.group === 'admin'
           li.nav-item.dropdown.ml-lg-1.mt-1.mt-lg-0
-            a#navbar-dropdown-admin.btn.btn-lg.font-weight-bold.dropdown-toggle.d-block.text-left.text-lg-center(href=l('/admin'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/admin') ? 'btn-outline-light' : 'btn-dark')
+            a#navbar-dropdown-admin.btn.btn-lg.dropdown-toggle.d-block.text-left.text-lg-center(href=l('/admin'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/admin') ? 'btn-outline-light' : 'btn-dark')
               = t('Admin')
             .dropdown-menu(aria-labelledby='navbar-dropdown-admin')
               a.dropdown-item(class=ctx.pathWithoutLocale === '/admin' ? 'active' : '', href=l('/admin'))= t('Dashboard')
               a.dropdown-item(class=ctx.pathWithoutLocale.startsWith('/admin/users') ? 'active' : '', href=l('/admin/users'))= t('Users')
         li.nav-item.dropdown.ml-lg-1.mt-1.mt-lg-0
-          a#navbar-dropdown-my-account.btn.btn-lg.font-weight-bold.dropdown-toggle.d-block.text-left.text-lg-center(href=l('/my-account'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/my-account') ? 'btn-outline-light' : 'btn-dark')
+          a#navbar-dropdown-my-account.btn.btn-lg.dropdown-toggle.d-block.text-left.text-lg-center(href=l('/my-account'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/my-account') ? 'btn-outline-light' : 'btn-dark')
             = t('My Account')
           .dropdown-menu(aria-labelledby='navbar-dropdown-admin')
             //- a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Dashboard')
@@ -95,7 +95,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
       //- links that show only if you're logged out
       else
         li.nav-item.ml-lg-1.mt-1.mt-lg-0
-          a.btn.btn-lg.font-weight-bold.d-block.text-left.text-lg-center(
+          a.btn.btn-lg.d-block.text-left.text-lg-center(
             role=isRegisterOrLogin ? 'link' : 'button',
             href=l(config.loginRoute),
             data-toggle=isRegisterOrLogin ? '': 'modal-anchor',
@@ -103,7 +103,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
             class=ctx.pathWithoutLocale === config.loginRoute ? 'btn-outline-light' : 'btn-dark'
           )= t('Sign in')
         li.nav-item.ml-lg-1.mt-1.mt-lg-0
-          a.btn.btn-lg.font-weight-bold.d-block.text-uppercase.font-weight-bold(
+          a.btn.btn-lg.d-block.text-uppercase.font-weight-bold(
             href=l('/register'),
             data-toggle=isRegisterOrLogin ? '' : 'modal-anchor',
             data-target=isRegisterOrLogin ? '' : '#modal-sign-up',

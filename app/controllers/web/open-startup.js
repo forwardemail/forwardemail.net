@@ -101,7 +101,7 @@ async function getBody(ctx) {
             format: 'M/d/yy'
           }
         },
-        colors: ['#20C1ED', '#8CC63F', '#ffc107']
+        colors: ['#20C1ED', '#269C32', '#ffc107']
       };
     })(),
     (async () => {
