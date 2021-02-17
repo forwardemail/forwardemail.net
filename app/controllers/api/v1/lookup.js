@@ -22,17 +22,16 @@ async function lookup(ctx) {
 
   const domain = await Domains.findOne(query).lean().exec();
 
-  if (!domain)
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
+  let aliases = [];
 
-  const aliases = await Aliases.find({
-    domain: domain._id
-  })
-    .populate('user', config.userFields.isBanned)
-    .lean()
-    .exec();
+  if (domain) {
+    aliases = await Aliases.find({
+      domain: domain._id
+    })
+      .populate('user', config.userFields.isBanned)
+      .lean()
+      .exec();
+  }
 
   const username = isSANB(ctx.query.username) ? ctx.query.username : false;
 
