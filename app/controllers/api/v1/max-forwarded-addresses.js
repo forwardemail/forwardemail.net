@@ -53,10 +53,7 @@ async function maxForwardedAddresses(ctx) {
           .lean()
           .exec();
 
-        if (!domain)
-          throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
-
-        if (domain.max_recipients_per_alias > 0)
+        if (domain && domain.max_recipients_per_alias > maxForwardedAddresses)
           maxForwardedAddresses = domain.max_recipients_per_alias;
       }
 

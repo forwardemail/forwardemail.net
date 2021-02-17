@@ -218,7 +218,10 @@ test('fails resetting password if new password is too weak', async (t) => {
     .send({ email, password: 'password' });
 
   t.is(res.status, 400);
-  t.regex(JSON.parse(res.text).message, new RegExp(phrases.INVALID_PASSWORD_STRENGTH));
+  t.regex(
+    JSON.parse(res.text).message,
+    new RegExp(phrases.INVALID_PASSWORD_STRENGTH)
+  );
 });
 
 test('fails resetting password if reset was already tried in the last 30 mins', async (t) => {
