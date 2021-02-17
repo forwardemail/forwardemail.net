@@ -44,7 +44,7 @@ mixin registerOrLogin(verb, isModal = false)
         if verb === 'sign in'
           .form-group
             small.form-text.text-right: a(href=l('/forgot-password')).text-secondary= t('Forget your password?')
-        button.btn.btn-success.btn-lg.btn-block(type="submit")= t(titleize(verb))
+        button.btn.btn-success.btn-lg.btn-block(type="submit")= t(capitalize(verb))
       .alert.alert-warning.mt-3.text-center(class=isModal ? 'mb-0' : '')
         - const isRegisterOrLogin = ['/register', config.loginRoute].includes(ctx.pathWithoutLocale)
         ul.list-inline.mb-0

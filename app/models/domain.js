@@ -557,9 +557,7 @@ async function getTxtAddresses(domainName, locale, allowEmpty = false) {
       // (e.. the record is just "b.com" if it's not a valid email)
       globalForwardingAddresses.push(lowerCaseAddress);
     } else if (isEmail(lowerCaseAddress)) {
-      const domain = app.parseDomain(lowerCaseAddress, false);
-      if (isFQDN(domain) || isIP(domain))
-        globalForwardingAddresses.push(lowerCaseAddress);
+      globalForwardingAddresses.push(lowerCaseAddress);
     } else if (isURL(element, app.config.isURLOptions)) {
       globalForwardingAddresses.push(element);
     }
