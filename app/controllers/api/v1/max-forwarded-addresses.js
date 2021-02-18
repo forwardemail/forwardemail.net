@@ -1,5 +1,3 @@
-const dns = require('dns');
-
 const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
 const isFQDN = require('is-fqdn');
@@ -25,7 +23,12 @@ async function maxForwardedAddresses(ctx) {
     // if a verification record was found, then look it up and if it's valid
     // otherwise return default max count
     try {
-      const records = await dns.promises.resolveTxt(ctx.query.domain);
+      const records = await app.resolver(
+        ctx.query.domain,
+        'TXT',
+        false,
+        ctx.client
+      );
 
       const verifications = [];
 
@@ -33,7 +36,9 @@ async function maxForwardedAddresses(ctx) {
         const record = element.join('').trim(); // join chunks together
         if (record.startsWith(`${app.config.recordPrefix}-site-verification=`))
           verifications.push(
-            record.replace(`${app.config.recordPrefix}-site-verification=`, '')
+            record
+              .replace(`${app.config.recordPrefix}-site-verification=`, '')
+              .trim()
           );
       }
 
@@ -41,13 +46,15 @@ async function maxForwardedAddresses(ctx) {
 
       if (verifications.length > 0) {
         if (verifications.length > 1)
-          throw Boom.badRequest(
-            ctx.translateError('SINGLE_VERIFICATION_RECORD_REQUIRED')
+          ctx.logger.fatal(
+            ctx.translateError('SINGLE_VERIFICATION_RECORD_REQUIRED'),
+            { domain: ctx.query.domain }
           );
 
         const domain = await Domains.findOne({
-          verification_record: verifications[0],
-          plan: { $ne: 'free' }
+          verification_record: { $in: verifications },
+          plan: { $ne: 'free' },
+          max_recipients_per_alias: { $gt: maxForwardedAddresses }
         })
           .select('max_recipients_per_alias')
           .lean()

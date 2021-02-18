@@ -784,7 +784,8 @@ async function createDomain(ctx, next) {
       is_global:
         ctx.state.user.group === 'admin' && boolean(ctx.request.body.is_global),
       locale: ctx.locale,
-      plan
+      plan,
+      client: ctx.client
     });
 
     // create a default alias for the user pointing to the admin
@@ -879,9 +880,9 @@ async function verifyRecords(ctx) {
     await Promise.all([
       // reset redis cache for smtp servers
       ctx.client
-        ? ['a', 'mx', 'txt'].map(async (type) => {
+        ? ['A', 'MX', 'TXT'].map(async (type) => {
             try {
-              await app.dnsQuery(type, ctx.state.domain.name, true, ctx.client);
+              await app.resolver(ctx.state.domain.name, type, true, ctx.client);
             } catch (err) {
               ctx.logger.warn(err);
             }
@@ -889,7 +890,7 @@ async function verifyRecords(ctx) {
         : Promise.resolve(),
 
       // check mx and txt
-      Domains.verifyRecords(ctx.state.domain._id, ctx.locale)
+      Domains.verifyRecords(ctx.state.domain._id, ctx.locale, ctx.client)
     ]);
 
     const text = ctx.translate('DOMAIN_IS_VERIFIED');
@@ -1950,7 +1951,11 @@ async function retrieveDomainBilling(ctx) {
     //
     if (isAccountUpgrade || isMakePayment)
       ctx.state.user = await ctx.state.user.save();
-    else ctx.state.domain = await domain.save();
+    else {
+      domain.locale = ctx.locale;
+      domain.client = ctx.client;
+      ctx.state.domain = await domain.save();
+    }
 
     // if ctx.query.plan was free and it was an account billing change
     // then we know that we need to cancel any necessary subscriptions
@@ -2581,7 +2586,12 @@ async function importAliases(ctx) {
       globalForwardingAddresses,
       ignoredAddresses,
       errors
-    } = await Domains.getTxtAddresses(ctx.state.domain.name));
+    } = await Domains.getTxtAddresses(
+      ctx.state.domain.name,
+      ctx.locale,
+      false,
+      ctx.client
+    ));
   } catch (err) {
     ctx.logger.error(err);
     if (err.code === 'ENOTFOUND')
@@ -2823,6 +2833,7 @@ async function retrieveInvite(ctx) {
 
   // save domain
   domain.locale = ctx.locale;
+  domain.skip_verification = true;
   ctx.state.domain = await domain.save();
 
   // flash a message to the user telling them they've successfully accepted
@@ -2892,6 +2903,7 @@ async function createInvite(ctx, next) {
     group: ctx.request.body.group
   });
   ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain.skip_verification = true;
   ctx.state.domain = await ctx.state.domain.save();
 
   // send an email
@@ -2939,6 +2951,7 @@ async function removeInvite(ctx, next) {
     (invite) => invite.email.toLowerCase() !== email.toLowerCase()
   );
   ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain.skip_verification = true;
   ctx.state.domain = await ctx.state.domain.save();
 
   if (ctx.api) return next();
@@ -2987,6 +3000,7 @@ async function updateMember(ctx, next) {
   }));
 
   ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain.client = ctx.client;
   ctx.state.domain = await ctx.state.domain.save();
 
   if (ctx.api) return next();
@@ -3033,6 +3047,7 @@ async function removeMember(ctx, next) {
     (member) => member.user.toString() !== ctx.params.member_id
   );
   ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain.client = ctx.client;
   ctx.state.domain = await ctx.state.domain.save();
 
   if (ctx.api) return next();
@@ -3089,6 +3104,7 @@ async function updateDomain(ctx, next) {
   }
 
   ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain.skip_verification = true;
   ctx.state.domain = await ctx.state.domain.save();
 
   if (ctx.api) return next();

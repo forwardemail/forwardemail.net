@@ -1,5 +1,3 @@
-const dns = require('dns');
-
 const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
@@ -163,6 +161,15 @@ const Domain = new mongoose.Schema({
 
 Domain.plugin(captainHook);
 
+// shared redis client
+Domain.virtual('client')
+  .get(function () {
+    return this.__client;
+  })
+  .set(function (client) {
+    this.__client = client;
+  });
+
 Domain.virtual('link')
   .get(function () {
     return this.__link;
@@ -227,7 +234,7 @@ Domain.pre('validate', async function (next) {
       throw Boom.badRequest(
         i18n.translateError('AT_LEAST_ONE_ADMIN_REQUIRED', domain.locale)
       );
-    const { txt, mx } = await getVerificationResults(domain);
+    const { txt, mx } = await getVerificationResults(domain, domain.client);
     domain.has_txt_record = txt;
     domain.has_mx_record = mx;
     next();
@@ -248,7 +255,7 @@ Domain.plugin(mongooseCommonPlugin, {
 });
 
 // eslint-disable-next-line complexity
-async function getVerificationResults(domain) {
+async function getVerificationResults(domain, client = false) {
   const MISSING_DNS_MX = Boom.badRequest(
     i18n.translateError('MISSING_DNS_MX', domain.locale, EXCHANGES, domain.name)
   );
@@ -343,7 +350,7 @@ async function getVerificationResults(domain) {
       ignoredAddresses,
       errors,
       verifications
-    } = await getTxtAddresses(domain.name, domain.locale, true));
+    } = await getTxtAddresses(domain.name, domain.locale, true, client));
 
     if (isPaidPlan) {
       if (
@@ -427,7 +434,7 @@ async function getVerificationResults(domain) {
 
 Domain.statics.getVerificationResults = getVerificationResults;
 
-async function verifyRecords(_id, locale) {
+async function verifyRecords(_id, locale, client) {
   const domain = await this.model('Domain').findById(_id);
 
   if (!domain)
@@ -435,10 +442,11 @@ async function verifyRecords(_id, locale) {
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
 
-  const { txt, mx, errors } = await getVerificationResults(domain);
+  const { txt, mx, errors } = await getVerificationResults(domain, client);
   domain.has_txt_record = txt;
   domain.has_mx_record = mx;
   domain.locale = locale;
+  domain.skip_verification = true;
   await domain.save();
 
   // if no errors, return early
@@ -457,12 +465,17 @@ async function verifyRecords(_id, locale) {
 Domain.statics.verifyRecords = verifyRecords;
 
 // eslint-disable-next-line complexity
-async function getTxtAddresses(domainName, locale, allowEmpty = false) {
+async function getTxtAddresses(
+  domainName,
+  locale,
+  allowEmpty = false,
+  client = false
+) {
   if (!isFQDN(domainName))
     throw Boom.badRequest(i18n.translateError('INVALID_FQDN', locale));
 
   logger.debug('resolveTxt', { domainName });
-  const records = await dns.promises.resolveTxt(domainName);
+  const records = await app.resolver(domainName, 'TXT', false, client);
 
   // verification records that contain `forward-email-site-verification=` prefix
   const verifications = [];

@@ -59,6 +59,7 @@ graceful.listen();
   await Promise.all(
     domainsWithPortNumber.map(async (domain) => {
       domain.smtp_port = domain.smtp_port.toString();
+      domain.skip_verification = true;
       await domain.save();
     })
   );
@@ -137,7 +138,12 @@ graceful.listen();
         */
     ]
   });
-  await Promise.all(domains.map((domain) => domain.save()));
+  await Promise.all(
+    domains.map((domain) => {
+      domain.skip_verification = true;
+      return domain.save();
+    })
+  );
 
   // find all domains with zero aliases and create one pointing to admin
   const domainIds = await Domains.distinct('_id', {});
