@@ -1360,6 +1360,19 @@ Please do not report the message as spam, but instead forward it to our manually
 
 Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
 
+You should also set the SPF record for Gmail in your DNS configuration TXT record.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF TXT record, for example:
+    <br /><br />
+    <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
+</div>
 
 ## Can I "send mail as" in Outlook with this
 
