@@ -1582,5 +1582,6 @@
   "Startup Email Service": "Startup Email Service",
   "Shopify Email Service": "Shopify Email Service",
   "Api Token": "Api Token",
-  "Fill out this form to personalize our guide below.": "Fill out this form to personalize our guide below."
+  "Fill out this form to personalize our guide below.": "Fill out this form to personalize our guide below.",
+  "You should also set the SPF record for Gmail in your DNS configuration TXT record.": "You should also set the SPF record for Gmail in your DNS configuration TXT record."
 }
