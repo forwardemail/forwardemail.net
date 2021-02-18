@@ -37,12 +37,14 @@ router.post('/account', api.v1.users.create);
 router.get(
   '/account',
   policies.ensureApiToken,
+  api.v1.enforcePaidPlan,
   web.myAccount.ensureNotBanned,
   api.v1.users.retrieve
 );
 router.put(
   '/account',
   policies.ensureApiToken,
+  api.v1.enforcePaidPlan,
   web.myAccount.ensureNotBanned,
   api.v1.users.update
 );
@@ -51,6 +53,7 @@ router.put(
 router.use(
   '/domains',
   policies.ensureApiToken,
+  api.v1.enforcePaidPlan,
   web.myAccount.ensureNotBanned,
   web.myAccount.retrieveDomains
 );
