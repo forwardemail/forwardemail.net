@@ -12,6 +12,7 @@ const test = require('./test');
 const users = require('./users');
 const stripe = require('./stripe');
 const paypal = require('./paypal');
+const enforcePaidPlan = require('./enforce-paid-plan');
 
 module.exports = {
   aliases,
@@ -27,5 +28,6 @@ module.exports = {
   test,
   users,
   stripe,
-  paypal
+  paypal,
+  enforcePaidPlan
 };
