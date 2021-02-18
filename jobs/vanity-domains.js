@@ -5,6 +5,7 @@ const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
+const Redis = require('@ladjs/redis');
 const sharedConfig = require('@ladjs/shared-config');
 
 const logger = require('../helpers/logger');
@@ -14,11 +15,13 @@ const Users = require('../app/models/user');
 const Domains = require('../app/models/domain');
 
 const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
 
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
+  redisClients: [client],
   logger
 });
 
@@ -47,11 +50,13 @@ graceful.listen();
       if (domain) {
         if (!domain.is_global) {
           domain.is_global = true;
+          domain.skip_verification = true;
           await domain.save();
         }
 
         if (!domain.plan !== 'team') {
           domain.plan = 'team';
+          domain.skip_verification = true;
           await domain.save();
         }
 
@@ -65,7 +70,8 @@ graceful.listen();
           user: admin._id,
           group: 'admin'
         })),
-        is_global: true
+        is_global: true,
+        client
       });
     })
   );

@@ -124,7 +124,8 @@ async function onboard(ctx, next) {
       ctx.state.domain = await Domains.create({
         members: [{ user: ctx.state.user._id, group: 'admin' }],
         name: ctx.request.body.domain,
-        locale: ctx.locale
+        locale: ctx.locale,
+        client: ctx.client
       });
       // create a default alias for the user pointing to the admin
       await Aliases.create({
@@ -162,7 +163,8 @@ async function onboard(ctx, next) {
       members: [{ user: ctx.state.user._id, group: 'admin' }],
       name: ctx.request.body.domain,
       locale: ctx.locale,
-      skip_verification: !boolean(ctx.query.redirect_to_domain)
+      skip_verification: !boolean(ctx.query.redirect_to_domain),
+      client: ctx.client
     });
 
     // create a default alias for the user pointing to the admin

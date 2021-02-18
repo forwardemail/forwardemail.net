@@ -6,6 +6,7 @@ const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
+const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
@@ -17,9 +18,14 @@ const Users = require('../app/models/user');
 const Domains = require('../app/models/domain');
 
 const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
 const concurrency = os.cpus().length;
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
-const graceful = new Graceful({ mongooses: [mongoose], logger });
+const graceful = new Graceful({
+  mongooses: [mongoose],
+  redisClients: [client],
+  logger
+});
 const fifteenMinutesAgo = dayjs().subtract(15, 'minutes').toDate();
 
 // store boolean if the job is cancelled
@@ -63,8 +69,10 @@ async function mapper(_id) {
     });
 
     // get verification results (and any errors too)
-    // const { txt, mx, errors } = await Domains.getVerificationResults(domain);
-    const { txt, mx, errors } = await Domains.getVerificationResults(domain);
+    const { txt, mx, errors } = await Domains.getVerificationResults(
+      domain,
+      client
+    );
 
     //
     // run a save on the domain name
