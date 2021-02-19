@@ -14,7 +14,7 @@ block body
           if isSANB(ctx.query.plan) && ['free','enhanced_protection','team'].includes(ctx.query.plan)
             input(type='hidden', name='plan', value=ctx.query.plan)
           .form-group.floating-label
-            input#input-domain(required, name='domain', autocomplete="off", placeholder="example.com", autocorrect="off", spellcheck="false", autocapitalize="off", type="text").form-control.form-control-lg
+            input#input-domain(required, value=isSANB(ctx.query.domain) && isFQDN(ctx.query.domain) ? ctx.query.domain : '', name='domain', autocomplete="off", placeholder="example.com", autocorrect="off", spellcheck="false", autocapitalize="off", type="text").form-control.form-control-lg
             label(for="input-domain")= t('Domain name')
           if user.group === 'admin'
             .form-group.form-check
