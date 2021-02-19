@@ -9,9 +9,6 @@ const ip = require('ip');
 const logger = require('./helpers/logger');
 const apiConfig = require('./config/api');
 
-// NOTE: this is a temporary fix until IPv6 are parsed properly to IPv4 due to Koa/Node issue
-apiConfig.rateLimit = false;
-
 const api = new API(apiConfig);
 
 if (!module.parent) {
