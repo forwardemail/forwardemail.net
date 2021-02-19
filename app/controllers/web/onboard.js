@@ -67,16 +67,7 @@ async function onboard(ctx, next) {
 
     Object.assign(ctx.state.meta, data);
 
-    let html = pug.renderFile(
-      filePath,
-      // make flash a noop so we don't interfere with messages/session
-      {
-        ...ctx.state,
-        flash() {
-          return {};
-        }
-      }
-    );
+    let html = pug.renderFile(filePath, ctx.state);
 
     if (ctx.state.domain)
       html = html.replace(
@@ -158,23 +149,41 @@ async function onboard(ctx, next) {
       ctx.logger.warn(err);
     }
 
-    // create the domain
-    ctx.state.domain = await Domains.create({
-      members: [{ user: ctx.state.user._id, group: 'admin' }],
-      name: ctx.request.body.domain,
-      locale: ctx.locale,
-      skip_verification: !boolean(ctx.query.redirect_to_domain),
-      client: ctx.client
-    });
+    try {
+      // create the domain
+      ctx.state.domain = await Domains.create({
+        members: [{ user: ctx.state.user._id, group: 'admin' }],
+        name: ctx.request.body.domain,
+        locale: ctx.locale,
+        skip_verification: !boolean(ctx.query.redirect_to_domain),
+        client: ctx.client
+      });
 
-    // create a default alias for the user pointing to the admin
-    await Aliases.create({
-      user: ctx.state.user._id,
-      domain: ctx.state.domain._id,
-      name: '*',
-      recipients: [ctx.state.user.email],
-      locale: ctx.locale
-    });
+      // create a default alias for the user pointing to the admin
+      await Aliases.create({
+        user: ctx.state.user._id,
+        domain: ctx.state.domain._id,
+        name: '*',
+        recipients: [ctx.state.user.email],
+        locale: ctx.locale
+      });
+    } catch (err) {
+      ctx.logger.warn(err);
+      // if there was a payment required error before creating the domain
+      // it indicates that the domain was most likely a malicious extension
+      // redirect to /my-account/domains/new?domain=$domain&plan=enhanced_protection
+      if (err && err.isBoom && err.output && err.output.statusCode === 402) {
+        const redirectTo = ctx.state.l(
+          '/my-account/billing/upgrade?plan=enhanced_protection'
+        );
+        if (ctx.accepts('html')) ctx.redirect(redirectTo);
+        else ctx.body = { redirectTo };
+        return;
+      }
+
+      // otherwise just flash the error message
+      ctx.flash('error', err.message);
+    }
   }
 
   // TODO: flash messages logic in @ladjs/assets doesn't support both
@@ -186,16 +195,6 @@ async function onboard(ctx, next) {
         .translate('WWW_WARNING')
         .replace('example.com', ctx.request.body.domain.replace('www.', ''))
     );
-  } else {
-    ctx.flash('custom', {
-      title: ctx.request.t('Success'),
-      text: ctx.translate('REQUEST_OK'),
-      type: 'success',
-      toast: true,
-      showConfirmButton: false,
-      timer: 3000,
-      position: 'top'
-    });
   }
 
   // redirect user if they wanted to upgrade

@@ -6,7 +6,12 @@ async function enforcePaidPlan(ctx, next) {
 
   if (ctx.state.user.plan === 'free')
     return ctx.throw(
-      Boom.paymentRequired(ctx.translateError('PLAN_UPGRADE_REQUIRED'))
+      Boom.paymentRequired(
+        ctx.translateError(
+          'PLAN_UPGRADE_REQUIRED',
+          ctx.state.l('/my-account/billing/upgrade?plan=enhanced_protection')
+        )
+      )
     );
 
   return next();

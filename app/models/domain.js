@@ -639,7 +639,8 @@ async function ensureUserHasValidPlan(user, locale) {
           'DOMAIN_PLAN_UPGRADE_REQUIRED',
           locale,
           domain.name,
-          i18n.translate(domain.plan.toUpperCase(), locale)
+          i18n.translate(domain.plan.toUpperCase(), locale),
+          `/${locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
         )
       );
   }
@@ -669,7 +670,11 @@ Domain.pre('save', async function (next) {
   try {
     const domain = this;
 
-    if (domain.plan === 'free') return next();
+    const hasBadDomain = config.badDomains.some((ext) =>
+      domain.name.endsWith(ext)
+    );
+
+    if (domain.plan === 'free' && !hasBadDomain) return next();
 
     const users = await Users.find({
       _id: { $in: domain.members.map((m) => m.user) }
@@ -693,27 +698,24 @@ Domain.pre('save', async function (next) {
         return false;
       });
 
+    if (hasBadDomain && !hasPaidPlan)
+      throw Boom.paymentRequired(
+        i18n.translateError(
+          'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
+          domain.locale,
+          domain.name,
+          `/${domain.locale}/my-account/billing/upgrade?plan=enhanced_protection`
+        )
+      );
+
     if (!hasValidPlan)
-      throw Boom.badRequest(
+      throw Boom.paymentRequired(
         i18n.translateError(
           'DOMAIN_PLAN_UPGRADE_REQUIRED',
           domain.locale,
           domain.name,
-          i18n.translate(domain.plan.toUpperCase(), domain.locale)
-        )
-      );
-
-    // alert when top 20 shady top-level domains are created via web/api
-    const hasBadDomain = config.badDomains.some((ext) =>
-      domain.name.endsWith(ext)
-    );
-
-    if (hasBadDomain && !hasPaidPlan)
-      throw Boom.badRequest(
-        i18n.translateError(
-          'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
-          domain.locale,
-          domain.name
+          i18n.translate(domain.plan.toUpperCase(), domain.locale),
+          `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
         )
       );
 
