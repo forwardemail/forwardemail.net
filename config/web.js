@@ -86,7 +86,9 @@ module.exports = (client) => ({
               'crisp.chat',
               '*.crisp.chat',
               'wss://*.relay.crisp.chat',
-              'wss://*.crisp.chat'
+              'wss://*.crisp.chat',
+              'ytimg.com',
+              '*.ytimg.com'
             ],
             styleSrc: [
               ...defaultSrc,
