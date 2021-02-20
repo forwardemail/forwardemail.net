@@ -10,7 +10,7 @@ block body
           button(type='button', data-dismiss='modal', aria-label='Close').close
             span(aria-hidden='true') &times;
         .modal-body
-          iframe.lazyframe(title=t('Free Email Forwarding for Creators'), width='100%', height='450', src='https://www.youtube.com/embed/ql9rtNpTid4', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
+          .lazyframe(data-initinview='true', title=t('Free Email Forwarding for Creators'), style='width:100%;height:450px;', data-vendor='youtube', data-src='https://www.youtube.com/embed/ql9rtNpTid4?autoplay=0', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
   #modal-for-developers.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-for-developers-title', aria-hidden='true')
     .modal-dialog.modal-lg(role='document')
       .modal-content
@@ -19,7 +19,7 @@ block body
           button(type='button', data-dismiss='modal', aria-label='Close').close
             span(aria-hidden='true') &times;
         .modal-body
-          iframe.lazyframe(title=t('Free Email Forwarding for Developers'), width='100%', height='450', src='https://www.youtube.com/embed/1e9UyIoFu4Y', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
+          .lazyframe(data-initinview='true', title=t('Free Email Forwarding for Developers'), style='width:100%;height:450px;', data-vendor='youtube', data-src='https://www.youtube.com/embed/1e9UyIoFu4Y?autoplay=0', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
   #modal-for-businesses.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-for-businesses-title', aria-hidden='true')
     .modal-dialog.modal-lg(role='document')
       .modal-content
@@ -28,7 +28,7 @@ block body
           button(type='button', data-dismiss='modal', aria-label='Close').close
             span(aria-hidden='true') &times;
         .modal-body
-          iframe.lazyframe(title=t('Free Email Forwarding for Businesses'), width='100%', height='450', src='https://www.youtube.com/embed/--p9LdmVSAw', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
+          .lazyframe(data-initinview='true', title=t('Free Email Forwarding for Businesses'), style='width:100%;height:450px;', data-vendor='youtube', data-src='https://www.youtube.com/embed/--p9LdmVSAw?autoplay=0', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen)
   .min-vh-80.text-center.d-flex.flex-column
     .container.my-auto.py-2.py-sm-3.py-md-5
       .row
@@ -64,7 +64,7 @@ block body
       h1.display-4.text-uppercase.font-weight-bold!= t('Made for <u>you</u>.')
     .row
       .col-md.text-center.d-block.mb-5
-        iframe.lazyframe(data-vendor='youtube', title=t('How to create unlimited email addresses and aliases'), style='max-width:100%; border-width:0.5rem !important;', width='640', height='360', src='https://www.youtube.com/embed/oWEVGMPXMbA', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen).border.border-dark
+        .lazyframe.border.border-dark.d-inline-block(data-initinview='true', data-vendor='youtube', title=t('How to create unlimited email addresses and aliases'), style='max-width:100%; border-width:0.5rem !important;width:640px;height:360px', data-src='https://www.youtube.com/embed/oWEVGMPXMbA?autoplay=0', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture')
     .row
       .col-md.text-center.mb-3.mb-md-0
         button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-creators')
