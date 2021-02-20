@@ -1,9 +1,9 @@
 const $ = require('jquery');
-const Popper = require('popper.js');
 const Clipboard = require('clipboard');
-const { randomstring } = require('@sidoshi/random-string');
+const Popper = require('popper.js');
 const debounce = require('lodash/debounce');
-const lazyframe = require('lazyframe');
+const lazyframe = require('@ladjs/lazyframe');
+const { randomstring } = require('@sidoshi/random-string');
 
 // load jQuery and Bootstrap
 // <https://stackoverflow.com/a/34340392>

@@ -76,3 +76,4 @@ deployment-keys
 *.ca-bundle
 *.crt
 .env.test
+.gapp-creds.json
