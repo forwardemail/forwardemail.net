@@ -90,6 +90,7 @@
     "koa-ctx-paginate": "^0.0.6",
     "koa-meta": "^1.0.1",
     "koa-views-render": "^0.0.1",
+    "lazyframe": "^1.1.6",
     "lodash": "^4.17.20",
     "mandarin": "^4.2.0",
     "manifest-rev": "^1.0.3",

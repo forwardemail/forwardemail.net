@@ -113,8 +113,6 @@ html(lang=locale).h-100
       script.
         window.API_URL = "#{config.urls.api}";
 
-      script(defer, src="https://hcaptcha.com/1/api.js")
-
       //- set the user and API key to be used by CabinJS
       if config.env !== 'test'
         //- set the user and API key to be used by CabinJS
@@ -137,7 +135,7 @@ html(lang=locale).h-100
         script(defer, src=manifest('js/build.js'), integrity=manifest('js/build.js', 'integrity'), crossorigin='anonymous')
 
         //- crisp chat
-        if !ctx.pathWithoutLocale.startsWith('/admin')
+        if config.env === 'production' && !ctx.pathWithoutLocale.startsWith('/admin')
           script(type='text/javascript').
             window.$crisp = [];
             window.CRISP_WEBSITE_ID = "02da78ba-6e8c-4be0-9319-7c785330aec1";

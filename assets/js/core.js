@@ -3,6 +3,7 @@ const Popper = require('popper.js');
 const Clipboard = require('clipboard');
 const { randomstring } = require('@sidoshi/random-string');
 const debounce = require('lodash/debounce');
+const lazyframe = require('lazyframe');
 
 // load jQuery and Bootstrap
 // <https://stackoverflow.com/a/34340392>
@@ -210,11 +211,20 @@ $body.on('keyup', '.verification-form', debounce(keyup, 500));
 //
 // help form with Crisp chat and modal fallback
 //
+let hCaptchaLoaded = false;
 $body.on('click', '[data-target="#modal-help"]', (ev) => {
   ev.preventDefault();
   if (window.$crisp) {
     window.$crisp.push(['do', 'chat:open']);
   } else {
+    if (!hCaptchaLoaded) {
+      $('<script />')
+        .attr('type', 'text/javascript')
+        .attr('src', 'https://hcaptcha.com/1/api.js')
+        .appendTo('head');
+      hCaptchaLoaded = true;
+    }
+
     $('#modal-help').modal('show');
   }
 });
@@ -229,3 +239,9 @@ $body.on('hide.bs.modal', '.modal', function () {
   const html = $modal.html();
   $modal.html(html);
 });
+
+//
+// lazyload iframes
+// <https://github.com/vb/lazyframe>
+//
+lazyframe('.lazyframe');

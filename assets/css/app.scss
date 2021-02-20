@@ -56,6 +56,10 @@ $fontAwesomeFree: 'Font Awesome 5 Free';
 // bootstrap floating labels
 @import 'node_modules/@tkrotoff/bootstrap-floating-label/src/bootstrap-floating-label';
 
+// lazyframe
+// <https://github.com/vb/lazyframe>
+@import 'node_modules/lazyframe/src/scss/lazyframe';
+
 // markdown
 @import '_markdown';
 
