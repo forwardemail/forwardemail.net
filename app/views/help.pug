@@ -1,6 +1,9 @@
 
 extends layout
 
+append scripts
+  script(defer, src="https://hcaptcha.com/1/api.js")
+
 block body
   .container.py-5
     .row

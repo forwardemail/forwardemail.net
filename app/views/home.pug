@@ -64,7 +64,7 @@ block body
       h1.display-4.text-uppercase.font-weight-bold!= t('Made for <u>you</u>.')
     .row
       .col-md.text-center.d-block.mb-5
-        iframe(title=t('How to create unlimited email addresses and aliases'), style='max-width:100%; border-width:0.5rem !important;', width='640', height='360', src='https://www.youtube.com/embed/oWEVGMPXMbA', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen).border.border-dark
+        iframe.lazyframe(data-vendor='youtube', title=t('How to create unlimited email addresses and aliases'), style='max-width:100%; border-width:0.5rem !important;', width='640', height='360', src='https://www.youtube.com/embed/oWEVGMPXMbA', frameborder='0', allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture', allowfullscreen).border.border-dark
     .row
       .col-md.text-center.mb-3.mb-md-0
         button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(type='button', data-toggle='modal', data-target='#modal-for-creators')
