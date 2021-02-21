@@ -1342,5 +1342,9 @@
   "Email address or password is incorrect.": "Email address or password is incorrect.",
   "Sign up &#124; <span class=\"notranslate\">Forward Email</span>": "Sign up &#124; <span class=\"notranslate\">Forward Email</span>",
   "Create a Forward Email account": "Create a Forward Email account",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases"
+  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
+  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
+  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
 }
