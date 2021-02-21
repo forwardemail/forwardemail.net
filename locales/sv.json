@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "kryptografiska cifrar",
   "Andris Reisman": "Andris Reisman",
   " (the author of the ": " (författaren till",
-  "npm": "asl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " paket nodemailer, som används internt i vidarebefordrad e-post.",
   "Scott Kitterman": "Scott Kitterman",
   "Sender Policy Framework": "Ram för avsändarpolitik",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "Du har för närvarande inte en aktiv prenumeration, eller den avbröts nyligen.",
   "Captcha service error.": "Captcha-servicefel.",
   "Captcha not verified.": "Captcha har inte verifierats.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Hur man skapar obegränsade e-postadresser och alias",
+  "Is pricing per account or per domain?": "Är prissättning per konto eller per domän?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Vår prissättning är per konto, inte per domän & ndash; till skillnad från andra leverantörer debiterar vi inte extra.",
+  "You also have the ability to mix and match plans and domains.": "Du har också möjlighet att mixa och matcha planer och domäner.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Du kan till exempel ställa in några domäner i den kostnadsfria planen (DNS-baserad) & ndash; och andra på planerna för förbättrat skydd eller lag."
 }

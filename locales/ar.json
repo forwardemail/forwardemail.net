@@ -1006,7 +1006,7 @@
   "cryptographic ciphers": "شفرات التشفير",
   "Andris Reisman": "أندريس ريسمان",
   " (the author of the ": " (مؤلف كتاب",
-  "npm": "asl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " حزمة nodemailer ، التي يتم استخدامها داخليًا في Forward Email.",
   "Scott Kitterman": "سكوت كيترمان",
   "Sender Policy Framework": "إطار سياسة المرسل",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "ليس لديك اشتراك نشط حاليًا ، أو تم إلغاؤه مؤخرًا.",
   "Captcha service error.": "خطأ في خدمة Captcha.",
   "Captcha not verified.": "لم يتم التحقق من كلمة التحقق.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "كيفية إنشاء عدد غير محدود من عناوين البريد الإلكتروني والأسماء المستعارة",
+  "Is pricing per account or per domain?": "هل التسعير لكل حساب أم لكل مجال؟",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "التسعير الخاص بنا لكل حساب ، وليس لكل مجال & ndash؛ على عكس مقدمي الخدمات الآخرين ، فإننا لا نفرض رسومًا إضافية.",
+  "You also have the ability to mix and match plans and domains.": "لديك أيضًا القدرة على مزج الخطط والمجالات ومطابقتها.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "على سبيل المثال يمكنك تعيين بعض المجالات على الخطة المجانية (القائمة على DNS) & ndash؛ وآخرون في خطط الحماية المحسنة أو الفريق."
 }

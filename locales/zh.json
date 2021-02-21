@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "密码学",
   "Andris Reisman": "安德里斯·里斯曼",
   " (the author of the ": " （《",
-  "npm": "Asl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " 软件包nodemailer，在转发电子邮件内部使用。",
   "Scott Kitterman": "斯科特·基特曼",
   "Sender Policy Framework": "发件人政策框架",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "您当前没有有效的订阅，或者该订阅最近被取消。",
   "Captcha service error.": "验证码服务错误。",
   "Captcha not verified.": "验证码未验证。",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "如何创建无限的电子邮件地址和别名",
+  "Is pricing per account or per domain?": "是按帐户还是按域定价？",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "我们的定价是按帐户而非每个域＆ndash;与其他提供商不同，我们不收取额外费用。",
+  "You also have the ability to mix and match plans and domains.": "您还可以混合和匹配计划和域。",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "例如，您可以在免费套餐（基于DNS）上设置某些域＆ndash;以及增强保护或团队计划中的其他内容。"
 }

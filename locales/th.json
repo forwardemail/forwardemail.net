@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "ยันต์เข้ารหัส",
   "Andris Reisman": "Andris Reisman",
   " (the author of the ": " ผู้แต่ง",
-  "npm": "ASL",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " package nodemailer ซึ่งใช้ภายในใน Forward Email",
   "Scott Kitterman": "Scott Kitterman",
   "Sender Policy Framework": "กรอบนโยบายผู้ส่ง",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "ขณะนี้คุณไม่มีการสมัครสมาชิกที่ใช้งานอยู่หรือเพิ่งถูกยกเลิก",
   "Captcha service error.": "ข้อผิดพลาดของบริการ Captcha",
   "Captcha not verified.": "ไม่ได้ตรวจสอบ Captcha",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "วิธีสร้างที่อยู่อีเมลและนามแฝงไม่ จำกัด",
+  "Is pricing per account or per domain?": "เป็นราคาต่อบัญชีหรือต่อโดเมน?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "ราคาของเราเป็นราคาต่อบัญชีไม่ใช่ตามโดเมน & ndash; ซึ่งแตกต่างจากผู้ให้บริการรายอื่นเราไม่คิดค่าบริการเพิ่มเติม",
+  "You also have the ability to mix and match plans and domains.": "คุณยังมีความสามารถในการผสมผสานแผนและโดเมน",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "ตัวอย่างเช่นคุณสามารถตั้งค่าบางโดเมนในแผนบริการฟรี (ใช้ DNS) & ndash; และอื่น ๆ ในแผนปรับปรุงการป้องกันหรือทีม"
 }

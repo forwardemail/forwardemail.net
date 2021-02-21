@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "kriptografik şifreler",
   "Andris Reisman": "Andris Reisman",
   " (the author of the ": " (yazarı",
-  "npm": "asl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " Dahili E-postada dahili olarak kullanılan paket nodemailer.",
   "Scott Kitterman": "Scott Kitterman",
   "Sender Policy Framework": "Gönderen Politikası Çerçevesi",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "Şu anda aktif bir aboneliğiniz yok veya kısa süre önce iptal edildi.",
   "Captcha service error.": "Captcha hizmet hatası.",
   "Captcha not verified.": "Captcha doğrulanmadı.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Sınırsız e-posta adresi ve takma adlar nasıl oluşturulur",
+  "Is pricing per account or per domain?": "Fiyatlandırma hesap başına mı yoksa etki alanı başına mı?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Fiyatlandırmamız etki alanı başına değil, hesap başınadır & ndash; diğer sağlayıcıların aksine, ekstra ücret almıyoruz.",
+  "You also have the ability to mix and match plans and domains.": "Ayrıca planları ve alanları karıştırıp eşleştirme olanağına da sahipsiniz.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Örneğin, Ücretsiz planda (DNS tabanlı) bazı etki alanları belirleyebilirsiniz & ndash; ve Gelişmiş Koruma veya Ekip planlarındaki diğerleri."
 }

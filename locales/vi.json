@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "mật mã",
   "Andris Reisman": "Andris Reisman",
   " (the author of the ": " (tác giả của",
-  "npm": "asl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " gói gật đầu, được sử dụng nội bộ trong Email chuyển tiếp.",
   "Scott Kitterman": "Scott Kitterman",
   "Sender Policy Framework": "Khung chính sách người gửi",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "Bạn hiện không có đăng ký đang hoạt động hoặc đăng ký này đã bị hủy gần đây.",
   "Captcha service error.": "Lỗi dịch vụ xác thực.",
   "Captcha not verified.": "Captcha chưa được xác minh.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Cách tạo địa chỉ email và bí danh không giới hạn",
+  "Is pricing per account or per domain?": "Định giá cho mỗi tài khoản hay mỗi miền?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Giá của chúng tôi là trên mỗi tài khoản, không phải theo miền & ndash; không giống như các nhà cung cấp khác, chúng tôi không tính thêm phí.",
+  "You also have the ability to mix and match plans and domains.": "Bạn cũng có khả năng kết hợp và kết hợp các kế hoạch và miền.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Ví dụ: bạn có thể đặt một số miền trên gói Miễn phí (dựa trên DNS) & ndash; và những người khác trong các kế hoạch Bảo vệ nâng cao hoặc Nhóm."
 }

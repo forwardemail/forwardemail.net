@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "cifre crittografiche",
   "Andris Reisman": "Andris Reisman",
   " (the author of the ": " (l'autore del",
-  "npm": "slm",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " pacchetto nodemailer, utilizzato internamente in Inoltra e-mail.",
   "Scott Kitterman": "Scott Kitterman",
   "Sender Policy Framework": "Framework delle politiche del mittente",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "Al momento non disponi di un abbonamento attivo o è stato annullato di recente.",
   "Captcha service error.": "Errore del servizio captcha.",
   "Captcha not verified.": "Captcha non verificato.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Come creare indirizzi e-mail e alias illimitati",
+  "Is pricing per account or per domain?": "Il prezzo è per account o per dominio?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "I nostri prezzi sono per account, non per dominio & ndash; a differenza di altri fornitori non applichiamo costi aggiuntivi.",
+  "You also have the ability to mix and match plans and domains.": "Hai anche la possibilità di combinare e abbinare piani e domini.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Ad esempio, puoi impostare alcuni domini sul piano gratuito (basato su DNS) & ndash; e altri sui piani Protezione avanzata o Team."
 }

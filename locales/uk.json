@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "криптографічні шифри",
   "Andris Reisman": "Андріс Рейсман",
   " (the author of the ": " (автор",
-  "npm": "впр",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " пакетний нодермайлер, який використовується внутрішньо в Forward Email.",
   "Scott Kitterman": "Скотт Кіттерман",
   "Sender Policy Framework": "Рамка політики відправника",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "На даний момент у вас немає активної підписки, або вона нещодавно була скасована.",
   "Captcha service error.": "Помилка служби Captcha.",
   "Captcha not verified.": "Капчу не перевірено.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Як створити необмежену кількість адрес електронної пошти та псевдонімів",
+  "Is pricing per account or per domain?": "Ціни на обліковий запис чи на домен?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Наші ціни розраховані на обліковий запис, а не на домен & ndash; на відміну від інших постачальників, ми не беремо додаткової плати.",
+  "You also have the ability to mix and match plans and domains.": "Ви також можете змішувати та поєднувати плани та домени.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Наприклад, ви можете встановити деякі домени у тарифному плані Free (на основі DNS) & ndash; та інші, що стосуються планів посиленого захисту або команд."
 }

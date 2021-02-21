@@ -997,7 +997,7 @@
   "cryptographic ciphers": "kryptografické šifry",
   "Andris Reisman": "Andris Reisman",
   " (the author of the ": " (autor",
-  "npm": "asl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " balíček nodemailer, který je interně používán v Forward Email.",
   "Scott Kitterman": "Scott Kitterman",
   "Sender Policy Framework": "Rámec politiky odesílatele",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "Momentálně nemáte aktivní předplatné nebo bylo nedávno zrušeno.",
   "Captcha service error.": "Chyba služby Captcha.",
   "Captcha not verified.": "Captcha nebyla ověřena.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Jak vytvořit neomezený počet e-mailových adres a aliasů",
+  "Is pricing per account or per domain?": "Je cena za účet nebo za doménu?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Naše ceny platí za účet, nikoli za doménu & ndash; na rozdíl od jiných poskytovatelů neúčtujeme extra.",
+  "You also have the ability to mix and match plans and domains.": "Máte také možnost kombinovat plány a domény.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Můžete například nastavit některé domény v bezplatném plánu (založeném na DNS) & ndash; a další na plánech rozšířené ochrany nebo týmu."
 }

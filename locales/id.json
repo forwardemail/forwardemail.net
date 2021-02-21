@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "sandi cryptographic",
   "Andris Reisman": "Andris Reisman",
   " (the author of the ": " (penulis buku",
-  "npm": "dl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " paket nodemailer, yang digunakan secara internal di Email Teruskan.",
   "Scott Kitterman": "Scott Kitterman",
   "Sender Policy Framework": "Kerangka Kebijakan Pengirim",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "Saat ini Anda tidak memiliki langganan aktif, atau langganan tersebut baru saja dibatalkan.",
   "Captcha service error.": "Kesalahan layanan captcha.",
   "Captcha not verified.": "Captcha tidak diverifikasi.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Cara membuat alamat email dan alias tanpa batas",
+  "Is pricing per account or per domain?": "Apakah harga per akun atau per domain?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Harga kami adalah per akun, bukan per domain & ndash; tidak seperti penyedia lain, kami tidak mengenakan biaya tambahan.",
+  "You also have the ability to mix and match plans and domains.": "Anda juga memiliki kemampuan untuk mencampur dan mencocokkan rencana dan domain.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Misalnya, Anda dapat menyetel beberapa domain pada paket Gratis (berbasis DNS) & ndash; dan lainnya di Enhanced Protection atau Team plan."
 }

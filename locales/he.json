@@ -1002,7 +1002,7 @@
   "cryptographic ciphers": "צופרים קריפטוגרפיים",
   "Andris Reisman": "אנדריס רייזמן",
   " (the author of the ": " (מחבר הספר",
-  "npm": "asl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " חבילה nodemailer, המשמשת באופן פנימי בדוא\"ל קדימה.",
   "Scott Kitterman": "סקוט קיטרמן",
   "Sender Policy Framework": "מסגרת מדיניות שולח",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "כרגע אין לך מנוי פעיל, או שהוא בוטל לאחרונה.",
   "Captcha service error.": "שגיאת שירות Captcha.",
   "Captcha not verified.": "Captcha לא אומת.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "כיצד ליצור כתובות דוא\"ל וכינויים ללא הגבלה",
+  "Is pricing per account or per domain?": "האם תמחור לחשבון או לדומיין?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "התמחור שלנו הוא לכל חשבון, לא לכל דומיין & ndash; בניגוד לספקים אחרים אנו לא גובים תשלום נוסף.",
+  "You also have the ability to mix and match plans and domains.": "יש לך גם את היכולת לשלב בין תוכניות ותחומים.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "לדוגמא אתה יכול להגדיר כמה דומיינים בתכנית החינמית (מבוססת DNS) & ndash; ואחרים בתוכניות ההגנה המשופרת או הצוות."
 }

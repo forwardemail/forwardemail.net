@@ -1004,7 +1004,7 @@
   "cryptographic ciphers": "криптографические шифры",
   "Andris Reisman": "Андрис Рейсман",
   " (the author of the ": " (автор",
-  "npm": "над уровнем моря",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " package nodemailer, который используется внутри Forward Email.",
   "Scott Kitterman": "Скотт Киттерман",
   "Sender Policy Framework": "Основы политики отправителя",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "В настоящее время у вас нет активной подписки или она была недавно отменена.",
   "Captcha service error.": "Ошибка службы Captcha.",
   "Captcha not verified.": "Капча не проверена.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Как создать неограниченное количество адресов электронной почты и псевдонимов",
+  "Is pricing per account or per domain?": "Цена указана за аккаунт или за домен?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Наши цены указаны за аккаунт, а не за домен & ndash; в отличие от других провайдеров мы не берем дополнительную плату.",
+  "You also have the ability to mix and match plans and domains.": "У вас также есть возможность смешивать и сопоставлять планы и домены.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Например, вы можете установить для некоторых доменов бесплатный тариф (на основе DNS) & ndash; и другие по планам усиленной защиты или группам."
 }

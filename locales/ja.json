@@ -1003,7 +1003,7 @@
   "cryptographic ciphers": "暗号暗号",
   "Andris Reisman": "アンドリス・ライスマン",
   " (the author of the ": " （の著者",
-  "npm": "asl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " Forwardmailで内部的に使用されるnodemailerパッケージ。",
   "Scott Kitterman": "スコット・キッターマン",
   "Sender Policy Framework": "送信者ポリシーフレームワーク",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "現在アクティブなサブスクリプションがないか、最近キャンセルされました。",
   "Captcha service error.": "キャプチャサービスエラー。",
   "Captcha not verified.": "キャプチャは検証されていません。",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "無制限のメールアドレスとエイリアスを作成する方法",
+  "Is pricing per account or per domain?": "価格はアカウントごとですか、それともドメインごとですか？",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "料金はドメインごとではなく、アカウントごとです。他のプロバイダーとは異なり、追加料金はかかりません。",
+  "You also have the ability to mix and match plans and domains.": "また、プランとドメインを組み合わせて組み合わせることができます。",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "たとえば、無料プラン（DNSベース）にいくつかのドメインを設定できます＆ndash;およびその他の強化された保護またはチーム計画。"
 }

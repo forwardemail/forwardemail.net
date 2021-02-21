@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "kriptográfiai rejtjelek",
   "Andris Reisman": "Andris Reisman",
   " (the author of the ": " (a",
-  "npm": "mBf",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " csomag nodemailer, amelyet belsőleg használ a továbbító e-mailben.",
   "Scott Kitterman": "Scott Kitterman",
   "Sender Policy Framework": "Feladó politikai keret",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "Jelenleg nincs aktív előfizetésed, vagy azt nemrég törölték.",
   "Captcha service error.": "Captcha szolgáltatás hiba.",
   "Captcha not verified.": "A Captcha nincs ellenőrizve.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Hogyan lehet korlátlan e-mail címeket és álneveket létrehozni",
+  "Is pricing per account or per domain?": "Fiókonként vagy domainenként van-e árazás?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Áraink számlánként, nem domainenként vannak & ndash; más szolgáltatóktól eltérően nem számítunk fel külön díjat.",
+  "You also have the ability to mix and match plans and domains.": "Arra is képes, hogy keverje össze a terveket és a domaineket.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Például beállíthat néhány tartományt az Ingyenes tervben (DNS-alapú) & ndash; és mások a fokozott védelem vagy a csapat tervei között."
 }

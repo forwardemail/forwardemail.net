@@ -1005,7 +1005,7 @@
   "cryptographic ciphers": "chiffres cryptographiques",
   "Andris Reisman": "Andris Reisman",
   " (the author of the ": " (l'auteur de la",
-  "npm": "asl",
+  "npm": "npm",
   " package nodemailer, which is used internally in Forward Email.": " package nodemailer, qui est utilisé en interne dans le courrier électronique de transfert.",
   "Scott Kitterman": "Scott Kitterman",
   "Sender Policy Framework": "Cadre de politique de l'expéditeur",
@@ -1662,9 +1662,9 @@
   "You do not currently have an active subscription, or it was recently cancelled.": "Vous n'avez pas d'abonnement actif actuellement ou il a été récemment annulé.",
   "Captcha service error.": "Erreur du service Captcha.",
   "Captcha not verified.": "Captcha non vérifié.",
-  "How to create unlimited email addresses and aliases": "How to create unlimited email addresses and aliases",
-  "Is pricing per account or per domain?": "Is pricing per account or per domain?",
-  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
-  "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "How to create unlimited email addresses and aliases": "Comment créer des adresses e-mail et des alias illimités",
+  "Is pricing per account or per domain?": "La tarification est-elle par compte ou par domaine?",
+  "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Notre tarification est par compte et non par domaine & ndash; contrairement aux autres fournisseurs, nous ne facturons pas de supplément.",
+  "You also have the ability to mix and match plans and domains.": "Vous avez également la possibilité de combiner des plans et des domaines.",
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Par exemple, vous pouvez définir certains domaines sur le plan gratuit (basé sur DNS) & ndash; et d'autres sur les plans de protection renforcée ou d'équipe."
 }
