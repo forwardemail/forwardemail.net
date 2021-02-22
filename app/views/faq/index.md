@@ -627,7 +627,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 
 ## How to Send Mail As using Gmail
 
-<div class="lazyframe border border-dark d-inline-block mb-3" data-initinview="true" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" style="max-width:100%; border-width:0.5rem !important;width:640px;height:360px" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div class="lazyframe border border-dark mb-3" data-initinview="true" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" style="border-color: #1d1d1d !important; max-width:100%; border-width:0.5rem !important;width:640px;height:360px" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
 <div class="alert my-3 bg-dark border-dark text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
