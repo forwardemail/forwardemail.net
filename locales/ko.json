@@ -1666,5 +1666,7 @@
   "Is pricing per account or per domain?": "계정 당 또는 도메인 당 가격이 책정됩니까?",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "가격은 도메인이 아닌 계정 당 &ndash; 다른 공급자와 달리 우리는 추가 요금을 부과하지 않습니다.",
   "You also have the ability to mix and match plans and domains.": "또한 계획과 도메인을 혼합하고 일치시킬 수 있습니다.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "예를 들어 무료 요금제 (DNS 기반) &ndash;에서 일부 도메인을 설정할 수 있습니다. 및 기타 강화 된 보호 또는 팀 계획에 있습니다."
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "예를 들어 무료 요금제 (DNS 기반) &ndash;에서 일부 도메인을 설정할 수 있습니다. 및 기타 강화 된 보호 또는 팀 계획에 있습니다.",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

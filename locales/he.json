@@ -1666,5 +1666,7 @@
   "Is pricing per account or per domain?": "האם תמחור לחשבון או לדומיין?",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "התמחור שלנו הוא לכל חשבון, לא לכל דומיין &ndash; בניגוד לספקים אחרים אנו לא גובים תשלום נוסף.",
   "You also have the ability to mix and match plans and domains.": "יש לך גם את היכולת לשלב בין תוכניות ותחומים.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "לדוגמא אתה יכול להגדיר כמה דומיינים בתכנית החינמית (מבוססת DNS) &ndash; ואחרים בתוכניות ההגנה המשופרת או הצוות."
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "לדוגמא אתה יכול להגדיר כמה דומיינים בתכנית החינמית (מבוססת DNS) &ndash; ואחרים בתוכניות ההגנה המשופרת או הצוות.",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

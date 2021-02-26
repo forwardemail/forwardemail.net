@@ -1592,5 +1592,7 @@
   "Is pricing per account or per domain?": "Is pricing per account or per domain?",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.",
   "You also have the ability to mix and match plans and domains.": "You also have the ability to mix and match plans and domains.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans."
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

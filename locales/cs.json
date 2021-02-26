@@ -1666,5 +1666,7 @@
   "Is pricing per account or per domain?": "Je cena za účet nebo za doménu?",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Naše ceny platí za účet, nikoli za doménu &ndash; na rozdíl od jiných poskytovatelů neúčtujeme extra.",
   "You also have the ability to mix and match plans and domains.": "Máte také možnost kombinovat plány a domény.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Můžete například nastavit některé domény v bezplatném plánu (založeném na DNS) &ndash; a další na plánech rozšířené ochrany nebo týmu."
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Můžete například nastavit některé domény v bezplatném plánu (založeném na DNS) &ndash; a další na plánech rozšířené ochrany nebo týmu.",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

@@ -1666,5 +1666,7 @@
   "Is pricing per account or per domain?": "Fiyatlandırma hesap başına mı yoksa etki alanı başına mı?",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Fiyatlandırmamız etki alanı başına değil, hesap başınadır &ndash; diğer sağlayıcıların aksine, ekstra ücret almıyoruz.",
   "You also have the ability to mix and match plans and domains.": "Ayrıca planları ve alanları karıştırıp eşleştirme olanağına da sahipsiniz.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Örneğin, Ücretsiz planda (DNS tabanlı) bazı etki alanları belirleyebilirsiniz &ndash; ve Gelişmiş Koruma veya Ekip planlarındaki diğerleri."
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Örneğin, Ücretsiz planda (DNS tabanlı) bazı etki alanları belirleyebilirsiniz &ndash; ve Gelişmiş Koruma veya Ekip planlarındaki diğerleri.",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

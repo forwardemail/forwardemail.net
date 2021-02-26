@@ -1665,5 +1665,7 @@
   "Is pricing per account or per domain?": "O preço é por conta ou por domínio?",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Nosso preço é por conta, não por domínio &ndash; ao contrário de outros fornecedores, não cobramos extra.",
   "You also have the ability to mix and match plans and domains.": "Você também pode misturar e combinar planos e domínios.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Por exemplo, você pode definir alguns domínios no plano Gratuito (baseado em DNS) &ndash; e outros nos planos de Proteção Avançada ou Equipe."
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Por exemplo, você pode definir alguns domínios no plano Gratuito (baseado em DNS) &ndash; e outros nos planos de Proteção Avançada ou Equipe.",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

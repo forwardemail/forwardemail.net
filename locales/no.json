@@ -1666,5 +1666,7 @@
   "Is pricing per account or per domain?": "Er prissetting per konto eller per domene?",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Våre priser er per konto, ikke per domene &ndash; i motsetning til andre leverandører tar vi ikke betalt ekstra.",
   "You also have the ability to mix and match plans and domains.": "Du har også muligheten til å mikse og matche planer og domener.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For eksempel kan du angi noen domener i den gratis planen (DNS-basert) &ndash; og andre på Enhanced Protection eller Team-planene."
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "For eksempel kan du angi noen domener i den gratis planen (DNS-basert) &ndash; og andre på Enhanced Protection eller Team-planene.",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

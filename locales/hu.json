@@ -1666,5 +1666,7 @@
   "Is pricing per account or per domain?": "Fiókonként vagy domainenként van-e árazás?",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "Áraink számlánként, nem domainenként vannak &ndash; más szolgáltatóktól eltérően nem számítunk fel külön díjat.",
   "You also have the ability to mix and match plans and domains.": "Arra is képes, hogy keverje össze a terveket és a domaineket.",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Például beállíthat néhány tartományt az Ingyenes tervben (DNS-alapú) &ndash; és mások a fokozott védelem vagy a csapat tervei között."
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Például beállíthat néhány tartományt az Ingyenes tervben (DNS-alapú) &ndash; és mások a fokozott védelem vagy a csapat tervei között.",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

@@ -1666,5 +1666,7 @@
   "Is pricing per account or per domain?": "เป็นราคาต่อบัญชีหรือต่อโดเมน?",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "ราคาของเราเป็นราคาต่อบัญชีไม่ใช่ตามโดเมน &ndash; ซึ่งแตกต่างจากผู้ให้บริการรายอื่นเราไม่คิดค่าบริการเพิ่มเติม",
   "You also have the ability to mix and match plans and domains.": "คุณยังมีความสามารถในการผสมผสานแผนและโดเมน",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "ตัวอย่างเช่นคุณสามารถตั้งค่าบางโดเมนในแผนบริการฟรี (ใช้ DNS) &ndash; และอื่น ๆ ในแผนปรับปรุงการป้องกันหรือทีม"
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "ตัวอย่างเช่นคุณสามารถตั้งค่าบางโดเมนในแผนบริการฟรี (ใช้ DNS) &ndash; และอื่น ๆ ในแผนปรับปรุงการป้องกันหรือทีม",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

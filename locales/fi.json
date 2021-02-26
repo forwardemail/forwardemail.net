@@ -1444,5 +1444,7 @@
   "Port 25 blocked by ISP workaround &#124; <span class=\"notranslate\">Forward Email</span>": "Internet-palveluntarjoajan kiertotie on estänyt portin 25 <span class=\"notranslate\">Forward Email</span>",
   "Our service allows you to workaround port blocking set by your Internet Service Provider on port 25.  Simple follow our guide to workaround this issue in minutes.": "Palvelumme avulla voit kiertää portin eston, jonka Internet-palveluntarjoajasi on asettanut porttiin 25. Yksinkertainen seuraa ohjetta ongelman kiertämiseen muutamassa minuutissa.",
   "Did your ISP block port 25?": "Estäkö Internet-palveluntarjoajasi portti 25?",
-  "Skip ahead to the instructions to forward emails to a custom SMTP port.": "Siirry eteenpäin ohjeiden mukaan sähköpostin edelleenlähettämiseen mukautettuun SMTP-porttiin."
+  "Skip ahead to the instructions to forward emails to a custom SMTP port.": "Siirry eteenpäin ohjeiden mukaan sähköpostin edelleenlähettämiseen mukautettuun SMTP-porttiin.",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

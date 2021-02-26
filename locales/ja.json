@@ -1666,5 +1666,7 @@
   "Is pricing per account or per domain?": "価格はアカウントごとですか、それともドメインごとですか？",
   "Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.": "料金はドメインごとではなく、アカウントごとです。他のプロバイダーとは異なり、追加料金はかかりません。",
   "You also have the ability to mix and match plans and domains.": "また、プランとドメインを組み合わせて組み合わせることができます。",
-  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "たとえば、無料プラン（DNSベース）にいくつかのドメインを設定できます＆ndash;およびその他の強化された保護またはチーム計画。"
+  "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "たとえば、無料プラン（DNSベース）にいくつかのドメインを設定できます＆ndash;およびその他の強化された保護またはチーム計画。",
+  "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
+  "50K+": "50K+"
 }

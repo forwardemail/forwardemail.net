@@ -19,7 +19,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                   label(for='input-onboard-email')= t('Enter your email')
                 .form-check.form-group
                   input#input-enhanced-protection(type='checkbox', name='enhanced_protection', checked, value='true').form-check-input
-                  label.form-check-label(for='input-enhanced-protection')!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a> (premium privacy add-on)', l('/pricing'))
+                  label.form-check-label(for='input-enhanced-protection')!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a> ($3/mo premium support and privacy)', l('/pricing'))
                 if user
                   .form-check.form-group
                     input#input-create-domain(type='checkbox', name='create_domain', checked, value='true').form-check-input
