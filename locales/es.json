@@ -1668,5 +1668,6 @@
   "You also have the ability to mix and match plans and domains.": "También tiene la capacidad de combinar planes y dominios.",
   "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Por ejemplo, puede configurar algunos dominios en el plan gratuito (basado en DNS) &ndash; y otros en los planes de Protección mejorada o Equipo.",
   "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
-  "50K+": "50K+"
+  "50K+": "50K+",
+  "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)"
 }

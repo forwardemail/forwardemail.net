@@ -1668,5 +1668,6 @@
   "You also have the ability to mix and match plans and domains.": "또한 계획과 도메인을 혼합하고 일치시킬 수 있습니다.",
   "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "예를 들어 무료 요금제 (DNS 기반) &ndash;에서 일부 도메인을 설정할 수 있습니다. 및 기타 강화 된 보호 또는 팀 계획에 있습니다.",
   "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
-  "50K+": "50K+"
+  "50K+": "50K+",
+  "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)"
 }

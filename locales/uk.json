@@ -1668,5 +1668,6 @@
   "You also have the ability to mix and match plans and domains.": "Ви також можете змішувати та поєднувати плани та домени.",
   "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Наприклад, ви можете встановити деякі домени у тарифному плані Free (на основі DNS) &ndash; та інші, що стосуються планів посиленого захисту або команд.",
   "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
-  "50K+": "50K+"
+  "50K+": "50K+",
+  "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)"
 }

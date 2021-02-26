@@ -1062,5 +1062,14 @@
   "Thank you": "tak skal du have",
   "Norsk": "Norsk",
   "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
-  "50K+": "50K+"
+  "50K+": "50K+",
+  "My Account - Domains": "My Account - Domains",
+  "Add Domain": "Add Domain",
+  "My Account &#124; <span class=\"notranslate\">Forward Email</span>": "My Account &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Manage your Forward Email profile": "Manage your Forward Email profile",
+  "Domain name": "Domain name",
+  "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)",
+  "Don't have a domain name?": "Don't have a domain name?",
+  "Register a domain": "Register a domain",
+  "Back to Domains": "Back to Domains"
 }

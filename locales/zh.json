@@ -1668,5 +1668,6 @@
   "You also have the ability to mix and match plans and domains.": "您还可以混合和匹配计划和域。",
   "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "例如，您可以在免费套餐（基于DNS）上设置某些域＆ndash;以及增强保护或团队计划中的其他内容。",
   "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
-  "50K+": "50K+"
+  "50K+": "50K+",
+  "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)"
 }

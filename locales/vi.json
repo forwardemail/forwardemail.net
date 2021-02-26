@@ -1668,5 +1668,6 @@
   "You also have the ability to mix and match plans and domains.": "Bạn cũng có khả năng kết hợp và kết hợp các kế hoạch và miền.",
   "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "Ví dụ: bạn có thể đặt một số miền trên gói Miễn phí (dựa trên DNS) &ndash; và những người khác trong các kế hoạch Bảo vệ nâng cao hoặc Nhóm.",
   "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
-  "50K+": "50K+"
+  "50K+": "50K+",
+  "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)"
 }

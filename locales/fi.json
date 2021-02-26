@@ -1446,5 +1446,6 @@
   "Did your ISP block port 25?": "Estäkö Internet-palveluntarjoajasi portti 25?",
   "Skip ahead to the instructions to forward emails to a custom SMTP port.": "Siirry eteenpäin ohjeiden mukaan sähköpostin edelleenlähettämiseen mukautettuun SMTP-porttiin.",
   "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
-  "50K+": "50K+"
+  "50K+": "50K+",
+  "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)"
 }
