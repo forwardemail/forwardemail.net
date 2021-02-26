@@ -34,19 +34,12 @@ block body
       .row
         .col-12.col-lg-10.offset-lg-1
           h1.display-4.font-weight-bold.mb-3!= t('Free Email Forwarding')
-          //- h2.h3.font-weight-light.mb-3= t('Set up email forwarding for your custom domain in seconds.')
-          if isBot(ctx.get('User-Agent'))
-            p.lead.mb-3
-              = t('Create and forward unlimited email addresses for free using your custom domain name.')
-              = ' '
-              = t('Disposable email addresses, wildcard and catch-all addresses, and unlimited aliases.')
-          else
-            p.lead.mb-3.d-block.d-lg-none
-              != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses for free using your custom domain name.')
-            p.lead.mb-0.d-none.d-lg-block
-              != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses using your custom domain name.')
-            p.lead.mb-3.d-none.d-lg-block
-              != t('Plus get catch-all, wildcard, and disposable aliases &ndash; all for free!')
+          p.lead.mb-3.d-block.d-lg-none
+            != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses for free using your custom domain name.')
+          p.lead.mb-0.d-none.d-lg-block
+            != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses using your custom domain name.')
+          p.lead.mb-3.d-none.d-lg-block
+            != t('Plus get catch-all, wildcard, and disposable aliases &ndash; all for free!')
           a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')
             = t('Sign up free')
             = ' '
@@ -71,7 +64,7 @@ block body
           i.fa.fa-play-circle
           = ' '
           if isBot(ctx.get('User-Agent'))
-            = t('Website Email Service')
+            = t('Website Email Forwarding')
           else
             = t('Creators')
       .col-md.text-center.mb-3.mb-md-0
@@ -79,7 +72,7 @@ block body
           i.fa.fa-play-circle
           = ' '
           if isBot(ctx.get('User-Agent'))
-            = t('Startup Email Service')
+            = t('Startup Email Forwarding')
           else
             = t('Developers')
       .col-md.text-center
@@ -87,7 +80,7 @@ block body
           i.fa.fa-play-circle
           = ' '
           if isBot(ctx.get('User-Agent'))
-            = t('Shopify Email Service')
+            = t('Shopify Email Forwarding')
           else
             = t('Businesses')
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block
@@ -191,7 +184,7 @@ block body
           .h2.display-4= t('7')
           .text-monospace.text-uppercase= t('Global Servers')
         .col-12.col-md-4.py-3.py-md-5
-          .h2.display-4= t('30K+')
+          .h2.display-4= t('50K+')
           .text-monospace.text-uppercase= t('Active Users')
     .display-3.my-3.text-warning
       i.fa.fa-star
