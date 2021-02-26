@@ -34,10 +34,8 @@ block body
       .row
         .col-12.col-lg-10.offset-lg-1
           h1.display-4.font-weight-bold.mb-3!= t('Free Email Forwarding')
-          p.lead.mb-3.d-block.d-lg-none
-            != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses for free using your custom domain name.')
-          p.lead.mb-0.d-none.d-lg-block
-            != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses using your custom domain name.')
+          p.lead.mb-3.mb-lg-0.d-block
+            != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses for free using your custom domain.')
           p.lead.mb-3.d-none.d-lg-block
             != t('Plus get catch-all, wildcard, and disposable aliases &ndash; all for free!')
           a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(href=l('/register'), role="button", data-toggle='modal-anchor', data-target='#modal-sign-up')

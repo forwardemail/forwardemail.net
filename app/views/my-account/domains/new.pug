@@ -16,6 +16,10 @@ block body
           .form-group.floating-label
             input#input-domain(required, value=isSANB(ctx.query.domain) && isFQDN(ctx.query.domain) ? ctx.query.domain : '', name='domain', autocomplete="off", placeholder="example.com", autocorrect="off", spellcheck="false", autocapitalize="off", type="text").form-control.form-control-lg
             label(for="input-domain")= t('Domain name')
+          if !isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan)
+            .form-check.form-group
+              input#input-enhanced-protection(type='checkbox', name='plan', value='enhanced_protection', checked).form-check-input
+              label.form-check-label(for='input-enhanced-protection')!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a> ($3/mo premium support and privacy)', l('/pricing'))
           if user.group === 'admin'
             .form-group.form-check
               input#input-is-global(type='checkbox', name='is_global', value='true').form-check-input
