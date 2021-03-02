@@ -122,7 +122,7 @@ const Domain = new mongoose.Schema({
     type: Number,
     default: 0,
     min: 0,
-    max: 500
+    max: 1000
   },
   smtp_port: {
     type: String,
