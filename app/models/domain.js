@@ -251,7 +251,12 @@ Domain.plugin(mongooseCommonPlugin, {
     'onboard_email_sent_at',
     'verified_email_sent_at',
     'last_checked_at'
-  ]
+  ],
+  mongooseHidden: {
+    virtuals: {
+      client: 'hide'
+    }
+  }
 });
 
 // eslint-disable-next-line complexity
