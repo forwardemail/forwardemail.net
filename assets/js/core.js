@@ -209,24 +209,21 @@ function keyup() {
 $body.on('keyup', '.verification-form', debounce(keyup, 500));
 
 //
-// help form with Crisp chat and modal fallback
+// help form with hcaptcha dynamic loading
 //
 let hCaptchaLoaded = false;
 $body.on('click', '[data-target="#modal-help"]', (ev) => {
   ev.preventDefault();
-  if (window.$crisp) {
-    window.$crisp.push(['do', 'chat:open']);
-  } else {
-    if (!hCaptchaLoaded) {
-      $('<script />')
-        .attr('type', 'text/javascript')
-        .attr('src', 'https://hcaptcha.com/1/api.js')
-        .appendTo('head');
-      hCaptchaLoaded = true;
-    }
 
-    $('#modal-help').modal('show');
+  if (!hCaptchaLoaded) {
+    $('<script />')
+      .attr('type', 'text/javascript')
+      .attr('src', 'https://hcaptcha.com/1/api.js')
+      .appendTo('head');
+    hCaptchaLoaded = true;
   }
+
+  $('#modal-help').modal('show');
 });
 
 //

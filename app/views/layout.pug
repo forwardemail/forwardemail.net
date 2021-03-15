@@ -134,19 +134,6 @@ html(lang=locale).h-100
       if !isBot(ctx.get('User-Agent'))
         script(defer, src=manifest('js/build.js'), integrity=manifest('js/build.js', 'integrity'), crossorigin='anonymous')
 
-        //- crisp chat
-        if config.env === 'production' && !ctx.pathWithoutLocale.startsWith('/admin')
-          script(type='text/javascript').
-            window.$crisp = [];
-            window.CRISP_WEBSITE_ID = "02da78ba-6e8c-4be0-9319-7c785330aec1";
-            (function() {
-              d = document;
-              s = d.createElement("script");
-              s.src = "https://client.crisp.chat/l.js";
-              s.async = 1;
-              d.getElementsByTagName("head")[0].appendChild(s);
-            })();
-
   body(role='document').d-flex.flex-column.min-h-100
 
     - const isHelp = ctx.pathWithoutLocale === '/help'
