@@ -64,29 +64,16 @@ module.exports = (client) => ({
               'www.paypal.com',
               'hcaptcha.com',
               '*.hcaptcha.com',
-              'crisp.chat',
-              '*.crisp.chat',
-              'client.relay.crisp.chat',
-              'wss://*.relay.crisp.chat',
-              'wss://*.crisp.chat',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])
             ],
             fontSrc: [
-              ...defaultSrc,
-              'crisp.chat',
-              '*.crisp.chat',
-              'wss://*.relay.crisp.chat',
-              'wss://*.crisp.chat'
+              ...defaultSrc
             ],
             imgSrc: [
               ...defaultSrc,
               'tracking.qa.paypal.com',
-              'crisp.chat',
-              '*.crisp.chat',
-              'wss://*.relay.crisp.chat',
-              'wss://*.crisp.chat',
               'ytimg.com',
               '*.ytimg.com'
             ],
@@ -94,11 +81,7 @@ module.exports = (client) => ({
               ...defaultSrc,
               "'unsafe-inline'",
               'hcaptcha.com',
-              '*.hcaptcha.com',
-              'crisp.chat',
-              '*.crisp.chat',
-              'wss://*.relay.crisp.chat',
-              'wss://*.crisp.chat'
+              '*.hcaptcha.com'
             ],
             scriptSrc: [
               ...defaultSrc,
@@ -107,10 +90,6 @@ module.exports = (client) => ({
               'www.paypal.com',
               'hcaptcha.com',
               '*.hcaptcha.com',
-              'crisp.chat',
-              '*.crisp.chat',
-              'wss://*.relay.crisp.chat',
-              'wss://*.crisp.chat',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])
@@ -123,10 +102,6 @@ module.exports = (client) => ({
               'www.paypal.com',
               'hcaptcha.com',
               '*.hcaptcha.com',
-              'crisp.chat',
-              '*.crisp.chat',
-              'wss://*.relay.crisp.chat',
-              'wss://*.crisp.chat',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])
