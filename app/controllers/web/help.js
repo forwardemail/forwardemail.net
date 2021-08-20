@@ -86,7 +86,8 @@ async function help(ctx) {
       },
       locals: {
         locale: ctx.locale,
-        inquiry
+        inquiry,
+        isPremium: ctx.isAuthenticated() && ctx.state.user.plan !== 'free'
       }
     });
 

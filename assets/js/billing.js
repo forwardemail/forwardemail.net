@@ -43,6 +43,48 @@ const PAYPAL_MAPPING = {
   }
 };
 
+async function sendRequest(body) {
+  const response = await superagent
+    .post(window.location.pathname)
+    .set({
+      'X-CSRF-Token': window._csrf,
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    })
+    .ok(() => true) // override so we can parse it ourselves
+    .send(body);
+
+  if (!response.ok) {
+    response.err = new Error(
+      response.statusText || response.text || 'Unsuccessful HTTP response'
+    );
+    if (
+      typeof response.body === 'object' &&
+      response.body !== null &&
+      typeof response.body.message === 'string'
+    ) {
+      response.err = new Error(response.body.message);
+    } else if (
+      !Array.isArray(response.body) &&
+      typeof response.body === 'object' &&
+      response.body !== null &&
+      // attempt to utilize Stripe-inspired error messages
+      typeof response.body.error === 'object'
+    ) {
+      if (response.body.error.message)
+        response.err = new Error(response.body.error.message);
+      if (response.body.error.stack)
+        response.err.stack = response.body.error.stack;
+      if (response.body.error.code)
+        response.err.code = response.body.error.code;
+      if (response.body.error.param)
+        response.err.param = response.body.error.param;
+    }
+  }
+
+  return response;
+}
+
 function createSubscription(data, actions) {
   const duration = $paymentDuration.find('option:checked').val();
   if (typeof url.query.plan !== 'string')
@@ -76,80 +118,40 @@ function createSubscription(data, actions) {
   });
 }
 
-function createOrder() {
+async function createOrder() {
   const body = qs.parse($formBilling.serialize());
-  return (
-    superagent
-      .post(window.location.pathname)
-      .set({
-        'X-CSRF-Token': window._csrf,
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      })
-      .ok(() => true) // override so we can parse it ourselves
-      .send(body)
-      // eslint-disable-next-line promise/prefer-await-to-then
-      .then((response) => {
-        if (!response.ok) {
-          response.err = new Error(
-            response.statusText || response.text || 'Unsuccessful HTTP response'
-          );
-          if (
-            typeof response.body === 'object' &&
-            response.body !== null &&
-            typeof response.body.message === 'string'
-          ) {
-            response.err = new Error(response.body.message);
-          } else if (
-            !Array.isArray(response.body) &&
-            typeof response.body === 'object' &&
-            response.body !== null &&
-            // attempt to utilize Stripe-inspired error messages
-            typeof response.body.error === 'object'
-          ) {
-            if (response.body.error.message)
-              response.err = new Error(response.body.error.message);
-            if (response.body.error.stack)
-              response.err.stack = response.body.error.stack;
-            if (response.body.error.code)
-              response.err.code = response.body.error.code;
-            if (response.body.error.param)
-              response.err.param = response.body.error.param;
-          }
-        }
+  const response = await sendRequest(body);
 
-        // Check if any errors occurred
-        if (response.err) {
-          // render an alert
-          Swal.fire(window._types.error, response.err.message, 'error');
+  // Check if any errors occurred
+  if (response.err) {
+    // render an alert
+    Swal.fire(window._types.error, response.err.message, 'error');
 
-          // reject the promise
-          throw response.err;
-        }
+    // reject the promise
+    throw response.err;
+  }
 
-        //
-        // Either display a success message, redirect user, or reload page
-        //
-        // Use the same key name for order ID on the client and server
-        if (
-          typeof response.body === 'object' &&
-          response.body !== null &&
-          typeof response.body.orderID === 'string'
-        )
-          return response.body.orderID;
+  //
+  // Either display a success message, redirect user, or reload page
+  //
+  // Use the same key name for order ID on the client and server
+  if (
+    typeof response.body === 'object' &&
+    response.body !== null &&
+    typeof response.body.orderID === 'string'
+  )
+    return response.body.orderID;
 
-        // Prepare a message
-        const message =
-          response.statusText ||
-          response.text ||
-          'Invalid response, please try again';
-        // Hide the spinner
-        spinner.hide();
-        // Show message
-        Swal.fire(window._types.error, message, 'error');
-        throw new Error(message);
-      })
-  );
+  // Prepare a message
+  const message =
+    response.statusText ||
+    response.text ||
+    'Invalid response, please try again';
+  // Hide the spinner
+  spinner.hide();
+  // Show message
+  Swal.fire(window._types.error, message, 'error');
+  throw new Error(message);
 }
 
 // TODO: ajaxForm from @ladjs/assets should accept a callback function
@@ -158,46 +160,8 @@ $formBilling.on('submit', async function (ev) {
   try {
     ev.preventDefault();
     spinner.show();
-
     const body = qs.parse($(this).serialize());
-
-    const response = await superagent
-      .post(window.location.pathname)
-      .set({
-        'X-CSRF-Token': window._csrf,
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      })
-      .ok(() => true) // override so we can parse it ourselves
-      .send(body);
-
-    if (!response.ok) {
-      response.err = new Error(
-        response.statusText || response.text || 'Unsuccessful HTTP response'
-      );
-      if (
-        typeof response.body === 'object' &&
-        response.body !== null &&
-        typeof response.body.message === 'string'
-      ) {
-        response.err = new Error(response.body.message);
-      } else if (
-        !Array.isArray(response.body) &&
-        typeof response.body === 'object' &&
-        response.body !== null &&
-        // attempt to utilize Stripe-inspired error messages
-        typeof response.body.error === 'object'
-      ) {
-        if (response.body.error.message)
-          response.err = new Error(response.body.error.message);
-        if (response.body.error.stack)
-          response.err.stack = response.body.error.stack;
-        if (response.body.error.code)
-          response.err.code = response.body.error.code;
-        if (response.body.error.param)
-          response.err.param = response.body.error.param;
-      }
-    }
+    const response = await sendRequest(body);
 
     // Check if any errors occurred
     if (response.err) throw response.err;

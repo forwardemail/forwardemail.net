@@ -43,16 +43,18 @@ const jobs = [
 ];
 
 if (process.env.NODE_ENV === 'production') {
-  jobs.push({
-    name: 'translate-phrases',
-    interval: '1h',
-    timeout: 0
-  });
-  jobs.push({
-    name: 'translate-markdown',
-    interval: '30m',
-    timeout: 0
-  });
+  jobs.push(
+    {
+      name: 'translate-phrases',
+      interval: '1h',
+      timeout: 0
+    },
+    {
+      name: 'translate-markdown',
+      interval: '30m',
+      timeout: 0
+    }
+  );
 }
 
 if (boolean(process.env.AUTH_OTP_ENABLED))

@@ -268,7 +268,9 @@ async function recoveryKey(ctx) {
   // handle case if the user runs out of keys
   if (emptyRecoveryKeys) {
     recoveryKeys = await Promise.all(
-      new Array(10).fill().map(() => cryptoRandomString.async(options))
+      Array.from({ length: 10 })
+        .fill()
+        .map(() => cryptoRandomString.async(options))
     );
   }
 

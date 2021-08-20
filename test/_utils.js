@@ -1,6 +1,6 @@
 // Necessary utils for testing
 // Librarires required for testing
-const MongodbMemoryServer = require('mongodb-memory-server').default;
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
 const request = require('supertest');
 const sinon = require('sinon');
@@ -11,12 +11,14 @@ const { factory, MongooseAdapter } = require('factory-girl');
 const config = require('../config');
 const { Users } = require('../app/models');
 
-const mongod = new MongodbMemoryServer();
 const adapter = new MongooseAdapter();
+
+let mongod;
 
 // create connection to mongoose before all tests
 exports.before = async () => {
-  const uri = await mongod.getConnectionString();
+  mongod = await MongoMemoryServer.create();
+  const uri = mongod.getUri();
   await mongoose.connect(uri);
 
   factory.setAdapter(adapter);
@@ -50,8 +52,8 @@ exports.afterEach = async () => {
 };
 
 exports.after = async () => {
-  mongoose.disconnect();
-  mongod.stop();
+  await mongoose.disconnect();
+  await mongod.stop();
 
   factory.cleanUp();
 };
