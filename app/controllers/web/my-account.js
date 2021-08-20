@@ -233,6 +233,7 @@ function retrieveProfile(ctx) {
   return ctx.render('my-account/profile');
 }
 
+// eslint-disable-next-line complexity
 async function updateProfile(ctx) {
   const { body } = ctx.request;
   const hasSetPassword = ctx.state.user[config.userFields.hasSetPassword];
@@ -242,12 +243,12 @@ async function updateProfile(ctx) {
   if (hasSetPassword) requiredFields.push('old_password');
 
   if (body.change_password === 'true') {
-    requiredFields.forEach((prop) => {
+    for (const prop of requiredFields) {
       if (!isSANB(body[prop]))
         throw Boom.badRequest(
           ctx.translateError('INVALID_STRING', ctx.request.t(humanize(prop)))
         );
-    });
+    }
 
     if (body.password !== body.confirm_password)
       throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD_CONFIRM'));
@@ -330,11 +331,10 @@ async function updateProfile(ctx) {
     ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = dayjs()
       .add(config.changeEmailTokenTimeoutMs, 'milliseconds')
       .toDate();
-    ctx.state.user[
-      config.userFields.changeEmailToken
-    ] = await cryptoRandomString.async({
-      length: 32
-    });
+    ctx.state.user[config.userFields.changeEmailToken] =
+      await cryptoRandomString.async({
+        length: 32
+      });
     ctx.state.user[config.userFields.changeEmailNewAddress] = body.email;
   }
 
@@ -635,13 +635,17 @@ async function retrieveDomain(ctx, next) {
     `/my-account/domains/${ctx.state.domain.name}/aliases/new`
   ) {
     ctx.state.breadcrumbHeaderCentered = true;
-    ctx.state.breadcrumbs.push({
-      name: ctx.state.t('Aliases'),
-      href: ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`)
-    });
-    ctx.state.breadcrumbs.push({
-      name: ctx.state.t('Add Alias')
-    });
+    ctx.state.breadcrumbs.push(
+      {
+        name: ctx.state.t('Aliases'),
+        href: ctx.state.l(
+          `/my-account/domains/${ctx.state.domain.name}/aliases`
+        )
+      },
+      {
+        name: ctx.state.t('Add Alias')
+      }
+    );
   } else if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/billing`
@@ -1045,14 +1049,18 @@ function retrieveAlias(ctx, next) {
     `/my-account/domains/${ctx.state.domain.name}/aliases/${ctx.state.alias.id}`
   ) {
     ctx.state.breadcrumbHeaderCentered = true;
-    ctx.state.breadcrumbs.push({
-      name: ctx.state.t('Aliases'),
-      href: ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`)
-    });
-    ctx.state.breadcrumbs.push({
-      header: ctx.state.t('Edit Alias'),
-      name: `${ctx.state.alias.name}@${ctx.state.domain.name}`
-    });
+    ctx.state.breadcrumbs.push(
+      {
+        name: ctx.state.t('Aliases'),
+        href: ctx.state.l(
+          `/my-account/domains/${ctx.state.domain.name}/aliases`
+        )
+      },
+      {
+        header: ctx.state.t('Edit Alias'),
+        name: `${ctx.state.alias.name}@${ctx.state.domain.name}`
+      }
+    );
   }
 
   return next();

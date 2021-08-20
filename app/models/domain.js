@@ -428,8 +428,7 @@ async function getVerificationResults(domain, client = false) {
   }
 
   if (!txt || !mx) {
-    errors.push(PURGE_CACHE);
-    errors.push(AUTOMATED_CHECK);
+    errors.push(PURGE_CACHE, AUTOMATED_CHECK);
   }
 
   errors = _.uniqBy(errors, 'message');

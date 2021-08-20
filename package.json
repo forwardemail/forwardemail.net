@@ -100,7 +100,7 @@
     "markdown-it-highlightjs": "^3.4.0",
     "markdown-it-task-checkbox": "^1.0.6",
     "memoizee": "^0.4.15",
-    "mongodb-memory-server": "^6.9.3",
+    "mongodb-memory-server": "^7.3.6",
     "mongoose": "^5.11.17",
     "mongoose-common-plugin": "^2.0.2",
     "mongoose-omit-common-fields": "^0.0.6",
@@ -219,7 +219,7 @@
     "xo": "^0.38.1"
   },
   "engines": {
-    "node": ">=12.11.0"
+    "node": ">=14.0.0"
   },
   "homepage": "https://github.com/forwardemail/forwardemail.net",
   "husky": {
@@ -321,7 +321,9 @@
     "rules": {
       "ava/assertion-arguments": "off",
       "unicorn/prevent-abbreviations": "off",
-      "unicorn/no-fn-reference-in-iterator": "off"
+      "unicorn/no-fn-reference-in-iterator": "off",
+      "import/extensions": "off",
+      "unicorn/no-this-assignment": "off"
     }
   }
 }
