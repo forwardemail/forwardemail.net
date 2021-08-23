@@ -203,10 +203,16 @@ $body.on('click', '.generate-random-alias', function () {
 });
 
 function keyup() {
-  if ($(this).val().length >= 6) $(this).parents('form').first().submit();
+  const $that = $(this);
+  if ($that.val().length >= 6) {
+    const $form = $that.parents('form').first();
+    const $btn = $form.find('button[type="submit"]');
+    if ($form.length > 0 && $btn.length > 0 && !$btn.is(':disabled'))
+      $form.submit();
+  }
 }
 
-$body.on('keyup', '.verification-form', debounce(keyup, 500));
+$body.on('keyup', '.verification-form', debounce(keyup, 200));
 
 //
 // help form with hcaptcha dynamic loading
@@ -241,4 +247,4 @@ $body.on('hide.bs.modal', '.modal', function () {
 // lazyload iframes
 // <https://github.com/vb/lazyframe>
 //
-lazyframe('.lazyframe');
+lazyframe('.lazyframe', { autoplay: false, initinview: true });
