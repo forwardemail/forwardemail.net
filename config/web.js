@@ -68,9 +68,7 @@ module.exports = (client) => ({
                 ? []
                 : ['www.sandbox.paypal.com'])
             ],
-            fontSrc: [
-              ...defaultSrc
-            ],
+            fontSrc: [...defaultSrc],
             imgSrc: [
               ...defaultSrc,
               'tracking.qa.paypal.com',

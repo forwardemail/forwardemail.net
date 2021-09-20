@@ -45,10 +45,9 @@ See [Requirements](#requirements) below.
 
    ```sh
    brew tap mongodb/brew
-   brew install mongodb-community@3.4 redis python3 ansible ansible-lint libtool automake autoconf nasm
-   brew services start mongodb-community@3.4
+   brew install mongodb-community redis ansible ansible-lint libtool automake autoconf nasm
+   brew services start mongodb-community
    brew services start redis
-   pip3 install dkimpy pyspf dnspython
    ```
 
 3. Install [ansible-galaxy][] requirements (assumes current working directory is the root of this repository):
