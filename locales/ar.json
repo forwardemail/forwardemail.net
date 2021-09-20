@@ -1669,5 +1669,7 @@
   "For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.": "على سبيل المثال يمكنك تعيين بعض المجالات على الخطة المجانية (القائمة على DNS) & ndash؛ وآخرون في خطط الحماية المحسنة أو الفريق.",
   "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.": "Create <strong class=\"font-weight-bold\">unlimited</strong> email addresses for free using your custom domain.",
   "50K+": "50K+",
-  "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)"
+  "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)": "Upgrade to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> ($3/mo premium support and privacy)",
+  "Add your Enhanced Protection Verification <strong>TXT record</strong> to your domain's DNS:": "Add your Enhanced Protection Verification <strong>TXT record</strong> to your domain's DNS:",
+  "Use \"@\", \".\", or blank for the name/host/alias value. You <u>must remove</u> any existing \"<span class=\"notranslate\">%s</span><span class=\"notranslate\">=</span>\" records.": "Use \"@\", \".\", or blank for the name/host/alias value. You <u>must remove</u> any existing \"<span class=\"notranslate\">%s</span><span class=\"notranslate\">=</span>\" records."
 }
