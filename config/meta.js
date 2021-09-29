@@ -41,8 +41,12 @@ module.exports = function (config) {
       'Programmatic API access to email forwarding aliases, domains, and more.'
     ],
     '/free-email-webhooks': [
-      `Free email webhooks ${lad}`,
+      `Free Email Webhooks ${lad}`,
       'Create free email forwarding webhooks.  We are the best alternative to Mailgun.'
+    ],
+    '/email-forwarding-regex-pattern-filter': [
+      `Email Forwarding Regex Pattern Filter ${lad}`,
+      'Create email forwarding aliases with regex pattern filtering and substitution.'
     ],
     '/donate': [
       `Donate ${lad}`,
