@@ -48,7 +48,7 @@ block body
                   i.fa.fa-question-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 != `<i class="fa fa-fw fa-paperclip text-primary mr-3"></i> ${t('50MB attachment limit')}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('"Send mail as" with Gmail, Outlook, and Yahoo')}`
+              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('"Send mail as" with Gmail and Outlook')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Catch-all email addresses')}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('Multiple recipients per email address')}`
               li.list-group-item.d-flex.align-items-center
@@ -57,6 +57,13 @@ block body
                 = t('Unlimited email webhooks')
                 = ' '
                 a(href=l('/free-email-webhooks')).btn.btn-link.text-dark.py-0
+                  i.fa.fa-link
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t('Unlimited email regex filtering')
+                = ' '
+                a(href=l('/email-forwarding-regex-pattern-filter')).btn.btn-link.text-dark.py-0
                   i.fa.fa-link
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
