@@ -79,6 +79,12 @@ localeRouter
     render('free-email-webhooks')
   )
   .get(
+    '/email-forwarding-regex-pattern-filter',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    render('email-forwarding-regex-pattern-filter')
+  )
+  .get(
     '/guides/port-25-blocked-by-isp-workaround',
     web.myAccount.retrieveDomains,
     web.onboard,
