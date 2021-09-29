@@ -12,6 +12,7 @@
 * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
 * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
 * [Do you support webhooks](#do-you-support-webhooks)
+* [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
 * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
 * [Can I disable specific aliases](#can-i-disable-specific-aliases)
 * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
