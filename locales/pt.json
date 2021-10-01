@@ -1712,5 +1712,6 @@
   "Create an email forwarding regex filter": "Create an email forwarding regex filter",
   "Note that we also support our ": "Note that we also support our ",
   "disabled alias feature": "disabled alias feature",
-  " for the recipient portion with our regex support.": " for the recipient portion with our regex support."
+  " for the recipient portion with our regex support.": " for the recipient portion with our regex support.",
+  "Manage Billing": "Manage Billing"
 }

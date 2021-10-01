@@ -101,7 +101,7 @@ block body
                 .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
                   form(action=l('/my-account/billing/manage-payments'), method='POST')
                     input(type='hidden', name='_csrf', value=ctx.csrf)
-                    button(type='submit').btn.btn-lg.btn-info= t('Manage Billing')
+                    button(type='submit').btn.btn-lg.btn-danger= t('Manage Billing')
             else
               a(href=l('/my-account/billing/make-payment'), disabled=user.plan === 'free', class=user.plan === 'free' ? 'disabled' : '').btn.btn-lg.btn-danger= t('Make Payment')
   if payments.length > 0
