@@ -96,8 +96,14 @@ block body
                 i.fa.fa-infinity
               else
                 = dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY')
-            a(href=l('/my-account/billing/make-payment'), disabled=user.plan === 'free', class=user.plan === 'free' ? 'disabled' : '').btn.btn-lg.btn-danger= t('Make Payment')
-
+            if isSANB(user[config.userFields.stripeSubscriptionID])
+              .col-12.d-flex.col-lg-6
+                .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
+                  form(action=l('/my-account/billing/manage-payments'), method='POST')
+                    input(type='hidden', name='_csrf', value=ctx.csrf)
+                    button(type='submit').btn.btn-lg.btn-info= t('Manage Billing')
+            else
+              a(href=l('/my-account/billing/make-payment'), disabled=user.plan === 'free', class=user.plan === 'free' ? 'disabled' : '').btn.btn-lg.btn-danger= t('Make Payment')
   if payments.length > 0
     .container.py-3
       .row
