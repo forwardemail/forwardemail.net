@@ -21,6 +21,7 @@ router.delete(
   web.myAccount.cancelSubscription,
   web.myAccount.retrieveBilling
 );
+router.post('/billing/manage-payments', web.myAccount.manageBilling);
 router.get('/billing/make-payment', web.myAccount.retrieveDomainBilling);
 router.post('/billing/make-payment', web.myAccount.createDomainBilling);
 router.get('/billing/upgrade', web.myAccount.retrieveDomainBilling);
