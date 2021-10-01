@@ -209,5 +209,7 @@ module.exports = {
   REFUND_PROCESSING:
     'We will manually process your pro-rated refund in the amount of <span class="notranslate">%s USD</span> and email you when complete.',
   CAPTCHA_SERVICE_ERROR: 'Captcha service error.',
-  CAPTCHA_NOT_VERIFIED: 'Captcha not verified.'
+  CAPTCHA_NOT_VERIFIED: 'Captcha not verified.',
+  MISSING_PORTAL_CREDENTIALS:
+    'Missing stripe subscription or customer id for stripe billing portal.'
 };
