@@ -82,6 +82,9 @@ const Payment = new mongoose.Schema({
   exp_year: Number,
   last4: String,
   stripe_session_id: String,
+  stripe_invoice_id: String,
+  stripe_subscription_id: String,
+  stripe_payment_intent_id: String,
   paypal_order_id: String,
   paypal_subscription_id: String
 });
