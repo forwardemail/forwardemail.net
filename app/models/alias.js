@@ -210,7 +210,8 @@ Alias.pre('save', async function (next) {
         i18n.translateError('ALIAS_ALREADY_EXISTS', alias.locale)
       );
 
-    if (!isEmail(`${alias.name}@${domain.name}`))
+    // if it starts with a forward slash then it must be a regex
+    if (!alias.name.startsWith('/') && !isEmail(`${alias.name}@${domain.name}`))
       throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
 
     // determine the domain membership for the user
