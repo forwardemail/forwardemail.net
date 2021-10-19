@@ -722,7 +722,8 @@ function retrieveAlias(ctx, next) {
   if (!isSANB(ctx.params.alias_id))
     return ctx.throw(Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST')));
   ctx.state.alias = ctx.state.domain.aliases.find(
-    (alias) => alias.id === ctx.params.alias_id
+    (alias) =>
+      alias.id === ctx.params.alias_id || alias.name === ctx.params.alias_id
   );
   if (!ctx.state.alias)
     return ctx.throw(Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST')));

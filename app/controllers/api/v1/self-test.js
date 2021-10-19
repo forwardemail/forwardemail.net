@@ -65,6 +65,7 @@ async function selfTest(ctx) {
     pMap(emails, mapper, { concurrency })
       // eslint-disable-next-line promise/prefer-await-to-then
       .then(() => {})
+      // eslint-disable-next-line promise/prefer-await-to-then
       .catch((err) => ctx.logger.error(err));
 
     // send successful response
