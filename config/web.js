@@ -84,6 +84,7 @@ module.exports = (client) => ({
             scriptSrc: [
               ...defaultSrc,
               "'unsafe-inline'",
+              'plausible.io',
               'js.stripe.com',
               'www.paypal.com',
               'hcaptcha.com',
