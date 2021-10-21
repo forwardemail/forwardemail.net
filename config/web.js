@@ -61,7 +61,9 @@ module.exports = (client) => ({
             defaultSrc,
             connectSrc: [
               ...defaultSrc,
+              'plausible.io',
               'www.paypal.com',
+              'noembed.com',
               'hcaptcha.com',
               '*.hcaptcha.com',
               ...(env.NODE_ENV === 'production'
