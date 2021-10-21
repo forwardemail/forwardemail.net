@@ -133,6 +133,8 @@ html(lang=locale).h-100
       //- build
       if !isBot(ctx.get('User-Agent'))
         script(defer, src=manifest('js/build.js'), integrity=manifest('js/build.js', 'integrity'), crossorigin='anonymous')
+        //- analytics via plausible.io
+        script(defer, data-domain='forwardemail.net', src='https://plausible.io/js/plausible.js')
 
   body(role='document').d-flex.flex-column.min-h-100
 
