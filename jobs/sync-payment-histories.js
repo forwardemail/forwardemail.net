@@ -136,8 +136,16 @@ graceful.listen();
     .lean()
     .exec();
 
+  console.log(
+    `Syncing payments for ${stripeCustomers.length} stripe customers.`
+  );
+
   for (const customer of stripeCustomers) {
-    console.group(`Syncing payments for customer ${customer.email}`);
+    console.group(
+      `Syncing payments for customer ${customer.email} ${
+        customer[config.userFields.stripeCustomerID]
+      }`
+    );
     // stripe payment_intents are source of truth for stripe payments as one is created
     // for each time a customer is charged for both one-time and subscriptions
     // we go through each successful charge and ensure there is an existing payment and
@@ -147,6 +155,7 @@ graceful.listen();
       stripePaymentIntents = await getAllStripePaymentIntents(
         customer[config.userFields.stripeCustomerID]
       );
+      console.log(`syncing ${stripePaymentIntents.length} payment intents`);
     } catch (err) {
       // if we couldn't get the customers payments
       // send an alert and try the next customer
@@ -164,6 +173,8 @@ graceful.listen();
         logger.error(err);
       }
 
+      console.groupEnd();
+
       continue;
     }
 
@@ -171,8 +182,12 @@ graceful.listen();
     // payment and the data we are getting from stripe, we do
     // not make any changes and send an alert for that payment
     for (const paymentIntent of stripePaymentIntents) {
+      console.group('paymentIntent', paymentIntent.id);
       try {
-        if (paymentIntent.status !== 'succeeded') continue;
+        if (paymentIntent.status !== 'succeeded') {
+          console.groupEnd();
+          continue;
+        }
 
         // charges will usually just be an array of the successful charge,
         // but I think it may be possible a failed charge could be there as well
@@ -181,9 +196,10 @@ graceful.listen();
           (charge) => charge.paid && charge.status === 'succeeded'
         );
 
-        // TODO: what should we do with refunded charges?
-        //       ignoring these for now
-        if (stripeCharge.refunded) continue;
+        let amountRefunded;
+        if (stripeCharge.refunded) {
+          ({ amount_refunded: amountRefunded } = stripeCharge);
+        }
 
         // one time payments have no invoice nor subscription
         const isOneTime = !paymentIntent.invoice;
@@ -198,23 +214,28 @@ graceful.listen();
           isSANB(paymentIntent.invoice) &&
           paymentIntent.description?.includes('Invoice');
 
+        if (isOneTime) console.log('isOneTime', true);
+        if (isSubscriptionCreation) console.log('isSubscriptionCreation', true);
+        if (isSubscriptionRenewal) console.log('isSubscriptionRenewal', true);
+
         if (!stripeCharge)
           throw new Error('No successful stripe charge on payment intent.');
 
-        let checkoutSession;
-        if (isOneTime || isSubscriptionCreation) {
-          // there will only ever be 1 checkout
-          // session per successful payment intent
-          const { data: checkoutSessions } =
-            await stripe.checkout.sessions.list({
-              payment_intent: paymentIntent.id
-            });
+        // let checkoutSession;
+        // if (isOneTime || isSubscriptionCreation) {
+        // there will only ever be 1 checkout
+        // session per successful payment intent
+        const { data: checkoutSessions } = await stripe.checkout.sessions.list({
+          payment_intent: paymentIntent.id
+        });
 
-          if (checkoutSessions.length !== 1)
-            throw new Error('Found an unexpected # of checkout sessions');
+        if (checkoutSessions.length > 1)
+          throw new Error('Found an unexpected # of checkout sessions');
 
-          [checkoutSession] = checkoutSessions;
-        }
+        const [checkoutSession] = checkoutSessions;
+        // }
+
+        console.log('checkoutSession', checkoutSession?.id);
 
         // invoices only on subscription payments
         let invoice;
@@ -244,30 +265,44 @@ graceful.listen();
           )
         );
 
+        console.log('plan', plan);
+        console.log('duration', duration);
+
         // Once all the required/relevant information is gathered from stripe
         // we attempt to look up the payment in our system, if it already exists
         // we validate it and modify any missing params, if it doesnt, we create it
         // depending on how it was created it will have some of the following fields
-        // in the $or correctly populated
-        const $or = [{ stripe_payment_intent_id: paymentIntent.id }];
-        if (isSANB(checkoutSession?.id))
-          $or.push({ stripe_session_id: checkoutSession.id });
-        if (isSANB(invoice?.subscription))
-          $or.push({ stripe_subscription_id: invoice.subscription });
 
-        const payments = await Payments.find({
-          user: customer._id,
-          $or
+        const q = {
+          user: customer._id
+        };
+
+        let [payment, ...tooManyPayments] = await Payments.find({
+          ...q,
+          stripe_payment_intent_id: paymentIntent.id
         });
 
-        if (payments.length > 1)
+        if (tooManyPayments.length > 0)
           throw new Error(
-            `More than 1 matching payment was found for stripe payment intent ${paymentIntent.id}`
+            `There are too many payments in the system with stripe_payment_intent_id ${paymentIntent.id}`
           );
 
-        let [payment] = payments;
+        if (!payment && isSANB(checkoutSession?.id)) {
+          const payments = await Payments.find({
+            ...q,
+            stripe_session_id: checkoutSession.id
+          });
+
+          if (payments.length > 1)
+            throw new Error(
+              `Unexpected amount of payments found when searched for checkout session id ${checkoutSession.id}`
+            );
+
+          [payment] = payments;
+        }
 
         if (payment) {
+          console.log('found existing payment');
           const { id } = payment;
 
           //
@@ -336,13 +371,15 @@ graceful.listen();
 
           if (
             isSANB(payment.stripe_session_id) &&
-            payment.stripe_session_id !== checkoutSession.id
-          )
+            (!checkoutSession ||
+              payment.stripe_session_id !== checkoutSession.id)
+          ) {
             throw new Error(
               `Saved payment.stripe_session_id (${payment.stripe_session_id}) does not match billing history sync session_id ${checkoutSession.id}`
             );
+          }
 
-          payment.stripe_session_id = checkoutSession.id;
+          payment.stripe_session_id = checkoutSession?.id;
 
           if (
             isSANB(payment.stripe_invoice_id) &&
@@ -374,12 +411,23 @@ graceful.listen();
 
           payment.stripe_subscription_id = invoice?.subscription;
 
+          if (
+            isSANB(payment.amount_refunded) &&
+            payment.amount_refunded !== amountRefunded
+          )
+            throw new Error(
+              `Saved payment.amount_refunded (${payment.amount_refunded}) does not match billing history sync stripe charge: ${stripeCharge.id}, payment_intent: ${paymentIntent.id}`
+            );
+
+          payment.amount_refunded = amountRefunded;
+
           await payment.save();
 
           console.log(
             `sucessfully synced and saved payment for stripe payment_intent ${paymentIntent.id}`
           );
         } else {
+          console.log('creating new payment');
           payment = {
             user: customer._id,
             plan,
@@ -414,6 +462,54 @@ graceful.listen();
           });
         } catch {}
       }
+
+      console.groupEnd();
+    }
+
+    // finally - check the db to see if there is any payments this script couldn't handle
+    try {
+      const missed = await Payments.find({
+        user: customer._id,
+        method: { $nin: ['unknown', 'paypal'] },
+        stripe_payment_intent_id: { $exists: false }
+      })
+        .lean()
+        .exec();
+
+      if (missed.length > 0)
+        throw new Error(
+          `${customer.email} has some stripe payments that were not found and synced, please fix manually.`.concat(
+            // eslint-disable-next-line unicorn/no-array-reduce
+            missed.reduce((acc, miss) => {
+              // eslint-disable-next-line unicorn/prefer-spread
+              return acc.concat(miss.id + '<br />');
+            }, 'The Payment ids are listed below: <br />')
+          )
+        );
+
+      const stripePaymentCount = await Payments.countDocuments({
+        user: customer._id,
+        stripe_payment_intent_id: { $exists: true, $ne: null }
+      });
+
+      if (
+        stripePaymentIntents.filter((pi) => pi.status === 'succeeded')
+          .length !== stripePaymentCount
+      )
+        throw new Error(
+          `The number of payment_intents from stripe does not match the number of stripe payments in the db. Please review manually.`
+        );
+    } catch (err) {
+      try {
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `${customer.email} has stripe payments that were not synced by the sync-payment-hitories job`
+          },
+          locals: { message: err.message }
+        });
+      } catch {}
     }
 
     console.groupEnd();
@@ -426,7 +522,11 @@ graceful.listen();
 async function getAllStripePaymentIntents(stripeCustomerId) {
   let paymentIntents = [];
   let has_more = true;
+  let count = 0;
   do {
+    // reasonable bailout if it gets stuck for some reason
+    if (count > 100) has_more = false;
+
     const res = await stripe.paymentIntents.list({
       customer: stripeCustomerId
     });
@@ -434,6 +534,7 @@ async function getAllStripePaymentIntents(stripeCustomerId) {
     paymentIntents = [...paymentIntents, ...res.data];
 
     has_more = res.has_more;
+    count++;
   } while (has_more);
 
   return paymentIntents;

@@ -32,6 +32,10 @@ const Payment = new mongoose.Schema({
     min: 0, // cents (not dollars)
     required: true
   },
+  amount_refunded: {
+    type: Number,
+    min: 0 // cents (not dollars)
+  },
   amount_formatted: {
     type: String,
     required: true
