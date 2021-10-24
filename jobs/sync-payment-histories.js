@@ -522,19 +522,24 @@ graceful.listen();
 async function getAllStripePaymentIntents(stripeCustomerId) {
   let paymentIntents = [];
   let has_more = true;
-  let count = 0;
+  let starting_after;
   do {
-    // reasonable bailout if it gets stuck for some reason
-    if (count > 100) has_more = false;
-
-    const res = await stripe.paymentIntents.list({
-      customer: stripeCustomerId
-    });
+    let res;
+    try {
+      console.log('stripeCustomerId', stripeCustomerId);
+      res = await stripe.paymentIntents.list({
+        customer: stripeCustomerId,
+        limit: 100,
+        starting_after
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
 
     paymentIntents = [...paymentIntents, ...res.data];
-
     has_more = res.has_more;
-    count++;
+    starting_after = _.last(res.data).id;
   } while (has_more);
 
   return paymentIntents;
