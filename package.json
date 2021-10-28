@@ -29,6 +29,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@hapi/boom": "^9.1.4",
+    "@influxdata/influxdb-client": "^1.20.0",
     "@koa/router": "^10.1.1",
     "@ladjs/api": "^7.0.2",
     "@ladjs/assets": "^1.1.1",
