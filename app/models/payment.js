@@ -32,6 +32,10 @@ const Payment = new mongoose.Schema({
     min: 0, // cents (not dollars)
     required: true
   },
+  amount_refunded: {
+    type: Number,
+    min: 0 // cents (not dollars)
+  },
   amount_formatted: {
     type: String,
     required: true
@@ -82,6 +86,9 @@ const Payment = new mongoose.Schema({
   exp_year: Number,
   last4: String,
   stripe_session_id: String,
+  stripe_invoice_id: String,
+  stripe_subscription_id: String,
+  stripe_payment_intent_id: String,
   paypal_order_id: String,
   paypal_subscription_id: String
 });

@@ -71,6 +71,7 @@
     "dashify": "^2.0.0",
     "dayjs": "^1.10.7",
     "dayjs-with-plugins": "^0.0.4",
+    "dedent": "^0.7.0",
     "delay": "^5.0.0",
     "email-addresses": "^5.0.0",
     "email-templates": "^8.0.8",
