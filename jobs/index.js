@@ -8,7 +8,8 @@ const jobs = [
   'vanity-domains',
   {
     name: 'sync-payment-histories',
-    interval: '24h'
+    interval: '24h',
+    timeout: 0
   },
   // {
   //   name: 'billing',
