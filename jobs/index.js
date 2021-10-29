@@ -6,6 +6,10 @@ const { boolean } = require('boolean');
 const jobs = [
   'migration',
   'vanity-domains',
+  {
+    name: 'sync-payment-histories',
+    interval: '24h'
+  },
   // {
   //   name: 'billing',
   //   date: dayjs().startOf('day').add(10, 'hour').toDate(),
