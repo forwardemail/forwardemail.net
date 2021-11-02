@@ -450,7 +450,7 @@ async function createDomainBilling(ctx) {
           invoice = await bitpay.CreateInvoice(invoice);
 
           ctx.logger.info('bitpay.CreateInvoice', { invoice });
-          ctx.body = { id: invoice.id };
+          ctx.body = { invoiceId: invoice.id };
         } catch (err) {
           ctx.logger.error(err);
           throw err;

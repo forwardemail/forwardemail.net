@@ -44,6 +44,66 @@ const PAYPAL_MAPPING = {
   }
 };
 
+if (process.env.NODE_ENV !== 'production') window.bitpay.enableTestMode();
+
+window.bitpay.onModalWillLeave(() => {
+  spinner.hide();
+});
+
+window.addEventListener('message', (ev) => {
+  const paymentStatus = ev.data.status;
+
+  if (paymentStatus === 'paid') {
+    // transacation has begun so we can close the bitpay frame
+    // and notify them of success
+    window.bitpay.hideFrame();
+    Swal.fire(
+      window._types.success,
+      'You will receive a notification once payment has been completed (approximately 10 mins).',
+      'success'
+    );
+
+    return;
+  }
+
+  if (paymentStatus === 'paidPartial') {
+    // payment was short
+    // BitPay will refund them
+    window.bitpay.hideFrame();
+    Swal.fire(
+      window._types.error,
+      'Partial payment was received. You will be refund, please try again.',
+      'error'
+    );
+
+    return;
+  }
+
+  if (paymentStatus === 'paidOver') {
+    // payment was over
+    // BitPay will refund them the difference
+    window.bitpay.hideFrame();
+    Swal.fire(
+      window._types.warn,
+      'Over payment was received. You will be refund the amount over.',
+      'warn'
+    );
+
+    return;
+  }
+
+  if (paymentStatus === 'expired') {
+    // invoice has expired
+    // the user will need to click the button again
+    window.bitpay.hideFrame();
+    Swal.fire(
+      window._types.error,
+      'Invoice has expired. Please try again.',
+      'error'
+    );
+  }
+});
+
 async function sendRequest(body) {
   const response = await superagent
     .post(window.location.pathname)
@@ -155,42 +215,6 @@ async function createPayPalOrder() {
   throw new Error(message);
 }
 
-async function createBitPayOrder() {
-  const body = qs.parse($formBilling.serialize());
-  const response = await sendRequest(body);
-
-  // Check if any errors occurred
-  if (response.err) {
-    // render an alert
-    Swal.fire(window._types.error, response.err.message, 'error');
-
-    // reject the promise
-    throw response.err;
-  }
-
-  //
-  // Either display a success message, redirect user, or reload page
-  //
-  // Use the same key name for order ID on the client and server
-  if (
-    typeof response.body === 'object' &&
-    response.body !== null &&
-    typeof response.body.orderID === 'string'
-  )
-    return response.body.orderID;
-
-  // Prepare a message
-  const message =
-    response.statusText ||
-    response.text ||
-    'Invalid response, please try again';
-  // Hide the spinner
-  spinner.hide();
-  // Show message
-  Swal.fire(window._types.error, message, 'error');
-  throw new Error(message);
-}
-
 // TODO: ajaxForm from @ladjs/assets should accept a callback function
 // which gets passed as the success callback to optionally do something custom
 $formBilling.on('submit', async function (ev) {
@@ -207,7 +231,10 @@ $formBilling.on('submit', async function (ev) {
     if (
       typeof response.body !== 'object' ||
       response.body === null ||
-      typeof response.body.sessionId !== 'string'
+      !(
+        typeof response.body.sessionId === 'string' ||
+        typeof response.body.invoiceId === 'string'
+      )
     )
       throw new Error(
         response.statusText ||
@@ -215,10 +242,14 @@ $formBilling.on('submit', async function (ev) {
           'Invalid response, please try again'
       );
 
-    const { sessionId } = response.body;
-    const result = await stripe.redirectToCheckout({ sessionId });
-    spinner.hide();
-    Swal.fire(window._types.error, result.error.message, 'error');
+    const { sessionId, invoiceId } = response.body;
+    if (sessionId) {
+      const result = await stripe.redirectToCheckout({ sessionId });
+      spinner.hide();
+      Swal.fire(window._types.error, result.error.message, 'error');
+    } else if (invoiceId) {
+      window.bitpay.showInvoice(invoiceId);
+    }
   } catch (err) {
     spinner.hide();
     Swal.fire(window._types.error, err.message, 'error');
