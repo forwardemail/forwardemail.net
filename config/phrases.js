@@ -28,7 +28,7 @@ module.exports = {
   INVALID_TOKEN: 'Invalid CSRF token.',
   INVALID_VERIFICATION_PIN: 'The verification code entered was invalid.',
   INVALID_PAYMENT_METHOD:
-    'Payment method must be either credit card or PayPal.',
+    'Payment method must be either credit card, PayPal, or BitPay.',
   INVALID_PAYMENT_TYPE: 'Payment type must be either one-time or subscription.',
   INVALID_PAYMENT_DURATION: 'Payment duration was invalid.',
   JAVASCRIPT_REQUIRED: 'Please enable JavaScript to continue.',

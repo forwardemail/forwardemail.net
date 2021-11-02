@@ -10,6 +10,7 @@ const titleize = require('titleize');
 const Stripe = require('stripe');
 const slug = require('speakingurl');
 const striptags = require('striptags');
+const { Client, Env, Tokens, Models, Currency } = require('bitpay-sdk');
 
 const env = require('../../../../config/env');
 const config = require('../../../../config');
@@ -21,6 +22,11 @@ const payPalClient = new checkoutNodeJssdk.core.PayPalHttpClient(
 );
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+
+const bitpayTokens = Tokens;
+bitpayTokens.merchant = env.BITPAY_MERCHANT_API_TOKEN;
+const bitpayEnv = env.NODE_ENV === 'production' ? Env.Prod : Env.Test;
+const bitpay = new Client(null, bitpayEnv, env.BITPAY_SECRET_KEY, bitpayTokens);
 
 const isTest =
   !env.STRIPE_SECRET_KEY || env.STRIPE_SECRET_KEY.startsWith('sk_test');
@@ -185,7 +191,7 @@ async function createDomainBilling(ctx) {
     // payment_method
     if (
       !isSANB(paymentMethod) ||
-      !['credit_card', 'paypal'].includes(paymentMethod)
+      !['credit_card', 'paypal', 'bitpay'].includes(paymentMethod)
     )
       throw ctx.translateError('INVALID_PAYMENT_METHOD');
 
@@ -205,7 +211,7 @@ async function createDomainBilling(ctx) {
     let price;
     if (paymentMethod === 'credit_card')
       price = STRIPE_MAPPING[plan][paymentType][paymentDuration];
-    else if (paymentMethod === 'paypal')
+    else if (paymentMethod === 'paypal' || paymentMethod === 'bitpay')
       price = PAYPAL_MAPPING[plan][paymentDuration];
 
     if (!isSANB(price) && !_.isFinite(price))
@@ -425,6 +431,37 @@ async function createDomainBilling(ctx) {
 
         throw new Error('test');
         */
+      }
+
+      return;
+    }
+
+    // bitpay
+    if (paymentMethod === 'bitpay') {
+      // one-time
+      if (paymentType === 'one-time') {
+        try {
+          let invoice = new Models.Invoice(price, Currency.USD);
+          invoice.itemDesc = description;
+          invoice.orderId = reference;
+          invoice.redirectURL = `${config.urls.web}${ctx.path}/?plan=${plan}`;
+          invoice.buyer = { email: ctx.state.user.email };
+
+          invoice = await bitpay.CreateInvoice(invoice);
+
+          ctx.logger.info('bitpay.CreateInvoice', { invoice });
+          ctx.body = { id: invoice.id };
+        } catch (err) {
+          ctx.logger.error(err);
+          throw err;
+        }
+
+        return;
+      }
+
+      // subscription
+      if (paymentType === 'subscription') {
+        return;
       }
 
       return;
