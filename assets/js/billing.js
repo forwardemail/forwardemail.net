@@ -8,6 +8,7 @@ const { spinner: Spinner } = require('@ladjs/assets');
 const $formBilling = $('#form-billing');
 const $stripeButtonContainer = $('#stripe-button-container');
 const $paypalButtonContainer = $('#paypal-button-container');
+const $bitpayButtonContainer = $('#bitpay-button-container');
 const $paymentType = $('input[name="payment_type"]');
 const $paymentMethod = $('input[name="payment_method"');
 const $paymentDuration = $('select[name="payment_duration"]');
@@ -85,7 +86,7 @@ async function sendRequest(body) {
   return response;
 }
 
-function createSubscription(data, actions) {
+function createPayPalSubscription(data, actions) {
   const duration = $paymentDuration.find('option:checked').val();
   if (typeof url.query.plan !== 'string')
     throw new Error('"plan" key missing from parsed querystring');
@@ -118,7 +119,43 @@ function createSubscription(data, actions) {
   });
 }
 
-async function createOrder() {
+async function createPayPalOrder() {
+  const body = qs.parse($formBilling.serialize());
+  const response = await sendRequest(body);
+
+  // Check if any errors occurred
+  if (response.err) {
+    // render an alert
+    Swal.fire(window._types.error, response.err.message, 'error');
+
+    // reject the promise
+    throw response.err;
+  }
+
+  //
+  // Either display a success message, redirect user, or reload page
+  //
+  // Use the same key name for order ID on the client and server
+  if (
+    typeof response.body === 'object' &&
+    response.body !== null &&
+    typeof response.body.orderID === 'string'
+  )
+    return response.body.orderID;
+
+  // Prepare a message
+  const message =
+    response.statusText ||
+    response.text ||
+    'Invalid response, please try again';
+  // Hide the spinner
+  spinner.hide();
+  // Show message
+  Swal.fire(window._types.error, message, 'error');
+  throw new Error(message);
+}
+
+async function createBitPayOrder() {
   const body = qs.parse($formBilling.serialize());
   const response = await sendRequest(body);
 
@@ -203,27 +240,42 @@ $paymentType.on('change', function () {
   )
     $paymentDuration.val('1y');
 
-  // conditionally update paypal button
-  updatePayPalButton();
+  // conditionally update buttons
+  updatePayButtons();
 });
 
 // when the user changes payment method to PayPal
 // we need to hide the "Continue" button and render
 // that PayPal button instead using their SDK
 // (and subsequently on toggle state switch it back)
-$paymentMethod.on('change', updatePayPalButton);
+$paymentMethod.on('change', updatePayButtons);
 
-function updatePayPalButton() {
+function updatePayButtons() {
   const paymentMethod = $('input[name="payment_method"]:checked').val();
   const paymentType = $('input[name="payment_type"]:checked').val();
+
+  if (paymentMethod === 'bitpay') {
+    // destroy the button if we need to
+    // (if button was set this indicates paypal is active)
+    if (button) button.close();
+
+    // hide the other pay containers
+    $paypalButtonContainer.addClass('d-none');
+    $stripeButtonContainer.addClass('d-none');
+
+    // show the stripe container
+    $bitpayButtonContainer.removeClass('d-none');
+    return;
+  }
 
   if (paymentMethod === 'credit_card') {
     // destroy the button if we need to
     // (if button was set this indicates paypal is active)
     if (button) button.close();
 
-    // hide the paypal container
+    // hide the other pay containers
     $paypalButtonContainer.addClass('d-none');
+    $bitpayButtonContainer.addClass('d-none');
 
     // show the stripe container
     $stripeButtonContainer.removeClass('d-none');
@@ -231,8 +283,9 @@ function updatePayPalButton() {
   }
 
   if (paymentMethod === 'paypal') {
-    // hide the stripe container
+    // hide the other pay containers
     $stripeButtonContainer.addClass('d-none');
+    $bitpayButtonContainer.addClass('d-none');
 
     // show the paypal container
     $paypalButtonContainer.removeClass('d-none');
@@ -273,8 +326,8 @@ function updatePayPalButton() {
     };
 
     if (paymentType === 'subscription')
-      props.createSubscription = createSubscription;
-    else props.createOrder = createOrder;
+      props.createSubscription = createPayPalSubscription;
+    else props.createOrder = createPayPalOrder;
 
     // attach it to the container and render it
     // eslint-disable-next-line new-cap
