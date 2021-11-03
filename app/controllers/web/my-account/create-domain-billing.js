@@ -442,7 +442,7 @@ async function createDomainBilling(ctx) {
       if (paymentType === 'one-time') {
         try {
           let invoice = new Models.Invoice(price, Currency.USD);
-          invoice.itemDesc = description;
+          invoice.itemDesc = plan;
           invoice.orderId = reference;
           invoice.redirectURL = `${config.urls.web}${ctx.path}/?plan=${plan}`;
           invoice.buyer = { email: ctx.state.user.email };
