@@ -1821,17 +1821,17 @@
   resolved "https://registry.yarnpkg.com/@paypal/paypalhttp/-/paypalhttp-1.0.1.tgz#406e337bf86cec7ea58c42eb167eb9b57ed88110"
   integrity sha512-DC7AHxTT7drF6dUi3YaFdPVuT15sIkpD5H2eHmdtFgxM4UanS1o1ZDfMhR9mpxd8o+X6pz2r+EZVRRq+n1cssQ==
 
-"@primer/css@^18.0.1":
-  version "18.0.1"
-  resolved "https://registry.yarnpkg.com/@primer/css/-/css-18.0.1.tgz#74ce5659ea48c3b13d1be7129670d3fcc0c663be"
-  integrity sha512-6xc0SAQGFDNl7Lc1ETOl5CIaLP4P3Vo+soWisoCNGWlLbJlHUAJGCSyLR1nZpoIS7vbZeSmwULUzOXzpnFpTFg==
+"@primer/css@^18.1.0":
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/@primer/css/-/css-18.1.0.tgz#fa4bad5726750122cb2dbf534828d864ddd3541a"
+  integrity sha512-B7ZjxeGPXzcaSm7dAp9n1C2tXDfJnRpdUlfLoTnsXWGKKgbHKgtDtwgRn+e0KGSDoNTmC85N3gemNfkT69D0kg==
   dependencies:
-    "@primer/primitives" "^5.0.0"
+    "@primer/primitives" "6.0.0"
 
-"@primer/primitives@^5.0.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@primer/primitives/-/primitives-5.1.0.tgz#698ad3a173f3a1d7090651cce0a7088e4b93da39"
-  integrity sha512-pW8DIh6rZV0/R7lxHnVRJ/tdN4kDVSpAtdcCecxKsvtgK5d9haekt3ERpM6i93xKwB5CJYy9ouuC9C0UqWPI0A==
+"@primer/primitives@6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@primer/primitives/-/primitives-6.0.0.tgz#a360f2b97f50a8918ef07c2257f0ea4dde8dfec0"
+  integrity sha512-idupwQC7vpMki4G2HBpQqTAD6MusFkipgfNXxETQ1D4yLkMQ1bMuif09dnHB7bhQBO5pXUFt52LMpPAnM5Zv4w==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
@@ -8717,10 +8717,10 @@ git-raw-commits@^2.0.0:
     split2 "^3.0.0"
     through2 "^4.0.0"
 
-github-markdown-css@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/github-markdown-css/-/github-markdown-css-4.0.0.tgz#be9f4caf7a389228d4c368336260ffc909061f35"
-  integrity sha512-mH0bcIKv4XAN0mQVokfTdKo2OD5K8WJE9+lbMdM32/q0Ie5tXgVN/2o+zvToRMxSTUuiTRcLg5hzkFfOyBYreg==
+github-markdown-css@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/github-markdown-css/-/github-markdown-css-5.0.0.tgz#829966927643426f0a43aabee9991a3ed532280d"
+  integrity sha512-0iojMu3BisjTYyGuQ6aVwnJZY4HgnyQtKvky25BGItHIcll4AHIWAtQ7Fy+6qQfkvjWdkHnZFRpFBQfMABr/EQ==
 
 github-slugger@^1.0.0, github-slugger@^1.1.1, github-slugger@^1.2.1:
   version "1.4.0"
