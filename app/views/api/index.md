@@ -28,8 +28,9 @@
   * [Update domain member](#update-domain-member)
   * [Remove domain member](#remove-domain-member)
 * [Aliases](#aliases)
-  * [Retrieve domain aliases](#retrieve-domain-aliases)
+  * [List domain aliases](#list-domain-aliases)
   * [Create new domain alias](#create-new-domain-alias)
+  * [Retrieve domain alias](#retrieve-domain-alias)
   * [Update domain alias](#update-domain-alias)
   * [Delete domain alias](#delete-domain-alias)
 
@@ -324,7 +325,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 ## Aliases
 
-### Retrieve domain aliases
+### List domain aliases
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -356,6 +357,28 @@ curl -X GET BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
+  -u API_TOKEN:
+```
+
+### Retrieve domain alias
+
+You can retrieve a domain alias by either its `id` or its `name` value.
+
+> `GET /v1/domains/:domain_name/aliases/:alias_id`
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
+  -u API_TOKEN:
+```
+
+> `GET /v1/domains/:domain_name/aliases/:alias_name`
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
   -u API_TOKEN:
 ```
 
