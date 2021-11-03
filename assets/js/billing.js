@@ -26,6 +26,7 @@ delete url.query.paypal_order_id;
 delete url.query.session_id;
 
 let button;
+let invoice;
 
 const PAYPAL_MAPPING = {
   enhanced_protection: {
@@ -57,10 +58,12 @@ window.addEventListener('message', (ev) => {
     // transacation has begun so we can close the bitpay frame
     // and notify them of success
     window.bitpay.hideFrame();
-    Swal.fire(
-      window._types.success,
-      'You will receive a notification once payment has been completed (approximately 10 mins).',
-      'success'
+    Swal.fire(window._types.success, 'Payment received!', 'success');
+
+    // redirect
+    url.query.bitpay_invoice_id = invoice;
+    window.location = url.toString((query) =>
+      qs.stringify(query, { addQueryPrefix: true, format: 'RFC1738' })
     );
 
     return;
@@ -87,6 +90,12 @@ window.addEventListener('message', (ev) => {
       window._types.warn,
       'Over payment was received. You will be refund the amount over.',
       'warn'
+    );
+
+    // redirect
+    url.query.bitpay_invoice_id = invoice;
+    window.location = url.toString((query) =>
+      qs.stringify(query, { addQueryPrefix: true, format: 'RFC1738' })
     );
 
     return;
@@ -248,6 +257,7 @@ $formBilling.on('submit', async function (ev) {
       spinner.hide();
       Swal.fire(window._types.error, result.error.message, 'error');
     } else if (invoiceId) {
+      invoice = invoiceId;
       window.bitpay.showInvoice(invoiceId);
     }
   } catch (err) {

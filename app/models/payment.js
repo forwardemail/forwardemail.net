@@ -55,7 +55,8 @@ const Payment = new mongoose.Schema({
       'unionpay',
       'visa',
       'unknown',
-      'paypal'
+      'paypal',
+      'bitpay'
     ]
   },
   // this is the duration of time added
@@ -90,7 +91,10 @@ const Payment = new mongoose.Schema({
   stripe_subscription_id: String,
   stripe_payment_intent_id: String,
   paypal_order_id: String,
-  paypal_subscription_id: String
+  paypal_subscription_id: String,
+  bitpay_invoice_id: String,
+  bitpay_display_amount_paid: String,
+  bitpay_transaction_currency: String
 });
 
 Payment.virtual('description').get(function () {
