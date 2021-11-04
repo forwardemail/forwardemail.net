@@ -1020,7 +1020,7 @@ async function retrieveDomainBilling(ctx) {
             bitpay_invoice_id: invoice.id,
             bitpay_transaction_currency:
               invoice.buyerProvidedInfo.selectedTransactionCurrency,
-            bitpay_display_amount_paid: invoice.displayAmounPaid
+            bitpay_display_amount_paid: invoice.displayAmountPaid
           }),
           ctx.state.user.save()
         ]);
