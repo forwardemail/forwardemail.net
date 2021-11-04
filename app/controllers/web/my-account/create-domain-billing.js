@@ -445,6 +445,8 @@ async function createDomainBilling(ctx) {
           invoice.itemDesc = plan;
           invoice.orderId = reference;
           invoice.redirectURL = `${config.urls.web}${ctx.path}/?plan=${plan}`;
+          invoice.notificationURL = `${config.urls.web}/v1/bitpay`;
+          invoice.extendedNotifications = true;
           invoice.buyer = { email: ctx.state.user.email };
 
           invoice = await bitpay.CreateInvoice(invoice);

@@ -212,5 +212,6 @@ module.exports = {
   CAPTCHA_SERVICE_ERROR: 'Captcha service error.',
   CAPTCHA_NOT_VERIFIED: 'Captcha not verified.',
   MISSING_PORTAL_CREDENTIALS:
-    'Missing stripe subscription or customer id for stripe billing portal.'
+    'Missing stripe subscription or customer id for stripe billing portal.',
+  INVALID_BITPAY_PAYMENT: 'Payment via BitPay was not enough.'
 };
