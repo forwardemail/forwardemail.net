@@ -294,11 +294,18 @@ $paymentMethod.on('change', updatePayButtons);
 function updatePayButtons() {
   const paymentMethod = $('input[name="payment_method"]:checked').val();
   const paymentType = $('input[name="payment_type"]:checked').val();
+  const $subscriptionInput = $('input#input-payment-type-subscription');
+  const $oneTimeInput = $('input#input-payment-type-one-time');
 
   if (paymentMethod === 'bitpay') {
     // destroy the button if we need to
     // (if button was set this indicates paypal is active)
     if (button) button.close();
+
+    // disable subscription input
+    $subscriptionInput.prop('disabled', true);
+    $subscriptionInput.prop('checked', false);
+    $oneTimeInput.prop('checked', true);
 
     // hide the other pay containers
     $paypalButtonContainer.addClass('d-none');
@@ -314,6 +321,9 @@ function updatePayButtons() {
     // (if button was set this indicates paypal is active)
     if (button) button.close();
 
+    // enable subscription input
+    $subscriptionInput.prop('disabled', false);
+
     // hide the other pay containers
     $paypalButtonContainer.addClass('d-none');
     $bitpayButtonContainer.addClass('d-none');
@@ -324,6 +334,9 @@ function updatePayButtons() {
   }
 
   if (paymentMethod === 'paypal') {
+    // enable subscription input
+    $subscriptionInput.prop('disabled', false);
+
     // hide the other pay containers
     $stripeButtonContainer.addClass('d-none');
     $bitpayButtonContainer.addClass('d-none');
