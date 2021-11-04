@@ -461,7 +461,8 @@ async function createDomainBilling(ctx) {
 
       // subscription
       if (paymentType === 'subscription') {
-        return;
+        ctx.logger.error('Payment type must be one-time.');
+        throw ctx.translateError('INVALID_PAYMENT_TYPE_BITPAY');
       }
 
       return;
