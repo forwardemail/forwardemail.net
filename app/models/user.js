@@ -94,12 +94,24 @@ const User = new mongoose.Schema({
 const object = {};
 
 // stripe
-object[config.userFields.stripeCustomerID] = String;
-object[config.userFields.stripeSubscriptionID] = String;
+object[config.userFields.stripeCustomerID] = {
+  type: String,
+  unique: true
+};
+object[config.userFields.stripeSubscriptionID] = {
+  type: String,
+  unique: true
+};
 
 // paypal
-object[config.userFields.paypalPayerID] = String;
-object[config.userFields.paypalSubscriptionID] = String;
+object[config.userFields.paypalPayerID] = {
+  type: String,
+  unique: true
+};
+object[config.userFields.paypalSubscriptionID] = {
+  type: String,
+  unique: true
+};
 
 // two factor auth reminders
 object[config.userFields.twoFactorReminderSentAt] = Date;
@@ -172,14 +184,7 @@ object[config.userFields.pendingRecovery] = {
   default: false
 };
 
-object[config.userFields.pendingRecovery] = {
-  type: Boolean,
-  default: false
-};
-
 // list of account updates that are batched every 1 min.
-object[config.userFields.accountUpdates] = Array;
-
 object[config.userFields.accountUpdates] = Array;
 
 // shared field names with @ladjs/passport for consistency
