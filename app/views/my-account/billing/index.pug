@@ -1,32 +1,6 @@
 extends ../../layout
 
-mixin paymentMethod(payment)
-  if payment.method === 'paypal'
-    i.fab.fa-paypal
-    |  PayPal
-  else
-    case payment.method
-      when 'amex'
-        i.fa.fa-cc-amex
-      when 'diners'
-        i.fa.fa-cc-diners-club
-      when 'discover'
-        i.fa.fa-cc-discover
-      when 'jcb'
-        i.fa.fa-cc-jcb
-      when 'mastercard'
-        i.fa.fa-cc-mastercard
-      when 'visa'
-        i.fa.fa-cc-visa
-      default
-        i.fa.fa-credit-card
-    = ' '
-    = titleize(humanize(payment.method))
-    if payment.last4
-      small= ' x'
-      = payment.last4
-    if payment.exp_month && payment.exp_year
-      small.text-muted.text-uppercase= ` ${payment.exp_month}/${payment.exp_year.toString().slice(2)}`
+include ./_payment-method.pug
 
 mixin receipt(payment)
   .btn-group

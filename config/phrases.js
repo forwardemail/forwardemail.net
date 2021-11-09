@@ -28,8 +28,9 @@ module.exports = {
   INVALID_TOKEN: 'Invalid CSRF token.',
   INVALID_VERIFICATION_PIN: 'The verification code entered was invalid.',
   INVALID_PAYMENT_METHOD:
-    'Payment method must be either credit card or PayPal.',
+    'Payment method must be either credit card, PayPal, or BitPay.',
   INVALID_PAYMENT_TYPE: 'Payment type must be either one-time or subscription.',
+  INVALID_PAYMENT_TYPE_BITPAY: 'Payment type must be one-time.',
   INVALID_PAYMENT_DURATION: 'Payment duration was invalid.',
   JAVASCRIPT_REQUIRED: 'Please enable JavaScript to continue.',
   EMAIL_VERIFICATION_REQUIRED: 'Please verify your email address to continue.',
@@ -211,5 +212,6 @@ module.exports = {
   CAPTCHA_SERVICE_ERROR: 'Captcha service error.',
   CAPTCHA_NOT_VERIFIED: 'Captcha not verified.',
   MISSING_PORTAL_CREDENTIALS:
-    'Missing stripe subscription or customer id for stripe billing portal.'
+    'Missing stripe subscription or customer id for stripe billing portal.',
+  INVALID_BITPAY_PAYMENT: 'Payment via BitPay was not enough.'
 };

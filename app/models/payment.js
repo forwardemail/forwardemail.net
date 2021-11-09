@@ -55,7 +55,8 @@ const Payment = new mongoose.Schema({
       'unionpay',
       'visa',
       'unknown',
-      'paypal'
+      'paypal',
+      'bitpay'
     ]
   },
   // this is the duration of time added
@@ -90,7 +91,10 @@ const Payment = new mongoose.Schema({
   stripe_subscription_id: String,
   stripe_payment_intent_id: String,
   paypal_order_id: String,
-  paypal_subscription_id: String
+  paypal_subscription_id: String,
+  bitpay_invoice_id: String,
+  bitpay_display_amount_paid: String,
+  bitpay_transaction_currency: String
 });
 
 Payment.virtual('description').get(function () {
@@ -120,7 +124,10 @@ async function getUniqueReference(payment) {
 
 Payment.pre('validate', async function (next) {
   try {
-    this.amount_formatted = accounting.formatMoney(this.amount / 100);
+    this.amount_formatted =
+      this.bitpay_transaction_currency && this.bitpay_display_amount_paid
+        ? `${this.bitpay_display_amount_paid} ${this.bitpay_transaction_currency}`
+        : accounting.formatMoney(this.amount / 100);
 
     if (!isSANB(this.reference))
       this.reference = await cryptoRandomString.async(config.referenceOptions);
