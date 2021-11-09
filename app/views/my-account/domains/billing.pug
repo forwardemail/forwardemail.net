@@ -6,6 +6,7 @@ append scripts
   script(src='https://js.stripe.com/v3/')
   //- PayPal
   script(src=`https://www.paypal.com/sdk/js?client-id=${config.paypal.clientID}&vault=true${config.env === 'production' ? '' : '&debug=true'}`)
+  script(src='https://bitpay.com/bitpay.min.js')
   script(defer, src=manifest('js/billing.js'), integrity=manifest('js/billing.js', 'integrity'), crossorigin='anonymous')
 
 block body
@@ -46,6 +47,9 @@ block body
                 .form-check.form-check-inline
                   input(type='radio', required, name='payment_method', value='paypal')#input-payment-method-paypal.form-check-input
                   label(for='input-payment-method-paypal').form-check-label.lead= t('PayPal')
+                .form-check.form-check-inline
+                  input(type='radio', required, name='payment_method', value='bitpay')#input-payment-method-bitpay.form-check-input
+                  label(for='input-payment-method-bitpay').form-check-label.lead= t('BitPay')
 
               //- Payment Type
               //- TODO: default to last one used
@@ -93,6 +97,9 @@ block body
 
               //- Continue (PayPal)
               #paypal-button-container.d-none
+
+              //- Continue (BitPay)
+              input#bitpay-button-container.btn.btn-dark.btn-lg.btn-block.p-0.d-none(type="image", src="https://www.bitpay.com/cdn/en_US/bp-btn-pay.svg", alt="Pay with BitPay")
 
               p.text-muted.pt-3.mb-0: small.text-muted= t('We accept all major currencies and card types.')
 

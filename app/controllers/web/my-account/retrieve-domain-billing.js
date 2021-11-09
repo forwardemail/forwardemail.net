@@ -11,6 +11,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const paypal = require('paypal-rest-sdk');
 const superagent = require('superagent');
+const { Client, Env, Tokens } = require('bitpay-sdk');
 
 const env = require('../../../../config/env');
 const config = require('../../../../config');
@@ -34,6 +35,11 @@ paypal.configure({
   client_id: env.PAYPAL_CLIENT_ID,
   client_secret: env.PAYPAL_SECRET
 });
+
+const bitpayTokens = Tokens;
+bitpayTokens.merchant = env.BITPAY_MERCHANT_API_TOKEN;
+const bitpayEnv = env.NODE_ENV === 'production' ? Env.Prod : Env.Test;
+const bitpay = new Client(null, bitpayEnv, env.BITPAY_SECRET_KEY, bitpayTokens);
 
 const isTest =
   !env.STRIPE_SECRET_KEY || env.STRIPE_SECRET_KEY.startsWith('sk_test');
@@ -285,6 +291,7 @@ async function retrieveDomainBilling(ctx) {
       !isSANB(ctx.query.session_id) &&
       !isSANB(ctx.query.paypal_order_id) &&
       !isSANB(ctx.query.paypal_subscription_id) &&
+      !isSANB(ctx.query.bitpay_invoice_id) &&
       (isAccountUpgrade ||
         isMakePayment ||
         (ctx.query.plan === 'team' && ctx.state.user.plan !== 'team') ||
@@ -945,6 +952,87 @@ async function retrieveDomainBilling(ctx) {
 
       // re-assign if needed
       ctx.state.user = user;
+    }
+
+    //
+    // bitpay (one-time payment)
+    //
+    if (isSANB(ctx.query.bitpay_invoice_id)) {
+      try {
+        const invoice = await bitpay.GetInvoice(ctx.query.bitpay_invoice_id);
+        ctx.logger.info('bitpay.GetInvoice', { invoice });
+
+        // validate plans matched up
+        if (
+          !['team', 'enhanced_protection'].includes(invoice.itemDesc) ||
+          invoice.itemDesc !== ctx.query.plan
+        )
+          throw ctx.translateError('UNKNOWN_ERROR');
+
+        // we will take the amount and divide it by the cost per the custom_id
+        // in order to determine the duration the customer purchased/added
+        const amount = Number(invoice.price);
+        const months = Math.round(amount / (ctx.query.plan === 'team' ? 9 : 3));
+        if (!_.isFinite(months) || months < 1)
+          throw ctx.translateError('UNKNOWN_ERROR');
+
+        // if they upgraded their plan then store it on the user object
+        if (!isMakePayment) ctx.state.user.plan = ctx.query.plan;
+
+        let now = new Date(invoice.invoiceTime);
+        if (!_.isDate(now)) now = new Date();
+
+        // if for whatever reason they never had a plan set at date then set one
+        if (!_.isDate(ctx.state.user[config.userFields.planSetAt]))
+          ctx.state.user[config.userFields.planSetAt] = now;
+
+        // if they're just making a one time payment we want to simply add to their account
+        if (isMakePayment) {
+          // ensure there was an existing plan expiration, otherwise set one for safety
+          if (!_.isDate(ctx.state.user[config.userFields.planExpiresAt]))
+            ctx.state.user[config.userFields.planExpiresAt] = now;
+          // now add to the plan expiration the length in time necessary
+          ctx.state.user[config.userFields.planExpiresAt] = dayjs(
+            ctx.state.user[config.userFields.planExpiresAt]
+          )
+            .add(months, 'month')
+            .toDate();
+        } else {
+          // set planSetAt (since we're changing plans or making an upgrade/change to the plan)
+          ctx.state.user[config.userFields.planSetAt] = now;
+          ctx.state.user[config.userFields.planExpiresAt] = dayjs(
+            ctx.state.user[config.userFields.planSetAt]
+          )
+            .add(months, 'month')
+            .toDate();
+        }
+
+        // create payment
+        const [payment, user] = await Promise.all([
+          Payments.create({
+            user: ctx.state.user._id,
+            reference: invoice.orderId,
+            amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
+            method: 'bitpay',
+            duration: dayjs(now).add(months, 'month').diff(new Date()),
+            plan: ctx.query.plan,
+            kind: 'one-time',
+            bitpay_invoice_id: invoice.id,
+            bitpay_transaction_currency:
+              invoice.buyerProvidedInfo.selectedTransactionCurrency,
+            bitpay_display_amount_paid: invoice.displayAmountPaid
+          }),
+          ctx.state.user.save()
+        ]);
+
+        // log the payment just for sanity
+        ctx.logger.info('payment created', { payment });
+
+        // re-assign if needed
+        ctx.state.user = user;
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
     }
 
     // save the user or domain's new plan
