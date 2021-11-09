@@ -11,7 +11,7 @@ async function list(ctx) {
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
       .lean()
-      .sort('-created_at')
+      .sort(ctx.query.sort || '-created_at')
       .exec(),
     Users.countDocuments({})
   ]);
