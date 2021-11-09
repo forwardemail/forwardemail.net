@@ -1,0 +1,17 @@
+
+mixin sort_header(name, text)
+  a(
+    href=paginate.href(
+      {
+        sort:
+          ctx.query.sort === name
+            ? `-${name}`
+            : (ctx.query.sort === `-${name}`
+              ? false
+              : name)
+      }
+    )
+  ).btn.btn-block.text-nowrap.text-reset.text-capitalize
+    = t(text ? text : name.replace('_', ' '))
+    = ' '
+    i.fas(class=ctx.query.sort === name || (!ctx.query.sort && name === 'created_at') ? 'fa-sort-up' : (ctx.query.sort === `-${name}` ? 'fa-sort-down' : 'fa-sort'))
