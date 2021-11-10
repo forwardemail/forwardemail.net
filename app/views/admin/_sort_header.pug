@@ -1,6 +1,6 @@
 
-mixin sort_header(name, text, tableId)
-  - const classes = tableId ? 'ajax-form table-ajax-form' : ''
+mixin sort_header(name, text, tableSelector)
+  - const classes = tableSelector ? 'ajax-form table-ajax-form' : ''
   form(
     class=classes,
     action=paginate.href(
@@ -13,8 +13,8 @@ mixin sort_header(name, text, tableId)
               : name)
       }
     ),
-    method=tableId ? 'POST' : 'GET',
-    data-table-id=tableId
+    method=tableSelector ? 'POST' : 'GET',
+    data-table=tableSelector
   )
     button.btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold(type='submit')
       = t(text ? text : name.replace('_', ' '))
