@@ -12,6 +12,7 @@ router.use(policies.ensureOtp);
 router.use(web.breadcrumbs);
 router.get('/', render('admin'));
 router.get('/users', paginate.middleware(10, 50), web.admin.users.list);
+router.post('/users', paginate.middleware(10, 50), web.admin.users.list);
 router.get('/users/:id', web.admin.users.retrieve);
 router.put('/users/:id', web.admin.users.update);
 router.post('/users/:id/login', web.admin.users.login);
