@@ -1,7 +1,9 @@
 
-mixin sort_header(name, text)
-  a(
-    href=paginate.href(
+mixin sort_header(name, text, tableId)
+  - const classes = tableId ? 'ajax-form table-ajax-form' : ''
+  form(
+    class=classes,
+    action=paginate.href(
       {
         sort:
           ctx.query.sort === name
@@ -10,8 +12,11 @@ mixin sort_header(name, text)
               ? false
               : name)
       }
-    )
-  ).btn.btn-block.text-nowrap.text-reset.text-capitalize
-    = t(text ? text : name.replace('_', ' '))
-    = ' '
-    i.fas(class=ctx.query.sort === name || (!ctx.query.sort && name === 'created_at') ? 'fa-sort-up' : (ctx.query.sort === `-${name}` ? 'fa-sort-down' : 'fa-sort'))
+    ),
+    method=tableId ? 'POST' : 'GET',
+    data-table-id=tableId
+  )
+    button.btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold(type='submit')
+      = t(text ? text : name.replace('_', ' '))
+      = ' '
+      i.fas(class=ctx.query.sort === name || (!ctx.query.sort && name === 'created_at') ? 'fa-sort-up' : (ctx.query.sort === `-${name}` ? 'fa-sort-down' : 'fa-sort'))

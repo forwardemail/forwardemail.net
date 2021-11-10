@@ -6,23 +6,23 @@ include ../_sort_header
     thead.thead-dark
       tr
         th(scope='col')
-          +sort_header(config.passport.fields.givenName, 'First Name')
+          +sort_header(config.passport.fields.givenName, 'First Name', 'table-users')
         th(scope='col')
-          +sort_header(config.passport.fields.familyName, 'Last Name')
+          +sort_header(config.passport.fields.familyName, 'Last Name', 'table-users')
         th(scope='col')
-          +sort_header('email')
+          +sort_header('email', null, 'table-users')
         th(scope='col')
-          +sort_header('group')
+          +sort_header('group', null, 'table-users')
         th(scope='col')
-          +sort_header('created_at', 'Created')
+          +sort_header('created_at', 'Created', 'table-users')
         th(scope='col')
-          +sort_header('updated_at', 'Updated')
+          +sort_header('updated_at', 'Updated', 'table-users')
         th(scope='col')
-          +sort_header('last_login_at', 'Last Login')
+          +sort_header('last_login_at', 'Last Login', 'table-users')
         if boolean(process.env.AUTH_OTP_ENABLED)
           th(scope='col')
-            +sort_header(config.passport.fields.otpEnabled, 'OTP Enabled')
-        th(scope='col')= t('Actions')
+            +sort_header(config.passport.fields.otpEnabled, 'OTP Enabled', 'table-users')
+        th.text-center.align-middle(scope='col')= t('Actions')
     tbody
       each user in users
         tr
