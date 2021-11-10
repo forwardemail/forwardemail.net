@@ -1,8 +1,6 @@
 
 extends ../../layout
 
-include ../_sort_header.pug
-
 block body
   .container-fluid.py-3
     .row.mt-1
@@ -11,54 +9,11 @@ block body
         if users.length === 0
           .alert.alert-info= t('No users exist yet')
         else
-          .table-responsive
-            table.table.table-hover.table-bordered
-              thead.thead-dark
-                tr
-                  th(scope='col')
-                    +sort_header(config.passport.fields.givenName, 'First Name')
-                  th(scope='col')
-                    +sort_header(config.passport.fields.familyName, 'Last Name')
-                  th(scope='col')
-                    +sort_header('email')
-                  th(scope='col')
-                    +sort_header('group')
-                  th(scope='col')
-                    +sort_header('created_at', 'Created')
-                  th(scope='col')
-                    +sort_header('updated_at', 'Updated')
-                  th(scope='col')
-                    +sort_header('last_login_at', 'Last Login')
-                  th(scope='col')
-                    +sort_header(config.storeIPAddress.ip, 'Last IP')
-                  th(scope='col')
-                    +sort_header(config.lastLocaleField, 'Last Locale')
-                  if boolean(process.env.AUTH_OTP_ENABLED)
-                    th(scope='col')
-                      +sort_header(config.passport.fields.otpEnabled, 'OTP Enabled')
-                  th(scope='col')= t('Actions')
-              tbody
-                each user in users
-                  tr
-                    td.align-middle= user[config.passport.fields.givenName]
-                    td.align-middle= user[config.passport.fields.familyName]
-                    td.align-middle: a(href=`mailto:${user.email}`, target='_blank')= user.email
-                    td.align-middle= titleize(user.group)
-                    td.align-middle= dayjs(user.created_at).format('M/D/YY h:mm A')
-                    td.align-middle= dayjs(user.updated_at).format('M/D/YY h:mm A')
-                    td.align-middle= dayjs(user.last_login_at).format('M/D/YY h:mm A')
-                    td.align-middle: code= user[config.storeIPAddress.ip]
-                    td.align-middle: code= user[config.lastLocaleField]
-                    if boolean(process.env.AUTH_OTP_ENABLED)
-                      td.align-middle= user[config.passport.fields.otpEnabled]
-                    td.align-middle
-                      .btn-group(role='group', aria-label=t('Actions'))
-                        a(href=l(`/admin/users/${user.id}`), data-toggle='tooltip', data-title=t('Edit')).btn.btn-secondary: i.fa.fa-fw.fa-edit
-                        form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}/login`), method="POST", autocomplete="off")
-                          input(type="hidden", name="_csrf", value=ctx.csrf)
-                          button(type='submit', data-toggle='tooltip', data-title=t('Log in as user')).btn.btn-secondary: i.fa.fa-fw.fa-user-secret
-                        form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}`), method="POST", autocomplete="off")
-                          input(type="hidden", name="_csrf", value=ctx.csrf)
-                          input(type="hidden", name="_method", value="DELETE")
-                          button(type='submit', data-toggle='tooltip', data-title=t('Remove')).btn.btn-secondary: i.fa.fa-fw.fa-remove
-          include ../../_pagination
+          form.ajax-form.table-ajax-form(action=ctx.path, method="POST", data-table-id='table-users')
+            input(type='hidden', name='_csrf', value=ctx.csrf)
+            .input-group.mb-3.px-3
+              input.form-control#input-keyword-search(type='text', value=isSANB(ctx.query.keyword) ? ctx.query.keyword : '', name='keyword', placeholder='Keyword')
+              .input-group-append
+                button.btn.btn-success(type="submit")= t('Search')
+          #table-users
+            include ./_table
