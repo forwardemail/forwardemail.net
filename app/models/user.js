@@ -94,24 +94,12 @@ const User = new mongoose.Schema({
 const object = {};
 
 // stripe
-object[config.userFields.stripeCustomerID] = {
-  type: String,
-  unique: true
-};
-object[config.userFields.stripeSubscriptionID] = {
-  type: String,
-  unique: true
-};
+object[config.userFields.stripeCustomerID] = String;
+object[config.userFields.stripeSubscriptionID] = String;
 
 // paypal
-object[config.userFields.paypalPayerID] = {
-  type: String,
-  unique: true
-};
-object[config.userFields.paypalSubscriptionID] = {
-  type: String,
-  unique: true
-};
+object[config.userFields.paypalPayerID] = String;
+object[config.userFields.paypalSubscriptionID] = String;
 
 // two factor auth reminders
 object[config.userFields.twoFactorReminderSentAt] = Date;

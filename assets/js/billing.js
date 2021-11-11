@@ -55,7 +55,7 @@ window.addEventListener('message', (ev) => {
   const paymentStatus = ev.data.status;
 
   if (paymentStatus === 'paid') {
-    // transacation has begun so we can close the bitpay frame
+    // transaction has begun so we can close the bitpay frame
     // and notify them of success
     window.bitpay.hideFrame();
     Swal.fire(window._types.success, 'Payment received!', 'success');
@@ -75,7 +75,7 @@ window.addEventListener('message', (ev) => {
     window.bitpay.hideFrame();
     Swal.fire(
       window._types.error,
-      'Partial payment was received. You will be refund, please try again.',
+      'Partial payment was received. You will be refunded, please try again.',
       'error'
     );
 

@@ -845,6 +845,7 @@ async function retrieveDomainBilling(ctx) {
 
         // validate plans matched up
         if (
+          !_.isObject(invoice) ||
           !['team', 'enhanced_protection'].includes(invoice.itemDesc) ||
           invoice.itemDesc !== ctx.query.plan
         )

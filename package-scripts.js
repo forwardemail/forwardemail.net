@@ -13,6 +13,7 @@ module.exports = {
     watch: 'gulp watch',
     clean: 'gulp clean',
     build: 'gulp build',
+    buildTest: 'NODE_ENV=test gulp build',
     publishAssets: 'gulp publish',
 
     lintJs: 'gulp xo',
@@ -21,7 +22,12 @@ module.exports = {
     lint: concurrent.nps('lint-js', 'lint-md', 'lint-pug'),
 
     // <https://github.com/kentcdodds/nps-utils/issues/24>
-    pretest: concurrent.nps('lint', 'build', 'pretest-mongo', 'pretest-redis'),
+    pretest: concurrent.nps(
+      'lint',
+      'build-test',
+      'pretest-mongo',
+      'pretest-redis'
+    ),
     pretestMongo: "mongo forwardemail_test --eval 'db.dropDatabase()'",
     // <https://stackoverflow.com/a/16974060/3586413>
     pretestRedis:
