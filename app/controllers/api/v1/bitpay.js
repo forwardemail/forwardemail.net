@@ -1,5 +1,6 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const isSANB = require('is-string-and-not-blank');
 const { Client, Env, Tokens } = require('bitpay-sdk');
 
 const env = require('../../../../config/env');
@@ -13,6 +14,9 @@ const bitpay = new Client(null, bitpayEnv, env.BITPAY_SECRET_KEY, bitpayTokens);
 async function webhook(ctx) {
   try {
     const { body } = ctx.request;
+
+    if (!isSANB(body.id))
+      throw Boom.badRequest(ctx.translateError('INVALID_BITPAY_PAYMENT'));
 
     // eslint-disable-next-line new-cap
     const invoice = await bitpay.GetInvoice(body.id);

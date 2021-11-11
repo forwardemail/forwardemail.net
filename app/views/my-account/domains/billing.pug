@@ -99,9 +99,9 @@ block body
               #paypal-button-container.d-none
 
               //- Continue (BitPay)
-              input#bitpay-button-container.btn.btn-dark.btn-lg.btn-block.p-0.d-none(type="image", src="https://www.bitpay.com/cdn/en_US/bp-btn-pay.svg", alt="Pay with BitPay")
+              input#bitpay-button-container.p-0.d-none(type="image", src=manifest('img/btn-bitpay.svg'), alt='Pay with BitPay')
 
-              p.text-muted.pt-3.mb-0: small.text-muted= t('We accept all major currencies and card types.')
+              p.text-muted.pt-3.mb-0: small.text-muted= t('We accept all major currencies, card types, and cryptocurrencies.')
 
           .card-footer.text-muted.text-center= t("We'll automatically email you if you're late on a payment.")
         if !isMakePayment

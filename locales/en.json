@@ -1642,5 +1642,15 @@
   "Note that we also support our ": "Note that we also support our ",
   "disabled alias feature": "disabled alias feature",
   " for the recipient portion with our regex support.": " for the recipient portion with our regex support.",
-  "Manage Billing": "Manage Billing"
+  "Manage Billing": "Manage Billing",
+  "List domain aliases": "List domain aliases",
+  "Retrieve domain alias": "Retrieve domain alias",
+  "You can retrieve a domain alias by either its ": "You can retrieve a domain alias by either its ",
+  " or its ": " or its ",
+  " value.": " value.",
+  ", and cryptocurrencies with ": ", and cryptocurrencies with ",
+  "BitPay": "BitPay",
+  "We accept deibt and credit cards using ": "We accept deibt and credit cards using ",
+  "We accept debit and credit cards using ": "We accept debit and credit cards using ",
+  " – for one-time payments or monthly, quarterly, or yearly subscriptions.": " – for one-time payments or monthly, quarterly, or yearly subscriptions."
 }
