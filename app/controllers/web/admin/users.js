@@ -8,13 +8,13 @@ const config = require('../../../../config');
 async function list(ctx) {
   let q = {};
 
-  if (ctx.request.body?.keyword) {
+  if (ctx.query.keyword) {
     q = { $or: [] };
 
     for (const field of Object.keys(Users.schema.paths)) {
       // only search fields that are strings
       if (Users.schema.paths[field].instance === 'String') {
-        q.$or.push({ [field]: { $regex: ctx.request.body.keyword } });
+        q.$or.push({ [field]: { $regex: ctx.query.keyword } });
       }
     }
   }
