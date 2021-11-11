@@ -1,6 +1,6 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const { Client, Env, Tokens, Models, Currency } = require('bitpay-sdk');
+const { Client, Env, Tokens } = require('bitpay-sdk');
 
 const env = require('../../../../config/env');
 
@@ -14,6 +14,7 @@ async function webhook(ctx) {
   try {
     const { body } = ctx.request;
 
+    // eslint-disable-next-line new-cap
     const invoice = await bitpay.GetInvoice(body.id);
 
     if (!_.isObject(invoice) || invoice.exceptionStatus === 'paidPartial')

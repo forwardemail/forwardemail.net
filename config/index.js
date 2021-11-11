@@ -21,6 +21,7 @@ const loggerConfig = require('./logger');
 const meta = require('./meta');
 const phrases = require('./phrases');
 const utilities = require('./utilities');
+const payments = require('./payments');
 
 const config = {
   // package.json
@@ -401,5 +402,7 @@ if (
 
 // launch date is 11/23/2020 at 10:00 AM
 config.launchDate = dayjs('11/23/2020 10:00 AM', 'MM/DD/YYYY h:mm A').toDate();
+
+config.payments = payments;
 
 module.exports = config;
