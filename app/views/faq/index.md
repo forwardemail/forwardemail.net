@@ -94,7 +94,7 @@
   </span>
 </div>
 
-<table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
+<table id="table-dns-management-by-registrar" class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Registrar</th>
@@ -208,7 +208,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using <code>now</code> CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>Using <code class="text-light">now</code> CLI <i class="fa fa-angle-right"></i> <code class="text-light">now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
@@ -216,7 +216,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <code>...</code> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>Sign in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <code class="text-light">...</code> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
@@ -244,7 +244,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -260,14 +260,14 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>10</td>
-      <td><code>mx1.forwardemail.net</code></td>
+      <td><code class="text-light">mx1.forwardemail.net</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>10</td>
-      <td><code>mx2.forwardemail.net</code></td>
+      <td><code class="text-light">mx2.forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
@@ -296,7 +296,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -310,7 +310,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -337,7 +337,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -351,7 +351,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=hello:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -368,7 +368,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -382,7 +382,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -399,7 +399,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -413,31 +413,31 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=help:user@gmail.com,foo:user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=help:user@gmail.com,foo:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=orders:user@gmail.com,baz:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=info:user@gmail.com,beep:user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=info:user@gmail.com,beep:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=errors:user@gmail.com,boop:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -454,7 +454,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -468,7 +468,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=example.net</code></td>
+      <td><code class="text-light">forward-email=example.net</code></td>
     </tr>
   </tbody>
 </table>
@@ -485,7 +485,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -499,7 +499,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+      <td><code class="text-light">forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
     </tr>
   </tbody>
 </table>
@@ -516,7 +516,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -530,7 +530,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+      <td><code class="text-light">forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
     </tr>
   </tbody>
 </table>
@@ -539,7 +539,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 
 </li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following "TXT" record:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -553,7 +553,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>v=spf1 a mx include:spf.forwardemail.net -all</code></td>
+      <td><code class="text-light">v=spf1 a mx include:spf.forwardemail.net -all</code></td>
     </tr>
   </tbody>
 </table>
@@ -564,9 +564,9 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Important:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code class="text-light">include:_spf.google.com</code> to the value above, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
+    <code class="text-light">v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
@@ -576,9 +576,9 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Tip:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    If you already have a similar line with "v=spf1", then you'll need to append <code class="text-light">include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:host.com -all</code>
+    <code class="text-light">v=spf1 a mx include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
     Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
     <br /><br />
@@ -638,7 +638,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Add a DMARC record for your domain name by following the instructions at <a rel="noopener noreferrer" class="alert-link" href="https://dmarc.postmarkapp.com" target="_blank">https://dmarc.postmarkapp.com</a> (this will allow DMARC verification to pass and help to prevent people from forging emails as if they were from you).
     If you intend to use <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a>, you can only set the DMARC policy to "p=none", for example:
     <br /><br />
-    <code>v=DMARC1; p=none; pct=100; rua=mailto:re+random-key@dmarc.postmarkapp.com;</code>
+    <code class="text-light">v=DMARC1; p=none; pct=100; rua=mailto:re+random-key@dmarc.postmarkapp.com;</code>
     <br /><br />
     Setting other policies, "quarantine" or "reject", may cause sent mails to respectively end up in recipient's spam folder or not delivered at all.
     DMARC requires both "From" and "Return-Path" to match the same domain. When you use "Send Mail As", your Gmail address would be used as the "Return-Path", instead of your custom domain in "From".
@@ -716,7 +716,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 
 9. Click "Next Step" to proceed
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
+10. When prompted for "SMTP Server", enter <code class="text-light">smtp.gmail.com</code> and leave the port as <code class="text-light">587</code>
 
 11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
     <div class="alert my-3 alert-primary">
@@ -799,7 +799,7 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
 
 For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -813,7 +813,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email-port=1337</code></td>
+      <td><code class="text-light">forward-email-port=1337</code></td>
     </tr>
   </tbody>
 </table>
@@ -828,7 +828,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -842,7 +842,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=example.com</code></td>
+      <td><code class="text-light">forward-email=example.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -880,7 +880,7 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
 
 For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -894,14 +894,14 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+      <td><code class="text-light">forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
     </tr>
   </tbody>
 </table>
 
 Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -915,7 +915,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
+      <td><code class="text-light">forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
     </tr>
   </tbody>
 </table>
@@ -1031,7 +1031,7 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
 
 <strong>Simple Example:</strong> If I want all emails that go to `elon@example.com` or `musk@example.com` to forward to `user@gmail.com`:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1045,14 +1045,14 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=/^(elon|musk)$/:user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=/^(elon|musk)$/:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
 
 <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1066,14 +1066,14 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
+      <td><code class="text-light">forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
     </tr>
   </tbody>
 </table>
 
 <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1087,14 +1087,14 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
+      <td><code class="text-light">forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
 
 <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>)::
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1108,7 +1108,7 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
+      <td><code class="text-light">forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
     </tr>
   </tbody>
 </table>
@@ -1130,7 +1130,7 @@ Yes, but this is <u>NOT</u> recommended as this is an incredibly rare edge case.
 
 If you use Google Business for email, and want to use our server as a fallback so your mail still gets delivered, then just specify the Google mail servers with a lower priority than our mail servers.  An example is provided below:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1146,49 +1146,49 @@ If you use Google Business for email, and want to use our server as a fallback s
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>1</td>
-      <td><code>ASPMX.L.GOOGLE.COM</code></td>
+      <td><code class="text-light">ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>5</td>
-      <td><code>ALT1.ASPMX.L.GOOGLE.COM</code></td>
+      <td><code class="text-light">ALT1.ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>5</td>
-      <td><code>ALT2.ASPMX.L.GOOGLE.COM</code></td>
+      <td><code class="text-light">ALT2.ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>10</td>
-      <td><code>ALT3.ASPMX.L.GOOGLE.COM</code></td>
+      <td><code class="text-light">ALT3.ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>10</td>
-      <td><code>ALT4.ASPMX.L.GOOGLE.COM</code></td>
+      <td><code class="text-light">ALT4.ASPMX.L.GOOGLE.COM</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>20</td>
-      <td><code>mx1.forwardemail.net</code></td>
+      <td><code class="text-light">mx1.forwardemail.net</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>30</td>
-      <td><code>mx2.forwardemail.net</code></td>
+      <td><code class="text-light">mx2.forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
@@ -1204,7 +1204,7 @@ Emails sent to disabled addresses will respond with a `250` (message queued) sta
 
 For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com`:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1218,7 +1218,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=!alias:user@gmail.com</code></td>
+      <td><code class="text-light">forward-email=!alias:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -1233,7 +1233,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1247,7 +1247,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=!alias:nobody@forwardemail.net</code></td>
+      <td><code class="text-light">forward-email=!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
@@ -1262,7 +1262,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </span>
 </div>
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1276,7 +1276,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=!alias</code></td>
+      <td><code class="text-light">forward-email=!alias</code></td>
     </tr>
   </tbody>
 </table>
@@ -1288,7 +1288,7 @@ Yes, absolutely.  Just specify multiple recipients in your TXT records.
 
 For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my TXT record would look like this:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1302,14 +1302,14 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code style="cursor: initial;" data-original-title="" title="" aria-describedby="tooltip885348">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
+      <td><code class="text-light" style="cursor: initial;" data-original-title="" title="" aria-describedby="tooltip885348">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
 
 Or, you could specify them in two separate lines, such as this:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1323,13 +1323,13 @@ Or, you could specify them in two separate lines, such as this:
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:user+a@gmail.com</code></td>
+      <td><code class="text-light">forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=hello:user+b@gmail.com</code></td>
+      <td><code class="text-light">forward-email=hello:user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -1343,7 +1343,7 @@ Yes, you can. Just specify multiple global catch-all recipients in your TXT reco
 
 For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my TXT record would look like this:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1357,14 +1357,14 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
+      <td><code class="text-light">forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
 
 Or, you could specify them in two separate lines, such as this:
 
-<table class="table table-striped table-hover my-3">
+<table class="table table-dark table-hover my-3">
   <thead class="thead-dark">
     <tr>
       <th>Name/Host/Alias</th>
@@ -1378,13 +1378,13 @@ Or, you could specify them in two separate lines, such as this:
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=user+a@gmail.com</code></td>
+      <td><code class="text-light">forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>@, ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td>TXT</td>
-      <td><code>forward-email=user+b@gmail.com</code></td>
+      <td><code class="text-light">forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -1517,9 +1517,9 @@ You should also set the SPF record for Gmail in your DNS configuration TXT recor
     Important:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF TXT record, for example:
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code class="text-light">include:_spf.google.com</code> to your SPF TXT record, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
+    <code class="text-light">v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
@@ -1538,9 +1538,9 @@ You should also set the SPF record for Outlook in your DNS configuration TXT rec
     Important:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF TXT record, for example:
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code class="text-light">include:spf.protection.outlook.com</code> to your SPF TXT record, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+    <code class="text-light">v=spf1 a mx include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
