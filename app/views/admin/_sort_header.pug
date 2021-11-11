@@ -1,22 +1,25 @@
 
 mixin sort_header(name, text, tableSelector)
   - const classes = tableSelector ? 'ajax-form table-ajax-form' : ''
+  -
+    const sort = ctx.query.sort === name
+      ? `-${name}`
+      : (
+        ctx.query.sort === `-${name}`
+          ? false
+          : name
+      )
+
   form(
     class=classes,
-    action=paginate.href(
-      {
-        sort:
-          ctx.query.sort === name
-            ? `-${name}`
-            : (ctx.query.sort === `-${name}`
-              ? false
-              : name)
-      }
-    ),
-    method=tableSelector ? 'POST' : 'GET',
+    action=ctx.path,
+    method='GET',
     data-table=tableSelector
   )
+    if tableSelector
+      input(type='hidden', name='_csrf', value=ctx.csrf)
+      input(type='hidden', name='sort', value=sort ? sort : '')
     button.btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold(type='submit')
       = t(text ? text : name.replace('_', ' '))
       = ' '
-      i.fas(class=ctx.query.sort === name || (!ctx.query.sort && name === 'created_at') ? 'fa-sort-up' : (ctx.query.sort === `-${name}` ? 'fa-sort-down' : 'fa-sort'))
+      i.fas(class=sort === `-${name}` ? 'fa-sort-up' : (sort === name ? 'fa-sort' : 'fa-sort-down'))
