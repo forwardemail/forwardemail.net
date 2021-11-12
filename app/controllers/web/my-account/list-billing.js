@@ -28,7 +28,10 @@ async function listBilling(ctx) {
   // filter based on regex keyword and/or dates
   if (ctx.query.keyword || ctx.query.startDate || ctx.query.endDate) {
     payments = payments.filter((payment) =>
-      Object.values(payment).some((prop) => {
+      Object.entries(payment).some((property) => {
+        const key = property[0];
+        const prop = property[1];
+
         let isKeyword = false;
         let isDate = false;
 
@@ -41,7 +44,7 @@ async function listBilling(ctx) {
         }
 
         // check dates
-        if (prop instanceof Date) {
+        if (key === 'created_at') {
           if (ctx.query.startDate && ctx.query.endDate) {
             isDate = dayjs(prop).isBetween(
               ctx.query.startDate,
@@ -55,7 +58,9 @@ async function listBilling(ctx) {
           }
         }
 
-        return isKeyword || isDate;
+        if (isKeyword || isDate) return true;
+
+        return false;
       })
     );
   }

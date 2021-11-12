@@ -73,6 +73,22 @@ block body
         .col
           h3.text-center.mb-3= t('Payment History')
           p.text-center: small.text-muted!= t('If you want to update company info on receipts, then <a href="%s" class="notranslate">update your profile</a>.', l('/my-account/profile'))
+          form.ajax-form.table-ajax-form.mb-3.px-3(action=ctx.path, method='GET', data-table='#table-payments')
+            input(type='hidden', name='_csrf', value=ctx.csrf)
+            .form-row
+              .col.form-group.floating-label
+                input.form-control#input-keyword-search(type='text', value=ctx.query.keyword ? ctx.query.keyword : '', name='keyword', placeholder='Keyword')
+                label(for='input-keyword-search')= t('Keyword')
+            .form-row
+              .col.form-group.floating-label
+                input.form-control#input-start-date(type='date', value=ctx.query.startDate ? ctx.query.startDate : '', name='startDate', placeholder='YYYY/MM/DD')
+                label(for='input-start-date')= t('Start Date')
+              .col.form-group.floating-label
+                input.form-control#input-end-date(type='date', value=ctx.query.endDate ? ctx.query.endDate : '', name='endDate', placeholder='YYYY/MM/DD')
+                label(for='input-end-date')= t('End Date')
+            .row
+              .col
+                button.btn.btn-success.btn-block(type="submit")= t('Search')
           #table-payments.mb-0
             include ./_table.pug
   if isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
