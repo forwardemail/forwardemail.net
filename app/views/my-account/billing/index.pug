@@ -1,16 +1,5 @@
 extends ../../layout
 
-include ./_payment-method.pug
-
-mixin receipt(payment)
-  .btn-group
-    a(href=l(`/my-account/billing/${payment.reference}`), data-toggle='tooltip', data-placement='bottom', title=t('View')).btn.btn-primary
-      i.fa.fa-receipt
-    a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
-      i.fa.fa-file-pdf
-    a(href=l(`/my-account/billing/${payment.reference}.html`), target='_blank', data-toggle='tooltip', data-placement='bottom', title=t('Print')).btn.btn-dark
-      i.fa.fa-print
-
 block body
 
   #modal-change-plan.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-change-plan-title', aria-hidden='true')
@@ -84,40 +73,8 @@ block body
         .col
           h3.text-center.mb-3= t('Payment History')
           p.text-center: small.text-muted!= t('If you want to update company info on receipts, then <a href="%s" class="notranslate">update your profile</a>.', l('/my-account/profile'))
-          table.table.table-hover.table-bordered.mb-0
-            thead.thead-dark
-              tr
-                th(scope='col').d-none.d-lg-table-cell= t('Reference')
-                th(scope='col')= t('Date')
-                th(scope='col')
-                  span.d-none.d-lg-inline= t('Description')
-                  span.d-lg-none= t('Payment')
-                th(scope='col').d-none.d-lg-table-cell= t('Method')
-                th(scope='col')= t('Amount')
-                th(scope='col').d-none.d-lg-table-cell.text-center= t('Receipt')
-            tbody
-              each payment in payments
-                tr
-                  td.align-middle.d-none.d-lg-table-cell= payment.reference
-                  td.align-middle= dayjs(payment.created_at).locale(ctx.locale).format('M/D/YY')
-                  td.align-middle
-                    .d-block.d-lg-none.mb-2
-                      strong
-                        = t('Reference')
-                        = ':'
-                      = ' '
-                      = payment.reference
-                    != payment.description
-                    .d-block.d-lg-none.mb-2
-                    .d-block.d-lg-none.mb-2
-                      +paymentMethod(payment)
-                    .d-block.d-lg-none
-                      +receipt(payment)
-                  td.align-middle.d-none.d-lg-table-cell
-                    +paymentMethod(payment)
-                  td.align-middle.text-right= payment.amount_formatted
-                  td.align-middle.d-none.d-lg-table-cell.text-center
-                    +receipt(payment)
+          #table-payments.mb-0
+            include ./_table.pug
   if isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
     .container(class=payments.length === 0 ? 'py-3' : '')
       .row.text-center.my-5

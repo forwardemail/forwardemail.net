@@ -1,0 +1,49 @@
+
+include ../../_sort_header
+include ../../_pagination
+
+include ./_payment-method
+include ./_receipt
+
+.table-responsive
+  table.table.table-hover.table-bordered
+    thead.thead-dark
+      tr
+        th(scope='col').d-none.d-lg-table-cell
+          +sort_header('reference', null, '#table-payments')
+        th(scope='col')
+          +sort_header('created_at', 'Date', '#table-payments')
+        th(scope='col')
+          span.d-none.d-lg-inline
+            +sort_header('description', null, '#table-payments')
+          span.d-lg-none
+            +sort_header('reference', 'Payment', '#table-payments')
+        th(scope='col').d-none.d-lg-table-cell
+          +sort_header('method', null, '#table-payments')
+        th(scope='col')
+          +sort_header('amount_formatted', 'Amount', '#table-payments')
+        th(scope='col').d-none.d-lg-table-cell.text-center.align-middle= t('Receipt')
+    tbody
+      each payment in payments
+        tr
+          td.align-middle.d-none.d-lg-table-cell= payment.reference
+          td.align-middle= dayjs(payment.created_at).locale(ctx.locale).format('M/D/YY')
+          td.align-middle
+            .d-block.d-lg-none.mb-2
+              strong
+                = t('Reference')
+                = ':'
+              = ' '
+              = payment.reference
+            != payment.description
+            .d-block.d-lg-none.mb-2
+            .d-block.d-lg-none.mb-2
+              +paymentMethod(payment)
+            .d-block.d-lg-none
+              +receipt(payment)
+          td.align-middle.d-none.d-lg-table-cell
+            +paymentMethod(payment)
+          td.align-middle.text-right= payment.amount_formatted
+          td.align-middle.d-none.d-lg-table-cell.text-center
+            +receipt(payment)
++paginate('#table-payments')
