@@ -35,6 +35,7 @@ const { Users, Domains, Aliases, Payments } = require('../../models');
 
 const {
   createDomainBilling,
+  listAliases,
   listBilling,
   listDomains,
   manageBilling,
@@ -1550,6 +1551,7 @@ module.exports = {
   ensureTeamPlan,
   ensureUpgradedPlan,
   importAliases,
+  listAliases,
   listBilling,
   listDomains,
   manageBilling,
