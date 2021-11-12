@@ -6,27 +6,27 @@ const { Users } = require('../../../models');
 const config = require('../../../../config');
 
 async function list(ctx) {
-  let q = {};
+  let query = {};
 
   if (ctx.query.keyword) {
-    q = { $or: [] };
+    query = { $or: [] };
 
     for (const field of Object.keys(Users.schema.paths)) {
       // only search fields that are strings
       if (Users.schema.paths[field].instance === 'String') {
-        q.$or.push({ [field]: { $regex: ctx.query.keyword } });
+        query.$or.push({ [field]: { $regex: ctx.query.keyword } });
       }
     }
   }
 
   const [users, itemCount] = await Promise.all([
-    Users.find(q)
+    Users.find(query)
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
       .lean()
       .sort(ctx.query.sort || '-created_at')
       .exec(),
-    Users.countDocuments(q)
+    Users.countDocuments(query)
   ]);
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
@@ -51,8 +51,6 @@ async function list(ctx) {
     itemCount === 0
       ? `<div class="alert alert-info"> No users exist for that keyword. </div>`
       : ctx.body;
-
-  ctx.logger.warn('list table', { table });
 
   ctx.body = { table };
 }
