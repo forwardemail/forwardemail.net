@@ -6,7 +6,8 @@ append scripts
   script(src='https://js.stripe.com/v3/')
   //- PayPal
   script(src=`https://www.paypal.com/sdk/js?client-id=${config.paypal.clientID}&vault=true${config.env === 'production' ? '' : '&debug=true'}`)
-  //- script(src='https://bitpay.com/bitpay.min.js')
+  //- BitPay
+  script(src='https://bitpay.com/bitpay.min.js')
   script(defer, src=manifest('js/billing.js'), integrity=manifest('js/billing.js', 'integrity'), crossorigin='anonymous')
 
 block body
