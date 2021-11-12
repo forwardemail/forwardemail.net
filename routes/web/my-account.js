@@ -100,7 +100,8 @@ router.get(
   web.myAccount.retrieveDomain,
   web.myAccount.ensureUpgradedPlan,
   web.myAccount.retrieveAliases,
-  render('my-account/domains/aliases')
+  paginate.middleware(10, 50),
+  web.myAccount.listAliases
 );
 router.get(
   '/domains/aliases/new',
