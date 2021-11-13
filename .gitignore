@@ -76,3 +76,8 @@ deployment-keys
 *.crt
 .env.test
 .gapp-creds.json
+
+
+Thumbs.db
+tmp/
+temp/
