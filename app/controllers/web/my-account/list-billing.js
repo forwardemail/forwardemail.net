@@ -9,24 +9,24 @@ async function listBilling(ctx) {
 
   // make sure dates are good
   // and if not remove them from query
-  if (ctx.query.startDate) {
-    ctx.query.startDate = dayjs(ctx.query.startDate, 'YYYY-MM-DD');
-    if (!ctx.query.startDate.isValid()) {
-      ctx.query.startDate = undefined;
-      delete ctx.query.startDate;
+  if (ctx.query.start_date) {
+    ctx.query.start_date = dayjs(ctx.query.start_date, 'YYYY-MM-DD');
+    if (!ctx.query.start_date.isValid()) {
+      ctx.query.start_date = undefined;
+      delete ctx.query.start_date;
     }
   }
 
-  if (ctx.query.endDate) {
-    ctx.query.endDate = dayjs(ctx.query.endDate, 'YYYY-MM-DD');
-    if (!ctx.query.endDate.isValid()) {
-      ctx.query.endDate = undefined;
-      delete ctx.query.endDate;
+  if (ctx.query.end_date) {
+    ctx.query.end_date = dayjs(ctx.query.end_date, 'YYYY-MM-DD');
+    if (!ctx.query.end_date.isValid()) {
+      ctx.query.end_date = undefined;
+      delete ctx.query.end_date;
     }
   }
 
   // filter based on regex keyword and/or dates
-  if (ctx.query.keyword || ctx.query.startDate || ctx.query.endDate) {
+  if (ctx.query.keyword || ctx.query.start_date || ctx.query.end_date) {
     payments = payments.filter((payment) =>
       Object.entries(payment).some((property) => {
         const key = property[0];
@@ -45,16 +45,16 @@ async function listBilling(ctx) {
 
         // check dates
         if (key === 'created_at') {
-          if (ctx.query.startDate && ctx.query.endDate) {
+          if (ctx.query.start_date && ctx.query.end_date) {
             isDate = dayjs(prop).isBetween(
-              ctx.query.startDate,
-              ctx.query.endDate,
+              ctx.query.start_date,
+              ctx.query.end_date,
               'day'
             );
-          } else if (ctx.query.startDate && !ctx.query.endDate) {
-            isDate = dayjs(prop).isSameOrAfter(ctx.query.startDate, 'day');
-          } else if (!ctx.query.startDate && ctx.query.endDate) {
-            isDate = dayjs(prop).isSameOrBefore(ctx.query.endDate, 'day');
+          } else if (ctx.query.start_date && !ctx.query.end_date) {
+            isDate = dayjs(prop).isSameOrAfter(ctx.query.start_date, 'day');
+          } else if (!ctx.query.start_date && ctx.query.end_date) {
+            isDate = dayjs(prop).isSameOrBefore(ctx.query.end_date, 'day');
           }
         }
 
