@@ -81,10 +81,10 @@ block body
                 label(for='input-keyword-search')= t('Keyword')
             .form-row
               .col.form-group.floating-label
-                input.form-control#input-start-date(type='date', value=ctx.query.startDate ? ctx.query.startDate : '', name='startDate', placeholder='YYYY/MM/DD')
+                input.form-control#input-start-date(type='date', value=ctx.query.start_date ? ctx.query.start_date : '', name='start_date', placeholder='YYYY/MM/DD')
                 label(for='input-start-date')= t('Start Date')
               .col.form-group.floating-label
-                input.form-control#input-end-date(type='date', value=ctx.query.endDate ? ctx.query.endDate : '', name='endDate', placeholder='YYYY/MM/DD')
+                input.form-control#input-end-date(type='date', value=ctx.query.end_date ? ctx.query.end_date : '', name='end_date', placeholder='YYYY/MM/DD')
                 label(for='input-end-date')= t('End Date')
             .row
               .col
