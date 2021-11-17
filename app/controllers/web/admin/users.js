@@ -5,13 +5,19 @@ const { boolean } = require('boolean');
 const { Users } = require('../../../models');
 const config = require('../../../../config');
 
+const USER_SEARCH_PATHS = [
+  'email',
+  config.passport.fields.givenName,
+  config.passport.fields.familyName
+];
+
 async function list(ctx) {
   let query = {};
 
   if (ctx.query.keyword) {
     query = { $or: [] };
 
-    for (const field of Object.keys(Users.schema.paths)) {
+    for (const field of USER_SEARCH_PATHS) {
       // only search fields that are strings
       if (Users.schema.paths[field].instance === 'String') {
         query.$or.push({ [field]: { $regex: ctx.query.keyword } });

@@ -7,18 +7,18 @@ include ../../_pagination
     thead.thead-dark
       tr
         th(scope='col')
-          +sort_header('name', 'Domain Name', '#table-domains')
+          +sortHeader('name', 'Domain Name', '#table-domains')
         if user.group === 'admin'
           th(scope='col').text-center
-            +sort_header('is_global', 'Global', '#table-domains')
+            +sortHeader('is_global', 'Global', '#table-domains')
         th(scope='col').d-none.d-md-table-cell
-          +sort_header('plan', 'Current Plan', '#table-domains')
+          +sortHeader('plan', 'Current Plan', '#table-domains')
         th(scope='col').d-none.d-md-table-cell.text-center
-          +sort_header('aliases', 'Aliases', '#table-domains')
+          +sortHeader('aliases', 'Aliases', '#table-domains')
         th(scope='col').d-none.d-md-table-cell.text-center
-          +sort_header('has_mx_record', 'MX Records', '#table-domains')
+          +sortHeader('has_mx_record', 'MX Records', '#table-domains')
         th(scope='col').d-none.d-md-table-cell.text-center
-          +sort_header('has_txt_record', 'TXT Records', '#table-domains')
+          +sortHeader('has_txt_record', 'TXT Records', '#table-domains')
         th(scope='col').text-center.text-md-left.align-middle= t('Quick Links')
     tbody
       each domain in domains
