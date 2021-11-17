@@ -105,6 +105,8 @@ $body.on(
 
 // Bind ajax form submission and handle Stripe tokens in forms
 $body.on('submit.ajaxForm', 'form.ajax-form', ajaxForm);
+// Bind ajax link submission
+$body.on('click', 'a.ajax-form', ajaxForm);
 
 // Example for how to detect waypoint scrolling:
 //

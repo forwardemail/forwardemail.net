@@ -6,24 +6,53 @@ const { Users } = require('../../../models');
 const config = require('../../../../config');
 
 async function list(ctx) {
+  let query = {};
+
+  if (ctx.query.keyword) {
+    query = { $or: [] };
+
+    for (const field of Object.keys(Users.schema.paths)) {
+      // only search fields that are strings
+      if (Users.schema.paths[field].instance === 'String') {
+        query.$or.push({ [field]: { $regex: ctx.query.keyword } });
+      }
+    }
+  }
+
   const [users, itemCount] = await Promise.all([
-    Users.find({})
+    Users.find(query)
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
       .lean()
-      .sort('-created_at')
+      .sort(ctx.query.sort || '-created_at')
       .exec(),
-    Users.countDocuments({})
+    Users.countDocuments(query)
   ]);
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
-  return ctx.render('admin/users', {
+  if (ctx.accepts('html'))
+    return ctx.render('admin/users', {
+      users,
+      pageCount,
+      itemCount,
+      pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
+    });
+
+  // this will assign rendered html to ctx.body
+  await ctx.render('admin/users/_table', {
     users,
     pageCount,
     itemCount,
     pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
   });
+
+  const table =
+    itemCount === 0
+      ? `<div class="alert alert-info"> No users exist for that keyword. </div>`
+      : ctx.body;
+
+  ctx.body = { table };
 }
 
 async function retrieve(ctx) {
