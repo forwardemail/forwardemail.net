@@ -1524,6 +1524,24 @@
     titleize "2"
     tlds "^1.221.1"
 
+"@ladjs/i18n@^7.2.4":
+  version "7.2.4"
+  resolved "https://registry.npmjs.org/@ladjs/i18n/-/i18n-7.2.4.tgz#31e299e6b417baf31742dc5451c896add0789533"
+  integrity sha512-5RlHCMp8s1eJgFR7glx1lDik0aoekhq2zSzsrSdHpa6kIIg3a58HO+pCmZor97vPXJxP2CUzeG9cvZNLOphoLw==
+  dependencies:
+    "@hapi/boom" "^9.1.2"
+    "@ladjs/country-language" "^0.2.1"
+    boolean "3.0.4"
+    debug "^4.3.1"
+    i18n "^0.13.3"
+    i18n-locales "^0.0.5"
+    lodash "^4.17.21"
+    multimatch "^5.0.0"
+    punycode "^2.1.1"
+    qs "^6.10.1"
+    titleize "2"
+    tlds "^1.221.1"
+
 "@ladjs/koa-better-static@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@ladjs/koa-better-static/-/koa-better-static-2.0.1.tgz#b74b9731d653cb5ae2e23a49a9080c5ee52bd5c8"
@@ -17386,16 +17404,7 @@ rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-re2@^1.15.9:
-  version "1.16.0"
-  resolved "https://registry.yarnpkg.com/re2/-/re2-1.16.0.tgz#f311eb4865b1296123800ea8e013cec8dab25590"
-  integrity sha512-eizTZL2ZO0ZseLqfD4t3Qd0M3b3Nr0MBWpX81EbPMIud/1d/CSfUIx2GQK8fWiAeHoSekO5EOeFib2udTZLwYw==
-  dependencies:
-    install-artifact-from-github "^1.2.0"
-    nan "^2.14.2"
-    node-gyp "^8.0.0"
-
-re2@^1.16.0:
+re2@^1.15.9, re2@^1.16.0:
   version "1.16.0"
   resolved "https://registry.npmjs.org/re2/-/re2-1.16.0.tgz#f311eb4865b1296123800ea8e013cec8dab25590"
   integrity sha512-eizTZL2ZO0ZseLqfD4t3Qd0M3b3Nr0MBWpX81EbPMIud/1d/CSfUIx2GQK8fWiAeHoSekO5EOeFib2udTZLwYw==
