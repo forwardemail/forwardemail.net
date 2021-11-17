@@ -10,18 +10,18 @@ include ./_receipt
     thead.thead-dark
       tr
         th(scope='col').d-none.d-lg-table-cell
-          +sort_header('reference', null, '#table-payments')
+          +sortHeader('reference', null, '#table-payments')
         th(scope='col')
-          +sort_header('created_at', 'Date', '#table-payments')
+          +sortHeader('created_at', 'Date', '#table-payments')
         th(scope='col')
           span.d-none.d-lg-inline
-            +sort_header('description', null, '#table-payments')
+            +sortHeader('description', null, '#table-payments')
           span.d-lg-none
-            +sort_header('reference', 'Payment', '#table-payments')
+            +sortHeader('reference', 'Payment', '#table-payments')
         th(scope='col').d-none.d-lg-table-cell
-          +sort_header('method', null, '#table-payments')
+          +sortHeader('method', null, '#table-payments')
         th(scope='col')
-          +sort_header('amount_formatted', 'Amount', '#table-payments')
+          +sortHeader('amount_formatted', 'Amount', '#table-payments')
         th(scope='col').d-none.d-lg-table-cell.text-center.align-middle= t('Receipt')
     tbody
       each payment in payments
