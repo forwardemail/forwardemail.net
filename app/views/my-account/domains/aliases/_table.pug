@@ -7,15 +7,15 @@ include ../../../_pagination
     thead.thead-dark
       tr
         th(scope='col')
-          +sort_header('name', 'Alias', '#table-aliases')
+          +sortHeader('name', 'Alias', '#table-aliases')
         if domain.group === 'admin' && domain.plan === 'team'
           th(scope='col')
-            +sort_header('user', 'Team Member', '#table-aliases')
+            +sortHeader('user', 'Team Member', '#table-aliases')
         if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
           th(scope='col')
-            +sort_header('description', 'Description & Labels', '#table-aliases')
+            +sortHeader('description', 'Description & Labels', '#table-aliases')
         th(scope='col').text-center
-          +sort_header('is_enabled', 'Active', '#table-aliases')
+          +sortHeader('is_enabled', 'Active', '#table-aliases')
         th(scope='col').align-middle= t('Recipients')
         th(scope='col').text-center.text-md-left.align-middle= t('Quick Links')
     tbody

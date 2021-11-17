@@ -4,6 +4,8 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
+const REGEX_AMOUNT_FORMATTED = new RE2('amount_formatted');
+
 async function listBilling(ctx) {
   let { payments } = ctx.state;
 
@@ -71,7 +73,7 @@ async function listBilling(ctx) {
 
   // sort payments
   let sortFn;
-  if (new RE2('amount_formatted').test(ctx.query.sort))
+  if (REGEX_AMOUNT_FORMATTED.test(ctx.query.sort))
     sortFn = (p) => p.amount_formatted.replace(/[^\d.]/, '');
   else if (isSANB(ctx.query.sort))
     sortFn = (p) => p[ctx.query.sort.replace(/^-/, '')];
