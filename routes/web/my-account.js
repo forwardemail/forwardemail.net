@@ -1,5 +1,6 @@
 const Router = require('@koa/router');
 const render = require('koa-views-render');
+const paginate = require('koa-ctx-paginate');
 
 const policies = require('../../helpers/policies');
 const web = require('../../app/controllers/web');
@@ -15,11 +16,18 @@ router.get('/', (ctx) => {
   ctx.redirect(ctx.state.l('/my-account/domains'));
 });
 router.delete('/', web.myAccount.remove);
-router.get('/billing', web.myAccount.retrieveBilling);
+router.get(
+  '/billing',
+  web.myAccount.retrieveBilling,
+  paginate.middleware(10, 50),
+  web.myAccount.listBilling
+);
 router.delete(
   '/billing',
   web.myAccount.cancelSubscription,
-  web.myAccount.retrieveBilling
+  web.myAccount.retrieveBilling,
+  paginate.middleware(10, 50),
+  web.myAccount.listBilling
 );
 router.post('/billing/manage-payments', web.myAccount.manageBilling);
 router.get('/billing/make-payment', web.myAccount.retrieveDomainBilling);
@@ -27,7 +35,7 @@ router.post('/billing/make-payment', web.myAccount.createDomainBilling);
 router.get('/billing/upgrade', web.myAccount.retrieveDomainBilling);
 router.post('/billing/upgrade', web.myAccount.createDomainBilling);
 router.get('/billing/:reference', web.myAccount.retrieveReceipt);
-router.get('/domains', render('my-account/domains'));
+router.get('/domains', paginate.middleware(10, 50), web.myAccount.listDomains);
 router.post(
   '/aliases',
   web.myAccount.retrieveDomain,
@@ -92,7 +100,8 @@ router.get(
   web.myAccount.retrieveDomain,
   web.myAccount.ensureUpgradedPlan,
   web.myAccount.retrieveAliases,
-  render('my-account/domains/aliases')
+  paginate.middleware(10, 50),
+  web.myAccount.listAliases
 );
 router.get(
   '/domains/aliases/new',
