@@ -40,6 +40,7 @@ const {
   listBilling,
   listDomains,
   manageBilling,
+  resendEmailChange,
   retrieveBilling,
   retrieveDomainBilling,
   updateProfile
@@ -1563,6 +1564,7 @@ module.exports = {
   removeDomain,
   removeInvite,
   removeMember,
+  resendEmailChange,
   resetAPIToken,
   retrieveAlias,
   retrieveAliases,

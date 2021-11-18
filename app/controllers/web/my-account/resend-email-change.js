@@ -1,14 +1,35 @@
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
+const cryptoRandomString = require('crypto-random-string');
+const dayjs = require('dayjs-with-plugins');
 
 const config = require('../../../../config');
 const emailHelper = require('../../../../helpers/email');
 
 async function resendEmailChange(ctx) {
+  // if no email change request exists throw an error
+  if (!ctx.state.user[config.userFields.changeEmailNewAddress])
+    throw ctx.throw(
+      Boom.badRequest(ctx.translateError('EMAIL_CHANGE_DOES_NOT_EXIST'))
+    );
+
+  // reset the reset token and expiry
+  ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = dayjs()
+    .add(config.changeEmailTokenTimeoutMs, 'milliseconds')
+    .toDate();
+  ctx.state.user[config.userFields.changeEmailToken] =
+    await cryptoRandomString.async({
+      length: 32
+    });
+
+  // save the user
+  ctx.state.user = await ctx.state.user.save();
+
   try {
     await emailHelper({
       template: 'change-email',
       message: {
-        to: body.email
+        to: ctx.state.user[config.userFields.changeEmailNewAddress]
       },
       locals: {
         user: _.pick(ctx.state.user, [
@@ -48,4 +69,7 @@ async function resendEmailChange(ctx) {
     });
 
   if (ctx.accepts('html')) ctx.redirect('back');
+  else ctx.body = { reloadPage: true };
 }
+
+module.exports = resendEmailChange;
