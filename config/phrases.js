@@ -189,6 +189,8 @@ module.exports = {
     'You can only change your email address every <span class="notranslate">%s</span> minutes. Please try again <span class="notranslate">%s</span>.',
   EMAIL_CHANGE_ALREADY_EXISTS:
     'The email address <span class="notranslate">%s</span> already exists.',
+  EMAIL_CHANGE_DOES_NOT_EXIST: 'Email change request does not exist.',
+  EMAIL_CHANGE_CANCELLED: 'Email change request has been cancelled.',
   ALIASES_NEED_REASSIGNED:
     'Aliases owned by the member being deleted must be first reassigned or deleted.',
   PAYMENT_DESCRIPTION:
