@@ -87,7 +87,7 @@ block body
                 label(for='input-address-zip')= t('ZIP or postal code')
               .form-group.floating-label
                 select#select-address-country(name=config.userFields.addressCountry).form-control.form-control-lg
-                  option(value='', selected=!isSANB(user[config.userFields.addressCountry]))= t('None')
+                  option(value='None', selected=!isSANB(user[config.userFields.addressCountry]))= t('None')
                   each country in countries
                     option(value=country, selected=user[config.userFields.addressCountry] === country)= t(country)
                 label(for='select-address-country')= t('Country name')
