@@ -34,11 +34,13 @@ const toObject = require('../../../helpers/to-object');
 const { Users, Domains, Aliases, Payments } = require('../../models');
 
 const {
+  cancelEmailChange,
   createDomainBilling,
   listAliases,
   listBilling,
   listDomains,
   manageBilling,
+  resendEmailChange,
   retrieveBilling,
   retrieveDomainBilling,
   updateProfile
@@ -1539,6 +1541,7 @@ async function updateDomain(ctx, next) {
 }
 
 module.exports = {
+  cancelEmailChange,
   cancelSubscription,
   createAlias,
   createAliasForm,
@@ -1561,6 +1564,7 @@ module.exports = {
   removeDomain,
   removeInvite,
   removeMember,
+  resendEmailChange,
   resetAPIToken,
   retrieveAlias,
   retrieveAliases,
