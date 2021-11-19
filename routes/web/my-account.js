@@ -204,6 +204,8 @@ router.post(
 );
 router.get('/profile', web.myAccount.retrieveProfile);
 router.put('/profile', web.myAccount.updateProfile);
+router.put('/profile/resend-email-change', web.myAccount.resendEmailChange);
+router.put('/profile/cancel-email-change', web.myAccount.cancelEmailChange);
 router.delete('/security', web.myAccount.resetAPIToken);
 router.get('/security', render('my-account/security'));
 router.post('/recovery-keys', web.myAccount.recoveryKeys);

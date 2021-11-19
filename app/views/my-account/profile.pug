@@ -1,6 +1,12 @@
 extends ../layout
 
 block body
+  form#form-resend-email-change(action=`${ctx.path}/resend-email-change`, method='POST').ajax-form.confirm-prompt.form-inline
+    input(type='hidden', name='_method', value='PUT')
+    input(type="hidden", name="_csrf", value=ctx.csrf)
+  form#form-cancel-email-change(action=`${ctx.path}/cancel-email-change`, method='POST').ajax-form.confirm-prompt.form-inline
+    input(type='hidden', name='_method', value='PUT')
+    input(type="hidden", name="_csrf", value=ctx.csrf)
   #modal-change-password(tabindex='-1', role='dialog').modal.fade
     .modal-dialog(role='document')
       .modal-content
@@ -47,11 +53,17 @@ block body
               .form-group.floating-label
                 input#input-family-name(type='text', name=config.passport.fields.familyName, value=user[config.passport.fields.familyName], placeholder=t('Last name')).form-control.form-control-lg
                 label(for="input-family-name")= t('Last name')
-              .form-group.floating-label
-                if user[config.userFields.hasSetPassword]
-                  button(data-toggle='modal', data-target='#modal-change-password', type='button').btn.btn-secondary.btn-sm.my-auto= t('Change password')
-                else
-                  button(data-toggle='modal', data-target='#modal-change-password', type='button').btn.btn-primary.btn-sm.my-auto= t('Set an account password')
+              .form-row
+                .form-group
+                  if user[config.userFields.hasSetPassword]
+                    button(data-toggle='modal', data-target='#modal-change-password', type='button').btn.btn-secondary.btn-sm.my-auto.mr-3= t('Change password')
+                  else
+                    button(data-toggle='modal', data-target='#modal-change-password', type='button').btn.btn-primary.btn-sm.my-auto.mr-3= t('Set an account password')
+                if user[config.userFields.changeEmailNewAddress]
+                  .form-group
+                    button(type="submit" form="form-resend-email-change").btn.btn-primary.btn-sm.my-auto.mr-3= t('Resend change email request')
+                  .form-group
+                    button(type="submit" form="form-cancel-email-change").btn.btn-primary.btn-sm.my-auto.mr-3= t('Cancel email change')
               hr
               h5= t('Company Information')
               p: small.form-text.text-muted= t('We strictly use this information for your receipts and sending payment reminders.')
@@ -75,7 +87,7 @@ block body
                 label(for='input-address-zip')= t('ZIP or postal code')
               .form-group.floating-label
                 select#select-address-country(name=config.userFields.addressCountry).form-control.form-control-lg
-                  option(value='', selected=!isSANB(user[config.userFields.addressCountry]))= t('None')
+                  option(value='None', selected=!isSANB(user[config.userFields.addressCountry]))= t('None')
                   each country in countries
                     option(value=country, selected=user[config.userFields.addressCountry] === country)= t(country)
                 label(for='select-address-country')= t('Country name')
