@@ -36,6 +36,7 @@ const {
   listAliases,
   listBilling,
   createDomain,
+  remove,
   listDomains,
   manageBilling,
   retrieveDomain,
@@ -64,30 +65,6 @@ const app = new ForwardEmail({
 });
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-
-async function remove(ctx) {
-  const adminDomains = ctx.state.domains.filter(
-    (domain) => domain.group === 'admin'
-  );
-  if (adminDomains.length > 0)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('ACCOUNT_DELETE_HAS_DOMAINS'))
-    );
-  await Users.findByIdAndRemove(ctx.state.user._id);
-  if (!ctx.api)
-    ctx.flash('custom', {
-      title: ctx.request.t('Success'),
-      text: ctx.translate('ACCOUNT_DELETE_SUCCESSFUL'),
-      type: 'success',
-      toast: true,
-      showConfirmButton: false,
-      timer: 3000,
-      position: 'top'
-    });
-  const redirectTo = ctx.state.l();
-  if (ctx.accepts('html')) ctx.redirect(redirectTo);
-  else ctx.body = { redirectTo };
-}
 
 async function removeDomain(ctx, next) {
   await Domains.findByIdAndRemove(ctx.state.domain._id);
