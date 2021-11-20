@@ -35,6 +35,7 @@ const {
   createDomainBilling,
   listAliases,
   listBilling,
+  removeDomain,
   createDomain,
   remove,
   listDomains,
@@ -65,24 +66,6 @@ const app = new ForwardEmail({
 });
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-
-async function removeDomain(ctx, next) {
-  await Domains.findByIdAndRemove(ctx.state.domain._id);
-  if (!ctx.api)
-    ctx.flash('custom', {
-      title: ctx.request.t('Success'),
-      text: ctx.translate('REQUEST_OK'),
-      type: 'success',
-      toast: true,
-      showConfirmButton: false,
-      timer: 3000,
-      position: 'top'
-    });
-  if (ctx.api) return next();
-  const redirectTo = ctx.state.l('/my-account/domains');
-  if (ctx.accepts('html')) ctx.redirect(redirectTo);
-  else ctx.body = { redirectTo };
-}
 
 async function verifyRecords(ctx) {
   try {
