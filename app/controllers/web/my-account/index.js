@@ -16,9 +16,11 @@ const createDomain = require('./create-domain');
 const remove = require('./remove');
 const removeDomain = require('./remove-domain');
 const verifyRecords = require('./verifyRecords');
+const ensureDomainAdmin = require('./ensure-domain-admin');
 
 module.exports = {
   cancelEmailChange,
+  ensureDomainAdmin,
   verifyRecords,
   removeDomain,
   remove,
