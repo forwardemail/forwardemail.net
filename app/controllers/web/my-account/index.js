@@ -11,9 +11,11 @@ const retrieveDomainBilling = require('./retrieve-domain-billing');
 const retrieveDomains = require('./retrieve-domains');
 const retrieveProfile = require('./retrieve-profile');
 const updateProfile = require('./update-profile');
+const retrieveDomain = require('./retrieve-domain');
 
 module.exports = {
   cancelEmailChange,
+  retrieveDomain,
   createDomainBilling,
   listAliases,
   listBilling,
