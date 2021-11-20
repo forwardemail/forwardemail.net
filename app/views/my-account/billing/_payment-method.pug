@@ -22,7 +22,7 @@ mixin paymentMethod(payment)
       default
         i.fa.fa-credit-card
     = ' '
-    = titleize(humanize(payment.method))
+    = titleize(humanize(payment.method || ''))
     if payment.last4
       small= ' x'
       = payment.last4
