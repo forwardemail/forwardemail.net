@@ -12,9 +12,11 @@ const retrieveDomains = require('./retrieve-domains');
 const retrieveProfile = require('./retrieve-profile');
 const updateProfile = require('./update-profile');
 const retrieveDomain = require('./retrieve-domain');
+const createDomain = require('./create-domain');
 
 module.exports = {
   cancelEmailChange,
+  createDomain,
   retrieveDomain,
   createDomainBilling,
   listAliases,
