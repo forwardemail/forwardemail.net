@@ -20,9 +20,11 @@ const ensureDomainAdmin = require('./ensure-domain-admin');
 const ensureAliasAdmin = require('./ensure-alias-admin');
 const validateAlias = require('./validate-alias');
 const createAlias = require('./create-alias');
+const retrieveAlias = require('./retrieve-alias');
 
 module.exports = {
   cancelEmailChange,
+  retrieveAlias,
   createAlias,
   validateAlias,
   ensureAliasAdmin,
