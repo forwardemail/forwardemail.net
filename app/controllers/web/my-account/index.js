@@ -5,6 +5,7 @@ const listBilling = require('./list-billing');
 const listDomains = require('./list-domains');
 const manageBilling = require('./manage-billing');
 const resendEmailChange = require('./resend-email-change');
+const resetAPIToken = require('./reset-api-token');
 const retrieveBilling = require('./retrieve-billing');
 const retrieveDomainBilling = require('./retrieve-domain-billing');
 const retrieveProfile = require('./retrieve-profile');
@@ -18,6 +19,7 @@ module.exports = {
   listDomains,
   manageBilling,
   resendEmailChange,
+  resetAPIToken,
   retrieveBilling,
   retrieveDomainBilling,
   retrieveProfile,
