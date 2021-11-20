@@ -18,9 +18,11 @@ const removeDomain = require('./remove-domain');
 const verifyRecords = require('./verifyRecords');
 const ensureDomainAdmin = require('./ensure-domain-admin');
 const ensureAliasAdmin = require('./ensure-alias-admin');
+const validateAlias = require('./validate-alias');
 
 module.exports = {
   cancelEmailChange,
+  validateAlias,
   ensureAliasAdmin,
   ensureDomainAdmin,
   verifyRecords,
