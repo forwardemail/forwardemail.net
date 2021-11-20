@@ -4,13 +4,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
 const env = require('../../../../config/env');
-const paypal = require('paypal-rest-sdk');
-
-paypal.configure({
-  mode: env.NODE_ENV === 'production' ? 'live' : 'sandbox',
-  client_id: env.PAYPAL_CLIENT_ID,
-  client_secret: env.PAYPAL_SECRET
-});
+const { paypal } = require('../../../../helpers/paypal');
 
 // <https://developer.paypal.com/docs/api-basics/notifications/webhooks/>
 async function webhook(ctx) {
