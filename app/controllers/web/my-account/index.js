@@ -13,9 +13,11 @@ const retrieveProfile = require('./retrieve-profile');
 const updateProfile = require('./update-profile');
 const retrieveDomain = require('./retrieve-domain');
 const createDomain = require('./create-domain');
+const remove = require('./remove');
 
 module.exports = {
   cancelEmailChange,
+  remove,
   createDomain,
   retrieveDomain,
   createDomainBilling,
