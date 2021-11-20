@@ -8,6 +8,7 @@ const resendEmailChange = require('./resend-email-change');
 const resetAPIToken = require('./reset-api-token');
 const retrieveBilling = require('./retrieve-billing');
 const retrieveDomainBilling = require('./retrieve-domain-billing');
+const retrieveDomains = require('./retrieve-domains');
 const retrieveProfile = require('./retrieve-profile');
 const updateProfile = require('./update-profile');
 
@@ -22,6 +23,7 @@ module.exports = {
   resetAPIToken,
   retrieveBilling,
   retrieveDomainBilling,
+  retrieveDomains,
   retrieveProfile,
   updateProfile
 };
