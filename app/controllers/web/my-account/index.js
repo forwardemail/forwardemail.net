@@ -7,6 +7,7 @@ const manageBilling = require('./manage-billing');
 const resendEmailChange = require('./resend-email-change');
 const retrieveBilling = require('./retrieve-billing');
 const retrieveDomainBilling = require('./retrieve-domain-billing');
+const retrieveProfile = require('./retrieve-profile');
 const updateProfile = require('./update-profile');
 
 module.exports = {
@@ -19,5 +20,6 @@ module.exports = {
   resendEmailChange,
   retrieveBilling,
   retrieveDomainBilling,
+  retrieveProfile,
   updateProfile
 };
