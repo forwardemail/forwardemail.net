@@ -1,3 +1,4 @@
+const checkoutNodeJssdk = require('@paypal/checkout-server-sdk');
 const env = require('./env');
 
 const isTest =
@@ -154,11 +155,23 @@ const PAYPAL_ENDPOINT =
     ? 'https://api-m.paypal.com'
     : 'https://api-m.sandbox.paypal.com';
 
+const paypalRestSdkConfig = {
+  mode: env.NODE_ENV === 'production' ? 'live' : 'sandbox',
+  client_id: env.PAYPAL_CLIENT_ID,
+  client_secret: env.PAYPAL_SECRET
+};
+
+const paypalCheckoutSdkConfig = new checkoutNodeJssdk.core[
+  env.NODE_ENV === 'production' ? 'LiveEnvironment' : 'SandboxEnvironment'
+](env.PAYPAL_CLIENT_ID, env.PAYPAL_SECRET);
+
 module.exports = {
   STRIPE_MAPPING,
   STRIPE_PRODUCTS,
   PAYMENT_DURATIONS,
   PAYPAL_MAPPING,
   PAYPAL_PLAN_MAPPING,
-  PAYPAL_ENDPOINT
+  PAYPAL_ENDPOINT,
+  paypalRestSdkConfig,
+  paypalCheckoutSdkConfig
 };

@@ -16,9 +16,7 @@ const env = require('../../../../config/env');
 const config = require('../../../../config');
 
 const payPalClient = new checkoutNodeJssdk.core.PayPalHttpClient(
-  new checkoutNodeJssdk.core[
-    env.NODE_ENV === 'production' ? 'LiveEnvironment' : 'SandboxEnvironment'
-  ](env.PAYPAL_CLIENT_ID, env.PAYPAL_SECRET)
+  config.payments.paypalCheckoutSdkConfig
 );
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);

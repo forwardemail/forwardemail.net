@@ -1,5 +1,4 @@
 const path = require('path');
-const { promisify } = require('util');
 
 const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
@@ -10,14 +9,11 @@ const _ = require('lodash');
 const countryList = require('country-list');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
-const paypal = require('paypal-rest-sdk');
 const pify = require('pify');
 const pug = require('pug');
 const slug = require('speakingurl');
 const splitLines = require('split-lines');
 const striptags = require('striptags');
-const superagent = require('superagent');
 const webResourceInliner = require('web-resource-inliner');
 const wkhtmltopdf = require('wkhtmltopdf');
 const { boolean } = require('boolean');
@@ -29,6 +25,7 @@ const inline = pify(webResourceInliner.html);
 const env = require('../../../config/env');
 const config = require('../../../config');
 const emailHelper = require('../../../helpers/email');
+const { paypalAgent } = require('../../../helpers/paypal');
 const logger = require('../../../helpers/logger');
 const toObject = require('../../../helpers/to-object');
 const { Users, Domains, Aliases, Payments } = require('../../models');
@@ -45,17 +42,6 @@ const {
   retrieveDomainBilling,
   updateProfile
 } = require('./my-account/index');
-
-const PAYPAL_ENDPOINT =
-  env.NODE_ENV === 'production'
-    ? 'https://api-m.paypal.com'
-    : 'https://api-m.sandbox.paypal.com';
-
-paypal.configure({
-  mode: env.NODE_ENV === 'production' ? 'live' : 'sandbox',
-  client_id: env.PAYPAL_CLIENT_ID,
-  client_secret: env.PAYPAL_SECRET
-});
 
 const meta = new Meta(config.meta, logger);
 
@@ -954,18 +940,11 @@ async function cancelSubscription(ctx, next) {
         )
       : Promise.resolve(),
     isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
-      ? (async () => {
-          const token = await promisify(paypal.generateToken)();
-          await superagent
-            .post(
-              `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${
-                ctx.state.user[config.userFields.paypalSubscriptionID]
-              }/cancel`
-            )
-            .set('Content-Type', 'application/json')
-            .set('Authorization', token)
-            .timeout(ms('5s'));
-        })()
+      ? paypalAgent.post(
+          `/v1/billing/subscriptions/${
+            ctx.state.user[config.userFields.paypalSubscriptionID]
+          }/cancel`
+        )
       : Promise.resolve()
   ]);
 
