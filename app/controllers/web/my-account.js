@@ -40,6 +40,7 @@ const {
   resendEmailChange,
   retrieveBilling,
   retrieveDomainBilling,
+  retrieveProfile,
   updateProfile
 } = require('./my-account/index');
 
@@ -59,11 +60,6 @@ const app = new ForwardEmail({
 });
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-
-function retrieveProfile(ctx) {
-  ctx.state.countries = countries;
-  return ctx.render('my-account/profile');
-}
 
 async function resetAPIToken(ctx) {
   ctx.state.user[config.userFields.apiToken] = null;
