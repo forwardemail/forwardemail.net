@@ -68,11 +68,6 @@ const app = new ForwardEmail({
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-function ensureDomainAdmin(ctx, next) {
-  if (ctx.state.domain.group === 'admin') return next();
-  ctx.throw(Boom.badRequest(ctx.translateError('IS_NOT_ADMIN')));
-}
-
 function ensureAliasAdmin(ctx, next) {
   if (ctx.state.alias.group === 'admin') return next();
   ctx.throw(Boom.badRequest(ctx.translateError('IS_NOT_ADMIN')));
