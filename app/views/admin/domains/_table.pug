@@ -26,7 +26,14 @@ include ../../_pagination
             td.align-middle.text-center
               = t(titleize(humanize(domain.plan)))
             td.align-middle.text-center
-              = domain.max_recipients_per_alias
+              form.ajax-form.confirm-prompt.d-inline-block(action=l(`/admin/domains/${domain.id}`), method="POST", autocomplete="off")
+                input(type="hidden", name="_csrf", value=ctx.csrf)
+                input(type="hidden", name="_method", value="PUT")
+                .input-group
+                  select#input-max-recipients-per-alias(name='max_recipients_per_alias').form-select.form-select-sm
+                    each option in OPTIONS_MAX_RECIPIENTS
+                      option(value=option selected=option === domain.max_recipients_per_alias)= option
+                  button(type='submit', data-toggle='tooltip', data-title=t('Update')).btn.btn-sm.btn-secondary: i.fa.fa-fw.fa-save
             td.align-middle
               .btn-group(role='group', aria-label=t('Actions'))
                 form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/domains/${domain.id}`), method="POST", autocomplete="off")
