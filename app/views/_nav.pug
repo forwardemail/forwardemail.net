@@ -82,6 +82,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
             .dropdown-menu(aria-labelledby='navbar-dropdown-admin')
               a.dropdown-item(class=ctx.pathWithoutLocale === '/admin' ? 'active' : '', href=l('/admin'))= t('Dashboard')
               a.dropdown-item(class=ctx.pathWithoutLocale.startsWith('/admin/users') ? 'active' : '', href=l('/admin/users'))= t('Users')
+              a.dropdown-item(class=ctx.pathWithoutLocale.startsWith('/admin/domains') ? 'active' : '', href=l('/admin/domains'))= t('Domains')
         li.nav-item.dropdown.ml-lg-1.mt-1.mt-lg-0
           a#navbar-dropdown-my-account.btn.btn-lg.dropdown-toggle.d-block.text-left.text-lg-center(href=l('/my-account'), data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', class=ctx.pathWithoutLocale.startsWith('/my-account') ? 'btn-outline-light' : 'btn-dark')
             = t('My Account')

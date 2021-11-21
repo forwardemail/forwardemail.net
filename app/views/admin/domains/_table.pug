@@ -1,0 +1,31 @@
+
+include ../../_sort-header
+include ../../_pagination
+
+.table-responsive
+  table.table.table-hover.table-bordered
+    thead.thead-dark
+      tr
+        th(scope='col')
+          +sortHeader('name', 'Name', '#table-domains')
+        th(scope='col')
+          +sortHeader('is_global', 'Global', '#table-domains')
+        th(scope='col')
+          +sortHeader('plan', 'Plan', '#table-domains')
+        th(scope='col')
+          +sortHeader('max_recipients_per_alias', 'Max Recipients', '#table-domains')
+        th.text-center.align-middle(scope='col')= t('Actions')
+      tbody
+        each domain in domains
+          tr
+            td.align-middle
+              .markdown-body.ml-0.mr-0: code= domain.name
+            td.align-middle.text-center
+              if domain.is_global
+                i.fa.fa-fw.fa-check.fa-2x.text-success
+            td.align-middle.text-center
+              = t(titleize(humanize(domain.plan)))
+            td.align-middle.text-center
+              = domain.max_recipients_per_alias
+            td.align-middle
++paginate('#table-domains')
