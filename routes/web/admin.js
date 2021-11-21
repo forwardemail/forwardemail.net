@@ -21,5 +21,6 @@ router.delete('/users/:id', web.admin.users.remove);
 
 // domains
 router.get('/domains', paginate.middleware(10, 50), web.admin.domains.list);
+router.delete('/domains/:domain_id', web.admin.domains.remove);
 
 module.exports = router;
