@@ -1,3 +1,4 @@
+const Boom = require('@hapi/boom');
 const paginate = require('koa-ctx-paginate');
 
 const { Domains } = require('../../../models');
@@ -44,6 +45,27 @@ async function list(ctx) {
   ctx.body = { table };
 }
 
+async function remove(ctx) {
+  const domain = await Domains.findById(ctx.params.id);
+
+  if (!domain) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+
+  await domain.remove();
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: ctx.translate('REQUEST_OK'),
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
+
+  if (ctx.accepts('html')) ctx.redirect('back');
+  else ctx.body = { reloadPage: true };
+}
+
 module.exports = {
-  list
+  list,
+  remove
 };

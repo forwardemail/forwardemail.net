@@ -28,4 +28,9 @@ include ../../_pagination
             td.align-middle.text-center
               = domain.max_recipients_per_alias
             td.align-middle
+              .btn-group(role='group', aria-label=t('Actions'))
+                form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/domains/${domain.id}`), method="POST", autocomplete="off")
+                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  input(type="hidden", name="_method", value="DELETE")
+                  button(type='submit', data-toggle='tooltip', data-title=t('Remove')).btn.btn-secondary: i.fa.fa-fw.fa-remove
 +paginate('#table-domains')
