@@ -30,10 +30,9 @@ include ../../_pagination
                 input(type="hidden", name="_csrf", value=ctx.csrf)
                 input(type="hidden", name="_method", value="PUT")
                 .input-group
-                  select#input-max-recipients-per-alias(name='max_recipients_per_alias').form-select.form-select-sm
-                    each option in OPTIONS_MAX_RECIPIENTS
-                      option(value=option selected=option === domain.max_recipients_per_alias)= option
-                  button(type='submit', data-toggle='tooltip', data-title=t('Update')).btn.btn-sm.btn-secondary: i.fa.fa-fw.fa-save
+                  input(type='number', min=0, max=1000, step=10, name='max_recipients_per_alias', value=domain.max_recipients_per_alias).form-control
+                  .input-group-append
+                    button(type='submit', data-toggle='tooltip', data-title=t('Update')).btn.btn-sm.btn-dark: i.fa.fa-fw.fa-save
             td.align-middle
               .btn-group(role='group', aria-label=t('Actions'))
                 form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/domains/${domain.id}`), method="POST", autocomplete="off")
