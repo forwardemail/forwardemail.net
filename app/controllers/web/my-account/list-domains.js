@@ -11,7 +11,7 @@ async function listDomains(ctx) {
     domains = domains.filter((domain) =>
       Object.values(domain).some((prop) =>
         typeof prop === 'string'
-          ? new RE2(_.escapeRegExp(ctx.query.keyword)).test(prop)
+          ? new RE2(_.escapeRegExp(ctx.query.keyword), 'gi').test(prop)
           : false
       )
     );
@@ -23,7 +23,8 @@ async function listDomains(ctx) {
 
   // sort domains
   let sortFn;
-  if (new RE2('aliases').test(ctx.query.sort)) sortFn = (d) => d.aliases.length;
+  if (new RE2('aliases', 'gi').test(ctx.query.sort))
+    sortFn = (d) => d.aliases.length;
   else if (isSANB(ctx.query.sort))
     sortFn = (d) => d[ctx.query.sort.replace(/^-/, '')];
 
