@@ -4,7 +4,7 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
-const REGEX_AMOUNT_FORMATTED = new RE2('amount_formatted');
+const REGEX_AMOUNT_FORMATTED = new RE2('amount_formatted', 'gi');
 
 async function listBilling(ctx) {
   let { payments } = ctx.state;
@@ -41,7 +41,7 @@ async function listBilling(ctx) {
         if (ctx.query.keyword) {
           isKeyword =
             typeof prop === 'string'
-              ? new RE2(_.escapeRegExp(ctx.query.keyword)).test(prop)
+              ? new RE2(_.escapeRegExp(ctx.query.keyword), 'gi').test(prop)
               : false;
         }
 

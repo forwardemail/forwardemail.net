@@ -11,7 +11,7 @@ async function listAliases(ctx) {
     domain.aliases = domain.aliases.filter((alias) =>
       Object.values(alias).some((prop) =>
         typeof prop === 'string'
-          ? new RE2(_.escapeRegExp(ctx.query.keyword)).test(prop)
+          ? new RE2(_.escapeRegExp(ctx.query.keyword), 'gi').test(prop)
           : false
       )
     );
