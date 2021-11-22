@@ -412,7 +412,7 @@ async function getVerificationResults(domain, client = false) {
     else errors.push(MISSING_DNS_MX);
   } catch (err) {
     logger.warn(err);
-    const regex = new RegExp(testEmail, 'g');
+    const regex = new RE2(testEmail, 'g');
     err.message = err.message.replace(regex, domain.name);
     if (err.code === 'ENOTFOUND') {
       const error = new Error(config.i18n.phrases.ENOTFOUND);
