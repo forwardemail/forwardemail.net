@@ -6,6 +6,8 @@ module.exports = {
     appsAndWatch: concurrent.nps('apps', 'watch'),
     apps: concurrent.nps('bree', 'api', 'web'),
 
+    webAndWatch: series.nps('build', 'web', 'watch'),
+
     bree: 'nodemon bree.js',
     api: 'nodemon api.js',
     web: 'nodemon web.js',
