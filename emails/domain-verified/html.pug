@@ -1,4 +1,3 @@
-
 extends ../layout
 
 block content
@@ -6,30 +5,39 @@ block content
     .row
       .col-12
         .card.d-block.text-center
-          h5.card-header= t('Your domain is verified!')
+          h5.card-header= t("Your domain is verified!")
           .card-body.text-center.p-0
-            a(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`)
-              img(src=`${config.urls.web}/img/emails/domain-verified.gif`, alt='', data-inline-ignore=true).img-responsive
+            a(
+              href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
+            )
+              img.img-responsive(
+                src=`${config.urls.web}/img/emails/domain-verified.gif`,
+                alt='',
+                data-inline-ignore
+              )
             .p-3
-              h1.h3!= t('Woo-hoo!')
+              h1.h3!= t("Woo-hoo!")
               p.card-text!= t('We detected that your domain <strong><span class="notranslate">%s</span></strong> is now verified.', domain.name)
-              a.btn.btn-lg.btn-success(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`, role="button")= t('Manage domain')
+              a.btn.btn-lg.btn-success(
+                href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
+                role='button'
+              )= t("Manage domain")
             if domain.plan === 'free'
               .p-3
-                h2.h5= t('Did you want enhanced privacy and protection?')
+                h2.h5= t("Did you want enhanced privacy and protection?")
                 p.card-text
-                  != t('Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.')
-                  = ' '
-                  = t('If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.')
-                  = ' '
+                  != t("Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.")
+                  = " "
+                  = t("If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.")
+                  = " "
                   != t('<strong><a href="%s">Click here to learn more</a></strong> about our Enhanced Protection and Team plans.', `${config.urls.web}/${locale}/pricing`)
             .px-3.py-5.bg-dark.mt-3
-              h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t('Verification Status')
+              h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
               ul.list-inline
                 li.list-inline-item.mr-5
-                  = emoji('white_check_mark')
-                  .mt-2.text-monospace.text-uppercase.text-white= t('MX Records')
+                  = emoji("white_check_mark")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("MX Records")
                 li.list-inline-item
-                  = emoji('white_check_mark')
-                  .mt-2.text-monospace.text-uppercase.text-white= t('TXT Records')
-          .card-footer: small.text-muted= t('If you have any questions or comments, then please let us know')
+                  = emoji("white_check_mark")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("TXT Records")
+          .card-footer: small.text-muted= t("If you have any questions or comments, then please let us know")

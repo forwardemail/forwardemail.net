@@ -1,4 +1,3 @@
-
 include ../../../_sort-header
 include ../../../_pagination
 
@@ -14,10 +13,10 @@ include ../../../_pagination
         if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
           th(scope='col')
             +sortHeader('description', 'Description & Labels', '#table-aliases')
-        th(scope='col').text-center
+        th.text-center(scope='col')
           +sortHeader('is_enabled', 'Active', '#table-aliases')
-        th(scope='col').align-middle= t('Recipients')
-        th(scope='col').text-center.text-md-left.align-middle= t('Quick Links')
+        th.align-middle(scope='col')= t("Recipients")
+        th.text-center.text-md-left.align-middle(scope='col')= t("Quick Links")
     tbody
       each alias in domain.aliases
         tr
@@ -33,10 +32,18 @@ include ../../../_pagination
                 ul.list-inline.mb-0
                   each label in alias.labels
                     li.list-inline-item.h4
-                      span(class=label === 'catch-all' ? 'badge-success': 'badge-primary').badge.text-monospace.font-weight-normal= label === 'catch-all' ? t('catch-all') : label
+                      span.badge.text-monospace.font-weight-normal(
+                        class=label === "catch-all" ? "badge-success" : "badge-primary"
+                      )= label === "catch-all" ? t("catch-all") : label
           td.align-middle.text-center
-            button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=alias.is_enabled ? t('Enabled') : t('Disabled'), class=alias.is_enabled ? 'text-success' : 'text-danger').btn.btn-link
-              i.fa.fa-2x(class=alias.is_enabled ? 'fa-check' : 'fa-times')
+            button.btn.btn-link(
+              type='button',
+              data-placement='bottom',
+              data-toggle='tooltip',
+              data-title=alias.is_enabled ? t("Enabled") : t("Disabled"),
+              class=alias.is_enabled ? "text-success" : "text-danger"
+            )
+              i.fa.fa-2x(class=alias.is_enabled ? "fa-check" : "fa-times")
           td.align-middle
             ul.list-inline.mb-0
               each recipient in alias.recipients
@@ -46,19 +53,24 @@ include ../../../_pagination
                       = recipient
                     else
                       = `${alias.name}@${recipient}`
-          td.align-middle(style='width:20%')
+          td.align-middle(style='width: 20%')
             ul.list-inline.mb-0
               li.list-inline-item
-                a(href=`/my-account/domains/${domain.name}/aliases/${alias.id}`).btn.btn-dark
+                a.btn.btn-dark(
+                  href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
+                )
                   i.fa.fa-pencil
-                  = ' '
-                  = t('Edit Alias')
+                  = " "
+                  = t("Edit Alias")
               li.list-inline-item
-                form(action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`), method='POST').ajax-form.confirm-prompt.d-inline-block
-                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                form.ajax-form.confirm-prompt.d-inline-block(
+                  action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
+                  method='POST'
+                )
+                  input(type='hidden', name='_csrf', value=ctx.csrf)
                   input(type='hidden', name='_method', value='DELETE')
-                  button(type='submit').btn.btn-danger
+                  button.btn.btn-danger(type='submit')
                     i.fa.fa-trash
-                    = ' '
-                    = t('Delete Alias')
+                    = " "
+                    = t("Delete Alias")
 +paginate('#table-aliases')

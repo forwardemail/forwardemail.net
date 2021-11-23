@@ -1,16 +1,9 @@
-
 extends ../layout
 
 include ../_onboard
 
 block body
-  +onboard(
-    '<i class="fas fa-hourglass-half"></i>' + ' ' + t('Save Yourself Time'),
-    t('Fill out this form to personalize our guide below.'),
-    ctx.path,
-    '#top',
-    'border-bottom'
-  )
+  +onboard('<i class="fas fa-hourglass-half"></i>' + ' ' + t('Save Yourself Time'), t('Fill out this form to personalize our guide below.'), ctx.path, '#top', 'border-bottom')
   .container.py-5
     .row
       .col

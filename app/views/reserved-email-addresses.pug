@@ -1,27 +1,20 @@
-
 extends layout
 
 include _onboard
 
 block body
-  +onboard(
-    t('Need email forwarding for your team?'),
-    t('Skip ahead to the instructions to setup email forwarding for your team.'),
-    l('/faq?redirect_to_domain=true'),
-    '#reserved-email-addresses',
-    'border-bottom'
-  )
-  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center#reserved-email-addresses
+  +onboard(t('Need email forwarding for your team?'), t('Skip ahead to the instructions to setup email forwarding for your team.'), l('/faq?redirect_to_domain=true'), '#reserved-email-addresses', 'border-bottom')
+  #reserved-email-addresses.container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
     .row
       .col-md-12
         p.lead.mb-0.text-white.font-weight-bold
-          = t('We compiled a list of 1250+ email addresses that should be reserved by admins for security concerns.')
+          = t("We compiled a list of 1250+ email addresses that should be reserved by admins for security concerns.")
   .container.py-5
     .text-center.mb-5
       .h2.display-3.mb-1
         i.fa.fa-user-lock
-      h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t('Reserved Email Addresses and Words')
-      small.text-black-50.text-uppercase= t('Security-Focused List')
+      h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t("Reserved Email Addresses and Words")
+      small.text-black-50.text-uppercase= t("Security-Focused List")
     .row.mt-3
       .col-md-6.offset-md-3
         .alert.alert-info.mb-3!= t('<strong>Did you know?</strong> In our paid plans, organizations can have members that belong to an "admin" or a "user" group &ndash; and the "user" group is not permitted to add aliases that equal one of the reserved email addresses below.  We also restrict the "user" group from having an email address that starts with, ends with, or equals "admin", "administrator", "webmaster", "hostmaster", "postmaster", and "ssl".')
@@ -29,7 +22,11 @@ block body
           each reservedEmailAddress in reservedEmailAddressesList
             li: code= reservedEmailAddress
         p.mt-5.mb-0.text-center
-          a(href='https://github.com/forwardemail/reserved-email-addresses-list', target='_blank', rel='noopener noreferrer')
-            = t('View source code on GitHub')
-            = ' '
+          a(
+            href='https://github.com/forwardemail/reserved-email-addresses-list',
+            target='_blank',
+            rel='noopener noreferrer'
+          )
+            = t("View source code on GitHub")
+            = " "
             i.fa.fa-external-link

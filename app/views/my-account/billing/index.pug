@@ -1,29 +1,33 @@
 extends ../../layout
 
 block body
-
-  #modal-change-plan.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-change-plan-title', aria-hidden='true')
+  #modal-change-plan.modal.fade(
+    tabindex='-1',
+    role='dialog',
+    aria-labelledby='modal-change-plan-title',
+    aria-hidden='true'
+  )
     .modal-dialog(role='document')
       .modal-content
         .modal-header.text-center.d-block
-          h4.modal-title.d-inline-block.ml-4#modal-change-plan-title= t('Change Plan')
-          button(type='button', data-dismiss='modal', aria-label='Close').close
+          h4#modal-change-plan-title.modal-title.d-inline-block.ml-4= t("Change Plan")
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
             span(aria-hidden='true') &times;
         .modal-body
           p.lead.text-center!= t('You are currently on the <span class="notranslate">%s</span> plan.', t(titleize(humanize(user.plan))))
           if user.plan === 'free'
-            a(href=l('/my-account/billing/upgrade?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-success.mb-3= t('Upgrade to Enhanced Protection')
-            a(href=l('/my-account/billing/upgrade?plan=team')).btn.btn-lg.btn-block.btn-primary= t('Upgrade to Team')
+            a.btn.btn-lg.btn-block.btn-success.mb-3(href=l("/my-account/billing/upgrade?plan=enhanced_protection"))= t("Upgrade to Enhanced Protection")
+            a.btn.btn-lg.btn-block.btn-primary(href=l("/my-account/billing/upgrade?plan=team"))= t("Upgrade to Team")
           else if user.plan === 'enhanced_protection'
-            a(href=l('/my-account/billing/upgrade?plan=team')).btn.btn-lg.btn-block.btn-primary.mb-3= t('Upgrade to Team')
+            a.btn.btn-lg.btn-block.btn-primary.mb-3(href=l("/my-account/billing/upgrade?plan=team"))= t("Upgrade to Team")
           else if user.plan === 'team'
-            a(href=l('/my-account/billing/upgrade?plan=enhanced_protection')).btn.btn-lg.btn-block.btn-dark.mb-3= t('Downgrade to Enhanced Protection')
+            a.btn.btn-lg.btn-block.btn-dark.mb-3(href=l("/my-account/billing/upgrade?plan=enhanced_protection"))= t("Downgrade to Enhanced Protection")
           if ['enhanced_protection', 'team'].includes(user.plan)
-            form(action=l('/my-account/billing/upgrade'), method='GET').confirm-prompt
+            form.confirm-prompt(action=l("/my-account/billing/upgrade"), method='GET')
               input(type='hidden', name='plan', value='free')
-              button(type='submit').btn.btn-block.btn-outline-danger= t('Downgrade to Free')
+              button.btn.btn-block.btn-outline-danger(type='submit')= t("Downgrade to Free")
         .modal-footer
-          button(type='button', data-dismiss='modal', aria-label=t('Cancel')).btn.btn-lg.btn-block.btn-secondary= t('Cancel')
+          button.btn.btn-lg.btn-block.btn-secondary(type='button', data-dismiss='modal', aria-label=t("Cancel"))= t("Cancel")
 
   .container-fluid.py-3
     .row
@@ -32,11 +36,15 @@ block body
 
   .container.pb-5.position-relative
     .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-      .col-12.d-flex(class=user.plan === 'free' ? '' : 'col-lg-6')
+      .col-12.d-flex(class=user.plan === "free" ? "" : "col-lg-6")
         .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
           h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
-          small.text-muted.text-uppercase.mb-3= t('Current Plan')
-          button(type='button', data-toggle='modal', data-target='#modal-change-plan').btn.btn-lg.btn-success= t('Change Plan')
+          small.text-muted.text-uppercase.mb-3= t("Current Plan")
+          button.btn.btn-lg.btn-success(
+            type='button',
+            data-toggle='modal',
+            data-target='#modal-change-plan'
+          )= t("Change Plan")
       if user.plan !== 'free'
         .col-12.col-lg-6.d-flex
           .mt-lg-0.mt-5.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
@@ -44,59 +52,83 @@ block body
               if user.plan === 'free'
                 i.fa.fa-infinity
               else
-                - let str = _.capitalize(dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow())
+                - let str = _.capitalize(dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow());
                 if str.startsWith('A ')
-                  - str = str.replace('A ', '1 ')
+                  - str = str.replace("A ", "1 ");
                 else if str.startsWith('In a')
-                  - str = str.replace('In a ', '1 ')
+                  - str = str.replace("In a ", "1 ");
                 else if str.startsWith('In ')
-                  - str = str.replace('In ', '')
+                  - str = str.replace("In ", "");
                 = str
             small.text-muted.text-uppercase.mb-3
-              = t('Next Payment Due')
-              = ': '
+              = t("Next Payment Due")
+              = ": "
               if user.plan === 'free'
                 i.fa.fa-infinity
               else
-                = dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY')
+                = dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY")
             if isSANB(user[config.userFields.stripeSubscriptionID])
               .col-12.d-flex.col-lg-6
                 .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-                  form(action=l('/my-account/billing/manage-payments'), method='POST')
+                  form(
+                    action=l("/my-account/billing/manage-payments"),
+                    method='POST'
+                  )
                     input(type='hidden', name='_csrf', value=ctx.csrf)
-                    button(type='submit').btn.btn-lg.btn-danger= t('Manage Billing')
+                    button.btn.btn-lg.btn-danger(type='submit')= t("Manage Billing")
             else
-              a(href=l('/my-account/billing/make-payment'), disabled=user.plan === 'free', class=user.plan === 'free' ? 'disabled' : '').btn.btn-lg.btn-danger= t('Make Payment')
+              a.btn.btn-lg.btn-danger(
+                href=l("/my-account/billing/make-payment"),
+                disabled=user.plan === "free",
+                class=user.plan === "free" ? "disabled" : ""
+              )= t("Make Payment")
   if payments.length > 0
     .container.py-3
       .row
         .col
-          h3.text-center.mb-3= t('Payment History')
-          p.text-center: small.text-muted!= t('If you want to update company info on receipts, then <a href="%s" class="notranslate">update your profile</a>.', l('/my-account/profile'))
-          form.ajax-form.table-ajax-form.mb-3.px-3(action=ctx.path, method='GET', data-table='#table-payments')
+          h3.text-center.mb-3= t("Payment History")
+          p.text-center: small.text-muted!= t('If you want to update company info on receipts, then <a href="%s" class="notranslate">update your profile</a>.', l("/my-account/profile"))
+          form.ajax-form.table-ajax-form.mb-3.px-3(
+            action=ctx.path,
+            method='GET',
+            data-table='#table-payments'
+          )
             input(type='hidden', name='_csrf', value=ctx.csrf)
             .form-row
               .col.form-group.floating-label
-                input.form-control#input-keyword-search(type='text', value=ctx.query.keyword ? ctx.query.keyword : '', name='keyword', placeholder='Keyword')
-                label(for='input-keyword-search')= t('Keyword')
+                input#input-keyword-search.form-control(
+                  type='text',
+                  value=ctx.query.keyword ? ctx.query.keyword : "",
+                  name='keyword',
+                  placeholder='Keyword'
+                )
+                label(for='input-keyword-search')= t("Keyword")
             .form-row
               .col.form-group.floating-label
-                input.form-control#input-start-date(type='date', value=ctx.query.start_date ? ctx.query.start_date : '', name='start_date')
-                label(for='input-start-date')= t('Start Date')
+                input#input-start-date.form-control(
+                  type='date',
+                  value=ctx.query.start_date ? ctx.query.start_date : "",
+                  name='start_date'
+                )
+                label(for='input-start-date')= t("Start Date")
               .col.form-group.floating-label
-                input.form-control#input-end-date(type='date', value=ctx.query.end_date ? ctx.query.end_date : '', name='end_date')
-                label(for='input-end-date')= t('End Date')
+                input#input-end-date.form-control(
+                  type='date',
+                  value=ctx.query.end_date ? ctx.query.end_date : "",
+                  name='end_date'
+                )
+                label(for='input-end-date')= t("End Date")
             .row
               .col
-                button.btn.btn-success.btn-block(type="submit")= t('Search')
+                button.btn.btn-success.btn-block(type='submit')= t("Search")
           #table-payments.mb-0
             include ./_table.pug
   if isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
-    .container(class=payments.length === 0 ? 'py-3' : '')
+    .container(class=payments.length === 0 ? "py-3" : "")
       .row.text-center.my-5
         .col
-          form(action=l('/my-account/billing'), method='POST').confirm-prompt
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+          form.confirm-prompt(action=l("/my-account/billing"), method='POST')
+            input(type='hidden', name='_csrf', value=ctx.csrf)
             input(type='hidden', name='_method', value='DELETE')
-            button(type='submit').btn.btn-outline-secondary
-              = t('Cancel Subscription')
+            button.btn.btn-outline-secondary(type='submit')
+              = t("Cancel Subscription")

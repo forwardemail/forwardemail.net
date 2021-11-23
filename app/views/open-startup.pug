@@ -1,60 +1,58 @@
-
 extends layout
 
 include _onboard
 
-append scripts
-  script(defer, src=manifest('js/open-startup.js'), integrity=manifest('js/open-startup.js', 'integrity'), crossorigin='anonymous')
+block append scripts
+  script(
+    defer,
+    src=manifest("js/open-startup.js"),
+    integrity=manifest("js/open-startup.js", "integrity"),
+    crossorigin='anonymous'
+  )
 
 block body
-  - const hash = 'how-do-i-get-started-and-set-up-email-forwarding'
+  - const hash = "how-do-i-get-started-and-set-up-email-forwarding";
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
     .row
       .col-md-12
         p.lead.mb-0.text-white.font-weight-bold
-          t= t('We operate with complete transparency and share our metrics.')
+          t= t("We operate with complete transparency and share our metrics.")
   .bg-light
     .container.py-3.text-center
       .mb-5
         .h2.display-3.mb-1.text-success
           i.fa.fa-chart-line
-        h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t('Open Startup')
-        small.text-black-50.text-uppercase= t('Our live metrics update every five minutes')
+        h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t("Open Startup")
+        small.text-black-50.text-uppercase= t("Our live metrics update every five minutes")
       .row.mb-3
         .col
           .d-flex.flex-wrap.rounded.border.bg-white
             .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
-              h2.h6.text-muted.text-uppercase= t('Total users')
-              .display-4.font-weight-bold#metrics-total-users -
+              h2.h6.text-muted.text-uppercase= t("Total users")
+              #metrics-total-users.display-4.font-weight-bold -
             .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
-              h2.h6.text-muted.text-uppercase= t('Total domains')
-              .display-4.font-weight-bold#metrics-total-domains -
+              h2.h6.text-muted.text-uppercase= t("Total domains")
+              #metrics-total-domains.display-4.font-weight-bold -
             .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
-              h2.h6.text-muted.text-uppercase= t('Total aliases')
-              .display-4.font-weight-bold#metrics-total-aliases -
+              h2.h6.text-muted.text-uppercase= t("Total aliases")
+              #metrics-total-aliases.display-4.font-weight-bold -
       .row.mb-3
         .col
           .card
             .card-body
-              h2.h6.text-muted.text-uppercase.mb-0= t('Growth since launch')
+              h2.h6.text-muted.text-uppercase.mb-0= t("Growth since launch")
               #line-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
       .row.mb-3
         .col
           .card
             .card-body
-              h2.h6.text-muted.text-uppercase.mb-0= t('Daily new users')
+              h2.h6.text-muted.text-uppercase.mb-0= t("Daily new users")
               #heatmap: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
       .row.mb-3
         .col
           .card
             .card-body
-              h2.h6.text-muted.text-uppercase.mb-0= t('Plan distribution')
+              h2.h6.text-muted.text-uppercase.mb-0= t("Plan distribution")
               #pie-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
   if !user
-    +onboard(
-      t('Need email forwarding?'),
-      t('Skip ahead to the instructions to get started.'),
-      l(`/faq?hash=${hash}`),
-      false,
-      'border-top bg-transparent'
-    ).d-flex.flex-column.flex-grow-1.justify-content-end
+    +onboard(t('Need email forwarding?'), t('Skip ahead to the instructions to get started.'), l(`/faq?hash=${hash}`), false, 'border-top bg-transparent').d-flex.flex-column.flex-grow-1.justify-content-end

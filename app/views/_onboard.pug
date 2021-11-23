@@ -7,32 +7,61 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
             h1.text-center!= onboardHeader
           if onboardText
             p.text-center.mb-0.text-muted!= onboardText
-          form(action=onboardFormAction, method='POST').ajax-form.pt-4.mb-3
+          form.ajax-form.pt-4.mb-3(action=onboardFormAction, method='POST')
             input(type='hidden', name='_csrf', value=ctx.csrf)
             .form-row
               .col-12.col-md-6.offset-md-3
                 .form-group.floating-label
-                  input#input-onboard-domain.form-control.form-control-lg(type='text', name='domain', value=domain, required, placeholder='example.com')
-                  label(for='input-onboard-domain')= t('Enter your domain')
+                  input#input-onboard-domain.form-control.form-control-lg(
+                    type='text',
+                    name='domain',
+                    value=domain,
+                    required,
+                    placeholder='example.com'
+                  )
+                  label(for='input-onboard-domain')= t("Enter your domain")
                 .form-group.floating-label
-                  input#input-onboard-email.form-control.form-control-lg(type='email', autocomplete="email", name="email", value=email, placeholder='name@gmail.com', required)
-                  label(for='input-onboard-email')= t('Enter your email')
+                  input#input-onboard-email.form-control.form-control-lg(
+                    type='email',
+                    autocomplete='email',
+                    name='email',
+                    value=email,
+                    placeholder='name@gmail.com',
+                    required
+                  )
+                  label(for='input-onboard-email')= t("Enter your email")
                 .form-check.form-group
-                  input#input-enhanced-protection(type='checkbox', name='enhanced_protection', checked, value='true').form-check-input
-                  label.form-check-label(for='input-enhanced-protection')!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a> ($3/mo premium support and privacy)', l('/pricing'))
+                  input#input-enhanced-protection.form-check-input(
+                    type='checkbox',
+                    name='enhanced_protection',
+                    checked,
+                    value='true'
+                  )
+                  label.form-check-label(for='input-enhanced-protection')!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a> ($3/mo premium support and privacy)', l("/pricing"))
                 if user
                   .form-check.form-group
-                    input#input-create-domain(type='checkbox', name='create_domain', checked, value='true').form-check-input
-                    label.form-check-label(for='input-create-domain')= t('Add this domain to your account (if it does not exist)')
+                    input#input-create-domain.form-check-input(
+                      type='checkbox',
+                      name='create_domain',
+                      checked,
+                      value='true'
+                    )
+                    label.form-check-label(for='input-create-domain')= t("Add this domain to your account (if it does not exist)")
                 else
                   .form-check.form-group.d-flex
-                    input#input-create-account(type='checkbox', name='create_account', checked, value='true', aria-describedby='help-create-account').form-check-input
-                    label.form-check-label(for='input-create-account').mr-2= t('Create your free account now')
+                    input#input-create-account.form-check-input(
+                      type='checkbox',
+                      name='create_account',
+                      checked,
+                      value='true',
+                      aria-describedby='help-create-account'
+                    )
+                    label.form-check-label.mr-2(for='input-create-account')= t("Create your free account now")
                     small#help-create-account.text-black-50.align-self-center.flex-grow-1.text-right
-                      != t('Read our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>', l('/privacy'), l('/terms'))
-                button.btn.btn-success.btn-lg.btn-block(type="submit")
-                  = t('Continue')
-                  = ' '
+                      != t('Read our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>', l("/privacy"), l("/terms"))
+                button.btn.btn-success.btn-lg.btn-block(type='submit')
+                  = t("Continue")
+                  = " "
                   i.fa.fa-angle-double-right
           if onboardKeepReading
-            p.text-center.mb-0: small: a(href=onboardKeepReading).text-black-50= t('Not interested?  Click here to keep reading')
+            p.text-center.mb-0: small: a.text-black-50(href=onboardKeepReading)= t("Not interested?  Click here to keep reading")
