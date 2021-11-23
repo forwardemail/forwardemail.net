@@ -7,7 +7,7 @@ async function listDomains(ctx) {
   let { domains } = ctx.state;
 
   // filter based on regex keyword
-  if (ctx.query.keyword) {
+  if (ctx.query.q) {
     domains = domains.filter((domain) =>
       Object.values(domain).some((prop) =>
         typeof prop === 'string'
@@ -54,12 +54,7 @@ async function listDomains(ctx) {
     pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
   });
 
-  const table =
-    itemCount === 0
-      ? `<div class="alert alert-info"> No domains exist for that keyword. </div>`
-      : ctx.body;
-
-  ctx.body = { table };
+  ctx.body = { table: ctx.body };
 }
 
 module.exports = listDomains;

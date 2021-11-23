@@ -31,7 +31,7 @@ block body
     .row
       .col
         include ../../_breadcrumbs
-        if domains.length === 0
+        if domains.length === 0 && !ctx.query.q
           .alert.alert-info= t('No domains exist yet')
         else
           .alert.my-3.alert-primary
@@ -40,19 +40,10 @@ block body
             strong= t('Tip:')
             = ' '
             = t('If you need to upgrade or downgrade your plan on a domain name, then click on the dropdown for it under the column "Current Plan" below.')
-          form.ajax-form.table-ajax-form(
-            action=ctx.path,
-            method="GET",
-            data-table="#table-domains"
-          )
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+          form.ajax-form.table-ajax-form(action=ctx.path, method='GET', data-table='#table-domains', data-search-params='q')
+            input(type='hidden', name='_csrf', value=ctx.csrf)
             .input-group.mb-3.px-3
-              input#input-keyword-search.form-control(
-                type="text",
-                value=ctx.query.keyword ? ctx.query.keyword : '',
-                name="keyword",
-                placeholder="Keyword"
-              )
+              input.form-control#input-keyword-search(type='text', value=ctx.query.q ? ctx.query.q : '', name='q', placeholder='Keyword')
               .input-group-append
                 button.btn.btn-success(type="submit")= t('Search')
           #table-domains
