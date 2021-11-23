@@ -1,15 +1,19 @@
-
 extends ../../layout
 
 block body
   include _modal-upgrade
   if modalFAQTable
-    #modal-faq-table.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-faq-table-title', aria-hidden='true')
+    #modal-faq-table.modal.fade(
+      tabindex='-1',
+      role='dialog',
+      aria-labelledby='modal-faq-table-title',
+      aria-hidden='true'
+    )
       .modal-dialog.modal-lg(role='document')
         .modal-content
           .modal-header.text-center.d-block
-            h4.modal-title.d-inline-block.ml-4#modal-faq-table-title= t('DNS Management by Registar')
-            button(type='button', data-dismiss='modal', aria-label='Close').close
+            h4#modal-faq-table-title.modal-title.d-inline-block.ml-4= t("DNS Management by Registar")
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
               span(aria-hidden='true') &times;
           .modal-body!= modalFAQTable
   .container-fluid.pt-3
@@ -17,31 +21,46 @@ block body
       .col
         include ../../_breadcrumbs
   .py-5.bg-dark.text-center
-    h2.display-5.font-weight-light.mb-3.text-uppercase.text-white= t('Verification Status')
+    h2.display-5.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
     p.px-5.text-white= t('Follow the steps below and then click "Verify Records" to verify your setup.')
     ul.list-inline
       li.list-inline-item
-        button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_mx_record ? t('Verified') : t('Not Verified'), class=domain.has_mx_record ? 'text-success' : 'text-danger').btn.btn-link
-          i.fa.fa-4x(class=domain.has_mx_record ? 'fa-check' : 'fa-times')
-        .text-monospace.text-uppercase.text-white= t('MX Records')
+        button.btn.btn-link(
+          type='button',
+          data-placement='bottom',
+          data-toggle='tooltip',
+          data-title=domain.has_mx_record ? t("Verified") : t("Not Verified"),
+          class=domain.has_mx_record ? "text-success" : "text-danger"
+        )
+          i.fa.fa-4x(class=domain.has_mx_record ? "fa-check" : "fa-times")
+        .text-monospace.text-uppercase.text-white= t("MX Records")
       li.list-inline-item
-        button(type='button', data-placement='bottom', data-toggle='tooltip', data-title=domain.has_txt_record ? t('Verified') : t('Not Verified'), class=domain.has_txt_record ? 'text-success' : 'text-danger').btn.btn-link
-          i.fa.fa-4x(class=domain.has_txt_record ? 'fa-check' : 'fa-times')
-        .text-monospace.text-uppercase.text-white= t('TXT Records')
+        button.btn.btn-link(
+          type='button',
+          data-placement='bottom',
+          data-toggle='tooltip',
+          data-title=domain.has_txt_record ? t("Verified") : t("Not Verified"),
+          class=domain.has_txt_record ? "text-success" : "text-danger"
+        )
+          i.fa.fa-4x(class=domain.has_txt_record ? "fa-check" : "fa-times")
+        .text-monospace.text-uppercase.text-white= t("TXT Records")
     if domain.group === 'admin'
-      form.ajax-form(action=l(`/my-account/domains/${domain.name}/verify-records`), method="POST")
-        input(type="hidden", name="_csrf", value=ctx.csrf)
-        button(type='submit').btn.btn-success.btn-lg
+      form.ajax-form(
+        action=l(`/my-account/domains/${domain.name}/verify-records`),
+        method='POST'
+      )
+        input(type='hidden', name='_csrf', value=ctx.csrf)
+        button.btn.btn-success.btn-lg(type='submit')
           i.fa.fa-refresh
-          = ' '
-          = t('Verify Records')
+          = " "
+          = t("Verify Records")
       if !domain.has_mx_record
         .container
           .col-md-8.offset-md-2
             .card.mt-5
-              h5.card-header= t('DNS MX Records Required')
+              h5.card-header= t("DNS MX Records Required")
               .card-body
-                p!= t('Set these <strong>MX records</strong> as the <u>only MX records</u> to your domain\'s DNS:')
+                p!= t("Set these <strong>MX records</strong> as the <u>only MX records</u> to your domain's DNS:")
                 table.table.table-striped.table-hover.mt-2
                   thead.thead-dark
                     tr
@@ -65,61 +84,97 @@ block body
                       td: code mx2.forwardemail.net
                 if modalFAQTable
                   .text-center.mt-2
-                    button(type='button', data-toggle='modal', data-target='#modal-faq-table').btn.btn-link.btn-sm Need help navigating to your DNS management page?
+                    button.btn.btn-link.btn-sm(
+                      type='button',
+                      data-toggle='modal',
+                      data-target='#modal-faq-table'
+                    ) Need help navigating to your DNS management page?
       if domain.plan === 'free' && !domain.has_txt_record
         .container
           .col-md-8.offset-md-2
             .card.mt-5
-              h5.card-header= t('DNS TXT Record Required')
+              h5.card-header= t("DNS TXT Record Required")
               .card-body
-                p!= t('Add this <strong>TXT record</strong> to your domain\'s DNS for a global catch-all:')
+                p!= t("Add this <strong>TXT record</strong> to your domain's DNS for a global catch-all:")
                 .input-group
-                  input(type='text', readonly, value=`${config.recordPrefix}=${user.email}`).form-control#verification-record
+                  input#verification-record.form-control(
+                    type='text',
+                    readonly,
+                    value=`${config.recordPrefix}=${user.email}`
+                  )
                   .input-group-append
-                    button(type='button', data-toggle="clipboard", data-clipboard-target="#verification-record").btn.btn-primary
+                    button.btn.btn-primary(
+                      type='button',
+                      data-toggle='clipboard',
+                      data-clipboard-target='#verification-record'
+                    )
                       i.fa.fa-clipboard
-                      = ' '
-                      = t('Copy')
+                      = " "
+                      = t("Copy")
                 p.text-center.text-muted.py-2: small!= t('Use "@", ".", or blank for the name/host/alias value. Read <a href="%s" class="notranslate" rel="noopener noreferrer" target="_blank">our FAQ section</a> for more options', l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`))
                 if modalFAQTable
                   .text-center.mt-3
-                    button(type='button', data-toggle='modal', data-target='#modal-faq-table').btn.btn-link.btn-sm Need help navigating to your DNS management page?
+                    button.btn.btn-link.btn-sm(
+                      type='button',
+                      data-toggle='modal',
+                      data-target='#modal-faq-table'
+                    ) Need help navigating to your DNS management page?
       else if domain.plan !== 'free' && !domain.has_txt_record
         .container
           .col-md-8.offset-md-2
             .card.mt-5
-              h5.card-header= t('DNS TXT Record Required')
+              h5.card-header= t("DNS TXT Record Required")
               .card-body
-                p!= t('Add your Enhanced Protection Verification <strong>TXT record</strong> to your domain\'s DNS:')
+                p!= t("Add your Enhanced Protection Verification <strong>TXT record</strong> to your domain's DNS:")
                 .input-group
-                  input(type='text', readonly, value=`${config.recordPrefix}-site-verification=${domain.verification_record}`).form-control#verification-record
+                  input#verification-record.form-control(
+                    type='text',
+                    readonly,
+                    value=`${config.recordPrefix}-site-verification=${domain.verification_record}`
+                  )
                   .input-group-append
-                    button(type='button', data-toggle="clipboard", data-clipboard-target="#verification-record").btn.btn-primary
+                    button.btn.btn-primary(
+                      type='button',
+                      data-toggle='clipboard',
+                      data-clipboard-target='#verification-record'
+                    )
                       i.fa.fa-clipboard
-                      = ' '
-                      = t('Copy')
+                      = " "
+                      = t("Copy")
                 p.text-center.text-muted.py-2: small!= t('Use "@", ".", or blank for the name/host/alias value. You <u>must remove</u> any existing "<span class="notranslate">%s</span><span class="notranslate">=</span>" records.', config.recordPrefix)
                 if modalFAQTable
                   .text-center.mt-3
-                    button(type='button', data-toggle='modal', data-target='#modal-faq-table').btn.btn-link.btn-sm Need help navigating to your DNS management page?
+                    button.btn.btn-link.btn-sm(
+                      type='button',
+                      data-toggle='modal',
+                      data-target='#modal-faq-table'
+                    ) Need help navigating to your DNS management page?
   .container-fluid.py-5
     .position-relative
       .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
         .col-12.d-flex
           .p-5.m-2.mt-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t('1. Set up your domain for email forwarding')
+            h2.display-5.font-weight-bold.mb-3= t("1. Set up your domain for email forwarding")
             p.lead.mb-3= t("Do you need to configure (or re-configure) this domain name for email forwarding?")
-            a.mt-auto(href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`), target='_blank', rel='noopener noreferrer').stretched-link.btn.btn-lg.btn-outline-dark
-              = t('Configure your domain')
-              = ' '
+            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`),
+              target='_blank',
+              rel='noopener noreferrer'
+            )
+              = t("Configure your domain")
+              = " "
               i.fa.fa-angle-double-right
         .col-12.d-flex
           .p-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t('2. Send emails with your domain using Gmail (optional)')
-            p.lead.mb-3!= t('Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.')
-            a.mt-auto(href=l(`/faq?domain=${domain.name}#how-to-send-mail-as-using-gmail`), target='_blank', rel='noopener noreferrer').stretched-link.btn.btn-lg.btn-outline-dark
-              = t('Setup your Gmail')
-              = ' '
+            h2.display-5.font-weight-bold.mb-3= t("2. Send emails with your domain using Gmail (optional)")
+            p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
+            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              href=l(`/faq?domain=${domain.name}#how-to-send-mail-as-using-gmail`),
+              target='_blank',
+              rel='noopener noreferrer'
+            )
+              = t("Setup your Gmail")
+              = " "
               i.fa.fa-angle-double-right
         //-.
           .col-12.col-lg-6.d-flex
@@ -139,15 +194,19 @@ block body
                     i.fa.fa-angle-double-right
         .col-12.d-flex
           .p-5.m-2.mb-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t('3. Still need help with something?')
-            p.lead.mb-3!= t('We are here to answer your questions, but before asking us, please be sure to <a href="%s">read our FAQ section</a>.', l('/faq'))
-            a.mt-auto(href=l('/help'), role='button', data-target='#modal-help').stretched-link.btn.btn-lg.btn-outline-dark
-              = t('Ask us a question')
-              = ' '
+            h2.display-5.font-weight-bold.mb-3= t("3. Still need help with something?")
+            p.lead.mb-3!= t('We are here to answer your questions, but before asking us, please be sure to <a href="%s">read our FAQ section</a>.', l("/faq"))
+            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              href=l("/help"),
+              role='button',
+              data-target='#modal-help'
+            )
+              = t("Ask us a question")
+              = " "
               i.fa.fa-angle-double-right
     .row.text-center.mt-5
       .col
-        a(href=l('/my-account/domains')).btn.btn-outline-secondary
+        a.btn.btn-outline-secondary(href=l("/my-account/domains"))
           i.fa.fa-angle-double-left
-          = ' '
-          = t('Back to Domains')
+          = " "
+          = t("Back to Domains")

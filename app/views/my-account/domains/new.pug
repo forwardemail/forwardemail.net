@@ -1,4 +1,3 @@
-
 extends ../../layout
 
 block body
@@ -9,31 +8,50 @@ block body
   .container
     .row
       .col-sm-12.col-md-12.col-lg-8.offset-lg-2
-        form.ajax-form(action=ctx.path, method="POST")
-          input(type="hidden", name="_csrf", value=ctx.csrf)
+        form.ajax-form(action=ctx.path, method='POST')
+          input(type='hidden', name='_csrf', value=ctx.csrf)
           if isSANB(ctx.query.plan) && ['free','enhanced_protection','team'].includes(ctx.query.plan)
             input(type='hidden', name='plan', value=ctx.query.plan)
           .form-group.floating-label
-            input#input-domain(required, value=isSANB(ctx.query.domain) && isFQDN(ctx.query.domain) ? ctx.query.domain : '', name='domain', autocomplete="off", placeholder="example.com", autocorrect="off", spellcheck="false", autocapitalize="off", type="text").form-control.form-control-lg
-            label(for="input-domain")= t('Domain name')
+            input#input-domain.form-control.form-control-lg(
+              required,
+              value=isSANB(ctx.query.domain) && isFQDN(ctx.query.domain) ? ctx.query.domain : "",
+              name='domain',
+              autocomplete='off',
+              placeholder='example.com',
+              autocorrect='off',
+              spellcheck='false',
+              autocapitalize='off',
+              type='text'
+            )
+            label(for='input-domain')= t("Domain name")
           if !isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan)
             .form-check.form-group
-              input#input-enhanced-protection(type='checkbox', name='plan', value='enhanced_protection', checked).form-check-input
-              label.form-check-label(for='input-enhanced-protection')!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a> ($3/mo premium support and privacy)', l('/pricing'))
+              input#input-enhanced-protection.form-check-input(
+                type='checkbox',
+                name='plan',
+                value='enhanced_protection',
+                checked
+              )
+              label.form-check-label(for='input-enhanced-protection')!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a> ($3/mo premium support and privacy)', l("/pricing"))
           if user.group === 'admin'
             .form-group.form-check
-              input#input-is-global(type='checkbox', name='is_global', value='true').form-check-input
-              label(for='input-is-global').form-check-label= t('Global domain')
-          button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+              input#input-is-global.form-check-input(
+                type='checkbox',
+                name='is_global',
+                value='true'
+              )
+              label.form-check-label(for='input-is-global')= t("Global domain")
+          button.btn.btn-success.btn-block.btn-lg(type='submit')= t("Continue")
         .alert.alert-warning.mt-3.text-center
           ul.list-inline.mb-0
             li.list-inline-item= t("Don't have a domain name?")
             li.list-inline-item
-              a.alert-link(href=l('/domain-registration'))= t('Register a domain')
+              a.alert-link(href=l("/domain-registration"))= t("Register a domain")
     if domains.length > 0
       .row.text-center.my-5
         .col
-          a(href=l('/my-account/domains')).btn.btn-outline-secondary
+          a.btn.btn-outline-secondary(href=l("/my-account/domains"))
             i.fa.fa-angle-double-left
-            = ' '
-            = t('Back to Domains')
+            = " "
+            = t("Back to Domains")

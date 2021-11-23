@@ -1,4 +1,3 @@
-
 extends ../../../layout
 
 block body
@@ -11,23 +10,26 @@ block body
     if domain && domain.group === 'admin'
       .row.text-center.my-2
         .col
-          form(action=l(`/my-account/domains/${domain.name}/aliases/import`), method='POST').ajax-form.confirm-prompt.d-inline-block
-            input(type="hidden", name="_csrf", value=ctx.csrf)
-            button(type='submit').btn.btn-lg.btn-dark.text-uppercase.font-weight-bold
-              = t('Import TXT Records')
-              = ' '
+          form.ajax-form.confirm-prompt.d-inline-block(
+            action=l(`/my-account/domains/${domain.name}/aliases/import`),
+            method='POST'
+          )
+            input(type='hidden', name='_csrf', value=ctx.csrf)
+            button.btn.btn-lg.btn-dark.text-uppercase.font-weight-bold(type='submit')
+              = t("Import TXT Records")
+              = " "
               i.fa.fa-cloud-download-alt
     .row
       .col
         .card
           .card-body
-            form.ajax-form(action=ctx.path, method="POST")
+            form.ajax-form(action=ctx.path, method='POST')
               include _form
-              button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+              button.btn.btn-success.btn-block.btn-lg(type='submit')= t("Continue")
     if domain
       .row.text-center.my-5
         .col
-          a(href=l(`/my-account/domains/${domain.name}/aliases`)).btn.btn-outline-secondary
+          a.btn.btn-outline-secondary(href=l(`/my-account/domains/${domain.name}/aliases`))
             i.fa.fa-angle-double-left
-            = ' '
-            = t('Back to Aliases')
+            = " "
+            = t("Back to Aliases")

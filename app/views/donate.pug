@@ -1,4 +1,3 @@
-
 extends layout
 
 block body
@@ -6,25 +5,37 @@ block body
     .row
       .col-md-12
         p.lead.mb-0.text-white.font-weight-bold
-          = t('We thank you for your generosity and time in considering a donation.')
+          = t("We thank you for your generosity and time in considering a donation.")
   .container.py-5
     .text-center.mb-5
       .ih2.display-3.mb-1
         i.fa.fa-donate
-      h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t('Donate')
-      small.text-black-50.text-uppercase= t('How can I donate?')
+      h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t("Donate")
+      small.text-black-50.text-uppercase= t("How can I donate?")
       .row.mt-3
         .col-md-6.offset-md-3
           ul.list-unstyled.text-left
             li
-              a(href='https://github.com/sponsors/niftylettuce', target='_blank', rel='noopener noreferrer').btn.btn-lg.btn-link.btn-block
+              a.btn.btn-lg.btn-link.btn-block(
+                href='https://github.com/sponsors/niftylettuce',
+                target='_blank',
+                rel='noopener noreferrer'
+              )
                 i.fa.fa-github
-                = ' GitHub Sponsorship'
+                = " GitHub Sponsorship"
             li
-              a(href='https://paypal.me/niftylettuce', target='_blank', rel='noopener noreferrer').btn.btn-lg.btn-link.btn-block
+              a.btn.btn-lg.btn-link.btn-block(
+                href='https://paypal.me/niftylettuce',
+                target='_blank',
+                rel='noopener noreferrer'
+              )
                 i.fa.fa-paypal
-                = ' PayPal'
+                = " PayPal"
             li
-              a(href='https://www.patreon.com/niftylettuce', target='blank', rel='nopener').btn.btn-lg.btn-link.btn-block
+              a.btn.btn-lg.btn-link.btn-block(
+                href='https://www.patreon.com/niftylettuce',
+                target='blank',
+                rel='nopener'
+              )
                 i.fab.fa-patreon
-                = ' Patreon'
+                = " Patreon"

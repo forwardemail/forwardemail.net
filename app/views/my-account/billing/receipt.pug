@@ -1,8 +1,6 @@
-
 extends ../../layout
 
 block body
-
   .container-fluid.py-3
     .row
       .col
@@ -15,18 +13,29 @@ block body
     .row.my-5
       ul.list-inline.mb-0.mx-auto
         li.list-inline-item
-          a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
+          a.btn.btn-danger(
+            href=l(`/my-account/billing/${payment.reference}.pdf`),
+            data-toggle='tooltip',
+            data-placement='bottom',
+            title=t("Download")
+          )
             i.fa.fa-file-pdf
-            = ' '
-            = t('Download')
+            = " "
+            = t("Download")
         li.list-inline-item
-          a(href=l(`/my-account/billing/${payment.reference}.html`), target='_blank', data-toggle='tooltip', data-placement='bottom', title=t('Print')).btn.btn-dark
+          a.btn.btn-dark(
+            href=l(`/my-account/billing/${payment.reference}.html`),
+            target='_blank',
+            data-toggle='tooltip',
+            data-placement='bottom',
+            title=t("Print")
+          )
             i.fa.fa-print
-            = ' '
-            = t('Print')
+            = " "
+            = t("Print")
     .row.text-center.my-5
       .col
-        a(href=l('/my-account/billing')).btn.btn-outline-secondary
+        a.btn.btn-outline-secondary(href=l("/my-account/billing"))
           i.fa.fa-angle-double-left
-          = ' '
-          = t('Back to Billing')
+          = " "
+          = t("Back to Billing")

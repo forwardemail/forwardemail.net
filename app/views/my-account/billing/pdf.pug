@@ -1,11 +1,10 @@
-
 extends ../../layout
 
 block spinner
 block navigation
 block footer
 
-append scripts
+block append scripts
   if ctx.params.reference.endsWith('.html')
     script.
       window.print();

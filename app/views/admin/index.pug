@@ -1,4 +1,3 @@
-
 extends ../layout
 
 block body
@@ -8,8 +7,8 @@ block body
         include ../_breadcrumbs
         p.lead
           if (dayjs().format('HH') >= 12 && dayjs().format('HH') <= 17)
-            = t('Good afternoon')
+            = t("Good afternoon")
           else if (dayjs().format('HH') >= 17)
-            = t('Good evening')
+            = t("Good evening")
           else
-            = t('Good morning')
+            = t("Good morning")

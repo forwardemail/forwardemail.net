@@ -1,4 +1,3 @@
-
 include ../../_sort-header
 include ../../_pagination
 
@@ -23,7 +22,7 @@ include ../../_pagination
         if boolean(process.env.AUTH_OTP_ENABLED)
           th(scope='col')
             +sortHeader(config.passport.fields.otpEnabled, 'OTP Enabled', '#table-users')
-        th.text-center.align-middle(scope='col')= t('Actions')
+        th.text-center.align-middle(scope='col')= t("Actions")
     tbody
       each user in users
         tr
@@ -31,19 +30,39 @@ include ../../_pagination
           td.align-middle= user[config.passport.fields.familyName]
           td.align-middle: a(href=`mailto:${user.email}`, target='_blank')= user.email
           td.align-middle= titleize(user.group)
-          td.align-middle= dayjs(user.created_at).format('M/D/YY h:mm A')
-          td.align-middle= dayjs(user.updated_at).format('M/D/YY h:mm A')
-          td.align-middle= dayjs(user.last_login_at).format('M/D/YY h:mm A')
+          td.align-middle= dayjs(user.created_at).format("M/D/YY h:mm A")
+          td.align-middle= dayjs(user.updated_at).format("M/D/YY h:mm A")
+          td.align-middle= dayjs(user.last_login_at).format("M/D/YY h:mm A")
           if boolean(process.env.AUTH_OTP_ENABLED)
             td.align-middle= user[config.passport.fields.otpEnabled]
           td.align-middle
-            .btn-group(role='group', aria-label=t('Actions'))
-              a(href=l(`/admin/users/${user.id}`), data-toggle='tooltip', data-title=t('Edit')).btn.btn-secondary: i.fa.fa-fw.fa-edit
-              form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}/login`), method="POST", autocomplete="off")
-                input(type="hidden", name="_csrf", value=ctx.csrf)
-                button(type='submit', data-toggle='tooltip', data-title=t('Log in as user')).btn.btn-secondary: i.fa.fa-fw.fa-user-secret
-              form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/users/${user.id}`), method="POST", autocomplete="off")
-                input(type="hidden", name="_csrf", value=ctx.csrf)
-                input(type="hidden", name="_method", value="DELETE")
-                button(type='submit', data-toggle='tooltip', data-title=t('Remove')).btn.btn-secondary: i.fa.fa-fw.fa-remove
+            .btn-group(role='group', aria-label=t("Actions"))
+              a.btn.btn-secondary(
+                href=l(`/admin/users/${user.id}`),
+                data-toggle='tooltip',
+                data-title=t("Edit")
+              ): i.fa.fa-fw.fa-edit
+              form.ajax-form.confirm-prompt.btn-group(
+                action=l(`/admin/users/${user.id}/login`),
+                method='POST',
+                autocomplete='off'
+              )
+                input(type='hidden', name='_csrf', value=ctx.csrf)
+                button.btn.btn-secondary(
+                  type='submit',
+                  data-toggle='tooltip',
+                  data-title=t("Log in as user")
+                ): i.fa.fa-fw.fa-user-secret
+              form.ajax-form.confirm-prompt.btn-group(
+                action=l(`/admin/users/${user.id}`),
+                method='POST',
+                autocomplete='off'
+              )
+                input(type='hidden', name='_csrf', value=ctx.csrf)
+                input(type='hidden', name='_method', value='DELETE')
+                button.btn.btn-secondary(
+                  type='submit',
+                  data-toggle='tooltip',
+                  data-title=t("Remove")
+                ): i.fa.fa-fw.fa-remove
 +paginate('#table-users')

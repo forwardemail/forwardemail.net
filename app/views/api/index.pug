@@ -1,17 +1,10 @@
-
 extends ../layout
 
 include ../_onboard
 
 block body
   if !user
-    +onboard(
-      t('Need docs with real data and keys?'),
-      t('Simply sign up or log in to have your API keys and real account data populated below.'),
-      l(`/faq?redirect_to=${l('/email-forwarding-api')}`),
-      '#top',
-      'border-bottom'
-    )
+    +onboard(t('Need docs with real data and keys?'), t('Simply sign up or log in to have your API keys and real account data populated below.'), l(`/faq?redirect_to=${l('/email-forwarding-api')}`), '#top', 'border-bottom')
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
     .row
       .col-md-12
@@ -20,8 +13,8 @@ block body
     .text-center
       .h2.display-3.mb-1.text-primary
         i.fa.fa-robot
-      h2.display-5.font-weight-light.mb-0.text-uppercase= t('API Documentation')
-      small.text-black-50.text-uppercase= t('Programmatic access to your data')
+      h2.display-5.font-weight-light.mb-0.text-uppercase= t("API Documentation")
+      small.text-black-50.text-uppercase= t("Programmatic access to your data")
   .container.pb-5
     .row
       .col

@@ -1,4 +1,3 @@
-
 extends ../layout
 
 block content
@@ -6,28 +5,35 @@ block content
     .row
       .col-12
         .card.d-block
-          h5.card-header.text-center= t('The Free Beta Program Ended')
+          h5.card-header.text-center= t("The Free Beta Program Ended")
           .card-body.p-0
             a(href=config.urls.web)
-              img(src=`${config.urls.web}/img/emails/domain-verified.gif`, alt='', data-inline-ignore=true).img-responsive
+              img.img-responsive(
+                src=`${config.urls.web}/img/emails/domain-verified.gif`,
+                alt='',
+                data-inline-ignore
+              )
             .p-3
               p.card-text
-                = t('On November 23, 2020 we announced the public launch of our service.')
-                = ' '
+                = t("On November 23, 2020 we announced the public launch of our service.")
+                = " "
                 = t("We're reaching out to share more information about what this means for you.")
               p.card-text
                 strong= t("Don't worry, we still offer the same free and unlimited plans.")
               p.card-text
                 != t('To keep your emails flowing for <strong class="notranslate">%s</strong> (since it is on the <span class="notranslate">%s</span> plan) &ndash; we need you to enter your billing information.', domain.name, t(titleize(humanize(domain.plan))))
               p.card-text
-                = t('As a one-time courtesy we have also added 30 days of free credit to your account to give ample time to setup billing.')
-                = ' '
-                = t('We are also offering 30 day grace periods, which means you technically have 60 days to setup billing.')
+                = t("As a one-time courtesy we have also added 30 days of free credit to your account to give ample time to setup billing.")
+                = " "
+                = t("We are also offering 30 day grace periods, which means you technically have 60 days to setup billing.")
               p.card-text
-                = t('All major payment methods are accepted, including debit cards, credit cards, and PayPal.')
-                = ' '
-                != t('You will also be receiving friendly payment reminder emails moving forwards.')
-                = ' '
+                = t("All major payment methods are accepted, including debit cards, credit cards, and PayPal.")
+                = " "
+                != t("You will also be receiving friendly payment reminder emails moving forwards.")
+                = " "
                 != t("Feel free to reach out with any feature requests, questions, or if you need help.")
-              a.btn.btn-lg.btn-block.btn-success(href=`${config.urls.web}/${locale}/my-account/billing`, role="button")= t('Setup your billing')
-          .card-footer.text-center: small.text-muted= t('If you no longer use our service, then please let us know.')
+              a.btn.btn-lg.btn-block.btn-success(
+                href=`${config.urls.web}/${locale}/my-account/billing`,
+                role='button'
+              )= t("Setup your billing")
+          .card-footer.text-center: small.text-muted= t("If you no longer use our service, then please let us know.")
