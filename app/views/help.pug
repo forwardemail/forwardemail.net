@@ -1,7 +1,6 @@
-
 extends layout
 
-append scripts
+block append scripts
   script(defer, src="https://hcaptcha.com/1/api.js")
 
 block body
@@ -16,13 +15,31 @@ block body
               if ctx.pathWithoutLocale !== '/faq'
                 p.card-text.font-weight-bold.text-center!= t('Have you read our <a href="%s" target="_blank" rel="noopener noreferrer">FAQ</a> yet?', l('/faq'))
               .form-group.floating-label
-                input#input-email.form-control(required, autocomplete="email", name="email", type="email", value=user ? user.email : '', placeholder='name@example.com')
+                input#input-email.form-control(
+                  required,
+                  autocomplete="email",
+                  name="email",
+                  type="email",
+                  value=user ? user.email : '',
+                  placeholder="name@example.com"
+                )
                 label(for="input-email")= t('Email address')
               .form-group.floating-label
-                textarea#input-message.form-control(rows="10", required, maxlength=config.supportRequestMaxLength, name="message", placeholder=t('Write your message'))
+                textarea#input-message.form-control(
+                  rows="10",
+                  required,
+                  maxlength=config.supportRequestMaxLength,
+                  name="message",
+                  placeholder=t('Write your message')
+                )
                 label(for="input-message")= t('Message')
               if boolean(config.hcaptchaEnabled) && !user
                 .h-captcha(data-sitekey=config.hcaptchaSiteKey)
                 p.text-left.mb-3: small.text-muted= t('If you log in to your account, you will not need to fill out these captchas.')
             .card-footer
-              button.btn.btn-block.btn-success.btn-lg(type="submit", data-toggle="tooltip", data-placement="bottom", title=t("We'll be in contact with you!"))= t('Send message')
+              button.btn.btn-block.btn-success.btn-lg(
+                type="submit",
+                data-toggle="tooltip",
+                data-placement="bottom",
+                title=t("We'll be in contact with you!")
+              )= t('Send message')

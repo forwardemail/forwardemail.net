@@ -20,7 +20,9 @@ async function list(ctx) {
     for (const field of USER_SEARCH_PATHS) {
       // only search fields that are strings
       if (Users.schema.paths[field].instance === 'String') {
-        query.$or.push({ [field]: { $regex: ctx.query.keyword } });
+        query.$or.push({
+          [field]: { $regex: ctx.query.keyword, $options: 'i' }
+        });
       }
     }
   }

@@ -1,4 +1,3 @@
-
 extends ../layout
 
 block content
@@ -9,7 +8,11 @@ block content
           h5.card-header= t('Your email was sent successfully')
           .card-body.text-center.p-0
             a(href=config.urls.web)
-              img(src=`${config.urls.web}/img/emails/self-test.gif`, alt='', data-inline-ignore=true).img-responsive
+              img.img-responsive(
+                src=`${config.urls.web}/img/emails/self-test.gif`,
+                alt="",
+                data-inline-ignore
+              )
             .p-3
               h1.h3!= t("Don't worry &ndash; everything is OK!")
               p.card-text= t('We detected that you successfully sent an email to yourself.')
@@ -18,7 +21,7 @@ block content
               p.card-text
                 = t('No, we only send it the first time as a courtesy.')
             .p-3
-              h2.h5= t("Why are you sending this email?")
+              h2.h5= t('Why are you sending this email?')
               p.card-text
                 != t('It is a widely known issue that <u>only</u> happens when you send an email to yourself <i>as</i> yourself.')
                 = ' '
@@ -27,8 +30,10 @@ block content
                 = t("If you're using a service such as Gmail, then the email will only be shown in your Sent folder.")
                 = ' '
                 = t('We are simply letting you know in advance of this issue!')
-              a.btn.btn-lg.btn-danger(href='https://support.google.com/a/answer/1703601')
-                = t("Read the official Gmail answer")
+              a.btn.btn-lg.btn-danger(
+                href="https://support.google.com/a/answer/1703601"
+              )
+                = t('Read the official Gmail answer')
             .p-3
               h2.h5= t('Is there a workaround?')
               p.card-text
@@ -36,7 +41,7 @@ block content
                 = ' '
                 = t('Unfortunately we did not discover any reasonable alternatives that respect privacy and security.')
             .p-3
-              h2.h5= t("What is the technical reason?")
+              h2.h5= t('What is the technical reason?')
               p.card-text
                 = t('The core reason why this happens is because emails with duplicate "Message-ID" headers only show up once in the inbox.')
               p.card-text

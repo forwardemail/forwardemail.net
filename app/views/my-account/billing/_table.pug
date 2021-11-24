@@ -1,4 +1,3 @@
-
 include ../../_sort-header
 include ../../_pagination
 
@@ -6,31 +5,47 @@ include ./_payment-method
 
 mixin receipt(payment)
   .btn-group
-    a(href=l(`/my-account/billing/${payment.reference}`), data-toggle='tooltip', data-placement='bottom', title=t('View')).btn.btn-primary
+    a.btn.btn-primary(
+      href=l(`/my-account/billing/${payment.reference}`),
+      data-toggle="tooltip",
+      data-placement="bottom",
+      title=t('View')
+    )
       i.fa.fa-receipt
-    a(href=l(`/my-account/billing/${payment.reference}.pdf`), data-toggle='tooltip', data-placement='bottom', title=t('Download')).btn.btn-danger
+    a.btn.btn-danger(
+      href=l(`/my-account/billing/${payment.reference}.pdf`),
+      data-toggle="tooltip",
+      data-placement="bottom",
+      title=t('Download')
+    )
       i.fa.fa-file-pdf
-    a(href=l(`/my-account/billing/${payment.reference}.html`), target='_blank', data-toggle='tooltip', data-placement='bottom', title=t('Print')).btn.btn-dark
+    a.btn.btn-dark(
+      href=l(`/my-account/billing/${payment.reference}.html`),
+      target="_blank",
+      data-toggle="tooltip",
+      data-placement="bottom",
+      title=t('Print')
+    )
       i.fa.fa-print
 
 .table-responsive
   table.table.table-hover.table-bordered
     thead.thead-dark
       tr
-        th(scope='col').d-none.d-lg-table-cell
+        th.d-none.d-lg-table-cell(scope="col")
           +sortHeader('reference', null, '#table-payments')
-        th(scope='col')
+        th(scope="col")
           +sortHeader('created_at', 'Date', '#table-payments')
-        th(scope='col')
+        th(scope="col")
           span.d-none.d-lg-inline
             +sortHeader('description', null, '#table-payments')
           span.d-lg-none
             +sortHeader('reference', 'Payment', '#table-payments')
-        th(scope='col').d-none.d-lg-table-cell
+        th.d-none.d-lg-table-cell(scope="col")
           +sortHeader('method', null, '#table-payments')
-        th(scope='col')
+        th(scope="col")
           +sortHeader('amount_formatted', 'Amount', '#table-payments')
-        th(scope='col').d-none.d-lg-table-cell.text-center.align-middle= t('Receipt')
+        th.d-none.d-lg-table-cell.text-center.align-middle(scope="col")= t('Receipt')
     tbody
       each payment in payments
         tr

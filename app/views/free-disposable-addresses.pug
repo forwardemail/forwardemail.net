@@ -1,16 +1,9 @@
-
 extends layout
 
 include _onboard
 
 block body
-  +onboard(
-    t('Free disposable adddresses'),
-    t('Ready to get started and create a disposable email address?'),
-    `${l('/faq')}?redirect_to=${l('/my-account/domains/aliases/new')}`,
-    l('/my-account/domains/aliases/new'),
-    'border-bottom'
-  )
+  +onboard(t('Free disposable adddresses'), t('Ready to get started and create a disposable email address?'), `${l('/faq')}?redirect_to=${l('/my-account/domains/aliases/new')}`, l('/my-account/domains/aliases/new'), 'border-bottom')
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
     .row
       .col-md-12
@@ -32,12 +25,16 @@ block body
                 li.list-inline-item
                   .markdown-body.ml-0.mr-0: code= `${t('name')}@${vanityDomain}`
                 li.list-inline-item
-                  a(href=`/my-account/domains/aliases/new?domain=${vanityDomain}`).btn.btn-dark.btn-sm.text-uppercase
+                  a.btn.btn-dark.btn-sm.text-uppercase(
+                    href=`/my-account/domains/aliases/new?domain=${vanityDomain}`
+                  )
                     = t('Try it now')
                     = ' '
                     i.fa.fa-angle-double-right
         p.mt-5.mb-0.text-center
-          a(href='/my-account/domains/aliases/new').btn.btn-primary.btn-lg.text-uppercase.font-weight-bold
+          a.btn.btn-primary.btn-lg.text-uppercase.font-weight-bold(
+            href="/my-account/domains/aliases/new"
+          )
             = t('Create your address')
             = ' '
             i.fa.fa-angle-double-right

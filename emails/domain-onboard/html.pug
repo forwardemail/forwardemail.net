@@ -1,4 +1,3 @@
-
 extends ../layout
 
 block content
@@ -8,12 +7,21 @@ block content
         .card.d-block.text-center
           h5.card-header= t('Welcoming your domain!')
           .card-body.text-center.p-0
-            a(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`)
-              img(src=`${config.urls.web}/img/emails/domain-onboard.gif`, alt='', data-inline-ignore=true).img-responsive
+            a(
+              href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
+            )
+              img.img-responsive(
+                src=`${config.urls.web}/img/emails/domain-onboard.gif`,
+                alt="",
+                data-inline-ignore
+              )
             .p-3
               h1.h3!= t('Woo-hoo!')
               p.card-text!= t('<span class="notranslate">%s</span> you added the domain <strong><span class="notranslate">%s</span></strong>.', capitalize(dayjs(domain.created_at).fromNow()), domain.name)
-              a.btn.btn-lg.btn-primary(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`, role="button")
+              a.btn.btn-lg.btn-primary(
+                href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
+                role="button"
+              )
                 = t('Manage domain')
             if domain.plan === 'free'
               .p-3
@@ -52,6 +60,9 @@ block content
                   = emoji(txt ? 'white_check_mark' : 'x')
                   .mt-2.text-monospace.text-uppercase.text-white= t('TXT Records')
               if !mx || !txt
-                a.btn.btn-lg.btn-success(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`, role="button")
+                a.btn.btn-lg.btn-success(
+                  href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
+                  role="button"
+                )
                   = t('Verify Records')
           .card-footer: small.text-muted= t('If you have any questions or comments, then please let us know')

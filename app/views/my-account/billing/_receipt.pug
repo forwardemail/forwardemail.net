@@ -18,9 +18,14 @@ include ./_payment-method.pug
           = t('Paid')
   table.table.mb-0
     tr
-      td(colspan=2).border-0
+      td.border-0(colspan=2)
         .text-center.mt-2.mb-3.pb-3.border-bottom
-          img.d-inline-block(src=manifest(ctx.params.reference.endsWith('.pdf') ? 'img/apple-touch-icon.png' : 'img/logo-square.svg'), width=50, height=50, alt='').mr-1
+          img.d-inline-block.mr-1(
+            src=manifest(ctx.params.reference.endsWith('.pdf') ? 'img/apple-touch-icon.png' : 'img/logo-square.svg'),
+            width=50,
+            height=50,
+            alt=""
+          )
           h1.h2.m-0.align-middle.d-inline-block
             span.text-primary.font-weight-bold Forward
             = ' '
@@ -36,7 +41,7 @@ include ./_payment-method.pug
           br
           | United States of America
           br
-          small: a(href='mailto:support@forwardemail.net') support@forwardemail.net
+          small: a(href="mailto:support@forwardemail.net") support@forwardemail.net
       td.border-0.text-right
         address
           != user[config.userFields.addressHTML]
@@ -58,8 +63,8 @@ include ./_payment-method.pug
   table.table.table-bordered.mb-0
     thead.thead-dark
       tr
-        th(scope='col')= t('Description')
-        th(scope='col').text-right= t('Amount')
+        th(scope="col")= t('Description')
+        th.text-right(scope="col")= t('Amount')
     tbody
       tr
         td.align-middle!= payment.description

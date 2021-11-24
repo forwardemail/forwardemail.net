@@ -1,4 +1,3 @@
-
 extends ../../layout
 
 block body
@@ -9,10 +8,19 @@ block body
         if users.length === 0
           .alert.alert-info= t('No users exist yet')
         else
-          form.ajax-form.table-ajax-form(action=ctx.path, method='GET', data-table='#table-users')
-            input(type='hidden', name='_csrf', value=ctx.csrf)
+          form.ajax-form.table-ajax-form(
+            action=ctx.path,
+            method="GET",
+            data-table="#table-users"
+          )
+            input(type="hidden", name="_csrf", value=ctx.csrf)
             .input-group.mb-3.px-3
-              input.form-control#input-keyword-search(type='text', value=ctx.query.keyword ? ctx.query.keyword : '', name='keyword', placeholder='Keyword')
+              input#input-keyword-search.form-control(
+                type="text",
+                value=ctx.query.keyword ? ctx.query.keyword : '',
+                name="keyword",
+                placeholder="Keyword"
+              )
               .input-group-append
                 button.btn.btn-success(type="submit")= t('Search')
           #table-users
