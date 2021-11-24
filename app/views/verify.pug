@@ -20,7 +20,9 @@ block body
               pattern=`[0-9]{${config.verificationPin.length}}`,
               minlength=config.verificationPin.length,
               maxlength=config.verificationPin.length,
-              autocomplete="off",
+              // <https://web.dev/sms-otp-form/>
+              // <https://www.twilio.com/blog/html-attributes-two-factor-authentication-autocomplete>
+              autocomplete="one-time-code",
               name="pin",
               placeholder=" "
             )

@@ -40,13 +40,16 @@ async function updateProfile(ctx) {
     ctx.state.user[config.userFields.resetToken] = null;
     ctx.state.user[config.userFields.resetTokenExpiresAt] = null;
   } else {
+    // TODO: make all these optional (since the form is now divided)
     //
     // personal information
     //
-    ctx.state.user[config.passport.fields.givenName] =
-      body[config.passport.fields.givenName];
-    ctx.state.user[config.passport.fields.familyName] =
-      body[config.passport.fields.familyName];
+    if (_.isString(body[config.passport.fields.givenName]))
+      ctx.state.user[config.passport.fields.givenName] =
+        body[config.passport.fields.givenName];
+    if (_.isString(body[config.passport.fields.familyName]))
+      ctx.state.user[config.passport.fields.familyName] =
+        body[config.passport.fields.familyName];
 
     //
     // company information
@@ -61,7 +64,7 @@ async function updateProfile(ctx) {
       config.userFields.addressCountry,
       config.userFields.companyVAT
     ]) {
-      ctx.state.user[prop] = body[prop];
+      if (_.isString(body[prop])) ctx.state.user[prop] = body[prop];
     }
   }
 
@@ -72,6 +75,13 @@ async function updateProfile(ctx) {
 
   // confirm user supplied email is different than current email
   if (hasNewEmail) {
+    // ensure that a password has been set first
+    // (this is a safety guard even though the email is read only if so)
+    if (!ctx.state.user[config.userFields.hasSetPassword])
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('PASSWORD_REQUIRED'))
+      );
+
     // validate it (so it doesn't have to use mongoose for this)
     if (!isEmail(body.email))
       return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
