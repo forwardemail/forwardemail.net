@@ -3,7 +3,7 @@ extends ../../layout
 include ../../_onboard
 
 block body
-  - const hash = "can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25";
+  - const hash = 'can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25';
   +onboard(t('Did your ISP block port 25?'), t('Skip ahead to the instructions to forward emails to a custom SMTP port.'), l(`/faq?hash=${hash}`), l(`/faq#${hash}`), 'border-bottom')
   .container.py-5
     .row

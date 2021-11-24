@@ -5,51 +5,51 @@ block body
     .row.mt-1
       .col
         include ../../_breadcrumbs
-        form.ajax-form.confirm-prompt(action=ctx.path, method='POST')
-          input(type='hidden', name='_method', value='PUT')
-          input(type='hidden', name='_csrf', value=ctx.csrf)
+        form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
+          input(type="hidden", name="_method", value="PUT")
+          input(type="hidden", name="_csrf", value=ctx.csrf)
           .card.card-bg-light
             h4.card-header= result.id
             .card-body
               .form-group.floating-label
                 input#input-first-name.form-control(
-                  type='text',
+                  type="text",
                   name=config.passport.fields.givenName,
                   value=result[config.passport.fields.givenName],
-                  placeholder=t("First name")
+                  placeholder=t('First name')
                 )
-                label(for='input-first-name')= t("First name")
+                label(for="input-first-name")= t('First name')
               .form-group.floating-label
                 input#input-last-name.form-control(
-                  type='text',
+                  type="text",
                   name=config.passport.fields.familyName,
                   value=result[config.passport.fields.familyName],
-                  placeholder=t("Last name")
+                  placeholder=t('Last name')
                 )
-                label(for='input-last-name')= t("Last name")
+                label(for="input-last-name")= t('Last name')
               .form-group.floating-label
                 input#input-email.form-control(
-                  type='email',
+                  type="email",
                   required,
-                  name='email',
+                  name="email",
                   value=result.email,
-                  placeholder='name@example.com'
+                  placeholder="name@example.com"
                 )
-                label(for='input-email')= t("Email address")
+                label(for="input-email")= t('Email address')
               .form-group.floating-label
-                select#input-group.form-control(name='group', required)
-                  option(value='user', selected=result.group === "user") User
-                  option(value='admin', selected=result.group === "admin") Admin
-                label(for='input-group')= t("Group")
+                select#input-group.form-control(name="group", required)
+                  option(value="user", selected=result.group === 'user') User
+                  option(value="admin", selected=result.group === 'admin') Admin
+                label(for="input-group")= t('Group')
               if boolean(process.env.AUTH_OTP_ENABLED) && result[config.passport.fields.otpEnabled]
                 .form-check
                   input#otp-enabled(
-                    type='checkbox',
+                    type="checkbox",
                     name=config.passport.fields.otpEnabled,
-                    value='true',
+                    value="true",
                     checked
                   )
-                  label(for='input-otp-enabled')= t("OTP Enabled")
+                  label(for="input-otp-enabled")= t('OTP Enabled')
             .card-footer.text-right
-              button.btn.btn-secondary(type='reset')= t("Reset")
-              button.btn.btn-primary(type='submit')= t("Save")
+              button.btn.btn-secondary(type="reset")= t('Reset')
+              button.btn.btn-primary(type="submit")= t('Save')

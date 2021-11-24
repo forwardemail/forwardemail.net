@@ -5,52 +5,52 @@ block content
     .row
       .col-12
         .card.d-block.text-center
-          h5.card-header= t("Your email was sent successfully")
+          h5.card-header= t('Your email was sent successfully')
           .card-body.text-center.p-0
             a(href=config.urls.web)
               img.img-responsive(
                 src=`${config.urls.web}/img/emails/self-test.gif`,
-                alt='',
+                alt="",
                 data-inline-ignore
               )
             .p-3
               h1.h3!= t("Don't worry &ndash; everything is OK!")
-              p.card-text= t("We detected that you successfully sent an email to yourself.")
+              p.card-text= t('We detected that you successfully sent an email to yourself.')
             .p-3
-              h2.h5= t("Do you send this every time?")
+              h2.h5= t('Do you send this every time?')
               p.card-text
-                = t("No, we only send it the first time as a courtesy.")
+                = t('No, we only send it the first time as a courtesy.')
             .p-3
-              h2.h5= t("Why are you sending this email?")
+              h2.h5= t('Why are you sending this email?')
               p.card-text
-                != t("It is a widely known issue that <u>only</u> happens when you send an email to yourself <i>as</i> yourself.")
-                = " "
+                != t('It is a widely known issue that <u>only</u> happens when you send an email to yourself <i>as</i> yourself.')
+                = ' '
                 = t('The emails do not show up twice in your inbox because they have the same "Message-ID" value in the email headers.')
-                = " "
+                = ' '
                 = t("If you're using a service such as Gmail, then the email will only be shown in your Sent folder.")
-                = " "
-                = t("We are simply letting you know in advance of this issue!")
+                = ' '
+                = t('We are simply letting you know in advance of this issue!')
               a.btn.btn-lg.btn-danger(
-                href='https://support.google.com/a/answer/1703601'
+                href="https://support.google.com/a/answer/1703601"
               )
-                = t("Read the official Gmail answer")
+                = t('Read the official Gmail answer')
             .p-3
-              h2.h5= t("Is there a workaround?")
+              h2.h5= t('Is there a workaround?')
               p.card-text
-                = t("We spent a lot of time researching, testing, and implementing alternatives since 2017.")
-                = " "
-                = t("Unfortunately we did not discover any reasonable alternatives that respect privacy and security.")
+                = t('We spent a lot of time researching, testing, and implementing alternatives since 2017.')
+                = ' '
+                = t('Unfortunately we did not discover any reasonable alternatives that respect privacy and security.')
             .p-3
-              h2.h5= t("What is the technical reason?")
+              h2.h5= t('What is the technical reason?')
               p.card-text
                 = t('The core reason why this happens is because emails with duplicate "Message-ID" headers only show up once in the inbox.')
               p.card-text
                 != t('In the past we had a workaround where we rewrote the "Message-ID" and removed the "DKIM-Signature" header.')
-                = " "
+                = ' '
                 = t('This workaround led to a confusing "Be careful with this message" alert and sometimes marked it as spam in Gmail.')
             .p-3
-              h2.h5= t("Interested in learning more about us?")
+              h2.h5= t('Interested in learning more about us?')
               p.card-text
                 != t('We\'re an <a href="%s">open startup</a> and have a remarkable story.', `${config.urls.web}/open-startup`)
-              a.btn.btn-lg.btn-primary(href=`${config.urls.web}/about`)= t("Learn more about us")
-          .card-footer: small.text-muted= t("If you have any questions or comments, then please let us know.")
+              a.btn.btn-lg.btn-primary(href=`${config.urls.web}/about`)= t('Learn more about us')
+          .card-footer: small.text-muted= t('If you have any questions or comments, then please let us know.')

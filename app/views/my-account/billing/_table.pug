@@ -7,24 +7,24 @@ mixin receipt(payment)
   .btn-group
     a.btn.btn-primary(
       href=l(`/my-account/billing/${payment.reference}`),
-      data-toggle='tooltip',
-      data-placement='bottom',
-      title=t("View")
+      data-toggle="tooltip",
+      data-placement="bottom",
+      title=t('View')
     )
       i.fa.fa-receipt
     a.btn.btn-danger(
       href=l(`/my-account/billing/${payment.reference}.pdf`),
-      data-toggle='tooltip',
-      data-placement='bottom',
-      title=t("Download")
+      data-toggle="tooltip",
+      data-placement="bottom",
+      title=t('Download')
     )
       i.fa.fa-file-pdf
     a.btn.btn-dark(
       href=l(`/my-account/billing/${payment.reference}.html`),
-      target='_blank',
-      data-toggle='tooltip',
-      data-placement='bottom',
-      title=t("Print")
+      target="_blank",
+      data-toggle="tooltip",
+      data-placement="bottom",
+      title=t('Print')
     )
       i.fa.fa-print
 
@@ -32,31 +32,31 @@ mixin receipt(payment)
   table.table.table-hover.table-bordered
     thead.thead-dark
       tr
-        th.d-none.d-lg-table-cell(scope='col')
+        th.d-none.d-lg-table-cell(scope="col")
           +sortHeader('reference', null, '#table-payments')
-        th(scope='col')
+        th(scope="col")
           +sortHeader('created_at', 'Date', '#table-payments')
-        th(scope='col')
+        th(scope="col")
           span.d-none.d-lg-inline
             +sortHeader('description', null, '#table-payments')
           span.d-lg-none
             +sortHeader('reference', 'Payment', '#table-payments')
-        th.d-none.d-lg-table-cell(scope='col')
+        th.d-none.d-lg-table-cell(scope="col")
           +sortHeader('method', null, '#table-payments')
-        th(scope='col')
+        th(scope="col")
           +sortHeader('amount_formatted', 'Amount', '#table-payments')
-        th.d-none.d-lg-table-cell.text-center.align-middle(scope='col')= t("Receipt")
+        th.d-none.d-lg-table-cell.text-center.align-middle(scope="col")= t('Receipt')
     tbody
       each payment in payments
         tr
           td.align-middle.d-none.d-lg-table-cell= payment.reference
-          td.align-middle= dayjs(payment.created_at).locale(ctx.locale).format("M/D/YY")
+          td.align-middle= dayjs(payment.created_at).locale(ctx.locale).format('M/D/YY')
           td.align-middle
             .d-block.d-lg-none.mb-2
               strong
-                = t("Reference")
-                = ":"
-              = " "
+                = t('Reference')
+                = ':'
+              = ' '
               = payment.reference
             != payment.description
             .d-block.d-lg-none.mb-2

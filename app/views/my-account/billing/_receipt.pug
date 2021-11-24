@@ -6,29 +6,29 @@ include ./_payment-method.pug
       tr
         td.border-0
           strong
-            = t("Reference")
-            = ":"
-          = " "
+            = t('Reference')
+            = ':'
+          = ' '
           = payment.reference
         td.text-right.border-0
           strong
-            = t("Payment Status")
-            = ":"
-          = " "
-          = t("Paid")
+            = t('Payment Status')
+            = ':'
+          = ' '
+          = t('Paid')
   table.table.mb-0
     tr
       td.border-0(colspan=2)
         .text-center.mt-2.mb-3.pb-3.border-bottom
           img.d-inline-block.mr-1(
-            src=manifest(ctx.params.reference.endsWith(".pdf") ? "img/apple-touch-icon.png" : "img/logo-square.svg"),
+            src=manifest(ctx.params.reference.endsWith('.pdf') ? 'img/apple-touch-icon.png' : 'img/logo-square.svg'),
             width=50,
             height=50,
-            alt=''
+            alt=""
           )
           h1.h2.m-0.align-middle.d-inline-block
             span.text-primary.font-weight-bold Forward
-            = " "
+            = ' '
             span.text-info.font-weight-normal Email
     tr
       td.border-0
@@ -41,7 +41,7 @@ include ./_payment-method.pug
           br
           | United States of America
           br
-          small: a(href='mailto:support@forwardemail.net') support@forwardemail.net
+          small: a(href="mailto:support@forwardemail.net") support@forwardemail.net
       td.border-0.text-right
         address
           != user[config.userFields.addressHTML]
@@ -50,21 +50,21 @@ include ./_payment-method.pug
     tr
       td.border-0
         strong
-          = t("Payment Method")
-          = ":"
+          = t('Payment Method')
+          = ':'
         br
         +paymentMethod(payment)
       td.border-0.text-right
         strong
-          = t("Payment Date")
-          = ":"
+          = t('Payment Date')
+          = ':'
         br
-        = dayjs(payment.created_at).locale(locale).format("M/D/YY")
+        = dayjs(payment.created_at).locale(locale).format('M/D/YY')
   table.table.table-bordered.mb-0
     thead.thead-dark
       tr
-        th(scope='col')= t("Description")
-        th.text-right(scope='col')= t("Amount")
+        th(scope="col")= t('Description')
+        th.text-right(scope="col")= t('Amount')
     tbody
       tr
         td.align-middle!= payment.description
@@ -73,9 +73,9 @@ include ./_payment-method.pug
       tr
         th.align-middle
           if user[config.userFields.companyVAT]
-            strong= "VAT #"
-            = " "
+            strong= 'VAT #'
+            = ' '
             = user[config.userFields.companyVAT]
-          .float-right.text-right: u= t("Total")
+          .float-right.text-right: u= t('Total')
         th.align-middle.text-right= payment.amount_formatted
-  .card-footer.text-center: small.text-muted= t("If you have any questions or comments, then please let us know")
+  .card-footer.text-center: small.text-muted= t('If you have any questions or comments, then please let us know')
