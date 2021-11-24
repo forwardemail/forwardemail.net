@@ -106,10 +106,6 @@ Alias.pre('validate', function (next) {
   // trim and convert to lowercase
   this.name = this.name.trim().toLowerCase();
 
-  // if alias is wildcards only then convert to single asterisk
-  if ([...new Set(this.name.replace(/[^*]/g, '').split(''))].join('') === '*')
-    this.name = '*';
-
   // add wildcard as first label
   if (this.name === '*') this.labels.unshift('catch-all');
   this.labels = _.compact(_.uniq(this.labels.map((label) => slug(label))));

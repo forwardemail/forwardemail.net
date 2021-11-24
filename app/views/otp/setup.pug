@@ -1,4 +1,3 @@
-
 extends ../layout
 
 block body
@@ -6,11 +5,13 @@ block body
     .row
       .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3.text-center
         h1.my-3.py-3= t('Setup OTP')
-        .alert.alert-warning(role='alert')
+        .alert.alert-warning(role="alert")
           i.fa.fa-exclamation-triangle
           = ' '
           = t('Download your emergency recovery keys below.')
-        textarea(rows='5').form-control.text-monospace.text-center.rounded-bottom-0.border-dark#otp-recovery-keys
+        textarea#otp-recovery-keys.form-control.text-monospace.text-center.rounded-bottom-0.border-dark(
+          rows="5"
+        )
           each key, i in user[config.userFields.otpRecoveryKeys]
             = key
             if i !== user[config.userFields.otpRecoveryKeys].length - 1
@@ -18,21 +19,35 @@ block body
                 = '\n'
               else
                 = '    '
-        form(action=l('/my-account/recovery-keys'), method='POST')
+        form(action=l('/my-account/recovery-keys'), method="POST")
           input(type="hidden", name="_csrf", value=ctx.csrf)
-          .d-flex.btn-group(role='group')
-            button(type='submit').btn.btn-dark.rounded-top-0
+          .d-flex.btn-group(role="group")
+            button.btn.btn-dark.rounded-top-0(type="submit")
               i.fa.fa-file-download
               = ' '
               = t('Download')
-            button(type='button', data-toggle="clipboard", data-clipboard-text=user[config.userFields.otpRecoveryKeys].join('\r\n')).btn.btn-dark.rounded-top-0
+            button.btn.btn-dark.rounded-top-0(
+              type="button",
+              data-toggle="clipboard",
+              data-clipboard-text=user[config.userFields.otpRecoveryKeys].join('\r\n')
+            )
               i.fa.fa-clipboard
               = ' '
               = t('Copy')
-        form(action=ctx.path, method="POST", autocomplete="off", class=user[config.userFields.otpRecoveryKeys] ? '' : 'confirm-prompt')
+        form(
+          action=ctx.path,
+          method="POST",
+          autocomplete="off",
+          class=user[config.userFields.otpRecoveryKeys] ? '' : 'confirm-prompt'
+        )
           input(type="hidden", name="_csrf", value=ctx.csrf)
           if user[config.userFields.hasSetPassword]
             .form-group.floating-label.mt-4
-              input#input-password.form-control.form-control-lg(type="password", autocomplete="off", name="password" required)
+              input#input-password.form-control.form-control-lg(
+                type="password",
+                autocomplete="off",
+                name="password",
+                required
+              )
               label(for="input-password")= t('Confirm Password')
           button.btn.btn-primary.btn-lg.btn-block.mt-2(type="submit")= t('Continue')
