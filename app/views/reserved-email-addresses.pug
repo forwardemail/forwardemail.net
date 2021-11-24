@@ -1,17 +1,10 @@
-
 extends layout
 
 include _onboard
 
 block body
-  +onboard(
-    t('Need email forwarding for your team?'),
-    t('Skip ahead to the instructions to setup email forwarding for your team.'),
-    l('/faq?redirect_to_domain=true'),
-    '#reserved-email-addresses',
-    'border-bottom'
-  )
-  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center#reserved-email-addresses
+  +onboard(t('Need email forwarding for your team?'), t('Skip ahead to the instructions to setup email forwarding for your team.'), l('/faq?redirect_to_domain=true'), '#reserved-email-addresses', 'border-bottom')
+  #reserved-email-addresses.container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
     .row
       .col-md-12
         p.lead.mb-0.text-white.font-weight-bold
@@ -29,7 +22,11 @@ block body
           each reservedEmailAddress in reservedEmailAddressesList
             li: code= reservedEmailAddress
         p.mt-5.mb-0.text-center
-          a(href='https://github.com/forwardemail/reserved-email-addresses-list', target='_blank', rel='noopener noreferrer')
+          a(
+            href="https://github.com/forwardemail/reserved-email-addresses-list",
+            target="_blank",
+            rel="noopener noreferrer"
+          )
             = t('View source code on GitHub')
             = ' '
             i.fa.fa-external-link
