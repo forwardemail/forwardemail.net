@@ -1,4 +1,3 @@
-
 extends layout
 
 block body
@@ -8,8 +7,17 @@ block body
       .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
         .alert.alert-warning.text-center.mb-4!= t('From <strong class="notranslate">%s</strong> to <strong class="notranslate">%s</strong>.', user[config.passportLocalMongoose.usernameField], user[config.userFields.changeEmailNewAddress])
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
-          input#input-email(type="hidden", name="email", value=user[config.passportLocalMongoose.usernameField])
+          input#input-email(
+            type="hidden",
+            name="email",
+            value=user[config.passportLocalMongoose.usernameField]
+          )
           .form-group.floating-label
-            input#input-password.form-control.form-control-lg(type="password", autocomplete="confirm-password", name="password", placeholder=" ")
+            input#input-password.form-control.form-control-lg(
+              type="password",
+              autocomplete="confirm-password",
+              name="password",
+              placeholder=" "
+            )
             label(for="input-password")= t('Confirm password')
           button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')

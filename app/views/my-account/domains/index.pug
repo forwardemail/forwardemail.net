@@ -1,15 +1,24 @@
-
 extends ../../layout
 
 block body
   if domains.length > 0
-    #modal-alias.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-alias-title', aria-hidden='true', data-backdrop='static')
-      .modal-dialog.modal-lg(role='document')
+    #modal-alias.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-alias-title",
+      aria-hidden="true",
+      data-backdrop="static"
+    )
+      .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            h4.modal-title.d-inline-block.ml-4#modal-alias-title= t('Add New Alias')
-            button(type='button', data-dismiss='modal', aria-label='Close').close
-              span(aria-hidden='true') &times;
+            h4#modal-alias-title.modal-title.d-inline-block.ml-4= t('Add New Alias')
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
           .modal-body
             form.ajax-form(action=l('/my-account/aliases'), method="POST")
               include aliases/_form
@@ -31,10 +40,19 @@ block body
             strong= t('Tip:')
             = ' '
             = t('If you need to upgrade or downgrade your plan on a domain name, then click on the dropdown for it under the column "Current Plan" below.')
-          form.ajax-form.table-ajax-form(action=ctx.path, method='GET', data-table='#table-domains')
-            input(type='hidden', name='_csrf', value=ctx.csrf)
+          form.ajax-form.table-ajax-form(
+            action=ctx.path,
+            method="GET",
+            data-table="#table-domains"
+          )
+            input(type="hidden", name="_csrf", value=ctx.csrf)
             .input-group.mb-3.px-3
-              input.form-control#input-keyword-search(type='text', value=ctx.query.keyword ? ctx.query.keyword : '', name='keyword', placeholder='Keyword')
+              input#input-keyword-search.form-control(
+                type="text",
+                value=ctx.query.keyword ? ctx.query.keyword : '',
+                name="keyword",
+                placeholder="Keyword"
+              )
               .input-group-append
                 button.btn.btn-success(type="submit")= t('Search')
           #table-domains
