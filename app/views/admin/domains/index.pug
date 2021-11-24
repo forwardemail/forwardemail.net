@@ -1,0 +1,19 @@
+
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        if domains.length === 0
+          .alert.alert-info= t('No domains exist yet.')
+        else
+          form.ajax-form.table-ajax-form(action=ctx.path, method='GET', data-table='#table-domains')
+            input(type='hidden', name='_csrf', value=ctx.csrf)
+            .input-group.mb-3.px-3
+              input.form-control#input-keyword-search(type='text', value=ctx.query.keyword ? ctx.query.keyword : '', name='keyword', placeholder='Keyword')
+              .input-group-append
+                button.btn.btn-success(type="submit")= t('Search')
+          #table-domains
+            include ./_table
