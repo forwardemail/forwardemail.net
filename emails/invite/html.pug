@@ -5,11 +5,11 @@ block content
     .row
       .col-12
         .card.d-block.text-center
-          h5.card-header= t("Team invite")
+          h5.card-header= t('Team invite')
           .card-body
-            p.card-text= t("Click the button below to accept your invite.")
+            p.card-text= t('Click the button below to accept your invite.')
             a.btn.btn-lg.btn-block.btn-success(
               href=`${config.urls.web}/${locale}/my-account/domains/${domain.id}/invites`,
-              role='button'
-            )= t("Accept invite")
-          .card-footer: small.text-muted= t("If you did not expect to receive this invite, then please reply to let us know.")
+              role="button"
+            )= t('Accept invite')
+          .card-footer: small.text-muted= t('If you did not expect to receive this invite, then please reply to let us know.')

@@ -1,41 +1,41 @@
 #modal-domain.modal.fade(
-  tabindex='-1',
-  role='dialog',
-  aria-labelledby='modal-domain-title',
-  aria-hidden='true'
+  tabindex="-1",
+  role="dialog",
+  aria-labelledby="modal-domain-title",
+  aria-hidden="true"
 )
-  .modal-dialog(role='document')
+  .modal-dialog(role="document")
     .modal-content
       .modal-header.text-center.d-block
-        h4#modal-domain-title.modal-title.d-inline-block.ml-4= t("Add New Domain")
-        button.close(type='button', data-dismiss='modal', aria-label='Close')
-          span(aria-hidden='true') &times;
+        h4#modal-domain-title.modal-title.d-inline-block.ml-4= t('Add New Domain')
+        button.close(type="button", data-dismiss="modal", aria-label="Close")
+          span(aria-hidden="true") &times;
       .modal-body
-        form.ajax-form(action=l("/my-account/domains/new"), method='POST')
-          input(type='hidden', name='_csrf', value=ctx.csrf)
+        form.ajax-form(action=l('/my-account/domains/new'), method="POST")
+          input(type="hidden", name="_csrf", value=ctx.csrf)
           .form-group.floating-label
             input#input-domain.form-control.form-control-lg(
               required,
-              name='domain',
-              autocomplete='off',
-              placeholder='example.com',
-              autocorrect='off',
-              spellcheck='false',
-              autocapitalize='off',
-              type='text'
+              name="domain",
+              autocomplete="off",
+              placeholder="example.com",
+              autocorrect="off",
+              spellcheck="false",
+              autocapitalize="off",
+              type="text"
             )
-            label(for='input-domain')= t("Domain name")
+            label(for="input-domain")= t('Domain name')
           if user.group === 'admin'
             .form-group.form-check
               input#input-is-global.form-check-input(
-                type='checkbox',
-                name='is_global',
-                value='true'
+                type="checkbox",
+                name="is_global",
+                value="true"
               )
-              label.form-check-label(for='input-is-global')= t("Global domain")
-          button.btn.btn-success.btn-block.btn-lg(type='submit')= t("Continue")
+              label.form-check-label(for="input-is-global")= t('Global domain')
+          button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
         .alert.alert-warning.mt-3.mb-0.text-center
           ul.list-inline.mb-0
             li.list-inline-item= t("Don't have a domain name?")
             li.list-inline-item
-              a.alert-link(href=l("/domain-registration"))= t("Register a domain")
+              a.alert-link(href=l('/domain-registration'))= t('Register a domain')

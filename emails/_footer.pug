@@ -4,14 +4,14 @@ footer.py-3.mt-3
       .col-12.text-center
         a(href=config.urls.web)
           img.d-inline-block.align-middle(
-            src=manifest("img/apple-touch-icon.png"),
+            src=manifest('img/apple-touch-icon.png'),
             width=90,
             height=90,
-            alt=''
+            alt=""
           )
         ul.m-0.p-0.text-muted.py-3
-          li.px-1.d-inline: small: a.text-muted(href=`${config.urls.web}/help`)= t("Help")
-          li.px-1.d-inline: small: a.text-muted(href=`${config.urls.web}/about`)= t("About")
-          li.px-1.d-inline: small: a.text-muted(href=`${config.urls.web}/privacy`)= t("Privacy")
-          li.px-1.d-inline: small: a.text-muted(href=`${config.urls.web}/terms`)= t("Terms")
+          li.px-1.d-inline: small: a.text-muted(href=`${config.urls.web}/help`)= t('Help')
+          li.px-1.d-inline: small: a.text-muted(href=`${config.urls.web}/about`)= t('About')
+          li.px-1.d-inline: small: a.text-muted(href=`${config.urls.web}/privacy`)= t('Privacy')
+          li.px-1.d-inline: small: a.text-muted(href=`${config.urls.web}/terms`)= t('Terms')
         p: small.text-muted!= '&copy; <a href="https://niftylettuce.com" target="_blank" rel="noopener noreferrer">Niftylettuce, LLC.</a>'

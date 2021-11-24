@@ -12,24 +12,28 @@ block body
         .col
           form.ajax-form.confirm-prompt.d-inline-block(
             action=l(`/my-account/domains/${domain.name}/aliases/import`),
-            method='POST'
+            method="POST"
           )
-            input(type='hidden', name='_csrf', value=ctx.csrf)
-            button.btn.btn-lg.btn-dark.text-uppercase.font-weight-bold(type='submit')
-              = t("Import TXT Records")
-              = " "
+            input(type="hidden", name="_csrf", value=ctx.csrf)
+            button.btn.btn-lg.btn-dark.text-uppercase.font-weight-bold(
+              type="submit"
+            )
+              = t('Import TXT Records')
+              = ' '
               i.fa.fa-cloud-download-alt
     .row
       .col
         .card
           .card-body
-            form.ajax-form(action=ctx.path, method='POST')
+            form.ajax-form(action=ctx.path, method="POST")
               include _form
-              button.btn.btn-success.btn-block.btn-lg(type='submit')= t("Continue")
+              button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
     if domain
       .row.text-center.my-5
         .col
-          a.btn.btn-outline-secondary(href=l(`/my-account/domains/${domain.name}/aliases`))
+          a.btn.btn-outline-secondary(
+            href=l(`/my-account/domains/${domain.name}/aliases`)
+          )
             i.fa.fa-angle-double-left
-            = " "
-            = t("Back to Aliases")
+            = ' '
+            = t('Back to Aliases')

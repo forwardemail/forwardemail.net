@@ -15,27 +15,27 @@ block body
         li.list-inline-item
           a.btn.btn-danger(
             href=l(`/my-account/billing/${payment.reference}.pdf`),
-            data-toggle='tooltip',
-            data-placement='bottom',
-            title=t("Download")
+            data-toggle="tooltip",
+            data-placement="bottom",
+            title=t('Download')
           )
             i.fa.fa-file-pdf
-            = " "
-            = t("Download")
+            = ' '
+            = t('Download')
         li.list-inline-item
           a.btn.btn-dark(
             href=l(`/my-account/billing/${payment.reference}.html`),
-            target='_blank',
-            data-toggle='tooltip',
-            data-placement='bottom',
-            title=t("Print")
+            target="_blank",
+            data-toggle="tooltip",
+            data-placement="bottom",
+            title=t('Print')
           )
             i.fa.fa-print
-            = " "
-            = t("Print")
+            = ' '
+            = t('Print')
     .row.text-center.my-5
       .col
-        a.btn.btn-outline-secondary(href=l("/my-account/billing"))
+        a.btn.btn-outline-secondary(href=l('/my-account/billing'))
           i.fa.fa-angle-double-left
-          = " "
-          = t("Back to Billing")
+          = ' '
+          = t('Back to Billing')
