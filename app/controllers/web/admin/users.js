@@ -18,16 +18,12 @@ async function list(ctx) {
     query = { $or: [] };
 
     for (const field of USER_SEARCH_PATHS) {
-      // only search fields that are strings
-      if (Users.schema.paths[field].instance === 'String') {
-        query.$or.push({
-          [field]: { $regex: ctx.query.keyword, $options: 'i' }
-        });
-      }
+      query.$or.push({ [field]: { $regex: ctx.query.keyword, $options: 'i' } });
     }
   }
 
   const [users, itemCount] = await Promise.all([
+    // eslint-disable-next-line unicorn/no-array-callback-reference
     Users.find(query)
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
