@@ -67,7 +67,7 @@ block body
                   label(for="input-family-name")= t('Last name')
                 if user[config.userFields.hasSetPassword]
                   .form-group.mb-0
-                      a(href='#', role='button', data-toggle='modal', data-target='#modal-change-password').text-danger: small= t('Need to change your password?')
+                    a(href='#', role='button', data-toggle='modal', data-target='#modal-change-password').text-danger: small= t('Need to change your password?')
             .card-footer
               button(type='submit').btn.btn-success.btn-lg.btn-block= t('Save Changes')
       .col-md

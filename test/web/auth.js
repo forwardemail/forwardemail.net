@@ -1,5 +1,4 @@
 // Libraries required for testing
-const RE2 = require('re2');
 const util = require('util');
 const test = require('ava');
 const cryptoRandomString = require('crypto-random-string');
@@ -221,7 +220,7 @@ test('fails resetting password if new password is too weak', async (t) => {
   t.is(res.status, 400);
   t.regex(
     JSON.parse(res.text).message,
-    new RE2(phrases.INVALID_PASSWORD_STRENGTH)
+    new RegExp(phrases.INVALID_PASSWORD_STRENGTH)
   );
 });
 
