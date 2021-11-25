@@ -40,7 +40,6 @@ async function updateProfile(ctx) {
     ctx.state.user[config.userFields.resetToken] = null;
     ctx.state.user[config.userFields.resetTokenExpiresAt] = null;
   } else {
-    // TODO: make all these optional (since the form is now divided)
     //
     // personal information
     //
