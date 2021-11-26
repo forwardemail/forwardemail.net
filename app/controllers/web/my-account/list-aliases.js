@@ -7,13 +7,12 @@ async function listAliases(ctx) {
   const { domain } = ctx.state;
 
   // filter based on regex keyword
-  if (ctx.query.keyword) {
-    domain.aliases = domain.aliases.filter((alias) =>
-      Object.values(alias).some((prop) =>
-        typeof prop === 'string'
-          ? new RE2(_.escapeRegExp(ctx.query.keyword), 'gi').test(prop)
-          : false
-      )
+  if (ctx.query.q) {
+    const qRegex = new RE2(_.escapeRegExp(ctx.query.q), 'gi');
+    domain.aliases = domain.aliases.filter(
+      (alias) =>
+        qRegex.test(alias.name) ||
+        alias.recipients.some((recipient) => qRegex.test(recipient))
     );
   }
 
@@ -44,18 +43,12 @@ async function listAliases(ctx) {
       pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
     });
 
-  // this will assign rendered html to ctx.body
-  await ctx.render('my-account/domains/aliases/_table', {
+  const table = await ctx.render('my-account/domains/aliases/_table', {
     domain,
     pageCount,
     itemCount,
     pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
   });
-
-  const table =
-    itemCount === 0
-      ? `<div class="alert alert-info"> No aliases exist for that keyword. </div>`
-      : ctx.body;
 
   ctx.body = { table };
 }
