@@ -16,27 +16,32 @@ include ../../_pagination
           +sortHeader('max_recipients_per_alias', 'Max Recipients', '#table-domains')
         th.text-center.align-middle(scope='col')= t('Actions')
       tbody
-        each domain in domains
+        if domains.length === 0
           tr
-            td.align-middle
-              .markdown-body.ml-0.mr-0: code= domain.name
-            td.align-middle.text-center
-              if domain.is_global
-                i.fa.fa-fw.fa-check.fa-2x.text-success
-            td.align-middle.text-center
-              = t(titleize(humanize(domain.plan)))
-            td.align-middle.text-center
-              form.ajax-form.confirm-prompt.d-inline-block(action=l(`/admin/domains/${domain.id}`), method="POST", autocomplete="off")
-                input(type="hidden", name="_csrf", value=ctx.csrf)
-                input(type="hidden", name="_method", value="PUT")
-                .input-group
-                  input(type='number', min=0, max=1000, step=10, name='max_recipients_per_alias', value=domain.max_recipients_per_alias).form-control
-                  .input-group-append
-                    button(type='submit', data-toggle='tooltip', data-title=t('Update')).btn.btn-sm.btn-dark: i.fa.fa-fw.fa-save
-            td.align-middle
-              .btn-group(role='group', aria-label=t('Actions'))
-                form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/domains/${domain.id}`), method="POST", autocomplete="off")
+            td.alert.alert-info(colspan="5")
+              = t('No domains exist yet.')
+        else
+          each domain in domains
+            tr
+              td.align-middle
+                .markdown-body.ml-0.mr-0: code= domain.name
+              td.align-middle.text-center
+                if domain.is_global
+                  i.fa.fa-fw.fa-check.fa-2x.text-success
+              td.align-middle.text-center
+                = t(titleize(humanize(domain.plan)))
+              td.align-middle.text-center
+                form.ajax-form.confirm-prompt.d-inline-block(action=l(`/admin/domains/${domain.id}`), method="POST", autocomplete="off")
                   input(type="hidden", name="_csrf", value=ctx.csrf)
-                  input(type="hidden", name="_method", value="DELETE")
-                  button(type='submit', data-toggle='tooltip', data-title=t('Remove')).btn.btn-secondary: i.fa.fa-fw.fa-remove
+                  input(type="hidden", name="_method", value="PUT")
+                  .input-group
+                    input(type='number', min=0, max=1000, step=10, name='max_recipients_per_alias', value=domain.max_recipients_per_alias).form-control
+                    .input-group-append
+                      button(type='submit', data-toggle='tooltip', data-title=t('Update')).btn.btn-sm.btn-dark: i.fa.fa-fw.fa-save
+              td.align-middle
+                .btn-group(role='group', aria-label=t('Actions'))
+                  form.ajax-form.confirm-prompt.btn-group(action=l(`/admin/domains/${domain.id}`), method="POST", autocomplete="off")
+                    input(type="hidden", name="_csrf", value=ctx.csrf)
+                    input(type="hidden", name="_method", value="DELETE")
+                    button(type='submit', data-toggle='tooltip', data-title=t('Remove')).btn.btn-secondary: i.fa.fa-fw.fa-remove
 +paginate('#table-domains')
