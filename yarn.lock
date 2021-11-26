@@ -1450,10 +1450,10 @@
     request-received "^0.0.3"
     response-time "^2.3.2"
 
-"@ladjs/assets@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@ladjs/assets/-/assets-1.2.1.tgz#74e0127405123d2ab8c103b43c5a4920793ce908"
-  integrity sha512-c4beds64bwrTC23TiUj2CsmH/7bPneB/6z/+Z+9q0xbg+7RapnBPYOatTKHcSU38oohUsBMTbDCG0y+u7sKCig==
+"@ladjs/assets@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.npmjs.org/@ladjs/assets/-/assets-1.2.2.tgz#b4b1278616230a5ed26ed1d8da268c171823bbfb"
+  integrity sha512-C+OSuk0VEAURmambvOjo7bidaZsR+KFthczQTYzH7x8nHQ1jW6dA12UflBn5H953K2pOeF4fMeNVhqJPhw5uag==
   dependencies:
     clipboard "^2.0.6"
     is-string-and-not-blank "^0.0.2"
