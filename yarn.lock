@@ -1450,7 +1450,7 @@
     request-received "^0.0.3"
     response-time "^2.3.2"
 
-"@ladjs/assets@^1.2.0":
+"@ladjs/assets@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@ladjs/assets/-/assets-1.2.1.tgz#74e0127405123d2ab8c103b43c5a4920793ce908"
   integrity sha512-c4beds64bwrTC23TiUj2CsmH/7bPneB/6z/+Z+9q0xbg+7RapnBPYOatTKHcSU38oohUsBMTbDCG0y+u7sKCig==
@@ -1660,10 +1660,10 @@
     debug "^4.1.1"
     validator "^12.1.0"
 
-"@ladjs/web@^11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@ladjs/web/-/web-11.0.3.tgz#0752d0a28c503b90196ce4d900132269392238bd"
-  integrity sha512-RzLV1K6ubtmsRLmSjAeMh/3P2f4oFPqlJELaNhEoILAOIRTQUo8Ck5Od1fsQfvgCjRmXzPo3qRNoZ+GCQcdFcg==
+"@ladjs/web@^11.0.4":
+  version "11.0.4"
+  resolved "https://registry.npmjs.org/@ladjs/web/-/web-11.0.4.tgz#71d6161f8a6d9c86cfa21dc1c7023c634b76b7fc"
+  integrity sha512-CoZcNW2SQX8YS6ydX3+rmhJ+2/lgLrP/D2Lg157VryWj7weGsKVBC9J4SFs74hUJcRWgl2+ceB0cZUHeYoTMiw==
   dependencies:
     "@hapi/boom" "^9.1.4"
     "@koa/router" "^10.1.1"
@@ -1704,7 +1704,7 @@
     koa-redirect-loop "^0.0.3"
     koa-redis "^4.0.1"
     koa-simple-ratelimit "^5.1.1"
-    koa-views "^7.0.1"
+    koa-views "^8.0.0"
     lodash "^4.17.21"
     ms "^2.1.3"
     multimatch "5"
@@ -12153,10 +12153,10 @@ koa-views-render@^0.0.1:
   resolved "https://registry.yarnpkg.com/koa-views-render/-/koa-views-render-0.0.1.tgz#98b38e52de411d55e380a3d4af8be06a85f404bf"
   integrity sha512-vryfNancX55BsfC0A4scAOXrLJxbalx7TeVaPcIF6/OSN6EDOTS55uvriIDGLT8A1bbDhmy1G6M+9SvKA39pdA==
 
-koa-views@^7.0.1:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/koa-views/-/koa-views-7.0.2.tgz#c96fd9e2143ef00c29dc5160c5ed639891aa723d"
-  integrity sha512-dvx3mdVeSVuIPEaKAoGbxLcenudvhl821xxyuRbcoA+bOJ2dvN8wlGjkLu0ZFMlkCscXZV6lzxy28rafeazI/w==
+koa-views@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.npmjs.org/koa-views/-/koa-views-8.0.0.tgz#bcba45e07a0e42b61583d0e6998f0da061485cb5"
+  integrity sha512-nvGKdG8yVyomhouwN060SWd7Q9kGYRr322dwN6jvI04hgiDEW9vsPXEje9OEtBgGXxHURe7xOzo3bxQ3DBc1Nw==
   dependencies:
     consolidate "^0.16.0"
     debug "^4.1.0"
