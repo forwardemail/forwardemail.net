@@ -92,6 +92,7 @@ const Payment = new mongoose.Schema({
   stripe_payment_intent_id: String,
   paypal_order_id: String,
   paypal_subscription_id: String,
+  paypal_transaction_id: String,
   bitpay_invoice_id: String,
   bitpay_display_amount_paid: String,
   bitpay_transaction_currency: String

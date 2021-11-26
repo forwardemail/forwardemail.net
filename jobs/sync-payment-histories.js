@@ -11,10 +11,12 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const dedent = require('dedent');
+const dayjs = require('dayjs-with-plugins');
 
 const env = require('../config/env');
 const config = require('../config');
 const emailHelper = require('../helpers/email');
+const { paypalAgent } = require('../helpers/paypal');
 const logger = require('../helpers/logger');
 const Users = require('../app/models/user');
 const Payments = require('../app/models/payment');
@@ -27,13 +29,174 @@ const graceful = new Graceful({
   logger
 });
 
-const { STRIPE_MAPPING, STRIPE_PRODUCTS } = config.payments;
+const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_PLAN_MAPPING } =
+  config.payments;
+
+const PAYPAL_PLANS = {
+  enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
+  team: Object.values(PAYPAL_PLAN_MAPPING.team)
+};
 
 graceful.listen();
 
 (async () => {
   await mongoose.connect();
 
+  await syncStripePayments();
+  await syncPaypalSubscriptionPayments();
+
+  if (parentPort) parentPort.postMessage('done');
+  else process.exit(0);
+})();
+
+async function syncPaypalSubscriptionPayments() {
+  const paypalCustomers = await Users.find({
+    paypal_subscription_id: { $exists: true, $ne: null }
+  })
+    .lean()
+    .exec();
+
+  console.log(`${paypalCustomers.length} paypal customers`);
+
+  for (const customer of paypalCustomers) {
+    try {
+      // first we need to get the distinct paypal order Ids and validate them all
+      // this really shouldn't be needed. So I am leaving it out for now unless
+      // we want to specifically validate these in the future
+      //
+      // const orderIds = await Payments.distinct('paypal_order_id', {
+      //   user: customer._id
+      // });
+
+      // for (const orderId of orderIds) {
+      //   console.group('orderId', orderId);
+      //   const { body: order } = await paypalAgent.get(
+      //     `/v2/checkout/orders/${orderId}`
+      //   );
+
+      //   // validate or create a payment for the order
+      //   console.groupEnd();
+      // }
+
+      // then we need to get all the subscription ids and validate that the one that
+      // works is the subscription id set on the user. Assuming that is good, that will
+      // be the only subscription we have access to I think...
+      // This kind of sucks, but it is the best we can do right now I beleive.
+      const subscriptionIds = await Payments.distinct(
+        'paypal_subscription_id',
+        {
+          user: customer._id
+        }
+      );
+
+      for (const subscriptionId of subscriptionIds) {
+        try {
+          console.group('subscriptionId', subscriptionId);
+          const { body: subscription } = await paypalAgent.get(
+            `/v1/billing/subscriptions/${subscriptionId}`
+          );
+
+          const plan = Object.keys(PAYPAL_PLANS).find((plan) =>
+            PAYPAL_PLANS[plan].includes(subscription.plan_id)
+          );
+
+          const duration = ms(
+            Object.entries(PAYPAL_PLAN_MAPPING[plan]).find(
+              (mapping) => mapping[1] === subscription.plan_id
+            )[0]
+          );
+
+          // this will either error - or it will return the current active subscriptions transactions.
+          // https://developer.paypal.com/docs/subscriptions/full-integration/subscription-management/#list-transactions-for-a-subscription
+          const { body: { transactions } = {} } = await paypalAgent.get(
+            `/v1/billing/subscriptions/${subscriptionId}/transactions?start_time=${
+              subscription.create_time
+            }&end_time=${new Date().toISOString()}`
+          );
+
+          if (transactions.length > 0) {
+            console.log(`${transactions.length} transactions`);
+            for (const transaction of transactions) {
+              // we need to have a payment for each transaction of a subscription
+              console.log('transaction', transaction.id);
+
+              // try to find the payment
+              const paymentCandidates = await Payments.find({
+                paypal_subscription_id: subscription.id
+              });
+
+              // then use it if its on the same day
+              const payment = paymentCandidates.find(
+                (p) =>
+                  transaction.id === p.paypal_transaction_id ||
+                  dayjs(transaction.time).format('MM/DD/YY') ===
+                    dayjs(p.created_at).format('MM/DD/YY')
+              );
+
+              const amount = Number(
+                transaction.amount_with_breakdown.gross_amount.value.replace(
+                  '.',
+                  ''
+                )
+              );
+
+              if (payment) {
+                let shouldSave = false;
+
+                if (!payment.paypal_transaction_id) {
+                  payment.paypal_transaction_id = transaction.id;
+                  shouldSave = true;
+                }
+
+                if (payment.plan !== plan)
+                  throw new Error('Paypal plan did not match');
+
+                // currently problem with durations - skip this validation for now
+                // if (payment.duration !== duration)
+                //   throw new Error('Paypal duration did not match');
+
+                if (shouldSave) {
+                  console.log('Updating existing payment');
+                  await payment.save();
+                } else {
+                  console.log('payment already up to date and good to go!');
+                }
+              } else {
+                const payment = {
+                  user: customer._id,
+                  method: 'paypal',
+                  kind: 'subscription',
+                  amount,
+                  plan,
+                  duration,
+                  paypal_subscription_id: subscription.id,
+                  paypal_transaction_id: transaction.id
+                };
+
+                console.log('creating new payment');
+                await Payments.create(payment);
+              }
+            }
+          }
+
+          console.groupEnd();
+        } catch (err) {
+          if (err.status === 404)
+            console.error(
+              new Error('subscription is cancelled or no longer exists')
+            );
+          else console.error(err);
+          console.groupEnd();
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      console.groupEnd();
+    }
+  }
+}
+
+async function syncStripePayments() {
   const stripeCustomers = await Users.find({
     [config.userFields.stripeCustomerID]: { $exists: true, $ne: null }
   })
@@ -451,10 +614,7 @@ graceful.listen();
 
     console.groupEnd();
   }
-
-  if (parentPort) parentPort.postMessage('done');
-  else process.exit(0);
-})();
+}
 
 async function getAllStripePaymentIntents(stripeCustomerId) {
   let paymentIntents = [];
