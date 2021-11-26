@@ -3,15 +3,11 @@ const paginate = require('koa-ctx-paginate');
 
 const { Domains } = require('../../../models');
 
-const OPTIONS_MAX_RECIPIENTS = [
-  0, 10, 20, 30, 40, 50, 100, 150, 200, 250, 500, 750, 1000
-];
-
 async function list(ctx) {
   const query = {};
 
   // filter based on regex name
-  if (ctx.query.keyword) query.name = { $regex: ctx.query.keyword };
+  if (ctx.query.name) query.name = { $regex: ctx.query.name };
 
   const [domains, itemCount] = await Promise.all([
     Domains.find(query)
@@ -30,23 +26,15 @@ async function list(ctx) {
       domains,
       pageCount,
       itemCount,
-      pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page),
-      OPTIONS_MAX_RECIPIENTS
+      pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
     });
 
-  // this will assign rendered html to ctx.body
-  await ctx.render('admin/domains/_table', {
+  const table = await ctx.render('admin/domains/_table', {
     domains,
     pageCount,
     itemCount,
-    pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page),
-    OPTIONS_MAX_RECIPIENTS
+    pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
   });
-
-  const table =
-    itemCount === 0
-      ? `<div class="alert alert-info">No domains exist for that keyword.</div>`
-      : ctx.body;
 
   ctx.body = { table };
 }
