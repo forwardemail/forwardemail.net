@@ -27,7 +27,7 @@ include ../../_pagination
       if users.length === 0
         td.alert.alert-info(
           colspan=boolean(process.env.AUTH_OTP_ENABLED) ? '8' : '7'
-        )= t('No users exist yet')
+        )= t('No users exist for that search.')
       else
         each user in users
           tr
