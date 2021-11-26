@@ -8,12 +8,15 @@ async function listDomains(ctx) {
 
   // filter based on regex keyword
   if (ctx.query.q) {
-    domains = domains.filter((domain) =>
-      Object.values(domain).some((prop) =>
-        typeof prop === 'string'
-          ? new RE2(_.escapeRegExp(ctx.query.keyword), 'gi').test(prop)
-          : false
-      )
+    const qRegex = new RE2(_.escapeRegExp(ctx.query.q), 'gi');
+    domains = domains.filter(
+      (domain) =>
+        qRegex.test(domain.name) ||
+        domain.aliases.some(
+          (alias) =>
+            qRegex.test(alias.name) ||
+            alias.recipients.some((recipient) => qRegex.test(recipient))
+        )
     );
   }
 
@@ -46,15 +49,14 @@ async function listDomains(ctx) {
       pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
     });
 
-  // this will assign rendered html to ctx.body
-  await ctx.render('my-account/domains/_table', {
+  const table = await ctx.render('my-account/domains/_table', {
     domains,
     pageCount,
     itemCount,
     pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
   });
 
-  ctx.body = { table: ctx.body };
+  ctx.body = { table };
 }
 
 module.exports = listDomains;
