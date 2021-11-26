@@ -14,11 +14,11 @@ const USER_SEARCH_PATHS = [
 async function list(ctx) {
   let query = {};
 
-  if (ctx.query.keyword) {
+  if (ctx.query.q) {
     query = { $or: [] };
 
     for (const field of USER_SEARCH_PATHS) {
-      query.$or.push({ [field]: { $regex: ctx.query.keyword, $options: 'i' } });
+      query.$or.push({ [field]: { $regex: ctx.query.q, $options: 'i' } });
     }
   }
 
@@ -43,18 +43,12 @@ async function list(ctx) {
       pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
     });
 
-  // this will assign rendered html to ctx.body
-  await ctx.render('admin/users/_table', {
+  const table = await ctx.render('admin/users/_table', {
     users,
     pageCount,
     itemCount,
     pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
   });
-
-  const table =
-    itemCount === 0
-      ? `<div class="alert alert-info"> No users exist for that keyword. </div>`
-      : ctx.body;
 
   ctx.body = { table };
 }
