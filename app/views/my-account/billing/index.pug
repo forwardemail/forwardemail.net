@@ -103,39 +103,40 @@ block body
         .col
           h3.text-center.mb-3= t('Payment History')
           p.text-center: small.text-muted!= t('If you want to update company info on receipts, then <a href="%s" class="notranslate">update your profile</a>.', l('/my-account/profile'))
-          form.ajax-form.table-ajax-form.mb-3.px-3(
-            action=ctx.path,
-            method="GET",
-            data-table="#table-payments"
-          )
-            input(type="hidden", name="_csrf", value=ctx.csrf)
-            .form-row
-              .col.form-group.floating-label
-                input#input-keyword-search.form-control(
-                  type="text",
-                  value=ctx.query.keyword ? ctx.query.keyword : '',
-                  name="keyword",
-                  placeholder="Keyword"
-                )
-                label(for="input-keyword-search")= t('Keyword')
-            .form-row
-              .col.form-group.floating-label
-                input#input-start-date.form-control(
-                  type="date",
-                  value=ctx.query.start_date ? ctx.query.start_date : '',
-                  name="start_date"
-                )
-                label(for="input-start-date")= t('Start Date')
-              .col.form-group.floating-label
-                input#input-end-date.form-control(
-                  type="date",
-                  value=ctx.query.end_date ? ctx.query.end_date : '',
-                  name="end_date"
-                )
-                label(for="input-end-date")= t('End Date')
-            .row
-              .col
-                button.btn.btn-success.btn-block(type="submit")= t('Search')
+          //-.
+            form.ajax-form.table-ajax-form.mb-3.px-3(
+              action=ctx.path,
+              method="GET",
+              data-table="#table-payments"
+            )
+              input(type="hidden", name="_csrf", value=ctx.csrf)
+              .form-row
+                .col.form-group.floating-label
+                  input#input-keyword-search.form-control(
+                    type="text",
+                    value=ctx.query.keyword ? ctx.query.keyword : '',
+                    name="keyword",
+                    placeholder="Keyword"
+                  )
+                  label(for="input-keyword-search")= t('Keyword')
+              .form-row
+                .col.form-group.floating-label
+                  input#input-start-date.form-control(
+                    type="date",
+                    value=ctx.query.start_date ? ctx.query.start_date : '',
+                    name="start_date"
+                  )
+                  label(for="input-start-date")= t('Start Date')
+                .col.form-group.floating-label
+                  input#input-end-date.form-control(
+                    type="date",
+                    value=ctx.query.end_date ? ctx.query.end_date : '',
+                    name="end_date"
+                  )
+                  label(for="input-end-date")= t('End Date')
+              .row
+                .col
+                  button.btn.btn-success.btn-block(type="submit")= t('Search')
           #table-payments.mb-0
             include ./_table.pug
   if isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
