@@ -14,6 +14,7 @@ const { Client, Env, Tokens, Models, Currency } = require('bitpay-sdk');
 
 const env = require('../../../../config/env');
 const config = require('../../../../config');
+const logger = require('../../../../helpers/logger');
 
 const payPalClient = new checkoutNodeJssdk.core.PayPalHttpClient(
   config.payments.paypalCheckoutSdkConfig
@@ -112,13 +113,27 @@ async function createDomainBilling(ctx) {
       // if the user didn't have JavaScript enabled, then redirect them to Stripe page
       if (ctx.accepts('html')) throw ctx.translateError('JAVASCRIPT_REQUIRED');
 
+      // create/validate stripe customer here - this ensures we have the valid customer saved before all future stripe interaction.
+      try {
+        const customer = await stripe.customers.retrieve(
+          ctx.state.user[config.userFields.stripeCustomerID]
+        );
+        if (customer.deleted)
+          throw new Error('Stripe customer previously deleted');
+      } catch (err) {
+        logger.error(err);
+        const customer = await stripe.customers.create({
+          email: ctx.state.user.email
+        });
+        ctx.state.user[config.userFields.stripeCustomerID] = customer.id;
+        await ctx.state.user.save();
+      }
+
       const options = {
         // TODO: add alipay and others
         payment_method_types: ['card'],
         mode: paymentType === 'one-time' ? 'payment' : 'subscription',
-        ...(isSANB(ctx.state.user[config.userFields.stripeCustomerID])
-          ? { customer: ctx.state.user[config.userFields.stripeCustomerID] }
-          : { customer_email: ctx.state.user.email }),
+        customer: ctx.state.user[config.userFields.stripeCustomerID],
         client_reference_id: reference,
         line_items: [
           {
