@@ -1,6 +1,8 @@
 include ../../../_sort-header
 include ../../../_pagination
 
+- let numCols = 4;
+
 .table-responsive
   table.table.table-hover.table-bordered
     thead.thead-dark
@@ -8,9 +10,11 @@ include ../../../_pagination
         th(scope="col")
           +sortHeader('name', 'Alias', '#table-aliases')
         if domain.group === 'admin' && domain.plan === 'team'
+          - numCols++;
           th(scope="col")
             +sortHeader('user', 'Team Member', '#table-aliases')
         if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
+          - numCols++;
           th(scope="col")
             +sortHeader('description', 'Description & Labels', '#table-aliases')
         th.text-center(scope="col")
@@ -18,59 +22,62 @@ include ../../../_pagination
         th.align-middle(scope="col")= t('Recipients')
         th.text-center.text-md-left.align-middle(scope="col")= t('Quick Links')
     tbody
-      each alias in domain.aliases
-        tr
-          td.align-middle
-            p.mb-0.markdown-body.ml-0.mr-0: code= `${alias.name}@${domain.name}`
-          if domain.group === 'admin' && domain.plan === 'team'
-            td.align-middle= alias.user.email
-          if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
+      if domain.aliases.length === 0
+        td.alert.alert-info(colspan=numCols)= t('No aliases exist for that search.')
+      else
+        each alias in domain.aliases
+          tr
             td.align-middle
-              if isSANB(alias.description)
-                p.mb-0: small= alias.description
-              if Array.isArray(alias.labels)
-                ul.list-inline.mb-0
-                  each label in alias.labels
-                    li.list-inline-item.h4
-                      span.badge.text-monospace.font-weight-normal(
-                        class=label === 'catch-all' ? 'badge-success' : 'badge-primary'
-                      )= label === 'catch-all' ? t('catch-all') : label
-          td.align-middle.text-center
-            button.btn.btn-link(
-              type="button",
-              data-placement="bottom",
-              data-toggle="tooltip",
-              data-title=alias.is_enabled ? t('Enabled') : t('Disabled'),
-              class=alias.is_enabled ? 'text-success' : 'text-danger'
-            )
-              i.fa.fa-2x(class=alias.is_enabled ? 'fa-check' : 'fa-times')
-          td.align-middle
-            ul.list-inline.mb-0
-              each recipient in alias.recipients
-                li.list-inline-item.h3
-                  span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal
-                    if validator.isEmail(recipient) || validator.isURL(recipient)
-                      = recipient
-                    else
-                      = `${alias.name}@${recipient}`
-          td.align-middle(style="width: 20%")
-            ul.list-inline.mb-0
-              li.list-inline-item
-                a.btn.btn-dark(
-                  href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
-                )
-                  i.fa.fa-pencil
-                  = ' '
-                  = t('Edit Alias')
-              li.list-inline-item
-                form.ajax-form.confirm-prompt.d-inline-block(
-                  action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
-                  method="POST"
-                )
-                  input(type="hidden", name="_csrf", value=ctx.csrf)
-                  input(type="hidden", name="_method", value="DELETE")
-                  button.btn.btn-danger(type="submit")
-                    i.fa.fa-trash
+              p.mb-0.markdown-body.ml-0.mr-0: code= `${alias.name}@${domain.name}`
+            if domain.group === 'admin' && domain.plan === 'team'
+              td.align-middle= alias.user.email
+            if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
+              td.align-middle
+                if isSANB(alias.description)
+                  p.mb-0: small= alias.description
+                if Array.isArray(alias.labels)
+                  ul.list-inline.mb-0
+                    each label in alias.labels
+                      li.list-inline-item.h4
+                        span.badge.text-monospace.font-weight-normal(
+                          class=label === 'catch-all' ? 'badge-success' : 'badge-primary'
+                        )= label === 'catch-all' ? t('catch-all') : label
+            td.align-middle.text-center
+              button.btn.btn-link(
+                type="button",
+                data-placement="bottom",
+                data-toggle="tooltip",
+                data-title=alias.is_enabled ? t('Enabled') : t('Disabled'),
+                class=alias.is_enabled ? 'text-success' : 'text-danger'
+              )
+                i.fa.fa-2x(class=alias.is_enabled ? 'fa-check' : 'fa-times')
+            td.align-middle
+              ul.list-inline.mb-0
+                each recipient in alias.recipients
+                  li.list-inline-item.h3
+                    span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal
+                      if validator.isEmail(recipient) || validator.isURL(recipient)
+                        = recipient
+                      else
+                        = `${alias.name}@${recipient}`
+            td.align-middle(style="width: 20%")
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  a.btn.btn-dark(
+                    href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
+                  )
+                    i.fa.fa-pencil
                     = ' '
-                    = t('Delete Alias')
+                    = t('Edit Alias')
+                li.list-inline-item
+                  form.ajax-form.confirm-prompt.d-inline-block(
+                    action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
+                    method="POST"
+                  )
+                    input(type="hidden", name="_csrf", value=ctx.csrf)
+                    input(type="hidden", name="_method", value="DELETE")
+                    button.btn.btn-danger(type="submit")
+                      i.fa.fa-trash
+                      = ' '
+                      = t('Delete Alias')
 +paginate('#table-aliases')

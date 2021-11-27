@@ -28,21 +28,22 @@ block body
     .row
       .col
         include ../../../_breadcrumbs
-        if domain.aliases.length === 0
+        if domain.aliases.length === 0 && !ctx.query.q && !ctx.query.page
           .alert.alert-info= t('No aliases exist yet')
         else
           form.ajax-form.table-ajax-form(
             action=ctx.path,
             method="GET",
-            data-table="#table-aliases"
+            data-table="#table-aliases",
+            data-search-params="q"
           )
             input(type="hidden", name="_csrf", value=ctx.csrf)
-            .input-group.mb-3.px-3
+            .input-group.mb-3
               input#input-keyword-search.form-control(
                 type="text",
-                value=ctx.query.keyword ? ctx.query.keyword : '',
-                name="keyword",
-                placeholder="Keyword"
+                value=ctx.query.q ? ctx.query.q : '',
+                name="q",
+                placeholder="Sort by alias name or recipient"
               )
               .input-group-append
                 button.btn.btn-success(type="submit")= t('Search')
