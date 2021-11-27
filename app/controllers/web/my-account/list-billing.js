@@ -1,6 +1,6 @@
 const RE2 = require('re2');
 const _ = require('lodash');
-const dayjs = require('dayjs-with-plugins');
+// const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
@@ -9,6 +9,9 @@ const REGEX_AMOUNT_FORMATTED = new RE2('amount_formatted', 'gi');
 async function listBilling(ctx) {
   let { payments } = ctx.state;
 
+  // NOTE: I'm commenting this out for now, please see the GH issue below:
+  // <https://github.com/titanism/issues/issues/20>
+  /*
   // make sure dates are good
   // and if not remove them from query
   if (ctx.query.start_date) {
@@ -66,6 +69,7 @@ async function listBilling(ctx) {
       })
     );
   }
+  */
 
   const itemCount = payments.length;
 
