@@ -7,7 +7,7 @@ block body
       .col
         include ../../../_breadcrumbs
   .container
-    if domain && domain.group === 'admin'
+    if domain && domain.group === 'admin' && !alias
       .row.text-center.my-2
         .col
           form.ajax-form.confirm-prompt.d-inline-block(

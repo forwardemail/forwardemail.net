@@ -44,7 +44,7 @@ mixin receipt(payment)
         th.d-none.d-lg-table-cell(scope="col")
           +sortHeader('method', null, '#table-payments')
         th(scope="col")
-          +sortHeader('amount_formatted', 'Amount', '#table-payments')
+          +sortHeader('amount', 'Amount', '#table-payments')
         th.d-none.d-lg-table-cell.text-center.align-middle(scope="col")= t('Receipt')
     tbody
       each payment in payments
