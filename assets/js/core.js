@@ -26,11 +26,12 @@ const {
   confirmPrompt,
   customFileInput,
   flash,
-  returnTo,
-  resizeNavbarPadding,
-  modalAnchor,
+  handleFormOnPopstate,
+  handleHashChange,
   handleHashOnLoad,
-  handleHashChange
+  modalAnchor,
+  resizeNavbarPadding,
+  returnTo
 } = require('@ladjs/assets');
 
 // Resize navbar padding on load, window resize, and navbar collapse/show
@@ -107,6 +108,8 @@ $body.on(
 $body.on('submit.ajaxForm', 'form.ajax-form', ajaxForm);
 // Bind ajax link submission
 $body.on('click', 'a.ajax-form', ajaxForm);
+// handle popstate
+$(window).on('popstate', handleFormOnPopstate);
 
 // Example for how to detect waypoint scrolling:
 //
