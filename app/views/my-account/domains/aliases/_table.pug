@@ -61,23 +61,20 @@ include ../../../_pagination
                       else
                         = `${alias.name}@${recipient}`
             td.align-middle(style="width: 20%")
-              ul.list-inline.mb-0
-                li.list-inline-item
-                  a.btn.btn-dark(
-                    href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
-                  )
-                    i.fa.fa-pencil
-                    = ' '
-                    = t('Edit Alias')
-                li.list-inline-item
-                  form.ajax-form.confirm-prompt.d-inline-block(
-                    action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
-                    method="POST"
-                  )
-                    input(type="hidden", name="_csrf", value=ctx.csrf)
-                    input(type="hidden", name="_method", value="DELETE")
-                    button.btn.btn-danger(type="submit")
-                      i.fa.fa-trash
-                      = ' '
-                      = t('Delete Alias')
+              a.btn.btn-dark.mb-1(
+                href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
+              )
+                i.fa.fa-pencil
+                = ' '
+                = t('Edit Alias')
+              form.ajax-form.confirm-prompt.d-inline-block(
+                action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
+                method="POST"
+              )
+                input(type="hidden", name="_csrf", value=ctx.csrf)
+                input(type="hidden", name="_method", value="DELETE")
+                button.btn.btn-danger(type="submit")
+                  i.fa.fa-trash
+                  = ' '
+                  = t('Delete Alias')
 +paginate('#table-aliases')
