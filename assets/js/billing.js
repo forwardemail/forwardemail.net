@@ -370,7 +370,6 @@ function updatePayButtons() {
 
     // <https://developer.paypal.com/docs/checkout/integrate/#5-capture-the-transaction>
     props.onApprove = function (data, actions) {
-      console.log('onApprove', { data, actions });
       spinner.show();
       if (data.subscriptionID)
         url.query.paypal_subscription_id = data.subscriptionID;
