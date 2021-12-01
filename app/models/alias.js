@@ -42,12 +42,14 @@ const Alias = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
+    index: true
   },
   domain: {
     type: mongoose.Schema.ObjectId,
     ref: 'Domain',
-    required: true
+    required: true,
+    index: true
   },
   // asterisk "*" means wildcard
   // however note that "*" is a valid email character

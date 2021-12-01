@@ -38,8 +38,8 @@ include ../../../_pagination
                 if Array.isArray(alias.labels)
                   ul.list-inline.mb-0
                     each label in alias.labels
-                      li.list-inline-item.h4
-                        span.badge.text-monospace.font-weight-normal(
+                      li.list-inline-item.h5
+                        span.badge.badge-pill.text-monospace.font-weight-normal.py-2.px-3(
                           class=label === 'catch-all' ? 'badge-success' : 'badge-primary'
                         )= label === 'catch-all' ? t('catch-all') : label
             td.align-middle.text-center
@@ -50,12 +50,12 @@ include ../../../_pagination
                 data-title=alias.is_enabled ? t('Enabled') : t('Disabled'),
                 class=alias.is_enabled ? 'text-success' : 'text-danger'
               )
-                i.fa.fa-2x(class=alias.is_enabled ? 'fa-check' : 'fa-times')
+                i.fa.fa-fw(class=alias.is_enabled ? 'fa-check' : 'fa-times')
             td.align-middle
               ul.list-inline.mb-0
                 each recipient in alias.recipients
-                  li.list-inline-item.h3
-                    span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal
+                  li.list-inline-item.h5
+                    span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal.py-2.px-3
                       if validator.isEmail(recipient) || validator.isURL(recipient)
                         = recipient
                       else

@@ -1,172 +1,171 @@
 include ../../_sort-header
 include ../../_pagination
 
-.table-responsive
-  table.table.table-hover.table-bordered
-    thead.thead-dark
-      tr
-        th(scope="col")
-          +sortHeader('name', 'Domain Name', '#table-domains')
-        if user.group === 'admin'
-          th.text-center(scope="col")
-            +sortHeader('is_global', 'Global', '#table-domains')
-        th.d-none.d-md-table-cell(scope="col")
-          +sortHeader('plan', 'Current Plan', '#table-domains')
-        th.d-none.d-md-table-cell.text-center(scope="col")
-          +sortHeader('aliases', 'Aliases', '#table-domains')
-        th.d-none.d-md-table-cell.text-center(scope="col")
-          +sortHeader('has_mx_record', 'MX Records', '#table-domains')
-        th.d-none.d-md-table-cell.text-center(scope="col")
-          +sortHeader('has_txt_record', 'TXT Records', '#table-domains')
-        th.text-center.text-md-left.align-middle(scope="col")= t('Quick Links')
-    tbody
-      if domains.length === 0
-        td.alert.alert-info(colspan=user.group === 'admin' ? '7' : '6')= t('No domains exist for that search.')
-      else
-        each domain in domains
-          tr
-            td.align-middle
-              .markdown-body.ml-0.mr-0: code= domain.name
+table.table.table-hover.table-bordered
+  thead.thead-dark
+    tr
+      th(scope="col")
+        +sortHeader('name', 'Domain Name', '#table-domains')
+      if user.group === 'admin'
+        th.text-center(scope="col")
+          +sortHeader('is_global', 'Global', '#table-domains')
+      th.d-none.d-md-table-cell(scope="col")
+        +sortHeader('plan', 'Current Plan', '#table-domains')
+      th.d-none.d-md-table-cell.text-center(scope="col")
+        +sortHeader('aliases', 'Aliases', '#table-domains')
+      th.d-none.d-md-table-cell.text-center(scope="col")
+        +sortHeader('has_mx_record', 'MX Records', '#table-domains')
+      th.d-none.d-md-table-cell.text-center(scope="col")
+        +sortHeader('has_txt_record', 'TXT Records', '#table-domains')
+      th.text-center.text-md-left.align-middle(scope="col")= t('Quick Links')
+  tbody
+    if domains.length === 0
+      td.alert.alert-info(colspan=user.group === 'admin' ? '7' : '6')= t('No domains exist for that search.')
+    else
+      each domain in domains
+        tr
+          td.align-middle
+            .markdown-body.ml-0.mr-0: code= domain.name
+            if domain.is_global
+              .h4.mb-0.mt-2: span.badge.badge-success.font-weight-bold.text-uppercase= t('Free Vanity Domain')
+          if user.group === 'admin'
+            td.align-middle.text-center
               if domain.is_global
-                .h4.mb-0.mt-2: span.badge.badge-success.font-weight-bold.text-uppercase= t('Free Vanity Domain')
-            if user.group === 'admin'
-              td.align-middle.text-center
-                if domain.is_global
-                  i.fa.fa-fw.fa-check.fa-2x.text-success
-            td.align-middle.d-none.d-md-table-cell
-              - domain.plan = domain.plan || 'free';
-              if domain.group === 'admin'
-                .btn-group
-                  button.btn.btn-dark.dropdown-toggle(
-                    type="button",
-                    data-toggle="dropdown",
-                    aria-haspopup="true",
-                    aria-expanded="false"
-                  )
-                    case domain.plan
-                      when 'enhanced_protection'
-                        i.fa.fa-fw.fa-shield
-                        = ' '
-                        = t('Enhanced Protection')
-                      when 'team'
-                        i.fa.fa-fw.fa-users
-                        = ' '
-                        = t('Team')
-                      default
-                        = t('Free')
-                        = ' ('
-                        = t('DNS-based')
-                        = ')'
-                  .dropdown-menu
-                    h6.dropdown-header.text-uppercase= t('Change plan to:')
-                    each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
-                      a.dropdown-item(
-                        href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)
-                      )
-                        case plan
-                          when 'enhanced_protection'
-                            i.fa.fa-fw.fa-shield
-                            = ' '
-                            = t('Enhanced Protection')
-                          when 'team'
-                            i.fa.fa-fw.fa-users
-                            = ' '
-                            = t('Team')
-                          default
-                            = t('Free')
-                            = ' ('
-                            = t('DNS-based')
-                            = ')'
-                    .dropdown-divider
-                    a.dropdown-item(href=l(`/pricing?domain=${domain.name}`))
-                      small.text-muted= t('See all plan features')
-              else
-                = t(titleize(humanize(domain.plan)))
-            if domain.plan === 'free'
-              td.align-middle.d-none.d-md-table-cell.text-center= t('DNS-based')
-            else
-              td.align-middle.d-none.d-md-table-cell.text-center.h4: a.badge.badge-pill.badge-dark.px-3.py-2.font-weight-normal(
-                href=l(`/my-account/domains/${domain.name}/aliases`),
-                data-toggle="tooltip",
-                title=t('Manage Aliases')
-              )= domain.aliases.length
-            td.align-middle.d-none.d-md-table-cell.text-center
-              if !domain.is_global || domain.is_global && domain.group === 'admin'
-                ul.list-inline.mb-0
-                  li.list-inline-item
-                    button.btn.btn-link(
-                      type="button",
-                      data-placement="bottom",
-                      data-toggle="tooltip",
-                      data-title=domain.has_mx_record ? t('Verified') : t('Not Verified'),
-                      class=domain.has_mx_record ? 'text-success' : 'text-danger'
-                    )
-                      i.fa.fa-fw.fa-2x(
-                        class=domain.has_mx_record ? 'fa-check' : 'fa-times'
-                      )
-                  li.list-inline-item
-                    form.ajax-form.d-inline-block(
-                      action=l(`/my-account/domains/${domain.name}/verify-records`),
-                      method="POST"
-                    )
-                      input(type="hidden", name="_csrf", value=ctx.csrf)
-                      button.btn.btn-outline-dark(type="submit")
-                        i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
-            td.align-middle.d-none.d-md-table-cell.text-center
-              if !domain.is_global || domain.is_global && domain.group === 'admin'
-                ul.list-inline.mb-0
-                  li.list-inline-item
-                    button.btn.btn-link(
-                      type="button",
-                      data-placement="bottom",
-                      data-toggle="tooltip",
-                      data-title=domain.has_txt_record ? t('Verified') : t('Not Verified'),
-                      class=domain.has_txt_record ? 'text-success' : 'text-danger'
-                    )
-                      i.fa.fa-fw.fa-2x(
-                        class=domain.has_txt_record ? 'fa-check' : 'fa-times'
-                      )
-                  li.list-inline-item
-                    form.ajax-form.d-inline-block(
-                      action=l(`/my-account/domains/${domain.name}/verify-records`),
-                      method="POST"
-                    )
-                      input(type="hidden", name="_csrf", value=ctx.csrf)
-                      button.btn.btn-outline-dark(type="submit")
-                        i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
-            td.align-middle
-              ul.list-inline.mb-0
-                if domain.group === 'admin'
-                  li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
-                    a.btn.btn-dark.btn-block(
-                      href=l(`/my-account/domains/${domain.name}`)
-                    )
-                      i.fa.fa-fw.fa-cog
+                i.fa.fa-fw.fa-check.fa-2x.text-success
+          td.align-middle.d-none.d-md-table-cell
+            - domain.plan = domain.plan || 'free';
+            if domain.group === 'admin'
+              .btn-group
+                button.btn.btn-dark.dropdown-toggle(
+                  type="button",
+                  data-toggle="dropdown",
+                  aria-haspopup="true",
+                  aria-expanded="false"
+                )
+                  case domain.plan
+                    when 'enhanced_protection'
+                      i.fa.fa-fw.fa-shield
                       = ' '
-                      = t('Setup')
+                      = t('Enhanced Protection')
+                    when 'team'
+                      i.fa.fa-fw.fa-users
+                      = ' '
+                      = t('Team')
+                    default
+                      = t('Free')
+                      = ' ('
+                      = t('DNS-based')
+                      = ')'
+                .dropdown-menu
+                  h6.dropdown-header.text-uppercase= t('Change plan to:')
+                  each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
+                    a.dropdown-item(
+                      href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)
+                    )
+                      case plan
+                        when 'enhanced_protection'
+                          i.fa.fa-fw.fa-shield
+                          = ' '
+                          = t('Enhanced Protection')
+                        when 'team'
+                          i.fa.fa-fw.fa-users
+                          = ' '
+                          = t('Team')
+                        default
+                          = t('Free')
+                          = ' ('
+                          = t('DNS-based')
+                          = ')'
+                  .dropdown-divider
+                  a.dropdown-item(href=l(`/pricing?domain=${domain.name}`))
+                    small.text-muted= t('See all plan features')
+            else
+              = t(titleize(humanize(domain.plan)))
+          if domain.plan === 'free'
+            td.align-middle.d-none.d-md-table-cell.text-center= t('DNS-based')
+          else
+            td.align-middle.d-none.d-md-table-cell.text-center.h4: a.badge.badge-pill.badge-dark.px-3.py-2.font-weight-normal(
+              href=l(`/my-account/domains/${domain.name}/aliases`),
+              data-toggle="tooltip",
+              title=t('Manage Aliases')
+            )= domain.aliases.length
+          td.align-middle.d-none.d-md-table-cell.text-center
+            if !domain.is_global || domain.is_global && domain.group === 'admin'
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  button.btn.btn-link(
+                    type="button",
+                    data-placement="bottom",
+                    data-toggle="tooltip",
+                    data-title=domain.has_mx_record ? t('Verified') : t('Not Verified'),
+                    class=domain.has_mx_record ? 'text-success' : 'text-danger'
+                  )
+                    i.fa.fa-fw.fa-2x(
+                      class=domain.has_mx_record ? 'fa-check' : 'fa-times'
+                    )
+                li.list-inline-item
+                  form.ajax-form.d-inline-block(
+                    action=l(`/my-account/domains/${domain.name}/verify-records`),
+                    method="POST"
+                  )
+                    input(type="hidden", name="_csrf", value=ctx.csrf)
+                    button.btn.btn-outline-dark(type="submit")
+                      i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
+          td.align-middle.d-none.d-md-table-cell.text-center
+            if !domain.is_global || domain.is_global && domain.group === 'admin'
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  button.btn.btn-link(
+                    type="button",
+                    data-placement="bottom",
+                    data-toggle="tooltip",
+                    data-title=domain.has_txt_record ? t('Verified') : t('Not Verified'),
+                    class=domain.has_txt_record ? 'text-success' : 'text-danger'
+                  )
+                    i.fa.fa-fw.fa-2x(
+                      class=domain.has_txt_record ? 'fa-check' : 'fa-times'
+                    )
+                li.list-inline-item
+                  form.ajax-form.d-inline-block(
+                    action=l(`/my-account/domains/${domain.name}/verify-records`),
+                    method="POST"
+                  )
+                    input(type="hidden", name="_csrf", value=ctx.csrf)
+                    button.btn.btn-outline-dark(type="submit")
+                      i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
+          td.align-middle
+            ul.list-inline.mb-0
+              if domain.group === 'admin'
                 li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
                   a.btn.btn-dark.btn-block(
-                    href=domain.plan === 'free' ? '#' : l(`/my-account/domains/${domain.name}/aliases`),
-                    role=domain.plan === 'free' ? 'button' : false,
-                    data-target=domain.plan === 'free' ? '#modal-upgrade' : false,
-                    data-toggle=domain.plan === 'free' ? 'modal' : false
+                    href=l(`/my-account/domains/${domain.name}`)
                   )
-                    i.fa.fa-fw.fa-users
+                    i.fa.fa-fw.fa-cog
                     = ' '
-                    = t('Aliases')
+                    = t('Setup')
+              li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
+                a.btn.btn-dark.btn-block(
+                  href=domain.plan === 'free' ? '#' : l(`/my-account/domains/${domain.name}/aliases`),
+                  role=domain.plan === 'free' ? 'button' : false,
+                  data-target=domain.plan === 'free' ? '#modal-upgrade' : false,
+                  data-toggle=domain.plan === 'free' ? 'modal' : false
+                )
+                  i.fa.fa-fw.fa-users
+                  = ' '
+                  = t('Aliases')
+              if domain.group === 'admin'
+                li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
+                  a.btn.btn-dark.btn-block(
+                    href=l(`/my-account/domains/${domain.name}/advanced-settings`)
+                  )
+                    i.fa.fa-fw.fa-tools
+                    = ' '
+                    = t('Advanced Settings')
+              //-.
                 if domain.group === 'admin'
-                  li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
-                    a.btn.btn-dark.btn-block(
-                      href=l(`/my-account/domains/${domain.name}/advanced-settings`)
-                    )
-                      i.fa.fa-fw.fa-tools
+                  li.list-inline-item.d-block.d-lg-inline-block
+                    a(href=l(`/my-account/domains/${domain.name}/billing`)).btn.btn-dark.btn-block
+                      i.fa.fa-fw.fa-receipt
                       = ' '
-                      = t('Advanced Settings')
-                //-.
-                  if domain.group === 'admin'
-                    li.list-inline-item.d-block.d-lg-inline-block
-                      a(href=l(`/my-account/domains/${domain.name}/billing`)).btn.btn-dark.btn-block
-                        i.fa.fa-fw.fa-receipt
-                        = ' '
-                        = t('Billing')
+                      = t('Billing')
 +paginate('#table-domains')
