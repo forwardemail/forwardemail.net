@@ -287,7 +287,10 @@ async function retrieveDomain(ctx, next) {
     );
 
   // if it's an API request then return early
-  if (ctx.api) return next();
+  // note that we added `ctx.state.xhr` here because of AJAX search requests
+  // which don't require the breadcrumbs nor the pug rendering for state
+  // <https://titanism.slack.com/archives/C02FU8YN0L8/p1638321195037700>
+  if (ctx.api || ctx.state.xhr) return next();
 
   //
   // set breadcrumbs

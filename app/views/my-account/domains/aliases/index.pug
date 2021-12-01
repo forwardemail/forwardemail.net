@@ -43,7 +43,7 @@ block body
                 type="text",
                 value=ctx.query.q ? ctx.query.q : '',
                 name="q",
-                placeholder="Sort by alias name or recipient"
+                placeholder=t("Search by alias name or recipient")
               )
               .input-group-append
                 button.btn.btn-success(type="submit")= t('Search')
