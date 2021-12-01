@@ -8,7 +8,7 @@ const config = require('../../../../config');
 const Domains = require('../../../models/domain');
 const Aliases = require('../../../models/alias');
 
-const REGEX_FLAG_ENDINGS = ['/gi:', '/ig:', '/g:', '/i:', '/:'];
+const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
 async function lookup(ctx) {
   if (!isSANB(ctx.query.verification_record))
