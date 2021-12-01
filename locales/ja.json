@@ -1728,5 +1728,8 @@
   "Payment method must be either credit card, PayPal, or BitPay.": "お支払い方法は、クレジットカード、PayPal、またはBitPayのいずれかである必要があります。",
   "Payment type must be one-time.": "支払いタイプは1回限りである必要があります。",
   "Missing stripe subscription or customer id for stripe billing portal.": "ストライプ課金ポータルのストライプサブスクリプションまたはカスタマーIDがありません。",
-  "Payment via BitPay was not enough.": "BitPayによる支払いでは不十分でした。"
+  "Payment via BitPay was not enough.": "BitPayによる支払いでは不十分でした。",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

@@ -1728,5 +1728,8 @@
   "Payment method must be either credit card, PayPal, or BitPay.": "يجب أن تكون طريقة الدفع إما بطاقة ائتمان أو PayPal أو BitPay.",
   "Payment type must be one-time.": "يجب أن يكون نوع الدفع لمرة واحدة.",
   "Missing stripe subscription or customer id for stripe billing portal.": "اشتراك شريطي مفقود أو معرّف العميل لبوابة الفوترة الشريطية.",
-  "Payment via BitPay was not enough.": "لم يكن الدفع عبر BitPay كافيًا."
+  "Payment via BitPay was not enough.": "لم يكن الدفع عبر BitPay كافيًا.",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

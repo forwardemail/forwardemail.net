@@ -1728,5 +1728,8 @@
   "Payment method must be either credit card, PayPal, or BitPay.": "אמצעי התשלום חייב להיות כרטיס אשראי, PayPal או BitPay.",
   "Payment type must be one-time.": "סוג התשלום חייב להיות חד פעמי.",
   "Missing stripe subscription or customer id for stripe billing portal.": "חסר מנוי פס או מזהה לקוח לפורטל חיוב פס.",
-  "Payment via BitPay was not enough.": "תשלום באמצעות BitPay לא הספיק."
+  "Payment via BitPay was not enough.": "תשלום באמצעות BitPay לא הספיק.",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

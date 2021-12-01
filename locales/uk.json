@@ -1728,5 +1728,8 @@
   "Payment method must be either credit card, PayPal, or BitPay.": "Спосіб оплати має бути кредитною карткою, PayPal або BitPay.",
   "Payment type must be one-time.": "Тип платежу має бути одноразовим.",
   "Missing stripe subscription or customer id for stripe billing portal.": "Відсутня підписка на смугу або ідентифікатор клієнта для порталу виставлення рахунків.",
-  "Payment via BitPay was not enough.": "Оплати через BitPay було недостатньо."
+  "Payment via BitPay was not enough.": "Оплати через BitPay було недостатньо.",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

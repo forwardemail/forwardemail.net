@@ -1728,5 +1728,8 @@
   "Payment method must be either credit card, PayPal, or BitPay.": "A fizetési mód hitelkártya, PayPal vagy BitPay lehet.",
   "Payment type must be one-time.": "A fizetés típusának egyszerinek kell lennie.",
   "Missing stripe subscription or customer id for stripe billing portal.": "Hiányzó csíkos előfizetés vagy ügyfél -azonosító a csíkos számlázási portálon.",
-  "Payment via BitPay was not enough.": "A BitPay-en keresztüli fizetés nem volt elég."
+  "Payment via BitPay was not enough.": "A BitPay-en keresztüli fizetés nem volt elég.",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

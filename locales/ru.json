@@ -1728,5 +1728,8 @@
   "Payment method must be either credit card, PayPal, or BitPay.": "Способ оплаты должен быть кредитной картой, PayPal или BitPay.",
   "Payment type must be one-time.": "Тип оплаты должен быть разовым.",
   "Missing stripe subscription or customer id for stripe billing portal.": "Отсутствует подписка на полосу или идентификатор клиента для портала биллинга с полосой пропускания.",
-  "Payment via BitPay was not enough.": "Оплаты через BitPay оказалось недостаточно."
+  "Payment via BitPay was not enough.": "Оплаты через BitPay оказалось недостаточно.",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

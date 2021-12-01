@@ -1728,5 +1728,8 @@
   "Payment method must be either credit card, PayPal, or BitPay.": "Il metodo di pagamento deve essere carta di credito, PayPal o BitPay.",
   "Payment type must be one-time.": "Il tipo di pagamento deve essere una tantum.",
   "Missing stripe subscription or customer id for stripe billing portal.": "Abbonamento stripe mancante o ID cliente per il portale di fatturazione stripe.",
-  "Payment via BitPay was not enough.": "Il pagamento tramite BitPay non è stato sufficiente."
+  "Payment via BitPay was not enough.": "Il pagamento tramite BitPay non è stato sufficiente.",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

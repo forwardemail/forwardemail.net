@@ -1728,5 +1728,8 @@
   "Payment method must be either credit card, PayPal, or BitPay.": "Metode pembayaran harus berupa kartu kredit, PayPal, atau BitPay.",
   "Payment type must be one-time.": "Jenis pembayaran harus satu kali.",
   "Missing stripe subscription or customer id for stripe billing portal.": "Langganan stripe atau id pelanggan untuk portal penagihan stripe tidak ada.",
-  "Payment via BitPay was not enough.": "Pembayaran melalui BitPay tidak cukup."
+  "Payment via BitPay was not enough.": "Pembayaran melalui BitPay tidak cukup.",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

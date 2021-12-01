@@ -1015,7 +1015,9 @@ Regular expression supported aliases are ones that start with a `/` and end with
 
 We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
 
-Note that we also support our <a href="#can-i-disable-specific-aliases" class="alert-link">disabled alias feature</a> for the recipient portion with our regex support.
+Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+
+Regular expressions are not supported on <a href="/free-disposable-addresses" target="_blank">free global vanity domains</a> (as this could be a security vulnerability).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>

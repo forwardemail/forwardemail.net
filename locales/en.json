@@ -1652,5 +1652,8 @@
   "BitPay": "BitPay",
   "We accept deibt and credit cards using ": "We accept deibt and credit cards using ",
   "We accept debit and credit cards using ": "We accept debit and credit cards using ",
-  " – for one-time payments or monthly, quarterly, or yearly subscriptions.": " – for one-time payments or monthly, quarterly, or yearly subscriptions."
+  " – for one-time payments or monthly, quarterly, or yearly subscriptions.": " – for one-time payments or monthly, quarterly, or yearly subscriptions.",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

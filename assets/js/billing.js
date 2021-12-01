@@ -119,7 +119,8 @@ async function sendRequest(body) {
     .set({
       'X-CSRF-Token': window._csrf,
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
     })
     .ok(() => true) // override so we can parse it ourselves
     .send(body);

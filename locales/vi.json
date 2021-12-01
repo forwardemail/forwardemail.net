@@ -1728,5 +1728,8 @@
   "Payment method must be either credit card, PayPal, or BitPay.": "Phương thức thanh toán phải là thẻ tín dụng, PayPal hoặc BitPay.",
   "Payment type must be one-time.": "Hình thức thanh toán phải là một lần.",
   "Missing stripe subscription or customer id for stripe billing portal.": "Thiếu đăng ký sọc hoặc id khách hàng cho cổng thanh toán sọc.",
-  "Payment via BitPay was not enough.": "Thanh toán qua BitPay là không đủ."
+  "Payment via BitPay was not enough.": "Thanh toán qua BitPay là không đủ.",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }

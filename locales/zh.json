@@ -811,5 +811,8 @@
   "you can workaround this issue through our FAQ answer here": "you can workaround this issue through our FAQ answer here",
   "If your ISP blocks outbound port 25, then you will have to find an alternate solution or contact them.": "If your ISP blocks outbound port 25, then you will have to find an alternate solution or contact them.",
   "See our ": "See our ",
-  "list of ports blocked by Internet Service Providers": "list of ports blocked by Internet Service Providers"
+  "list of ports blocked by Internet Service Providers": "list of ports blocked by Internet Service Providers",
+  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
+  "free global vanity domains": "free global vanity domains",
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
 }
