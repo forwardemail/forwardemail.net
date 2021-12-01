@@ -284,6 +284,7 @@
     "build": "nps build",
     "coverage": "nps coverage",
     "lint": "nps lint",
+    "prepare": "husky install",
     "pretest": "nps pretest",
     "start": "nps",
     "test": "nps test",
