@@ -33,7 +33,8 @@ async function listDomains(ctx) {
 
   domains = _.sortBy(domains, sortFn ? [sortFn] : ['is_global', 'name']);
 
-  if (ctx.query.sort?.startsWith('-') || !sortFn) domains = _.reverse(domains);
+  if (!sortFn || (isSANB(ctx.query.sort) && ctx.query.sort.startsWith('-')))
+    domains = _.reverse(domains);
 
   // slice for page
   domains = domains.slice(

@@ -7,9 +7,10 @@ async function list(ctx) {
   const query = {};
 
   // filter based on regex name
-  if (ctx.query.name) query.name = { $regex: ctx.query.name };
+  if (ctx.query.name) query.name = { $regex: ctx.query.name, $options: 'i' };
 
   const [domains, itemCount] = await Promise.all([
+    // eslint-disable-next-line unicorn/no-array-callback-reference
     Domains.find(query)
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)

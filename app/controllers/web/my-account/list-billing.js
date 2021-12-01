@@ -84,7 +84,7 @@ async function listBilling(ctx) {
 
   payments = _.sortBy(payments, sortFn ? [sortFn] : ['created_at']);
 
-  if (ctx.query.sort?.startsWith('-') || !sortFn)
+  if (!sortFn || (isSANB(ctx.query.sort) && ctx.query.sort.startsWith('-')))
     payments = _.reverse(payments);
 
   // slice for page
