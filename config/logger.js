@@ -107,5 +107,7 @@ if (env.SLACK_API_TOKEN) {
 
 module.exports = {
   logger: axe,
-  capture: false
+  capture: false,
+  level: config.level,
+  levels: ['trace', 'info', 'debug', 'warn', 'error', 'fatal']
 };
