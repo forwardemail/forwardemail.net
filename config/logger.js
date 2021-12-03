@@ -25,6 +25,9 @@ const isProduction = env.NODE_ENV === 'production';
 const config = {
   logger: isProduction ? pino : signale,
   level: isProduction ? 'warn' : 'debug',
+  levels: isProduction
+    ? ['warn', 'error', 'fatal']
+    : ['trace', 'info', 'debug', 'warn', 'error', 'fatal'],
   showStack: env.SHOW_STACK,
   showMeta: env.SHOW_META,
   capture: false,
@@ -108,6 +111,6 @@ if (env.SLACK_API_TOKEN) {
 module.exports = {
   logger: axe,
   capture: false,
-  level: config.level,
-  levels: ['trace', 'info', 'debug', 'warn', 'error', 'fatal']
+  levels: config.levels,
+  level: config.level
 };

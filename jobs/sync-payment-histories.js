@@ -97,7 +97,7 @@ async function syncPaypalSubscriptionPayments() {
 
       for (const subscriptionId of subscriptionIds) {
         try {
-          logger.debug('subscriptionId', subscriptionId);
+          logger.debug(`subscriptionId ${subscriptionId}`);
           const { body: subscription } = await paypalAgent.get(
             `/v1/billing/subscriptions/${subscriptionId}`
           );
@@ -125,7 +125,7 @@ async function syncPaypalSubscriptionPayments() {
             for (const transaction of transactions) {
               try {
                 // we need to have a payment for each transaction of a subscription
-                logger.debug('transaction', transaction.id);
+                logger.debug(`transaction ${transaction.id}`);
 
                 // try to find the payment
                 const paymentCandidates = await Payments.find({
@@ -197,7 +197,9 @@ async function syncPaypalSubscriptionPayments() {
                     },
                     locals: { message: err.message }
                   });
-                } catch {}
+                } catch (err) {
+                  logger.error(err);
+                }
               }
             }
           }
@@ -217,7 +219,9 @@ async function syncPaypalSubscriptionPayments() {
                 },
                 locals: { message: err.message }
               });
-            } catch {}
+            } catch (err) {
+              logger.error(err);
+            }
           }
         }
       }
@@ -283,7 +287,7 @@ async function syncStripePayments() {
     // payment and the data we are getting from stripe, we do
     // not make any changes and send an alert for that payment
     for (const paymentIntent of stripePaymentIntents) {
-      logger.debug('paymentIntent', paymentIntent.id);
+      logger.debug(`paymentIntent ${paymentIntent.id}`);
       try {
         if (paymentIntent.status !== 'succeeded') {
           continue;
@@ -296,7 +300,7 @@ async function syncStripePayments() {
           (charge) => charge.paid && charge.status === 'succeeded'
         );
 
-        logger.debug('charge:', stripeCharge?.id);
+        logger.debug(`charge ${stripeCharge?.id}`);
 
         let amountRefunded;
         if (stripeCharge.refunded)
@@ -321,7 +325,7 @@ async function syncStripePayments() {
 
         const [checkoutSession] = checkoutSessions;
 
-        logger.debug('checkoutSession', checkoutSession?.id);
+        logger.debug(`checkoutSession ${checkoutSession?.id}`);
 
         // invoices only on subscription payments
         let invoice;
@@ -331,7 +335,7 @@ async function syncStripePayments() {
         let productId;
         let priceId;
         if (_.isObject(invoice)) {
-          logger.debug('invoice', invoice.id);
+          logger.debug(`invoice ${invoice.id}`);
           productId = invoice.lines.data[0].price.product;
           priceId = invoice.lines.data[0].price.id;
         } else {
@@ -343,8 +347,8 @@ async function syncStripePayments() {
           priceId = lines.data[0].price.id;
         }
 
-        logger.debug('product', productId);
-        logger.debug('price', priceId);
+        logger.debug(`product ${productId}`);
+        logger.debug(`price ${priceId}`);
 
         // this logic is the same in rerieve-domain-billing
         const plan = STRIPE_PRODUCTS[productId];
@@ -588,7 +592,9 @@ async function syncStripePayments() {
             },
             locals: { message: err.message }
           });
-        } catch {}
+        } catch (err) {
+          logger.error(err);
+        }
       }
     }
 
@@ -639,7 +645,9 @@ async function syncStripePayments() {
           },
           locals: { message: err.message }
         });
-      } catch {}
+      } catch (err) {
+        logger.error(err);
+      }
     }
   }
 }
