@@ -1051,9 +1051,7 @@ async function retrieveDomainBilling(ctx) {
             message: `<p><strong>${ctx.state.user.email}</strong> just checked out with the "${ctx.query.plan}" plan and was on the "${originalPlan}" plan: ${message}`
           }
         })
-          // eslint-disable-next-line promise/prefer-await-to-then
           .then(() => {})
-          // eslint-disable-next-line promise/prefer-await-to-then
           .catch((err) => {
             ctx.logger.fatal(err);
           });
@@ -1072,9 +1070,7 @@ async function retrieveDomainBilling(ctx) {
         message: `<p><strong>${ctx.state.user.email}</strong> just checked out with the "${ctx.query.plan}" plan`
       }
     })
-      // eslint-disable-next-line promise/prefer-await-to-then
       .then(() => {})
-      // eslint-disable-next-line promise/prefer-await-to-then
       .catch((err) => {
         ctx.logger.fatal(err);
       });
@@ -1095,9 +1091,7 @@ async function retrieveDomainBilling(ctx) {
         message: `<p><strong>URL:</strong> ${ctx.url}</p><p><strong>Error Message:</strong> ${err.message}</p>`
       }
     })
-      // eslint-disable-next-line promise/prefer-await-to-then
       .then(() => {})
-      // eslint-disable-next-line promise/prefer-await-to-then
       .catch((err) => {
         ctx.logger.fatal(err);
       });
