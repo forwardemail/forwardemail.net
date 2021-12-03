@@ -18,6 +18,7 @@ const pkg = require('../../package.json');
 const logger = require('../../helpers/logger');
 const config = require('../../config');
 const i18n = require('../../helpers/i18n');
+const verificationRecordOptions = require('../../config/verification-record');
 const Users = require('./user');
 
 const CACHE_TYPES = ['MX', 'TXT'];
@@ -38,8 +39,6 @@ const EXCHANGES = app.config.exchanges
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
-
-const verificationRecordOptions = require('../../config/verification-record');
 
 const REGEX_VERIFICATION = new RE2(/[^\da-z]/gi);
 
@@ -689,18 +688,16 @@ Domain.pre('save', async function (next) {
 
     let hasPaidPlan = false;
 
-    const hasValidPlan =
-      users.length > 0 &&
-      users.some((user) => {
-        if (PAID_PLANS.includes(user.plan)) hasPaidPlan = true;
-        if (domain.plan === 'team' && user.plan === 'team') return true;
-        if (
-          domain.plan === 'enhanced_protection' &&
-          PAID_PLANS.includes(user.plan)
-        )
-          return true;
-        return false;
-      });
+    const hasValidPlan = users.some((user) => {
+      if (PAID_PLANS.includes(user.plan)) hasPaidPlan = true;
+      if (domain.plan === 'team' && user.plan === 'team') return true;
+      if (
+        domain.plan === 'enhanced_protection' &&
+        PAID_PLANS.includes(user.plan)
+      )
+        return true;
+      return false;
+    });
 
     if (hasBadDomain && !hasPaidPlan)
       throw Boom.paymentRequired(

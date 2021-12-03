@@ -1731,5 +1731,6 @@
   "Payment via BitPay was not enough.": "Betaling via BitPay var ikke nok.",
   "Regular expressions are not supported on ": "Regular expressions are not supported on ",
   "free global vanity domains": "free global vanity domains",
-  " (as this could be a security vulnerability).": " (as this could be a security vulnerability)."
+  " (as this could be a security vulnerability).": " (as this could be a security vulnerability).",
+  ", the author of the ": ", the author of the "
 }

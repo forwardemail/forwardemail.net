@@ -1,3 +1,4 @@
+const { Buffer } = require('buffer');
 const test = require('ava');
 
 const config = require('../../config');

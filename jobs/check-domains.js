@@ -81,7 +81,6 @@ async function mapper(_id) {
     //
     const hasDNSError =
       Array.isArray(errors) &&
-      errors.length > 0 &&
       errors.some(
         (err) => err.code && ['ENOTFOUND', 'ENODATA'].includes(err.code)
       );

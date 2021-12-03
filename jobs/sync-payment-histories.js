@@ -199,15 +199,15 @@ graceful.listen();
           const { id } = payment;
 
           const errorDetails = dedent`
-          <br/>
-          <br/> Forward Email Payment id: ${id}
-          <br/> Stripe payment_intent id: ${paymentIntent.id}
-          <br/> Stripe charge id: ${stripeCharge?.id}
-          <br/> Stripe checkout_session id: ${checkoutSession?.id}
-          <br/> Stripe invoice id: ${invoice?.id}
-          <br/> Stripe subscription id: ${invoice?.subscription}
-          <br/> Stripe product id: ${productId}
-          <br/> Stripe price id: ${priceId}
+            <br/>
+            <br/> Forward Email Payment id: ${id}
+            <br/> Stripe payment_intent id: ${paymentIntent.id}
+            <br/> Stripe charge id: ${stripeCharge?.id}
+            <br/> Stripe checkout_session id: ${checkoutSession?.id}
+            <br/> Stripe invoice id: ${invoice?.id}
+            <br/> Stripe subscription id: ${invoice?.subscription}
+            <br/> Stripe product id: ${productId}
+            <br/> Stripe price id: ${priceId}
           `;
 
           //
