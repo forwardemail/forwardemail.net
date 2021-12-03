@@ -60,25 +60,29 @@ async function syncPaypalSubscriptionPayments() {
     `Syncing payments for ${paypalCustomers.length} paypal customers`
   );
 
+  let updatedCount = 0;
+  let goodToGoCount = 0;
+  let createdCount = 0;
+
   for (const customer of paypalCustomers) {
     try {
-      // first we need to get the distinct paypal order Ids and validate them all
-      // this really shouldn't be needed. So I am leaving it out for now unless
-      // we want to specifically validate these in the future
-      //
-      // const orderIds = await Payments.distinct('paypal_order_id', {
-      //   user: customer._id
-      // });
-
-      // for (const orderId of orderIds) {
-      //   logger.info('orderId', orderId);
-      //   const { body: order } = await paypalAgent.get(
-      //     `/v2/checkout/orders/${orderId}`
-      //   );
-
-      //   // validate or create a payment for the order
-      //   ;
-      // }
+      logger.info(`Syncing paypal subscription payments for ${customer.email}`);
+      /**
+       * first we need to get the distinct paypal order Ids and validate them all
+       * this really shouldn't be needed. So I am leaving it out for now unless
+       * we want to specifically validate these in the future
+       *
+       * const orderIds = await Payments.distinct('paypal_order_id', {
+       *   user: customer._id
+       * });
+       *
+       * for (const orderId of orderIds) {
+       *   const { body: order } = await paypalAgent.get(
+       *     `/v2/checkout/orders/${orderId}`
+       *   );
+       *   ;
+       * }
+       */
 
       // then we need to get all the subscription ids and validate that the one that
       // works is the subscription id set on the user. Assuming that is good, that will
@@ -159,10 +163,14 @@ async function syncPaypalSubscriptionPayments() {
                   //   throw new Error('Paypal duration did not match');
 
                   if (shouldSave) {
-                    logger.debug('Updating existing payment');
+                    logger.debug(`Updating existing payment ${payment.id}`);
+                    updatedCount++;
                     await payment.save();
                   } else {
-                    logger.debug('payment already up to date and good to go!');
+                    goodToGoCount++;
+                    logger.debug(
+                      `payment ${payment.id} already up to date and good to go!`
+                    );
                   }
                 } else {
                   const payment = {
@@ -175,7 +183,7 @@ async function syncPaypalSubscriptionPayments() {
                     paypal_subscription_id: subscription.id,
                     paypal_transaction_id: transaction.id
                   };
-
+                  createdCount++;
                   logger.debug('creating new payment');
                   await Payments.create(payment);
                 }
@@ -217,6 +225,10 @@ async function syncPaypalSubscriptionPayments() {
       logger.error(err);
     }
   }
+
+  logger.info(
+    `Paypal subscriptions synced to payments: ${createdCount} created, ${updatedCount} updated, ${goodToGoCount} good`
+  );
 }
 
 async function syncStripePayments() {
