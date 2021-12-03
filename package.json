@@ -30,7 +30,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@hapi/boom": "^9.1.4",
     "@koa/router": "^10.1.1",
-    "@ladjs/api": "^7.0.2",
+    "@ladjs/api": "^7.0.3",
     "@ladjs/assets": "^1.4.0",
     "@ladjs/env": "^3.0.0",
     "@ladjs/graceful": "^1.1.4",
@@ -44,7 +44,7 @@
     "@ladjs/proxy": "^2.0.3",
     "@ladjs/redis": "^1.0.7",
     "@ladjs/shared-config": "^6.0.0",
-    "@ladjs/web": "^11.0.4",
+    "@ladjs/web": "^11.0.6",
     "@paypal/checkout-server-sdk": "^1.0.3",
     "@primer/css": "^19.0.0",
     "@sidoshi/random-string": "^1.0.0",
@@ -53,7 +53,7 @@
     "accounting": "^0.4.1",
     "apexcharts": "^3.31.0",
     "array-join-conjunction": "^1.0.0",
-    "aws-sdk": "^2.1040.0",
+    "aws-sdk": "^2.1042.0",
     "axe": "^8.0.0",
     "basic-auth": "^2.0.1",
     "bitpay-sdk": "^1.4.2102",
@@ -121,7 +121,7 @@
     "passport-local-mongoose": "^6.1.0",
     "paypal-rest-sdk": "^1.8.1",
     "pify": "^5.0.0",
-    "pino": "^7.5.0",
+    "pino": "^7.5.1",
     "pluralize": "^8.0.0",
     "popper.js": "^1.16.1",
     "prepare-stack-trace": "^0.0.4",
@@ -166,7 +166,7 @@
     "codecov": "^3.8.3",
     "cssnano": "^5.0.12",
     "del": "^6.0.0",
-    "eslint": "7.x",
+    "eslint": "^8.3.0",
     "eslint-config-xo-lass": "^1.0.6",
     "eslint-formatter-pretty": "^4.1.0",
     "eslint-plugin-compat": "^4.0.0",
@@ -224,7 +224,7 @@
     "stylelint-scss": "^4.0.0",
     "supertest": "^6.1.6",
     "through2": "^4.0.2",
-    "xo": "0.39"
+    "xo": "^0.47.0"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -321,7 +321,9 @@
       "unicorn/prevent-abbreviations": "off",
       "unicorn/no-fn-reference-in-iterator": "off",
       "import/extensions": "off",
-      "unicorn/no-this-assignment": "off"
+      "unicorn/no-this-assignment": "off",
+      "unicorn/numeric-separators-style": "off",
+      "node/prefer-global/process": "warn"
     }
   }
 }

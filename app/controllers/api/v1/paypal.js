@@ -2,9 +2,9 @@ const { promisify } = require('util');
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const paypal = require('paypal-rest-sdk');
 
 const env = require('../../../../config/env');
-const paypal = require('paypal-rest-sdk');
 
 paypal.configure({
   mode: env.NODE_ENV === 'production' ? 'live' : 'sandbox',

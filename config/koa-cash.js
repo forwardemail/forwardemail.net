@@ -1,3 +1,4 @@
+const { Buffer } = require('buffer');
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
 const logger = require('../helpers/logger');

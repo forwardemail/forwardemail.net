@@ -54,9 +54,7 @@ async function spfError(ctx) {
     message: { to },
     locals
   })
-    // eslint-disable-next-line promise/prefer-await-to-then
     .then(() => {})
-    // eslint-disable-next-line promise/prefer-await-to-then
     .catch((err) => ctx.logger.error(err));
 
   // send successful response
