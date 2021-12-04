@@ -1,5 +1,3 @@
-const { promisify } = require('util');
-
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
@@ -9,34 +7,25 @@ const countryList = require('country-list');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const paypal = require('paypal-rest-sdk');
-const superagent = require('superagent');
 const { Client, Env, Tokens } = require('bitpay-sdk');
 
 const env = require('../../../../config/env');
 const config = require('../../../../config');
 const emailHelper = require('../../../../helpers/email');
+const { paypalAgent } = require('../../../../helpers/paypal');
 const logger = require('../../../../helpers/logger');
 const { Domains, Payments } = require('../../../models');
-
-const payPalClient = new checkoutNodeJssdk.core.PayPalHttpClient(
-  new checkoutNodeJssdk.core[
-    env.NODE_ENV === 'production' ? 'LiveEnvironment' : 'SandboxEnvironment'
-  ](env.PAYPAL_CLIENT_ID, env.PAYPAL_SECRET)
-);
 
 const {
   STRIPE_MAPPING,
   STRIPE_PRODUCTS,
-  PAYPAL_ENDPOINT,
+  paypalCheckoutSdkConfig,
   PAYPAL_PLAN_MAPPING
 } = config.payments;
 
-paypal.configure({
-  mode: env.NODE_ENV === 'production' ? 'live' : 'sandbox',
-  client_id: env.PAYPAL_CLIENT_ID,
-  client_secret: env.PAYPAL_SECRET
-});
+const payPalClient = new checkoutNodeJssdk.core.PayPalHttpClient(
+  paypalCheckoutSdkConfig
+);
 
 const bitpayTokens = Tokens;
 bitpayTokens.merchant = env.BITPAY_MERCHANT_API_TOKEN;
@@ -437,16 +426,11 @@ async function retrieveDomainBilling(ctx) {
         isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
       ) {
         try {
-          const token = await promisify(paypal.generateToken)();
-          await superagent
-            .post(
-              `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${
-                ctx.state.user[config.userFields.paypalSubscriptionID]
-              }/cancel`
-            )
-            .set('Content-Type', 'application/json')
-            .set('Authorization', token)
-            .timeout(ms('5s'));
+          await paypalAgent.post(
+            `/v1/billing/subscriptions/${
+              ctx.state.user[config.userFields.paypalSubscriptionID]
+            }/cancel`
+          );
           ctx.state.user[config.userFields.paypalSubscriptionID] = null;
           user = await ctx.state.user.save();
         } catch (err) {
@@ -686,16 +670,11 @@ async function retrieveDomainBilling(ctx) {
       // if user already has a subscription then switch them and cancel the old one
       if (isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])) {
         try {
-          const token = await promisify(paypal.generateToken)();
-          await superagent
-            .post(
-              `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${
-                ctx.state.user[config.userFields.paypalSubscriptionID]
-              }/cancel`
-            )
-            .set('Content-Type', 'application/json')
-            .set('Authorization', token)
-            .timeout(ms('5s'));
+          await paypalAgent.post(
+            `/v1/billing/subscriptions/${
+              ctx.state.user[config.userFields.paypalSubscriptionID]
+            }/cancel`
+          );
         } catch (err) {
           ctx.logger.fatal(err);
           // email admins here
@@ -716,14 +695,9 @@ async function retrieveDomainBilling(ctx) {
         }
       }
 
-      const token = await promisify(paypal.generateToken)();
-      const { body } = await superagent
-        .get(
-          `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${ctx.query.paypal_subscription_id}`
-        )
-        .set('Content-Type', 'application/json')
-        .set('Authorization', token)
-        .timeout(ms('5s'));
+      const { body } = await paypalAgent.get(
+        `/v1/billing/subscriptions/${ctx.query.paypal_subscription_id}`
+      );
 
       // validate subscription is active
       if (
@@ -975,16 +949,11 @@ async function retrieveDomainBilling(ctx) {
         isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
           ? (async () => {
               try {
-                const token = await promisify(paypal.generateToken)();
-                await superagent
-                  .post(
-                    `${PAYPAL_ENDPOINT}/v1/billing/subscriptions/${
-                      ctx.state.user[config.userFields.paypalSubscriptionID]
-                    }/cancel`
-                  )
-                  .set('Content-Type', 'application/json')
-                  .set('Authorization', token)
-                  .timeout(ms('5s'));
+                await paypalAgent.post(
+                  `/v1/billing/subscriptions/${
+                    ctx.state.user[config.userFields.paypalSubscriptionID]
+                  }/cancel`
+                );
               } catch (err) {
                 ctx.logger.fatal(err);
                 // email admins here
