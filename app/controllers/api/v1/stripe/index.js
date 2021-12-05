@@ -2,7 +2,9 @@ const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const isSANB = require('is-string-and-not-blank');
 
-const env = require('../../../../config/env');
+const env = require('../../../../../config/env');
+
+const handlePaymentIntent = require('./handle-payment-intent');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
@@ -25,34 +27,17 @@ async function webhook(ctx) {
     if (!event)
       throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
 
-    // handle the event
-    // switch(event.type)
+    ctx.logger.info(`stripe webhook event: ${event.type}`);
 
-    // NOTE: for now we just manually email admins of every event
-    //       (and manual edits can be made as needed)
+    // handle the event
+    if (event.type === 'payment_intent.succeeded') {
+      await handlePaymentIntent(event);
+    }
 
     // return a response to acknowledge receipt of the event
     ctx.body = { received: true };
 
-    ctx.logger.info('stripe webhook', { event });
-
-    // email admins here
-    /*
-    try {
-      await email({
-        template: 'alert',
-        message: {
-          to: config.email.message.from,
-          subject: `Stripe Webhook: ${event.type}`
-        },
-        locals: {
-          message: `<pre><code>${JSON.stringify(event, null, 2)}</code></pre>`
-        }
-      });
-    } catch (err) {
-      ctx.logger.fatal(err);
-    }
-    */
+    // ctx.logger.info('stripe webhook', { event });
   } catch (err) {
     ctx.throw(err);
   }
