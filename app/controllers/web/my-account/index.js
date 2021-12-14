@@ -29,8 +29,10 @@ const ensureUpgradedPlan = require('./ensure-upgraded-plan');
 const retrieveReceipt = require('./retrieve-receipt');
 const cancelSubscription = require('./cancel-subscription');
 const createAliasForm = require('./create-alias-form');
+const importAliases = require('./import-aliases');
 
 module.exports = {
+  importAliases,
   createAliasForm,
   cancelSubscription,
   retrieveReceipt,
