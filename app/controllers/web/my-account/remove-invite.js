@@ -2,7 +2,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('validator');
 
-const { Domains } = require('../../models');
+const { Domains } = require('../../../models');
 
 async function removeInvite(ctx, next) {
   // ctx.request.body.email

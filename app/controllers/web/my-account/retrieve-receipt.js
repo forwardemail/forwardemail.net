@@ -9,8 +9,8 @@ const wkhtmltopdf = require('wkhtmltopdf');
 
 const inline = pify(webResourceInliner.html);
 
-const config = require('../../../config');
-const { Payments } = require('../../models');
+const config = require('../../../../config');
+const { Payments } = require('../../../models');
 
 async function retrieveReceipt(ctx) {
   try {

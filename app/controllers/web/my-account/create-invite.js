@@ -2,8 +2,8 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('validator');
 
-const emailHelper = require('../../../helpers/email');
-const { Users, Domains } = require('../../models');
+const emailHelper = require('../../../../helpers/email');
+const { Users, Domains } = require('../../../models');
 
 async function createInvite(ctx, next) {
   // ctx.request.body.email
