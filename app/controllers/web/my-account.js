@@ -68,26 +68,6 @@ const app = new ForwardEmail({
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-async function removeAlias(ctx, next) {
-  await Aliases.findByIdAndRemove(ctx.state.alias._id);
-  if (!ctx.api)
-    ctx.flash('custom', {
-      title: ctx.request.t('Success'),
-      text: ctx.translate('REQUEST_OK'),
-      type: 'success',
-      toast: true,
-      showConfirmButton: false,
-      timer: 3000,
-      position: 'top'
-    });
-  if (ctx.api) return next();
-  const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.name}/aliases`
-  );
-  if (ctx.accepts('html')) ctx.redirect(redirectTo);
-  else ctx.body = { redirectTo };
-}
-
 function sortedDomains(ctx, next) {
   ctx.state.sortedDomains = _.clone(ctx.state.domains);
   ctx.state.sortedDomains = ctx.state.sortedDomains.filter(

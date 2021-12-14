@@ -22,8 +22,10 @@ const validateAlias = require('./validate-alias');
 const createAlias = require('./create-alias');
 const retrieveAlias = require('./retrieve-alias');
 const updateAlias = require('./update-alias');
+const removeAlias = require('./remove-alias');
 
 module.exports = {
+  removeAlias,
   cancelEmailChange,
   updateAlias,
   retrieveAlias,
