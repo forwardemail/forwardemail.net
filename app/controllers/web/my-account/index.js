@@ -31,8 +31,10 @@ const cancelSubscription = require('./cancel-subscription');
 const createAliasForm = require('./create-alias-form');
 const importAliases = require('./import-aliases');
 const retrieveAliases = require('./retrieve-aliases');
+const retrieveInvite = require('./retrieve-invite');
 
 module.exports = {
+  retrieveInvite,
   retrieveAliases,
   importAliases,
   createAliasForm,
