@@ -68,12 +68,6 @@ const app = new ForwardEmail({
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-function ensureNotBanned(ctx, next) {
-  if (ctx.state.user[config.userFields.isBanned])
-    return ctx.throw(Boom.forbidden(ctx.translateError('ACCOUNT_BANNED')));
-  return next();
-}
-
 async function recoveryKeys(ctx) {
   const otpRecoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];
 
