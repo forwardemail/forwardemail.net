@@ -1,105 +1,105 @@
 extends ../layout
 
 block body
-  #modal-disable-otp.modal.fade(
+  #modal-disable-otp(
     tabindex="-1",
     role="dialog",
     aria-labelledby="modal-disable-otp-title",
     aria-hidden="true"
-  )
-    .modal-dialog(role="document")
+  ).modal.fade
+    div(role="document").modal-dialog
       .modal-content
         .modal-header.d-block.text-center
-          h4#modal-disable-otp-title.modal-title.d-inline-block.ml-4= t('Disable OTP')
-          button.close(type="button", data-dismiss="modal", aria-label="Close")
+          h4#modal-disable-otp-title.modal-title.d-inline-block.ml-4= t("Disable OTP")
+          button(type="button", data-dismiss="modal", aria-label="Close").close
             span(aria-hidden="true") &times;
         .modal-body.text-center
-          form.ajax-form.confirm-prompt.mb-0(
+          form(
             action=l(`${config.otpRoutePrefix}/disable`),
             method="POST"
-          )
+          ).ajax-form.confirm-prompt.mb-0
             input(type="hidden", name="_csrf", value=ctx.csrf)
             if user[config.userFields.hasSetPassword]
               .form-group.floating-label
-                input#input-password.form-control.form-control-lg(
+                input#input-password(
                   type="password",
                   autocomplete="off",
                   name="password",
                   required
-                )
-                label(for="input-password")= t('Confirm Password')
-            button.btn.btn-danger.btn-lg.btn-block(type="submit")= t('Disable OTP')
+                ).form-control.form-control-lg
+                label(for="input-password")= t("Confirm Password")
+            button(type="submit").btn.btn-danger.btn-lg.btn-block= t("Disable OTP")
   .container-fluid.py-3
     .row
       .col
         include ../_breadcrumbs
         if boolean(process.env.AUTH_OTP_ENABLED)
           .card.card-bg-light.mb-3
-            h4.card-header= t('Two-Factor Authentication')
+            h4.card-header= t("Two-Factor Authentication")
             .card-body
               if user[config.passport.fields.otpEnabled]
-                h5= t('Recovery keys')
-                p= t('Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.')
-                form(action=l('/my-account/recovery-keys'), method="POST")
+                h5= t("Recovery keys")
+                p= t("Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.")
+                form(action=l("/my-account/recovery-keys"), method="POST")
                   input(type="hidden", name="_csrf", value=ctx.csrf)
-                  button.btn.btn-secondary.btn-lg(type="submit")= t('Download recovery keys')
-                button.btn.btn-danger.btn-lg.mt-3(
+                  button(type="submit").btn.btn-secondary.btn-lg= t("Download recovery keys")
+                button(
                   data-toggle="modal",
                   data-target="#modal-disable-otp",
                   type="button"
-                )= t('Disable OTP')
+                ).btn.btn-danger.btn-lg.mt-3= t("Disable OTP")
               else
-                h5= t('Configure One-time Password')
+                h5= t("Configure One-time Password")
                 p= t('One-time passwords ("OTP") allow you to add a layer of Two-Factor Authentication to your account using a device or authenticator app.  If you lose access to your device or authenticator app, then you can use a recovery key provided to you during configuration.')
-                a.btn.btn-primary.btn-lg(
+                a(
                   href=l(`${config.otpRoutePrefix}/setup`),
                   role="button",
                   data-toggle="modal-anchor",
                   data-target="#modal-sign-up"
-                )= t('Enable OTP')
+                ).btn.btn-primary.btn-lg= t("Enable OTP")
             .card-footer.text-right
-              a.btn.btn-dark(
+              a(
                 href="https://en.wikipedia.org/wiki/One-time_password",
                 rel="noopener noreferrer",
                 target="_blank"
-              )= t('Learn more')
+              ).btn.btn-dark= t("Learn more")
         .card.mb-3
-          h4.card-header= t('Developer Access')
+          h4.card-header= t("Developer Access")
           .card-body
             .form-group.row
-              label.control-label.col-md-4.col-form-label.text-md-right= t('API token')
+              label.control-label.col-md-4.col-form-label.text-md-right= t("API token")
               .col-md-8
                 .input-group
-                  input#api-token.form-control(
+                  input#api-token(
                     type="text",
                     readonly,
                     value=user[config.userFields.apiToken]
-                  )
+                  ).form-control
                   .input-group-append
-                    button.btn.btn-primary(
+                    button(
                       type="button",
                       data-toggle="clipboard",
                       data-clipboard-target="#api-token"
-                    )
+                    ).btn.btn-primary
                       i.fa.fa-clipboard
-                      = ' '
-                      = t('Copy')
-                small.form-text.text-muted= t('Keep your token secure and never share it publicly')
+                      = " "
+                      = t("Copy")
+                small.form-text.text-muted= t("Keep your token secure and never share it publicly")
           .card-footer.text-right
             ul.list-inline.mb-0
               li.list-inline-item
-                form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
+                form(action=ctx.path, method="POST").ajax-form.confirm-prompt
                   input(type="hidden", name="_method", value="DELETE")
                   input(type="hidden", name="_csrf", value=ctx.csrf)
-                  button.btn.btn-danger(type="submit")= t('Reset API Token')
+                  button(type="submit").btn.btn-danger= t("Reset API Token")
               li.list-inline-item
-                a.btn.btn-dark(href=l('/email-forwarding-api'))= t('Learn more')
+                a(href=l("/email-forwarding-api")).btn.btn-dark= t("Learn more")
         .card
-          h4.card-header= t('Delete Account')
-          - const adminDomains = domains.filter((domain) => domain.group === 'admin');
+          h4.card-header= t("Delete Account")
+          - const adminDomains = domains.filter((domain) => domain.group === "admin");
           if adminDomains.length > 0
             .card-body
-              p= t('Your account is currently an admin of these domains:')
+              p= t("Your account is currently an admin of these domains:")
               ul
                 each domain in adminDomains
                   li: a(
@@ -107,23 +107,23 @@ block body
                     target="_blank",
                     rel="noopener noreferrer"
                   )= domain.name
-              p.mb-0= t('You must remove yourself from or delete these domains before you can delete your account.')
+              p.mb-0= t("You must remove yourself from or delete these domains before you can delete your account.")
           else
             .card-body
-              p= t('Deleting your account is irreversable.  Please take extreme caution when deleting your account.')
+              p= t("Deleting your account is irreversable.  Please take extreme caution when deleting your account.")
             .card-footer.text-right
-              form.ajax-form.confirm-prompt(
-                action=l('/my-account'),
+              form(
+                action=l("/my-account"),
                 method="POST"
-              )
+              ).ajax-form.confirm-prompt
                 input(type="hidden", name="_method", value="DELETE")
                 input(type="hidden", name="_csrf", value=ctx.csrf)
-                button.btn.btn-danger(type="submit")= t('Delete Account')
+                button(type="submit").btn.btn-danger= t("Delete Account")
   .container
     .row.text-center.my-5
       .col
-        a.btn.btn-outline-secondary(href=l('/my-account/profile'))
+        a(href=l("/my-account/profile")).btn.btn-outline-secondary
           if user[config.userFields.hasSetPassword]
-            = t('Need to change your password?')
+            = t("Need to change your password?")
           else
-            = t('Need to set a password?')
+            = t("Need to set a password?")

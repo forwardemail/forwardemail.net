@@ -3,57 +3,57 @@ extends ../../../layout
 block body
   include ../_modal-domain
 
-  #modal-alias.modal.fade(
+  #modal-alias(
     tabindex="-1",
     role="dialog",
     aria-labelledby="modal-alias-title",
     aria-hidden="true",
     data-backdrop="static"
-  )
-    .modal-dialog.modal-lg(role="document")
+  ).modal.fade
+    div(role="document").modal-dialog.modal-lg
       .modal-content
         .modal-header.text-center.d-block
-          h4#modal-alias-title.modal-title.d-inline-block.ml-4= t('Add New Alias')
-          button.close(type="button", data-dismiss="modal", aria-label="Close")
+          h4#modal-alias-title.modal-title.d-inline-block.ml-4= t("Add New Alias")
+          button(type="button", data-dismiss="modal", aria-label="Close").close
             span(aria-hidden="true") &times;
         .modal-body
-          form.ajax-form(
+          form(
             action=l(`/my-account/domains/${domain.name}/aliases/new`),
             method="POST"
-          )
+          ).ajax-form
             include _form
-            button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+            button(type="submit").btn.btn-success.btn-block.btn-lg= t("Continue")
 
   .container-fluid.pt-3
     .row
       .col
         include ../../../_breadcrumbs
         if domain.aliases.length === 0 && !ctx.query.q && !ctx.query.page
-          .alert.alert-info= t('No aliases exist yet')
+          .alert.alert-info= t("No aliases exist yet")
         else
-          form.ajax-form.table-ajax-form(
+          form(
             action=ctx.path,
             method="GET",
             data-table="#table-aliases",
             data-search-params="q"
-          )
+          ).ajax-form.table-ajax-form
             input(type="hidden", name="_csrf", value=ctx.csrf)
             .input-group.mb-3
-              input#input-keyword-search.form-control(
+              input#input-keyword-search(
                 type="text",
-                value=ctx.query.q ? ctx.query.q : '',
+                value=ctx.query.q ? ctx.query.q : "",
                 name="q",
                 placeholder=t("Search by alias name or recipient")
-              )
+              ).form-control
               .input-group-append
-                button.btn.btn-success(type="submit")= t('Search')
+                button(type="submit").btn.btn-success= t("Search")
           #table-aliases
             include ./_table
     .row.text-center.my-5
       .col
-        a.btn.btn-outline-secondary(
-          href=l(domain.group === 'admin' ? `/my-account/domains/${domain.name}` : '/my-account/domains')
-        )
+        a(
+          href=l(domain.group === "admin" ? `/my-account/domains/${domain.name}` : "/my-account/domains")
+        ).btn.btn-outline-secondary
           i.fa.fa-angle-double-left
-          = ' '
-          = domain.group === 'admin' ? t('Back to Domain') : t('Back to Domains')
+          = " "
+          = domain.group === "admin" ? t("Back to Domain") : t("Back to Domains")

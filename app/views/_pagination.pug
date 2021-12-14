@@ -1,24 +1,24 @@
 mixin paginate(tableSelector)
   if pageCount && pageCount > 0
-    nav.d-flex.justify-content-center(aria-label="Page navigation")
+    nav(aria-label="Page navigation").d-flex.justify-content-center
       ul.pagination
         if paginate.hasPreviousPages
           li.page-item
-            a.page-link.ajax-form.table-ajax-form(
+            a(
               href=paginate.href(true),
               data-table=tableSelector,
               data-page=ctx.query.page - 1,
-              aria-label=t('Previous')
-            )
+              aria-label=t("Previous")
+            ).page-link.ajax-form.table-ajax-form
               span(aria-hidden="true")
                 i.fa.fa-angle-double-left
-              span.sr-only= t('Previous')
+              span.sr-only= t("Previous")
         else
           li.page-item.disabled
-            span.page-link(aria-label=t('Previous'))
+            span(aria-label=t("Previous")).page-link
               span(aria-hidden="true")
                 i.fa.fa-angle-double-left
-              span.sr-only= t('Previous')
+              span.sr-only= t("Previous")
         if pages
           each page in pages
             if page.number === 1 && pageCount === 1
@@ -27,32 +27,32 @@ mixin paginate(tableSelector)
             else
               if page.number === ctx.query.page
                 li.page-item.active
-                  a.page-link.ajax-form.table-ajax-form(
+                  a(
                     href=page.url,
                     data-table=tableSelector,
                     data-page=page.number
-                  )= page.number
+                  ).page-link.ajax-form.table-ajax-form= page.number
               else
                 li.page-item
-                  a.page-link.ajax-form.table-ajax-form(
+                  a(
                     href=page.url,
                     data-table=tableSelector,
                     data-page=page.number
-                  )= page.number
+                  ).page-link.ajax-form.table-ajax-form= page.number
         if paginate.hasNextPages(pageCount)
           li.page-item
-            a.page-link.ajax-form.table-ajax-form(
+            a(
               href=paginate.href({ page: ctx.query.page + 1 }),
               data-table=tableSelector,
               data-page=ctx.query.page + 1,
-              aria-label=t('Next')
-            )
+              aria-label=t("Next")
+            ).page-link.ajax-form.table-ajax-form
               span(aria-hidden="true")
                 i.fa.fa-angle-double-right
-              span.sr-only= t('Next')
+              span.sr-only= t("Next")
         else
           li.page-item.disabled
-            span.page-link(aria-label=t('Next'))
+            span(aria-label=t("Next")).page-link
               span(aria-hidden="true")
                 i.fa.fa-angle-double-right
-              span.sr-only= t('Next')
+              span.sr-only= t("Next")

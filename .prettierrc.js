@@ -3,5 +3,6 @@ module.exports = {
   singleQuote: true,
   pugSingleQuote: false,
   bracketSpacing: true,
-  trailingComma: 'none'
+  trailingComma: 'none',
+  pugClassLocation: 'after-attributes'
 };

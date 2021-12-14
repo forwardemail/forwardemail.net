@@ -1,20 +1,20 @@
-#modal-domain.modal.fade(
+#modal-domain(
   tabindex="-1",
   role="dialog",
   aria-labelledby="modal-domain-title",
   aria-hidden="true"
-)
-  .modal-dialog(role="document")
+).modal.fade
+  div(role="document").modal-dialog
     .modal-content
       .modal-header.text-center.d-block
-        h4#modal-domain-title.modal-title.d-inline-block.ml-4= t('Add New Domain')
-        button.close(type="button", data-dismiss="modal", aria-label="Close")
+        h4#modal-domain-title.modal-title.d-inline-block.ml-4= t("Add New Domain")
+        button(type="button", data-dismiss="modal", aria-label="Close").close
           span(aria-hidden="true") &times;
       .modal-body
-        form.ajax-form(action=l('/my-account/domains/new'), method="POST")
+        form(action=l("/my-account/domains/new"), method="POST").ajax-form
           input(type="hidden", name="_csrf", value=ctx.csrf)
           .form-group.floating-label
-            input#input-domain.form-control.form-control-lg(
+            input#input-domain(
               required,
               name="domain",
               autocomplete="off",
@@ -23,19 +23,19 @@
               spellcheck="false",
               autocapitalize="off",
               type="text"
-            )
-            label(for="input-domain")= t('Domain name')
+            ).form-control.form-control-lg
+            label(for="input-domain")= t("Domain name")
           if user.group === 'admin'
             .form-group.form-check
-              input#input-is-global.form-check-input(
+              input#input-is-global(
                 type="checkbox",
                 name="is_global",
                 value="true"
-              )
-              label.form-check-label(for="input-is-global")= t('Global domain')
-          button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+              ).form-check-input
+              label(for="input-is-global").form-check-label= t("Global domain")
+          button(type="submit").btn.btn-success.btn-block.btn-lg= t("Continue")
         .alert.alert-warning.mt-3.mb-0.text-center
           ul.list-inline.mb-0
             li.list-inline-item= t("Don't have a domain name?")
             li.list-inline-item
-              a.alert-link(href=l('/domain-registration'))= t('Register a domain')
+              a(href=l("/domain-registration")).alert-link= t("Register a domain")

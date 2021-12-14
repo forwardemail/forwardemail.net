@@ -3,23 +3,23 @@ input(type="hidden", name="_csrf", value=ctx.csrf)
 if alias
   input(type="hidden", name="_method", value="PUT")
 .form-row
-  .form-group(class=domain ? 'col' : 'col col-md-6')
+  div(class=domain ? "col" : "col col-md-6").form-group
     label(for="input-alias-name")
-      = t('Alias Name')
-      = ' '
-      span.text-danger= t('(required)')
+      = t("Alias Name")
+      = " "
+      span.text-danger= t("(required)")
     .input-group
       .input-group-prepend
-        button.generate-random-alias.btn.btn-dark(
+        button(
           data-target="#input-alias-name",
           type="button",
           data-toggle="tooltip",
-          title=t('Generate random alias')
-        )
+          title=t("Generate random alias")
+        ).generate-random-alias.btn.btn-dark
           i.fa.fa-dice
-      input#input-alias-name.form-control.form-control-lg(
+      input#input-alias-name(
         required,
-        value=alias ? alias.name : '',
+        value=alias ? alias.name : "",
         name="name",
         autocomplete="off",
         placeholder="",
@@ -27,7 +27,7 @@ if alias
         spellcheck="false",
         autocapitalize="off",
         type="text"
-      )
+      ).form-control.form-control-lg
       .input-group-append
         .input-group-text
           if domain
@@ -41,15 +41,15 @@ if alias
           = t('Use an asterisk "*" for a catch-all alias.')
       li.list-inline-item
         small.text-black-50
-          != t('We also support <a href="%s" target="_blank">regular expressions</a>.', l('/faq#do-you-support-regular-expressions-or-regex'))
+          != t('We also support <a href="%s" target="_blank">regular expressions</a>.', l("/faq#do-you-support-regular-expressions-or-regex"))
   if !domain
     .form-group.col-md-6
       label(for="select-alias-domain")
-        = t('Domain Name')
-      select#select-alias-domain.form-control.form-control-lg(
+        = t("Domain Name")
+      select#select-alias-domain(
         required,
         name="domain"
-      )
+      ).form-control.form-control-lg
         each domain, i in domains
           option(
             value=domain.id,
@@ -57,69 +57,69 @@ if alias
           )
             = domain.name
             if !domain.plan || domain.plan === 'free'
-              = ' '
-              = '('
-              = t('Upgrade plan')
-              = ')'
+              = " "
+              = "("
+              = t("Upgrade plan")
+              = ")"
             if domain.is_global
-              = ' ('
-              = t('Free Vanity Domain')
-              = ')'
-      - const hasFreeDomains = domains.some((domain) => !domain.plan || domain.plan === 'free');
+              = " ("
+              = t("Free Vanity Domain")
+              = ")"
+      - const hasFreeDomains = domains.some((domain) => !domain.plan || domain.plan === "free");
       ul.list-inline.form-text
         if hasFreeDomains
           li.list-inline-item
-            a.btn.btn-sm.btn-primary(
-              href=l(`/pricing${domainQuery ? `?domain=${domainQuery}` : ''}`)
-            )
+            a(
+              href=l(`/pricing${domainQuery ? `?domain=${domainQuery}` : ""}`)
+            ).btn.btn-sm.btn-primary
               i.fa.fa-angle-double-up
-              = ' '
-              = t('Upgrade plan')
+              = " "
+              = t("Upgrade plan")
         li.list-inline-item
-          a.btn.btn-sm.btn-success(
-            href=l('/my-account/domains/new'),
+          a(
+            href=l("/my-account/domains/new"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-domain"
-          )
+          ).btn.btn-sm.btn-success
             i.fa.fa-plus
-            = ' '
-            = t('Add new domain')
+            = " "
+            = t("Add new domain")
         if hasFreeDomains
           - const match = domains.find((domain) => domain.name === domainQuery);
           if match && match.id
             li.list-inline-item
-              a.btn.btn-sm.btn-link.text-muted(
+              a(
                 href=l(`/my-account/domains/${match.id}`)
-              )= t('Need free version?')
+              ).btn.btn-sm.btn-link.text-muted= t("Need free version?")
 .form-group
   label(for="textarea-alias-recipients")
-    = t('Alias Recipients')
-    = ' '
-    span.text-danger= t('(required)')
-  textarea#textarea-alias-recipients.form-control.form-control-lg(
+    = t("Alias Recipients")
+    = " "
+    span.text-danger= t("(required)")
+  textarea#textarea-alias-recipients(
     name="recipients",
     rows=2
-  )= alias && Array.isArray(alias.recipients) ? alias.recipients.join(', ') : user.email
-  p.form-text: small.text-black-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
+  ).form-control.form-control-lg= alias && Array.isArray(alias.recipients) ? alias.recipients.join(", ") : user.email
+  p: small.form-text.text-black-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
 .form-group
-  label(for="textarea-alias-description")= t('Alias Description (optional)')
-  textarea#textarea-alias-description.form-control.form-control-lg(
+  label(for="textarea-alias-description")= t("Alias Description (optional)")
+  textarea#textarea-alias-description(
     name="description",
     maxlength=150,
     rows=2
-  )= alias ? alias.description : ''
-  p.form-text: small.text-black-50= t('Description has a max of 150 characters.')
+  ).form-control.form-control-lg= alias ? alias.description : ""
+  p: small.form-text.text-black-50= t("Description has a max of 150 characters.")
 .form-group
-  label(for="input-alias-labels")= t('Alias Labels (optional)')
-  textarea#input-alias-labels.form-control.form-control-lg(name="labels")= alias && Array.isArray(alias.labels) ? _.without(alias.labels, 'catch-all').join(', ') : ''
-  p.form-text: small.text-black-50= t('Labels must be a line-break/space/comma separated list with a maximum of 20 characters per label.')
+  label(for="input-alias-labels")= t("Alias Labels (optional)")
+  textarea#input-alias-labels(name="labels").form-control.form-control-lg= alias && Array.isArray(alias.labels) ? _.without(alias.labels, "catch-all").join(", ") : ""
+  p: small.form-text.text-black-50= t("Labels must be a line-break/space/comma separated list with a maximum of 20 characters per label.")
 .form-group.form-check
-  input#input-is-enabled.form-check-input(
+  input#input-is-enabled(
     type="checkbox",
     name="is_enabled",
     value="true",
     checked=alias ? alias.is_enabled : true
-  )
-  label.form-check-label(for="input-is-enabled")= t('Active')
-  p.form-text: small.text-black-50= t('If you uncheck this, then this email will be deactivated and no emails will flow through.  However emails will NOT bounce until this alias is completely deleted.')
+  ).form-check-input
+  label(for="input-is-enabled").form-check-label= t("Active")
+  p: small.form-text.text-black-50= t("If you uncheck this, then this email will be deactivated and no emails will flow through.  However emails will NOT bounce until this alias is completely deleted.")
