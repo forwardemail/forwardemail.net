@@ -68,41 +68,6 @@ const app = new ForwardEmail({
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-function retrieveAliases(ctx, next) {
-  // if there aren't any aliases yet
-  // then prompt the user to create one and flash a message
-  // otherwise take them to the next middleware
-  if (ctx.api || ctx.state.domain.aliases.length > 0) {
-    //
-    // search functionality (with RegExp support)
-    //
-    if (isSANB(ctx.query.name))
-      ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
-        new RE2(_.escapeRegExp(ctx.query.name), 'gi').test(alias.name)
-      );
-
-    if (isSANB(ctx.query.recipient)) {
-      const recipientRegex = new RE2(_.escapeRegExp(ctx.query.recipient, 'gi'));
-      ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
-        alias.recipients.some((recipient) => recipientRegex.test(recipient))
-      );
-    }
-
-    return next();
-  }
-
-  ctx.flash('custom', {
-    title: ctx.translate('ADD_ALIAS'),
-    text: ctx.translate('NO_ALIASES_EXIST'),
-    type: 'info',
-    toast: true,
-    showConfirmButton: false,
-    timer: 5000,
-    position: 'top'
-  });
-  ctx.redirect(`/my-account/domains/${ctx.state.domain.name}/aliases/new`);
-}
-
 async function retrieveInvite(ctx) {
   if (!isSANB(ctx.params.domain_id))
     return ctx.throw(
