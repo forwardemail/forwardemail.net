@@ -30,8 +30,10 @@ const retrieveReceipt = require('./retrieve-receipt');
 const cancelSubscription = require('./cancel-subscription');
 const createAliasForm = require('./create-alias-form');
 const importAliases = require('./import-aliases');
+const retrieveAliases = require('./retrieve-aliases');
 
 module.exports = {
+  retrieveAliases,
   importAliases,
   createAliasForm,
   cancelSubscription,
