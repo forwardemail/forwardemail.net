@@ -38,8 +38,10 @@ const updateMember = require('./update-member');
 const removeMember = require('./remove-member');
 const ensureNotBanned = require('./ensure-not-banned');
 const recoveryKeys = require('./recovery-keys');
+const updateDomain = require('./update-domain');
 
 module.exports = {
+  updateDomain,
   recoveryKeys,
   ensureNotBanned,
   removeMember,
