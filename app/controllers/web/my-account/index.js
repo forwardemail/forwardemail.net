@@ -35,8 +35,10 @@ const retrieveInvite = require('./retrieve-invite');
 const createInvite = require('./create-invite');
 const removeInvite = require('./remove-invite');
 const updateMember = require('./update-member');
+const removeMember = require('./remove-member');
 
 module.exports = {
+  removeMember,
   updateMember,
   removeInvite,
   createInvite,
