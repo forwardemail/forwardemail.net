@@ -26,8 +26,10 @@ const removeAlias = require('./remove-alias');
 const sortedDomains = require('./sorted-domains');
 const ensureTeamPlan = require('./ensure-team-plan');
 const ensureUpgradedPlan = require('./ensure-upgraded-plan');
+const retrieveReceipt = require('./retrieve-receipt');
 
 module.exports = {
+  retrieveReceipt,
   ensureUpgradedPlan,
   ensureTeamPlan,
   sortedDomains,
