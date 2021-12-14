@@ -68,13 +68,6 @@ const app = new ForwardEmail({
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-async function recoveryKeys(ctx) {
-  const otpRecoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];
-
-  ctx.attachment('recovery-keys.txt');
-  ctx.body = otpRecoveryKeys.toString().replace(/,/g, '\n').replace(/"/g, '');
-}
-
 async function updateDomain(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
 
