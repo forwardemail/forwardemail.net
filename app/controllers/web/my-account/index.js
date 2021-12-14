@@ -33,8 +33,10 @@ const importAliases = require('./import-aliases');
 const retrieveAliases = require('./retrieve-aliases');
 const retrieveInvite = require('./retrieve-invite');
 const createInvite = require('./create-invite');
+const removeInvite = require('./remove-invite');
 
 module.exports = {
+  removeInvite,
   createInvite,
   retrieveInvite,
   retrieveAliases,
