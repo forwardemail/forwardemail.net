@@ -2,27 +2,27 @@ extends ../../layout
 
 block body
   if domains.length > 0
-    #modal-alias.modal.fade(
+    #modal-alias(
       tabindex="-1",
       role="dialog",
       aria-labelledby="modal-alias-title",
       aria-hidden="true",
       data-backdrop="static"
-    )
-      .modal-dialog.modal-lg(role="document")
+    ).modal.fade
+      div(role="document").modal-dialog.modal-lg
         .modal-content
           .modal-header.text-center.d-block
-            h4#modal-alias-title.modal-title.d-inline-block.ml-4= t('Add New Alias')
-            button.close(
+            h4#modal-alias-title.modal-title.d-inline-block.ml-4= t("Add New Alias")
+            button(
               type="button",
               data-dismiss="modal",
               aria-label="Close"
-            )
+            ).close
               span(aria-hidden="true") &times;
           .modal-body
-            form.ajax-form(action=l('/my-account/aliases'), method="POST")
+            form(action=l("/my-account/aliases"), method="POST").ajax-form
               include aliases/_form
-              button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+              button(type="submit").btn.btn-success.btn-block.btn-lg= t("Continue")
 
   include _modal-upgrade
   include _modal-domain
@@ -32,29 +32,29 @@ block body
       .col
         include ../../_breadcrumbs
         if domains.length === 0 && !ctx.query.q && !ctx.query.page
-          .alert.alert-info= t('No domains exist yet.')
+          .alert.alert-info= t("No domains exist yet.")
         else
           .alert.my-3.alert-primary
             i.fa.fa-info-circle
-            = ' '
-            strong= t('Tip:')
-            = ' '
+            = " "
+            strong= t("Tip:")
+            = " "
             = t('If you need to upgrade or downgrade your plan on a domain name, then click on the dropdown for it under the column "Current Plan" below.')
-          form.ajax-form.table-ajax-form(
+          form(
             action=ctx.path,
             method="GET",
             data-table="#table-domains",
             data-search-params="q"
-          )
+          ).ajax-form.table-ajax-form
             input(type="hidden", name="_csrf", value=ctx.csrf)
             .input-group.mb-3
-              input#input-keyword-search.form-control(
+              input#input-keyword-search(
                 type="text",
-                value=ctx.query.q ? ctx.query.q : '',
+                value=ctx.query.q ? ctx.query.q : "",
                 name="q",
                 placeholder=t("Search by domain name, alias name, or recipient")
-              )
+              ).form-control
               .input-group-append
-                button.btn.btn-success(type="submit")= t('Search')
+                button(type="submit").btn.btn-success= t("Search")
           #table-domains
             include ./_table

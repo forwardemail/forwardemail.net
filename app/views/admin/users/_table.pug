@@ -22,52 +22,52 @@ include ../../_pagination
         if boolean(process.env.AUTH_OTP_ENABLED)
           th(scope="col")
             +sortHeader(config.passport.fields.otpEnabled, 'OTP Enabled', '#table-users')
-        th.text-center.align-middle(scope="col")= t('Actions')
+        th(scope="col").text-center.align-middle= t("Actions")
     tbody
       if users.length === 0
-        td.alert.alert-info(
-          colspan=boolean(process.env.AUTH_OTP_ENABLED) ? '8' : '7'
-        )= t('No users exist for that search.')
+        td(
+          colspan=boolean(process.env.AUTH_OTP_ENABLED) ? "8" : "7"
+        ).alert.alert-info= t("No users exist for that search.")
       else
         each user in users
           tr
             td.align-middle= user[config.passport.fields.givenName]
             td.align-middle= user[config.passport.fields.familyName]
-            td.align-middle: a(href=`mailto:${user.email}`, target="_blank")= user.email
+            td: a(href=`mailto:${user.email}`, target="_blank").align-middle= user.email
             td.align-middle= titleize(user.group)
-            td.align-middle= dayjs(user.created_at).format('M/D/YY h:mm A')
-            td.align-middle= dayjs(user.updated_at).format('M/D/YY h:mm A')
-            td.align-middle= dayjs(user.last_login_at).format('M/D/YY h:mm A')
+            td.align-middle= dayjs(user.created_at).format("M/D/YY h:mm A")
+            td.align-middle= dayjs(user.updated_at).format("M/D/YY h:mm A")
+            td.align-middle= dayjs(user.last_login_at).format("M/D/YY h:mm A")
             if boolean(process.env.AUTH_OTP_ENABLED)
               td.align-middle= user[config.passport.fields.otpEnabled]
             td.align-middle
-              .btn-group(role="group", aria-label=t('Actions'))
-                a.btn.btn-secondary(
+              div(role="group", aria-label=t("Actions")).btn-group
+                a(
                   href=l(`/admin/users/${user.id}`),
                   data-toggle="tooltip",
-                  data-title=t('Edit')
-                ): i.fa.fa-fw.fa-edit
-                form.ajax-form.confirm-prompt.btn-group(
+                  data-title=t("Edit")
+                ).btn.btn-secondary: i.fa.fa-fw.fa-edit
+                form(
                   action=l(`/admin/users/${user.id}/login`),
                   method="POST",
                   autocomplete="off"
-                )
+                ).ajax-form.confirm-prompt.btn-group
                   input(type="hidden", name="_csrf", value=ctx.csrf)
-                  button.btn.btn-secondary(
+                  button(
                     type="submit",
                     data-toggle="tooltip",
-                    data-title=t('Log in as user')
-                  ): i.fa.fa-fw.fa-user-secret
-                form.ajax-form.confirm-prompt.btn-group(
+                    data-title=t("Log in as user")
+                  ).btn.btn-secondary: i.fa.fa-fw.fa-user-secret
+                form(
                   action=l(`/admin/users/${user.id}`),
                   method="POST",
                   autocomplete="off"
-                )
+                ).ajax-form.confirm-prompt.btn-group
                   input(type="hidden", name="_csrf", value=ctx.csrf)
                   input(type="hidden", name="_method", value="DELETE")
-                  button.btn.btn-secondary(
+                  button(
                     type="submit",
                     data-toggle="tooltip",
-                    data-title=t('Remove')
-                  ): i.fa.fa-fw.fa-remove
+                    data-title=t("Remove")
+                  ).btn.btn-secondary: i.fa.fa-fw.fa-remove
 +paginate('#table-users')

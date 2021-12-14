@@ -3,17 +3,17 @@ extends layout
 include _onboard
 
 block body
-  - const hash = 'do-you-support-regular-expressions-or-regex';
+  - const hash = "do-you-support-regular-expressions-or-regex";
   if !user
     +onboard(t('Need email regex forwarding?'), t('Skip ahead to the instructions to forward emails using regex.'), l(`/faq?hash=${hash}`), l(`/faq#${hash}`), 'border-bottom')
   .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
     .row
       .col-md-12
         p.lead.mb-0.text-white.font-weight-bold
-          t= t('Easily set up an email forwarding regex to filter and forward incoming email to your custom domain.')
+          t= t("Easily set up an email forwarding regex to filter and forward incoming email to your custom domain.")
   .container.py-5
     .text-center.mb-5
-      h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t('Email forwarding regex')
-      small.text-black-50.text-uppercase= t('Setup an email forwarding regex in minutes')
+      h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t("Email forwarding regex")
+      small.text-black-50.text-uppercase= t("Setup an email forwarding regex in minutes")
       p.text-muted.my-5.text-center
-        a.btn.btn-lg.btn-primary(href=l(`/faq#${hash}`))= t('Create an email forwarding regex filter')
+        a(href=l(`/faq#${hash}`)).btn.btn-lg.btn-primary= t("Create an email forwarding regex filter")
