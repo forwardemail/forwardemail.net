@@ -27,8 +27,10 @@ const sortedDomains = require('./sorted-domains');
 const ensureTeamPlan = require('./ensure-team-plan');
 const ensureUpgradedPlan = require('./ensure-upgraded-plan');
 const retrieveReceipt = require('./retrieve-receipt');
+const cancelSubscription = require('./cancel-subscription');
 
 module.exports = {
+  cancelSubscription,
   retrieveReceipt,
   ensureUpgradedPlan,
   ensureTeamPlan,
