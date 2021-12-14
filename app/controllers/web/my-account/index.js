@@ -28,8 +28,10 @@ const ensureTeamPlan = require('./ensure-team-plan');
 const ensureUpgradedPlan = require('./ensure-upgraded-plan');
 const retrieveReceipt = require('./retrieve-receipt');
 const cancelSubscription = require('./cancel-subscription');
+const createAliasForm = require('./create-alias-form');
 
 module.exports = {
+  createAliasForm,
   cancelSubscription,
   retrieveReceipt,
   ensureUpgradedPlan,
