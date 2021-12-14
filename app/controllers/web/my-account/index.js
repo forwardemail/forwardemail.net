@@ -25,8 +25,10 @@ const updateAlias = require('./update-alias');
 const removeAlias = require('./remove-alias');
 const sortedDomains = require('./sorted-domains');
 const ensureTeamPlan = require('./ensure-team-plan');
+const ensureUpgradedPlan = require('./ensure-upgraded-plan');
 
 module.exports = {
+  ensureUpgradedPlan,
   ensureTeamPlan,
   sortedDomains,
   removeAlias,
