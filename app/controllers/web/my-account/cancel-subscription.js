@@ -7,8 +7,8 @@ const ms = require('ms');
 const paypal = require('paypal-rest-sdk');
 const superagent = require('superagent');
 
-const env = require('../../../config/env');
-const config = require('../../../config');
+const env = require('../../../../config/env');
+const config = require('../../../../config');
 
 const PAYPAL_ENDPOINT =
   env.NODE_ENV === 'production'

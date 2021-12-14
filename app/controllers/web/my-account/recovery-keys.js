@@ -1,4 +1,4 @@
-const config = require('../../../config');
+const config = require('../../../../config');
 
 async function recoveryKeys(ctx) {
   const otpRecoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];

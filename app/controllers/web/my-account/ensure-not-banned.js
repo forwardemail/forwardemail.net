@@ -1,6 +1,6 @@
 const Boom = require('@hapi/boom');
 
-const config = require('../../../config');
+const config = require('../../../../config');
 
 function ensureNotBanned(ctx, next) {
   if (ctx.state.user[config.userFields.isBanned])
