@@ -68,18 +68,6 @@ const app = new ForwardEmail({
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-function createAliasForm(ctx, next) {
-  ctx.state.breadcrumbHeaderCentered = true;
-  ctx.state.breadcrumbs = [
-    'my-account',
-    'domains',
-    {
-      name: ctx.state.t('Add Alias')
-    }
-  ];
-  return next();
-}
-
 // eslint-disable-next-line complexity
 async function importAliases(ctx) {
   if (ctx.state.domain.is_global)
