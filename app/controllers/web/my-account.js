@@ -68,11 +68,6 @@ const app = new ForwardEmail({
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-function ensureTeamPlan(ctx, next) {
-  ctx.state.isTeamPlanRequired = ctx.state.domain.plan !== 'team';
-  return next();
-}
-
 function ensureUpgradedPlan(ctx, next) {
   if (ctx.state.domain.plan !== 'free' && !ctx.state.isTeamPlanRequired)
     return next();
