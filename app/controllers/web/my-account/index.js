@@ -37,8 +37,10 @@ const removeInvite = require('./remove-invite');
 const updateMember = require('./update-member');
 const removeMember = require('./remove-member');
 const ensureNotBanned = require('./ensure-not-banned');
+const recoveryKeys = require('./recovery-keys');
 
 module.exports = {
+  recoveryKeys,
   ensureNotBanned,
   removeMember,
   updateMember,
