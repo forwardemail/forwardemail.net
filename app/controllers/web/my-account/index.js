@@ -32,8 +32,10 @@ const createAliasForm = require('./create-alias-form');
 const importAliases = require('./import-aliases');
 const retrieveAliases = require('./retrieve-aliases');
 const retrieveInvite = require('./retrieve-invite');
+const createInvite = require('./create-invite');
 
 module.exports = {
+  createInvite,
   retrieveInvite,
   retrieveAliases,
   importAliases,
