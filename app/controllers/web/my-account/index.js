@@ -24,8 +24,10 @@ const retrieveAlias = require('./retrieve-alias');
 const updateAlias = require('./update-alias');
 const removeAlias = require('./remove-alias');
 const sortedDomains = require('./sorted-domains');
+const ensureTeamPlan = require('./ensure-team-plan');
 
 module.exports = {
+  ensureTeamPlan,
   sortedDomains,
   removeAlias,
   cancelEmailChange,
