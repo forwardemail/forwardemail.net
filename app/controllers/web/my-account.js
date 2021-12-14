@@ -68,27 +68,6 @@ const app = new ForwardEmail({
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-function sortedDomains(ctx, next) {
-  ctx.state.sortedDomains = _.clone(ctx.state.domains);
-  ctx.state.sortedDomains = ctx.state.sortedDomains.filter(
-    (domain) => !domain.is_global
-  );
-  if (
-    isSANB(ctx.query.domain) &&
-    (isFQDN(ctx.query.domain) || isIP(ctx.query.domain)) &&
-    ctx.state.sortedDomains.some((domain) => domain.name === ctx.query.domain)
-  )
-    ctx.state.sortedDomains = _.sortBy(
-      ctx.state.sortedDomains.map((domain, i) => ({
-        ...domain,
-        _key: domain.name === ctx.query.domain ? 0 : i + 1
-      })),
-      '_key'
-    );
-
-  return next();
-}
-
 function ensureTeamPlan(ctx, next) {
   ctx.state.isTeamPlanRequired = ctx.state.domain.plan !== 'team';
   return next();
