@@ -1650,6 +1650,13 @@
     router "^1.3.5"
     url-parse "^1.4.7"
 
+"@ladjs/pug-lint-config-lad@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/@ladjs/pug-lint-config-lad/-/pug-lint-config-lad-0.1.0.tgz#a56d16cc453f33d74cfb1260aa805425042beb0c"
+  integrity sha512-2bRNoWYi44+8/kSni/RnUAR/Enj/RHDOg/ZLPrTRrRiRm7vl3DiHaU+Zt0Ljx1Z68fjFLknPHyhIJHFMqng87w==
+  dependencies:
+    assert "^2.0.0"
+
 "@ladjs/redis@^1.0.7":
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/@ladjs/redis/-/redis-1.0.7.tgz#89ba9df5daf4b24733169c6763ea3abe2b29bc99"
@@ -3083,6 +3090,16 @@ assert@^1.1.1, assert@^1.4.0:
   dependencies:
     object-assign "^4.1.1"
     util "0.10.3"
+
+assert@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/assert/-/assert-2.0.0.tgz#95fc1c616d48713510680f2eaf2d10dd22e02d32"
+  integrity sha512-se5Cd+js9dXJnu6Ag2JFc00t+HmHOen+8Q+L7O9zI0PqQXr20uk2J0XQqMxZEeo5U50o8Nvmmx7dZrl+Ufr35A==
+  dependencies:
+    es6-object-assign "^1.1.0"
+    is-nan "^1.2.1"
+    object-is "^1.0.1"
+    util "^0.12.0"
 
 assign-symbols@^1.0.0:
   version "1.0.0"
@@ -6752,6 +6769,11 @@ es6-iterator@^2.0.1, es6-iterator@^2.0.3, es6-iterator@~2.0.3:
     d "1"
     es5-ext "^0.10.35"
     es6-symbol "^3.1.1"
+
+es6-object-assign@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/es6-object-assign/-/es6-object-assign-1.1.0.tgz#c2c3582656247c39ea107cb1e6652b6f9f24523c"
+  integrity sha1-wsNYJlYkfDnqEHyx5mUrb58kUjw=
 
 es6-promise@~2.3.0:
   version "2.3.0"
@@ -10775,6 +10797,14 @@ is-lambda@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-lambda/-/is-lambda-1.0.1.tgz#3d9877899e6a53efc0160504cde15f82e6f061d5"
   integrity sha1-PZh3iZ5qU+/AFgUEzeFfgubwYdU=
+
+is-nan@^1.2.1:
+  version "1.3.2"
+  resolved "https://registry.npmjs.org/is-nan/-/is-nan-1.3.2.tgz#043a54adea31748b55b6cd4e09aadafa69bd9e1d"
+  integrity sha512-E+zBKpQ2t6MEo1VsonYmluk9NxGrbzpeeLC2xIViuO2EjU2xsXsBPwTr3Ykv9l08UYEVEdWeRZNouaZqF6RN0w==
+  dependencies:
+    call-bind "^1.0.0"
+    define-properties "^1.1.3"
 
 is-natural-number@^4.0.1:
   version "4.0.1"
@@ -22172,7 +22202,7 @@ util@^0.11.0:
   dependencies:
     inherits "2.0.3"
 
-util@~0.12.0:
+util@^0.12.0, util@~0.12.0:
   version "0.12.4"
   resolved "https://registry.yarnpkg.com/util/-/util-0.12.4.tgz#66121a31420df8f01ca0c464be15dfa1d1850253"
   integrity sha512-bxZ9qtSlGUWSOy9Qa9Xgk11kSslpuZwaxCg4sNIDj6FLucDab2JxnHwyNTCpHMtK1MjoQiWQ6DiUMZYbSrO+Sw==
