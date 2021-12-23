@@ -6,9 +6,9 @@ const numeral = require('numeral');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 
-const config = require('../../../config');
-const { Users, Domains, Aliases } = require('../../models');
-const locales = require('../../../config/locales');
+const config = require('#config');
+const { Users, Domains, Aliases } = require('#models');
+const locales = require('#config/locales');
 
 const models = { Users, Domains, Aliases };
 const loadedLocales = {};

@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unassigned-import
-require('../config/env');
+require('#config/env');
 
 const fs = require('fs');
 
@@ -9,11 +9,11 @@ const isSANB = require('is-string-and-not-blank');
 const sharedConfig = require('@ladjs/shared-config');
 const validator = require('validator');
 
-const logger = require('../helpers/logger');
+const logger = require('#helpers/logger');
 
-const Users = require('../app/models/user');
-const Domains = require('../app/models/domain');
-const Aliases = require('../app/models/alias');
+const Users = require('#models/user');
+const Domains = require('#models/domain');
+const Aliases = require('#models/alias');
 
 const breeSharedConfig = sharedConfig('BREE');
 

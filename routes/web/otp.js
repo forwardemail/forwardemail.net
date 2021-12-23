@@ -1,9 +1,9 @@
 const Router = require('@koa/router');
 const render = require('koa-views-render');
 
-const policies = require('../../helpers/policies');
-const web = require('../../app/controllers/web');
-const config = require('../../config');
+const policies = require('#helpers/policies');
+const web = require('#controllers/web');
+const config = require('#config');
 
 const router = new Router({ prefix: config.otpRoutePrefix });
 router.use(policies.ensureLoggedIn);

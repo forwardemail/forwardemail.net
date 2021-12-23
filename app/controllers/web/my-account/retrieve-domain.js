@@ -2,13 +2,12 @@ const path = require('path');
 
 const Boom = require('@hapi/boom');
 const Meta = require('koa-meta');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
 const { parse } = require('node-html-parser');
 
-const config = require('../../../../config');
-const logger = require('../../../../helpers/logger');
+const config = require('#config');
+const logger = require('#helpers/logger');
 
 const meta = new Meta(config.meta, logger);
 

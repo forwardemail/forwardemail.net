@@ -2,10 +2,10 @@ const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 const pickOriginal = require('@ladjs/pick-original');
 
-const config = require('../../../../config');
-const logger = require('../../../../helpers/logger');
-const toObject = require('../../../../helpers/to-object');
-const { Users, Aliases, Domains } = require('../../../models');
+const config = require('#config');
+const logger = require('#helpers/logger');
+const toObject = require('#helpers/to-object');
+const { Users, Aliases, Domains } = require('#models');
 
 const app = new ForwardEmail({
   logger,

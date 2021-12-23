@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unassigned-import
-require('./config/env');
+require('#config/env');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
@@ -8,9 +8,9 @@ const Web = require('@ladjs/web');
 const ip = require('ip');
 const sharedConfig = require('@ladjs/shared-config');
 
-const config = require('./config');
-const logger = require('./helpers/logger');
-const webConfig = require('./config/web');
+const config = require('#config');
+const logger = require('#helpers/logger');
+const webConfig = require('#config/web');
 
 const webSharedConfig = sharedConfig('WEB');
 const client = new Redis(webSharedConfig.redis, logger);

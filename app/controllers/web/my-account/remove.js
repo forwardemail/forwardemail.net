@@ -1,7 +1,6 @@
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 
-const { Users } = require('../../../models');
+const { Users } = require('#models');
 
 async function remove(ctx) {
   const adminDomains = ctx.state.domains.filter(

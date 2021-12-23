@@ -1,5 +1,5 @@
-const config = require('../../../../config');
-const sendVerificationEmail = require('../../../../helpers/send-verification-email');
+const config = require('#config');
+const sendVerificationEmail = require('#helpers/send-verification-email');
 
 async function recovery(ctx) {
   const redirectTo = ctx.state.l(config.verifyRoute);

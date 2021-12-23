@@ -6,8 +6,8 @@ const isSANB = require('is-string-and-not-blank');
 const pMap = require('p-map');
 const { isEmail } = require('validator');
 
-const email = require('../../../../helpers/email');
-const { SelfTests } = require('../../../models');
+const email = require('#helpers/email');
+const { SelfTests } = require('#models');
 
 const concurrency = os.cpus().length;
 

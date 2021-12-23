@@ -4,8 +4,8 @@ const paypal = require('paypal-rest-sdk');
 const superagent = require('superagent');
 const ms = require('ms');
 
-const config = require('../config');
-const { paypalRestSdkConfig } = require('../config/payments');
+const config = require('#config');
+const { paypalRestSdkConfig } = require('#config/payments');
 
 const { PAYPAL_ENDPOINT } = config.payments;
 

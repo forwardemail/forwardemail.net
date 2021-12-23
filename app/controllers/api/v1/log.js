@@ -1,7 +1,7 @@
 const auth = require('basic-auth');
 const parseLogs = require('parse-logs');
 
-const policies = require('../../../../helpers/policies');
+const policies = require('#helpers/policies');
 
 async function parseLog(ctx) {
   ctx.body = 'OK';

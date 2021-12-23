@@ -16,9 +16,9 @@ const { boolean } = require('boolean');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const logger = require('../../helpers/logger');
-const config = require('../../config');
-const i18n = require('../../helpers/i18n');
+const logger = require('#helpers/logger');
+const config = require('#config');
+const i18n = require('#helpers/i18n');
 
 if (config.passportLocalMongoose.usernameField !== 'email')
   throw new Error(

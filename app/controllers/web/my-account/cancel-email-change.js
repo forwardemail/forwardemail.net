@@ -1,6 +1,6 @@
 const Boom = require('@hapi/boom');
 
-const config = require('../../../../config');
+const config = require('#config');
 
 async function cancelEmailChange(ctx) {
   // if no email change request exists throw an error

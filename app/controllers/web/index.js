@@ -2,9 +2,6 @@ const _ = require('lodash');
 const humanize = require('humanize-string');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const titleize = require('titleize');
-
-const config = require('../../../config');
-
 const admin = require('./admin');
 const api = require('./api');
 const auth = require('./auth');
@@ -15,6 +12,7 @@ const onboard = require('./onboard');
 const openStartup = require('./open-startup');
 const otp = require('./otp');
 const report = require('./report');
+const config = require('#config');
 
 function breadcrumbs(ctx, next) {
   const breadcrumbs = _.compact(ctx.path.split('/')).slice(1);

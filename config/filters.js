@@ -2,9 +2,9 @@ const I18N = require('@ladjs/i18n');
 const isSANB = require('is-string-and-not-blank');
 const { parse } = require('node-html-parser');
 
-const i18nConfig = require('../config/i18n');
-const logger = require('../helpers/logger');
-const markdown = require('../helpers/markdown');
+const i18nConfig = require('#config/i18n');
+const logger = require('#helpers/logger');
+const markdown = require('#helpers/markdown');
 
 // const cheerio = require('cheerio');
 /*

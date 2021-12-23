@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unassigned-import
-require('../config/env');
+require('#config/env');
 
 const { parentPort } = require('worker_threads');
 
@@ -8,8 +8,8 @@ const Mongoose = require('@ladjs/mongoose');
 const dayjs = require('dayjs-with-plugins');
 const sharedConfig = require('@ladjs/shared-config');
 
-const logger = require('../helpers/logger');
-const Users = require('../app/models/user');
+const logger = require('#helpers/logger');
+const Users = require('#models/user');
 
 const breeSharedConfig = sharedConfig('BREE');
 

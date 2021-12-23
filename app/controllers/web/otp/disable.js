@@ -1,7 +1,7 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
-const config = require('../../../../config');
+const config = require('#config');
 
 async function disable(ctx) {
   const { body } = ctx.request;

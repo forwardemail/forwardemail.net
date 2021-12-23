@@ -9,12 +9,12 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const { Client, Env, Tokens } = require('bitpay-sdk');
 
-const env = require('../../../../config/env');
-const config = require('../../../../config');
-const emailHelper = require('../../../../helpers/email');
-const { paypalAgent } = require('../../../../helpers/paypal');
-const logger = require('../../../../helpers/logger');
-const { Domains, Payments } = require('../../../models');
+const env = require('#config/env');
+const config = require('#config');
+const emailHelper = require('#helpers/email');
+const { paypalAgent } = require('#helpers/paypal');
+const logger = require('#helpers/logger');
+const { Domains, Payments } = require('#models');
 
 const {
   STRIPE_MAPPING,

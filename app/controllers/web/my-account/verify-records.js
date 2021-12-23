@@ -1,10 +1,9 @@
 const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
-const _ = require('lodash');
 
-const config = require('../../../../config');
-const logger = require('../../../../helpers/logger');
-const { Domains } = require('../../../models');
+const config = require('#config');
+const logger = require('#helpers/logger');
+const { Domains } = require('#models');
 
 const app = new ForwardEmail({
   logger,

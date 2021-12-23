@@ -3,7 +3,7 @@ const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
 const { isPort } = require('validator');
 
-const { Domains } = require('../../../models');
+const { Domains } = require('#models');
 
 async function updateDomain(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);

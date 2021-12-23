@@ -9,10 +9,10 @@ const pug = require('pug');
 const { boolean } = require('boolean');
 const { isEmail, isIP } = require('validator');
 
-const config = require('../../../config');
-const logger = require('../../../helpers/logger');
-const sendVerificationEmail = require('../../../helpers/send-verification-email');
-const { Users, Domains, Aliases } = require('../../models');
+const config = require('#config');
+const logger = require('#helpers/logger');
+const sendVerificationEmail = require('#helpers/send-verification-email');
+const { Users, Domains, Aliases } = require('#models');
 
 // we're only using this for the exposed `getTemplatePath` method
 const email = new Email({ views: config.views });
