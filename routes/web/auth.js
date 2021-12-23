@@ -2,8 +2,9 @@ const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const { boolean } = require('boolean');
 
-const passport = require('../../helpers/passport');
 const config = require('../../config');
+const parseLoginSuccessRedirect = require('../../helpers/parse-login-success-redirect');
+const passport = require('../../helpers/passport');
 const web = require('../../app/controllers/web');
 
 const router = new Router({ prefix: '/auth' });
@@ -27,15 +28,22 @@ router
       )(ctx, next);
     }
   )
-  .get('/:provider/ok', web.auth.catchError, (ctx, next) => {
-    const redirect = ctx.session.returnTo
-      ? ctx.session.returnTo
-      : ctx.state.l(config.passportCallbackOptions.successReturnToOrRedirect);
-    return passport.authenticate(ctx.params.provider, {
-      ...config.passportCallbackOptions,
-      successReturnToOrRedirect: redirect
-    })(ctx, next);
-  });
+  .get(
+    '/:provider/ok',
+    web.auth.catchError,
+    (ctx, next) => {
+      return passport.authenticate(ctx.params.provider, {
+        ...config.passportCallbackOptions,
+        successReturnToOrRedirect: false
+      })(ctx, next);
+    },
+    async (ctx) => {
+      const redirectTo = await parseLoginSuccessRedirect(ctx);
+
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+    }
+  );
 
 if (boolean(process.env.AUTH_GOOGLE_ENABLED)) {
   router.get(

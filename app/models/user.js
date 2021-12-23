@@ -87,7 +87,8 @@ const User = new mongoose.Schema({
     lowercase: true,
     unique: true,
     validate: (value) => validator.isEmail(value)
-  }
+  },
+  default_domain: String
 });
 
 // additional variable based properties to add to the schema
