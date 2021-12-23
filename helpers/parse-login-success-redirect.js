@@ -1,7 +1,5 @@
-const isSANB = require('is-string-and-not-blank');
-
-const config = require('../config');
-const { Domains } = require('../app/models');
+const config = require('#config');
+const { Domains } = require('#models');
 
 async function parseLoginSuccessRedirect(ctx) {
   let redirectTo = ctx.state.l(
@@ -10,20 +8,18 @@ async function parseLoginSuccessRedirect(ctx) {
 
   if (
     ctx.isAuthenticated() &&
-    isSANB(ctx.state.user[config.userFields.defaultDomain])
+    ctx.state.user[config.userFields.defaultDomain]
   ) {
     const domain = await Domains.findOne({
-      name: ctx.state.user.default_domain,
+      _id: ctx.state.user[config.userFields.defaultDomain],
       'members.user': ctx.state.user.id
     })
       .lean()
       .exec();
 
-    ctx.logger.debug('parsed domain', { domain, user: ctx.state.user });
-
     if (domain) {
       redirectTo = ctx.state.l(`/my-account/domains/${domain.name}`);
-    } else {
+    } else if (!ctx.session?.returnTo) {
       ctx.flash('custom', {
         text: ctx.request.t('Your default domain does not exist!'),
         type: 'error',

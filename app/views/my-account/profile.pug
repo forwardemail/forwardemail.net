@@ -114,13 +114,16 @@ block body
                   label(for="input-family-name")= t("Last name")
                 .form-group.floating-label
                   select#input-default-domain.form-control(
-                    name="default_domain"
+                    name=config.userFields.defaultDomain
                   )
-                    option(value="None", selected=!isSANB(user.default_domain))= t("None")
+                    option(
+                      value="None",
+                      selected=!user[config.userFields.defaultDomain]
+                    )= t("None")
                     each domain in domains
                       option(
-                        value=domain.name,
-                        selected=user.default_domain === domain.name
+                        value=domain._id,
+                        selected=user[config.userFields.defaultDomain] && user[config.userFields.defaultDomain].toString() === domain.id
                       )= domain.name
                   label(for="input-default-domain")= t("Default Domain")
                 if user[config.userFields.hasSetPassword]

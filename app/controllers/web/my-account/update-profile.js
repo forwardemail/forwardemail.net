@@ -6,9 +6,9 @@ const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('validator');
 
-const config = require('../../../../config');
-const emailHelper = require('../../../../helpers/email');
-const { Users } = require('../../../models');
+const config = require('#config');
+const emailHelper = require('#helpers/email');
+const { Users } = require('#models');
 
 // eslint-disable-next-line complexity
 async function updateProfile(ctx) {
@@ -53,13 +53,19 @@ async function updateProfile(ctx) {
       _.isString(body[config.userFields.defaultDomain]) &&
       (body[config.userFields.defaultDomain] === 'None' ||
         ctx.state.domains.some(
-          (d) => d.name === body[config.userFields.defaultDomain]
+          (d) => d.id === body[config.userFields.defaultDomain]
         ))
     )
       ctx.state.user[config.userFields.defaultDomain] =
         body[config.userFields.defaultDomain] === 'None'
           ? undefined
-          : body.default_domain;
+          : body[config.userFields.defaultDomain];
+
+    ctx.logger.debug('updated user', {
+      [config.userFields.defaultDomain]:
+        ctx.state.user[config.userFields.defaultDomain],
+      body: body[config.userFields.defaultDomain]
+    });
 
     //
     // company information
