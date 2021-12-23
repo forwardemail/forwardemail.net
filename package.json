@@ -230,6 +230,17 @@
     "node": ">=14.0.0"
   },
   "homepage": "https://github.com/forwardemail/forwardemail.net",
+  "imports": {
+    "#config/*": "./config/*.js",
+    "#config": "./config/index.js",
+    "#helpers/*": "./helpers/*.js",
+    "#models/*": "./app/models/*.js",
+    "#models": "./app/models/index.js",
+    "#controllers/*": "./app/controllers/*.js",
+    "#controllers": "./app/controllers/index.js",
+    "#controllers/web": "./app/controllers/web/index.js",
+    "#controllers/api": "./app/controllers/api/index.js"
+  },
   "keywords": [
     "address",
     "addresses",
