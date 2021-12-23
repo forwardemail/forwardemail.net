@@ -10,10 +10,11 @@ const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
 
 const Users = require('../../models/user');
-const passport = require('../../../helpers/passport');
-const email = require('../../../helpers/email');
-const sendVerificationEmail = require('../../../helpers/send-verification-email');
 const config = require('../../../config');
+const email = require('../../../helpers/email');
+const parseLoginSuccessRedirect = require('../../../helpers/parse-login-success-redirect');
+const passport = require('../../../helpers/passport');
+const sendVerificationEmail = require('../../../helpers/send-verification-email');
 const { Inquiries } = require('../../models');
 
 const options = { length: 10, type: 'numeric' };
@@ -145,14 +146,7 @@ async function login(ctx, next) {
       ctx.locale = ctx.request.locale;
     }
 
-    let redirectTo = ctx.state.l(
-      config.passportCallbackOptions.successReturnToOrRedirect
-    );
-
-    if (ctx.session && ctx.session.returnTo) {
-      redirectTo = ctx.session.returnTo;
-      delete ctx.session.returnTo;
-    }
+    let redirectTo = await parseLoginSuccessRedirect(ctx);
 
     let greeting = 'Good morning';
     if (dayjs().format('HH') >= 12 && dayjs().format('HH') <= 17)
