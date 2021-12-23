@@ -156,6 +156,7 @@ const config = {
     stripeSubscriptionID: 'stripe_subscription_id',
     paypalPayerID: 'paypal_payer_id',
     paypalSubscriptionID: 'paypal_subscription_id',
+    defaultDomain: 'default_domain',
     companyName: 'company_name',
     addressLine1: 'address_line1',
     addressLine2: 'address_line2',

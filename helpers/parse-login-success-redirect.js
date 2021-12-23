@@ -8,7 +8,10 @@ async function parseLoginSuccessRedirect(ctx) {
     config.passportCallbackOptions.successReturnToOrRedirect
   );
 
-  if (ctx.isAuthenticated() && isSANB(ctx.state.user.default_domain)) {
+  if (
+    ctx.isAuthenticated() &&
+    isSANB(ctx.state.user[config.userFields.defaultDomain])
+  ) {
     const domain = await Domains.findOne({
       name: ctx.state.user.default_domain,
       'members.user': ctx.state.user.id
