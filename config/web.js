@@ -1,14 +1,14 @@
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 
-const i18n = require('../helpers/i18n');
-const logger = require('../helpers/logger');
-const passport = require('../helpers/passport');
 const routes = require('../routes');
 const env = require('./env');
 const cookieOptions = require('./cookies');
 const koaCashConfig = require('./koa-cash');
 const config = require('.');
+const i18n = require('#helpers/i18n');
+const passport = require('#helpers/passport');
+const logger = require('#helpers/logger');
 
 const defaultSrc = isSANB(process.env.WEB_HOST)
   ? [

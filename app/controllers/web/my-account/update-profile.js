@@ -6,9 +6,9 @@ const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('validator');
 
-const config = require('../../../../config');
-const emailHelper = require('../../../../helpers/email');
-const { Users } = require('../../../models');
+const config = require('#config');
+const emailHelper = require('#helpers/email');
+const { Users } = require('#models');
 
 // eslint-disable-next-line complexity
 async function updateProfile(ctx) {

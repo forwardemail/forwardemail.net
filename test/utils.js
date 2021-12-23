@@ -9,8 +9,8 @@ const getPort = require('get-port');
 factory.setAdapter(new MongooseAdapter());
 
 // Models and server
-const config = require('../config');
-const { Users } = require('../app/models');
+const config = require('#config');
+const { Users } = require('#models');
 
 let mongod;
 

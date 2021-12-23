@@ -5,7 +5,7 @@ process.env.I18N_AUTO_RELOAD = false;
 process.env.I18N_UPDATE_FILES = true;
 
 // eslint-disable-next-line import/no-unassigned-import
-require('./config/env');
+require('#controllers/env');
 
 const path = require('path');
 const fs = require('fs');
@@ -47,10 +47,10 @@ const { lastRun, watch, series, parallel, src, dest } = require('gulp');
 // explicitly set the compiler in case it were to change to dart
 sass.compiler = nodeSass;
 
-const env = require('./config/env');
-const config = require('./config');
-const logger = require('./helpers/logger');
-const i18n = require('./helpers/i18n');
+const env = require('#config/env');
+const config = require('#config');
+const logger = require('#helpers/logger');
+const i18n = require('#helpers/i18n');
 
 const PROD = config.env === 'production';
 const DEV = config.env === 'development';

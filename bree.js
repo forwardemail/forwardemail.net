@@ -1,10 +1,10 @@
 // eslint-disable-next-line import/no-unassigned-import
-require('./config/env');
+require('#config/env');
 
 const Bree = require('bree');
 const Graceful = require('@ladjs/graceful');
 
-const logger = require('./helpers/logger');
+const logger = require('#helpers/logger');
 
 const bree = new Bree({ logger });
 

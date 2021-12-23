@@ -1,9 +1,9 @@
 const Email = require('email-templates');
 const _ = require('lodash');
 
-const config = require('../config');
 const getEmailLocals = require('./get-email-locals');
 const logger = require('./logger');
+const config = require('#config');
 
 const email = new Email(config.email);
 

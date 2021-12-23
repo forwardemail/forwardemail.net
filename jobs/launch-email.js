@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unassigned-import
-require('../config/env');
+require('#config/env');
 
 const { parentPort } = require('worker_threads');
 
@@ -7,11 +7,11 @@ const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 
-const config = require('../config');
-const email = require('../helpers/email');
-const logger = require('../helpers/logger');
 const bree = require('../bree');
-const Users = require('../app/models/user');
+const config = require('#config');
+const email = require('#helpers/email');
+const logger = require('#helpers/logger');
+const Users = require('#models/user');
 
 const breeSharedConfig = sharedConfig('BREE');
 

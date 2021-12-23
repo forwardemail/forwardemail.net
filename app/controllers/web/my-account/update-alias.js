@@ -1,8 +1,8 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
-const toObject = require('../../../../helpers/to-object');
-const { Users, Domains, Aliases } = require('../../../models');
+const toObject = require('#helpers/to-object');
+const { Users, Domains, Aliases } = require('#models');
 
 async function updateAlias(ctx, next) {
   ctx.state.alias = await Aliases.findById(ctx.state.alias._id);

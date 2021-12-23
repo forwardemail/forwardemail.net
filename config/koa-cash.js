@@ -1,7 +1,7 @@
 const { Buffer } = require('buffer');
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
-const logger = require('../helpers/logger');
+const logger = require('#helpers/logger');
 
 module.exports = (client) => ({
   maxAge: ms('1y') / 1000,

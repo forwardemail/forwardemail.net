@@ -1,10 +1,10 @@
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
-const emailHelper = require('../../../../helpers/email');
+const emailHelper = require('#helpers/email');
 
-const env = require('../../../../config/env');
-const config = require('../../../../config');
+const env = require('#config/env');
+const config = require('#config');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 

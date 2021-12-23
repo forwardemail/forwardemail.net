@@ -1,9 +1,8 @@
 const test = require('ava');
 const sinon = require('sinon');
 
-const { Inquiries } = require('../../app/models');
-
 const utils = require('../utils');
+const { Inquiries } = require('#models');
 
 test.before(utils.setupMongoose);
 test.before((t) => {

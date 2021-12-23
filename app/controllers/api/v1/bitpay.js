@@ -3,7 +3,7 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const { Client, Env, Tokens } = require('bitpay-sdk');
 
-const env = require('../../../../config/env');
+const env = require('#config/env');
 
 const bitpayTokens = Tokens;
 bitpayTokens.merchant = env.BITPAY_MERCHANT_API_TOKEN;

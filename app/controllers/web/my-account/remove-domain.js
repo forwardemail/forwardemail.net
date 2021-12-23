@@ -1,6 +1,4 @@
-const _ = require('lodash');
-
-const { Domains } = require('../../../models');
+const { Domains } = require('#models');
 
 async function removeDomain(ctx, next) {
   await Domains.findByIdAndRemove(ctx.state.domain._id);

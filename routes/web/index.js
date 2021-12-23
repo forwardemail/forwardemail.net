@@ -2,14 +2,13 @@ const Router = require('@koa/router');
 const render = require('koa-views-render');
 const { boolean } = require('boolean');
 
-const config = require('../../config');
-const policies = require('../../helpers/policies');
-const { web } = require('../../app/controllers');
-
 const admin = require('./admin');
 const auth = require('./auth');
 const myAccount = require('./my-account');
 const otp = require('./otp');
+const config = require('#config');
+const policies = require('#helpers/policies');
+const { web } = require('#controllers');
 
 const router = new Router();
 

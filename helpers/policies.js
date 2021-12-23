@@ -9,8 +9,8 @@ const {
   loginRoute,
   hcaptchaEnabled,
   hcaptchaSecretKey
-} = require('../config');
-const { Users } = require('../app/models');
+} = require('#config');
+const { Users } = require('#models');
 
 const policies = new Policies(
   {

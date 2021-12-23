@@ -15,11 +15,11 @@ const { isIP, isEmail, isURL } = require('validator');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const logger = require('../../helpers/logger');
-const config = require('../../config');
-const i18n = require('../../helpers/i18n');
 const Domains = require('./domain');
 const Users = require('./user');
+const logger = require('#helpers/logger');
+const config = require('#config');
+const i18n = require('#helpers/i18n');
 
 const app = new ForwardEmail({
   logger,

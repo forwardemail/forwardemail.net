@@ -15,11 +15,11 @@ const { boolean } = require('boolean');
 const { isIP, isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
-const logger = require('../../helpers/logger');
-const config = require('../../config');
-const i18n = require('../../helpers/i18n');
-const verificationRecordOptions = require('../../config/verification-record');
 const Users = require('./user');
+const logger = require('#helpers/logger');
+const config = require('#config');
+const i18n = require('#helpers/i18n');
+const verificationRecordOptions = require('#config/verification-record');
 
 const CACHE_TYPES = ['MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';

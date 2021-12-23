@@ -2,9 +2,9 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 
-const sendVerificationEmail = require('../../../../helpers/send-verification-email');
-const config = require('../../../../config');
-const { Users } = require('../../../models');
+const sendVerificationEmail = require('#helpers/send-verification-email');
+const config = require('#config');
+const { Users } = require('#models');
 
 async function create(ctx) {
   const { body } = ctx.request;
