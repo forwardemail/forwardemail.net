@@ -87,8 +87,7 @@ const User = new mongoose.Schema({
     lowercase: true,
     unique: true,
     validate: (value) => validator.isEmail(value)
-  },
-  default_domain: String
+  }
 });
 
 // additional variable based properties to add to the schema
@@ -122,6 +121,8 @@ object[config.userFields.fullEmail] = {
   required: true,
   trim: true
 };
+
+object[config.userFields.defaultDomain] = String;
 
 // api token for basic auth
 object[config.userFields.apiToken] = {

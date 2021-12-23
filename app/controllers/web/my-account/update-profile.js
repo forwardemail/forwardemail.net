@@ -49,6 +49,17 @@ async function updateProfile(ctx) {
     if (_.isString(body[config.passport.fields.familyName]))
       ctx.state.user[config.passport.fields.familyName] =
         body[config.passport.fields.familyName];
+    if (
+      _.isString(body[config.userFields.defaultDomain]) &&
+      (body[config.userFields.defaultDomain] === 'None' ||
+        ctx.state.domains.some(
+          (d) => d.name === body[config.userFields.defaultDomain]
+        ))
+    )
+      ctx.state.user[config.userFields.defaultDomain] =
+        body[config.userFields.defaultDomain] === 'None'
+          ? undefined
+          : body.default_domain;
 
     //
     // company information
