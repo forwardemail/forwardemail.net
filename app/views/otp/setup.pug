@@ -4,50 +4,50 @@ block body
   .container.py-3
     .row
       .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3.text-center
-        h1.my-3.py-3= t('Setup OTP')
-        .alert.alert-warning(role="alert")
+        h1.my-3.py-3= t("Setup OTP")
+        div(role="alert").alert.alert-warning
           i.fa.fa-exclamation-triangle
-          = ' '
-          = t('Download your emergency recovery keys below.')
-        textarea#otp-recovery-keys.form-control.text-monospace.text-center.rounded-bottom-0.border-dark(
+          = " "
+          = t("Download your emergency recovery keys below.")
+        textarea#otp-recovery-keys(
           rows="5"
-        )
+        ).form-control.text-monospace.text-center.rounded-bottom-0.border-dark
           each key, i in user[config.userFields.otpRecoveryKeys]
             = key
             if i !== user[config.userFields.otpRecoveryKeys].length - 1
               if i % 2
-                = '\n'
+                = "\n"
               else
-                = '    '
-        form(action=l('/my-account/recovery-keys'), method="POST")
+                = "    "
+        form(action=l("/my-account/recovery-keys"), method="POST")
           input(type="hidden", name="_csrf", value=ctx.csrf)
-          .d-flex.btn-group(role="group")
-            button.btn.btn-dark.rounded-top-0(type="submit")
+          div(role="group").d-flex.btn-group
+            button(type="submit").btn.btn-dark.rounded-top-0
               i.fa.fa-file-download
-              = ' '
-              = t('Download')
-            button.btn.btn-dark.rounded-top-0(
+              = " "
+              = t("Download")
+            button(
               type="button",
               data-toggle="clipboard",
-              data-clipboard-text=user[config.userFields.otpRecoveryKeys].join('\r\n')
-            )
+              data-clipboard-text=user[config.userFields.otpRecoveryKeys].join("\r\n")
+            ).btn.btn-dark.rounded-top-0
               i.fa.fa-clipboard
-              = ' '
-              = t('Copy')
+              = " "
+              = t("Copy")
         form(
           action=ctx.path,
           method="POST",
           autocomplete="off",
-          class=user[config.userFields.otpRecoveryKeys] ? '' : 'confirm-prompt'
+          class=user[config.userFields.otpRecoveryKeys] ? "" : "confirm-prompt"
         )
           input(type="hidden", name="_csrf", value=ctx.csrf)
           if user[config.userFields.hasSetPassword]
             .form-group.floating-label.mt-4
-              input#input-password.form-control.form-control-lg(
+              input#input-password(
                 type="password",
                 autocomplete="off",
                 name="password",
                 required
-              )
-              label(for="input-password")= t('Confirm Password')
-          button.btn.btn-primary.btn-lg.btn-block.mt-2(type="submit")= t('Continue')
+              ).form-control.form-control-lg
+              label(for="input-password")= t("Confirm Password")
+          button(type="submit").btn.btn-primary.btn-lg.btn-block.mt-2= t("Continue")

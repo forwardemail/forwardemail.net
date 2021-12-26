@@ -5,20 +5,20 @@ block content
     .row
       .col-12
         .card.d-block
-          h5.card-header.text-center= t('Help request')
+          h5.card-header.text-center= t("Help request")
           .card-body
             p.card-text
               if inquiry.is_email_only
-                = t('Thank you for submitting a help request on our website.  We will get back to you soon!')
+                = t("Thank you for submitting a help request on our website.  We will get back to you soon!")
               else
-                = t('Below is a copy of your request submitted on ')
-                = dayjs(inquiry.created_at).format('MM/DD/YY')
-                = t(' at ')
-                = dayjs(inquiry.created_at).format('h:mm A')
-                = '.'
+                = t("Below is a copy of your request submitted on ")
+                = dayjs(inquiry.created_at).format("MM/DD/YY")
+                = t(" at ")
+                = dayjs(inquiry.created_at).format("h:mm A")
+                = "."
                 hr
                 p: pre: code= inquiry.message
                 hr
                 br
-                = t('We will review your request and reply as soon as possible.')
-          .card-footer.text-center: small.text-muted= t('If you did not submit this request, then please reply to let us know.')
+                = t("We will review your request and reply as soon as possible.")
+          div: small.card-footer.text-center.text-muted= t("If you did not submit this request, then please reply to let us know.")

@@ -4,7 +4,7 @@ mixin paymentMethod(payment)
     |
     | PayPal
   else if payment.method === 'bitpay'
-    img.img-fluid(src=manifest('img/bitpay.svg'), alt="BitPay")
+    img(src=manifest("img/bitpay.svg"), alt="BitPay").img-fluid
   else
     case payment.method
       when 'amex'
@@ -21,10 +21,10 @@ mixin paymentMethod(payment)
         i.fa.fa-cc-visa
       default
         i.fa.fa-credit-card
-    = ' '
+    = " "
     = titleize(humanize(payment.method))
     if payment.last4
-      small= ' x'
+      small= " x"
       = payment.last4
     if payment.exp_month && payment.exp_year
       small.text-muted.text-uppercase= ` ${payment.exp_month}/${payment.exp_year.toString().slice(2)}`
