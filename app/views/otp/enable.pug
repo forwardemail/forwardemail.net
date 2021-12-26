@@ -1,142 +1,142 @@
 extends ../layout
 
 block body
-  #authenticator-apps-modal.modal.fade(tabindex="-1", role="dialog")
-    .modal-dialog.modal-lg(role="document")
+  #authenticator-apps-modal(tabindex="-1", role="dialog").modal.fade
+    div(role="document").modal-dialog.modal-lg
       .modal-content
         .modal-header
-          h1.h4.modal-title= t('Recommended Authenticator Apps')
-          button.close(type="button", data-dismiss="modal", aria-label="Close")
+          h1.h4.modal-title= t("Recommended Authenticator Apps")
+          button(type="button", data-dismiss="modal", aria-label="Close").close
             span(aria-hidden="true") &times;
         .modal-body
           table.table
             thead
               tr
-                th(scope="col")= t('App')
-                th(scope="col")= t('Links')
-                th.text-center(scope="col")= t('Open-Source')
+                th(scope="col")= t("App")
+                th(scope="col")= t("Links")
+                th(scope="col").text-center= t("Open-Source")
             tbody
               tr
-                td.align-middle: a(
+                td: a(
                   href="https://freeotp.github.io/",
                   rel="noopener noreferrer",
                   target="_blank"
-                ) FreeOTP
+                ).align-middle FreeOTP
                 td.align-middle
                   ul.list-inline.mb-0
                     li.list-inline-item.mb-1.mb-md-0
-                      a.btn.btn-sm.btn-outline-secondary(
+                      a(
                         href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp",
                         rel="noopener noreferrer",
                         target="_blank"
-                      )
+                      ).btn.btn-sm.btn-outline-secondary
                         i.fab.fa-google-play
-                        = ' '
-                        = t('Google Play')
+                        = " "
+                        = t("Google Play")
                     li.list-inline-item.mb-1.mb-md-0
-                      a.btn.btn-sm.btn-outline-secondary(
+                      a(
                         href="https://itunes.apple.com/us/app/freeotp-authenticator/id872559395?mt=8",
                         rel="noopener noreferrer",
                         target="_blank"
-                      )
+                      ).btn.btn-sm.btn-outline-secondary
                         i.fab.fa-app-store-ios
-                        = ' '
-                        = t('App Store')
+                        = " "
+                        = t("App Store")
                     li.list-inline-item
-                      a.btn.btn-sm.btn-outline-secondary(
+                      a(
                         href="https://f-droid.org/en/packages/org.fedorahosted.freeotp/",
                         rel="noopener noreferrer",
                         target="_blank"
-                      )
+                      ).btn.btn-sm.btn-outline-secondary
                         i.fab.fa-android
-                        = ' '
-                        = t('F-Droid')
-                td.align-middle.text-center: i.fa.fa-check-circle.text-success
+                        = " "
+                        = t("F-Droid")
+                td: i.align-middle.text-center.fa.fa-check-circle.text-success
               tr
-                td.align-middle: a(
+                td: a(
                   href="https://github.com/andOTP/andOTP",
                   rel="noopener noreferrer",
                   target="_blank"
-                ) andOTP
+                ).align-middle andOTP
                 td.align-middle
                   ul.list-inline.mb-0
                     li.list-inline-item.mb-1.mb-md-0
-                      a.btn.btn-sm.btn-outline-secondary(
+                      a(
                         href="https://f-droid.org/repo/org.shadowice.flocke.andotp_28.apk",
                         rel="noopener noreferrer",
                         target="_blank"
-                      )
+                      ).btn.btn-sm.btn-outline-secondary
                         i.fab.fa-google-play
-                        = ' '
-                        = t('Google Play')
+                        = " "
+                        = t("Google Play")
                     li.list-inline-item
-                      a.btn.btn-sm.btn-outline-secondary(
+                      a(
                         href="https://f-droid.org/en/packages/org.shadowice.flocke.andotp/",
                         rel="noopener noreferrer",
                         target="_blank"
-                      )
+                      ).btn.btn-sm.btn-outline-secondary
                         i.fab.fa-android
-                        = ' '
-                        = t('F-Droid')
-                td.align-middle.text-center: i.fa.fa-check-circle.text-success
+                        = " "
+                        = t("F-Droid")
+                td: i.align-middle.text-center.fa.fa-check-circle.text-success
               tr
-                td.align-middle: a(
+                td: a(
                   href="https://authy.com/",
                   rel="noopener noreferrer",
                   target="_blank"
-                ) Authy
+                ).align-middle Authy
                 td.align-middle
                   ul.list-inline.mb-0
                     li.list-inline-item.mb-1.mb-md-0
-                      a.btn.btn-sm.btn-outline-secondary(
+                      a(
                         href="https://play.google.com/store/apps/details?id=com.authy.authy",
                         rel="noopener noreferrer",
                         target="_blank"
-                      )
+                      ).btn.btn-sm.btn-outline-secondary
                         i.fab.fa-google-play
-                        = ' '
-                        = t('Google Play')
+                        = " "
+                        = t("Google Play")
                     li.list-inline-item
-                      a.btn.btn-sm.btn-outline-secondary(
+                      a(
                         href="https://itunes.apple.com/us/app/authy/id494168017",
                         rel="noopener noreferrer",
                         target="_blank"
-                      )
+                      ).btn.btn-sm.btn-outline-secondary
                         i.fab.fa-app-store-ios
-                        = ' '
-                        = t('App Store')
-                td.align-middle.text-center: i.fa.fa-times-circle.text-danger
+                        = " "
+                        = t("App Store")
+                td: i.align-middle.text-center.fa.fa-times-circle.text-danger
               tr
-                td.align-middle: a(
+                td: a(
                   href="https://support.google.com/accounts/answer/1066447",
                   rel="noopener noreferrer",
                   target="_blank"
-                ) Google Authenticator
+                ).align-middle Google Authenticator
                 td.align-middle
                   ul.list-inline.mb-0
                     li.list-inline-item.mb-1.mb-md-0
-                      a.btn.btn-sm.btn-outline-secondary(
+                      a(
                         href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2",
                         rel="noopener noreferrer",
                         target="_blank"
-                      )
+                      ).btn.btn-sm.btn-outline-secondary
                         i.fab.fa-google-play
-                        = ' '
-                        = t('Google Play')
+                        = " "
+                        = t("Google Play")
                     li.list-inline-item
-                      a.btn.btn-sm.btn-outline-secondary(
+                      a(
                         href="https://apps.apple.com/us/app/google-authenticator/id388497605",
                         rel="noopener noreferrer",
                         target="_blank"
-                      )
+                      ).btn.btn-sm.btn-outline-secondary
                         i.fab.fa-app-store-ios
-                        = ' '
-                        = t('App Store')
-                td.align-middle.text-center: i.fa.fa-times-circle.text-danger
+                        = " "
+                        = t("App Store")
+                td: i.align-middle.text-center.fa.fa-times-circle.text-danger
   .container.py-3
     .row
       .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3
-        h1.my-3.py-3.text-center= t('Setup OTP')
+        h1.my-3.py-3.text-center= t("Setup OTP")
         form(action=ctx.path, method="POST")
           input(type="hidden", name="_csrf", value=ctx.csrf)
           .form-group
@@ -144,39 +144,39 @@ block body
               != t('<strong>Step 1:</strong> Install and open an <a href="#" data-toggle="modal-anchor" data-target="#authenticator-apps-modal">authenticator app</a>.')
           .form-group
             label(for="otp-step-two")
-              != t('<strong>Step 2:</strong> Scan this QR code and enter its generated token:')
-            img.d-block.my-3(src=qrcode, width=250, height=250, alt="")
+              != t("<strong>Step 2:</strong> Scan this QR code and enter its generated token:")
+            img(src=qrcode, width=250, height=250, alt="").d-block.my-3
           .form-group.floating-label
-            input#input-token.form-control.form-control-lg.verification-form(
+            input#input-token(
               type="text",
               name="token",
               required,
               placeholder=" "
-            )
+            ).form-control.form-control-lg.verification-form
             label(for="input-token") Verification Token
           .form-group
-            a.btn.btn-link.text-center.text-primary(
+            a(
               href="#",
               data-toggle="collapse",
               data-target="#otp-copy"
-            )
-              = t('Can’t scan the QR code?  Configure with this code')
-              = ' '
+            ).btn.btn-link.text-center.text-primary
+              = t("Can’t scan the QR code?  Configure with this code")
+              = " "
               i.fa.fa-angle-down
             #otp-copy.collapse
               .input-group.input-group-lg.floating-label.form-group
-                input#otp-token.form-control(
+                input#otp-token(
                   type="text",
                   readonly,
                   value=user[config.passport.fields.otpToken]
-                )
+                ).form-control
                 .input-group-append
-                  button.btn.btn-dark(
+                  button(
                     type="button",
                     data-toggle="clipboard",
                     data-clipboard-target="#otp-token"
-                  )
+                  ).btn.btn-dark
                     i.fa.fa-clipboard
-                    = ' '
-                    = t('Copy')
-          button.btn.btn-lg.btn-block.btn-primary(type="submit")= t('Complete Setup')
+                    = " "
+                    = t("Copy")
+          button(type="submit").btn.btn-lg.btn-block.btn-primary= t("Complete Setup")
