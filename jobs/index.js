@@ -1,7 +1,7 @@
 // const dayjs = require('dayjs-with-plugins');
 const { boolean } = require('boolean');
 
-// const config = require('../config');
+// const config = require('#config');
 
 const jobs = [
   'migration',

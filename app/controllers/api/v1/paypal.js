@@ -3,8 +3,8 @@ const { promisify } = require('util');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
-const env = require('../../../../config/env');
-const { paypal } = require('../../../../helpers/paypal');
+const env = require('#config/env');
+const { paypal } = require('#helpers/paypal');
 
 // <https://developer.paypal.com/docs/api-basics/notifications/webhooks/>
 async function webhook(ctx) {

@@ -2,8 +2,8 @@ const Router = require('@koa/router');
 const render = require('koa-views-render');
 const paginate = require('koa-ctx-paginate');
 
-const policies = require('../../helpers/policies');
-const web = require('../../app/controllers/web');
+const policies = require('#helpers/policies');
+const web = require('#controllers/web');
 
 const router = new Router({ prefix: '/my-account' });
 

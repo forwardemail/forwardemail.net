@@ -11,9 +11,9 @@ const { JSDOM } = require('jsdom');
 const { isIP, isEmail } = require('validator');
 
 const exec = util.promisify(childProcess.exec);
-const config = require('../../../config');
-const markdown = require('../../../helpers/markdown');
-const logger = require('../../../helpers/logger');
+const config = require('#config');
+const markdown = require('#helpers/markdown');
+const logger = require('#helpers/logger');
 
 const REGEX_404 = new RE2(/"statusCode": 404,/g);
 const REGEX_ALIAS_ID = new RE2(/ALIAS_ID/g);

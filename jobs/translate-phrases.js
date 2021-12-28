@@ -1,13 +1,13 @@
 // eslint-disable-next-line import/no-unassigned-import
-require('../config/env');
+require('#config/env');
 
 const { parentPort } = require('worker_threads');
 
 const Mandarin = require('mandarin');
 const I18N = require('@ladjs/i18n');
 
-const i18nConfig = require('../config/i18n');
-const logger = require('../helpers/logger');
+const i18nConfig = require('#config/i18n');
+const logger = require('#helpers/logger');
 
 //
 // NOTE: we want our own instance of i18n that does not auto reload files

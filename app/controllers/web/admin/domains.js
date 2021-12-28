@@ -1,7 +1,7 @@
 const Boom = require('@hapi/boom');
 const paginate = require('koa-ctx-paginate');
 
-const { Domains } = require('../../../models');
+const { Domains } = require('#models');
 
 async function list(ctx) {
   const query = {};

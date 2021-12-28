@@ -3,9 +3,9 @@ const ForwardEmail = require('forward-email');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 
-const logger = require('../../../../helpers/logger');
-const config = require('../../../../config');
-const Domains = require('../../../models/domain');
+const logger = require('#helpers/logger');
+const config = require('#config');
+const Domains = require('#models/domain');
 
 const app = new ForwardEmail({
   logger,

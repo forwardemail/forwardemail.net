@@ -1,10 +1,9 @@
 const { Buffer } = require('buffer');
 const test = require('ava');
 
-const config = require('../../config');
-const phrases = require('../../config/phrases');
-
 const utils = require('../utils');
+const config = require('#config');
+const phrases = require('#config/phrases');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);

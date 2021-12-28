@@ -8,8 +8,8 @@ const proxyquire = require('proxyquire');
 const { factory, MongooseAdapter } = require('factory-girl');
 
 // Models and server
-const config = require('../config');
-const { Users } = require('../app/models');
+const config = require('#config');
+const { Users } = require('#models');
 
 const adapter = new MongooseAdapter();
 

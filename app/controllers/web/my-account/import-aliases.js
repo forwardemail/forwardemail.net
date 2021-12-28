@@ -4,7 +4,7 @@ const isFQDN = require('is-fqdn');
 const { boolean } = require('boolean');
 const { isEmail, isIP } = require('validator');
 
-const { Domains, Aliases } = require('../../../models');
+const { Domains, Aliases } = require('#models');
 
 // eslint-disable-next-line complexity
 async function importAliases(ctx) {

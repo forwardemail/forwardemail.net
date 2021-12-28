@@ -2,10 +2,10 @@ const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const { boolean } = require('boolean');
 
-const config = require('../../config');
-const parseLoginSuccessRedirect = require('../../helpers/parse-login-success-redirect');
-const passport = require('../../helpers/passport');
-const web = require('../../app/controllers/web');
+const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
+const passport = require('#helpers/passport');
+const config = require('#config');
+const web = require('#controllers/web');
 
 const router = new Router({ prefix: '/auth' });
 

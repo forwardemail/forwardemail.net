@@ -3,7 +3,7 @@ const isSANB = require('is-string-and-not-blank');
 const qrcode = require('qrcode');
 const { authenticator } = require('otplib');
 
-const config = require('../../../../config');
+const config = require('#config');
 
 const options = { width: 500, margin: 0 };
 

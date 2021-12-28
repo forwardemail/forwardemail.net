@@ -13,57 +13,57 @@ include ../../_pagination
           +sortHeader('plan', 'Plan', '#table-domains')
         th(scope="col")
           +sortHeader('max_recipients_per_alias', 'Max Recipients', '#table-domains')
-        th.text-center.align-middle(scope="col")= t('Actions')
+        th(scope="col").text-center.align-middle= t("Actions")
       tbody
         if domains.length === 0
           tr
-            td.alert.alert-info(colspan="5")
-              = t('No domains exist for that search.')
+            td(colspan="5").alert.alert-info
+              = t("No domains exist for that search.")
         else
           each domain in domains
             tr
               td.align-middle
-                .markdown-body.ml-0.mr-0: code= domain.name
-              td.align-middle.text-center
+                div: code= domain.name
+              td.markdown-body.ml-0.mr-0.align-middle.text-center
                 if domain.is_global
                   i.fa.fa-fw.fa-check.fa-2x.text-success
               td.align-middle.text-center
                 = t(titleize(humanize(domain.plan)))
               td.align-middle.text-center
-                form.ajax-form.confirm-prompt.d-inline-block(
+                form(
                   action=l(`/admin/domains/${domain.id}`),
                   method="POST",
                   autocomplete="off"
-                )
+                ).ajax-form.confirm-prompt.d-inline-block
                   input(type="hidden", name="_csrf", value=ctx.csrf)
                   input(type="hidden", name="_method", value="PUT")
                   .input-group
-                    input.form-control(
+                    input(
                       type="number",
                       min=0,
                       max=1000,
                       step=10,
                       name="max_recipients_per_alias",
                       value=domain.max_recipients_per_alias
-                    )
+                    ).form-control
                     .input-group-append
-                      button.btn.btn-sm.btn-dark(
+                      button(
                         type="submit",
                         data-toggle="tooltip",
-                        data-title=t('Update')
-                      ): i.fa.fa-fw.fa-save
+                        data-title=t("Update")
+                      ).btn.btn-sm.btn-dark: i.fa.fa-fw.fa-save
               td.align-middle
-                .btn-group(role="group", aria-label=t('Actions'))
-                  form.ajax-form.confirm-prompt.btn-group(
+                div(role="group", aria-label=t("Actions")).btn-group
+                  form(
                     action=l(`/admin/domains/${domain.id}`),
                     method="POST",
                     autocomplete="off"
-                  )
+                  ).ajax-form.confirm-prompt.btn-group
                     input(type="hidden", name="_csrf", value=ctx.csrf)
                     input(type="hidden", name="_method", value="DELETE")
-                    button.btn.btn-secondary(
+                    button(
                       type="submit",
                       data-toggle="tooltip",
-                      data-title=t('Remove')
-                    ): i.fa.fa-fw.fa-remove
+                      data-title=t("Remove")
+                    ).btn.btn-secondary: i.fa.fa-fw.fa-remove
 +paginate('#table-domains')

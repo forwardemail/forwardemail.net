@@ -5,9 +5,9 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const validator = require('validator');
 
-const email = require('../../../helpers/email');
-const { Inquiries } = require('../../models');
-const config = require('../../../config');
+const email = require('#helpers/email');
+const { Inquiries } = require('#models');
+const config = require('#config');
 
 async function help(ctx) {
   let { body } = ctx.request;

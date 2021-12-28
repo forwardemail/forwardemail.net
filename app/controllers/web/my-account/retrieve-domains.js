@@ -2,8 +2,8 @@ const RE2 = require('re2');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 
-const config = require('../../../../config');
-const { Domains, Aliases } = require('../../../models');
+const config = require('#config');
+const { Domains, Aliases } = require('#models');
 
 async function retrieveDomains(ctx, next) {
   ctx.state.domains = [];

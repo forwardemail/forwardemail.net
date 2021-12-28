@@ -1,5 +1,5 @@
 mixin sortHeader(name, text, tableSelector)
-  - const classes = tableSelector ? 'ajax-form table-ajax-form' : '';
+  - const classes = tableSelector ? "ajax-form table-ajax-form" : "";
   -
     const sort = ctx.query.sort === name
       ? `-${name}`
@@ -12,18 +12,18 @@ mixin sortHeader(name, text, tableSelector)
   form(
     class=classes,
     action=ctx.path,
-    method='GET',
+    method="GET",
     data-table=tableSelector,
-    data-search-params='sort'
+    data-search-params="sort"
   )
     if tableSelector
       input(type="hidden", name="_csrf", value=ctx.csrf)
-      input(type="hidden", name="sort", value=sort ? sort : '')
-    button.btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold(
+      input(type="hidden", name="sort", value=sort ? sort : "")
+    button(
       type="submit"
-    )
-      = t(text ? text : name.replace('_', ' '))
-      = ' '
-      i.fas(
-        class=sort === `-${name}` ? 'fa-sort-up' : sort === name ? 'fa-sort' : 'fa-sort-down'
-      )
+    ).btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold
+      = t(text ? text : name.replace("_", " "))
+      = " "
+      i(
+        class=sort === `-${name}` ? "fa-sort-up" : sort === name ? "fa-sort" : "fa-sort-down"
+      ).fas

@@ -12,8 +12,8 @@ const slug = require('speakingurl');
 const striptags = require('striptags');
 const { Client, Env, Tokens, Models, Currency } = require('bitpay-sdk');
 
-const env = require('../../../../config/env');
-const config = require('../../../../config');
+const env = require('#config/env');
+const config = require('#config');
 
 const payPalClient = new checkoutNodeJssdk.core.PayPalHttpClient(
   config.payments.paypalCheckoutSdkConfig

@@ -2,10 +2,9 @@ const ObjectID = require('bson-objectid');
 const _ = require('lodash');
 const pickOriginal = require('@ladjs/pick-original');
 
-const { Aliases, Users } = require('../../../models');
-const toObject = require('../../../../helpers/to-object');
-
 const { _domainJSON } = require('./domains');
+const { Aliases, Users } = require('#models');
+const toObject = require('#helpers/to-object');
 
 function json(alias) {
   const object = toObject(Aliases, alias);

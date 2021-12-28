@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unassigned-import
-require('../config/env');
+require('#config/env');
 
 const { parentPort } = require('worker_threads');
 
@@ -9,10 +9,10 @@ const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const sharedConfig = require('@ladjs/shared-config');
 
-const config = require('../config');
-const email = require('../helpers/email');
-const logger = require('../helpers/logger');
-const { Users, Domains } = require('../app/models');
+const config = require('#config');
+const email = require('#helpers/email');
+const logger = require('#helpers/logger');
+const { Users, Domains } = require('#models');
 
 const breeSharedConfig = sharedConfig('BREE');
 

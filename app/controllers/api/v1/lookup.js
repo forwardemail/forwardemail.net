@@ -4,9 +4,9 @@ const isSANB = require('is-string-and-not-blank');
 const RE2 = require('re2');
 const regexParser = require('regex-parser');
 
-const config = require('../../../../config');
-const Domains = require('../../../models/domain');
-const Aliases = require('../../../models/alias');
+const config = require('#config');
+const Domains = require('#models/domain');
+const Aliases = require('#models/alias');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 

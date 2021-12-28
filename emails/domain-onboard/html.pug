@@ -5,64 +5,64 @@ block content
     .row
       .col-12
         .card.d-block.text-center
-          h5.card-header= t('Welcoming your domain!')
+          h5.card-header= t("Welcoming your domain!")
           .card-body.text-center.p-0
             a(
               href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
             )
-              img.img-responsive(
+              img(
                 src=`${config.urls.web}/img/emails/domain-onboard.gif`,
                 alt="",
                 data-inline-ignore
-              )
+              ).img-responsive
             .p-3
-              h1.h3!= t('Woo-hoo!')
+              h1.h3!= t("Woo-hoo!")
               p.card-text!= t('<span class="notranslate">%s</span> you added the domain <strong><span class="notranslate">%s</span></strong>.', capitalize(dayjs(domain.created_at).fromNow()), domain.name)
-              a.btn.btn-lg.btn-primary(
+              a(
                 href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
                 role="button"
-              )
-                = t('Manage domain')
+              ).btn.btn-lg.btn-primary
+                = t("Manage domain")
             if domain.plan === 'free'
               .p-3
-                h2.h5= t('Did you want enhanced privacy and protection?')
+                h2.h5= t("Did you want enhanced privacy and protection?")
                 p.card-text
-                  != t('Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.')
-                  = ' '
-                  = t('If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.')
-                  = ' '
+                  != t("Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.")
+                  = " "
+                  = t("If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.")
+                  = " "
                   != t('<strong><a href="%s">Click here to learn more</a></strong> about our Enhanced Protection and Team plans.', `${config.urls.web}/${locale}/pricing`)
             .p-3
-              h2.h5= t('Did you have any questions or requests?')
-              p.card-text= t('Our support team is always here to help you. Feel free to reply directly to this email. Our response time is usually within minutes!')
+              h2.h5= t("Did you have any questions or requests?")
+              p.card-text= t("Our support team is always here to help you. Feel free to reply directly to this email. Our response time is usually within minutes!")
             .p-3
               h2.h5
                 if mx && txt
-                  = t('Your domain is already verified!')
+                  = t("Your domain is already verified!")
                 else
-                  = t('Need help with domain verification?')
+                  = t("Need help with domain verification?")
               p.card-text
                 if mx && txt
                   = t("Nice work! Let us know if you have any issues or questions. We'd like you to be a customer for life!")
                 else
                   = t("Your domain's DNS records haven't yet propagated or may not be configured properly.")
-                  = ' '
+                  = " "
                   = t("If we automatically detect that this changes, then we'll immediately notify you by email.")
-                  = ' '
+                  = " "
                   != t('Please <strong><a href="%s">read this FAQ section</a></strong> for more information on how to resolve this.', `${config.urls.web}/${locale}/faq#how-do-i-get-started-and-set-up-email-forwarding`)
             .px-3.py-5.bg-dark.mt-3
-              h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t('Verification Status')
-              ul.list-inline(class=mx && txt ? '' : 'mb-3')
+              h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
+              ul(class=mx && txt ? "" : "mb-3").list-inline
                 li.list-inline-item.mr-5
-                  = emoji(mx ? 'white_check_mark' : 'x')
-                  .mt-2.text-monospace.text-uppercase.text-white= t('MX Records')
+                  = emoji(mx ? "white_check_mark" : "x")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("MX Records")
                 li.list-inline-item
-                  = emoji(txt ? 'white_check_mark' : 'x')
-                  .mt-2.text-monospace.text-uppercase.text-white= t('TXT Records')
+                  = emoji(txt ? "white_check_mark" : "x")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("TXT Records")
               if !mx || !txt
-                a.btn.btn-lg.btn-success(
+                a(
                   href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
                   role="button"
-                )
-                  = t('Verify Records')
-          .card-footer: small.text-muted= t('If you have any questions or comments, then please let us know')
+                ).btn.btn-lg.btn-success
+                  = t("Verify Records")
+          div: small.card-footer.text-muted= t("If you have any questions or comments, then please let us know")

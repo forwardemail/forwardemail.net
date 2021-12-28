@@ -2,8 +2,8 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const parseDomain = require('parse-domain');
 
-const email = require('../../../../helpers/email');
-const { SPFErrors } = require('../../../models');
+const email = require('#helpers/email');
+const { SPFErrors } = require('#models');
 
 const props = [
   'remote_address',
