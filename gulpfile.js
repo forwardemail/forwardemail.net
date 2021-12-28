@@ -5,7 +5,7 @@ process.env.I18N_AUTO_RELOAD = false;
 process.env.I18N_UPDATE_FILES = true;
 
 // eslint-disable-next-line import/no-unassigned-import
-require('#controllers/env');
+require('#config/env');
 
 const path = require('path');
 const fs = require('fs');
