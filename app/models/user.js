@@ -122,6 +122,11 @@ object[config.userFields.fullEmail] = {
   trim: true
 };
 
+object[config.userFields.defaultDomain] = {
+  type: mongoose.Schema.ObjectId,
+  ref: 'Domain'
+};
+
 // api token for basic auth
 object[config.userFields.apiToken] = {
   type: String,
