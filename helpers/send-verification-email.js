@@ -1,8 +1,8 @@
 const Boom = require('@hapi/boom');
 
-const config = require('../config');
 const email = require('./email');
 const logger = require('./logger');
+const config = require('#config');
 
 async function sendVerificationEmail(ctx) {
   ctx.state.user = await ctx.state.user.sendVerificationEmail(ctx);

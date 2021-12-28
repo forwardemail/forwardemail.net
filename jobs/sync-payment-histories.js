@@ -13,13 +13,13 @@ const ms = require('ms');
 const dedent = require('dedent');
 const dayjs = require('dayjs-with-plugins');
 
-const env = require('../config/env');
-const config = require('../config');
-const emailHelper = require('../helpers/email');
-const { paypalAgent } = require('../helpers/paypal');
-const logger = require('../helpers/logger');
-const Users = require('../app/models/user');
-const Payments = require('../app/models/payment');
+const env = require('#config/env');
+const config = require('#config');
+const emailHelper = require('#helpers/email');
+const { paypalAgent } = require('#helpers/paypal');
+const logger = require('#helpers/logger');
+const Users = require('#models/user');
+const Payments = require('#models/payment');
 
 const breeSharedConfig = sharedConfig('BREE');
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);

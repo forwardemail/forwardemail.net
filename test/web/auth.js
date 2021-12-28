@@ -4,9 +4,8 @@ const test = require('ava');
 const cryptoRandomString = require('crypto-random-string');
 const { factory } = require('factory-girl');
 
-const phrases = require('../../config/phrases');
-
 const utils = require('../utils');
+const phrases = require('#config/phrases');
 
 test.before(utils.setupMongoose);
 test.before(utils.defineUserFactory);

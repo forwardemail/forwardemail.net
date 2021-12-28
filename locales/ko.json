@@ -1729,8 +1729,11 @@
   "Payment type must be one-time.": "지불 유형은 일회성이어야 합니다.",
   "Missing stripe subscription or customer id for stripe billing portal.": "스트라이프 청구 포털에 대한 스트라이프 구독 또는 고객 ID가 누락되었습니다.",
   "Payment via BitPay was not enough.": "BitPay를 통한 결제로는 충분하지 않습니다.",
-  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
-  "free global vanity domains": "free global vanity domains",
-  " (as this could be a security vulnerability).": " (as this could be a security vulnerability).",
-  ", the author of the ": ", the author of the "
+  "Regular expressions are not supported on ": "정규식은 지원되지 않습니다.",
+  "free global vanity domains": "무료 글로벌 베니티 도메인",
+  " (as this could be a security vulnerability).": " (보안 취약점이 될 수 있으므로).",
+  ", the author of the ": ", 저자",
+  "Please set a password on your account to continue.": "계속하려면 계정에 비밀번호를 설정하세요.",
+  "Email change request does not exist.": "이메일 변경 요청이 존재하지 않습니다.",
+  "Email change request has been cancelled.": "이메일 변경 요청이 취소되었습니다."
 }

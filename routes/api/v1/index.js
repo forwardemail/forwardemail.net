@@ -1,8 +1,8 @@
 const Router = require('@koa/router');
 
-const policies = require('../../../helpers/policies');
-const api = require('../../../app/controllers/api');
-const web = require('../../../app/controllers/web');
+const policies = require('#helpers/policies');
+const api = require('#controllers/api');
+const web = require('#controllers/web');
 
 const router = new Router({
   prefix: '/v1'

@@ -1,4 +1,6 @@
 module.exports = {
+  extends: '@ladjs/pug-lint-config-lad',
+
   // <https://github.com/pugjs/pug-lint/blob/master/docs/rules.md>
   disallowAttributeConcatentation: true,
   disallowAttributeInterpolation: true,
@@ -14,7 +16,6 @@ module.exports = {
   requireLowerCaseTags: true,
   requireSpaceAfterCodeOperator: true,
   requireStrictEqualityOperators: true,
-  validateDivTags: true,
   validateIndentation: 2,
   validateLineBreaks: 'LF',
   validateSelfClosingTags: true,

@@ -2,7 +2,7 @@ const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const isSANB = require('is-string-and-not-blank');
 
-const env = require('../../../../config/env');
+const env = require('#config/env');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 

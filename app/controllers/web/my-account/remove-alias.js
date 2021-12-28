@@ -1,4 +1,4 @@
-const { Aliases } = require('../../../models');
+const { Aliases } = require('#models');
 
 async function removeAlias(ctx, next) {
   await Aliases.findByIdAndRemove(ctx.state.alias._id);

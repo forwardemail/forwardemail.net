@@ -1507,8 +1507,11 @@
   "Payment type must be one-time.": "Maksutyypin on oltava kertaluonteinen.",
   "Missing stripe subscription or customer id for stripe billing portal.": "Raidan laskutusportaalin raitatilaus tai asiakastunnus puuttuu.",
   "Payment via BitPay was not enough.": "Maksu BitPaylla ei riittänyt.",
-  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
-  "free global vanity domains": "free global vanity domains",
-  " (as this could be a security vulnerability).": " (as this could be a security vulnerability).",
-  ", the author of the ": ", the author of the "
+  "Regular expressions are not supported on ": "Säännöllisiä lausekkeita ei tueta",
+  "free global vanity domains": "ilmaiset maailmanlaajuiset turhamaiset verkkotunnukset",
+  " (as this could be a security vulnerability).": " (koska tämä voi olla tietoturvaheikkous).",
+  ", the author of the ": ", kirjoittaja",
+  "Please set a password on your account to continue.": "Aseta salasana tilillesi jatkaaksesi.",
+  "Email change request does not exist.": "Sähköpostin muutospyyntöä ei ole olemassa.",
+  "Email change request has been cancelled.": "Sähköpostin muutospyyntö on peruutettu."
 }

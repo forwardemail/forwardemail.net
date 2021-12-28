@@ -9,14 +9,14 @@ block body
         .card
           .card-body
             .text-center
-              h1.card-title.h4= t('Register a domain name')
-              p= t('Enter a custom domain name below to register.')
+              h1.card-title.h4= t("Register a domain name")
+              p= t("Enter a custom domain name below to register.")
             form(
               target="_blank",
               action="https://www.anrdoezrs.net/links/9237059/type/dlg/https://www.namecheap.com/domains/registration/results.aspx"
             )
               .form-group.floating-label
-                input#input-domain.form-control.form-control-lg(
+                input#input-domain(
                   name="domain",
                   autocomplete="off",
                   placeholder="example.com",
@@ -24,7 +24,7 @@ block body
                   spellcheck="false",
                   autocapitalize="off",
                   type="text"
-                )
-                label(for="input-domain")= t('Domain name')
-              button.btn.btn-success.btn-block.btn-lg(type="submit")= t('Continue')
+                ).form-control.form-control-lg
+                label(for="input-domain")= t("Domain name")
+              button(type="submit").btn.btn-success.btn-block.btn-lg= t("Continue")
   +onboard(t('Did you finish registering?'), t('Simply enter your domain below to setup free email forwarding.'), l('/faq?redirect_to_domain=true'), false, 'border-top').d-flex.flex-column.flex-grow-1.justify-content-end

@@ -9,13 +9,13 @@ const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
 
-const Users = require('../../models/user');
-const config = require('../../../config');
-const email = require('../../../helpers/email');
-const parseLoginSuccessRedirect = require('../../../helpers/parse-login-success-redirect');
-const passport = require('../../../helpers/passport');
-const sendVerificationEmail = require('../../../helpers/send-verification-email');
-const { Inquiries } = require('../../models');
+const Users = require('#models/user');
+const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
+const passport = require('#helpers/passport');
+const email = require('#helpers/email');
+const sendVerificationEmail = require('#helpers/send-verification-email');
+const config = require('#config');
+const { Inquiries } = require('#models');
 
 const options = { length: 10, type: 'numeric' };
 

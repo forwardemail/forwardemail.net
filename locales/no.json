@@ -1729,8 +1729,11 @@
   "Payment type must be one-time.": "Betalingstype må være engangs.",
   "Missing stripe subscription or customer id for stripe billing portal.": "Mangler stripeabonnement eller kunde -ID for stripefaktureringsportal.",
   "Payment via BitPay was not enough.": "Betaling via BitPay var ikke nok.",
-  "Regular expressions are not supported on ": "Regular expressions are not supported on ",
-  "free global vanity domains": "free global vanity domains",
-  " (as this could be a security vulnerability).": " (as this could be a security vulnerability).",
-  ", the author of the ": ", the author of the "
+  "Regular expressions are not supported on ": "Vanlige uttrykk støttes ikke på",
+  "free global vanity domains": "gratis globale forfengelighetsdomener",
+  " (as this could be a security vulnerability).": " (da dette kan være et sikkerhetsproblem).",
+  ", the author of the ": ", forfatteren av",
+  "Please set a password on your account to continue.": "Angi et passord på kontoen din for å fortsette.",
+  "Email change request does not exist.": "E-postendringsforespørsel eksisterer ikke.",
+  "Email change request has been cancelled.": "Forespørsel om endring av e-post er kansellert."
 }

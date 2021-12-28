@@ -6,8 +6,8 @@ const splitLines = require('split-lines');
 const { boolean } = require('boolean');
 const { isIP } = require('validator');
 
-const toObject = require('../../../../helpers/to-object');
-const { Users, Domains, Aliases } = require('../../../models');
+const toObject = require('#helpers/to-object');
+const { Users, Domains, Aliases } = require('#models');
 
 // eslint-disable-next-line complexity
 async function createDomain(ctx, next) {

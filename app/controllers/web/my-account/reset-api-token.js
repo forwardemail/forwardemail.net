@@ -1,4 +1,4 @@
-const config = require('../../../../config');
+const config = require('#config');
 
 async function resetAPIToken(ctx) {
   ctx.state.user[config.userFields.apiToken] = null;

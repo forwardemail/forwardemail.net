@@ -1,7 +1,7 @@
 const Boom = require('@hapi/boom');
 const auth = require('basic-auth');
 
-const env = require('../../../../config/env');
+const env = require('#config/env');
 
 async function restricted(ctx, next) {
   const credentials = auth(ctx.req);

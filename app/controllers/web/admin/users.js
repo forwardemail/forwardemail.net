@@ -2,8 +2,8 @@ const Boom = require('@hapi/boom');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
 
-const { Users } = require('../../../models');
-const config = require('../../../../config');
+const { Users } = require('#models');
+const config = require('#config');
 
 const USER_SEARCH_PATHS = [
   'email',

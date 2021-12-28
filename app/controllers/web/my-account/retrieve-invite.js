@@ -1,7 +1,7 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
-const { Domains } = require('../../../models');
+const { Domains } = require('#models');
 
 async function retrieveInvite(ctx) {
   if (!isSANB(ctx.params.domain_id))

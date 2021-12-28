@@ -3,18 +3,20 @@ const { factory } = require('factory-girl');
 const _ = require('lodash');
 const { authenticator } = require('otplib');
 
-const config = require('../../config');
-const phrases = require('../../config/phrases');
-const { Users } = require('../../app/models');
 // if default authenticator options in #ladjs/passport or
 // config sets authenticator options for otp
 // these settings will need to be changed
+
 authenticator.options = {
   crypto: require('crypto'),
   step: 30
 };
 
 const utils = require('../utils');
+
+const config = require('#config');
+const { Users } = require('#models');
+const phrases = require('#config/phrases');
 
 test.before(utils.setupMongoose);
 test.before(utils.defineUserFactory);

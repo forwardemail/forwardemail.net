@@ -3,8 +3,8 @@ const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 
-const config = require('../../../../config');
-const emailHelper = require('../../../../helpers/email');
+const emailHelper = require('#helpers/email');
+const config = require('#config');
 
 async function resendEmailChange(ctx) {
   // if no email change request exists throw an error

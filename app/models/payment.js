@@ -11,8 +11,8 @@ const titleize = require('titleize');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const config = require('../../config');
-const i18n = require('../../helpers/i18n');
+const config = require('#config');
+const i18n = require('#helpers/i18n');
 
 const Payment = new mongoose.Schema({
   user: {

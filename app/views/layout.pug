@@ -1,5 +1,5 @@
 doctype html
-html.h-100(lang=locale)
+html(lang=locale).h-100
   head
     block meta
       meta(charset="utf-8")
@@ -27,36 +27,36 @@ html.h-100(lang=locale)
       link(
         rel="apple-touch-icon",
         sizes="152x152",
-        href=manifest('img/apple-touch-icon.png'),
-        integrity=manifest('img/apple-touch-icon.png', 'integrity'),
+        href=manifest("img/apple-touch-icon.png"),
+        integrity=manifest("img/apple-touch-icon.png", "integrity"),
         crossorigin="anonymous"
       )
       link(
         rel="icon",
         type="image/png",
-        href=manifest('img/favicon-32x32.png'),
+        href=manifest("img/favicon-32x32.png"),
         sizes="32x32",
-        integrity=manifest('img/favicon-32x32.png', 'integrity'),
+        integrity=manifest("img/favicon-32x32.png", "integrity"),
         crossorigin="anonymous"
       )
       link(
         rel="icon",
         type="image/png",
-        href=manifest('img/favicon-16x16.png'),
+        href=manifest("img/favicon-16x16.png"),
         sizes="16x16",
-        integrity=manifest('img/favicon-16x16.png', 'integrity'),
+        integrity=manifest("img/favicon-16x16.png", "integrity"),
         crossorigin="anonymous"
       )
       link(
         rel="manifest",
-        href=manifest('site.webmanifest'),
-        integrity=manifest('site.webmanifest', 'integrity'),
+        href=manifest("site.webmanifest"),
+        integrity=manifest("site.webmanifest", "integrity"),
         crossorigin="anonymous"
       )
       link(
         rel="mask-icon",
-        href=manifest('img/safari-pinned-tab.svg'),
-        integrity=manifest('img/safari-pinned-tab.svg', 'integrity'),
+        href=manifest("img/safari-pinned-tab.svg"),
+        integrity=manifest("img/safari-pinned-tab.svg", "integrity"),
         color=config.appColor,
         crossorigin="anonymous"
       )
@@ -68,7 +68,7 @@ html.h-100(lang=locale)
       //- csrf token
       meta(name="csrf-token", content=ctx.csrf)
       script.
-        window._csrf = '#{ctx.csrf}';
+        window._csrf = "#{ctx.csrf}";
 
       //- associate with wikipedia
       script(type="application/ld+json").
@@ -87,8 +87,8 @@ html.h-100(lang=locale)
       link(
         rel="image_src",
         type="image/png",
-        href=manifest('img/social.png'),
-        integrity=manifest('img/social.png', 'integrity'),
+        href=manifest("img/social.png"),
+        integrity=manifest("img/social.png", "integrity"),
         crossorigin="anonymous"
       )
       meta(property="og:title", content=meta.title)
@@ -111,8 +111,8 @@ html.h-100(lang=locale)
     block stylesheets
       link(
         rel="stylesheet",
-        href=manifest('css/app.css'),
-        integrity=manifest('css/app.css', 'integrity'),
+        href=manifest("css/app.css"),
+        integrity=manifest("css/app.css", "integrity"),
         crossorigin="anonymous"
       )
 
@@ -178,11 +178,11 @@ html.h-100(lang=locale)
 
       //- set the locale to be used by front-end assets
       script.
-        window.LOCALE = '#{locale}';
+        window.LOCALE = "#{locale}";
 
       //- set the API endpoint to be used by front-end assets
       script.
-        window.API_URL = '#{config.urls.api}';
+        window.API_URL = "#{config.urls.api}";
 
       //- set the user and API key to be used by CabinJS
       if config.env !== 'test'
@@ -190,23 +190,23 @@ html.h-100(lang=locale)
         if user
           script.
             window.USER = {
-              id: '#{user.id}',
-              name: '#{user[config.passport.fields.displayName]}',
-              email: '#{user.email}',
+              id: "#{user.id}",
+              name: "#{user[config.passport.fields.displayName]}",
+              email: "#{user.email}",
             };
-            window.API_TOKEN = '#{user[config.userFields.apiToken]}';
+            window.API_TOKEN = "#{user[config.userFields.apiToken]}";
         else
           script.
             window.USER = {
-              id: '#{ctx.sessionId}',
+              id: "#{ctx.sessionId}",
             };
 
       //- build
       if !isBot(ctx.get('User-Agent'))
         script(
           defer,
-          src=manifest('js/build.js'),
-          integrity=manifest('js/build.js', 'integrity'),
+          src=manifest("js/build.js"),
+          integrity=manifest("js/build.js", "integrity"),
           crossorigin="anonymous"
         )
         //- analytics via plausible.io
@@ -216,9 +216,9 @@ html.h-100(lang=locale)
           src="https://plausible.io/js/plausible.js"
         )
 
-  body.d-flex.flex-column.min-h-100(role="document")
-    - const isHelp = ctx.pathWithoutLocale === '/help';
-    - const isRegisterOrLogin = ['/register', config.loginRoute].includes(ctx.pathWithoutLocale);
+  body(role="document").d-flex.flex-column.min-h-100
+    - const isHelp = ctx.pathWithoutLocale === "/help";
+    - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
 
     //- spinner
     block spinner
@@ -228,7 +228,7 @@ html.h-100(lang=locale)
       include _nav
 
     //- body
-    main.flex-grow-1.d-flex.flex-column.flex-grow-1(role="main")
+    main(role="main").flex-grow-1.d-flex.flex-column.flex-grow-1
       block body
 
     //- footer

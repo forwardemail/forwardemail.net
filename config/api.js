@@ -1,9 +1,9 @@
 const sharedConfig = require('@ladjs/shared-config');
 
-const i18n = require('../helpers/i18n');
-const logger = require('../helpers/logger');
-const passport = require('../helpers/passport');
 const routes = require('../routes');
+const i18n = require('#helpers/i18n');
+const logger = require('#helpers/logger');
+const passport = require('#helpers/passport');
 
 module.exports = {
   ...sharedConfig('API'),

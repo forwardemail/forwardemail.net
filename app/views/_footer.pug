@@ -5,153 +5,153 @@ footer.mt-auto
         .row
           if !user
             .col-6
-              a.btn.btn-dark.text-uppercase.font-weight-bold(
-                href=l('/register'),
+              a(
+                href=l("/register"),
                 role="button",
                 data-toggle="modal-anchor",
                 data-target="#modal-sign-up"
-              )
-                = t('Sign up')
-                = ' '
+              ).btn.btn-dark.text-uppercase.font-weight-bold
+                = t("Sign up")
+                = " "
                 i.fa.fa-angle-double-right
-          div(class=user ? 'col-12' : 'col-6')
-            a.btn.btn-dark.text-uppercase.font-weight-bold(
-              href=l('/help'),
-              role=isHelp ? 'link' : 'button',
-              data-target=isHelp ? '' : '#modal-help'
-            )= t('Need help?')
+          div(class=user ? "col-12" : "col-6")
+            a(
+              href=l("/help"),
+              role=isHelp ? "link" : "button",
+              data-target=isHelp ? "" : "#modal-help"
+            ).btn.btn-dark.text-uppercase.font-weight-bold= t("Need help?")
   .bg-dark.text-white
     .container.py-5.text-center.text-lg-left
       .d-flex.flex-column.flex-lg-row
         .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1
           hr.d-lg-none.w-100
           .dropdown.dropup
-            a#navbar-dropdown-language-btn.btn.btn-outline-light.dropdown-toggle(
+            a#navbar-dropdown-language-btn(
               href=ctx.url,
               role="button",
               data-toggle="dropdown",
               aria-haspopup="true",
               aria-expanded="false"
-            )
-              = `${titleize(t(currentLanguage))} ${ctx.locale !== 'en' && currentLanguage !== titleize(currentLanguage) ? `(${titleize(currentLanguage)})` : ''}`
-            ul#navbar-dropdown-language-ul.dropdown-menu(
+            ).btn.btn-outline-light.dropdown-toggle
+              = `${titleize(t(currentLanguage))} ${ctx.locale !== "en" && currentLanguage !== titleize(currentLanguage) ? `(${titleize(currentLanguage)})` : ""}`
+            ul#navbar-dropdown-language-ul(
               role="menu",
               aria-expanded="false",
               aria-hidden="true",
               aria-labelledby="navbar-dropdown-language-btn"
-            )
+            ).dropdown-menu
               each language in availableLanguages
                 if language.locale !== locale
-                  li: a.dropdown-item(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== 'en' ? `(${titleize(language.name)})` : ''}`
+                  li: a(href=language.url).dropdown-item= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
           hr.d-lg-none.w-100
           .mt-auto
             a(href="#")
-              img.d-inline-block.mx-lg-auto(
-                src=manifest('img/logo-square.svg'),
+              img(
+                src=manifest("img/logo-square.svg"),
                 width=50,
                 height=50,
                 alt="Go to top"
-              )
+              ).d-inline-block.mx-lg-auto
             small.d-block.text-muted.mt-3!= '&copy; <a class="text-white" href="https://niftylettuce.com" target="_blank" rel="noopener noreferrer">Niftylettuce, LLC.</a>'
         .flex-wrap.flex-fill
-          h1.h5.mb-2= t('Resources')
+          h1.h5.mb-2= t("Resources")
           ul.list-unstyled.mb-0
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l('/pricing')
-            )= t('Pricing')
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l('/faq')
-            )= t('FAQ')
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l('/help'),
-              role=isHelp ? 'link' : 'button',
-              data-target=isHelp ? '' : '#modal-help'
-            )= t('Help')
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l('/free-disposable-addresses')
-            )= t('Free Disposable Addresses')
-            li: a.d-block.text-light.py-2.py-md-0(href=l('/domain-registration'))= t('Domain Registration')
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l('/reserved-email-addresses')
-            )= t('Reserved Email Addresses')
+            li: a(
+              href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l("/pricing")
+            ).d-block.text-light.py-2.py-md-0= t("Pricing")
+            li: a(
+              href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
+            ).d-block.text-light.py-2.py-md-0= t("FAQ")
+            li: a(
+              href=l("/help"),
+              role=isHelp ? "link" : "button",
+              data-target=isHelp ? "" : "#modal-help"
+            ).d-block.text-light.py-2.py-md-0= t("Help")
+            li: a(
+              href=l("/free-disposable-addresses")
+            ).d-block.text-light.py-2.py-md-0= t("Free Disposable Addresses")
+            li: a(href=l("/domain-registration")).d-block.text-light.py-2.py-md-0= t("Domain Registration")
+            li: a(
+              href=l("/reserved-email-addresses")
+            ).d-block.text-light.py-2.py-md-0= t("Reserved Email Addresses")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill
-          h1.h5.mb-2= t('Guides')
+          h1.h5.mb-2= t("Guides")
           ul.list-unstyled.mb-0.mb-lg-3
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l('/guides/port-25-blocked-by-isp-workaround')
-            )= t('Port 25 blocked by ISP workaround')
+            li: a(
+              href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
+            ).d-block.text-light.py-2.py-md-0= t("Port 25 blocked by ISP workaround")
           hr.d-lg-none.w-100
-          h1.h5.mb-2= t('Developers')
+          h1.h5.mb-2= t("Developers")
           ul.list-unstyled.mb-0
-            li: a.d-block.text-light.py-2.py-md-0(href=l('/free-email-webhooks'))= t('Free Email Webhooks')
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l('/email-forwarding-regex-pattern-filter')
-            )= t('Email Forwarding Regex Pattern Filter')
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l('/email-forwarding-api')
-            )= t('Email Forwarding API')
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a(href=l("/free-email-webhooks")).d-block.text-light.py-2.py-md-0= t("Free Email Webhooks")
+            li: a(
+              href=l("/email-forwarding-regex-pattern-filter")
+            ).d-block.text-light.py-2.py-md-0= t("Email Forwarding Regex Pattern Filter")
+            li: a(
+              href=l("/email-forwarding-api")
+            ).d-block.text-light.py-2.py-md-0= t("Email Forwarding API")
+            li: a(
               href="https://github.com/forwardemail/free-email-forwarding/releases",
               target="_blank",
               rel="noopener noreferrer"
-            )= t('Releases')
-            li: a.d-block.text-light.py-2.py-md-0(
+            ).d-block.text-light.py-2.py-md-0= t("Releases")
+            li: a(
               data-toggle="tooltip",
               data-placement="left",
-              title=t('Coming soon'),
+              title=t("Coming soon"),
               href="#coming-soon"
-            )= t('Status Page')
-            li: a.d-block.text-light.py-2.py-md-0(
+            ).d-block.text-light.py-2.py-md-0= t("Status Page")
+            li: a(
               href="https://github.com/forwardemail",
               target="_blank",
               rel="noopener noreferrer"
-            )= t('Source Code')
+            ).d-block.text-light.py-2.py-md-0= t("Source Code")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
-            h1.h5.mb-2= t('Company')
+            h1.h5.mb-2= t("Company")
             ul.list-unstyled.mb-0
-              li: a.d-block.text-light.py-2.py-md-0(href=l('/about'))= t('About')
-              li: a.d-block.text-light.py-2.py-md-0(href=l('/open-startup'))= t('Open Startup')
-              li: a.d-block.text-light.py-2.py-md-0(href=l('/donate'))= t('Donate')
-              li: a.d-block.text-light.py-2.py-md-0(href=l('/privacy'))= t('Privacy')
-              li: a.d-block.text-light.py-2.py-md-0(href=l('/terms'))= t('Terms')
+              li: a(href=l("/about")).d-block.text-light.py-2.py-md-0= t("About")
+              li: a(href=l("/open-startup")).d-block.text-light.py-2.py-md-0= t("Open Startup")
+              li: a(href=l("/donate")).d-block.text-light.py-2.py-md-0= t("Donate")
+              li: a(href=l("/privacy")).d-block.text-light.py-2.py-md-0= t("Privacy")
+              li: a(href=l("/terms")).d-block.text-light.py-2.py-md-0= t("Terms")
           .mt-lg-auto.mt-3
             ul.list-inline.mb-0
               li.list-inline-item
-                a.d-inline-block.text-light(
+                a(
                   data-toggle="tooltip",
-                  title=t('Twitter'),
+                  title=t("Twitter"),
                   href="https://twitter.com/niftylettuce",
                   target="_blank",
                   rel="noopener noreferrer"
-                )
+                ).d-inline-block.text-light
                   i.fa.fa-2x.fa-twitter
                   span.sr-only.sr-only-focusable
-                    = ' '
-                    = t('Twitter')
+                    = " "
+                    = t("Twitter")
               li.list-inline-item
-                a.d-inline-block.text-light(
+                a(
                   data-toggle="tooltip",
-                  title=t('GitHub'),
+                  title=t("GitHub"),
                   href="https://github.com/forwardemail",
                   target="_blank",
                   rel="noopener noreferrer"
-                )
+                ).d-inline-block.text-light
                   i.fa.fa-2x.fa-github
                   span.sr-only.sr-only-focusable
-                    = ' '
-                    = t('GitHub')
+                    = " "
+                    = t("GitHub")
               li.list-inline-item
-                a.d-inline-block.text-light(
+                a(
                   data-toggle="tooltip",
-                  title=t('Email'),
+                  title=t("Email"),
                   href="mailto:support@forwardemail.net",
                   target="_blank",
                   rel="noopener noreferrer"
-                )
+                ).d-inline-block.text-light
                   i.fa.fa-2x.fa-envelope
                   span.sr-only.sr-only-focusable
-                    = ' '
-                    = t('Email')
+                    = " "
+                    = t("Email")
