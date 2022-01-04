@@ -37,7 +37,11 @@ block body
               )
               label(for="input-confirm-password")= t("Confirm new password")
           .modal-footer.text-right
-            button.btn.btn-secondary(type="button", data-dismiss="modal", aria-label=t("Cancel"))= t("Cancel")
+            button.btn.btn-secondary(
+              type="button",
+              data-dismiss="modal",
+              aria-label=t("Cancel")
+            )= t("Cancel")
             button.btn.btn-primary(type="submit")= user[config.userFields.hasSetPassword] ? t("Change password") : t("Set an account password")
   .container-fluid.py-3
     .row
@@ -48,12 +52,18 @@ block body
             ul.list-inline.mb-0
               li.list-inline-item.mb-3.mb-md-0!= t("Email change confirmation link has been sent to: <span class='notranslate font-weight-bold'>%s</span>", user[config.userFields.changeEmailNewAddress])
               li.list-inline-item
-                form.ajax-form.confirm-prompt(action=`${ctx.path}/resend-email-change`, method="POST")
+                form.ajax-form.confirm-prompt(
+                  action=`${ctx.path}/resend-email-change`,
+                  method="POST"
+                )
                   input(type="hidden", name="_method", value="PUT")
                   input(type="hidden", name="_csrf", value=ctx.csrf)
                   button.btn.btn-dark.btn-sm(type="submit")= t("Resend email")
               li.list-inline-item
-                form.ajax-form.confirm-prompt(action=`${ctx.path}/cancel-email-change`, method="POST")
+                form.ajax-form.confirm-prompt(
+                  action=`${ctx.path}/cancel-email-change`,
+                  method="POST"
+                )
                   input(type="hidden", name="_method", value="PUT")
                   input(type="hidden", name="_csrf", value=ctx.csrf)
                   button.btn.btn-danger.btn-sm(type="submit")= t("Cancel change")
