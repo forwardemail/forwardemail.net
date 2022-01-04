@@ -11,7 +11,7 @@ const apiConfig = require('#config/api');
 
 const api = new API(apiConfig);
 
-if (!module.parent) {
+if (require.main === module) {
   const mongoose = new Mongoose({ ...api.config.mongoose, logger });
 
   const graceful = new Graceful({

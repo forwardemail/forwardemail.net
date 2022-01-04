@@ -8,7 +8,7 @@ const logger = require('#helpers/logger');
 
 const bree = new Bree({ logger });
 
-if (!module.parent) {
+if (require.main === module) {
   const graceful = new Graceful({
     brees: [bree],
     logger
