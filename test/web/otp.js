@@ -83,7 +83,7 @@ test('POST otp/login > successful', async (t) => {
     });
 
   t.is(res.status, 200);
-  t.is(res.body.redirectTo, '/en/dashboard');
+  t.is(res.body.redirectTo, '/en/my-account/domains');
 });
 
 test('POST otp/login > invalid OTP passcode', async (t) => {
