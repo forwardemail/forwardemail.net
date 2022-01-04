@@ -1,3 +1,4 @@
+const process = require('process');
 const path = require('path');
 
 const test = process.env.NODE_ENV === 'test';

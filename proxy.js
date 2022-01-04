@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
+const process = require('process');
+
 const Graceful = require('@ladjs/graceful');
 const ProxyServer = require('@ladjs/proxy');
 const ip = require('ip');

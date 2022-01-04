@@ -19,11 +19,10 @@
   border-bottom-right-radius: 0 !important;
 }
 
-//
 // TODO: refactor this so !important is preserved
 // NOTE: currently the below syntax is invalid SCSS as you cannot
 // append `!important` to a mixin invocation
-//
+
 // @each $breakpoint in map-keys($grid-breakpoints) {
 //   @include media-breakpoint-up($breakpoint) {
 //     $infix: breakpoint-infix($breakpoint, $grid-breakpoints) !important;
@@ -33,17 +32,14 @@
 //     .rounded#{$infix}-left   { @include border-left-radius($border-radius) !important; }
 //     .rounded#{$infix}-circle { border-radius: 50% !important; }
 //     .rounded#{$infix}-0 { border-radius: 0 !important; }
-//
 //     .rounded#{$infix}-top-0 { @include border-top-radius(0) !important; }
 //     .rounded#{$infix}-right-0 { @include border-right-radius(0) !important; }
 //     .rounded#{$infix}-left-0 { @include border-left-radius(0) !important; }
 //     .rounded#{$infix}-bottom-0 { @include border-bottom-radius(0) !important; }
-//
 //     .rounded#{$infix}-x {
 //       @include border-left-radius($border-radius) !important;
 //       @include border-right-radius($border-radius) !important;
 //     }
-//
 //     .rounded#{$infix}-y {
 //       @include border-top-radius($border-radius) !important;
 //       @include border-bottom-radius($border-radius) !important;

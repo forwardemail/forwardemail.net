@@ -1,3 +1,5 @@
+const process = require('process');
+
 const checkoutNodeJssdk = require('@paypal/checkout-server-sdk');
 const env = require('./env');
 

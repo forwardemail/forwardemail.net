@@ -1,3 +1,5 @@
+const process = require('process');
+
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const { boolean } = require('boolean');

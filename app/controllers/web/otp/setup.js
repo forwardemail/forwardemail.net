@@ -1,3 +1,5 @@
+const process = require('process');
+
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const qrcode = require('qrcode');

@@ -3,5 +3,6 @@ module.exports = {
     [(filenames) => filenames.map((filename) => `remark ${filename} -qfo`)],
   'package.json': 'fixpack',
   '*.pug': ['prettier --write', 'pug-lint'],
-  '*.js': 'xo --fix'
+  '*.js': 'xo --fix',
+  '*.scss': 'stylelint --fix'
 };

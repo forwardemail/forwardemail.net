@@ -1,3 +1,5 @@
+const process = require('process');
+
 // const dayjs = require('dayjs-with-plugins');
 const { boolean } = require('boolean');
 

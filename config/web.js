@@ -1,3 +1,5 @@
+const process = require('process');
+
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 

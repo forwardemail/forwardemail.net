@@ -324,18 +324,18 @@
         ],
         "rules": {
           "compat/compat": "error",
-          "no-smart-quotes/no-smart-quotes": "error"
+          "no-smart-quotes/no-smart-quotes": "error",
+          "node/prefer-global/process": "off"
         }
       }
     ],
     "rules": {
       "ava/assertion-arguments": "off",
-      "unicorn/prevent-abbreviations": "off",
-      "unicorn/no-fn-reference-in-iterator": "off",
       "import/extensions": "off",
+      "unicorn/no-fn-reference-in-iterator": "off",
       "unicorn/no-this-assignment": "off",
       "unicorn/numeric-separators-style": "off",
-      "node/prefer-global/process": "warn"
+      "unicorn/prevent-abbreviations": "off"
     }
   }
 }
