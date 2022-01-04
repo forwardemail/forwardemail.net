@@ -8,11 +8,11 @@ block content
           h5.card-header.text-center= t("The Free Beta Program Ended")
           .card-body.p-0
             a(href=config.urls.web)
-              img(
+              img.img-responsive(
                 src=`${config.urls.web}/img/emails/domain-verified.gif`,
                 alt="",
                 data-inline-ignore
-              ).img-responsive
+              )
             .p-3
               p.card-text
                 = t("On November 23, 2020 we announced the public launch of our service.")
@@ -32,8 +32,8 @@ block content
                 != t("You will also be receiving friendly payment reminder emails moving forwards.")
                 = " "
                 != t("Feel free to reach out with any feature requests, questions, or if you need help.")
-              a(
+              a.btn.btn-lg.btn-block.btn-success(
                 href=`${config.urls.web}/${locale}/my-account/billing`,
                 role="button"
-              ).btn.btn-lg.btn-block.btn-success= t("Setup your billing")
-          div: small.card-footer.text-center.text-muted= t("If you no longer use our service, then please let us know.")
+              )= t("Setup your billing")
+          .card-footer.text-center: small.text-muted= t("If you no longer use our service, then please let us know.")

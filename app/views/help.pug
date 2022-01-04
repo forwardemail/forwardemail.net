@@ -7,7 +7,7 @@ block body
   .container.py-5
     .row
       .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
-        form(action=l("/help"), method="POST").ajax-form.confirm-prompt
+        form.ajax-form.confirm-prompt(action=l("/help"), method="POST")
           input(type="hidden", name="_csrf", value=ctx.csrf)
           .card
             h4.card-header.text-center= t("Ask a question")
@@ -15,31 +15,31 @@ block body
               if ctx.pathWithoutLocale !== '/faq'
                 p.card-text.font-weight-bold.text-center!= t('Have you read our <a href="%s" target="_blank" rel="noopener noreferrer">FAQ</a> yet?', l("/faq"))
               .form-group.floating-label
-                input#input-email(
+                input#input-email.form-control(
                   required,
                   autocomplete="email",
                   name="email",
                   type="email",
                   value=user ? user.email : "",
                   placeholder="name@example.com"
-                ).form-control
+                )
                 label(for="input-email")= t("Email address")
               .form-group.floating-label
-                textarea#input-message(
+                textarea#input-message.form-control(
                   rows="10",
                   required,
                   maxlength=config.supportRequestMaxLength,
                   name="message",
                   placeholder=t("Write your message")
-                ).form-control
+                )
                 label(for="input-message")= t("Message")
               if boolean(config.hcaptchaEnabled) && !user
-                div(data-sitekey=config.hcaptchaSiteKey).h-captcha
-                p: small.text-left.mb-3.text-muted= t("If you log in to your account, you will not need to fill out these captchas.")
+                .h-captcha(data-sitekey=config.hcaptchaSiteKey)
+                p.text-left.mb-3: small.text-muted= t("If you log in to your account, you will not need to fill out these captchas.")
             .card-footer
-              button(
+              button.btn.btn-block.btn-success.btn-lg(
                 type="submit",
                 data-toggle="tooltip",
                 data-placement="bottom",
                 title=t("We'll be in contact with you!")
-              ).btn.btn-block.btn-success.btn-lg= t("Send message")
+              )= t("Send message")

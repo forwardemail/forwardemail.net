@@ -19,11 +19,11 @@ mixin sortHeader(name, text, tableSelector)
     if tableSelector
       input(type="hidden", name="_csrf", value=ctx.csrf)
       input(type="hidden", name="sort", value=sort ? sort : "")
-    button(
+    button.btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold(
       type="submit"
-    ).btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold
+    )
       = t(text ? text : name.replace("_", " "))
       = " "
-      i(
+      i.fas(
         class=sort === `-${name}` ? "fa-sort-up" : sort === name ? "fa-sort" : "fa-sort-down"
-      ).fas
+      )

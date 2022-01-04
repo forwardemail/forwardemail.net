@@ -8,11 +8,11 @@ block content
           h5.card-header.text-center!= t('<span class="notranslate">%d</span> Day Payment Reminder', diff)
           .card-body.p-0
             a(href=config.urls.web)
-              img(
+              img.img-responsive(
                 src=`${config.urls.web}/img/emails/self-test.gif`,
                 alt="",
                 data-inline-ignore
-              ).img-responsive
+              )
             .p-3
               p.card-text
                 = t("If you're not aware, we publicly launched our service (out of beta) on November 23, 2020.")
@@ -32,8 +32,8 @@ block content
                 != t('If you want to keep your email service for <strong class="notranslate">%s</strong>, then you need to make a payment for your account\'s <span class="notranslate">%s</span> plan.', domain.name, t(titleize(humanize(domain.plan))))
                 = " "
                 != t("Feel free to reach out with any feature requests, questions, or if you need help &ndash; we're here!")
-              a(
+              a.btn.btn-lg.btn-block.btn-success(
                 href=`${config.urls.web}/${locale}/my-account/billing`,
                 role="button"
-              ).btn.btn-lg.btn-block.btn-success= t("Pay by card or PayPal")
-          div: small.card-footer.text-center.text-muted= t("If you no longer use our service, then please let us know.")
+              )= t("Pay by card or PayPal")
+          .card-footer.text-center: small.text-muted= t("If you no longer use our service, then please let us know.")

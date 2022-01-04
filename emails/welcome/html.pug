@@ -8,16 +8,16 @@ block content
           h5.card-header= t("You're ready to go!")
           .card-body.text-center.p-0
             a(href=`${config.urls.web}/${locale}/my-account`)
-              img(
+              img.img-responsive(
                 src=`${config.urls.web}/img/emails/welcome.gif`,
                 alt="",
                 data-inline-ignore
-              ).img-responsive
+              )
             .p-3
               h1.h3!= t("Woo-hoo!")
               p.card-text= t("Now you can add your domains and set up free email forwarding!")
-              a(
+              a.btn.btn-lg.btn-block.btn-primary(
                 href=`${config.urls.web}/${locale}/my-account`
-              ).btn.btn-lg.btn-block.btn-primary
+              )
                 = t("Get started now")
-          div: small.card-footer.text-muted= t("If you have any questions or comments, then please let us know")
+          .card-footer: small.text-muted= t("If you have any questions or comments, then please let us know")

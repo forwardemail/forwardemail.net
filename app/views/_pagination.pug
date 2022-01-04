@@ -1,21 +1,21 @@
 mixin paginate(tableSelector)
   if pageCount && pageCount > 0
-    nav(aria-label="Page navigation").d-flex.justify-content-center
+    nav.d-flex.justify-content-center(aria-label="Page navigation")
       ul.pagination
         if paginate.hasPreviousPages
           li.page-item
-            a(
+            a.page-link.ajax-form.table-ajax-form(
               href=paginate.href(true),
               data-table=tableSelector,
               data-page=ctx.query.page - 1,
               aria-label=t("Previous")
-            ).page-link.ajax-form.table-ajax-form
+            )
               span(aria-hidden="true")
                 i.fa.fa-angle-double-left
               span.sr-only= t("Previous")
         else
           li.page-item.disabled
-            span(aria-label=t("Previous")).page-link
+            span.page-link(aria-label=t("Previous"))
               span(aria-hidden="true")
                 i.fa.fa-angle-double-left
               span.sr-only= t("Previous")
@@ -27,32 +27,32 @@ mixin paginate(tableSelector)
             else
               if page.number === ctx.query.page
                 li.page-item.active
-                  a(
+                  a.page-link.ajax-form.table-ajax-form(
                     href=page.url,
                     data-table=tableSelector,
                     data-page=page.number
-                  ).page-link.ajax-form.table-ajax-form= page.number
+                  )= page.number
               else
                 li.page-item
-                  a(
+                  a.page-link.ajax-form.table-ajax-form(
                     href=page.url,
                     data-table=tableSelector,
                     data-page=page.number
-                  ).page-link.ajax-form.table-ajax-form= page.number
+                  )= page.number
         if paginate.hasNextPages(pageCount)
           li.page-item
-            a(
+            a.page-link.ajax-form.table-ajax-form(
               href=paginate.href({ page: ctx.query.page + 1 }),
               data-table=tableSelector,
               data-page=ctx.query.page + 1,
               aria-label=t("Next")
-            ).page-link.ajax-form.table-ajax-form
+            )
               span(aria-hidden="true")
                 i.fa.fa-angle-double-right
               span.sr-only= t("Next")
         else
           li.page-item.disabled
-            span(aria-label=t("Next")).page-link
+            span.page-link(aria-label=t("Next"))
               span(aria-hidden="true")
                 i.fa.fa-angle-double-right
               span.sr-only= t("Next")
