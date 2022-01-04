@@ -1,3 +1,7 @@
+const process = require('process');
+const path = require('path');
+const fs = require('fs');
+
 // required to disable watching of I18N files in @ladjs/i18n
 // otherwises tasks will fail to exit due to watchers running
 process.env.I18N_SYNC_FILES = true;
@@ -6,9 +10,6 @@ process.env.I18N_UPDATE_FILES = true;
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
-
-const path = require('path');
-const fs = require('fs');
 
 const Graceful = require('@ladjs/graceful');
 const Mandarin = require('mandarin');
@@ -36,9 +37,7 @@ const reporter = require('postcss-reporter');
 const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
 const sass = require('gulp-sass')(require('sass'));
-const scssParser = require('postcss-scss');
 const sourcemaps = require('gulp-sourcemaps');
-const stylelint = require('stylelint');
 const terser = require('gulp-terser');
 const through2 = require('through2');
 const unassert = require('gulp-unassert');
@@ -99,11 +98,7 @@ function fonts() {
 function scss() {
   return src('assets/css/**/*.scss', {
     base: 'assets'
-  }).pipe(
-    postcss([stylelint(), reporter()], {
-      syntax: scssParser
-    })
-  );
+  }).pipe(postcss());
 }
 
 function css() {

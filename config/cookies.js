@@ -1,3 +1,5 @@
+const process = require('process');
+
 module.exports = {
   // <https://github.com/pillarjs/cookies#cookiesset-name--value---options-->
   // <https://github.com/koajs/generic-session/blob/master/src/session.js#L32-L38>

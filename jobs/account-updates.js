@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
+const process = require('process');
 const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
@@ -35,7 +36,8 @@ graceful.listen();
     account_updates: {
       $exists: true,
       $not: { $size: 0 }
-    }
+    },
+    [config.userFields.hasVerifiedEmail]: true
   });
 
   // merge and map to actionable email

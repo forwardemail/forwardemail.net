@@ -1,27 +1,25 @@
-//
 // Special thanks to these two sources:
 // <https://gist.github.com/twolfson/8f578c0720df7fc87f29e4d8395cf76b>
 // <https://github.com/appellation/google-signin-button>
-//
 $roboto: 'Roboto-Medium', $font-family-sans-serif;
 
 @mixin button($height) {
-  border-radius: #{$height * (1/40)}px;
+  border-radius: #{$height * (1 / 40)}px;
   .btn-auth-icon {
-    background-size: #{$height * (18/40)}px;
+    background-size: #{$height * (18 / 40)}px;
     background-repeat: no-repeat;
     background-position: center;
     display: inline-block;
     vertical-align: middle;
     width: #{$height}px;
     height: #{$height}px;
-    border-radius: #{$height * (1/40)}px;
-    margin-right: #{$height * (12/40)}px;
+    border-radius: #{$height * (1 / 40)}px;
+    margin-right: #{$height * (12 / 40)}px;
   }
   .btn-auth-text {
-    font-size: #{$height * (14/40)}px;
-    margin-left: #{$height * (6/40)}px;
-    margin-right: #{$height * (6/40)}px;
+    font-size: #{$height * (14 / 40)}px;
+    margin-left: #{$height * (6 / 40)}px;
+    margin-right: #{$height * (6 / 40)}px;
   }
 }
 

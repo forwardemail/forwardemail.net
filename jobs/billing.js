@@ -1,7 +1,8 @@
+const process = require('process');
+const { parentPort } = require('worker_threads');
+
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
-
-const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');

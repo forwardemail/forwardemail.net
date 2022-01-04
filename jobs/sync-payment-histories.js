@@ -1,6 +1,7 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable complexity */
+const process = require('process');
 const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');

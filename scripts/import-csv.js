@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
+const process = require('process');
 const fs = require('fs');
 
 const Graceful = require('@ladjs/graceful');

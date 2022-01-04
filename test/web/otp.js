@@ -1,3 +1,5 @@
+const process = require('process');
+
 const test = require('ava');
 const { factory } = require('factory-girl');
 const _ = require('lodash');

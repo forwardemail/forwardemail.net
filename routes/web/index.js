@@ -1,3 +1,5 @@
+const process = require('process');
+
 const Router = require('@koa/router');
 const render = require('koa-views-render');
 const { boolean } = require('boolean');
