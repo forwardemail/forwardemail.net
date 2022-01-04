@@ -1,75 +1,65 @@
 extends ../layout
 
 block body
-  #modal-change-password(tabindex="-1", role="dialog").modal.fade
-    div(role="document").modal-dialog
+  #modal-change-password.modal.fade(tabindex="-1", role="dialog")
+    .modal-dialog(role="document")
       .modal-content
         .modal-header.d-block.text-center
           h5.modal-title= t("Change password")
-        form(action=ctx.path, method="POST").ajax-form.confirm-prompt.mt-3
+        form.ajax-form.confirm-prompt.mt-3(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
           input(type="hidden", name="_csrf", value=ctx.csrf)
           input(type="hidden", name="change_password", value="true")
           .modal-body
             if user[config.userFields.hasSetPassword]
               .form-group.floating-label
-                input#input-old-password(
+                input#input-old-password.form-control(
                   type="password",
                   name="old_password",
                   required,
                   autocomplete="off"
-                ).form-control
+                )
                 label(for="input-old-password")= t("Confirm old password")
             .form-group.floating-label
-              input#input-password(
+              input#input-password.form-control(
                 type="password",
                 name="password",
                 required,
                 autocomplete="off"
-              ).form-control
+              )
               label(for="input-password")= t("Set new password")
             .form-group.floating-label
-              input#input-confirm-password(
+              input#input-confirm-password.form-control(
                 type="password",
                 name="confirm_password",
                 required,
                 autocomplete="off"
-              ).form-control
+              )
               label(for="input-confirm-password")= t("Confirm new password")
           .modal-footer.text-right
-            button(
-              type="button",
-              data-dismiss="modal",
-              aria-label=t("Cancel")
-            ).btn.btn-secondary= t("Cancel")
-            button(type="submit").btn.btn-primary= user[config.userFields.hasSetPassword] ? t("Change password") : t("Set an account password")
+            button.btn.btn-secondary(type="button", data-dismiss="modal", aria-label=t("Cancel"))= t("Cancel")
+            button.btn.btn-primary(type="submit")= user[config.userFields.hasSetPassword] ? t("Change password") : t("Set an account password")
   .container-fluid.py-3
     .row
       .col
         include ../_breadcrumbs
         if user[config.userFields.changeEmailNewAddress]
-          div(role="alert").alert.alert-warning
+          .alert.alert-warning(role="alert")
             ul.list-inline.mb-0
               li.list-inline-item.mb-3.mb-md-0!= t("Email change confirmation link has been sent to: <span class='notranslate font-weight-bold'>%s</span>", user[config.userFields.changeEmailNewAddress])
               li.list-inline-item
-                form(
-                  action=`${ctx.path}/resend-email-change`,
-                  method="POST"
-                ).ajax-form.confirm-prompt
+                form.ajax-form.confirm-prompt(action=`${ctx.path}/resend-email-change`, method="POST")
                   input(type="hidden", name="_method", value="PUT")
                   input(type="hidden", name="_csrf", value=ctx.csrf)
-                  button(type="submit").btn.btn-dark.btn-sm= t("Resend email")
+                  button.btn.btn-dark.btn-sm(type="submit")= t("Resend email")
               li.list-inline-item
-                form(
-                  action=`${ctx.path}/cancel-email-change`,
-                  method="POST"
-                ).ajax-form.confirm-prompt
+                form.ajax-form.confirm-prompt(action=`${ctx.path}/cancel-email-change`, method="POST")
                   input(type="hidden", name="_method", value="PUT")
                   input(type="hidden", name="_csrf", value=ctx.csrf)
-                  button(type="submit").btn.btn-danger.btn-sm= t("Cancel change")
+                  button.btn.btn-danger.btn-sm(type="submit")= t("Cancel change")
     .row
       .col-md
-        form(action=ctx.path, method="POST").ajax-form.confirm-prompt
+        form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
           input(type="hidden", name="_csrf", value=ctx.csrf)
           .card
@@ -77,40 +67,40 @@ block body
             .card-body.pb-0
               p.text-muted= t("We promise to never share your personal information.")
                 .form-group.floating-label.mt-4
-                  input#input-email(
+                  input#input-email.form-control(
                     type="email",
                     required,
                     name="email",
                     value=user.email,
                     placeholder="name@example.com",
                     readonly=!user[config.userFields.hasSetPassword]
-                  ).form-control
+                  )
                   label(for="input-email")= t("Email address")
                   if !user[config.userFields.hasSetPassword]
                     small.form-text
-                      a(
+                      a.text-danger(
                         href="#",
                         role="button",
                         data-toggle="modal",
                         data-target="#modal-change-password"
-                      ).text-danger= t("Set a password to change your email")
+                      )= t("Set a password to change your email")
                   else if user[config.userFields.changeEmailNewAddress]
                     small.form-text.text-muted!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
                 .form-group.floating-label
-                  input#input-given-name(
+                  input#input-given-name.form-control(
                     type="text",
                     name=config.passport.fields.givenName,
                     value=user[config.passport.fields.givenName],
                     placeholder=t("First name")
-                  ).form-control
+                  )
                   label(for="input-given-name")= t("First name")
                 .form-group.floating-label
-                  input#input-family-name(
+                  input#input-family-name.form-control(
                     type="text",
                     name=config.passport.fields.familyName,
                     value=user[config.passport.fields.familyName],
                     placeholder=t("Last name")
-                  ).form-control
+                  )
                   label(for="input-family-name")= t("Last name")
                 if domains && domains.length > 0
                   .form-group.floating-label
@@ -129,16 +119,16 @@ block body
                     label(for="input-default-domain")= t("Default Domain")
                 if user[config.userFields.hasSetPassword]
                   .form-group.mb-0
-                    a(
+                    a.text-danger(
                       href="#",
                       role="button",
                       data-toggle="modal",
                       data-target="#modal-change-password"
-                    ).text-danger: small= t("Need to change your password?")
+                    ): small= t("Need to change your password?")
             .card-footer
-              button(type="submit").btn.btn-success.btn-lg.btn-block= t("Save Changes")
+              button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
       .col-md
-        form(action=ctx.path, method="POST").ajax-form.confirm-prompt
+        form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
           input(type="hidden", name="_csrf", value=ctx.csrf)
           .card
@@ -146,57 +136,57 @@ block body
             .card-body.pb-0
               p.text-muted= t("We strictly use this info for receipts and reminders.")
               .form-group.floating-label.mt-4
-                input#input-company-name(
+                input#input-company-name.form-control(
                   type="text",
                   name=config.userFields.companyName,
                   value=user[config.userFields.companyName],
                   placeholder=t("Company name")
-                ).form-control
+                )
                 label(for="input-company-name")= t("Company name")
               .form-group.floating-label
-                input#input-address-line1(
+                input#input-address-line1.form-control(
                   type="text",
                   name=config.userFields.addressLine1,
                   value=user[config.userFields.addressLine1],
                   placeholder=t("Street address or PO Box")
-                ).form-control
+                )
                 label(for="input-address-line1")= t("Street address or PO Box")
               .form-group.floating-label
-                input#input-address-line2(
+                input#input-address-line2.form-control(
                   type="text",
                   name=config.userFields.addressLine2,
                   value=user[config.userFields.addressLine2],
                   placeholder=t("Apartment, suite, unit, or building")
-                ).form-control
+                )
                 label(for="input-address-line2")= t("Apartment, suite, unit, or building")
               .form-group.floating-label
-                input#input-address-city(
+                input#input-address-city.form-control(
                   type="text",
                   name=config.userFields.addressCity,
                   value=user[config.userFields.addressCity],
                   placeholder=t("City, district, suburb, town, or village")
-                ).form-control
+                )
                 label(for="input-address-city")= t("City, district, suburb, town, or village")
               .form-group.floating-label
-                input#input-address-state(
+                input#input-address-state.form-control(
                   type="text",
                   name=config.userFields.addressState,
                   value=user[config.userFields.addressState],
                   placeholder=t("State, county, province, or region")
-                ).form-control
+                )
                 label(for="input-address-state")= t("State, county, province, or region")
               .form-group.floating-label
-                input#input-address-zip(
+                input#input-address-zip.form-control(
                   type="text",
                   name=config.userFields.addressZip,
                   value=user[config.userFields.addressZip],
                   placeholder=t("ZIP or postal code")
-                ).form-control
+                )
                 label(for="input-address-zip")= t("ZIP or postal code")
               .form-group.floating-label
-                select#select-address-country(
+                select#select-address-country.form-control(
                   name=config.userFields.addressCountry
-                ).form-control
+                )
                   option(
                     value="None",
                     selected=!isSANB(user[config.userFields.addressCountry])
@@ -208,12 +198,12 @@ block body
                     )= t(country)
                 label(for="select-address-country")= t("Country name")
               .form-group.floating-label
-                input#input-vat(
+                input#input-vat.form-control(
                   type="text",
                   name=config.userFields.companyVAT,
                   value=user[config.userFields.companyVAT],
                   placeholder=t("Company VAT tax number")
-                ).form-control
+                )
                 label(for="input-vat")= t("Company VAT tax number")
             .card-footer
-              button(type="submit").btn.btn-success.btn-lg.btn-block= t("Save Changes")
+              button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")

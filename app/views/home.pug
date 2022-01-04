@@ -1,63 +1,63 @@
 extends layout
 
 block body
-  #modal-for-creators(
+  #modal-for-creators.modal.fade(
     tabindex="-1",
     role="dialog",
     aria-labelledby="modal-for-creators-title",
     aria-hidden="true"
-  ).modal.fade
-    div(role="document").modal-dialog.modal-lg
+  )
+    .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
           h1#modal-for-creators-title.h4.modal-title.d-inline-block.ml-4= t("Free Email Forwarding for Creators")
-          button(type="button", data-dismiss="modal", aria-label="Close").close
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
-          div(
+          .lazyframe(
             title=t("Free Email Forwarding for Creators"),
             style="width: 100%; height: 450px",
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/ql9rtNpTid4?autoplay=0"
-          ).lazyframe
-  #modal-for-developers(
+          )
+  #modal-for-developers.modal.fade(
     tabindex="-1",
     role="dialog",
     aria-labelledby="modal-for-developers-title",
     aria-hidden="true"
-  ).modal.fade
-    div(role="document").modal-dialog.modal-lg
+  )
+    .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
           h1#modal-for-developers-title.h4.modal-title.d-inline-block.ml-4= t("Free Email Forwarding for Developers")
-          button(type="button", data-dismiss="modal", aria-label="Close").close
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
-          div(
+          .lazyframe(
             title=t("Free Email Forwarding for Developers"),
             style="width: 100%; height: 450px",
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/1e9UyIoFu4Y?autoplay=0"
-          ).lazyframe
-  #modal-for-businesses(
+          )
+  #modal-for-businesses.modal.fade(
     tabindex="-1",
     role="dialog",
     aria-labelledby="modal-for-businesses-title",
     aria-hidden="true"
-  ).modal.fade
-    div(role="document").modal-dialog.modal-lg
+  )
+    .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
           h1#modal-for-businesses-title.h4.modal-title.d-inline-block.ml-4= t("Free Email Forwarding for Businesses")
-          button(type="button", data-dismiss="modal", aria-label="Close").close
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
-          div(
+          .lazyframe(
             title=t("Free Email Forwarding for Businesses"),
             style="width: 100%; height: 450px",
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
-          ).lazyframe
+          )
   .min-vh-80.text-center.d-flex.flex-column
     .container.my-auto.py-2.py-sm-3.py-md-5
       .row
@@ -67,20 +67,20 @@ block body
             != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses for free using your custom domain.')
           p.lead.mb-3.d-none.d-lg-block
             != t("Plus get catch-all, wildcard, and disposable aliases &ndash; all for free!")
-          a(
+          a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(
             href=l("/register"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
-          ).btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2
+          )
             = t("Sign up free")
             = " "
             i.fa.fa-angle-double-right
           small.d-block.text-muted.text-uppercase.font-weight-bold
             u!= t("No credit card required")
-    a(
+    a.text-decoration-none.pt-1.pb-4.pt-md-4.d-block.text-monospace.text-uppercase.text-dark(
       href="#learn-more"
-    ).text-decoration-none.pt-1.pb-4.pt-md-4.d-block.text-monospace.text-uppercase.text-dark
+    )
       i.fa.fa-angle-down
       = " "
       = t("Learn more")
@@ -91,19 +91,19 @@ block body
       h1.display-4.text-uppercase.font-weight-bold!= t("Made for <u>you</u>.")
     .row
       .col-md.text-center.d-block.mb-5
-        div(
+        .lazyframe.border.border-dark.d-inline-block(
           data-vendor="youtube_nocookie",
           title=t("How to create unlimited email addresses and aliases"),
           style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
           data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
-        ).lazyframe.border.border-dark.d-inline-block
+        )
     .row
       .col-md.text-center.mb-3.mb-md-0
-        button(
+        button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(
           type="button",
           data-toggle="modal",
           data-target="#modal-for-creators"
-        ).btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold
+        )
           i.fa.fa-play-circle
           = " "
           if isBot(ctx.get('User-Agent'))
@@ -111,11 +111,11 @@ block body
           else
             = t("Creators")
       .col-md.text-center.mb-3.mb-md-0
-        button(
+        button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(
           type="button",
           data-toggle="modal",
           data-target="#modal-for-developers"
-        ).btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold
+        )
           i.fa.fa-play-circle
           = " "
           if isBot(ctx.get('User-Agent'))
@@ -123,11 +123,11 @@ block body
           else
             = t("Developers")
       .col-md.text-center
-        button(
+        button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(
           type="button",
           data-toggle="modal",
           data-target="#modal-for-businesses"
-        ).btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold
+        )
           i.fa.fa-play-circle
           = " "
           if isBot(ctx.get('User-Agent'))
@@ -145,25 +145,25 @@ block body
       //- DHH
       .col
         .p-4.border.border-gray-100.rounded-lg
-          a(
+          a.d-flex.align-items-top.text-decoration-none(
             href="https://twitter.com/dhh/status/1331183379686055936",
             target="_blank",
             rel="noopener noreferrer"
-          ).d-flex.align-items-top.text-decoration-none
-            img(
+          )
+            img.rounded-circle(
               width=50,
               height=50,
               src=manifest("img/testimonials/dhh.jpg")
-            ).rounded-circle
+            )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
                 div
                   | DHH
-                  img(
+                  img.ml-1(
                     src=manifest("img/testimonials/twitter-verified.svg"),
                     width=20,
                     height=20
-                  ).ml-1
+                  )
                 .small.text-muted @dhh
             .ml-auto
               i.fa.fa-twitter
@@ -188,25 +188,25 @@ block body
       //- Abhi Nemani
       .col.mt-4.mt-md-0
         .p-4.border.border-gray-100.rounded-lg
-          a(
+          a.d-flex.align-items-top.text-decoration-none(
             href="https://twitter.com/abhinemani/status/1187406737101545473",
             target="_blank",
             rel="noopener noreferrer"
-          ).d-flex.align-items-top.text-decoration-none
-            img(
+          )
+            img.rounded-circle(
               width=50,
               height=50,
               src=manifest("img/testimonials/abhinemani.jpg")
-            ).rounded-circle
+            )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
                 div
                   | abhi nemani
-                  img(
+                  img.ml-1(
                     src=manifest("img/testimonials/twitter-verified.svg"),
                     width=20,
                     height=20
-                  ).ml-1
+                  )
                 .small.text-muted @abhinemani
             .ml-auto
               i.fa.fa-twitter
@@ -226,25 +226,25 @@ block body
       //- Andrew Escobar
       .col.mt-4
         .p-4.border.border-gray-100.rounded-lg
-          a(
+          a.d-flex.align-items-top.text-decoration-none(
             href="https://twitter.com/andrewe/status/1016554126711275520",
             target="_blank",
             rel="noopener noreferrer"
-          ).d-flex.align-items-top.text-decoration-none
-            img(
+          )
+            img.rounded-circle(
               width=50,
               height=50,
               src=manifest("img/testimonials/andrewe.jpg")
-            ).rounded-circle
+            )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
                 div
                   | Andrew Escobar (Andres)
-                  img(
+                  img.ml-1(
                     src=manifest("img/testimonials/twitter-verified.svg"),
                     width=20,
                     height=20
-                  ).ml-1
+                  )
                 .small.text-muted @andrewe
             .ml-auto
               i.fa.fa-twitter
@@ -262,16 +262,16 @@ block body
       //- Ullrich Schäfer
       .col.mt-4
         .p-4.border.border-gray-100.rounded-lg
-          a(
+          a.d-flex.align-items-top.text-decoration-none(
             href="https://twitter.com/stigi/status/1070084392402460674",
             target="_blank",
             rel="noopener noreferrer"
-          ).d-flex.align-items-top.text-decoration-none
-            img(
+          )
+            img.rounded-circle(
               width=50,
               height=50,
               src=manifest("img/testimonials/stigi.jpg")
-            ).rounded-circle
+            )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
                 div Ullrich Schäfer
@@ -294,16 +294,16 @@ block body
       //- Andre Goncalves
       .col.mt-4
         .p-4.border.border-gray-100.rounded-lg
-          a(
+          a.d-flex.align-items-top.text-decoration-none(
             href="https://twitter.com/andregce/status/1290014041465933824",
             target="_blank",
             rel="noopener noreferrer"
-          ).d-flex.align-items-top.text-decoration-none
-            img(
+          )
+            img.rounded-circle(
               width=50,
               height=50,
               src=manifest("img/testimonials/andregce.jpg")
-            ).rounded-circle
+            )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
                 div Andre Goncalves
@@ -326,16 +326,16 @@ block body
       //- Phil Cockfield
       .col.mt-4
         .p-4.border.border-gray-100.rounded-lg
-          a(
+          a.d-flex.align-items-top.text-decoration-none(
             href="https://twitter.com/philcockfield/status/1035659754587095040",
             target="_blank",
             rel="noopener noreferrer"
-          ).d-flex.align-items-top.text-decoration-none
-            img(
+          )
+            img.rounded-circle(
               width=50,
               height=50,
               src=manifest("img/testimonials/philcockfield.jpg")
-            ).rounded-circle
+            )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
                 div Phil
@@ -363,22 +363,22 @@ block body
       .col-12.col-md-9.col-lg-6
         p.lead.text-white.mb-3.mb-md-5
           != t('We use industry standard email header validation and signature checks, spam prevention tools, DNS blacklist lookups, and domain verification.  All powered by Cloudflare\'s <a href="https://blog.cloudflare.com/announcing-1111/" target="_blank" rel="noopener noreferrer" class="text-white">privacy-first consumer DNS service</a>.')
-        a(
+        a.btn.btn-outline-light.btn-lg.mb-md-5(
           href=l("/register"),
           role="button",
           data-toggle="modal-anchor",
           data-target="#modal-sign-up"
-        ).btn.btn-outline-light.btn-lg.mb-md-5
+        )
           = t("Stay protected")
           = " "
           i.fa.fa-angle-double-right
       .d-flex.col-md-3.col-lg-6.pt-3
-        img(
+        img.mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0(
           src=manifest("img/logo-square.svg"),
           width=200,
           height=200,
           alt=""
-        ).mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0
+        )
   .pt-5.pb-lg-5.text-center.bg-light
     .h2.display-3.mb-1.text-danger
       i.fa.fa-heart
@@ -389,21 +389,21 @@ block body
         .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
           h2.display-5.font-weight-bold.mb-3= t("Privacy First")
           p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption and a zero-tolerance policy for logs of any kind.")
-          a(
+          a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
             href=l("/register"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
-          ).d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark
+          )
             = t("Regain your privacy")
             = " "
             i.fa.fa-angle-double-right
-          a(
+          a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
             href=l("/register"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
-          ).d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark
+          )
             = t("Regain your privacy")
             = " "
             i.fa.fa-angle-double-right
@@ -411,21 +411,21 @@ block body
         .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
           h2.display-5.font-weight-bold.mb-3= t("Disposable Addresses")
           p.lead.mb-3!= t("Create a specific or an anonymous email address that forwards to you.  You can even assign it a label and enable or disable it at any time to keep your inbox tidy.  Your actual email address is never exposed.")
-          a(
+          a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
             href=l("/register"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
-          ).d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark
+          )
             = t("Disposable addresses")
             = " "
             i.fa.fa-angle-double-right
-          a(
+          a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
             href=l("/register"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
-          ).d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark
+          )
             = t("Disposable addresses")
             = " "
             i.fa.fa-angle-double-right
@@ -433,21 +433,21 @@ block body
         .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
           h2.display-5.font-weight-bold.mb-3= t("Multiple Recipients and Wildcards")
           p.lead.mb-3!= t("You can forward a single address to multiple, and even use wildcard addresses &ndash; also known as catch-all's.  Managing your company's inboxes has never been easier.")
-          a(
+          a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
             href=l("/register"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
-          ).d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark
+          )
             = t("Start forwarding now")
             = " "
             i.fa.fa-angle-double-right
-          a(
+          a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
             href=l("/register"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
-          ).d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark
+          )
             = t("Start forwarding now")
             = " "
             i.fa.fa-angle-double-right
@@ -455,21 +455,21 @@ block body
         .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
           h2.display-5.font-weight-bold.mb-3= t('"Send mail as" with Gmail')
           p.lead.mb-3= t("You'll never have to leave your inbox to send out emails as if they're from your company.  Send and reply-to messages as if they're from you@company.com directly from you@gmail.com.")
-          a(
+          a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
             href=l("/register"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
-          ).d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark
+          )
             = t("Configure your inbox")
             = " "
             i.fa.fa-angle-double-right
-          a(
+          a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
             href=l("/register"),
             role="button",
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
-          ).d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark
+          )
             = t("Configure your inbox")
             = " "
             i.fa.fa-angle-double-right
@@ -486,21 +486,21 @@ block body
           != t('We\'re the <strong class="text-uppercase font-weight-bold border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
           = " "
           != t('Made by <a href="https://github.com/niftylettuce" class="text-success font-weight-bold" target="_blank" rel="noopener noreferrer">@niftylettuce</a>, an open-source and privacy advocate.')
-        a(
+        a.btn.btn-outline-light.btn-lg.mb-md-5(
           href="https://github.com/forwardemail",
           target="_blank",
           rel="noopener noreferrer"
-        ).btn.btn-outline-light.btn-lg.mb-md-5
+        )
           = t("View source code")
           = " "
           i.fa.fa-angle-double-right
       .d-flex.col-md-3.col-lg-6.pt-3
-        img(
+        img.mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0(
           src=manifest("img/github-logo-white.svg"),
           width=200,
           height=200,
           alt=""
-        ).mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0
+        )
   .py-3.py-md-5.text-center.bg-light
     .h2.display-3.mb-1.text-primary
       i.fa.fa-globe

@@ -22,18 +22,18 @@ include ../../_pagination
         if boolean(process.env.AUTH_OTP_ENABLED)
           th(scope="col")
             +sortHeader(config.passport.fields.otpEnabled, 'OTP Enabled', '#table-users')
-        th(scope="col").text-center.align-middle= t("Actions")
+        th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if users.length === 0
-        td(
+        td.alert.alert-info(
           colspan=boolean(process.env.AUTH_OTP_ENABLED) ? "8" : "7"
-        ).alert.alert-info= t("No users exist for that search.")
+        )= t("No users exist for that search.")
       else
         each user in users
           tr
             td.align-middle= user[config.passport.fields.givenName]
             td.align-middle= user[config.passport.fields.familyName]
-            td: a(href=`mailto:${user.email}`, target="_blank").align-middle= user.email
+            td.align-middle: a(href=`mailto:${user.email}`, target="_blank")= user.email
             td.align-middle= titleize(user.group)
             td.align-middle= dayjs(user.created_at).format("M/D/YY h:mm A")
             td.align-middle= dayjs(user.updated_at).format("M/D/YY h:mm A")
@@ -41,33 +41,33 @@ include ../../_pagination
             if boolean(process.env.AUTH_OTP_ENABLED)
               td.align-middle= user[config.passport.fields.otpEnabled]
             td.align-middle
-              div(role="group", aria-label=t("Actions")).btn-group
-                a(
+              .btn-group(role="group", aria-label=t("Actions"))
+                a.btn.btn-secondary(
                   href=l(`/admin/users/${user.id}`),
                   data-toggle="tooltip",
                   data-title=t("Edit")
-                ).btn.btn-secondary: i.fa.fa-fw.fa-edit
-                form(
+                ): i.fa.fa-fw.fa-edit
+                form.ajax-form.confirm-prompt.btn-group(
                   action=l(`/admin/users/${user.id}/login`),
                   method="POST",
                   autocomplete="off"
-                ).ajax-form.confirm-prompt.btn-group
+                )
                   input(type="hidden", name="_csrf", value=ctx.csrf)
-                  button(
+                  button.btn.btn-secondary(
                     type="submit",
                     data-toggle="tooltip",
                     data-title=t("Log in as user")
-                  ).btn.btn-secondary: i.fa.fa-fw.fa-user-secret
-                form(
+                  ): i.fa.fa-fw.fa-user-secret
+                form.ajax-form.confirm-prompt.btn-group(
                   action=l(`/admin/users/${user.id}`),
                   method="POST",
                   autocomplete="off"
-                ).ajax-form.confirm-prompt.btn-group
+                )
                   input(type="hidden", name="_csrf", value=ctx.csrf)
                   input(type="hidden", name="_method", value="DELETE")
-                  button(
+                  button.btn.btn-secondary(
                     type="submit",
                     data-toggle="tooltip",
                     data-title=t("Remove")
-                  ).btn.btn-secondary: i.fa.fa-fw.fa-remove
+                  ): i.fa.fa-fw.fa-remove
 +paginate('#table-users')

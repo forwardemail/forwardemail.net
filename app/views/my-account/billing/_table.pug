@@ -5,34 +5,34 @@ include ./_payment-method
 
 mixin receipt(payment)
   .btn-group
-    a(
+    a.btn.btn-primary(
       href=l(`/my-account/billing/${payment.reference}`),
       data-toggle="tooltip",
       data-placement="bottom",
       title=t("View")
-    ).btn.btn-primary
+    )
       i.fa.fa-receipt
-    a(
+    a.btn.btn-danger(
       href=l(`/my-account/billing/${payment.reference}.pdf`),
       data-toggle="tooltip",
       data-placement="bottom",
       title=t("Download")
-    ).btn.btn-danger
+    )
       i.fa.fa-file-pdf
-    a(
+    a.btn.btn-dark(
       href=l(`/my-account/billing/${payment.reference}.html`),
       target="_blank",
       data-toggle="tooltip",
       data-placement="bottom",
       title=t("Print")
-    ).btn.btn-dark
+    )
       i.fa.fa-print
 
 .table-responsive
   table.table.table-hover.table-bordered
     thead.thead-dark
       tr
-        th(scope="col").d-none.d-lg-table-cell
+        th.d-none.d-lg-table-cell(scope="col")
           +sortHeader('reference', null, '#table-payments')
         th(scope="col")
           +sortHeader('created_at', 'Date', '#table-payments')
@@ -41,11 +41,11 @@ mixin receipt(payment)
             +sortHeader('description', null, '#table-payments')
           span.d-lg-none
             +sortHeader('reference', 'Payment', '#table-payments')
-        th(scope="col").d-none.d-lg-table-cell
+        th.d-none.d-lg-table-cell(scope="col")
           +sortHeader('method', null, '#table-payments')
         th(scope="col")
           +sortHeader('amount', 'Amount', '#table-payments')
-        th(scope="col").d-none.d-lg-table-cell.text-center.align-middle= t("Receipt")
+        th.d-none.d-lg-table-cell.text-center.align-middle(scope="col")= t("Receipt")
     tbody
       each payment in payments
         tr

@@ -49,26 +49,26 @@ block body
               h3.h4= t("Method")
               .form-group
                 .form-check.form-check-inline
-                  input#input-payment-method-credit-card(
+                  input#input-payment-method-credit-card.form-check-input(
                     type="radio",
                     checked,
                     required,
                     name="payment_method",
                     value="credit_card"
-                  ).form-check-input
-                  label(
+                  )
+                  label.form-check-label.lead(
                     for="input-payment-method-credit-card"
-                  ).form-check-label.lead= t("Debit/Credit Card")
+                  )= t("Debit/Credit Card")
                 .form-check.form-check-inline
-                  input#input-payment-method-paypal(
+                  input#input-payment-method-paypal.form-check-input(
                     type="radio",
                     required,
                     name="payment_method",
                     value="paypal"
-                  ).form-check-input
-                  label(
+                  )
+                  label.form-check-label.lead(
                     for="input-payment-method-paypal"
-                  ).form-check-label.lead= t("PayPal")
+                  )= t("PayPal")
                 //-.
                   .form-check.form-check-inline
                     input(type='radio', required, name='payment_method', value='bitpay')#input-payment-method-bitpay.form-check-input
@@ -80,35 +80,35 @@ block body
                 h3.h4= t("Payment Type")
                 .form-group
                   .form-check.form-check-inline
-                    input#input-payment-type-subscription(
+                    input#input-payment-type-subscription.form-check-input(
                       type="radio",
                       checked,
                       required,
                       name="payment_type",
                       value="subscription"
-                    ).form-check-input
-                    label(
+                    )
+                    label.form-check-label.lead(
                       for="input-payment-type-subscription"
-                    ).form-check-label.lead= t("Subscription")
+                    )= t("Subscription")
                   .form-check.form-check-inline
-                    input#input-payment-type-one-time(
+                    input#input-payment-type-one-time.form-check-input(
                       type="radio",
                       required,
                       name="payment_type",
                       value="one-time"
-                    ).form-check-input
-                    label(
+                    )
+                    label.form-check-label.lead(
                       for="input-payment-type-one-time"
-                    ).form-check-label.lead= t("One-time")
+                    )= t("One-time")
 
               //- Length
               //- TODO: default to last one used
               h3.h4= t("Duration")
               .form-group
-                select(
+                select.form-control.form-control-lg.d-inline-block.w-auto(
                   name="payment_duration",
                   required
-                ).form-control.form-control-lg.d-inline-block.w-auto
+                )
                   - const plan = ctx.query.plan || user.plan;
                   if plan === 'enhanced_protection'
                     option(value="30d")= t("1 month ($3 USD)")
@@ -147,9 +147,9 @@ block body
                     //- option(value='lifetime', data-no-subscription=true, disabled=!isMakePayment)= t('Lifetime ($432 USD)')
 
               //- Continue (Stripe)
-              button#stripe-button-container(
+              button#stripe-button-container.btn.btn-dark.btn-lg.btn-block(
                 type="submit"
-              ).btn.btn-dark.btn-lg.btn-block
+              )
                 = t("Continue")
                 = " "
                 i.fa.fa-angle-double-right
@@ -161,7 +161,7 @@ block body
                 //- Continue (BitPay)
                 input#bitpay-button-container.p-0.d-none(type="image", src=manifest('img/btn-bitpay.svg'), alt='Pay with BitPay')
 
-              p: small.text-muted.pt-3.mb-0.text-muted= t("We accept all major currencies, card types, and cryptocurrencies.")
+              p.text-muted.pt-3.mb-0: small.text-muted= t("We accept all major currencies, card types, and cryptocurrencies.")
 
           .card-footer.text-muted.text-center= t("We'll automatically email you if you're late on a payment.")
         if !isMakePayment

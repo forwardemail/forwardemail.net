@@ -41,18 +41,18 @@ block body
           .card
             .card-body
               h2.h6.text-muted.text-uppercase.mb-0= t("Growth since launch")
-              #line-chart: : i.text-center.mt-3.text-muted.fa.fa-2x.fa-spin.fa-spinner
+              #line-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
       .row.mb-3
         .col
           .card
             .card-body
               h2.h6.text-muted.text-uppercase.mb-0= t("Daily new users")
-              #heatmap: : i.text-center.mt-3.text-muted.fa.fa-2x.fa-spin.fa-spinner
+              #heatmap: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
       .row.mb-3
         .col
           .card
             .card-body
               h2.h6.text-muted.text-uppercase.mb-0= t("Plan distribution")
-              #pie-chart: : i.text-center.mt-3.text-muted.fa.fa-2x.fa-spin.fa-spinner
+              #pie-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
   if !user
     +onboard(t('Need email forwarding?'), t('Skip ahead to the instructions to get started.'), l(`/faq?hash=${hash}`), false, 'border-top bg-transparent').d-flex.flex-column.flex-grow-1.justify-content-end

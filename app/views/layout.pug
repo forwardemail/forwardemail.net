@@ -1,5 +1,5 @@
 doctype html
-html(lang=locale).h-100
+html.h-100(lang=locale)
   head
     block meta
       meta(charset="utf-8")
@@ -216,7 +216,7 @@ html(lang=locale).h-100
           src="https://plausible.io/js/plausible.js"
         )
 
-  body(role="document").d-flex.flex-column.min-h-100
+  body.d-flex.flex-column.min-h-100(role="document")
     - const isHelp = ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
 
@@ -228,7 +228,7 @@ html(lang=locale).h-100
       include _nav
 
     //- body
-    main(role="main").flex-grow-1.d-flex.flex-column.flex-grow-1
+    main.flex-grow-1.d-flex.flex-column.flex-grow-1(role="main")
       block body
 
     //- footer

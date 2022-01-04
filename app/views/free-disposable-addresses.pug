@@ -23,18 +23,18 @@ block body
             li.py-2
               ul.list-inline
                 li.list-inline-item
-                  div: code= `${t("name")}@${vanityDomain}`
-                li.markdown-body.ml-0.mr-0.list-inline-item
-                  a(
+                  .markdown-body.ml-0.mr-0: code= `${t("name")}@${vanityDomain}`
+                li.list-inline-item
+                  a.btn.btn-dark.btn-sm.text-uppercase(
                     href=`/my-account/domains/aliases/new?domain=${vanityDomain}`
-                  ).btn.btn-dark.btn-sm.text-uppercase
+                  )
                     = t("Try it now")
                     = " "
                     i.fa.fa-angle-double-right
         p.mt-5.mb-0.text-center
-          a(
+          a.btn.btn-primary.btn-lg.text-uppercase.font-weight-bold(
             href="/my-account/domains/aliases/new"
-          ).btn.btn-primary.btn-lg.text-uppercase.font-weight-bold
+          )
             = t("Create your address")
             = " "
             i.fa.fa-angle-double-right

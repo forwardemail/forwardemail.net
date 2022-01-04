@@ -17,4 +17,4 @@ block content
                     li= t("API token has been reset.")
                   else
                     li= t(`${field.text} has changed from ${field.previous} to ${field.current}`)
-          div: small.card-footer.text-center.text-muted= t("If you did not make these changes, then please contact us immediately.")
+          .card-footer.text-center: small.text-muted= t("If you did not make these changes, then please contact us immediately.")

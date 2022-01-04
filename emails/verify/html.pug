@@ -11,7 +11,7 @@ block content
               p= t("Use this verification code:")
               pre: code.display-3= pin
               p= t("This code expires within %s.", dayjs(expiresAt).fromNow(true))
-            a(href=link).btn.btn-lg.btn-block.btn-primary
+            a.btn.btn-lg.btn-block.btn-primary(href=link)
               .d-inline-block.align-middle
                 = t("Verify now")
-          div: small.card-footer.text-muted= t("If you did not submit this request, then please reply to let us know.")
+          .card-footer: small.text-muted= t("If you did not submit this request, then please reply to let us know.")

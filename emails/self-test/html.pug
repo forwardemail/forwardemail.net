@@ -8,11 +8,11 @@ block content
           h5.card-header= t("Your email was sent successfully")
           .card-body.text-center.p-0
             a(href=config.urls.web)
-              img(
+              img.img-responsive(
                 src=`${config.urls.web}/img/emails/self-test.gif`,
                 alt="",
                 data-inline-ignore
-              ).img-responsive
+              )
             .p-3
               h1.h3!= t("Don't worry &ndash; everything is OK!")
               p.card-text= t("We detected that you successfully sent an email to yourself.")
@@ -30,9 +30,9 @@ block content
                 = t("If you're using a service such as Gmail, then the email will only be shown in your Sent folder.")
                 = " "
                 = t("We are simply letting you know in advance of this issue!")
-              a(
+              a.btn.btn-lg.btn-danger(
                 href="https://support.google.com/a/answer/1703601"
-              ).btn.btn-lg.btn-danger
+              )
                 = t("Read the official Gmail answer")
             .p-3
               h2.h5= t("Is there a workaround?")
@@ -52,5 +52,5 @@ block content
               h2.h5= t("Interested in learning more about us?")
               p.card-text
                 != t('We\'re an <a href="%s">open startup</a> and have a remarkable story.', `${config.urls.web}/open-startup`)
-              a(href=`${config.urls.web}/about`).btn.btn-lg.btn-primary= t("Learn more about us")
-          div: small.card-footer.text-muted= t("If you have any questions or comments, then please let us know.")
+              a.btn.btn-lg.btn-primary(href=`${config.urls.web}/about`)= t("Learn more about us")
+          .card-footer: small.text-muted= t("If you have any questions or comments, then please let us know.")

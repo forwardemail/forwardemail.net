@@ -10,18 +10,18 @@ block content
             a(
               href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
             )
-              img(
+              img.img-responsive(
                 src=`${config.urls.web}/img/emails/domain-verified.gif`,
                 alt="",
                 data-inline-ignore
-              ).img-responsive
+              )
             .p-3
               h1.h3!= t("Woo-hoo!")
               p.card-text!= t('We detected that your domain <strong><span class="notranslate">%s</span></strong> is now verified.', domain.name)
-              a(
+              a.btn.btn-lg.btn-success(
                 href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
                 role="button"
-              ).btn.btn-lg.btn-success= t("Manage domain")
+              )= t("Manage domain")
             if domain.plan === 'free'
               .p-3
                 h2.h5= t("Did you want enhanced privacy and protection?")
@@ -40,4 +40,4 @@ block content
                 li.list-inline-item
                   = emoji("white_check_mark")
                   .mt-2.text-monospace.text-uppercase.text-white= t("TXT Records")
-          div: small.card-footer.text-muted= t("If you have any questions or comments, then please let us know")
+          .card-footer: small.text-muted= t("If you have any questions or comments, then please let us know")

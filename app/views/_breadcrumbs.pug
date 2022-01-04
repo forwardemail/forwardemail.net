@@ -3,16 +3,16 @@ if breadcrumbs.length > 1
     ol.breadcrumb.justify-content-center.justify-content-md-start.mb-3
       each breadcrumb, i in breadcrumbs
         if i === breadcrumbs.length - 1
-          li(aria-current="page").breadcrumb-item.active
+          li.breadcrumb-item.active(aria-current="page")
             = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
         else
           li.breadcrumb-item
-            a(
+            a.text-dark(
               href=_.isObject(breadcrumb) ? breadcrumb.href : `/${breadcrumbs.slice(0, i + 1).join("/")}/`
-            ).text-dark
+            )
               = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
   .text-center.text-md-left.d-md-flex.mb-3
-    h1(class=breadcrumbHeaderCentered ? "flex-grow-1 text-center" : "").mb-0
+    h1.mb-0(class=breadcrumbHeaderCentered ? "flex-grow-1 text-center" : "")
       if breadcrumbs.length > 0
         = _.isObject(breadcrumbs[breadcrumbs.length - 1]) ? breadcrumbs[breadcrumbs.length - 1].header || breadcrumbs[breadcrumbs.length - 1].name : t(titleize(humanize(breadcrumbs[breadcrumbs.length - 1])))
       else
@@ -22,39 +22,39 @@ if breadcrumbs.length > 1
         if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
           ul.list-inline.mb-0
             li.list-inline-item
-              a(
+              a.btn.btn-dark(
                 href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
                 role=domain.plan === "free" ? "button" : false,
                 data-target=domain.plan === "free" ? "#modal-upgrade" : false,
                 data-toggle=domain.plan === "free" ? "modal" : false
-              ).btn.btn-dark
+              )
                 i.fa.fa-fw.fa-users
                 = " "
                 = t("Aliases")
             li.list-inline-item
-              a(
+              a.btn.btn-dark(
                 href=l(`/my-account/domains/${domain.name}/advanced-settings`)
-              ).btn.btn-dark
+              )
                 i.fa.fa-fw.fa-tools
                 = " "
                 = t("Advanced Settings")
             if domain.group === 'admin'
               li.list-inline-item
                 .btn-group
-                  button(
+                  button.btn.btn-dark.dropdown-toggle(
                     type="button",
                     data-toggle="dropdown",
                     aria-haspopup="true",
                     aria-expanded="false"
-                  ).btn.btn-dark.dropdown-toggle= t("Change Plan")
+                  )= t("Change Plan")
                   .dropdown-menu.dropdown-menu-right
                     h6.dropdown-header.text-uppercase= t("Change Plan")
                     each plan in [ 'free', 'enhanced_protection', 'team' ]
-                      a(
+                      a.dropdown-item(
                         href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`),
                         disabled=plan === domain.plan,
                         class=plan === domain.plan ? "disabled" : ""
-                      ).dropdown-item
+                      )
                         case plan
                           when 'enhanced_protection'
                             i.fa.fa-fw.fa-shield
@@ -74,30 +74,30 @@ if breadcrumbs.length > 1
                           = t("Current")
                           = ")"
                     .dropdown-divider
-                    a(href=l(`/pricing?domain=${domain.name}`)).dropdown-item
+                    a.dropdown-item(href=l(`/pricing?domain=${domain.name}`))
                       small.text-muted= t("See all plan features")
         else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0
             if !domain.is_global && ctx.state.domain.group === 'admin'
               li.list-inline-item
-                form(
+                form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/my-account/domains/${domain.name}/aliases/import`),
                   method="POST"
-                ).ajax-form.confirm-prompt.d-inline-block
+                )
                   input(type="hidden", name="_csrf", value=ctx.csrf)
-                  button(
+                  button.btn.btn-dark.text-uppercase.font-weight-bold(
                     type="submit"
-                  ).btn.btn-dark.text-uppercase.font-weight-bold
+                  )
                     = t("Import TXT Records")
                     = " "
                     i.fa.fa-cloud-download-alt
             li.list-inline-item
-              a(
+              a.btn.btn-primary.text-uppercase.font-weight-bold(
                 href=l(`/my-account/domains/${domain.name}/aliases/new`),
                 role="button",
                 data-toggle="modal-anchor",
                 data-target="#modal-alias"
-              ).btn.btn-primary.text-uppercase.font-weight-bold
+              )
                 = t("Add New Alias")
                 = " "
                 i.fa.fa-angle-double-right
@@ -106,23 +106,23 @@ if breadcrumbs.length > 1
             when '/my-account/domains'
               ul.list-inline.mb-0
                 li.list-inline-item
-                  a(
+                  a.btn.btn-primary.text-uppercase.font-weight-bold(
                     href=l("/my-account/domains/new"),
                     role="button",
                     data-toggle="modal-anchor",
                     data-target="#modal-domain"
-                  ).btn.btn-primary.text-uppercase.font-weight-bold
+                  )
                     = t("Add New Domain")
                     = " "
                     i.fa.fa-angle-double-right
                 if domains.length > 0
                   li.list-inline-item
-                    a(
+                    a.btn.btn-primary.text-uppercase.font-weight-bold(
                       href=l("/my-account/domains/aliases/new"),
                       role="button",
                       data-toggle="modal-anchor",
                       data-target="#modal-alias"
-                    ).btn.btn-primary.text-uppercase.font-weight-bold
+                    )
                       = t("Add New Alias")
                       = " "
                       i.fa.fa-angle-double-right

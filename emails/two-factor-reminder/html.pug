@@ -13,9 +13,9 @@ block content
               = t("We suggest that you enable two-factor authentication since your domains are using Enhanced Protection.")
               = " "
               = t("Doing so will help to keep your domains, aliases, and account even more secure.")
-            a(
+            a.btn.btn-lg.btn-block.btn-primary(
               href=`${config.urls.web}/${locale}/my-account/security`
-            ).btn.btn-lg.btn-block.btn-primary
+            )
               .d-inline-block.align-middle
                 = t("Manage security")
-          div: small.card-footer.text-muted= t("We send this reminder every three months to increase security.")
+          .card-footer: small.text-muted= t("We send this reminder every three months to increase security.")

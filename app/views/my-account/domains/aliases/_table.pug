@@ -17,40 +17,40 @@ include ../../../_pagination
           - numCols++;
           th(scope="col")
             +sortHeader('description', 'Description & Labels', '#table-aliases')
-        th(scope="col").text-center
+        th.text-center(scope="col")
           +sortHeader('is_enabled', 'Active', '#table-aliases')
-        th(scope="col").align-middle= t("Recipients")
-        th(scope="col").text-center.text-md-left.align-middle= t("Quick Links")
+        th.align-middle(scope="col")= t("Recipients")
+        th.text-center.text-md-left.align-middle(scope="col")= t("Quick Links")
     tbody
       if domain.aliases.length === 0
-        td(colspan=numCols).alert.alert-info= t("No aliases exist for that search.")
+        td.alert.alert-info(colspan=numCols)= t("No aliases exist for that search.")
       else
         each alias in domain.aliases
           tr
             td.align-middle
-              p: code= `${alias.name}@${domain.name}`
+              p.mb-0.markdown-body.ml-0.mr-0: code= `${alias.name}@${domain.name}`
             if domain.group === 'admin' && domain.plan === 'team'
-              td.mb-0.markdown-body.ml-0.mr-0.align-middle= alias.user.email
+              td.align-middle= alias.user.email
             if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
               td.align-middle
                 if isSANB(alias.description)
-                  p: small= alias.description
+                  p.mb-0: small= alias.description
                 if Array.isArray(alias.labels)
-                  ul.mb-0.list-inline.mb-0
+                  ul.list-inline.mb-0
                     each label in alias.labels
                       li.list-inline-item.h5
-                        span(
+                        span.badge.badge-pill.text-monospace.font-weight-normal.py-2.px-3(
                           class=label === "catch-all" ? "badge-success" : "badge-primary"
-                        ).badge.badge-pill.text-monospace.font-weight-normal.py-2.px-3= label === "catch-all" ? t("catch-all") : label
+                        )= label === "catch-all" ? t("catch-all") : label
             td.align-middle.text-center
-              button(
+              button.btn.btn-link(
                 type="button",
                 data-placement="bottom",
                 data-toggle="tooltip",
                 data-title=alias.is_enabled ? t("Enabled") : t("Disabled"),
                 class=alias.is_enabled ? "text-success" : "text-danger"
-              ).btn.btn-link
-                i(class=alias.is_enabled ? "fa-check" : "fa-times").fa.fa-fw
+              )
+                i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
             td.align-middle
               ul.list-inline.mb-0
                 each recipient in alias.recipients
@@ -60,20 +60,20 @@ include ../../../_pagination
                         = recipient
                       else
                         = `${alias.name}@${recipient}`
-            td(style="width: 20%").align-middle
-              a(
+            td.align-middle(style="width: 20%")
+              a.btn.btn-dark.mb-1(
                 href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
-              ).btn.btn-dark.mb-1
+              )
                 i.fa.fa-pencil
                 = " "
                 = t("Edit Alias")
-              form(
+              form.ajax-form.confirm-prompt.d-inline-block(
                 action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
                 method="POST"
-              ).ajax-form.confirm-prompt.d-inline-block
+              )
                 input(type="hidden", name="_csrf", value=ctx.csrf)
                 input(type="hidden", name="_method", value="DELETE")
-                button(type="submit").btn.btn-danger
+                button.btn.btn-danger(type="submit")
                   i.fa.fa-trash
                   = " "
                   = t("Delete Alias")

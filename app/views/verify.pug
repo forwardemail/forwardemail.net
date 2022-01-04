@@ -2,19 +2,19 @@ extends layout
 
 block body
   .container.py-3
-    div: h1.text-center.my-3.py-3= t("Verify email")
+    .text-center: h1.my-3.py-3= t("Verify email")
     .row
       .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
         .alert.alert-primary.text-center.mb-4!= t('Enter the verification code emailed to: <strong><span class="notranslate">%s</span></strong>', user.email)
-        form(
+        form.ajax-form(
           action=redirectTo ? `${ctx.path}?redirect_to=${redirectTo}` : ctx.path,
           method="POST"
-        ).ajax-form
+        )
           input(type="hidden", name="_csrf", value=ctx.csrf)
           .form-group.floating-label
             //- <https://web.dev/sms-otp-form/>
             //- <https://www.twilio.com/blog/html-attributes-two-factor-authentication-autocomplete>
-            input#input-pin(
+            input#input-pin.form-control.form-control-lg.verification-form(
               type="text",
               autofocus,
               title=striptags(t('Please enter a <span class="notranslate">%d</span> digit verification code.', config.verificationPin.length)),
@@ -25,12 +25,12 @@ block body
               autocomplete="one-time-code",
               name="pin",
               placeholder=" "
-            ).form-control.form-control-lg.verification-form
+            )
             label(for="input-pin")= t("Verification code")
-          button(type="submit").btn.btn-success.btn-block.btn-lg= t("Continue")
+          button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
         .alert.alert-warning.mt-3.text-center
           = t("Didn't receive it?")
           = " "
-          a(
+          a.alert-link(
             href=redirectTo ? `${ctx.path}?resend=true&redirect_to=${redirectTo}` : `${ctx.path}?resend=true`
-          ).alert-link= t("Resend now")
+          )= t("Resend now")

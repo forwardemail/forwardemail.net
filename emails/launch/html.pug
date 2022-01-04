@@ -8,11 +8,11 @@ block content
           h5.card-header.text-center Forward Email launches to the public!
           .card-body.p-0
             a(href=config.urls.web)
-              img(
+              img.img-responsive(
                 src=`${config.urls.web}/img/emails/domain-onboard.gif`,
                 alt="",
                 data-inline-ignore
-              ).img-responsive
+              )
             .p-3
               h1.h3.text-center To the Moon!
               p.card-text
@@ -47,5 +47,5 @@ block content
                 | Thank you,
                 br
                 a(href="https://github.com/niftylettuce", target="_blank") @niftylettuce
-              a(href=config.urls.web).btn.btn-lg.btn-block.btn-primary To the Moon!
-          div: small.card-footer.text-center.text-muted= t("If you have any questions or issues, then please let us know")
+              a.btn.btn-lg.btn-block.btn-primary(href=config.urls.web) To the Moon!
+          .card-footer.text-center: small.text-muted= t("If you have any questions or issues, then please let us know")
