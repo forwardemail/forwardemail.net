@@ -36,3 +36,17 @@ mark {
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
+
+
+// <https://github.com/forwardemail/forwardemail.net/issues/141>
+// <https://stackoverflow.com/q/58931615>
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-delay: -1s !important;
+    animation-duration: 1s !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+  }
+}
