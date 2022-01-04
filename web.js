@@ -16,7 +16,7 @@ const webSharedConfig = sharedConfig('WEB');
 const client = new Redis(webSharedConfig.redis, logger);
 const web = new Web(webConfig(client));
 
-if (!module.parent) {
+if (require.main === module) {
   const mongoose = new Mongoose({ ...webSharedConfig.mongoose, logger });
 
   const graceful = new Graceful({

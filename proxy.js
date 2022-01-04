@@ -11,7 +11,7 @@ const proxy = new ProxyServer({
   logger
 });
 
-if (!module.parent) {
+if (require.main === module) {
   const graceful = new Graceful({ servers: [proxy], logger });
   graceful.listen();
 
