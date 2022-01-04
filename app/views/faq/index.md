@@ -208,7 +208,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using <code>now</code> CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
@@ -216,7 +216,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <code>...</code> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>Sign in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
@@ -249,9 +249,9 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
+      <th>Type</th>
       <th>Priority</th>
-      <th>Value/Answer/Destination</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -301,8 +301,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -321,7 +321,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Tip:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value/Answer/Destination" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
   </span>
 </div>
 
@@ -342,8 +342,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -373,8 +373,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -404,8 +404,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -459,8 +459,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -490,8 +490,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -521,8 +521,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -544,8 +544,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -804,8 +804,8 @@ For example, if I want all emails that go to `example.com` to forward to alias r
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -833,8 +833,8 @@ For example, if I want all emails that go to `example.com` to forward to alias r
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -885,8 +885,8 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -906,8 +906,8 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1038,8 +1038,8 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1059,8 +1059,8 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1080,8 +1080,8 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1101,8 +1101,8 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1137,9 +1137,9 @@ If you use Google Business for email, and want to use our server as a fallback s
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
+      <th>Type</th>
       <th>Priority</th>
-      <th>Value/Answer/Destination</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1211,8 +1211,8 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1240,8 +1240,8 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1269,8 +1269,8 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1295,8 +1295,8 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1316,8 +1316,8 @@ Or, you could specify them in two separate lines, such as this:
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1350,8 +1350,8 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1371,8 +1371,8 @@ Or, you could specify them in two separate lines, such as this:
     <tr>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Record Type</th>
-      <th>Value/Answer/Destination</th>
+      <th>Type</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
