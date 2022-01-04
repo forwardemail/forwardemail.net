@@ -10,11 +10,11 @@ const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
 
 const Users = require('#models/user');
+const config = require('#config');
+const email = require('#helpers/email');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const passport = require('#helpers/passport');
-const email = require('#helpers/email');
 const sendVerificationEmail = require('#helpers/send-verification-email');
-const config = require('#config');
 const { Inquiries } = require('#models');
 
 const options = { length: 10, type: 'numeric' };
@@ -205,7 +205,7 @@ async function login(ctx, next) {
 }
 
 async function loginOtp(ctx, next) {
-  await passport.authenticate('otp', (err, user) => {
+  await passport.authenticate('otp', async (err, user) => {
     if (err) throw err;
     if (!user)
       throw Boom.unauthorized(ctx.translateError('INVALID_OTP_PASSCODE'));
@@ -213,7 +213,7 @@ async function loginOtp(ctx, next) {
     ctx.session.otp_remember_me = boolean(ctx.request.body.otp_remember_me);
 
     ctx.session.otp = 'totp';
-    const redirectTo = ctx.state.l('/dashboard');
+    const redirectTo = await parseLoginSuccessRedirect(ctx);
 
     if (ctx.accepts('json')) {
       ctx.body = { redirectTo };
