@@ -34,12 +34,6 @@ block body
         if domains.length === 0 && !ctx.query.q && !ctx.query.page
           .alert.alert-info= t("No domains exist yet.")
         else
-          .alert.my-3.alert-primary
-            i.fa.fa-info-circle
-            = " "
-            strong= t("Tip:")
-            = " "
-            = t('If you need to upgrade or downgrade your plan on a domain name, then click on the dropdown for it under the column "Current Plan" below.')
           form.ajax-form.table-ajax-form(
             action=ctx.path,
             method="GET",

@@ -33,7 +33,7 @@ block body
                 value="enhanced_protection",
                 checked
               )
-              label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a> ($3/mo premium support and privacy)', l("/pricing"))
+              label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a>', l("/pricing"))
           if user.group === 'admin'
             .form-group.form-check
               input#input-is-global.form-check-input(

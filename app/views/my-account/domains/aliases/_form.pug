@@ -10,14 +10,14 @@ if alias
       span.text-danger= t("(required)")
     .input-group
       .input-group-prepend
-        button.generate-random-alias.btn.btn-dark(
+        button.generate-random-alias.btn.btn-dark.border-dark(
           data-target="#input-alias-name",
           type="button",
           data-toggle="tooltip",
           title=t("Generate random alias")
         )
           i.fa.fa-dice
-      input#input-alias-name.form-control.form-control-lg(
+      input#input-alias-name.form-control.form-control-lg.border-dark(
         required,
         value=alias ? alias.name : "",
         name="name",
@@ -29,7 +29,7 @@ if alias
         type="text"
       )
       .input-group-append
-        .input-group-text
+        .input-group-text.bg-dark.text-white.border-dark
           if domain
             input(type="hidden", name="domain", required, value=domain.id)
             = `@${domain.name}`
