@@ -8,7 +8,7 @@ block body
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
           input(type="hidden", name="_csrf", value=ctx.csrf)
-          .card.card-bg-light
+          .card.border-dark
             h4.card-header.bg-dark.text-white= result.id
             .card-body
               .form-group.floating-label

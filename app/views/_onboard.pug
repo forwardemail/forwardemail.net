@@ -37,7 +37,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                     checked,
                     value="true"
                   )
-                  label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a> ($3/mo premium support and privacy)', l("/pricing"))
+                  label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a>', l("/pricing"))
                 if user
                   .form-check.form-group
                     input#input-create-domain.form-check-input(

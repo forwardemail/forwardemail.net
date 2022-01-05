@@ -37,7 +37,8 @@ if breadcrumbs.length > 1
               )
                 i.fa.fa-fw.fa-tools
                 = " "
-                = t("Advanced Settings")
+                span.d-none.d-md-inline-block= t("Advanced Settings")
+                span.d-md-none= t("Settings")
             if domain.group === 'admin'
               li.list-inline-item
                 .btn-group
@@ -46,7 +47,9 @@ if breadcrumbs.length > 1
                     data-toggle="dropdown",
                     aria-haspopup="true",
                     aria-expanded="false"
-                  )= t("Change Plan")
+                  )
+                    span.d-none.d-md-inline-block= t("Change Plan")
+                    span.d-md-none= t("Plan")
                   .dropdown-menu.dropdown-menu-right
                     h6.dropdown-header.text-uppercase= t("Change Plan")
                     each plan in [ 'free', 'enhanced_protection', 'team' ]
@@ -98,7 +101,7 @@ if breadcrumbs.length > 1
                 data-toggle="modal-anchor",
                 data-target="#modal-alias"
               )
-                = t("Add New Alias")
+                = t("Add Alias")
                 = " "
                 i.fa.fa-angle-double-right
         else
@@ -112,7 +115,7 @@ if breadcrumbs.length > 1
                     data-toggle="modal-anchor",
                     data-target="#modal-domain"
                   )
-                    = t("Add New Domain")
+                    = t("Add Domain")
                     = " "
                     i.fa.fa-angle-double-right
                 if domains.length > 0
@@ -123,7 +126,7 @@ if breadcrumbs.length > 1
                       data-toggle="modal-anchor",
                       data-target="#modal-alias"
                     )
-                      = t("Add New Alias")
+                      = t("Add Alias")
                       = " "
                       i.fa.fa-angle-double-right
             default
