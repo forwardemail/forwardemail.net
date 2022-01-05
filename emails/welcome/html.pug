@@ -4,8 +4,8 @@ block content
   .container.mt-3
     .row
       .col-12
-        .card.d-block.text-center
-          h5.card-header= t("You're ready to go!")
+        .card.border-dark.d-block.text-center
+          h5.card-header.bg-dark.text-white= t("You're ready to go!")
           .card-body.text-center.p-0
             a(href=`${config.urls.web}/${locale}/my-account`)
               img.img-responsive(

@@ -4,8 +4,8 @@ block content
   .container.mt-3
     .row
       .col-12
-        .card.d-block
-          h5.card-header.text-center!= t('<span class="notranslate">%d</span> Day Payment Reminder', diff)
+        .card.border-dark.d-block
+          h5.card-header.bg-dark.text-white.text-center!= t('<span class="notranslate">%d</span> Day Payment Reminder', diff)
           .card-body.p-0
             a(href=config.urls.web)
               img.img-responsive(

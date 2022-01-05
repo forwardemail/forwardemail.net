@@ -6,10 +6,10 @@ block body
   .container.py-3
     .row
       .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3
-        .card
+        .card.border-dark
+          h4.card-header.bg-dark.text-white.text-center= t("Register a domain name")
           .card-body
             .text-center
-              h1.card-title.h4= t("Register a domain name")
               p= t("Enter a custom domain name below to register.")
             form(
               target="_blank",

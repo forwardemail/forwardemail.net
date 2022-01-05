@@ -72,8 +72,8 @@ block body
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
           input(type="hidden", name="_csrf", value=ctx.csrf)
-          .card
-            h4.card-header= t("Personal Information")
+          .card.border-dark
+            h4.card-header.bg-dark.text-white= t("Personal Information")
             .card-body.pb-0
               p.text-muted= t("We promise to never share your personal information.")
                 .form-group.floating-label.mt-4
@@ -87,13 +87,11 @@ block body
                   )
                   label(for="input-email")= t("Email address")
                   if !user[config.userFields.hasSetPassword]
-                    small.form-text
-                      a.text-danger(
-                        href="#",
-                        role="button",
-                        data-toggle="modal",
-                        data-target="#modal-change-password"
-                      )= t("Set a password to change your email")
+                    button.mt-3.btn.btn-danger.btn-sm(
+                      type="button",
+                      data-toggle="modal",
+                      data-target="#modal-change-password"
+                    )= t("Set a password to change your email")
                   else if user[config.userFields.changeEmailNewAddress]
                     small.form-text.text-muted!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
                 .form-group.floating-label
@@ -141,8 +139,8 @@ block body
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
           input(type="hidden", name="_csrf", value=ctx.csrf)
-          .card
-            h4.card-header= t("Company Information")
+          .card.border-dark
+            h4.card-header.bg-dark.text-white= t("Company Information")
             .card-body.pb-0
               p.text-muted= t("We strictly use this info for receipts and reminders.")
               .form-group.floating-label.mt-4

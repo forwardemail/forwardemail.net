@@ -4,8 +4,8 @@ block content
   .container.mt-3
     .row
       .col-12
-        .card.d-block.text-center
-          h5.card-header= t("Your domain is verified!")
+        .card.border-dark.d-block.text-center
+          h5.card-header.bg-dark.text-white= t("Your domain is verified!")
           .card-body.text-center.p-0
             a(
               href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
@@ -36,8 +36,8 @@ block content
               ul.list-inline
                 li.list-inline-item.mr-5
                   = emoji("white_check_mark")
-                  .mt-2.text-monospace.text-uppercase.text-white= t("MX Records")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("MX")
                 li.list-inline-item
                   = emoji("white_check_mark")
-                  .mt-2.text-monospace.text-uppercase.text-white= t("TXT Records")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("TXT")
           .card-footer: small.text-muted= t("If you have any questions or comments, then please let us know")
