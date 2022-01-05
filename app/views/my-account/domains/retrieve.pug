@@ -24,9 +24,21 @@ block body
     .row
       .col
         include ../../_breadcrumbs
-  .py-5.bg-dark.text-center
-    h2.display-5.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
-    p.px-5.text-white= t('Follow the steps below and then click "Verify Records" to verify your setup.')
+  .py-5.text-center
+    h2.display-5.font-weight-bold.mb-3.text-uppercase= t("Verification Status")
+    p.px-5
+      if domain.has_mx_record && domain.has_txt_record
+        .alert.alert-success.d-inline-block
+          strong= t("Verified:")
+          = " "
+          = t("You have successfully completed setup.")
+          = " "
+          = emoji("tada")
+      else
+        .alert.alert-danger.d-inline-block
+          strong= t("Not Verified:")
+          = " "
+          = t('Follow the steps below and click "Verify Records" to complete setup.')
     ul.list-inline
       li.list-inline-item
         button.btn.btn-link(
@@ -37,7 +49,7 @@ block body
           class=domain.has_mx_record ? "text-success" : "text-danger"
         )
           i.fa.fa-4x(class=domain.has_mx_record ? "fa-check" : "fa-times")
-        .text-monospace.text-uppercase.text-white= t("MX Records")
+        .text-monospace.text-uppercase= t("MX")
       li.list-inline-item
         button.btn.btn-link(
           type="button",
@@ -47,7 +59,7 @@ block body
           class=domain.has_txt_record ? "text-success" : "text-danger"
         )
           i.fa.fa-4x(class=domain.has_txt_record ? "fa-check" : "fa-times")
-        .text-monospace.text-uppercase.text-white= t("TXT Records")
+        .text-monospace.text-uppercase= t("TXT")
     if domain.group === 'admin'
       form.ajax-form(
         action=l(`/my-account/domains/${domain.name}/verify-records`),
@@ -62,8 +74,8 @@ block body
         .container
           .row
             .col
-              .card.mt-5
-                h5.card-header= t("DNS MX Records Required")
+              .card.border-dark.mt-5
+                h5.card-header.bg-dark.text-white= t("MX Records Required")
                 .card-body
                   p!= t("Set these <strong>MX records</strong> as the <u>only MX records</u> to your domain's DNS:")
                   .table-responsive
@@ -90,17 +102,17 @@ block body
                           td: code mx2.forwardemail.net
                   if modalFAQTable
                     .text-center.mt-2
-                      button.btn.btn-link.btn-sm(
+                      button.btn.btn-danger.btn-lg(
                         type="button",
                         data-toggle="modal",
                         data-target="#modal-faq-table"
-                      ) Need help navigating to your DNS management page?
+                      )= t("Need help finding where to do this?")
       if domain.plan === 'free' && !domain.has_txt_record
         .container
           .row
             .col
-              .card.mt-5
-                h5.card-header= t("DNS TXT Record Required")
+              .card.border-dark.mt-5
+                h5.card-header.bg-dark.text-white= t("TXT Record Required")
                 .card-body
                   p!= t("Add this <strong>TXT record</strong> to your domain's DNS for a global catch-all:")
                   .input-group
@@ -121,17 +133,17 @@ block body
                   p.text-center.text-muted.py-2: small!= t('Use "@", ".", or blank for the name/host/alias value. Read <a href="%s" class="notranslate" rel="noopener noreferrer" target="_blank">our FAQ section</a> for more options', l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`))
                   if modalFAQTable
                     .text-center.mt-3
-                      button.btn.btn-link.btn-sm(
+                      button.btn.btn-danger.btn-lg(
                         type="button",
                         data-toggle="modal",
                         data-target="#modal-faq-table"
-                      ) Need help navigating to your DNS management page?
+                      )= t("Need help finding where to do this?")
       else if domain.plan !== 'free' && !domain.has_txt_record
         .container
           .row
             .col
-              .card.mt-5
-                h5.card-header= t("DNS TXT Record Required")
+              .card.border-dark.mt-5
+                h5.card-header.bg-dark.text-white= t("TXT Record Required")
                 .card-body
                   p!= t("Add your Enhanced Protection Verification <strong>TXT record</strong> to your domain's DNS:")
                   .input-group
@@ -152,11 +164,11 @@ block body
                   p.text-center.text-muted.py-2: small!= t('Use "@", ".", or blank for the name/host/alias value. You <u>must remove</u> any existing "<span class="notranslate">%s</span><span class="notranslate">=</span>" records.', config.recordPrefix)
                   if modalFAQTable
                     .text-center.mt-3
-                      button.btn.btn-link.btn-sm(
+                      button.btn.btn-danger.btn-lg(
                         type="button",
                         data-toggle="modal",
                         data-target="#modal-faq-table"
-                      ) Need help navigating to your DNS management page?
+                      )= t("Need help finding where to do this?")
   .container-fluid.py-5
     .position-relative
       .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch

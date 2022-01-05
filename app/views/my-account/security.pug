@@ -34,8 +34,8 @@ block body
       .col
         include ../_breadcrumbs
         if boolean(process.env.AUTH_OTP_ENABLED)
-          .card.card-bg-light.mb-3
-            h4.card-header= t("Two-Factor Authentication")
+          .card.border-dark.mb-3
+            h4.card-header.bg-dark.text-white= t("Two-Factor Authentication")
             .card-body
               if user[config.passport.fields.otpEnabled]
                 h5= t("Recovery keys")
@@ -63,8 +63,8 @@ block body
                 rel="noopener noreferrer",
                 target="_blank"
               )= t("Learn more")
-        .card.mb-3
-          h4.card-header= t("Developer Access")
+        .card.border-dark.mb-3
+          h4.card-header.bg-dark.text-white= t("Developer Access")
           .card-body
             .form-group.row
               label.control-label.col-md-4.col-form-label.text-md-right= t("API token")
@@ -94,8 +94,8 @@ block body
                   button.btn.btn-danger(type="submit")= t("Reset API Token")
               li.list-inline-item
                 a.btn.btn-dark(href=l("/email-forwarding-api"))= t("Learn more")
-        .card
-          h4.card-header= t("Delete Account")
+        .card.border-dark
+          h4.card-header.bg-dark.text-white= t("Delete Account")
           - const adminDomains = domains.filter((domain) => domain.group === "admin");
           if adminDomains.length > 0
             .card-body

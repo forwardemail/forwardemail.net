@@ -108,8 +108,8 @@ block body
     .row
       .col
         if domain.group === 'admin'
-          .card.mb-3
-            h4.card-header= t("Current Plan")
+          .card.border-dark.mb-3
+            h4.card-header.bg-dark.text-white= t("Current Plan")
             .card-body
               p.card-text
                 != t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a href="%s">Billing</a> page and our <a href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/pricing?domain=${domain.name}`))
@@ -146,8 +146,8 @@ block body
                     small.text-muted= t("See all plan features")
         if domain.group === 'admin'
           - const hasInvites = Array.isArray(domain.invites) && domain.invites.length > 0 && domain.plan === "team";
-          .card.mb-3
-            h4.card-header= t("Manage Team")
+          .card.border-dark.mb-3
+            h4.card-header.bg-dark.text-white= t("Manage Team")
             .card-body
               +planRequired(true)
               p.card-text= t("Members have shared access to this domain, and you can invite new members, remove existing members, or manage permissions for them below.")
@@ -288,14 +288,14 @@ block body
                 = " "
                 = t("Invite New Member")
         if domain.group === 'admin'
-          form.ajax-form.confirm-prompt.card.mb-3(
+          form.ajax-form.confirm-prompt.card.border-dark.mb-3(
             action=ctx.path,
             method="POST",
             disabled=isDisabled
           )
             input(type="hidden", name="_method", value="PUT")
             input(type="hidden", name="_csrf", value=ctx.csrf)
-            h4.card-header= t("Spam Scanner Settings")
+            h4.card-header.bg-dark.text-white= t("Spam Scanner Settings")
             .card-body
               +planRequired(false)
               p.card-text
@@ -357,14 +357,14 @@ block body
                     disabled=isDisabled
                   )= t("Save")
         if domain.group === 'admin'
-          form.ajax-form.confirm-prompt.card.mb-3(
+          form.ajax-form.confirm-prompt.card.border-dark.mb-3(
             action=ctx.path,
             method="POST",
             disabled=isDisabled
           )
             input(type="hidden", name="_method", value="PUT")
             input(type="hidden", name="_csrf", value=ctx.csrf)
-            h4.card-header= t("Custom SMTP Port Forwarding")
+            h4.card-header.bg-dark.text-white= t("Custom SMTP Port Forwarding")
             .card-body
               +planRequired(false)
               .form-group.floating-label
@@ -395,8 +395,8 @@ block body
                     type="submit",
                     disabled=isDisabled
                   )= t("Save")
-        .card.mb-3
-          h4.card-header= t("Maximum Recipients Per Alias")
+        .card.border-dark.mb-3
+          h4.card-header.bg-dark.text-white= t("Maximum Recipients Per Alias")
           .card-body
             if domain.group === 'admin'
               +planRequired(false)
@@ -413,8 +413,8 @@ block body
                 disabled=isDisabled
               )= t("Increase limit")
         if domain.group === 'admin'
-          .card.mb-3
-            h4.card-header= t("Delete Domain")
+          .card.border-dark.mb-3
+            h4.card-header.bg-dark.text-white= t("Delete Domain")
             .card-body
               = t("Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.")
             .card-footer

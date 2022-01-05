@@ -9,8 +9,8 @@ block body
       .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
         form.ajax-form.confirm-prompt(action=l("/help"), method="POST")
           input(type="hidden", name="_csrf", value=ctx.csrf)
-          .card
-            h4.card-header.text-center= t("Ask a question")
+          .card.border-dark
+            h4.card-header.bg-dark.text-white.text-center= t("Ask a question")
             .card-body
               if ctx.pathWithoutLocale !== '/faq'
                 p.card-text.font-weight-bold.text-center!= t('Have you read our <a href="%s" target="_blank" rel="noopener noreferrer">FAQ</a> yet?', l("/faq"))

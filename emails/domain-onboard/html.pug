@@ -4,8 +4,8 @@ block content
   .container.mt-3
     .row
       .col-12
-        .card.d-block.text-center
-          h5.card-header= t("Welcoming your domain!")
+        .card.border-dark.d-block.text-center
+          h5.card-header.bg-dark.text-white= t("Welcoming your domain!")
           .card-body.text-center.p-0
             a(
               href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
@@ -55,10 +55,10 @@ block content
               ul.list-inline(class=mx && txt ? "" : "mb-3")
                 li.list-inline-item.mr-5
                   = emoji(mx ? "white_check_mark" : "x")
-                  .mt-2.text-monospace.text-uppercase.text-white= t("MX Records")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("MX")
                 li.list-inline-item
                   = emoji(txt ? "white_check_mark" : "x")
-                  .mt-2.text-monospace.text-uppercase.text-white= t("TXT Records")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("TXT")
               if !mx || !txt
                 a.btn.btn-lg.btn-success(
                   href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,

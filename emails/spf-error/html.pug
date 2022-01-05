@@ -4,8 +4,8 @@ block content
   .container.mt-3
     .row
       .col-12
-        .card.d-block
-          h5.card-header.text-center= t("For your technical administrator")
+        .card.border-dark.d-block
+          h5.card-header.bg-dark.text-white.text-center= t("For your technical administrator")
           .card-body
             p.card-text!= t('This email is a one-time courtesy message from our free email forwarding service at <strong><a href="%s" class="notranslate">ForwardEmail.net</a></strong>.', config.urls.web)
             p.card-text.mb-3!= t('We detected that an email from <strong class="notranslate">%s</strong> sent by <strong class="notranslate">%s</strong> (<span class="notranslate">%s</span>) has <strong><u>failed</u></strong> <a href="https://en.wikipedia.org/wiki/Sender_Policy_Framework">Sender Policy Framework</a> validation.', from, client_hostname, remote_address)
