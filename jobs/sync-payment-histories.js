@@ -141,15 +141,22 @@ async function syncPaypalSubscriptionPayments() {
                       dayjs(p.created_at).format('MM/DD/YY')
                 );
 
-                if (transaction.amount_with_breakdown.currency_code !== 'USD')
+                if (
+                  isSANB(
+                    transaction.amount_with_breakdown.gross_amount.currency_code
+                  ) &&
+                  transaction.amount_with_breakdown.gross_amount
+                    .currency_code !== 'USD'
+                )
                   throw new Error(
                     'Paypal transaction amount was not in USD and could not be saved by sync-payment-histories'
                   );
 
-                const amount = Number.parseInt(
-                  Number(transaction.amount_with_breakdown.value) * 100,
-                  10
-                );
+                const amount =
+                  Number.parseInt(
+                    transaction.amount_with_breakdown.gross_amount.value,
+                    10
+                  ) * 100;
 
                 if (payment) {
                   let shouldSave = false;
