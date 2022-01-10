@@ -48,9 +48,4 @@ block content
                 != t('In the past we had a workaround where we rewrote the "Message-ID" and removed the "DKIM-Signature" header.')
                 = " "
                 = t('This workaround led to a confusing "Be careful with this message" alert and sometimes marked it as spam in Gmail.')
-            .p-3
-              h2.h5= t("Interested in learning more about us?")
-              p.card-text
-                != t('We\'re an <a href="%s">open startup</a> and have a remarkable story.', `${config.urls.web}/open-startup`)
-              a.btn.btn-lg.btn-primary(href=`${config.urls.web}/about`)= t("Learn more about us")
           .card-footer: small.text-muted= t("If you have any questions or comments, then please let us know.")

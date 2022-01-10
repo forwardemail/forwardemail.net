@@ -94,7 +94,10 @@ localeRouter
   .get('/donate', render('donate'))
   .get('/terms', render('terms'))
   .get('/privacy', render('privacy'))
-  .get('/open-startup', web.openStartup)
+  .get('/open-startup', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/'));
+  })
   .get('/404', render('404'))
   .get('/500', render('500'))
   .post('/help', policies.ensureCaptcha, web.help)
