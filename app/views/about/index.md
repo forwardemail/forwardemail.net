@@ -31,8 +31,6 @@ In April 2020, our developer Niftylettuce [released](https://github.com/spamscan
 
 In May 2020, we [allowed](https://github.com/forwardemail/free-email-forwarding/commit/0c2f6a49a9069cfe03555eab82255ac5dcb3026e) custom [port forwarding](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") as workaround for users to circumvent port blocking by their [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider").  We also released our [Free Email Forwarding RESTful API](/api), with complete documentation and real-time request and response examples.  We also [released](https://github.com/forwardemail/free-email-forwarding/commit/6b4227e0b2728342719426ef4e5a806ca6f66a35) support for webhooks, due to high demand from users [switching](https://news.ycombinator.com/item?id=22192543) to use our service as a Mailgun webhook alternative.
 
-In June 2020, we publicly released our real-time metrics and revenue on our [Open Startup](/open-startup) page (also available as a link in the footer of our site).
-
 In August 2020, we added support for the [Authenticated Received Chain][arc] ("ARC") email authentication system.
 
 On November 23, 2020 we publicly launched out of our beta program.

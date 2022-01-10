@@ -9,7 +9,6 @@ const faq = require('./faq');
 const help = require('./help');
 const myAccount = require('./my-account');
 const onboard = require('./onboard');
-const openStartup = require('./open-startup');
 const otp = require('./otp');
 const report = require('./report');
 const config = require('#config');
@@ -46,7 +45,6 @@ module.exports = {
   help,
   myAccount,
   onboard,
-  openStartup,
   otp,
   report,
   reservedEmailAddresses
