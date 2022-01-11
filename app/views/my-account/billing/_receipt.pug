@@ -59,7 +59,7 @@ include ./_payment-method.pug
           = t("Payment Date")
           = ":"
         br
-        = dayjs(payment.created_at).locale(locale).format("M/D/YY")
+        = dayjs(_.isDate(payment.invoice_at) ? payment.invoice : payment.created_at).locale(locale).format("M/D/YY")
   table.table.table-bordered.mb-0
     thead.thead-dark
       tr

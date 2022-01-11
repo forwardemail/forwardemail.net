@@ -36,6 +36,10 @@ const Payment = new mongoose.Schema({
     type: Number,
     min: 0 // cents (not dollars)
   },
+  // when the payment was created by the payment provider(paypal/stripe)
+  // which can vary significantly from the payment.created_at date
+  // for automatic subscription payments
+  invoice_at: Date,
   amount_formatted: {
     type: String,
     required: true

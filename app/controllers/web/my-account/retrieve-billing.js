@@ -6,7 +6,7 @@ async function retrieveBilling(ctx, next) {
   // render a billing history
   // prompt users for credit card
   ctx.state.payments = await Payments.find({ user: ctx.state.user._id })
-    .sort('-created_at')
+    .sort('-invoice_at')
     .exec();
   // localize the descriptions
   ctx.state.payments = ctx.state.payments.map((payment) => {

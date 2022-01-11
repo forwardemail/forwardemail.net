@@ -1,12 +1,6 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable complexity */
-const process = require('process');
-const { parentPort } = require('worker_threads');
-
-const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const sharedConfig = require('@ladjs/shared-config');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
@@ -14,239 +8,24 @@ const ms = require('ms');
 const dedent = require('dedent');
 const dayjs = require('dayjs-with-plugins');
 
+const getAllStripePaymentIntents = require('./get-all-stripe-payment-intents');
+
 const env = require('#config/env');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
-const { paypalAgent } = require('#helpers/paypal');
 const logger = require('#helpers/logger');
 const Users = require('#models/user');
 const Payments = require('#models/payment');
 
-const breeSharedConfig = sharedConfig('BREE');
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
-const graceful = new Graceful({
-  mongooses: [mongoose],
-  logger
-});
 
-const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_PLAN_MAPPING } =
-  config.payments;
+const { STRIPE_MAPPING, STRIPE_PRODUCTS } = config.payments;
 
-const PAYPAL_PLANS = {
-  enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
-  team: Object.values(PAYPAL_PLAN_MAPPING.team)
-};
+const thresholdError = new Error('Error threshold has been met');
 
-graceful.listen();
+async function syncStripePayments({ errorThreshold }) {
+  const errorEmails = [];
 
-(async () => {
-  await mongoose.connect();
-
-  await syncStripePayments();
-  await syncPaypalSubscriptionPayments();
-
-  if (parentPort) parentPort.postMessage('done');
-  else process.exit(0);
-})();
-
-async function syncPaypalSubscriptionPayments() {
-  const paypalCustomers = await Users.find({
-    paypal_subscription_id: { $exists: true, $ne: null }
-  })
-    .lean()
-    .exec();
-
-  logger.info(
-    `Syncing payments for ${paypalCustomers.length} paypal customers`
-  );
-
-  let updatedCount = 0;
-  let goodToGoCount = 0;
-  let createdCount = 0;
-
-  for (const customer of paypalCustomers) {
-    try {
-      logger.info(`Syncing paypal subscription payments for ${customer.email}`);
-      /**
-       * first we need to get the distinct paypal order Ids and validate them all
-       * this really shouldn't be needed. So I am leaving it out for now unless
-       * we want to specifically validate these in the future
-       *
-       * const orderIds = await Payments.distinct('paypal_order_id', {
-       *   user: customer._id
-       * });
-       *
-       * for (const orderId of orderIds) {
-       *   const { body: order } = await paypalAgent.get(
-       *     `/v2/checkout/orders/${orderId}`
-       *   );
-       *   ;
-       * }
-       */
-
-      // then we need to get all the subscription ids and validate that the one that
-      // works is the subscription id set on the user. Assuming that is good, that will
-      // be the only subscription we have access to I think...
-      // This kind of sucks, but it is the best we can do right now I beleive.
-      const subscriptionIds = await Payments.distinct(
-        'paypal_subscription_id',
-        {
-          user: customer._id
-        }
-      );
-
-      for (const subscriptionId of subscriptionIds) {
-        try {
-          logger.debug(`subscriptionId ${subscriptionId}`);
-          const { body: subscription } = await paypalAgent.get(
-            `/v1/billing/subscriptions/${subscriptionId}`
-          );
-
-          const plan = Object.keys(PAYPAL_PLANS).find((plan) =>
-            PAYPAL_PLANS[plan].includes(subscription.plan_id)
-          );
-
-          const duration = ms(
-            Object.entries(PAYPAL_PLAN_MAPPING[plan]).find(
-              (mapping) => mapping[1] === subscription.plan_id
-            )[0]
-          );
-
-          // this will either error - or it will return the current active subscriptions transactions.
-          // https://developer.paypal.com/docs/subscriptions/full-integration/subscription-management/#list-transactions-for-a-subscription
-          const { body: { transactions } = {} } = await paypalAgent.get(
-            `/v1/billing/subscriptions/${subscriptionId}/transactions?start_time=${
-              subscription.create_time
-            }&end_time=${new Date().toISOString()}`
-          );
-
-          if (transactions.length > 0) {
-            logger.debug(`${transactions.length} transactions`);
-            for (const transaction of transactions) {
-              try {
-                // we need to have a payment for each transaction of a subscription
-                logger.debug(`transaction ${transaction.id}`);
-
-                // try to find the payment
-                const paymentCandidates = await Payments.find({
-                  paypal_subscription_id: subscription.id
-                });
-
-                // then use it if its on the same day
-                const payment = paymentCandidates.find(
-                  (p) =>
-                    transaction.id === p.paypal_transaction_id ||
-                    dayjs(transaction.time).format('MM/DD/YY') ===
-                      dayjs(p.created_at).format('MM/DD/YY')
-                );
-
-                if (
-                  isSANB(
-                    transaction.amount_with_breakdown.gross_amount.currency_code
-                  ) &&
-                  transaction.amount_with_breakdown.gross_amount
-                    .currency_code !== 'USD'
-                )
-                  throw new Error(
-                    'Paypal transaction amount was not in USD and could not be saved by sync-payment-histories'
-                  );
-
-                const amount =
-                  Number.parseInt(
-                    transaction.amount_with_breakdown.gross_amount.value,
-                    10
-                  ) * 100;
-
-                if (payment) {
-                  let shouldSave = false;
-
-                  if (!payment.paypal_transaction_id) {
-                    payment.paypal_transaction_id = transaction.id;
-                    shouldSave = true;
-                  }
-
-                  if (payment.plan !== plan)
-                    throw new Error('Paypal plan did not match');
-
-                  // currently problem with durations - skip this validation for now
-                  // if (payment.duration !== duration)
-                  //   throw new Error('Paypal duration did not match');
-
-                  if (shouldSave) {
-                    logger.debug(`Updating existing payment ${payment.id}`);
-                    updatedCount++;
-                    await payment.save();
-                  } else {
-                    goodToGoCount++;
-                    logger.debug(
-                      `payment ${payment.id} already up to date and good to go!`
-                    );
-                  }
-                } else {
-                  const payment = {
-                    user: customer._id,
-                    method: 'paypal',
-                    kind: 'subscription',
-                    amount,
-                    plan,
-                    duration,
-                    paypal_subscription_id: subscription.id,
-                    paypal_transaction_id: transaction.id
-                  };
-                  createdCount++;
-                  logger.debug('creating new payment');
-                  await Payments.create(payment);
-                }
-              } catch (err) {
-                try {
-                  await emailHelper({
-                    template: 'alert',
-                    message: {
-                      to: config.email.message.from,
-                      subject: `${customer.email} had an issue syncing a transaction from paypal subscription ${subscriptionId} and transaction ${transaction.id}`
-                    },
-                    locals: { message: err.message }
-                  });
-                } catch (err) {
-                  logger.error(err);
-                }
-              }
-            }
-          }
-        } catch (err) {
-          if (err.status === 404)
-            logger.error(
-              new Error('subscription is cancelled or no longer exists')
-            );
-          else {
-            logger.error(err);
-            try {
-              await emailHelper({
-                template: 'alert',
-                message: {
-                  to: config.email.message.from,
-                  subject: `${customer.email} has an issue syncing all payments from paypal subscription ${subscriptionId} that were not synced by the sync-payment-histories job`
-                },
-                locals: { message: err.message }
-              });
-            } catch (err) {
-              logger.error(err);
-            }
-          }
-        }
-      }
-    } catch (err) {
-      logger.error(err);
-    }
-  }
-
-  logger.info(
-    `Paypal subscriptions synced to payments: ${createdCount} created, ${updatedCount} updated, ${goodToGoCount} good`
-  );
-}
-
-async function syncStripePayments() {
   const stripeCustomers = await Users.find({
     [config.userFields.stripeCustomerID]: { $exists: true, $ne: null }
   })
@@ -278,18 +57,16 @@ async function syncStripePayments() {
       // if we couldn't get the customers payments
       // send an alert and try the next customer
       logger.error(err);
-      try {
-        await emailHelper({
-          template: 'alert',
-          message: {
-            to: config.email.message.from,
-            subject: `Problem syncing billing history for ${customer.email} - could not retrieve customer payments`
-          },
-          locals: { message: err.message }
-        });
-      } catch (err) {
-        logger.error(err);
-      }
+      errorEmails.push({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: `Problem syncing billing history for ${customer.email} - could not retrieve customer payments`
+        },
+        locals: { message: err.message }
+      });
+
+      if (errorEmails.length >= errorThreshold) throw thresholdError;
 
       continue;
     }
@@ -418,6 +195,9 @@ async function syncStripePayments() {
             <br/> Stripe subscription id: ${invoice?.subscription}
             <br/> Stripe product id: ${productId}
             <br/> Stripe price id: ${priceId}
+            <br/> Stripe created: ${dayjs
+              .unix(paymentIntent.created)
+              .format('MM/DD/YY')}
           `;
 
           //
@@ -560,6 +340,19 @@ async function syncStripePayments() {
               )
             );
 
+          if (
+            _.isDate(payment.invoice_at) &&
+            dayjs(payment.invoice_at).format('MM/DD/YY') !==
+              dayjs.unix(paymentIntent.created).format('MM/DD/YY')
+          )
+            throw new Error(
+              `Saved payment.invoice_at (${dayjs(payment.invoice_at).format(
+                'MM/DD/YY'
+              )}) does not match billing history sync`.concat(errorDetails)
+            );
+
+          payment.invoice_at = dayjs.unix(paymentIntent.created).toDate();
+
           payment.amount_refunded = amountRefunded;
 
           await payment.save();
@@ -582,7 +375,8 @@ async function syncStripePayments() {
             stripe_sessions_id: checkoutSession?.id,
             stripe_payment_intent_id: paymentIntent?.id,
             stripe_invoice_id: invoice?.id,
-            stripe_subscription_id: invoice?.subscription
+            stripe_subscription_id: invoice?.subscription,
+            invoice_at: dayjs.unix(paymentIntent.created).toDate()
           };
 
           await Payments.create(payment);
@@ -594,17 +388,28 @@ async function syncStripePayments() {
       } catch (err) {
         hasError = true;
         logger.error(err);
-        try {
+        errorEmails.push({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Problem syncing billing history for ${customer.email} - payment_intent ${paymentIntent.id}`
+          },
+          locals: { message: err.message }
+        });
+
+        if (errorEmails.length >= errorThreshold) {
           await emailHelper({
             template: 'alert',
             message: {
               to: config.email.message.from,
-              subject: `Problem syncing billing history for ${customer.email} - payment_intent ${paymentIntent.id}`
+              subject: `Sync payment histories hit ${errorThreshold} errors during the script`
             },
-            locals: { message: err.message }
+            locals: {
+              message: `This may have occurred because of an error in the script, or the stripe service was down, or another error was causing an abnormal number of payment syncing failures`
+            }
           });
-        } catch (err) {
-          logger.error(err);
+
+          throw thresholdError;
         }
       }
     }
@@ -647,37 +452,40 @@ async function syncStripePayments() {
           );
       }
     } catch (err) {
-      try {
+      errorEmails.push({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: `${customer.email} has stripe payments that were not synced by the sync-payment-histories job`
+        },
+        locals: { message: err.message }
+      });
+
+      if (errorEmails.length >= errorThreshold) {
+        logger.info(`Sending ${errorEmails.length} error emails`);
         await emailHelper({
           template: 'alert',
           message: {
             to: config.email.message.from,
-            subject: `${customer.email} has stripe payments that were not synced by the sync-payment-histories job`
+            subject: `Sync payment histories hit ${errorThreshold} errors during the script`
           },
-          locals: { message: err.message }
+          locals: {
+            message: `This may have occurred because of an error in the script, or the stripe service was down, or another error was causing an abnormal number of payment syncing failures`
+          }
         });
-      } catch (err) {
-        logger.error(err);
+
+        throw thresholdError;
       }
+    }
+  }
+
+  if (errorEmails.length > 0) {
+    try {
+      await Promise.all(errorEmails.map((email) => emailHelper(email)));
+    } catch (err) {
+      logger.error(err);
     }
   }
 }
 
-async function getAllStripePaymentIntents(stripeCustomerId) {
-  let paymentIntents = [];
-  let has_more = true;
-  let starting_after;
-  do {
-    const res = await stripe.paymentIntents.list({
-      customer: stripeCustomerId,
-      limit: 100,
-      starting_after
-    });
-
-    paymentIntents = [...paymentIntents, ...res.data];
-    has_more = res.has_more;
-    starting_after = _.last(res.data).id;
-  } while (has_more);
-
-  return paymentIntents;
-}
+module.exports = syncStripePayments;
