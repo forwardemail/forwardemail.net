@@ -49,7 +49,7 @@ async function listBilling(ctx) {
         }
 
         // check dates
-        if (key === 'created_at') {
+        if (key === 'invoice_at') {
           if (ctx.query.start_date && ctx.query.end_date) {
             isDate = dayjs(prop).isBetween(
               ctx.query.start_date,
@@ -82,7 +82,7 @@ async function listBilling(ctx) {
   else if (isSANB(ctx.query.sort))
     sortFn = (p) => p[ctx.query.sort.replace(/^-/, '')];
 
-  payments = _.sortBy(payments, sortFn ? [sortFn] : ['created_at']);
+  payments = _.sortBy(payments, sortFn ? [sortFn] : ['invoice_at']);
 
   if (!sortFn || (isSANB(ctx.query.sort) && ctx.query.sort.startsWith('-')))
     payments = _.reverse(payments);
