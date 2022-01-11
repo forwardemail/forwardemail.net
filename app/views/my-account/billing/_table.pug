@@ -35,7 +35,7 @@ mixin receipt(payment)
         th.d-none.d-lg-table-cell(scope="col")
           +sortHeader('reference', null, '#table-payments')
         th(scope="col")
-          +sortHeader('created_at', 'Date', '#table-payments')
+          +sortHeader('invoice_at', 'Date', '#table-payments')
         th(scope="col")
           span.d-none.d-lg-inline
             +sortHeader('description', null, '#table-payments')
@@ -50,7 +50,7 @@ mixin receipt(payment)
       each payment in payments
         tr
           td.align-middle.d-none.d-lg-table-cell= payment.reference
-          td.align-middle= dayjs(payment.created_at).locale(ctx.locale).format("M/D/YY")
+          td.align-middle= dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).locale(ctx.locale).format("M/D/YY")
           td.align-middle
             .d-block.d-lg-none.mb-2
               strong

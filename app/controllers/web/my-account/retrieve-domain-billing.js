@@ -410,7 +410,8 @@ async function retrieveDomainBilling(ctx) {
           stripe_session_id: session.id,
           duration: ms(key),
           plan: ctx.query.plan,
-          kind: session.mode === 'subscription' ? 'subscription' : 'one-time'
+          kind: session.mode === 'subscription' ? 'subscription' : 'one-time',
+          invoice_at: now
         }),
         // try to save the customer info to the account
         ctx.state.user.save()
@@ -648,7 +649,8 @@ async function retrieveDomainBilling(ctx) {
           duration: dayjs(now).add(months, 'month').diff(new Date()),
           plan: ctx.query.plan,
           kind: 'one-time',
-          paypal_order_id: order.result.id
+          paypal_order_id: order.result.id,
+          invoice_at: now
         }),
         // try to save the customer info to the account
         ctx.state.user.save()
@@ -767,7 +769,8 @@ async function retrieveDomainBilling(ctx) {
             .diff(new Date()),
           plan: ctx.query.plan,
           kind: 'subscription',
-          paypal_subscription_id: body.id
+          paypal_subscription_id: body.id,
+          invoice_at: now
         }),
         // try to save the customer info to the account
         ctx.state.user.save()
