@@ -9,7 +9,7 @@ const jobs = [
   'migration',
   'vanity-domains',
   {
-    name: 'sync-payment-histories',
+    name: 'sync-payment-histories/index',
     interval: '24h',
     timeout: 0
   },
