@@ -52,8 +52,10 @@ module.exports = {
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
   NO_DOMAINS_EXIST: 'Add a domain name to your account to continue.',
   NO_ALIASES_EXIST: 'Add a new alias to continue.',
-  INVALID_DOMAIN: 'Domain name was invalid (must be an IP or FQDN).',
-  INVALID_FQDN: 'Domain name was invalid (must be a FQDN).',
+  INVALID_DOMAIN:
+    'Domain name was invalid (must be a domain name without protocol, for example "domain.com" instead of "http://domain.com" or an IP address).',
+  INVALID_FQDN:
+    'Domain name was invalid (must be a domain name without protocol, for example "domain.com" instead of "http://domain.com").',
   ADD_ALIAS: 'Add Alias',
   CATCHALL_ADMIN_REQUIRED:
     'User must be a domain admin to create a catch-all alias.',
