@@ -71,7 +71,6 @@ const config = {
   logger: loggerConfig,
   appName: env.APP_NAME,
   appColor: env.APP_COLOR,
-  twitter: env.TWITTER,
   i18n,
 
   // paypal
