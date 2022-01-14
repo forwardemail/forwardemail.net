@@ -1,3 +1,4 @@
+const URLParse = require('url-parse');
 const $ = require('jquery');
 const Clipboard = require('clipboard');
 const Popper = require('popper.js');
@@ -253,3 +254,64 @@ $body.on('hide.bs.modal', '.modal', function () {
 // <https://github.com/vb/lazyframe>
 //
 lazyframe('.lazyframe', { autoplay: false, initinview: true });
+
+//
+// strip protocol from input[name="domain"][type="text"]
+// inspired by `getHostname` from `spamscanner`
+// <https://github.com/spamscanner/spamscanner>
+//
+let wwwCounter = 0;
+function domainKeyup() {
+  const $input = $(this);
+
+  // trim
+  let val = $(this).val().trim().replace(/\.+$/, '').toLowerCase();
+
+  // parse hostname (e.g. from https:// or http:// pasted URL)
+  const url = new URLParse(val, {});
+  if (url.hostname) {
+    val = url.hostname;
+    // strip www up to 3x
+    if (wwwCounter < 3 && val.startsWith('www.')) {
+      val = val.replace('www.', '');
+      wwwCounter++;
+    }
+
+    $input.val(val);
+    return;
+  }
+
+  // strip protocol
+  if (val.startsWith('http:') || val.startsWith('https:'))
+    val = val
+      .replace('http://', '')
+      .replace('http:/', '')
+      .replace('https://', '')
+      .replace('https:/', '');
+
+  // strip www up to 3x
+  if (wwwCounter < 3 && val.startsWith('www.')) {
+    val = val.replace('www.', '');
+    wwwCounter++;
+  }
+
+  // remove everything after the slash (if there was one)
+  const index = val.indexOf('/');
+  if (index === -1) {
+    $input.val(val);
+    return;
+  }
+
+  if (index === 0) {
+    $input.val(val.slice(1));
+    return;
+  }
+
+  $input.val(val.slice(0, Math.max(0, index)));
+}
+
+$body.on(
+  'keydown',
+  'input[name="domain"][type="text"]',
+  debounce(domainKeyup, 500)
+);
