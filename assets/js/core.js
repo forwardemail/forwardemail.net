@@ -311,7 +311,7 @@ function domainKeyup() {
 }
 
 $body.on(
-  'keydown',
+  'keydown keydown blur change paste',
   'input[name="domain"][type="text"]',
-  debounce(domainKeyup, 500)
+  debounce(domainKeyup, 300)
 );

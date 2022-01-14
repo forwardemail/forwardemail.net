@@ -2,8 +2,8 @@
 @import 'node_modules/@primer/css/markdown/index';
 
 .markdown-body {
-  margin-left: 20px;
-  margin-right: 20px;
+  // margin-left: 20px;
+  // margin-right: 20px;
   font-family: $font-family-sans-serif;
 
   @for $index from 1 through 6 {
@@ -35,6 +35,16 @@
     // font-size: 100%;
     padding: 1rem;
   }
+
+  hr {
+    margin: 0;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    height: 0;
+  }
+
 }
 
 td {

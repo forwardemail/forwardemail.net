@@ -89,4 +89,4 @@ General Terms and Conditions applicable to Use of a Web Site.
 
 ## License
 
-[Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © [Niftylettuce, LLC.](https://niftylettuce.com/)
+[Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © Niftylettuce, LLC.

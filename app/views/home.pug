@@ -10,12 +10,12 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-for-creators-title.h4.modal-title.d-inline-block.ml-4= t("Free Email Forwarding for Creators")
+          h1#modal-for-creators-title.h4.modal-title.d-inline-block.ml-4= t("Email Forwarding for Creators")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
           .lazyframe(
-            title=t("Free Email Forwarding for Creators"),
+            title=t("Email Forwarding for Creators"),
             style="width: 100%; height: 450px",
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/ql9rtNpTid4?autoplay=0"
@@ -29,12 +29,12 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-for-developers-title.h4.modal-title.d-inline-block.ml-4= t("Free Email Forwarding for Developers")
+          h1#modal-for-developers-title.h4.modal-title.d-inline-block.ml-4= t("Email Forwarding for Developers")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
           .lazyframe(
-            title=t("Free Email Forwarding for Developers"),
+            title=t("Email Forwarding for Developers"),
             style="width: 100%; height: 450px",
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/1e9UyIoFu4Y?autoplay=0"
@@ -48,12 +48,12 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-for-businesses-title.h4.modal-title.d-inline-block.ml-4= t("Free Email Forwarding for Businesses")
+          h1#modal-for-businesses-title.h4.modal-title.d-inline-block.ml-4= t("Email Forwarding for Businesses")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
           .lazyframe(
-            title=t("Free Email Forwarding for Businesses"),
+            title=t("Email Forwarding for Businesses"),
             style="width: 100%; height: 450px",
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
@@ -62,22 +62,53 @@ block body
     .container.my-auto.py-2.py-sm-3.py-md-5
       .row
         .col-12.col-lg-10.offset-lg-1
-          h1.display-4.font-weight-bold.mb-3!= t("Free Email Forwarding")
-          p.lead.mb-3.mb-lg-0.d-block
-            != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses for free using your custom domain.')
-          p.lead.mb-3.d-none.d-lg-block
-            != t("Plus get catch-all, wildcard, and disposable aliases &ndash; all for free!")
-          a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(
-            href=l("/register"),
-            role="button",
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
-          )
-            = t("Sign up free")
-            = " "
-            i.fa.fa-angle-double-right
-          small.d-block.text-muted.text-uppercase.font-weight-bold
-            u!= t("No credit card required")
+          h1.display-4.font-weight-bold.mb-3
+            if isBot(ctx.get('User-Agent'))
+              != t("Free Email Forwarding")
+            else
+              != t("Unlimited Email Forwarding")
+          p.lead.mb-3.d-block
+            != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses and aliases using your custom domain.')
+          form.ajax-form.d-md-flex.align-items-md-center.justify-content-md-center(action=ctx.path, method='POST')
+            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(type='hidden', name='enhanced_protection', value='true')
+            input(type='hidden', name="create_domain", value='true')
+            input(type='hidden', name="create_account", value='true')
+            .form-group.floating-label.mb-md-0
+              input.form-control.form-control-lg(
+                type='text',
+                name='domain',
+                required,
+                placeholder='example.com'
+              )
+              label(for="input-onboard-domain")= t("Enter your domain")
+            i.fa.fa-angle-double-right.d-none.d-md-inline.mx-2
+            .form-group.floating-label.mb-md-0.mr-md-2
+              input#input-onboard-email.form-control.form-control-lg(
+                type="email",
+                autocomplete="email",
+                name="email",
+                value=email,
+                placeholder="name@gmail.com",
+                required
+              )
+              label(for="input-onboard-email")= t("Enter your email")
+            button.btn.btn-success.btn-lg.d-none.d-md-inline(type="submit")
+              = t("Continue")
+            button.btn.btn-success.btn-lg.btn-block.d-md-none(type="submit")
+              = t("Continue")
+          //-.
+            a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(
+              href=l("/register"),
+              role="button",
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Sign up free")
+              = " "
+              i.fa.fa-angle-double-right
+            small.d-block.text-muted.text-uppercase.font-weight-bold
+              u!= t("No credit card required")
     a.text-decoration-none.pt-1.pb-4.pt-md-4.d-block.text-monospace.text-uppercase.text-dark(
       href="#learn-more"
     )
@@ -168,15 +199,7 @@ block body
             .ml-auto
               i.fa.fa-twitter
           .mt-3.font-weight-light
-            | Congrats to
-            = " "
-            a(
-              href="https://twitter.com/niftylettuce",
-              target="_blank",
-              rel="noopener noreferrer"
-            ) @niftylettuce
-            = " "
-            | for fully launching Forward Email – a forwarding service
+            | Congrats for fully launching Forward Email – a forwarding service
             | for email that doesn't keep logs or store emails, and which works with ARC to ensure
             | signed forwards don't trip email filters
             = " "
@@ -215,12 +238,6 @@ block body
             = " "
             a(href="https://forwardemail.net") ForwardEmail.net
             | . Simple and painless (and free!). Just some DNS changes, and it just works. Thanks
-            = " "
-            a(
-              href="https://twitter.com/niftylettuce",
-              target="_blank",
-              rel="noopener noreferrer"
-            ) @niftylettuce
           .mt-2.small.text-muted.font-italic.font-weight-light Government Technology Advisor, Sacramento and Los Angeles
     .row.row-cols-1.row-cols-md-2
       //- Andrew Escobar
@@ -249,12 +266,6 @@ block body
             .ml-auto
               i.fa.fa-twitter
           .mt-3.font-weight-light
-            a(
-              href="https://twitter.com/niftylettuce",
-              target="_blank",
-              rel="noopener noreferrer"
-            ) @niftylettuce
-            |
             | This is so dope. Thank you.
             = " "
             a(href="https://forwardemail.net") forwardemail.net
@@ -279,12 +290,6 @@ block body
             .ml-auto
               i.fa.fa-twitter
           .mt-3.font-weight-light
-            a(
-              href="https://twitter.com/niftylettuce",
-              target="_blank",
-              rel="noopener noreferrer"
-            ) @niftylettuce
-            |
             | Thanks so much for
             = " "
             a(href="https://forwardemail.net") forwardemail.net
@@ -311,15 +316,7 @@ block body
             .ml-auto
               i.fa.fa-twitter
           .mt-3.font-weight-light
-            | So
-            = " "
-            a(
-              href="https://twitter.com/niftylettuce",
-              target="_blank",
-              rel="noopener noreferrer"
-            ) @niftylettuce
-            = " "
-            | made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
+            | So they made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
             = " "
             a(href="https://forwardemail.net") forwardemail.net
           .mt-2.small.text-muted.font-italic.font-weight-light Computer Engineer, Software Developer
@@ -343,13 +340,7 @@ block body
             .ml-auto
               i.fa.fa-twitter
           .mt-3.font-weight-light
-            a(
-              href="https://twitter.com/niftylettuce",
-              target="_blank",
-              rel="noopener noreferrer"
-            ) @niftylettuce
-            |
-            | thanks for your
+            | Thanks for your
             = " "
             a(href="https://forwardemail.net") forwardemail.net
             | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
@@ -485,7 +476,7 @@ block body
           = " "
           != t('We\'re the <strong class="text-uppercase font-weight-bold border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
           = " "
-          != t('Made by <a href="https://github.com/niftylettuce" class="text-success font-weight-bold" target="_blank" rel="noopener noreferrer">@niftylettuce</a>, an open-source and privacy advocate.')
+          != t('Made by an open-source and privacy advocate.')
         a.btn.btn-outline-light.btn-lg.mb-md-5(
           href="https://github.com/forwardemail",
           target="_blank",

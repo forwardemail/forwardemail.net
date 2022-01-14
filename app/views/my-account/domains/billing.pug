@@ -111,11 +111,11 @@ block body
                 )
                   - const plan = ctx.query.plan || user.plan;
                   if plan === 'enhanced_protection'
-                    option(value="30d")= t("1 month ($3 USD)")
+                    option(value="30d", selected)= t("1 month ($3 USD)")
                     option(value="60d")= t("2 months ($6 USD)")
                     option(value="90d")= t("3 months ($9 USD)")
                     option(value="180d")= t("6 months ($18 USD)")
-                    option(value="1y", selected)= t("1 year ($36 USD)")
+                    option(value="1y")= t("1 year ($36 USD)")
                     //- since subscription is the default, we disable these
                     option(
                       value="2y",
@@ -129,11 +129,11 @@ block body
                     )= t("3 years ($108 USD)")
                     //- option(value='lifetime', data-no-subscription=true, disabled=!isMakePayment)= t('Lifetime ($144 USD)')
                   else if plan === 'team'
-                    option(value="30d")= t("1 month ($9 USD)")
+                    option(value="30d", selected)= t("1 month ($9 USD)")
                     option(value="60d")= t("2 months ($18 USD)")
                     option(value="90d")= t("3 months ($27 USD)")
                     option(value="180d")= t("6 months ($54 USD)")
-                    option(value="1y", selected)= t("1 year ($108 USD)")
+                    option(value="1y")= t("1 year ($108 USD)")
                     option(
                       value="2y",
                       data-no-subscription,
