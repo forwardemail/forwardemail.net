@@ -7,17 +7,36 @@ mixin paginate(tableSelector)
             a.page-link.ajax-form.table-ajax-form(
               href=paginate.href(true),
               data-table=tableSelector,
-              data-page=ctx.query.page - 1,
+              data-page=1,
               aria-label=t("Previous")
             )
               span(aria-hidden="true")
                 i.fa.fa-angle-double-left
+              span.ml-1(aria-hidden="true")
+                = "1"
+              span.sr-only= t("Previous")
+          li.page-item
+            a.page-link.ajax-form.table-ajax-form(
+              href=paginate.href(true),
+              data-table=tableSelector,
+              data-page=ctx.query.page - 1,
+              aria-label=t("Previous")
+            )
+              span(aria-hidden="true")
+                i.fa.fa-angle-left
               span.sr-only= t("Previous")
         else
           li.page-item.disabled
             span.page-link(aria-label=t("Previous"))
               span(aria-hidden="true")
                 i.fa.fa-angle-double-left
+              span.ml-1(aria-hidden="true")
+                = "1"
+              span.sr-only= t("Previous")
+          li.page-item.disabled
+            span.page-link(aria-label=t("Previous"))
+              span(aria-hidden="true")
+                i.fa.fa-angle-left
               span.sr-only= t("Previous")
         if pages
           each page in pages
@@ -48,11 +67,30 @@ mixin paginate(tableSelector)
               aria-label=t("Next")
             )
               span(aria-hidden="true")
+                i.fa.fa-angle-right
+              span.sr-only= t("Next")
+          li.page-item
+            a.page-link.ajax-form.table-ajax-form(
+              href=paginate.href({ page: pageCount }),
+              data-table=tableSelector,
+              data-page=pageCount,
+              aria-label=t("Next")
+            )
+              span.mr-1(aria-hidden="true")
+                = pageCount
+              span(aria-hidden="true")
                 i.fa.fa-angle-double-right
               span.sr-only= t("Next")
         else
           li.page-item.disabled
             span.page-link(aria-label=t("Next"))
+              span(aria-hidden="true")
+                i.fa.fa-angle-right
+              span.sr-only= t("Next")
+          li.page-item.disabled
+            span.page-link(aria-label=t("Next"))
+              span.mr-1(aria-hidden="true")
+                = pageCount
               span(aria-hidden="true")
                 i.fa.fa-angle-double-right
               span.sr-only= t("Next")
