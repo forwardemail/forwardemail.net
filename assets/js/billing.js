@@ -8,7 +8,6 @@ const { spinner: Spinner } = require('@ladjs/assets');
 const $formBilling = $('#form-billing');
 const $stripeButtonContainer = $('#stripe-button-container');
 const $paypalButtonContainer = $('#paypal-button-container');
-const $bitpayButtonContainer = $('#bitpay-button-container');
 const $paymentType = $('input[name="payment_type"]');
 const $paymentMethod = $('input[name="payment_method"');
 const $paymentDuration = $('select[name="payment_duration"]');
@@ -44,74 +43,6 @@ const PAYPAL_MAPPING = {
     '1y': process.env.PAYPAL_TEAM_PLAN_1Y
   }
 };
-
-if (process.env.NODE_ENV !== 'production') window.bitpay.enableTestMode();
-
-window.bitpay.onModalWillLeave(() => {
-  spinner.hide();
-});
-
-window.addEventListener('message', (ev) => {
-  const paymentStatus = ev.data.status;
-
-  if (paymentStatus === 'paid') {
-    // transaction has begun so we can close the bitpay frame
-    // and notify them of success
-    window.bitpay.hideFrame();
-    Swal.fire(window._types.success, 'Payment received!', 'success');
-
-    // redirect
-    url.query.bitpay_invoice_id = invoice;
-    window.location = url.toString((query) =>
-      qs.stringify(query, { addQueryPrefix: true, format: 'RFC1738' })
-    );
-
-    return;
-  }
-
-  if (paymentStatus === 'paidPartial') {
-    // payment was short
-    // BitPay will refund them
-    window.bitpay.hideFrame();
-    Swal.fire(
-      window._types.error,
-      'Partial payment was received. You will be refunded, please try again.',
-      'error'
-    );
-
-    return;
-  }
-
-  if (paymentStatus === 'paidOver') {
-    // payment was over
-    // BitPay will refund them the difference
-    window.bitpay.hideFrame();
-    Swal.fire(
-      window._types.warn,
-      'Over payment was received. You will be refund the amount over.',
-      'warn'
-    );
-
-    // redirect
-    url.query.bitpay_invoice_id = invoice;
-    window.location = url.toString((query) =>
-      qs.stringify(query, { addQueryPrefix: true, format: 'RFC1738' })
-    );
-
-    return;
-  }
-
-  if (paymentStatus === 'expired') {
-    // invoice has expired
-    // the user will need to click the button again
-    window.bitpay.hideFrame();
-    Swal.fire(
-      window._types.error,
-      'Invoice has expired. Please try again.',
-      'error'
-    );
-  }
-});
 
 async function sendRequest(body) {
   const response = await superagent
@@ -252,14 +183,11 @@ $formBilling.on('submit', async function (ev) {
           'Invalid response, please try again'
       );
 
-    const { sessionId, invoiceId } = response.body;
+    const { sessionId } = response.body;
     if (sessionId) {
       const result = await stripe.redirectToCheckout({ sessionId });
       spinner.hide();
       Swal.fire(window._types.error, result.error.message, 'error');
-    } else if (invoiceId) {
-      invoice = invoiceId;
-      window.bitpay.showInvoice(invoiceId);
     }
   } catch (err) {
     spinner.hide();
@@ -298,25 +226,6 @@ function updatePayButtons() {
   const $subscriptionInput = $('input#input-payment-type-subscription');
   const $oneTimeInput = $('input#input-payment-type-one-time');
 
-  if (paymentMethod === 'bitpay') {
-    // destroy the button if we need to
-    // (if button was set this indicates paypal is active)
-    if (button) button.close();
-
-    // disable subscription input
-    $subscriptionInput.prop('disabled', true);
-    $subscriptionInput.prop('checked', false);
-    $oneTimeInput.prop('checked', true);
-
-    // hide the other pay containers
-    $paypalButtonContainer.addClass('d-none');
-    $stripeButtonContainer.addClass('d-none');
-
-    // show the stripe container
-    $bitpayButtonContainer.removeClass('d-none');
-    return;
-  }
-
   if (paymentMethod === 'credit_card') {
     // destroy the button if we need to
     // (if button was set this indicates paypal is active)
@@ -327,7 +236,6 @@ function updatePayButtons() {
 
     // hide the other pay containers
     $paypalButtonContainer.addClass('d-none');
-    $bitpayButtonContainer.addClass('d-none');
 
     // show the stripe container
     $stripeButtonContainer.removeClass('d-none');
@@ -340,7 +248,6 @@ function updatePayButtons() {
 
     // hide the other pay containers
     $stripeButtonContainer.addClass('d-none');
-    $bitpayButtonContainer.addClass('d-none');
 
     // show the paypal container
     $paypalButtonContainer.removeClass('d-none');

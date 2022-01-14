@@ -1,5 +1,4 @@
 const aliases = require('./aliases');
-const bitpay = require('./bitpay');
 const domains = require('./domains');
 const enforcePaidPlan = require('./enforce-paid-plan');
 const log = require('./log');
@@ -17,7 +16,6 @@ const users = require('./users');
 
 module.exports = {
   aliases,
-  bitpay,
   domains,
   enforcePaidPlan,
   log,

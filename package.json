@@ -55,7 +55,6 @@
     "aws-sdk": "^2.1057.0",
     "axe": "^8.1.1",
     "basic-auth": "^2.0.1",
-    "bitpay-sdk": "1",
     "boolean": "^3.1.4",
     "bootstrap": "4.6.0",
     "bree": "^7.1.5",

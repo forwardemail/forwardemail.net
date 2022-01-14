@@ -7,8 +7,6 @@ block append scripts
   script(
     src=`https://www.paypal.com/sdk/js?client-id=${config.paypal.clientID}&vault=true${config.env === 'production' ? '' : '&debug=true'}`
   )
-  //- BitPay
-  script(src="https://bitpay.com/bitpay.min.js")
   script(
     defer,
     src=manifest("js/billing.js"),
@@ -69,10 +67,6 @@ block body
                   label.form-check-label.lead(
                     for="input-payment-method-paypal"
                   )= t("PayPal")
-                //-.
-                  .form-check.form-check-inline
-                    input(type='radio', required, name='payment_method', value='bitpay')#input-payment-method-bitpay.form-check-input
-                    label(for='input-payment-method-bitpay').form-check-label.lead= t('BitPay')
 
               //- Payment Type
               //- TODO: default to last one used
@@ -157,11 +151,7 @@ block body
               //- Continue (PayPal)
               #paypal-button-container.d-none
 
-              //-.
-                //- Continue (BitPay)
-                input#bitpay-button-container.p-0.d-none(type="image", src=manifest('img/btn-bitpay.svg'), alt='Pay with BitPay')
-
-              p.text-muted.pt-3.mb-0: small.text-muted= t("We accept all major currencies, card types, and cryptocurrencies.")
+              p.text-muted.pt-3.mb-0: small.text-muted= t("We accept all major currencies and card types.")
 
           .card-footer.text-muted.text-center= t("We'll automatically email you if you're late on a payment.")
         if !isMakePayment

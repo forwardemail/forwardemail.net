@@ -76,8 +76,6 @@ module.exports = (client) => ({
             imgSrc: [
               ...defaultSrc,
               'tracking.qa.paypal.com',
-              'bitpay.com',
-              '*.bitpay.com',
               'ytimg.com',
               '*.ytimg.com'
             ],
@@ -93,8 +91,6 @@ module.exports = (client) => ({
               'plausible.io',
               'js.stripe.com',
               'www.paypal.com',
-              'bitpay.com',
-              '*.bitpay.com',
               'hcaptcha.com',
               '*.hcaptcha.com',
               ...(env.NODE_ENV === 'production'
@@ -107,8 +103,6 @@ module.exports = (client) => ({
               '*.youtube-nocookie.com',
               'js.stripe.com',
               'www.paypal.com',
-              'bitpay.com',
-              '*.bitpay.com',
               'hcaptcha.com',
               '*.hcaptcha.com',
               ...(env.NODE_ENV === 'production'
