@@ -264,8 +264,8 @@ let wwwCounter = 0;
 function domainKeyup() {
   const $input = $(this);
 
-  // trim
-  let val = $(this).val().trim().replace(/\.+$/, '').toLowerCase();
+  // trim and convert to lowercase
+  let val = $(this).val().trim().toLowerCase();
 
   // parse hostname (e.g. from https:// or http:// pasted URL)
   const url = new URLParse(val, {});
