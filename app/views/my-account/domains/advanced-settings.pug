@@ -382,7 +382,7 @@ block body
                 = t("Do not modify this unless you know what you are doing.  This will forward all emails to the specific port for all aliases and their recipients.  For example, if you are forwarding to info@example.com, and input port number 1337 here, then our server will forward email to example.com on port 1337 (as opposed to the standard SMTP port of 25).")
                 if domain.plan === 'free'
                   = " "
-                  = t('If you are on the free plan, then you can use the <a href="%s">"forward-email-port"</a> DNS TXT record.', l("/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25"))
+                  != t('If you are on the free plan, then you can use the <a href="%s">"forward-email-port"</a> DNS TXT record.', l("/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25"))
             .card-footer
               ul.list-inline.mb-0
                 li.list-inline-item

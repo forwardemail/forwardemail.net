@@ -137,7 +137,7 @@ async function createDomain(ctx, next) {
         'error',
         ctx
           .translate('WWW_WARNING')
-          .replace(/example.com/g, ctx.state.domain.name)
+          .replace(/example.com/g, ctx.state.domain.name.replace('www.', ''))
       );
     } else if (!ctx.api) {
       ctx.flash('custom', {
