@@ -3,8 +3,6 @@ mixin paymentMethod(payment)
     i.fab.fa-paypal
     |
     | PayPal
-  else if payment.method === 'bitpay'
-    img.img-fluid(src=manifest("img/bitpay.svg"), alt="BitPay")
   else
     case payment.method
       when 'amex'
