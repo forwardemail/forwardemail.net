@@ -25,7 +25,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
   const errorEmails = [];
 
   const paypalCustomers = await Users.find({
-    paypal_subscription_id: { $exists: true, $ne: null }
+    [config.userFields.paypalPayerID]: { $exists: true, $ne: null }
   })
     .lean()
     .exec();
@@ -63,7 +63,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
       // be the only subscription we have access to I think...
       // This kind of sucks, but it is the best we can do right now I beleive.
       const subscriptionIds = await Payments.distinct(
-        'paypal_subscription_id',
+        config.userFields.paypalSubscriptionID,
         {
           user: customer._id
         }
@@ -103,7 +103,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
                 // try to find the payment
                 const paymentCandidates = await Payments.find({
-                  paypal_subscription_id: subscription.id
+                  [config.userFields.paypalSubscriptionID]: subscription.id
                 });
 
                 // TODO: need to fix this to actually add the
@@ -183,7 +183,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     amount,
                     plan,
                     duration,
-                    paypal_subscription_id: subscription.id,
+                    [config.userFields.paypalSubscriptionID]: subscription.id,
                     paypal_transaction_id: transaction.id,
                     invoice_at: dayjs(transaction.time).toDate()
                   };
