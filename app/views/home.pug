@@ -59,7 +59,7 @@ block body
             data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
           )
   .min-vh-80.text-center.d-flex.flex-column
-    .container.my-auto.py-2.py-sm-3.py-md-5
+    .container.my-auto
       .row
         .col-12.col-lg-10.offset-lg-1
           h1.display-4.font-weight-bold.mb-3
@@ -68,7 +68,7 @@ block body
             else
               != t("Unlimited Email Forwarding")
           p.lead.mb-3.d-block
-            != t('Create <strong class="font-weight-bold">unlimited</strong> email addresses and aliases using your custom domain.')
+            != t("We're <span class='font-weight-bold'>the only</span> service that <mark>respects your privacy</mark> and <mark>never stores</mark> your emails.")
           form.ajax-form.d-md-flex.align-items-md-center.justify-content-md-center(action=ctx.path, method='POST')
             input(type="hidden", name="_csrf", value=ctx.csrf)
             input(type='hidden', name='enhanced_protection', value='true')
@@ -79,24 +79,27 @@ block body
                 type='text',
                 name='domain',
                 required,
-                placeholder='example.com'
+                placeholder='your-domain.com'
               )
               label(for="input-onboard-domain")= t("Enter your domain")
-            i.fa.fa-angle-double-right.d-none.d-md-inline.mx-2
+            i.fa.fa-forward.d-none.d-md-inline.mx-2
             .form-group.floating-label.mb-md-0.mr-md-2
               input#input-onboard-email.form-control.form-control-lg(
                 type="email",
                 autocomplete="email",
                 name="email",
                 value=email,
-                placeholder="name@gmail.com",
+                placeholder="your-name@gmail.com",
                 required
               )
               label(for="input-onboard-email")= t("Enter your email")
             button.btn.btn-success.btn-lg.d-none.d-md-inline(type="submit")
-              = t("Continue")
+              = t("Get Started")
             button.btn.btn-success.btn-lg.btn-block.d-md-none(type="submit")
-              = t("Continue")
+              = t("Get Started")
+              = ' '
+              i.fa.fa-angle-double-right
+          small.d-block.mt-3.text-muted.font-weight-bold!= t('Forward anything @your-domain.com to your email &ndash; and create individual aliases too!')
           //-.
             a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(
               href=l("/register"),
@@ -169,7 +172,7 @@ block body
     .row.text-center.d-block.mb-5
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
-      h1.display-4.text-uppercase.font-weight-bold!= t("100K+ Happy Users.")
+      h1.display-4.text-uppercase.font-weight-bold!= t("300K+ Happy Users.")
       p.lead.mb-3.mb-lg-0.d-block
         != t('Trusted by the folks at <a href="https://flutter.dev/" target="_blank" rel="noopener noreferrer">Flutter</a>, <a href="https://www.disneyadsales.com/" target="_blank" rel="noopener noreferrer">Disney Ad Sales</a> &ndash; and thousands more.')
     .row.row-cols-1.row-cols-md-2
@@ -514,7 +517,7 @@ block body
           .h2.display-4= t("7")
           .text-monospace.text-uppercase= t("Global Servers")
         .col-12.col-md-4.py-3.py-md-5
-          .h2.display-4= t("100K+")
+          .h2.display-4= t("300K+")
           .text-monospace.text-uppercase= t("Active Users")
     .display-3.my-3.text-warning
       i.fa.fa-star
