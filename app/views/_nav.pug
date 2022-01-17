@@ -118,17 +118,16 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
           href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l("/pricing"),
           class=ctx.pathWithoutLocale.startsWith("/pricing") ? "btn-outline-light" : "btn-dark"
         )= t("Pricing")
-      if isBot(ctx.get('User-Agent'))
-        li.nav-item.ml-lg-1.mt-1.mt-lg-0
-          a.btn.btn-lg.d-block.text-left.text-lg-center(
-            href=l("/about"),
-            class=ctx.pathWithoutLocale.startsWith("/about") ? "btn-outline-light" : "btn-dark"
-          )= t("About")
       li.nav-item.ml-lg-1.mt-1.mt-lg-0
         a.btn.btn-lg.d-block.text-left.text-lg-center(
           href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
           class=ctx.pathWithoutLocale.startsWith("/faq") ? "btn-outline-light" : "btn-dark"
         )= t("FAQ")
+      li.nav-item.ml-lg-1.mt-1.mt-lg-0
+        a.btn.btn-lg.d-block.text-left.text-lg-center(
+          href=l("/about"),
+          class=ctx.pathWithoutLocale.startsWith("/about") ? "btn-outline-light" : "btn-dark"
+        )= t("About")
       li.nav-item.ml-lg-1.mt-1.mt-lg-0
         a.btn.btn-lg.d-block.text-left.text-lg-center(
           href=l("/help"),
@@ -200,15 +199,22 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
             data-target=isRegisterOrLogin ? "" : "#modal-sign-in",
             class=ctx.pathWithoutLocale === config.loginRoute ? "btn-outline-light" : "btn-dark"
           )= t("Sign in")
-        li.nav-item.ml-lg-1.mt-1.mt-lg-0
-          a.btn.btn-lg.d-block.text-uppercase.font-weight-bold.btn-success(
-            href=l("/register"),
-            data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
-            data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
-          )
-            = t("Sign up free")
-            = " "
-            i.fa.fa-angle-double-right
+        //-.
+          li.nav-item.ml-lg-1.mt-1.mt-lg-0
+            a.btn.btn-lg.d-block.text-uppercase.font-weight-bold.btn-primary(
+              href=l("/register"),
+              data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
+              data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
+            )
+              = t("Sign up free")
+              = " "
+              i.fa.fa-angle-double-right
 if ctx.pathWithoutLocale === '/'
-  h1.h6.py-3.px-3.mb-0.text-center
-    mark!= t("Secure and private email. No tracking.")
+  h1.h6.py-3.px-3.mb-0.text-center.alert.alert-success.border-top-0.border-left-0.border-right-0.rounded-0
+    if !isBot(ctx.get('User-Agent'))
+      = emoji('trophy')
+      = ' '
+    .d-none.d-md-inline
+      != t("The #1 Ranked Email Service &ndash; Since 2017")
+    small.d-md-none
+      != t("The #1 Ranked Email Service &ndash; Since 2017")
