@@ -25,7 +25,6 @@ delete url.query.paypal_order_id;
 delete url.query.session_id;
 
 let button;
-let invoice;
 
 const PAYPAL_MAPPING = {
   enhanced_protection: {
@@ -224,7 +223,6 @@ function updatePayButtons() {
   const paymentMethod = $('input[name="payment_method"]:checked').val();
   const paymentType = $('input[name="payment_type"]:checked').val();
   const $subscriptionInput = $('input#input-payment-type-subscription');
-  const $oneTimeInput = $('input#input-payment-type-one-time');
 
   if (paymentMethod === 'credit_card') {
     // destroy the button if we need to
