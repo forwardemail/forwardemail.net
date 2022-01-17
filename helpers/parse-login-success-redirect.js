@@ -19,6 +19,9 @@ async function parseLoginSuccessRedirect(ctx) {
 
     if (domain) {
       redirectTo = ctx.state.l(`/my-account/domains/${domain.name}`);
+      if (domain.has_mx_record && domain.has_txt_record) {
+        redirectTo += '/aliases';
+      }
     } else if (!ctx.session?.returnTo) {
       ctx.flash('custom', {
         text: ctx.request.t('Your default domain does not exist!'),
