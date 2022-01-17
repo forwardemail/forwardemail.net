@@ -15,6 +15,7 @@ async function listDomains(ctx) {
         domain.aliases.some(
           (alias) =>
             qRegex.test(alias.name) ||
+            qRegex.test(alias.description) ||
             alias.recipients.some((recipient) => qRegex.test(recipient))
         )
     );
