@@ -12,6 +12,7 @@ async function listAliases(ctx) {
     domain.aliases = domain.aliases.filter(
       (alias) =>
         qRegex.test(`${alias.name}@${domain.name}`) ||
+        qRegex.test(alias.description) ||
         alias.recipients.some((recipient) => qRegex.test(recipient))
     );
   }
