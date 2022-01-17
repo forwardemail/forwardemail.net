@@ -77,7 +77,10 @@ async function onboard(ctx, next) {
           : ctx.state.domain
       );
 
-    if (ctx.state.email) {
+    if (
+      ctx.state.email &&
+      (!ctx.isAuthenticated() || ctx.state.user.group !== 'admin')
+    ) {
       const parsed = emailAddresses.parseOneAddress(ctx.state.email);
       if (parsed === null) {
         const index = ctx.state.email.lastIndexOf('@');
