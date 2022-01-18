@@ -1735,5 +1735,9 @@
   ", the author of the ": ", l'auteur du",
   "Please set a password on your account to continue.": "Veuillez définir un mot de passe sur votre compte pour continuer.",
   "Email change request does not exist.": "La demande de modification d'e-mail n'existe pas.",
-  "Email change request has been cancelled.": "La demande de modification d'e-mail a été annulée."
+  "Email change request has been cancelled.": "La demande de modification d'e-mail a été annulée.",
+  "Payment method must be either credit card, debit card, or PayPal.": "Le mode de paiement doit être soit une carte de crédit, une carte de débit ou PayPal.",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\" or an IP address).": "Le nom de domaine n'était pas valide (doit être un nom de domaine sans protocole, par exemple \"domaine.com\" au lieu de \"http://domaine.com\" ou une adresse IP).",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\").": "Le nom de domaine n'était pas valide (doit être un nom de domaine sans protocole, par exemple \"domaine.com\" au lieu de \"http://domaine.com\").",
+  "Missing subscription or customer ID from Stripe billing portal.": "Abonnement ou ID client manquant sur le portail de facturation Stripe."
 }

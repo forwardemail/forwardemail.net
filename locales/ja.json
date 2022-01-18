@@ -1735,5 +1735,9 @@
   ", the author of the ": "、の作者",
   "Please set a password on your account to continue.": "続行するには、アカウントにパスワードを設定してください。",
   "Email change request does not exist.": "メール変更リクエストが存在しません。",
-  "Email change request has been cancelled.": "メール変更リクエストはキャンセルされました。"
+  "Email change request has been cancelled.": "メール変更リクエストはキャンセルされました。",
+  "Payment method must be either credit card, debit card, or PayPal.": "お支払い方法は、クレジットカード、デビットカード、PayPalのいずれかである必要があります。",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\" or an IP address).": "ドメイン名が無効でした（たとえば、「http://domain.com」またはIPアドレスの代わりに「domain.com」などのプロトコルのないドメイン名である必要があります）。",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\").": "ドメイン名が無効でした（「http://domain.com」ではなく「domain.com」など、プロトコルのないドメイン名である必要があります）。",
+  "Missing subscription or customer ID from Stripe billing portal.": "Stripe課金ポータルからサブスクリプションまたは顧客IDがありません。"
 }

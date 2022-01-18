@@ -1735,5 +1735,9 @@
   ", the author of the ": ", ผู้เขียน",
   "Please set a password on your account to continue.": "โปรดตั้งรหัสผ่านในบัญชีของคุณเพื่อดำเนินการต่อ",
   "Email change request does not exist.": "ไม่มีคำขอเปลี่ยนแปลงอีเมล",
-  "Email change request has been cancelled.": "คำขอเปลี่ยนแปลงอีเมลถูกยกเลิก"
+  "Email change request has been cancelled.": "คำขอเปลี่ยนแปลงอีเมลถูกยกเลิก",
+  "Payment method must be either credit card, debit card, or PayPal.": "วิธีการชำระเงินต้องเป็นบัตรเครดิต บัตรเดบิต หรือ PayPal",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\" or an IP address).": "ชื่อโดเมนไม่ถูกต้อง (ต้องเป็นชื่อโดเมนที่ไม่มีโปรโตคอล เช่น \"domain.com\" แทนที่จะเป็น \"http://domain.com\" หรือที่อยู่ IP)",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\").": "ชื่อโดเมนไม่ถูกต้อง (ต้องเป็นชื่อโดเมนที่ไม่มีโปรโตคอล เช่น \"domain.com\" แทนที่จะเป็น \"http://domain.com\")",
+  "Missing subscription or customer ID from Stripe billing portal.": "ไม่มีการสมัครรับข้อมูลหรือรหัสลูกค้าจากพอร์ทัลการเรียกเก็บเงิน Stripe"
 }

@@ -1735,5 +1735,9 @@
   ", the author of the ": ", penulis",
   "Please set a password on your account to continue.": "Harap tetapkan kata sandi di akun Anda untuk melanjutkan.",
   "Email change request does not exist.": "Permintaan perubahan email tidak ada.",
-  "Email change request has been cancelled.": "Permintaan perubahan email telah dibatalkan."
+  "Email change request has been cancelled.": "Permintaan perubahan email telah dibatalkan.",
+  "Payment method must be either credit card, debit card, or PayPal.": "Metode pembayaran harus berupa kartu kredit, kartu debit, atau PayPal.",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\" or an IP address).": "Nama domain tidak valid (harus berupa nama domain tanpa protokol, misalnya \"domain.com\", bukan \"http://domain.com\" atau alamat IP).",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\").": "Nama domain tidak valid (harus nama domain tanpa protokol, misalnya \"domain.com\" bukan \"http://domain.com\").",
+  "Missing subscription or customer ID from Stripe billing portal.": "Langganan atau ID pelanggan tidak ada dari portal penagihan Stripe."
 }

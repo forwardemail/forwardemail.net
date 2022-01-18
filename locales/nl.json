@@ -1735,5 +1735,9 @@
   ", the author of the ": ", de auteur van de",
   "Please set a password on your account to continue.": "Stel een wachtwoord in op uw account om door te gaan.",
   "Email change request does not exist.": "E-mail wijzigingsverzoek bestaat niet.",
-  "Email change request has been cancelled.": "Wijzigingsverzoek e-mail is geannuleerd."
+  "Email change request has been cancelled.": "Wijzigingsverzoek e-mail is geannuleerd.",
+  "Payment method must be either credit card, debit card, or PayPal.": "De betalingsmethode moet creditcard, bankpas of PayPal zijn.",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\" or an IP address).": "Domeinnaam was ongeldig (moet een domeinnaam zijn zonder protocol, bijvoorbeeld \"domain.com\" in plaats van \"http://domain.com\" of een IP-adres).",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\").": "Domeinnaam was ongeldig (moet een domeinnaam zijn zonder protocol, bijvoorbeeld \"domain.com\" in plaats van \"http://domain.com\").",
+  "Missing subscription or customer ID from Stripe billing portal.": "Ontbrekend abonnement of klant-ID van Stripe-factureringsportal."
 }

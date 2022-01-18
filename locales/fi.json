@@ -1513,5 +1513,9 @@
   ", the author of the ": ", kirjoittaja",
   "Please set a password on your account to continue.": "Aseta salasana tilillesi jatkaaksesi.",
   "Email change request does not exist.": "Sähköpostin muutospyyntöä ei ole olemassa.",
-  "Email change request has been cancelled.": "Sähköpostin muutospyyntö on peruutettu."
+  "Email change request has been cancelled.": "Sähköpostin muutospyyntö on peruutettu.",
+  "Payment method must be either credit card, debit card, or PayPal.": "Maksutavan on oltava joko luottokortti, pankkikortti tai PayPal.",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\" or an IP address).": "Verkkotunnuksen nimi oli virheellinen (täytyy olla verkkotunnuksen nimi ilman protokollaa, esimerkiksi \"domain.com\" eikä \"http://domain.com\" tai IP-osoite).",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\").": "Verkkotunnuksen nimi oli virheellinen (täytyy olla verkkotunnus ilman protokollaa, esimerkiksi \"domain.com\" eikä \"http://domain.com\").",
+  "Missing subscription or customer ID from Stripe billing portal.": "Stripe-laskutusportaalin tilaus tai asiakastunnus puuttuu."
 }

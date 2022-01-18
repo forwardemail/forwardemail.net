@@ -1735,5 +1735,9 @@
   ", the author of the ": ", a szerző a",
   "Please set a password on your account to continue.": "A folytatáshoz állítson be jelszót a fiókjában.",
   "Email change request does not exist.": "E-mail-módosítási kérelem nem létezik.",
-  "Email change request has been cancelled.": "Az e-mail-cím módosítási kérelmet törölték."
+  "Email change request has been cancelled.": "Az e-mail-cím módosítási kérelmet törölték.",
+  "Payment method must be either credit card, debit card, or PayPal.": "A fizetési mód hitelkártya, betéti kártya vagy PayPal lehet.",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\" or an IP address).": "A domain név érvénytelen (protokoll nélküli domain névnek kell lennie, például „domain.com” a „http://domain.com” helyett, vagy IP-cím).",
+  "Domain name was invalid (must be a domain name without protocol, for example \"domain.com\" instead of \"http://domain.com\").": "A domain név érvénytelen (protokoll nélküli domain névnek kell lennie, például \"domain.com\" a \"http://domain.com\" helyett).",
+  "Missing subscription or customer ID from Stripe billing portal.": "Hiányzó előfizetés vagy ügyfél-azonosító a Stripe számlázási portálról."
 }
