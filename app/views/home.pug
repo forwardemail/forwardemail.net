@@ -100,19 +100,14 @@ block body
               = ' '
               i.fa.fa-angle-double-right
           small.d-block.mt-3.text-muted.font-weight-bold!= t('Forward anything @your-domain.com to your email &ndash; and create individual aliases too!')
-          //-.
-            a.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold.mb-2(
-              href=l("/register"),
-              role="button",
-              data-toggle="modal-anchor",
-              data-target="#modal-sign-up"
-            )
-              = t("Sign up free")
-              = " "
-              i.fa.fa-angle-double-right
-            small.d-block.text-muted.text-uppercase.font-weight-bold
-              u!= t("No credit card required")
-    a.text-decoration-none.pt-1.pb-4.pt-md-4.d-block.text-monospace.text-uppercase.text-dark(
+          a.text-decoration-none.mt-5.d-block.d-md-none.text-monospace.text-uppercase.text-dark(
+            href="#learn-more"
+          )
+            i.fa.fa-angle-down
+            = " "
+            = t("Learn more")
+
+    a.text-decoration-none.pt-1.pb-4.pt-md-4.d-none.d-md-block.text-monospace.text-uppercase.text-dark(
       href="#learn-more"
     )
       i.fa.fa-angle-down
