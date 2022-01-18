@@ -24,7 +24,15 @@ function validateAlias(ctx, next) {
       _.uniq(
         _.map(
           splitLines(body.labels).join(' ').split(',').join(' ').split(' '),
-          (label) => slug(label)
+          (label) => slug(label.trim())
+        )
+      )
+    );
+  else if (_.isArray(body.labels))
+    body.labels = _.compact(
+      _.uniq(
+        _.map(body.labels, (label) =>
+          isSANB(label) ? slug(label.trim()) : null
         )
       )
     );
@@ -38,6 +46,14 @@ function validateAlias(ctx, next) {
         _.map(
           splitLines(body.recipients).join(' ').split(',').join(' ').split(' '),
           (recipient) => recipient.trim()
+        )
+      )
+    );
+  else if (_.isArray(body.recipients))
+    body.recipients = _.compact(
+      _.uniq(
+        _.map(body.recipients, (recipient) =>
+          isSANB(recipient) ? recipient.trim() : null
         )
       )
     );
