@@ -135,7 +135,7 @@ block body
                     ): small= t("Need to change your password?")
             .card-footer
               button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
-      .col-md
+      .col-md.mt-3.mt-md-0
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
           input(type="hidden", name="_csrf", value=ctx.csrf)

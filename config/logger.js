@@ -23,9 +23,9 @@ const isProduction = env.NODE_ENV === 'production';
 
 const config = {
   logger: isProduction ? pino : signale,
-  level: isProduction ? 'warn' : 'debug',
+  level: isProduction ? 'info' : 'debug',
   levels: isProduction
-    ? ['warn', 'error', 'fatal']
+    ? ['info', 'warn', 'error', 'fatal']
     : ['trace', 'info', 'debug', 'warn', 'error', 'fatal'],
   showStack: env.SHOW_STACK,
   showMeta: env.SHOW_META,

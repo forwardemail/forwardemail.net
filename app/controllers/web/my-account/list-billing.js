@@ -100,7 +100,7 @@ async function listBilling(ctx) {
       payments,
       pageCount,
       itemCount,
-      pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
+      pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
   // this will assign rendered html to ctx.body
@@ -108,7 +108,7 @@ async function listBilling(ctx) {
     payments,
     pageCount,
     itemCount,
-    pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
+    pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
   });
 
   const table =
