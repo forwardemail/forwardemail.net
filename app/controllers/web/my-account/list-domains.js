@@ -48,14 +48,14 @@ async function listDomains(ctx) {
       domains,
       pageCount,
       itemCount,
-      pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
+      pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
   const table = await ctx.render('my-account/domains/_table', {
     domains,
     pageCount,
     itemCount,
-    pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
+    pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
   });
 
   ctx.body = { table };

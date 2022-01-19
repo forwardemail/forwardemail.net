@@ -41,14 +41,14 @@ async function list(ctx) {
       users,
       pageCount,
       itemCount,
-      pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
+      pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
   const table = await ctx.render('admin/users/_table', {
     users,
     pageCount,
     itemCount,
-    pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
+    pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
   });
 
   ctx.body = { table };

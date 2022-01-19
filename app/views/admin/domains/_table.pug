@@ -13,6 +13,8 @@ include ../../_pagination
           +sortHeader('plan', 'Plan', '#table-domains')
         th(scope="col")
           +sortHeader('max_recipients_per_alias', 'Max Recipients', '#table-domains')
+        th(scope="col")
+          +sortHeader('created_at', 'Created', '#table-domains')
         th.text-center.align-middle(scope="col")= t("Actions")
       tbody
         if domains.length === 0
@@ -52,18 +54,19 @@ include ../../_pagination
                         data-toggle="tooltip",
                         data-title=t("Update")
                       ): i.fa.fa-fw.fa-save
+              td.align-middle.text-center
+                = dayjs(domain.created_at).format("M/D/YY h:mm A")
               td.align-middle
-                .btn-group(role="group", aria-label=t("Actions"))
-                  form.ajax-form.confirm-prompt.btn-group(
-                    action=l(`/admin/domains/${domain.id}`),
-                    method="POST",
-                    autocomplete="off"
-                  )
-                    input(type="hidden", name="_csrf", value=ctx.csrf)
-                    input(type="hidden", name="_method", value="DELETE")
-                    button.btn.btn-secondary(
-                      type="submit",
-                      data-toggle="tooltip",
-                      data-title=t("Remove")
-                    ): i.fa.fa-fw.fa-remove
+                form.ajax-form.confirm-prompt(
+                  action=l(`/admin/domains/${domain.id}`),
+                  method="POST",
+                  autocomplete="off"
+                )
+                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  input(type="hidden", name="_method", value="DELETE")
+                  button.btn.btn-danger(
+                    type="submit",
+                    data-toggle="tooltip",
+                    data-title=t("Remove")
+                  ): i.fa.fa-fw.fa-remove
 +paginate('#table-domains')

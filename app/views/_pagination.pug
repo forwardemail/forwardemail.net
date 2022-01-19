@@ -1,24 +1,21 @@
 mixin paginate(tableSelector)
-  if pageCount && pageCount > 0
+  if pageCount && pageCount > 1
     nav.d-flex.justify-content-center(aria-label="Page navigation")
       ul.pagination
         if paginate.hasPreviousPages
           li.page-item
             a.page-link.ajax-form.table-ajax-form(
-              href=paginate.href(true),
+              href=paginate.href({ page: 1 }),
               data-table=tableSelector,
-              data-page=ctx.query.page - 1,
-              aria-label=t("Previous")
+              data-page=1,
+              aria-label=t("First Page"),
+              data-toggle='tooltip',
+              data-placement='bottom',
+              title=t("First Page"),
             )
               span(aria-hidden="true")
-                i.fa.fa-angle-double-left
-              span.sr-only= t("Previous")
-        else
-          li.page-item.disabled
-            span.page-link(aria-label=t("Previous"))
-              span(aria-hidden="true")
-                i.fa.fa-angle-double-left
-              span.sr-only= t("Previous")
+                i.fa.fa-step-backward
+              span.sr-only= t("First Page")
         if pages
           each page in pages
             if page.number === 1 && pageCount === 1
@@ -42,17 +39,22 @@ mixin paginate(tableSelector)
         if paginate.hasNextPages(pageCount)
           li.page-item
             a.page-link.ajax-form.table-ajax-form(
-              href=paginate.href({ page: ctx.query.page + 1 }),
+              href=paginate.href({ page: pageCount }),
               data-table=tableSelector,
-              data-page=ctx.query.page + 1,
-              aria-label=t("Next")
+              data-page=pageCount,
+              aria-label=t("Last Page"),
+              data-toggle='tooltip',
+              data-placement='bottom',
+              title=t("Last Page")
             )
               span(aria-hidden="true")
-                i.fa.fa-angle-double-right
-              span.sr-only= t("Next")
-        else
-          li.page-item.disabled
-            span.page-link(aria-label=t("Next"))
-              span(aria-hidden="true")
-                i.fa.fa-angle-double-right
-              span.sr-only= t("Next")
+                i.fa.fa-step-forward
+              span.sr-only= t("Last Page")
+    .dropdown.text-center
+      button#pagination-menu-link.btn.btn-outline-secondary.btn-sm.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+        strong= t('Results per page:')
+        = ' '
+        = t(ctx.query.limit.toString())
+      .dropdown-menu(aria-labelledby='pagination-menu-link')
+        each limit in [10, 25, 50]
+          a.dropdown-item(class=ctx.query.limit === limit ? 'active' : '', href=paginate.href({ page: 1, limit }))= t(limit.toString())
