@@ -140,6 +140,18 @@ Alias.pre('validate', function (next) {
   next();
 });
 
+// prevent wildcards from being disabled
+// (they either need deleted or enabled, too confusing otherwise)
+Alias.pre('validate', function (next) {
+  if (this.name === '*' && !this.is_enabled)
+    return next(
+      new Error(
+        'Alias that is a catch-all must be enabled or deleted entirely to be disabled'
+      )
+    );
+  next();
+});
+
 // this must be kept before other `pre('save')` hooks as
 // it populates "id" String automatically for comparisons
 Alias.plugin(mongooseCommonPlugin, {
