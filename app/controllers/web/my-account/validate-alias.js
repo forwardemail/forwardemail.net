@@ -16,8 +16,9 @@ function validateAlias(ctx, next) {
 
   if (!isSANB(body.name)) delete body.name;
 
-  if (isSANB(body.description)) body.description = striptags(body.description);
-  else delete body.description;
+  body.description = isSANB(body.description)
+    ? striptags(body.description)
+    : '';
 
   if (isSANB(body.labels))
     body.labels = _.compact(
@@ -36,7 +37,7 @@ function validateAlias(ctx, next) {
         )
       )
     );
-  else delete body.labels;
+  else body.labels = [];
 
   body.is_enabled = boolean(body.is_enabled);
 
@@ -57,7 +58,7 @@ function validateAlias(ctx, next) {
         )
       )
     );
-  else delete body.recipients;
+  else body.recipients = [];
 
   ctx.state.body = body;
 
