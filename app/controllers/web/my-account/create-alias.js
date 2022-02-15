@@ -7,7 +7,11 @@ const { Users, Domains, Aliases } = require('#models');
 
 async function createAlias(ctx, next) {
   try {
-    if (isSANB(ctx.state.body.name) && ctx.state.body.name.includes('+'))
+    if (
+      isSANB(ctx.state.body.name) &&
+      !ctx.state.body.name.startsWith('/') &&
+      ctx.state.body.name.includes('+')
+    )
       return ctx.throw(
         Boom.badRequest(ctx.translateError('ALIAS_WITH_PLUS_UNSUPPORTED'))
       );
