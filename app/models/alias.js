@@ -101,7 +101,7 @@ Alias.pre('validate', function (next) {
   if (
     !isSANB(this.name) ||
     !quotedEmailUserUtf8.test(this.name.trim().toLowerCase()) ||
-    this.name.includes('+')
+    (!this.name.trim().startsWith('/') && this.name.includes('+'))
   )
     return next(new Error('Alias name was invalid'));
 
