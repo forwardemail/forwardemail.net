@@ -148,10 +148,7 @@ async function login(ctx, next) {
 
     let redirectTo = await parseLoginSuccessRedirect(ctx);
 
-    let greeting = 'Good morning';
-    if (dayjs().format('HH') >= 12 && dayjs().format('HH') <= 17)
-      greeting = 'Good afternoon';
-    else if (dayjs().format('HH') >= 17) greeting = 'Good evening';
+    const greeting = 'Welcome back';
 
     if (user) {
       await ctx.login(user);
