@@ -39,7 +39,7 @@ async function retrieveReceipt(ctx) {
       const html = pug.renderFile(
         path.join(config.views.root, 'my-account', 'billing', 'pdf.pug'),
         // make flash a noop so we don't interfere with messages/session
-        { ...ctx.state, flash: () => {} }
+        { ...ctx.state, flash() {} }
       );
 
       //

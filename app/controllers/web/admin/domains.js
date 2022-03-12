@@ -16,7 +16,6 @@ async function list(ctx) {
       .skip(ctx.paginate.skip)
       .sort(ctx.query.sort || '-created_at')
       .lean()
-      .allowDiskUse(true)
       .exec(),
     Domains.countDocuments(query)
   ]);

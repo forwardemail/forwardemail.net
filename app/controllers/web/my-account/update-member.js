@@ -22,19 +22,25 @@ async function updateMember(ctx, next) {
   if (!member)
     return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
-  ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+  const domain = await Domains.findById(ctx.state.domain._id);
+
+  if (!domain)
+    return ctx.throw(
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+    );
+
   // swap the user group based off ctx.request.body.group
-  ctx.state.domain.members = ctx.state.domain.members.map((member) => ({
-    ...member,
+  domain.members = domain.members.map((member) => ({
+    ...member.toObject(),
     group:
       member.user.toString() === ctx.params.member_id
         ? ctx.request.body.group
         : member.group
   }));
 
-  ctx.state.domain.locale = ctx.locale;
-  ctx.state.domain.client = ctx.client;
-  ctx.state.domain = await ctx.state.domain.save();
+  domain.locale = ctx.locale;
+  domain.client = ctx.client;
+  ctx.state.domain = await domain.save();
 
   if (ctx.api) return next();
 

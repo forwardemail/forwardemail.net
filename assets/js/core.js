@@ -267,6 +267,10 @@ function domainKeyup() {
   // trim and convert to lowercase
   let val = $(this).val().trim().toLowerCase();
 
+  // remove anything before the @ symbol in case the user entered an email
+  const atSymbolIndex = val.indexOf('@');
+  if (atSymbolIndex !== -1) val = val.slice(atSymbolIndex + 1);
+
   // parse hostname (e.g. from https:// or http:// pasted URL)
   const url = new URLParse(val, {});
   if (url.hostname) {
