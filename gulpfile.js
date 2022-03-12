@@ -322,7 +322,7 @@ module.exports = {
   bundle,
   sri,
   markdown,
-  watch: () => {
+  watch() {
     lr.listen(config.livereload);
     watch(['**/*.js', '!assets/js/**/*.js'], xo);
     watch(Mandarin.DEFAULT_PATTERNS, markdown);

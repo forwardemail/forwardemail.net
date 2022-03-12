@@ -28,7 +28,7 @@ async function retrieveDomains(ctx, next) {
       'members.user',
       `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
     )
-    .sort('is_global name') // A-Z domains
+    .sort('name') // A-Z domains
     .lean()
     .exec();
 
@@ -76,7 +76,9 @@ async function retrieveDomains(ctx, next) {
           id: ctx.state.user.id,
           email: ctx.state.user.email
         },
-        group: 'user'
+        group: 'user',
+        // store the assignment was virtual
+        is_virtual: true
       };
       domain.members.push(member);
     }

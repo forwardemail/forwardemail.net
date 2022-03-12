@@ -239,7 +239,7 @@ const config = {
     saltlen: 32,
     iterations: 25000,
     keylen: 512,
-    passwordValidator: (password, fn) => {
+    passwordValidator(password, fn) {
       if (env.NODE_ENV === 'development') return fn();
       // TODO: new fork `zxcvbn3`
       // <https://github.com/hrueger/zxcvbn>

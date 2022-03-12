@@ -95,7 +95,7 @@ function fixTableOfContents(content) {
 }
 
 module.exports = {
-  md: (string, options) => {
+  md(string, options) {
     if (!isSANB(options.locale))
       return `<div class="markdown-body">${fixTableOfContents(
         markdown.render(string)

@@ -29,7 +29,6 @@ async function list(ctx) {
       .skip(ctx.paginate.skip)
       .lean()
       .sort(ctx.query.sort || '-created_at')
-      .allowDiskUse(true)
       .exec(),
     Users.countDocuments(query)
   ]);

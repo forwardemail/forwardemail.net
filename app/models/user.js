@@ -226,7 +226,7 @@ object[fields.otpToken] = String;
 // shared field names with @ladjs/i18n and email-templates
 object[config.lastLocaleField] = {
   type: String,
-  default: i18n.config.defaultLocale
+  default: i18n.getLocale()
 };
 
 //

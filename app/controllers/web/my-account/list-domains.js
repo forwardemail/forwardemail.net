@@ -6,6 +6,24 @@ const RE2 = require('re2');
 async function listDomains(ctx) {
   let { domains } = ctx.state;
 
+  // hide global domain names if not admin of
+  // the global domain and had zero aliases
+  domains = domains.filter((domain) => {
+    if (!domain.is_global) return true;
+    if (
+      domain.members.some(
+        (member) =>
+          // if the logged in user was not member
+          // and if the logged in user had no aliases
+          member.user.id === ctx.state.user.id &&
+          member.is_virtual &&
+          member.alias_count === 0
+      )
+    )
+      return false;
+    return true;
+  });
+
   // filter based on regex keyword
   if (ctx.query.q) {
     const qRegex = new RE2(_.escapeRegExp(ctx.query.q), 'gi');
@@ -32,9 +50,10 @@ async function listDomains(ctx) {
   else if (isSANB(ctx.query.sort))
     sortFn = (d) => d[ctx.query.sort.replace(/^-/, '')];
 
-  domains = _.sortBy(domains, sortFn ? [sortFn] : ['is_global', 'name']);
+  // domains are already pre-sorted A-Z by 'name'
+  if (sortFn) domains = _.sortBy(domains);
 
-  if (!sortFn || (isSANB(ctx.query.sort) && ctx.query.sort.startsWith('-')))
+  if (isSANB(ctx.query.sort) && ctx.query.sort.startsWith('-'))
     domains = _.reverse(domains);
 
   // slice for page
