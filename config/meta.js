@@ -48,10 +48,6 @@ module.exports = function (config) {
       `Email Forwarding Regex Pattern Filter ${lad}`,
       'Create email forwarding aliases with regex pattern filtering and substitution.'
     ],
-    '/donate': [
-      `Donate ${lad}`,
-      'Donate to our service to support our efforts'
-    ],
     '/terms': [`Terms ${lad}`, 'Read our terms and conditions of use'],
     '/privacy': [`Privacy Policy ${lad}`, 'Read our privacy policy'],
     '/help': [

@@ -616,7 +616,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </div>
 </div>
 
-<div class="text-muted">Now you can <a href="https://www.youtube.com/watch?v=hvuzUasjFAo" target="_blank" rel="noopener noreferrer">start dancing</a>, <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">sing a song</a>, and start forwarding emails!  If you have enjoyed these instructions, then please consider <a rel="noopener noreferrer" href="/pricing">upgrading to a paid plan</a> or sending us a <a href="/donate">donation</a>.  Additional tips and optional add-ons are described below:</div>
+<div class="text-muted">Now you can <a href="https://www.youtube.com/watch?v=hvuzUasjFAo" target="_blank" rel="noopener noreferrer">start dancing</a>, <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">sing a song</a>, and start forwarding emails!  If you have enjoyed these instructions, then please consider <a rel="noopener noreferrer" href="/pricing">upgrading to a paid plan</a>.  Additional tips and optional add-ons are described below:</div>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1421,7 +1421,7 @@ We use MX and TXT record verification, therefore if you add this service's respe
 
 ## How is it free
 
-The service continues to run thanks to [donations](/donate) and users that upgraded to paid plans.  We want to provide a free alternative (since we feel bad) for people that are using closed-source forwarding services (and subsequently risking their privacy and security).
+The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).
 
 
 ## What is the max email size limit

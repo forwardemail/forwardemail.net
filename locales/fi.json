@@ -1885,5 +1885,6 @@
   "Change Your Email": "Vaihda sähköpostiosoitteesi",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "<strong class=\"notranslate\">%s</strong> - <strong class=\"notranslate\">%s</strong> .",
   "Confirm password": "Vahvista salasana",
-  "Need free version?": "Tarvitsetko ilmaisen version?"
+  "Need free version?": "Tarvitsetko ilmaisen version?",
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
 }

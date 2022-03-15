@@ -2058,5 +2058,6 @@
   "Pending change to: <span class=\"notranslate font-weight-bold\">%s</span>": "Perubahan tertunda ke: <span class=\"notranslate font-weight-bold\">%s</span>",
   "My Account - Change Email": "Akun Saya - Ubah Email",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
-  "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "Dari <strong class=\"notranslate\">%s</strong> ke <strong class=\"notranslate\">%s</strong> ."
+  "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "Dari <strong class=\"notranslate\">%s</strong> ke <strong class=\"notranslate\">%s</strong> .",
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
 }

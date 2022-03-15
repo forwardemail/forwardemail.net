@@ -92,7 +92,10 @@ localeRouter
     web.onboard,
     render('guides/port-25-blocked-by-isp-workaround')
   )
-  .get('/donate', render('donate'))
+  .get('/donate', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/'));
+  })
   .get('/terms', render('terms'))
   .get('/privacy', render('privacy'))
   .get('/open-startup', (ctx) => {

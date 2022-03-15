@@ -1702,5 +1702,6 @@
   "Confirm password": "确认密码",
   "Downgrade to Enhanced Protection": "降级到增强保护",
   "One-time payment": "一次性支付",
-  "Add credit to your account below.": "在下面为您的帐户添加信用。"
+  "Add credit to your account below.": "在下面为您的帐户添加信用。",
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
 }

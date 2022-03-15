@@ -1757,5 +1757,6 @@
   "Confirm password": "Bekræft kodeord",
   "Downgrade to Enhanced Protection": "Nedgrader til forbedret beskyttelse",
   "One-time payment": "Engangsbetaling",
-  "Add credit to your account below.": "Tilføj kredit til din konto nedenfor."
+  "Add credit to your account below.": "Tilføj kredit til din konto nedenfor.",
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
 }
