@@ -69,17 +69,20 @@ block body
               != t("Unlimited Email Forwarding")
           p.lead.mb-3.d-block
             != t("We're <span class='font-weight-bold'>the only</span> service that <mark>respects your privacy</mark> and <mark>never stores</mark> your emails.")
-          form.ajax-form.d-md-flex.align-items-md-center.justify-content-md-center(action=ctx.path, method='POST')
+          form.ajax-form.d-md-flex.align-items-md-center.justify-content-md-center(
+            action=ctx.path,
+            method="POST"
+          )
             input(type="hidden", name="_csrf", value=ctx.csrf)
-            input(type='hidden', name='enhanced_protection', value='true')
-            input(type='hidden', name="create_domain", value='true')
-            input(type='hidden', name="create_account", value='true')
+            input(type="hidden", name="enhanced_protection", value="true")
+            input(type="hidden", name="create_domain", value="true")
+            input(type="hidden", name="create_account", value="true")
             .form-group.floating-label.mb-md-0
               input.form-control.form-control-lg(
-                type='text',
-                name='domain',
+                type="text",
+                name="domain",
                 required,
-                placeholder='your-domain.com'
+                placeholder="your-domain.com"
               )
               label(for="input-onboard-domain")= t("Enter your domain")
             i.fa.fa-forward.d-none.d-md-inline.mx-2
@@ -97,9 +100,9 @@ block body
               = t("Get Started")
             button.btn.btn-success.btn-lg.btn-block.d-md-none(type="submit")
               = t("Get Started")
-              = ' '
+              = " "
               i.fa.fa-angle-double-right
-          small.d-block.mt-3.text-muted.font-weight-bold!= t('Forward anything @your-domain.com to your email &ndash; and create individual aliases too!')
+          small.d-block.mt-3.text-muted.font-weight-bold!= t("Forward anything @your-domain.com to your email &ndash; and create individual aliases too!")
           a.text-decoration-none.mt-5.d-block.d-md-none.text-monospace.text-uppercase.text-dark(
             href="#learn-more"
           )
@@ -183,7 +186,7 @@ block body
               width=50,
               height=50,
               src=manifest("img/testimonials/dhh.jpg"),
-              alt='dhh'
+              alt="dhh"
             )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
@@ -193,7 +196,7 @@ block body
                     src=manifest("img/testimonials/twitter-verified.svg"),
                     width=20,
                     height=20,
-                    alt='Verified'
+                    alt="Verified"
                   )
                 .small.text-muted @dhh
             .ml-auto
@@ -220,7 +223,7 @@ block body
               width=50,
               height=50,
               src=manifest("img/testimonials/abhinemani.jpg"),
-              alt='abhinemani'
+              alt="abhinemani"
             )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
@@ -230,7 +233,7 @@ block body
                     src=manifest("img/testimonials/twitter-verified.svg"),
                     width=20,
                     height=20,
-                    alt='Verified'
+                    alt="Verified"
                   )
                 .small.text-muted @abhinemani
             .ml-auto
@@ -254,7 +257,7 @@ block body
               width=50,
               height=50,
               src=manifest("img/testimonials/andrewe.jpg"),
-              alt='andrewe'
+              alt="andrewe"
             )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
@@ -264,7 +267,7 @@ block body
                     src=manifest("img/testimonials/twitter-verified.svg"),
                     width=20,
                     height=20,
-                    alt='Verified'
+                    alt="Verified"
                   )
                 .small.text-muted @andrewe
             .ml-auto
@@ -286,7 +289,7 @@ block body
               width=50,
               height=50,
               src=manifest("img/testimonials/stigi.jpg"),
-              alt='stigi'
+              alt="stigi"
             )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
@@ -313,7 +316,7 @@ block body
               width=50,
               height=50,
               src=manifest("img/testimonials/andregce.jpg"),
-              alt='andregce'
+              alt="andregce"
             )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
@@ -338,7 +341,7 @@ block body
               width=50,
               height=50,
               src=manifest("img/testimonials/philcockfield.jpg"),
-              alt='philcockfield'
+              alt="philcockfield"
             )
             .d-flex.flex-column.ml-2.font-weight-bold.text-dark
               div
@@ -483,7 +486,7 @@ block body
           = " "
           != t('We\'re the <strong class="text-uppercase font-weight-bold border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
           = " "
-          != t('Made by an open-source and privacy advocate.')
+          != t("Made by an open-source and privacy advocate.")
         a.btn.btn-outline-light.btn-lg.mb-md-5(
           href="https://github.com/forwardemail",
           target="_blank",

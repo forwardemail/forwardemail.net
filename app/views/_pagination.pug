@@ -9,9 +9,9 @@ mixin paginate(tableSelector)
               data-table=tableSelector,
               data-page=1,
               aria-label=t("First Page"),
-              data-toggle='tooltip',
-              data-placement='bottom',
-              title=t("First Page"),
+              data-toggle="tooltip",
+              data-placement="bottom",
+              title=t("First Page")
             )
               span(aria-hidden="true")
                 i.fa.fa-step-backward
@@ -43,18 +43,26 @@ mixin paginate(tableSelector)
               data-table=tableSelector,
               data-page=pageCount,
               aria-label=t("Last Page"),
-              data-toggle='tooltip',
-              data-placement='bottom',
+              data-toggle="tooltip",
+              data-placement="bottom",
               title=t("Last Page")
             )
               span(aria-hidden="true")
                 i.fa.fa-step-forward
               span.sr-only= t("Last Page")
     .dropdown.text-center
-      button#pagination-menu-link.btn.btn-outline-secondary.btn-sm.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-        strong= t('Results per page:')
-        = ' '
+      button#pagination-menu-link.btn.btn-outline-secondary.btn-sm.dropdown-toggle(
+        type="button",
+        data-toggle="dropdown",
+        aria-haspopup="true",
+        aria-expanded="false"
+      )
+        strong= t("Results per page:")
+        = " "
         = t(ctx.query.limit.toString())
-      .dropdown-menu(aria-labelledby='pagination-menu-link')
+      .dropdown-menu(aria-labelledby="pagination-menu-link")
         each limit in [10, 25, 50]
-          a.dropdown-item(class=ctx.query.limit === limit ? 'active' : '', href=paginate.href({ page: 1, limit }))= t(limit.toString())
+          a.dropdown-item(
+            class=ctx.query.limit === limit ? "active" : "",
+            href=paginate.href({ page: 1, limit })
+          )= t(limit.toString())
