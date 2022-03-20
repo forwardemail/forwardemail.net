@@ -81,23 +81,38 @@ async function createDomain(ctx, next) {
 
   // if the user was not on a valid plan then redirect them to billing post creation
   if (isSANB(ctx.request.body.plan)) {
-    if (ctx.request.body.plan === 'enhanced_protection') {
-      if (['enhanced_protection', 'team'].includes(ctx.state.user.plan))
-        plan = 'enhanced_protection';
-      else
-        redirectTo = ctx.state.l(
-          `/my-account/domains/${name}/billing?plan=enhanced_protection`
-        );
-    } else if (ctx.request.body.plan === 'team') {
-      if (ctx.state.user.plan === 'team') {
-        plan = 'team';
-      } else {
-        if (ctx.state.user.plan === 'enhanced_protection')
+    switch (ctx.request.body.plan) {
+      case 'enhanced_protection': {
+        if (['enhanced_protection', 'team'].includes(ctx.state.user.plan))
           plan = 'enhanced_protection';
-        redirectTo = ctx.state.l(
-          `/my-account/domains/${name}/billing?plan=team`
-        );
+        else
+          redirectTo = ctx.state.l(
+            `/my-account/domains/${name}/billing?plan=enhanced_protection`
+          );
+
+        break;
       }
+
+      case 'team': {
+        if (ctx.state.user.plan === 'team') {
+          plan = 'team';
+        } else {
+          if (ctx.state.user.plan === 'enhanced_protection')
+            plan = 'enhanced_protection';
+          redirectTo = ctx.state.l(
+            `/my-account/domains/${name}/billing?plan=team`
+          );
+        }
+
+        break;
+      }
+
+      case 'free': {
+        plan = 'free';
+
+        break;
+      }
+      // No default
     }
   }
 
