@@ -50,8 +50,8 @@ async function listDomains(ctx) {
   else if (isSANB(ctx.query.sort))
     sortFn = (d) => d[ctx.query.sort.replace(/^-/, '')];
 
-  // domains are already pre-sorted A-Z by 'name'
-  if (sortFn) domains = _.sortBy(domains);
+  // domains are already pre-sorted A-Z by 'name' so only use sortFn if passed
+  if (sortFn) domains = _.sortBy(domains, [sortFn]);
 
   if (isSANB(ctx.query.sort) && ctx.query.sort.startsWith('-'))
     domains = _.reverse(domains);

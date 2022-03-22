@@ -30,13 +30,10 @@ async function updateMember(ctx, next) {
     );
 
   // swap the user group based off ctx.request.body.group
-  domain.members = domain.members.map((member) => ({
-    ...member.toObject(),
-    group:
-      member.user.toString() === ctx.params.member_id
-        ? ctx.request.body.group
-        : member.group
-  }));
+  for (const member of domain.members) {
+    if (member.user.toString() === ctx.params.member_id)
+      member.group = ctx.request.body.group;
+  }
 
   domain.locale = ctx.locale;
   domain.client = ctx.client;
