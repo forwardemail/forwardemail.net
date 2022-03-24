@@ -45,7 +45,9 @@ function generateOptions(domain, alias, to) {
   //
   const options = {
     template: 'recipient-verification',
-    message: {},
+    message: {
+      to
+    },
     locals: {
       link: `${config.urls.web}/v/${encrypt(
         shortID.longToShort(alias.id) + '|' + to
