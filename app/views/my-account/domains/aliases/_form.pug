@@ -115,6 +115,15 @@ if alias
   textarea#input-alias-labels.form-control.form-control-lg(name="labels")= alias && Array.isArray(alias.labels) ? _.without(alias.labels, "catch-all").join(", ") : ""
   p.form-text: small.text-black-50= t("Labels must be a line-break/space/comma separated list with a maximum of 20 characters per label.")
 .form-group.form-check
+  input#input-has-recipient-verification.form-check-input(
+    type="checkbox",
+    name="has_recipient_verification",
+    value="true",
+    checked=alias ? alias.has_recipient_verification : domain && domain.has_recipient_verification
+  )
+  label.form-check-label(for="input-has-recipient-verification")= t("Requires recipients to click email verification link")
+  p.form-text: small.text-black-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
+.form-group.form-check
   input#input-is-enabled.form-check-input(
     type="checkbox",
     name="is_enabled",

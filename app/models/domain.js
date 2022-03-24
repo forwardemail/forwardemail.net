@@ -10,8 +10,11 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
+const sanitize = require('sanitize-html');
+const striptags = require('striptags');
 const superagent = require('superagent');
 const { boolean } = require('boolean');
+const { convert } = require('html-to-text');
 const { isIP, isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
@@ -21,6 +24,28 @@ const config = require('#config');
 const i18n = require('#helpers/i18n');
 const verificationRecordOptions = require('#config/verification-record');
 
+// NOTE: we should sanitize more to prevent headaches
+// <https://www.caniemail.com/>
+const DISALLOWED_TAGS = new Set([
+  'link',
+  'audio',
+  'bdi',
+  'dialog',
+  'marquee',
+  'meter',
+  'object',
+  'picture',
+  'progress',
+  'rp',
+  'rt',
+  'ruby',
+  'svg',
+  'video',
+  'wbr'
+]);
+const ALLOWED_TAGS = sanitize.defaults.allowedTags.filter(
+  (tag) => !DISALLOWED_TAGS.has(tag)
+);
 const CACHE_TYPES = ['MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
@@ -155,7 +180,51 @@ const Domain = new mongoose.Schema({
     unique: true
   },
   onboard_email_sent_at: Date,
-  verified_email_sent_at: Date
+  verified_email_sent_at: Date,
+  // default option to require `has_recipient_verification`
+  // on all aliases for verification emails to send
+  has_recipient_verification: {
+    type: Boolean,
+    // if true then aliases default to true
+    // (if not explicitly set, e.g. via API request)
+    default: false
+  },
+  // premium alias verification template
+  // (manually enabled by admins only upon request)
+  has_custom_verification: {
+    type: Boolean,
+    default: false
+  },
+  custom_verification: {
+    name: {
+      type: String,
+      trim: true
+    },
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      validate: (value) => isEmail(value) || value === ''
+    },
+    subject: {
+      type: String,
+      trim: true,
+      maxLength: 40
+    },
+    html: {
+      type: String,
+      trim: true
+    },
+    text: {
+      type: String,
+      trim: true
+    },
+    redirect: {
+      type: String,
+      trim: true,
+      validate: (value) => isURL(value) || value === ''
+    }
+  }
 });
 
 Domain.plugin(captainHook);
@@ -240,6 +309,88 @@ Domain.pre('validate', async function (next) {
   } catch (err) {
     next(err);
   }
+});
+
+Domain.pre('validate', function (next) {
+  const domain = this;
+  // domain must be on a paid plan in order to require verification
+  if (domain.plan === 'free' && domain.has_recipient_verification)
+    return next(
+      Boom.badRequest(
+        i18n.translateError(
+          'PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION',
+          domain.locale
+        )
+      )
+    );
+  next();
+});
+
+Domain.pre('validate', function (next) {
+  const domain = this;
+
+  // we return early here in case the boolean was set to false
+  // and we want to preserve what the user had already set for templates
+  // (e.g. as a backup in case they ever restore it or we turn it back on)
+  if (!domain.has_custom_verification) return next();
+
+  // if template was empty for html then assume it's not set
+  if (!isSANB(domain.custom_verification.html)) {
+    domain.custom_verification.html = '';
+    domain.custom_verification.text = '';
+    return next();
+  }
+
+  // strip subject of all tags
+  domain.custom_verification.subject = striptags(
+    domain.custom_verification.subject
+  );
+
+  if (!isSANB(domain.custom_verification.subject))
+    domain.custom_verification.subject = '';
+
+  // clean up the HTML
+  domain.custom_verification.html = sanitize(domain.custom_verification.html, {
+    allowedTags: ALLOWED_TAGS
+  });
+
+  if (!isSANB(domain.custom_verification.html)) {
+    domain.custom_verification.html = '';
+    domain.custom_verification.text = '';
+    return next();
+  }
+
+  // ensure that the HTML has at least one occurrence
+  // of the `VERIFICATION_LINK` variable
+  // (even though we interpolate all of them)
+  if (!domain.custom_verification.html.includes('VERIFICATION_LINK'))
+    return next(
+      Boom.badRequest(
+        i18n.translateError('MISSING_VERIFICATION_LINK', domain.locale)
+      )
+    );
+
+  // auto-generate text portion if blank
+  if (isSANB(domain.custom_verification.text))
+    domain.custom_verification.text = striptags(
+      domain.custom_verification.text
+    );
+  else
+    domain.custom_verification.text = convert(domain.custom_verification.html, {
+      selectors: [{ selector: 'img', format: 'skip' }]
+    });
+
+  // ensure that text has at least one occurrence
+  // of the `VERIFICATION_LINK` variable
+  // (even though we interpolate all of them)
+  if (!domain.custom_verification.text.includes('VERIFICATION_LINK'))
+    return next(
+      Boom.badRequest(
+        i18n.translateError('MISSING_VERIFICATION_LINK', domain.locale)
+      )
+    );
+
+  next();
 });
 
 Domain.plugin(mongooseCommonPlugin, {

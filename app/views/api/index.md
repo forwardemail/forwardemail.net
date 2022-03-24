@@ -183,11 +183,16 @@ curl -X GET BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
-| Body Parameter | Required | Type                                          | Description                                                                                                                                                                                                                                                                                                       |
-| -------------- | -------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `domain`       | Yes      | String (FQDN or IP)                           | Fully qualified domain name ("FQDN") or IP address                                                                                                                                                                                                                                                                |
-| `plan`         | No       | String (enumerable)                           | Plan type (must be `"free"`, `"enhanced_protection"`, or `"team"`, defaults to `"free"`)                                                                                                                                                                                                                          |
-| `catchall`     | No       | String (delimited email addresses) or Boolean | Create a default catch-all alias, defaults to `true` (if `true` it will use the API user's email address as a recipient, and if `false` no catch-all will be created).  If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma) |
+| Body Parameter                 | Required | Type                                          | Description                                                                                                                                                                                                                                                                                                       |
+| ------------------------------ | -------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`                       | Yes      | String (FQDN or IP)                           | Fully qualified domain name ("FQDN") or IP address                                                                                                                                                                                                                                                                |
+| `plan`                         | No       | String (enumerable)                           | Plan type (must be `"free"`, `"enhanced_protection"`, or `"team"`, defaults to `"free"` or the user's current paid plan if on one)                                                                                                                                                                                |
+| `catchall`                     | No       | String (delimited email addresses) or Boolean | Create a default catch-all alias, defaults to `true` (if `true` it will use the API user's email address as a recipient, and if `false` no catch-all will be created).  If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma) |
+| `has_adult_content_protection` | No       | Boolean                                       | Whether to enable Spam Scanner adult content protection on this domain                                                                                                                                                                                                                                            |
+| `has_phishing_protection`      | No       | Boolean                                       | Whether to enable Spam Scanner phishing protection on this domain                                                                                                                                                                                                                                                 |
+| `has_executable_protection`    | No       | Boolean                                       | Whether to enable Spam Scanner executable protection on this domain                                                                                                                                                                                                                                               |
+| `has_virus_protection`         | No       | Boolean                                       | Whether to enable Spam Scanner virus protection on this domain                                                                                                                                                                                                                                                    |
+| `has_recipient_verification`   | No       | Boolean                                       | Global domain default for whether to require alias recipients to click an email verification link for emails to flow through                                                                                                                                                                                      |
 
 > Example Request:
 
@@ -224,9 +229,14 @@ curl -X GET BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
 
 > `PUT /v1/domains/DOMAIN_NAME`
 
-| Body Parameter | Required | Type             | Description                                                      |
-| -------------- | -------- | ---------------- | ---------------------------------------------------------------- |
-| `smtp_port`    | No       | String or Number | Custom port to configure for SMTP forwarding (default is `"25"`) |
+| Body Parameter                 | Required | Type             | Description                                                                                                                  |
+| ------------------------------ | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `smtp_port`                    | No       | String or Number | Custom port to configure for SMTP forwarding (default is `"25"`)                                                             |
+| `has_adult_content_protection` | No       | Boolean          | Whether to enable Spam Scanner adult content protection on this domain                                                       |
+| `has_phishing_protection`      | No       | Boolean          | Whether to enable Spam Scanner phishing protection on this domain                                                            |
+| `has_executable_protection`    | No       | Boolean          | Whether to enable Spam Scanner executable protection on this domain                                                          |
+| `has_virus_protection`         | No       | Boolean          | Whether to enable Spam Scanner virus protection on this domain                                                               |
+| `has_recipient_verification`   | No       | Boolean          | Global domain default for whether to require alias recipients to click an email verification link for emails to flow through |
 
 > Example Request:
 
@@ -345,13 +355,14 @@ curl -X GET BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 > `POST /v1/domains/DOMAIN_NAME/aliases`
 
-| Body Parameter | Required | Type            | Description                                                                                                                                                                       |
-| -------------- | -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`         | Yes      | String          | Alias name                                                                                                                                                                        |
-| `recipients`   | Yes      | String or Array | List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL's) |
-| `description`  | No       | String          | Alias description                                                                                                                                                                 |
-| `labels`       | No       | String or Array | List of labels (must be line-break/space/comma separated String or Array)                                                                                                         |
-| `is_enabled`   | No       | Boolean         | Whether to enable to disable this alias (if disabled, emails will be routed nowhere but return successful status codes)                                                           |
+| Body Parameter               | Required | Type            | Description                                                                                                                                                                         |
+| ---------------------------- | -------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                       | Yes      | String          | Alias name                                                                                                                                                                          |
+| `recipients`                 | Yes      | String or Array | List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL's)   |
+| `description`                | No       | String          | Alias description                                                                                                                                                                   |
+| `labels`                     | No       | String or Array | List of labels (must be line-break/space/comma separated String or Array)                                                                                                           |
+| `has_recipient_verification` | No       | Boolean         | Whether to enable to require recipients to click an email verification link for emails to flow through (defaults to the domain's setting if not explicitly set in the request body) |
+| `is_enabled`                 | No       | Boolean         | Whether to enable to disable this alias (if disabled, emails will be routed nowhere but return successful status codes)                                                             |
 
 > Example Request:
 
@@ -386,13 +397,14 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 
 > `PUT /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID`
 
-| Body Parameter | Required | Type            | Description                                                                                                                                                                       |
-| -------------- | -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`         | No       | String          | Alias name                                                                                                                                                                        |
-| `recipients`   | Yes      | String or Array | List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL's) |
-| `description`  | No       | String          | Alias description                                                                                                                                                                 |
-| `labels`       | No       | String or Array | List of labels (must be line-break/space/comma separated String or Array)                                                                                                         |
-| `is_enabled`   | No       | Boolean         | Whether to enable to disable this alias (if disabled, emails will be routed nowhere but return successful status codes)                                                           |
+| Body Parameter               | Required | Type            | Description                                                                                                                                                                         |
+| ---------------------------- | -------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                       | No       | String          | Alias name                                                                                                                                                                          |
+| `recipients`                 | Yes      | String or Array | List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL's)   |
+| `description`                | No       | String          | Alias description                                                                                                                                                                   |
+| `labels`                     | No       | String or Array | List of labels (must be line-break/space/comma separated String or Array)                                                                                                           |
+| `has_recipient_verification` | No       | Boolean         | Whether to enable to require recipients to click an email verification link for emails to flow through (defaults to the domain's setting if not explicitly set in the request body) |
+| `is_enabled`                 | No       | Boolean         | Whether to enable to disable this alias (if disabled, emails will be routed nowhere but return successful status codes)                                                             |
 
 > Example Request:
 

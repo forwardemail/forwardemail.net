@@ -1525,6 +1525,7 @@ You should also set the SPF record for Gmail in your DNS configuration TXT recor
   </span>
 </div>
 
+
 ## Can I "send mail as" in Outlook with this
 
 Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:

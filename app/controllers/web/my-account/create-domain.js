@@ -116,6 +116,19 @@ async function createDomain(ctx, next) {
     }
   }
 
+  // Boolean settings for spam and requiring recipient verification
+  const optionalBooleans = {};
+  for (const bool of [
+    'has_adult_content_protection',
+    'has_phishing_protection',
+    'has_executable_protection',
+    'has_virus_protection',
+    'has_recipient_verification'
+  ]) {
+    if (_.isBoolean(ctx.request.body[bool]) || isSANB(ctx.request.body[bool]))
+      optionalBooleans[bool] = boolean(ctx.request.body[bool]);
+  }
+
   try {
     ctx.state.domain = await Domains.create({
       is_api: boolean(ctx.api),
@@ -125,7 +138,8 @@ async function createDomain(ctx, next) {
         ctx.state.user.group === 'admin' && boolean(ctx.request.body.is_global),
       locale: ctx.locale,
       plan,
-      client: ctx.client
+      client: ctx.client,
+      ...optionalBooleans
     });
 
     // create a default alias for the user pointing to the admin
@@ -136,7 +150,10 @@ async function createDomain(ctx, next) {
         domain: ctx.state.domain._id,
         name: '*',
         recipients,
-        locale: ctx.locale
+        locale: ctx.locale,
+        ...(optionalBooleans.has_recipient_verification
+          ? { has_recipient_verification: true }
+          : {})
       });
 
     if (ctx.api) {

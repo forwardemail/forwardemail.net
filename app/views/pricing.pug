@@ -146,28 +146,13 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-tasks text-primary mr-3"></i> ${t("Easy to use email alias and import manager")}`
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-bell.text-primary.mr-3
-                = t("Automatic smart alerting system")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold.border-bottom
+                = t("Optional recipient verification emails")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-tools.text-primary.mr-3
-                = t("Browser extension (coming soon)")
-                button.btn.btn-link.text-dark.py-0.px-1(
-                  role="button",
-                  data-toggle="tooltip",
-                  data-placement="bottom",
-                  title="Chrome"
-                ): i.fab.fa-chrome
-                button.btn.btn-link.text-dark.py-0.px-1.ml-1(
-                  role="button",
-                  data-toggle="tooltip",
-                  data-placement="bottom",
-                  title="Firefox"
-                ): i.fab.fa-firefox
-                button.btn.btn-link.text-dark.py-0.px-1.ml-1(
-                  role="button",
-                  data-toggle="tooltip",
-                  data-placement="bottom",
-                  title="Safari"
-                ): i.fab.fa-safari
+                = t("Customize spam, phishing, and filtering settings")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-palette.text-primary.mr-3
+                = t("Custom-branded recipient verification emails")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-code.text-primary.mr-3
                 = t("Exclusive access to API features")

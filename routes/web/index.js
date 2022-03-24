@@ -26,6 +26,8 @@ const localeRouter = new Router({ prefix: '/:locale' });
 localeRouter
   .get('/', web.auth.homeOrDomains)
   .post('/', web.myAccount.retrieveDomains, web.onboard)
+  // recipient verification
+  .get('/v/:text', web.recipientVerification)
   .get('/dashboard', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));
