@@ -287,6 +287,8 @@ block body
                 i.fa.fa-user-plus
                 = " "
                 = t("Invite New Member")
+
+        //- Has Recipient Verification
         if domain.group === 'admin'
           form.ajax-form.confirm-prompt.card.border-dark.mb-3(
             action=ctx.path,
@@ -295,6 +297,141 @@ block body
           )
             input(type="hidden", name="_method", value="PUT")
             input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(
+              type="hidden",
+              name="_section",
+              value="recipient_verification"
+            )
+            h4.card-header.bg-dark.text-white= t("Recipient Verification")
+            .card-body
+              +planRequired(false)
+              .form-group.form-check
+                input#input-has-recipient-verification.form-check-input(
+                  type="checkbox",
+                  disabled=isDisabled,
+                  name="has_recipient_verification",
+                  value="true",
+                  checked=domain.has_recipient_verification
+                )
+                label.form-check-label(for="input-has-recipient-verification")= t("Requires recipients to click email verification link")
+                p.form-text: small.text-black-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
+            .card-footer
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  button.confirm-prompt.btn.btn-lg.btn-secondary(
+                    type="reset",
+                    disabled=isDisabled
+                  )= t("Reset")
+                li.list-inline-item
+                  button.btn.btn-lg.btn-primary(
+                    type="submit",
+                    disabled=isDisabled
+                  )= t("Save")
+
+        //- TODO: make it so this is a playground but disabled unless user contacts us
+        //- Custom Verification Template
+        if domain.group === 'admin' && domain.has_custom_verification
+          form.ajax-form.confirm-prompt.card.border-dark.mb-3(
+            action=ctx.path,
+            method="POST",
+            disabled=isDisabled
+          )
+            input(type="hidden", name="_method", value="PUT")
+            input(type="hidden", name="_csrf", value=ctx.csrf)
+            h4.card-header.bg-dark.text-white= t("Custom Verification Template")
+            .card-body
+              //- custom_verification.name
+              .form-group.floating-label
+                input#input-custom-verification-name.form-control.form-control-lg(
+                  value=domain.custom_verification && isSANB(domain.custom_verification.name) ? domain.custom_verification.name : "",
+                  name="custom_verification_name",
+                  autocomplete="off",
+                  placeholder="Sender name",
+                  autocorrect="off",
+                  spellcheck="false",
+                  autocapitalize="off",
+                  type="text"
+                )
+                label(for="input-custom-verification-name")= t("Sender name")
+
+              //- custom_verification.email
+              .form-group.floating-label
+                input#input-custom-verification-email.form-control.form-control-lg(
+                  value=domain.custom_verification && isSANB(domain.custom_verification.email) ? domain.custom_verification.email : "",
+                  name="custom_verification_email",
+                  autocomplete="email",
+                  placeholder="Sender email",
+                  autocorrect="off",
+                  spellcheck="false",
+                  type="email"
+                )
+                label(for="input-custom-verification-email")= t("Sender email")
+
+              //- custom_verification.subject
+              .form-group.floating-label
+                input#input-custom-verification-subject.form-control.form-control-lg(
+                  value=domain.custom_verification && isSANB(domain.custom_verification.subject) ? domain.custom_verification.subject : "",
+                  name="custom_verification_subject",
+                  autocomplete="off",
+                  placeholder="Subject line",
+                  autocorrect="off",
+                  spellcheck="false",
+                  autocapitalize="off",
+                  type="text"
+                )
+                label(for="input-custom-verification-subject")= t("Subject line")
+
+              //- custom_verification.redirect
+              .form-group.floating-label
+                input#input-custom-verification-redirect.form-control.form-control-lg(
+                  value=domain.custom_verification && isSANB(domain.custom_verification.redirect) ? domain.custom_verification.redirect : "",
+                  name="custom_verification_redirect",
+                  autocomplete="off",
+                  placeholder="Verification redirect link",
+                  autocorrect="off",
+                  spellcheck="false",
+                  autocapitalize="off",
+                  type="url"
+                )
+                label(for="input-custom-verification-redirect")= t("Verification redirect link")
+                p.form-text: small.text-black-50= t("If you set a value here, then once a verification link was clicked and it was successful, it will redirect the users to this URL.")
+
+              .alert.alert-warning!= t('Please make sure to include the string "VERIFICATION_LINK" without quotes at least once to insert the verification link into the email message.')
+
+              //- TODO: html
+              textarea#textarea-custom-verification-html(
+                name="custom_verification_html"
+              )!= domain.custom_verification && isSANB(domain.custom_verification.html) ? domain.custom_verification.html : ""
+
+              //- TODO: eventually let users customize the text portion (for now we use html-to-text)
+
+            .card-footer
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  button.confirm-prompt.btn.btn-lg.btn-secondary(
+                    type="reset",
+                    disabled=isDisabled
+                  )= t("Reset")
+                li.list-inline-item
+                  button.btn.btn-lg.btn-primary(
+                    type="submit",
+                    disabled=isDisabled
+                  )= t("Save")
+
+        //- Spam Scanner Settings
+        if domain.group === 'admin'
+          form.ajax-form.confirm-prompt.card.border-dark.mb-3(
+            action=ctx.path,
+            method="POST",
+            disabled=isDisabled
+          )
+            input(type="hidden", name="_method", value="PUT")
+            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(
+              type="hidden",
+              name="_section",
+              value="spam_scanner_settings"
+            )
             h4.card-header.bg-dark.text-white= t("Spam Scanner Settings")
             .card-body
               +planRequired(false)

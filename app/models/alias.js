@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
+const shortID = require('mongodb-short-id');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const { isIP, isEmail, isURL } = require('validator');
@@ -18,6 +19,8 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const Domains = require('./domain');
 const Users = require('./user');
 const logger = require('#helpers/logger');
+const email = require('#helpers/email');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 
@@ -33,6 +36,59 @@ const quotedEmailUserUtf8 = new RE2(
   // eslint-disable-next-line no-control-regex
   /^([\s\u0001-\u0008\u000E-\u001F!\u0023-\u005B\u005D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i
 );
+
+function generateOptions(domain, alias, to) {
+  //
+  // generate a link for verification
+  // (uses cipher of domain.id + '/' + to)
+  //
+  const options = {
+    template: 'recipient-verification',
+    message: {},
+    locals: {
+      link: `${config.urls.web}/v/${encrypt(
+        shortID.longToShort(alias.id) + '|' + to
+      )}`
+    }
+  };
+
+  //
+  // allow template customization if admins allowed this domain to have such
+  //
+  if (domain.has_custom_verification) {
+    // name and email
+    if (domain.custom_verification.name && !domain.custom_verification.email)
+      options.message.from = `${domain.custom_verification.name} <${config.email.message.from}>`;
+    else if (
+      domain.custom_verification.name &&
+      domain.custom_verification.email
+    )
+      options.message.from = `${domain.custom_verification.name} <${domain.custom_verification.email}>`;
+    else if (domain.custom_verification.email)
+      options.message.from = domain.custom_verification.email;
+
+    // subject
+    if (domain.custom_verification.subject)
+      options.message.subject = domain.custom_verification.subject;
+
+    //
+    // html and text (with interpolation)
+    // (rewrite `VERIFICATION_LINK` with `locals.link` variable)
+    //
+    if (domain.custom_verification.html)
+      options.message.html = domain.custom_verification.html.replace(
+        /VERIFICATION_LINK/g,
+        options.locals.link
+      );
+    if (domain.custom_verification.text)
+      options.message.text = domain.custom_verification.text.replace(
+        /VERIFICATION_LINK/g,
+        options.locals.link
+      );
+  }
+
+  return options;
+}
 
 const Alias = new mongoose.Schema({
   is_api: {
@@ -78,6 +134,29 @@ const Alias = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  has_recipient_verification: {
+    type: Boolean,
+    default: false
+  },
+  // recipients that are verified (ones that have clicked email link)
+  // the API endpoint for lookups uses this as well as the UI on FE front-end side
+  verified_recipients: [
+    {
+      type: String,
+      trim: true,
+      lowercase: true,
+      validate: (value) => isEmail(value)
+    }
+  ],
+  // this is an array of emails that have been sent a verification email
+  pending_recipients: [
+    {
+      type: String,
+      trim: true,
+      lowercase: true,
+      validate: (value) => isEmail(value)
+    }
+  ],
   recipients: [
     {
       type: String,
@@ -117,21 +196,40 @@ Alias.pre('validate', function (next) {
   if (this.name.indexOf('!') === 0)
     return next(new Error('Alias must not start with an exclamation point'));
 
-  // make recipients unique by email address, FQDN, or IP
-  this.recipients = _.compact(
-    _.uniq(
-      this.recipients.map((r) => {
-        // some webhooks are case-sensitive
-        if (isURL(r)) return r.trim();
-        return r.toLowerCase().trim();
-      })
-    )
-  );
+  // make all recipients kinds unique by email address, FQDN, or IP
+  for (const prop of [
+    'recipients',
+    'verified_recipients',
+    'pending_recipients'
+  ]) {
+    if (!_.isArray(this[prop])) this[prop] = [];
+    this[prop] = _.compact(
+      _.uniq(
+        this[prop].map((r) => {
+          // some webhooks are case-sensitive
+          if (isURL(r)) return r.trim();
+          return r.toLowerCase().trim();
+        })
+      )
+    );
+  }
+
+  // all recipients must be emails if it requires verification
+  if (
+    this.has_recipient_verification &&
+    this.recipients.some((r) => !isEmail(r))
+  )
+    return next(
+      new Error(
+        'Alias with recipient verification must have email-only recipients'
+      )
+    );
+
   // labels must be slugified and unique
   if (!_.isArray(this.labels)) this.labels = [];
   // description must be plain text
   if (isSANB(this.description)) this.description = striptags(this.description);
-  if (!isSANB(this.description)) this.description = null;
+  if (!isSANB(this.description)) this.description = '';
 
   // alias must have at least one recipient
   if (!_.isArray(this.recipients) || _.isEmpty(this.recipients))
@@ -297,9 +395,70 @@ Alias.pre('save', async function (next) {
         i18n.translateError('EXCEEDED_UNIQUE_COUNT', alias.locale, count)
       );
 
+    // domain must be on a paid plan in order to require verification
+    if (domain.plan === 'free' && alias.has_recipient_verification)
+      return next(
+        Boom.badRequest(
+          i18n.translateError(
+            'PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION',
+            alias.locale
+          )
+        )
+      );
+
     next();
   } catch (err) {
     next(err);
+  }
+});
+
+//
+// send verification emails to new recipients added that haven't been sent/queued yet
+//
+// TODO: this should probably be moved to a job and independent
+// with email notification to admins AND domain admins of failure
+//
+Alias.pre('save', async function (next) {
+  const alias = this;
+
+  // if it's not required then continue
+  if (!alias.has_recipient_verification) return next();
+
+  // lookup the domain to see if we need to use a custom template
+  const domain = await Domains.findById(alias.domain).lean().exec();
+  if (!domain)
+    throw Boom.notFound(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+    );
+
+  // this is a list of all recipients not in the verified_recipients
+  // array and also not in the pending_recipients array
+  const recipients = alias.recipients.filter(
+    (r) =>
+      !alias.verified_recipients.includes(r) &&
+      !alias.pending_recipients.includes(r)
+  );
+  if (recipients.length === 0) return next();
+
+  // attempt to send each one an email
+  try {
+    await Promise.all(
+      recipients.map((to) => email(generateOptions(domain, alias, to)))
+    );
+    if (!_.isArray(alias.pending_recipients)) alias.pending_recipients = [];
+    for (const r of recipients) {
+      alias.pending_recipients.push(r);
+    }
+    //
+    // TODO: save each one that succeeded to the pending_recipients array so we don't retry twice
+    //
+
+    next();
+  } catch (err) {
+    logger.error(err);
+    next(
+      Boom.badRequest(i18n.translateError('EMAIL_FAILED_TO_SEND', alias.locale))
+    );
   }
 });
 

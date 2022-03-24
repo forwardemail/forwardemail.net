@@ -121,9 +121,21 @@ async function lookup(ctx) {
       // alias.name = "*" (wildcard catchall) otherwise an alias
       // alias.is_enabled = "!" prefixed alias name
       // alias.recipients = comma separated (split with a colon)
-      if (alias.name === '*') return alias.recipients.join(',');
 
-      return alias.recipients
+      // if the alias requires recipient verification
+      // then filter out recipients that haven't yet clicked
+      // the verification link required and sent
+      // (but if and only if the domain was not on free plan)
+      const recipients =
+        domain.plan === 'free' || !alias.has_recipient_verification
+          ? alias.recipients
+          : alias.recipients.filter((r) =>
+              alias.verified_recipients.includes(r)
+            );
+
+      if (alias.name === '*') return recipients.join(',');
+
+      return recipients
         .map((recipient) => {
           return alias.is_enabled
             ? `${alias.name}:${recipient}`

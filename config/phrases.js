@@ -216,5 +216,11 @@ module.exports = {
   CAPTCHA_SERVICE_ERROR: 'Captcha service error.',
   CAPTCHA_NOT_VERIFIED: 'Captcha not verified.',
   MISSING_PORTAL_CREDENTIALS:
-    'Missing subscription or customer ID from Stripe billing portal.'
+    'Missing subscription or customer ID from Stripe billing portal.',
+  MISSING_VERIFICATION_LINK:
+    'Missing "VERIFICATION_LINK" in HTML template string.  This variable must be included at least once either in text or link format.',
+  PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION:
+    'Paid plan is required for recipient verification',
+  INVALID_RECIPIENT_VERIFICATION:
+    'Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.'
 };

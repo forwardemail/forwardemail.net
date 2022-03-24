@@ -1,6 +1,6 @@
+const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
-const Boom = require('@hapi/boom');
 
 const toObject = require('#helpers/to-object');
 const { Users, Domains, Aliases } = require('#models');
