@@ -10,7 +10,6 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
-const sanitize = require('sanitize-html');
 const striptags = require('striptags');
 const superagent = require('superagent');
 const { boolean } = require('boolean');
@@ -24,28 +23,6 @@ const config = require('#config');
 const i18n = require('#helpers/i18n');
 const verificationRecordOptions = require('#config/verification-record');
 
-// NOTE: we should sanitize more to prevent headaches
-// <https://www.caniemail.com/>
-const DISALLOWED_TAGS = new Set([
-  'link',
-  'audio',
-  'bdi',
-  'dialog',
-  'marquee',
-  'meter',
-  'object',
-  'picture',
-  'progress',
-  'rp',
-  'rt',
-  'ruby',
-  'svg',
-  'video',
-  'wbr'
-]);
-const ALLOWED_TAGS = sanitize.defaults.allowedTags.filter(
-  (tag) => !DISALLOWED_TAGS.has(tag)
-);
 const CACHE_TYPES = ['MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
@@ -208,8 +185,7 @@ const Domain = new mongoose.Schema({
     },
     subject: {
       type: String,
-      trim: true,
-      maxLength: 40
+      trim: true
     },
     html: {
       type: String,
@@ -349,10 +325,7 @@ Domain.pre('validate', function (next) {
   if (!isSANB(domain.custom_verification.subject))
     domain.custom_verification.subject = '';
 
-  // clean up the HTML
-  domain.custom_verification.html = sanitize(domain.custom_verification.html, {
-    allowedTags: ALLOWED_TAGS
-  });
+  // TODO: clean up the HTML
 
   if (!isSANB(domain.custom_verification.html)) {
     domain.custom_verification.html = '';
