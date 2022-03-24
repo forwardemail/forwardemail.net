@@ -22,6 +22,7 @@ const logger = require('#helpers/logger');
 const email = require('#helpers/email');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const config = require('#config');
+const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 
 const app = new ForwardEmail({
@@ -58,7 +59,7 @@ function generateOptions(domain, alias, to) {
   if (domain.has_custom_verification) {
     // name and email
     if (domain.custom_verification.name && !domain.custom_verification.email)
-      options.message.from = `${domain.custom_verification.name} <${config.email.message.from}>`;
+      options.message.from = `${domain.custom_verification.name} <${env.EMAIL_DEFAULT_FROM_EMAIL}>`;
     else if (
       domain.custom_verification.name &&
       domain.custom_verification.email
