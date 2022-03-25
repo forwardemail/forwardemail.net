@@ -121,7 +121,6 @@ const Alias = new mongoose.Schema({
   },
   description: {
     type: String,
-    minlength: 1,
     maxlength: 150,
     trim: true
   },
@@ -129,7 +128,6 @@ const Alias = new mongoose.Schema({
     {
       type: String,
       trim: true,
-      minlength: 1,
       maxlength: 20
     }
   ],
@@ -232,7 +230,7 @@ Alias.pre('validate', function (next) {
   if (!_.isArray(this.labels)) this.labels = [];
   // description must be plain text
   if (isSANB(this.description)) this.description = striptags(this.description);
-  if (!isSANB(this.description)) this.description = '';
+  if (!isSANB(this.description)) this.description = null;
 
   // alias must have at least one recipient
   if (!_.isArray(this.recipients) || _.isEmpty(this.recipients))
