@@ -16,8 +16,9 @@ const router = new Router();
 
 // status page crawlers often send `HEAD /` requests
 router.head('/', (ctx) => {
-  ctx.body = 'OK';
+  ctx.body = '';
 });
+
 // report URI support (not locale specific)
 router.post('/report', web.report);
 
