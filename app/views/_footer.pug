@@ -97,12 +97,6 @@ footer.mt-auto
               rel="noopener noreferrer"
             )= t("Releases")
             li: a.d-block.text-light.py-2.py-md-0(
-              data-toggle="tooltip",
-              data-placement="left",
-              title=t("Coming soon"),
-              href="#coming-soon"
-            )= t("Status Page")
-            li: a.d-block.text-light.py-2.py-md-0(
               href="https://github.com/forwardemail",
               target="_blank",
               rel="noopener noreferrer"
@@ -115,6 +109,12 @@ footer.mt-auto
               li: a.d-block.text-light.py-2.py-md-0(href=l("/about"))= t("About")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/terms"))= t("Terms")
+              li: a.d-block.text-light.py-2.py-md-0(
+                href="https://status.forwardemail.net/",
+                target="_blank",
+                rel="noopener noreferrer"
+              )
+                = t("Status Page")
           .mt-lg-auto.mt-3
             ul.list-inline.mb-0
               li.list-inline-item
