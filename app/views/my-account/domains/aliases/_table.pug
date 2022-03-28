@@ -84,14 +84,14 @@ include ../../../_pagination
                         )
                           i.fa.fa-fw.fa-info-circle
                       else
-                        //- Not Sent
-                        button.btn.btn-link.text-danger(
+                        //- Not Sent (Queued)
+                        button.btn.btn-link.text-warning(
                           type="button",
                           data-placement="bottom",
                           data-toggle="tooltip",
-                          data-title=t("Not Sent")
+                          data-title=t("Queued Verification Email")
                         )
-                          i.fa.fa-fw.fa-times
+                          i.fa.fa-fw.fa-exclamation-circle
                       if validator.isEmail(recipient) || validator.isURL(recipient)
                         = recipient
                       else

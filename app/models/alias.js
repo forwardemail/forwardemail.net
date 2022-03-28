@@ -407,6 +407,17 @@ Alias.pre('save', async function (next) {
         )
       );
 
+    // domain must not be a global plan in order to require verification
+    if (domain.is_global && alias.has_recipient_verification)
+      return next(
+        Boom.badRequest(
+          i18n.translateError(
+            'PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION',
+            alias.locale
+          )
+        )
+      );
+
     next();
   } catch (err) {
     next(err);
