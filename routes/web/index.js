@@ -15,8 +15,13 @@ const { web } = require('#controllers');
 const router = new Router();
 
 // status page crawlers often send `HEAD /` requests
-router.head('/', (ctx) => {
-  ctx.body = '';
+router.get('/', (ctx, next) => {
+  if (ctx.method === 'HEAD') {
+    ctx.body = 'OK';
+    return;
+  }
+
+  return next();
 });
 
 // report URI support (not locale specific)
