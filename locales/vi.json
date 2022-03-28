@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "Tài khoản của tôi - Thay đổi Email",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "Từ <strong class=\"notranslate\">%s</strong> đến <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Dịch vụ tiếp tục chạy nhờ những người dùng đã nâng cấp lên gói trả phí. Chúng tôi muốn cung cấp một giải pháp thay thế miễn phí cho những người đang sử dụng dịch vụ chuyển tiếp mã nguồn đóng (và sau đó gặp rủi ro về quyền riêng tư và bảo mật của họ).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "Thiếu \"VERIFICATION_LINK\" trong chuỗi mẫu HTML. Biến này phải được đưa vào ít nhất một lần ở định dạng văn bản hoặc liên kết.",
+  "Paid plan is required for recipient verification": "Gói trả phí là bắt buộc để xác minh người nhận",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Yêu cầu xác minh người nhận không hợp lệ. Vui lòng đảm bảo liên kết chính xác và thử lại hoặc liên hệ với chúng tôi để được trợ giúp."
 }

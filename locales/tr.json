@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "Hesabım - E-postayı Değiştir",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "<strong class=\"notranslate\">%s</strong> ile <strong class=\"notranslate\">%s</strong> arasında.",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Ücretli planlara geçen kullanıcılar sayesinde hizmet çalışmaya devam ediyor. Kapalı kaynak yönlendirme hizmetlerini kullanan (ve ardından gizliliklerini ve güvenliklerini riske atan) kişilere ücretsiz bir alternatif sunmak istiyoruz.",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "HTML şablon dizesinde \"VERIFICATION_LINK\" eksik. Bu değişken, metin veya bağlantı biçiminde en az bir kez dahil edilmelidir.",
+  "Paid plan is required for recipient verification": "Alıcı doğrulaması için ücretli plan gereklidir",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Geçersiz alıcı doğrulama isteği. Lütfen bağlantının doğru olduğundan emin olun ve tekrar deneyin veya yardım için bizimle iletişime geçin."
 }

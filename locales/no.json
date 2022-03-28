@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "Min konto - Endre e-post",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "Fra <strong class=\"notranslate\">%s</strong> til <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Tjenesten fortsetter å kjøre takket være brukere som oppgraderte til betalte planer. Vi ønsker å tilby et gratis alternativ for personer som bruker lukkede kildekodetjenester (og deretter risikerer personvernet og sikkerheten deres).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "Mangler «VERIFICATION_LINK» i HTML-malstrengen. Denne variabelen må inkluderes minst én gang enten i tekst- eller lenkeformat.",
+  "Paid plan is required for recipient verification": "Betalt abonnement kreves for mottakerbekreftelse",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Ugyldig forespørsel om mottakerbekreftelse. Kontroller at koblingen er riktig og prøv igjen, eller kontakt oss for å få hjelp."
 }

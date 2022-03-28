@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "マイアカウント-メールの変更",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "<strong class=\"notranslate\">%s</strong>から<strong class=\"notranslate\">%s</strong> sへ。",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "有料プランにアップグレードしたユーザーのおかげで、サービスは引き続き実行されます。クローズドソースの転送サービスを使用している（そしてその後プライバシーとセキュリティを危険にさらす）人々に無料の代替手段を提供したいと考えています。",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "HTMLテンプレート文字列に「VERIFICATION_LINK」がありません。この変数は、テキスト形式またはリンク形式のいずれかで少なくとも1回含める必要があります。",
+  "Paid plan is required for recipient verification": "受信者の確認には有料プランが必要です",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "受信者の確認要求が無効です。リンクが正しいことを確認して再試行するか、サポートが必要な場合はお問い合わせください。"
 }

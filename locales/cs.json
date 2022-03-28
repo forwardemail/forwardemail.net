@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "Můj účet - Změnit e-mail",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "Od <strong class=\"notranslate\">%s</strong> do <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Služba nadále běží díky uživatelům, kteří upgradovali na placené plány. Chceme poskytnout bezplatnou alternativu pro lidi, kteří využívají spediční služby s uzavřeným zdrojem (a následně riskují své soukromí a bezpečnost).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "V řetězci šablony HTML chybí „VERIFICATION_LINK“. Tato proměnná musí být zahrnuta alespoň jednou ve formátu textu nebo odkazu.",
+  "Paid plan is required for recipient verification": "Pro ověření příjemce je vyžadován placený tarif",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Neplatný požadavek na ověření příjemce. Ujistěte se, že je odkaz správný, a zkuste to znovu, nebo nás kontaktujte s žádostí o pomoc."
 }

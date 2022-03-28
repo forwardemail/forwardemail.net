@@ -1758,5 +1758,8 @@
   "Downgrade to Enhanced Protection": "Nedgrader til forbedret beskyttelse",
   "One-time payment": "Engangsbetaling",
   "Add credit to your account below.": "Tilføj kredit til din konto nedenfor.",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Tjenesten fortsætter med at køre takket være brugere, der har opgraderet til betalte planer. Vi ønsker at tilbyde et gratis alternativ til folk, der bruger lukkede kilde-videresendelsestjenester (og efterfølgende risikerer deres privatliv og sikkerhed).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "Mangler \"VERIFICATION_LINK\" i HTML-skabelonstrengen. Denne variabel skal inkluderes mindst én gang enten i tekst- eller linkformat.",
+  "Paid plan is required for recipient verification": "Betalt abonnement er påkrævet for modtagerbekræftelse",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Ugyldig anmodning om modtagerbekræftelse. Sørg for, at linket er korrekt, og prøv igen, eller kontakt os for at få hjælp."
 }

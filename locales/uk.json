@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "Мій обліковий запис - Змінити електронну адресу",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "Від <strong class=\"notranslate\">%s</strong> до <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Сервіс продовжує працювати завдяки користувачам, які перейшли на платні плани. Ми хочемо надати безкоштовну альтернативу для людей, які використовують послуги пересилання з закритим кодом (і згодом ризикують своєю конфіденційністю та безпекою).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "Відсутнє \"VERIFICATION_LINK\" у рядку шаблону HTML. Цю змінну потрібно включити принаймні один раз у текстовому форматі або у форматі посилання.",
+  "Paid plan is required for recipient verification": "Платний план необхідний для підтвердження одержувача",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Недійсний запит на підтвердження одержувача. Переконайтеся, що посилання правильне, і повторіть спробу або зв’яжіться з нами за допомогою."
 }

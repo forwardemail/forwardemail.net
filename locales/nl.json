@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "Mijn account - e-mailadres wijzigen",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "Van <strong class=\"notranslate\">%s</strong> tot <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "De service blijft draaien dankzij gebruikers die een upgrade naar betaalde abonnementen hebben uitgevoerd. We willen een gratis alternatief bieden voor mensen die gebruik maken van closed-source doorstuurdiensten (en daarmee hun privacy en veiligheid in gevaar brengen).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "Ontbrekende \"VERIFICATION_LINK\" in HTML-sjabloontekenreeks. Deze variabele moet minstens één keer worden opgenomen in tekst- of linkformaat.",
+  "Paid plan is required for recipient verification": "Betaald abonnement is vereist voor verificatie van de ontvanger",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Ongeldig verificatieverzoek van ontvanger. Zorg ervoor dat de link correct is en probeer het opnieuw, of neem contact met ons op voor hulp."
 }

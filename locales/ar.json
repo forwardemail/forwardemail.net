@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "حسابي - تغيير البريد الإلكتروني",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "من <strong class=\"notranslate\">%s</strong> إلى <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "تستمر الخدمة في العمل بفضل المستخدمين الذين قاموا بالترقية إلى الخطط المدفوعة. نريد توفير بديل مجاني للأشخاص الذين يستخدمون خدمات إعادة توجيه مغلقة المصدر (وبالتالي يخاطرون بخصوصياتهم وأمنهم).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "\"VERIFICATION_LINK\" مفقود في سلسلة قالب HTML. يجب تضمين هذا المتغير مرة واحدة على الأقل إما في شكل نص أو تنسيق ارتباط.",
+  "Paid plan is required for recipient verification": "الخطة المدفوعة مطلوبة للتحقق من المستلم",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "طلب التحقق من المستلم غير صالح. يرجى التأكد من صحة الرابط والمحاولة مرة أخرى ، أو الاتصال بنا للحصول على المساعدة."
 }

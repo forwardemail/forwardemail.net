@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "Il mio account - Modifica e-mail",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "Da <strong class=\"notranslate\">%s</strong> a <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Il servizio continua a funzionare grazie agli utenti che sono passati ai piani a pagamento. Vogliamo fornire un'alternativa gratuita per le persone che utilizzano servizi di inoltro a codice chiuso (e quindi rischiano la loro privacy e sicurezza).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "Manca \"VERIFICATION_LINK\" nella stringa del modello HTML. Questa variabile deve essere inclusa almeno una volta in formato testo o collegamento.",
+  "Paid plan is required for recipient verification": "Il piano a pagamento è richiesto per la verifica del destinatario",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Richiesta di verifica del destinatario non valida. Assicurati che il link sia corretto e riprova, oppure contattaci per assistenza."
 }

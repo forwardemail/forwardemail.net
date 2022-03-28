@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "บัญชีของฉัน - เปลี่ยนอีเมล",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "จาก <strong class=\"notranslate\">%s</strong> ถึง <strong class=\"notranslate\">%s</strong>",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "บริการยังคงทำงานต่อไปด้วยผู้ใช้ที่อัปเกรดเป็นแผนชำระเงิน เราต้องการมอบทางเลือกฟรีสำหรับผู้ที่ใช้บริการส่งต่อแบบปิด (และเสี่ยงต่อความเป็นส่วนตัวและความปลอดภัยในภายหลัง)",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "ไม่มี \"VERIFICATION_LINK\" ในสตริงเทมเพลต HTML ต้องรวมตัวแปรนี้อย่างน้อยหนึ่งครั้งในรูปแบบข้อความหรือลิงก์",
+  "Paid plan is required for recipient verification": "ต้องใช้แผนการชำระเงินสำหรับการยืนยันผู้รับ",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "คำขอตรวจสอบผู้รับไม่ถูกต้อง โปรดตรวจสอบให้แน่ใจว่าลิงก์ถูกต้องแล้วลองอีกครั้ง หรือติดต่อเราเพื่อขอความช่วยเหลือ"
 }

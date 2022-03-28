@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "החשבון שלי - שנה אימייל",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "מ- <strong class=\"notranslate\">%s</strong> עד <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "השירות ממשיך לפעול הודות למשתמשים ששדרגו לתוכניות בתשלום. אנו רוצים לספק חלופה חינמית לאנשים שמשתמשים בשירותי שילוח בקוד סגור (ולאחר מכן מסכנים את הפרטיות והאבטחה שלהם).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "חסר \"VERIFICATION_LINK\" במחרוזת תבנית HTML. יש לכלול משתנה זה לפחות פעם אחת בפורמט טקסט או קישור.",
+  "Paid plan is required for recipient verification": "נדרשת תוכנית בתשלום לאימות הנמען",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "בקשת אימות נמען לא חוקית. אנא ודא שהקישור נכון ונסה שוב, או צור איתנו קשר לקבלת עזרה."
 }

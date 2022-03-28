@@ -1703,5 +1703,8 @@
   "Downgrade to Enhanced Protection": "降级到增强保护",
   "One-time payment": "一次性支付",
   "Add credit to your account below.": "在下面为您的帐户添加信用。",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "由于升级到付费计划的用户，该服务继续运行。我们希望为使用闭源转发服务（并随后冒着隐私和安全风险）的人们提供免费的替代方案。",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "HTML 模板字符串中缺少“VERIFICATION_LINK”。此变量必须以文本或链接格式至少包含一次。",
+  "Paid plan is required for recipient verification": "收件人验证需要付费计划",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "收件人验证请求无效。请确保链接正确并重试，或联系我们寻求帮助。"
 }

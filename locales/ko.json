@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "내 계정 - 이메일 변경",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "<strong class=\"notranslate\">%s</strong> 에서 <strong class=\"notranslate\">%s</strong> s까지.",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "유료 요금제로 업그레이드 한 사용자 덕분에 서비스가 계속 실행됩니다. 우리는 폐쇄 소스 포워딩 서비스를 사용하는(그리고 나중에 개인 정보와 보안을 위협하는) 사람들에게 무료 대안을 제공하고자 합니다.",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "HTML 템플릿 문자열에 \"VERIFICATION_LINK\"가 없습니다. 이 변수는 텍스트 또는 링크 형식으로 한 번 이상 포함되어야 합니다.",
+  "Paid plan is required for recipient verification": "수신자 확인을 위해 유료 요금제가 필요합니다.",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "잘못된 수신자 확인 요청입니다. 링크가 올바른지 확인하고 다시 시도하거나 저희에게 도움을 요청하십시오."
 }

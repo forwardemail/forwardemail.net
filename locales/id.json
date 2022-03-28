@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "Akun Saya - Ubah Email",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "Dari <strong class=\"notranslate\">%s</strong> ke <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Layanan terus berjalan berkat pengguna yang meningkatkan ke paket berbayar. Kami ingin memberikan alternatif gratis bagi orang-orang yang menggunakan layanan penerusan sumber tertutup (dan selanjutnya mempertaruhkan privasi dan keamanan mereka).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "Tidak ada \"VERIFICATION_LINK\" dalam string template HTML. Variabel ini harus disertakan setidaknya sekali dalam format teks atau tautan.",
+  "Paid plan is required for recipient verification": "Paket berbayar diperlukan untuk verifikasi penerima",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Permintaan verifikasi penerima tidak valid. Pastikan tautannya benar dan coba lagi, atau hubungi kami untuk mendapatkan bantuan."
 }

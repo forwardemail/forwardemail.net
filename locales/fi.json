@@ -1886,5 +1886,8 @@
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "<strong class=\"notranslate\">%s</strong> - <strong class=\"notranslate\">%s</strong> .",
   "Confirm password": "Vahvista salasana",
   "Need free version?": "Tarvitsetko ilmaisen version?",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Palvelu toimii edelleen maksullisiin sopimuksiin päivittäneiden käyttäjien ansiosta. Haluamme tarjota ilmaisen vaihtoehdon ihmisille, jotka käyttävät suljetun lähdekoodin huolintapalveluita (ja myöhemmin vaarantavat yksityisyytensä ja turvallisuutensa).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "HTML-mallin merkkijonosta puuttuu \"VERIFICATION_LINK\". Tämä muuttuja on sisällytettävä vähintään kerran joko teksti- tai linkkimuodossa.",
+  "Paid plan is required for recipient verification": "Maksullinen suunnitelma vaaditaan vastaanottajan vahvistamiseen",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Virheellinen vastaanottajan vahvistuspyyntö. Varmista, että linkki on oikea ja yritä uudelleen tai ota meihin yhteyttä saadaksesi apua."
 }

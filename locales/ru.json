@@ -2059,5 +2059,8 @@
   "My Account - Change Email": "Моя учетная запись - изменить адрес электронной почты",
   "My Account - Recovery Keys": "My Account - Recovery Keys",
   "From <strong class=\"notranslate\">%s</strong> to <strong class=\"notranslate\">%s</strong>.": "От <strong class=\"notranslate\">%s</strong> до <strong class=\"notranslate\">%s</strong> .",
-  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security)."
+  "The service continues to run thanks to users that upgraded to paid plans.  We want to provide a free alternative for people that are using closed-source forwarding services (and subsequently risking their privacy and security).": "Сервис продолжает работать благодаря пользователям, которые перешли на платные планы. Мы хотим предоставить бесплатную альтернативу людям, которые используют службы пересылки с закрытым исходным кодом (и впоследствии рискуют своей конфиденциальностью и безопасностью).",
+  "Missing \"VERIFICATION_LINK\" in HTML template string.  This variable must be included at least once either in text or link format.": "Отсутствует \"VERIFICATION_LINK\" в строке шаблона HTML. Эта переменная должна быть включена хотя бы один раз в формате текста или ссылки.",
+  "Paid plan is required for recipient verification": "Платный план необходим для проверки получателя",
+  "Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.": "Неверный запрос подтверждения получателя. Убедитесь, что ссылка верна, и повторите попытку или свяжитесь с нами для получения помощи."
 }
