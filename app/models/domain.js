@@ -833,7 +833,7 @@ Domain.pre('save', async function (next) {
         )
       );
 
-    if (!hasValidPlan)
+    if (!hasValidPlan && domain.plan !== 'free')
       throw Boom.paymentRequired(
         i18n.translateError(
           'DOMAIN_PLAN_UPGRADE_REQUIRED',
