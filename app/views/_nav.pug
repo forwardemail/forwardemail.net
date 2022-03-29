@@ -211,10 +211,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
               i.fa.fa-angle-double-right
 if ctx.pathWithoutLocale === '/'
   h1.h6.py-3.px-3.mb-0.text-center.alert.alert-success.border-top-0.border-left-0.border-right-0.rounded-0
-    if !isBot(ctx.get('User-Agent'))
-      = emoji("trophy")
-      = " "
     .d-none.d-md-inline
-      != t("#1 Ranked Forwarding Service &ndash; Since 2017")
+      != t("Privacy-Focused Email Forwarding Since 2017")
     small.d-md-none
-      != t("#1 Ranked Forwarding Service &ndash; Since 2017")
+      != t("Privacy-Focused Email Forwarding Since 2017")
