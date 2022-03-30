@@ -10,7 +10,6 @@ const sharedConfig = require('@ladjs/shared-config');
 const humanize = require('humanize-string');
 const titleize = require('titleize');
 
-const bree = require('../bree');
 const config = require('#config');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
@@ -23,7 +22,6 @@ const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
-  brees: [bree],
   logger
 });
 

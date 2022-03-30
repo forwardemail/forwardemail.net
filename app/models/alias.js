@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
-const shortID = require('mongodb-short-id');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const { isIP, isEmail, isURL } = require('validator');
@@ -19,10 +18,7 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const Domains = require('./domain');
 const Users = require('./user');
 const logger = require('#helpers/logger');
-const email = require('#helpers/email');
-const { encrypt } = require('#helpers/encrypt-decrypt');
 const config = require('#config');
-const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 
 const app = new ForwardEmail({
@@ -37,61 +33,6 @@ const quotedEmailUserUtf8 = new RE2(
   // eslint-disable-next-line no-control-regex
   /^([\s\u0001-\u0008\u000E-\u001F!\u0023-\u005B\u005D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i
 );
-
-function generateOptions(domain, alias, to) {
-  //
-  // generate a link for verification
-  // (uses cipher of domain.id + '/' + to)
-  //
-  const options = {
-    template: 'recipient-verification',
-    message: {
-      to
-    },
-    locals: {
-      link: `${config.urls.web}/v/${encrypt(
-        shortID.longToShort(alias.id) + '|' + to
-      )}`
-    }
-  };
-
-  //
-  // allow template customization if admins allowed this domain to have such
-  //
-  if (domain.has_custom_verification) {
-    // name and email
-    if (domain.custom_verification.name && !domain.custom_verification.email)
-      options.message.from = `${domain.custom_verification.name} <${env.EMAIL_DEFAULT_FROM_EMAIL}>`;
-    else if (
-      domain.custom_verification.name &&
-      domain.custom_verification.email
-    )
-      options.message.from = `${domain.custom_verification.name} <${domain.custom_verification.email}>`;
-    else if (domain.custom_verification.email)
-      options.message.from = domain.custom_verification.email;
-
-    // subject
-    if (domain.custom_verification.subject)
-      options.message.subject = domain.custom_verification.subject;
-
-    //
-    // html and text (with interpolation)
-    // (rewrite `VERIFICATION_LINK` with `locals.link` variable)
-    //
-    if (domain.custom_verification.html)
-      options.message.html = domain.custom_verification.html.replace(
-        /VERIFICATION_LINK/g,
-        options.locals.link
-      );
-    if (domain.custom_verification.text)
-      options.message.text = domain.custom_verification.text.replace(
-        /VERIFICATION_LINK/g,
-        options.locals.link
-      );
-  }
-
-  return options;
-}
 
 const Alias = new mongoose.Schema({
   is_api: {
@@ -258,6 +199,7 @@ Alias.plugin(mongooseCommonPlugin, {
   omitExtraFields: ['is_api']
 });
 
+// eslint-disable-next-line complexity
 Alias.pre('save', async function (next) {
   const alias = this;
   try {
@@ -421,56 +363,6 @@ Alias.pre('save', async function (next) {
     next();
   } catch (err) {
     next(err);
-  }
-});
-
-//
-// send verification emails to new recipients added that haven't been sent/queued yet
-//
-// TODO: this should probably be moved to a job and independent
-// with email notification to admins AND domain admins of failure
-//
-Alias.pre('save', async function (next) {
-  const alias = this;
-
-  // if it's not required then continue
-  if (!alias.has_recipient_verification) return next();
-
-  // lookup the domain to see if we need to use a custom template
-  const domain = await Domains.findById(alias.domain).lean().exec();
-  if (!domain)
-    throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
-    );
-
-  // this is a list of all recipients not in the verified_recipients
-  // array and also not in the pending_recipients array
-  const recipients = alias.recipients.filter(
-    (r) =>
-      !alias.verified_recipients.includes(r) &&
-      !alias.pending_recipients.includes(r)
-  );
-  if (recipients.length === 0) return next();
-
-  // attempt to send each one an email
-  try {
-    await Promise.all(
-      recipients.map((to) => email(generateOptions(domain, alias, to)))
-    );
-    if (!_.isArray(alias.pending_recipients)) alias.pending_recipients = [];
-    for (const r of recipients) {
-      alias.pending_recipients.push(r);
-    }
-    //
-    // TODO: save each one that succeeded to the pending_recipients array so we don't retry twice
-    //
-
-    next();
-  } catch (err) {
-    logger.error(err);
-    next(
-      Boom.badRequest(i18n.translateError('EMAIL_FAILED_TO_SEND', alias.locale))
-    );
   }
 });
 

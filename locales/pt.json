@@ -2076,5 +2076,7 @@
   "Whether to enable Spam Scanner virus protection on this domain": "Whether to enable Spam Scanner virus protection on this domain",
   "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through",
   "Whether to enable to require recipients to click an email verification link for emails to flow through (defaults to the domain's setting if not explicitly set in the request body)": "Whether to enable to require recipients to click an email verification link for emails to flow through (defaults to the domain's setting if not explicitly set in the request body)",
-  "In May 2019, we released v2, which was a major rewrite from the initial versions and focused on ": "In May 2019, we released v2, which was a major rewrite from the initial versions and focused on "
+  "In May 2019, we released v2, which was a major rewrite from the initial versions and focused on ": "In May 2019, we released v2, which was a major rewrite from the initial versions and focused on ",
+  "API key": "API key",
+  " to be set as the \"username\" value of the request's ": " to be set as the \"username\" value of the request's "
 }

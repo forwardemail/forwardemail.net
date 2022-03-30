@@ -46,6 +46,11 @@ const jobs = [
     name: 'check-unknown-payment-methods',
     interval: '1h',
     timeout: 0
+  },
+  {
+    name: 'recipient-verification-email',
+    interval: '15s',
+    timeout: 0
   }
 ];
 
