@@ -6,6 +6,7 @@ const { isPort } = require('validator');
 
 const { Domains } = require('#models');
 
+// eslint-disable-next-line complexity
 async function updateDomain(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
 
@@ -18,6 +19,7 @@ async function updateDomain(ctx, next) {
 
   // Boolean settings for spam and requiring recipient verification
   if (ctx.api) {
+    // require paid plan (note that the API middleware already does this)
     for (const bool of [
       'has_adult_content_protection',
       'has_phishing_protection',
@@ -29,6 +31,11 @@ async function updateDomain(ctx, next) {
         ctx.state.domain[bool] = boolean(ctx.request.body[bool]);
     }
   } else if (ctx.request.body._section === 'spam_scanner_settings') {
+    // require paid plan
+    if (ctx.state.domain.plan === 'free')
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('PLAN_UPGRADE_REQUIRED'))
+      );
     for (const bool of [
       'has_adult_content_protection',
       'has_phishing_protection',
@@ -38,20 +45,37 @@ async function updateDomain(ctx, next) {
       ctx.state.domain[bool] = boolean(ctx.request.body[bool]);
     }
   } else if (ctx.request.body._section === 'recipient_verification') {
+    // require paid plan
+    if (ctx.state.domain.plan === 'free')
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('PLAN_UPGRADE_REQUIRED'))
+      );
     ctx.state.domain.has_recipient_verification = boolean(
       ctx.request.body.has_recipient_verification
     );
   }
 
   // custom verification IFF allowed
-  if (ctx.state.domain.has_custom_verification) {
+  if (
+    !ctx.api &&
+    ctx.request.body._section === 'custom_verification_template'
+  ) {
+    // require paid plan
+    if (
+      ctx.state.domain.plan === 'free' ||
+      !ctx.state.domain.has_custom_verification
+    )
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('PLAN_UPGRADE_REQUIRED'))
+      );
     for (const prop of ['name', 'email', 'subject', 'redirect', 'html']) {
-      if (_.isString(ctx.request.body[`custom_verification_${prop}`]))
+      if (_.isString(ctx.request.body[`custom_verification_${prop}`])) {
         ctx.state.domain.custom_verification[prop] = isSANB(
           ctx.request.body[`custom_verification_${prop}`]
         )
           ? ctx.request.body[`custom_verification_${prop}`]
           : '';
+      }
     }
   }
 

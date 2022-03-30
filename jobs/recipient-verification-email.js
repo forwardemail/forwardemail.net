@@ -48,12 +48,15 @@ function getEmailOptions(alias, to) {
   // generate a link for verification
   // (uses cipher of domain.id + '/' + to)
   //
+  const fromEmail = `${alias.name}@${alias.domain.name}`;
   const options = {
     template: 'recipient-verification',
     message: {
       to
     },
     locals: {
+      fromEmail,
+      toEmail: to,
       link: `${config.urls.web}/v/${encrypt(
         shortID.longToShort(alias.id) + '|' + to
       )}`
@@ -84,18 +87,20 @@ function getEmailOptions(alias, to) {
 
     //
     // html and text (with interpolation)
-    // (rewrite `VERIFICATION_LINK` with `locals.link` variable)
+    // (rewrite `VERIFICATION_LINK` with `locals.link`)
+    // (rewrite `FROM_EMAIL` with `fromEmail`)
+    // (rewrite `TO_EMAIL` with `to`)
     //
     if (alias.domain.custom_verification.html)
-      options.message.html = alias.domain.custom_verification.html.replace(
-        /VERIFICATION_LINK/g,
-        options.locals.link
-      );
+      options.message.html = alias.domain.custom_verification.html
+        .replace(/VERIFICATION_LINK/g, options.locals.link)
+        .replace(/FROM_EMAIL/g, fromEmail)
+        .replace(/TO_EMAIL/g, to);
     if (alias.domain.custom_verification.text)
-      options.message.text = alias.domain.custom_verification.text.replace(
-        /VERIFICATION_LINK/g,
-        options.locals.link
-      );
+      options.message.text = alias.domain.custom_verification.text
+        .replace(/VERIFICATION_LINK/g, options.locals.link)
+        .replace(/FROM_EMAIL/g, fromEmail)
+        .replace(/TO_EMAIL/g, to);
   }
 
   return options;
@@ -178,6 +183,7 @@ async function mapper(alias) {
       $project: {
         id: 1,
         domain: 1,
+        name: 1,
         recipients: 1,
         verified_and_pending: {
           $setUnion: ['$verified_recipients', '$pending_recipients']
@@ -194,6 +200,7 @@ async function mapper(alias) {
           {
             $project: {
               id: 1,
+              name: 1,
               has_custom_verification: 1,
               custom_verification: 1
             }
@@ -207,6 +214,7 @@ async function mapper(alias) {
     {
       $project: {
         id: 1,
+        name: 1,
         domain: 1,
         emails: { $setDifference: ['$recipients', '$verified_and_pending'] }
       }

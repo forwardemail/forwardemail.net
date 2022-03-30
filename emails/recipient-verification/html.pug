@@ -7,6 +7,6 @@ block content
         .card.border-dark.d-block.text-center
           h5.card-header.bg-dark.text-white= t("Recipient Verification")
           .card-body
-            p.card-text!= t("Click the button below to verify this email forwarding address.")
-            a.btn.btn-lg.btn-block.btn-success(href=link, role="button")= t("Verify this address")
+            p.card-text!= t('Please click below to verify forwarding from <code class="notranslate">%s</code> to <code class="notranslate">%s</code>.', fromEmail, toEmail)
+            a.btn.btn-lg.btn-block.btn-success(href=link, role="button")= t("Verify now")
           .card-footer: small.text-muted= t("If you did not submit this request, then please reply to let us know.")

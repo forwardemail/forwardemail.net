@@ -1,5 +1,25 @@
 extends ../../layout
 
+block append scripts
+
+  script.
+    window.IS_CUSTOM_VERIFICATION_DISABLED = !{domain.plan === 'free' || !domain.has_custom_verification};
+
+  script(
+    defer,
+    src=manifest("js/advanced-settings.js"),
+    integrity=manifest("js/advanced-settings.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
+block append stylesheets
+  link(
+    rel="stylesheet",
+    href=manifest("css/codemirror.css"),
+    integrity=manifest("css/codemirror.css", "integrity"),
+    crossorigin="anonymous"
+  )
+
 mixin planRequired(isTeam = false)
   if domain.plan === 'free' || (isTeam && domain.plan !== 'team')
     .alert.alert-warning!= t('Please <a class="alert-link" href="%s">upgrade to the <span class="notranslate">%s</span> plan</a> to unlock this feature.', l(`/my-account/domains/${domain.name}/billing?plan=${isTeam ? "team" : "enhanced_protection"}`), isTeam ? "Team" : "Enhanced Protection")
@@ -328,18 +348,26 @@ block body
                     disabled=isDisabled
                   )= t("Save")
 
-        //- TODO: make it so this is a playground but disabled unless user contacts us
         //- Custom Verification Template
-        if domain.group === 'admin' && domain.has_custom_verification
+        - const isCustomVerificationDisabled = domain.plan === 'free' || !domain.has_custom_verification
+        if domain.group === 'admin'
           form.ajax-form.confirm-prompt.card.border-dark.mb-3(
             action=ctx.path,
             method="POST",
-            disabled=isDisabled
+            disabled=isCustomVerificationDisabled
           )
             input(type="hidden", name="_method", value="PUT")
             input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(
+              type="hidden",
+              name="_section",
+              value="custom_verification_template"
+            )
             h4.card-header.bg-dark.text-white= t("Custom Verification Template")
             .card-body
+              +planRequired(false)
+              if !domain.has_custom_verification && domain.plan !== 'free'
+                .alert.alert-warning!= t('Please <a class="alert-link" href="%s">contact us</a> to unlock this feature.', l('/help'))
               //- custom_verification.name
               .form-group.floating-label
                 input#input-custom-verification-name.form-control.form-control-lg(
@@ -350,6 +378,7 @@ block body
                   autocorrect="off",
                   spellcheck="false",
                   autocapitalize="off",
+                  disabled=isCustomVerificationDisabled,
                   type="text"
                 )
                 label(for="input-custom-verification-name")= t("Sender name")
@@ -363,6 +392,7 @@ block body
                   placeholder="Sender email",
                   autocorrect="off",
                   spellcheck="false",
+                  disabled=isCustomVerificationDisabled,
                   type="email"
                 )
                 label(for="input-custom-verification-email")= t("Sender email")
@@ -377,6 +407,7 @@ block body
                   autocorrect="off",
                   spellcheck="false",
                   autocapitalize="off",
+                  disabled=isCustomVerificationDisabled,
                   type="text"
                 )
                 label(for="input-custom-verification-subject")= t("Subject line")
@@ -391,17 +422,27 @@ block body
                   autocorrect="off",
                   spellcheck="false",
                   autocapitalize="off",
+                  disabled=isCustomVerificationDisabled,
                   type="url"
                 )
                 label(for="input-custom-verification-redirect")= t("Verification redirect link")
                 p.form-text: small.text-black-50= t("If you set a value here, then once a verification link was clicked and it was successful, it will redirect the users to this URL.")
 
-              .alert.alert-warning!= t('Please make sure to include the string "VERIFICATION_LINK" without quotes at least once to insert the verification link into the email message.')
+              .form-group
+                label(for="#textarea-custom-verification-html")= t("HTML Content")
+                .alert.alert-warning= t('Please leave this section blank if you wish to use our default HTML template.')
+                .alert.alert-info
+                  != t('Please make sure to include the string "VERIFICATION_LINK" without quotes at least once to insert the verification link into the email message.')
+                  = ' '
+                  != t('You can optionally include the string "FROM_EMAIL" and/or "TO_EMAIL" to insert the forwarding "From" address and the forwarding "To" address to give the user context.')
+                textarea#textarea-custom-verification-html(
+                  name="custom_verification_html",
+                  disabled=isCustomVerificationDisabled
+                )= domain.custom_verification && isSANB(domain.custom_verification.html) ? domain.custom_verification.html : ""
 
-              //- TODO: html
-              textarea#textarea-custom-verification-html(
-                name="custom_verification_html"
-              )!= domain.custom_verification && isSANB(domain.custom_verification.html) ? domain.custom_verification.html : ""
+              .form-group
+                label= t('HTML Preview')
+              iframe#custom-verification-preview(src="about:blank").border.border-dark.mb-3.min-vh-80.w-100
 
               //- TODO: eventually let users customize the text portion (for now we use html-to-text)
 
@@ -410,12 +451,12 @@ block body
                 li.list-inline-item
                   button.confirm-prompt.btn.btn-lg.btn-secondary(
                     type="reset",
-                    disabled=isDisabled
+                    disabled=isCustomVerificationDisabled
                   )= t("Reset")
                 li.list-inline-item
                   button.btn.btn-lg.btn-primary(
                     type="submit",
-                    disabled=isDisabled
+                    disabled=isCustomVerificationDisabled
                   )= t("Save")
 
         //- Spam Scanner Settings
