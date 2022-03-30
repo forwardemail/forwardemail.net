@@ -11,7 +11,6 @@ const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
-const bree = require('../bree');
 const Users = require('../app/models/user');
 const Domains = require('../app/models/domain');
 const config = require('#config');
@@ -23,7 +22,6 @@ const concurrency = os.cpus().length;
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
-  brees: [bree],
   logger
 });
 const threeMonthsAgo = dayjs().subtract(3, 'months').toDate();

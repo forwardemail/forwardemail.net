@@ -9,7 +9,6 @@ const Mongoose = require('@ladjs/mongoose');
 const dayjs = require('dayjs-with-plugins');
 const sharedConfig = require('@ladjs/shared-config');
 
-const bree = require('../bree');
 const config = require('#config');
 const email = require('#helpers/email');
 const logger = require('#helpers/logger');
@@ -21,7 +20,6 @@ const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
-  brees: [bree],
   logger
 });
 

@@ -58,7 +58,7 @@ The current HTTP base URI path is: `BASE_URI`.  The legacy HTTP base URI path of
 
 ## Authentication
 
-All endpoints require your [free API key](https://forwardemail.net/my-account/security) :tada: to be set as the "username" value of the request's [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication) header.  Don't worry – examples are provided below for you if you're not sure what this is.
+All endpoints require your [API key](https://forwardemail.net/my-account/security) to be set as the "username" value of the request's [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication) header.  Don't worry – examples are provided below for you if you're not sure what this is.
 
 
 ## Errors
