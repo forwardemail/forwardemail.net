@@ -1,7 +1,6 @@
 extends ../../layout
 
 block append scripts
-
   script.
     window.IS_CUSTOM_VERIFICATION_DISABLED = !{domain.plan === 'free' || !domain.has_custom_verification};
 
@@ -349,7 +348,7 @@ block body
                   )= t("Save")
 
         //- Custom Verification Template
-        - const isCustomVerificationDisabled = domain.plan === 'free' || !domain.has_custom_verification
+        - const isCustomVerificationDisabled = domain.plan === "free" || !domain.has_custom_verification;
         if domain.group === 'admin'
           form.ajax-form.confirm-prompt.card.border-dark.mb-3(
             action=ctx.path,
@@ -367,7 +366,7 @@ block body
             .card-body
               +planRequired(false)
               if !domain.has_custom_verification && domain.plan !== 'free'
-                .alert.alert-warning!= t('Please <a class="alert-link" href="%s">contact us</a> to unlock this feature.', l('/help'))
+                .alert.alert-warning!= t('Please <a class="alert-link" href="%s">contact us</a> to unlock this feature.', l("/help"))
               //- custom_verification.name
               .form-group.floating-label
                 input#input-custom-verification-name.form-control.form-control-lg(
@@ -430,10 +429,10 @@ block body
 
               .form-group
                 label(for="#textarea-custom-verification-html")= t("HTML Content")
-                .alert.alert-warning= t('Please leave this section blank if you wish to use our default HTML template.')
+                .alert.alert-warning= t("Please leave this section blank if you wish to use our default HTML template.")
                 .alert.alert-info
                   != t('Please make sure to include the string "VERIFICATION_LINK" without quotes at least once to insert the verification link into the email message.')
-                  = ' '
+                  = " "
                   != t('You can optionally include the string "FROM_EMAIL" and/or "TO_EMAIL" to insert the forwarding "From" address and the forwarding "To" address to give the user context.')
                 textarea#textarea-custom-verification-html(
                   name="custom_verification_html",
@@ -441,8 +440,8 @@ block body
                 )= domain.custom_verification && isSANB(domain.custom_verification.html) ? domain.custom_verification.html : ""
 
               .form-group
-                label= t('HTML Preview')
-              iframe#custom-verification-preview(src="about:blank").border.border-dark.mb-3.min-vh-80.w-100
+                label= t("HTML Preview")
+              iframe#custom-verification-preview.border.border-dark.mb-3.min-vh-80.w-100(src="about:blank")
 
               //- TODO: eventually let users customize the text portion (for now we use html-to-text)
 
