@@ -10,8 +10,16 @@ async function retrieveInvite(ctx) {
     );
 
   const domain = await Domains.findOne({
-    id: ctx.params.domain_id,
-    'invites.email': ctx.state.user.email
+    $or: [
+      {
+        id: ctx.params.domain_id,
+        'invites.email': ctx.state.user.email
+      },
+      {
+        id: ctx.params.domain_id,
+        'members.user': ctx.state.user._id
+      }
+    ]
   });
 
   if (!domain)
@@ -24,26 +32,30 @@ async function retrieveInvite(ctx) {
     (invite) => invite.email === ctx.state.user.email
   );
 
-  if (!invite)
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'))
+  let group = 'user';
+
+  if (invite) {
+    ({ group } = invite);
+    domain.members.push({
+      user: ctx.state.user._id,
+      group
+    });
+
+    // remove invitee from invites list
+    domain.invites = domain.invites.filter(
+      (invite) => invite.email !== ctx.state.user.email
     );
 
-  const { group } = invite;
-  domain.members.push({
-    user: ctx.state.user._id,
-    group
-  });
-
-  // remove invitee from invites list
-  domain.invites = domain.invites.filter(
-    (invite) => invite.email !== ctx.state.user.email
-  );
-
-  // save domain
-  domain.locale = ctx.locale;
-  domain.skip_verification = true;
-  ctx.state.domain = await domain.save();
+    // save domain
+    domain.locale = ctx.locale;
+    domain.skip_verification = true;
+    ctx.state.domain = await domain.save();
+  } else {
+    const match = domain.members.find(
+      (member) => member._id.toString() === ctx.state.user.id
+    );
+    group = match && match.group === 'admin' ? 'admin' : 'user';
+  }
 
   // flash a message to the user telling them they've successfully accepted
   const message =
@@ -62,8 +74,8 @@ async function retrieveInvite(ctx) {
   // redirect user to either alias page (if user) or admin page (if admin)
   const redirectTo =
     group === 'admin'
-      ? ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
-      : ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`);
+      ? ctx.state.l(`/my-account/domains/${domain.name}`)
+      : ctx.state.l(`/my-account/domains/${domain.name}/aliases`);
 
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };

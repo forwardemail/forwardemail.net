@@ -43,6 +43,10 @@ async function createInvite(ctx, next) {
 
   // create the invite
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+  if (!ctx.state.domain)
+    return ctx.throw(
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+    );
   ctx.state.domain.invites.push({
     email: email.toLowerCase(),
     group: ctx.request.body.group

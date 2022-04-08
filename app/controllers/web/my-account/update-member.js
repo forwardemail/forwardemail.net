@@ -15,29 +15,34 @@ async function updateMember(ctx, next) {
   )
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_GROUP')));
 
-  const member = ctx.state.domain.members.find(
-    (member) => member.user.id === ctx.params.member_id
-  );
-
-  if (!member)
-    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
-
-  const domain = await Domains.findById(ctx.state.domain._id);
-
-  if (!domain)
+  ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+  if (!ctx.state.domain)
     return ctx.throw(
       Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
-  // swap the user group based off ctx.request.body.group
-  for (const member of domain.members) {
-    if (member.user.toString() === ctx.params.member_id)
-      member.group = ctx.request.body.group;
-  }
+  const match = ctx.state.domain.members.find(
+    (member) => member.user.toString() === ctx.params.member_id
+  );
 
-  domain.locale = ctx.locale;
-  domain.client = ctx.client;
-  ctx.state.domain = await domain.save();
+  if (!match)
+    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+
+  // swap the user group based off ctx.request.body.group
+  // <https://github.com/Automattic/mongoose/issues/11522>
+  ctx.state.domain.members = ctx.state.domain.members.map((member) => {
+    return {
+      user: member.user,
+      group:
+        member.user.toString() === ctx.params.member_id
+          ? ctx.request.body.group
+          : member.group
+    };
+  });
+
+  ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain.client = ctx.client;
+  ctx.state.domain = await ctx.state.domain.save();
 
   if (ctx.api) return next();
 

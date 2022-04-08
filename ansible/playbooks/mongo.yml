@@ -19,6 +19,9 @@
     mongodb_net_bindip: "127.0.0.1,{{ lookup('env', 'MONGO_HOST') }}"
     mongodb_security_javascript_enabled: true
     mongodb_manage_service: true
+    mongodb_config:
+      systemLog:
+        - "verbosity: 0"
   # this was already defined in the mongo role
   # https://github.com/UnderGreen/ansible-role-mongodb/blob/master/handlers/main.yml
   handlers:
