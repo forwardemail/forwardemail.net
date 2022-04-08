@@ -27,6 +27,10 @@ async function removeMember(ctx, next) {
     );
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+  if (!ctx.state.domain)
+    return ctx.throw(
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+    );
   ctx.state.domain.members = ctx.state.domain.members.filter(
     (member) => member.user.toString() !== ctx.params.member_id
   );

@@ -9,6 +9,10 @@ const { Domains } = require('#models');
 // eslint-disable-next-line complexity
 async function updateDomain(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+  if (!ctx.state.domain)
+    return ctx.throw(
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+    );
 
   // Custom SMTP Port Forwarding
   if (isSANB(ctx.request.body.smtp_port)) {

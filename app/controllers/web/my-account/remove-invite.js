@@ -11,6 +11,10 @@ async function removeInvite(ctx, next) {
   if (!isSANB(email) || !isEmail(email))
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+  if (!ctx.state.domain)
+    return ctx.throw(
+      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+    );
   // remove invite
   ctx.state.domain.invites = ctx.state.domain.invites.filter(
     (invite) => invite.email.toLowerCase() !== email.toLowerCase()
