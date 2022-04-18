@@ -37,10 +37,10 @@ const STRIPE_MAPPING = {
         : 'price_1HbLglLFuf8FuIPJDmpFggVW',
       '60d': isTest
         ? 'price_1Hc3xlLFuf8FuIPJeQjmmDHr'
-        : 'price_1HbLh0LFuf8FuIPJD4lYB3Jz',
+        : 'price_1Kq01ELFuf8FuIPJ6zCIlJaA',
       '90d': isTest
         ? 'price_1Hc3xlLFuf8FuIPJeQjmmDHr'
-        : 'price_1HbLhFLFuf8FuIPJBPD5hScR',
+        : 'price_1Kq000LFuf8FuIPJEVDxj9gs',
       '180d': isTest
         ? 'price_1Hc3xlLFuf8FuIPJeQjmmDHr'
         : 'price_1HbLhaLFuf8FuIPJ2eUbPZfI',
