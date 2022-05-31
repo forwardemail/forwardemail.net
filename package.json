@@ -37,7 +37,7 @@
     "@ladjs/i18n": "7.2.6",
     "@ladjs/mongoose": "3.0.0",
     "@ladjs/mongoose-error-messages": "1.0.0",
-    "@ladjs/passport": "2.1.0",
+    "@ladjs/passport": "3.0.0",
     "@ladjs/passport-otp-strategy": "1.1.0",
     "@ladjs/pick-original": "1.0.0",
     "@ladjs/policies": "7.0.0",
