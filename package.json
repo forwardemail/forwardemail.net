@@ -44,7 +44,7 @@
     "@ladjs/proxy": "2.1.0",
     "@ladjs/redis": "1.0.7",
     "@ladjs/shared-config": "6.0.0",
-    "@ladjs/web": "11.1.1",
+    "@ladjs/web": "13.0.1",
     "@paypal/checkout-server-sdk": "1.0.3",
     "@sidoshi/random-string": "1.0.0",
     "@tkrotoff/bootstrap-floating-label": "0.8",
