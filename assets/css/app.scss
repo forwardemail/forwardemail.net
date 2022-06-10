@@ -24,6 +24,7 @@ $question: theme-color('light');
 @import 'node_modules/@fortawesome/fontawesome-free/scss/v4-shims';
 
 // spinkit loading spinner
+@import 'node_modules/spinkit/spinkit';
 @import 'node_modules/@ladjs/assets/scss/spinner';
 
 // support custom file inputs

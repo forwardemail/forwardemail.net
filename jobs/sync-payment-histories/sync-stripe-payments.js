@@ -205,35 +205,35 @@ async function syncStripePayments({ errorThreshold }) {
           //
           if (plan !== payment.plan)
             throw new Error(
-              `Saved payment.plan does not match plan from billing history sync.`.concat(
+              'Saved payment.plan does not match plan from billing history sync.'.concat(
                 errorDetails
               )
             );
 
           if (kind !== payment.kind)
             throw new Error(
-              `Saved payment.kind does not match kind from billing history sync`.concat(
+              'Saved payment.kind does not match kind from billing history sync'.concat(
                 errorDetails
               )
             );
 
           if (duration !== payment.duration)
             throw new Error(
-              `Saved payment.duration does not match duration from billing history sync`.concat(
+              'Saved payment.duration does not match duration from billing history sync'.concat(
                 errorDetails
               )
             );
 
           if (paymentIntent.amount !== payment.amount)
             throw new Error(
-              `Saved payment.amount does not match amount from billing history sync`.concat(
+              'Saved payment.amount does not match amount from billing history sync'.concat(
                 errorDetails
               )
             );
 
           if (stripeCharge.payment_method_details.card.brand !== payment.method)
             throw new Error(
-              `Saved payment.method does not match method from billing history sync`.concat(
+              'Saved payment.method does not match method from billing history sync'.concat(
                 errorDetails
               )
             );
@@ -247,7 +247,7 @@ async function syncStripePayments({ errorThreshold }) {
               payment.exp_month
           )
             throw new Error(
-              `Saved payment.exp_month does not match exp_month from billing history sync`.concat(
+              'Saved payment.exp_month does not match exp_month from billing history sync'.concat(
                 errorDetails
               )
             );
@@ -261,7 +261,7 @@ async function syncStripePayments({ errorThreshold }) {
               payment.exp_year
           )
             throw new Error(
-              `Saved payment.exp_year does not match exp_year from billing history sync`.concat(
+              'Saved payment.exp_year does not match exp_year from billing history sync'.concat(
                 errorDetails
               )
             );
@@ -273,7 +273,7 @@ async function syncStripePayments({ errorThreshold }) {
             stripeCharge.payment_method_details.card.last4 !== payment.last4
           )
             throw new Error(
-              `Saved payment.last4 does not match last4 from billing history sync`.concat(
+              'Saved payment.last4 does not match last4 from billing history sync'.concat(
                 errorDetails
               )
             );
@@ -286,7 +286,7 @@ async function syncStripePayments({ errorThreshold }) {
               payment.stripe_session_id !== checkoutSession.id)
           ) {
             throw new Error(
-              `Saved payment.stripe_session_id does not match billing history sync`.concat(
+              'Saved payment.stripe_session_id does not match billing history sync'.concat(
                 errorDetails
               )
             );
@@ -405,7 +405,8 @@ async function syncStripePayments({ errorThreshold }) {
               subject: `Sync payment histories hit ${errorThreshold} errors during the script`
             },
             locals: {
-              message: `This may have occurred because of an error in the script, or the stripe service was down, or another error was causing an abnormal number of payment syncing failures`
+              message:
+                'This may have occurred because of an error in the script, or the stripe service was down, or another error was causing an abnormal number of payment syncing failures'
             }
           });
 
@@ -431,10 +432,12 @@ async function syncStripePayments({ errorThreshold }) {
           throw new Error(
             `${customer.email} has some stripe payments that were not found and synced, please fix manually.`.concat(
               // eslint-disable-next-line unicorn/no-array-reduce
-              missed.reduce((acc, miss) => {
-                // eslint-disable-next-line unicorn/prefer-spread
-                return acc.concat(miss.id + '<br />');
-              }, 'The Payment ids are listed below: <br />')
+              missed.reduce(
+                (acc, miss) =>
+                  // eslint-disable-next-line unicorn/prefer-spread
+                  acc.concat(miss.id + '<br />'),
+                'The Payment ids are listed below: <br />'
+              )
             )
           );
 
@@ -448,7 +451,7 @@ async function syncStripePayments({ errorThreshold }) {
             .length !== stripePaymentCount
         )
           throw new Error(
-            `The number of payment_intents from stripe does not match the number of stripe payments in the db. Please review manually.`
+            'The number of payment_intents from stripe does not match the number of stripe payments in the db. Please review manually.'
           );
       }
     } catch (err) {
@@ -470,7 +473,8 @@ async function syncStripePayments({ errorThreshold }) {
             subject: `Sync payment histories hit ${errorThreshold} errors during the script`
           },
           locals: {
-            message: `This may have occurred because of an error in the script, or the stripe service was down, or another error was causing an abnormal number of payment syncing failures`
+            message:
+              'This may have occurred because of an error in the script, or the stripe service was down, or another error was causing an abnormal number of payment syncing failures'
           }
         });
 

@@ -145,11 +145,13 @@ async function onboard(ctx, next) {
     await ctx.login(ctx.state.user);
 
     // send verification email if needed
-    try {
-      ctx.state.user = await sendVerificationEmail(ctx);
-      ctx.flash('success', ctx.translate('EMAIL_VERIFICATION_SENT'));
-    } catch (err) {
-      ctx.logger.warn(err);
+    if (!ctx.state.user[config.userFields.hasVerifiedEmail]) {
+      try {
+        ctx.state.user = await sendVerificationEmail(ctx);
+        ctx.flash('success', ctx.translate('EMAIL_VERIFICATION_SENT'));
+      } catch (err) {
+        ctx.logger.warn(err);
+      }
     }
 
     try {

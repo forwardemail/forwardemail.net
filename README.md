@@ -1,7 +1,6 @@
 # ForwardEmail.net
 
-[![build status](https://img.shields.io/travis/com/forwardemail/forwardemail.net.svg)](https://travis-ci.com/forwardemail/forwardemail.net)
-[![code coverage](https://img.shields.io/codecov/c/github/forwardemail/forwardemail.net.svg)](https://codecov.io/gh/forwardemail/forwardemail.net)
+[![build status](https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml/badge.svg)](https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml)
 [![code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![made with lad](https://img.shields.io/badge/made_with-lad-95CC28.svg)](https://lad.js.org)
@@ -39,7 +38,7 @@ See [Requirements](#requirements) below.
 
 ### macOS
 
-1. You should have [brew][] and [node][] installed.  We recommend installing Node.js with [nvm][] (e.g. `nvm install --lts`).
+1. You should have [brew][] and [node][] installed.  We recommend installing Node.js with [n][] (e.g. `n lts`).
 
 2. Install [brew][] dependencies:
 
@@ -301,7 +300,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
 [node]: https://nodejs.org/
 
-[nvm]: https://github.com/nvm-sh/nvm
+[n]: https://github.com/tj/n
 
 [ansible-lint]: https://github.com/ansible/ansible-lint
 
@@ -331,4 +330,4 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
 [ansible-guide]: https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html
 
-[mandarin]: https://github.com/niftylettuce/mandarin
+[mandarin]: https://github.com/ladjs/mandarin

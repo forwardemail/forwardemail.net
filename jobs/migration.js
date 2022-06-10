@@ -41,13 +41,13 @@ graceful.listen();
 
   if (results.length > 0) {
     await Promise.all(
-      results.map((result) => {
-        return Domains.findByIdAndUpdate(result._id, {
+      results.map((result) =>
+        Domains.findByIdAndUpdate(result._id, {
           $set: {
             verified_email_sent_at: result.onboard_email_sent_at
           }
-        });
-      })
+        })
+      )
     );
   }
 

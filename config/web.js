@@ -2,6 +2,7 @@ const process = require('process');
 
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
+const sharedConfig = require('@ladjs/shared-config');
 
 const routes = require('../routes');
 const env = require('./env');
@@ -9,7 +10,6 @@ const cookieOptions = require('./cookies');
 const koaCashConfig = require('./koa-cash');
 const config = require('.');
 const i18n = require('#helpers/i18n');
-const passport = require('#helpers/passport');
 const logger = require('#helpers/logger');
 
 const defaultSrc = isSANB(process.env.WEB_HOST)
@@ -26,15 +26,17 @@ const reportUri = isSANB(process.env.WEB_URL)
   ? `${process.env.WEB_URL}/report`
   : null;
 
-module.exports = (client) => ({
+module.exports = (redis) => ({
+  ...sharedConfig('WEB'),
+  ...config,
   routes: routes.web,
   logger,
   i18n,
   cookies: cookieOptions,
   meta: config.meta,
   views: config.views,
-  passport,
-  koaCash: env.CACHE_RESPONSES ? koaCashConfig(client) : false,
+  koaCash: env.CACHE_RESPONSES ? koaCashConfig(redis) : false,
+  redis,
   cacheResponses: env.CACHE_RESPONSES
     ? {
         routes: [

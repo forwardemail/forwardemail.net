@@ -33,7 +33,7 @@ block body
     .row
       .col
         include ../_breadcrumbs
-        if boolean(process.env.AUTH_OTP_ENABLED)
+        if ctx.passport && ctx.passport.config.providers.otp
           .card.border-dark.mb-3
             h4.card-header.bg-dark.text-white= t("Two-Factor Authentication")
             .card-body

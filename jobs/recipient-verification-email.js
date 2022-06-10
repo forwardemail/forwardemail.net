@@ -167,7 +167,9 @@ async function mapper(alias) {
       [config.userFields.isBanned]: true
     }),
     Domains.distinct('_id', {
-      plan: { $ne: 'free' }
+      plan: { $ne: 'free' },
+      has_mx_record: true,
+      has_txt_record: true
     })
   ]);
 

@@ -15,7 +15,6 @@ window.jQuery = $;
 // required for bootstrap (we could use the bundle but this is cleaner)
 window.Popper = Popper;
 
-// eslint-disable-next-line import/no-unassigned-import
 require('bootstrap');
 
 const $body = $('body');

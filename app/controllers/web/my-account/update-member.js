@@ -30,15 +30,13 @@ async function updateMember(ctx, next) {
 
   // swap the user group based off ctx.request.body.group
   // <https://github.com/Automattic/mongoose/issues/11522>
-  ctx.state.domain.members = ctx.state.domain.members.map((member) => {
-    return {
-      user: member.user,
-      group:
-        member.user.toString() === ctx.params.member_id
-          ? ctx.request.body.group
-          : member.group
-    };
-  });
+  ctx.state.domain.members = ctx.state.domain.members.map((member) => ({
+    user: member.user,
+    group:
+      member.user.toString() === ctx.params.member_id
+        ? ctx.request.body.group
+        : member.group
+  }));
 
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.client = ctx.client;

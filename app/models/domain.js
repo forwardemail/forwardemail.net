@@ -326,7 +326,6 @@ Domain.pre('validate', function (next) {
     domain.custom_verification.subject = '';
 
   // TODO: clean up the HTML
-
   if (!isSANB(domain.custom_verification.html)) {
     domain.custom_verification.html = '';
     domain.custom_verification.text = '';
@@ -666,7 +665,7 @@ async function getTxtAddresses(
           : [element.slice(0, index), element.slice(index + 1)];
 
       // addr[0] = hello (username)
-      // addr[1] = niftylettuce@gmail.com (forwarding email)
+      // addr[1] = forwardemail@gmail.com (forwarding email)
       // check if we have a match (and if it is ignored)
       if (_.isString(addr[0]) && addr[0].indexOf('!') === 0) {
         ignoredAddresses.push({
@@ -853,8 +852,7 @@ Domain.pre('save', async function (next) {
 Domain.postCreate((domain, next) => {
   // log that the domain was created
   logger.info('domain created', {
-    domain: domain.toObject(),
-    slack: true
+    domain: domain.toObject()
   });
 
   next();

@@ -1,7 +1,18 @@
+const statuses = require('statuses');
+
 const env = require('./env');
 
 // turn off max length eslint rule since this is a config file with long strs
 /* eslint max-len: 0 */
+
+//
+// NOTE: page title's use this if status code is not 200
+// (e.g we don't want to render koa-meta titles on 404's)
+//
+const STATUSES = {};
+for (const key of Object.keys(statuses.message)) {
+  STATUSES[key.toString()] = statuses.message[key];
+}
 
 module.exports = {
   HELLO: 'Hello',
@@ -61,10 +72,12 @@ module.exports = {
   ALIAS_ALREADY_EXISTS: 'Alias already exists for domain.',
   DOMAIN_IS_VERIFIED: "Domain's DNS records have been verified.",
   DOMAIN_DOES_NOT_EXIST: 'Domain does not exist on your account.',
-  RESERVED_WORD_ADMIN_REQUIRED: `User must be a domain admin to create an alias with a reserved word (see the page on <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s/reserved-email-addresses">Reserved Email Addresses</a>).`,
+  RESERVED_WORD_ADMIN_REQUIRED:
+    'User must be a domain admin to create an alias with a reserved word (see the page on <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s/reserved-email-addresses">Reserved Email Addresses</a>).',
   REACHED_MAX_ALIAS_COUNT:
     'User cannot have more than (5) aliases on global domains.',
-  EXCEEDED_UNIQUE_COUNT: `You have exceeded the maximum count of (<span class="notranslate">%s</span>) recipients per alias.  Please <a class="font-weight-bold" href="/help">contact us</a> if you wish to have this limit increased.  We review requests on a unique basis.  Please provide us with information about your forwarding purposes if possible.`,
+  EXCEEDED_UNIQUE_COUNT:
+    'You have exceeded the maximum count of (<span class="notranslate">%s</span>) recipients per alias.  Please <a class="font-weight-bold" href="/help">contact us</a> if you wish to have this limit increased.  We review requests on a unique basis.  Please provide us with information about your forwarding purposes if possible.',
   DOMAIN_DOES_NOT_EXIST_ANYWHERE: 'Domain does not exist.',
   INVITE_DOES_NOT_EXIST:
     'Invite does not exist with your email address for this domain.',
@@ -137,31 +150,42 @@ module.exports = {
     'You have successfully upgraded to the Enhanced Protection Plan.',
   TEAM_PLAN: 'You have successfully upgraded to the Team Plan.',
   ACCOUNT_BANNED: 'Your account has been banned.',
-  ENOTFOUND: `Domain is not a registered domain name. <a class="font-weight-bold" href="/domain-registration">Click here to register it now</a>.`,
+  ENOTFOUND:
+    'Domain is not a registered domain name. <a class="font-weight-bold" href="/domain-registration">Click here to register it now</a>.',
   MISSING_DNS_TXT:
     'Domain is missing required DNS TXT records. <a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.',
-  SINGLE_VERIFICATION_RECORD_REQUIRED: `Domain has multiple verification records.  Please ensure there is only one verification record that exists.`,
-  MULTIPLE_PORT_RECORDS: `Domain has multiple port records.  Please ensure there is only one port record that exists.`,
+  SINGLE_VERIFICATION_RECORD_REQUIRED:
+    'Domain has multiple verification records.  Please ensure there is only one verification record that exists.',
+  MULTIPLE_PORT_RECORDS:
+    'Domain has multiple port records.  Please ensure there is only one port record that exists.',
   AT_LEAST_ONE_ADMIN_REQUIRED:
     'At least one admin user must belong to the domain.',
   INVALID_VERIFICATION_RECORD:
     'Verification record must only use characters A-Z and numbers 0-9.',
-  MISSING_DNS_MX: `<p class="mb-0">Domain is missing required DNS MX records of:</p><ul class="markdown-body ml-0 mr-0 mb-3"><span class="notranslate">%s</span></ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren't the same).<a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.</p>`,
-  MISSING_VERIFICATION_RECORD: `Domain is missing required DNS TXT record of: <span class="notranslate">%s</span>`,
-  INCORRECT_VERIFICATION_RECORD: `Domain has an incorrect DNS TXT record for verification.  Please ensure <span class="notranslate">%s</span> is the only verification record that exists.`,
+  MISSING_DNS_MX:
+    '<p class="mb-0">Domain is missing required DNS MX records of:</p><ul class="markdown-body ml-0 mr-0 mb-3"><span class="notranslate">%s</span></ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren\'t the same).<a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.</p>',
+  MISSING_VERIFICATION_RECORD:
+    'Domain is missing required DNS TXT record of: <span class="notranslate">%s</span>',
+  INCORRECT_VERIFICATION_RECORD:
+    'Domain has an incorrect DNS TXT record for verification.  Please ensure <span class="notranslate">%s</span> is the only verification record that exists.',
   MULTIPLE_VERIFICATION_RECORDS:
     'Domain has multiple verification records.  Please ensure <span class="notranslate">%s</span> is the only verification record that exists.',
-  PURGE_CACHE: `If you recently updated your DNS records for <span class="notranslate">%s</span>, then you should purge its cache using <a class="font-weight-bold" href="https://1.1.1.1/purge-cache/" rel="noopener noreferrer" target="_blank">Cloudflare's Purge Cache Tool</a> and optionally <a class="font-weight-bold" href="https://developers.google.com/speed/public-dns/cache" rel="noopener noreferrer" target="_blank">Google's Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet's DNS propagation to finish.`,
+  PURGE_CACHE:
+    'If you recently updated your DNS records for <span class="notranslate">%s</span>, then you should purge its cache using <a class="font-weight-bold" href="https://1.1.1.1/purge-cache/" rel="noopener noreferrer" target="_blank">Cloudflare\'s Purge Cache Tool</a> and optionally <a class="font-weight-bold" href="https://developers.google.com/speed/public-dns/cache" rel="noopener noreferrer" target="_blank">Google\'s Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet\'s DNS propagation to finish.',
   AUTOMATED_CHECK:
     "If we automatically detect your DNS records are valid (before you do), then we will send you an automated email alert.  Don't worry, we routinely check DNS records for your domain every few minutes!",
-  IMPORT_ALIAS_ALREADY_EXISTS: `Could not import "<span class="notranslate">%s</span>" record's recipient of "<span class="notranslate">%s</span>" since it already exists as an alias.`,
+  IMPORT_ALIAS_ALREADY_EXISTS:
+    'Could not import "<span class="notranslate">%s</span>" record\'s recipient of "<span class="notranslate">%s</span>" since it already exists as an alias.',
   IMPORT_ALIAS_DISABLED_NOBODY:
     'We successfully imported the disabled address of "<span class="notranslate">%s</span>", but we had to do so with a single recipient of "nobody@forwardemail.net" because it did not have a recipient in the imported DNS entry.',
-  IMPORT_CATCHALL_ALREADY_INCLUDES: `Could not import catch-all record's recipient of "<span class="notranslate">%s</span>" since the catch-all already includes it as a recipient.`,
-  IMPORT_SUCCESSFUL: `Successfully imported (<span class="notranslate">%d</span>) aliases.`,
+  IMPORT_CATCHALL_ALREADY_INCLUDES:
+    'Could not import catch-all record\'s recipient of "<span class="notranslate">%s</span>" since the catch-all already includes it as a recipient.',
+  IMPORT_SUCCESSFUL:
+    'Successfully imported (<span class="notranslate">%d</span>) aliases.',
   IMPORT_ERROR: 'An error occurred while importing aliases.',
   IMPORT_NO_ALIASES_AVAILABLE: 'No aliases were available to import.',
-  IMPORT_CATCHALL_SUCCESSFUL: `Successfully imported (<span class="notranslate">%d</span>) catch-all recipients.`,
+  IMPORT_CATCHALL_SUCCESSFUL:
+    'Successfully imported (<span class="notranslate">%d</span>) catch-all recipients.',
   IMPORT_CATCHALL_ERROR:
     'An error occurred while importing catch-all recipients.',
   IMPORT_CATCHALL_NONE: 'No catch-all recipients were available to import.',
@@ -222,5 +246,8 @@ module.exports = {
   PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION:
     'Paid plan is required for recipient verification',
   INVALID_RECIPIENT_VERIFICATION:
-    'Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.'
+    'Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.',
+  RECIPIENT_VERIFICATION_PENDING_DOMAIN_VERIFICATION:
+    'Verification link will not be sent until the domain has verified TXT and MX records.',
+  ...STATUSES
 };

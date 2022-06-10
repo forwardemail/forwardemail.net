@@ -13,22 +13,20 @@ const proxy = new ProxyServer({
   logger
 });
 
-if (require.main === module) {
-  const graceful = new Graceful({ servers: [proxy], logger });
-  graceful.listen();
+const graceful = new Graceful({ servers: [proxy.server], logger });
+graceful.listen();
 
-  (async () => {
-    try {
-      await proxy.listen(proxy.config.port);
-      if (process.send) process.send('ready');
-      const { port } = proxy.server.address();
-      logger.info(
-        `Lad proxy server listening on ${port} (LAN: ${ip.address()}:${port})`
-      );
-    } catch (err) {
-      logger.error(err);
-      // eslint-disable-next-line unicorn/no-process-exit
-      process.exit(1);
-    }
-  })();
-}
+(async () => {
+  try {
+    await proxy.listen(proxy.config.port);
+    if (process.send) process.send('ready');
+    const { port } = proxy.server.address();
+    logger.info(
+      `Lad proxy server listening on ${port} (LAN: ${ip.address()}:${port})`
+    );
+  } catch (err) {
+    logger.error(err);
+    // eslint-disable-next-line unicorn/no-process-exit
+    process.exit(1);
+  }
+})();

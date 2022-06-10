@@ -21,8 +21,9 @@ async function create(ctx) {
 
   ctx.state.user = await Users.register(query, body.password);
 
-  // send a verification email
-  ctx.state.user = await sendVerificationEmail(ctx);
+  // send a verification email if needed
+  if (!ctx.state.user[config.userFields.hasVerifiedEmail])
+    ctx.state.user = await sendVerificationEmail(ctx);
 
   // send the response
   const object = ctx.state.user.toObject();

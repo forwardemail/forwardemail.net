@@ -1,31 +1,30 @@
-const process = require('process');
-
 const Router = require('@koa/router');
 const render = require('koa-views-render');
-const { boolean } = require('boolean');
 
 const admin = require('./admin');
 const auth = require('./auth');
 const myAccount = require('./my-account');
 const otp = require('./otp');
+
 const config = require('#config');
 const policies = require('#helpers/policies');
+const rateLimit = require('#helpers/rate-limit');
 const { web } = require('#controllers');
 
 const router = new Router();
 
-// status page crawlers often send `HEAD /` requests
-router.get('/', (ctx, next) => {
-  if (ctx.method === 'HEAD') {
-    ctx.body = 'OK';
-    return;
-  }
+router
+  // status page crawlers often send `HEAD /` requests
+  .get('/', (ctx, next) => {
+    if (ctx.method === 'HEAD') {
+      ctx.body = 'OK';
+      return;
+    }
 
-  return next();
-});
-
-// report URI support (not locale specific)
-router.post('/report', web.report);
+    return next();
+  })
+  // report URI support (not locale specific)
+  .post('/report', web.report);
 
 const localeRouter = new Router({ prefix: '/:locale' });
 
@@ -96,7 +95,6 @@ localeRouter
   )
   .get(
     '/guides/port-25-blocked-by-isp-workaround',
-    web.myAccount.retrieveDomains,
     web.onboard,
     render('guides/port-25-blocked-by-isp-workaround')
   )
@@ -110,11 +108,14 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/'));
   })
-  .get('/404', render('404'))
-  .get('/500', render('500'))
   .post('/help', policies.ensureCaptcha, web.help)
   .get('/forgot-password', policies.ensureLoggedOut, render('forgot-password'))
-  .post('/forgot-password', policies.ensureLoggedOut, web.auth.forgotPassword)
+  .post(
+    '/forgot-password',
+    policies.ensureLoggedOut,
+    rateLimit(10, 'forgot password'),
+    web.auth.forgotPassword
+  )
   .get(
     '/reset-password/:token',
     policies.ensureLoggedOut,
@@ -123,6 +124,7 @@ localeRouter
   .post(
     '/reset-password/:token',
     policies.ensureLoggedOut,
+    rateLimit(10, 'reset password'),
     web.auth.resetPassword
   )
   .get(
@@ -135,6 +137,7 @@ localeRouter
     config.verifyRoute,
     policies.ensureLoggedIn,
     web.auth.parseReturnOrRedirectTo,
+    rateLimit(10, 'verify'),
     web.auth.verify
   )
   .get('/logout', web.auth.logout)
@@ -143,21 +146,22 @@ localeRouter
     web.auth.parseReturnOrRedirectTo,
     web.auth.registerOrLogin
   )
-  .post(config.loginRoute, web.auth.login)
+  .post(config.loginRoute, rateLimit(50, 'login'), web.auth.login)
   .get(
     '/register',
     policies.ensureLoggedOut,
     web.auth.parseReturnOrRedirectTo,
     web.auth.registerOrLogin
   )
-  .post('/register', policies.ensureLoggedOut, web.auth.register);
+  .post(
+    '/register',
+    policies.ensureLoggedOut,
+    rateLimit(5, 'create user'),
+    web.auth.register
+  );
 
-localeRouter.use(myAccount.routes());
-localeRouter.use(admin.routes());
+localeRouter.use(myAccount.routes()).use(admin.routes()).use(otp.routes());
 
-if (boolean(process.env.AUTH_OTP_ENABLED)) localeRouter.use(otp.routes());
-
-router.use(auth.routes());
-router.use(localeRouter.routes());
+router.use(auth.routes()).use(localeRouter.routes());
 
 module.exports = router;

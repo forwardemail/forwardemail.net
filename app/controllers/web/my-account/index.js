@@ -3,6 +3,7 @@ const cancelSubscription = require('./cancel-subscription');
 const createAlias = require('./create-alias');
 const createAliasForm = require('./create-alias-form');
 const createDomain = require('./create-domain');
+const createDomainForm = require('./create-domain-form');
 const createDomainBilling = require('./create-domain-billing');
 const createInvite = require('./create-invite');
 const ensureAliasAdmin = require('./ensure-alias-admin');
@@ -38,6 +39,7 @@ const updateDomain = require('./update-domain');
 const updateMember = require('./update-member');
 const updateProfile = require('./update-profile');
 const validateAlias = require('./validate-alias');
+const validateDomain = require('./validate-domain');
 const verifyRecords = require('./verify-records');
 
 module.exports = {
@@ -46,6 +48,7 @@ module.exports = {
   createAlias,
   createAliasForm,
   createDomain,
+  createDomainForm,
   createDomainBilling,
   createInvite,
   ensureAliasAdmin,
@@ -81,5 +84,6 @@ module.exports = {
   updateMember,
   updateProfile,
   validateAlias,
+  validateDomain,
   verifyRecords
 };

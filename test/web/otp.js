@@ -1,39 +1,28 @@
-const process = require('process');
+const crypto = require('crypto');
 
 const test = require('ava');
-const { factory } = require('factory-girl');
-const _ = require('lodash');
 const { authenticator } = require('otplib');
+const { factory } = require('factory-girl');
+
+const utils = require('../utils');
+const config = require('#config');
+const phrases = require('#config/phrases');
+const { Users } = require('#models');
 
 // if default authenticator options in #ladjs/passport or
 // config sets authenticator options for otp
 // these settings will need to be changed
 
 authenticator.options = {
-  crypto: require('crypto'),
+  crypto,
   step: 30
 };
 
-const utils = require('../utils');
-
-const config = require('#config');
-const { Users } = require('#models');
-const phrases = require('#config/phrases');
-
 test.before(utils.setupMongoose);
 test.before(utils.defineUserFactory);
-
 test.after.always(utils.teardownMongoose);
 
 test.beforeEach(async (t) => {
-  // save original environment variables so we can reset after test
-  t.context.originalEnv = _.cloneDeep(process.env);
-
-  // set AUTH_OTP_ENABLED to true
-  process.env.AUTH_OTP_ENABLED = 'true';
-  // set rate limit higher for when running serially
-  process.env.WEB_RATELIMIT_MAX = 250;
-
   // set password
   t.context.password = '!@K#NLK!#N';
   // create user
@@ -44,14 +33,15 @@ test.beforeEach(async (t) => {
   user[config.userFields.hasSetPassword] = true;
   user[config.passport.fields.otpEnabled] = true;
   t.context.user = await user.save();
-
+  t.context.webConfig = {
+    passport: {
+      providers: {
+        otp: true
+      }
+    }
+  };
   await utils.setupWebServer(t);
   await utils.loginUser(t);
-});
-
-test.afterEach.always((t) => {
-  // reset environment variables
-  process.env = _.cloneDeep(t.context.originalEnv);
 });
 
 test('GET otp/login > successful', async (t) => {
@@ -59,10 +49,10 @@ test('GET otp/login > successful', async (t) => {
   const { web } = t.context;
 
   // GET login page
-  const res = await web.get(
-    `/en${config.otpRoutePrefix}${config.otpRouteLoginPath}`
-  );
+  const res = await web.get(`/en${config.loginOtpRoute}`);
 
+  console.log('res.status', res.status);
+  console.log('res.text', res.text);
   t.is(res.status, 200);
   t.snapshot(res.text.replace(/<head>[\S\s]*<\/head>/, ''));
 });
@@ -75,12 +65,10 @@ test('POST otp/login > successful', async (t) => {
   );
 
   // POST login page
-  const res = await web
-    .post(`/en${config.otpRoutePrefix}${config.otpRouteLoginPath}`)
-    .send({
-      passcode,
-      otp_remember_me: 'true'
-    });
+  const res = await web.post(`/en${config.loginOtpRoute}`).send({
+    passcode,
+    otp_remember_me: 'true'
+  });
 
   t.is(res.status, 200);
   t.is(res.body.redirectTo, '/en/my-account/domains');
@@ -91,12 +79,10 @@ test('POST otp/login > invalid OTP passcode', async (t) => {
   const { web } = t.context;
 
   // POST login page
-  const res = await web
-    .post(`/en${config.otpRoutePrefix}${config.otpRouteLoginPath}`)
-    .send({
-      passcode: '1234 124',
-      otp_remember_me: 'true'
-    });
+  const res = await web.post(`/en${config.loginOtpRoute}`).send({
+    passcode: '1234 124',
+    otp_remember_me: 'true'
+  });
 
   t.is(res.status, 401);
   t.is(JSON.parse(res.text).message, phrases.INVALID_OTP_PASSCODE);

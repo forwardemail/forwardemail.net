@@ -24,7 +24,7 @@
   src: oefenweb.redis
   version: v3.0.29
 - name: mongo
-  src: https://github.com/niftylettuce/ansible-role-mongodb.git
+  src: https://github.com/ladjs/ansible-role-mongodb.git
   version: master
   # src: undergreen.mongodb
   # version: v2.6.1

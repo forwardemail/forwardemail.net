@@ -1,157 +1,33 @@
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
-const isFQDN = require('is-fqdn');
-const isSANB = require('is-string-and-not-blank');
-const splitLines = require('split-lines');
 const { boolean } = require('boolean');
-const { isIP } = require('validator');
 
 const toObject = require('#helpers/to-object');
 const { Users, Domains, Aliases } = require('#models');
 
-// eslint-disable-next-line complexity
 async function createDomain(ctx, next) {
-  if (!['GET', 'POST'].includes(ctx.method)) return next();
-
-  if (ctx.method === 'GET') {
-    ctx.state.breadcrumbHeaderCentered = true;
-    ctx.state.breadcrumbs = [
-      'my-account',
-      {
-        name: ctx.state.t('Domains'),
-        header: ctx.state.t('Add Domain'),
-        href: ctx.state.l('/my-account/domains')
-      },
-      {
-        name: ctx.state.t('Add Domain')
-      }
-    ];
-    if (ctx.api) return next();
-    return ctx.render('my-account/domains/new');
-  }
-
-  if (
-    !isSANB(ctx.request.body.domain) ||
-    (!isFQDN(ctx.request.body.domain) && !isIP(ctx.request.body.domain))
-  )
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_DOMAIN')));
-
-  const match = ctx.state.domains.find(
-    (domain) => domain.name === ctx.request.body.domain
-  );
-
-  if (match)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'))
-    );
-
-  if (
-    isSANB(ctx.request.body.plan) &&
-    !['free', 'enhanced_protection', 'team'].includes(ctx.request.body.plan)
-  )
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PLAN')));
-
-  // check if we're creating a default catchall
-  const recipients = [ctx.state.user.email];
-
-  if (_.isBoolean(ctx.request.body.catchall) && !ctx.request.body.catchall)
-    recipients.pop();
-  else if (isSANB(ctx.request.body.catchall)) {
-    const rcpts = _.compact(
-      _.uniq(
-        _.map(
-          splitLines(ctx.request.body.catchall)
-            .join(' ')
-            .split(',')
-            .join(' ')
-            .split(' '),
-          (recipient) => recipient.trim()
-        )
-      )
-    );
-    for (const rcpt of rcpts) {
-      recipients.push(rcpt);
-    }
-  }
-
-  const name = ctx.request.body.domain.trim().toLowerCase();
-
-  let plan = ctx.state.user.plan || 'free';
-  let redirectTo = ctx.state.l(`/my-account/domains/${name}`);
-
-  // if the user was not on a valid plan then redirect them to billing post creation
-  if (isSANB(ctx.request.body.plan)) {
-    switch (ctx.request.body.plan) {
-      case 'enhanced_protection': {
-        if (['enhanced_protection', 'team'].includes(ctx.state.user.plan))
-          plan = 'enhanced_protection';
-        else
-          redirectTo = ctx.state.l(
-            `/my-account/domains/${name}/billing?plan=enhanced_protection`
-          );
-
-        break;
-      }
-
-      case 'team': {
-        if (ctx.state.user.plan === 'team') {
-          plan = 'team';
-        } else {
-          if (ctx.state.user.plan === 'enhanced_protection')
-            plan = 'enhanced_protection';
-          redirectTo = ctx.state.l(
-            `/my-account/domains/${name}/billing?plan=team`
-          );
-        }
-
-        break;
-      }
-
-      case 'free': {
-        plan = 'free';
-
-        break;
-      }
-      // No default
-    }
-  }
-
-  // Boolean settings for spam and requiring recipient verification
-  const optionalBooleans = {};
-  for (const bool of [
-    'has_adult_content_protection',
-    'has_phishing_protection',
-    'has_executable_protection',
-    'has_virus_protection',
-    'has_recipient_verification'
-  ]) {
-    if (_.isBoolean(ctx.request.body[bool]) || isSANB(ctx.request.body[bool]))
-      optionalBooleans[bool] = boolean(ctx.request.body[bool]);
-  }
-
   try {
     ctx.state.domain = await Domains.create({
       is_api: boolean(ctx.api),
       members: [{ user: ctx.state.user._id, group: 'admin' }],
-      name,
+      name: ctx.request.body.domain,
       is_global:
         ctx.state.user.group === 'admin' && boolean(ctx.request.body.is_global),
       locale: ctx.locale,
-      plan,
+      plan: ctx.request.body.plan,
       client: ctx.client,
-      ...optionalBooleans
+      ...ctx.state.optionalBooleans
     });
 
     // create a default alias for the user pointing to the admin
-    if (recipients.length > 0)
+    if (ctx.state.recipients.length > 0)
       await Aliases.create({
         is_api: boolean(ctx.api),
         user: ctx.state.user._id,
         domain: ctx.state.domain._id,
         name: '*',
-        recipients,
+        recipients: ctx.state.recipients,
         locale: ctx.locale,
-        ...(optionalBooleans.has_recipient_verification
+        ...(ctx.state.optionalBooleans.has_recipient_verification
           ? { has_recipient_verification: true }
           : {})
       });
@@ -183,8 +59,8 @@ async function createDomain(ctx, next) {
       });
     }
 
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
+    if (ctx.accepts('html')) ctx.redirect(ctx.state.redirectTo);
+    else ctx.body = { redirectTo: ctx.state.redirectTo };
   } catch (err) {
     ctx.throw(Boom.badRequest(err));
   }
