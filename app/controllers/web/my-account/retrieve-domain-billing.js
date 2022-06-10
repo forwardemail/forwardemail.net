@@ -34,7 +34,6 @@ countries.unshift(USA);
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-// TODO: dis my shit too
 // eslint-disable-next-line complexity
 async function retrieveDomainBilling(ctx) {
   const isAccountUpgrade =
@@ -504,7 +503,7 @@ async function retrieveDomainBilling(ctx) {
                   }
                 },
                 "payee": {
-                  "email_address": "niftylettuce-facilitator@gmail.com",
+                  "email_address": "forwardemail-facilitator@gmail.com",
                   "merchant_id": "8CV4WN2C9QDA4",
                   "display_data": {
                     "brand_name": "Forward Email"

@@ -2,6 +2,7 @@ const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
 const _ = require('lodash');
+const captainHook = require('captain-hook');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -116,6 +117,8 @@ const Alias = new mongoose.Schema({
     }
   ]
 });
+
+Alias.plugin(captainHook);
 
 Alias.pre('validate', function (next) {
   // require alias name
@@ -314,7 +317,7 @@ Alias.pre('save', async function (next) {
 
       // if user is not admin of the domain and it is a global domain
       // then the user can only have up to 5 aliases at a time on the domain
-      if (domain.is_global) {
+      if (domain.is_global && !alias._wasNew) {
         const aliasCount = aliases.filter(
           (_alias) => _alias.user.id === user.id && _alias.name !== alias.name
         ).length;

@@ -932,79 +932,223 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 
 ```json
 {
-  "attachments": [],
-  "headers": {},
+  "attachments": [
+    {
+      "type": "attachment",
+      "content": {
+        "type": "Buffer",
+        "data": [
+          104,
+          101,
+          108,
+          108,
+          111,
+          32,
+          119,
+          111,
+          114,
+          108,
+          100,
+          33
+        ]
+      },
+      "contentType": "text/plain",
+      "partId": "2",
+      "release": null,
+      "contentDisposition": "attachment",
+      "filename": "text1.txt",
+      "headers": {},
+      "checksum": "fc3ff98e8c6a0d3087d515c0473f8677",
+      "size": 12
+    }
+  ],
+  "headers": "ARC-Seal: i=1; a=rsa-sha256; t=1653506802; cv=none; d=forwardemail.net;\r\n s=default;\r\n b=R6QJ0tGwwjg2VPxiAlVIKxsg3jEPtRGKPTIOdZNWuhWrbssttFdOYzRRqvacDyN5SLoyDhVye\r\n DUA/64IxANXdHVFlpR258Yp7WxLDv2gtJD5vNSKYmUJZOWk1TynmlqTYrp0Vuqg2xIUjIlPBWAJ\r\n PPNx4JvOLjJuWYynU2qIWz0=\r\nARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;\r\n d=forwardemail.net; h=MIME-Version: Date: Message-ID: From: Content-Type;\r\n q=dns/txt; s=default; t=1653506802;\r\n bh=cEYDoyTy+Ub29XZt/zXR+sprfUE6BW0y5cHfah01PT4=;\r\n b=F/t56AAXr2Kv3G6VsbdT5OKDVJf2ulhwLiTM18Ra4tDPUKPSGSLKrWvxiXEg5NMWwdWnsOYrL\r\n r3YSm4uMxVMhHZbHm/sUu4QZq5/18hQsAkCv6fI9ifTjDwBrN5zpLOhPoZFFo+TyvHxiII3Xv3L\r\n UEzmUIIaJRX6tboQ160tino=\r\nARC-Authentication-Results: i=1; mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)\r\nReceived-SPF: none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) client-ip=127.0.0.1;\r\nAuthentication-Results: mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)\r\n",
   "headerLines": [
     {
-      "key": "dkim-signature",
-      "line": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=forwardemail.net;\r\n q=dns/txt; s=default; bh=fdkeB/A0FkbVP2k4J4pNPoeWH6vqBm9+b0C3OY87Cw8=;\r\n h=from:subject:date:message-id:to:mime-version:content-type:content-transfer-encoding;\r\n b=KJZp0q0u/cQhcjwilKMainmlystwHgCZ7/ncK1uBmmdGoaXlQcMHsfenLyn/uribhMVrdfWw6\r\n YhQ5AIOAGoft/fwpGhl3zP1b5qrPwYu0kLMPr2MSwkLo0YVdbHB6xF+VGeg2vaduJk6CipXjMW7\r\n Mlohmvjw0m1tnN6dAYGOkwQ="
+      "key": "arc-seal",
+      "line": "ARC-Seal: i=1; a=rsa-sha256; t=1653506802; cv=none; d=forwardemail.net;\r\n s=default;\r\n b=R6QJ0tGwwjg2VPxiAlVIKxsg3jEPtRGKPTIOdZNWuhWrbssttFdOYzRRqvacDyN5SLoyDhVye\r\n DUA/64IxANXdHVFlpR258Yp7WxLDv2gtJD5vNSKYmUJZOWk1TynmlqTYrp0Vuqg2xIUjIlPBWAJ\r\n PPNx4JvOLjJuWYynU2qIWz0="
     },
     {
-      "key": "message-id",
-      "line": "Message-ID: <123.abc@test>"
+      "key": "arc-message-signature",
+      "line": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;\r\n d=forwardemail.net; h=MIME-Version: Date: Message-ID: From: Content-Type;\r\n q=dns/txt; s=default; t=1653506802;\r\n bh=cEYDoyTy+Ub29XZt/zXR+sprfUE6BW0y5cHfah01PT4=;\r\n b=F/t56AAXr2Kv3G6VsbdT5OKDVJf2ulhwLiTM18Ra4tDPUKPSGSLKrWvxiXEg5NMWwdWnsOYrL\r\n r3YSm4uMxVMhHZbHm/sUu4QZq5/18hQsAkCv6fI9ifTjDwBrN5zpLOhPoZFFo+TyvHxiII3Xv3L\r\n UEzmUIIaJRX6tboQ160tino="
     },
     {
-      "key": "date",
-      "line": "Date: Thu, 9 Nov 2000 10:44:00 -0800 (PST)"
+      "key": "arc-authentication-results",
+      "line": "ARC-Authentication-Results: i=1; mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)"
     },
     {
-      "key": "to",
-      "line": "To: webhook@example.com"
+      "key": "received-spf",
+      "line": "Received-SPF: none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) client-ip=127.0.0.1;"
     },
     {
-      "key": "from",
-      "line": "From: Test <test@user.com>"
+      "key": "authentication-results",
+      "line": "Authentication-Results: mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)"
     },
     {
-      "key": "subject",
-      "line": "Subject: testing webhooks"
+      "key": "x-forwardemail-sender",
+      "line": "X-ForwardEmail-Sender: rfc822; test@example.net"
     },
     {
-      "key": "mime-version",
-      "line": "Mime-Version: 1.0"
+      "key": "x-forwardemail-session-id",
+      "line": "X-ForwardEmail-Session-ID: w2czxgznghn5ryyw"
+    },
+    {
+      "key": "x-forwardemail-version",
+      "line": "X-ForwardEmail-Version: 9.0.0"
     },
     {
       "key": "content-type",
-      "line": "Content-Type: text/plain; charset=us-ascii"
+      "line": "Content-Type: multipart/mixed; boundary=\"--_NmP-179a735428ca7575-Part_1\""
     },
     {
-      "key": "content-transfer-encoding",
-      "line": "Content-Transfer-Encoding: 7bit"
+      "key": "from",
+      "line": "From: some <random@example.com>"
+    },
+    {
+      "key": "message-id",
+      "line": "Message-ID: <69ad5fc2-91cb-728f-ae5c-eeedc5f267b6@example.net>"
+    },
+    {
+      "key": "date",
+      "line": "Date: Wed, 25 May 2022 19:26:41 +0000"
+    },
+    {
+      "key": "mime-version",
+      "line": "MIME-Version: 1.0"
     }
   ],
-  "text": "Test\n",
-  "textAsHtml": "<p>Test</p>",
-  "subject": "testing webhooks",
-  "date": "2000-11-09T18:44:00.000Z",
-  "to": {
-    "value": [
-      {
-        "address": "webhook@example.com",
-        "name": ""
-      }
-    ],
-    "html": "<span class=\"mp_address_group\"><a href=\"mailto:webhook@example.com\" class=\"mp_address_email\">webhook@example.com</a></span>",
-    "text": "webhook@example.com"
-  },
+  "html": "<strong>some random text</strong>",
+  "text": "some random text",
+  "textAsHtml": "<p>some random text</p>",
+  "date": "2022-05-25T19:26:41.000Z",
   "from": {
     "value": [
       {
-        "address": "test@example.com",
-        "name": "Test"
+        "address": "random@example.com",
+        "name": "some"
       }
     ],
-    "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Test</span> &lt;<a href=\"mailto:test@example.com\" class=\"mp_address_email\">test@example.com</a>&gt;</span>",
-    "text": "Test <test@examplecom>"
+    "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">some</span> &lt;<a href=\"mailto:random@example.com\" class=\"mp_address_email\">random@example.com</a>&gt;</span>",
+    "text": "some <random@example.com>"
   },
-  "messageId": "<123.abc@test>",
-  "html": false,
-  "raw": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=forwardemail.net;\r\n q=dns/txt; s=default; bh=fdkeB/A0FkbVP2k4J4pNPoeWH6vqBm9+b0C3OY87Cw8=;\r\n h=from:subject:date:message-id:to:mime-version:content-type:content-transfer-encoding;\r\n b=KJZp0q0u/cQhcjwilKMainmlystwHgCZ7/ncK1uBmmdGoaXlQcMHsfenLyn/uribhMVrdfWw6\r\n YhQ5AIOAGoft/fwpGhl3zP1b5qrPwYu0kLMPr2MSwkLo0YVdbHB6xF+VGeg2vaduJk6CipXjMW7\r\n Mlohmvjw0m1tnN6dAYGOkwQ=\r\nMessage-ID: <123.abc@test>\r\nDate: Thu, 9 Nov 2000 10:44:00 -0800 (PST)\r\nTo: webhook@example.com\r\nFrom: Test <test@example.com>\r\nSubject: testing webhooks\r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\n\r\nTest\r\n"
+  "messageId": "<69ad5fc2-91cb-728f-ae5c-eeedc5f267b6@example.net>",
+  "raw": "ARC-Seal: i=1; a=rsa-sha256; t=1653506802; cv=none; d=forwardemail.net;\r\n s=default;\r\n b=R6QJ0tGwwjg2VPxiAlVIKxsg3jEPtRGKPTIOdZNWuhWrbssttFdOYzRRqvacDyN5SLoyDhVye\r\n DUA/64IxANXdHVFlpR258Yp7WxLDv2gtJD5vNSKYmUJZOWk1TynmlqTYrp0Vuqg2xIUjIlPBWAJ\r\n PPNx4JvOLjJuWYynU2qIWz0=\r\nARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;\r\n d=forwardemail.net; h=MIME-Version: Date: Message-ID: From: Content-Type;\r\n q=dns/txt; s=default; t=1653506802;\r\n bh=cEYDoyTy+Ub29XZt/zXR+sprfUE6BW0y5cHfah01PT4=;\r\n b=F/t56AAXr2Kv3G6VsbdT5OKDVJf2ulhwLiTM18Ra4tDPUKPSGSLKrWvxiXEg5NMWwdWnsOYrL\r\n r3YSm4uMxVMhHZbHm/sUu4QZq5/18hQsAkCv6fI9ifTjDwBrN5zpLOhPoZFFo+TyvHxiII3Xv3L\r\n UEzmUIIaJRX6tboQ160tino=\r\nARC-Authentication-Results: i=1; mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)\r\nReceived-SPF: none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) client-ip=127.0.0.1;\r\nAuthentication-Results: mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)\r\nX-ForwardEmail-Sender: rfc822; test@example.net\r\nX-ForwardEmail-Session-ID: w2czxgznghn5ryyw\r\nX-ForwardEmail-Version: 9.0.0\r\nContent-Type: multipart/mixed; boundary=\"--_NmP-179a735428ca7575-Part_1\"\r\nFrom: some <random@example.com>\r\nMessage-ID: <69ad5fc2-91cb-728f-ae5c-eeedc5f267b6@example.net>\r\nDate: Wed, 25 May 2022 19:26:41 +0000\r\nMIME-Version: 1.0\r\n\r\n----_NmP-179a735428ca7575-Part_1\r\nContent-Type: multipart/alternative;\r\n boundary=\"--_NmP-179a735428ca7575-Part_2\"\r\n\r\n----_NmP-179a735428ca7575-Part_2\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Transfer-Encoding: 7bit\r\n\r\nsome random text\r\n----_NmP-179a735428ca7575-Part_2\r\nContent-Type: text/html; charset=utf-8\r\nContent-Transfer-Encoding: 7bit\r\n\r\n<strong>some random text</strong>\r\n----_NmP-179a735428ca7575-Part_2--\r\n\r\n----_NmP-179a735428ca7575-Part_1\r\nContent-Type: text/plain; name=text1.txt\r\nContent-Transfer-Encoding: base64\r\nContent-Disposition: attachment; filename=text1.txt\r\n\r\naGVsbG8gd29ybGQh\r\n----_NmP-179a735428ca7575-Part_1--\r\n",
+  "dkim": {
+    "headerFrom": [
+      "random@example.com"
+    ],
+    "envelopeFrom": "test@example.net",
+    "results": [
+      {
+        "status": {
+          "result": "none",
+          "comment": "message not signed"
+        },
+        "info": "dkim=none (message not signed)"
+      }
+    ]
+  },
+  "spf": {
+    "domain": "example.net",
+    "client-ip": "127.0.0.1",
+    "helo": "user.oem.local",
+    "envelope-from": "test@example.net",
+    "status": {
+      "result": "none",
+      "comment": "mx1.forwardemail.net: example.net does not designate permitted sender hosts",
+      "smtp": {
+        "mailfrom": "test@example.net",
+        "helo": "user.oem.local"
+      }
+    },
+    "header": "Received-SPF: none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) client-ip=127.0.0.1;",
+    "info": "spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local",
+    "lookups": {
+      "limit": 50,
+      "count": 1
+    }
+  },
+  "arc": {
+    "status": {
+      "result": "none"
+    },
+    "i": 0,
+    "authResults": "mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)"
+  },
+  "dmarc": {
+    "status": {
+      "result": "none",
+      "header": {
+        "from": "example.com"
+      }
+    },
+    "domain": "example.com",
+    "info": "dmarc=none header.from=example.com"
+  },
+  "bimi": {
+    "status": {
+      "header": {},
+      "result": "skipped",
+      "comment": "DMARC not enabled"
+    },
+    "info": "bimi=skipped (DMARC not enabled)"
+  },
+  "recipients": [
+    "webhook1@webhooks.net"
+  ],
+  "session": {
+    "remoteAddress": "127.0.0.1",
+    "remotePort": 65138,
+    "clientHostname": "[127.0.0.1]",
+    "hostNameAppearsAs": "user.oem.local",
+    "sender": "test@example.net",
+    "mta": "mx1.forwardemail.net",
+    "arrivalDate": "2022-05-25T19:26:41.423Z",
+    "arrivalTime": 1653506801423
+  }
 }
 ```
 
-> Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object, and also append the "raw" property with the raw email message as a String.
+> Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
+
+> Raw email value as a String is given as the property "raw".
+
+> Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
+
+> The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
+
+> The grouped recipients for this webhook are grouped together and given as the property "recipients".
+
+> The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
+
+> If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
+
+```js
+const data = [
+  104,
+  101,
+  108,
+  108,
+  111,
+  32,
+  119,
+  111,
+  114,
+  108,
+  100,
+  33
+];
+
+//
+// outputs "hello world!" to the console
+// (this is the content from the filename "text1.txt" in the example JSON request payload above)
+//
+console.log(Buffer.from(data).toString());
+```
 
 Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in [superagent's retry method](https://visionmedia.github.io/superagent/#retrying-requests) (this package is also maintained by the creator of Forward Email).
+
+We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
 
 
 ## Do you support regular expressions or regex
@@ -1558,9 +1702,9 @@ Unfortunately Apple does not allow this, regardless of which service you use.  H
 
 ## Can I forward unlimited emails with this
 
-Practically yes - the only current restriction is that senders **by unique email address** are limited to sending (300) emails per hour through the system.
+The only current restriction is that senders (excluding a whitelist) are limited to (100) connections per hour through the system.
 
-If this limit is exceeded we send a "451" response code which tells the senders mail server to retry later.
+If this limit is exceeded we send a "421" response code which tells the senders mail server to retry later.
 
 
 ## How do I add a profile picture to my email address

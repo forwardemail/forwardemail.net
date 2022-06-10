@@ -2,7 +2,7 @@
 - hosts: "{{ hostlist }}"
   become: true
   become_user: root
-  # TODO: install nodejs + yarn + pm2 using n as deploy user
+  # TODO: install nodejs + pm2 using n as deploy user
   tasks:
     # install fonts
     - name: accept fonts license

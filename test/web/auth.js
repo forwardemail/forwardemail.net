@@ -122,7 +122,7 @@ test('resets password with valid email and token (HTML)', async (t) => {
   const password = '!@K#NLK!#N';
 
   const res = await web
-    .post(`/en/reset-password/token`)
+    .post('/en/reset-password/token')
     .set({ Accept: 'text/html' })
     .send({ email, password });
 
@@ -137,7 +137,7 @@ test('resets password with valid email and token (JSON)', async (t) => {
   const password = '!@K#NLK!#N';
 
   const res = await web
-    .post(`/en/reset-password/token`)
+    .post('/en/reset-password/token')
     .send({ email, password });
 
   t.is(res.status, 302);
@@ -176,7 +176,7 @@ test('fails resetting password with missing new password', async (t) => {
   const user = await factory.create('user', {}, { resetToken: 'token' });
   const { email } = user;
 
-  const res = await web.post(`/en/reset-password/token`).send({ email });
+  const res = await web.post('/en/reset-password/token').send({ email });
 
   t.is(res.status, 400);
   t.is(JSON.parse(res.text).message, phrases.INVALID_PASSWORD);
@@ -187,7 +187,7 @@ test('fails resetting password with invalid email', async (t) => {
   await factory.create('user', {}, { resetToken: 'token' });
 
   const res = await web
-    .post(`/en/reset-password/token`)
+    .post('/en/reset-password/token')
     .send({ email: 'wrongemail' });
 
   t.is(res.status, 400);
@@ -200,7 +200,7 @@ test('fails resetting password with invalid email + reset token match', async (t
   const password = '!@K#NLK!#N';
 
   const res = await web
-    .post(`/en/reset-password/token`)
+    .post('/en/reset-password/token')
     .send({ email: 'wrongemail@example.com', password });
 
   t.is(res.status, 400);
@@ -213,7 +213,7 @@ test('fails resetting password if new password is too weak', async (t) => {
   const { email } = user;
 
   const res = await web
-    .post(`/en/reset-password/token`)
+    .post('/en/reset-password/token')
     .send({ email, password: 'password' });
 
   t.is(res.status, 400);

@@ -188,7 +188,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     invoice_at: dayjs(transaction.time).toDate()
                   };
                   createdCount++;
-                  logger.debug(`creating new payment`);
+                  logger.debug('creating new payment');
                   await Payments.create(payment);
                 }
               } catch (err) {
@@ -238,7 +238,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
               subject: `Sync payment histories hit ${errorThreshold} errors during the script`
             },
             locals: {
-              message: `This may have occurred because of an error in the script, or the paypal service was down, or another error was causing an abnormal number of payment syncing failures`
+              message:
+                'This may have occurred because of an error in the script, or the paypal service was down, or another error was causing an abnormal number of payment syncing failures'
             }
           });
         } catch (err) {

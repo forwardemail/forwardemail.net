@@ -33,6 +33,15 @@ async function createAlias(ctx, next) {
       return next();
     }
 
+    if (
+      ctx.state.alias.has_recipient_verification &&
+      (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
+    )
+      ctx.flash(
+        'warning',
+        ctx.translate('RECIPIENT_VERIFICATION_PENDING_DOMAIN_VERIFICATION')
+      );
+
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
       text: ctx.translate('REQUEST_OK'),

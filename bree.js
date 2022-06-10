@@ -8,16 +8,14 @@ const logger = require('#helpers/logger');
 
 const bree = new Bree({ logger });
 
-if (require.main === module) {
-  const graceful = new Graceful({
-    brees: [bree],
-    logger
-  });
-  graceful.listen();
+const graceful = new Graceful({
+  brees: [bree],
+  logger
+});
+graceful.listen();
 
-  bree.start();
+(async () => {
+  await bree.start();
+})();
 
-  logger.info('Lad bree started');
-}
-
-module.exports = bree;
+logger.info('Lad bree started');

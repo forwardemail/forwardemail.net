@@ -9,7 +9,6 @@ const port = require('./port');
 const restricted = require('./restricted');
 const selfTest = require('./self-test');
 const settings = require('./settings');
-const spfError = require('./spf-error');
 const stripe = require('./stripe');
 const test = require('./test');
 const users = require('./users');
@@ -26,7 +25,6 @@ module.exports = {
   restricted,
   selfTest,
   settings,
-  spfError,
   stripe,
   test,
   users

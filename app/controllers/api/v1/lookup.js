@@ -1,11 +1,11 @@
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const RE2 = require('re2');
 const regexParser = require('regex-parser');
 
 const config = require('#config');
 const Domains = require('#models/domain');
+const Users = require('#models/user');
 const Aliases = require('#models/alias');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
@@ -31,10 +31,14 @@ async function lookup(ctx) {
     return;
   }
 
+  const bannedUserIds = await Users.distinct('_id', {
+    [config.userFields.isBanned]: true
+  });
+
   const aliases = await Aliases.find({
-    domain: domain._id
+    domain: domain._id,
+    user: { $nin: bannedUserIds }
   })
-    .populate('user', config.userFields.isBanned)
     .lean()
     .exec();
 
@@ -47,10 +51,24 @@ async function lookup(ctx) {
     ? ctx.query.username.toLowerCase()
     : false;
 
+  if (domain.plan !== 'free') {
+    for (const alias of aliases) {
+      if (alias.has_recipient_verification) {
+        const recipients = [];
+        for (const recipient of alias.recipients) {
+          // eslint-disable-next-line max-depth
+          if (alias.verified_recipients.includes(recipient))
+            recipients.push(recipient);
+        }
+
+        alias.recipients = recipients;
+      }
+    }
+  }
+
   ctx.body = aliases
     .filter((alias) => {
-      if (!_.isObject(alias.user)) return false;
-      if (alias.user[config.userFields.isBanned]) return false;
+      if (alias.recipients.length === 0) return false;
       if (alias.name === '*') return true;
       if (!username) return true;
 
@@ -61,8 +79,8 @@ async function lookup(ctx) {
       //
       if (!domain.is_global) {
         // must start with / and end with /: and not have the same index for the last index
-        // forward-email=/^(support|info)$/:niftylettuce+$1@gmail.com
-        // -> this would forward to niftylettuce+support@gmail.com if email sent to support@
+        // forward-email=/^(support|info)$/:forwardemail+$1@gmail.com
+        // -> this would forward to forwardemail+support@gmail.com if email sent to support@
 
         // it either ends with:
         // "/gi:"
@@ -100,15 +118,15 @@ async function lookup(ctx) {
           // add case insensitive flag since email addresses are case insensitive
           if (lastIndex === '/g:' || lastIndex === '/:') parsedRegex += 'i';
           //
-          // `forward-email=/^(support|info)$/:niftylettuce+$1@gmail.com`
-          // support@mydomain.com -> niftylettuce+support@gmail.com
+          // `forward-email=/^(support|info)$/:forwardemail+$1@gmail.com`
+          // support@mydomain.com -> forwardemail+support@gmail.com
           //
-          // `forward-email=/^(support|info)$/:niftylettuce.com/$1`
-          // info@mydomain.com -> POST to niftylettuce.com/info
+          // `forward-email=/^(support|info)$/:forwardemail.net/$1`
+          // info@mydomain.com -> POST to forwardemail.net/info
           //
-          // `forward-email=/Support/g:niftylettuce.com`
+          // `forward-email=/Support/g:forwardemail.net`
           //
-          // `forward-email=/SUPPORT/gi:niftylettuce.com`
+          // `forward-email=/SUPPORT/gi:forwardemail.net`
           const regex = new RE2(regexParser(parsedRegex));
           return regex.test(username);
         }
@@ -126,21 +144,12 @@ async function lookup(ctx) {
       // then filter out recipients that haven't yet clicked
       // the verification link required and sent
       // (but if and only if the domain was not on free plan)
-      const recipients =
-        domain.plan === 'free' || !alias.has_recipient_verification
-          ? alias.recipients
-          : alias.recipients.filter((r) =>
-              alias.verified_recipients.includes(r)
-            );
+      if (alias.name === '*') return alias.recipients.join(',');
 
-      if (alias.name === '*') return recipients.join(',');
-
-      return recipients
-        .map((recipient) => {
-          return alias.is_enabled
-            ? `${alias.name}:${recipient}`
-            : `!${alias.name}`;
-        })
+      return alias.recipients
+        .map((recipient) =>
+          alias.is_enabled ? `${alias.name}:${recipient}` : `!${alias.name}`
+        )
         .join(',');
     });
 }

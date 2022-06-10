@@ -51,16 +51,8 @@ test('GET /:locale/404', async (t) => {
   const { web } = t.context;
   const res = await web.get('/en/404');
 
-  t.is(res.status, 200);
-  t.assert(res.text.includes('Page not found'));
-});
-
-test('GET /:locale/500', async (t) => {
-  const { web } = t.context;
-  const res = await web.get('/en/500');
-
-  t.is(res.status, 200);
-  t.assert(res.text.includes('Server Error'));
+  t.is(res.status, 404);
+  t.assert(res.text.includes('Not Found'));
 });
 
 test('GET /:locale/privacy', async (t) => {

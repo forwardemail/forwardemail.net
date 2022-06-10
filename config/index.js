@@ -31,10 +31,10 @@ const config = {
   maxForwardedAddresses: env.MAX_FORWARDED_ADDRESSES,
 
   // server
-  env: env.NODE_ENV,
+  env: env.NODE_ENV.toLowerCase(),
   urls: {
-    web: env.WEB_URL,
-    api: env.API_URL
+    web: env.WEB_URL.toLowerCase(),
+    api: env.API_URL.toLowerCase()
   },
 
   // vanity domains
@@ -202,25 +202,21 @@ const config = {
       // you could make this "last_name"
       familyName: 'family_name',
       avatarURL: 'avatar_url',
+      // apple
+      appleProfileID: 'apple_profile_id',
+      appleAccessToken: 'apple_access_token',
+      appleRefreshToken: 'apple_refresh_token',
+      // google
       googleProfileID: 'google_profile_id',
       googleAccessToken: 'google_access_token',
       googleRefreshToken: 'google_refresh_token',
+      // github
       githubProfileID: 'github_profile_id',
       githubAccessToken: 'github_access_token',
       githubRefreshToken: 'github_refresh_token',
+      // otp
       otpToken: 'otp_token',
       otpEnabled: 'otp_enabled'
-    },
-    google: {
-      accessType: 'offline',
-      prompt: 'consent',
-      scope: [
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile'
-      ]
-    },
-    github: {
-      scope: ['user:email']
     }
   },
 
@@ -306,7 +302,8 @@ const config = {
     '.ru',
     '.tk',
     '.top',
-    '.work'
+    '.work',
+    '.cam'
   ]
 };
 

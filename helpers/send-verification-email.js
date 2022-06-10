@@ -5,7 +5,7 @@ const logger = require('./logger');
 const config = require('#config');
 
 async function sendVerificationEmail(ctx) {
-  ctx.state.user = await ctx.state.user.sendVerificationEmail(ctx);
+  ctx.state.user = await ctx.state.user.updateVerificationPin(ctx);
 
   // attempt to send them an email
   try {
@@ -23,11 +23,15 @@ async function sendVerificationEmail(ctx) {
         }`
       }
     });
+
+    // save when the verification pin was sent
+    ctx.state.user[config.userFields.verificationPinSentAt] = new Date();
+    await ctx.state.user.save();
   } catch (err) {
     logger.error(err);
-    // reset if there was an error
+    // revert if there was an error
     try {
-      ctx.state.user = await ctx.state.user.sendVerificationEmail(ctx, true);
+      ctx.state.user = await ctx.state.user.updateVerificationPin(ctx, true);
     } catch (err) {
       logger.error(err);
     }

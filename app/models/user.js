@@ -60,7 +60,7 @@ const omitExtraFields = [
 ];
 
 // TODO: set relative threshold for messages
-// <https://github.com/niftylettuce/dayjs-with-plugins/issues/2>
+// <https://github.com/ladjs/dayjs-with-plugins/issues/2>
 // <https://day.js.org/docs/en/customization/relative-time>
 // moment.relativeTimeThreshold('ss', 5);
 
@@ -202,6 +202,13 @@ object[fields.avatarURL] = {
   trim: true,
   validate: (value) => validator.isURL(value)
 };
+// apple
+object[fields.appleProfileID] = {
+  type: String,
+  index: true
+};
+object[fields.appleAccessToken] = String;
+object[fields.appleRefreshToken] = String;
 // google
 object[fields.googleProfileID] = {
   type: String,
@@ -351,40 +358,44 @@ User.pre('validate', async function (next) {
 // instead you should use the helper located at
 // `../helpers/send-verification-email.js`
 //
-User.methods.sendVerificationEmail = async function (ctx, reset = false) {
-  if (
-    this[config.userFields.hasVerifiedEmail] &&
-    boolean(!this[config.userFields.pendingRecovery])
-  )
-    return this;
-
-  if (reset) {
+User.methods.updateVerificationPin = async function (ctx, revert = false) {
+  if (revert) {
     this[config.userFields.verificationPinExpiresAt] =
       this[`__${config.userFields.verificationPinExpiresAt}`];
-    this[config.userFields.verificationPinSentAt] =
-      this[`__${config.userFields.verificationPinSentAt}`];
     this[config.userFields.verificationPin] =
       this[`__${config.userFields.verificationPin}`];
     await this.save();
     return this;
   }
 
-  // store old values in case we have to reset
+  // store old values in case we have to revert
   this[`__${config.userFields.verificationPinExpiresAt}`] =
     this[config.userFields.verificationPinExpiresAt];
-  this[`__${config.userFields.verificationPinSentAt}`] =
-    this[config.userFields.verificationPinSentAt];
   this[`__${config.userFields.verificationPin}`] =
     this[config.userFields.verificationPin];
 
-  const diff =
-    this[config.userFields.verificationPinExpiresAt] &&
-    this[config.userFields.verificationPinSentAt]
-      ? Date.now() -
-        new Date(this[config.userFields.verificationPinSentAt]).getTime()
-      : false;
+  // set new values if necessary
+  if (
+    !this[config.userFields.verificationPinExpiresAt] ||
+    this[config.userFields.verificationPinHasExpired] ||
+    !isSANB(this[config.userFields.verificationPin])
+  ) {
+    this[config.userFields.verificationPinExpiresAt] = new Date(
+      Date.now() + config.verificationPinTimeoutMs
+    );
+    this[config.userFields.verificationPin] = await cryptoRandomString.async(
+      config.verificationPin
+    );
+  }
+
+  const diff = this[config.userFields.verificationPinSentAt]
+    ? Date.now() -
+      new Date(this[config.userFields.verificationPinSentAt]).getTime()
+    : false;
+
   const sendNewEmail =
     this[config.userFields.verificationPinHasExpired] ||
+    !this[config.userFields.verificationPinSentAt] ||
     (diff && diff >= config.verificationPinEmailIntervalMs);
 
   // ensure the user waited as long as necessary to send a new pin email
@@ -410,16 +421,7 @@ User.methods.sendVerificationEmail = async function (ctx, reset = false) {
     throw err;
   }
 
-  if (this[config.userFields.verificationPinHasExpired]) {
-    this[config.userFields.verificationPinExpiresAt] = new Date(
-      Date.now() + config.verificationPinTimeoutMs
-    );
-    this[config.userFields.verificationPin] = await cryptoRandomString.async(
-      config.verificationPin
-    );
-  }
-
-  this[config.userFields.verificationPinSentAt] = new Date();
+  // save the updated pin
   await this.save();
 
   return this;
@@ -455,7 +457,7 @@ User.pre('save', function (next) {
         current: this[fieldName],
         previous: this[`__${fieldName}`]
       });
-      // reset so we don't get into infinite loop
+      // revert so we don't get into infinite loop
       this[`__${fieldName}`] = this[fieldName];
     }
   }
@@ -465,8 +467,7 @@ User.pre('save', function (next) {
 
 User.postCreate((user, next) => {
   logger.info('user created', {
-    user: user.toObject(),
-    slack: true
+    user: user.toObject()
   });
   next();
 });

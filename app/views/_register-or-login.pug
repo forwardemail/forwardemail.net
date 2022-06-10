@@ -10,7 +10,7 @@ mixin registerOrLogin(verb, isModal = false)
           else
             = emoji("wave")
     div(class=isModal ? "" : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
-      if boolean(process.env.AUTH_GOOGLE_ENABLED)
+      if ctx.passport && ctx.passport.config.providers.google
         a.btn-auth.btn-auth-google.btn-auth-google-dark.my-3(
           href="/auth/google",
           role="button"
@@ -23,7 +23,7 @@ mixin registerOrLogin(verb, isModal = false)
             .btn-auth-wrapper
               span.btn-auth-icon
               span.btn-auth-text= t(`${humanize(verb)} with Google`)
-      if boolean(process.env.AUTH_GITHUB_ENABLED)
+      if ctx.passport && ctx.passport.config.providers.github
         a.btn-auth.btn-auth-github.btn-auth-github-dark.my-3(
           href="/auth/github",
           role="button"
@@ -36,7 +36,7 @@ mixin registerOrLogin(verb, isModal = false)
             .btn-auth-wrapper
               span.btn-auth-icon
               span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
-      if boolean(process.env.AUTH_GOOGLE_ENABLED) || boolean(process.env.AUTH_GITHUB_ENABLED)
+      if ctx.passport && (ctx.passport.config.providers.google || ctx.passport.config.providers.github)
         .hr-text.d-flex.text-secondary.align-items-center= t("or")
       - const action = verb === "sign up" ? "/register" : config.loginRoute;
       form.ajax-form(action=l(action), method="POST")

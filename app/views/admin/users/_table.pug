@@ -19,14 +19,14 @@ include ../../_pagination
           +sortHeader('updated_at', 'Updated', '#table-users')
         th(scope="col")
           +sortHeader('last_login_at', 'Last Login', '#table-users')
-        if boolean(process.env.AUTH_OTP_ENABLED)
+        if ctx.passport && ctx.passport.config.providers.otp
           th(scope="col")
             +sortHeader(config.passport.fields.otpEnabled, 'OTP Enabled', '#table-users')
         th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if users.length === 0
         td.alert.alert-info(
-          colspan=boolean(process.env.AUTH_OTP_ENABLED) ? "8" : "7"
+          colspan=ctx.passport && ctx.passport.config.providers.otp ? '8' : '7'
         )= t("No users exist for that search.")
       else
         each user in users
@@ -38,7 +38,7 @@ include ../../_pagination
             td.align-middle= dayjs(user.created_at).format("M/D/YY h:mm A")
             td.align-middle= dayjs(user.updated_at).format("M/D/YY h:mm A")
             td.align-middle= dayjs(user.last_login_at).format("M/D/YY h:mm A")
-            if boolean(process.env.AUTH_OTP_ENABLED)
+            if ctx.passport && ctx.passport.config.providers.otp
               td.align-middle= user[config.passport.fields.otpEnabled]
             td.align-middle
               .btn-group(role="group", aria-label=t("Actions"))

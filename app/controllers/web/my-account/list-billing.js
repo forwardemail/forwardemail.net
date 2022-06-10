@@ -113,7 +113,7 @@ async function listBilling(ctx) {
 
   const table =
     itemCount === 0
-      ? `<div class="alert alert-info"> No payments exist for that keyword or timeframe. </div>`
+      ? '<div class="alert alert-info"> No payments exist for that keyword or timeframe. </div>'
       : ctx.body;
 
   ctx.body = { table };

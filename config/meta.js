@@ -89,12 +89,7 @@ module.exports = function (config) {
       `Reset password ${lad}`,
       'Confirm your password reset token'
     ],
-    '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in'],
-    '/404': [
-      `Page not found ${lad}`,
-      'The page you requested could not be found'
-    ],
-    '/500': [`Server error ${lad}`, 'A server error has unfortunately occurred']
+    '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in']
   };
   meta[config.loginRoute] = [`Sign in ${lad}`, 'Sign in to your account'];
   meta[config.verifyRoute] = [
