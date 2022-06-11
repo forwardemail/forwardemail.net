@@ -14,6 +14,17 @@ const app = new ForwardEmail({
   redis: false
 });
 
+const HTTP_RETRY_ERROR_CODES = new Set([
+  'ETIMEDOUT',
+  'ECONNRESET',
+  'EADDRINUSE',
+  'ECONNREFUSED',
+  'EPIPE',
+  'ENOTFOUND',
+  'ENETUNREACH',
+  'EAI_AGAIN'
+]);
+
 async function maxForwardedAddresses(ctx) {
   try {
     if (!isSANB(ctx.query.domain) || !isFQDN(ctx.query.domain))
@@ -66,6 +77,11 @@ async function maxForwardedAddresses(ctx) {
 
       ctx.body = { max_forwarded_addresses: maxForwardedAddresses };
     } catch (err) {
+      // superagent inside of the smtp-server will retry on 408 error code
+      // therefore if it is a DNS error, then send that retry code
+      // otherwise send a bad request error with the error
+      if (err.code && HTTP_RETRY_ERROR_CODES.has(err.code))
+        throw Boom.clientTimeout(err);
       throw Boom.badRequest(err);
     }
   } catch (err) {
