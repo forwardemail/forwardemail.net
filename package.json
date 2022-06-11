@@ -144,6 +144,7 @@
     "@commitlint/config-conventional": "17.0.2",
     "@ladjs/browserslist-config": "1.0.0",
     "@ladjs/gulp-envify": "2.0.1",
+    "@ladjs/pug-lint": "2.6.1",
     "@ladjs/pug-lint-config-lad": "0.1.1",
     "@prettier/plugin-pug": "2.1.0",
     "ava": "4.3.0",
@@ -201,7 +202,6 @@
     "postcss-reporter": "7.0.5",
     "postcss-scss": "4.0.4",
     "prettier": "2.6.2",
-    "pug-lint": "2.6.0",
     "rc": "1.2.8",
     "remark-cli": "10.0.1",
     "remark-license": "^6.1.0",
@@ -257,6 +257,9 @@
   ],
   "license": "Business Source License 1.1",
   "main": "index.js",
+  "overrides": {
+    "pug-lint": "@ladjs/pug-lint"
+  },
   "private": true,
   "repository": {
     "type": "git",

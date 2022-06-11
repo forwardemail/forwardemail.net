@@ -14,21 +14,20 @@ const app = new ForwardEmail({
 
 async function verifyRecords(ctx) {
   try {
-    await Promise.all([
-      // reset redis cache for smtp servers
-      ctx.client
-        ? ['A', 'MX', 'TXT'].map(async (type) => {
-            try {
-              await app.resolver(ctx.state.domain.name, type, true, ctx.client);
-            } catch (err) {
-              ctx.logger.warn(err);
-            }
-          })
-        : Promise.resolve(),
+    // reset redis cache for web and smtp
+    if (ctx.client)
+      await Promise.all(
+        ['A', 'MX', 'TXT'].map(async (type) => {
+          try {
+            await app.resolver(ctx.state.domain.name, type, true, ctx.client);
+          } catch (err) {
+            ctx.logger.fatal(err);
+          }
+        })
+      );
 
-      // check mx and txt
-      Domains.verifyRecords(ctx.state.domain._id, ctx.locale, ctx.client)
-    ]);
+    // check mx and txt
+    await Domains.verifyRecords(ctx.state.domain._id, ctx.locale, ctx.client);
 
     const text = ctx.translate('DOMAIN_IS_VERIFIED');
 
