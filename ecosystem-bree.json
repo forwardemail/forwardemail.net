@@ -19,7 +19,7 @@
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",
       "pre-deploy": "git reset --hard",
-      "post-deploy": "npm install && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-bree.json --env production --update-env"
+      "post-deploy": "pnpm install && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-bree.json --env production --update-env"
     }
   }
 }
