@@ -26,6 +26,7 @@ const globby = require('globby');
 const gulpRemark = require('gulp-remark');
 const gulpXo = require('gulp-xo');
 const imagemin = require('gulp-imagemin');
+const isCI = require('is-ci');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
 const nodeSass = require('node-sass');
@@ -244,7 +245,8 @@ function static() {
 async function markdown() {
   const mandarin = new Mandarin({
     i18n,
-    logger
+    logger,
+    ...(isCI ? { redis: false } : {})
   });
   const graceful = new Graceful({
     redisClients: [mandarin.redisClient],
