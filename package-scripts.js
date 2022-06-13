@@ -18,11 +18,24 @@ module.exports = {
     buildTest: 'NODE_ENV=test gulp build',
     publishAssets: 'gulp publish',
 
-    lintJs: 'gulp xo',
-    lintMd: 'gulp remark',
-    lintPug: 'gulp pug',
+    //
+    // TODO: once remark-preset-github is upgraded to ESM and all deps upgraded
+    //       then we can change `-qo` to `-qfo` to get failure on warnings
+    //       <https://github.com/remarkjs/remark-lint/blob/main/packages/remark-preset-lint-recommended/index.js>
+    //
+    lintMd: 'remark . -qo',
     lintPkg: 'fixpack',
-    lint: concurrent.nps('lint-js', 'lint-md', 'lint-pug', 'lintPkg'),
+    lintPug: 'prettier --write **/*.pug && pug-lint **/*.pug',
+    lintJs: 'xo --fix',
+    lintScss: 'stylelint --fix **/*.scss',
+
+    lint: concurrent.nps(
+      'lint-js',
+      'lint-md',
+      'lint-pug',
+      'lint-pkg',
+      'lint-scss'
+    ),
 
     // <https://github.com/kentcdodds/nps-utils/issues/24>
     pretest: concurrent.nps('lint', 'build-test'),

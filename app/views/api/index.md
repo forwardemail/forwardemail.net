@@ -53,12 +53,12 @@ Right now we have not yet released any API wrappers, but we plan to do so in the
 
 ## Base URI
 
-The current HTTP base URI path is: `BASE_URI`.  The legacy HTTP base URI path of `https://forwardemail.net:4000` is deprecated as of January 1, 2021.
+The current HTTP base URI path is: `BASE_URI`. The legacy HTTP base URI path of `https://forwardemail.net:4000` is deprecated as of January 1, 2021.
 
 
 ## Authentication
 
-All endpoints require your [API key](https://forwardemail.net/my-account/security) to be set as the "username" value of the request's [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication) header.  Don't worry – examples are provided below for you if you're not sure what this is.
+All endpoints require your [API key](https://forwardemail.net/my-account/security) to be set as the "username" value of the request's [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication) header. Don't worry – examples are provided below for you if you're not sure what this is.
 
 
 ## Errors
@@ -92,7 +92,7 @@ If any errors occur, the response body of the API request will contain a detaile
 
 ## Localization
 
-Our service is translated to over 25 different languages.  All API response messages are translated to the last locale detected of the user making the API request.  You can override this by passing a custom `Accept-Language` header.  Feel free to try it out using the language drop-down at the bottom of this page.
+Our service is translated to over 25 different languages. All API response messages are translated to the last locale detected of the user making the API request. You can override this by passing a custom `Accept-Language` header. Feel free to try it out using the language drop-down at the bottom of this page.
 
 
 ## Pagination
@@ -183,16 +183,16 @@ curl -X GET BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
-| Body Parameter                 | Required | Type                                          | Description                                                                                                                                                                                                                                                                                                       |
-| ------------------------------ | -------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `domain`                       | Yes      | String (FQDN or IP)                           | Fully qualified domain name ("FQDN") or IP address                                                                                                                                                                                                                                                                |
-| `plan`                         | No       | String (enumerable)                           | Plan type (must be `"free"`, `"enhanced_protection"`, or `"team"`, defaults to `"free"` or the user's current paid plan if on one)                                                                                                                                                                                |
-| `catchall`                     | No       | String (delimited email addresses) or Boolean | Create a default catch-all alias, defaults to `true` (if `true` it will use the API user's email address as a recipient, and if `false` no catch-all will be created).  If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma) |
-| `has_adult_content_protection` | No       | Boolean                                       | Whether to enable Spam Scanner adult content protection on this domain                                                                                                                                                                                                                                            |
-| `has_phishing_protection`      | No       | Boolean                                       | Whether to enable Spam Scanner phishing protection on this domain                                                                                                                                                                                                                                                 |
-| `has_executable_protection`    | No       | Boolean                                       | Whether to enable Spam Scanner executable protection on this domain                                                                                                                                                                                                                                               |
-| `has_virus_protection`         | No       | Boolean                                       | Whether to enable Spam Scanner virus protection on this domain                                                                                                                                                                                                                                                    |
-| `has_recipient_verification`   | No       | Boolean                                       | Global domain default for whether to require alias recipients to click an email verification link for emails to flow through                                                                                                                                                                                      |
+| Body Parameter                 | Required | Type                                          | Description                                                                                                                                                                                                                                                                                                      |
+| ------------------------------ | -------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`                       | Yes      | String (FQDN or IP)                           | Fully qualified domain name ("FQDN") or IP address                                                                                                                                                                                                                                                               |
+| `plan`                         | No       | String (enumerable)                           | Plan type (must be `"free"`, `"enhanced_protection"`, or `"team"`, defaults to `"free"` or the user's current paid plan if on one)                                                                                                                                                                               |
+| `catchall`                     | No       | String (delimited email addresses) or Boolean | Create a default catch-all alias, defaults to `true` (if `true` it will use the API user's email address as a recipient, and if `false` no catch-all will be created). If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma) |
+| `has_adult_content_protection` | No       | Boolean                                       | Whether to enable Spam Scanner adult content protection on this domain                                                                                                                                                                                                                                           |
+| `has_phishing_protection`      | No       | Boolean                                       | Whether to enable Spam Scanner phishing protection on this domain                                                                                                                                                                                                                                                |
+| `has_executable_protection`    | No       | Boolean                                       | Whether to enable Spam Scanner executable protection on this domain                                                                                                                                                                                                                                              |
+| `has_virus_protection`         | No       | Boolean                                       | Whether to enable Spam Scanner virus protection on this domain                                                                                                                                                                                                                                                   |
+| `has_recipient_verification`   | No       | Boolean                                       | Global domain default for whether to require alias recipients to click an email verification link for emails to flow through                                                                                                                                                                                     |
 
 > Example Request:
 
