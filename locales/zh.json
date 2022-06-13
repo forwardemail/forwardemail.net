@@ -1740,5 +1740,10 @@
   "exact": "exact",
   " endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.": " endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.",
   "The only current restriction is that senders (excluding a whitelist) are limited to (100) connections per hour through the system.": "The only current restriction is that senders (excluding a whitelist) are limited to (100) connections per hour through the system.",
-  "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry later.": "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry later."
+  "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry later.": "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry later.",
+  ". The legacy HTTP base URI path of ": ". The legacy HTTP base URI path of ",
+  " header. Don't worry – examples are provided below for you if you're not sure what this is.": " header. Don't worry – examples are provided below for you if you're not sure what this is.",
+  "Our service is translated to over 25 different languages. All API response messages are translated to the last locale detected of the user making the API request. You can override this by passing a custom ": "Our service is translated to over 25 different languages. All API response messages are translated to the last locale detected of the user making the API request. You can override this by passing a custom ",
+  " header. Feel free to try it out using the language drop-down at the bottom of this page.": " header. Feel free to try it out using the language drop-down at the bottom of this page.",
+  " no catch-all will be created). If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma)": " no catch-all will be created). If a String is passed, then it is a delimited list of email addresses to use as recipients (separated by line break, space, and/or comma)"
 }
