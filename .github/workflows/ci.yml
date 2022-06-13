@@ -14,6 +14,23 @@ jobs:
           - 16
           - 18
     name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
+    env:
+      PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
+      PAYPAL_ENHANCED_PLAN_180D: ${{ secrets.PAYPAL_ENHANCED_PLAN_180D }}
+      PAYPAL_ENHANCED_PLAN_1Y: ${{ secrets.PAYPAL_ENHANCED_PLAN_1Y }}
+      PAYPAL_ENHANCED_PLAN_30D: ${{ secrets.PAYPAL_ENHANCED_PLAN_30D }}
+      PAYPAL_ENHANCED_PLAN_60D: ${{ secrets.PAYPAL_ENHANCED_PLAN_60D }}
+      PAYPAL_ENHANCED_PLAN_90D: ${{ secrets.PAYPAL_ENHANCED_PLAN_90D }}
+      PAYPAL_SECRET: ${{ secrets.PAYPAL_SECRET }}
+      PAYPAL_TEAM_PLAN_180D: ${{ secrets.PAYPAL_TEAM_PLAN_180D }}
+      PAYPAL_TEAM_PLAN_1Y: ${{ secrets.PAYPAL_TEAM_PLAN_1Y }}
+      PAYPAL_TEAM_PLAN_30D: ${{ secrets.PAYPAL_TEAM_PLAN_30D }}
+      PAYPAL_TEAM_PLAN_60D: ${{ secrets.PAYPAL_TEAM_PLAN_60D }}
+      PAYPAL_TEAM_PLAN_90D: ${{ secrets.PAYPAL_TEAM_PLAN_90D }}
+      PAYPAL_WEBHOOK_ID: ${{ secrets.PAYPAL_WEBHOOK_ID }}
+      STRIPE_ENDPOINT_SECRET: ${{ secrets.STRIPE_ENDPOINT_SECRET }}
+      STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
