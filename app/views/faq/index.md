@@ -1702,9 +1702,13 @@ Unfortunately Apple does not allow this, regardless of which service you use.  H
 
 ## Can I forward unlimited emails with this
 
-The only current restriction is that senders (excluding a whitelist) are limited to (100) connections per hour through the system.
+Yes, however "relatively unknown" senders are rate limited to sending 10,000 emails per hour per hostname or IP.
 
-If this limit is exceeded we send a "421" response code which tells the senders mail server to retry later.
+By "relatively unknown", we mean senders that do not appear in the top 100,000 unique root domain names used at the DNS level.
+
+This means that service providers such as Gmail, Outlook, Apple, and Yahoo are not rate limited, and plenty more.
+
+If this limit is exceeded we send a "421" response code which tells the senders mail server to retry again later.
 
 
 ## How do I add a profile picture to my email address

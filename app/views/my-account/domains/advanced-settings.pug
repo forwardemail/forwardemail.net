@@ -108,7 +108,7 @@ block body
               input#invite-link.form-control(
                 type="text",
                 readonly,
-                value=isTeamDisabled ? "" : `${config.urls.web}/my-account/domains/${domain.name}/invites`
+                value=isTeamDisabled ? "" : `${config.urls.web}/my-account/domains/${domain.id}/invites`
               )
               .input-group-append
                 button.btn.btn-primary(
@@ -441,7 +441,9 @@ block body
 
               .form-group
                 label= t("HTML Preview")
-              iframe#custom-verification-preview.border.border-dark.mb-3.min-vh-80.w-100(src="about:blank")
+              iframe#custom-verification-preview.border.border-dark.mb-3.min-vh-80.w-100(
+                src="about:blank"
+              )
 
               //- TODO: eventually let users customize the text portion (for now we use html-to-text)
 
