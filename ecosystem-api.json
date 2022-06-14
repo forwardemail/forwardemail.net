@@ -15,7 +15,7 @@
       "script": "proxy.js",
       "exec_mode": "cluster",
       "wait_ready": true,
-      "instances": "max",
+      "instances": "2",
       "env_production": {
         "NODE_ENV": "production"
       }
