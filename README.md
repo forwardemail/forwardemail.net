@@ -1,9 +1,17 @@
-# ForwardEmail.net
+<h1 align="center">
+  <a href="https://forwardemail.net"><img src="https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/media/header.png" alt="ForwardEmail" /></a>
+</h1>
+<div align="center">
+  <a href="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml"><img src="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml/badge.svg" alt="build status" /></a>
+  <a href="https://github.com/sindresorhus/xo"><img src="https://img.shields.io/badge/code_style-XO-5ed9c7.svg" alt="code style" /></a>
+  <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/styled_with-prettier-ff69b4.svg" alt="styled with prettier" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/forwardemail/forwardemail.net.svg" alt="license" /></a>
+</div>
+<br />
 
-[![build status](https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml/badge.svg)](https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml)
-[![code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
-[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![made with lad](https://img.shields.io/badge/made_with-lad-95CC28.svg)](https://lad.js.org)
+<div align="center">Forward Email is the 100% open-source and privacy-focused email service @ <a href="https://forwardemail.net">https://forwardemail.net</a>.</div>
+
+<hr />
 
 
 ## Table of Contents
@@ -291,6 +299,8 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
 
 ##
+
+<a href="#"><img src="https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/media/footer.png" alt="#" /></a>
 
 [ansible]: https://github.com/ansible/ansible
 
