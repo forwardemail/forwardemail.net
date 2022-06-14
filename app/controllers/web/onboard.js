@@ -150,7 +150,20 @@ async function onboard(ctx, next) {
         ctx.state.user = await sendVerificationEmail(ctx);
         ctx.flash('success', ctx.translate('EMAIL_VERIFICATION_SENT'));
       } catch (err) {
-        ctx.logger.warn(err);
+        // if email failed to send then verify the user automatically
+        if (err.has_email_failed) {
+          ctx.logger.fatal(err);
+          ctx.state.user[config.userFields.hasVerifiedEmail] = true;
+          // eslint-disable-next-line max-depth
+          try {
+            ctx.state.user = await ctx.state.user.save();
+          } catch (err) {
+            ctx.logger.fatal(err);
+            ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
+          }
+        } else {
+          ctx.logger.error(err);
+        }
       }
     }
 

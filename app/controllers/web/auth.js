@@ -418,7 +418,7 @@ async function forgotPassword(ctx) {
       };
     }
   } catch (err) {
-    ctx.logger.error(err);
+    ctx.logger.fatal(err);
     // reset if there was an error
     try {
       user[config.userFields.resetToken] = null;
@@ -575,6 +575,30 @@ async function verify(ctx) {
     try {
       ctx.state.user = await sendVerificationEmail(ctx);
     } catch (err) {
+      // if email failed to send then verify the user automatically
+      // but if and only if the user was not pending recovery
+      if (
+        err.has_email_failed &&
+        !ctx.state.user[config.userFields.pendingRecovery]
+      ) {
+        ctx.logger.fatal(err);
+        ctx.state.user[config.userFields.hasVerifiedEmail] = true;
+        try {
+          ctx.state.user = await ctx.state.user.save();
+        } catch (err) {
+          ctx.logger.fatal(err);
+          ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
+        }
+
+        if (ctx.accepts('html')) {
+          ctx.redirect(redirectTo);
+        } else {
+          ctx.body = { redirectTo };
+        }
+
+        return;
+      }
+
       // wrap with try/catch to prevent redirect looping
       // (even though the koa redirect loop package will help here)
       if (!err.isBoom) return ctx.throw(err);
@@ -655,7 +679,7 @@ async function verify(ctx) {
         }
       });
     } catch (err) {
-      ctx.logger.error(err);
+      ctx.logger.fatal(err);
       throw Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));
     }
   }

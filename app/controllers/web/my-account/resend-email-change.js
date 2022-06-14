@@ -43,7 +43,7 @@ async function resendEmailChange(ctx) {
       }
     });
   } catch (err) {
-    ctx.logger.error(err);
+    ctx.logger.fatal(err);
     // reset if there was an error
     try {
       ctx.state.user[config.userFields.changeEmailToken] = null;
