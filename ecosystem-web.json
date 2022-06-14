@@ -15,20 +15,9 @@
       "script": "proxy.js",
       "exec_mode": "cluster",
       "wait_ready": true,
-      "instances": "max",
+      "instances": "2",
       "env_production": {
         "NODE_ENV": "production"
-      }
-    },
-    {
-      "name": "api",
-      "script": "api.js",
-      "exec_mode": "fork",
-      "wait_ready": true,
-      "instances": "1",
-      "env_production": {
-        "NODE_ENV": "production",
-        "API_PORT": "4000"
       }
     }
   ],
