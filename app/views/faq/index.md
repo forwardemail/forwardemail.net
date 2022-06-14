@@ -1702,7 +1702,7 @@ Unfortunately Apple does not allow this, regardless of which service you use.  H
 
 ## Can I forward unlimited emails with this
 
-Yes, however "relatively unknown" senders are rate limited to sending 10,000 emails per hour per hostname or IP.
+Yes, however "relatively unknown" senders are rate limited to 10,000 connections per hour per hostname or IP.
 
 By "relatively unknown", we mean senders that do not appear in the top 100,000 unique root domain names used at the DNS level.
 
