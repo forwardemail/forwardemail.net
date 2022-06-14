@@ -107,7 +107,7 @@ module.exports = {
   PENDING_RECOVERY_VERIFICATION_SUCCESS:
     'Your email has been successfully verified. You should receive a support email from an admin within the next 3-5 business days.',
   SUPPORT_REQUEST_ERROR:
-    'We were unable to send your help request.  We have been alerted of this problem.  Please try again.',
+    'We were unable to send your help request.  We have been alerted of this problem.  Please try again or directly email <a href="mailto:support@forwardemail.net">support@forwardemail.net</a>.',
   SUPPORT_REQUEST_LIMIT:
     'You have reached the limit for sending help requests.  Please try again.',
   SUPPORT_REQUEST_MESSAGE:
