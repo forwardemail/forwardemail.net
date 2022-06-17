@@ -597,7 +597,6 @@
   " library's \"simpleParser\" method to parse the message into a JSON friendly object, and also append the \"raw\" property with the raw email message as a String.": " 库的“simpleParser”方法将消息解析为 JSON 友好对象，并将“raw”属性与原始电子邮件消息附加为字符串。",
   "Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in ": "Webhook HTTP 请求将重试最多 10 次（与我们允许普通 SMTP 的重试次数完全相同），每个端点 POST 请求的最大超时时间为 20 秒。我们将根据默认状态和错误代码自动重试",
   "superagent's retry method": "superagent的重试方法",
-  " (this package is also maintained by the creator of Forward Email).": " （这个包也由 Forward Email 的创建者维护）。",
   "Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions (\"regex\") for matching aliases and performing substitions.": "是的，自 2021 年 9 月 27 日起，我们已添加此功能。您可以简单地编写正则表达式（“regex”）来匹配别名和执行替换。",
   "Regular expression supported aliases are ones that start with a ": "正则表达式支持的别名是以 a 开头的别名",
   " and end with ": " 并以",
@@ -1749,5 +1748,6 @@
   "Yes, however \"relatively unknown\" senders are rate limited to sending 10,000 emails per hour per hostname or IP.": "Yes, however \"relatively unknown\" senders are rate limited to sending 10,000 emails per hour per hostname or IP.",
   "By \"relatively unknown\", we mean senders that do not appear in the top 100,000 unique root domain names used at the DNS level.": "By \"relatively unknown\", we mean senders that do not appear in the top 100,000 unique root domain names used at the DNS level.",
   "This means that service providers such as Gmail, Outlook, Apple, and Yahoo are not rate limited, and plenty more.": "This means that service providers such as Gmail, Outlook, Apple, and Yahoo are not rate limited, and plenty more.",
-  "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later.": "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later."
+  "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later.": "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later.",
+  "Yes, however \"relatively unknown\" senders are rate limited to 1,000 connections per hour per hostname or IP.": "Yes, however \"relatively unknown\" senders are rate limited to 1,000 connections per hour per hostname or IP."
 }

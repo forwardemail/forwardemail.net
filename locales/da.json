@@ -682,7 +682,6 @@
   " library's \"simpleParser\" method to parse the message into a JSON friendly object, and also append the \"raw\" property with the raw email message as a String.": " bibliotekets \"simpleParser\" -metode til at analysere meddelelsen i et JSON-venligt objekt og tilføje også \"rå\" egenskaben med den rå e-mail-besked som en streng.",
   "Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in ": "Webhook HTTP-anmodninger vil prøve igen op til 10 gange (det nøjagtige samme antal forsøg, vi tillader for normal SMTP), med maksimum 20 sekunders timeout pr. Slutpunkt POST-anmodning. Vi prøver igen automatisk baseret på standardstatus og fejlkoder, der bruges i",
   "superagent's retry method": "superagent's forsøgsmetode igen",
-  " (this package is also maintained by the creator of Forward Email).": " (denne pakke vedligeholdes også af skaberen af Videresend e-mail).",
   "Yes, but this is ": "Ja, men det er det",
   "NOT": "IKKE",
   " recommended as this is an incredibly rare edge case.": " anbefales, da dette er en utrolig sjælden kanttilstand.",
@@ -1803,5 +1802,6 @@
   "Yes, however \"relatively unknown\" senders are rate limited to sending 10,000 emails per hour per hostname or IP.": "Yes, however \"relatively unknown\" senders are rate limited to sending 10,000 emails per hour per hostname or IP.",
   "By \"relatively unknown\", we mean senders that do not appear in the top 100,000 unique root domain names used at the DNS level.": "By \"relatively unknown\", we mean senders that do not appear in the top 100,000 unique root domain names used at the DNS level.",
   "This means that service providers such as Gmail, Outlook, Apple, and Yahoo are not rate limited, and plenty more.": "This means that service providers such as Gmail, Outlook, Apple, and Yahoo are not rate limited, and plenty more.",
-  "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later.": "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later."
+  "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later.": "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later.",
+  "Yes, however \"relatively unknown\" senders are rate limited to 1,000 connections per hour per hostname or IP.": "Yes, however \"relatively unknown\" senders are rate limited to 1,000 connections per hour per hostname or IP."
 }

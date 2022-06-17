@@ -1284,7 +1284,6 @@
   "Will you ever increase prices": "가격을 올릴 수 있습니까?",
   "Webhook HTTP requests will retry up to 3 times, with 20 seconds maximum timeout per request.  We will retry automatically based off the default status and error codes used in ": "Webhook HTTP 요청은 최대 3 회 재 시도하며 요청 당 최대 시간 제한은 20 초입니다. 에 사용 된 기본 상태 및 오류 코드를 기반으로 자동으로 다시 시도합니다.",
   "superagent's retry method": "수퍼 에이전트의 재시도 방법",
-  " (this package is also maintained by the creator of Forward Email).": " (이 패키지는 Forward Email 작성자도 관리합니다).",
   "The Free plan requires you to use public DNS records to store your forwarding configuration. Anyone with a computer can lookup your forwarding configuration in a terminal if you are on the Free plan. Unlike the Free plan, the Enhanced Protection plan uses a cryptographically generated random string to store your forwarding configuration privately.": "무료 요금제를 사용하려면 퍼블릭 DNS 레코드를 사용하여 전달 구성을 저장해야합니다. 무료 요금제를 사용하는 경우 컴퓨터가있는 사람은 누구나 터미널에서 전달 구성을 조회 할 수 있습니다. 무료 플랜과 달리 Enhanced Protection 플랜은 암호화 방식으로 생성 된 임의의 문자열을 사용하여 전달 구성을 비공개로 저장합니다.",
   "Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.": "예. 모든 계획에서 SPF, DKIM, DMARC, ARC 및 SRS에 대한 기본 지원이 있습니다. 또한 완벽 성과 높은 전 달성을 보장하기 위해 이러한 사양의 원저자 및 기타 이메일 전문가와 광범위하게 협력했습니다.",
   "Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.": "예. 어떤 플랜을 사용하든 모든 도메인에 적용되는 월별 요금을 한 번만 지불하면됩니다.",
@@ -2100,5 +2099,6 @@
   "Yes, however \"relatively unknown\" senders are rate limited to sending 10,000 emails per hour per hostname or IP.": "Yes, however \"relatively unknown\" senders are rate limited to sending 10,000 emails per hour per hostname or IP.",
   "By \"relatively unknown\", we mean senders that do not appear in the top 100,000 unique root domain names used at the DNS level.": "By \"relatively unknown\", we mean senders that do not appear in the top 100,000 unique root domain names used at the DNS level.",
   "This means that service providers such as Gmail, Outlook, Apple, and Yahoo are not rate limited, and plenty more.": "This means that service providers such as Gmail, Outlook, Apple, and Yahoo are not rate limited, and plenty more.",
-  "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later.": "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later."
+  "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later.": "If this limit is exceeded we send a \"421\" response code which tells the senders mail server to retry again later.",
+  "Yes, however \"relatively unknown\" senders are rate limited to 1,000 connections per hour per hostname or IP.": "Yes, however \"relatively unknown\" senders are rate limited to 1,000 connections per hour per hostname or IP."
 }
