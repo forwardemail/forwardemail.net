@@ -101,7 +101,7 @@
     "otplib": "12.0.1",
     "p-map": "4",
     "p-series": "2",
-    "parse-domain": "2",
+    "parse-domain": "3.0.0",
     "parse-logs": "1.0.0",
     "passport-local-mongoose": "7.1.2",
     "paypal-rest-sdk": "1.8.1",
