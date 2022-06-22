@@ -867,6 +867,8 @@ Otherwise if the recipient is an email address, then we will attempt to send the
 
 If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
 
+If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blacklisted (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+
 
 ## How do you handle your IP addresses becoming blacklisted
 
