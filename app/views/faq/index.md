@@ -803,13 +803,13 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
 4. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
 
-5. If the message had a "To" header, and if any of the message's "To" headers were directed towards SRS rewritten addresses using our domain name, then we will rewrite them (this namely applies for vacation responders).
+5. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried more than 500 times, and if so, then it will be rejected with a 550 error code.
 
-6. If the message was missing a "Message-ID" header, then we will add one using either the envelope MAIL FROM parsed FQDN or our domain name.
+6. If the message had a "To" header, and if any of the message's "To" headers were directed towards SRS rewritten addresses using our domain name, then we will rewrite them (this namely applies for vacation responders).
 
-7. If the message was missing a valid "Date" header, then we will add one using the arrival time from the initial connection of the message.
+7. If the message was missing a "Message-ID" header, then we will add one using either the envelope MAIL FROM parsed FQDN or our domain name.
 
-8. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried more than 500 times, and if so, then it will be rejected with a 550 error code.
+8. If the message was missing a valid "Date" header, then we will add one using the arrival time from the initial connection of the message.
 
 9. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
 
