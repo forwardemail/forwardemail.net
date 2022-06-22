@@ -786,7 +786,7 @@ Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Tr
 
 * `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [Blacklist](#do-you-have-a-blacklist).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 100 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [Blacklist](#do-you-have-a-blacklist).  We also perform a MX record lookup to ensure that each recipient is actually configured to receive emails with our service (e.g. their mail exchanges include `mx1.forwardemail.net` and/or `mx2.forwardemail.net`).  If they are not, then it is rejected with a 421 error code.  We indicate a 421 retry code in case new users are onboarding and have DNS cache issues.
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 100 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [Blacklist](#do-you-have-a-blacklist).
 
 * `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
@@ -834,7 +834,7 @@ This section describes our process related to the SMTP protocol command `DATA` i
     * We parse all TXT records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
     * From these parsed TXT records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
     * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-    * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.  Recursive lookups also ensure that the mail exchanges of the recipient are set to contain at least one of our exchanges.
+    * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
     * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
     * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
     * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
@@ -1826,21 +1826,7 @@ Yes, absolutely.  For example if you're sending an email to `hello@example.com` 
 
 ## How do you prevent spammers and ensure good email forwarding reputation
 
-Per documentation and suggestions from Google at <https://support.google.com/a/answer/175365?hl=en>, along with best practice, including:
-
-1. **DNS Blacklists:** we test senders IP's against the Spamhaus [DNS blacklists][dns-blacklists], if any fail, then the sender is not permitted to send the message and is returned a detailed error message with instructions on how to de-list themselves from the specific blacklists they're listed under.
-
-2. **Anti-Spam and Anti-Phishing Scanner**: we built from scratch and use [Spam Scanner][spamscanner] for anti-spam prevention (it uses a Naive Bayes classifier under the hood).  We built this because we were not happy with [rspamd][] nor [SpamAssassin][], nor were we happy with their lack of privacy-focused policies and public corpus datasets.  Spam Scanner checks a message for spam, phishing, executables, viruses, and more, while completely respecting your privacy.
-
-3. **SPF and DKIM:** through checking if an SPF record exists for a sender, and if so, we reverse-lookup the SMTP connection's remote address to validate it matches the SPF record, otherwise it's rejected.  If an SPF record does not exist, then we require DKIM verification.  If DKIM headers are passed and fail, then it is rejected as well.  If no DKIM headers are passed, then we assume that DKIM validation passes.
-
-4. **MX Record Test:** through checking if the sender's from address domain has MX records (so it's actually coming from a mail exchange/SMTP server), otherwise it's rejected.
-
-5. **Fully Qualified Domain Name Test:** validates that senders SMTP connections are from a fully qualified domain name ("FQDN"), meaning no IP addresses, they must have a valid domain name resolved.
-
-6. **TXT Record Test:** through checking if the email address the sender is trying to send to has a TXT DNS record with a valid email forwarding setup. The SSL certificates (main domain name or alternative names) of all MX servers of the forwarding destination must match the MX entry.
-
-7. **ARC:** we use the [Authentication-Results][] header and validate it against the sending domain's DMARC policy.
+See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blacklisted](#how-do-you-handle-your-ip-addresses-becoming-blacklisted) above.
 
 
 ## What should I do if I receive spam emails
@@ -1903,7 +1889,7 @@ Unfortunately Apple does not allow this, regardless of which service you use.  H
 
 ## Can I forward unlimited emails with this
 
-Yes, however "relatively unknown" senders are rate limited to 1,000 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting).
+Yes, however "relatively unknown" senders are rate limited to 1,000 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
 
 By "relatively unknown", we mean senders that do not appear in the [Whitelist](#do-you-have-a-whitelist).
 
