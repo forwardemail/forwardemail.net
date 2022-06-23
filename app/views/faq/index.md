@@ -850,7 +850,9 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
 16. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.  If any errors occur while sending emails, then we will take the lowest error code used (e.g. 421 retry) and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
 
-17. If there are bounces, then we will send bounce emails (in the background) after returning a `250` successful status code.  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+17. If there are no bounces, then we return a SMTP response status code of 250.
+
+18. If there are bounces and the lowest bounce error code is < 500, then we will send bounce emails (in the background).  We will return the lowest bounce error status code to the sender (e.g. a SMTP response code of 421).  If the lowest error status code is >= 500, then we do not send a bounce email (if we did, then senders would receive a double bounce email, e.g. one from their MTA and one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
 
 
 ## How do you handle email delivery issues
@@ -1542,7 +1544,7 @@ Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS TX
 
 If you prefix an alias with "!" (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole.
 
-Emails sent to disabled addresses will respond with a `250` (message queued) status code, but the emails will not actually be delivered to the recipient(s).
+Emails sent to disabled addresses will respond with a SMTP response status code of 250 (accepted), but the emails will not actually be delivered to the recipient(s).
 
 For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com`:
 
