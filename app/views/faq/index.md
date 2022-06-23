@@ -986,20 +986,11 @@ A common reason for getting listed on the Backscatterer list is misdirected boun
 3. We only send bounces when the MAIL FROM is not blank and does not contain (case-insensitive) one of the following usernames (the portion before the @ in an email).  Note that this list is a little bit shorter than the one above in the MAIL FROM check because we don't want to have false positives (e.g. security@ is a valid address that you might want to get a bounce for; a lot of folks use security@ for their bug bounty programs).
 
    * `abuse@`
-   * `ftp@`
    * `hostmaster@`
    * `mailer-daemon@`
    * `mailer_daemon@`
    * `mailerdaemon@`
-   * `no-reply@`
-   * `no_reply@`
-   * `nobody@`
-   * `noreplies@`
-   * `noreply@`
    * `postmaster@`
-   * `root@`
-   * `usenet@`
-   * `www@`
 
 4. We don't send bounces if the original message had any of the following headers (case-insensitive):
 
