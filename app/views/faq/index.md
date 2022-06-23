@@ -927,6 +927,8 @@ Note that greylisting does not apply to any sender on our [Whitelist](#do-you-ha
 
 Yes, we operate our own private blacklist and update it automatically in real-time and manually based off spam and malicious activity detected.  Blacklisted senders will receive a 554 error message.
 
+We also pull from the UCEPROTECT Level 1 Blacklist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+
 Blacklist removal requests can be sent to <whitelist@forwardemail.net> (please provide a complete description and reason for whitelisting, links to websites, and your businesses' certificate of formation to be whitelisted).
 
 
