@@ -848,11 +848,16 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
 15. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
 
-16. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.  If any errors occur while sending emails, then we will take the lowest error code used (e.g. 421 retry) and use that as the response code to the `DATA` command (see the next step).  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).  A bounce is determined to be any delivery attempted that results in a status code of >= 500 (a permanent failure).
+16. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
 
-17. If there are no bounces (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none, e.g. if there were no >= 400 error codes received throughout delivery).
+    * If any errors occur while sending emails, then we will store them in-memory for later processing.
+    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * If no errors occurred, then we will send a 250 successful SMTP response status code.
+    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
 
-18. If there are bounces and the lowest bounce error code is < 500, then we will send bounce emails in the background.  We will return the lowest bounce error status code to the sender – but if the lowest error status code is >= 500, then we do not send bounce emails (because if we did, then senders would receive a double bounce email, e.g. one from their outbound MTA, such as Gmail, and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+17. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+
+18. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
 
 
 ## How do you handle email delivery issues
