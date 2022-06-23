@@ -927,7 +927,7 @@ Blacklist removal requests can be sent to <whitelist@forwardemail.net> (please p
 
 Yes, we have rate limiting which applies only to senders not on the [Whitelist](#do-you-have-a-whitelist).
 
-We only permit up to 1000 connections per hour per resolved client FQDN root domain (or) remote IP address.
+We only permit up to 100 connections per hour, per sender resolved FQDN root domain (or) sender remote IP address (if no reverse PTR is available), and per envelope recipient to.
 
 If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
 
