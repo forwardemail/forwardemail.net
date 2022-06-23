@@ -780,11 +780,11 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 
 Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We will rate limit senders that are not on the whitelist (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [Whitelisting](#do-you-have-a-whitelist) for more information).  We also check senders that aren't whitelisted against our [Blacklist](#do-you-have-a-blacklist).  Finally, if a sender is not whitelisted, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't whitelisted against our [Blacklist](#do-you-have-a-blacklist).  Finally, if a sender is not whitelisted, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
 
 * `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [Blacklist](#do-you-have-a-blacklist).
+* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [Blacklist](#do-you-have-a-blacklist).  We finally check senders that are not on the whitelist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [Whitelisting](#do-you-have-a-whitelist) for more information).
 
 * `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 100 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [Blacklist](#do-you-have-a-blacklist).
 
@@ -927,13 +927,15 @@ Blacklist removal requests can be sent to <whitelist@forwardemail.net> (please p
 
 Yes, we have rate limiting which applies only to senders not on the [Whitelist](#do-you-have-a-whitelist).
 
-We only permit up to 100 connections per hour, per sender resolved FQDN root domain (or) sender remote IP address (if no reverse PTR is available), and per envelope recipient to.
+We only permit up to 100 connections per hour, per sender resolved FQDN root domain (or) sender remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
 
 If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
 
 Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is whitelisted.
 
 If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+
+Senders that exceed the rate limit will be rejected with a 421 error.
 
 
 ## How do you protect against backscatter
