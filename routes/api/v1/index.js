@@ -162,7 +162,7 @@ router
     web.myAccount.retrieveDomain,
     web.myAccount.ensureUpgradedPlan,
     web.myAccount.validateAlias,
-    rateLimit(50, 'create alias'),
+    rateLimit(300, 'create alias'),
     web.myAccount.createAlias,
     api.v1.aliases.retrieve
   )
