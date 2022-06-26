@@ -13,6 +13,7 @@ const striptags = require('striptags');
 
 const env = require('#config/env');
 const config = require('#config');
+const emailHelper = require('#helpers/email');
 
 const payPalClient = new checkoutNodeJssdk.core.PayPalHttpClient(
   config.payments.paypalCheckoutSdkConfig
@@ -106,14 +107,56 @@ async function createDomainBilling(ctx) {
       // if the user didn't have JavaScript enabled, then redirect them to Stripe page
       if (ctx.accepts('html')) throw ctx.translateError('JAVASCRIPT_REQUIRED');
 
+      //
+      // create and validate stripe customer here
+      // (ensure valid customer before webhooks hit)
+      //
+      try {
+        let customer = isSANB(
+          ctx.state.user[config.userFields.stripeCustomerID]
+        )
+          ? await stripe.customers.retrieve(
+              ctx.state.user[config.userFields.stripeCustomerID]
+            )
+          : await stripe.customers.create({ email: ctx.state.user.email });
+
+        if (customer.deleted) {
+          ctx.logger.warn('Stripe customer previously deleted', { customer });
+          customer = await stripe.customers.create({
+            email: ctx.state.user.email
+          });
+        }
+
+        ctx.state.user[config.userFields.stripeCustomerID] = customer.id;
+        await ctx.state.user.save();
+      } catch (err) {
+        ctx.logger.fatal(err);
+        // email admins here
+        try {
+          await emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              subject: `Error creating Stripe customer for ${ctx.state.user.email}`
+            },
+            locals: { message: err.message }
+          });
+        } catch (err) {
+          ctx.logger.fatal(err);
+        }
+
+        throw ctx.translateError('UNKNOWN_ERROR');
+      }
+
       const options = {
         // TODO: add alipay and others
         payment_method_types: ['card'],
         mode: paymentType === 'one-time' ? 'payment' : 'subscription',
-        ...(isSANB(ctx.state.user[config.userFields.stripeCustomerID])
-          ? { customer: ctx.state.user[config.userFields.stripeCustomerID] }
-          : { customer_email: ctx.state.user.email }),
+        customer: ctx.state.user[config.userFields.stripeCustomerID],
         client_reference_id: reference,
+        metadata: {
+          plan
+        },
         line_items: [
           {
             price,
