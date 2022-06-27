@@ -19,7 +19,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                     required,
                     placeholder="example.com"
                   )
-                  label(for="input-onboard-domain")= t("Enter your domain")
+                  label(for="input-onboard-domain")= t("Your custom domain")
                 .form-group.floating-label
                   input#input-onboard-email.form-control.form-control-lg(
                     type="email",
@@ -29,7 +29,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                     placeholder="name@gmail.com",
                     required
                   )
-                  label(for="input-onboard-email")= t("Enter your email")
+                  label(for="input-onboard-email")= t("Your existing email")
                 .form-check.form-group
                   input#input-enhanced-protection.form-check-input(
                     type="checkbox",
@@ -57,11 +57,12 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                       aria-describedby="help-create-account"
                     )
                     label.form-check-label.mr-2(for="input-create-account")= t("Create your free account now")
-                    small#help-create-account.text-black-50.align-self-center.flex-grow-1.text-right
-                      != t('Read our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>', l("/privacy"), l("/terms"))
+                .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
                 button.btn.btn-success.btn-lg.btn-block(type="submit")
                   = t("Continue")
                   = " "
                   i.fa.fa-angle-double-right
+                p.mt-3.mb-1.text-center#help-create-account
+                  small.text-black-50!= t('By signing up, you agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
           if onboardKeepReading
-            p.text-center.mb-0: small: a.text-black-50(href=onboardKeepReading)= t("Not interested?  Click here to keep reading")
+            p.text-center.mb-0: small: a.text-black-50.font-weight-bold(href=onboardKeepReading)= t("Not interested?  Click here to keep reading")

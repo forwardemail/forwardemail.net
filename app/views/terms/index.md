@@ -18,6 +18,7 @@ By accessing this web site, you are agreeing to be bound by these web site Terms
 * [Site Terms of Use Modifications](#site-terms-of-use-modifications)
 * [Governing Law](#governing-law)
 * [License](#license)
+* [Additional Disclosures](#additional-disclosures)
 
 
 ## Disclaimer
@@ -90,3 +91,9 @@ General Terms and Conditions applicable to Use of a Web Site.
 ## License
 
 [Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © [Niftylettuce, LLC.](https://niftylettuce.com/)
+
+
+## Additional Disclosures
+
+* This site is protected by Cloudflare and its [Privacy Policy](https://www.cloudflare.com/privacypolicy/) and [Terms of Service](https://www.cloudflare.com/website-terms/) apply.
+* This site is protected by hCaptcha and its [Privacy Policy](https://www.hcaptcha.com/privacy) and [Terms of Service](https://www.hcaptcha.com/terms) apply.

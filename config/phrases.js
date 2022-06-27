@@ -58,6 +58,8 @@ module.exports = {
   TWO_FACTOR_REQUIRED:
     'Please log in with two-factor authentication to continue.',
   LOGIN_REQUIRED: 'Please log in or sign up to view the page you requested.',
+  LOGIN_REQUIRED_FOR_ACTION:
+    'We tried to create a new account with this email address, but it already exists.  Please log in with this email address if it belongs to you and then try again.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
   NO_DOMAINS_EXIST: 'Add a domain name to your account to continue.',

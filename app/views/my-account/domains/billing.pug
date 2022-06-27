@@ -16,31 +16,44 @@ block append scripts
 
 block body
   - const isMakePayment = ctx.pathWithoutLocale === "/my-account/billing/make-payment";
-  #modal-pricing-video.modal.fade(
-    tabindex="-1",
-    role="dialog",
-    aria-labelledby="modal-pricing-video-title",
-    aria-hidden="true"
-  )
-    .modal-dialog.modal-lg(role="document")
-      .modal-content
-        .modal-header.text-center.d-block
-          h1#modal-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Learn about our plans")
-          button.close(type="button", data-dismiss="modal", aria-label="Close")
-            span(aria-hidden="true") &times;
-        .modal-body
-          .lazyframe(
-            title=t("Free Email Forwarding for Creators"),
-            style="width: 100%; height: 450px",
-            data-vendor="youtube_nocookie",
-            data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
-          )
+  - const isNew = boolean(ctx.query.is_new)
+  if isNew
+    #modal-pricing-video.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-pricing-video-title",
+      aria-hidden="true"
+    )
+      .modal-dialog.modal-lg(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            h1#modal-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Learn about our plans")
+            button.close(type="button", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+          .modal-body
+            .lazyframe(
+              title=t("Free Email Forwarding for Creators"),
+              style="width: 100%; height: 450px",
+              data-vendor="youtube_nocookie",
+              data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
+            )
   .container-fluid.py-3
     .row
       .col
         include ../../_breadcrumbs
     .row
-      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3.text-center
+      .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3.text-center
+        if isNew
+          .alert.alert-warning
+            small
+              = t("Don't want to upgrade yet?")
+              br.d-block.d-md-none
+              = ' '
+              a(href=l(`/my-account/domains/${domain.name}`)).alert-link= t("Try our free plan")
+              = ' '
+              = t('or')
+              = ' '
+              a(href=l('/pricing'), data-toggle='modal', data-target='#modal-pricing-video').alert-link= t('learn about our plans')
         .card.border-dark
           h2.card-header.bg-dark.text-white
             if isMakePayment
@@ -51,28 +64,15 @@ block body
               else
                 != t('Upgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
           .card-body
-            p.lead
-              if isMakePayment
-                = t("Add credit to your account below.")
-              else
-                = t("Unlimited domains for one price.")
-            if !isMakePayment
-              button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(
-                type="button",
-                data-toggle="modal",
-                data-target="#modal-pricing-video"
-              )
-                i.fa.fa-play-circle
-                = " "
-                = t("Learn about plans")
-            hr
+            if isMakePayment
+              p.lead= t("Add credit to your account below.")
             form#form-billing(action=ctx.path, method="POST")
               input(type="hidden", name="_csrf", value=ctx.csrf)
 
               if !isMakePayment
                 input(type="hidden", name="plan", value=ctx.query.plan)
 
-              h3.h4= t("Method")
+              h3.h5= t("Method")
               .form-group
                 .form-check.form-check-inline
                   input#input-payment-method-credit-card.form-check-input(
@@ -82,7 +82,7 @@ block body
                     name="payment_method",
                     value="credit_card"
                   )
-                  label.form-check-label.lead(
+                  label.form-check-label(
                     for="input-payment-method-credit-card"
                   )= t("Debit/Credit Card")
                 .form-check.form-check-inline
@@ -92,14 +92,14 @@ block body
                     name="payment_method",
                     value="paypal"
                   )
-                  label.form-check-label.lead(
+                  label.form-check-label(
                     for="input-payment-method-paypal"
                   )= t("PayPal")
 
               //- Payment Type
               //- TODO: default to last one used
               if !isMakePayment
-                h3.h4= t("Payment Type")
+                h3.h5= t("Payment Type")
                 .form-group
                   .form-check.form-check-inline
                     input#input-payment-type-subscription.form-check-input(
@@ -109,7 +109,7 @@ block body
                       name="payment_type",
                       value="subscription"
                     )
-                    label.form-check-label.lead(
+                    label.form-check-label(
                       for="input-payment-type-subscription"
                     )= t("Subscription")
                   .form-check.form-check-inline
@@ -119,15 +119,15 @@ block body
                       name="payment_type",
                       value="one-time"
                     )
-                    label.form-check-label.lead(
+                    label.form-check-label(
                       for="input-payment-type-one-time"
                     )= t("One-time")
 
               //- Length
               //- TODO: default to last one used
-              h3.h4= t("Duration")
+              h3.h5= t("Duration")
               .form-group
-                select.form-control.form-control-lg.d-inline-block.w-auto(
+                select.form-control.form-control.d-inline-block.w-auto(
                   name="payment_duration",
                   required
                 )
@@ -181,6 +181,6 @@ block body
 
               p.text-muted.pt-3.mb-0: small.text-muted= t("We accept all major currencies and card types.")
 
-          .card-footer.text-muted.text-center= t("We'll automatically email you if you're late on a payment.")
+          small.card-footer.text-muted.text-center= t("We'll automatically email you if you're late on a payment.")
         if !isMakePayment
           .mt-3.font-weight-bold.text-uppercase.text-decoration-underline= t("30-day money back guarantee")

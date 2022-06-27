@@ -30,7 +30,7 @@ const localeRouter = new Router({ prefix: '/:locale' });
 
 localeRouter
   .get('/', web.auth.homeOrDomains)
-  .post('/', web.myAccount.retrieveDomains, web.onboard)
+  .post('/', web.myAccount.retrieveDomains, policies.ensureCaptcha, web.onboard)
   // recipient verification
   .get('/v/:text', web.recipientVerification)
   .get('/dashboard', (ctx) => {
@@ -51,6 +51,7 @@ localeRouter
   .post(
     '/faq',
     web.myAccount.retrieveDomains,
+    policies.ensureCaptcha,
     web.onboard,
     web.auth.parseReturnOrRedirectTo,
     web.faq
@@ -113,6 +114,7 @@ localeRouter
   .post(
     '/forgot-password',
     policies.ensureLoggedOut,
+    policies.ensureCaptcha,
     rateLimit(10, 'forgot password'),
     web.auth.forgotPassword
   )
@@ -124,6 +126,7 @@ localeRouter
   .post(
     '/reset-password/:token',
     policies.ensureLoggedOut,
+    policies.ensureCaptcha,
     rateLimit(10, 'reset password'),
     web.auth.resetPassword
   )
@@ -146,7 +149,12 @@ localeRouter
     web.auth.parseReturnOrRedirectTo,
     web.auth.registerOrLogin
   )
-  .post(config.loginRoute, rateLimit(50, 'login'), web.auth.login)
+  .post(
+    config.loginRoute,
+    policies.ensureCaptcha,
+    rateLimit(50, 'login'),
+    web.auth.login
+  )
   .get(
     '/register',
     policies.ensureLoggedOut,
@@ -156,6 +164,7 @@ localeRouter
   .post(
     '/register',
     policies.ensureLoggedOut,
+    policies.ensureCaptcha,
     rateLimit(5, 'create user'),
     web.auth.register
   );

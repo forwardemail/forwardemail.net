@@ -48,7 +48,8 @@ block body
             li.list-inline-item= t("Don't have a domain name?")
             li.list-inline-item
               a.alert-link(href=l("/domain-registration"))= t("Register a domain")
-    if domains.length > 0
+    - const filteredDomains = domains.filter(domain => !domain.is_global || domain.group === 'admin')
+    if filteredDomains.length > 0
       .row.text-center.my-5
         .col
           a.btn.btn-outline-secondary(href=l("/my-account/domains"))

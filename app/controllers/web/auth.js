@@ -8,6 +8,7 @@ const sanitizeHtml = require('sanitize-html');
 const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
+const { errors } = require('passport-local-mongoose');
 
 const Users = require('#models/user');
 const config = require('#config');
@@ -295,7 +296,7 @@ async function recoveryKey(ctx) {
   }
 }
 
-async function register(ctx) {
+async function register(ctx, next) {
   const { body } = ctx.request;
 
   if (!_.isString(body.email) || !validator.isEmail(body.email))
@@ -316,7 +317,19 @@ async function register(ctx) {
   query[config.userFields.hasVerifiedEmail] = true;
   query[config.userFields.hasSetPassword] = true;
   query[config.lastLocaleField] = ctx.locale;
-  const user = await Users.register(query, body.password);
+  let user;
+  try {
+    user = await Users.register(query, body.password);
+  } catch (err) {
+    if (err instanceof errors.UserExistsError) {
+      ctx.logger.warn(err);
+
+      // Attempt to log the existing user in (e.g. they tried to log in from the signup page)
+      return login(ctx, next);
+    }
+
+    throw err;
+  }
 
   await ctx.login(user);
 

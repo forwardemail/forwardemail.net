@@ -60,6 +60,16 @@ $('.navbar-collapse').on('hidden.bs.collapse shown.bs.collapse', () => {
   resizeNavbarPadding($);
 });
 
+// Add data-compact to h-captcha onload depending on width
+// 576px = bootstrap md
+const mediaQuery = window.matchMedia('(min-width: 576px)');
+if (!mediaQuery.matches) $('.h-captcha').attr('data-size', 'compact');
+
+// Handle hCaptcha errors
+window.hCaptchaError = (...args) => {
+  console.error('hCaptchaError', { args });
+};
+
 // Handle modals on anchor tags with data-target specified (preserve href)
 $('a[data-toggle="modal-anchor"]').on('click.modalAnchor', modalAnchor);
 
@@ -218,24 +228,6 @@ function keyup() {
 }
 
 $body.on('keyup', '.verification-form', debounce(keyup, 200));
-
-//
-// help form with hcaptcha dynamic loading
-//
-let hCaptchaLoaded = false;
-$body.on('click', '[data-target="#modal-help"]', (ev) => {
-  ev.preventDefault();
-
-  if (!hCaptchaLoaded) {
-    $('<script />')
-      .attr('type', 'text/javascript')
-      .attr('src', 'https://hcaptcha.com/1/api.js')
-      .appendTo('head');
-    hCaptchaLoaded = true;
-  }
-
-  $('#modal-help').modal('show');
-});
 
 //
 // any modals with embedded <iframe> we can assume need reset

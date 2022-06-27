@@ -357,16 +357,15 @@ block body
             p.lead!= t('<span class="font-weight-bold">Yes.</span> We offer a 30 day money-back guarantee &ndash; with no questions asked.')
         .row.my-5
           .col
-            h2.font-weight-bold= t("Do you store logs or write to disk?")
+            h2.font-weight-bold= t("Do you store SMTP logs or write to disk?")
             p.lead
-              != t('<span class="font-weight-bold">No.</span> We have a <a href="%s">Privacy</a> policy of strictly not storing logs, metadata, nor emails.', l("/privacy"))
+              != t('<span class="font-weight-bold">No.</span> We have a <a href="%s">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.', l("/privacy"))
               = " "
-              = t("You will find that every other email forwarder either stores logs or writes your emails to a disk storage queue (or sometimes both!).")
+              = t("You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.")
               = " "
               = t("This common practice is a huge security risk for you, and is another reason why we built our service.")
               = " "
               = t("Our expertise allowed us to build our own custom solution that uses memory-based streams, and is lightning fast and privacy-focused.")
-              = " "
             p.lead.font-weight-bold: u= t("We don't track you like other services do.")
         .row.my-5
           .col

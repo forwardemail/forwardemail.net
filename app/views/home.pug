@@ -59,17 +59,14 @@ block body
             data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
           )
   .min-vh-80.text-center.d-flex.flex-column
-    .container.my-auto
+    .container.my-auto.pt-3
       .row
         .col-12.col-lg-10.offset-lg-1
           h1.display-4.font-weight-bold.mb-3
-            if isBot(ctx.get('User-Agent'))
-              != t("Free Email Forwarding")
-            else
-              != t("Unlimited Email Forwarding")
-          p.lead.mb-3.d-block
-            != t("We're <span class='font-weight-bold'>the only</span> service that <mark>respects your privacy</mark> and <mark>never stores</mark> your emails.")
-          form.ajax-form.d-md-flex.align-items-md-center.justify-content-md-center(
+            != t("Custom Domain Email Service")
+          p.d-block.mb-3.text-muted.font-weight-bold
+            != t("Forward any email @your-domain.com, create unlimited aliases, and send email as @your-domain.com.")
+          form.ajax-form(
             action=ctx.path,
             method="POST"
           )
@@ -77,16 +74,15 @@ block body
             input(type="hidden", name="enhanced_protection", value="true")
             input(type="hidden", name="create_domain", value="true")
             input(type="hidden", name="create_account", value="true")
-            .form-group.floating-label.mb-md-0
+            .form-group.floating-label
               input.form-control.form-control-lg(
                 type="text",
                 name="domain",
                 required,
                 placeholder="your-domain.com"
               )
-              label(for="input-onboard-domain")= t("Enter your domain")
-            i.fa.fa-forward.d-none.d-md-inline.mx-2
-            .form-group.floating-label.mb-md-0.mr-md-2
+              label(for="input-onboard-domain")= t("Your custom domain")
+            .form-group.floating-label
               input#input-onboard-email.form-control.form-control-lg(
                 type="email",
                 autocomplete="email",
@@ -95,14 +91,14 @@ block body
                 placeholder="your-name@gmail.com",
                 required
               )
-              label(for="input-onboard-email")= t("Enter your email")
-            button.btn.btn-success.btn-lg.d-none.d-md-inline(type="submit")
-              = t("Get Started")
-            button.btn.btn-success.btn-lg.btn-block.d-md-none(type="submit")
+              label(for="input-onboard-email")= t("Your existing email")
+            .text-left.h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
+            button.btn.btn-success.btn-lg.btn-block(type="submit")
               = t("Get Started")
               = " "
               i.fa.fa-angle-double-right
-          small.d-block.mt-3.text-muted.font-weight-bold!= t("Forward anything @your-domain.com to your email &ndash; and create individual aliases too!")
+          p.mt-3.mb-1.text-center
+            small.text-black-50!= t('By signing up, you agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
           a.text-decoration-none.mt-5.d-block.d-md-none.text-monospace.text-uppercase.text-dark(
             href="#learn-more"
           )
@@ -387,7 +383,7 @@ block body
       .col-12.col-lg-6.d-flex
         .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
           h2.display-5.font-weight-bold.mb-3= t("Privacy First")
-          p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption and a zero-tolerance policy for logs of any kind.")
+          p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs, and do not write your emails to disk storage.")
           a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
             href=l("/register"),
             role="button",
@@ -480,7 +476,7 @@ block body
     .row
       .col-12.col-md-9.col-lg-6
         p.lead.text-white.mb-3.mb-md-5
-          != t('Unlike other services, we <strong class="font-weight-bold">do not keep logs</strong> nor metadata, <strong class="font-weight-bold">never read</strong> your emails, and are <strong class="font-weight-bold">100% open-source</strong>.')
+          != t('Unlike other services, we <strong class="font-weight-bold">do not store SMTP logs</strong>, <strong class="font-weight-bold">never store</strong> your emails, and are <strong class="font-weight-bold">100% open-source</strong>.')
           = " "
           != t('We\'re the <strong class="text-uppercase font-weight-bold border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
           = " "

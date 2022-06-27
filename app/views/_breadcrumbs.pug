@@ -1,5 +1,5 @@
 if breadcrumbs.length > 1
-  nav(aria-label="breadcrumb")
+  nav(aria-label="breadcrumb").d-none.d-md-block
     ol.breadcrumb.bg-dark.justify-content-center.justify-content-md-start.mb-3
       each breadcrumb, i in breadcrumbs
         if i === breadcrumbs.length - 1

@@ -76,7 +76,7 @@
     If you would like to hide your information from being publicly searchable over the Internet, then please go to <a class="alert-link" href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan before starting this guide.
     Publicly searchable information on free plans includes, but is not limited to: aliases, forwarded addresses, recipients, and advanced settings such as custom port forwarding.
     If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/pricing">Pricing</a> page &ndash; otherwise keep reading!
-    All plans abide by our <a class="alert-link" href="/privacy">Privacy</a> policy of strictly not storing logs, metadata, nor emails.
+    All plans abide by our <a class="alert-link" href="/privacy">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.
     We don't track you like other services do.
   </span>
 </div>
@@ -1790,7 +1790,7 @@ No, absolutely not.  See our [Privacy Policy](/privacy).
 
 ## Do you read my emails
 
-No, absolutely not.  We do not store logs.  See our [Privacy Policy](/privacy).
+No, absolutely not.  We do not store SMTP logs.  See our [Privacy Policy](/privacy).
 
 Many other email forwarding services unethically read your email.  This is not in alignment with our principles and philosophy on software.
 
@@ -1965,16 +1965,6 @@ At no point in time do we write to disk or store emails – everything is done i
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
-[dns-blacklists]: https://en.wikipedia.org/wiki/Domain_Name_System-based_Blackhole_List
-
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
 
 [nodemailer]: https://github.com/nodemailer/nodemailer
-
-[spamscanner]: https://github.com/spamscanner/spamscanner
-
-[rspamd]: https://www.rspamd.com/
-
-[spamassassin]: https://spamassassin.apache.org/
-
-[authentication-results]: https://en.wikipedia.org/wiki/Email_authentication#Authentication-Results

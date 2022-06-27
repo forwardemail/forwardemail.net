@@ -44,7 +44,7 @@ graceful.listen();
       const user = await Users.findById(_id);
 
       // in case user deleted their account or is banned
-      if (!user || user.is_banned) continue;
+      if (!user || user[config.userFields.isBanned]) continue;
 
       // in case email was sent for whatever reason
       if (user[config.userFields.launchEmailSentAt]) continue;

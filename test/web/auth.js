@@ -77,7 +77,7 @@ test('fails registering invalid email', async (t) => {
   t.is(JSON.parse(res.text).message, phrases.INVALID_EMAIL);
 });
 
-test("doesn't leak used email", async (t) => {
+test('if user exists then try to log them in if they were accidentally on the registration page', async (t) => {
   const { web } = t.context;
   const user = await factory.create('user');
 
@@ -87,7 +87,10 @@ test("doesn't leak used email", async (t) => {
   });
 
   t.is(res.status, 400);
-  t.is(JSON.parse(res.text).message, phrases.PASSPORT_USER_EXISTS_ERROR);
+  t.is(
+    JSON.parse(res.text).message,
+    phrases.PASSPORT_NO_SALT_VALUE_STORED_ERROR
+  );
 });
 
 test('allows password reset for valid email (HTML)', async (t) => {

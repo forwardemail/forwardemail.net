@@ -1,8 +1,5 @@
 extends layout
 
-block append scripts
-  script(defer, src="https://hcaptcha.com/1/api.js")
-
 block body
   .container.py-5
     .row
@@ -33,9 +30,7 @@ block body
                   placeholder=t("Write your message")
                 )
                 label(for="input-message")= t("Message")
-              if boolean(config.hcaptchaEnabled) && !user
-                .h-captcha(data-sitekey=config.hcaptchaSiteKey)
-                p.text-left.mb-3: small.text-muted= t("If you log in to your account, you will not need to fill out these captchas.")
+              .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
             .card-footer
               button.btn.btn-block.btn-success.btn-lg(
                 type="submit",

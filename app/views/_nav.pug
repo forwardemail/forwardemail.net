@@ -36,9 +36,7 @@ if !isHelp
                 placeholder=t("Write your message")
               )
               label(for="input-message")= t("Message")
-            if boolean(config.hcaptchaEnabled) && !user
-              .h-captcha(data-sitekey=config.hcaptchaSiteKey)
-              p.text-left.mb-3: small.text-muted= t("If you log in to your account, you will not need to fill out these captchas.")
+            .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError', data-tabindex='-1')
             button.btn.btn-block.btn-success.btn-lg(
               type="submit",
               data-toggle="tooltip",
@@ -90,7 +88,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
     href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l()
   )
     span.sr-only.sr-only-focusable Forward Email
-    img.d-inline-block.mr-1(
+    img.d-none.d-md-inline-block.mr-1(
       src=manifest("img/logo-square.svg"),
       width=50,
       height=50,
@@ -210,8 +208,5 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
               = " "
               i.fa.fa-angle-double-right
 if ctx.pathWithoutLocale === '/'
-  h1.h6.py-3.px-3.mb-0.text-center.alert.alert-success.border-top-0.border-left-0.border-right-0.rounded-0
-    .d-none.d-md-inline
-      != t("Privacy-Focused Email Forwarding Since 2017")
-    small.d-md-none
-      != t("Privacy-Focused Email Forwarding Since 2017")
+  h1.h6.py-3.px-3.mb-0.text-center.alert.alert-primary.border-top-0.border-left-0.border-right-0.rounded-0
+    small!= t("We're <span class='font-weight-bold'>the only</span> service that <mark>respects your privacy</mark> and <mark>never stores</mark> your emails.")
