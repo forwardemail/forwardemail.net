@@ -2,6 +2,9 @@ module.exports = {
   prettier: true,
   space: true,
   extends: ['xo-lass'],
+  rules: {
+    'no-warning-comments': 'off'
+  },
   overrides: [
     {
       files: ['assets/js/*.js', 'assets/js/**/*.js'],
