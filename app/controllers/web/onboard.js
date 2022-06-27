@@ -140,9 +140,7 @@ async function onboard(ctx, next) {
       locale: ctx.locale
     };
     query[config.lastLocaleField] = ctx.locale;
-    // TODO: re-enable this
-    // query[config.userFields.hasVerifiedEmail] = false;
-    query[config.userFields.hasVerifiedEmail] = true;
+    query[config.userFields.hasVerifiedEmail] = false;
     query[config.userFields.hasSetPassword] = false;
     try {
       ctx.state.user = await Users.create(query);

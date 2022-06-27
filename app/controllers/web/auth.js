@@ -312,9 +312,7 @@ async function register(ctx, next) {
     group: count === 0 ? 'admin' : 'user',
     locale: ctx.locale
   };
-  // TODO: re-enable this
-  // query[config.userFields.hasVerifiedEmail] = false;
-  query[config.userFields.hasVerifiedEmail] = true;
+  query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
   query[config.lastLocaleField] = ctx.locale;
   let user;
