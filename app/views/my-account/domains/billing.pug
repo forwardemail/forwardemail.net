@@ -16,8 +16,7 @@ block append scripts
 
 block body
   - const isMakePayment = ctx.pathWithoutLocale === "/my-account/billing/make-payment";
-  - const isNew = boolean(ctx.query.is_new)
-  if isNew
+  if user.plan === 'free'
     #modal-pricing-video.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -43,7 +42,7 @@ block body
         include ../../_breadcrumbs
     .row
       .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3.text-center
-        if isNew
+        if user.plan === 'free'
           .alert.alert-warning
             small
               = t("Don't want to upgrade yet?")

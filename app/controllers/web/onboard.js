@@ -244,7 +244,7 @@ async function onboard(ctx, next) {
   // redirect user if they wanted to upgrade
   if (ctx.state.domain && boolean(ctx.request.body.enhanced_protection)) {
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection&is_new=true`
+      `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
