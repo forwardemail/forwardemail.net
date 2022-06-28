@@ -64,8 +64,8 @@ const config = {
     i18n: {
       ...i18n,
       autoReload: false,
-      updateFiles: false,
-      syncFiles: false
+      updateFiles: true,
+      syncFiles: true
     }
   },
   logger: loggerConfig,
