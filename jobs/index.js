@@ -57,11 +57,13 @@ const jobs = [
     interval: '1d',
     timeout: 0
   },
+  /*
   {
     name: 'domain-missing-txt',
     interval: '1h',
     timeout: 0
   }
+  */
 ];
 
 if (process.env.NODE_ENV === 'production') {
