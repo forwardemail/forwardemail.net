@@ -56,7 +56,7 @@ const jobs = [
     name: 'check-disposable',
     interval: '1d',
     timeout: 0
-  },
+  }
   /*
   {
     name: 'domain-missing-txt',
