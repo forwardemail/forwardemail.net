@@ -99,7 +99,10 @@ const Payment = new mongoose.Schema({
 });
 
 Payment.virtual('description').get(function () {
-  const duration = dayjs().add(this.duration, 'millisecond').fromNow(true);
+  const duration = dayjs()
+    .add(this.duration, 'millisecond')
+    .locale(this.locale)
+    .fromNow(true);
   return i18n.translate(
     'PAYMENT_DESCRIPTION',
     this.locale,

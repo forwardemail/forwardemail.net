@@ -10,7 +10,7 @@ block content
             .card-text
               p= t("Use this verification code:")
               pre: code.display-3= pin
-              p= t("This code expires within %s.", dayjs(expiresAt).fromNow(true))
+              p= t("This code expires within %s.", dayjs(expiresAt).locale(locale).fromNow(true))
             a.btn.btn-lg.btn-block.btn-primary(href=link)
               .d-inline-block.align-middle
                 = t("Verify now")

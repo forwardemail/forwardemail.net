@@ -249,7 +249,7 @@ async function markdown() {
     ...(isCI ? { redis: false } : {})
   });
   const graceful = new Graceful({
-    redisClients: [mandarin.redisClient],
+    ...(isCI ? {} : { redisClients: [mandarin.redisClient] }),
     logger
   });
   graceful.listen();

@@ -251,5 +251,7 @@ module.exports = {
     'Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.',
   RECIPIENT_VERIFICATION_PENDING_DOMAIN_VERIFICATION:
     'Verification link will not be sent until the domain has verified TXT and MX records.',
+  DISPOSABLE_EMAIL_NOT_ALLOWED:
+    'Disposable email addresses are not allowed.  Try again or contact us for help.',
   ...STATUSES
 };

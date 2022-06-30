@@ -87,6 +87,10 @@ async function mapper(_id) {
       );
 
     if (!hasDNSError) {
+      // reset missing txt so we alert users if they are missing a TXT in future again
+      if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
+        domain.missing_txt_sent_at = null;
+
       // set the values (since we are skipping some verification)
       domain.has_txt_record = txt;
       domain.has_mx_record = mx;

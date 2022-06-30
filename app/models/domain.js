@@ -158,6 +158,7 @@ const Domain = new mongoose.Schema({
   },
   onboard_email_sent_at: Date,
   verified_email_sent_at: Date,
+  missing_txt_sent_at: Date,
   // default option to require `has_recipient_verification`
   // on all aliases for verification emails to send
   has_recipient_verification: {
@@ -279,6 +280,9 @@ Domain.pre('validate', async function (next) {
         i18n.translateError('AT_LEAST_ONE_ADMIN_REQUIRED', domain.locale)
       );
     const { txt, mx } = await getVerificationResults(domain, domain.client);
+    // reset missing txt so we alert users if they are missing a TXT in future again
+    if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
+      domain.missing_txt_sent_at = null;
     domain.has_txt_record = txt;
     domain.has_mx_record = mx;
     next();
@@ -569,6 +573,9 @@ async function verifyRecords(_id, locale, client) {
     );
 
   const { txt, mx, errors } = await getVerificationResults(domain, client);
+  // reset missing txt so we alert users if they are missing a TXT in future again
+  if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
+    domain.missing_txt_sent_at = null;
   domain.has_txt_record = txt;
   domain.has_mx_record = mx;
   domain.locale = locale;

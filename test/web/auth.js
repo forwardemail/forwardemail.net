@@ -1,10 +1,12 @@
-// Libraries required for testing
 const util = require('util');
-const test = require('ava');
+
 const cryptoRandomString = require('crypto-random-string');
+const superagent = require('superagent');
+const test = require('ava');
 const { factory } = require('factory-girl');
 
 const utils = require('../utils');
+
 const phrases = require('#config/phrases');
 
 test.before(utils.setupMongoose);
@@ -25,6 +27,22 @@ test('creates new user', async (t) => {
   t.is(res.header.location, '/en/my-account/domains');
 });
 
+test('rejects new user with disposable email', async (t) => {
+  const { web } = t.context;
+
+  const { text } = await superagent.get(
+    'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+  );
+
+  const res = await web.post('/en/register').send({
+    email: `test@${JSON.parse(text)[0]}`,
+    password: '!@K#NLK!#N'
+  });
+
+  t.is(res.status, 400);
+  t.is(JSON.parse(res.text).message, phrases.DISPOSABLE_EMAIL_NOT_ALLOWED);
+});
+
 test('fails registering with easy password', async (t) => {
   const { web } = t.context;
 
@@ -34,7 +52,10 @@ test('fails registering with easy password', async (t) => {
   });
 
   t.is(res.status, 400);
-  t.is(res.body.message, phrases.INVALID_PASSWORD_STRENGHT);
+  t.regex(
+    JSON.parse(res.text).message,
+    new RegExp(phrases.INVALID_PASSWORD_STRENGTH, 'g')
+  );
 });
 
 test('successfully registers with strong password', async (t) => {

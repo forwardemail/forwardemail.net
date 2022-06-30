@@ -36,7 +36,8 @@ if !isHelp
                 placeholder=t("Write your message")
               )
               label(for="input-message")= t("Message")
-            .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError', data-tabindex='-1')
+            if config.hcaptchaEnabled
+              .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError', data-tabindex='-1')
             button.btn.btn-block.btn-success.btn-lg(
               type="submit",
               data-toggle="tooltip",

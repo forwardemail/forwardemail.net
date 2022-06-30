@@ -30,7 +30,8 @@ block body
                   placeholder=t("Write your message")
                 )
                 label(for="input-message")= t("Message")
-              .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
+              if config.hcaptchaEnabled
+                .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
             .card-footer
               button.btn.btn-block.btn-success.btn-lg(
                 type="submit",

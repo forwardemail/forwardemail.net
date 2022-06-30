@@ -8,7 +8,9 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const mongooseOmitCommonFields = require('mongoose-omit-common-fields');
+const ms = require('ms');
 const passportLocalMongoose = require('passport-local-mongoose');
+const superagent = require('superagent');
 const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
@@ -58,11 +60,6 @@ const omitExtraFields = [
   config.userFields.paypalSubscriptionID,
   config.userFields.addressHTML
 ];
-
-// TODO: set relative threshold for messages
-// <https://github.com/ladjs/dayjs-with-plugins/issues/2>
-// <https://day.js.org/docs/en/customization/relative-time>
-// moment.relativeTimeThreshold('ss', 5);
 
 const User = new mongoose.Schema({
   // plan
@@ -299,6 +296,54 @@ User.virtual(config.userFields.verificationPinHasExpired).get(function () {
       new Date(this[config.userFields.verificationPinExpiresAt]).getTime() <
         Date.now()
   );
+});
+
+//
+// TODO: this should be moved to redis or its own package under forwardemail or @ladjs
+//
+let disposableDomains = [];
+async function crawlDisposable() {
+  try {
+    const { text } = await superagent
+      .get(
+        'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+      )
+      .timeout(ms('5s'));
+    const json = JSON.parse(text);
+    if (!Array.isArray(json) || json.length === 0)
+      throw new Error('Disposable did not crawl data');
+    disposableDomains = json;
+  } catch (err) {
+    logger.fatal(err);
+  }
+}
+
+setInterval(crawlDisposable, ms('1d'));
+
+crawlDisposable();
+
+// this ensures that `email` was already validated, trimmed, lowercased
+User.pre('save', async function (next) {
+  // only do this for new users signing up
+  // (we will most likely deprecate disposable; see jobs/check-disposable)
+  if (!this.isNew) return next();
+
+  const domain = this.email.split('@')[1];
+  if (disposableDomains.length === 0) await crawlDisposable();
+  // TODO: convert to Set with set.has(x) lookup vs arr.indexOf(x) !== -1
+  // eslint-disable-next-line unicorn/prefer-includes
+  if (disposableDomains.indexOf(domain) !== -1) {
+    const err = Boom.badRequest(
+      i18n.api.t({
+        phrase: config.i18n.phrases.DISPOSABLE_EMAIL_NOT_ALLOWED,
+        locale: this[config.lastLocaleField]
+      })
+    );
+    err.no_translate = true;
+    return next(err);
+  }
+
+  next();
 });
 
 User.pre('validate', async function (next) {

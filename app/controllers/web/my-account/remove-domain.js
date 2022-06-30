@@ -1,6 +1,11 @@
-const { Domains } = require('#models');
+const { Domains, Aliases } = require('#models');
 
 async function removeDomain(ctx, next) {
+  // remove all aliases
+  await Aliases.deleteMany({
+    domain: ctx.state.domain._id
+  });
+  // remove the domain
   await Domains.findByIdAndRemove(ctx.state.domain._id);
   if (!ctx.api)
     ctx.flash('custom', {

@@ -38,7 +38,7 @@ const jobs = [
     timeout: 0
   },
   {
-    name: 'remove-unverified-users',
+    name: 'cleanup-database',
     interval: '1h',
     timeout: 0
   },
@@ -50,6 +50,16 @@ const jobs = [
   {
     name: 'recipient-verification-email',
     interval: '15s',
+    timeout: 0
+  },
+  {
+    name: 'check-disposable',
+    interval: '1d',
+    timeout: 0
+  },
+  {
+    name: 'domain-missing-txt',
+    interval: '1h',
     timeout: 0
   }
 ];

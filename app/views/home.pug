@@ -92,7 +92,8 @@ block body
                 required
               )
               label(for="input-onboard-email")= t("Your existing email")
-            .text-left.h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
+            if config.hcaptchaEnabled
+              .text-left.h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
             button.btn.btn-success.btn-lg.btn-block(type="submit")
               = t("Get Started")
               = " "

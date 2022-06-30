@@ -87,6 +87,7 @@ async function createDomainBilling(ctx) {
     // Subscription payment for 1 year of Enhanced Protection plan
     const duration = dayjs()
       .add(ms(paymentDuration), 'millisecond')
+      .locale(ctx.locale)
       .fromNow(true);
     const description = striptags(
       ctx.translate(

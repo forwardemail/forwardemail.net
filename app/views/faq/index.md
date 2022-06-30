@@ -1792,11 +1792,9 @@ No, absolutely not.  See our [Privacy Policy](/privacy).
 
 No, absolutely not.  We do not store SMTP logs.  See our [Privacy Policy](/privacy).
 
-Many other email forwarding services unethically read your email.  This is not in alignment with our principles and philosophy on software.
+Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
 
-We believe you should have a right to privacy and we strictly respect it.
-
-The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
 
 
 ## Does it support the plus + symbol for Gmail aliases

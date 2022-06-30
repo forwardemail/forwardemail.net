@@ -390,7 +390,9 @@ async function forgotPassword(ctx) {
     throw Boom.badRequest(
       ctx.translateError(
         'PASSWORD_RESET_LIMIT',
-        dayjs(user[config.userFields.resetTokenExpiresAt]).fromNow()
+        dayjs(user[config.userFields.resetTokenExpiresAt])
+          .locale(ctx.locale)
+          .fromNow()
       )
     );
 
@@ -565,11 +567,11 @@ async function verify(ctx) {
     !ctx.state.user[config.userFields.pendingRecovery]
   ) {
     const message = ctx.translate('EMAIL_ALREADY_VERIFIED');
+    ctx.flash('success', message);
     if (ctx.accepts('html')) {
-      ctx.flash('success', message);
       ctx.redirect(redirectTo);
     } else {
-      ctx.body = { message, redirectTo };
+      ctx.body = { redirectTo };
     }
 
     return;
@@ -702,11 +704,11 @@ async function verify(ctx) {
     : ctx.translate('EMAIL_VERIFICATION_SUCCESS');
 
   redirectTo = pendingRecovery ? '/logout' : redirectTo;
+  ctx.flash('success', message);
   if (ctx.accepts('html')) {
-    ctx.flash('success', message);
     ctx.redirect(redirectTo);
   } else {
-    ctx.body = { message, redirectTo };
+    ctx.body = { redirectTo };
   }
 }
 

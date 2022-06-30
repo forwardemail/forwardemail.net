@@ -7,6 +7,6 @@ block content
         .card.border-dark.d-block.text-center
           h5.card-header.bg-dark.text-white= t("Password reset")
           .card-body
-            p.card-text!= t('Click the button below within <span class="notranslate">%s</span> to continue.', dayjs(user[config.userFields.resetTokenExpiresAt]).fromNow(true))
+            p.card-text!= t('Click the button below within <span class="notranslate">%s</span> to continue.', dayjs(user[config.userFields.resetTokenExpiresAt]).locale(locale).fromNow(true))
             a.btn.btn-lg.btn-block.btn-success(href=link, role="button")= t("Change your password")
           .card-footer: small.text-muted= t("If you did not submit this request, then please reply to let us know.")

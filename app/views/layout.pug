@@ -217,7 +217,8 @@ html.h-100(lang=locale)
         )
 
         //- hcaptcha (hidden from bots)
-        script(defer, src=`https://hcaptcha.com/1/api.js?hl=${locale}`)
+        if config.hcaptchaEnabled
+          script(defer, src=`https://hcaptcha.com/1/api.js?hl=${locale}`)
 
   body.d-flex.flex-column.min-h-100(role="document")
     - const isHelp = ctx.pathWithoutLocale === "/help";

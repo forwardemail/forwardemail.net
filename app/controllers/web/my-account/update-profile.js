@@ -116,9 +116,9 @@ async function updateProfile(ctx) {
         ctx.translateError(
           'EMAIL_CHANGE_LIMIT',
           dayjs.duration(config.changeEmailLimitMs, 'milliseconds').minutes(),
-          dayjs(
-            ctx.state.user[config.userFields.changeEmailTokenExpiresAt]
-          ).fromNow()
+          dayjs(ctx.state.user[config.userFields.changeEmailTokenExpiresAt])
+            .locale(ctx.locale)
+            .fromNow()
         )
       );
 

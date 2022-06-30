@@ -57,7 +57,8 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                       aria-describedby="help-create-account"
                     )
                     label.form-check-label.mr-2(for="input-create-account")= t("Create your free account now")
-                .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
+                if config.hcaptchaEnabled
+                  .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
                 button.btn.btn-success.btn-lg.btn-block(type="submit")
                   = t("Continue")
                   = " "
