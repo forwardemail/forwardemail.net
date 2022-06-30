@@ -47,13 +47,25 @@ graceful.listen();
   // (so we only send one email digest per user, and only send it once per domain)
   const data = {};
   for (const id of domainIds) {
-    //
-    // TODO: in future we may want to verify the domain in case
-    //       the last time `check-domains.js` it didn't pick up successful TXT verification
-    //
-
     // eslint-disable-next-line no-await-in-loop
-    const domain = await Domains.findById(id).lean().exec();
+    const domain = await Domains.findById(id);
+
+    // get latest verification results (and any errors too)
+    // eslint-disable-next-line no-await-in-loop
+    const { txt, mx, errors } = await Domains.getVerificationResults(domain);
+
+    const hasDNSError =
+      Array.isArray(errors) &&
+      errors.some(
+        (err) => err.code && ['ENOTFOUND', 'ENODATA'].includes(err.code)
+      );
+
+    // ignore domains that don't exist or had DNS errors
+    if (hasDNSError) continue;
+
+    // ignore domains that had TXT or did not have MX
+    if (txt || !mx) continue;
+
     for (const member of domain.members) {
       if (member.group !== 'admin') continue;
       if (!data[member.user.toString()]) {
@@ -65,13 +77,12 @@ graceful.listen();
         };
       }
 
-      data[member.user.toString()].domains.push(domain);
+      data[member.user.toString()].domains.push(domain.toObject());
     }
   }
 
   for (const userId of Object.keys(data)) {
     const locals = data[userId];
-    if (locals.domains.length > 1) continue;
     // eslint-disable-next-line no-await-in-loop
     await email({
       template: 'domain-missing-txt',
