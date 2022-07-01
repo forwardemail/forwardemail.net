@@ -16,5 +16,5 @@ block content
                   else if field.name === config.userFields.apiToken
                     li= t("API token has been reset.")
                   else
-                    li= t(`${field.text} has changed from ${field.previous} to ${field.current}`)
+                    li= t(`${field.text} has changed from <span class="notranslate">%s</span> to <span class="notranslate">%s</span>`, field.previous, field.current)
           .card-footer.text-center: small.text-muted= t("If you did not make these changes, then please contact us immediately.")
