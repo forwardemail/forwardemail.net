@@ -41,7 +41,33 @@ async function retrieveDomains(ctx, next) {
   });
 
   let domainAliases = await Aliases.find({
-    domain: { $in: _.map(ctx.state.domains, '_id') }
+    // if the user is an admin then show all
+    // aliases otherwise only matches for the user
+    ...(ctx.state.user.group === 'admin'
+      ? { domain: { $in: ctx.state.domains.map((d) => d._id) } }
+      : {
+          $or: [
+            // find aliases that are owned by the user's domains
+            {
+              domain: {
+                $in: ctx.state.domains
+                  .filter((d) => !d.is_global)
+                  .map((d) => d._id)
+              }
+            },
+            // NOTE: we can most likely remove this but need to check is_global elsewhere
+            // find aliases that are global and owned by the user
+            // (since our approach seems to be that we correlate user group to owning is_global's)
+            {
+              domain: {
+                $in: ctx.state.domains
+                  .filter((d) => d.is_global)
+                  .map((d) => d._id)
+              },
+              user: ctx.state.user._id
+            }
+          ]
+        })
   })
     .populate('domain', 'name')
     .populate(

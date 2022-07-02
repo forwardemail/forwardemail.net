@@ -66,7 +66,8 @@ const User = new mongoose.Schema({
   plan: {
     type: String,
     enum: ['free', 'enhanced_protection', 'team'],
-    default: 'free'
+    default: 'free',
+    index: true
   },
   // group permissions
   group: {
@@ -74,7 +75,8 @@ const User = new mongoose.Schema({
     default: 'user',
     enum: ['admin', 'user'],
     lowercase: true,
-    trim: true
+    trim: true,
+    index: true
   },
   email: {
     type: String,
@@ -91,12 +93,24 @@ const User = new mongoose.Schema({
 const object = {};
 
 // stripe
-object[config.userFields.stripeCustomerID] = String;
-object[config.userFields.stripeSubscriptionID] = String;
+object[config.userFields.stripeCustomerID] = {
+  type: String,
+  index: true
+};
+object[config.userFields.stripeSubscriptionID] = {
+  type: String,
+  index: true
+};
 
 // paypal
-object[config.userFields.paypalPayerID] = String;
-object[config.userFields.paypalSubscriptionID] = String;
+object[config.userFields.paypalPayerID] = {
+  type: String,
+  index: true
+};
+object[config.userFields.paypalSubscriptionID] = {
+  type: String,
+  index: true
+};
 
 // two factor auth reminders
 object[config.userFields.twoFactorReminderSentAt] = Date;
@@ -110,7 +124,8 @@ object[config.userFields.planExpiresAt] = Date;
 // user fields
 object[config.userFields.isBanned] = {
   type: Boolean,
-  default: false
+  default: false,
+  index: true
 };
 
 object[config.userFields.fullEmail] = {

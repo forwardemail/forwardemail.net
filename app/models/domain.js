@@ -136,19 +136,23 @@ const Domain = new mongoose.Schema({
     type: String,
     required: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    index: true
   },
   has_mx_record: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true
   },
   has_txt_record: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true
   },
   is_global: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true
   },
   verification_record: {
     type: String,
