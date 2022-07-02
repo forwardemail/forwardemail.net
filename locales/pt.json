@@ -2435,5 +2435,6 @@
   "Doing so will help to keep your domains, aliases, and account even more secure.": "Isso ajudará a manter seus domínios, aliases e conta ainda mais seguros.",
   "Manage security": "Gerenciar a segurança",
   "We send this reminder every three months to increase security.": "Enviamos este lembrete a cada três meses para aumentar a segurança.",
-  "Did you want to enable two-factor authentication?": "Você queria habilitar a autenticação de dois fatores?"
+  "Did you want to enable two-factor authentication?": "Você queria habilitar a autenticação de dois fatores?",
+  "We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with \"defer\" or \"slowdown\" would be retried as 421 errors).": "We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with \"defer\" or \"slowdown\" would be retried as 421 errors)."
 }

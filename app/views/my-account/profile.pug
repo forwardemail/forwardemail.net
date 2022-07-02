@@ -8,7 +8,7 @@ block body
           h5.modal-title= t("Change password")
         form.ajax-form.confirm-prompt.mt-3(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
-          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type="hidden", name="_csrf", value=_csrf)
           input(type="hidden", name="change_password", value="true")
           .modal-body
             if user[config.userFields.hasSetPassword]
@@ -57,7 +57,7 @@ block body
                   method="POST"
                 )
                   input(type="hidden", name="_method", value="PUT")
-                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-dark.btn-sm(type="submit")= t("Resend email")
               li.list-inline-item
                 form.ajax-form.confirm-prompt(
@@ -65,13 +65,13 @@ block body
                   method="POST"
                 )
                   input(type="hidden", name="_method", value="PUT")
-                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-danger.btn-sm(type="submit")= t("Cancel change")
     .row
       .col-md
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
-          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type="hidden", name="_csrf", value=_csrf)
           .card.border-dark
             h4.card-header.bg-dark.text-white= t("Personal Information")
             .card-body.pb-0
@@ -138,7 +138,7 @@ block body
       .col-md.mt-3.mt-md-0
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
-          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type="hidden", name="_csrf", value=_csrf)
           .card.border-dark
             h4.card-header.bg-dark.text-white= t("Company Information")
             .card-body.pb-0

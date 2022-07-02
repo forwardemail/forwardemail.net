@@ -2431,5 +2431,6 @@
   "Recipient Verification": "수신자 확인",
   "Please click below to verify forwarding from <code class=\"notranslate\">%s</code> to <code class=\"notranslate\">%s</code>.": "아래를 클릭하여 <code class=\"notranslate\">%s</code> <code class=\"notranslate\">%s</code> (으)로의 전달을 확인하십시오.",
   "Two-factor authentication": "이중 인증",
-  "Did you want to enable two-factor authentication?": "이중 인증을 사용하시겠습니까?"
+  "Did you want to enable two-factor authentication?": "이중 인증을 사용하시겠습니까?",
+  "We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with \"defer\" or \"slowdown\" would be retried as 421 errors).": "We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with \"defer\" or \"slowdown\" would be retried as 421 errors)."
 }

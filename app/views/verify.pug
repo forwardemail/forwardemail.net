@@ -10,7 +10,7 @@ block body
           action=redirectTo ? `${ctx.path}?redirect_to=${redirectTo}` : ctx.path,
           method="POST"
         )
-          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type="hidden", name="_csrf", value=_csrf)
           .form-group.floating-label
             //- <https://web.dev/sms-otp-form/>
             //- <https://www.twilio.com/blog/html-attributes-two-factor-authentication-autocomplete>

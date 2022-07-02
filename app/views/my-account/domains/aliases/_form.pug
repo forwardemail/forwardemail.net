@@ -1,5 +1,5 @@
 - const domainQuery = isSANB(ctx.query.domain) && (validator.isIP(ctx.query.domain) || isFQDN(ctx.query.domain)) ? ctx.query.domain : false;
-input(type="hidden", name="_csrf", value=ctx.csrf)
+input(type="hidden", name="_csrf", value=_csrf)
 if alias
   input(type="hidden", name="_method", value="PUT")
 .form-row

@@ -125,7 +125,7 @@ test('allows password reset for valid email (HTML)', async (t) => {
     .send({ email: user.email });
 
   t.is(res.status, 302);
-  t.is(res.header.location, '/');
+  t.is(res.header.location, '/en');
 });
 
 test('allows password reset for valid email (JSON)', async (t) => {
@@ -136,7 +136,7 @@ test('allows password reset for valid email (JSON)', async (t) => {
   const res = await web.post('/en/forgot-password').send({ email: user.email });
 
   t.is(res.status, 302);
-  t.is(res.header.location, '/');
+  t.is(res.header.location, '/en');
 });
 
 test('resets password with valid email and token (HTML)', async (t) => {

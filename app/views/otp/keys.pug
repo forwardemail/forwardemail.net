@@ -6,7 +6,7 @@ block body
       .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3.text-center
         h1.my-3.py-3= t("Recovery Key")
         form.ajax-form(action=ctx.path, method="POST", autocomplete="off")
-          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type="hidden", name="_csrf", value=_csrf)
           .form-group.floating-label
             input#input-text.form-control.form-control-lg(
               type="text",

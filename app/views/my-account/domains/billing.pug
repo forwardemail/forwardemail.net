@@ -27,7 +27,11 @@ block body
         .modal-content
           .modal-header.text-center.d-block
             h1#modal-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Learn about our plans")
-            button.close(type="button", data-dismiss="modal", aria-label="Close")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
               span(aria-hidden="true") &times;
           .modal-body
             .lazyframe(
@@ -47,12 +51,16 @@ block body
             small
               = t("Don't want to upgrade yet?")
               br.d-block.d-md-none
-              = ' '
-              a(href=l(`/my-account/domains/${domain.name}`)).alert-link= t("Try our free plan")
-              = ' '
-              = t('or')
-              = ' '
-              a(href=l('/pricing'), data-toggle='modal', data-target='#modal-pricing-video').alert-link= t('learn about our plans')
+              = " "
+              a.alert-link(href=l(`/my-account/domains/${domain.name}`))= t("Try our free plan")
+              = " "
+              = t("or")
+              = " "
+              a.alert-link(
+                href=l("/pricing"),
+                data-toggle="modal",
+                data-target="#modal-pricing-video"
+              )= t("learn about our plans")
         .card.border-dark
           h2.card-header.bg-dark.text-white
             if isMakePayment
@@ -66,7 +74,7 @@ block body
             if isMakePayment
               p.lead= t("Add credit to your account below.")
             form#form-billing(action=ctx.path, method="POST")
-              input(type="hidden", name="_csrf", value=ctx.csrf)
+              input(type="hidden", name="_csrf", value=_csrf)
 
               if !isMakePayment
                 input(type="hidden", name="plan", value=ctx.query.plan)
@@ -91,9 +99,7 @@ block body
                     name="payment_method",
                     value="paypal"
                   )
-                  label.form-check-label(
-                    for="input-payment-method-paypal"
-                  )= t("PayPal")
+                  label.form-check-label(for="input-payment-method-paypal")= t("PayPal")
 
               //- Payment Type
               //- TODO: default to last one used
@@ -118,9 +124,7 @@ block body
                       name="payment_type",
                       value="one-time"
                     )
-                    label.form-check-label(
-                      for="input-payment-type-one-time"
-                    )= t("One-time")
+                    label.form-check-label(for="input-payment-type-one-time")= t("One-time")
 
               //- Length
               //- TODO: default to last one used

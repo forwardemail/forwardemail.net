@@ -7,7 +7,7 @@ block body
         include ../../_breadcrumbs
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
-          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type="hidden", name="_csrf", value=_csrf)
           .card.border-dark
             h4.card-header.bg-dark.text-white= result.id
             .card-body
@@ -41,7 +41,7 @@ block body
                   option(value="user", selected=result.group === "user") User
                   option(value="admin", selected=result.group === "admin") Admin
                 label(for="input-group")= t("Group")
-              if ctx.passport && ctx.passport.config.providers.otp && result[config.passport.fields.otpEnabled]
+              if passport && passport.otp && result[config.passport.fields.otpEnabled]
                 .form-check
                   input#otp-enabled(
                     type="checkbox",

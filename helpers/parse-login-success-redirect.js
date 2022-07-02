@@ -1,5 +1,5 @@
 const config = require('#config');
-const { Domains } = require('#models');
+const { Users, Domains } = require('#models');
 
 async function parseLoginSuccessRedirect(ctx) {
   let redirectTo = ctx.state.l(
@@ -22,14 +22,12 @@ async function parseLoginSuccessRedirect(ctx) {
       if (domain.has_mx_record && domain.has_txt_record) {
         redirectTo += '/aliases';
       }
-    } else if (!ctx.session?.returnTo) {
-      ctx.flash('custom', {
-        text: ctx.request.t('Your default domain does not exist!'),
-        type: 'error',
-        position: 'top',
-        toast: true,
-        showConfirmButton: false,
-        timer: 3000
+    } else {
+      // remove the default domain from the user
+      await Users.findByIdAndUpdate(ctx.state.user._id, {
+        $unset: {
+          [config.userFields.defaultDomain]: ''
+        }
       });
     }
   }

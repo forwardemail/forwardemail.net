@@ -66,9 +66,9 @@ html.h-100(lang=locale)
       meta(name="theme-color", content="#ffffff")
 
       //- csrf token
-      meta(name="csrf-token", content=ctx.csrf)
+      meta(name="csrf-token", content=_csrf)
       script.
-        window._csrf = "#{ctx.csrf}";
+        window._csrf = "#{_csrf}";
 
       //- associate with wikipedia
       script(type="application/ld+json").
@@ -159,6 +159,7 @@ html.h-100(lang=locale)
           warning: "#{ t('Warning') }",
           question: "#{ t('Question') }"
         };
+      script.
         window._messages = !{json(flash(), null, null)};
 
       //- set defaults for sweetalert2
@@ -195,7 +196,7 @@ html.h-100(lang=locale)
               email: "#{user.email}",
             };
             window.API_TOKEN = "#{user[config.userFields.apiToken]}";
-        else
+        else if ctx.sessionId
           script.
             window.USER = {
               id: "#{ctx.sessionId}",

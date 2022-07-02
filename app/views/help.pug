@@ -5,7 +5,7 @@ block body
     .row
       .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
         form.ajax-form.confirm-prompt(action=l("/help"), method="POST")
-          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type="hidden", name="_csrf", value=_csrf)
           .card.border-dark
             h4.card-header.bg-dark.text-white.text-center= t("Ask a question")
             .card-body
@@ -31,7 +31,10 @@ block body
                 )
                 label(for="input-message")= t("Message")
               if config.hcaptchaEnabled
-                .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
+                .h-captcha(
+                  data-sitekey=config.hcaptchaSiteKey,
+                  data-error-callback="hCaptchaError"
+                )
             .card-footer
               button.btn.btn-block.btn-success.btn-lg(
                 type="submit",

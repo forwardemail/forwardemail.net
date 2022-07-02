@@ -27,7 +27,8 @@ const sanitize = (string) =>
 
 function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(ctx.state.l());
-  if (ctx.session.otp && !ctx.session.otp_remember_me) delete ctx.session.otp;
+  if (ctx.session && ctx.session.otp && !ctx.session.otp_remember_me)
+    delete ctx.session.otp;
   ctx.logout();
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -44,15 +45,16 @@ function logout(ctx) {
 function parseReturnOrRedirectTo(ctx, next) {
   // if the user passed `?return_to` and it is not blank
   // then set it as the returnTo value for when we log in
-  if (isSANB(ctx.query.return_to)) {
+  if (isSANB(ctx.query.return_to) && ctx.session) {
     ctx.session.returnTo = ctx.query.return_to;
-  } else if (isSANB(ctx.query.redirect_to)) {
+  } else if (isSANB(ctx.query.redirect_to) && ctx.session) {
     // in case people had a typo, we should support redirect_to as well
     ctx.session.returnTo = ctx.query.redirect_to;
   }
 
   // prevents lad being used as a open redirect
   if (
+    ctx.session &&
     ctx.session.returnTo &&
     ctx.session.returnTo.includes('://') &&
     ctx.session.returnTo.indexOf(config.urls.web) !== 0
@@ -175,7 +177,11 @@ async function login(ctx, next) {
           ctx.state.user.qrcode = await qrcode.toDataURL(uri);
           ctx.state.user = await ctx.state.user.save();
 
-          if (user[config.passport.fields.otpEnabled] && !ctx.session.otp)
+          if (
+            user[config.passport.fields.otpEnabled] &&
+            ctx.session &&
+            !ctx.session.otp
+          )
             redirectTo = ctx.state.l(config.loginOtpRoute);
 
           if (ctx.accepts('html')) {
@@ -210,9 +216,13 @@ function loginOtp(ctx, next) {
         if (!user)
           throw Boom.unauthorized(ctx.translateError('INVALID_OTP_PASSCODE'));
 
-        ctx.session.otp_remember_me = boolean(ctx.request.body.otp_remember_me);
+        if (ctx.session) {
+          ctx.session.otp_remember_me = boolean(
+            ctx.request.body.otp_remember_me
+          );
+          ctx.session.otp = 'totp';
+        }
 
-        ctx.session.otp = 'totp';
         const redirectTo = await parseLoginSuccessRedirect(ctx);
 
         if (ctx.accepts('json')) {
@@ -272,7 +282,7 @@ async function recoveryKey(ctx) {
   ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys;
   ctx.state.user = await ctx.state.user.save();
 
-  ctx.session.otp = 'totp-recovery';
+  if (ctx.session) ctx.session.otp = 'totp-recovery';
 
   const message = ctx.translate(
     type === 'warning' ? 'OTP_RECOVERY_RESET' : 'OTP_RECOVERY_SUCCESS'

@@ -2436,5 +2436,6 @@
   "Doing so will help to keep your domains, aliases, and account even more secure.": "Ezzel még nagyobb biztonságban tarthatja domainjeit, álneveit és fiókját.",
   "Manage security": "A biztonság kezelése",
   "We send this reminder every three months to increase security.": "Ezt az emlékeztetőt háromhavonta küldjük el a biztonság növelése érdekében.",
-  "Did you want to enable two-factor authentication?": "Engedélyezni akarta a kéttényezős hitelesítést?"
+  "Did you want to enable two-factor authentication?": "Engedélyezni akarta a kéttényezős hitelesítést?",
+  "We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with \"defer\" or \"slowdown\" would be retried as 421 errors).": "We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with \"defer\" or \"slowdown\" would be retried as 421 errors)."
 }

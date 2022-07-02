@@ -1,5 +1,5 @@
 if breadcrumbs.length > 1
-  nav(aria-label="breadcrumb").d-none.d-md-block
+  nav.d-none.d-md-block(aria-label="breadcrumb")
     ol.breadcrumb.bg-dark.justify-content-center.justify-content-md-start.mb-3
       each breadcrumb, i in breadcrumbs
         if i === breadcrumbs.length - 1
@@ -81,13 +81,13 @@ if breadcrumbs.length > 1
                       small.text-muted= t("See all plan features")
         else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0
-            if !domain.is_global && ctx.state.domain.group === 'admin'
+            if !domain.is_global && domain.group === 'admin'
               li.list-inline-item
                 form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/my-account/domains/${domain.name}/aliases/import`),
                   method="POST"
                 )
-                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-dark.text-uppercase.font-weight-bold(
                     type="submit"
                   )

@@ -107,7 +107,7 @@ include ../../../_pagination
                 action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
                 method="POST"
               )
-                input(type="hidden", name="_csrf", value=ctx.csrf)
+                input(type="hidden", name="_csrf", value=_csrf)
                 input(type="hidden", name="_method", value="DELETE")
                 button.btn.btn-danger(type="submit")
                   i.fa.fa-trash

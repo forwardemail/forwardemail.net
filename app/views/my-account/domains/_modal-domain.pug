@@ -12,7 +12,7 @@
           span(aria-hidden="true") &times;
       .modal-body
         form.ajax-form(action=l("/my-account/domains/new"), method="POST")
-          input(type="hidden", name="_csrf", value=ctx.csrf)
+          input(type="hidden", name="_csrf", value=_csrf)
           .form-group.floating-label
             input#input-domain.form-control.form-control-lg(
               required,

@@ -2436,5 +2436,6 @@
   "Doing so will help to keep your domains, aliases, and account even more secure.": "Làm như vậy sẽ giúp giữ cho miền, bí danh và tài khoản của bạn an toàn hơn.",
   "Manage security": "Quản lý bảo mật",
   "We send this reminder every three months to increase security.": "Chúng tôi gửi lời nhắc này ba tháng một lần để tăng cường bảo mật.",
-  "Did you want to enable two-factor authentication?": "Bạn có muốn bật xác thực hai yếu tố không?"
+  "Did you want to enable two-factor authentication?": "Bạn có muốn bật xác thực hai yếu tố không?",
+  "We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with \"defer\" or \"slowdown\" would be retried as 421 errors).": "We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with \"defer\" or \"slowdown\" would be retried as 421 errors)."
 }

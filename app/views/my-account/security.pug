@@ -18,7 +18,7 @@ block body
             action=l(`${config.otpRoutePrefix}/disable`),
             method="POST"
           )
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(type="hidden", name="_csrf", value=_csrf)
             if user[config.userFields.hasSetPassword]
               .form-group.floating-label
                 input#input-password.form-control.form-control-lg(
@@ -33,7 +33,7 @@ block body
     .row
       .col
         include ../_breadcrumbs
-        if ctx.passport && ctx.passport.config.providers.otp
+        if passport && passport.otp
           .card.border-dark.mb-3
             h4.card-header.bg-dark.text-white= t("Two-Factor Authentication")
             .card-body
@@ -41,7 +41,7 @@ block body
                 h5= t("Recovery keys")
                 p= t("Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.")
                 form(action=l("/my-account/recovery-keys"), method="POST")
-                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-secondary.btn-lg(type="submit")= t("Download recovery keys")
                 button.btn.btn-danger.btn-lg.mt-3(
                   data-toggle="modal",
@@ -90,7 +90,7 @@ block body
               li.list-inline-item
                 form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
                   input(type="hidden", name="_method", value="DELETE")
-                  input(type="hidden", name="_csrf", value=ctx.csrf)
+                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-danger(type="submit")= t("Reset API Token")
               li.list-inline-item
                 a.btn.btn-dark(href=l("/email-forwarding-api"))= t("Learn more")
@@ -117,7 +117,7 @@ block body
                 method="POST"
               )
                 input(type="hidden", name="_method", value="DELETE")
-                input(type="hidden", name="_csrf", value=ctx.csrf)
+                input(type="hidden", name="_csrf", value=_csrf)
                 button.btn.btn-danger(type="submit")= t("Delete Account")
   .container
     .row.text-center.my-5

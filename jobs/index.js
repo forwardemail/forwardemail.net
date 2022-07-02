@@ -20,8 +20,8 @@ const jobs = [
   // },
   {
     name: 'check-domains',
-    timeout: '1m', // give migration script time to run
-    interval: '1m'
+    timeout: '10m', // give migration script time to run
+    interval: '1h'
   },
   {
     name: 'welcome-email',

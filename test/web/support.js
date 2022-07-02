@@ -23,7 +23,7 @@ test('creates inquiry', async (t) => {
     .send({ email: 'test@example.com', message: 'Test message!' });
 
   t.is(res.status, 302);
-  t.is(res.header.location, '/');
+  t.is(res.header.location, '/en');
 });
 
 test('fails creating inquiry if last inquiry was within last 24 hours (HTML)', async (t) => {

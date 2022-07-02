@@ -51,7 +51,7 @@ block body
               method="POST",
               disabled=isTeamDisabled
             )
-              input(type="hidden", name="_csrf", value=ctx.csrf)
+              input(type="hidden", name="_csrf", value=_csrf)
               .form-group
                 label(for="input-invite-email")= t("Email address")
                 input#input-invite-email.form-control(
@@ -199,7 +199,7 @@ block body
                                   input(
                                     type="hidden",
                                     name="_csrf",
-                                    value=ctx.csrf
+                                    value=_csrf
                                   )
                                   input(
                                     type="hidden",
@@ -225,7 +225,7 @@ block body
                                   input(
                                     type="hidden",
                                     name="_csrf",
-                                    value=ctx.csrf
+                                    value=_csrf
                                   )
                                   input(
                                     type="hidden",
@@ -276,7 +276,7 @@ block body
                                     input(
                                       type="hidden",
                                       name="_csrf",
-                                      value=ctx.csrf
+                                      value=_csrf
                                     )
                                     input(
                                       type="hidden",
@@ -315,7 +315,7 @@ block body
             disabled=isDisabled
           )
             input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(type="hidden", name="_csrf", value=_csrf)
             input(
               type="hidden",
               name="_section",
@@ -356,7 +356,7 @@ block body
             disabled=isCustomVerificationDisabled
           )
             input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(type="hidden", name="_csrf", value=_csrf)
             input(
               type="hidden",
               name="_section",
@@ -468,7 +468,7 @@ block body
             disabled=isDisabled
           )
             input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(type="hidden", name="_csrf", value=_csrf)
             input(
               type="hidden",
               name="_section",
@@ -542,7 +542,7 @@ block body
             disabled=isDisabled
           )
             input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(type="hidden", name="_csrf", value=_csrf)
             h4.card-header.bg-dark.text-white= t("Custom SMTP Port Forwarding")
             .card-body
               +planRequired(false)
@@ -602,7 +602,7 @@ block body
                 method="POST"
               )
                 input(type="hidden", name="_method", value="DELETE")
-                input(type="hidden", name="_csrf", value=ctx.csrf)
+                input(type="hidden", name="_csrf", value=_csrf)
                 button.btn.btn-sm.btn-danger(type="submit")
                   i.fa.fa-trash
                   = " "

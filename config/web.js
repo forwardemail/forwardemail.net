@@ -1,6 +1,8 @@
 const process = require('process');
 
+const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
+const mongoose = require('mongoose');
 const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
 
@@ -136,5 +138,33 @@ module.exports = (redis) => ({
     xssFilter: {
       reportUri
     }
+  },
+  session: {
+    errorHandler(err, type, ctx) {
+      if (
+        err.name === 'RedisError' ||
+        err.name === 'MaxRetriesPerRequestError' ||
+        Object.getPrototypeOf(err.constructor).name === 'RedisError'
+      ) {
+        ctx.logger.error(err);
+        throw Boom.clientTimeout(ctx.translateError('WEBSITE_OUTAGE'));
+      }
+
+      // unknown error
+      throw err;
+    }
+  },
+  hookBeforeRoutes(app) {
+    app.use((ctx, next) => {
+      // if either mongoose or redis are not connected
+      // then render website outage message to users
+      if (
+        mongoose.connection.readyState !== 1 ||
+        (ctx.client && ctx.client.status !== 'ready')
+      )
+        ctx.flash('warning', ctx.translate('WEBSITE_OUTAGE'));
+
+      return next();
+    });
   }
 });

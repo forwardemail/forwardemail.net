@@ -10,7 +10,7 @@ mixin registerOrLogin(verb, isModal = false)
           else
             = emoji("wave")
     div(class=isModal ? "" : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
-      if ctx.passport && ctx.passport.config.providers.google
+      if passport && passport.google
         a.btn-auth.btn-auth-google.btn-auth-google-dark.my-3(
           href="/auth/google",
           role="button"
@@ -23,7 +23,7 @@ mixin registerOrLogin(verb, isModal = false)
             .btn-auth-wrapper
               span.btn-auth-icon
               span.btn-auth-text= t(`${humanize(verb)} with Google`)
-      if ctx.passport && ctx.passport.config.providers.github
+      if passport && passport.github
         a.btn-auth.btn-auth-github.btn-auth-github-dark.my-3(
           href="/auth/github",
           role="button"
@@ -36,11 +36,11 @@ mixin registerOrLogin(verb, isModal = false)
             .btn-auth-wrapper
               span.btn-auth-icon
               span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
-      if ctx.passport && (ctx.passport.config.providers.google || ctx.passport.config.providers.github)
+      if passport && (passport.google || passport.github)
         .hr-text.d-flex.text-secondary.align-items-center= t("or")
       - const action = verb === "sign up" ? "/register" : config.loginRoute;
       form.ajax-form(action=l(action), method="POST")
-        input(type="hidden", name="_csrf", value=ctx.csrf)
+        input(type="hidden", name="_csrf", value=_csrf)
         .form-group.floating-label
           input.form-control.form-control-lg(
             id=`input-email-${dashify(verb)}`,
@@ -62,16 +62,18 @@ mixin registerOrLogin(verb, isModal = false)
           )
           label(for=`input-password-${dashify(verb)}`)= t("Password")
         if config.hcaptchaEnabled
-          .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError', data-tabindex=isModal ? '-1' : false)
+          .h-captcha(
+            data-sitekey=config.hcaptchaSiteKey,
+            data-error-callback="hCaptchaError",
+            data-tabindex=isModal ? "-1" : false
+          )
         button.btn.btn-success.btn-lg.btn-block(type="submit")= t(capitalize(verb))
         if verb === 'sign up'
           p.mt-3.mb-1.text-center: small.text-black-50!= t('By signing up, you agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
         else if verb === 'sign in'
           p.mt-3.mb-1.text-center
             small
-              a.text-black-50(
-                href=l("/forgot-password")
-              )= t("Forget your password?")
+              a.text-black-50(href=l("/forgot-password"))= t("Forget your password?")
       .alert.alert-warning.mt-3.text-center(class=isModal ? "mb-0" : "")
         - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
         ul.list-inline.mb-0

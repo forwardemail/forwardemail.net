@@ -60,7 +60,7 @@ block body
         action=l(`/my-account/domains/${domain.name}/verify-records`),
         method="POST"
       )
-        input(type="hidden", name="_csrf", value=ctx.csrf)
+        input(type="hidden", name="_csrf", value=_csrf)
         button.btn.btn-success.btn-lg(type="submit")
           i.fa.fa-refresh
           = " "

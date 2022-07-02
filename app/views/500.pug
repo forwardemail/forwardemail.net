@@ -2,6 +2,6 @@ extends layout
 
 block body
   .container.text-center.py-5
-    h1= t(meta.title)
-    p.lead.text-muted!= t("A server error has unfortunately occurred.")
-    button(onclick="javascript:document.location.reload(true);").btn.btn-outline-success.btn-lg= t('Try again')
+    h1!= meta.title
+    p.lead.text-muted!= meta.description
+    button.btn.btn-outline-success.btn-lg(onclick="javascript:document.location.reload(true);")= t("Try again")

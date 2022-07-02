@@ -108,7 +108,7 @@ table.table.table-hover.table-bordered
                     action=l(`/my-account/domains/${domain.name}/verify-records`),
                     method="POST"
                   )
-                    input(type="hidden", name="_csrf", value=ctx.csrf)
+                    input(type="hidden", name="_csrf", value=_csrf)
                     button.btn.btn-outline-dark(type="submit")
                       i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
           td.align-middle.d-none.d-md-table-cell.text-center
@@ -130,7 +130,7 @@ table.table.table-hover.table-bordered
                     action=l(`/my-account/domains/${domain.name}/verify-records`),
                     method="POST"
                   )
-                    input(type="hidden", name="_csrf", value=ctx.csrf)
+                    input(type="hidden", name="_csrf", value=_csrf)
                     button.btn.btn-outline-dark(type="submit")
                       i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
           td.align-middle

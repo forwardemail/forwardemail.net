@@ -66,11 +66,8 @@ block body
             != t("Custom Domain Email Service")
           p.d-block.mb-3.text-muted.font-weight-bold
             != t("Forward any email @your-domain.com, create unlimited aliases, and send email as @your-domain.com.")
-          form.ajax-form(
-            action=ctx.path,
-            method="POST"
-          )
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+          form.ajax-form(action=ctx.path, method="POST")
+            input(type="hidden", name="_csrf", value=_csrf)
             input(type="hidden", name="enhanced_protection", value="true")
             input(type="hidden", name="create_domain", value="true")
             input(type="hidden", name="create_account", value="true")
@@ -93,7 +90,10 @@ block body
               )
               label(for="input-onboard-email")= t("Your existing email")
             if config.hcaptchaEnabled
-              .text-left.h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
+              .text-left.h-captcha(
+                data-sitekey=config.hcaptchaSiteKey,
+                data-error-callback="hCaptchaError"
+              )
             button.btn.btn-success.btn-lg.btn-block(type="submit")
               = t("Get Started")
               = " "

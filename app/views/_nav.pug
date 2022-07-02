@@ -13,7 +13,7 @@ if !isHelp
             span(aria-hidden="true") &times;
         .modal-body
           form.ajax-form.confirm-prompt(action=l("/help"), method="POST")
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(type="hidden", name="_csrf", value=_csrf)
             if ctx.pathWithoutLocale !== '/faq'
               p.text-center.font-weight-bold
                 != t('Have you read our <a href="%s" target="_blank" rel="noopener noreferrer">FAQ</a> yet?', domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"))
@@ -37,7 +37,11 @@ if !isHelp
               )
               label(for="input-message")= t("Message")
             if config.hcaptchaEnabled
-              .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError', data-tabindex='-1')
+              .h-captcha(
+                data-sitekey=config.hcaptchaSiteKey,
+                data-error-callback="hCaptchaError",
+                data-tabindex="-1"
+              )
             button.btn.btn-block.btn-success.btn-lg(
               type="submit",
               data-toggle="tooltip",

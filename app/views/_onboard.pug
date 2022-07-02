@@ -8,7 +8,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
           if onboardText
             p.text-center.mb-0.text-muted!= onboardText
           form.ajax-form.pt-4.mb-3(action=onboardFormAction, method="POST")
-            input(type="hidden", name="_csrf", value=ctx.csrf)
+            input(type="hidden", name="_csrf", value=_csrf)
             .form-row
               .col-12.col-md-6.offset-md-3
                 .form-group.floating-label
@@ -58,12 +58,17 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                     )
                     label.form-check-label.mr-2(for="input-create-account")= t("Create your free account now")
                 if config.hcaptchaEnabled
-                  .h-captcha(data-sitekey=config.hcaptchaSiteKey, data-error-callback='hCaptchaError')
+                  .h-captcha(
+                    data-sitekey=config.hcaptchaSiteKey,
+                    data-error-callback="hCaptchaError"
+                  )
                 button.btn.btn-success.btn-lg.btn-block(type="submit")
                   = t("Continue")
                   = " "
                   i.fa.fa-angle-double-right
-                p.mt-3.mb-1.text-center#help-create-account
+                p#help-create-account.mt-3.mb-1.text-center
                   small.text-black-50!= t('By signing up, you agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
           if onboardKeepReading
-            p.text-center.mb-0: small: a.text-black-50.font-weight-bold(href=onboardKeepReading)= t("Not interested?  Click here to keep reading")
+            p.text-center.mb-0: small: a.text-black-50.font-weight-bold(
+              href=onboardKeepReading
+            )= t("Not interested?  Click here to keep reading")

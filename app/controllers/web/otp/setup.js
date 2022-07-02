@@ -52,7 +52,7 @@ async function setup(ctx) {
 
     ctx.state.user[config.passport.fields.otpEnabled] = true;
     await ctx.state.user.save();
-    ctx.session.otp = 'totp-setup';
+    if (ctx.session) ctx.session.otp = 'totp-setup';
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
       text: ctx.translate('REQUEST_OK'),

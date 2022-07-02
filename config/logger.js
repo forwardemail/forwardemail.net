@@ -1,4 +1,3 @@
-const Axe = require('axe');
 const signale = require('signale');
 const pino = require('pino')({
   customLevels: {
@@ -21,7 +20,7 @@ const env = require('./env');
 
 const isProduction = env.NODE_ENV === 'production';
 
-const config = {
+module.exports = {
   logger: isProduction ? pino : signale,
   level: isProduction ? 'info' : 'debug',
   levels: isProduction
@@ -31,14 +30,4 @@ const config = {
   showMeta: env.SHOW_META,
   capture: false,
   name: env.APP_NAME
-};
-
-// create our application logger that uses a custom callback function
-const axe = new Axe({ ...config });
-
-module.exports = {
-  logger: axe,
-  capture: false,
-  levels: config.levels,
-  level: config.level
 };

@@ -16,17 +16,18 @@ const logger = require('#helpers/logger');
 const webConfig = require('#config/web');
 
 const webSharedConfig = sharedConfig('WEB');
-const client = new Redis(
+const redis = new Redis(
   webSharedConfig.redis,
   logger,
   webSharedConfig.redisMonitor
 );
-const web = new Web(webConfig(client), Users);
+
 const mongoose = new Mongoose({ ...webSharedConfig.mongoose, logger });
+const web = new Web(webConfig(redis), Users);
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [web.server],
-  redisClients: [client],
+  redisClients: [redis],
   logger
 });
 graceful.listen();

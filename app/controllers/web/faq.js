@@ -9,7 +9,8 @@ function faq(ctx) {
 
   if (isRedirectToDomain && ctx.state.domain)
     redirectTo = ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`);
-  else if (ctx.session.returnTo) redirectTo = ctx.session.returnTo;
+  else if (ctx.session && ctx.session.returnTo)
+    redirectTo = ctx.session.returnTo;
 
   let qs = '';
   if (!isSANB(ctx.request.body.domain) && !isSANB(ctx.request.body.email)) {
@@ -24,7 +25,7 @@ function faq(ctx) {
     }
   }
 
-  if (ctx.session.returnTo) {
+  if (ctx.session && ctx.session.returnTo) {
     redirectTo += `?${qs}`;
     delete ctx.session.returnTo;
   } else {
