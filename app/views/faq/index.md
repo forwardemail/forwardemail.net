@@ -629,8 +629,6 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </div>
 </div>
 
-<div class="text-muted">Now you can <a href="https://www.youtube.com/watch?v=hvuzUasjFAo" target="_blank" rel="noopener noreferrer">start dancing</a>, <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">sing a song</a>, and start forwarding emails!  If you have enjoyed these instructions, then please consider <a rel="noopener noreferrer" href="/pricing">upgrading to a paid plan</a>.  Additional tips and optional add-ons are described below:</div>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
