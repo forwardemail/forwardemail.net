@@ -2336,5 +2336,7 @@
   "Custom-branded recipient verification emails": "Custom-branded recipient verification emails",
   "Do you store SMTP logs or write to disk?": "Do you store SMTP logs or write to disk?",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.",
-  "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage."
+  "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.",
+  "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>"
 }
