@@ -30,7 +30,13 @@ const localeRouter = new Router({ prefix: '/:locale' });
 
 localeRouter
   .get('/', web.auth.homeOrDomains)
-  .post('/', web.myAccount.retrieveDomains, policies.ensureCaptcha, web.onboard)
+  .post(
+    '/',
+    web.myAccount.retrieveDomains,
+    policies.ensureCaptcha,
+    rateLimit(50, 'onboard'),
+    web.onboard
+  )
   // recipient verification
   .get('/v/:text', web.recipientVerification)
   .get('/dashboard', (ctx) => {
@@ -52,6 +58,7 @@ localeRouter
     '/faq',
     web.myAccount.retrieveDomains,
     policies.ensureCaptcha,
+    rateLimit(50, 'onboard'),
     web.onboard,
     web.auth.parseReturnOrRedirectTo,
     web.faq

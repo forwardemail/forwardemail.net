@@ -31,11 +31,31 @@ router
     paginate.middleware(10, 50),
     web.myAccount.listBilling
   )
-  .post('/billing/manage-payments', web.myAccount.manageBilling)
-  .get('/billing/make-payment', web.myAccount.retrieveDomainBilling)
-  .post('/billing/make-payment', web.myAccount.createDomainBilling)
-  .get('/billing/upgrade', web.myAccount.retrieveDomainBilling)
-  .post('/billing/upgrade', web.myAccount.createDomainBilling)
+  .post(
+    '/billing/manage-payments',
+    rateLimit(50, 'manage payments'),
+    web.myAccount.manageBilling
+  )
+  .get(
+    '/billing/make-payment',
+    rateLimit(50, 'retrieve domain billing'),
+    web.myAccount.retrieveDomainBilling
+  )
+  .post(
+    '/billing/make-payment',
+    rateLimit(50, 'create domain billing'),
+    web.myAccount.createDomainBilling
+  )
+  .get(
+    '/billing/upgrade',
+    rateLimit(50, 'retrieve domain billing'),
+    web.myAccount.retrieveDomainBilling
+  )
+  .post(
+    '/billing/upgrade',
+    rateLimit(50, 'create domain billing'),
+    web.myAccount.createDomainBilling
+  )
   .get('/billing/:reference', web.myAccount.retrieveReceipt)
   .get('/domains', paginate.middleware(10, 50), web.myAccount.listDomains)
   .post(
@@ -148,6 +168,7 @@ router
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureUpgradedPlan,
+    rateLimit(50, 'import alias'),
     web.myAccount.importAliases
   )
   .get(
@@ -179,18 +200,21 @@ router
     '/domains/:domain_id/billing',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
+    rateLimit(50, 'retrieve domain billing'),
     web.myAccount.retrieveDomainBilling
   )
   .post(
     '/domains/:domain_id/billing',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
+    rateLimit(50, 'create domain billing'),
     web.myAccount.createDomainBilling
   )
   .post(
     '/domains/:domain_id/verify-records',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
+    rateLimit(100, 'verify records'),
     web.myAccount.verifyRecords
   )
   .delete(
@@ -215,11 +239,16 @@ router
     '/change-email/:token',
     policies.ensureLoggedIn,
     policies.ensureOtp,
+    rateLimit(100, 'change email'),
     web.auth.changeEmail
   )
   .get('/profile', web.myAccount.retrieveProfile)
   .put('/profile', web.myAccount.updateProfile)
-  .put('/profile/resend-email-change', web.myAccount.resendEmailChange)
+  .put(
+    '/profile/resend-email-change',
+    rateLimit(5, 'resend email change'),
+    web.myAccount.resendEmailChange
+  )
   .put('/profile/cancel-email-change', web.myAccount.cancelEmailChange)
   .delete('/security', web.myAccount.resetAPIToken)
   .get('/security', render('my-account/security'))

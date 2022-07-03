@@ -39,8 +39,9 @@ async function createDomainBilling(ctx) {
     const isMakePayment =
       ctx.pathWithoutLocale === '/my-account/billing/make-payment';
 
-    if (isMakePayment && ctx.state.user.plan === 'free')
-      throw ctx.translateError('INVALID_PLAN');
+    if (isMakePayment && ctx.state.user.plan === 'free') {
+      throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
+    }
 
     if (isMakePayment) {
       paymentType = 'one-time';
@@ -51,40 +52,46 @@ async function createDomainBilling(ctx) {
     if (
       !isSANB(plan) ||
       !['free', 'enhanced_protection', 'team'].includes(plan)
-    )
-      throw ctx.translateError('INVALID_PLAN');
+    ) {
+      throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
+    }
 
     // payment_method
     if (
       !isSANB(paymentMethod) ||
       !['credit_card', 'paypal'].includes(paymentMethod)
-    )
-      throw ctx.translateError('INVALID_PAYMENT_METHOD');
+    ) {
+      throw Boom.badRequest(ctx.translateError('INVALID_PAYMENT_METHOD'));
+    }
 
     // payment_type
     if (
       !isSANB(paymentType) ||
       !['one-time', 'subscription'].includes(paymentType)
-    )
-      throw ctx.translateError('INVALID_PAYMENT_TYPE');
+    ) {
+      throw Boom.badRequest(ctx.translateError('INVALID_PAYMENT_TYPE'));
+    }
 
     // payment_duration
-    if (!isSANB(paymentDuration) || !PAYMENT_DURATIONS.has(paymentDuration))
-      throw ctx.translateError('INVALID_PAYMENT_DURATION');
+    if (!isSANB(paymentDuration) || !PAYMENT_DURATIONS.has(paymentDuration)) {
+      throw Boom.badRequest(ctx.translateError('INVALID_PAYMENT_DURATION'));
+    }
 
     // don't allow a user to have a subscription paymentType selected
     // with 2y, 3y, 4y, 5y, or lifetime selected (in other words if the mapping doesn't exist)
     let price;
-    if (paymentMethod === 'credit_card')
+    if (paymentMethod === 'credit_card') {
       price = STRIPE_MAPPING[plan][paymentType][paymentDuration];
-    else if (paymentMethod === 'paypal')
+    } else if (paymentMethod === 'paypal') {
       price = PAYPAL_MAPPING[plan][paymentDuration];
+    }
 
-    if (!isSANB(price) && !_.isFinite(price))
-      throw ctx.translateError('INVALID_PAYMENT_DURATION');
+    if (!isSANB(price) && !_.isFinite(price)) {
+      throw Boom.badRequest(ctx.translateError('INVALID_PAYMENT_DURATION'));
+    }
 
-    // One-time payment for 3 months of Team plan
-    // Subscription payment for 1 year of Enhanced Protection plan
+    // one-time payment for 3 months of Team plan
+    // subscription payment for 1 year of Enhanced Protection plan
     const duration = dayjs()
       .add(ms(paymentDuration), 'millisecond')
       .locale(ctx.locale)
@@ -105,8 +112,10 @@ async function createDomainBilling(ctx) {
     // stripe
     //
     if (paymentMethod === 'credit_card') {
-      // if the user didn't have JavaScript enabled, then redirect them to Stripe page
-      if (ctx.accepts('html')) throw ctx.translateError('JAVASCRIPT_REQUIRED');
+      // If the user didn't have JavaScript enabled, then redirect them to Stripe page
+      if (ctx.accepts('html')) {
+        throw ctx.translateError('JAVASCRIPT_REQUIRED');
+      }
 
       //
       // create and validate stripe customer here
@@ -265,9 +274,9 @@ async function createDomainBilling(ctx) {
             // err.message = {"name":"INVALID_REQUEST","message":"Request is not well-formed, syntactically incorrect, or violates schema.","debug_id":"1d5686dcdfa41","details":[{"field":"/purchase_units/@reference_id=='WyA2Pn'/amount/value","value":"","location":"body","issue":"MISSING_REQUIRED_PARAMETER","description":"A required field / parameter is missing."},{"field":"/purchase_units/@reference_id=='WyA2Pn'/items/0/unit_amount/value","value":"","location":"body","issue":"MISSING_REQUIRED_PARAMETER","description":"A required field / parameter is missing."}],"links":[{"href":"https://developer.paypal.com/docs/api/orders/v2/#error-MISSING_REQUIRED_PARAMETER","rel":"information_link","encType":"application/json"}]}
             err.original_message = err.message;
             err.message = JSON.parse(err.message).message;
-          } catch (err) {
+          } catch (err_) {
             // if it wasn't a PayPal error
-            ctx.logger.debug(err);
+            ctx.logger.debug(err_);
           }
 
           throw err;

@@ -50,28 +50,31 @@ async function retrieveDomainBilling(ctx) {
 
   if (isMakePayment)
     if (ctx.state.user.plan === 'free')
-      throw ctx.translateError('INVALID_PLAN');
+      throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
     else ctx.query.plan = ctx.state.user.plan;
+  else if (isAccountUpgrade && ctx.query.plan === ctx.state.user.plan)
+    throw Boom.badRequest(ctx.translateError('PLAN_ALREADY_ACTIVE'));
 
   try {
     if (
       !isSANB(ctx.query.plan) ||
       !['free', 'enhanced_protection', 'team'].includes(ctx.query.plan)
     )
-      throw ctx.translateError('INVALID_PLAN');
+      throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
 
     let domain;
     if (!isAccountUpgrade && !isMakePayment) {
       domain = await Domains.findById(ctx.state.domain._id);
 
-      if (!domain) throw ctx.translateError('DOMAIN_DOES_NOT_EXIST');
+      if (!domain)
+        throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
       // set locale on domain for translation
       domain.locale = ctx.locale;
 
       // handle edge case if user had multiple tabs open and already upgraded
       if (ctx.query.plan === domain.plan)
-        throw ctx.translateError('PLAN_ALREADY_ACTIVE');
+        throw Boom.badRequest(ctx.translateError('PLAN_ALREADY_ACTIVE'));
     }
 
     //
