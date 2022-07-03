@@ -63,7 +63,8 @@ Member.plugin(mongooseCommonPlugin, {
   object: 'member',
   omitCommonFields: false,
   omitExtraFields: ['_id', '__v'],
-  uniqueId: false
+  uniqueId: false,
+  locale: false
 });
 
 const Invite = new mongoose.Schema({
@@ -88,7 +89,8 @@ Invite.plugin(mongooseCommonPlugin, {
   object: 'invite',
   omitCommonFields: false,
   omitExtraFields: ['_id', '__v'],
-  uniqueId: false
+  uniqueId: false,
+  locale: false
 });
 
 const Domain = new mongoose.Schema({
@@ -386,7 +388,8 @@ Domain.plugin(mongooseCommonPlugin, {
     virtuals: {
       client: 'hide'
     }
-  }
+  },
+  defaultLocale: i18n.getLocale()
 });
 
 // eslint-disable-next-line complexity

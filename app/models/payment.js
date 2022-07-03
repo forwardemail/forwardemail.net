@@ -142,6 +142,9 @@ Payment.pre('validate', async function (next) {
   }
 });
 
-Payment.plugin(mongooseCommonPlugin, { object: 'payment' });
+Payment.plugin(mongooseCommonPlugin, {
+  object: 'payment',
+  defaultLocale: i18n.getLocale()
+});
 
 module.exports = mongoose.model('Payment', Payment);

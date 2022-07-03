@@ -659,7 +659,7 @@ async function verify(ctx) {
   // if it's a POST request then ensure the user entered the 6 digit pin
   // otherwise if it's a GET request then use the ctx.query.pin
   let pin = '';
-  if (ctx.method === 'GET') pin = ctx.query.pin;
+  if (ctx.method === 'GET' && isSANB(ctx.query.pin)) pin = ctx.query.pin;
   else pin = isSANB(ctx.request.body.pin) ? ctx.request.body.pin : '';
 
   // convert to digits only

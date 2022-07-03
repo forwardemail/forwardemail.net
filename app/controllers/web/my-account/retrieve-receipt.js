@@ -35,6 +35,9 @@ async function retrieveReceipt(ctx) {
         Boom.badRequest(ctx.translateError('PAYMENT_REFERENCE_INVALID'))
       );
 
+    // localize the payment
+    ctx.state.payment.locale = ctx.locale;
+
     if (isPDF) {
       const html = pug.renderFile(
         path.join(config.views.root, 'my-account', 'billing', 'pdf.pug'),
@@ -60,10 +63,12 @@ async function retrieveReceipt(ctx) {
         debug: config.env !== 'production',
         pageSize: 'letter',
         background: true,
-        'image-dpi': 300,
-        'print-media-type': false,
-        'enable-javascript': false,
-        'enable-internal-links': true
+        imageDpi: 300,
+        printMediaType: false,
+        enableJavaScript: false,
+        disableJavascript: true,
+        enableInternalLinks: false,
+        disableInternalLinks: true
       });
       return;
     }

@@ -134,7 +134,9 @@ Alias.pre('validate', function (next) {
 
   // add wildcard as first label
   if (this.name === '*') this.labels.unshift('catch-all');
-  this.labels = _.compact(_.uniq(this.labels.map((label) => slug(label))));
+  this.labels = _.compact(
+    _.uniq(this.labels.map((label) => slug(striptags(label))))
+  );
   if (this.name !== '*') this.labels = _.without(this.labels, 'catch-all');
 
   // alias must not start with ! exclamation (since that denotes it is ignored)
@@ -199,7 +201,8 @@ Alias.pre('validate', function (next) {
 // it populates "id" String automatically for comparisons
 Alias.plugin(mongooseCommonPlugin, {
   object: 'alias',
-  omitExtraFields: ['is_api']
+  omitExtraFields: ['is_api'],
+  defaultLocale: i18n.getLocale()
 });
 
 // eslint-disable-next-line complexity

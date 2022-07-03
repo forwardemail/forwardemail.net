@@ -5,7 +5,7 @@ block navigation
 block footer
 
 block append scripts
-  if ctx.params.reference.endsWith('.html')
+  if ctx.path.endsWith('.html')
     script.
       window.print();
 

@@ -33,6 +33,9 @@ const Inquiry = new mongoose.Schema({
   }
 });
 
-Inquiry.plugin(mongooseCommonPlugin, { object: 'inquiry' });
+Inquiry.plugin(mongooseCommonPlugin, {
+  object: 'inquiry',
+  locale: false
+});
 
 module.exports = mongoose.model('Inquiry', Inquiry);

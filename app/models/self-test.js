@@ -16,6 +16,9 @@ const SelfTest = new mongoose.Schema({
   }
 });
 
-SelfTest.plugin(mongooseCommonPlugin, { object: 'self_test' });
+SelfTest.plugin(mongooseCommonPlugin, {
+  object: 'self_test',
+  locale: false
+});
 
 module.exports = mongoose.model('SelfTest', SelfTest);

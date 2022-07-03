@@ -21,7 +21,7 @@ include ./_payment-method.pug
       td.border-0(colspan=2)
         .text-center.mt-2.mb-3.pb-3.border-bottom
           img.d-inline-block.mr-1(
-            src=manifest(ctx.params.reference.endsWith(".pdf") ? "img/apple-touch-icon.png" : "img/logo-square.svg"),
+            src=manifest(ctx.path.endsWith(".pdf") ? "img/apple-touch-icon.png" : "img/logo-square.svg"),
             width=50,
             height=50,
             alt=""
@@ -75,7 +75,7 @@ include ./_payment-method.pug
           if user[config.userFields.companyVAT]
             strong= "VAT #"
             = " "
-            = user[config.userFields.companyVAT]
+            = striptags(user[config.userFields.companyVAT])
           .float-right.text-right: u= t("Total")
         th.align-middle.text-right= payment.amount_formatted
   .card-footer.text-center: small.text-muted= t("If you have any questions or comments, then please let us know")

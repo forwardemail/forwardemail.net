@@ -10,6 +10,8 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const mongooseOmitCommonFields = require('mongoose-omit-common-fields');
 const ms = require('ms');
 const passportLocalMongoose = require('passport-local-mongoose');
+const sanitizeHtml = require('sanitize-html');
+const striptags = require('striptags');
 const superagent = require('superagent');
 const validator = require('validator');
 const { authenticator } = require('otplib');
@@ -276,6 +278,27 @@ object[config.userFields.addressCountry] = {
 // finally add the fields
 User.add(object);
 
+// sanitize input (striptags)
+User.pre('save', function (next) {
+  for (const prop of [
+    config.userFields.companyName,
+    config.userFields.addressLine1,
+    config.userFields.addressLine2,
+    config.userFields.addressCity,
+    config.userFields.addressState,
+    config.userFields.addressZip,
+    config.userFields.companyVAT
+  ]) {
+    if (isSANB(this[prop])) {
+      this[prop] = striptags(this[prop]);
+    } else {
+      this[prop] = null;
+    }
+  }
+
+  next();
+});
+
 User.plugin(captainHook);
 
 User.virtual(config.userFields.addressHTML).get(function () {
@@ -302,7 +325,10 @@ User.virtual(config.userFields.addressHTML).get(function () {
       ? this[config.userFields.addressCountry]
       : null
   ];
-  return arr.filter(Boolean).join('<br />');
+  return sanitizeHtml(arr.filter(Boolean).join('<br />'), {
+    allowedTags: ['strong', 'br'],
+    allowedAttributes: []
+  });
 });
 
 User.virtual(config.userFields.verificationPinHasExpired).get(function () {
@@ -491,6 +517,7 @@ User.plugin(mongooseCommonPlugin, {
   object: 'user',
   omitCommonFields: false,
   omitExtraFields,
+  defaultLocale: i18n.getLocale(),
   mongooseHidden: {
     virtuals: {
       [config.userFields.verificationPinHasExpired]: 'hide'

@@ -7,6 +7,8 @@ const env = require('#config/env');
 // inspiration from the following gist, except we swapped ":" for "-" to be more URL-friendly
 // https://gist.github.com/vlucas/2bd40f62d20c1d49237a109d491974eb?permalink_comment_id=3771967#gistcomment-3771967
 //
+// NOTE: in the future we could use GCM <https://gist.github.com/rjz/15baffeab434b8125ca4d783f4116d81>
+//
 function encrypt(
   text,
   ivLength = 16,
