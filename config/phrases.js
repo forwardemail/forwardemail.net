@@ -255,5 +255,6 @@ module.exports = {
     'Disposable email addresses are not allowed.  Try again or contact us for help.',
   WEBSITE_OUTAGE:
     'We are resolving an issue with our website &ndash; visit our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">Status Page</a> for updates.',
+  ERRORS_OCCURRED: 'The following errors occurred:',
   ...STATUSES
 };

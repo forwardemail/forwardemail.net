@@ -138,9 +138,10 @@ async function retrieveDomainBilling(ctx) {
 
       if (errors.length > 0) {
         if (errors.length === 1) throw Boom.badRequest(errors[0].message);
-        // TODO: translate stuff like this
         throw Boom.badRequest(`
-          <p class="font-weight-bold text-danger">The following errors occurred:</p>
+          <p class="font-weight-bold text-danger">${ctx.translate(
+            'ERRORS_OCCURRED'
+          )}</p>
           <ul class="mb-0 text-left"><li>${errors
             .map((e) => e.message)
             .join('</li><li>')}</li><ul>

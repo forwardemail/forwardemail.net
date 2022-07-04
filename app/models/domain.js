@@ -792,7 +792,10 @@ async function ensureUserHasValidPlan(user, locale) {
   if (errors.length === 1) throw Boom.badRequest(errors[0].message);
 
   throw Boom.badRequest(`
-    <p class="font-weight-bold text-danger">The following errors occurred:</p>
+    <p class="font-weight-bold text-danger">${i18n.translate(
+      'ERRORS_OCCURRED',
+      user.locale
+    )}</p>
     <ul class="mb-0 text-left"><li>${errors
       .map((e) => e.message)
       .join('</li><li>')}</li><ul>

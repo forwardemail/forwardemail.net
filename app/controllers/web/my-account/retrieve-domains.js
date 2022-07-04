@@ -152,18 +152,18 @@ async function retrieveDomains(ctx, next) {
   if (!ctx.pathWithoutLocale.endsWith('/aliases')) {
     if (isSANB(ctx.query.name))
       ctx.state.domains = ctx.state.domains.filter((domain) =>
-        new RE2(_.escapeRegExp(ctx.query.name)).test(domain.name)
+        new RE2(ctx.query.name).test(domain.name)
       );
 
     if (isSANB(ctx.query.alias)) {
-      const aliasRegex = new RE2(_.escapeRegExp(ctx.query.alias));
+      const aliasRegex = new RE2(ctx.query.alias);
       ctx.state.domains = ctx.state.domains.filter((domain) =>
         domain.aliases.some((alias) => aliasRegex.test(alias.name))
       );
     }
 
     if (isSANB(ctx.query.recipient)) {
-      const recipientRegex = new RE2(_.escapeRegExp(ctx.query.recipient));
+      const recipientRegex = new RE2(ctx.query.recipient);
       ctx.state.domains = ctx.state.domains.filter((domain) =>
         domain.aliases.some((alias) =>
           alias.recipients.some((recipient) => recipientRegex.test(recipient))

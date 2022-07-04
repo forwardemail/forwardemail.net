@@ -1,5 +1,4 @@
 const RE2 = require('re2');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 
 function retrieveAliases(ctx, next) {
@@ -12,11 +11,11 @@ function retrieveAliases(ctx, next) {
     //
     if (isSANB(ctx.query.name))
       ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
-        new RE2(_.escapeRegExp(ctx.query.name)).test(alias.name)
+        new RE2(ctx.query.name).test(alias.name)
       );
 
     if (isSANB(ctx.query.recipient)) {
-      const recipientRegex = new RE2(_.escapeRegExp(ctx.query.recipient));
+      const recipientRegex = new RE2(ctx.query.recipient);
       ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
         alias.recipients.some((recipient) => recipientRegex.test(recipient))
       );

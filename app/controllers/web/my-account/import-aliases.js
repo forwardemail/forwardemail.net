@@ -174,7 +174,9 @@ async function importAliases(ctx) {
     errors.length > 0
       ? `<p>${messages.join(
           ' '
-        )}</p><p class="font-weight-bold text-danger">The following errors occurred:</p><ul class="mb-0 text-left"><li>${errors
+        )}</p><p class="font-weight-bold text-danger">${ctx.translate(
+          'ERRORS_OCCURRED'
+        )}</p><ul class="mb-0 text-left"><li>${errors
           .map((err) => err.message)
           .join('</li><li>')}</li></ul>`
       : messages.join(' ');
