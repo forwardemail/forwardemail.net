@@ -1,4 +1,5 @@
 const users = require('./users');
 const domains = require('./domains');
+const dashboard = require('./dashboard');
 
-module.exports = { users, domains };
+module.exports = { dashboard, users, domains };

@@ -1,5 +1,13 @@
 extends ../layout
 
+block append scripts
+  script(
+    defer,
+    src=manifest("js/open-startup.js"),
+    integrity=manifest("js/open-startup.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
 block body
   .container-fluid.py-3
     .row
@@ -12,3 +20,33 @@ block body
             = t("Good evening")
           else
             = t("Good morning")
+    .row.mb-3
+      .col
+        .d-flex.flex-wrap.rounded.border.bg-white
+          .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
+            h2.h6.text-muted.text-uppercase= t("Total users")
+            #metrics-total-users.display-4.font-weight-bold -
+          .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
+            h2.h6.text-muted.text-uppercase= t("Total domains")
+            #metrics-total-domains.display-4.font-weight-bold -
+          .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
+            h2.h6.text-muted.text-uppercase= t("Total aliases")
+            #metrics-total-aliases.display-4.font-weight-bold -
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h6.text-muted.text-uppercase.mb-0= t("Growth since launch")
+            #line-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h6.text-muted.text-uppercase.mb-0= t("Daily new users")
+            #heatmap: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h6.text-muted.text-uppercase.mb-0= t("Plan distribution")
+            #pie-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner

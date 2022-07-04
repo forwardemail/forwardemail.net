@@ -1,5 +1,4 @@
 const Router = require('@koa/router');
-const render = require('koa-views-render');
 const paginate = require('koa-ctx-paginate');
 
 const policies = require('#helpers/policies');
@@ -11,7 +10,7 @@ router
   .use(policies.ensureAdmin)
   .use(policies.ensureOtp)
   .use(web.breadcrumbs)
-  .get('/', render('admin'))
+  .get('/', web.admin.dashboard)
 
   // users
   .get('/users', paginate.middleware(10, 50), web.admin.users.list)
