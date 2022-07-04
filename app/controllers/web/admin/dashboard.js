@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const dayjs = require('dayjs-with-plugins');
 const memoize = require('memoizee');
 const ms = require('ms');
 const numeral = require('numeral');
@@ -19,6 +18,7 @@ for (const locale of locales) {
   } catch {}
 }
 
+/*
 const DAYS_OF_WEEK = [
   'Sunday',
   'Monday',
@@ -28,6 +28,7 @@ const DAYS_OF_WEEK = [
   'Friday',
   'Saturday'
 ];
+*/
 
 async function getBody(ctx) {
   const [
@@ -36,14 +37,11 @@ async function getBody(ctx) {
     totalAliases,
     // monthlyRevenue,
     lineChart,
-    heatmap,
+    // heatmap,
     pieChart
   ] = await Promise.all([
     Users.countDocuments({ [config.userFields.hasVerifiedEmail]: true }),
-    (async () => {
-      const domains = await Domains.distinct('name', {});
-      return domains.length;
-    })(),
+    Domains.countDocuments(),
     Aliases.countDocuments(),
     // Promise.resolve(0),
     (async () => {
@@ -51,33 +49,32 @@ async function getBody(ctx) {
 
       await Promise.all(
         Object.keys(models).map(async (name) => {
-          const mapping = {};
-
-          const docs = await models[name]
-            .find({
-              ...(name === 'Users'
-                ? { [config.userFields.hasVerifiedEmail]: true }
-                : {})
-            })
-            .lean()
-            .select('created_at')
-            .exec();
-
-          for (const doc of docs) {
-            const date = dayjs(doc.created_at).startOf('day').toDate();
-            if (!mapping[date]) mapping[date] = 0;
-            mapping[date]++;
-          }
-
-          let count = 0;
-          for (const key of Object.keys(mapping)) {
-            count += mapping[key];
-            mapping[key] = count;
-          }
+          const docs = await models[name].aggregate([
+            {
+              $match: {
+                ...(name === 'Users'
+                  ? { [config.userFields.hasVerifiedEmail]: true }
+                  : {})
+              }
+            },
+            {
+              $group: {
+                _id: {
+                  $dateToString: { format: '%Y/%m/%d', date: '$created_at' }
+                },
+                count: { $sum: 1 }
+              }
+            },
+            {
+              $sort: {
+                _id: 1
+              }
+            }
+          ]);
 
           series.push({
             name,
-            data: Object.keys(mapping).map((key) => [key, mapping[key]])
+            data: docs.map((doc) => [doc._id, doc.count])
           });
         })
       );
@@ -98,12 +95,13 @@ async function getBody(ctx) {
         },
         tooltip: {
           x: {
-            format: 'M/d/yy'
+            format: 'y/M/d'
           }
         },
         colors: ['#20C1ED', '#269C32', '#ffc107']
       };
     })(),
+    /*
     (async () => {
       const start = dayjs()
         .endOf('week')
@@ -179,6 +177,7 @@ async function getBody(ctx) {
         colors
       };
     })(),
+    */
     (async () => {
       const [free, enhancedProtection, team] = await Promise.all([
         Domains.countDocuments({ plan: 'free' }),
@@ -208,6 +207,7 @@ async function getBody(ctx) {
   }
 
   // localize heatmap
+  /*
   if (heatmap) {
     heatmap.series = heatmap.series.map((s) => ({
       ...s,
@@ -218,6 +218,7 @@ async function getBody(ctx) {
       }))
     }));
   }
+  */
 
   const options = {
     dataLabels: {
@@ -263,7 +264,7 @@ async function getBody(ctx) {
         selector: '#line-chart',
         options: _.merge({}, options, lineChart || {})
       },
-      { selector: '#heatmap', options: _.merge({}, options, heatmap || {}) },
+      // { selector: '#heatmap', options: _.merge({}, options, heatmap || {}) },
       { selector: '#pie-chart', options: _.merge({}, options, pieChart || {}) }
     ]
   };
@@ -274,7 +275,7 @@ async function getBody(ctx) {
   return body;
 }
 
-const getBodyMemoized = memoize(getBody, { length: 1, maxAge: ms('5m') });
+const getBodyMemoized = memoize(getBody, { length: 1, maxAge: ms('60m') });
 
 async function dashboard(ctx) {
   if (ctx.accepts('html')) return ctx.render('admin');
