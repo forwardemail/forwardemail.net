@@ -26,7 +26,7 @@ async function listDomains(ctx) {
 
   // filter based on regex keyword
   if (ctx.query.q) {
-    const qRegex = new RE2(ctx.query.q, 'gi');
+    const qRegex = new RE2(_.escapeRegExp(ctx.query.q), 'gi');
     domains = domains.filter(
       (domain) =>
         qRegex.test(domain.name) ||
