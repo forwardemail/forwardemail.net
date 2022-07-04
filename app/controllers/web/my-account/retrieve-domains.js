@@ -147,6 +147,7 @@ async function retrieveDomains(ctx, next) {
   });
 
   //
+  // TODO: is this actually still in use anywhere?
   // search functionality (with RegExp support)
   //
   if (!ctx.pathWithoutLocale.endsWith('/aliases')) {
