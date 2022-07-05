@@ -1,7 +1,11 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
+const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
+const reservedEmailAddressesList = require('reserved-email-addresses-list');
 
-const { Domains } = require('#models');
+const config = require('#config');
+const emailHelper = require('#helpers/email');
+const { Aliases, Domains } = require('#models');
 
 async function updateMember(ctx, next) {
   // ctx.params.member_id
@@ -15,18 +19,22 @@ async function updateMember(ctx, next) {
   )
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_GROUP')));
 
+  const member = ctx.state.domain.members.find(
+    (member) => member.user && member.user.id === ctx.params.member_id
+  );
+
+  if (!member || !member.user)
+    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+
+  const aliases = ctx.state.domain.aliases.filter(
+    (alias) => alias.user && alias.user.id === member.user.id
+  );
+
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
     return ctx.throw(
       Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
-
-  const match = ctx.state.domain.members.find(
-    (member) => member.user.toString() === ctx.params.member_id
-  );
-
-  if (!match)
-    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
   // swap the user group based off ctx.request.body.group
   // <https://github.com/Automattic/mongoose/issues/11522>
@@ -37,6 +45,63 @@ async function updateMember(ctx, next) {
         ? ctx.request.body.group
         : member.group
   }));
+
+  // if the user being swapped is being downgraded to user
+  // and the user has aliases that are either "*" or reserved
+  // then we need to re-assign them to the currently logged in user
+  if (ctx.request.body.group === 'user') {
+    const updatedAliases = aliases.filter((alias) => {
+      // + "*"
+      // + reserved email addresses list
+      // + reserved admin list
+      if (alias.name === '*') return true;
+
+      const string = alias.name.replace(/[^\da-z]/g, '');
+      let reservedMatch = reservedEmailAddressesList.find(
+        (addr) => addr === string
+      );
+      if (!reservedMatch)
+        reservedMatch = reservedAdminList.find(
+          (addr) =>
+            addr === string || string.startsWith(addr) || string.endsWith(addr)
+        );
+      if (reservedMatch) return true;
+      return false;
+    });
+
+    if (updatedAliases.length > 0) {
+      await Aliases.updateMany(
+        {
+          id: {
+            $in: updatedAliases.map((alias) => alias.id)
+          }
+        },
+        {
+          user: ctx.state.user._id
+        }
+      );
+
+      const message = `<p class="font-weight-bold">${ctx.translate(
+        'REASSIGNED_ALIAS_OWNERSHIP'
+      )}</p><ul class="mb-0 text-left"><li>${updatedAliases
+        .map((alias) => alias.name)
+        .join('</li><li>')}</li></ul>`;
+
+      // flash a message if we're not on the API
+      if (!ctx.api) ctx.flash('info', message);
+
+      // send an email in the background
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: ctx.state.user[config.userFields.fullEmail]
+        },
+        locals: { message }
+      })
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+    }
+  }
 
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.client = ctx.client;

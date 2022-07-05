@@ -1,4 +1,23 @@
 mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKeepReading=false, onboardContainerClass='')
+  #modal-onboard-pricing-video.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-onboard-pricing-video-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          h1#modal-onboard-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Enhanced Protection Plan")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          .lazyframe(
+            title=t("Setup your domain with email"),
+            style="width: 100%; height: 450px",
+            data-vendor="youtube_nocookie",
+            data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
+          )
   div&attributes(attributes)
     .container-fluid.bg-light.py-5(class=onboardContainerClass)
       .row
@@ -37,16 +56,18 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                     checked,
                     value="true"
                   )
-                  label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a>', l("/pricing"))
+                  label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" data-toggle="modal" data-target="#modal-onboard-pricing-video" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a>', l("/pricing"))
                 if user
-                  .form-check.form-group
-                    input#input-create-domain.form-check-input(
-                      type="checkbox",
-                      name="create_domain",
-                      checked,
-                      value="true"
-                    )
-                    label.form-check-label(for="input-create-domain")= t("Add this domain to your account (if it does not exist)")
+                  input(type='hidden', name='create_domain', value='true')
+                  //-.
+                    .form-check.form-group
+                      input#input-create-domain.form-check-input(
+                        type="checkbox",
+                        name="create_domain",
+                        checked,
+                        value="true"
+                      )
+                      label.form-check-label(for="input-create-domain")= t("Add this domain to your account")
                 else
                   .form-check.form-group.d-flex
                     input#input-create-account.form-check-input(
@@ -67,7 +88,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                   = " "
                   i.fa.fa-angle-double-right
                 p#help-create-account.mt-3.mb-1.text-center
-                  small.text-black-50!= t('By signing up, you agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
+                  small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
           if onboardKeepReading
             p.text-center.mb-0: small: a.text-black-50.font-weight-bold(
               href=onboardKeepReading

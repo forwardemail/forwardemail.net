@@ -1,4 +1,5 @@
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const paginate = require('koa-ctx-paginate');
 
 const { Domains } = require('#models');
@@ -7,7 +8,16 @@ async function list(ctx) {
   const query = {};
 
   // filter based on regex name
-  if (ctx.query.name) query.name = { $regex: ctx.query.name, $options: 'i' };
+  if (ctx.query.name) {
+    query.$or = [
+      {
+        name: { $regex: ctx.query.name, $options: 'i' }
+      },
+      {
+        name: { $regex: _.escapeRegExp(ctx.query.name), $options: 'i' }
+      }
+    ];
+  }
 
   const [domains, itemCount] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference

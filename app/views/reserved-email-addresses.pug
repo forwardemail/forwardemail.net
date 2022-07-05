@@ -3,7 +3,7 @@ extends layout
 include _onboard
 
 block body
-  +onboard(t('Need email forwarding for your team?'), t('Skip ahead to the instructions to setup email forwarding for your team.'), l('/faq?redirect_to_domain=true'), '#reserved-email-addresses', 'border-bottom')
+  +onboard(t('Need email for your domain?'), t('Skip ahead to the instructions to setup email for your domain.'), l('/faq?redirect_to_domain=true'), '#reserved-email-addresses', 'border-bottom')
   #reserved-email-addresses.container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
     .row
       .col-md-12

@@ -3,7 +3,12 @@ extends ../layout
 include ../_onboard
 
 block body
-  +onboard('<i class="fas fa-hourglass-half"></i>' + ' ' + t('Save Yourself Time'), t('Fill out this form to personalize our guide below.'), ctx.path, '#top', 'border-bottom')
+  +onboard(t("Setup email in minutes"), t('Personalize our guide to save time:'), ctx.path, '#top', 'border-bottom')
+  .fixed-bottom.text-right.mb-2.mr-2
+    a(href='#table-of-contents').btn.btn-dark.text-center
+      i.fa.fa-list
+      = ' '
+      = t('Table of Contents')
   .container.py-5
     .row
       .col

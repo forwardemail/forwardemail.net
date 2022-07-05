@@ -470,14 +470,20 @@ async function resetPassword(ctx) {
     throw Boom.badRequest(ctx.translateError('INVALID_RESET_TOKEN'));
 
   // lookup the user that has this token and if it matches the email passed
-  const query = { email: body.email };
-  query[config.userFields.resetToken] = ctx.params.token;
-  // ensure that the reset token expires at value is in the future (hasn't expired)
-  query[config.userFields.resetTokenExpiresAt] = { $gte: new Date() };
-  let user = await Users.findOne(query);
+  let user = await Users.findOne({
+    email: body.email.trim().toLowerCase(),
+    [config.userFields.resetToken]: ctx.params.token
+  });
 
   if (!user)
     throw Boom.badRequest(ctx.translateError('INVALID_RESET_PASSWORD'));
+
+  // ensure that the reset token expires at value is in the future (hasn't expired)
+  if (
+    !_.isDate(user[config.userFields.resetTokenExpiresAt]) ||
+    new Date(user[config.userFields.resetTokenExpiresAt]).getTime() < Date.now()
+  )
+    throw Boom.badRequest(ctx.translateError('RESET_TOKEN_EXPIRED'));
 
   user[config.userFields.resetToken] = null;
   user[config.userFields.resetTokenExpiresAt] = null;

@@ -127,7 +127,7 @@ Alias.pre('validate', function (next) {
     !quotedEmailUserUtf8.test(this.name.trim().toLowerCase()) ||
     (!this.name.trim().startsWith('/') && this.name.includes('+'))
   )
-    return next(new Error('Alias name was invalid'));
+    return next(new Error('Alias name was invalid.'));
 
   // trim and convert to lowercase
   this.name = this.name.trim().toLowerCase();
@@ -141,7 +141,7 @@ Alias.pre('validate', function (next) {
 
   // alias must not start with ! exclamation (since that denotes it is ignored)
   if (this.name.indexOf('!') === 0)
-    return next(new Error('Alias must not start with an exclamation point'));
+    return next(new Error('Alias must not start with an exclamation point.'));
 
   // make all recipients kinds unique by email address, FQDN, or IP
   for (const prop of [
@@ -154,8 +154,8 @@ Alias.pre('validate', function (next) {
       _.uniq(
         this[prop].map((r) => {
           // some webhooks are case-sensitive
-          if (isURL(r)) return r.trim();
-          return r.toLowerCase().trim();
+          if (isEmail(r)) return r.toLowerCase().trim();
+          return r.trim();
         })
       )
     );
@@ -168,7 +168,7 @@ Alias.pre('validate', function (next) {
   )
     return next(
       new Error(
-        'Alias with recipient verification must have email-only recipients'
+        'Alias with recipient verification must have email-only recipients.'
       )
     );
 
@@ -191,7 +191,7 @@ Alias.pre('validate', function (next) {
   if (this.name === '*' && !this.is_enabled)
     return next(
       new Error(
-        'Alias that is a catch-all must be enabled or deleted entirely to be disabled'
+        'Alias that is a catch-all must be enabled or deleted entirely to be disabled.'
       )
     );
   next();
@@ -212,7 +212,7 @@ Alias.pre('save', async function (next) {
     // domain and user must exist
     // user must be a member of the domain
     // name@domain.name must be unique for given domain
-    let [domain, user, aliases] = await Promise.all([
+    const [domain, user] = await Promise.all([
       Domains.findOne({
         $or: [
           {
@@ -228,22 +228,16 @@ Alias.pre('save', async function (next) {
         .populate('members.user', `id ${config.userFields.isBanned}`)
         .lean()
         .exec(),
-      Users.findById(alias.user).select('id').lean().exec(),
-      alias.constructor
-        .find({
-          domain: alias.domain
-        })
-        .select('id user name recipients')
-        .populate('user', `id ${config.userFields.isBanned}`)
+      Users.findOne({
+        _id: alias.user,
+        [config.userFields.isBanned]: false
+      })
         .lean()
+        .select('id')
         .exec()
     ]);
 
-    // filter out domains and aliases without users
-    aliases = aliases.filter(
-      (alias) =>
-        _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
-    );
+    // filter out a domain's members without actual users
     domain.members = domain.members.filter(
       (member) =>
         _.isObject(member.user) && !member.user[config.userFields.isBanned]
@@ -258,9 +252,16 @@ Alias.pre('save', async function (next) {
       throw Boom.notFound(i18n.translateError('INVALID_USER', alias.locale));
 
     // find an existing alias match
-    const match = aliases.find(
-      (_alias) => _alias.id !== alias.id && _alias.name === alias.name
-    );
+    const match = await alias.constructor
+      .findOne({
+        _id: {
+          $ne: alias._id
+        },
+        domain: domain._id,
+        name: alias.name
+      })
+      .lean()
+      .exec();
 
     if (match)
       throw Boom.badRequest(
@@ -282,6 +283,9 @@ Alias.pre('save', async function (next) {
         },
         group: 'user'
       };
+
+    if (!member)
+      throw Boom.notFound(i18n.translateError('INVALID_MEMBER', alias.locale));
 
     if (member.group !== 'admin') {
       // alias name cannot be a wildcard "*" if the user is not an admin
@@ -309,21 +313,29 @@ Alias.pre('save', async function (next) {
             addr === string || string.startsWith(addr) || string.endsWith(addr)
         );
 
-      if (reservedMatch)
-        throw Boom.badRequest(
+      if (reservedMatch) {
+        const err = Boom.badRequest(
           i18n.translateError(
             'RESERVED_WORD_ADMIN_REQUIRED',
             alias.locale,
             config.urls.web
           )
         );
+        err.is_reserved_word = true;
+
+        throw err;
+      }
 
       // if user is not admin of the domain and it is a global domain
       // then the user can only have up to 5 aliases at a time on the domain
       if (domain.is_global && !alias._wasNew) {
-        const aliasCount = aliases.filter(
-          (_alias) => _alias.user.id === user.id && _alias.name !== alias.name
-        ).length;
+        const aliasCount = await alias.constructor.countDocuments({
+          user: user._id,
+          domain: domain._id,
+          name: {
+            $ne: alias.name
+          }
+        });
         if (aliasCount > 5)
           throw Boom.badRequest(
             i18n.translateError('REACHED_MAX_ALIAS_COUNT', alias.locale)
@@ -339,10 +351,14 @@ Alias.pre('save', async function (next) {
         ? app.config.maxForwardedAddresses
         : domain.max_recipients_per_alias;
 
-    if (alias.recipients.length > count)
-      throw Boom.badRequest(
+    if (alias.recipients.length > count) {
+      const err = Boom.badRequest(
         i18n.translateError('EXCEEDED_UNIQUE_COUNT', alias.locale, count)
       );
+      err.exceeded_by_count = alias.recipients.length - count;
+      err.has_exceeded_unique_count = true;
+      throw err;
+    }
 
     // domain must be on a paid plan in order to require verification
     if (domain.plan === 'free' && alias.has_recipient_verification)

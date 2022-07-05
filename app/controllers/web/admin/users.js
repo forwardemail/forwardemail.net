@@ -1,4 +1,5 @@
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
 
@@ -18,7 +19,10 @@ async function list(ctx) {
     query = { $or: [] };
 
     for (const field of USER_SEARCH_PATHS) {
-      query.$or.push({ [field]: { $regex: ctx.query.q, $options: 'i' } });
+      query.$or.push(
+        { [field]: { $regex: ctx.query.q, $options: 'i' } },
+        { [field]: { $regex: _.escapeRegExp(ctx.query.q), $options: 'i' } }
+      );
     }
   }
 

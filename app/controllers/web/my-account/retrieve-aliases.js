@@ -12,11 +12,15 @@ function retrieveAliases(ctx, next) {
     //
     if (isSANB(ctx.query.name))
       ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
-        new RE2(_.escapeRegExp(ctx.query.name)).test(alias.name)
+        new RE2(_.escapeRegExp(ctx.query.name) + '|' + ctx.query.name).test(
+          alias.name
+        )
       );
 
     if (isSANB(ctx.query.recipient)) {
-      const recipientRegex = new RE2(_.escapeRegExp(ctx.query.recipient));
+      const recipientRegex = new RE2(
+        _.escapeRegExp(ctx.query.recipient) + '|' + ctx.query.recipient
+      );
       ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
         alias.recipients.some((recipient) => recipientRegex.test(recipient))
       );

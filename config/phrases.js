@@ -36,6 +36,7 @@ module.exports = {
   INVALID_SLUG: 'Please slightly change values to ensure slug uniqueness.',
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
   INVALID_USER: 'User does not exist.',
+  INVALID_MEMBER: 'Member does not exist.',
   INVALID_TOKEN: 'Invalid CSRF token.',
   INVALID_VERIFICATION_PIN: 'The verification code entered was invalid.',
   INVALID_PAYMENT_METHOD:
@@ -87,8 +88,7 @@ module.exports = {
   ACCOUNT_DELETE_HAS_DOMAINS:
     'Your account is currently an admin of one or more domain names.  Please delete these domains or remove yourself from them to continue.',
   ACCOUNT_DELETE_SUCCESSFUL: 'Your account was successfully deleted.',
-  PASSWORD_RESET_LIMIT:
-    'You can only request a password reset every 30 minutes.  Please try again <span class="notranslate">%s</span>.',
+  PASSWORD_RESET_LIMIT: 'Please try again <span class="notranslate">%s</span>.',
   PASSWORD_RESET_SENT: 'We have emailed you a link to reset your password.',
   PASSWORD_CONFIRM_SUCCESS: 'Password successfully confirmed.',
   PASSWORD_REQUIRED: 'Please set a password on your account to continue.',
@@ -219,8 +219,6 @@ module.exports = {
     'The email address <span class="notranslate">%s</span> already exists.',
   EMAIL_CHANGE_DOES_NOT_EXIST: 'Email change request does not exist.',
   EMAIL_CHANGE_CANCELLED: 'Email change request has been cancelled.',
-  ALIASES_NEED_REASSIGNED:
-    'Aliases owned by the member being deleted must be first reassigned or deleted.',
   PAYMENT_DESCRIPTION:
     '<span class="notranslate">%s</span> payment for <span class="notranslate">%s</span> of the <span class="notranslate">%s</span> plan.',
   PAYMENT_REFERENCE_INVALID: 'Payment reference was invalid or did not exist.',
@@ -256,5 +254,9 @@ module.exports = {
   WEBSITE_OUTAGE:
     'We are resolving an issue with our website &ndash; visit our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">Status Page</a> for updates.',
   ERRORS_OCCURRED: 'The following errors occurred:',
+  RESET_TOKEN_EXPIRED:
+    'The reset token has already expired. Please start a new <a href="/forgot-password">Forgot Password</a> request to continue.',
+  REASSIGNED_ALIAS_OWNERSHIP:
+    'We have re-assigned ownership of the following aliases to you:',
   ...STATUSES
 };

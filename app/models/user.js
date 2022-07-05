@@ -26,7 +26,7 @@ const i18n = require('#helpers/i18n');
 
 if (config.passportLocalMongoose.usernameField !== 'email')
   throw new Error(
-    'User model and @ladjs/passport requires that the usernameField is email'
+    'User model and @ladjs/passport requires that the usernameField is email.'
   );
 
 const countries = countryList.getNames().sort();
@@ -352,7 +352,7 @@ async function crawlDisposable() {
       .timeout(ms('5s'));
     const json = JSON.parse(text);
     if (!Array.isArray(json) || json.length === 0)
-      throw new Error('Disposable did not crawl data');
+      throw new Error('Disposable did not crawl data.');
     disposableDomains = json;
   } catch (err) {
     logger.fatal(err);

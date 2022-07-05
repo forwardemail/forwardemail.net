@@ -758,7 +758,7 @@ async function ensureUserHasValidPlan(user, locale) {
 
       // if the user did not exist then return early
       if (!member.user || !member.user.id) {
-        logger.fatal(new Error(`Member in ${domain.name} no longer exists`));
+        logger.fatal(new Error(`Member in ${domain.name} no longer exists.`));
         continue;
       }
 

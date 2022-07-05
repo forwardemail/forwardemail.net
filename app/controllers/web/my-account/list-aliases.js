@@ -8,7 +8,10 @@ async function listAliases(ctx) {
 
   // filter based on regex keyword
   if (ctx.query.q) {
-    const qRegex = new RE2(_.escapeRegExp(ctx.query.q), 'gi');
+    const qRegex = new RE2(
+      _.escapeRegExp(ctx.query.q) + '|' + ctx.query.q,
+      'gi'
+    );
     domain.aliases = domain.aliases.filter(
       (alias) =>
         qRegex.test(alias.name) ||

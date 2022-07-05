@@ -1,7 +1,9 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
-const { Domains } = require('#models');
+const config = require('#config');
+const emailHelper = require('#helpers/email');
+const { Aliases, Domains } = require('#models');
 
 async function removeMember(ctx, next) {
   // ctx.params.member_id
@@ -15,16 +17,42 @@ async function removeMember(ctx, next) {
   if (!member || !member.user)
     return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
-  // ensure that no aliases created with this user being removed
-  // (they need re-assigned first before the user can be removed)
-  const memberAliases = ctx.state.domain.aliases.filter(
+  // re-assign aliases that belong to this user before removing them
+  const aliases = ctx.state.domain.aliases.filter(
     (alias) => alias.user && alias.user.id === member.user.id
   );
 
-  if (memberAliases.length > 0)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('ALIASES_NEED_REASSIGNED'))
+  if (aliases.length > 0) {
+    await Aliases.updateMany(
+      {
+        id: {
+          $in: aliases.map((alias) => alias.id)
+        }
+      },
+      {
+        user: ctx.state.user._id
+      }
     );
+    const message = `<p class="font-weight-bold">${ctx.translate(
+      'REASSIGNED_ALIAS_OWNERSHIP'
+    )}</p><ul class="mb-0 text-left"><li>${aliases
+      .map((alias) => alias.name)
+      .join('</li><li>')}</li></ul>`;
+
+    // flash a message if we're not on the API
+    if (!ctx.api) ctx.flash('info', message);
+
+    // send an email in the background
+    emailHelper({
+      template: 'alert',
+      message: {
+        to: ctx.state.user[config.userFields.fullEmail]
+      },
+      locals: { message }
+    })
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+  }
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)

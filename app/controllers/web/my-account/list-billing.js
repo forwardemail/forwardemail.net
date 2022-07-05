@@ -44,7 +44,7 @@ async function listBilling(ctx) {
         if (ctx.query.keyword) {
           isKeyword =
             typeof prop === 'string'
-              ? new RE2(_.escapeRegExp(ctx.query.keyword), 'gi').test(prop)
+              ? new RE2(_.escapeRegExp(ctx.query.keyword) + '|' + ctx.query.keyword, 'gi').test(prop)
               : false;
         }
 
