@@ -23,7 +23,7 @@ function rateLimit(max = 10, context, duration = ms('1d')) {
       max,
       prefix,
       db: ctx.client,
-      id: (ctx) => (ctx.isAuthenticated() ? ctx.state.user.id : ctx.ip)
+      id: config.rateLimit.id
     })(ctx, next);
   };
 }

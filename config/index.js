@@ -24,6 +24,19 @@ const utilities = require('./utilities');
 const payments = require('./payments');
 
 const config = {
+  // custom rate limiting lookup for allowing whitelisted customers
+  rateLimit: {
+    id(ctx) {
+      if (typeof ctx.isAuthenticated !== 'function' || !ctx.isAuthenticated())
+        return ctx.ip;
+      // return `false` if the user is whitelisted
+      if (ctx.state.user[config.userFields.isRateLimitWhitelisted])
+        return false;
+      // in case user is abusing multiple IP addresses
+      return ctx.state.user.id;
+    }
+  },
+
   // package.json
   pkg,
 
@@ -129,6 +142,7 @@ const config = {
 
   // user fields (change these if you want camel case or whatever)
   userFields: {
+    isRateLimitWhitelisted: 'is_rate_limit_whitelisted',
     accountUpdates: 'account_updates',
     fullEmail: 'full_email',
     apiToken: 'api_token',

@@ -34,6 +34,7 @@ const options = { length: 10, type: 'numeric' };
 const { fields } = config.passport;
 const omitExtraFields = [
   ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
+  config.userFields.isRateLimitWhitelisted,
   config.userFields.apiToken,
   config.userFields.resetTokenExpiresAt,
   config.userFields.resetToken,
@@ -139,6 +140,12 @@ object[config.userFields.fullEmail] = {
 object[config.userFields.defaultDomain] = {
   type: mongoose.Schema.ObjectId,
   ref: 'Domain'
+};
+
+// rate limit whitelisting
+object[config.userFields.isRateLimitWhitelisted] = {
+  type: Boolean,
+  default: false
 };
 
 // api token for basic auth

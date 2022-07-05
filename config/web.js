@@ -28,9 +28,15 @@ const reportUri = isSANB(process.env.WEB_URL)
   ? `${process.env.WEB_URL}/report`
   : null;
 
+const sharedWebConfig = sharedConfig('WEB');
+
 module.exports = (redis) => ({
-  ...sharedConfig('WEB'),
+  ...sharedWebConfig,
   ...config,
+  rateLimit: {
+    ...sharedWebConfig.rateLimit,
+    ...config.rateLimit
+  },
   routes: routes.web,
   logger,
   i18n,
