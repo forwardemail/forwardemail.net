@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">ไม่</span> เรามี <a href=\"%s\">นโยบายความ</a> เป็นส่วนตัวที่ห้ามจัดเก็บบันทึก SMTP, ข้อมูลเมตา หรืออีเมลอย่างเคร่งครัด",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "คุณจะพบว่าผู้ส่งต่ออีเมลรายอื่น ๆ ทุกรายเก็บบันทึก SMTP และเขียนอีเมลของคุณไปยังที่เก็บข้อมูลดิสก์",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "อีเมลเปลี่ยนจาก <span class=\"notranslate\">%s</span> เป็น <span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "ให้ชื่อเปลี่ยนจาก <span class=\"notranslate\">%s</span> เป็น <span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "ให้ชื่อเปลี่ยนจาก <span class=\"notranslate\">%s</span> เป็น <span class=\"notranslate\">%s</span>",
+  "Member does not exist.": "ไม่มีสมาชิก",
+  "Please try again <span class=\"notranslate\">%s</span>.": "โปรดลองอีกครั้ง <span class=\"notranslate\">%s</span>",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "นามแฝงต้องไม่มีสัญลักษณ์ \"+\" เนื่องจากเป็นคุณลักษณะการกรองในตัว (คล้ายกับ Gmail)",
+  "The following errors occurred:": "เกิดข้อผิดพลาดต่อไปนี้:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "โทเค็นการรีเซ็ตหมดอายุแล้ว โปรดเริ่มต้นคำขอ <a href=\"/forgot-password\">ลืมรหัสผ่าน</a> ใหม่เพื่อดำเนินการต่อ",
+  "We have re-assigned ownership of the following aliases to you:": "เราได้มอบหมายความเป็นเจ้าของชื่อแทนต่อไปนี้ให้กับคุณอีกครั้ง:",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

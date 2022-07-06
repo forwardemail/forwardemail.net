@@ -2470,5 +2470,15 @@
   "We suggest that you enable two-factor authentication since your domains are using Enhanced Protection.": "도메인에서 향상된 보호를 사용하고 있으므로 이중 인증을 활성화하는 것이 좋습니다.",
   "Doing so will help to keep your domains, aliases, and account even more secure.": "그렇게 하면 도메인, 별칭 및 계정을 더욱 안전하게 유지하는 데 도움이 됩니다.",
   "Manage security": "보안 관리",
-  "We send this reminder every three months to increase security.": "보안을 강화하기 위해 3개월마다 이 알림을 보냅니다."
+  "We send this reminder every three months to increase security.": "보안을 강화하기 위해 3개월마다 이 알림을 보냅니다.",
+  "Member does not exist.": "회원이 존재하지 않습니다.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "다시 시도하십시오 <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "기본 제공 필터링 기능(Gmail과 유사)이므로 별칭에 \"+\" 기호를 사용할 수 없습니다.",
+  "The following errors occurred:": "다음 오류가 발생했습니다.",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "재설정 토큰은 이미 만료되었습니다. 계속하려면 새 <a href=\"/forgot-password\">비밀번호 찾기</a> 요청을 시작하십시오.",
+  "We have re-assigned ownership of the following aliases to you:": "다음 별칭의 소유권을 다시 할당했습니다.",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

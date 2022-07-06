@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">Ne.</span> Máme zásady <a href=\"%s\">ochrany osobních</a> údajů, podle kterých striktně neukládáme protokoly SMTP, metadata ani e-maily.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "Zjistíte, že každý jiný e-mailový přeposílání buď ukládá protokoly SMTP a zapisuje vaše e-maily na diskové úložiště.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "E-mail se změnil z <span class=\"notranslate\">%s</span> na <span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Křestní jméno se změnilo z <span class=\"notranslate\">%s</span> na <span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Křestní jméno se změnilo z <span class=\"notranslate\">%s</span> na <span class=\"notranslate\">%s</span>",
+  "Member does not exist.": "Člen neexistuje.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "Zkuste to znovu <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "Aliasy nemohou mít symbol „+“, protože se jedná o vestavěnou funkci filtrování (podobně jako Gmail).",
+  "The following errors occurred:": "Došlo k následujícím chybám:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Platnost resetovacího tokenu již vypršela. Chcete-li pokračovat, spusťte nový požadavek na <a href=\"/forgot-password\">zapomenuté heslo</a> .",
+  "We have re-assigned ownership of the following aliases to you:": "Znovu jsme vám přidělili vlastnictví následujících aliasů:",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

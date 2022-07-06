@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">Hayır</span> . SMTP günlüklerini, meta verilerini veya e-postaları kesinlikle saklamamaya yönelik bir <a href=\"%s\">Gizlilik</a> politikamız var.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "Diğer tüm e-posta ileticilerinin ya SMTP günlüklerini depoladığını ve e-postalarınızı disk depolama alanına yazdığını göreceksiniz.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "E-posta <span class=\"notranslate\">%s</span> iken <span class=\"notranslate\">%s</span> s olarak değişti",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Verilen Ad <span class=\"notranslate\">%s</span> iken <span class=\"notranslate\">%s</span> olarak değiştirildi"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Verilen Ad <span class=\"notranslate\">%s</span> iken <span class=\"notranslate\">%s</span> olarak değiştirildi",
+  "Member does not exist.": "Üye mevcut değil.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "Lütfen tekrar deneyin <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "Takma adlar, yerleşik bir filtreleme özelliği olduğundan (Gmail'e benzer) \"+\" sembolüne sahip olamaz.",
+  "The following errors occurred:": "şu hatalar oluştu:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Sıfırlama belirtecinin süresi zaten doldu. Devam etmek için lütfen yeni bir <a href=\"/forgot-password\">Şifremi Unuttum</a> isteği başlatın.",
+  "We have re-assigned ownership of the following aliases to you:": "Aşağıdaki takma adların sahipliğini size yeniden atadık:",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

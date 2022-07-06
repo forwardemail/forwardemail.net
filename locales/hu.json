@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">Nem.</span> <a href=\"%s\">Adatvédelmi</a> szabályzatunk szerint szigorúan nem tárolunk SMTP-naplókat, metaadatokat és e-maileket.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "Azt fogja tapasztalni, hogy minden más e-mail továbbító vagy SMTP-naplókat tárol, és az e-maileket lemeztárra írja.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Az e-mail cím: <span class=\"notranslate\">%s</span> , új cím: <span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "A keresztnév <span class=\"notranslate\">%s</span> -ról <span class=\"notranslate\">%s</span> -ra változott"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "A keresztnév <span class=\"notranslate\">%s</span> -ról <span class=\"notranslate\">%s</span> -ra változott",
+  "Member does not exist.": "Tag nem létezik.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "Kérjük, próbálja újra <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "Az álneveknél nem lehet „+” szimbólum, mivel ez egy beépített szűrési funkció (hasonlóan a Gmailhez).",
+  "The following errors occurred:": "A következő hibák történtek:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "A visszaállítási token már lejárt. A folytatáshoz indítson el egy új <a href=\"/forgot-password\">Elfelejtett jelszó</a> kérést.",
+  "We have re-assigned ownership of the following aliases to you:": "A következő álnevek tulajdonjogát újra átruháztuk Önnek:",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

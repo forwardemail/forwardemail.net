@@ -2123,5 +2123,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "不可以<span class=\"font-weight-bold\">。</span>我们有严格不存储 SMTP 日志、元数据或电子邮件的<a href=\"%s\">隐私</a>政策。",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "您会发现所有其他电子邮件转发器要么存储 SMTP 日志，要么将您的电子邮件写入磁盘存储。",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "电子邮件已从<span class=\"notranslate\">%s</span>更改为<span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Given Name 已从<span class=\"notranslate\">%s</span>更改为<span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Given Name 已从<span class=\"notranslate\">%s</span>更改为<span class=\"notranslate\">%s</span>",
+  "Member does not exist.": "会员不存在。",
+  "Please try again <span class=\"notranslate\">%s</span>.": "请再试一次<span class=\"notranslate\">%s</span> 。",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "别名不能有“+”号，因为这是一种内置过滤功能（类似于 Gmail）。",
+  "The following errors occurred:": "发生以下错误：",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "重置令牌已过期。请开始新的<a href=\"/forgot-password\">忘记密码</a>请求以继续。",
+  "We have re-assigned ownership of the following aliases to you:": "我们已将以下别名的所有权重新分配给您：",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

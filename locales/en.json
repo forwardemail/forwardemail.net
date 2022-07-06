@@ -2338,5 +2338,9 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

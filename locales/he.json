@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">לא.</span> יש לנו מדיניות <a href=\"%s\">פרטיות</a> של אי שמירה מוחלטת של יומני SMTP, מטא נתונים או דואר אלקטרוני.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "תגלה שכל מעביר דוא\"ל אחר אוחסן יומני SMTP וכותב את המיילים שלך לאחסון הדיסק.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "האימייל השתנה מ- <span class=\"notranslate\">%s</span> ל- <span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "שם נתון השתנה מ- <span class=\"notranslate\">%s</span> ל- <span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "שם נתון השתנה מ- <span class=\"notranslate\">%s</span> ל- <span class=\"notranslate\">%s</span>",
+  "Member does not exist.": "חבר לא קיים.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "אנא נסה שוב <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "כינויים לא יכולים לכלול סמל \"+\" מכיוון שזו תכונת סינון מובנית (בדומה ל-Gmail).",
+  "The following errors occurred:": "התרחשו השגיאות הבאות:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "תוקף אסימון האיפוס כבר פג. אנא התחל בקשה חדשה <a href=\"/forgot-password\">לשכחת סיסמה</a> כדי להמשיך.",
+  "We have re-assigned ownership of the following aliases to you:": "הקצנו לך מחדש בעלות על הכינויים הבאים:",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

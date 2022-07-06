@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">いいえ</span>。SMTPログ、メタデータ、または電子メールを厳密に保存しないという<a href=\"%s\">プライバシー</a>ポリシーがあります。",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "他のすべての電子メールフォワーダーはSMTPログを保存し、電子メールをディスクストレージに書き込みます。",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "メールが<span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>変更されました",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "名が<span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>変更されました"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "名が<span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>変更されました",
+  "Member does not exist.": "メンバーが存在しません。",
+  "Please try again <span class=\"notranslate\">%s</span>.": "<span class=\"notranslate\">%s</span>を再試行してください。",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "これは組み込みのフィルタリング機能（Gmailと同様）であるため、エイリアスに「+」記号を付けることはできません。",
+  "The following errors occurred:": "次のエラーが発生しました。",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "リセットトークンはすでに期限切れになっています。続行するには、新しい<a href=\"/forgot-password\">パスワードを忘れ</a>た場合のリクエストを開始してください。",
+  "We have re-assigned ownership of the following aliases to you:": "次のエイリアスの所有権が再割り当てされました。",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">Non.</span> Nous avons une politique de <a href=\"%s\">confidentialité</a> qui interdit strictement de stocker les journaux SMTP, les métadonnées ou les e-mails.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "Vous constaterez que tous les autres redirecteurs d'e-mails stockent les journaux SMTP et écrivent vos e-mails sur le stockage sur disque.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "L&#39;e-mail est passé de <span class=\"notranslate\">%s</span> à <span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Le prénom est passé de <span class=\"notranslate\">%s</span> à <span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Le prénom est passé de <span class=\"notranslate\">%s</span> à <span class=\"notranslate\">%s</span>",
+  "Member does not exist.": "Le membre n'existe pas.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "Veuillez réessayer <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "Les alias ne peuvent pas avoir de symbole \"+\" car il s'agit d'une fonction de filtrage intégrée (similaire à Gmail).",
+  "The following errors occurred:": "Les erreurs suivantes sont survenues:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Le jeton de réinitialisation a déjà expiré. Veuillez lancer une nouvelle demande de <a href=\"/forgot-password\">mot de passe oublié</a> pour continuer.",
+  "We have re-assigned ownership of the following aliases to you:": "Nous vous avons réattribué la propriété des alias suivants :",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

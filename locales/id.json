@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">Tidak.</span> Kami memiliki kebijakan <a href=\"%s\">Privasi</a> untuk tidak menyimpan log SMTP, metadata, atau email secara ketat.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "Anda akan menemukan bahwa setiap pengirim email lainnya menyimpan log SMTP dan menulis email Anda ke penyimpanan disk.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Email telah diubah dari <span class=\"notranslate\">%s</span> menjadi <span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Nama yang Diberikan telah berubah dari <span class=\"notranslate\">%s</span> menjadi <span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Nama yang Diberikan telah berubah dari <span class=\"notranslate\">%s</span> menjadi <span class=\"notranslate\">%s</span>",
+  "Member does not exist.": "Anggota tidak ada.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "Silakan coba lagi <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "Alias tidak boleh memiliki simbol \"+\" karena ini adalah fitur pemfilteran bawaan (mirip dengan Gmail).",
+  "The following errors occurred:": "Terjadi kesalahan berikut:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Token reset telah kedaluwarsa. Silakan mulai permintaan <a href=\"/forgot-password\">Lupa Kata Sandi</a> baru untuk melanjutkan.",
+  "We have re-assigned ownership of the following aliases to you:": "Kami telah menetapkan kembali kepemilikan alias berikut kepada Anda:",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

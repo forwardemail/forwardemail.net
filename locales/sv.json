@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">Nej</span> . Vi har en <a href=\"%s\">integritetspolicy</a> som innebär att vi strikt inte lagrar SMTP-loggar, metadata eller e-postmeddelanden.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "Du kommer att upptäcka att varannan e-postbefordrare antingen lagrar SMTP-loggar och skriver dina e-postmeddelanden till disklagring.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "E-post har ändrats från <span class=\"notranslate\">%s</span> till <span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Givet Name har ändrats från <span class=\"notranslate\">%s</span> till <span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Givet Name har ändrats från <span class=\"notranslate\">%s</span> till <span class=\"notranslate\">%s</span>",
+  "Member does not exist.": "Medlem finns inte.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "Försök igen <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "Alias kan inte ha en \"+\"-symbol eftersom detta är en inbyggd filtreringsfunktion (liknar Gmail).",
+  "The following errors occurred:": "Följande fel inträffade:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Återställningstoken har redan gått ut. Vänligen starta en ny <a href=\"/forgot-password\">Glömt lösenordsbegäran</a> för att fortsätta.",
+  "We have re-assigned ownership of the following aliases to you:": "Vi har återtilldelat äganderätten till följande alias till dig:",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

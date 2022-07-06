@@ -2470,5 +2470,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">لا</span> ، لدينا سياسة <a href=\"%s\">خصوصية</a> تقضي بشكل صارم بعدم تخزين سجلات SMTP أو البيانات الوصفية أو رسائل البريد الإلكتروني.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "ستجد أن كل معيد بريد إلكتروني آخر إما يخزن سجلات SMTP ويكتب رسائل البريد الإلكتروني الخاصة بك على وحدة تخزين القرص.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "تم تغيير البريد الإلكتروني من <span class=\"notranslate\">%s</span> إلى <span class=\"notranslate\">%s</span>",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "تم تغيير الاسم المحدد من <span class=\"notranslate\">%s</span> إلى <span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "تم تغيير الاسم المحدد من <span class=\"notranslate\">%s</span> إلى <span class=\"notranslate\">%s</span>",
+  "Member does not exist.": "العضو غير موجود.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "الرجاء المحاولة مرة أخرى <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "لا يمكن أن تحتوي الأسماء المستعارة على رمز \"+\" لأن هذه ميزة تصفية مضمنة (على غرار Gmail).",
+  "The following errors occurred:": "وقعت الأخطاء التالية:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "انتهت صلاحية رمز إعادة التعيين بالفعل. يرجى بدء طلب جديد <a href=\"/forgot-password\">نسيت كلمة المرور</a> للمتابعة.",
+  "We have re-assigned ownership of the following aliases to you:": "لقد أعدنا تعيين ملكية الأسماء المستعارة التالية لك:",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }

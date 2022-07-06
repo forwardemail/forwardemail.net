@@ -2301,5 +2301,15 @@
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">Ei.</span> Meillä on <a href=\"%s\">tietosuojakäytäntö</a> , jonka mukaan emme tallenna SMTP-lokeja, metatietoja tai sähköposteja.",
   "You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.": "Huomaat, että jokainen toinen sähköpostin edelleenlähettäjä joko tallentaa SMTP-lokit ja kirjoittaa sähköpostisi levymuistiin.",
   "Email has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Sähköpostiosoite <span class=\"notranslate\">%s</span> on vaihdettu <span class=\"notranslate\">%s</span> :ksi",
-  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Etunimi on muuttunut <span class=\"notranslate\">%s</span> :sta <span class=\"notranslate\">%s</span>"
+  "Given Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Etunimi on muuttunut <span class=\"notranslate\">%s</span> :sta <span class=\"notranslate\">%s</span>",
+  "Member does not exist.": "Jäsentä ei ole olemassa.",
+  "Please try again <span class=\"notranslate\">%s</span>.": "Yritä uudelleen <span class=\"notranslate\">%s</span> .",
+  "Aliases cannot have a \"+\" symbol as this is a built-in filtering feature (similar to Gmail).": "Aliasissa ei voi olla \"+\"-symbolia, koska tämä on sisäänrakennettu suodatusominaisuus (samanlainen kuin Gmail).",
+  "The following errors occurred:": "Tapahtui seuraavat virheet:",
+  "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Nollaustunnus on jo vanhentunut. Aloita uusi <a href=\"/forgot-password\">Unohtunut salasana</a> -pyyntö jatkaaksesi.",
+  "We have re-assigned ownership of the following aliases to you:": "Olemme siirtäneet sinulle uudelleen seuraavien aliasten omistajuuden:",
+  "Your domain is verified!": "Your domain is verified!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
+  "Manage domain": "Manage domain",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
 }
