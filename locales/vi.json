@@ -2477,13 +2477,13 @@
   "The following errors occurred:": "Các lỗi sau đã xảy ra:",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Mã thông báo đặt lại đã hết hạn. Vui lòng bắt đầu một yêu cầu <a href=\"/forgot-password\">Quên mật khẩu</a> mới để tiếp tục.",
   "We have re-assigned ownership of the following aliases to you:": "Chúng tôi đã chuyển nhượng lại quyền sở hữu các bí danh sau cho bạn:",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "Miền của bạn đã được xác minh!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "Chúng tôi phát hiện rằng tên miền <strong><span class=\"notranslate\">%s</span></strong> bạn hiện đã được xác minh.",
+  "Manage domain": "Quản lý miền",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Miền đã xác minh: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "Bạn đồng ý với <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Chính sách bảo mật</a> và <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Điều khoản</a> của chúng tôi.",
+  "Setup email in minutes": "Thiết lập email trong vài phút",
+  "Personalize our guide to save time:": "Cá nhân hóa hướng dẫn của chúng tôi để tiết kiệm thời gian:",
+  "Setup your domain with email": "Thiết lập miền của bạn bằng email",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Nâng cấp lên <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
 }

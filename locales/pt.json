@@ -2476,13 +2476,13 @@
   "The following errors occurred:": "ocorreram os seguintes erros:",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "O token de redefinição já expirou. Por favor, inicie uma nova solicitação de <a href=\"/forgot-password\">Esqueci a Senha</a> para continuar.",
   "We have re-assigned ownership of the following aliases to you:": "Atribuímos a propriedade dos seguintes aliases a você:",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "Seu domínio foi verificado!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "Detectamos que seu domínio <strong><span class=\"notranslate\">%s</span></strong> foi verificado.",
+  "Manage domain": "Gerenciar domínio",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domínio verificado: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "Você concorda com nossa <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Política de Privacidade</a> e <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Termos</a> .",
+  "Setup email in minutes": "Configurar e-mail em minutos",
+  "Personalize our guide to save time:": "Personalize nosso guia para economizar tempo:",
+  "Setup your domain with email": "Configure seu domínio com e-mail",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Atualize para a <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
 }

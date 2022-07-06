@@ -2130,13 +2130,13 @@
   "The following errors occurred:": "发生以下错误：",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "重置令牌已过期。请开始新的<a href=\"/forgot-password\">忘记密码</a>请求以继续。",
   "We have re-assigned ownership of the following aliases to you:": "我们已将以下别名的所有权重新分配给您：",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "您的域名已通过验证！",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "我们检测到您的域<strong><span class=\"notranslate\">%s</span></strong>现在已经过验证。",
+  "Manage domain": "管理域",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "已验证域： <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "您同意我们的<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">隐私政策</a>和<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">条款</a>。",
+  "Setup email in minutes": "在几分钟内设置电子邮件",
+  "Personalize our guide to save time:": "个性化我们的指南以节省时间：",
+  "Setup your domain with email": "使用电子邮件设置您的域",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "升级到<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
 }

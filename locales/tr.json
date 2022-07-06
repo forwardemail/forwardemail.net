@@ -2477,13 +2477,13 @@
   "The following errors occurred:": "şu hatalar oluştu:",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Sıfırlama belirtecinin süresi zaten doldu. Devam etmek için lütfen yeni bir <a href=\"/forgot-password\">Şifremi Unuttum</a> isteği başlatın.",
   "We have re-assigned ownership of the following aliases to you:": "Aşağıdaki takma adların sahipliğini size yeniden atadık:",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "Alan adınız doğrulandı!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "<strong><span class=\"notranslate\">%s</span></strong> alan adınızın artık doğrulandığını tespit ettik.",
+  "Manage domain": "Alanı yönet",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Alan doğrulandı: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Gizlilik Politikamızı</a> ve <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Koşullarımızı</a> kabul ediyorsunuz.",
+  "Setup email in minutes": "Dakikalar içinde e-posta kurulumu",
+  "Personalize our guide to save time:": "Zaman kazanmak için rehberimizi kişiselleştirin:",
+  "Setup your domain with email": "Alan adınızı e-posta ile kurun",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> Yükseltin"
 }

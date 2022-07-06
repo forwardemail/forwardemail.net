@@ -2477,13 +2477,13 @@
   "The following errors occurred:": "Følgende feil oppstod:",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Tilbakestillingstokenet har allerede utløpt. Vennligst start en ny <a href=\"/forgot-password\">Glemt passord-</a> forespørsel for å fortsette.",
   "We have re-assigned ownership of the following aliases to you:": "Vi har overført eierskapet til følgende aliaser til deg:",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "Domenet ditt er bekreftet!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "Vi oppdaget at domenet ditt <strong><span class=\"notranslate\">%s</span></strong> nå er bekreftet.",
+  "Manage domain": "Administrer domene",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domene bekreftet: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "Du godtar våre <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">retningslinjer for personvern</a> og <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">vilkår</a> .",
+  "Setup email in minutes": "Konfigurer e-post på minutter",
+  "Personalize our guide to save time:": "Tilpass guiden vår for å spare tid:",
+  "Setup your domain with email": "Konfigurer domenet ditt med e-post",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Oppgrader til <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
 }

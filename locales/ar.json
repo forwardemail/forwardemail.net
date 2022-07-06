@@ -2477,13 +2477,13 @@
   "The following errors occurred:": "وقعت الأخطاء التالية:",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "انتهت صلاحية رمز إعادة التعيين بالفعل. يرجى بدء طلب جديد <a href=\"/forgot-password\">نسيت كلمة المرور</a> للمتابعة.",
   "We have re-assigned ownership of the following aliases to you:": "لقد أعدنا تعيين ملكية الأسماء المستعارة التالية لك:",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "تم التحقق من المجال الخاص بك!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "اكتشفنا أن مجالك <strong><span class=\"notranslate\">%s</span></strong> قد تم التحقق منه الآن.",
+  "Manage domain": "إدارة المجال",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "تم التحقق من المجال: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "أنت توافق على <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">سياسة الخصوصية</a> <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">والشروط</a> الخاصة بنا.",
+  "Setup email in minutes": "إعداد البريد الإلكتروني في دقائق",
+  "Personalize our guide to save time:": "إضفاء الطابع الشخصي على دليلنا لتوفير الوقت:",
+  "Setup your domain with email": "قم بإعداد المجال الخاص بك مع البريد الإلكتروني",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "قم بالترقية إلى <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
 }

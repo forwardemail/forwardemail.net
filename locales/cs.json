@@ -2477,13 +2477,13 @@
   "The following errors occurred:": "Došlo k následujícím chybám:",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Platnost resetovacího tokenu již vypršela. Chcete-li pokračovat, spusťte nový požadavek na <a href=\"/forgot-password\">zapomenuté heslo</a> .",
   "We have re-assigned ownership of the following aliases to you:": "Znovu jsme vám přidělili vlastnictví následujících aliasů:",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "Vaše doména je ověřena!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "Zjistili jsme, že vaše doména <strong><span class=\"notranslate\">%s</span></strong> je nyní ověřena.",
+  "Manage domain": "Spravovat doménu",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Doména ověřena: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "Souhlasíte s našimi <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">zásadami ochrany osobních údajů</a> a <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">podmínkami</a> .",
+  "Setup email in minutes": "Nastavení e-mailu během několika minut",
+  "Personalize our guide to save time:": "Přizpůsobte si našeho průvodce, abyste ušetřili čas:",
+  "Setup your domain with email": "Nastavte svou doménu pomocí e-mailu",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgradujte na <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
 }

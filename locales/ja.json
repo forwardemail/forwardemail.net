@@ -2477,13 +2477,13 @@
   "The following errors occurred:": "次のエラーが発生しました。",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "リセットトークンはすでに期限切れになっています。続行するには、新しい<a href=\"/forgot-password\">パスワードを忘れ</a>た場合のリクエストを開始してください。",
   "We have re-assigned ownership of the following aliases to you:": "次のエイリアスの所有権が再割り当てされました。",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "ドメインが確認されました！",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "ドメイン<strong><span class=\"notranslate\">%s</span></strong>が確認されたことを検出しました。",
+  "Manage domain": "ドメインを管理する",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "検証済みドメイン： <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "あなたは私たちの<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">プライバシーポリシー</a>と<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">条件</a>に同意します。",
+  "Setup email in minutes": "数分でメールを設定",
+  "Personalize our guide to save time:": "ガイドをパーソナライズして時間を節約します。",
+  "Setup your domain with email": "メールでドメインを設定する",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>にアップグレードする"
 }

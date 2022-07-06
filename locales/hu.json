@@ -2477,13 +2477,13 @@
   "The following errors occurred:": "A következő hibák történtek:",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "A visszaállítási token már lejárt. A folytatáshoz indítson el egy új <a href=\"/forgot-password\">Elfelejtett jelszó</a> kérést.",
   "We have re-assigned ownership of the following aliases to you:": "A következő álnevek tulajdonjogát újra átruháztuk Önnek:",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "Domainje igazolva van!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "Azt észleltük, hogy a domain <strong><span class=\"notranslate\">%s</span></strong> ellenőrzése megtörtént.",
+  "Manage domain": "Domain kezelése",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Ellenőrzött domain: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "Ön elfogadja <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">adatvédelmi szabályzatunkat</a> és <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">feltételeinket</a> .",
+  "Setup email in minutes": "Az e-mail beállítása percek alatt",
+  "Personalize our guide to save time:": "Tegye személyre útmutatónkat, hogy időt takarítson meg:",
+  "Setup your domain with email": "Állítsa be domainjét e-maillel",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Frissítsen <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
 }

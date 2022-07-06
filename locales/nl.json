@@ -2476,13 +2476,13 @@
   "The following errors occurred:": "De volgende fouten zijn opgetreden:",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "Het resettoken is al verlopen. Start een nieuw <a href=\"/forgot-password\">wachtwoord vergeten-</a> verzoek om door te gaan.",
   "We have re-assigned ownership of the following aliases to you:": "We hebben het eigendom van de volgende aliassen opnieuw aan u toegewezen:",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "Uw domein is geverifieerd!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We hebben gedetecteerd dat uw domein <strong><span class=\"notranslate\">%s</span></strong> nu is geverifieerd.",
+  "Manage domain": "Domein beheren",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domein geverifieerd: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "U gaat akkoord met ons <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">privacybeleid</a> en onze <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">voorwaarden</a> .",
+  "Setup email in minutes": "E-mail instellen in minuten",
+  "Personalize our guide to save time:": "Personaliseer onze gids om tijd te besparen:",
+  "Setup your domain with email": "Stel uw domein in met e-mail",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade naar <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
 }

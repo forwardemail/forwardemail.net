@@ -2477,13 +2477,13 @@
   "The following errors occurred:": "다음 오류가 발생했습니다.",
   "The reset token has already expired. Please start a new <a href=\"/forgot-password\">Forgot Password</a> request to continue.": "재설정 토큰은 이미 만료되었습니다. 계속하려면 새 <a href=\"/forgot-password\">비밀번호 찾기</a> 요청을 시작하십시오.",
   "We have re-assigned ownership of the following aliases to you:": "다음 별칭의 소유권을 다시 할당했습니다.",
-  "Your domain is verified!": "Your domain is verified!",
-  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
-  "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
-  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
-  "Setup email in minutes": "Setup email in minutes",
-  "Personalize our guide to save time:": "Personalize our guide to save time:",
-  "Setup your domain with email": "Setup your domain with email",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Your domain is verified!": "도메인이 확인되었습니다!",
+  "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "이제 도메인 <strong><span class=\"notranslate\">%s</span></strong> 이(가) 확인되었음을 감지했습니다.",
+  "Manage domain": "도메인 관리",
+  "Domain verified: <span class=\"notranslate\">%s</span>": "확인된 도메인: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "귀하는 당사의 <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">개인정보 보호정책</a> 및 <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">약관</a> 에 동의합니다.",
+  "Setup email in minutes": "몇 분 안에 이메일 설정",
+  "Personalize our guide to save time:": "시간을 절약하기 위해 가이드를 개인화하십시오:",
+  "Setup your domain with email": "이메일로 도메인 설정",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> 로 업그레이드"
 }
