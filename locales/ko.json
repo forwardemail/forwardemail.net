@@ -2485,5 +2485,7 @@
   "Setup email in minutes": "몇 분 안에 이메일 설정",
   "Personalize our guide to save time:": "시간을 절약하기 위해 가이드를 개인화하십시오:",
   "Setup your domain with email": "이메일로 도메인 설정",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> 로 업그레이드"
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> 로 업그레이드",
+  "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
+  "Try again": "Try again"
 }

@@ -2484,5 +2484,7 @@
   "Setup email in minutes": "E-mail instellen in minuten",
   "Personalize our guide to save time:": "Personaliseer onze gids om tijd te besparen:",
   "Setup your domain with email": "Stel uw domein in met e-mail",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade naar <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade naar <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
+  "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
+  "Try again": "Try again"
 }

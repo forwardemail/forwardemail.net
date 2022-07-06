@@ -2191,5 +2191,7 @@
   "Setup email in minutes": "Konfigurer e-mail på få minutter",
   "Personalize our guide to save time:": "Tilpas vores guide for at spare tid:",
   "Setup your domain with email": "Konfigurer dit domæne med e-mail",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Opgrader til <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Opgrader til <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
+  "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
+  "Try again": "Try again"
 }

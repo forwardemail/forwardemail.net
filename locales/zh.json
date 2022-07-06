@@ -2138,5 +2138,7 @@
   "Setup email in minutes": "在几分钟内设置电子邮件",
   "Personalize our guide to save time:": "个性化我们的指南以节省时间：",
   "Setup your domain with email": "使用电子邮件设置您的域",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "升级到<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "升级到<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
+  "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
+  "Try again": "Try again"
 }

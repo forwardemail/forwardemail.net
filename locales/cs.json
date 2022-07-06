@@ -2485,5 +2485,7 @@
   "Setup email in minutes": "Nastavení e-mailu během několika minut",
   "Personalize our guide to save time:": "Přizpůsobte si našeho průvodce, abyste ušetřili čas:",
   "Setup your domain with email": "Nastavte svou doménu pomocí e-mailu",
-  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgradujte na <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgradujte na <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
+  "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
+  "Try again": "Try again"
 }
