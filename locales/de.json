@@ -2133,5 +2133,10 @@
   "Your domain is verified!": "Your domain is verified!",
   "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.": "We detected that your domain <strong><span class=\"notranslate\">%s</span></strong> is now verified.",
   "Manage domain": "Manage domain",
-  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>"
+  "Domain verified: <span class=\"notranslate\">%s</span>": "Domain verified: <span class=\"notranslate\">%s</span>",
+  "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>.",
+  "Setup email in minutes": "Setup email in minutes",
+  "Personalize our guide to save time:": "Personalize our guide to save time:",
+  "Setup your domain with email": "Setup your domain with email",
+  "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>"
 }
