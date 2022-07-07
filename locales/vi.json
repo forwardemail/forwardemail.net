@@ -2489,5 +2489,6 @@
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
   "Issues Detected": "Các vấn đề được phát hiện",
-  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Miền nằm trong gói &quot;Bảo vệ nâng cao&quot; nhưng vẫn có các bản ghi DNS TXT chưa được mã hóa. Vui lòng <a href=\"%s\">Nhập bản ghi TXT</a> , xóa bản ghi TXT có tiền tố <span class=\"notranslate\">&quot;%s=&quot;</span> , rồi thử lại."
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Miền nằm trong gói &quot;Bảo vệ nâng cao&quot; nhưng vẫn có các bản ghi DNS TXT chưa được mã hóa. Vui lòng <a href=\"%s\">Nhập bản ghi TXT</a> , xóa bản ghi TXT có tiền tố <span class=\"notranslate\">&quot;%s=&quot;</span> , rồi thử lại.",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }

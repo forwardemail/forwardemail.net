@@ -2142,5 +2142,6 @@
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
   "Issues Detected": "检测到的问题",
-  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "域在“增强保护”计划中，但仍有未加密的 DNS TXT 记录。请<a href=\"%s\">导入 TXT 记录</a>，删除前缀为<span class=\"notranslate\">&quot;%s=&quot;</span> TXT 记录，然后重试。"
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "域在“增强保护”计划中，但仍有未加密的 DNS TXT 记录。请<a href=\"%s\">导入 TXT 记录</a>，删除前缀为<span class=\"notranslate\">&quot;%s=&quot;</span> TXT 记录，然后重试。",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }

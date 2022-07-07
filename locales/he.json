@@ -2489,5 +2489,6 @@
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
   "Issues Detected": "בעיות זוהו",
-  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "הדומיין נמצא בתוכנית &quot;הגנה משופרת&quot;, אך עדיין יש לו רשומות DNS TXT לא מוצפנות. נא <a href=\"%s\">ייבא רשומות TXT</a> , הסר רשומות TXT עם הקדמת <span class=\"notranslate\">&quot;%s=&quot;</span> , ולאחר מכן נסה שוב."
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "הדומיין נמצא בתוכנית &quot;הגנה משופרת&quot;, אך עדיין יש לו רשומות DNS TXT לא מוצפנות. נא <a href=\"%s\">ייבא רשומות TXT</a> , הסר רשומות TXT עם הקדמת <span class=\"notranslate\">&quot;%s=&quot;</span> , ולאחר מכן נסה שוב.",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }

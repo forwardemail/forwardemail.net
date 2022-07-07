@@ -2489,5 +2489,6 @@
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
   "Issues Detected": "Виявлені проблеми",
-  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Домен має план &quot;Покращений захист&quot;, але все ще має незашифровані записи TXT DNS. Будь ласка, <a href=\"%s\">імпортуйте записи TXT</a> , видаліть записи TXT із префіксом <span class=\"notranslate\">&quot;%s=&quot;</span> і повторіть спробу."
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Домен має план &quot;Покращений захист&quot;, але все ще має незашифровані записи TXT DNS. Будь ласка, <a href=\"%s\">імпортуйте записи TXT</a> , видаліть записи TXT із префіксом <span class=\"notranslate\">&quot;%s=&quot;</span> і повторіть спробу.",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }

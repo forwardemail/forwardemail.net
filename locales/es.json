@@ -2489,5 +2489,6 @@
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
   "Issues Detected": "Problemas detectados",
-  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "El dominio está en el plan de &quot;Protección mejorada&quot;, pero todavía tiene registros DNS TXT sin cifrar. <a href=\"%s\">Importe registros TXT</a> , elimine los registros TXT con el prefijo <span class=\"notranslate\">&quot;%s=&quot;</span> y vuelva a intentarlo."
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "El dominio está en el plan de &quot;Protección mejorada&quot;, pero todavía tiene registros DNS TXT sin cifrar. <a href=\"%s\">Importe registros TXT</a> , elimine los registros TXT con el prefijo <span class=\"notranslate\">&quot;%s=&quot;</span> y vuelva a intentarlo.",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }

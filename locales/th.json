@@ -2489,5 +2489,6 @@
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
   "Issues Detected": "ปัญหาที่ตรวจพบ",
-  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "โดเมนอยู่ในแผน &quot;การปกป้องขั้นสูง&quot; แต่ยังคงมีระเบียน DNS TXT ที่ไม่ได้เข้ารหัส โปรด <a href=\"%s\">นำเข้าระเบียน TXT</a> ลบระเบียน TXT ที่นำหน้าด้วย <span class=\"notranslate\">&quot;%s=&quot;</span> แล้วลองอีกครั้ง"
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "โดเมนอยู่ในแผน &quot;การปกป้องขั้นสูง&quot; แต่ยังคงมีระเบียน DNS TXT ที่ไม่ได้เข้ารหัส โปรด <a href=\"%s\">นำเข้าระเบียน TXT</a> ลบระเบียน TXT ที่นำหน้าด้วย <span class=\"notranslate\">&quot;%s=&quot;</span> แล้วลองอีกครั้ง",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }

@@ -2489,5 +2489,6 @@
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
   "Issues Detected": "Masalah Terdeteksi",
-  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Domain menggunakan paket &quot;Perlindungan yang Disempurnakan&quot;, tetapi masih memiliki data TXT DNS yang tidak terenkripsi. Harap <a href=\"%s\">Impor Data TXT</a> , hapus data TXT yang diawali dengan <span class=\"notranslate\">&quot;%s=&quot;</span> , lalu coba lagi."
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Domain menggunakan paket &quot;Perlindungan yang Disempurnakan&quot;, tetapi masih memiliki data TXT DNS yang tidak terenkripsi. Harap <a href=\"%s\">Impor Data TXT</a> , hapus data TXT yang diawali dengan <span class=\"notranslate\">&quot;%s=&quot;</span> , lalu coba lagi.",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }

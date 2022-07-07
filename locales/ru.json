@@ -2489,5 +2489,6 @@
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
   "Issues Detected": "Обнаруженные проблемы",
-  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Домен включен в план «Усиленная защита», но все еще имеет незашифрованные записи DNS TXT. <a href=\"%s\">Импортируйте записи TXT</a> , удалите записи TXT с префиксом <span class=\"notranslate\">&quot;%s=&quot;</span> и повторите попытку."
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Домен включен в план «Усиленная защита», но все еще имеет незашифрованные записи DNS TXT. <a href=\"%s\">Импортируйте записи TXT</a> , удалите записи TXT с префиксом <span class=\"notranslate\">&quot;%s=&quot;</span> и повторите попытку.",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }

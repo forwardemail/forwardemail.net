@@ -2489,5 +2489,6 @@
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
   "Issues Detected": "検出された問題",
-  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "ドメインは「拡張保護」プランに含まれていますが、暗号化されていないDNSTXTレコードが残っています。 TXTレコードを<a href=\"%s\">インポート</a>し、プレフィックスが<span class=\"notranslate\">&quot;%s=&quot;</span> TXTレコードを削除してから、再試行してください。"
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "ドメインは「拡張保護」プランに含まれていますが、暗号化されていないDNSTXTレコードが残っています。 TXTレコードを<a href=\"%s\">インポート</a>し、プレフィックスが<span class=\"notranslate\">&quot;%s=&quot;</span> TXTレコードを削除してから、再試行してください。",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }

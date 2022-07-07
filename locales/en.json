@@ -2349,5 +2349,6 @@
   "Setup your domain with email": "Setup your domain with email",
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
   "Invalid CSRF token.": "Invalid CSRF token.",
-  "Issues Detected": "Issues Detected"
+  "Issues Detected": "Issues Detected",
+  "Our service was founded in 2017": "Our service was founded in 2017"
 }
