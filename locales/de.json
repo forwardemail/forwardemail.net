@@ -2141,5 +2141,6 @@
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade auf <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
-  "Issues Detected": "Issues Detected"
+  "Issues Detected": "Probleme erkannt",
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Die Domain ist im Plan „Erweiterter Schutz“, hat aber noch unverschlüsselte DNS-TXT-Einträge. Bitte <a href=\"%s\">importieren</a> Sie TXT-Einträge , entfernen Sie TXT-Einträge mit dem Präfix <span class=\"notranslate\">&quot;%s=&quot;</span> und versuchen Sie es erneut."
 }

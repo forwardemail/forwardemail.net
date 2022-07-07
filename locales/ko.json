@@ -2488,5 +2488,6 @@
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> 로 업그레이드",
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
-  "Issues Detected": "Issues Detected"
+  "Issues Detected": "감지된 문제",
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "도메인이 &quot;향상된 보호&quot; 계획에 있지만 여전히 암호화되지 않은 DNS TXT 레코드가 있습니다. TXT 레코드를 <a href=\"%s\">가져</a> 오고 <span class=\"notranslate\">&quot;%s=&quot;</span> 접두사가 있는 TXT 레코드를 제거한 다음 다시 시도하십시오."
 }

@@ -2488,5 +2488,6 @@
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "قم بالترقية إلى <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
-  "Issues Detected": "Issues Detected"
+  "Issues Detected": "تم اكتشاف المشكلات",
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "المجال موجود في خطة &quot;الحماية المحسّنة&quot; ، ولكن لا يزال يحتوي على سجلات TXT لنظام أسماء النطاقات غير المشفرة. الرجاء <a href=\"%s\">استيراد سجلات TXT</a> ، وإزالة سجلات TXT مسبوقة بـ <span class=\"notranslate\">&quot;%s=&quot;</span> ، ثم حاول مرة أخرى."
 }

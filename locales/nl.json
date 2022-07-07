@@ -2487,5 +2487,7 @@
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade naar <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
-  "Issues Detected": "Issues Detected"
+  "Issues Detected": "Gedetecteerde problemen",
+  "Did you want to enable two-factor authentication?": "Wilt u tweestapsverificatie inschakelen?",
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Domein heeft het abonnement &quot;Verbeterde bescherming&quot;, maar heeft nog steeds niet-versleutelde DNS TXT-records. <a href=\"%s\">Importeer TXT-records</a> , verwijder TXT-records met het voorvoegsel <span class=\"notranslate\">&quot;%s=&quot;</span> en probeer het opnieuw."
 }

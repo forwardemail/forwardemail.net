@@ -2488,5 +2488,6 @@
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Oppgrader til <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
   "Try again": "Try again",
-  "Issues Detected": "Issues Detected"
+  "Issues Detected": "Problemer oppdaget",
+  "Domain is on the \"Enhanced Protection\" plan, but still has unencrypted DNS TXT records.  Please <a href=\"%s\">Import TXT Records</a>, remove TXT records prefixed with <span class=\"notranslate\">\"%s=\"</span>, and then try again.": "Domenet er på «Enhanced Protection»-planen, men har fortsatt ukrypterte DNS TXT-poster. Vennligst <a href=\"%s\">importer TXT-poster</a> , fjern TXT-poster med prefikset <span class=\"notranslate\">&quot;%s=&quot;</span> , og prøv på nytt."
 }
