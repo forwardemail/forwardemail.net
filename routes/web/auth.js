@@ -11,7 +11,11 @@ const router = new Router({ prefix: '/auth' });
 router
   .param('provider', (provider, ctx, next) => {
     if (!ctx.passport || !isSANB(provider)) return next();
-    if (!ctx.passport.config.providers[provider.toLowerCase()])
+    if (
+      !ctx.passport.config ||
+      !ctx.passport.config.providers ||
+      !ctx.passport.config.providers[provider.toLowerCase()]
+    )
       return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PROVIDER')));
     return next();
   })
@@ -20,7 +24,7 @@ router
     web.auth.catchError,
     web.auth.parseReturnOrRedirectTo,
     (ctx, next) =>
-      ctx.passport
+      ctx.passport && ctx.passport.authenticate
         ? ctx.passport.authenticate(
             ctx.params.provider,
             config.passport[ctx.params.provider]
@@ -31,7 +35,7 @@ router
     '/:provider/ok',
     web.auth.catchError,
     (ctx, next) =>
-      ctx.passport
+      ctx.passport && ctx.passport.authenticate
         ? ctx.passport.authenticate(ctx.params.provider, {
             ...config.passportCallbackOptions,
             successReturnToOrRedirect: false
@@ -47,7 +51,7 @@ router
     }
   )
   .get('/google/consent', web.auth.catchError, (ctx, next) =>
-    ctx.passport
+    ctx.passport && ctx.passport.authenticate
       ? ctx.passport.authenticate('google', {
           accessType: 'offline',
           prompt: 'consent', // See google strategy in passport helper

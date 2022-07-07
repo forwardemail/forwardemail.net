@@ -11,7 +11,13 @@ const router = new Router({ prefix: config.otpRoutePrefix });
 router
   .use(policies.ensureLoggedIn)
   .get(config.otpRouteLoginPath, (ctx, next) => {
-    if (!ctx.passport || !ctx.passport.config.providers.otp) return next();
+    if (
+      !ctx.passport ||
+      !ctx.passport.config ||
+      !ctx.passport.config.providers ||
+      !ctx.passport.config.providers.otp
+    )
+      return next();
     return ctx.render('otp/login');
   })
   .post(config.otpRouteLoginPath, web.auth.loginOtp, rateLimit(30, 'otp login'))

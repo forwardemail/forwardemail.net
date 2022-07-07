@@ -129,7 +129,11 @@ async function login(ctx, next) {
     return;
   }
 
-  return ctx.passport && ctx.passport.config.providers.local
+  return ctx.passport &&
+    ctx.passport.authenticate &&
+    ctx.passport.config &&
+    ctx.passport.config.providers &&
+    ctx.passport.config.providers.local
     ? ctx.passport.authenticate('local', async (err, user, info) => {
         if (err) throw err;
 
@@ -210,7 +214,11 @@ async function login(ctx, next) {
 }
 
 function loginOtp(ctx, next) {
-  return ctx.passport && ctx.passport.config.providers.otp
+  return ctx.passport &&
+    ctx.passport.authenticate &&
+    ctx.passport.config &&
+    ctx.passport.config.providers &&
+    ctx.passport.config.providers.otp
     ? ctx.passport.authenticate('otp', async (err, user) => {
         if (err) throw err;
         if (!user)
