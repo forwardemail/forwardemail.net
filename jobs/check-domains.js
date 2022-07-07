@@ -56,6 +56,25 @@ async function mapper(_id) {
     // it could have been deleted by the user mid-process
     if (!domain) return;
 
+    // get all the admins we should send the email to
+    const users = await Users.find({
+      _id: {
+        $in: domain.members
+          .filter((member) => member.group === 'admin')
+          .map((member) => member.user)
+      }
+    });
+
+    if (users.length === 0) {
+      logger.warn(new Error('Domain had zero admins'), { domain });
+      return;
+    }
+
+    const locale = users[0].last_locale;
+
+    // set locale of domain
+    domain.locale = locale;
+
     logger.info('checking domain', { domain });
 
     // store the before state
@@ -103,21 +122,6 @@ async function mapper(_id) {
       domain = await domain.save();
     }
 
-    // get all the admins we should send the email to
-    const users = await Users.find({
-      _id: {
-        $in: domain.members
-          .filter((member) => member.group === 'admin')
-          .map((member) => member.user)
-      }
-    });
-
-    if (users.length === 0) {
-      logger.warn(new Error('Domain had zero admins'), { domain });
-      return;
-    }
-
-    const locale = users[0].last_locale;
     const to = _.map(users, 'email');
 
     // if verification was not passing and now is

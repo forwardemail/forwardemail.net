@@ -50,6 +50,29 @@ graceful.listen();
     // eslint-disable-next-line no-await-in-loop
     const domain = await Domains.findById(id);
 
+    if (!domain) continue;
+
+    // get all the admins we should send the email to
+    const users = await Users.find({
+      _id: {
+        $in: domain.members
+          .filter((member) => member.group === 'admin')
+          .map((member) => member.user)
+      }
+    });
+
+    if (users.length === 0) {
+      logger.warn(new Error('Domain had zero admins'), { domain });
+      continue;
+    }
+
+    const locale = users[0].last_locale;
+
+    // set locale of domain
+    domain.locale = locale;
+
+    logger.info('checking domain', { domain });
+
     // get latest verification results (and any errors too)
     // eslint-disable-next-line no-await-in-loop
     const { txt, mx, errors } = await Domains.getVerificationResults(domain);
