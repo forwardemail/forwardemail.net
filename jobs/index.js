@@ -6,7 +6,7 @@ const { boolean } = require('boolean');
 // const config = require('#config');
 
 const jobs = [
-  'migration',
+  // 'migration',
   'vanity-domains',
   {
     name: 'sync-payment-histories/index',
@@ -20,8 +20,8 @@ const jobs = [
   // },
   {
     name: 'check-domains',
-    timeout: '10m', // give migration script time to run
-    interval: '1h'
+    interval: '1h',
+    timeout: 0
   },
   {
     name: 'welcome-email',
@@ -56,14 +56,12 @@ const jobs = [
     name: 'check-disposable',
     interval: '1d',
     timeout: 0
-  }
-  /*
+  },
   {
     name: 'domain-missing-txt',
-    interval: '1h',
-    timeout: 0
+    interval: '2h',
+    timeout: '30m'
   }
-  */
 ];
 
 if (process.env.NODE_ENV === 'production') {
