@@ -53,6 +53,7 @@ graceful.listen();
     if (!domain) continue;
 
     // get all the admins we should send the email to
+    // eslint-disable-next-line no-await-in-loop
     const users = await Users.find({
       _id: {
         $in: domain.members
