@@ -2487,5 +2487,6 @@
   "Setup your domain with email": "이메일로 도메인 설정",
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "<a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a> 로 업그레이드",
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
-  "Try again": "Try again"
+  "Try again": "Try again",
+  "Issues Detected": "Issues Detected"
 }

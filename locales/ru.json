@@ -2487,5 +2487,6 @@
   "Setup your domain with email": "Настройте свой домен с электронной почтой",
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Обновление до <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
-  "Try again": "Try again"
+  "Try again": "Try again",
+  "Issues Detected": "Issues Detected"
 }

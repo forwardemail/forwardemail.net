@@ -2140,5 +2140,6 @@
   "Setup your domain with email": "Richten Sie Ihre Domain mit E-Mail ein",
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade auf <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
   "Simply enter your domain below to setup its email.": "Simply enter your domain below to setup its email.",
-  "Try again": "Try again"
+  "Try again": "Try again",
+  "Issues Detected": "Issues Detected"
 }

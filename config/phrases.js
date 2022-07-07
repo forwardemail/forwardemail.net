@@ -258,5 +258,7 @@ module.exports = {
     'The reset token has already expired. Please start a new <a href="/forgot-password">Forgot Password</a> request to continue.',
   REASSIGNED_ALIAS_OWNERSHIP:
     'We have re-assigned ownership of the following aliases to you:',
+  PAID_PLAN_HAS_UNENCRYPTED_RECORDS:
+    'Domain is on the "Enhanced Protection" plan, but still has unencrypted DNS TXT records.  Please <a href="%s">Import TXT Records</a>, remove TXT records prefixed with <span class="notranslate">"%s="</span>, and then try again.',
   ...STATUSES
 };

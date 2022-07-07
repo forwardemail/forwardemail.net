@@ -399,7 +399,12 @@ async function getVerificationResults(domain, client = false) {
   );
 
   const PAID_PLAN = Boom.badRequest(
-    `Domain is on a paid plan and has "Enhanced Protection".  To proceed with verification, please <a href="${config.urls.web}/my-account/domains/${domain.name}/aliases">configure and import</a> your Aliases.  Once you have configured your Aliases, then please remove all TXT records prefixed with "${app.config.recordPrefix}=" and try again.`
+    i18n.translateError(
+      'PAID_PLAN_HAS_UNENCRYPTED_RECORDS',
+      domain.locale,
+      `/my-account/domains/${domain.name}/aliases`,
+      app.config.recordPrefix
+    )
   );
 
   const verificationRecord = `${app.config.recordPrefix}-site-verification=${domain.verification_record}`;
@@ -478,6 +483,8 @@ async function getVerificationResults(domain, client = false) {
     logger.warn(err);
   }
 
+  // TODO: we should do these asynchronously
+
   //
   // validate TXT records
   //
@@ -502,7 +509,7 @@ async function getVerificationResults(domain, client = false) {
         errors.push(MULTIPLE_VERIFICATION_RECORDS);
       else if (!verifications.includes(domain.verification_record))
         errors.push(INCORRECT_VERIFICATION_RECORD);
-      if (errors.length === 0) txt = true;
+      if (errors.length === 0 || errors.includes(PAID_PLAN)) txt = true;
     } else if (
       forwardingAddresses.length === 0 &&
       globalForwardingAddresses.length === 0 &&
@@ -589,17 +596,7 @@ async function verifyRecords(_id, locale, client) {
   domain.skip_verification = true;
   await domain.save();
 
-  // if no errors, return early
-  if (errors.length === 0) return;
-
-  const err = new Error(
-    errors.length === 1
-      ? errors[0]
-      : i18n.translate('MULTIPLE_VERIFICATION_ERRORS', locale)
-  );
-  err.no_translate = true;
-  if (errors.length > 1) err.errors = errors;
-  throw err;
+  return { txt, mx, errors };
 }
 
 Domain.statics.verifyRecords = verifyRecords;

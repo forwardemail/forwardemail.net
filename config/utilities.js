@@ -27,6 +27,8 @@ const emoji = (string) => (toEmoji[string] ? toEmoji[string] : '');
 // (in order to prepend them with our website URL)
 //
 function prefixHTMLPathBasedAnchors(html, baseURI) {
+  if (!baseURI) throw new Error('baseURI missing');
+
   const root = parse(html);
   const links = root.querySelectorAll('a');
   for (const link of links) {

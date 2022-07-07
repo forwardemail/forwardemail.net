@@ -45,6 +45,7 @@ if (parentPort)
 
 graceful.listen();
 
+// eslint-disable-next-line complexity
 async function mapper(_id) {
   // return early if the job was already cancelled
   if (isCancelled) return;
@@ -127,13 +128,21 @@ async function mapper(_id) {
       mx &&
       txt
     ) {
+      // include helpful error message if needed
+      let errorMessage;
+      if (errors.length === 1) errorMessage = errors[0].message;
+      else if (errors.length > 1)
+        errorMessage = `<ul class="text-left mb-0">${errors
+          .map((e) => `<li class="mb-3">${e && e.message ? e.message : e}</li>`)
+          .join('')}</ul>`;
       // send the domain verified email
       await email({
         template: 'domain-verified',
         message: { to },
         locals: {
           locale,
-          domain: domain.toObject()
+          domain: domain.toObject(),
+          errorMessage
         }
       });
       // store that we sent this email

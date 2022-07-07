@@ -22,6 +22,10 @@ block content
                 href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
                 role="button"
               )= t("Manage domain")
+            if errorMessage
+              .p-3
+                h2.h5= t("Issues Detected")
+                p.card-text!= prefixHTMLPathBasedAnchors(errorMessage, config.urls.web)
             if domain.plan === 'free'
               .p-3
                 h2.h5= t("Did you want enhanced privacy and protection?")

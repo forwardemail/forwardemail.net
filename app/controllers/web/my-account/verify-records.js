@@ -27,12 +27,39 @@ async function verifyRecords(ctx) {
       );
 
     // check mx and txt
-    await Domains.verifyRecords(ctx.state.domain._id, ctx.locale, ctx.client);
+    let extra;
+    const { txt, mx, errors } = await Domains.verifyRecords(
+      ctx.state.domain._id,
+      ctx.locale,
+      ctx.client
+    );
+    if (txt && mx && errors.length > 0) {
+      extra =
+        errors.length === 1
+          ? errors[0].message
+          : `<ul class="text-left mb-0">${errors
+              .map(
+                (e) => `<li class="mb-3">${e && e.message ? e.message : e}</li>`
+              )
+              .join('')}</ul>`;
+      if (!ctx.api) ctx.flash('warning', extra);
+    } else if (errors.length > 0) {
+      const err = new Error(
+        errors.length === 1
+          ? errors[0]
+          : ctx.translate('MULTIPLE_VERIFICATION_ERRORS')
+      );
+      err.no_translate = true;
+      if (errors.length > 1) err.errors = errors;
+      throw err;
+    }
 
     const text = ctx.translate('DOMAIN_IS_VERIFIED');
 
     if (ctx.api) {
-      ctx.body = text;
+      const response = [text];
+      if (extra) response.push(extra);
+      ctx.body = response.join(' ');
       return;
     }
 
