@@ -502,14 +502,23 @@ async function getVerificationResults(domain, client = false) {
         forwardingAddresses.length > 0 ||
         globalForwardingAddresses.length > 0 ||
         ignoredAddresses.length > 0
-      )
+      ) {
         errors.push(PAID_PLAN);
-      if (verifications.length === 0) errors.push(MISSING_VERIFICATION_RECORD);
-      else if (verifications.length > 1)
+        txt = true;
+      }
+
+      if (verifications.length === 0) {
+        errors.push(MISSING_VERIFICATION_RECORD);
+        txt = false;
+      } else if (verifications.length > 1) {
         errors.push(MULTIPLE_VERIFICATION_RECORDS);
-      else if (!verifications.includes(domain.verification_record))
+        txt = false;
+      } else if (!verifications.includes(domain.verification_record)) {
         errors.push(INCORRECT_VERIFICATION_RECORD);
-      if (errors.length === 0 || errors.includes(PAID_PLAN)) txt = true;
+        txt = false;
+      }
+
+      if (errors.length === 0) txt = true;
     } else if (
       forwardingAddresses.length === 0 &&
       globalForwardingAddresses.length === 0 &&
