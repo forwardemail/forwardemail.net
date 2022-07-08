@@ -17,41 +17,74 @@ async function removeMember(ctx, next) {
   if (!member || !member.user)
     return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
+  // don't remove if the domain only has one member
+  if (ctx.state.domain.members.length === 1)
+    return ctx.throw(Boom.notFound(ctx.translateError('UNKNOWN_ERROR')));
+
   // re-assign aliases that belong to this user before removing them
   const aliases = ctx.state.domain.aliases.filter(
     (alias) => alias.user && alias.user.id === member.user.id
   );
 
   if (aliases.length > 0) {
-    await Aliases.updateMany(
-      {
+    // if the user is removing themselves
+    // then just remove the existing aliases of theirs
+    if (member.user.id === ctx.state.user.id) {
+      await Aliases.deleteMany({
         id: {
           $in: aliases.map((alias) => alias.id)
         }
-      },
-      {
-        user: ctx.state.user._id
-      }
-    );
-    const message = `<p class="font-weight-bold">${ctx.translate(
-      'REASSIGNED_ALIAS_OWNERSHIP'
-    )}</p><ul class="mb-0 text-left"><li>${aliases
-      .map((alias) => alias.name)
-      .join('</li><li>')}</li></ul>`;
+      });
+      const message = `<p class="font-weight-bold">${ctx.translate(
+        'REMOVED_ALIASES_FROM_OWNER'
+      )}</p><ul class="mb-0 text-left"><li>${aliases
+        .map((alias) => alias.name)
+        .join('</li><li>')}</li></ul>`;
 
-    // flash a message if we're not on the API
-    if (!ctx.api) ctx.flash('info', message);
+      // flash a message if we're not on the API
+      if (!ctx.api) ctx.flash('info', message);
 
-    // send an email in the background
-    emailHelper({
-      template: 'alert',
-      message: {
-        to: ctx.state.user[config.userFields.fullEmail]
-      },
-      locals: { message }
-    })
-      .then()
-      .catch((err) => ctx.logger.fatal(err));
+      // send an email in the background
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: ctx.state.user[config.userFields.fullEmail]
+        },
+        locals: { message }
+      })
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+    } else {
+      await Aliases.updateMany(
+        {
+          id: {
+            $in: aliases.map((alias) => alias.id)
+          }
+        },
+        {
+          user: ctx.state.user._id
+        }
+      );
+      const message = `<p class="font-weight-bold">${ctx.translate(
+        'REASSIGNED_ALIAS_OWNERSHIP'
+      )}</p><ul class="mb-0 text-left"><li>${aliases
+        .map((alias) => alias.name)
+        .join('</li><li>')}</li></ul>`;
+
+      // flash a message if we're not on the API
+      if (!ctx.api) ctx.flash('info', message);
+
+      // send an email in the background
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: ctx.state.user[config.userFields.fullEmail]
+        },
+        locals: { message }
+      })
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+    }
   }
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);

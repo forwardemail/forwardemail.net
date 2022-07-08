@@ -22,7 +22,10 @@ mixin paymentMethod(payment)
     = " "
     = titleize(humanize(payment.method))
     if payment.last4
-      small= " x"
+      = ' '
+      = t('ending with')
+      = ' '
       = payment.last4
     if payment.exp_month && payment.exp_year
-      small.text-muted.text-uppercase= ` ${payment.exp_month}/${payment.exp_year.toString().slice(2)}`
+      = ' '
+      span.text-uppercase= `(${payment.exp_month}/${payment.exp_year.toString().slice(2)})`

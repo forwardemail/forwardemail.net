@@ -866,7 +866,7 @@ We also use smart-parsing of error messages at every level of our stack – in o
 
 Our logic is dummy-proof and it will also retry for TLS/SSL errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
 
-If the recipient is a webhook, then we will permit a 10 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
 
 Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL or TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
 
@@ -1186,6 +1186,41 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
+**Here are additional notes regarding webhooks:**
+
+* Webhook HTTP requests will retry up to 3 times, with a 60 second max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in [superagent's retry method](https://visionmedia.github.io/superagent/#retrying-requests).
+* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
+* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
+* Raw email value as a String is given as the property "raw".
+* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
+* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
+* The grouped recipients for this webhook are grouped together and given as the property "recipients".
+* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
+* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
+
+  ```js
+  const data = [
+    104,
+    101,
+    108,
+    108,
+    111,
+    32,
+    119,
+    111,
+    114,
+    108,
+    100,
+    33
+  ];
+
+  //
+  // outputs "hello world!" to the console
+  // (this is the content from the filename "text1.txt" in the example JSON request payload above)
+  //
+  console.log(Buffer.from(data).toString());
+  ```
+
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
@@ -1374,47 +1409,6 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   }
 }
 ```
-
-> Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-
-> Raw email value as a String is given as the property "raw".
-
-> Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-
-> The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-
-> The grouped recipients for this webhook are grouped together and given as the property "recipients".
-
-> The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-
-> If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
-```js
-const data = [
-  104,
-  101,
-  108,
-  108,
-  111,
-  32,
-  119,
-  111,
-  114,
-  108,
-  100,
-  33
-];
-
-//
-// outputs "hello world!" to the console
-// (this is the content from the filename "text1.txt" in the example JSON request payload above)
-//
-console.log(Buffer.from(data).toString());
-```
-
-Webhook HTTP requests will retry up to 10 times (the exact same number of retries we permit for normal SMTP), with 20 seconds max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in [superagent's retry method](https://visionmedia.github.io/superagent/#retrying-requests).
-
-We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
 
 
 ## Do you support regular expressions or regex
@@ -1935,7 +1929,7 @@ Yes. Regardless of which plan you are on, you will pay only one monthly rate –
 
 ## Which payment methods do you accept
 
-We accept debit and credit cards using [Stripe](https://stripe.com/global) and [PayPal](https://paypal.com/) – for one-time payments or monthly, quarterly, or yearly subscriptions.
+We accept debit and credit cards using [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com/) – for one-time payments or monthly, quarterly, or yearly subscriptions.
 
 
 ## Will you ever increase prices

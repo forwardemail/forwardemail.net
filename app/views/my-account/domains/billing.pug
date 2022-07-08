@@ -40,13 +40,13 @@ block body
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
-  .container-fluid.py-3
+  .container-fluid.pt-3
     .row
       .col
         include ../../_breadcrumbs
     .row
       .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3.text-center
-        if user.plan === 'free'
+        if user.plan === 'free' && domain
           .alert.alert-warning
             small
               = t("Don't want to upgrade yet?")
@@ -71,8 +71,9 @@ block body
               else
                 != t('Upgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
           .card-body
-            if isMakePayment
-              p.lead= t("Add credit to your account below.")
+            - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
+            if (hasSubscription)
+              .alert.alert-warning: small!= t('One-time payments will extend your plan duration independently from your current subscription.')
             form#form-billing(action=ctx.path, method="POST")
               input(type="hidden", name="_csrf", value=_csrf)
 
@@ -91,7 +92,7 @@ block body
                   )
                   label.form-check-label(
                     for="input-payment-method-credit-card"
-                  )= t("Debit/Credit Card")
+                  )= t("Debit or Credit Card")
                 .form-check.form-check-inline
                   input#input-payment-method-paypal.form-check-input(
                     type="radio",
@@ -172,7 +173,7 @@ block body
                     //- option(value='lifetime', data-no-subscription=true, disabled=!isMakePayment)= t('Lifetime ($432 USD)')
 
               //- Continue (Stripe)
-              button#stripe-button-container.btn.btn-dark.btn-lg.btn-block(
+              button#stripe-button-container.btn.btn-success.btn-lg.btn-block(
                 type="submit"
               )
                 = t("Continue")

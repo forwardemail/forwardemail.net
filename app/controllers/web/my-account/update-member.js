@@ -26,6 +26,12 @@ async function updateMember(ctx, next) {
   if (!member || !member.user)
     return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
+  // don't update if the domain only has one member
+  if (ctx.state.domain.members.length === 1)
+    return ctx.throw(Boom.notFound(ctx.translateError('UNKNOWN_ERROR')));
+
+  const isCurrentUserBeingUpdated = member.user.id === ctx.state.user.id;
+
   const aliases = ctx.state.domain.aliases.filter(
     (alias) => alias.user && alias.user.id === member.user.id
   );
@@ -70,19 +76,41 @@ async function updateMember(ctx, next) {
     });
 
     if (updatedAliases.length > 0) {
-      await Aliases.updateMany(
-        {
-          id: {
-            $in: updatedAliases.map((alias) => alias.id)
+      if (isCurrentUserBeingUpdated) {
+        const otherAdminMember = ctx.state.domain.members.find(
+          (member) =>
+            member.group === 'admin' &&
+            member.user.toString() !== ctx.state.user.id
+        );
+        if (!otherAdminMember)
+          return ctx.throw(Boom.notFound(ctx.translateError('UNKNOWN_ERROR')));
+        await Aliases.updateMany(
+          {
+            id: {
+              $in: updatedAliases.map((alias) => alias.id)
+            }
+          },
+          {
+            user: otherAdminMember.user
           }
-        },
-        {
-          user: ctx.state.user._id
-        }
-      );
+        );
+      } else {
+        await Aliases.updateMany(
+          {
+            id: {
+              $in: updatedAliases.map((alias) => alias.id)
+            }
+          },
+          {
+            user: ctx.state.user._id
+          }
+        );
+      }
 
       const message = `<p class="font-weight-bold">${ctx.translate(
-        'REASSIGNED_ALIAS_OWNERSHIP'
+        isCurrentUserBeingUpdated
+          ? 'REASSIGNED_ALIASES_FROM_OWNER'
+          : 'REASSIGNED_ALIAS_OWNERSHIP'
       )}</p><ul class="mb-0 text-left"><li>${updatedAliases
         .map((alias) => alias.name)
         .join('</li><li>')}</li></ul>`;

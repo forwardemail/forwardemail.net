@@ -26,7 +26,7 @@ async function retrieveDomains(ctx, next) {
   ctx.state.domains = await Domains.find(query)
     .populate(
       'members.user',
-      `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
+      `id email plan ${config.passport.fields.displayName} ${config.userFields.isBanned}`
     )
     .sort('name') // A-Z domains
     .lean()

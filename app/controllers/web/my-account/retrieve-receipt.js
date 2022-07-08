@@ -63,8 +63,11 @@ async function retrieveReceipt(ctx) {
         debug: config.env !== 'production',
         pageSize: 'letter',
         background: true,
-        imageDpi: 300,
-        printMediaType: false,
+        imageDpi: 600,
+        // NOTE: there is a bug with min-width and max-width
+        // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4375>
+        // (so we set this to true so that we can leverage `d-print-x` classes
+        printMediaType: true,
         enableJavaScript: false,
         disableJavascript: true,
         enableInternalLinks: false,

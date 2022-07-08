@@ -310,3 +310,14 @@ $body.on(
   'input[name="domain"][type="text"]',
   debounce(domainKeyup, 300)
 );
+
+const $btnPrint = $('#btn-print');
+if ($btnPrint.length > 0)
+  $body.on('keyup keydown', function (ev) {
+    if (ev.keyCode === 80 && (ev.ctrlKey || ev.metaKey)) {
+      $btnPrint.get(0).click();
+      return false;
+    }
+
+    return true;
+  });

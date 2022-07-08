@@ -36,7 +36,7 @@ block body
               method="GET"
             )
               input(type="hidden", name="plan", value="free")
-              button.btn.btn-block.btn-outline-danger(type="submit")= t("Downgrade to Free")
+              button.btn.btn-block.btn-danger(type="submit")= t("Downgrade to Free")
         .modal-footer
           button.btn.btn-lg.btn-block.btn-secondary(
             type="button",
@@ -44,10 +44,26 @@ block body
             aria-label=t("Cancel")
           )= t("Cancel")
 
-  .container-fluid.py-3
+  .container-fluid.pt-3
     .row
       .col
         include ../../_breadcrumbs
+
+    - const hasPlanExpired = new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
+    - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
+
+    if user.plan !== 'free' && (hasPlanExpired || hasSubscription)
+      .container
+        .row
+          .col
+            .alert.text-center(class=hasPlanExpired ? 'alert-danger' : 'alert-success')
+              small
+                if hasPlanExpired
+                  != t('Your plan expired on <span class="notranslate">%s</span>. Please make a payment or correct billing issues to avoid account termination and service interruption.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY'))
+                else
+                  = emoji('tada')
+                  = ' '
+                  != t('You have an active subscription with <span class="notranslate">%s</span>.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('a debit or credit card') : 'PayPal')
 
   .container.pb-5.position-relative
     .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
@@ -55,7 +71,7 @@ block body
         .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
           h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
           small.text-muted.text-uppercase.mb-3= t("Current Plan")
-          button.btn.btn-lg.btn-success(
+          button.btn.btn-md.btn-success(
             type="button",
             data-toggle="modal",
             data-target="#modal-change-plan"
@@ -64,45 +80,39 @@ block body
         .col-12.col-lg-6.d-flex
           .mt-lg-0.mt-5.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
             h2.display-5.font-weight-bold
-              if user.plan === 'free'
-                i.fa.fa-infinity
+              if hasSubscription
+                = t('Auto-renew enabled')
               else
-                - let str = _.capitalize(dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow());
-                if str.startsWith('A ')
-                  - str = str.replace("A ", "1 ");
-                else if str.startsWith('In a')
-                  - str = str.replace("In a ", "1 ");
-                else if str.startsWith('In ')
-                  - str = str.replace("In ", "");
-                = str
-            small.text-muted.text-uppercase.mb-3
-              = t("Next Payment Due")
-              = ": "
-              if user.plan === 'free'
-                i.fa.fa-infinity
-              else
-                = dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY")
-            if isSANB(user[config.userFields.stripeSubscriptionID])
-              .col-12.d-flex.col-lg-6
-                .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-                  form(
-                    action=l("/my-account/billing/manage-payments"),
-                    method="POST"
-                  )
+                = t('Auto-renew disabled')
+            if hasSubscription && hasPlanExpired
+              small.alert.alert-warning!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('debit or credit card') : 'PayPal')
+            t(titleize(humanize(user.plan)))
+            if !hasPlanExpired
+              small.alert.alert-warning
+                != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
+            ul.list-inline
+              li.list-inline-item
+                a.btn.btn-md.btn-primary(href=l("/my-account/billing/make-payment"))= t("Make Payment")
+              if isSANB(user[config.userFields.stripeSubscriptionID])
+                li.list-inline-item
+                  form(action=l("/my-account/billing/manage-payments"), method='POST')
                     input(type="hidden", name="_csrf", value=_csrf)
-                    button.btn.btn-lg.btn-danger(type="submit")= t("Manage Billing")
-            else
-              a.btn.btn-lg.btn-danger(
-                href=l("/my-account/billing/make-payment"),
-                disabled=user.plan === "free",
-                class=user.plan === "free" ? "disabled" : ""
-              )= t("Make Payment")
+                    button.btn.btn-md.btn-dark(type="submit")= t("Update Card")
+              else if isSANB(user[config.userFields.paypalSubscriptionID])
+                li.list-inline-item
+                  a(href='https://www.paypal.com', target='_blank', rel='noopener noreferrer').btn.btn-md.btn-dark!= t('Go to <span class="notranslate">%s</span>', 'PayPal')
+              if hasSubscription
+                li.list-inline-item
+                  form.confirm-prompt(action=l("/my-account/billing"), method="POST")
+                    input(type="hidden", name="_csrf", value=_csrf)
+                    input(type="hidden", name="_method", value="DELETE")
+                    button.btn.btn-md.btn-danger(type="submit")
+                      = t("Cancel Subscription")
   if payments.length > 0
-    .container.py-3
+    .container.pt-3
       .row
         .col
-          h3.text-center.mb-3= t("Payment History")
-          p.text-center: small.text-muted!= t('If you want to update company info on receipts, then <a href="%s" class="notranslate">update your profile</a>.', l("/my-account/profile"))
+          h3.text-center.mb-3= t("Receipts")
           //-.
             form.ajax-form.table-ajax-form.mb-3.px-3(
               action=ctx.path,
@@ -139,12 +149,5 @@ block body
                   button.btn.btn-success.btn-block(type="submit")= t('Search')
           #table-payments.mb-0
             include ./_table.pug
-  if isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
-    .container(class=payments.length === 0 ? "py-3" : "")
-      .row.text-center.my-5
-        .col
-          form.confirm-prompt(action=l("/my-account/billing"), method="POST")
-            input(type="hidden", name="_csrf", value=_csrf)
-            input(type="hidden", name="_method", value="DELETE")
-            button.btn.btn-outline-secondary(type="submit")
-              = t("Cancel Subscription")
+          .alert.alert-info.text-center
+            small!= t('Need to update company information on receipts? <a href="%s" class="alert-link notranslate">Update your profile</a>', l("/my-account/profile"))
