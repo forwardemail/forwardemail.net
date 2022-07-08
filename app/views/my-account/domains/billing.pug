@@ -16,6 +16,7 @@ block append scripts
 
 block body
   - const isMakePayment = ctx.pathWithoutLocale === "/my-account/billing/make-payment";
+  - const isEnableAutoRenew = ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew";
   if user.plan === 'free'
     #modal-pricing-video.modal.fade(
       tabindex="-1",
@@ -65,6 +66,8 @@ block body
           h2.card-header.bg-dark.text-white
             if isMakePayment
               = t("One-time payment")
+            else if isEnableAutoRenew
+              = t('Enable Auto-Renew')
             else
               if user.plan === 'team' && ctx.query.plan === 'enhanced_protection'
                 != t('Downgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
@@ -77,7 +80,7 @@ block body
             form#form-billing(action=ctx.path, method="POST")
               input(type="hidden", name="_csrf", value=_csrf)
 
-              if !isMakePayment
+              if !isMakePayment && !isEnableAutoRenew
                 input(type="hidden", name="plan", value=ctx.query.plan)
 
               h3.h5= t("Method")
@@ -104,7 +107,7 @@ block body
 
               //- Payment Type
               //- TODO: default to last one used
-              if !isMakePayment
+              if !isMakePayment && !isEnableAutoRenew
                 h3.h5= t("Payment Type")
                 .form-group
                   .form-check.form-check-inline
@@ -143,34 +146,36 @@ block body
                     option(value="180d")= t("6 months ($18 USD)")
                     option(value="1y")= t("1 year ($36 USD)")
                     //- since subscription is the default, we disable these
-                    option(
-                      value="2y",
-                      data-no-subscription,
-                      disabled=!isMakePayment
-                    )= t("2 years ($72 USD)")
-                    option(
-                      value="3y",
-                      data-no-subscription,
-                      disabled=!isMakePayment
-                    )= t("3 years ($108 USD)")
-                    //- option(value='lifetime', data-no-subscription=true, disabled=!isMakePayment)= t('Lifetime ($144 USD)')
+                    if !isEnableAutoRenew
+                      option(
+                        value="2y",
+                        data-no-subscription,
+                        disabled=!isMakePayment
+                      )= t("2 years ($72 USD)")
+                      option(
+                        value="3y",
+                        data-no-subscription,
+                        disabled=!isMakePayment
+                      )= t("3 years ($108 USD)")
+                      //- option(value='lifetime', data-no-subscription=true, disabled=!isMakePayment)= t('Lifetime ($144 USD)')
                   else if plan === 'team'
                     option(value="30d", selected)= t("1 month ($9 USD)")
                     option(value="60d")= t("2 months ($18 USD)")
                     option(value="90d")= t("3 months ($27 USD)")
                     option(value="180d")= t("6 months ($54 USD)")
                     option(value="1y")= t("1 year ($108 USD)")
-                    option(
-                      value="2y",
-                      data-no-subscription,
-                      disabled=!isMakePayment
-                    )= t("2 years ($216 USD)")
-                    option(
-                      value="3y",
-                      data-no-subscription,
-                      disabled=!isMakePayment
-                    )= t("3 years ($324 USD)")
-                    //- option(value='lifetime', data-no-subscription=true, disabled=!isMakePayment)= t('Lifetime ($432 USD)')
+                    if !isEnableAutoRenew
+                      option(
+                        value="2y",
+                        data-no-subscription,
+                        disabled=!isMakePayment
+                      )= t("2 years ($216 USD)")
+                      option(
+                        value="3y",
+                        data-no-subscription,
+                        disabled=!isMakePayment
+                      )= t("3 years ($324 USD)")
+                      //- option(value='lifetime', data-no-subscription=true, disabled=!isMakePayment)= t('Lifetime ($432 USD)')
 
               //- Continue (Stripe)
               button#stripe-button-container.btn.btn-success.btn-lg.btn-block(
@@ -186,5 +191,5 @@ block body
               p.text-muted.pt-3.mb-0: small.text-muted= t("We accept all major currencies and card types.")
 
           small.card-footer.text-muted.text-center= t("We'll automatically email you if you're late on a payment.")
-        if !isMakePayment
+        if !isMakePayment && !isEnableAutoRenew
           .mt-3.font-weight-bold.text-uppercase.text-decoration-underline= t("30-day money back guarantee")

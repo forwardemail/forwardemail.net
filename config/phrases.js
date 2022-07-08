@@ -151,6 +151,8 @@ module.exports = {
   ENHANCED_PROTECTION_PLAN:
     'You have successfully upgraded to the Enhanced Protection Plan.',
   TEAM_PLAN: 'You have successfully upgraded to the Team Plan.',
+  AUTO_RENEW_ENABLED:
+    'You have successfully subscribed and enabled auto-renew.',
   ACCOUNT_BANNED: 'Your account has been banned.',
   ENOTFOUND:
     'Domain is not a registered domain name. <a class="font-weight-bold" href="/domain-registration">Click here to register it now</a>.',
@@ -229,8 +231,11 @@ module.exports = {
     'Domain name <span class="notranslate">%s</span> has a potentially malicious domain name extension and must have at least one admin that is signed up for a paid plan. Please <a class="font-weight-bold" href="%s">upgrade your account</a> to a paid plan to continue.',
   UPGRADE: 'Upgrade',
   BILLING: 'Billing',
+  ENABLE_AUTO_RENEW: 'Enable Auto-Renew',
   INVALID_STRIPE_SIGNATURE: 'Invalid Stripe Signature',
   INVALID_PAYPAL_SIGNATURE: 'Invalid PayPal Signature',
+  SUBSCRIPTION_ALREADY_ACTIVE:
+    'You have an active subscription and auto-renew is currently enabled.',
   SUBSCRIPTION_ALREADY_CANCELLED:
     'You do not currently have an active subscription, or it was recently cancelled.',
   SUBSCRIPTION_CANCELLED: 'You have successfully cancelled your subscription.',
@@ -239,8 +244,6 @@ module.exports = {
     'We will manually process your pro-rated refund in the amount of <span class="notranslate">%s USD</span> and email you when complete.',
   CAPTCHA_SERVICE_ERROR: 'Captcha service error.',
   CAPTCHA_NOT_VERIFIED: 'Captcha not verified.',
-  MISSING_PORTAL_CREDENTIALS:
-    'Missing subscription or customer ID from Stripe billing portal.',
   MISSING_VERIFICATION_LINK:
     'Missing "VERIFICATION_LINK" in HTML template string.  This variable must be included at least once either in text or link format.',
   PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION:

@@ -3,8 +3,8 @@ const cancelSubscription = require('./cancel-subscription');
 const createAlias = require('./create-alias');
 const createAliasForm = require('./create-alias-form');
 const createDomain = require('./create-domain');
-const createDomainForm = require('./create-domain-form');
 const createDomainBilling = require('./create-domain-billing');
+const createDomainForm = require('./create-domain-form');
 const createInvite = require('./create-invite');
 const ensureAliasAdmin = require('./ensure-alias-admin');
 const ensureDomainAdmin = require('./ensure-domain-admin');
@@ -15,7 +15,6 @@ const importAliases = require('./import-aliases');
 const listAliases = require('./list-aliases');
 const listBilling = require('./list-billing');
 const listDomains = require('./list-domains');
-const manageBilling = require('./manage-billing');
 const recoveryKeys = require('./recovery-keys');
 const remove = require('./remove');
 const removeAlias = require('./remove-alias');
@@ -35,6 +34,7 @@ const retrieveProfile = require('./retrieve-profile');
 const retrieveReceipt = require('./retrieve-receipt');
 const sortedDomains = require('./sorted-domains');
 const updateAlias = require('./update-alias');
+const updateCard = require('./update-card');
 const updateDomain = require('./update-domain');
 const updateMember = require('./update-member');
 const updateProfile = require('./update-profile');
@@ -60,7 +60,6 @@ module.exports = {
   listAliases,
   listBilling,
   listDomains,
-  manageBilling,
   recoveryKeys,
   remove,
   removeAlias,
@@ -80,6 +79,7 @@ module.exports = {
   retrieveReceipt,
   sortedDomains,
   updateAlias,
+  updateCard,
   updateDomain,
   updateMember,
   updateProfile,

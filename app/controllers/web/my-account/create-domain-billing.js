@@ -39,12 +39,28 @@ async function createDomainBilling(ctx) {
     const isMakePayment =
       ctx.pathWithoutLocale === '/my-account/billing/make-payment';
 
-    if (isMakePayment && ctx.state.user.plan === 'free') {
+    const isEnableAutoRenew =
+      ctx.pathWithoutLocale === '/my-account/billing/enable-auto-renew';
+
+    if (isMakePayment && ctx.state.user.plan === 'free')
       throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
-    }
+
+    if (isEnableAutoRenew)
+      if (ctx.state.user.plan === 'free')
+        throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
+      else if (
+        isSANB(ctx.state.user[config.userFields.stripeSubscriptionID]) ||
+        isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
+      )
+        throw Boom.badRequest(
+          ctx.translateError('SUBSCRIPTION_ALREADY_ACTIVE')
+        );
 
     if (isMakePayment) {
       paymentType = 'one-time';
+      plan = ctx.state.user.plan;
+    } else if (isEnableAutoRenew) {
+      paymentType = 'subscription';
       plan = ctx.state.user.plan;
     }
 
@@ -175,10 +191,12 @@ async function createDomainBilling(ctx) {
           }
         ],
         cancel_url: `${config.urls.web}${ctx.path}${
-          isMakePayment ? '' : `/?plan=${plan}`
+          isMakePayment || isEnableAutoRenew ? '' : `/?plan=${plan}`
         }`,
+        // NOTE: Stripe will automatically add `session_id={CHECKOUT_SESSION_ID} if it is missing
+        //       (but we're adding it here just as a safeguard)
         success_url: `${config.urls.web}${ctx.path}/?${
-          isMakePayment ? '' : `plan=${plan}&`
+          isMakePayment || isEnableAutoRenew ? '' : `plan=${plan}&`
         }session_id={CHECKOUT_SESSION_ID}`
       };
 

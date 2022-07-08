@@ -31,10 +31,19 @@ router
     paginate.middleware(10, 50),
     web.myAccount.listBilling
   )
+  // deprecated old endpoint (can remove in future)
+  .post('/billing/manage-payments', (ctx) =>
+    ctx.redirect(ctx.state.l('/my-account/update-card'))
+  )
+  .get(
+    '/billing/update-card',
+    rateLimit(50, 'update card'),
+    web.myAccount.updateCard
+  )
   .post(
-    '/billing/manage-payments',
-    rateLimit(50, 'manage payments'),
-    web.myAccount.manageBilling
+    '/billing/update-card',
+    rateLimit(50, 'update card'),
+    web.myAccount.updateCard
   )
   .get(
     '/billing/make-payment',
@@ -43,6 +52,16 @@ router
   )
   .post(
     '/billing/make-payment',
+    rateLimit(50, 'create domain billing'),
+    web.myAccount.createDomainBilling
+  )
+  .get(
+    '/billing/enable-auto-renew',
+    rateLimit(50, 'retrieve domain billing'),
+    web.myAccount.retrieveDomainBilling
+  )
+  .post(
+    '/billing/enable-auto-renew',
     rateLimit(50, 'create domain billing'),
     web.myAccount.createDomainBilling
   )

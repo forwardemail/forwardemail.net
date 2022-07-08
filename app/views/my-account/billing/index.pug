@@ -71,7 +71,7 @@ block body
         .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
           h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
           small.text-muted.text-uppercase.mb-3= t("Current Plan")
-          button.btn.btn-md.btn-success(
+          button.btn.btn-dark.btn-success(
             type="button",
             data-toggle="modal",
             data-target="#modal-change-plan"
@@ -95,7 +95,7 @@ block body
                 a.btn.btn-md.btn-primary(href=l("/my-account/billing/make-payment"))= t("Make Payment")
               if isSANB(user[config.userFields.stripeSubscriptionID])
                 li.list-inline-item
-                  form(action=l("/my-account/billing/manage-payments"), method='POST')
+                  form(action=l("/my-account/billing/update-card"), method='POST').ajax-form
                     input(type="hidden", name="_csrf", value=_csrf)
                     button.btn.btn-md.btn-dark(type="submit")= t("Update Card")
               else if isSANB(user[config.userFields.paypalSubscriptionID])
@@ -108,6 +108,9 @@ block body
                     input(type="hidden", name="_method", value="DELETE")
                     button.btn.btn-md.btn-danger(type="submit")
                       = t("Cancel Subscription")
+              else
+                li.list-inline-item
+                  a.btn.btn-md.btn-success(href=l("/my-account/billing/enable-auto-renew"))= t("Enable Auto-Renew")
   if payments.length > 0
     .container.pt-3
       .row

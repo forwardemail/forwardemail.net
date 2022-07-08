@@ -40,8 +40,10 @@ async function retrieveDomainBilling(ctx) {
     ctx.pathWithoutLocale === '/my-account/billing/upgrade';
   const isMakePayment =
     ctx.pathWithoutLocale === '/my-account/billing/make-payment';
+  const isEnableAutoRenew =
+    ctx.pathWithoutLocale === '/my-account/billing/enable-auto-renew';
   const redirectTo = ctx.state.l(
-    isAccountUpgrade || isMakePayment
+    isAccountUpgrade || isMakePayment || isEnableAutoRenew
       ? '/my-account/billing'
       : `/my-account/domains/${ctx.state.domain.name}`
   );
@@ -54,6 +56,15 @@ async function retrieveDomainBilling(ctx) {
     else ctx.query.plan = ctx.state.user.plan;
   else if (isAccountUpgrade && ctx.query.plan === ctx.state.user.plan)
     throw Boom.badRequest(ctx.translateError('PLAN_ALREADY_ACTIVE'));
+  else if (isEnableAutoRenew)
+    if (ctx.state.user.plan === 'free')
+      throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
+    else if (
+      isSANB(ctx.state.user[config.userFields.stripeSubscriptionID]) ||
+      isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
+    )
+      throw Boom.badRequest(ctx.translateError('SUBSCRIPTION_ALREADY_ACTIVE'));
+    else ctx.query.plan = ctx.state.user.plan;
 
   try {
     if (
@@ -63,7 +74,7 @@ async function retrieveDomainBilling(ctx) {
       throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
 
     let domain;
-    if (!isAccountUpgrade && !isMakePayment) {
+    if (!isAccountUpgrade && !isMakePayment && !isEnableAutoRenew) {
       domain = await Domains.findById(ctx.state.domain._id);
 
       if (!domain)
@@ -157,7 +168,8 @@ async function retrieveDomainBilling(ctx) {
       !isSANB(ctx.query.session_id) &&
       !isSANB(ctx.query.paypal_order_id) &&
       !isSANB(ctx.query.paypal_subscription_id) &&
-      (isAccountUpgrade ||
+      (isEnableAutoRenew ||
+        isAccountUpgrade ||
         isMakePayment ||
         (ctx.query.plan === 'team' && ctx.state.user.plan !== 'team') ||
         (ctx.query.plan === 'enhanced_protection' &&
@@ -170,6 +182,12 @@ async function retrieveDomainBilling(ctx) {
           name: ctx.translate('UPGRADE'),
           header: ctx.translate('BILLING')
         });
+      } else if (isEnableAutoRenew) {
+        ctx.state.breadcrumbs.pop();
+        ctx.state.breadcrumbs.push({
+          name: ctx.translate('ENABLE_AUTO_RENEW'),
+          header: ctx.translate('BILLING')
+        });
       }
 
       return ctx.render('my-account/domains/billing');
@@ -179,7 +197,7 @@ async function retrieveDomainBilling(ctx) {
     if (isAccountUpgrade) {
       ctx.state.user.plan = ctx.query.plan;
       await Domains.ensureUserHasValidPlan(ctx.state.user, ctx.locale);
-    } else if (!isMakePayment) {
+    } else if (!isMakePayment && !isEnableAutoRenew) {
       domain.plan = ctx.query.plan;
     }
 
@@ -210,7 +228,8 @@ async function retrieveDomainBilling(ctx) {
       ctx.state.user[config.userFields.stripeCustomerID] = session.customer;
 
       // if they upgraded their plan then store it on the user object
-      if (!isMakePayment) ctx.state.user.plan = ctx.query.plan;
+      if (!isMakePayment && !isEnableAutoRenew)
+        ctx.state.user.plan = ctx.query.plan;
 
       // look at the line items
       const lineItems = await stripe.checkout.sessions.listLineItems(
@@ -246,13 +265,13 @@ async function retrieveDomainBilling(ctx) {
       if (!isSANB(key)) throw ctx.translateError('UNKNOWN_ERROR');
 
       const now = new Date();
-      // if for whatever reason they never had a plan set at date then set one
 
+      // if for whatever reason they never had a plan set at date then set one
       if (!_.isDate(ctx.state.user[config.userFields.planSetAt]))
         ctx.state.user[config.userFields.planSetAt] = now;
 
       // if they're just making a one time payment we want to simply add to their account
-      if (isMakePayment) {
+      if (isMakePayment || isEnableAutoRenew) {
         // ensure there was an existing plan expiration, otherwise set one for safety
         if (!_.isDate(ctx.state.user[config.userFields.planExpiresAt]))
           ctx.state.user[config.userFields.planExpiresAt] = now;
@@ -579,7 +598,8 @@ async function retrieveDomainBilling(ctx) {
         throw ctx.translateError('UNKNOWN_ERROR');
 
       // if they upgraded their plan then store it on the user object
-      if (!isMakePayment) ctx.state.user.plan = ctx.query.plan;
+      if (!isMakePayment && !isEnableAutoRenew)
+        ctx.state.user.plan = ctx.query.plan;
 
       // we will take the amount and divide it by the cost per the custom_id
       // in order to determine the duration the customer purchased/added
@@ -598,7 +618,7 @@ async function retrieveDomainBilling(ctx) {
         ctx.state.user[config.userFields.planSetAt] = now;
 
       // if they're just making a one time payment we want to simply add to their account
-      if (isMakePayment) {
+      if (isMakePayment || isEnableAutoRenew) {
         // ensure there was an existing plan expiration, otherwise set one for safety
         if (!_.isDate(ctx.state.user[config.userFields.planExpiresAt]))
           ctx.state.user[config.userFields.planExpiresAt] = now;
@@ -733,7 +753,8 @@ async function retrieveDomainBilling(ctx) {
       if (!duration) throw ctx.translateError('UNKNOWN_ERROR');
 
       // if they upgraded their plan then store it on the user object
-      if (!isMakePayment) ctx.state.user.plan = ctx.query.plan;
+      if (!isMakePayment && !isEnableAutoRenew)
+        ctx.state.user.plan = ctx.query.plan;
 
       // parse the amount for later
       const amount = Number(body.billing_info.last_payment.amount.value);
@@ -811,7 +832,7 @@ async function retrieveDomainBilling(ctx) {
     //
     // NOTE: we do a double save here on user object which we might not want
     //
-    if (isAccountUpgrade || isMakePayment)
+    if (isAccountUpgrade || isMakePayment || isEnableAutoRenew)
       ctx.state.user = await ctx.state.user.save();
     else {
       domain.locale = ctx.locale;
@@ -899,6 +920,8 @@ async function retrieveDomainBilling(ctx) {
         'success',
         isMakePayment
           ? ctx.translate('ONE_TIME_PAYMENT_SUCCESSFUL')
+          : isEnableAutoRenew
+          ? ctx.translate('AUTO_RENEW_ENABLED')
           : ctx.translate(`${ctx.query.plan.toUpperCase()}_PLAN`)
       );
 
@@ -908,6 +931,7 @@ async function retrieveDomainBilling(ctx) {
     // (do things that don't scale)
     if (
       isAccountUpgrade &&
+      !isEnableAutoRenew &&
       !isMakePayment &&
       _.isDate(originalPlanExpiresAt) &&
       ctx.query.plan !== originalPlan &&

@@ -11,10 +11,14 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 async function redirectToPortal(ctx) {
   try {
     if (!isSANB(ctx.state.user[config.userFields.stripeSubscriptionID]))
-      throw Boom.badRequest(ctx.translateError('MISSING_PORTAL_CREDENTIALS'));
+      throw Boom.badRequest(
+        ctx.translateError('SUBSCRIPTION_ALREADY_CANCELLED')
+      );
 
     if (!isSANB(ctx.state.user[config.userFields.stripeCustomerID]))
-      throw Boom.badRequest(ctx.translateError('MISSING_PORTAL_CREDENTIALS'));
+      throw Boom.badRequest(
+        ctx.translateError('SUBSCRIPTION_ALREADY_CANCELLED')
+      );
 
     const session = await stripe.billingPortal.sessions.create({
       customer: ctx.state.user[config.userFields.stripeCustomerID],
@@ -24,7 +28,8 @@ async function redirectToPortal(ctx) {
 
     if (!session) throw ctx.translateError('UNKNOWN_ERROR');
 
-    ctx.redirect(session.url);
+    if (ctx.accepts('html')) ctx.redirect(session.url);
+    else ctx.body = { redirectTo: session.url };
   } catch (err) {
     ctx.logger.fatal(err);
     // email admins here
