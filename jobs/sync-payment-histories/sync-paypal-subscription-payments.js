@@ -206,6 +206,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
             }
           }
         } catch (err) {
+          logger.error(err);
+
           if (err === thresholdError) throw err;
 
           if (err.status === 404)
@@ -213,7 +215,6 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
               new Error('subscription is cancelled or no longer exists')
             );
           else {
-            logger.error(err);
             errorEmails.push({
               template: 'alert',
               message: {
@@ -228,13 +229,14 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
         }
       }
     } catch (err) {
+      logger.error(err, { customer });
       if (err === thresholdError) {
         try {
           await emailHelper({
             template: 'alert',
             message: {
               to: config.email.message.from,
-              subject: `Sync payment histories hit ${errorThreshold} errors during the script`
+              subject: `Sync PayPal payment histories hit ${errorThreshold} errors during the script`
             },
             locals: {
               message:

@@ -364,7 +364,7 @@ async function syncStripePayments({ errorThreshold }) {
             template: 'alert',
             message: {
               to: config.email.message.from,
-              subject: `Sync payment histories hit ${errorThreshold} errors during the script`
+              subject: `Sync Stripe payment histories hit ${errorThreshold} errors during the script`
             },
             locals: {
               message:
@@ -417,6 +417,7 @@ async function syncStripePayments({ errorThreshold }) {
           );
       }
     } catch (err) {
+      logger.error(err, { customer });
       errorEmails.push({
         template: 'alert',
         message: {
@@ -432,7 +433,7 @@ async function syncStripePayments({ errorThreshold }) {
           template: 'alert',
           message: {
             to: config.email.message.from,
-            subject: `Sync payment histories hit ${errorThreshold} errors during the script`
+            subject: `Sync Stripe payment histories hit ${errorThreshold} errors during the script`
           },
           locals: {
             message:
