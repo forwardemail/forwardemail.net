@@ -406,32 +406,28 @@ async function retrieveDomainBilling(ctx) {
         //
         // NOTE: we don't want to re-create the payment if the stripe webhook already did
         //
-        let payment = await Payments.findOne({
-          $or: [
-            {
-              user: ctx.state.user._id,
-              stripe_session_id: session.id
-            },
-            ...(invoiceId
-              ? {
-                  user: ctx.state.user._id,
-                  stripe_invoice_id: invoiceId
-                }
-              : {}),
-            ...(paymentIntentId
-              ? {
-                  user: ctx.state.user._id,
-                  stripe_payment_intent_id: paymentIntentId
-                }
-              : {}),
-            ...(session.client_reference_id
-              ? {
-                  user: ctx.state.user._id,
-                  reference: session.client_reference_id
-                }
-              : {})
-          ]
-        });
+        const $or = [
+          {
+            user: ctx.state.user._id,
+            stripe_session_id: session.id
+          }
+        ];
+        if (invoiceId)
+          $or.push({
+            user: ctx.state.user._id,
+            stripe_invoice_id: invoiceId
+          });
+        if (paymentIntentId)
+          $or.push({
+            user: ctx.state.user._id,
+            stripe_payment_intent_id: paymentIntentId
+          });
+        if (session.client_reference_id)
+          $or.push({
+            user: ctx.state.user._id,
+            reference: session.client_reference_id
+          });
+        let payment = await Payments.findOne({ $or });
         if (payment) {
           ctx.logger.info('stripe payment existed', { payment });
         } else {
