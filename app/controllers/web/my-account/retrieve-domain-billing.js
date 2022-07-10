@@ -449,8 +449,6 @@ async function retrieveDomainBilling(ctx) {
               : now,
             stripe_invoice_id: invoiceId,
             stripe_subscription_id: session.subscription
-              ? session.subscription
-              : null
           });
           ctx.logger.info('stripe payment created', { payment });
         }
@@ -753,7 +751,9 @@ async function retrieveDomainBilling(ctx) {
       if (!_.isDate(now)) now = new Date();
 
       // set planSetAt (since we're changing plans or making an upgrade/change to the plan)
-      ctx.state.user[config.userFields.planSetAt] = now;
+      if (!isMakePayment && !isEnableAutoRenew) {
+        ctx.state.user[config.userFields.planSetAt] = now;
+      }
 
       // these all occur in parallel, but the only one we need to work is saving domain
       try {

@@ -27,7 +27,8 @@ async function paypalAgent() {
     .set('Prefer', 'return=representation')
     .set('Authorization', token)
     .set('Content-Type', 'application/json')
-    .timeout(ms('5s'));
+    .timeout(ms('10s'))
+    .retry(2); // retry 2+ times, so 3x 10s = 30s total
 }
 
 module.exports = { paypalAgent, paypal };
