@@ -334,7 +334,7 @@ async function syncStripePayments({ errorThreshold }) {
             exp_month: stripeCharge.payment_method_details.card.exp_month,
             exp_year: stripeCharge.payment_method_details.card.exp_year,
             last4: stripeCharge.payment_method_details.card.last4,
-            stripe_sessions_id: checkoutSession?.id,
+            stripe_session_id: checkoutSession?.id,
             stripe_payment_intent_id: paymentIntent?.id,
             stripe_invoice_id: invoice?.id,
             stripe_subscription_id: invoice?.subscription,

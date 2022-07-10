@@ -254,11 +254,12 @@ async function retrieveDomainBilling(ctx) {
       let expMonth;
       let expYear;
       let last4;
-
+      let paymentIntentId;
       let invoiceId;
 
       try {
         if (session.payment_intent) {
+          paymentIntentId = session.payment_intent;
           paymentIntent = await stripe.paymentIntents.retrieve(
             session.payment_intent
           );
@@ -286,6 +287,11 @@ async function retrieveDomainBilling(ctx) {
 
           if (!subscription) throw ctx.translateError('UNKNOWN_ERROR');
 
+          //
+          // NOTE: subscription has a `latest_invoice` property we could also use
+          //       (but this is most likely the most accurate way to do this)
+          //
+
           const invoices = await stripe.invoices.list({
             limit: 100, // it'd be impossible for a customer to hit this (at least right now)
             customer: session.customer,
@@ -302,11 +308,13 @@ async function retrieveDomainBilling(ctx) {
               !invoices ||
               !invoices.data ||
               !invoices.data[0] ||
+              !invoices.data[0].id ||
               !invoices.data[0].payment_intent
             )
               throw ctx.translateError('UNKNOWN_ERROR');
 
             invoiceId = invoices.data[0].id;
+            paymentIntentId = invoices.data[0].payment_intent;
 
             paymentIntent = await stripe.paymentIntents.retrieve(
               invoices.data[0].payment_intent
@@ -331,20 +339,18 @@ async function retrieveDomainBilling(ctx) {
       } catch (err) {
         ctx.logger.fatal(err);
         // email admins here
-        try {
-          await emailHelper({
-            template: 'alert',
-            message: {
-              to: config.email.message.from,
-              subject: paymentIntent
-                ? `Error retrieving Stripe Payment Method ID ${paymentIntent.payment_method} for ${ctx.state.user.email}`
-                : `Stripe Payment Intent/Method Error for ${ctx.state.user.email}`
-            },
-            locals: { message: err.message }
-          });
-        } catch (err) {
-          ctx.logger.fatal(err);
-        }
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: paymentIntent
+              ? `Error retrieving Stripe Payment Method ID ${paymentIntent.payment_method} for ${ctx.state.user.email}`
+              : `Stripe Payment Intent/Method Error for ${ctx.state.user.email}`
+          },
+          locals: { message: err.message }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
       }
 
       // if for whatever reason they never had a plan set at date then set one
@@ -376,20 +382,18 @@ async function retrieveDomainBilling(ctx) {
           } catch (err) {
             ctx.logger.fatal(err);
             // email admins here
-            try {
-              await emailHelper({
-                template: 'alert',
-                message: {
-                  to: config.email.message.from,
-                  subject: `Error deleting Stripe subscription ID ${
-                    ctx.state.user[config.userFields.stripeSubscriptionID]
-                  } for ${ctx.state.user.email}`
-                },
-                locals: { message: err.message }
-              });
-            } catch (err) {
-              ctx.logger.fatal(err);
-            }
+            emailHelper({
+              template: 'alert',
+              message: {
+                to: config.email.message.from,
+                subject: `Error deleting Stripe subscription ID ${
+                  ctx.state.user[config.userFields.stripeSubscriptionID]
+                } for ${ctx.state.user.email}`
+              },
+              locals: { message: err.message }
+            })
+              .then()
+              .catch((err) => ctx.logger.fatal(err));
           }
         }
 
@@ -398,42 +402,94 @@ async function retrieveDomainBilling(ctx) {
           session.subscription;
       }
 
-      // these all occur in parallel, but the only one we need to work is saving domain
-      let [payment, user] = await Promise.all([
-        Payments.create({
-          user: ctx.state.user._id,
-          reference: session.client_reference_id,
-          amount: session.amount_total,
-          method,
-          exp_month: expMonth,
-          exp_year: expYear,
-          last4,
-          stripe_session_id: session.id,
-          // NOTE: the only time paymentIntent would be null is if there was a Stripe API error
-          //       when we perform the lookup above, so this value might be slightly off, but it's a safeguard
-          //       (because if the user made payment then we want to keep the flow going regardless of Stripe API)
-          stripe_payment_intent_id: paymentIntent ? paymentIntent.id : null,
-          duration: ms(key),
-          plan: ctx.query.plan,
-          kind: session.mode === 'subscription' ? 'subscription' : 'one-time',
-          // NOTE: the only time paymentIntent would be null is if there was a Stripe API error
-          //       when we perform the lookup above, so this value might be slightly off, but it's a safeguard
-          //       (because if the user made payment then we want to keep the flow going regardless of Stripe API)
-          //       (and we have to set a value here because it's a required field)
-          invoice_at: paymentIntent
-            ? dayjs.unix(paymentIntent.created).toDate()
-            : now,
-          stripe_invoice_id: invoiceId,
-          stripe_subscription_id: session.subscription
-            ? session.subscription
-            : null
-        }),
-        // try to save the customer info to the account
-        ctx.state.user.save()
-      ]);
+      try {
+        //
+        // NOTE: we don't want to re-create the payment if the stripe webhook already did
+        //
+        let payment = await Payments.findOne({
+          $or: [
+            {
+              user: ctx.state.user._id,
+              stripe_session_id: session.id
+            },
+            ...(invoiceId
+              ? {
+                  user: ctx.state.user._id,
+                  stripe_invoice_id: invoiceId
+                }
+              : {}),
+            ...(paymentIntentId
+              ? {
+                  user: ctx.state.user._id,
+                  stripe_payment_intent_id: paymentIntentId
+                }
+              : {}),
+            ...(session.client_reference_id
+              ? {
+                  user: ctx.state.user._id,
+                  reference: session.client_reference_id
+                }
+              : {})
+          ]
+        });
+        if (payment) {
+          ctx.logger.info('stripe payment existed', { payment });
+        } else {
+          payment = await Payments.create({
+            user: ctx.state.user._id,
+            reference: session.client_reference_id,
+            amount: session.amount_total,
+            method,
+            exp_month: expMonth,
+            exp_year: expYear,
+            last4,
+            stripe_session_id: session.id,
+            stripe_payment_intent_id: paymentIntentId,
+            duration: ms(key),
+            plan: ctx.query.plan,
+            kind: session.mode === 'subscription' ? 'subscription' : 'one-time',
+            invoice_at: paymentIntent
+              ? dayjs.unix(paymentIntent.created).toDate()
+              : now,
+            stripe_invoice_id: invoiceId,
+            stripe_subscription_id: session.subscription
+              ? session.subscription
+              : null
+          });
+          ctx.logger.info('stripe payment created', { payment });
+        }
+      } catch (err) {
+        ctx.logger.fatal(err);
+        // email admins here
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Error retrieving/creating stripe payment for ${ctx.state.user.email}`
+          },
+          locals: { message: err.message }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
 
-      // log the payment just for sanity
-      ctx.logger.info('payment created', { payment });
+      // save the user
+      try {
+        await ctx.state.user.save();
+      } catch (err) {
+        ctx.logger.fatal(err);
+        // email admins here
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Error saving user for ${ctx.state.user.email}`
+          },
+          locals: { message: err.message }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
 
       // cancel the user's paypal subscription if they had one
       // and if the session.mode was equal to subscription
@@ -449,29 +505,24 @@ async function retrieveDomainBilling(ctx) {
             }/cancel`
           );
           ctx.state.user[config.userFields.paypalSubscriptionID] = undefined;
-          user = await ctx.state.user.save();
+          await ctx.state.user.save();
         } catch (err) {
           ctx.logger.fatal(err);
           // email admins here
-          try {
-            await emailHelper({
-              template: 'alert',
-              message: {
-                to: config.email.message.from,
-                subject: `Error deleting PayPal subscription ID ${
-                  ctx.state.user[config.userFields.paypalSubscriptionID]
-                } for ${ctx.state.user.email}`
-              },
-              locals: { message: err.message }
-            });
-          } catch (err) {
-            ctx.logger.fatal(err);
-          }
+          emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              subject: `Error deleting PayPal subscription ID ${
+                ctx.state.user[config.userFields.paypalSubscriptionID]
+              } for ${ctx.state.user.email}`
+            },
+            locals: { message: err.message }
+          })
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
         }
       }
-
-      // re-assign if needed
-      ctx.state.user = user;
     }
 
     //
@@ -550,9 +601,17 @@ async function retrieveDomainBilling(ctx) {
       )
         throw ctx.translateError('UNKNOWN_ERROR');
 
-      // these all occur in parallel, but the only one we need to work is saving domain
-      const [payment, user] = await Promise.all([
-        Payments.create({
+      try {
+        //
+        // TODO: we don't want to re-create the payment if the paypal webhook already did
+        //
+        // let payment = await Payments.findOne({ ... });
+        // if (payment) {
+        //   ctx.logger.info('paypal payment existed', { payment });
+        // } else {
+        //   ... code below ...
+        // }
+        const payment = await Payments.create({
           user: ctx.state.user._id,
           reference: body.purchase_units[0].reference_id,
           amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
@@ -563,16 +622,42 @@ async function retrieveDomainBilling(ctx) {
           paypal_order_id: body.id,
           // TODO: store paypal_transaction_id
           invoice_at: now
-        }),
-        // try to save the customer info to the account
-        ctx.state.user.save()
-      ]);
+        });
 
-      // log the payment just for sanity
-      ctx.logger.info('payment created', { payment });
+        // log the payment just for sanity
+        ctx.logger.info('paypal payment created', { payment });
+      } catch (err) {
+        ctx.logger.fatal(err);
+        // email admins here
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
+          },
+          locals: { message: err.message }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
 
-      // re-assign if needed
-      ctx.state.user = user;
+      // save the user
+      try {
+        await ctx.state.user.save();
+      } catch (err) {
+        ctx.logger.fatal(err);
+        // email admins here
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Error saving user for ${ctx.state.user.email}`
+          },
+          locals: { message: err.message }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
     }
 
     //
@@ -615,20 +700,18 @@ async function retrieveDomainBilling(ctx) {
         } catch (err) {
           ctx.logger.fatal(err);
           // email admins here
-          try {
-            await emailHelper({
-              template: 'alert',
-              message: {
-                to: config.email.message.from,
-                subject: `Error deleting PayPal subscription ID ${
-                  ctx.state.user[config.userFields.paypalSubscriptionID]
-                } for ${ctx.state.user.email}`
-              },
-              locals: { message: err.message }
-            });
-          } catch (err) {
-            ctx.logger.fatal(err);
-          }
+          emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              subject: `Error deleting PayPal subscription ID ${
+                ctx.state.user[config.userFields.paypalSubscriptionID]
+              } for ${ctx.state.user.email}`
+            },
+            locals: { message: err.message }
+          })
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
         }
       }
 
@@ -677,8 +760,17 @@ async function retrieveDomainBilling(ctx) {
       ctx.state.user[config.userFields.planSetAt] = now;
 
       // these all occur in parallel, but the only one we need to work is saving domain
-      let [payment, user] = await Promise.all([
-        Payments.create({
+      try {
+        //
+        // TODO: we don't want to re-create the payment if the paypal webhook already did
+        //
+        // let payment = await Payments.findOne({ ... });
+        // if (payment) {
+        //   ctx.logger.info('paypal payment existed', { payment });
+        // } else {
+        //   ... code below ...
+        // }
+        const payment = await Payments.create({
           user: ctx.state.user._id,
           // NOTE: paypal subscriptions don't allow you to pass a reference
           amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
@@ -689,10 +781,42 @@ async function retrieveDomainBilling(ctx) {
           paypal_subscription_id: body.id,
           // TODO: store paypal_transaction_id
           invoice_at: now
-        }),
-        // try to save the customer info to the account
-        ctx.state.user.save()
-      ]);
+        });
+
+        // log the payment just for sanity
+        ctx.logger.info('paypal payment created', { payment });
+      } catch (err) {
+        ctx.logger.fatal(err);
+        // email admins here
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
+          },
+          locals: { message: err.message }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
+
+      // save the user
+      try {
+        await ctx.state.user.save();
+      } catch (err) {
+        ctx.logger.fatal(err);
+        // email admins here
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Error saving user for ${ctx.state.user.email}`
+          },
+          locals: { message: err.message }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
 
       // cancel the user's stripe subscription if they had one
       if (isSANB(ctx.state.user[config.userFields.stripeSubscriptionID])) {
@@ -701,32 +825,24 @@ async function retrieveDomainBilling(ctx) {
             ctx.state.user[config.userFields.stripeSubscriptionID]
           );
           ctx.state.user[config.userFields.stripeSubscriptionID] = undefined;
-          user = await ctx.state.user.save();
+          await ctx.state.user.save();
         } catch (err) {
           ctx.logger.fatal(err);
           // email admins here
-          try {
-            await emailHelper({
-              template: 'alert',
-              message: {
-                to: config.email.message.from,
-                subject: `Error deleting Stripe subscription ID ${
-                  ctx.state.user[config.userFields.stripeSubscriptionID]
-                } for ${ctx.state.user.email}`
-              },
-              locals: { message: err.message }
-            });
-          } catch (err) {
-            ctx.logger.fatal(err);
-          }
+          emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              subject: `Error deleting Stripe subscription ID ${
+                ctx.state.user[config.userFields.stripeSubscriptionID]
+              } for ${ctx.state.user.email}`
+            },
+            locals: { message: err.message }
+          })
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
         }
       }
-
-      // log the payment just for sanity
-      ctx.logger.info('payment created', { payment });
-
-      // re-assign if needed
-      ctx.state.user = user;
     }
 
     // save the user or domain's new plan
@@ -734,7 +850,7 @@ async function retrieveDomainBilling(ctx) {
     // NOTE: we do a double save here on user object which we might not want
     //
     if (isAccountUpgrade || isMakePayment || isEnableAutoRenew)
-      ctx.state.user = await ctx.state.user.save();
+      await ctx.state.user.save();
     else {
       domain.locale = ctx.locale;
       domain.client = ctx.client;
@@ -767,20 +883,18 @@ async function retrieveDomainBilling(ctx) {
               } catch (err) {
                 ctx.logger.fatal(err);
                 // email admins here
-                try {
-                  await emailHelper({
-                    template: 'alert',
-                    message: {
-                      to: config.email.message.from,
-                      subject: `Error deleting Stripe subscription ID ${
-                        ctx.state.user[config.userFields.stripeSubscriptionID]
-                      } for ${ctx.state.user.email}`
-                    },
-                    locals: { message: err.message }
-                  });
-                } catch (err) {
-                  ctx.logger.fatal(err);
-                }
+                emailHelper({
+                  template: 'alert',
+                  message: {
+                    to: config.email.message.from,
+                    subject: `Error deleting Stripe subscription ID ${
+                      ctx.state.user[config.userFields.stripeSubscriptionID]
+                    } for ${ctx.state.user.email}`
+                  },
+                  locals: { message: err.message }
+                })
+                  .then()
+                  .catch((err) => ctx.logger.fatal(err));
               }
             })()
           : Promise.resolve(),
@@ -797,20 +911,18 @@ async function retrieveDomainBilling(ctx) {
               } catch (err) {
                 ctx.logger.fatal(err);
                 // email admins here
-                try {
-                  await emailHelper({
-                    template: 'alert',
-                    message: {
-                      to: config.email.message.from,
-                      subject: `Error deleting PayPal subscription ID ${
-                        ctx.state.user[config.userFields.paypalSubscriptionID]
-                      } for ${ctx.state.user.email}`
-                    },
-                    locals: { message: err.message }
-                  });
-                } catch (err) {
-                  ctx.logger.fatal(err);
-                }
+                emailHelper({
+                  template: 'alert',
+                  message: {
+                    to: config.email.message.from,
+                    subject: `Error deleting PayPal subscription ID ${
+                      ctx.state.user[config.userFields.paypalSubscriptionID]
+                    } for ${ctx.state.user.email}`
+                  },
+                  locals: { message: err.message }
+                })
+                  .then()
+                  .catch((err) => ctx.logger.fatal(err));
               }
             })()
           : Promise.resolve()
