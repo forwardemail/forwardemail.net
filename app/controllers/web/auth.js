@@ -456,8 +456,8 @@ async function forgotPassword(ctx) {
     ctx.logger.fatal(err);
     // reset if there was an error
     try {
-      user[config.userFields.resetToken] = null;
-      user[config.userFields.resetTokenExpiresAt] = null;
+      user[config.userFields.resetToken] = undefined;
+      user[config.userFields.resetTokenExpiresAt] = undefined;
       user = await user.save();
     } catch (err) {
       ctx.logger.error(err);
@@ -495,8 +495,8 @@ async function resetPassword(ctx) {
   )
     throw Boom.badRequest(ctx.translateError('RESET_TOKEN_EXPIRED'));
 
-  user[config.userFields.resetToken] = null;
-  user[config.userFields.resetTokenExpiresAt] = null;
+  user[config.userFields.resetToken] = undefined;
+  user[config.userFields.resetTokenExpiresAt] = undefined;
 
   await user.setPassword(body.password);
   user = await user.save();
@@ -553,9 +553,9 @@ async function changeEmail(ctx) {
     }
 
     // reset change email info
-    user[config.userFields.changeEmailToken] = null;
-    user[config.userFields.changeEmailTokenExpiresAt] = null;
-    user[config.userFields.changeEmailNewAddress] = '';
+    user[config.userFields.changeEmailToken] = undefined;
+    user[config.userFields.changeEmailTokenExpiresAt] = undefined;
+    user[config.userFields.changeEmailNewAddress] = undefined;
     await user.save();
   } catch (err) {
     ctx.throw(err);

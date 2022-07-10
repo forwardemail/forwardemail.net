@@ -46,8 +46,8 @@ async function cancelSubscription(ctx, next) {
       : Promise.resolve()
   ]);
 
-  ctx.state.user[config.userFields.stripeSubscriptionID] = null;
-  ctx.state.user[config.userFields.paypalSubscriptionID] = null;
+  ctx.state.user[config.userFields.stripeSubscriptionID] = undefined;
+  ctx.state.user[config.userFields.paypalSubscriptionID] = undefined;
 
   await ctx.state.user.save();
 

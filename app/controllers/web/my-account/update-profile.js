@@ -37,8 +37,8 @@ async function updateProfile(ctx) {
       ctx.state.user[config.userFields.hasSetPassword] = true;
     }
 
-    ctx.state.user[config.userFields.resetToken] = null;
-    ctx.state.user[config.userFields.resetTokenExpiresAt] = null;
+    ctx.state.user[config.userFields.resetToken] = undefined;
+    ctx.state.user[config.userFields.resetTokenExpiresAt] = undefined;
   } else {
     //
     // personal information
@@ -167,9 +167,9 @@ async function updateProfile(ctx) {
       ctx.logger.fatal(err);
       // reset if there was an error
       try {
-        ctx.state.user[config.userFields.changeEmailToken] = null;
-        ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = null;
-        ctx.state.user[config.userFields.changeEmailNewAddress] = '';
+        ctx.state.user[config.userFields.changeEmailToken] = undefined;
+        ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = undefined;
+        ctx.state.user[config.userFields.changeEmailNewAddress] = undefined;
         ctx.state.user = await ctx.state.user.save();
       } catch (err) {
         ctx.logger.error(err);

@@ -288,7 +288,7 @@ Domain.pre('validate', async function (next) {
     const { txt, mx } = await getVerificationResults(domain, domain.client);
     // reset missing txt so we alert users if they are missing a TXT in future again
     if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
-      domain.missing_txt_sent_at = null;
+      domain.missing_txt_sent_at = undefined;
     domain.has_txt_record = txt;
     domain.has_mx_record = mx;
     next();
@@ -598,7 +598,7 @@ async function verifyRecords(_id, locale, client) {
   const { txt, mx, errors } = await getVerificationResults(domain, client);
   // reset missing txt so we alert users if they are missing a TXT in future again
   if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
-    domain.missing_txt_sent_at = null;
+    domain.missing_txt_sent_at = undefined;
   domain.has_txt_record = txt;
   domain.has_mx_record = mx;
   domain.locale = locale;

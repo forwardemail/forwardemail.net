@@ -20,8 +20,8 @@ async function disable(ctx) {
   }
 
   ctx.state.user[config.passport.fields.otpEnabled] = false;
-  ctx.state.user[config.passport.fields.otpToken] = null;
-  ctx.state.user[config.userFields.otpRecoveryKeys] = null;
+  ctx.state.user[config.passport.fields.otpToken] = undefined;
+  ctx.state.user[config.userFields.otpRecoveryKeys] = undefined;
   await ctx.state.user.save();
 
   ctx.flash('custom', {

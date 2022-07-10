@@ -178,8 +178,7 @@ object[config.userFields.changeEmailNewAddress] = {
   type: String,
   trim: true,
   lowercase: true,
-  validate: (value) => !value || validator.isEmail(value),
-  default: ''
+  validate: (value) => !value || validator.isEmail(value)
 };
 
 // welcome email
@@ -384,11 +383,8 @@ User.pre('save', function (next) {
     config.userFields.addressZip,
     config.userFields.companyVAT
   ]) {
-    if (isSANB(this[prop])) {
-      this[prop] = striptags(this[prop]);
-    } else {
-      this[prop] = null;
-    }
+    if (isSANB(this[prop])) this[prop] = striptags(this[prop]);
+    if (!isSANB(this[prop])) this[prop] = undefined;
   }
 
   next();

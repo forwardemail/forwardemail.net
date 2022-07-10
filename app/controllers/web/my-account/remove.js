@@ -37,7 +37,7 @@ async function remove(ctx) {
           ctx.state.user[config.userFields.paypalSubscriptionID]
         }/cancel`
       );
-      ctx.state.user[config.userFields.paypalSubscriptionID] = null;
+      ctx.state.user[config.userFields.paypalSubscriptionID] = undefined;
       await ctx.state.user.save();
     } catch (err) {
       ctx.logger.fatal(err);
@@ -65,7 +65,7 @@ async function remove(ctx) {
       await stripe.subscriptions.del(
         ctx.state.user[config.userFields.stripeSubscriptionID]
       );
-      ctx.state.user[config.userFields.stripeSubscriptionID] = null;
+      ctx.state.user[config.userFields.stripeSubscriptionID] = undefined;
       await ctx.state.user.save();
     } catch (err) {
       ctx.logger.fatal(err);
@@ -115,37 +115,37 @@ async function remove(ctx) {
     config.userFields.addressZip,
     config.userFields.companyVAT
   ]) {
-    ctx.state.user[prop] = null;
+    ctx.state.user[prop] = undefined;
   }
 
   ctx.state.user.email = `${ctx.state.user.id}@removed.forwardemail.net`;
   ctx.state.user[config.lastLocaleField] = i18n.getLocale();
-  ctx.state.user[config.passport.fields.appleAccessToken] = null;
-  ctx.state.user[config.passport.fields.appleProfileID] = null;
-  ctx.state.user[config.passport.fields.appleRefreshToken] = null;
-  ctx.state.user[config.passport.fields.avatarURL] = null;
-  ctx.state.user[config.passport.fields.familyName] = null;
-  ctx.state.user[config.passport.fields.githubAccessToken] = null;
-  ctx.state.user[config.passport.fields.githubProfileID] = null;
-  ctx.state.user[config.passport.fields.githubRefreshToken] = null;
-  ctx.state.user[config.passport.fields.givenName] = null;
-  ctx.state.user[config.passport.fields.googleAccessToken] = null;
-  ctx.state.user[config.passport.fields.googleProfileID] = null;
-  ctx.state.user[config.passport.fields.googleRefreshToken] = null;
+  ctx.state.user[config.passport.fields.appleAccessToken] = undefined;
+  ctx.state.user[config.passport.fields.appleProfileID] = undefined;
+  ctx.state.user[config.passport.fields.appleRefreshToken] = undefined;
+  ctx.state.user[config.passport.fields.avatarURL] = undefined;
+  ctx.state.user[config.passport.fields.familyName] = undefined;
+  ctx.state.user[config.passport.fields.githubAccessToken] = undefined;
+  ctx.state.user[config.passport.fields.githubProfileID] = undefined;
+  ctx.state.user[config.passport.fields.githubRefreshToken] = undefined;
+  ctx.state.user[config.passport.fields.givenName] = undefined;
+  ctx.state.user[config.passport.fields.googleAccessToken] = undefined;
+  ctx.state.user[config.passport.fields.googleProfileID] = undefined;
+  ctx.state.user[config.passport.fields.googleRefreshToken] = undefined;
   ctx.state.user[config.passport.fields.otpEnabled] = false;
-  ctx.state.user[config.passport.fields.otpToken] = null;
+  ctx.state.user[config.passport.fields.otpToken] = undefined;
   ctx.state.user[config.userFields.addressCountry] = 'None';
-  ctx.state.user[config.userFields.apiToken] = null;
-  ctx.state.user[config.userFields.changeEmailNewAddress] = '';
-  ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = null;
-  ctx.state.user[config.userFields.changeEmailToken] = null;
-  ctx.state.user[config.userFields.defaultDomain] = null;
+  ctx.state.user[config.userFields.apiToken] = undefined;
+  ctx.state.user[config.userFields.changeEmailNewAddress] = undefined;
+  ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = undefined;
+  ctx.state.user[config.userFields.changeEmailToken] = undefined;
+  ctx.state.user[config.userFields.defaultDomain] = undefined;
   ctx.state.user[config.userFields.isBanned] = true;
   ctx.state.user[config.userFields.otpRecoveryKeys] = [];
-  ctx.state.user[config.userFields.paypalPayerID] = null;
-  ctx.state.user[config.userFields.paypalSubscriptionID] = null;
-  ctx.state.user[config.userFields.stripeCustomerID] = null;
-  ctx.state.user[config.userFields.stripeSubscriptionID] = null;
+  ctx.state.user[config.userFields.paypalPayerID] = undefined;
+  ctx.state.user[config.userFields.paypalSubscriptionID] = undefined;
+  ctx.state.user[config.userFields.stripeCustomerID] = undefined;
+  ctx.state.user[config.userFields.stripeSubscriptionID] = undefined;
   await ctx.state.user.save();
 
   if (!ctx.api)

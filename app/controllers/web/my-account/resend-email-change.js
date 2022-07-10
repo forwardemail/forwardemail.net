@@ -46,9 +46,9 @@ async function resendEmailChange(ctx) {
     ctx.logger.fatal(err);
     // reset if there was an error
     try {
-      ctx.state.user[config.userFields.changeEmailToken] = null;
-      ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = null;
-      ctx.state.user[config.userFields.changeEmailNewAddress] = '';
+      ctx.state.user[config.userFields.changeEmailToken] = undefined;
+      ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = undefined;
+      ctx.state.user[config.userFields.changeEmailNewAddress] = undefined;
       ctx.state.user = await ctx.state.user.save();
     } catch (err) {
       ctx.logger.error(err);

@@ -448,7 +448,7 @@ async function retrieveDomainBilling(ctx) {
               ctx.state.user[config.userFields.paypalSubscriptionID]
             }/cancel`
           );
-          ctx.state.user[config.userFields.paypalSubscriptionID] = null;
+          ctx.state.user[config.userFields.paypalSubscriptionID] = undefined;
           user = await ctx.state.user.save();
         } catch (err) {
           ctx.logger.fatal(err);
@@ -700,7 +700,7 @@ async function retrieveDomainBilling(ctx) {
           await stripe.subscriptions.del(
             ctx.state.user[config.userFields.stripeSubscriptionID]
           );
-          ctx.state.user[config.userFields.stripeSubscriptionID] = null;
+          ctx.state.user[config.userFields.stripeSubscriptionID] = undefined;
           user = await ctx.state.user.save();
         } catch (err) {
           ctx.logger.fatal(err);
@@ -760,7 +760,8 @@ async function retrieveDomainBilling(ctx) {
                   ctx.state.user[config.userFields.stripeSubscriptionID]
                 );
                 // set the current value to null
-                ctx.state.user[config.userFields.stripeSubscriptionID] = null;
+                ctx.state.user[config.userFields.stripeSubscriptionID] =
+                  undefined;
                 // save the user again
                 await ctx.state.user.save();
               } catch (err) {

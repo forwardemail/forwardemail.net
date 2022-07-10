@@ -1,7 +1,7 @@
 const config = require('#config');
 
 async function resetAPIToken(ctx) {
-  ctx.state.user[config.userFields.apiToken] = null;
+  ctx.state.user[config.userFields.apiToken] = undefined;
   ctx.state.user = await ctx.state.user.save();
 
   if (!ctx.api)

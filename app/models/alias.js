@@ -176,7 +176,7 @@ Alias.pre('validate', function (next) {
   if (!_.isArray(this.labels)) this.labels = [];
   // description must be plain text
   if (isSANB(this.description)) this.description = striptags(this.description);
-  if (!isSANB(this.description)) this.description = null;
+  if (!isSANB(this.description)) this.description = undefined;
 
   // alias must have at least one recipient
   if (!_.isArray(this.recipients) || _.isEmpty(this.recipients))
