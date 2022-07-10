@@ -333,7 +333,7 @@ async function syncStripePayments({ errorThreshold }) {
           await payment.save();
 
           logger.debug(
-            `sucessfully synced and saved payment for stripe payment_intent ${paymentIntent.id}`
+            `Successfully synced and saved payment for stripe payment_intent ${paymentIntent.id}`
           );
         } else {
           logger.debug('creating new payment');
@@ -468,6 +468,8 @@ async function syncStripePayments({ errorThreshold }) {
       logger.error(err);
     }
   }
+
+  logger.info('Stripe payments synced successfully');
 }
 
 module.exports = syncStripePayments;
