@@ -555,7 +555,7 @@ async function changeEmail(ctx) {
     // reset change email info
     user[config.userFields.changeEmailToken] = null;
     user[config.userFields.changeEmailTokenExpiresAt] = null;
-    user[config.userFields.changeEmailNewAddress] = null;
+    user[config.userFields.changeEmailNewAddress] = '';
     await user.save();
   } catch (err) {
     ctx.throw(err);

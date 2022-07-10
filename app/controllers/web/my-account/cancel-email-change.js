@@ -10,7 +10,7 @@ async function cancelEmailChange(ctx) {
     );
 
   ctx.state.user[config.userFields.changeEmailToken] = null;
-  ctx.state.user[config.userFields.changeEmailNewAddress] = null;
+  ctx.state.user[config.userFields.changeEmailNewAddress] = '';
   ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = null;
   ctx.state.user = await ctx.state.user.save();
 

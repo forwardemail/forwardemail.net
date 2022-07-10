@@ -136,7 +136,7 @@ async function remove(ctx) {
   ctx.state.user[config.passport.fields.otpToken] = null;
   ctx.state.user[config.userFields.addressCountry] = 'None';
   ctx.state.user[config.userFields.apiToken] = null;
-  ctx.state.user[config.userFields.changeEmailNewAddress] = null;
+  ctx.state.user[config.userFields.changeEmailNewAddress] = '';
   ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = null;
   ctx.state.user[config.userFields.changeEmailToken] = null;
   ctx.state.user[config.userFields.defaultDomain] = null;

@@ -169,7 +169,7 @@ async function updateProfile(ctx) {
       try {
         ctx.state.user[config.userFields.changeEmailToken] = null;
         ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = null;
-        ctx.state.user[config.userFields.changeEmailNewAddress] = null;
+        ctx.state.user[config.userFields.changeEmailNewAddress] = '';
         ctx.state.user = await ctx.state.user.save();
       } catch (err) {
         ctx.logger.error(err);

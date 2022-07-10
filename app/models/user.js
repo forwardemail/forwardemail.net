@@ -175,7 +175,8 @@ object[config.userFields.changeEmailNewAddress] = {
   type: String,
   trim: true,
   lowercase: true,
-  validate: (value) => validator.isEmail(value)
+  validate: (value) => !value || validator.isEmail(value),
+  default: ''
 };
 
 // welcome email
