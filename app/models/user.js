@@ -122,7 +122,10 @@ object[config.userFields.twoFactorReminderSentAt] = Date;
 // when the user upgraded to a paid plan
 object[config.userFields.planSetAt] = {
   type: Date,
-  required: true
+  required: true,
+  default() {
+    return new Date(this._id.getTimestamp() || Date.now());
+  }
 };
 
 // when the user's plan expires
@@ -310,7 +313,7 @@ User.pre('validate', async function (next) {
 
     this[config.userFields.planSetAt] = payment
       ? new Date(payment.invoice_at)
-      : new Date(this.created_at);
+      : new Date(this._id.getTimestamp() || Date.now());
   }
 
   next();
