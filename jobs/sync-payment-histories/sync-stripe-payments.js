@@ -372,6 +372,7 @@ async function syncStripePayments({ errorThreshold }) {
             }
           });
 
+          logger.error(JSON.stringify(errorEmails, null, 2));
           throw thresholdError;
         }
       }
@@ -441,6 +442,7 @@ async function syncStripePayments({ errorThreshold }) {
           }
         });
 
+        logger.error(JSON.stringify(errorEmails, null, 2));
         throw thresholdError;
       }
     }
