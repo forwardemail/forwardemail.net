@@ -141,11 +141,24 @@ async function syncStripePayments({ errorThreshold }) {
         // this logic is the same in rerieve-domain-billing
         const plan = STRIPE_PRODUCTS[productId];
         const kind = isOneTime ? 'one-time' : 'subscription';
-        const duration = ms(
-          _.keys(STRIPE_MAPPING[plan][kind]).find(
-            (key) => STRIPE_MAPPING[plan][kind][key] === priceId
-          )
+        let durationMatch = _.keys(STRIPE_MAPPING[plan][kind]).find(
+          (key) => STRIPE_MAPPING[plan][kind][key] === priceId
         );
+
+        // <https://github.com/forwardemail/forwardemail.net/commit/c9777a86f37741b6b7dc73483926c0f71d7d5ce8>
+        if (!durationMatch) {
+          if (priceId === 'price_1HbLh0LFuf8FuIPJD4lYB3Jz') {
+            durationMatch = '60d';
+          } else if (priceId === 'price_1HbLhFLFuf8FuIPJBPD5hScR') {
+            durationMatch = '90d';
+          } else {
+            throw new Error(
+              `Invalid price id ${priceId} could not find matching duration`
+            );
+          }
+        }
+
+        const duration = ms(durationMatch);
 
         // Once all the required/relevant information is gathered from stripe
         // we attempt to look up the payment in our system, if it already exists
