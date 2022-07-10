@@ -146,7 +146,7 @@ async function remove(ctx) {
   ctx.state.user[config.userFields.paypalSubscriptionID] = null;
   ctx.state.user[config.userFields.stripeCustomerID] = null;
   ctx.state.user[config.userFields.stripeSubscriptionID] = null;
-  ctx.state.user.save();
+  await ctx.state.user.save();
 
   if (!ctx.api)
     ctx.flash('custom', {
