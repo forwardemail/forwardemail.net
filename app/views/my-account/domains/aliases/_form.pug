@@ -36,12 +36,8 @@ if alias
           else
             i.fa.fa-at
     ul.list-inline
-      li.list-inline-item
-        small.text-black-50
-          = t('Use an asterisk "*" for a catch-all alias.')
-      li.list-inline-item
-        small.text-black-50
-          != t('We also support <a href="%s" target="_blank">regular expressions</a>.', l("/faq#do-you-support-regular-expressions-or-regex"))
+      li.list-inline-item.small.text-black-50= t('Use an asterisk "*" for a catch-all alias.')
+      li.list-inline-item.small.text-black-50!= t('We also support <a href="%s" target="_blank">regular expressions</a>.', l("/faq#do-you-support-regular-expressions-or-regex"))
   if !domain
     .form-group.col-md-6
       label(for="select-alias-domain")
@@ -101,7 +97,7 @@ if alias
     name="recipients",
     rows=2
   )= alias && Array.isArray(alias.recipients) ? alias.recipients.join(", ") : user.email
-  p.form-text: small.text-black-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
+  p.form-text.small.text-black-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
 .form-group
   label(for="textarea-alias-description")= t("Alias Description (optional)")
   textarea#textarea-alias-description.form-control.form-control-lg(
@@ -109,11 +105,11 @@ if alias
     maxlength=150,
     rows=2
   )= alias ? alias.description : ""
-  p.form-text: small.text-black-50= t("Description has a max of 150 characters.")
+  p.form-text.small.text-black-50= t("Description has a max of 150 characters.")
 .form-group
   label(for="input-alias-labels")= t("Alias Labels (optional)")
   textarea#input-alias-labels.form-control.form-control-lg(name="labels")= alias && Array.isArray(alias.labels) ? _.without(alias.labels, "catch-all").join(", ") : ""
-  p.form-text: small.text-black-50= t("Labels must be a line-break/space/comma separated list with a maximum of 20 characters per label.")
+  p.form-text.small.text-black-50= t("Labels must be a line-break/space/comma separated list with a maximum of 20 characters per label.")
 if !domain || (domain && !domain.is_global)
   .form-group.form-check
     input#input-has-recipient-verification.form-check-input(
@@ -123,7 +119,7 @@ if !domain || (domain && !domain.is_global)
       checked=alias ? alias.has_recipient_verification : domain && domain.has_recipient_verification
     )
     label.form-check-label(for="input-has-recipient-verification")= t("Requires recipients to click email verification link")
-    p.form-text: small.text-black-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
+    p.form-text.small.text-black-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
 .form-group.form-check
   input#input-is-enabled.form-check-input(
     type="checkbox",
@@ -132,4 +128,4 @@ if !domain || (domain && !domain.is_global)
     checked=alias ? alias.is_enabled : true
   )
   label.form-check-label(for="input-is-enabled")= t("Active")
-  p.form-text: small.text-black-50= t("If you uncheck this, then this email will be deactivated and no emails will flow through.  However emails will NOT bounce until this alias is completely deleted.")
+  p.form-text.small.text-black-50= t("If you uncheck this, then this email will be deactivated and no emails will flow through.  However emails will NOT bounce until this alias is completely deleted.")

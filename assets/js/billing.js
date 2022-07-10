@@ -8,7 +8,7 @@ const { spinner: Spinner } = require('@ladjs/assets');
 const $formBilling = $('#form-billing');
 const $stripeButtonContainer = $('#stripe-button-container');
 const $paypalButtonContainer = $('#paypal-button-container');
-const $paymentType = $('input[name="payment_type"]');
+const $paymentType = $('input[name="payment_type"][type="radio"]');
 const $paymentMethod = $('input[name="payment_method"');
 const $paymentDuration = $('select[name="payment_duration"]');
 const $opts = $paymentDuration.find('option[data-no-subscription]');
@@ -88,17 +88,17 @@ async function sendRequest(body) {
 
 function createPayPalSubscription(data, actions) {
   const duration = $paymentDuration.find('option:checked').val();
-  if (typeof url.query.plan !== 'string')
+  if (typeof window.USER_PLAN !== 'string')
     throw new Error('"plan" key missing from parsed querystring');
-  if (!PAYPAL_MAPPING[url.query.plan])
-    throw new Error(`The plan "${url.query.plan}" does not exist`);
-  if (!PAYPAL_MAPPING[url.query.plan][duration])
+  if (!PAYPAL_MAPPING[window.USER_PLAN])
+    throw new Error(`The plan "${window.USER_PLAN}" does not exist`);
+  if (!PAYPAL_MAPPING[window.USER_PLAN][duration])
     throw new Error(
-      `The plan "${url.query.plan}" does not have a duration for "${duration}"`
+      `The plan "${window.USER_PLAN}" does not have a duration for "${duration}"`
     );
   return actions.subscription.create({
     intent: 'subscription',
-    plan_id: PAYPAL_MAPPING[url.query.plan][duration],
+    plan_id: PAYPAL_MAPPING[window.USER_PLAN][duration],
     // start time is current time + 1 minute
     start_time: new Date(Date.now() + 1000 * 60).toISOString(),
     subscriber: {
@@ -203,9 +203,7 @@ $paymentType.on('change', function () {
   // reset to 1y if 1y+
   if (
     isSubscription &&
-    ['2y', '3y', 'lifetime'].includes(
-      $paymentDuration.find('option:checked').val()
-    )
+    ['2y', '3y'].includes($paymentDuration.find('option:checked').val())
   )
     $paymentDuration.val('1y');
 
@@ -221,7 +219,10 @@ $paymentMethod.on('change', updatePayButtons);
 
 function updatePayButtons() {
   const paymentMethod = $('input[name="payment_method"]:checked').val();
-  const paymentType = $('input[name="payment_type"]:checked').val();
+  const paymentType =
+    $('input[name="payment_type"][type="radio"]').length > 0
+      ? $('input[name="payment_type"][type="radio"]:checked').val()
+      : $('input[name="payment_type"][type="hidden"]').val();
   const $subscriptionInput = $('input#input-payment-type-subscription');
 
   if (paymentMethod === 'credit_card') {

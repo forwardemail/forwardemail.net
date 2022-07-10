@@ -69,11 +69,10 @@ mixin registerOrLogin(verb, isModal = false)
           )
         button.btn.btn-success.btn-lg.btn-block(type="submit")= t(capitalize(verb))
         if verb === 'sign up'
-          p.mt-3.mb-1.text-center: small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
+          p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
         else if verb === 'sign in'
-          p.mt-3.mb-1.text-center
-            small
-              a.text-black-50(href=l("/forgot-password"))= t("Forget your password?")
+          p.mt-3.mb-1.text-center.small
+            a.text-black-50(href=l("/forgot-password"))= t("Forget your password?")
       .alert.alert-warning.mt-3.text-center(class=isModal ? "mb-0" : "")
         - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
         ul.list-inline.mb-0

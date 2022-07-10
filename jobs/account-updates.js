@@ -35,7 +35,8 @@ graceful.listen();
       $exists: true,
       $not: { $size: 0 }
     },
-    [config.userFields.hasVerifiedEmail]: true
+    [config.userFields.hasVerifiedEmail]: true,
+    [config.userFields.isBanned]: false
   });
 
   // merge and map to actionable email

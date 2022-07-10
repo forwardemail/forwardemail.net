@@ -34,7 +34,7 @@ include ../../../_pagination
             if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
               td.align-middle
                 if isSANB(alias.description)
-                  p.mb-0: small= alias.description
+                  p.mb-0.small= alias.description
                 if Array.isArray(alias.labels)
                   ul.list-inline.mb-0
                     each label in alias.labels

@@ -123,11 +123,11 @@ async function updateProfile(ctx) {
       );
 
     // short-circuit if email already exists
-    const query = { email: body.email };
+    const query = { email: body.email.toLowerCase().trim() };
     const user = await Users.findOne(query);
     if (user)
       throw Boom.badRequest(
-        ctx.translateError('EMAIL_CHANGE_ALREADY_EXISTS', body.email)
+        ctx.translateError('EMAIL_CHANGE_ALREADY_EXISTS', query.email)
       );
 
     // set the reset token and expiry
@@ -138,7 +138,7 @@ async function updateProfile(ctx) {
       await cryptoRandomString.async({
         length: 32
       });
-    ctx.state.user[config.userFields.changeEmailNewAddress] = body.email;
+    ctx.state.user[config.userFields.changeEmailNewAddress] = query.email;
   }
 
   // save the user
@@ -150,7 +150,7 @@ async function updateProfile(ctx) {
       await emailHelper({
         template: 'change-email',
         message: {
-          to: body.email
+          to: ctx.state.user[config.userFields.changeEmailNewAddress]
         },
         locals: {
           user: _.pick(ctx.state.user, [

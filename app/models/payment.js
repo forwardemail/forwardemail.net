@@ -39,7 +39,10 @@ const Payment = new mongoose.Schema({
   // when the payment was created by the payment provider(paypal/stripe)
   // which can vary significantly from the payment.created_at date
   // for automatic subscription payments
-  invoice_at: Date,
+  invoice_at: {
+    type: Date,
+    required: true
+  },
   amount_formatted: {
     type: String,
     required: true
@@ -66,7 +69,8 @@ const Payment = new mongoose.Schema({
   // (e.g. to set or add to plan_expires_at)
   duration: {
     type: Number, // milliseconds
-    required: true
+    required: true,
+    enum: config.validDurations
   },
   // `description` is a virtual populated from
   // note that we don't store "description" because

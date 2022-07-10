@@ -20,6 +20,7 @@ const { boolean } = require('boolean');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
+const Payments = require('./payment');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -119,7 +120,10 @@ object[config.userFields.paypalSubscriptionID] = {
 object[config.userFields.twoFactorReminderSentAt] = Date;
 
 // when the user upgraded to a paid plan
-object[config.userFields.planSetAt] = Date;
+object[config.userFields.planSetAt] = {
+  type: Date,
+  required: true
+};
 
 // when the user's plan expires
 object[config.userFields.planExpiresAt] = Date;
@@ -167,7 +171,12 @@ object[config.userFields.resetToken] = String;
 // email change
 object[config.userFields.changeEmailTokenExpiresAt] = Date;
 object[config.userFields.changeEmailToken] = String;
-object[config.userFields.changeEmailNewAddress] = String;
+object[config.userFields.changeEmailNewAddress] = {
+  type: String,
+  trim: true,
+  lowercase: true,
+  validate: (value) => validator.isEmail(value)
+};
 
 // welcome email
 object[config.userFields.welcomeEmailSentAt] = Date;
@@ -284,6 +293,81 @@ object[config.userFields.addressCountry] = {
 
 // finally add the fields
 User.add(object);
+
+// set plan at date to a default value
+// of when user was created or >= their first payment
+User.pre('validate', async function (next) {
+  // NOTE: this is a fallback in case our migration script hasn't run yet
+  if (!_.isDate(this[config.userFields.planSetAt])) {
+    const payment = await Payments.findOne(
+      {
+        user: this._id
+      },
+      null,
+      { sort: { invoice_at: 1 } }
+    );
+
+    this[config.userFields.planSetAt] = payment
+      ? new Date(payment.invoice_at)
+      : new Date(this.created_at);
+  }
+
+  next();
+});
+
+// plan expires at should get updated everytime the user is saved
+User.pre('save', async function (next) {
+  const user = this;
+  // if user is on the free plan then return early
+  if (user.plan === 'free') {
+    user[config.userFields.planExpiresAt] = new Date(
+      user[config.userFields.planSetAt]
+    );
+    return next();
+  }
+
+  try {
+    //
+    // the way to calculate plan expiry is to
+    // take the sum of all payment durations where the payment invoice
+    // is >= the user's current plan set at date
+    // and then add this sum to the user's plan set at
+    //
+    // NOTE: we don't care about the amount, e.g. we could have refunded
+    //       a customer because we had an outage, but we don't want
+    //       that to effect their plan's expiration since refunds are on us
+    //
+    // NOTE: if a user did get a refund from changing plans,
+    //       then their plan set at will change, so that takes care of that
+    //
+    const payments = await Payments.find({
+      user: user._id,
+      invoice_at: {
+        // safeguard in case migration didn't run
+        // (note we have another issue for setting `planSetAt` in a user pre-validate hook)
+        $gte: new Date(user[config.userFields.planSetAt])
+      },
+      // payments must match the user's current plan
+      plan: user.plan
+    })
+      .select('duration')
+      .lean()
+      .exec();
+
+    // calculate the sum of all payment durations (lodash _.sumBy is nice)
+    // the Math.max is a safeguard in case duration is negative for whatever reason
+    const sum = Math.max(_.sumBy(payments, 'duration'), 0);
+
+    // set the new expiry
+    user[config.userFields.planExpiresAt] = new Date(
+      new Date(user[config.userFields.planSetAt]).getTime() + sum
+    );
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 // sanitize input (striptags)
 User.pre('save', function (next) {

@@ -27,7 +27,6 @@
     "@ladjs/redis": "1.0.7",
     "@ladjs/shared-config": "8.0.0",
     "@ladjs/web": "18.0.2",
-    "@paypal/checkout-server-sdk": "1.0.3",
     "@sidoshi/random-string": "1.0.0",
     "@tkrotoff/bootstrap-floating-label": "0.8",
     "accounting": "0.4.1",

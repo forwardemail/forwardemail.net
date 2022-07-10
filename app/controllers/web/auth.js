@@ -1,8 +1,9 @@
 const Boom = require('@hapi/boom');
+const Stripe = require('stripe');
 const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
-const isSANB = require('is-string-and-not-blank');
 const dayjs = require('dayjs-with-plugins');
+const isSANB = require('is-string-and-not-blank');
 const qrcode = require('qrcode');
 const sanitizeHtml = require('sanitize-html');
 const validator = require('validator');
@@ -10,13 +11,14 @@ const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
 const { errors } = require('passport-local-mongoose');
 
-const Users = require('#models/user');
 const config = require('#config');
 const email = require('#helpers/email');
+const env = require('#config/env');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const sendVerificationEmail = require('#helpers/send-verification-email');
-const { Inquiries } = require('#models');
+const { Users, Inquiries } = require('#models');
 
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const options = { length: 10, type: 'numeric' };
 
 const sanitize = (string) =>
@@ -538,6 +540,17 @@ async function changeEmail(ctx) {
     const newEmail = user[config.userFields.changeEmailNewAddress];
     user[config.passportLocalMongoose.usernameField] = newEmail;
     await user.save();
+
+    if (isSANB(user[config.userFields.stripeCustomerID])) {
+      try {
+        await stripe.customers.update(
+          user[config.userFields.stripeCustomerID],
+          { email: user.email }
+        );
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
+    }
 
     // reset change email info
     user[config.userFields.changeEmailToken] = null;

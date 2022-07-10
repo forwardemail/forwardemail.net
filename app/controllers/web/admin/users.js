@@ -102,7 +102,9 @@ async function update(ctx) {
 async function remove(ctx) {
   const user = await Users.findById(ctx.params.id);
   if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
-  await user.remove();
+  // instead of removing the user entirely we just ban them
+  user[config.userFields.isBanned] = true;
+  await user.save();
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
     text: ctx.translate('REQUEST_OK'),

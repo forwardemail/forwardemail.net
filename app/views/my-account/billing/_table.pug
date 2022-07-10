@@ -48,9 +48,9 @@ mixin receipt(payment)
         th.d-none.d-lg-table-cell.text-center.align-middle(scope="col")= t("Receipt")
     tbody
       each payment in payments
-        tr
-          td.align-middle.d-none.d-lg-table-cell= payment.reference
-          td.align-middle= dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).locale(ctx.locale).format("M/D/YY")
+        tr.small.text-monospace
+          td.align-middle.d-none.d-lg-table-cell.text-center: code.lead= payment.reference
+          td.align-middle.text-center= dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).locale(ctx.locale).format("M/D/YY")
           td.align-middle
             .d-block.d-lg-none.mb-2
               strong

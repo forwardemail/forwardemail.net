@@ -318,6 +318,16 @@ const config = {
     '.top',
     '.work',
     '.cam'
+  ],
+
+  validDurations: [
+    ms('30d'), // 1 mo
+    ms('60d'), // 2 mo
+    ms('90d'), // 3 mo
+    ms('180d'), // 6 mo
+    ms('1y'),
+    ms('2y'),
+    ms('3y')
   ]
 };
 

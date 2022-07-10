@@ -44,7 +44,7 @@ block body
             aria-label=t("Cancel")
           )= t("Cancel")
 
-  .container-fluid.pt-3
+  .container-fluid.py-3
     .row
       .col
         include ../../_breadcrumbs
@@ -56,63 +56,62 @@ block body
       .container
         .row
           .col
-            .alert.text-center(class=hasPlanExpired ? 'alert-danger' : 'alert-success')
-              small
-                if hasPlanExpired
-                  != t('Your plan expired on <span class="notranslate">%s</span>. Please make a payment or correct billing issues to avoid account termination and service interruption.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY'))
-                else
-                  = emoji('tada')
-                  = ' '
-                  != t('You have an active subscription with <span class="notranslate">%s</span>.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('a debit or credit card') : 'PayPal')
+            .alert.text-center.mb-0.small(class=hasPlanExpired ? 'alert-danger' : 'alert-success')
+              if hasPlanExpired
+                != t('Your plan expired on <span class="notranslate">%s</span>. Please make a payment or correct billing issues to avoid account termination and service interruption.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY'))
+              else
+                = emoji('tada')
+                = ' '
+                != t('You have an active <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('debit or credit card') : 'PayPal')
 
-  .container.pb-5.position-relative
+  .container.py-3.py-sm-5.position-relative
     .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-      .col-12.d-flex(class=user.plan === "free" ? "" : "col-lg-6")
-        .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-          h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
-          small.text-muted.text-uppercase.mb-3= t("Current Plan")
-          button.btn.btn-dark.btn-success(
-            type="button",
-            data-toggle="modal",
-            data-target="#modal-change-plan"
-          )= t("Change Plan")
       if user.plan !== 'free'
         .col-12.col-lg-6.d-flex
-          .mt-lg-0.mt-5.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
+          .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
             h2.display-5.font-weight-bold
               if hasSubscription
                 = t('Auto-renew enabled')
               else
                 = t('Auto-renew disabled')
             if hasSubscription && hasPlanExpired
-              small.alert.alert-warning!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('debit or credit card') : 'PayPal')
+              .alert.alert-warning.small!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('debit or credit card') : 'PayPal')
             t(titleize(humanize(user.plan)))
             if !hasPlanExpired
-              small.alert.alert-warning
+              .alert.alert-warning.small
                 != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
-            ul.list-inline
+            ul.list-inline.text-center.mb-0
               li.list-inline-item
-                a.btn.btn-md.btn-primary(href=l("/my-account/billing/make-payment"))= t("Make Payment")
+                a.btn.btn-sm.btn-primary(href=l("/my-account/billing/make-payment"))= t("Make Payment")
               if isSANB(user[config.userFields.stripeSubscriptionID])
                 li.list-inline-item
                   form(action=l("/my-account/billing/update-card"), method='POST').ajax-form
                     input(type="hidden", name="_csrf", value=_csrf)
-                    button.btn.btn-md.btn-dark(type="submit")= t("Update Card")
+                    button.btn.btn-sm.btn-dark(type="submit")= t("Update Card")
               else if isSANB(user[config.userFields.paypalSubscriptionID])
                 li.list-inline-item
-                  a(href='https://www.paypal.com', target='_blank', rel='noopener noreferrer').btn.btn-md.btn-dark!= t('Go to <span class="notranslate">%s</span>', 'PayPal')
+                  a(href=config.env === 'production' ? 'https://www.paypal.com' : 'https://www.sandbox.paypal.com', target='_blank', rel='noopener noreferrer').btn.btn-sm.btn-dark!= t('Go to <span class="notranslate">%s</span>', 'PayPal')
               if hasSubscription
                 li.list-inline-item
                   form.confirm-prompt(action=l("/my-account/billing"), method="POST")
                     input(type="hidden", name="_csrf", value=_csrf)
                     input(type="hidden", name="_method", value="DELETE")
-                    button.btn.btn-md.btn-danger(type="submit")
+                    button.btn.btn-sm.btn-danger(type="submit")
                       = t("Cancel Subscription")
               else
                 li.list-inline-item
-                  a.btn.btn-md.btn-success(href=l("/my-account/billing/enable-auto-renew"))= t("Enable Auto-Renew")
+                  a.btn.btn-sm.btn-success(href=l("/my-account/billing/enable-auto-renew"))= t("Enable Auto-Renew")
+      .col-12.d-flex(class=user.plan === "free" ? "" : "col-lg-6")
+        .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
+          h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
+          .small.text-muted.text-uppercase.mb-3= t("Current Plan")
+          button.btn.btn-sm.btn-dark.btn-success(
+            type="button",
+            data-toggle="modal",
+            data-target="#modal-change-plan"
+          )= t("Change Plan")
   if payments.length > 0
-    .container.pt-3
+    .container
       .row
         .col
           h3.text-center.mb-3= t("Receipts")
@@ -152,5 +151,3 @@ block body
                   button.btn.btn-success.btn-block(type="submit")= t('Search')
           #table-payments.mb-0
             include ./_table.pug
-          .alert.alert-info.text-center
-            small!= t('Need to update company information on receipts? <a href="%s" class="alert-link notranslate">Update your profile</a>', l("/my-account/profile"))

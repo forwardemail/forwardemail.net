@@ -1,6 +1,5 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const checkoutNodeJssdk = require('@paypal/checkout-server-sdk');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -14,10 +13,7 @@ const striptags = require('striptags');
 const env = require('#config/env');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
-
-const payPalClient = new checkoutNodeJssdk.core.PayPalHttpClient(
-  config.payments.paypalCheckoutSdkConfig
-);
+const { paypalAgent } = require('#helpers/paypal');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
@@ -94,7 +90,7 @@ async function createDomainBilling(ctx) {
     }
 
     // don't allow a user to have a subscription paymentType selected
-    // with 2y, 3y, 4y, 5y, or lifetime selected (in other words if the mapping doesn't exist)
+    // with 2y or 3y selected (in other words if the mapping doesn't exist)
     let price;
     if (paymentMethod === 'credit_card') {
       price = STRIPE_MAPPING[plan][paymentType][paymentDuration];
@@ -214,10 +210,7 @@ async function createDomainBilling(ctx) {
       const name = ctx.translate(plan.toUpperCase());
 
       // one-time
-      // <https://developer.paypal.com/docs/checkout/reference/server-integration/capture-transaction/#on-the-server>
       if (paymentType === 'one-time') {
-        // <https://developer.paypal.com/docs/checkout/reference/server-integration/set-up-transaction-authorize/#on-the-server>
-        const request = new checkoutNodeJssdk.orders.OrdersCreateRequest();
         // the SKU should look like a product SKU
         // (e.g. "ENHANCED-PROTECTION" vs. "ENHANCED_PROTECTION")
         const sku = slug(plan).toUpperCase();
@@ -226,7 +219,7 @@ async function createDomainBilling(ctx) {
           intent: 'CAPTURE',
           application_context: {
             cancel_url: `${config.urls.web}${ctx.path}${
-              isMakePayment ? '' : `/?plan=${plan}`
+              isMakePayment || isEnableAutoRenew ? '' : `/?plan=${plan}`
             }`,
             return_url: `${config.urls.web}${ctx.path}/?plan=${plan}`,
             brand_name: 'Forward Email',
@@ -269,21 +262,12 @@ async function createDomainBilling(ctx) {
           ]
         };
 
-        // NOTE: what is this nonsense
-        request.prefer('return=representation');
-
-        // NOTE: this API is so odd
-        request.requestBody(requestBody);
-
-        ctx.logger.info(
-          'request.requestBody',
-          JSON.stringify(requestBody, null, 2)
-        );
-
         try {
-          const order = await payPalClient.execute(request);
-          ctx.logger.info('payPalClient.execute', { order });
-          ctx.body = { orderID: order.result.id };
+          const agent = await paypalAgent();
+          const { body } = await agent
+            .post('/v2/checkout/orders')
+            .send(requestBody);
+          ctx.body = { orderID: body.id };
         } catch (err) {
           ctx.logger.error(err);
           try {

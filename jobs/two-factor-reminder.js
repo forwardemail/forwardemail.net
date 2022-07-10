@@ -92,7 +92,9 @@ async function mapper(_id) {
   const userIds = await Users.distinct('_id', {
     $and: [
       {
-        _id: { $in: _ids }
+        _id: { $in: _ids },
+        [config.userFields.hasVerifiedEmail]: true,
+        [config.userFields.isBanned]: false
       },
       {
         $or: [

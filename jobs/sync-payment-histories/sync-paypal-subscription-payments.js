@@ -51,7 +51,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
        * });
        *
        * for (const orderId of orderIds) {
-       *   const { body: order } = await paypalAgent.get(
+       *   const agent = await paypalAgent();
+       *   const { body: order } = await agent.get(
        *     `/v2/checkout/orders/${orderId}`
        *   );
        *   ;
@@ -72,7 +73,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
       for (const subscriptionId of subscriptionIds) {
         try {
           logger.debug(`subscriptionId ${subscriptionId}`);
-          const { body: subscription } = await paypalAgent.get(
+          const agent1 = await paypalAgent();
+          const { body: subscription } = await agent1.get(
             `/v1/billing/subscriptions/${subscriptionId}`
           );
 
@@ -88,7 +90,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
           // this will either error - or it will return the current active subscriptions transactions.
           // https://developer.paypal.com/docs/subscriptions/full-integration/subscription-management/#list-transactions-for-a-subscription
-          const { body: { transactions } = {} } = await paypalAgent.get(
+          const agent2 = await paypalAgent();
+          const { body: { transactions } = {} } = await agent2.get(
             `/v1/billing/subscriptions/${subscriptionId}/transactions?start_time=${
               subscription.create_time
             }&end_time=${new Date().toISOString()}`
@@ -106,21 +109,12 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                   [config.userFields.paypalSubscriptionID]: subscription.id
                 });
 
-                // TODO: need to fix this to actually add the
-                //       invoice_at field in the redirect - although
-                //       it won't matter as long as we have fixed it
-                //       to add transaction id there need to double check that there
-
                 // then use it if its on the same day
-                // we use created_at here because when these were
-                // originally created it was the only date
-                // field and the only we can even attempt to match up,
-                // after the first time this is ran, transaction ids will be saved.
                 const payment = paymentCandidates.find(
                   (p) =>
                     transaction.id === p.paypal_transaction_id ||
                     dayjs(transaction.time).format('MM/DD/YY') ===
-                      dayjs(p.created_at).format('MM/DD/YY')
+                      dayjs(p.invoice_at).format('MM/DD/YY')
                 );
 
                 if (
@@ -148,6 +142,9 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     shouldSave = true;
                   }
 
+                  /*
+                  // transaction time is different than invoice_at, which is used for plan expiry calculation
+                  // (see jobs/fix-missing-invoice-at.js)
                   if (transaction.time !== payment?.invoice_at?.toISOString()) {
                     logger.debug(
                       `changing payment.invoice_at ${payment.invoice_at?.toISOString()} to match transaction.time ${
@@ -157,13 +154,15 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     payment.invoice_at = dayjs(transaction.time).toDate();
                     shouldSave = true;
                   }
+                  */
 
                   if (payment.plan !== plan)
                     throw new Error('Paypal plan did not match');
 
-                  // currently problem with durations - skip this validation for now
-                  // if (payment.duration !== duration)
-                  //   throw new Error('Paypal duration did not match');
+                  if (payment.duration !== duration) {
+                    payment.duration = duration;
+                    shouldSave = true;
+                  }
 
                   if (shouldSave) {
                     logger.debug(`Updating existing payment ${payment.id}`);
@@ -185,7 +184,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     duration,
                     [config.userFields.paypalSubscriptionID]: subscription.id,
                     paypal_transaction_id: transaction.id,
-                    invoice_at: dayjs(transaction.time).toDate()
+                    invoice_at: new Date(subscription.create_time)
                   };
                   createdCount++;
                   logger.debug('creating new payment');

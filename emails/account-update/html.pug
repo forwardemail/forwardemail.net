@@ -17,4 +17,4 @@ block content
                     li= t("API token has been reset.")
                   else
                     li!= t(`${field.text} has changed from <span class="notranslate">%s</span> to <span class="notranslate">%s</span>`, field.previous, field.current)
-          .card-footer.text-center: small.text-muted= t("If you did not make these changes, then please contact us immediately.")
+          .card-footer.text-center.small.text-muted= t("If you did not make these changes, then please contact us immediately.")

@@ -2350,5 +2350,19 @@
   "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>": "Upgrade to <a href=\"%s\" data-toggle=\"modal\" data-target=\"#modal-onboard-pricing-video\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"notranslate\">Enhanced Protection</a>",
   "Invalid CSRF token.": "Invalid CSRF token.",
   "Issues Detected": "Issues Detected",
-  "Our service was founded in 2017": "Our service was founded in 2017"
+  "Our service was founded in 2017": "Our service was founded in 2017",
+  "If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.": "If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.",
+  "Here are additional notes regarding webhooks:": "Here are additional notes regarding webhooks:",
+  "Webhook HTTP requests will retry up to 3 times, with a 60 second max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in ": "Webhook HTTP requests will retry up to 3 times, with a 60 second max timeout per endpoint POST request.  We will retry automatically based off the default status and error codes used in ",
+  "Welcoming your domain!": "Welcoming your domain!",
+  "<span class=\"notranslate\">%s</span> you added the domain <strong><span class=\"notranslate\">%s</span></strong>.": "<span class=\"notranslate\">%s</span> you added the domain <strong><span class=\"notranslate\">%s</span></strong>.",
+  "Did you have any questions or requests?": "Did you have any questions or requests?",
+  "Our support team is always here to help you. Feel free to reply directly to this email. Our response time is usually within minutes!": "Our support team is always here to help you. Feel free to reply directly to this email. Our response time is usually within minutes!",
+  "Need help with domain verification?": "Need help with domain verification?",
+  "Your domain's DNS records haven't yet propagated or may not be configured properly.": "Your domain's DNS records haven't yet propagated or may not be configured properly.",
+  "If we automatically detect that this changes, then we'll immediately notify you by email.": "If we automatically detect that this changes, then we'll immediately notify you by email.",
+  "Please <strong><a href=\"%s\">read this FAQ section</a></strong> for more information on how to resolve this.": "Please <strong><a href=\"%s\">read this FAQ section</a></strong> for more information on how to resolve this.",
+  "Welcome aboard: <span class=\"notranslate\">%s</span>": "Welcome aboard: <span class=\"notranslate\">%s</span>",
+  "Your domain is already verified!": "Your domain is already verified!",
+  "Nice work! Let us know if you have any issues or questions. We'd like you to be a customer for life!": "Nice work! Let us know if you have any issues or questions. We'd like you to be a customer for life!"
 }

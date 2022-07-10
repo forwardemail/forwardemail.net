@@ -59,7 +59,9 @@ graceful.listen();
         $in: domain.members
           .filter((member) => member.group === 'admin')
           .map((member) => member.user)
-      }
+      },
+      [config.userFields.hasVerifiedEmail]: true,
+      [config.userFields.isBanned]: false
     });
 
     if (users.length === 0) {
@@ -67,7 +69,7 @@ graceful.listen();
       continue;
     }
 
-    const locale = users[0].last_locale;
+    const locale = users[0][config.lastLocale];
 
     // set locale of domain
     domain.locale = locale;
@@ -94,10 +96,18 @@ graceful.listen();
       if (member.group !== 'admin') continue;
       if (!data[member.user.toString()]) {
         // eslint-disable-next-line no-await-in-loop
-        const user = await Users.findById(member.user).lean().exec();
+        const user = await Users.findOne({
+          _id: member.user,
+          [config.userFields.hasVerifiedEmail]: true,
+          [config.userFields.isBanned]: false
+        })
+          .lean()
+          .exec();
+        if (!user) continue;
         data[member.user.toString()] = {
           user,
-          domains: []
+          domains: [],
+          locale: user[config.lastLocale]
         };
       }
 

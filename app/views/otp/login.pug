@@ -54,11 +54,9 @@ block body
             li.list-inline-item
               a.alert-link(href=l(`${config.otpRoutePrefix}/keys`))= t("Use a recovery key")
         ul.list-inline.text-center.mb-0
-          li.list-inline-item
-            small.text-muted= t("Lose your recovery keys?")
-          li.list-inline-item
-            small: a.text-danger(
-              href="#",
-              data-toggle="modal-anchor",
-              data-target="#modal-recovery"
-            )= t("Request account recovery")
+          li.list-inline-item.small.text-muted= t("Lose your recovery keys?")
+          li.list-inline-item.small: a.text-danger(
+            href="#",
+            data-toggle="modal-anchor",
+            data-target="#modal-recovery"
+          )= t("Request account recovery")

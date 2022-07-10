@@ -77,8 +77,7 @@ table.table.table-hover.table-bordered
                           = t("DNS-based")
                           = ")"
                   .dropdown-divider
-                  a.dropdown-item(href=l(`/pricing?domain=${domain.name}`))
-                    small.text-muted= t("See all plan features")
+                  a.dropdown-item(href=l(`/pricing?domain=${domain.name}`)).small.text-muted= t("See all plan features")
             else
               = t(titleize(humanize(domain.plan)))
           if domain.plan === 'free'

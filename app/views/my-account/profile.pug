@@ -75,64 +75,64 @@ block body
           .card.border-dark
             h4.card-header.bg-dark.text-white= t("Personal Information")
             .card-body.pb-0
-              p.text-muted= t("We promise to never share your personal information.")
-                .form-group.floating-label.mt-4
-                  input#input-email.form-control(
-                    type="email",
-                    required,
-                    name="email",
-                    value=user.email,
-                    placeholder="name@example.com",
-                    readonly=!user[config.userFields.hasSetPassword]
-                  )
-                  label(for="input-email")= t("Email address")
-                  if !user[config.userFields.hasSetPassword]
-                    button.mt-3.btn.btn-danger.btn-sm(
-                      type="button",
-                      data-toggle="modal",
-                      data-target="#modal-change-password"
-                    )= t("Set a password to change your email")
-                  else if user[config.userFields.changeEmailNewAddress]
-                    small.form-text.text-muted!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
+              .form-group.floating-label.mt-4
+                input#input-email.form-control(
+                  type="email",
+                  required,
+                  name="email",
+                  value=user.email,
+                  placeholder="name@example.com",
+                  readonly=!user[config.userFields.hasSetPassword]
+                )
+                label(for="input-email")= t("Email address")
+                if !user[config.userFields.hasSetPassword]
+                  button.mt-3.btn.btn-danger.btn-sm(
+                    type="button",
+                    data-toggle="modal",
+                    data-target="#modal-change-password"
+                  )= t("Set a password to change your email")
+                else if user[config.userFields.changeEmailNewAddress]
+                  p.small.form-text.text-muted!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
+              .form-group.floating-label
+                input#input-given-name.form-control(
+                  type="text",
+                  name=config.passport.fields.givenName,
+                  value=user[config.passport.fields.givenName],
+                  placeholder=t("First name")
+                )
+                label(for="input-given-name")= t("First name")
+              .form-group.floating-label
+                input#input-family-name.form-control(
+                  type="text",
+                  name=config.passport.fields.familyName,
+                  value=user[config.passport.fields.familyName],
+                  placeholder=t("Last name")
+                )
+                label(for="input-family-name")= t("Last name")
+              if domains && domains.length > 0
                 .form-group.floating-label
-                  input#input-given-name.form-control(
-                    type="text",
-                    name=config.passport.fields.givenName,
-                    value=user[config.passport.fields.givenName],
-                    placeholder=t("First name")
+                  select#input-default-domain.form-control(
+                    name=config.userFields.defaultDomain
                   )
-                  label(for="input-given-name")= t("First name")
-                .form-group.floating-label
-                  input#input-family-name.form-control(
-                    type="text",
-                    name=config.passport.fields.familyName,
-                    value=user[config.passport.fields.familyName],
-                    placeholder=t("Last name")
-                  )
-                  label(for="input-family-name")= t("Last name")
-                if domains && domains.length > 0
-                  .form-group.floating-label
-                    select#input-default-domain.form-control(
-                      name=config.userFields.defaultDomain
-                    )
+                    option(
+                      value="None",
+                      selected=!user[config.userFields.defaultDomain]
+                    )= t("None")
+                    each domain in domains
                       option(
-                        value="None",
-                        selected=!user[config.userFields.defaultDomain]
-                      )= t("None")
-                      each domain in domains
-                        option(
-                          value=domain._id,
-                          selected=user[config.userFields.defaultDomain] && user[config.userFields.defaultDomain].toString() === domain.id
-                        )= domain.name
-                    label(for="input-default-domain")= t("Default Domain")
-                if user[config.userFields.hasSetPassword]
-                  .form-group.mb-0
-                    a.text-danger(
-                      href="#",
-                      role="button",
-                      data-toggle="modal",
-                      data-target="#modal-change-password"
-                    ): small= t("Need to change your password?")
+                        value=domain._id,
+                        selected=user[config.userFields.defaultDomain] && user[config.userFields.defaultDomain].toString() === domain.id
+                      )= domain.name
+                  label(for="input-default-domain")= t("Default Domain")
+                p.small.form-text.text-muted= t('If you set a default domain, then you will be redirected to its section after login.')
+              if user[config.userFields.hasSetPassword]
+                .form-group.mb-0
+                  a.text-danger(
+                    href="#",
+                    role="button",
+                    data-toggle="modal",
+                    data-target="#modal-change-password"
+                  ).small= t("Need to change your password?")
             .card-footer
               button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
       .col-md.mt-3.mt-md-0

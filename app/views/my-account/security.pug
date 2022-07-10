@@ -29,7 +29,7 @@ block body
                 )
                 label(for="input-password")= t("Confirm Password")
             button.btn.btn-danger.btn-lg.btn-block(type="submit")= t("Disable OTP")
-  .container-fluid.pt-3
+  .container-fluid.py-3
     .row
       .col
         include ../_breadcrumbs
@@ -84,7 +84,7 @@ block body
                       i.fa.fa-clipboard
                       = " "
                       = t("Copy")
-                small.form-text.text-muted= t("Keep your token secure and never share it publicly")
+                p.small.form-text.text-muted= t("Keep your token secure and never share it publicly")
           .card-footer.text-right
             ul.list-inline.mb-0
               li.list-inline-item

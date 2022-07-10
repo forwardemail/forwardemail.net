@@ -1,7 +1,7 @@
 extends ../../layout
 
 block body
-  .container-fluid.pt-3
+  .container-fluid.py-3
     .row
       .col
         include ../../_breadcrumbs
@@ -9,8 +9,7 @@ block body
   .container
     .row
       .col
-        .alert.alert-info.text-center
-          small!= t('Need to update company information? <a href="%s" class="alert-link notranslate">Update your profile</a>', l("/my-account/profile"))
+        .alert.alert-info.text-center.small!= t('Need to change invoice information? <a href="%s" class="alert-link notranslate">Update company/VAT info</a>', l("/my-account/profile"))
     .row
       ul.list-inline.mb-0.mx-auto
         li.list-inline-item

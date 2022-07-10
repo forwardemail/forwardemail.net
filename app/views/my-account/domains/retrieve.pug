@@ -20,7 +20,7 @@ block body
             )
               span(aria-hidden="true") &times;
           .modal-body!= modalFAQTable
-  .container-fluid.pt-3
+  .container-fluid.py-3
     .row
       .col
         include ../../_breadcrumbs
@@ -125,7 +125,7 @@ block body
                         i.fa.fa-clipboard
                         = " "
                         = t("Copy")
-                  p.text-center.text-muted.py-2: small!= t('Use "@", ".", or blank for the name/host/alias value. Read <a href="%s" class="notranslate" rel="noopener noreferrer" target="_blank">our FAQ section</a> for more options', l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`))
+                  p.text-center.text-muted.py-2.small!= t('Use "@", ".", or blank for the name/host/alias value. Read <a href="%s" class="notranslate" rel="noopener noreferrer" target="_blank">our FAQ section</a> for more options', l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`))
                   if modalFAQTable
                     .text-center.mt-3
                       button.btn.btn-danger.btn-lg(
@@ -156,7 +156,7 @@ block body
                         i.fa.fa-clipboard
                         = " "
                         = t("Copy")
-                  p.text-center.text-muted.py-2: small!= t('Use "@", ".", or blank for the name/host/alias value. You <u>must remove</u> any existing "<span class="notranslate">%s</span><span class="notranslate">=</span>" records.', config.recordPrefix)
+                  p.text-center.text-muted.py-2.small!= t('Use "@", ".", or blank for the name/host/alias value. You <u>must remove</u> any existing "<span class="notranslate">%s</span><span class="notranslate">=</span>" records.', config.recordPrefix)
                   if modalFAQTable
                     .text-center.mt-3
                       button.btn.btn-danger.btn-lg(

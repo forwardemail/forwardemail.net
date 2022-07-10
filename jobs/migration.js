@@ -10,6 +10,7 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const logger = require('#helpers/logger');
 const { Aliases, Users, Domains } = require('#models');
+const config = require('#config');
 
 const breeSharedConfig = sharedConfig('BREE');
 
@@ -164,7 +165,7 @@ graceful.listen();
         domain: domain._id,
         name: '*',
         recipients: [user.email],
-        locale: user.last_locale
+        locale: user[config.lastLocale]
       });
     })
   );

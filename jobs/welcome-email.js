@@ -35,6 +35,7 @@ graceful.listen();
   };
   object[config.userFields.welcomeEmailSentAt] = { $exists: false };
   object[config.userFields.hasVerifiedEmail] = true;
+  object[config.userFields.isBanned] = false;
 
   const _ids = await Users.distinct('_id', object);
 
@@ -43,9 +44,6 @@ graceful.listen();
     _ids.map(async (_id) => {
       try {
         const user = await Users.findById(_id);
-
-        // in case user deleted their account or is banned
-        if (!user || user[config.userFields.isBanned]) return;
 
         // in case email was sent for whatever reason
         if (user[config.userFields.welcomeEmailSentAt]) return;

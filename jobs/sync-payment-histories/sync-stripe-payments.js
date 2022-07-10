@@ -217,12 +217,8 @@ async function syncStripePayments({ errorThreshold }) {
               )
             );
 
-          if (duration !== payment.duration)
-            throw new Error(
-              'Saved payment.duration does not match duration from billing history sync'.concat(
-                errorDetails
-              )
-            );
+          // always sync duration
+          payment.duration = duration;
 
           if (paymentIntent.amount !== payment.amount)
             throw new Error(
@@ -317,42 +313,8 @@ async function syncStripePayments({ errorThreshold }) {
             );
 
           payment.stripe_payment_intent_id = paymentIntent.id;
-
-          if (
-            isSANB(payment.stripe_subscription_id) &&
-            payment.stripe_subscription_id !== invoice.subscription
-          )
-            throw new Error(
-              `Saved payment.stripe_subscription_id (${payment.stripe_subscription_id}) does not match billing history sync`.concat(
-                errorDetails
-              )
-            );
-
           payment.stripe_subscription_id = invoice?.subscription;
-
-          if (
-            isSANB(payment.amount_refunded) &&
-            payment.amount_refunded !== amountRefunded
-          )
-            throw new Error(
-              `Saved payment.amount_refunded (${payment.amount_refunded}) does not match billing history sync`.concat(
-                errorDetails
-              )
-            );
-
-          if (
-            _.isDate(payment.invoice_at) &&
-            dayjs(payment.invoice_at).format('MM/DD/YY') !==
-              dayjs.unix(paymentIntent.created).format('MM/DD/YY')
-          )
-            throw new Error(
-              `Saved payment.invoice_at (${dayjs(payment.invoice_at).format(
-                'MM/DD/YY'
-              )}) does not match billing history sync`.concat(errorDetails)
-            );
-
           payment.invoice_at = dayjs.unix(paymentIntent.created).toDate();
-
           payment.amount_refunded = amountRefunded;
 
           await payment.save();

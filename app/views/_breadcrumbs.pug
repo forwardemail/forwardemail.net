@@ -77,8 +77,7 @@ if breadcrumbs.length > 1
                           = t("Current")
                           = ")"
                     .dropdown-divider
-                    a.dropdown-item(href=l(`/pricing?domain=${domain.name}`))
-                      small.text-muted= t("See all plan features")
+                    a.dropdown-item(href=l(`/pricing?domain=${domain.name}`)).small.text-muted= t("See all plan features")
         else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0
             if !domain.is_global && domain.group === 'admin'

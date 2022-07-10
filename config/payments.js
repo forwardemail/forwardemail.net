@@ -1,6 +1,5 @@
 const process = require('process');
 
-const checkoutNodeJssdk = require('@paypal/checkout-server-sdk');
 const env = require('./env');
 
 const isTest =
@@ -121,7 +120,6 @@ const PAYPAL_MAPPING = {
     '1y': 36,
     '2y': 72,
     '3y': 108
-    // lifetime: 144
   },
   team: {
     '30d': 9,
@@ -131,7 +129,6 @@ const PAYPAL_MAPPING = {
     '1y': 108,
     '2y': 216,
     '3y': 324
-    // lifetime: 432
   }
 };
 
@@ -163,10 +160,6 @@ const paypalRestSdkConfig = {
   client_secret: env.PAYPAL_SECRET
 };
 
-const paypalCheckoutSdkConfig = new checkoutNodeJssdk.core[
-  env.NODE_ENV === 'production' ? 'LiveEnvironment' : 'SandboxEnvironment'
-](env.PAYPAL_CLIENT_ID, env.PAYPAL_SECRET);
-
 module.exports = {
   STRIPE_MAPPING,
   STRIPE_PRODUCTS,
@@ -174,6 +167,5 @@ module.exports = {
   PAYPAL_MAPPING,
   PAYPAL_PLAN_MAPPING,
   PAYPAL_ENDPOINT,
-  paypalRestSdkConfig,
-  paypalCheckoutSdkConfig
+  paypalRestSdkConfig
 };

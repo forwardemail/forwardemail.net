@@ -14,6 +14,13 @@ block append scripts
     crossorigin="anonymous"
   )
 
+  if ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew"
+    script.
+      window.USER_PLAN = "#{user.plan}";
+  else if isSANB(ctx.query.plan)
+    script.
+      window.USER_PLAN = "#{ctx.query.plan}";
+
 block body
   - const isMakePayment = ctx.pathWithoutLocale === "/my-account/billing/make-payment";
   - const isEnableAutoRenew = ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew";
@@ -41,27 +48,26 @@ block body
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
-  .container-fluid.pt-3
+  .container-fluid.py-3
     .row
       .col
         include ../../_breadcrumbs
     .row
       .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3.text-center
         if user.plan === 'free' && domain
-          .alert.alert-warning
-            small
-              = t("Don't want to upgrade yet?")
-              br.d-block.d-md-none
-              = " "
-              a.alert-link(href=l(`/my-account/domains/${domain.name}`))= t("Try our free plan")
-              = " "
-              = t("or")
-              = " "
-              a.alert-link(
-                href=l("/pricing"),
-                data-toggle="modal",
-                data-target="#modal-pricing-video"
-              )= t("learn about our plans")
+          .alert.alert-warning.small
+            = t("Don't want to upgrade yet?")
+            br.d-block.d-md-none
+            = " "
+            a.alert-link(href=l(`/my-account/domains/${domain.name}`))= t("Try our free plan")
+            = " "
+            = t("or")
+            = " "
+            a.alert-link(
+              href=l("/pricing"),
+              data-toggle="modal",
+              data-target="#modal-pricing-video"
+            )= t("learn about our plans")
         .card.border-dark
           h2.card-header.bg-dark.text-white
             if isMakePayment
@@ -76,7 +82,7 @@ block body
           .card-body
             - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
             if (hasSubscription)
-              .alert.alert-warning: small!= t('One-time payments will extend your plan duration independently from your current subscription.')
+              .alert.alert-warning.small!= t('One-time payments will extend your plan duration independently from your current subscription.')
             form#form-billing(action=ctx.path, method="POST")
               input(type="hidden", name="_csrf", value=_csrf)
 
@@ -107,7 +113,15 @@ block body
 
               //- Payment Type
               //- TODO: default to last one used
-              if !isMakePayment && !isEnableAutoRenew
+              if isMakePayment
+                //- the main reason for including this is merely for client-side JS
+                //- (the server side will _always_ override this value)
+                input(type='hidden', name='payment_type', value='one-time')
+              else if isEnableAutoRenew
+                //- the main reason for including this is merely for client-side JS
+                //- (the server side will _always_ override this value)
+                input(type='hidden', name='payment_type', value='subscription')
+              else
                 h3.h5= t("Payment Type")
                 .form-group
                   .form-check.form-check-inline
@@ -157,7 +171,6 @@ block body
                         data-no-subscription,
                         disabled=!isMakePayment
                       )= t("3 years ($108 USD)")
-                      //- option(value='lifetime', data-no-subscription=true, disabled=!isMakePayment)= t('Lifetime ($144 USD)')
                   else if plan === 'team'
                     option(value="30d", selected)= t("1 month ($9 USD)")
                     option(value="60d")= t("2 months ($18 USD)")
@@ -175,7 +188,6 @@ block body
                         data-no-subscription,
                         disabled=!isMakePayment
                       )= t("3 years ($324 USD)")
-                      //- option(value='lifetime', data-no-subscription=true, disabled=!isMakePayment)= t('Lifetime ($432 USD)')
 
               //- Continue (Stripe)
               button#stripe-button-container.btn.btn-success.btn-lg.btn-block(
@@ -188,8 +200,8 @@ block body
               //- Continue (PayPal)
               #paypal-button-container.d-none
 
-              p.text-muted.pt-3.mb-0: small.text-muted= t("We accept all major currencies and card types.")
+              p.text-muted.pt-3.mb-0.small.text-muted= t("We accept all major currencies and card types.")
 
-          small.card-footer.text-muted.text-center= t("We'll automatically email you if you're late on a payment.")
+          .card-footer.text-muted.text-center.small= t("We'll automatically email you if you're late on a payment.")
         if !isMakePayment && !isEnableAutoRenew
           .mt-3.font-weight-bold.text-uppercase.text-decoration-underline= t("30-day money back guarantee")

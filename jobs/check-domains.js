@@ -13,6 +13,7 @@ const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
+const config = require('#config');
 const logger = require('#helpers/logger');
 const email = require('#helpers/email');
 const Users = require('#models/user');
@@ -62,7 +63,9 @@ async function mapper(_id) {
         $in: domain.members
           .filter((member) => member.group === 'admin')
           .map((member) => member.user)
-      }
+      },
+      [config.userFields.hasVerifiedEmail]: true,
+      [config.userFields.isBanned]: false
     });
 
     if (users.length === 0) {
@@ -70,7 +73,7 @@ async function mapper(_id) {
       return;
     }
 
-    const locale = users[0].last_locale;
+    const locale = users[0][config.lastLocale];
 
     // set locale of domain
     domain.locale = locale;
