@@ -255,6 +255,8 @@ async function retrieveDomainBilling(ctx) {
       let expYear;
       let last4;
 
+      let invoiceId;
+
       try {
         if (session.payment_intent) {
           paymentIntent = await stripe.paymentIntents.retrieve(
@@ -262,6 +264,8 @@ async function retrieveDomainBilling(ctx) {
           );
 
           if (!paymentIntent) throw ctx.translateError('UNKNOWN_ERROR');
+
+          if (paymentIntent.invoice) invoiceId = paymentIntent.invoice;
 
           const paymentMethod = await stripe.paymentMethods.retrieve(
             paymentIntent.payment_method
@@ -301,6 +305,8 @@ async function retrieveDomainBilling(ctx) {
               !invoices.data[0].payment_intent
             )
               throw ctx.translateError('UNKNOWN_ERROR');
+
+            invoiceId = invoices.data[0].id;
 
             paymentIntent = await stripe.paymentIntents.retrieve(
               invoices.data[0].payment_intent
@@ -416,7 +422,11 @@ async function retrieveDomainBilling(ctx) {
           //       (and we have to set a value here because it's a required field)
           invoice_at: paymentIntent
             ? dayjs.unix(paymentIntent.created).toDate()
-            : now
+            : now,
+          stripe_invoice_id: invoiceId,
+          stripe_subscription_id: session.subscription
+            ? session.subscription
+            : null
         }),
         // try to save the customer info to the account
         ctx.state.user.save()
@@ -551,6 +561,7 @@ async function retrieveDomainBilling(ctx) {
           plan: ctx.query.plan,
           kind: 'one-time',
           paypal_order_id: body.id,
+          // TODO: store paypal_transaction_id
           invoice_at: now
         }),
         // try to save the customer info to the account
@@ -676,6 +687,7 @@ async function retrieveDomainBilling(ctx) {
           plan: ctx.query.plan,
           kind: 'subscription',
           paypal_subscription_id: body.id,
+          // TODO: store paypal_transaction_id
           invoice_at: now
         }),
         // try to save the customer info to the account
