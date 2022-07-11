@@ -24,11 +24,9 @@ const policies = new Policies(
     hcaptchaSecretKey
   },
   (apiToken) => {
-    const query = {};
-    query[userFields.apiToken] = apiToken;
-    query[userFields.isBanned] = false;
-    query[userFields.hasVerifiedEmail] = true;
-    return Users.findOne(query);
+    return Users.findOne({
+      [userFields.apiToken]: apiToken
+    });
   }
 );
 

@@ -127,6 +127,11 @@ async function login(ctx) {
 
   await ctx.login(user);
 
+  if (user[config.passport.fields.otpEnabled] && ctx.session) {
+    ctx.session.otp_remember_me = false;
+    ctx.session.otp = 'totp';
+  }
+
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
     text: ctx.translate('REQUEST_OK'),

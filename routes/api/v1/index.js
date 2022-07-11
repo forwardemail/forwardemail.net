@@ -38,15 +38,17 @@ router
   .get(
     '/account',
     policies.ensureApiToken,
-    api.v1.enforcePaidPlan,
+    policies.checkVerifiedEmail,
     web.myAccount.ensureNotBanned,
+    api.v1.enforcePaidPlan,
     api.v1.users.retrieve
   )
   .put(
     '/account',
     policies.ensureApiToken,
-    api.v1.enforcePaidPlan,
+    policies.checkVerifiedEmail,
     web.myAccount.ensureNotBanned,
+    api.v1.enforcePaidPlan,
     api.v1.users.update
   );
 
@@ -55,8 +57,9 @@ router
   .use(
     '/domains',
     policies.ensureApiToken,
-    api.v1.enforcePaidPlan,
+    policies.checkVerifiedEmail,
     web.myAccount.ensureNotBanned,
+    api.v1.enforcePaidPlan,
     web.myAccount.retrieveDomains
   )
   .get('/domains', api.v1.domains.list)
