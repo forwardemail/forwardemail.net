@@ -25,13 +25,15 @@ async function onboard(ctx, next) {
   if (!['GET', 'POST'].includes(ctx.method)) return next();
 
   if (ctx.method === 'GET') {
+    const filteredDomains = Array.isArray(ctx.state.domains)
+      ? ctx.state.domains.filter((domain) => !domain.is_global)
+      : [];
     ctx.state.domain =
-      Array.isArray(ctx.state.domains) &&
-      ctx.state.domains.length > 0 &&
-      _.isObject(ctx.state.domains[0]) &&
-      isSANB(ctx.state.domains[0].name) &&
-      (isIP(ctx.state.domains[0].name) || isFQDN(ctx.state.domains[0].name))
-        ? ctx.state.domains[0].name
+      filteredDomains.length > 0 &&
+      _.isObject(filteredDomains[0]) &&
+      isSANB(filteredDomains[0].name) &&
+      (isIP(filteredDomains[0].name) || isFQDN(filteredDomains[0].name))
+        ? filteredDomains[0].name
         : null;
 
     ctx.state.email = ctx.state.user ? ctx.state.user.email : '';
