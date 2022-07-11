@@ -381,7 +381,10 @@ async function forgotPassword(ctx) {
     throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   // lookup the user
-  let user = await Users.findOne({ email: body.email });
+  let user = await Users.findOne({
+    email: body.email,
+    [config.userFields.isBanned]: false
+  });
 
   // to prevent people from being able to find out valid email accounts
   // we always say "a password reset request has been sent to your email"
@@ -482,7 +485,8 @@ async function resetPassword(ctx) {
   // lookup the user that has this token and if it matches the email passed
   let user = await Users.findOne({
     email: body.email.trim().toLowerCase(),
-    [config.userFields.resetToken]: ctx.params.token
+    [config.userFields.resetToken]: ctx.params.token,
+    [config.userFields.isBanned]: false
   });
 
   if (!user)
@@ -528,6 +532,7 @@ async function changeEmail(ctx) {
   query[config.userFields.changeEmailToken] = ctx.params.token;
   // ensure that the reset token expires at value is in the future (hasn't expired)
   query[config.userFields.changeEmailTokenExpiresAt] = { $gte: new Date() };
+  query[config.userFields.isBanned] = false;
   const user = await Users.findOne(query);
 
   try {
