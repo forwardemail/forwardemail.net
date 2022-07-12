@@ -61,12 +61,12 @@ const jobs = [
     name: 'payment-email',
     interval: '1m',
     timeout: 0
-  },
-  {
-    name: 'domain-missing-txt',
-    interval: '24h',
-    timeout: 0
   }
+  // {
+  //   name: 'domain-missing-txt',
+  //   interval: '24h',
+  //   timeout: 0
+  // }
 ];
 
 if (process.env.NODE_ENV === 'production') {
