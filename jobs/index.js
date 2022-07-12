@@ -64,7 +64,7 @@ const jobs = [
   },
   {
     name: 'domain-missing-txt',
-    interval: '24',
+    interval: '24h',
     timeout: 0
   }
 ];
