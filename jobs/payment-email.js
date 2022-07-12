@@ -7,6 +7,7 @@ const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
+const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
@@ -29,6 +30,12 @@ async function mapper(id) {
   // can't use `lean()` because we need payment.description virtual
   const payment = await Payments.findById(id);
   if (!payment) throw new Error('Payment does not exist');
+
+  // if the receipt was sent somehow already then ignore it
+  if (_.isDate(payment.receipt_sent_at)) {
+    logger.info('Payment receipt already sent');
+    return;
+  }
 
   const user = await Users.findOne({
     _id: payment.user,
