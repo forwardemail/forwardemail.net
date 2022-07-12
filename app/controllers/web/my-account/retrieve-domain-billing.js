@@ -626,7 +626,10 @@ async function retrieveDomainBilling(ctx) {
             reference: body.purchase_units[0].reference_id,
             amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
             method: 'paypal',
-            duration: ms(`${Math.round(months * 30)}d`),
+            duration:
+              months >= 12
+                ? ms(`${Math.round(months / 12)}y`)
+                : ms(`${Math.round(months * 30)}d`),
             plan: ctx.query.plan,
             kind: 'one-time',
             paypal_order_id: body.id,
