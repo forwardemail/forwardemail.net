@@ -216,7 +216,7 @@ async function getPDFReceipt(
 
   // returns a stream
   // (we could use `get-stream` if we wanted to await the value)
-  const pdf = await getStream(
+  const pdf = await getStream.buffer(
     wkhtmltopdf(inlinedHTML, {
       debug: config.env !== 'production',
       pageSize: 'letter',
@@ -230,7 +230,8 @@ async function getPDFReceipt(
       disableJavascript: true,
       enableInternalLinks: false,
       disableInternalLinks: true
-    })
+    }),
+    { encoding: 'binary' }
   );
   return pdf;
 }
