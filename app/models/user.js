@@ -348,7 +348,11 @@ User.pre('save', async function (next) {
       invoice_at: {
         // safeguard in case migration didn't run
         // (note we have another issue for setting `planSetAt` in a user pre-validate hook)
-        $gte: new Date(user[config.userFields.planSetAt])
+        $gte: dayjs(new Date(user[config.userFields.planSetAt]))
+          // add a buffer due to second differences in historical `plan_set_at`
+          // with comparison to Stripe/PayPal API's
+          .subtract(1, 'minute')
+          .toDate()
       },
       // payments must match the user's current plan
       plan: user.plan
