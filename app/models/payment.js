@@ -4,7 +4,6 @@ const accounting = require('accounting');
 const capitalize = require('lodash/capitalize');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
-const getStream = require('get-stream');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -214,26 +213,23 @@ async function getPDFReceipt(
     relativeTo: config.buildDir
   });
 
+  const options = {
+    debug: config.env !== 'production',
+    pageSize: 'letter',
+    background: true,
+    imageDpi: 600,
+    // NOTE: there is a bug with min-width and max-width
+    // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4375>
+    // (so we set this to true so that we can leverage `d-print-x` classes
+    printMediaType: true,
+    enableJavaScript: false,
+    disableJavascript: true,
+    enableInternalLinks: false,
+    disableInternalLinks: true
+  };
+
   // returns a stream
-  // (we could use `get-stream` if we wanted to await the value)
-  const pdf = await getStream.buffer(
-    wkhtmltopdf(inlinedHTML, {
-      debug: config.env !== 'production',
-      pageSize: 'letter',
-      background: true,
-      imageDpi: 600,
-      // NOTE: there is a bug with min-width and max-width
-      // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4375>
-      // (so we set this to true so that we can leverage `d-print-x` classes
-      printMediaType: true,
-      enableJavaScript: false,
-      disableJavascript: true,
-      enableInternalLinks: false,
-      disableInternalLinks: true
-    }),
-    { encoding: 'binary' }
-  );
-  return pdf;
+  return wkhtmltopdf(inlinedHTML, options);
 }
 
 Payment.statics.getPDFReceipt = getPDFReceipt;

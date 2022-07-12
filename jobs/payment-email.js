@@ -9,6 +9,7 @@ const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
+const getStream = require('get-stream');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
@@ -70,7 +71,10 @@ async function mapper(id) {
       attachments: [
         {
           filename,
-          content
+          // in test environments where we use preview-email we can't use streams
+          content: ['test', 'development'].includes(config.env)
+            ? await getStream.buffer(content)
+            : content
         }
       ]
     },
