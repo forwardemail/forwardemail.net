@@ -29,6 +29,8 @@ async function syncStripePayments({ errorThreshold }) {
   const stripeCustomers = await Users.find({
     [config.userFields.stripeCustomerID]: { $exists: true, $ne: null }
   })
+    // sort by newest customers first
+    .sort('-created_at')
     .lean()
     .exec();
 
@@ -301,6 +303,9 @@ async function syncStripePayments({ errorThreshold }) {
             );
           }
 
+          if (checkoutSession && isSANB(checkoutSession.client_reference_id))
+            payment.reference = checkoutSession.client_reference_id;
+
           payment.stripe_session_id = checkoutSession?.id;
 
           if (
@@ -354,12 +359,21 @@ async function syncStripePayments({ errorThreshold }) {
             invoice_at: dayjs.unix(paymentIntent.created).toDate()
           };
 
+          if (checkoutSession && isSANB(checkoutSession.client_reference_id))
+            payment.reference = checkoutSession.client_reference_id;
+
           await Payments.create(payment);
 
           logger.debug(
             `Successfully created new payment for stripe payment_intent ${paymentIntent.id}`
           );
         }
+
+        // find and save the associated user
+        // so that their plan_expires_at gets updated
+        const user = await Users.findById(customer._id);
+        if (!user) throw new Error('User does not exist');
+        await user.save();
       } catch (err) {
         hasError = true;
         logger.error(err);

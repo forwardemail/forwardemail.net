@@ -285,7 +285,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "TXT" record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -322,7 +322,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=user@gmail.com</code></td>
     </tr>
   </tbody>
@@ -363,7 +363,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user@gmail.com</code></td>
     </tr>
   </tbody>
@@ -394,7 +394,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
     </tr>
   </tbody>
@@ -425,31 +425,31 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=help:user@gmail.com,foo:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=info:user@gmail.com,beep:user@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code></td>
     </tr>
   </tbody>
@@ -463,7 +463,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Option E:
   </strong>
   <span>
-    You can also specify a domain name in your TXT record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
   </span>
 </div>
 
@@ -480,7 +480,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=example.net</code></td>
     </tr>
   </tbody>
@@ -511,7 +511,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
     </tr>
   </tbody>
@@ -542,7 +542,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
     </tr>
   </tbody>
@@ -550,7 +550,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following "TXT" record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -565,7 +565,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>v=spf1 a mx include:spf.forwardemail.net -all</code></td>
     </tr>
   </tbody>
@@ -769,7 +769,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 
 If you're sending a test email to yourself using the "Send Mail As" feature, then it will not show up in your inbox due to <a href="https://support.google.com/a/answer/1703601">this widely known official Gmail answer</a>.
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your TXT records).
+If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
 
 **Still having issues?**  Please file a <a href="/help">Help request</a> so we can help investigate the issue and find a quick resolution.
 
@@ -823,14 +823,14 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
 12. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-    * If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://dmarc.postmarkapp.com/)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain TXT record, (e.g. `dig _dmarc.example.com txt`).
-    * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the TXT record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+    * If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://dmarc.postmarkapp.com/)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
+    * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
 
 13. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
 
-    * We lookup the TXT records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-    * We parse all TXT records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-    * From these parsed TXT records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
+    * We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
+    * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
+    * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
     * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
     * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
     * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
@@ -1061,7 +1061,7 @@ Yes, as of May 5, 2020 we have added this feature.  Right now the feature is dom
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS TXT record as shown below, but change the port from 25 to the port of your choosing.
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
 
 For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
 
@@ -1078,7 +1078,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
     </tr>
   </tbody>
@@ -1089,7 +1089,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following TXT catch-all record.
+    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
   <span>
   </span>
 </div>
@@ -1107,7 +1107,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
     </tr>
   </tbody>
@@ -1142,7 +1142,7 @@ Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS TXT record as shown below:
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
 
 For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
 
@@ -1159,7 +1159,7 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
     </tr>
   </tbody>
@@ -1180,7 +1180,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
     </tr>
   </tbody>
@@ -1433,7 +1433,7 @@ Regular expressions are not supported on <a href="/free-disposable-addresses" ta
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS TXT record as shown below:
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
 
 <strong>Simple Example:</strong> If I want all emails that go to `elon@example.com` or `musk@example.com` to forward to `user@gmail.com`:
 
@@ -1450,7 +1450,7 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(elon|musk)$/:user@gmail.com</code></td>
     </tr>
   </tbody>
@@ -1471,7 +1471,7 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
     </tr>
   </tbody>
@@ -1492,7 +1492,7 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
     </tr>
   </tbody>
@@ -1513,7 +1513,7 @@ If you are on the free plan, then simply add a new DNS TXT record as shown below
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
     </tr>
   </tbody>
@@ -1537,7 +1537,7 @@ No, it is not recommended, as you can only use one mail exchange server at a tim
 
 ## Can I disable specific aliases
 
-Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS TXT record and prefix the alias with an exclamation mark.  Note that you must preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing in our paid plans).
+Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with an exclamation mark.  Note that you must preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing in our paid plans).
 
 If you prefix an alias with "!" (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole.
 
@@ -1558,7 +1558,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=!alias:user@gmail.com</code></td>
     </tr>
   </tbody>
@@ -1587,7 +1587,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
@@ -1616,7 +1616,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=!alias</code></td>
     </tr>
   </tbody>
@@ -1625,9 +1625,9 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 
 ## Can I forward emails to multiple recipients
 
-Yes, absolutely.  Just specify multiple recipients in your TXT records.
+Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my TXT record would look like this:
+For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -1642,7 +1642,7 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code style="cursor: initial;" data-original-title="" title="" aria-describedby="tooltip885348">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
     </tr>
   </tbody>
@@ -1663,13 +1663,13 @@ Or, you could specify them in two separate lines, such as this:
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
     </tr>
   </tbody>
@@ -1680,9 +1680,9 @@ It's up to you!
 
 ## Can I have multiple global catch-all recipients
 
-Yes, you can. Just specify multiple global catch-all recipients in your TXT records.
+Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my TXT record would look like this:
+For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -1697,7 +1697,7 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
     </tr>
   </tbody>
@@ -1718,13 +1718,13 @@ Or, you could specify them in two separate lines, such as this:
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
       <td><em>@, ".", or blank</em></td>
       <td class="text-center">3600</td>
-      <td>TXT</td>
+      <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
@@ -1755,7 +1755,7 @@ Yes, you can, however you still must adhere to the maximum limit.  If you have `
 
 ## Can people unregister or register my email forwarding without my permission
 
-We use MX and TXT record verification, therefore if you add this service's respective MX and TXT records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
 
 
 ## How is it free
@@ -1798,7 +1798,7 @@ Yes, absolutely.
 
 Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and TXT records).
+If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
 
 
 ## Does this forward my email's headers
@@ -1834,7 +1834,7 @@ Please do not report the message as spam, but instead forward it to our manually
 
 Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
 
-You should also set the SPF record for Gmail in your DNS configuration TXT record.
+You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -1842,7 +1842,7 @@ You should also set the SPF record for Gmail in your DNS configuration TXT recor
     Important:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF TXT record, for example:
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
     <br /><br />
     <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1856,7 +1856,7 @@ Yes! As of October 2, 2018 we have added this feature.  Simply view these two li
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration TXT record.
+You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -1864,7 +1864,7 @@ You should also set the SPF record for Outlook in your DNS configuration TXT rec
     Important:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF TXT record, for example:
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
     <br /><br />
     <code>v=spf1 a mx include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>

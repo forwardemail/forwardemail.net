@@ -17,7 +17,7 @@ if alias
           title=t("Generate random alias")
         )
           i.fa.fa-dice
-      input#input-alias-name.form-control.form-control-lg.border-dark(
+      input#input-alias-name.form-control.border-dark(
         required,
         value=alias ? alias.name : "",
         name="name",
@@ -42,7 +42,7 @@ if alias
     .form-group.col-md-6
       label(for="select-alias-domain")
         = t("Domain Name")
-      select#select-alias-domain.form-control.form-control-lg(
+      select#select-alias-domain.form-control(
         required,
         name="domain"
       )
@@ -93,22 +93,28 @@ if alias
     = t("Alias Recipients")
     = " "
     span.text-danger= t("(required)")
-  textarea#textarea-alias-recipients.form-control.form-control-lg(
+  textarea#textarea-alias-recipients.form-control(
     name="recipients",
-    rows=2
+    rows=1
   )= alias && Array.isArray(alias.recipients) ? alias.recipients.join(", ") : user.email
   p.form-text.small.text-black-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
 .form-group
-  label(for="textarea-alias-description")= t("Alias Description (optional)")
-  textarea#textarea-alias-description.form-control.form-control-lg(
+  label(for="textarea-alias-description")
+    = t("Alias Description")
+    = " "
+    span.text-muted= "(optional)"
+  textarea#textarea-alias-description.form-control(
     name="description",
     maxlength=150,
-    rows=2
+    rows=1
   )= alias ? alias.description : ""
   p.form-text.small.text-black-50= t("Description has a max of 150 characters.")
 .form-group
-  label(for="input-alias-labels")= t("Alias Labels (optional)")
-  textarea#input-alias-labels.form-control.form-control-lg(name="labels")= alias && Array.isArray(alias.labels) ? _.without(alias.labels, "catch-all").join(", ") : ""
+  label(for="input-alias-labels")
+    = t("Alias Labels")
+    = " "
+    span.text-muted= "(optional)"
+  textarea#input-alias-labels.form-control(name="labels", rows=1)= alias && Array.isArray(alias.labels) ? _.without(alias.labels, "catch-all").join(", ") : ""
   p.form-text.small.text-black-50= t("Labels must be a line-break/space/comma separated list with a maximum of 20 characters per label.")
 if !domain || (domain && !domain.is_global)
   .form-group.form-check

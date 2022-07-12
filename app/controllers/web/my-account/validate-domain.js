@@ -21,10 +21,25 @@ async function validateDomain(ctx, next) {
     (domain) => domain.name === ctx.request.body.domain
   );
 
-  if (match)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'))
-    );
+  if (match) {
+    if (ctx.api)
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'))
+      );
+
+    const message = ctx.translate('DOMAIN_ALREADY_EXISTS');
+    ctx.flash('warning', message);
+
+    const redirectTo = ctx.state.l(`/my-account/domains/${match.name}/aliases`);
+
+    if (ctx.accepts('html')) {
+      ctx.redirect(redirectTo);
+    } else {
+      ctx.body = { redirectTo };
+    }
+
+    return;
+  }
 
   if (isSANB(ctx.request.body.plan)) {
     if (

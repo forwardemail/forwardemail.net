@@ -10,6 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
+const pMapSeries = require('p-map-series');
 const striptags = require('striptags');
 const superagent = require('superagent');
 const { boolean } = require('boolean');
@@ -23,10 +24,41 @@ const config = require('#config');
 const i18n = require('#helpers/i18n');
 const verificationRecordOptions = require('#config/verification-record');
 
-const CACHE_TYPES = ['MX', 'TXT'];
+const CACHE_TYPES = ['NS', 'MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
 const PAID_PLANS = ['enhanced_protection', 'team'];
+
+// <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
+// <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
+const DNS_RETRY_CODES = new Set([
+  'EADDRGETNETWORKPARAMS',
+  'EBADFAMILY',
+  'EBADFLAGS',
+  'EBADHINTS',
+  'EBADNAME',
+  'EBADQUERY',
+  'EBADRESP',
+  'EBADSTR',
+  'ECANCELLED',
+  'ECONNREFUSED',
+  'EDESTRUCTION',
+  'EFILE',
+  'EFORMERR',
+  'ELOADIPHLPAPI',
+  // NOTE: ENODATA is handled by error handling below
+  // 'ENODATA',
+  'ENOMEM',
+  'ENONAME',
+  // NOTE: ENOTFOUND is handled by error handling below
+  // 'ENOTFOUND',
+  'ENOTIMP',
+  'ENOTINITIALIZED',
+  'EOF',
+  'EREFUSED',
+  'ESERVFAIL',
+  'ETIMEOUT'
+]);
 
 const app = new ForwardEmail({
   logger,
@@ -268,29 +300,54 @@ Domain.pre('validate', async function (next) {
   }
 });
 
+Domain.pre('validate', function (next) {
+  if (
+    !Array.isArray(this.members) ||
+    this.members.length === 0 ||
+    !this.members.some(
+      (member) => typeof member.user !== 'undefined' && member.group === 'admin'
+    )
+  )
+    throw Boom.badRequest(
+      i18n.translateError('AT_LEAST_ONE_ADMIN_REQUIRED', this.locale)
+    );
+
+  next();
+});
+
 Domain.pre('validate', async function (next) {
   try {
     const domain = this;
+
     // helper virtual to skip verification results
     // (e.g. when onboarding a user that's just visiting the API/FAQ page)
+    // (or if we already performed the verification results lookup)
     if (domain.skip_verification) return next();
-    if (
-      !Array.isArray(domain.members) ||
-      domain.members.length === 0 ||
-      !domain.members.some(
-        (member) =>
-          typeof member.user !== 'undefined' && member.group === 'admin'
-      )
-    )
-      throw Boom.badRequest(
-        i18n.translateError('AT_LEAST_ONE_ADMIN_REQUIRED', domain.locale)
-      );
-    const { txt, mx } = await getVerificationResults(domain, domain.client);
-    // reset missing txt so we alert users if they are missing a TXT in future again
-    if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
-      domain.missing_txt_sent_at = undefined;
-    domain.has_txt_record = txt;
-    domain.has_mx_record = mx;
+
+    const { txt, mx, errors } = await getVerificationResults(
+      domain,
+      domain.client
+    );
+
+    //
+    // run a save on the domain name
+    // (as long as `errors` does not have a temporary DNS error)
+    //
+    const hasDNSError =
+      Array.isArray(errors) &&
+      errors.some((err) => err.code && DNS_RETRY_CODES.has(err.code));
+
+    if (!hasDNSError) {
+      // reset missing txt so we alert users if they are missing a TXT in future again
+      if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
+        domain.missing_txt_sent_at = undefined;
+      domain.has_txt_record = txt;
+      domain.has_mx_record = mx;
+    }
+
+    // store when we last checked it
+    domain.last_checked_at = new Date();
+
     next();
   } catch (err) {
     next(err);
@@ -392,86 +449,25 @@ Domain.plugin(mongooseCommonPlugin, {
   defaultLocale: i18n.getLocale()
 });
 
-// eslint-disable-next-line complexity
 async function getVerificationResults(domain, client = false) {
-  const MISSING_DNS_MX = Boom.badRequest(
-    i18n.translateError('MISSING_DNS_MX', domain.locale, EXCHANGES, domain.name)
-  );
-
-  const PAID_PLAN = Boom.badRequest(
-    i18n.translateError(
-      'PAID_PLAN_HAS_UNENCRYPTED_RECORDS',
-      domain.locale,
-      `/my-account/domains/${domain.name}/aliases`,
-      app.config.recordPrefix
-    )
-  );
-
   const verificationRecord = `${app.config.recordPrefix}-site-verification=${domain.verification_record}`;
   const verificationMarkdown = `<span class="markdown-body ml-0 mr-0"><code>${verificationRecord}</code></span>`;
-
-  const MISSING_VERIFICATION_RECORD = Boom.badRequest(
-    i18n.translateError(
-      'MISSING_VERIFICATION_RECORD',
-      domain.locale,
-      verificationMarkdown
-    )
-  );
-
-  const INCORRECT_VERIFICATION_RECORD = Boom.badRequest(
-    i18n.translateError(
-      'INCORRECT_VERIFICATION_RECORD',
-      domain.locale,
-      verificationMarkdown
-    )
-  );
-
-  const MULTIPLE_VERIFICATION_RECORDS = Boom.badRequest(
-    i18n.translateError(
-      'MULTIPLE_VERIFICATION_RECORDS',
-      domain.locale,
-      verificationMarkdown
-    )
-  );
-
-  const PURGE_CACHE = Boom.badRequest(
-    i18n.translateError('PURGE_CACHE', domain.locale, domain.name)
-  );
-
-  const AUTOMATED_CHECK = Boom.badRequest(
-    i18n.translateError('AUTOMATED_CHECK', domain.locale)
-  );
-
-  const MISSING_DNS_TXT = Boom.badRequest(
-    i18n.translateError('MISSING_DNS_TXT', domain.locale, domain.name)
-  );
-
   const isPaidPlan = _.isString(domain.plan) && domain.plan !== 'free';
-
-  let forwardingAddresses = [];
-  let globalForwardingAddresses = [];
-  let ignoredAddresses = [];
-  let errors = [];
-  let verifications = [];
-  let txt = false;
-  let mx = false;
 
   //
   // attempt to purge Cloudflare cache programmatically
   //
   try {
-    await Promise.all(
-      CACHE_TYPES.map((type) =>
-        superagent
-          .post(CLOUDFLARE_PURGE_CACHE_URL)
-          .query({
-            domain: domain.name,
-            type
-          })
-          .set('Accept', 'json')
-          .set('User-Agent', USER_AGENT)
-          .timeout(ms('5s'))
-      )
+    await pMapSeries(CACHE_TYPES, (type) =>
+      superagent
+        .post(CLOUDFLARE_PURGE_CACHE_URL)
+        .query({
+          domain: domain.name,
+          type
+        })
+        .set('Accept', 'json')
+        .set('User-Agent', USER_AGENT)
+        .timeout(ms('5s'))
     );
     logger.info('cleared DNS cache for cloudflare', {
       domain,
@@ -480,135 +476,205 @@ async function getVerificationResults(domain, client = false) {
     // wait one second for DNS changes to propagate
     await delay(ms('1s'));
   } catch (err) {
-    logger.warn(err);
+    logger.fatal(err);
   }
 
-  // TODO: we should do these asynchronously
+  const errors = [];
 
-  //
-  // validate TXT records
-  //
-  try {
-    ({
-      forwardingAddresses,
-      globalForwardingAddresses,
-      ignoredAddresses,
-      errors,
-      verifications
-    } = await getTxtAddresses(domain.name, domain.locale, true, client));
+  let txt = false;
+  let mx = false;
 
-    if (isPaidPlan) {
-      if (
-        forwardingAddresses.length > 0 ||
-        globalForwardingAddresses.length > 0 ||
-        ignoredAddresses.length > 0
-      ) {
-        errors.push(PAID_PLAN);
-        txt = true;
+  await Promise.all([
+    //
+    // validate TXT records
+    //
+    (async function () {
+      try {
+        const result = await getTxtAddresses(
+          domain.name,
+          domain.locale,
+          true,
+          client
+        );
+
+        if (isPaidPlan) {
+          if (
+            result.forwardingAddresses.length > 0 ||
+            result.globalForwardingAddresses.length > 0 ||
+            result.ignoredAddresses.length > 0
+          ) {
+            errors.push(
+              Boom.badRequest(
+                i18n.translateError(
+                  'PAID_PLAN_HAS_UNENCRYPTED_RECORDS',
+                  domain.locale,
+                  `/my-account/domains/${domain.name}/aliases`,
+                  app.config.recordPrefix,
+                  `/my-account/domains/${domain.name}`
+                )
+              )
+            );
+            txt = true;
+          }
+
+          if (result.verifications.length === 0) {
+            errors.push(
+              Boom.badRequest(
+                i18n.translateError(
+                  'MISSING_VERIFICATION_RECORD',
+                  domain.locale,
+                  verificationMarkdown
+                )
+              )
+            );
+            txt = false;
+          } else if (result.verifications.length > 1) {
+            errors.push(
+              Boom.badRequest(
+                i18n.translateError(
+                  'MULTIPLE_VERIFICATION_RECORDS',
+                  domain.locale,
+                  verificationMarkdown
+                )
+              )
+            );
+            txt = false;
+          } else if (
+            !result.verifications.includes(domain.verification_record)
+          ) {
+            errors.push(
+              Boom.badRequest(
+                i18n.translateError(
+                  'INCORRECT_VERIFICATION_RECORD',
+                  domain.locale,
+                  verificationMarkdown
+                )
+              )
+            );
+            txt = false;
+          }
+
+          if (errors.length === 0 && result.errors.length === 0) txt = true;
+        } else if (
+          result.forwardingAddresses.length === 0 &&
+          result.globalForwardingAddresses.length === 0 &&
+          result.ignoredAddresses.length === 0
+        ) {
+          errors.push(
+            Boom.badRequest(
+              i18n.translateError('MISSING_DNS_TXT', domain.locale, domain.name)
+            )
+          );
+        } else if (result.errors.length === 0) {
+          txt = true;
+        } else {
+          errors.push(...result.errors);
+        }
+      } catch (err) {
+        logger.warn(err);
+        if (err.code === 'ENOTFOUND') {
+          const error = Boom.badRequest(
+            i18n.translateError('ENOTFOUND', domain.locale)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code === 'ENODATA') {
+          if (isPaidPlan) {
+            const error = Boom.badRequest(
+              i18n.translateError(
+                'MISSING_VERIFICATION_RECORD',
+                domain.locale,
+                verificationMarkdown
+              )
+            );
+            error.code = err.code;
+            errors.push(error);
+          } else {
+            const error = Boom.badRequest(
+              i18n.translateError('MISSING_DNS_TXT', domain.locale, domain.name)
+            );
+            error.code = err.code;
+            errors.push(error);
+          }
+        } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else {
+          errors.push(err);
+        }
       }
-
-      if (verifications.length === 0) {
-        errors.push(MISSING_VERIFICATION_RECORD);
-        txt = false;
-      } else if (verifications.length > 1) {
-        errors.push(MULTIPLE_VERIFICATION_RECORDS);
-        txt = false;
-      } else if (!verifications.includes(domain.verification_record)) {
-        errors.push(INCORRECT_VERIFICATION_RECORD);
-        txt = false;
+    })(),
+    //
+    // validate MX records
+    //
+    (async function () {
+      const testEmail = `test@${domain.name}`;
+      try {
+        const addresses = await app.validateMX(testEmail);
+        const exchanges = new Set(
+          addresses.map((mxAddress) => mxAddress.exchange)
+        );
+        const hasAllExchanges = app.config.exchanges.every((exchange) =>
+          exchanges.has(exchange)
+        );
+        if (hasAllExchanges) mx = true;
+        else
+          errors.push(
+            Boom.badRequest(
+              i18n.translateError(
+                'MISSING_DNS_MX',
+                domain.locale,
+                EXCHANGES,
+                domain.name
+              )
+            )
+          );
+      } catch (err) {
+        logger.warn(err);
+        const regex = new RE2(testEmail, 'g');
+        err.message = err.message.replace(regex, domain.name);
+        if (err.code === 'ENOTFOUND') {
+          const error = Boom.badRequest(
+            i18n.translateError('ENOTFOUND', domain.locale)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code === 'ENODATA') {
+          const error = Boom.badRequest(
+            i18n.translateError(
+              'MISSING_DNS_MX',
+              domain.locale,
+              EXCHANGES,
+              domain.name
+            )
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else {
+          errors.push(err);
+        }
       }
+    })()
+  ]);
 
-      if (errors.length === 0) txt = true;
-    } else if (
-      forwardingAddresses.length === 0 &&
-      globalForwardingAddresses.length === 0 &&
-      ignoredAddresses.length === 0
-    )
-      errors.push(new Error(MISSING_DNS_TXT));
-    else if (errors.length === 0) txt = true;
-  } catch (err) {
-    logger.warn(err);
-    if (err.code === 'ENOTFOUND') {
-      const error = new Error(config.i18n.phrases.ENOTFOUND);
-      error.code = err.code;
-      errors.push(error);
-    } else if (err.code === 'ENODATA') {
-      if (isPaidPlan) {
-        const error = MISSING_VERIFICATION_RECORD;
-        error.code = err.code;
-        errors.push(error);
-      } else {
-        const error = new Error(MISSING_DNS_TXT);
-        error.code = err.code;
-        errors.push(error);
-      }
-    } else {
-      errors.push(err);
-    }
-  }
-
-  //
-  // validate MX records
-  //
-  const testEmail = `test@${domain.name}`;
-  try {
-    const addresses = await app.validateMX(testEmail);
-    const exchanges = new Set(addresses.map((mxAddress) => mxAddress.exchange));
-    const hasAllExchanges = app.config.exchanges.every((exchange) =>
-      exchanges.has(exchange)
+  if (!txt || !mx)
+    errors.push(
+      Boom.badRequest(i18n.translateError('AUTOMATED_CHECK', domain.locale))
     );
-    if (hasAllExchanges) mx = true;
-    else errors.push(MISSING_DNS_MX);
-  } catch (err) {
-    logger.warn(err);
-    const regex = new RE2(testEmail, 'g');
-    err.message = err.message.replace(regex, domain.name);
-    if (err.code === 'ENOTFOUND') {
-      const error = new Error(config.i18n.phrases.ENOTFOUND);
-      error.code = err.code;
-      errors.push(error);
-    } else if (err.code === 'ENODATA') {
-      const error = MISSING_DNS_MX;
-      error.code = err.code;
-      errors.push(error);
-    } else {
-      errors.push(err);
-    }
-  }
 
-  if (!txt || !mx) {
-    errors.push(PURGE_CACHE, AUTOMATED_CHECK);
-  }
-
-  errors = _.uniqBy(errors, 'message');
-
-  return { txt, mx, errors };
+  return { txt, mx, errors: _.uniqBy(errors, 'message') };
 }
 
 Domain.statics.getVerificationResults = getVerificationResults;
-
-async function verifyRecords(_id, locale, client) {
-  const domain = await this.model('Domain').findById(_id);
-
-  if (!domain)
-    throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
-    );
-
-  const { txt, mx, errors } = await getVerificationResults(domain, client);
-  // reset missing txt so we alert users if they are missing a TXT in future again
-  if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
-    domain.missing_txt_sent_at = undefined;
-  domain.has_txt_record = txt;
-  domain.has_mx_record = mx;
-  domain.locale = locale;
-  domain.skip_verification = true;
-  await domain.save();
-
-  return { txt, mx, errors };
-}
-
-Domain.statics.verifyRecords = verifyRecords;
 
 // eslint-disable-next-line complexity
 async function getTxtAddresses(
@@ -800,7 +866,7 @@ async function ensureUserHasValidPlan(user, locale) {
   throw Boom.badRequest(`
     <p class="font-weight-bold text-danger">${i18n.translate(
       'ERRORS_OCCURRED',
-      user.locale
+      locale
     )}</p>
     <ul class="mb-0 text-left"><li>${errors
       .map((e) => e.message)

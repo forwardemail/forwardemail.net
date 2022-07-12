@@ -1,0 +1,18 @@
+if user && _.isObject(user) && user.plan !== 'free' && _.isDate(user[config.userFields.planExpiresAt])
+  - const hasPlanExpired = new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now();
+  - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID]);
+  if hasPlanExpired
+    .alert.alert-danger.text-center.small.rounded-0
+      != t('Your plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).format("M/D/YY"))
+      = " "
+      if hasSubscription
+        != t('<a class="alert-link" href="%s">Make a payment</a> or <a class="alert-link" href="%s">fix billing</a>.', `${config.urls.web}/${locale}/my-account/billing/make-payment`, `${config.urls.web}/${locale}/my-account/billing`)
+      else
+        != t('<a class="alert-link" href="%s">Make a payment</a> or <a class="alert-link" href="%s">enable auto-renew</a>.', `${config.urls.web}/${locale}/my-account/billing/make-payment`, `${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)
+  else if !hasSubscription
+    .alert.alert-warning.small.text-center.rounded-0
+      != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(locale).format("M/D/YY"))
+      //- if it's within the next 30 days
+      if dayjs().diff(user[config.userFields.planExpiresAt], 'd') <= 30
+        = " "
+        != t('<a class="alert-link" href="%s">Make a payment</a> or <a class="alert-link" href="%s">enable auto-renew</a>.', `${config.urls.web}/${locale}/my-account/billing/make-payment`, `${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)

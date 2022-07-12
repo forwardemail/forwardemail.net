@@ -71,7 +71,7 @@ block body
         .card.border-dark
           h2.card-header.bg-dark.text-white
             if isMakePayment
-              = t("One-time payment")
+              = t("Make Payment")
             else if isEnableAutoRenew
               = t('Enable Auto-Renew')
             else
@@ -81,7 +81,7 @@ block body
                 != t('Upgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
           .card-body
             - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
-            if (hasSubscription)
+            if isMakePayment && hasSubscription
               .alert.alert-warning.small!= t('One-time payments will extend your plan duration independently from your current subscription.')
             form#form-billing(action=ctx.path, method="POST")
               input(type="hidden", name="_csrf", value=_csrf)
@@ -154,40 +154,40 @@ block body
                 )
                   - const plan = ctx.query.plan || user.plan;
                   if plan === 'enhanced_protection'
-                    option(value="30d", selected)= t("1 month ($3 USD)")
-                    option(value="60d")= t("2 months ($6 USD)")
-                    option(value="90d")= t("3 months ($9 USD)")
-                    option(value="180d")= t("6 months ($18 USD)")
-                    option(value="1y")= t("1 year ($36 USD)")
                     //- since subscription is the default, we disable these
                     if !isEnableAutoRenew
-                      option(
-                        value="2y",
-                        data-no-subscription,
-                        disabled=!isMakePayment
-                      )= t("2 years ($72 USD)")
                       option(
                         value="3y",
                         data-no-subscription,
                         disabled=!isMakePayment
                       )= t("3 years ($108 USD)")
-                  else if plan === 'team'
-                    option(value="30d", selected)= t("1 month ($9 USD)")
-                    option(value="60d")= t("2 months ($18 USD)")
-                    option(value="90d")= t("3 months ($27 USD)")
-                    option(value="180d")= t("6 months ($54 USD)")
-                    option(value="1y")= t("1 year ($108 USD)")
-                    if !isEnableAutoRenew
                       option(
                         value="2y",
                         data-no-subscription,
                         disabled=!isMakePayment
-                      )= t("2 years ($216 USD)")
+                      )= t("2 years ($72 USD)")
+                    option(value="1y", selected)= t("1 year ($36 USD)")
+                    option(value="180d")= t("6 months ($18 USD)")
+                    option(value="90d")= t("3 months ($9 USD)")
+                    option(value="60d")= t("2 months ($6 USD)")
+                    option(value="30d")= t("1 month ($3 USD)")
+                  else if plan === 'team'
+                    if !isEnableAutoRenew
                       option(
                         value="3y",
                         data-no-subscription,
                         disabled=!isMakePayment
                       )= t("3 years ($324 USD)")
+                      option(
+                        value="2y",
+                        data-no-subscription,
+                        disabled=!isMakePayment
+                      )= t("2 years ($216 USD)")
+                    option(value="1y", selected)= t("1 year ($108 USD)")
+                    option(value="180d")= t("6 months ($54 USD)")
+                    option(value="90d")= t("3 months ($27 USD)")
+                    option(value="60d")= t("2 months ($18 USD)")
+                    option(value="30d")= t("1 month ($9 USD)")
 
               //- Continue (Stripe)
               button#stripe-button-container.btn.btn-success.btn-lg.btn-block(
@@ -199,8 +199,6 @@ block body
 
               //- Continue (PayPal)
               #paypal-button-container.d-none
-
-              p.text-muted.pt-3.mb-0.small.text-muted= t("We accept all major currencies and card types.")
 
           .card-footer.text-muted.text-center.small= t("We'll automatically email you if you're late on a payment.")
         if !isMakePayment && !isEnableAutoRenew

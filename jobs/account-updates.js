@@ -2,12 +2,15 @@
 require('#config/env');
 
 const process = require('process');
+const os = require('os');
 const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
-const sharedConfig = require('@ladjs/shared-config');
+const _ = require('lodash');
 const humanize = require('humanize-string');
+const pMap = require('p-map');
+const sharedConfig = require('@ladjs/shared-config');
 const titleize = require('titleize');
 
 const config = require('#config');
@@ -16,10 +19,9 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const Users = require('#models/user');
 
+const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');
-
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
-
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -27,10 +29,62 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+async function mapper(id) {
+  const user = await Users.findById(id).lean().exec();
+  if (!user) throw new Error('User does not exist');
+
+  // ensure it still had a non-empty array
+  if (
+    !_.isArray(user[config.userFields.accountUpdates]) ||
+    _.isEmpty(user[config.userFields.accountUpdates])
+  ) {
+    logger.warn('user had empty account updates', { user });
+    return;
+  }
+
+  // merge and map to actionable email
+  const accountUpdates = user[config.userFields.accountUpdates].map(
+    (update) => {
+      const { fieldName, current, previous } = update;
+      return {
+        name: fieldName,
+        text: i18n.api.t({
+          phrase: titleize(humanize(fieldName)),
+          locale: user[config.lastLocaleField]
+        }),
+        current,
+        previous
+      };
+    }
+  );
+
+  // send account updates email
+  try {
+    await email({
+      template: 'account-update',
+      message: {
+        to: user[config.userFields.fullEmail]
+      },
+      locals: {
+        accountUpdates,
+        user
+      }
+    });
+    // delete account updates
+    await Users.findByIdAndUpdate(user._id, {
+      $set: {
+        [config.userFields.accountUpdates]: []
+      }
+    });
+  } catch (err) {
+    logger.error(err);
+  }
+}
+
 (async () => {
   await mongoose.connect();
 
-  const users = await Users.find({
+  const ids = await Users.distinct('_id', {
     account_updates: {
       $exists: true,
       $not: { $size: 0 }
@@ -39,40 +93,7 @@ graceful.listen();
     [config.userFields.isBanned]: false
   });
 
-  // merge and map to actionable email
-  await Promise.all(
-    users.map(async (user) => {
-      const accountUpdates = user[config.userFields.accountUpdates].map(
-        (update) => {
-          const { fieldName, current, previous } = update;
-          return {
-            name: fieldName,
-            text: i18n.t(titleize(humanize(fieldName))),
-            current,
-            previous
-          };
-        }
-      );
-
-      // send account updates email
-      try {
-        await email({
-          template: 'account-update',
-          message: {
-            to: user[config.userFields.fullEmail]
-          },
-          locals: {
-            accountUpdates
-          }
-        });
-        // delete account updates
-        user[config.userFields.accountUpdates] = [];
-        await user.save();
-      } catch (err) {
-        logger.error(err);
-      }
-    })
-  );
+  await pMap(ids, mapper, { concurrency });
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

@@ -1,77 +1,81 @@
 include ./_payment-method.pug
 
-.text-center.pb-5
-  img.d-inline-block.mr-1(
-    src=manifest(ctx.path.endsWith(".pdf") ? "img/apple-touch-icon.png" : "img/logo-square.svg"),
-    width=50,
-    height=50,
-    alt=""
-  )
-  h1.h2.m-0.align-middle.d-inline-block
-    span.text-primary.font-weight-bold Forward
-    = " "
-    span.text-info.font-weight-normal Email
+if !returnHTML
+  .text-center.pb-5
+    img.d-inline-block.mr-1(
+      src=manifest(isPDF || ctx.path.endsWith(".pdf") ? "img/apple-touch-icon.png" : "img/logo-square.svg"),
+      width=50,
+      height=50,
+      alt=""
+    )
+    h1.h2.m-0.align-middle.d-inline-block
+      span.text-primary.font-weight-bold Forward
+      = " "
+      span.text-info.font-weight-normal Email
 .text-monospace.table-responsive
   table.table.mb-0
     tbody
+      if !returnHTML
+        tr
+          td.border-0
+            u.font-weight-bold= t("Company")
+            address
+              | Niftylettuce, LLC.
+              br
+              | 16192 Coastal Hwy
+              br
+              | Lewes, DE 19958
+              br
+              | United States of America
+              br
+              a.text-decoration-none.text-dark(href="mailto:support@forwardemail.net") support@forwardemail.net
+              br
+              a.text-decoration-none.text-dark(href=config.urls.web)= config.urls.web.replace('http://', '').replace('https://', '')
+          td.border-0.text-right.d-none.d-sm-block.d-print-block
+            u.font-weight-bold= t("Customer")
+            address
+              != user[config.userFields.addressHTML]
+              if user[config.userFields.addressHTML]
+                br
+              a.text-decoration-none.text-dark(href=`mailto:${user.email}`)= user.email
+        tr.d-block.d-sm-none.d-print-none
+          td.border-0
+            u.font-weight-bold= t("Customer")
+            address
+              != user[config.userFields.addressHTML]
+              if user[config.userFields.addressHTML]
+                br
+              a.text-decoration-none.text-dark(href=`mailto:${user.email}`)= user.email
       tr
         td.border-0
-          u.font-weight-bold= t("Company")
-          address
-            | Niftylettuce, LLC.
-            br
-            | 16192 Coastal Hwy
-            br
-            | Lewes, DE 19958
-            br
-            | United States of America
-            br
-            a.text-decoration-none.text-dark(href="mailto:support@forwardemail.net") support@forwardemail.net
-            br
-            a.text-decoration-none.text-dark(href=config.urls.web)= config.urls.web.replace('http://', '').replace('https://', '')
-        td.border-0.text-right.d-none.d-md-block.d-print-block
-          u.font-weight-bold= t("Customer")
-          address
-            != user[config.userFields.addressHTML]
-            if user[config.userFields.addressHTML]
-              br
-            a.text-decoration-none.text-dark(href=`mailto:${user.email}`)= user.email
-      tr.d-block.d-md-none.d-print-none
-        td.border-0
-          u.font-weight-bold= t("Customer")
-          address
-            != user[config.userFields.addressHTML]
-            if user[config.userFields.addressHTML]
-              br
-            a.text-decoration-none.text-dark(href=`mailto:${user.email}`)= user.email
-      tr
-        td.border-0
-          u.font-weight-bold= t("Status")
+          u.font-weight-bold= t('Date')
           br
-          = t("Paid")
-        td.border-0.text-right.d-none.d-md-block.d-print-block
+          = dayjs(_.isDate(payment.invoice_at) ? payment.invoice : payment.created_at).locale(locale).format("M/D/YY")
+        td.border-0.text-right(class=returnHTML ? '' : 'd-none d-sm-block d-print-block')
           u.font-weight-bold= t("Reference")
           br
           = payment.reference
-      tr.d-block.d-md-none.d-print-none
-        td.border-0
-          u.font-weight-bold= t("Reference")
-          br
-          = payment.reference
+      if !returnHTML
+        tr.d-block.d-sm-none.d-print-none
+          td.border-0
+            u.font-weight-bold= t("Reference")
+            br
+            = payment.reference
       tr
         td.border-0
           u.font-weight-bold= t("Method")
           br
           +paymentMethod(payment)
-        td.border-0.text-right.d-none.d-md-block.d-print-block
-          u.font-weight-bold= t('Date')
+        td.border-0.text-right(class=returnHTML ? '' : 'd-none d-sm-block d-print-block')
+          u.font-weight-bold= t("Status")
           br
-          = dayjs(_.isDate(payment.invoice_at) ? payment.invoice : payment.created_at).locale(locale).format("M/D/YY")
-      tr.d-block.d-md-none.d-print-none
-        td.border-0
-          u.font-weight-bold= t('Date')
-          br
-          = dayjs(_.isDate(payment.invoice_at) ? payment.invoice : payment.created_at).locale(locale).format("M/D/YY")
+          = t("Paid")
+      if !returnHTML
+        tr.d-block.d-sm-none.d-print-none
+          td.border-0
+            u.font-weight-bold= t("Status")
+            br
+            = t("Paid")
   table.table.mb-0
     thead
       tr
@@ -79,8 +83,8 @@ include ./_payment-method.pug
         th.border-0.text-right(scope="col"): u= t("Amount")
     tbody
       tr
-        td.border-0.align-middle!= payment.description
-        td.border-0.align-middle.text-right= payment.amount_formatted
+        td.border-0!= payment.description
+        td.border-0.text-right= payment.amount_formatted
     tfoot
       tr
         th.border-0.align-middle

@@ -5,7 +5,11 @@ block content
     .row
       .col-12
         .card.border-dark.d-block.text-center
-          h5.card-header.bg-dark.text-white= t("Your domain is verified!")
+          h5.card-header.bg-dark.text-white
+            if errorMessage
+              = t("Your domain needs attention!")
+            else
+              = t("Your domain is verified!")
           .card-body.text-center.p-0
             a(
               href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
@@ -16,12 +20,17 @@ block content
                 data-inline-ignore
               )
             .p-3
-              h1.h3!= t("Woo-hoo!")
+              h1.h3
+                if errorMessage
+                  != t("Almost There!")
+                else
+                  != t("Congrats!")
               p.card-text!= t('We detected that your domain <strong><span class="notranslate">%s</span></strong> is now verified.', domain.name)
-              a.btn.btn-lg.btn-success(
-                href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
-                role="button"
-              )= t("Manage domain")
+              if !errorMessage && domain.plan !== 'free'
+                a.btn.btn-lg.btn-success(
+                  href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}/aliases`,
+                  role="button"
+                )= t("Manage aliases")
             if errorMessage
               .p-3
                 h2.h5= t("Issues Detected")
@@ -33,8 +42,10 @@ block content
                   != t("Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.")
                   = " "
                   = t("If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.")
-                  = " "
-                  != t('<strong><a href="%s">Click here to learn more</a></strong> about our Enhanced Protection and Team plans.', `${config.urls.web}/${locale}/pricing`)
+                a.btn.btn-primary.btn-success(
+                  href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`,
+                  role="button"
+                )= t("Upgrade now")
             .px-3.py-5.bg-dark.mt-3
               h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
               ul.list-inline
@@ -43,5 +54,5 @@ block content
                   .mt-2.text-monospace.text-uppercase.text-white= t("MX")
                 li.list-inline-item
                   = emoji("white_check_mark")
-                  .mt-2.text-monospace.text-uppercase.text-white= t("TXT")
+                  .mt-2.text-monospace.text-uppercase.text-white= "TXT"
           .card-footer.small.text-muted= t("If you have any questions or comments, then please let us know")

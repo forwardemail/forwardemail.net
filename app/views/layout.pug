@@ -4,24 +4,28 @@ html.h-100(lang=locale)
     block meta
       meta(charset="utf-8")
       meta(http-equiv="x-ua-compatible", content="ie=edge")
-      title= meta.title
-      meta(name="description", content=meta.description)
+      if meta && meta.title
+        title= meta.title
+      if meta && meta.description
+        meta(name="description", content=meta.description)
       meta(name="viewport", content="width=device-width, initial-scale=1")
 
       //- languages supported
       //- <https://support.google.com/webmasters/answer/189077?hl=en>
       //- <https://support.google.com/webmasters/answer/182192?hl=en>
-      link(
-        rel="alternate",
-        href=`${config.urls.web}${ctx.pathWithoutLocale}`,
-        hreflang="x-default"
-      )
-      each language in availableLanguages
+      if ctx && ctx.pathWithoutLocale
         link(
           rel="alternate",
-          href=`${config.urls.web}/${language.locale}${ctx.pathWithoutLocale}`,
-          hreflang=language.locale
+          href=`${config.urls.web}${ctx.pathWithoutLocale}`,
+          hreflang="x-default"
         )
+      if ctx && ctx.pathWithoutLocale && availableLanguages
+        each language in availableLanguages
+          link(
+            rel="alternate",
+            href=`${config.urls.web}/${language.locale}${ctx.pathWithoutLocale}`,
+            hreflang=language.locale
+          )
 
       //- generated with https://realfavicongenerator.net
       link(
@@ -66,9 +70,10 @@ html.h-100(lang=locale)
       meta(name="theme-color", content="#ffffff")
 
       //- csrf token
-      meta(name="csrf-token", content=_csrf)
-      script.
-        window._csrf = "#{_csrf}";
+      if _csrf
+        meta(name="csrf-token", content=_csrf)
+        script.
+          window._csrf = "#{_csrf}";
 
       //- associate with wikipedia
       script(type="application/ld+json").
@@ -222,8 +227,8 @@ html.h-100(lang=locale)
           script(defer, src=`https://hcaptcha.com/1/api.js?hl=${locale}`)
 
   body.d-flex.flex-column.min-h-100(role="document")
-    - const isHelp = ctx.pathWithoutLocale === "/help";
-    - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
+    - const isHelp = ctx && ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
+    - const isRegisterOrLogin = ctx && ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
 
     //- spinner
     block spinner

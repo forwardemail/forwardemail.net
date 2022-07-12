@@ -27,6 +27,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
   const paypalCustomers = await Users.find({
     [config.userFields.paypalPayerID]: { $exists: true, $ne: null }
   })
+    // sort by newest customers first
+    .sort('-created_at')
     .lean()
     .exec();
 
@@ -106,6 +108,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
                 // try to find the payment
                 const paymentCandidates = await Payments.find({
+                  user: customer._id,
                   [config.userFields.paypalSubscriptionID]: subscription.id
                 });
 
@@ -190,6 +193,12 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                   logger.debug('creating new payment');
                   await Payments.create(payment);
                 }
+
+                // find and save the associated user
+                // so that their plan_expires_at gets updated
+                const user = await Users.findById(customer._id);
+                if (!user) throw new Error('User does not exist');
+                await user.save();
               } catch (err) {
                 logger.error(err);
                 errorEmails.push({

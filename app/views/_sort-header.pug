@@ -22,7 +22,7 @@ mixin sortHeader(name, text, tableSelector)
     button.btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold(
       type="submit"
     )
-      = t(text ? text : name.replace("_", " "))
+      != t(text ? text : name.replace("_", " "))
       = " "
       i.fas(
         class=sort === `-${name}` ? "fa-sort-up" : sort === name ? "fa-sort" : "fa-sort-down"

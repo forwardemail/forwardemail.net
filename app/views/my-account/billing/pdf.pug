@@ -1,16 +1,19 @@
 extends ../../layout
 
+block opengraph
+block preload
+block prefetch
 block spinner
 block navigation
 block footer
 
-block append scripts
-  if ctx.path.endsWith('.html')
+block scripts
+  if ctx && ctx.path && ctx.path.endsWith('.html')
     script.
       window.print();
 
 block body
-  .container.p-5
+  .container.py-5
     .row
       .col
         include _receipt

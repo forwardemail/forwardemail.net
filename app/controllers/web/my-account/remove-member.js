@@ -50,7 +50,7 @@ async function removeMember(ctx, next) {
         message: {
           to: ctx.state.user[config.userFields.fullEmail]
         },
-        locals: { message }
+        locals: { user: ctx.state.user.toObject(), message }
       })
         .then()
         .catch((err) => ctx.logger.fatal(err));
@@ -80,7 +80,7 @@ async function removeMember(ctx, next) {
         message: {
           to: ctx.state.user[config.userFields.fullEmail]
         },
-        locals: { message }
+        locals: { user: ctx.state.user.toObject(), message }
       })
         .then()
         .catch((err) => ctx.logger.fatal(err));

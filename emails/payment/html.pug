@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h5.card-header.bg-dark.text-white.text-center= t("Thank you!")
+          .card-body.p-0
+            a(href=config.urls.web)
+              img.img-responsive(
+                src=`${config.urls.web}/img/emails/${_.sample(['domain-onboard', 'domain-verified', 'self-test', 'welcome'])}.gif`,
+                alt="",
+                data-inline-ignore
+              )
+            h1.h3.text-center.mt-3.mb-0= t('Receipt')
+            .small!= prefixHTMLPathBasedAnchors(receiptHTML, config.urls.web)
+            hr
+            ul.list-inline.text-center
+              li.list-inline-item
+                a.btn.btn-md.btn-primary(href=`${config.urls.web}/${locale}/my-account/billing/make-payment`)= t("Make Payment")
+              if isSANB(user[config.userFields.stripeSubscriptionID])
+                li.list-inline-item
+                  a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Card')
+              else if isSANB(user[config.userFields.paypalSubscriptionID])
+                li.list-inline-item
+                  a(href=config.env === 'production' ? 'https://www.paypal.com' : 'https://www.sandbox.paypal.com', target='_blank', rel='noopener noreferrer').btn.btn-md.btn-dark!= t('Go to <span class="notranslate">%s</span>', 'PayPal')
+              if !hasSubscription
+                li.list-inline-item
+                  a.btn.btn-md.btn-success(href=`${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)= t("Enable Auto-Renew")
+          .card-footer.small.text-muted.text-center= t("Your invoice is also attached as a PDF to this email.")

@@ -109,7 +109,7 @@ block body
                   placeholder=t("Last name")
                 )
                 label(for="input-family-name")= t("Last name")
-              if domains && domains.length > 0
+              if domains && domains.filter(domain => !domain.is_global).length > 0
                 .form-group.floating-label
                   select#input-default-domain.form-control(
                     name=config.userFields.defaultDomain
@@ -126,7 +126,7 @@ block body
                   label(for="input-default-domain")= t("Default Domain")
                 p.small.form-text.text-muted= t('If you set a default domain, then you will be redirected to its section after login.')
               if user[config.userFields.hasSetPassword]
-                .form-group.mb-0
+                .form-group
                   a.text-danger(
                     href="#",
                     role="button",

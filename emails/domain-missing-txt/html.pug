@@ -18,32 +18,34 @@ block content
             .p-3.text-center
               h1.h3!= t("Oops!")
               if domains.length === 1
-                p.card-text!= t('We detected that your domain <strong><span class="notranslate">%s</span></strong> is not delivering emails because it is missing a TXT record.', domains[0].name)
+                p.card-text!= t('Your domain <strong><span class="notranslate">%s</span></strong> may not be delivering emails &ndash; we detected it may be missing required DNS TXT records.', domains[0].name)
                 a.btn.btn-lg.btn-danger(
                   href=`${config.urls.web}/${locale}/my-account/domains/${domains[0].name}`,
                   role="button"
-                )= t("Fix domain")
+                )= t("Verify records")
               else
-                p.card-text!= t('We detected that several of your domains are not delivering emails because they are missing TXT records.')
+                p.card-text!= t('Several of your domains may not be not delivering emails &ndash; we detected they may be missing required DNS TXT records.')
                 a.btn.btn-lg.btn-danger(
                   href=`${config.urls.web}/${locale}/my-account/domains`,
                   role="button"
-                )= t("Fix domains")
-            if domains.length > 1
-              .p-3
-                h2.h5.text-center= t("What domains are not configured correctly?")
-                ul.card-text
-                  each domain in domains
-                    li: a(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`)= domain.name
+                )= t("Verify Records")
             if user.plan === 'free'
               .p-3.text-center
                 h2.h5= t("Did you want enhanced privacy and protection?")
                 p.card-text
-                  != t("Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.")
+                  != t("Currently <strong>you are on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.")
                   = " "
                   = t("If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.")
-                  = " "
-                  != t('<strong><a href="%s">Click here to learn more</a></strong> about our Enhanced Protection and Team plans.', `${config.urls.web}/${locale}/pricing`)
+                a.btn.btn-lg.btn-success(
+                  href=domains.length > 1 ? `${config.urls.web}/${locale}/my-account/upgrade?plan=enhanced_protection` : `${config.urls.web}/${locale}/my-account/domains/${domains[0].name}/billing?plan=enhanced_protection`,
+                  role="button"
+                )= t("Upgrade now")
+            if domains.length > 1
+              .p-3
+                h2.h5.text-center= t("What domains were detected?")
+                ul.card-text
+                  each domain in domains
+                    li: a(href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`)= domain.name
             .px-3.py-5.bg-dark.mt-3.text-center
               h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
               ul.list-inline
@@ -52,5 +54,5 @@ block content
                   .mt-2.text-monospace.text-uppercase.text-white= t("MX")
                 li.list-inline-item
                   = emoji("x")
-                  .mt-2.text-monospace.text-uppercase.text-white= t("TXT")
+                  .mt-2.text-monospace.text-uppercase.text-white= "TXT"
           .card-footer.text-center.small.text-muted= t("If you have any questions or comments, then please let us know")

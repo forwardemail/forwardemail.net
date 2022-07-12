@@ -10,6 +10,8 @@ html(lang=locale)
       link(rel="stylesheet", href=manifest("css/app.css"), data-inline)
   body.email
     block body
+      block messages
+        include _messages
       block nav
         include _nav
       block content

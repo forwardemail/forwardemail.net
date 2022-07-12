@@ -2,7 +2,6 @@
 require('#config/env');
 
 const process = require('process');
-const os = require('os');
 const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
@@ -10,7 +9,7 @@ const Mongoose = require('@ladjs/mongoose');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const pMap = require('p-map');
+const pMapSeries = require('p-map-series');
 const sharedConfig = require('@ladjs/shared-config');
 
 const config = require('#config');
@@ -21,14 +20,44 @@ const Domains = require('#models/domain');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
-const concurrency = os.cpus().length;
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [client],
   logger
 });
-const fifteenMinutesAgo = dayjs().subtract(15, 'minutes').toDate();
+
+// <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
+// <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
+const DNS_RETRY_CODES = new Set([
+  'EADDRGETNETWORKPARAMS',
+  'EBADFAMILY',
+  'EBADFLAGS',
+  'EBADHINTS',
+  'EBADNAME',
+  'EBADQUERY',
+  'EBADRESP',
+  'EBADSTR',
+  'ECANCELLED',
+  'ECONNREFUSED',
+  'EDESTRUCTION',
+  'EFILE',
+  'EFORMERR',
+  'ELOADIPHLPAPI',
+  // NOTE: ENODATA indicates there were no records set for MX or TXT
+  // 'ENODATA',
+  'ENOMEM',
+  'ENONAME',
+  // NOTE: ENOTFOUND indicates the domain doesn't exist
+  //       (and we don't want to send emails to people that didn't even register it yet)
+  'ENOTFOUND',
+  'ENOTIMP',
+  'ENOTINITIALIZED',
+  'EOF',
+  'EREFUSED',
+  'ESERVFAIL',
+  'ETIMEOUT'
+]);
 
 // store boolean if the job is cancelled
 let isCancelled = false;
@@ -46,51 +75,61 @@ if (parentPort)
 
 graceful.listen();
 
+async function getToAndMajorityLocaleByDomain(domain) {
+  // get all the admins we should send the email to
+  const users = await Users.find({
+    _id: {
+      $in: domain.members
+        .filter((member) => member.group === 'admin')
+        .map((member) => member.user)
+    },
+    [config.userFields.hasVerifiedEmail]: true,
+    [config.userFields.isBanned]: false
+  })
+    .select(`email ${config.lastLocaleField}`)
+    .lean()
+    .exec();
+
+  if (users.length === 0) throw new Error('Domain had zero admins');
+
+  const to = _.uniq(users.map((user) => user.email));
+
+  // <https://stackoverflow.com/a/49731453>
+  const locales = users.map((user) => user[config.lastLocaleField]);
+  const locale = _.head(_(locales).countBy().entries().maxBy(_.last));
+
+  return { to, locale };
+}
+
 // eslint-disable-next-line complexity
-async function mapper(_id) {
+async function mapper(id) {
   // return early if the job was already cancelled
   if (isCancelled) return;
 
   try {
-    let domain = await Domains.findById(_id);
+    const domain = await Domains.findById(id).lean().exec();
 
     // it could have been deleted by the user mid-process
     if (!domain) return;
 
-    // get all the admins we should send the email to
-    const users = await Users.find({
-      _id: {
-        $in: domain.members
-          .filter((member) => member.group === 'admin')
-          .map((member) => member.user)
-      },
-      [config.userFields.hasVerifiedEmail]: true,
-      [config.userFields.isBanned]: false
-    });
-
-    if (users.length === 0) {
-      logger.warn(new Error('Domain had zero admins'), { domain });
+    // if the domain was checked since this job started
+    if (
+      _.isDate(domain.last_checked_at) &&
+      new Date(domain.last_checked_at).getTime() >=
+        dayjs().subtract(2, 'hour').toDate().getTime()
+    )
       return;
-    }
 
-    const locale = users[0][config.lastLocale];
+    // get recipients and the majority favored locale
+    const { to, locale } = await getToAndMajorityLocaleByDomain(domain);
 
     // set locale of domain
     domain.locale = locale;
 
-    logger.info('checking domain', { domain });
+    logger.info('checking domain', { domain, to, locale });
 
     // store the before state
     const { has_mx_record: mxBefore, has_txt_record: txtBefore } = domain;
-
-    // store when we last checked it
-    const now = new Date();
-    domain.last_checked_at = now;
-    await Domains.findByIdAndUpdate(domain._id, {
-      $set: {
-        last_checked_at: now
-      }
-    });
 
     // get verification results (and any errors too)
     const { txt, mx, errors } = await Domains.getVerificationResults(
@@ -98,34 +137,42 @@ async function mapper(_id) {
       client
     );
 
+    if (errors.length > 0) logger.error(...errors, { domain });
+
     //
     // run a save on the domain name
-    // (as long as `errors` does not have an error with ENOTFOUND nor ENODATA)
-    // since DNS can sometimes have intermittent false information (e.g. Cloudflare issues)
+    // (as long as `errors` does not have a temporary DNS error)
     //
     const hasDNSError =
       Array.isArray(errors) &&
-      errors.some(
-        (err) => err.code && ['ENOTFOUND', 'ENODATA'].includes(err.code)
-      );
+      errors.some((err) => err.code && DNS_RETRY_CODES.has(err.code));
 
     if (!hasDNSError) {
       // reset missing txt so we alert users if they are missing a TXT in future again
-      if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
+      if (!txtBefore && txt && _.isDate(domain.missing_txt_sent_at)) {
         domain.missing_txt_sent_at = undefined;
+        await Domains.findByIdAndUpdate(domain._id, {
+          $unset: {
+            missing_txt_sent_at: 1
+          }
+        });
+      }
 
       // set the values (since we are skipping some verification)
       domain.has_txt_record = txt;
       domain.has_mx_record = mx;
-
-      // skip verification because we already checked (to capture errors)
-      domain.skip_verification = true;
-
-      // save the domain
-      domain = await domain.save();
     }
 
-    const to = _.map(users, 'email');
+    // store when we last checked it
+    const now = new Date();
+    domain.last_checked_at = now;
+    await Domains.findByIdAndUpdate(domain._id, {
+      $set: {
+        last_checked_at: domain.last_checked_at,
+        has_txt_record: domain.has_txt_record,
+        has_mx_record: domain.has_mx_record
+      }
+    });
 
     // if verification was not passing and now is
     // then send email (if we haven't sent one yet)
@@ -148,7 +195,7 @@ async function mapper(_id) {
         message: { to },
         locals: {
           locale,
-          domain: domain.toObject(),
+          domain,
           errorMessage
         }
       });
@@ -163,18 +210,16 @@ async function mapper(_id) {
             : { onboard_email_sent_at: now })
         }
       });
-    } else if (!_.isDate(domain.onboard_email_sent_at)) {
+    } else if (!_.isDate(domain.onboard_email_sent_at) && !hasDNSError) {
       // send the onboard email
       await email({
         template: 'domain-onboard',
         message: { to },
         locals: {
           locale,
-          domain: domain.toObject(),
+          domain,
           txt,
-          mx,
-          errors,
-          hasDNSError
+          mx
         }
       });
       // store that we sent this email
@@ -204,43 +249,60 @@ async function mapper(_id) {
   //       and routine checking (e.g. 3 in a row fail)
   //       then we will need to modify this query
   //
-  // get all non-API created domains
-  const _ids = await Domains.distinct('_id', {
-    $and: [
-      {
-        $or: [
+  // get all non-API created domains (sorted by last_checked_at)
+  const results = await Domains.aggregate([
+    {
+      $match: {
+        $and: [
           {
-            last_checked_at: {
-              $exists: false
-            }
+            $or: [
+              {
+                last_checked_at: {
+                  $exists: false
+                }
+              },
+              {
+                last_checked_at: {
+                  $lte: dayjs().subtract(2, 'hour').toDate()
+                }
+              }
+            ]
           },
           {
-            last_checked_at: {
-              $lte: fifteenMinutesAgo
-            }
-          }
-        ]
-      },
-      {
-        $or: [
-          {
-            verified_email_sent_at: {
-              $exists: false
-            }
-          },
-          {
-            onboard_email_sent_at: {
-              $exists: false
-            }
+            $or: [
+              {
+                verified_email_sent_at: {
+                  $exists: false
+                }
+              },
+              {
+                onboard_email_sent_at: {
+                  $exists: false
+                }
+              }
+            ]
           }
         ]
       }
-    ]
-  });
+    },
+    {
+      $sort: {
+        last_checked_at: 1
+      }
+    },
+    {
+      $group: {
+        _id: '$_id'
+      }
+    }
+  ]);
 
-  logger.info('checking domains', { count: _ids.length });
+  // flatten array
+  const ids = results.map((r) => r._id);
 
-  await pMap(_ids, mapper, { concurrency });
+  logger.info('checking domains', { count: ids.length });
+
+  await pMapSeries(ids, mapper);
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

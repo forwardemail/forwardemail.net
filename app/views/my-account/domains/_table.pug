@@ -16,7 +16,7 @@ table.table.table-hover.table-bordered
       th.d-none.d-md-table-cell.text-center(scope="col")
         +sortHeader('has_mx_record', 'MX Records', '#table-domains')
       th.d-none.d-md-table-cell.text-center(scope="col")
-        +sortHeader('has_txt_record', 'TXT Records', '#table-domains')
+        +sortHeader('has_txt_record', '<span class="notranslate">TXT</span> Records', '#table-domains')
       th.text-center.text-md-left.align-middle(scope="col")= t("Quick Links")
   tbody
     if domains.length === 0

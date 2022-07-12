@@ -54,7 +54,7 @@ block body
           class=domain.has_txt_record ? "text-success" : "text-danger"
         )
           i.fa.fa-4x(class=domain.has_txt_record ? "fa-check" : "fa-times")
-        .text-monospace.text-uppercase= t("TXT")
+        .text-monospace.text-uppercase= "TXT"
     if domain.group === 'admin'
       form.ajax-form(
         action=l(`/my-account/domains/${domain.name}/verify-records`),
@@ -107,9 +107,12 @@ block body
           .row
             .col
               .card.border-dark.mt-5
-                h5.card-header.bg-dark.text-white= t("TXT Record Required")
+                h5.card-header.bg-dark.text-white
+                  = 'TXT'
+                  = ' '
+                  = t("Record Required")
                 .card-body
-                  p!= t("Add this <strong>TXT record</strong> to your domain's DNS for a global catch-all:")
+                  p!= t("Add this <strong class=\"notranslate\">TXT</strong> record to your domain's DNS for a global catch-all:")
                   .input-group
                     input#verification-record.form-control(
                       type="text",
@@ -138,9 +141,12 @@ block body
           .row
             .col
               .card.border-dark.mt-5
-                h5.card-header.bg-dark.text-white= t("TXT Record Required")
+                h5.card-header.bg-dark.text-white
+                  = 'TXT'
+                  = ' '
+                  = t("Record Required")
                 .card-body
-                  p!= t("Add your Enhanced Protection Verification <strong>TXT record</strong> to your domain's DNS:")
+                  p!= t("Add your Enhanced Protection Verification <strong class=\"notranslate\">TXT</strong> record to your domain's DNS:")
                   .input-group
                     input#verification-record.form-control(
                       type="text",

@@ -1,5 +1,6 @@
 const Boom = require('@hapi/boom');
 const ForwardEmail = require('forward-email');
+const _ = require('lodash');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -12,27 +13,95 @@ const app = new ForwardEmail({
   redis: false
 });
 
+// <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
+// <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
+const DNS_RETRY_CODES = new Set([
+  'EADDRGETNETWORKPARAMS',
+  'EBADFAMILY',
+  'EBADFLAGS',
+  'EBADHINTS',
+  'EBADNAME',
+  'EBADQUERY',
+  'EBADRESP',
+  'EBADSTR',
+  'ECANCELLED',
+  'ECONNREFUSED',
+  'EDESTRUCTION',
+  'EFILE',
+  'EFORMERR',
+  'ELOADIPHLPAPI',
+  // NOTE: ENODATA indicates there were no records set for MX or TXT
+  // 'ENODATA',
+  'ENOMEM',
+  'ENONAME',
+  // NOTE: ENOTFOUND indicates the domain doesn't exist
+  // 'ENOTFOUND',
+  'ENOTIMP',
+  'ENOTINITIALIZED',
+  'EOF',
+  'EREFUSED',
+  'ESERVFAIL',
+  'ETIMEOUT'
+]);
+
+// eslint-disable-next-line complexity
 async function verifyRecords(ctx) {
   try {
+    const domain = await Domains.findById(ctx.state.domain._id);
+    if (!domain)
+      return ctx.throw(
+        Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+      );
+
     // reset redis cache for web and smtp
     if (ctx.client)
       await Promise.all(
-        ['A', 'MX', 'TXT'].map(async (type) => {
+        ['MX', 'TXT'].map(async (type) => {
           try {
-            await app.resolver(ctx.state.domain.name, type, true, ctx.client);
+            await app.resolver(domain.name, type, true, ctx.client);
           } catch (err) {
             ctx.logger.fatal(err);
           }
         })
       );
 
-    // check mx and txt
-    let extra;
-    const { txt, mx, errors } = await Domains.verifyRecords(
-      ctx.state.domain._id,
-      ctx.locale,
+    // set locale of domain
+    domain.locale = ctx.locale;
+
+    const { txt, mx, errors } = await Domains.getVerificationResults(
+      domain,
       ctx.client
     );
+
+    //
+    // run a save on the domain name
+    // (as long as `errors` does not have a temporary DNS error)
+    //
+    const hasDNSError =
+      Array.isArray(errors) &&
+      errors.some((err) => err.code && DNS_RETRY_CODES.has(err.code));
+
+    if (!hasDNSError) {
+      // reset missing txt so we alert users if they are missing a TXT in future again
+      if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
+        domain.missing_txt_sent_at = undefined;
+
+      // set the values (since we are skipping some verification)
+      domain.has_txt_record = txt;
+      domain.has_mx_record = mx;
+
+      // skip verification since we just verified it
+      domain.skip_verification = true;
+    }
+
+    // store when we last checked it
+    domain.last_checked_at = new Date();
+
+    // save the domain
+    await domain.save();
+
+    let extra;
+
     if (txt && mx && errors.length > 0) {
       extra =
         errors.length === 1

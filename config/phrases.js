@@ -157,7 +157,7 @@ module.exports = {
   ENOTFOUND:
     'Domain is not a registered domain name. <a class="font-weight-bold" href="/domain-registration">Click here to register it now</a>.',
   MISSING_DNS_TXT:
-    'Domain is missing required DNS TXT records. <a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.',
+    'Domain is missing required DNS <span class="notranslate">TXT</span> records. <a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.',
   SINGLE_VERIFICATION_RECORD_REQUIRED:
     'Domain has multiple verification records.  Please ensure there is only one verification record that exists.',
   MULTIPLE_PORT_RECORDS:
@@ -169,15 +169,13 @@ module.exports = {
   MISSING_DNS_MX:
     '<p class="mb-0">Domain is missing required DNS MX records of:</p><ul class="markdown-body ml-0 mr-0 mb-3"><span class="notranslate">%s</span></ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren\'t the same).<a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.</p>',
   MISSING_VERIFICATION_RECORD:
-    'Domain is missing required DNS TXT record of: <span class="notranslate">%s</span>',
+    'Domain is missing required DNS <span class="notranslate">TXT</span> record of: <span class="notranslate">%s</span>',
   INCORRECT_VERIFICATION_RECORD:
-    'Domain has an incorrect DNS TXT record for verification.  Please ensure <span class="notranslate">%s</span> is the only verification record that exists.',
+    'Domain has an incorrect DNS <span class="notranslate">TXT</span> record for verification.  Please ensure <span class="notranslate">%s</span> is the only verification record that exists.',
   MULTIPLE_VERIFICATION_RECORDS:
     'Domain has multiple verification records.  Please ensure <span class="notranslate">%s</span> is the only verification record that exists.',
-  PURGE_CACHE:
-    'If you recently updated your DNS records for <span class="notranslate">%s</span>, then you should purge its cache using <a class="font-weight-bold" href="https://1.1.1.1/purge-cache/" rel="noopener noreferrer" target="_blank">Cloudflare\'s Purge Cache Tool</a> and optionally <a class="font-weight-bold" href="https://developers.google.com/speed/public-dns/cache" rel="noopener noreferrer" target="_blank">Google\'s Purge Cache Tool</a>.  Note that sometimes it may take 30 minutes to 24 hours (depending on your location and provider) for the Internet\'s DNS propagation to finish.',
   AUTOMATED_CHECK:
-    "If we automatically detect your DNS records are valid (before you do), then we will send you an automated email alert.  Don't worry, we routinely check DNS records for your domain every few minutes!",
+    'If we detect your DNS records are valid, then we will send you an automated email alert.  We routinely check DNS records for your domain every few hours.',
   IMPORT_ALIAS_ALREADY_EXISTS:
     'Could not import "<span class="notranslate">%s</span>" record\'s recipient of "<span class="notranslate">%s</span>" since it already exists as an alias.',
   IMPORT_ALIAS_DISABLED_NOBODY:
@@ -225,6 +223,7 @@ module.exports = {
     '<span class="notranslate">%s</span> payment for <span class="notranslate">%s</span> of the <span class="notranslate">%s</span> plan.',
   PAYMENT_REFERENCE_INVALID: 'Payment reference was invalid or did not exist.',
   RECEIPT: 'Receipt',
+  MAKE_PAYMENT: 'Make Payment',
   DOMAIN_PLAN_UPGRADE_REQUIRED:
     'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan. Please <a class="font-weight-bold" href="%s">upgrade your account</a> to this plan to continue.',
   MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED:
@@ -251,7 +250,7 @@ module.exports = {
   INVALID_RECIPIENT_VERIFICATION:
     'Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.',
   RECIPIENT_VERIFICATION_PENDING_DOMAIN_VERIFICATION:
-    'Verification link will not be sent until the domain has verified TXT and MX records.',
+    'Verification link will not be sent until the domain has verified <span class="notranslate">TXT</span> and MX records.',
   DISPOSABLE_EMAIL_NOT_ALLOWED:
     'Disposable email addresses are not allowed.  Try again or contact us for help.',
   WEBSITE_OUTAGE:
@@ -266,6 +265,10 @@ module.exports = {
   REASSIGNED_ALIASES_FROM_OWNER:
     'We have reassigned the following aliases that belonged to you:',
   PAID_PLAN_HAS_UNENCRYPTED_RECORDS:
-    'Domain is on the "Enhanced Protection" plan, but still has unencrypted DNS TXT records.  Please <a href="%s">Import TXT Records</a>, remove TXT records prefixed with <span class="notranslate">"%s="</span>, and then try again.',
+    '<strong>This domain has unencrypted aliases stored in DNS <span class="notranslate">TXT</span> records.</strong>  Follow these steps to resolve this issue:<ol class="mt-3"><li><a href="%s">Import <span class="notranslate">TXT</span> Records</a></li><li>Remove any DNS <span class="notranslate">TXT</span> records prefixed with <code class="notranslate">%s=</code> (make sure you <u>DO NOT</u> remove the existing encrypted record)</li><li>Try to <a href="%s">Verify Records</a> again</li></ol>',
+  DNS_RETRY:
+    'An error code of "<span class="notranslate">%s</span>" occurred while performing the DNS lookup. Please try again.',
+  USER_UPGRADED_ACCOUNT_NOT_DOMAINS:
+    'You successfully upgraded your account &ndash; however we noticed that you have one or more domains that are not on the same plan you upgraded to. Please configure each domain to use your current plan by using the drop-down menu located at the <a href="/my-account/domains">Domains</a> page.  You can feel free to mix and match domains to be configued on different plans (e.g. you can have some on the free plan, and others on upgraded paid plans).',
   ...STATUSES
 };

@@ -437,10 +437,7 @@ async function forgotPassword(ctx) {
         to: user[config.userFields.fullEmail]
       },
       locals: {
-        user: _.pick(user, [
-          config.userFields.displayName,
-          config.userFields.resetTokenExpiresAt
-        ]),
+        user: user.toObject(),
         link: `${config.urls.web}/reset-password/${
           user[config.userFields.resetToken]
         }`

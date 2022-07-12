@@ -166,6 +166,12 @@ async function retrieveDomainBilling(ctx) {
           name: ctx.translate('UPGRADE'),
           header: ctx.translate('BILLING')
         });
+      } else if (isMakePayment) {
+        ctx.state.breadcrumbs.pop();
+        ctx.state.breadcrumbs.push({
+          name: ctx.translate('MAKE_PAYMENT'),
+          header: ctx.translate('BILLING')
+        });
       } else if (isEnableAutoRenew) {
         ctx.state.breadcrumbs.pop();
         ctx.state.breadcrumbs.push({
@@ -450,6 +456,7 @@ async function retrieveDomainBilling(ctx) {
             stripe_invoice_id: invoiceId,
             stripe_subscription_id: session.subscription
           });
+          // log the payment just for sanity
           ctx.logger.info('stripe payment created', { payment });
         }
       } catch (err) {
@@ -597,29 +604,38 @@ async function retrieveDomainBilling(ctx) {
 
       try {
         //
-        // TODO: we don't want to re-create the payment if the paypal webhook already did
+        // NOTE: we don't want to re-create the payment if the paypal webhook already did
         //
-        // let payment = await Payments.findOne({ ... });
-        // if (payment) {
-        //   ctx.logger.info('paypal payment existed', { payment });
-        // } else {
-        //   ... code below ...
-        // }
-        const payment = await Payments.create({
-          user: ctx.state.user._id,
-          reference: body.purchase_units[0].reference_id,
-          amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
-          method: 'paypal',
-          duration: ms(`${Math.round(months * 30)}d`),
-          plan: ctx.query.plan,
-          kind: 'one-time',
-          paypal_order_id: body.id,
-          // TODO: store paypal_transaction_id
-          invoice_at: now
+        let payment = await Payments.findOne({
+          $or: [
+            {
+              user: ctx.state.user._id,
+              paypal_order_id: body.id
+            },
+            {
+              user: ctx.state.user._id,
+              reference: body.purchase_units[0].reference_id
+            }
+          ]
         });
-
-        // log the payment just for sanity
-        ctx.logger.info('paypal payment created', { payment });
+        if (payment) {
+          ctx.logger.info('paypal payment existed', { payment });
+        } else {
+          payment = await Payments.create({
+            user: ctx.state.user._id,
+            reference: body.purchase_units[0].reference_id,
+            amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
+            method: 'paypal',
+            duration: ms(`${Math.round(months * 30)}d`),
+            plan: ctx.query.plan,
+            kind: 'one-time',
+            paypal_order_id: body.id,
+            // TODO: store paypal_transaction_id
+            invoice_at: now
+          });
+          // log the payment just for sanity
+          ctx.logger.info('paypal payment created', { payment });
+        }
       } catch (err) {
         ctx.logger.fatal(err);
         // email admins here
@@ -758,29 +774,31 @@ async function retrieveDomainBilling(ctx) {
       // these all occur in parallel, but the only one we need to work is saving domain
       try {
         //
-        // TODO: we don't want to re-create the payment if the paypal webhook already did
+        // NOTE: we don't want to re-create the payment if the paypal webhook already did
         //
-        // let payment = await Payments.findOne({ ... });
-        // if (payment) {
-        //   ctx.logger.info('paypal payment existed', { payment });
-        // } else {
-        //   ... code below ...
-        // }
-        const payment = await Payments.create({
+        let payment = await Payments.findOne({
           user: ctx.state.user._id,
-          // NOTE: paypal subscriptions don't allow you to pass a reference
-          amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
-          method: 'paypal',
-          duration: ms(duration),
-          plan: ctx.query.plan,
-          kind: 'subscription',
           paypal_subscription_id: body.id,
-          // TODO: store paypal_transaction_id
           invoice_at: now
         });
-
-        // log the payment just for sanity
-        ctx.logger.info('paypal payment created', { payment });
+        if (payment) {
+          ctx.logger.info('paypal payment existed', { payment });
+        } else {
+          payment = await Payments.create({
+            user: ctx.state.user._id,
+            // NOTE: paypal subscriptions don't allow you to pass a reference
+            amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
+            method: 'paypal',
+            duration: ms(duration),
+            plan: ctx.query.plan,
+            kind: 'subscription',
+            paypal_subscription_id: body.id,
+            // TODO: store paypal_transaction_id
+            invoice_at: now
+          });
+          // log the payment just for sanity
+          ctx.logger.info('paypal payment created', { payment });
+        }
       } catch (err) {
         ctx.logger.fatal(err);
         // email admins here
@@ -971,10 +989,37 @@ async function retrieveDomainBilling(ctx) {
             message: `<p><strong>${ctx.state.user.email}</strong> just checked out with the "${ctx.query.plan}" plan and was on the "${originalPlan}" plan: ${message}`
           }
         })
-          .then(() => {})
-          .catch((err) => {
-            ctx.logger.fatal(err);
-          });
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
+    }
+
+    // if the user is upgrading plans and has domains not
+    // on the same plan they're upgrading to, then alert them
+    // and also send them an email in the background too
+    if (isAccountUpgrade) {
+      const domains = ctx.state.domains.filter((domain) => {
+        return (
+          !domain.is_global &&
+          domain.plan !== ctx.state.user.plan &&
+          domain.members.some(
+            (member) =>
+              member.user.id === ctx.state.user.id && member.group === 'admin'
+          )
+        );
+      });
+      if (domains.length > 0) {
+        const message = ctx.translate('USER_UPGRADED_ACCOUNT_NOT_DOMAINS');
+        if (ctx.accepts('html')) ctx.flash('warning', message);
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: ctx.state.user[config.userFields.fullEmail]
+          },
+          locals: { user: ctx.state.user.toObject(), message }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
       }
     }
 
@@ -990,10 +1035,8 @@ async function retrieveDomainBilling(ctx) {
         message: `<p><strong>${ctx.state.user.email}</strong> just checked out with the "${ctx.query.plan}" plan`
       }
     })
-      .then(() => {})
-      .catch((err) => {
-        ctx.logger.fatal(err);
-      });
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
 
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
@@ -1011,10 +1054,8 @@ async function retrieveDomainBilling(ctx) {
         message: `<p><strong>URL:</strong> ${ctx.url}</p><p><strong>Error Message:</strong> ${err.message}</p>`
       }
     })
-      .then(() => {})
-      .catch((err) => {
-        ctx.logger.fatal(err);
-      });
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
 
     if (ctx.accepts('html')) {
       ctx.flash('error', err.message);

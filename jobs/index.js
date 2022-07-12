@@ -10,7 +10,7 @@ const jobs = [
   'vanity-domains',
   {
     name: 'sync-payment-histories/index',
-    interval: '24h',
+    interval: '1h',
     timeout: 0
   },
   // {
@@ -56,13 +56,17 @@ const jobs = [
     name: 'check-disposable',
     interval: '1d',
     timeout: 0
+  },
+  {
+    name: 'payment-email',
+    interval: '1m',
+    timeout: 0
+  },
+  {
+    name: 'domain-missing-txt',
+    interval: '24',
+    timeout: 0
   }
-  // NOTE: there seems to be an intermittent bug with txt/mx record verification
-  // {
-  //   name: 'domain-missing-txt',
-  //   interval: '2h',
-  //   timeout: '30m'
-  // }
 ];
 
 if (process.env.NODE_ENV === 'production') {

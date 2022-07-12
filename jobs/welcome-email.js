@@ -43,7 +43,7 @@ graceful.listen();
   await Promise.all(
     _ids.map(async (_id) => {
       try {
-        const user = await Users.findById(_id);
+        const user = await Users.findById(_id).lean().exec();
 
         // in case email was sent for whatever reason
         if (user[config.userFields.welcomeEmailSentAt]) return;
@@ -54,7 +54,7 @@ graceful.listen();
           message: {
             to: user[config.userFields.fullEmail]
           },
-          locals: { user: user.toObject() }
+          locals: { user }
         });
 
         // store that we sent this email
@@ -63,7 +63,6 @@ graceful.listen();
             [config.userFields.welcomeEmailSentAt]: new Date()
           }
         });
-        await user.save();
       } catch (err) {
         logger.error(err);
       }

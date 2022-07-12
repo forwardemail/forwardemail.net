@@ -1,18 +1,27 @@
+const path = require('path');
+
 const accounting = require('accounting');
 const capitalize = require('lodash/capitalize');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
+const getStream = require('get-stream');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const pify = require('pify');
+const pug = require('pug');
 const titleize = require('titleize');
+const webResourceInliner = require('web-resource-inliner');
+const wkhtmltopdf = require('wkhtmltopdf');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const config = require('#config');
 const i18n = require('#helpers/i18n');
+
+const inline = pify(webResourceInliner.html);
 
 const Payment = new mongoose.Schema({
   user: {
@@ -43,6 +52,7 @@ const Payment = new mongoose.Schema({
     type: Date,
     required: true
   },
+  receipt_sent_at: Date,
   amount_formatted: {
     type: String,
     required: true
@@ -150,5 +160,81 @@ Payment.plugin(mongooseCommonPlugin, {
   object: 'payment',
   defaultLocale: i18n.getLocale()
 });
+
+async function getPDFReceipt(
+  payment,
+  user,
+  locale = i18n.getLocale(),
+  returnHTML = false
+) {
+  const t = (phrase, ...args) => {
+    return i18n.api.t(
+      {
+        phrase,
+        locale
+      },
+      ...args
+    );
+  };
+
+  const locals = {
+    ...config.views.locals,
+    locale,
+    payment,
+    user,
+    isPDF: true,
+    returnHTML,
+    t
+  };
+
+  const html = pug.renderFile(
+    path.join(
+      config.views.root,
+      'my-account',
+      'billing',
+      returnHTML ? '_receipt.pug' : 'pdf.pug'
+    ),
+    locals
+  );
+
+  if (returnHTML) return html;
+
+  //
+  // workaround because of these bugs with wkhtmltopdf and HTTPS
+  //
+  // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4935>
+  // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4897>
+  // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4462>
+  const inlinedHTML = await inline({
+    fileContent: html,
+    images: true,
+    svgs: true,
+    scripts: false,
+    links: true,
+    relativeTo: config.buildDir
+  });
+
+  // returns a stream
+  // (we could use `get-stream` if we wanted to await the value)
+  const pdf = await getStream(
+    wkhtmltopdf(inlinedHTML, {
+      debug: config.env !== 'production',
+      pageSize: 'letter',
+      background: true,
+      imageDpi: 600,
+      // NOTE: there is a bug with min-width and max-width
+      // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4375>
+      // (so we set this to true so that we can leverage `d-print-x` classes
+      printMediaType: true,
+      enableJavaScript: false,
+      disableJavascript: true,
+      enableInternalLinks: false,
+      disableInternalLinks: true
+    })
+  );
+  return pdf;
+}
+
+Payment.statics.getPDFReceipt = getPDFReceipt;
 
 module.exports = mongoose.model('Payment', Payment);
