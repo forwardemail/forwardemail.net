@@ -24,8 +24,28 @@ const thresholdError = new Error('Error threshold has been met');
 async function syncPaypalSubscriptionPayments({ errorThreshold }) {
   const errorEmails = [];
 
+  //
+  // NOTE: this won't sync all payments because
+  //       some users cancelled paypal subscriptions
+  //       and sometimes webhooks and redirects weren't ever hit
+  //
+  //       and PayPal doesn't have a list subscriptions endpoint
+  //       nor do they have a list orders endpoint (it says Partners only?)
+  //
+  //       so if we really want to fix this retroactively we need to
+  //       download the entire TSV/CSV file and then run steps like here:
+  //
+  //       <https://github.com/paypal/PayPal-REST-API-issues/issues/5>
+  //
   const paypalCustomers = await Users.find({
-    [config.userFields.paypalPayerID]: { $exists: true, $ne: null }
+    $or: [
+      {
+        [config.userFields.paypalSubscriptionID]: { $exists: true, $ne: null }
+      },
+      {
+        [config.userFields.paypalPayerID]: { $exists: true, $ne: null }
+      }
+    ]
   })
     // sort by newest customers first
     .sort('-created_at')
