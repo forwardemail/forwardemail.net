@@ -119,7 +119,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
             }&end_time=${new Date().toISOString()}`
           );
 
-          if (transactions.length > 0) {
+          if (Array.isArray(transactions) && transactions.length > 0) {
             logger.info(`${transactions.length} transactions`);
 
             // eslint-disable-next-line no-inner-declarations
@@ -159,6 +159,19 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     10
                   ) * 100;
 
+                // NOTE: this is in cents
+                let amountRefunded = 0;
+
+                // if the transaction was refunded or partially
+                // refunded then we need to check and update it
+                if (transaction.status === 'REFUNDED') amountRefunded = amount;
+                else if (transaction.status === 'PARTIALLY_REFUNDED') {
+                  // TODO: finish this once we know the API response to parse (since it's undocumented)
+                  logger.info('partially refunded', {
+                    transaction: JSON.stringify(transaction, null, 2)
+                  });
+                }
+
                 if (payment) {
                   let shouldSave = false;
 
@@ -194,6 +207,11 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                   if (payment.plan !== plan)
                     throw new Error('Paypal plan did not match');
 
+                  if (payment.amount_refunded !== amountRefunded) {
+                    payment.amount_refunded = amountRefunded;
+                    shouldSave = true;
+                  }
+
                   if (payment.duration !== duration) {
                     payment.duration = duration;
                     shouldSave = true;
@@ -217,6 +235,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     amount,
                     plan,
                     duration,
+                    amount_refunded: amountRefunded,
                     [config.userFields.paypalSubscriptionID]: subscription.id,
                     paypal_transaction_id: transaction.id,
                     invoice_at: new Date(subscription.create_time)

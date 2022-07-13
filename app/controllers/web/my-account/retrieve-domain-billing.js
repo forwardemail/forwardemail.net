@@ -625,22 +625,29 @@ async function retrieveDomainBilling(ctx) {
       )
         throw ctx.translateError('UNKNOWN_ERROR');
 
+      // parse the transaction id
+      const transactionId = response.body?.id;
+
       try {
         //
         // NOTE: we don't want to re-create the payment if the paypal webhook already did
         //
-        let payment = await Payments.findOne({
-          $or: [
-            {
-              user: ctx.state.user._id,
-              paypal_order_id: body.id
-            },
-            {
-              user: ctx.state.user._id,
-              reference: body.purchase_units[0].reference_id
-            }
-          ]
-        });
+        const $or = [
+          {
+            user: ctx.state.user._id,
+            paypal_order_id: body.id
+          },
+          {
+            user: ctx.state.user._id,
+            reference: body.purchase_units[0].reference_id
+          }
+        ];
+        if (transactionId)
+          $or.push({
+            user: ctx.state.user._id,
+            paypal_transaction_id: transactionId
+          });
+        let payment = await Payments.findOne({ $or });
         if (payment) {
           ctx.logger.info('paypal payment existed', { payment });
         } else {
@@ -656,7 +663,7 @@ async function retrieveDomainBilling(ctx) {
             plan: ctx.query.plan,
             kind: 'one-time',
             paypal_order_id: body.id,
-            // TODO: store paypal_transaction_id
+            paypal_transaction_id: transactionId,
             invoice_at: now
           });
           // log the payment just for sanity
@@ -819,7 +826,14 @@ async function retrieveDomainBilling(ctx) {
             plan: ctx.query.plan,
             kind: 'subscription',
             paypal_subscription_id: body.id,
-            // TODO: store paypal_transaction_id
+            //
+            // NOTE: there is no way to get the `paypal_transaction_id`
+            //       because the PayPal API response does not include it
+            //       and when you search for transactions from a subscription
+            //       (even if you include start_time in the query in the past)
+            //       it will not return any results, and transactions will be empty
+            //       (and we don't want to do an artificial delay here just to populate date)
+            //
             invoice_at: now
           });
           // log the payment just for sanity
