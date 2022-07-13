@@ -1,9 +1,6 @@
-const os = require('os');
-
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const dayjs = require('dayjs-with-plugins');
-const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
 
 const config = require('#config');
@@ -13,7 +10,6 @@ const logger = require('#helpers/logger');
 const Users = require('#models/user');
 const Payments = require('#models/payment');
 
-const concurrency = os.cpus().length;
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 const PAYPAL_PLANS = {
   enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
@@ -301,7 +297,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
     }
   }
 
-  await pMap(paypalCustomers, mapper, { concurrency });
+  await pMapSeries(paypalCustomers, mapper);
 
   if (errorEmails.length > 0) {
     try {
