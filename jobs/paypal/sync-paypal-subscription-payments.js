@@ -167,9 +167,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                   // (see jobs/fix-missing-invoice-at.js)
                   if (
                     new Date(payment.invoice_at).getTime() ===
-                      new Date(payment.created_at).getTime() ||
-                    new Date(payment.invoice_at).getTime() ===
-                      new Date(subscription.create_time).getTime()
+                    new Date(payment.created_at).getTime()
                   ) {
                     logger.info(
                       `changing payment.invoice_at ${payment.invoice_at?.toISOString()} to match transaction or subscription`,
