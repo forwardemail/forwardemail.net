@@ -2,7 +2,6 @@
 require('#config/env');
 
 const process = require('process');
-const os = require('os');
 const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
@@ -10,14 +9,13 @@ const Mongoose = require('@ladjs/mongoose');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
-const pMap = require('p-map');
+const pMapSeries = require('p-map-series');
 const sharedConfig = require('@ladjs/shared-config');
 
 const config = require('#config');
 const { email, logger } = require('#helpers');
 const { Users, Payments } = require('#models');
 
-const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
@@ -104,7 +102,7 @@ async function mapper(id) {
       $exists: false
     }
   });
-  await pMap(ids, mapper, { concurrency });
+  await pMapSeries(ids, mapper);
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
