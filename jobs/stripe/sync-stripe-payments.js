@@ -31,7 +31,8 @@ async function syncStripePayments({ errorThreshold }) {
   })
     // sort by newest customers first
     .sort('-created_at')
-    .lean()
+    // NOTE: we can't use lean here because toObject() removes stripeSubscriptionID
+    // .lean()
     .exec();
 
   logger.info(
