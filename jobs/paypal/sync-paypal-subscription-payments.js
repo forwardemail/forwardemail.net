@@ -164,8 +164,13 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
                 // if the transaction was refunded or partially
                 // refunded then we need to check and update it
-                if (transaction.status === 'REFUNDED') amountRefunded = amount;
-                else if (transaction.status === 'PARTIALLY_REFUNDED') {
+                if (transaction.status === 'REFUNDED') {
+                  // TODO: remove this once we know the API response to parse for below partial refund (since it's undocumented)
+                  logger.info('fully refunded', {
+                    transaction: JSON.stringify(transaction, null, 2)
+                  });
+                  amountRefunded = amount;
+                } else if (transaction.status === 'PARTIALLY_REFUNDED') {
                   // TODO: finish this once we know the API response to parse (since it's undocumented)
                   logger.info('partially refunded', {
                     transaction: JSON.stringify(transaction, null, 2)
