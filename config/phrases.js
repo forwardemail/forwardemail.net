@@ -270,5 +270,7 @@ module.exports = {
     'An error code of "<span class="notranslate">%s</span>" occurred while performing the DNS lookup. Please try again.',
   USER_UPGRADED_ACCOUNT_NOT_DOMAINS:
     'You successfully upgraded your account &ndash; however we noticed that you have one or more domains that are not on the same plan you upgraded to. Please configure each domain to use your current plan by using the drop-down menu located at the <a href="/my-account/domains">Domains</a> page.  You can feel free to mix and match domains to be configued on different plans (e.g. you can have some on the free plan, and others on upgraded paid plans).',
+  PAST_DUE_CANNOT_SWITCH:
+    'In order to switch plans, you must first update your account to good standing by paying the entire past due balance. You owe payment for <span class="notranslate">%d</span> months.',
   ...STATUSES
 };

@@ -76,6 +76,29 @@ async function retrieveDomainBilling(ctx) {
     // validate that the user can actually downgrade to the desired plan
     //
     if (isAccountUpgrade) {
+      // do not allow users to switch plans if they are behind on payments
+      if (
+        ctx.state.user.plan !== ctx.query.plan &&
+        ctx.state.user.plan !== 'free' &&
+        new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
+          Date.now()
+      ) {
+        ctx.flash(
+          'warning',
+          ctx.translate(
+            'PAST_DUE_CANNOT_SWITCH',
+            dayjs().diff(
+              new Date(ctx.state.user[config.userFields.planExpiresAt]),
+              'months'
+            )
+          )
+        );
+        const redirectTo = ctx.state.l('/my-account/billing/make-payment');
+        if (ctx.accepts('html')) ctx.redirect(redirectTo);
+        else ctx.body = { redirectTo };
+        return;
+      }
+
       const adminDomains = ctx.state.domains.filter((domain) =>
         domain.members.some(
           (member) =>

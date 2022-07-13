@@ -94,7 +94,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
       for (const subscriptionId of subscriptionIds) {
         try {
-          logger.debug(`subscriptionId ${subscriptionId}`);
+          logger.info(`subscriptionId ${subscriptionId}`);
           const agent1 = await paypalAgent();
           const { body: subscription } = await agent1.get(
             `/v1/billing/subscriptions/${subscriptionId}`
@@ -120,11 +120,11 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
           );
 
           if (transactions.length > 0) {
-            logger.debug(`${transactions.length} transactions`);
+            logger.info(`${transactions.length} transactions`);
             for (const transaction of transactions) {
               try {
                 // we need to have a payment for each transaction of a subscription
-                logger.debug(`transaction ${transaction.id}`);
+                logger.info(`transaction ${transaction.id}`);
 
                 // try to find the payment
                 const paymentCandidates = await Payments.find({
@@ -173,7 +173,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     new Date(payment.invoice_at).getTime() ===
                       new Date(subscription.create_time).getTime()
                   ) {
-                    logger.debug(
+                    logger.info(
                       `changing payment.invoice_at ${payment.invoice_at?.toISOString()} to match transaction or subscription`,
                       { subscription, transaction }
                     );
@@ -200,12 +200,12 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                   }
 
                   if (shouldSave) {
-                    logger.debug(`Updating existing payment ${payment.id}`);
+                    logger.info(`Updating existing payment ${payment.id}`);
                     updatedCount++;
                     await payment.save();
                   } else {
                     goodToGoCount++;
-                    logger.debug(
+                    logger.info(
                       `payment ${payment.id} already up to date and good to go!`
                     );
                   }
@@ -222,7 +222,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     invoice_at: new Date(subscription.create_time)
                   };
                   createdCount++;
-                  logger.debug('creating new payment');
+                  logger.info('creating new payment');
                   await Payments.create(payment);
                 }
 

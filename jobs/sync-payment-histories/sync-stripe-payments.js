@@ -77,7 +77,7 @@ async function syncStripePayments({ errorThreshold }) {
     // payment and the data we are getting from stripe, we do
     // not make any changes and send an alert for that payment
     for (const paymentIntent of stripePaymentIntents) {
-      logger.debug(`paymentIntent ${paymentIntent.id}`);
+      logger.info(`paymentIntent ${paymentIntent.id}`);
       try {
         if (paymentIntent.status !== 'succeeded') {
           continue;
@@ -90,7 +90,7 @@ async function syncStripePayments({ errorThreshold }) {
           (charge) => charge.paid && charge.status === 'succeeded'
         );
 
-        logger.debug(`charge ${stripeCharge?.id}`);
+        logger.info(`charge ${stripeCharge?.id}`);
 
         let amountRefunded;
         if (stripeCharge.refunded)
@@ -115,7 +115,7 @@ async function syncStripePayments({ errorThreshold }) {
 
         const [checkoutSession] = checkoutSessions;
 
-        logger.debug(`checkoutSession ${checkoutSession?.id}`);
+        logger.info(`checkoutSession ${checkoutSession?.id}`);
 
         // invoices only on subscription payments
         let invoice;
@@ -125,7 +125,7 @@ async function syncStripePayments({ errorThreshold }) {
         let productId;
         let priceId;
         if (_.isObject(invoice)) {
-          logger.debug(`invoice ${invoice.id}`);
+          logger.info(`invoice ${invoice.id}`);
           productId = invoice.lines.data[0].price.product;
           priceId = invoice.lines.data[0].price.id;
         } else {
@@ -137,8 +137,8 @@ async function syncStripePayments({ errorThreshold }) {
           priceId = lines.data[0].price.id;
         }
 
-        logger.debug(`product ${productId}`);
-        logger.debug(`price ${priceId}`);
+        logger.info(`product ${productId}`);
+        logger.info(`price ${priceId}`);
 
         // this logic is the same in rerieve-domain-billing
         const plan = STRIPE_PRODUCTS[productId];
@@ -196,7 +196,7 @@ async function syncStripePayments({ errorThreshold }) {
         }
 
         if (payment) {
-          logger.debug('found existing payment');
+          logger.info('found existing payment');
 
           const { id } = payment;
 
@@ -337,11 +337,11 @@ async function syncStripePayments({ errorThreshold }) {
 
           await payment.save();
 
-          logger.debug(
+          logger.info(
             `Successfully synced and saved payment for stripe payment_intent ${paymentIntent.id}`
           );
         } else {
-          logger.debug('creating new payment');
+          logger.info('creating new payment');
           payment = {
             user: customer._id,
             plan,
@@ -364,7 +364,7 @@ async function syncStripePayments({ errorThreshold }) {
 
           await Payments.create(payment);
 
-          logger.debug(
+          logger.info(
             `Successfully created new payment for stripe payment_intent ${paymentIntent.id}`
           );
         }
