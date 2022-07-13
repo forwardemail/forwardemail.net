@@ -7,7 +7,7 @@ async function ensurePaidToDate(ctx, next) {
   // return early if we're already on a billing page
   if (
     ctx.pathWithoutLocale.startsWith('/my-account/billing') ||
-    ctx.state.plan === 'free' ||
+    ctx.state.user.plan === 'free' ||
     !_.isDate(ctx.state.user[config.userFields.planExpiresAt]) ||
     new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() >=
       Date.now()
