@@ -104,7 +104,8 @@ block body
       .col-12.d-flex(class=user.plan === "free" ? "" : "col-lg-6")
         .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
           h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
-          .small.text-muted.text-uppercase.mb-3= t("Current Plan")
+          .small.text-muted.text-uppercase.mb-3
+            = t('Plan started on <span class="notranslate">%s</span>', dayjs(user[config.userFields.planSetAt]).format('M/D/YY'))
           button.btn.btn-sm.btn-dark.btn-success(
             type="button",
             data-toggle="modal",
