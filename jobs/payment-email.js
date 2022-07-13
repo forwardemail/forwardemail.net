@@ -54,7 +54,15 @@ async function mapper(id) {
 
   const [receiptHTML, content] = await Promise.all([
     Payments.getPDFReceipt(payment, user, user[config.lastLocaleField], true),
-    Payments.getPDFReceipt(payment, user, user[config.lastLocaleField])
+    (async () => {
+      const stream = await Payments.getPDFReceipt(
+        payment,
+        user,
+        user[config.lastLocaleField]
+      );
+      const buffer = await getStream.buffer(stream);
+      return buffer;
+    })()
   ]);
 
   const filename = `${dayjs(payment.invoice_at).format('YYYY-MM-DD')}-${
@@ -69,10 +77,7 @@ async function mapper(id) {
       attachments: [
         {
           filename,
-          // in test environments where we use preview-email we can't use streams
-          content: ['test', 'development'].includes(config.env)
-            ? await getStream.buffer(content)
-            : content
+          content
         }
       ]
     },
