@@ -127,6 +127,9 @@ object[config.userFields.paypalSubscriptionID] = {
 // two factor auth reminders
 object[config.userFields.twoFactorReminderSentAt] = Date;
 
+// api past due reminders
+object[config.userFields.apiPastDueSentAt] = Date;
+
 // when the user upgraded to a paid plan
 object[config.userFields.planSetAt] = {
   type: Date,
@@ -377,6 +380,10 @@ User.pre('save', async function (next) {
     user[config.userFields.planExpiresAt] = new Date(
       new Date(user[config.userFields.planSetAt]).getTime() + sum
     );
+
+    // if the new expiry is in the future then reset the API past due sent at reminder
+    if (new Date(user[config.userFields.planExpiresAt]).getTime() >= Date.now())
+      user[config.userFields.apiPastDueSentAt] = undefined;
 
     next();
   } catch (err) {

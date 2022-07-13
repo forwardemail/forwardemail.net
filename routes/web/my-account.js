@@ -14,6 +14,7 @@ router
   .use(web.myAccount.ensureNotBanned)
   .use(web.breadcrumbs)
   .use(web.myAccount.retrieveDomains)
+  .use(web.myAccount.ensurePaidToDate)
   .get('/', (ctx) => {
     ctx.redirect(ctx.state.l('/my-account/domains'));
   })

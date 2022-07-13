@@ -11,6 +11,7 @@ const ensureDomainAdmin = require('./ensure-domain-admin');
 const ensureNotBanned = require('./ensure-not-banned');
 const ensureTeamPlan = require('./ensure-team-plan');
 const ensureUpgradedPlan = require('./ensure-upgraded-plan');
+const ensurePaidToDate = require('./ensure-paid-to-date');
 const importAliases = require('./import-aliases');
 const listAliases = require('./list-aliases');
 const listBilling = require('./list-billing');
@@ -56,6 +57,7 @@ module.exports = {
   ensureNotBanned,
   ensureTeamPlan,
   ensureUpgradedPlan,
+  ensurePaidToDate,
   importAliases,
   listAliases,
   listBilling,

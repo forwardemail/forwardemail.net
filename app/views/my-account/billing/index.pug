@@ -58,7 +58,7 @@ block body
           .col
             .alert.text-center.mb-0.small(class=hasPlanExpired ? 'alert-danger' : 'alert-success')
               if hasPlanExpired
-                != t('Your plan expired on <span class="notranslate">%s</span>. Please make a payment or correct billing issues to avoid account termination and service interruption.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY'))
+                != t('Your plan expired on <span class="notranslate">%s</span>. Please make a payment or correct billing issues to avoid account termination.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY'))
               else
                 = emoji('tada')
                 = ' '

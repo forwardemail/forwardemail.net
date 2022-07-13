@@ -151,6 +151,7 @@ const config = {
 
   // user fields (change these if you want camel case or whatever)
   userFields: {
+    apiPastDueSentAt: 'api_past_due_sent_at',
     receiptEmail: 'receipt_email',
     isRateLimitWhitelisted: 'is_rate_limit_whitelisted',
     accountUpdates: 'account_updates',

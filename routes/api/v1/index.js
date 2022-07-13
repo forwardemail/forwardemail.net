@@ -41,6 +41,7 @@ router
     policies.checkVerifiedEmail,
     web.myAccount.ensureNotBanned,
     api.v1.enforcePaidPlan,
+    web.myAccount.ensurePaidToDate,
     api.v1.users.retrieve
   )
   .put(
@@ -49,6 +50,7 @@ router
     policies.checkVerifiedEmail,
     web.myAccount.ensureNotBanned,
     api.v1.enforcePaidPlan,
+    web.myAccount.ensurePaidToDate,
     api.v1.users.update
   );
 
@@ -60,6 +62,7 @@ router
     policies.checkVerifiedEmail,
     web.myAccount.ensureNotBanned,
     api.v1.enforcePaidPlan,
+    web.myAccount.ensurePaidToDate,
     web.myAccount.retrieveDomains
   )
   .get('/domains', api.v1.domains.list)
