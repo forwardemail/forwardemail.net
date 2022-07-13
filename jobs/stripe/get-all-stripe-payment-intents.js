@@ -19,7 +19,9 @@ async function getAllStripePaymentIntents(stripeCustomerId) {
 
     paymentIntents = [...paymentIntents, ...res.data];
     has_more = res.has_more;
-    starting_after = _.last(res.data).id;
+    if (has_more && _.last(res.data)) {
+      starting_after = _.last(res.data).id;
+    }
   } while (has_more);
 
   return paymentIntents;
