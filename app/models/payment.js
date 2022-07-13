@@ -54,7 +54,8 @@ const Payment = new mongoose.Schema({
   receipt_sent_at: Date,
   amount_formatted: {
     type: String,
-    required: true
+    required: true,
+    default: 0
   },
   method: {
     default: 'unknown',
@@ -141,7 +142,9 @@ async function getUniqueReference(payment) {
 
 Payment.pre('validate', async function (next) {
   try {
-    this.amount_formatted = accounting.formatMoney(this.amount / 100);
+    this.amount_formatted = accounting.formatMoney(
+      this.amount - this.amount_refunded / 100
+    );
 
     if (!isSANB(this.reference))
       this.reference = await cryptoRandomString.async(config.referenceOptions);
