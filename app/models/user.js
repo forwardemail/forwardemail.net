@@ -129,6 +129,7 @@ object[config.userFields.twoFactorReminderSentAt] = Date;
 
 // api past due reminders
 object[config.userFields.apiPastDueSentAt] = Date;
+object[config.userFields.apiRestrictedSentAt] = Date;
 
 // when the user upgraded to a paid plan
 object[config.userFields.planSetAt] = {
@@ -382,8 +383,12 @@ User.pre('save', async function (next) {
     );
 
     // if the new expiry is in the future then reset the API past due sent at reminder
-    if (new Date(user[config.userFields.planExpiresAt]).getTime() >= Date.now())
+    if (
+      new Date(user[config.userFields.planExpiresAt]).getTime() >= Date.now()
+    ) {
       user[config.userFields.apiPastDueSentAt] = undefined;
+      user[config.userFields.apiRestrictedSentAt] = undefined;
+    }
 
     next();
   } catch (err) {

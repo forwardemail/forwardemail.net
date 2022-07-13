@@ -274,6 +274,8 @@ module.exports = {
     'In order to switch plans, you must first update your account to good standing by paying the entire past due balance. You owe payment for <span class="notranslate">%d</span> months.',
   PAYMENT_PAST_DUE_SUBJECT:
     'Your account is past due and API access may be restricted!',
+  PAYMENT_PAST_DUE_API_RESTRICTED:
+    'API access has been restricted due to past due payment',
   PAYMENT_PAST_DUE_MESSAGE:
     '<strong class="text-danger">Your account is past due.</strong> Please <a href="%s">make a payment</a> or <a href="%s">correct billing issues</a> to avoid account termination.',
   ...STATUSES

@@ -1,4 +1,6 @@
+const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const ms = require('ms');
 
 const emailHelper = require('#helpers/email');
 const config = require('#config');
@@ -23,8 +25,49 @@ async function ensurePaidToDate(ctx, next) {
 
   // otherwise enforce the user to make payment if they're behind
   if (ctx.api) {
-    // TODO: if they're past 30 days due then restrict API access
-    // ctx.throw(Boom.paymentRequired(ctx.translateError('PAYMENT_PAST_DUE')));
+    // if they received a past due reminder
+    // and it was more than 30 days ago then restrict their usage entirely
+    if (
+      _.isDate(ctx.state.user[config.userFields.apiPastDueSentAt]) &&
+      new Date(ctx.state.user[config.userFields.apiPastDueSentAt]).getTime() <
+        Date.now() - ms('30d')
+    ) {
+      // if they were already sent the email then return early
+      if (_.isDate(ctx.state.user[config.userFields.apiRestrictedSentAt])) {
+        ctx.throw(Boom.paymentRequired(ctx.translateError('PAYMENT_PAST_DUE')));
+        return;
+      }
+
+      // send them an email notifying them that access is restricted
+      // and only restrict access if this email was able to be sent successfully
+      try {
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: ctx.state.user[config.userFields.receiptEmail]
+              ? ctx.state.user[config.userFields.receiptEmail]
+              : ctx.state.user[config.userFields.fullEmail],
+            ...(ctx.state.user[config.userFields.receiptEmail]
+              ? {
+                  cc: [
+                    ctx.state.user[config.userFields.fullEmail],
+                    config.email.message.from
+                  ]
+                }
+              : { cc: config.email.message.from }),
+            subject: ctx.translate('PAYMENT_PAST_DUE_API_RESTRICTED')
+          },
+          locals: { message }
+        });
+        // mark that we sent this email
+        ctx.state.user[config.userFields.apiRestrictedSentAt] = new Date();
+        await ctx.state.user.save();
+        ctx.throw(Boom.paymentRequired(ctx.translateError('PAYMENT_PAST_DUE')));
+        return;
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
+    }
 
     // send a one-time email if the user was late on payments
     if (!_.isDate(ctx.state.user[config.userFields.apiPastDueSentAt])) {
@@ -32,8 +75,17 @@ async function ensurePaidToDate(ctx, next) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: ctx.state.user[config.userFields.fullEmail],
-            cc: config.email.message.from,
+            to: ctx.state.user[config.userFields.receiptEmail]
+              ? ctx.state.user[config.userFields.receiptEmail]
+              : ctx.state.user[config.userFields.fullEmail],
+            ...(ctx.state.user[config.userFields.receiptEmail]
+              ? {
+                  cc: [
+                    ctx.state.user[config.userFields.fullEmail],
+                    config.email.message.from
+                  ]
+                }
+              : { cc: config.email.message.from }),
             subject
           },
           locals: { message }
