@@ -63,8 +63,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
   })
     // sort by newest customers first
     .sort('-created_at')
-    // NOTE: we can't use lean here because toObject() hides fields
-    // .lean()
+    .lean()
     .exec();
 
   logger.info(
