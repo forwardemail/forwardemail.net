@@ -105,7 +105,7 @@ block body
         .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
           h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
           .small.text-muted.text-uppercase.mb-3
-            = t('Plan started on <span class="notranslate">%s</span>', dayjs(user[config.userFields.planSetAt]).format('M/D/YY'))
+            != t('Plan started on <span class="notranslate">%s</span>', dayjs(user[config.userFields.planSetAt]).format('M/D/YY'))
           button.btn.btn-sm.btn-dark.btn-success(
             type="button",
             data-toggle="modal",
