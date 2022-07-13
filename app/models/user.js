@@ -96,6 +96,14 @@ const User = new mongoose.Schema({
 // additional variable based properties to add to the schema
 const object = {};
 
+// custom receipt email
+object[config.userFields.receiptEmail] = {
+  type: String,
+  trim: true,
+  lowercase: true,
+  validate: (value) => !value || validator.isEmail(value)
+};
+
 // stripe
 object[config.userFields.stripeCustomerID] = {
   type: String,

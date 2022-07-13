@@ -142,6 +142,7 @@ const config = {
 
   // user fields (change these if you want camel case or whatever)
   userFields: {
+    receiptEmail: 'receipt_email',
     isRateLimitWhitelisted: 'is_rate_limit_whitelisted',
     accountUpdates: 'account_updates',
     fullEmail: 'full_email',

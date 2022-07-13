@@ -75,7 +75,7 @@ block body
           .card.border-dark
             h4.card-header.bg-dark.text-white= t("Personal Information")
             .card-body.pb-0
-              .form-group.floating-label.mt-4
+              .form-group.floating-label.mt-3
                 input#input-email.form-control(
                   type="email",
                   required,
@@ -85,14 +85,14 @@ block body
                   readonly=!user[config.userFields.hasSetPassword]
                 )
                 label(for="input-email")= t("Email address")
-                if !user[config.userFields.hasSetPassword]
-                  button.mt-3.btn.btn-danger.btn-sm(
-                    type="button",
-                    data-toggle="modal",
-                    data-target="#modal-change-password"
-                  )= t("Set a password to change your email")
-                else if user[config.userFields.changeEmailNewAddress]
-                  p.small.form-text.text-muted!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
+              if !user[config.userFields.hasSetPassword]
+                button.btn.btn-danger.btn-sm.mb-3(
+                  type="button",
+                  data-toggle="modal",
+                  data-target="#modal-change-password"
+                )= t("Set a password to change your email")
+              else if user[config.userFields.changeEmailNewAddress]
+                .alert.alert-warning.small!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
               .form-group.floating-label
                 input#input-given-name.form-control(
                   type="text",
@@ -109,7 +109,17 @@ block body
                   placeholder=t("Last name")
                 )
                 label(for="input-family-name")= t("Last name")
+              if user[config.userFields.hasSetPassword]
+                .form-group
+                  a.text-danger(
+                    href="#",
+                    role="button",
+                    data-toggle="modal",
+                    data-target="#modal-change-password"
+                  ).small= t("Need to change your password?")
               if domains && domains.filter(domain => !domain.is_global).length > 0
+                hr
+                .alert.alert-info.small= t('If you set a default domain, then you will be redirected to its section after login.')
                 .form-group.floating-label
                   select#input-default-domain.form-control(
                     name=config.userFields.defaultDomain
@@ -124,15 +134,6 @@ block body
                         selected=user[config.userFields.defaultDomain] && user[config.userFields.defaultDomain].toString() === domain.id
                       )= domain.name
                   label(for="input-default-domain")= t("Default Domain")
-                p.small.form-text.text-muted= t('If you set a default domain, then you will be redirected to its section after login.')
-              if user[config.userFields.hasSetPassword]
-                .form-group
-                  a.text-danger(
-                    href="#",
-                    role="button",
-                    data-toggle="modal",
-                    data-target="#modal-change-password"
-                  ).small= t("Need to change your password?")
             .card-footer
               button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
       .col-md.mt-3.mt-md-0
@@ -142,8 +143,17 @@ block body
           .card.border-dark
             h4.card-header.bg-dark.text-white= t("Company Information")
             .card-body.pb-0
-              p.text-muted= t("We strictly use this info for receipts and reminders.")
-              .form-group.floating-label.mt-4
+              .alert.alert-warning.small!= t("Receipts are automatically emailed to you.  If you set a receipt email address below, then receipts will be sent there and you will receive a copy too.")
+              .form-group.floating-label.mt-3
+                input#input-receipt-email.form-control(
+                  type="email",
+                  name=config.userFields.receiptEmail,
+                  value=user[config.userFields.receiptEmail],
+                  placeholder="receipts@example.com",
+                )
+                label(for="input-receipt-email")= t("Receipt email address")
+              hr
+              .form-group.floating-label
                 input#input-company-name.form-control(
                   type="text",
                   name=config.userFields.companyName,

@@ -61,11 +61,17 @@ async function updateProfile(ctx) {
           ? undefined
           : body[config.userFields.defaultDomain];
 
-    ctx.logger.debug('updated user', {
-      [config.userFields.defaultDomain]:
-        ctx.state.user[config.userFields.defaultDomain],
-      body: body[config.userFields.defaultDomain]
-    });
+    // receipt email
+    if (_.isString(body[config.userFields.receiptEmail])) {
+      if (body[config.userFields.receiptEmail]) {
+        if (!isEmail(body[config.userFields.receiptEmail]))
+          return ctx.throw(
+            Boom.badRequest(ctx.translateError('INVALID_EMAIL'))
+          );
+        ctx.state.user[config.userFields.receiptEmail] =
+          body[config.userFields.receiptEmail];
+      } else ctx.state.user[config.userFields.receiptEmail] = undefined;
+    }
 
     //
     // company information
