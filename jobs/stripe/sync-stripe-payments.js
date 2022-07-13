@@ -413,33 +413,35 @@ async function syncStripePayments({ errorThreshold }) {
     // after we have finished syncing subscriptions
     // if the subscription itself was cancelled
     // then we need to remove it from our system
-    try {
-      const subscription = await stripe.subscriptions.retrieve(
-        customer[config.userFields.stripeSubscriptionID]
-      );
-      // subscription.status is enumerable field and must be one of the following:
-      // - incomplete
-      // - incomplete_expired
-      // - trialing
-      // - active
-      // - past_due
-      // - canceled
-      // - unpaid
-      if (subscription.status !== 'active') {
-        // if the status was not cancelled then attempt to cancel it
-        if (!['canceled', 'cancelled'].includes(subscription.status))
-          await stripe.subscriptions.del(
-            customer[config.userFields.stripeSubscriptionID]
-          );
+    if (isSANB(customer[config.userFields.stripeSubscriptionID])) {
+      try {
+        const subscription = await stripe.subscriptions.retrieve(
+          customer[config.userFields.stripeSubscriptionID]
+        );
+        // subscription.status is enumerable field and must be one of the following:
+        // - incomplete
+        // - incomplete_expired
+        // - trialing
+        // - active
+        // - past_due
+        // - canceled
+        // - unpaid
+        if (subscription.status !== 'active') {
+          // if the status was not cancelled then attempt to cancel it
+          if (!['canceled', 'cancelled'].includes(subscription.status))
+            await stripe.subscriptions.del(
+              customer[config.userFields.stripeSubscriptionID]
+            );
 
-        // remove it from the user's account
-        const user = await Users.findById(customer._id);
-        if (!user) throw new Error('User does not exist');
-        user[config.userFields.stripeSubscriptionID] = undefined;
-        await user.save();
+          // remove it from the user's account
+          const user = await Users.findById(customer._id);
+          if (!user) throw new Error('User does not exist');
+          user[config.userFields.stripeSubscriptionID] = undefined;
+          await user.save();
+        }
+      } catch (err) {
+        logger.error(err, { customer });
       }
-    } catch (err) {
-      logger.error(err, { customer });
     }
 
     // check the db to see if there is any payments this script couldn't handle
