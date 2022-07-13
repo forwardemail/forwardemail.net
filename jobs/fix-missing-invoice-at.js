@@ -161,7 +161,10 @@ async function mapper(id) {
         throw err;
       }
 
-      invoiceAt = new Date(body.create_time);
+      // TODO: note there is a bug here in that it's going to set
+      //       it to the start date of the subscription for _all_ payments
+      // invoiceAt = new Date(body.create_time);
+      throw new Error('This script needs to utilize transactions API');
     } else {
       invoiceAt = new Date(payment.created_at);
     }

@@ -165,19 +165,31 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                     shouldSave = true;
                   }
 
-                  /*
                   // transaction time is different than invoice_at, which is used for plan expiry calculation
                   // (see jobs/fix-missing-invoice-at.js)
-                  if (transaction.time !== payment?.invoice_at?.toISOString()) {
+                  if (
+                    new Date(payment.invoice_at).getTime() ===
+                      new Date(payment.created_at).getTime() ||
+                    new Date(payment.invoice_at).getTime() ===
+                      new Date(subscription.create_time).getTime()
+                  ) {
                     logger.debug(
-                      `changing payment.invoice_at ${payment.invoice_at?.toISOString()} to match transaction.time ${
-                        transaction.time
-                      }`
+                      `changing payment.invoice_at ${payment.invoice_at?.toISOString()} to match transaction or subscription`,
+                      { subscription, transaction }
                     );
-                    payment.invoice_at = dayjs(transaction.time).toDate();
+                    // if the payment's invoice_at was equal to created_at
+                    // then this is a legacy bug and we need to update it
+                    // if the create_time when formatted equals the transaction time
+                    // then use that as it's probably when the subscription was started
+                    payment.invoice_at =
+                      dayjs(new Date(subscription.create_time)).format(
+                        'MM/DD/YYYY'
+                      ) ===
+                      dayjs(new Date(transaction.time)).format('MM/DD/YYYY')
+                        ? new Date(subscription.create_time)
+                        : dayjs(new Date(transaction.time)).toDate();
                     shouldSave = true;
                   }
-                  */
 
                   if (payment.plan !== plan)
                     throw new Error('Paypal plan did not match');
