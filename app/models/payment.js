@@ -143,7 +143,11 @@ async function getUniqueReference(payment) {
 Payment.pre('validate', async function (next) {
   try {
     this.amount_formatted = accounting.formatMoney(
-      (this.amount - this.amount_refunded) / 100
+      Number.isFinite(this.amount_refunded) &&
+        this.amount_refunded > 0 &&
+        this.amount_refunded <= this.amount
+        ? (this.amount - this.amount_refunded) / 100
+        : this.amount / 100
     );
 
     if (!isSANB(this.reference))
