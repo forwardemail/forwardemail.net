@@ -12,6 +12,7 @@ const pluralize = require('pluralize');
 const striptags = require('striptags');
 const titleize = require('titleize');
 const toEmoji = require('gemoji/name-to-emoji');
+const accounting = require('accounting');
 const validator = require('validator');
 const { boolean } = require('boolean');
 const { parse } = require('node-html-parser');
@@ -59,5 +60,6 @@ module.exports = {
   striptags,
   titleize,
   validator,
-  prefixHTMLPathBasedAnchors
+  prefixHTMLPathBasedAnchors,
+  accounting
 };
