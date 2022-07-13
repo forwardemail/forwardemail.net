@@ -1,12 +1,13 @@
-/* eslint-disable max-depth */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable complexity */
+const os = require('os');
+
 const Stripe = require('stripe');
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
+const dedent = require('dedent');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const dedent = require('dedent');
-const dayjs = require('dayjs-with-plugins');
+const pMap = require('p-map');
+const pMapSeries = require('p-map-series');
 
 const getAllStripePaymentIntents = require('./get-all-stripe-payment-intents');
 
@@ -17,10 +18,9 @@ const logger = require('#helpers/logger');
 const Users = require('#models/user');
 const Payments = require('#models/payment');
 
+const concurrency = os.cpus().length;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-
 const { STRIPE_MAPPING, STRIPE_PRODUCTS } = config.payments;
-
 const thresholdError = new Error('Error threshold has been met');
 
 async function syncStripePayments({ errorThreshold }) {
@@ -38,7 +38,7 @@ async function syncStripePayments({ errorThreshold }) {
     `Syncing payments for ${stripeCustomers.length} stripe customers.`
   );
 
-  for (const customer of stripeCustomers) {
+  async function mapper(customer) {
     let hasError = false;
     logger.info(
       `Syncing payments for customer ${customer.email} ${
@@ -70,18 +70,17 @@ async function syncStripePayments({ errorThreshold }) {
 
       if (errorEmails.length >= errorThreshold) throw thresholdError;
 
-      continue;
+      return;
     }
 
     // if for some reason data doesn't match between a saved
     // payment and the data we are getting from stripe, we do
     // not make any changes and send an alert for that payment
-    for (const paymentIntent of stripePaymentIntents) {
+    // eslint-disable-next-line complexity
+    async function paymentIntentMapper(paymentIntent) {
       logger.info(`paymentIntent ${paymentIntent.id}`);
       try {
-        if (paymentIntent.status !== 'succeeded') {
-          continue;
-        }
+        if (paymentIntent.status !== 'succeeded') return;
 
         // charges will usually just be an array of the successful charge,
         // but I think it may be possible a failed charge could be there as well
@@ -405,6 +404,8 @@ async function syncStripePayments({ errorThreshold }) {
       }
     }
 
+    await pMapSeries(stripePaymentIntents, paymentIntentMapper);
+
     // finally - check the db to see if there is any payments this script couldn't handle
     // we skip this if we had an error saving above because if we did - then this will send a duplicate email
     // for this customer
@@ -474,6 +475,8 @@ async function syncStripePayments({ errorThreshold }) {
       }
     }
   }
+
+  await pMap(stripeCustomers, mapper, { concurrency });
 
   if (errorEmails.length > 0) {
     try {

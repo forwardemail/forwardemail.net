@@ -1,8 +1,10 @@
-/* eslint-disable max-depth */
-/* eslint-disable no-await-in-loop */
+const os = require('os');
+
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const dayjs = require('dayjs-with-plugins');
+const pMap = require('p-map');
+const pMapSeries = require('p-map-series');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -11,19 +13,20 @@ const logger = require('#helpers/logger');
 const Users = require('#models/user');
 const Payments = require('#models/payment');
 
+const concurrency = os.cpus().length;
 const { PAYPAL_PLAN_MAPPING } = config.payments;
-
 const PAYPAL_PLANS = {
   enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
   team: Object.values(PAYPAL_PLAN_MAPPING.team)
 };
-
 const thresholdError = new Error('Error threshold has been met');
 
-// eslint-disable-next-line complexity
-async function syncPaypalSubscriptionPayments({ errorThreshold }) {
-  const errorEmails = [];
+let updatedCount = 0;
+let goodToGoCount = 0;
+let createdCount = 0;
+const errorEmails = [];
 
+async function syncPaypalSubscriptionPayments({ errorThreshold }) {
   //
   // NOTE: this won't sync all payments because
   //       some users cancelled paypal subscriptions
@@ -56,11 +59,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
     `Syncing payments for ${paypalCustomers.length} paypal customers`
   );
 
-  let updatedCount = 0;
-  let goodToGoCount = 0;
-  let createdCount = 0;
-
-  for (const customer of paypalCustomers) {
+  async function mapper(customer) {
     try {
       logger.info(`Syncing paypal subscription payments for ${customer.email}`);
       /**
@@ -92,7 +91,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
         }
       );
 
-      for (const subscriptionId of subscriptionIds) {
+      // eslint-disable-next-line no-inner-declarations
+      async function subscriptionMapper(subscriptionId) {
         try {
           logger.info(`subscriptionId ${subscriptionId}`);
           const agent1 = await paypalAgent();
@@ -121,7 +121,9 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
           if (transactions.length > 0) {
             logger.info(`${transactions.length} transactions`);
-            for (const transaction of transactions) {
+
+            // eslint-disable-next-line no-inner-declarations
+            async function transactionMapper(transaction) {
               try {
                 // we need to have a payment for each transaction of a subscription
                 logger.info(`transaction ${transaction.id}`);
@@ -245,6 +247,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                 if (errorEmails.length >= errorThreshold) throw thresholdError;
               }
             }
+
+            await pMapSeries(transactions, transactionMapper);
           }
         } catch (err) {
           logger.error(err);
@@ -269,6 +273,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
           }
         }
       }
+
+      await pMapSeries(subscriptionIds, subscriptionMapper);
     } catch (err) {
       logger.error(err, { customer });
       if (err === thresholdError) {
@@ -294,6 +300,8 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
       }
     }
   }
+
+  await pMap(paypalCustomers, mapper, { concurrency });
 
   if (errorEmails.length > 0) {
     try {

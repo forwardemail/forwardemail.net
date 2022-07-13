@@ -4,7 +4,6 @@ const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 const syncPaypalSubscriptionPayments = require('./sync-paypal-subscription-payments');
-const syncStripePayments = require('./sync-stripe-payments');
 const logger = require('#helpers/logger');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -23,22 +22,11 @@ graceful.listen();
   // ex... if errorTolerance = 50, and there are 50 stripe error emails sent, the stripe function will stop looping and
   // send a final email that the script needs work or that the service is down - so as to not flood inboxes with thousands of emails
   // note that the tolerance applies to each payment provider not to the entire script
-  await Promise.all([
-    (async () => {
-      try {
-        await syncStripePayments({ errorThreshold: 15 });
-      } catch (err) {
-        logger.error(err);
-      }
-    })(),
-    (async () => {
-      try {
-        await syncPaypalSubscriptionPayments({ errorThreshold: 5 });
-      } catch (err) {
-        logger.error(err);
-      }
-    })()
-  ]);
+  try {
+    await syncPaypalSubscriptionPayments({ errorThreshold: 5 });
+  } catch (err) {
+    logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

@@ -1,3 +1,4 @@
+const path = require('path');
 const process = require('process');
 
 // const dayjs = require('dayjs-with-plugins');
@@ -9,9 +10,16 @@ const jobs = [
   // 'migration',
   'vanity-domains',
   {
-    name: 'sync-payment-histories/index',
+    name: 'paypal',
     interval: '1h',
-    timeout: 0
+    timeout: 0,
+    path: path.join(__dirname, 'paypal', 'index.js')
+  },
+  {
+    name: 'stripe',
+    interval: '1h',
+    timeout: 0,
+    path: path.join(__dirname, 'stripe', 'index.js')
   },
   // {
   //   name: 'billing',
