@@ -22,9 +22,6 @@ block content
               if isSANB(user[config.userFields.stripeSubscriptionID])
                 li.list-inline-item
                   a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Card')
-              else if isSANB(user[config.userFields.paypalSubscriptionID])
-                li.list-inline-item
-                  a(href=config.env === 'production' ? 'https://www.paypal.com' : 'https://www.sandbox.paypal.com', target='_blank', rel='noopener noreferrer').btn.btn-md.btn-dark!= t('Go to <span class="notranslate">%s</span>', 'PayPal')
               if !hasSubscription
                 li.list-inline-item
                   a.btn.btn-md.btn-success(href=`${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)= t("Enable Auto-Renew")
