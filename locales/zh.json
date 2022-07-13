@@ -2193,5 +2193,14 @@
   "<strong>This domain has unencrypted aliases stored in DNS <span class=\"notranslate\">TXT</span> records.</strong>  Follow these steps to resolve this issue:<ol class=\"mt-3\"><li><a href=\"%s\">Import <span class=\"notranslate\">TXT</span> Records</a></li><li>Remove any DNS <span class=\"notranslate\">TXT</span> records prefixed with <code class=\"notranslate\">%s=</code> (make sure you <u>DO NOT</u> remove the existing encrypted record)</li><li>Try to <a href=\"%s\">Verify Records</a> again</li></ol>": "<strong>此域在 DNS <span class=\"notranslate\">TXT</span>记录中存储了未加密的别名。</strong>请按照以下步骤解决此问题：<ol class=\"mt-3\"><li><a href=\"%s\">导入<span class=\"notranslate\">TXT</span>记录</a></li><li>删除任何以<code class=\"notranslate\">%s=</code>为前缀的 DNS <span class=\"notranslate\">TXT</span>记录（确保<u>不要</u>删除现有的加密记录）</li><li>再次尝试<a href=\"%s\">验证记录</a></li></ol>",
   "An error code of \"<span class=\"notranslate\">%s</span>\" occurred while performing the DNS lookup. Please try again.": "执行 DNS 查找时出现错误代码“ <span class=\"notranslate\">%s</span> ”。请再试一次。",
   "You successfully upgraded your account &ndash; however we noticed that you have one or more domains that are not on the same plan you upgraded to. Please configure each domain to use your current plan by using the drop-down menu located at the <a href=\"/my-account/domains\">Domains</a> page.  You can feel free to mix and match domains to be configued on different plans (e.g. you can have some on the free plan, and others on upgraded paid plans).": "您已成功升级您的帐户 - 但是我们注意到您有一个或多个域与您升级到的计划不同。请使用位于“<a href=\"/my-account/domains\">域”</a>页面的下拉菜单配置每个域以使用您当前的计划。您可以随意混合和匹配域以配置不同的计划（例如，您可以在免费计划中使用一些，而在升级的付费计划中使用其他）。",
-  "In order to switch plans, you must first update your account to good standing by paying the entire past due balance. You owe payment for <span class=\"notranslate\">%d</span> months.": "为了切换计划，您必须首先通过支付全部逾期余额将您的帐户更新为良好信誉。您欠<span class=\"notranslate\">%d</span>个月的付款。"
+  "In order to switch plans, you must first update your account to good standing by paying the entire past due balance. You owe payment for <span class=\"notranslate\">%d</span> months.": "为了切换计划，您必须首先通过支付全部逾期余额将您的帐户更新为良好信誉。您欠<span class=\"notranslate\">%d</span>个月的付款。",
+  "<span class=\"notranslate\">Forward Email</span> Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)": "<span class=\"notranslate\">Forward Email</span>收据 [ <span class=\"notranslate\">%s</span> ] ( <span class=\"notranslate\">%s</span> )",
+  "Thank you!": "谢谢！",
+  "Your receipt is also attached as a PDF to this email.": "您的收据也以 PDF 格式附在这封电子邮件中。",
+  "Congrats!": "恭喜！",
+  "Manage aliases": "管理别名",
+  "Welcoming your new domain!": "欢迎您的新域名！",
+  "Upgrade now": "现在升级",
+  "DNS records haven't propagated or may not be configured properly.": "DNS 记录尚未传播或可能未正确配置。",
+  "If we detect successful changes, then we'll notify you by email.": "如果我们检测到更改成功，我们会通过电子邮件通知您。"
 }

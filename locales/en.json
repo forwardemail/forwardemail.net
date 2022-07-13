@@ -2390,5 +2390,14 @@
   "debit or credit card": "debit or credit card",
   "You have an active <span class=\"notranslate\">%s</span> subscription.": "You have an active <span class=\"notranslate\">%s</span> subscription.",
   "Auto-renew enabled": "Auto-renew enabled",
-  "Update Card": "Update Card"
+  "Update Card": "Update Card",
+  "<span class=\"notranslate\">Forward Email</span> Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)": "<span class=\"notranslate\">Forward Email</span> Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)",
+  "Thank you!": "Thank you!",
+  "Your receipt is also attached as a PDF to this email.": "Your receipt is also attached as a PDF to this email.",
+  "Congrats!": "Congrats!",
+  "Manage aliases": "Manage aliases",
+  "Welcoming your new domain!": "Welcoming your new domain!",
+  "Upgrade now": "Upgrade now",
+  "DNS records haven't propagated or may not be configured properly.": "DNS records haven't propagated or may not be configured properly.",
+  "If we detect successful changes, then we'll notify you by email.": "If we detect successful changes, then we'll notify you by email."
 }
