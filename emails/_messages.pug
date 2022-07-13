@@ -17,7 +17,7 @@ if user && _.isObject(user) && user.plan !== 'free' && _.isDate(user[config.user
       .row
         .col-12
           .alert.alert-warning.small.text-center.rounded-0
-            != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(locale).format("M/D/YY"))
+            != t('Next payment due <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow())
             //- if it's within the next 30 days
             if dayjs().diff(user[config.userFields.planExpiresAt], 'd') <= 30
               = " "
