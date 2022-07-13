@@ -9,15 +9,12 @@ const { boolean } = require('boolean');
 const jobs = [
   // 'migration',
   'vanity-domains',
+  // NOTE: we had to combine paypal sync jobs together because of API 429 rate limiting
   {
-    name: 'sync-paypal-order-payments',
+    name: 'paypal',
     interval: '1h',
-    timeout: 0
-  },
-  {
-    name: 'sync-paypal-subscription-payments',
-    interval: '1h',
-    timeout: 0
+    timeout: 0,
+    path: path.join(__dirname, 'paypal', 'index.js')
   },
   {
     name: 'stripe',

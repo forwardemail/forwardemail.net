@@ -1,25 +1,10 @@
-const process = require('process');
-const { parentPort } = require('worker_threads');
-
-const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const pMapSeries = require('p-map-series');
-const sharedConfig = require('@ladjs/shared-config');
 
 const emailHelper = require('#helpers/email');
 const Payments = require('#models/payment');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const { paypalAgent } = require('#helpers/paypal');
-
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
-const graceful = new Graceful({
-  mongooses: [mongoose],
-  logger
-});
-
-graceful.listen();
 
 async function mapper(id) {
   const payment = await Payments.findById(id);
@@ -98,8 +83,7 @@ async function mapper(id) {
   }
 }
 
-(async () => {
-  await mongoose.connect();
+async function syncPayPalOrderPayments() {
   //
   // NOTE: PayPal's Order list API endpoint is restricted to "Partners" only
   //       (so we can't retroactively get anyone that failed on redirect or webhook)
@@ -125,8 +109,17 @@ async function mapper(id) {
     await pMapSeries(ids, mapper);
   } catch (err) {
     logger.error(err);
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: 'Sync PayPal Orders had an error'
+      },
+      locals: {
+        message: err.message
+      }
+    });
   }
+}
 
-  if (parentPort) parentPort.postMessage('done');
-  else process.exit(0);
-})();
+module.exports = syncPayPalOrderPayments;

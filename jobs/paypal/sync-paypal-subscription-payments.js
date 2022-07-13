@@ -1,13 +1,7 @@
-const process = require('process');
-const { parentPort } = require('worker_threads');
-
-const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
-const sharedConfig = require('@ladjs/shared-config');
 
 const Payments = require('#models/payment');
 const Users = require('#models/user');
@@ -16,15 +10,6 @@ const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const { paypalAgent } = require('#helpers/paypal');
 
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
-const graceful = new Graceful({
-  mongooses: [mongoose],
-  logger
-});
-
-graceful.listen();
-
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 const PAYPAL_PLANS = {
   enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
@@ -32,12 +17,12 @@ const PAYPAL_PLANS = {
 };
 const thresholdError = new Error('Error threshold has been met');
 
-let updatedCount = 0;
-let goodToGoCount = 0;
-let createdCount = 0;
-const errorEmails = [];
+async function syncPayPalSubscriptionPayments({ errorThreshold }) {
+  let updatedCount = 0;
+  let goodToGoCount = 0;
+  let createdCount = 0;
+  const errorEmails = [];
 
-async function syncPaypalSubscriptionPayments({ errorThreshold }) {
   //
   // NOTE: this won't sync all payments because
   //       some users cancelled paypal subscriptions
@@ -73,23 +58,21 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
   async function mapper(customer) {
     try {
       logger.info(`Syncing paypal subscription payments for ${customer.email}`);
-      /**
-       * first we need to get the distinct paypal order Ids and validate them all
-       * this really shouldn't be needed. So I am leaving it out for now unless
-       * we want to specifically validate these in the future
-       *
-       * const orderIds = await Payments.distinct('paypal_order_id', {
-       *   user: customer._id
-       * });
-       *
-       * for (const orderId of orderIds) {
-       *   const agent = await paypalAgent();
-       *   const { body: order } = await agent.get(
-       *     `/v2/checkout/orders/${orderId}`
-       *   );
-       *   ;
-       * }
-       */
+      // first we need to get the distinct paypal order Ids and validate them all
+      // this really shouldn't be needed. So I am leaving it out for now unless
+      // we want to specifically validate these in the future
+      //
+      // const orderIds = await Payments.distinct('paypal_order_id', {
+      //   user: customer._id
+      // });
+      //
+      // for (const orderId of orderIds) {
+      //   const agent = await paypalAgent();
+      //   const { body: order } = await agent.get(
+      //     `/v2/checkout/orders/${orderId}`
+      //   );
+      //   ;
+      // }
 
       // then we need to get all the subscription ids and validate that the one that
       // works is the subscription id set on the user. Assuming that is good, that will
@@ -179,32 +162,6 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
                 // if the transaction was refunded or partially
                 // refunded then we need to check and update it
-                /*
-                transaction: '{\n' +
-                  '  "status": "REFUNDED",\n' +
-                  '  "id": "XXXXXXXXXXXXX",\n' +
-                  '  "amount_with_breakdown": {\n' +
-                  '    "gross_amount": {\n' +
-                  '      "currency_code": "USD",\n' +
-                  '      "value": "3.00"\n' +
-                  '    },\n' +
-                  '    "fee_amount": {\n' +
-                  '      "currency_code": "USD",\n' +
-                  '      "value": "0.64"\n' +
-                  '    },\n' +
-                  '    "net_amount": {\n' +
-                  '      "currency_code": "USD",\n' +
-                  '      "value": "2.36"\n' +
-                  '    }\n' +
-                  '  },\n' +
-                  '  "payer_name": {\n' +
-                  '    "given_name": "XXXXXXX",\n' +
-                  '    "surname": "XXXXXXX"\n' +
-                  '  },\n' +
-                  '  "payer_email": "XXXXXXXXXXXXXXXXXX",\n' +
-                  '  "time": "2022-01-01T00:00:00.000Z"\n' +
-                  '}'
-                */
                 if (transaction.status === 'REFUNDED') {
                   amountRefunded = amount;
                 } else if (transaction.status === 'PARTIALLY_REFUNDED') {
@@ -416,19 +373,4 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
   );
 }
 
-(async () => {
-  await mongoose.connect();
-
-  // set an amount of errors that causes the script to bail out completely.
-  // ex... if errorTolerance = 50, and there are 50 stripe error emails sent, the stripe function will stop looping and
-  // send a final email that the script needs work or that the service is down - so as to not flood inboxes with thousands of emails
-  // note that the tolerance applies to each payment provider not to the entire script
-  try {
-    await syncPaypalSubscriptionPayments({ errorThreshold: 5 });
-  } catch (err) {
-    logger.error(err);
-  }
-
-  if (parentPort) parentPort.postMessage('done');
-  else process.exit(0);
-})();
+module.exports = syncPayPalSubscriptionPayments;
