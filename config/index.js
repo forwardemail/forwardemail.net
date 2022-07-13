@@ -340,8 +340,24 @@ const config = {
     ms('1y'),
     ms('2y'),
     ms('3y')
-  ]
+  ],
+
+  // this is used for calculating plan_expires_at
+  // (there is probably a better way to implement this)
+  durationMapping: {
+    [ms('30d').toString()]: ['1', 'month'],
+    [ms('60d').toString()]: ['2', 'months'],
+    [ms('90d').toString()]: ['3', 'months'],
+    [ms('180d').toString()]: ['6', 'months'],
+    [ms('1y').toString()]: ['1', 'year'],
+    [ms('2y').toString()]: ['2', 'years'],
+    [ms('3y').toString()]: ['3', 'years']
+  }
 };
+
+// sanity test against validDurations and durationMapping length
+if (config.validDurations.length !== Object.keys(config.durationMapping).length)
+  throw new Error('validDurations and durationMapping must be aligned');
 
 // set dynamic login otp route
 config.loginOtpRoute = `${config.otpRoutePrefix}${config.otpRouteLoginPath}`;

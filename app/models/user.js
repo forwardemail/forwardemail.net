@@ -369,18 +369,26 @@ User.pre('save', async function (next) {
       // payments must match the user's current plan
       plan: user.plan
     })
+      .sort('invoice_at')
       .select('duration')
       .lean()
       .exec();
 
-    // calculate the sum of all payment durations (lodash _.sumBy is nice)
-    // the Math.max is a safeguard in case duration is negative for whatever reason
-    const sum = Math.max(_.sumBy(payments, 'duration'), 0);
-
+    //
     // set the new expiry
+    //
+    // NOTE: we can't do `_.sumBy` because people pay by the month, not by the # of days in a month (e.g. 30d)
+    //
     user[config.userFields.planExpiresAt] = new Date(
-      new Date(user[config.userFields.planSetAt]).getTime() + sum
+      user[config.userFields.planSetAt]
     );
+    for (const payment of payments) {
+      user[config.userFields.planExpiresAt] = dayjs(
+        user[config.userFields.planExpiresAt]
+      )
+        .add(...config.durationMapping[payment.duration.toString()])
+        .toDate();
+    }
 
     // if the new expiry is in the future then reset the API past due sent at reminder
     if (
