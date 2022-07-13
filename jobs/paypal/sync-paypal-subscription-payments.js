@@ -89,10 +89,11 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
       // eslint-disable-next-line no-inner-declarations
       async function subscriptionMapper(subscriptionId) {
+        let hasError = false;
+        logger.info(`subscriptionId ${subscriptionId}`);
         try {
-          logger.info(`subscriptionId ${subscriptionId}`);
-          const agent1 = await paypalAgent();
-          const { body: subscription } = await agent1.get(
+          const agent = await paypalAgent();
+          const { body: subscription } = await agent.get(
             `/v1/billing/subscriptions/${subscriptionId}`
           );
 
@@ -106,10 +107,13 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
             )[0]
           );
 
+          //
+          // NOTE: this re-uses the auth token from `agent` created above
+          // (so there should not be more than 30s delay between the two calls)
+          //
           // this will either error - or it will return the current active subscriptions transactions.
           // https://developer.paypal.com/docs/subscriptions/full-integration/subscription-management/#list-transactions-for-a-subscription
-          const agent2 = await paypalAgent();
-          const { body: { transactions } = {} } = await agent2.get(
+          const { body: { transactions } = {} } = await agent.get(
             `/v1/billing/subscriptions/${subscriptionId}/transactions?start_time=${
               subscription.create_time
             }&end_time=${new Date().toISOString()}`
@@ -229,6 +233,7 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
                 await user.save();
               } catch (err) {
                 logger.error(err);
+                hasError = true;
                 errorEmails.push({
                   template: 'alert',
                   message: {
@@ -244,15 +249,42 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
             await pMapSeries(transactions, transactionMapper);
           }
+
+          // after we have finished syncing subscriptions
+          // if the subscription itself was cancelled
+          // then we need to remove it from our system
+          if (
+            !hasError &&
+            isSANB(subscription.status) &&
+            ['SUSPENDED', 'CANCELLED', 'EXPIRED'].includes(subscription.status)
+          ) {
+            // attempt to cancel the subscription completely (if status was not "CANCELLED" explicitly)
+            if (subscription.status !== 'CANCELLED') {
+              try {
+                const agent = await paypalAgent();
+                await agent.post(
+                  `/v1/billing/subscriptions/${subscriptionId}/cancel`
+                );
+              } catch (err) {
+                logger.error(err, { customer });
+              }
+            }
+
+            // remove it from the user's account
+            const user = await Users.findById(customer._id);
+            if (!user) throw new Error('User does not exist');
+            user[config.userFields.paypalSubscriptionID] = undefined;
+            await user.save();
+          }
         } catch (err) {
           logger.error(err);
 
           if (err === thresholdError) throw err;
 
           if (err.status === 404)
-            logger.error(
-              new Error('subscription is cancelled or no longer exists')
-            );
+            logger.fatal(new Error('paypal subscription does not exist'), {
+              customer
+            });
           else {
             errorEmails.push({
               template: 'alert',
@@ -287,8 +319,6 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
         } catch (err) {
           logger.error(err);
         }
-
-        logger.error(err);
 
         throw err;
       }

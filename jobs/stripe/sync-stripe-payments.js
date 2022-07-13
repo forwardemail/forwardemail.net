@@ -58,7 +58,7 @@ async function syncStripePayments({ errorThreshold }) {
     } catch (err) {
       // if we couldn't get the customers payments
       // send an alert and try the next customer
-      logger.error(err);
+      logger.error(err, { customer });
       errorEmails.push({
         template: 'alert',
         message: {
@@ -177,7 +177,7 @@ async function syncStripePayments({ errorThreshold }) {
 
         if (tooManyPayments.length > 0)
           throw new Error(
-            `There are too many payments in the system with stripe_payment_intent_id ${paymentIntent.id}. It is reccomended to remove all the payments with this checkout session id and recreate with this script. Please review first to ensure this is the correct course of action.`
+            `There are too many payments in the system with stripe_payment_intent_id ${paymentIntent.id}. It is recommended to remove all the payments with this checkout session id and recreate with this script. Please review first to ensure this is the correct course of action.`
           );
 
         if (!payment && isSANB(checkoutSession?.id)) {
@@ -188,7 +188,7 @@ async function syncStripePayments({ errorThreshold }) {
 
           if (payments.length > 1)
             throw new Error(
-              `Unexpected amount of payments found when searched for checkout session id ${checkoutSession.id}. It is reccomended to remove all the payments with this checkout session id and recreate with this script. Please review first to ensure this is the correct course of action.`
+              `Unexpected amount of payments found when searched for checkout session id ${checkoutSession.id}. It is recommended to remove all the payments with this checkout session id and recreate with this script. Please review first to ensure this is the correct course of action.`
             );
 
           [payment] = payments;
@@ -375,7 +375,7 @@ async function syncStripePayments({ errorThreshold }) {
         await user.save();
       } catch (err) {
         hasError = true;
-        logger.error(err);
+        logger.error(err, { customer });
         errorEmails.push({
           template: 'alert',
           message: {
@@ -406,45 +406,78 @@ async function syncStripePayments({ errorThreshold }) {
 
     await pMapSeries(stripePaymentIntents, paymentIntentMapper);
 
-    // finally - check the db to see if there is any payments this script couldn't handle
-    // we skip this if we had an error saving above because if we did - then this will send a duplicate email
-    // for this customer
+    // if there were any errors then return early
+    if (hasError) return;
+
+    // after we have finished syncing subscriptions
+    // if the subscription itself was cancelled
+    // then we need to remove it from our system
     try {
-      if (!hasError) {
-        const missed = await Payments.find({
-          user: customer._id,
-          method: { $nin: ['unknown', 'paypal'] },
-          stripe_payment_intent_id: { $exists: false }
-        })
-          .lean()
-          .exec();
-
-        if (missed.length > 0)
-          throw new Error(
-            `${customer.email} has some stripe payments that were not found and synced, please fix manually.`.concat(
-              // eslint-disable-next-line unicorn/no-array-reduce
-              missed.reduce(
-                (acc, miss) =>
-                  // eslint-disable-next-line unicorn/prefer-spread
-                  acc.concat(miss.id + '<br />'),
-                'The Payment ids are listed below: <br />'
-              )
-            )
+      const subscription = await stripe.subscriptions.retrieve(
+        customer[config.userFields.stripeSubscriptionID]
+      );
+      // subscription.status is enumerable field and must be one of the following:
+      // - incomplete
+      // - incomplete_expired
+      // - trialing
+      // - active
+      // - past_due
+      // - canceled
+      // - unpaid
+      if (subscription.status !== 'active') {
+        // if the status was not cancelled then attempt to cancel it
+        if (!['canceled', 'cancelled'].includes(subscription.status))
+          await stripe.subscriptions.del(
+            customer[config.userFields.stripeSubscriptionID]
           );
 
-        const stripePaymentCount = await Payments.countDocuments({
-          user: customer._id,
-          stripe_payment_intent_id: { $exists: true, $ne: null }
-        });
-
-        if (
-          stripePaymentIntents.filter((pi) => pi.status === 'succeeded')
-            .length !== stripePaymentCount
-        )
-          throw new Error(
-            'The number of payment_intents from stripe does not match the number of stripe payments in the db. Please review manually.'
-          );
+        // remove it from the user's account
+        const user = await Users.findById(customer._id);
+        if (!user) throw new Error('User does not exist');
+        user[config.userFields.stripeSubscriptionID] = undefined;
+        await user.save();
       }
+    } catch (err) {
+      logger.error(err, { customer });
+    }
+
+    // check the db to see if there is any payments this script couldn't handle
+    // we skip this if we had an error saving above because if we did
+    // then this will send a duplicate email for this customer
+    try {
+      const missed = await Payments.find({
+        user: customer._id,
+        method: { $nin: ['unknown', 'paypal'] },
+        stripe_payment_intent_id: { $exists: false }
+      })
+        .lean()
+        .exec();
+
+      if (missed.length > 0)
+        throw new Error(
+          `${customer.email} has some stripe payments that were not found and synced, please fix manually.`.concat(
+            // eslint-disable-next-line unicorn/no-array-reduce
+            missed.reduce(
+              (acc, miss) =>
+                // eslint-disable-next-line unicorn/prefer-spread
+                acc.concat(miss.id + '<br />'),
+              'The Payment ids are listed below: <br />'
+            )
+          )
+        );
+
+      const stripePaymentCount = await Payments.countDocuments({
+        user: customer._id,
+        stripe_payment_intent_id: { $exists: true, $ne: null }
+      });
+
+      if (
+        stripePaymentIntents.filter((pi) => pi.status === 'succeeded')
+          .length !== stripePaymentCount
+      )
+        throw new Error(
+          'The number of payment_intents from stripe does not match the number of stripe payments in the db. Please review manually.'
+        );
     } catch (err) {
       logger.error(err, { customer });
       errorEmails.push({
