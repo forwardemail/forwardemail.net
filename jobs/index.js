@@ -10,10 +10,14 @@ const jobs = [
   // 'migration',
   'vanity-domains',
   {
-    name: 'paypal',
+    name: 'sync-paypal-order-payments',
     interval: '1h',
-    timeout: 0,
-    path: path.join(__dirname, 'paypal', 'index.js')
+    timeout: 0
+  },
+  {
+    name: 'sync-paypal-subscription-payments',
+    interval: '1h',
+    timeout: 0
   },
   {
     name: 'stripe',

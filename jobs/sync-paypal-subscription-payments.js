@@ -1,14 +1,29 @@
+const process = require('process');
+const { parentPort } = require('worker_threads');
+
+const Graceful = require('@ladjs/graceful');
+const Mongoose = require('@ladjs/mongoose');
+const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const dayjs = require('dayjs-with-plugins');
 const pMapSeries = require('p-map-series');
+const sharedConfig = require('@ladjs/shared-config');
 
+const Payments = require('#models/payment');
+const Users = require('#models/user');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
-const { paypalAgent } = require('#helpers/paypal');
 const logger = require('#helpers/logger');
-const Users = require('#models/user');
-const Payments = require('#models/payment');
+const { paypalAgent } = require('#helpers/paypal');
+
+const breeSharedConfig = sharedConfig('BREE');
+const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+const graceful = new Graceful({
+  mongooses: [mongoose],
+  logger
+});
+
+graceful.listen();
 
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 const PAYPAL_PLANS = {
@@ -164,17 +179,54 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
 
                 // if the transaction was refunded or partially
                 // refunded then we need to check and update it
+                /*
+                transaction: '{\n' +
+                  '  "status": "REFUNDED",\n' +
+                  '  "id": "XXXXXXXXXXXXX",\n' +
+                  '  "amount_with_breakdown": {\n' +
+                  '    "gross_amount": {\n' +
+                  '      "currency_code": "USD",\n' +
+                  '      "value": "3.00"\n' +
+                  '    },\n' +
+                  '    "fee_amount": {\n' +
+                  '      "currency_code": "USD",\n' +
+                  '      "value": "0.64"\n' +
+                  '    },\n' +
+                  '    "net_amount": {\n' +
+                  '      "currency_code": "USD",\n' +
+                  '      "value": "2.36"\n' +
+                  '    }\n' +
+                  '  },\n' +
+                  '  "payer_name": {\n' +
+                  '    "given_name": "XXXXXXX",\n' +
+                  '    "surname": "XXXXXXX"\n' +
+                  '  },\n' +
+                  '  "payer_email": "XXXXXXXXXXXXXXXXXX",\n' +
+                  '  "time": "2022-01-01T00:00:00.000Z"\n' +
+                  '}'
+                */
                 if (transaction.status === 'REFUNDED') {
-                  // TODO: remove this once we know the API response to parse for below partial refund (since it's undocumented)
-                  logger.info('fully refunded', {
-                    transaction: JSON.stringify(transaction, null, 2)
-                  });
                   amountRefunded = amount;
                 } else if (transaction.status === 'PARTIALLY_REFUNDED') {
-                  // TODO: finish this once we know the API response to parse (since it's undocumented)
-                  logger.info('partially refunded', {
-                    transaction: JSON.stringify(transaction, null, 2)
-                  });
+                  // NOTE: we do not support partial refunds right now
+                  logger.info('partially refunded', { transaction });
+                  // email admins here since we're not supposed to do this
+                  emailHelper({
+                    template: 'alert',
+                    message: {
+                      to: config.email.message.from,
+                      subject: 'Partial PayPal Subscription Refund Detected'
+                    },
+                    locals: {
+                      message: `We should not be giving partial refunds because our logic does not check for it.  The transaction response was: <pre><code>${JSON.stringify(
+                        transaction,
+                        null,
+                        2
+                      )}</code></pre>`
+                    }
+                  })
+                    .then()
+                    .catch((err) => logger.error(err));
                 }
 
                 if (payment) {
@@ -364,4 +416,19 @@ async function syncPaypalSubscriptionPayments({ errorThreshold }) {
   );
 }
 
-module.exports = syncPaypalSubscriptionPayments;
+(async () => {
+  await mongoose.connect();
+
+  // set an amount of errors that causes the script to bail out completely.
+  // ex... if errorTolerance = 50, and there are 50 stripe error emails sent, the stripe function will stop looping and
+  // send a final email that the script needs work or that the service is down - so as to not flood inboxes with thousands of emails
+  // note that the tolerance applies to each payment provider not to the entire script
+  try {
+    await syncPaypalSubscriptionPayments({ errorThreshold: 5 });
+  } catch (err) {
+    logger.error(err);
+  }
+
+  if (parentPort) parentPort.postMessage('done');
+  else process.exit(0);
+})();

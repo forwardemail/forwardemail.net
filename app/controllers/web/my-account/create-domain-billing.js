@@ -234,6 +234,7 @@ async function createDomainBilling(ctx) {
               reference_id: reference,
               description,
               custom_id: sku,
+              invoice_id: reference,
               soft_descriptor: sku,
               amount: {
                 currency_code: 'USD',
