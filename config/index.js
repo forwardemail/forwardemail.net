@@ -131,7 +131,16 @@ const config = {
     'passport.fields.givenName',
     'passport.fields.familyName',
     'passportLocalMongoose.usernameField',
-    'userFields.apiToken'
+    'userFields.apiToken',
+    'userFields.receiptEmail',
+    'userFields.companyName',
+    'userFields.addressLine1',
+    'userFields.addressLine2',
+    'userFields.addressCity',
+    'userFields.addressState',
+    'userFields.addressZip',
+    'userFields.companyVAT',
+    'userFields.addressCountry'
   ],
 
   // reference crypto random
