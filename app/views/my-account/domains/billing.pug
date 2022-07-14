@@ -84,7 +84,7 @@ block body
             - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
             if isMakePayment && hasSubscription && !hasPlanExpired
               .alert.alert-warning.small!= t('One-time payments will extend your plan duration independently from your current subscription.')
-            if hasPlanExpired
+            if user.plan !== 'free' && hasPlanExpired
               .alert.alert-danger
                 //-
                 //- NOTE: if it is over a year then we need to specify the # of months
