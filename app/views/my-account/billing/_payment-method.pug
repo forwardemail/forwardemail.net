@@ -19,6 +19,9 @@ mixin paymentMethod(payment)
           i.fa.fa-cc-mastercard
         when 'visa'
           i.fa.fa-cc-visa
+        when 'free_beta_program'
+        when 'unknown'
+          i.fa.fa-gift
         default
           i.fa.fa-credit-card
       = " "

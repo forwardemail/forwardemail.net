@@ -53,15 +53,36 @@ async function retrieveDomainBilling(ctx) {
       new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
         Date.now()
     ) {
-      ctx.flash(
-        'warning',
-        ctx.translate(
-          'PAST_DUE_REQUIRED_ONE_TIME',
-          dayjs(ctx.state.user[config.userFields.planExpiresAt])
-            .locale(ctx.locale)
-            .fromNow(true)
-        )
+      //
+      // NOTE: if it is over a year then we need to specify the # of months
+      //       and we could use thresholds from dayjs but this is simpler
+      //       <https://day.js.org/docs/en/customization/relative-time>
+      //       (but note we don't want to specify # months if not a complete month)
+      //
+      let str = dayjs(ctx.state.user[config.userFields.planExpiresAt])
+        .locale(ctx.locale)
+        .fromNow(true);
+      // subtract years difference and if there are > 0 months then add affix
+      const years = dayjs().diff(
+        ctx.state.user[config.userFields.planExpiresAt],
+        'years'
       );
+      if (years > 0) {
+        const months = dayjs().diff(
+          dayjs(ctx.state.user[config.userFields.planExpiresAt]).add(
+            years,
+            'years'
+          ),
+          'months'
+        );
+        if (months > 0)
+          str += ` ${ctx.translate('AND')} ${dayjs()
+            .add(months, 'months')
+            .locale(ctx.locale)
+            .fromNow(true)}`;
+      }
+
+      ctx.flash('warning', ctx.translate('PAST_DUE_REQUIRED_ONE_TIME', str));
       const redirectTo = ctx.state.l('/my-account/billing/make-payment');
       if (ctx.accepts('html')) ctx.redirect(redirectTo);
       else ctx.body = { redirectTo };

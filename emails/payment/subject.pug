@@ -1,1 +1,1 @@
-= striptags(t('<span class="notranslate">Forward Email</span> Receipt [<span class="notranslate">%s</span>] (<span class="notranslate">%s</span>)', payment.reference.toUpperCase(), dayjs(payment.invoice_at).format('M/D/YY')))
+= striptags(payment.method === 'free_beta_program' ? `${emoji('tada')} ${t('Thank you for joining our beta program!')}` : t('<span class="notranslate">Forward Email</span> Receipt [<span class="notranslate">%s</span>] (<span class="notranslate">%s</span>)', payment.reference.toUpperCase(), dayjs(payment.invoice_at).format('M/D/YY')))

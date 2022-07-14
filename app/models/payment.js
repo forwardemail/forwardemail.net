@@ -72,7 +72,8 @@ const Payment = new mongoose.Schema({
       'unionpay',
       'visa',
       'unknown',
-      'paypal'
+      'paypal',
+      'free_beta_program'
     ]
   },
   // this is the duration of time added

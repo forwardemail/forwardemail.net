@@ -6,8 +6,10 @@ const emailHelper = require('#helpers/email');
 const config = require('#config');
 
 async function ensurePaidToDate(ctx, next) {
-  // return early if we're already on a billing page
+  // return early if we're already on profile, security, or billing
   if (
+    ctx.pathWithoutLocale.startsWith('/my-account/profile') ||
+    ctx.pathWithoutLocale.startsWith('/my-account/security') ||
     ctx.pathWithoutLocale.startsWith('/my-account/billing') ||
     ctx.state.user.plan === 'free' ||
     !_.isDate(ctx.state.user[config.userFields.planExpiresAt]) ||
