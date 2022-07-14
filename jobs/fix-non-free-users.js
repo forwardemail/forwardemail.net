@@ -36,7 +36,7 @@ async function mapper(id) {
   if (count === 0 && paymentsCount === 0) {
     console.log(`setting ${user.email} to free plan`);
     user.plan = 'free';
-    await Payments.deleteMany({ method: 'free_beta_program' });
+    await Payments.deleteMany({ user: user._id, method: 'free_beta_program' });
     user[config.userFields.planSetAt] = new Date(user.created_at || Date.now());
     await user.save();
   }
