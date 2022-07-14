@@ -86,7 +86,20 @@ block body
               .alert.alert-warning.small!= t('One-time payments will extend your plan duration independently from your current subscription.')
             if hasPlanExpired
               .alert.alert-danger
-                != t('Your account is <strong class="notranslate">%s</strong> past due.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow(true))
+                //-
+                //- NOTE: if it is over a year then we need to specify the # of months
+                //-       and we could use thresholds from dayjs but this is simpler
+                //-       <https://day.js.org/docs/en/customization/relative-time>
+                //-       (but note we don't want to specify # months if not a complete month)
+                //-
+                - let str = dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow(true);
+                //- subtract years difference and if there are > 0 months then add affix
+                - const years = dayjs().diff(user[config.userFields.planExpiresAt], 'years')
+                if years > 0
+                  - const months = dayjs().diff(dayjs(user[config.userFields.planExpiresAt]).add(years, 'years'), 'months');
+                  if months > 0
+                    - str += ` ${t('and')} ${dayjs().add(months, 'months').locale(locale).fromNow(true)}`;
+                != t('Your account is <strong class="notranslate">%s</strong> past due.', str)
             form#form-billing(action=ctx.path, method="POST")
               input(type="hidden", name="_csrf", value=_csrf)
 
@@ -159,12 +172,27 @@ block body
                   - const plan = ctx.query.plan || user.plan;
                   - let defaultSelected = '1y'
                   //- TODO: we should do server-side validation for minimum payment_duration required (but its not essential)
-                  if hasPlanExpired
-                    //- if the plan expired more than 1 year ago then default to 2 year
+                  if hasPlanExpired && !isEnableAutoRenew
+                    //- if the plan expired more than 1 months ago then default to 1 month
+                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'month'))
+                      - defaultSelected = '30d'
+                    //- if the plan expired more than 2 months ago then default to 2 month
+                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months'))
+                      - defaultSelected = '60d'
+                    //- if the plan expired more than 3 months ago then default to 3 month
+                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months'))
+                      - defaultSelected = '90d'
+                    //- if the plan expired more than 6 months ago then default to 6 month
+                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months'))
+                      - defaultSelected = '180d'
+                    //- if the plan expired more than 1 year ago then default to 1 year
                     if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year'))
+                      - defaultSelected = '1y'
+                    //- if the plan expired more than 2 year ago then default to 2 year
+                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'year'))
                       - defaultSelected = '2y'
-                    //- if the plan expired more than 2 years ago then default to 3 year
-                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'years'))
+                    //- if the plan expired more than 3 years ago then default to 3 year
+                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'years'))
                       - defaultSelected = '3y'
                   if plan === 'enhanced_protection'
                     //- since subscription is the default, we disable these
@@ -178,31 +206,34 @@ block body
                       option(
                         value="2y",
                         data-no-subscription,
-                        disabled=!isMakePayment,
+                        disabled=!isMakePayment || dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'year')),
                         selected=defaultSelected === '2y'
                       )= t("2 years ($72 USD)")
-                    option(value="1y", selected=defaultSelected === '1y', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year')))= t("1 year ($36 USD)")
-                    option(value="180d", disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months')))= t("6 months ($18 USD)")
-                    option(value="90d", disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months')))= t("3 months ($9 USD)")
-                    option(value="60d", disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months')))= t("2 months ($6 USD)")
-                    option(value="30d", disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'months')))= t("1 month ($3 USD)")
+                    option(value="1y", selected=defaultSelected === '1y', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'year')))= t("1 year ($36 USD)")
+                    option(value="180d", selected=defaultSelected === '180d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year')))= t("6 months ($18 USD)")
+                    option(value="90d", selected=defaultSelected === '90d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months')))= t("3 months ($9 USD)")
+                    option(value="60d", selected=defaultSelected === '60d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months')))= t("2 months ($6 USD)")
+                    option(value="30d", selected=defaultSelected === '30d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months')))= t("1 month ($3 USD)")
                   else if plan === 'team'
+                    //- since subscription is the default, we disable these
                     if !isEnableAutoRenew
                       option(
                         value="3y",
                         data-no-subscription,
-                        disabled=!isMakePayment
+                        disabled=!isMakePayment,
+                        selected=defaultSelected === '3y'
                       )= t("3 years ($324 USD)")
                       option(
                         value="2y",
                         data-no-subscription,
-                        disabled=!isMakePayment
+                        disabled=!isMakePayment || dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'year')),
+                        selected=defaultSelected === '2y'
                       )= t("2 years ($216 USD)")
-                    option(value="1y", selected)= t("1 year ($108 USD)")
-                    option(value="180d")= t("6 months ($54 USD)")
-                    option(value="90d")= t("3 months ($27 USD)")
-                    option(value="60d")= t("2 months ($18 USD)")
-                    option(value="30d")= t("1 month ($9 USD)")
+                    option(value="1y", selected=defaultSelected === '1y', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'year')))= t("1 year ($108 USD)")
+                    option(value="180d", selected=defaultSelected === '180d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year')))= t("6 months ($54 USD)")
+                    option(value="90d", selected=defaultSelected === '90d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months')))= t("3 months ($27 USD)")
+                    option(value="60d", selected=defaultSelected === '60d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months')))= t("2 months ($18 USD)")
+                    option(value="30d", selected=defaultSelected === '30d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months')))= t("1 month ($9 USD)")
 
               //- Continue (Stripe)
               button#stripe-button-container.btn.btn-success.btn-lg.btn-block(

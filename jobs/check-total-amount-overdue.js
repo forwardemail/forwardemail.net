@@ -2,16 +2,19 @@
 require('#config/env');
 
 const process = require('process');
+const os = require('os');
 const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const dayjs = require('dayjs-with-plugins');
 const sharedConfig = require('@ladjs/shared-config');
+const pMap = require('p-map');
 
-const { Users, Domains } = require('#models');
+const { Users, Domains, Payments } = require('#models');
 const config = require('#config');
 
+const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose });
 const graceful = new Graceful({
@@ -33,14 +36,17 @@ graceful.listen();
     .lean()
     .exec();
 
-  for (const user of users) {
-    const months = dayjs().diff(
-      user[config.userFields.planExpiresAt],
-      'months'
-    );
+  async function mapper(user) {
+    let months = dayjs().diff(user[config.userFields.planExpiresAt], 'months');
+    const paymentCount = await Payments.countDocuments({ user: user._id });
+    if (paymentCount === 0) months -= 12;
+    if (months < 0) {
+      console.log(`returning early for ${user.email} with ${months}`);
+      return;
+    }
+
     const sum = Math.round(months * (user.plan === 'team' ? 9 : 3));
     owed += sum;
-    // eslint-disable-next-line no-await-in-loop
     const count = await Domains.countDocuments({
       'members.user': user._id,
       has_mx_record: true,
@@ -53,6 +59,8 @@ graceful.listen();
       }`
     );
   }
+
+  await pMap(users, mapper, { concurrency });
 
   console.log('amounts', { owed, predicted });
 

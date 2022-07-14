@@ -149,8 +149,12 @@ async function createDomainBilling(ctx) {
           });
         }
 
-        ctx.state.user[config.userFields.stripeCustomerID] = customer.id;
-        await ctx.state.user.save();
+        if (
+          ctx.state.user[config.userFields.stripeCustomerID] !== customer.id
+        ) {
+          ctx.state.user[config.userFields.stripeCustomerID] = customer.id;
+          await ctx.state.user.save();
+        }
       } catch (err) {
         ctx.logger.fatal(err);
         // email admins here

@@ -58,7 +58,12 @@ block body
           .col
             .alert.text-center.mb-0.small(class=hasPlanExpired ? 'alert-danger' : 'alert-success')
               if hasPlanExpired
-                != t('Your plan expired on <span class="notranslate">%s</span>. Please make a payment or correct billing issues to avoid account termination.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY'))
+                != t('Your plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY'))
+                = ' '
+                if hasSubscription && isSANB(user[config.userFields.stripeSubscriptionID])
+                  = t('Make payment or update card immediately to avoid account termination.')
+                else
+                  = t('Make payment immediately to avoid account termination.')
               else
                 = emoji('tada')
                 = ' '

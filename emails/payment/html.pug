@@ -5,7 +5,13 @@ block content
     .row
       .col-12
         .card.border-dark.d-block
-          h5.card-header.bg-dark.text-white.text-center= t("Thank you!")
+          h5.card-header.bg-dark.text-white.text-center
+            if payment.method === 'free_beta_program'
+              = emoji('tada')
+              = ' '
+              = t("You earned free credit!")
+            else
+              = t("Thank you!")
           .card-body.p-0
             a(href=config.urls.web)
               img.img-responsive(

@@ -6,17 +6,22 @@ const isSANB = require('is-string-and-not-blank');
 const pMap = require('p-map');
 const { isEmail } = require('validator');
 
+const config = require('#config');
 const email = require('#helpers/email');
-const { SelfTests } = require('#models');
+const i18n = require('#helpers/i18n');
+const { Users, SelfTests } = require('#models');
 
 const concurrency = os.cpus().length;
 
 async function selfTest(ctx) {
   async function mapper(to) {
     try {
+      const user = await Users.findOne({ email: to });
+      const locale = user ? user[config.lastLocaleField] : i18n.getLocale();
       await email({
         template: 'self-test',
-        message: { to }
+        message: { to },
+        locals: { locale }
       });
     } catch (err) {
       ctx.logger.error(err);
