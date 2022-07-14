@@ -157,7 +157,6 @@ block body
                   required
                 )
                   - const plan = ctx.query.plan || user.plan;
-                  - const allowed = [ '3y' ]
                   - let defaultSelected = '1y'
                   //- TODO: we should do server-side validation for minimum payment_duration required (but its not essential)
                   if hasPlanExpired
