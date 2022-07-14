@@ -633,21 +633,40 @@ async function retrieveDomainBilling(ctx) {
         ctx.state.user[config.userFields.planSetAt] = now;
       }
 
-      // capture the user's payment (towards the end in case something else went wrong)
-      const agent1 = await paypalAgent();
-      const response = await agent1.post(
-        `/v2/checkout/orders/${body.id}/capture`
-      );
-
-      if (
-        !_.isObject(response) ||
-        !_.isObject(response.body) ||
-        response.body.status !== 'COMPLETED'
-      )
-        throw ctx.translateError('UNKNOWN_ERROR');
+      let transactionId;
 
       // parse the transaction id
-      const transactionId = response.body?.id;
+      if (body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
+        transactionId = body.purchase_units[0].payments.captures[0].id;
+
+      // capture the user's payment (towards the end in case something else went wrong)
+      try {
+        const agent1 = await paypalAgent();
+        const response = await agent1.post(
+          `/v2/checkout/orders/${body.id}/capture`
+        );
+        // parse the transaction id
+        if (response.body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
+          transactionId =
+            response.body.purchase_units[0].payments.captures[0].id;
+      } catch (err) {
+        ctx.logger.warn(err);
+        if (!err.status || err.status !== 422) {
+          // email admins here
+          emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              subject: `Error while capturing PayPal order payment for ${ctx.state.user.email}`
+            },
+            locals: {
+              message: `<pre><code>${JSON.stringify(err, null, 2)}</code></pre>`
+            }
+          })
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
+        }
+      }
 
       try {
         //

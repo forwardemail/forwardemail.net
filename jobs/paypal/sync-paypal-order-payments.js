@@ -34,9 +34,7 @@ async function mapper(id) {
     payment.paypal_transaction_id &&
     payment.paypal_transaction_id !== capture.id
   )
-    throw new Error(`Transaction ID mismatch on payment ${payment.id}`);
-
-  if (payment.paypal_transaction_id !== capture.id) shouldSave = true;
+    shouldSave = true;
 
   //
   // NOTE: right now we don't do partial refunds on Stripe nor paypal
