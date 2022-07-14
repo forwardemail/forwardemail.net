@@ -80,9 +80,13 @@ block body
               else
                 != t('Upgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
           .card-body
+            - const hasPlanExpired = new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
             - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
-            if isMakePayment && hasSubscription
+            if isMakePayment && hasSubscription && !hasPlanExpired
               .alert.alert-warning.small!= t('One-time payments will extend your plan duration independently from your current subscription.')
+            if hasPlanExpired
+              .alert.alert-danger
+                != t('Your account is <strong class="notranslate">%s</strong> past due.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow(true))
             form#form-billing(action=ctx.path, method="POST")
               input(type="hidden", name="_csrf", value=_csrf)
 
@@ -153,24 +157,36 @@ block body
                   required
                 )
                   - const plan = ctx.query.plan || user.plan;
+                  - const allowed = [ '3y' ]
+                  - let defaultSelected = '1y'
+                  //- TODO: we should do server-side validation for minimum payment_duration required (but its not essential)
+                  if hasPlanExpired
+                    //- if the plan expired more than 1 year ago then default to 2 year
+                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year'))
+                      - defaultSelected = '2y'
+                    //- if the plan expired more than 2 years ago then default to 3 year
+                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'years'))
+                      - defaultSelected = '3y'
                   if plan === 'enhanced_protection'
                     //- since subscription is the default, we disable these
                     if !isEnableAutoRenew
                       option(
                         value="3y",
                         data-no-subscription,
-                        disabled=!isMakePayment
+                        disabled=!isMakePayment,
+                        selected=defaultSelected === '3y'
                       )= t("3 years ($108 USD)")
                       option(
                         value="2y",
                         data-no-subscription,
-                        disabled=!isMakePayment
+                        disabled=!isMakePayment,
+                        selected=defaultSelected === '2y'
                       )= t("2 years ($72 USD)")
-                    option(value="1y", selected)= t("1 year ($36 USD)")
-                    option(value="180d")= t("6 months ($18 USD)")
-                    option(value="90d")= t("3 months ($9 USD)")
-                    option(value="60d")= t("2 months ($6 USD)")
-                    option(value="30d")= t("1 month ($3 USD)")
+                    option(value="1y", selected=defaultSelected === '1y', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year')))= t("1 year ($36 USD)")
+                    option(value="180d", disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months')))= t("6 months ($18 USD)")
+                    option(value="90d", disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months')))= t("3 months ($9 USD)")
+                    option(value="60d", disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months')))= t("2 months ($6 USD)")
+                    option(value="30d", disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'months')))= t("1 month ($3 USD)")
                   else if plan === 'team'
                     if !isEnableAutoRenew
                       option(

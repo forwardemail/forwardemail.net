@@ -40,15 +40,36 @@ async function retrieveDomainBilling(ctx) {
     else ctx.query.plan = ctx.state.user.plan;
   else if (isAccountUpgrade && ctx.query.plan === ctx.state.user.plan)
     throw Boom.badRequest(ctx.translateError('PLAN_ALREADY_ACTIVE'));
-  else if (isEnableAutoRenew)
-    if (ctx.state.user.plan === 'free')
+  else if (isEnableAutoRenew) {
+    if (ctx.state.user.plan === 'free') {
       throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
-    else if (
+    } else if (
       isSANB(ctx.state.user[config.userFields.stripeSubscriptionID]) ||
       isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
-    )
+    ) {
       throw Boom.badRequest(ctx.translateError('SUBSCRIPTION_ALREADY_ACTIVE'));
-    else ctx.query.plan = ctx.state.user.plan;
+    } else if (
+      _.isDate(ctx.state.user[config.userFields.planExpiresAt]) &&
+      new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
+        Date.now()
+    ) {
+      ctx.flash(
+        'warning',
+        ctx.translate(
+          'PAST_DUE_REQUIRED_ONE_TIME',
+          dayjs(ctx.state.user[config.userFields.planExpiresAt])
+            .locale(ctx.locale)
+            .fromNow(true)
+        )
+      );
+      const redirectTo = ctx.state.l('/my-account/billing/make-payment');
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+      return;
+    } else {
+      ctx.query.plan = ctx.state.user.plan;
+    }
+  }
 
   try {
     if (
