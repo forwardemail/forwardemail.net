@@ -46,6 +46,8 @@ graceful.listen();
       plan: user.plan,
       kind: 'one-time'
     });
+    // save the user so their plan expired at is updated
+    await user.save();
   }
 
   // get all users that are not on a paid plan
