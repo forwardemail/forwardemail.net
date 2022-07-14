@@ -38,8 +38,14 @@ graceful.listen();
     // create a new free beta program credit for them
     await Payments.create({
       user: user._id,
-      amount: user.plan === 'enhanced_protection' ? 300 : 900,
-      amount_refunded: user.plan === 'enhanced_protection' ? 300 : 900,
+      amount:
+        user.plan === 'enhanced_protection'
+          ? Math.round(300 * 12)
+          : Math.round(900 * 12),
+      amount_refunded:
+        user.plan === 'enhanced_protection'
+          ? Math.round(300 * 12)
+          : Math.round(900 * 12),
       invoice_at: dayjs().startOf('day').toDate(),
       method: 'free_beta_program',
       duration: ms('1y'),
