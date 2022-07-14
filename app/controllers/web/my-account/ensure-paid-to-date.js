@@ -19,8 +19,7 @@ async function ensurePaidToDate(ctx, next) {
   const subject = ctx.translate('PAYMENT_PAST_DUE_SUBJECT');
   const message = ctx.translate(
     'PAYMENT_PAST_DUE_MESSAGE',
-    ctx.state.l('/my-account/billing/make-payment'),
-    ctx.state.l('/my-account/billing')
+    ctx.state.l('/my-account/billing/make-payment')
   );
 
   // otherwise enforce the user to make payment if they're behind
@@ -102,7 +101,7 @@ async function ensurePaidToDate(ctx, next) {
   }
 
   ctx.flash('error', message);
-  const redirectTo = ctx.state.l('/my-account/billing');
+  const redirectTo = ctx.state.l('/my-account/billing/make-payment');
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };
 }

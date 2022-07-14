@@ -277,7 +277,7 @@ module.exports = {
   PAYMENT_PAST_DUE_API_RESTRICTED:
     'API access has been restricted due to past due payment',
   PAYMENT_PAST_DUE_MESSAGE:
-    '<strong class="text-danger">Your account is past due.</strong> Please <a href="%s">make a payment</a> or <a href="%s">correct billing issues</a> to avoid account termination.',
+    '<strong class="text-danger">Your account is past due.</strong> Please <a href="%s">make a payment</a> immediately to avoid account termination.',
   PAST_DUE_REQUIRED_ONE_TIME:
     'Your account is <strong class="notranslate">%s</strong> past due. You must pay this amount before you can enable auto-renew.',
   ...STATUSES
