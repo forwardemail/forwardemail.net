@@ -2202,5 +2202,11 @@
   "Welcoming your new domain!": "欢迎您的新域名！",
   "Upgrade now": "现在升级",
   "DNS records haven't propagated or may not be configured properly.": "DNS 记录尚未传播或可能未正确配置。",
-  "If we detect successful changes, then we'll notify you by email.": "如果我们检测到更改成功，我们会通过电子邮件通知您。"
+  "If we detect successful changes, then we'll notify you by email.": "如果我们检测到更改成功，我们会通过电子邮件通知您。",
+  "Your account is past due and API access may be restricted!": "您的帐户已过期，API 访问可能受到限制！",
+  "API access has been restricted due to past due payment": "由于逾期付款，API 访问受到限制",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">您的帐户已逾期。</strong>请<a href=\"%s\">付款</a>或<a href=\"%s\">更正帐单问题</a>以避免帐户终止。",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "您的计划已于<span class=\"notranslate\">%s</span>到期。",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">付款</a>或<a class=\"alert-link\" href=\"%s\">启用自动续订</a>。",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "下次付款到期<span class=\"notranslate\">%s</span> 。"
 }

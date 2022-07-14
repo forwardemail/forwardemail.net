@@ -2547,5 +2547,11 @@
   "Welcoming your new domain!": "Dando as boas-vindas ao seu novo domínio!",
   "Upgrade now": "Atualize agora",
   "DNS records haven't propagated or may not be configured properly.": "Os registros DNS não foram propagados ou podem não estar configurados corretamente.",
-  "If we detect successful changes, then we'll notify you by email.": "Se detectarmos alterações bem-sucedidas, notificaremos você por e-mail."
+  "If we detect successful changes, then we'll notify you by email.": "Se detectarmos alterações bem-sucedidas, notificaremos você por e-mail.",
+  "Your account is past due and API access may be restricted!": "Sua conta está vencida e o acesso à API pode ser restrito!",
+  "API access has been restricted due to past due payment": "O acesso à API foi restringido devido ao pagamento em atraso",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">Sua conta está vencida.</strong> Faça <a href=\"%s\">um pagamento</a> ou <a href=\"%s\">corrija os problemas de cobrança</a> para evitar o encerramento da conta.",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "Seu plano expirou em <span class=\"notranslate\">%s</span> .",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">Efetue um pagamento</a> ou <a class=\"alert-link\" href=\"%s\">ative a renovação automática</a> .",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "Próximo pagamento devido <span class=\"notranslate\">%s</span> ."
 }

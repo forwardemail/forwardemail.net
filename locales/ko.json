@@ -2548,5 +2548,11 @@
   "Welcoming your new domain!": "새 도메인을 환영합니다!",
   "Upgrade now": "지금 업그레이드",
   "DNS records haven't propagated or may not be configured properly.": "DNS 레코드가 전파되지 않았거나 제대로 구성되지 않았을 수 있습니다.",
-  "If we detect successful changes, then we'll notify you by email.": "성공적인 변경이 감지되면 이메일로 알려드리겠습니다."
+  "If we detect successful changes, then we'll notify you by email.": "성공적인 변경이 감지되면 이메일로 알려드리겠습니다.",
+  "Your account is past due and API access may be restricted!": "귀하의 계정은 연체되어 API 액세스가 제한될 수 있습니다!",
+  "API access has been restricted due to past due payment": "연체 결제로 인해 API 액세스가 제한되었습니다.",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">귀하의 계정은 연체되었습니다.</strong> 계정 해지를 방지하려면 <a href=\"%s\">결제</a> 를 하거나 <a href=\"%s\">청구 문제를 수정하세요</a> .",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "계획이 <span class=\"notranslate\">%s</span> 에 만료되었습니다.",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">결제</a> 하거나 <a class=\"alert-link\" href=\"%s\">자동 갱신을 활성화</a> 합니다.",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "다음 지불 기한 <span class=\"notranslate\">%s</span> ."
 }

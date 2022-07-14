@@ -2548,5 +2548,11 @@
   "Welcoming your new domain!": "Velkommen til ditt nye domene!",
   "Upgrade now": "Oppgrader nå",
   "DNS records haven't propagated or may not be configured properly.": "DNS-poster har ikke spredt seg eller er kanskje ikke riktig konfigurert.",
-  "If we detect successful changes, then we'll notify you by email.": "Hvis vi oppdager vellykkede endringer, vil vi varsle deg via e-post."
+  "If we detect successful changes, then we'll notify you by email.": "Hvis vi oppdager vellykkede endringer, vil vi varsle deg via e-post.",
+  "Your account is past due and API access may be restricted!": "Kontoen din er forfalt, og API-tilgang kan være begrenset!",
+  "API access has been restricted due to past due payment": "API-tilgang er begrenset på grunn av forfalt betaling",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">Kontoen din er forfalt.</strong> <a href=\"%s\">Foreta en betaling</a> eller <a href=\"%s\">korriger faktureringsproblemer</a> for å unngå kontooppsigelse.",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "Planen din utløp <span class=\"notranslate\">%s</span> .",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">Utfør en betaling</a> eller <a class=\"alert-link\" href=\"%s\">aktiver automatisk fornyelse</a> .",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "Neste betaling forfaller <span class=\"notranslate\">%s</span> ."
 }

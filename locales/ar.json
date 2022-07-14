@@ -2548,5 +2548,11 @@
   "Welcoming your new domain!": "مرحبا بكم في المجال الجديد!",
   "Upgrade now": "تحديث الآن",
   "DNS records haven't propagated or may not be configured properly.": "لم يتم نشر سجلات DNS أو ربما لم يتم تكوينها بشكل صحيح.",
-  "If we detect successful changes, then we'll notify you by email.": "إذا اكتشفنا تغييرات ناجحة ، فسنخطرك عبر البريد الإلكتروني."
+  "If we detect successful changes, then we'll notify you by email.": "إذا اكتشفنا تغييرات ناجحة ، فسنخطرك عبر البريد الإلكتروني.",
+  "Your account is past due and API access may be restricted!": "حسابك فات موعد استحقاقه وقد يكون الوصول إلى واجهة برمجة التطبيقات مقيدًا!",
+  "API access has been restricted due to past due payment": "تم تقييد الوصول إلى واجهة برمجة التطبيقات بسبب تأخر السداد المستحق",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">حسابك فات موعد استحقاقه.</strong> يُرجى <a href=\"%s\">إجراء دفعة</a> أو <a href=\"%s\">تصحيح مشكلات الفوترة</a> لتجنب إنهاء الحساب.",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "انتهت خطتك في <span class=\"notranslate\">%s</span> .",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">قم بالدفع</a> أو قم <a class=\"alert-link\" href=\"%s\">بتمكين التجديد التلقائي</a> .",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "الدفعة التالية المستحقة <span class=\"notranslate\">%s</span> ."
 }

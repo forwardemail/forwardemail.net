@@ -2380,5 +2380,11 @@
   "Welcoming your new domain!": "Tervetuloa uuteen verkkotunnukseesi!",
   "Upgrade now": "Päivitä nyt",
   "DNS records haven't propagated or may not be configured properly.": "DNS-tietueita ei ole levitetty tai niitä ei ehkä ole määritetty oikein.",
-  "If we detect successful changes, then we'll notify you by email.": "Jos havaitsemme onnistuneita muutoksia, ilmoitamme sinulle sähköpostitse."
+  "If we detect successful changes, then we'll notify you by email.": "Jos havaitsemme onnistuneita muutoksia, ilmoitamme sinulle sähköpostitse.",
+  "Your account is past due and API access may be restricted!": "Tilisi on myöhässä ja API-käyttöä voidaan rajoittaa!",
+  "API access has been restricted due to past due payment": "API-käyttöä on rajoitettu erääntyneen maksun vuoksi",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">Tilisi on erääntynyt.</strong> Suorita <a href=\"%s\">maksu</a> tai <a href=\"%s\">korjaa laskutusongelmat</a> välttääksesi tilin sulkemisen.",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "Suunnitelmasi päättyi <span class=\"notranslate\">%s</span> .",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">Suorita maksu</a> tai <a class=\"alert-link\" href=\"%s\">ota käyttöön automaattinen uusiminen</a> .",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "Seuraava maksuerä <span class=\"notranslate\">%s</span> ."
 }

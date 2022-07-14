@@ -2399,5 +2399,8 @@
   "Welcoming your new domain!": "Welcoming your new domain!",
   "Upgrade now": "Upgrade now",
   "DNS records haven't propagated or may not be configured properly.": "DNS records haven't propagated or may not be configured properly.",
-  "If we detect successful changes, then we'll notify you by email.": "If we detect successful changes, then we'll notify you by email."
+  "If we detect successful changes, then we'll notify you by email.": "If we detect successful changes, then we'll notify you by email.",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "Your plan expired on <span class=\"notranslate\">%s</span>.",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "Next payment due <span class=\"notranslate\">%s</span>."
 }

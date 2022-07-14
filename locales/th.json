@@ -2548,5 +2548,11 @@
   "Welcoming your new domain!": "ยินดีต้อนรับโดเมนใหม่ของคุณ!",
   "Upgrade now": "อัพเกรดเดี๋ยวนี้",
   "DNS records haven't propagated or may not be configured properly.": "ระเบียน DNS ไม่ได้รับการเผยแพร่หรืออาจกำหนดค่าไม่ถูกต้อง",
-  "If we detect successful changes, then we'll notify you by email.": "หากเราตรวจพบการเปลี่ยนแปลงที่สำเร็จ เราจะแจ้งให้คุณทราบทางอีเมล"
+  "If we detect successful changes, then we'll notify you by email.": "หากเราตรวจพบการเปลี่ยนแปลงที่สำเร็จ เราจะแจ้งให้คุณทราบทางอีเมล",
+  "Your account is past due and API access may be restricted!": "บัญชีของคุณเลยกำหนดและการเข้าถึง API อาจถูกจำกัด!",
+  "API access has been restricted due to past due payment": "การเข้าถึง API ถูกจำกัดเนื่องจากการชำระเงินที่เลยกำหนดชำระ",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">บัญชีของคุณเลยกำหนดชำระ</strong> โปรด <a href=\"%s\">ชำระเงิน</a> หรือ <a href=\"%s\">แก้ไขปัญหาการเรียกเก็บเงิน</a> เพื่อหลีกเลี่ยงการยุติบัญชี",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "แผนของคุณหมดอายุเมื่อ <span class=\"notranslate\">%s</span>",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">ชำระเงิน</a> หรือ <a class=\"alert-link\" href=\"%s\">เปิดใช้งานการต่ออายุ</a> อัตโนมัติ",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "การชำระเงินครั้งต่อไปครบกำหนด <span class=\"notranslate\">%s</span>"
 }

@@ -2548,5 +2548,11 @@
   "Welcoming your new domain!": "Вітаємо ваш новий домен!",
   "Upgrade now": "Оновити зараз",
   "DNS records haven't propagated or may not be configured properly.": "Записи DNS не поширюються або можуть бути неправильно налаштовані.",
-  "If we detect successful changes, then we'll notify you by email.": "Якщо ми виявимо успішні зміни, ми повідомимо вас електронною поштою."
+  "If we detect successful changes, then we'll notify you by email.": "Якщо ми виявимо успішні зміни, ми повідомимо вас електронною поштою.",
+  "Your account is past due and API access may be restricted!": "Ваш обліковий запис прострочено, і доступ до API може бути обмежено!",
+  "API access has been restricted due to past due payment": "Доступ до API обмежено через прострочення платежу",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">Ваш обліковий запис прострочено.</strong> Будь ласка <a href=\"%s\">, здійсніть платіж</a> або <a href=\"%s\">виправте проблеми з виставленням рахунків,</a> щоб уникнути припинення дії облікового запису.",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "Термін дії вашого плану закінчився <span class=\"notranslate\">%s</span> .",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">Здійсніть платіж</a> або <a class=\"alert-link\" href=\"%s\">ввімкніть автоматичне поновлення</a> .",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "Наступний платіж <span class=\"notranslate\">%s</span> ."
 }

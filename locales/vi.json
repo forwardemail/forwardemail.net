@@ -2548,5 +2548,11 @@
   "Welcoming your new domain!": "Chào mừng miền mới của bạn!",
   "Upgrade now": "Nâng cấp ngay bây giờ",
   "DNS records haven't propagated or may not be configured properly.": "Bản ghi DNS không được phổ biến hoặc có thể không được định cấu hình đúng cách.",
-  "If we detect successful changes, then we'll notify you by email.": "Nếu chúng tôi phát hiện các thay đổi thành công, thì chúng tôi sẽ thông báo cho bạn qua email."
+  "If we detect successful changes, then we'll notify you by email.": "Nếu chúng tôi phát hiện các thay đổi thành công, thì chúng tôi sẽ thông báo cho bạn qua email.",
+  "Your account is past due and API access may be restricted!": "Tài khoản của bạn đã quá hạn và quyền truy cập API có thể bị hạn chế!",
+  "API access has been restricted due to past due payment": "Quyền truy cập API đã bị hạn chế do thanh toán quá hạn",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">Tài khoản của bạn đã quá hạn.</strong> Vui lòng <a href=\"%s\">thanh toán</a> hoặc <a href=\"%s\">khắc phục các vấn đề về thanh toán</a> để tránh bị chấm dứt tài khoản.",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "Gói của bạn đã hết hạn vào <span class=\"notranslate\">%s</span> .",
+  "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">Thanh toán</a> hoặc <a class=\"alert-link\" href=\"%s\">bật tự động gia hạn</a> .",
+  "Next payment due <span class=\"notranslate\">%s</span>.": "<span class=\"notranslate\">%s</span> đến hạn thanh toán tiếp theo."
 }
