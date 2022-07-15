@@ -51,7 +51,16 @@ async function retrieveDomainBilling(ctx) {
     } else if (
       _.isDate(ctx.state.user[config.userFields.planExpiresAt]) &&
       new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
-        Date.now()
+        Date.now() &&
+      // and the user must have at least one domain still on a paid plan
+      ctx.state.domains.some(
+        (domain) =>
+          domain.plan !== 'free' &&
+          domain.members.some(
+            (member) =>
+              member.user.id === ctx.state.user.id && member.group === 'admin'
+          )
+      )
     ) {
       //
       // NOTE: if it is over a year then we need to specify the # of months
