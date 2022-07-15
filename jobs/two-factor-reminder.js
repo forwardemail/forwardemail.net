@@ -7,6 +7,7 @@ const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
+const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
@@ -47,7 +48,7 @@ async function mapper(_id) {
   if (isCancelled) return;
 
   try {
-    const user = await Users.findById(_id);
+    const user = await Users.findById(_id).lean().exec();
 
     // user could have been deleted in the interim
     if (!user) return;
@@ -56,8 +57,14 @@ async function mapper(_id) {
     // in the interim if so return early
     if (user[config.passport.fields.otpEnabled]) return;
 
-    // in case email was sent for whatever reason
-    if (user[config.userFields.twoFactorReminderSentAt]) return;
+    // if the email was sent within the past 3 months
+    if (
+      _.isDate(user[config.userFields.twoFactorReminderSentAt]) &&
+      dayjs(user[config.userFields.twoFactorReminderSentAt]).isAfter(
+        dayjs().subtract(3, 'months')
+      )
+    )
+      return;
 
     // send email
     await email({
@@ -65,7 +72,7 @@ async function mapper(_id) {
       message: {
         to: user[config.userFields.fullEmail]
       },
-      locals: { user: user.toObject() }
+      locals: { user }
     });
 
     // store that we sent this email
