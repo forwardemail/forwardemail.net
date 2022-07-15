@@ -2554,5 +2554,19 @@
   "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">귀하의 계정은 연체되었습니다.</strong> 계정 해지를 방지하려면 <a href=\"%s\">결제</a> 를 하거나 <a href=\"%s\">청구 문제를 수정하세요</a> .",
   "Your plan expired on <span class=\"notranslate\">%s</span>.": "계획이 <span class=\"notranslate\">%s</span> 에 만료되었습니다.",
   "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">결제</a> 하거나 <a class=\"alert-link\" href=\"%s\">자동 갱신을 활성화</a> 합니다.",
-  "Next payment due <span class=\"notranslate\">%s</span>.": "다음 지불 기한 <span class=\"notranslate\">%s</span> ."
+  "Next payment due <span class=\"notranslate\">%s</span>.": "다음 지불 기한 <span class=\"notranslate\">%s</span> .",
+  "Need email for your domain?": "Need email for your domain?",
+  "Skip ahead to the instructions to setup email for your domain.": "Skip ahead to the instructions to setup email for your domain.",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> immediately to avoid account termination.": "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> immediately to avoid account termination.",
+  "and": "and",
+  "Your account is <strong class=\"notranslate\">%s</strong> past due.": "Your account is <strong class=\"notranslate\">%s</strong> past due.",
+  "Receipts are automatically emailed to you.  If you set a receipt email address below, then receipts will be sent there and you will receive a copy too.": "Receipts are automatically emailed to you.  If you set a receipt email address below, then receipts will be sent there and you will receive a copy too.",
+  "Receipt email address": "Receipt email address",
+  "Make payment immediately to avoid account termination.": "Make payment immediately to avoid account termination.",
+  "Your account is <strong class=\"notranslate\">%s</strong> past due. You must pay this amount before you can enable auto-renew.": "Your account is <strong class=\"notranslate\">%s</strong> past due. You must pay this amount before you can enable auto-renew.",
+  "Need to change invoice information? <a href=\"%s\" class=\"alert-link notranslate\">Update company/VAT info</a>": "Need to change invoice information? <a href=\"%s\" class=\"alert-link notranslate\">Update company/VAT info</a>",
+  "Status": "Status",
+  "Discount": "Discount",
+  "Total:": "Total:",
+  "Go to homepage": "Go to homepage"
 }
