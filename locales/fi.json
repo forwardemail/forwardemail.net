@@ -2386,5 +2386,19 @@
   "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> or <a href=\"%s\">correct billing issues</a> to avoid account termination.": "<strong class=\"text-danger\">Tilisi on erääntynyt.</strong> Suorita <a href=\"%s\">maksu</a> tai <a href=\"%s\">korjaa laskutusongelmat</a> välttääksesi tilin sulkemisen.",
   "Your plan expired on <span class=\"notranslate\">%s</span>.": "Suunnitelmasi päättyi <span class=\"notranslate\">%s</span> .",
   "<a class=\"alert-link\" href=\"%s\">Make a payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">Suorita maksu</a> tai <a class=\"alert-link\" href=\"%s\">ota käyttöön automaattinen uusiminen</a> .",
-  "Next payment due <span class=\"notranslate\">%s</span>.": "Seuraava maksuerä <span class=\"notranslate\">%s</span> ."
+  "Next payment due <span class=\"notranslate\">%s</span>.": "Seuraava maksuerä <span class=\"notranslate\">%s</span> .",
+  "Need email for your domain?": "Need email for your domain?",
+  "Skip ahead to the instructions to setup email for your domain.": "Skip ahead to the instructions to setup email for your domain.",
+  "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> immediately to avoid account termination.": "<strong class=\"text-danger\">Your account is past due.</strong> Please <a href=\"%s\">make a payment</a> immediately to avoid account termination.",
+  "and": "and",
+  "Your account is <strong class=\"notranslate\">%s</strong> past due.": "Your account is <strong class=\"notranslate\">%s</strong> past due.",
+  "Receipts are automatically emailed to you.  If you set a receipt email address below, then receipts will be sent there and you will receive a copy too.": "Receipts are automatically emailed to you.  If you set a receipt email address below, then receipts will be sent there and you will receive a copy too.",
+  "Receipt email address": "Receipt email address",
+  "Make payment immediately to avoid account termination.": "Make payment immediately to avoid account termination.",
+  "Your account is <strong class=\"notranslate\">%s</strong> past due. You must pay this amount before you can enable auto-renew.": "Your account is <strong class=\"notranslate\">%s</strong> past due. You must pay this amount before you can enable auto-renew.",
+  "Need to change invoice information? <a href=\"%s\" class=\"alert-link notranslate\">Update company/VAT info</a>": "Need to change invoice information? <a href=\"%s\" class=\"alert-link notranslate\">Update company/VAT info</a>",
+  "Status": "Status",
+  "Discount": "Discount",
+  "Total:": "Total:",
+  "Go to homepage": "Go to homepage"
 }
