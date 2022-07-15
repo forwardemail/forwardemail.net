@@ -28,7 +28,10 @@ async function mapper(id) {
 
   // if the user does not have any domains
   // remove any free beta credits and downgrade them to free
-  const count = await Domains.countDocuments({ 'members.user': user._id });
+  const count = await Domains.countDocuments({
+    'members.user': user._id,
+    plan: { $ne: 'free' }
+  });
   const paymentsCount = await Payments.countDocuments({
     user: user._id,
     method: { $ne: 'free_beta_program' }
