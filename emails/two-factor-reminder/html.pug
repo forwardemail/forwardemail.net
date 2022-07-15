@@ -5,17 +5,23 @@ block content
     .row
       .col-12
         .card.border-dark.d-block.text-center
-          h5.card-header.bg-dark.text-white= t("Two-factor authentication")
-          .card-body
-            p.card-text
-              = t("Don't worry! Your account is completely secure. This is just a friendly reminder to enhance the security of your account.")
-              = " "
-              = t("We suggest that you enable two-factor authentication since your domains are using Enhanced Protection.")
-              = " "
-              = t("Doing so will help to keep your domains, aliases, and account even more secure.")
-            a.btn.btn-lg.btn-block.btn-primary(
-              href=`${config.urls.web}/${locale}/my-account/security`
-            )
-              .d-inline-block.align-middle
-                = t("Manage security")
+          h5.card-header.bg-dark.text-white
+            = emoji('lock')
+            = ' '
+            = t("Two-factor auth")
+          .card-body.p-0
+            a(href=config.urls.web)
+              img.img-responsive(
+                src=`${config.urls.web}/img/emails/self-test.gif`,
+                alt="",
+                data-inline-ignore
+              )
+            .p-3
+              p.card-text
+                strong= t("Don't worry! Your account is secure.")
+              p.card-text
+                = t("This is a friendly reminder for your protection.")
+              a.btn.btn-lg.btn-block.btn-success(
+                href=`${config.urls.web}/${locale}/my-account/security`
+              )= t("Enable two-factor auth")
           .card-footer.small.text-muted= t("We send this reminder every three months to increase security.")
