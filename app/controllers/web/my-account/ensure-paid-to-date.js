@@ -103,6 +103,7 @@ async function ensurePaidToDate(ctx, next) {
   }
 
   ctx.flash('error', message);
+  if (ctx.pathWithoutLocale !== '/my-account') return next();
   const redirectTo = ctx.state.l('/my-account/billing/make-payment');
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };
