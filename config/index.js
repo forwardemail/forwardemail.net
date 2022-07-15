@@ -293,7 +293,7 @@ const config = {
 
   // passport callback options
   passportCallbackOptions: {
-    successReturnToOrRedirect: '/my-account/domains',
+    successReturnToOrRedirect: '/my-account',
     failureRedirect: '/register',
     successFlash: true,
     failureFlash: true
