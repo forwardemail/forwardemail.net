@@ -10,7 +10,7 @@ block content
             = ' '
             = t("Two-factor auth")
           .card-body.p-0
-            a(href=config.urls.web)
+            a(href=`${config.urls.web}/${locale}/my-account/security`)
               img.img-responsive(
                 src=`${config.urls.web}/img/emails/self-test.gif`,
                 alt="",
