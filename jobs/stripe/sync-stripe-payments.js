@@ -449,7 +449,7 @@ async function syncStripePayments({ errorThreshold }) {
     try {
       const missed = await Payments.find({
         user: customer._id,
-        method: { $nin: ['unknown', 'paypal'] },
+        method: { $nin: ['unknown', 'paypal', 'free_beta_program'] },
         stripe_payment_intent_id: { $exists: false }
       })
         .lean()
