@@ -73,6 +73,10 @@ async function mapper(id) {
     },
     [config.userFields.paypalSubscriptionID]: {
       $exists: false
+    },
+    [config.userFields.planExpiresAt]: {
+      $exists: true,
+      $lt: new Date()
     }
   });
 
