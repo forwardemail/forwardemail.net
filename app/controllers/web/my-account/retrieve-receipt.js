@@ -1,5 +1,6 @@
 const Boom = require('@hapi/boom');
 const dayjs = require('dayjs-with-plugins');
+const getStream = require('get-stream');
 const isSANB = require('is-string-and-not-blank');
 
 const { Payments } = require('#models');
@@ -54,11 +55,12 @@ async function retrieveReceipt(ctx) {
     }
 
     if (isPDF) {
-      ctx.body = await Payments.getPDFReceipt(
+      const stream = await Payments.getPDFReceipt(
         ctx.state.payment,
         ctx.state.user,
         ctx.locale
       );
+      ctx.body = await getStream.buffer(stream);
       return;
     }
 

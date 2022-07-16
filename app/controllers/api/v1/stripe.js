@@ -25,34 +25,39 @@ async function webhook(ctx) {
     if (!event)
       throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
 
-    // handle the event
-    // switch(event.type)
+    ctx.logger.info('stripe webhook', { event });
 
-    // NOTE: for now we just manually email admins of every event
-    //       (and manual edits can be made as needed)
+    //
+    // handle the events
+    // <https://stripe.com/docs/cli/trigger#trigger-event>
+    //
+    switch (event.type) {
+      // TODO: create or update existing payment
+      //       (we may also want to upgrade plan; e.g. in case redirect does not occur)
+      //       (also need to ensure no conflicts with redirect)
+      case 'charge.succeeded':
+        break;
+      // TODO: update payments with refund amount
+      case 'charge.refunded':
+        break;
+      // TODO: ban users that dispute charges
+      // and cancel their subscriptions (if not already)
+      case 'charge.dispute.created':
+        break;
+      // TODO: create subscription for customer if not already set
+      //       (also need to ensure no conflicts with redirect)
+      case 'customer.subscription.created':
+        break;
+      // TODO: remove stripe subscription from user
+      // when cancelled (if not already)
+      case 'customer.subscription.deleted':
+        break;
+      // TODO: handle other events
+      default:
+    }
 
     // return a response to acknowledge receipt of the event
     ctx.body = { received: true };
-
-    ctx.logger.info('stripe webhook', { event });
-
-    // email admins here
-    /*
-    try {
-      await email({
-        template: 'alert',
-        message: {
-          to: config.email.message.from,
-          subject: `Stripe Webhook: ${event.type}`
-        },
-        locals: {
-          message: `<pre><code>${JSON.stringify(event, null, 2)}</code></pre>`
-        }
-      });
-    } catch (err) {
-      ctx.logger.fatal(err);
-    }
-    */
   } catch (err) {
     ctx.throw(err);
   }

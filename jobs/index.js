@@ -70,6 +70,11 @@ const jobs = [
     name: 'payment-email',
     interval: '1m',
     timeout: 0
+  },
+  {
+    name: 'fix-non-free-users',
+    interval: '1m',
+    timeout: 0
   }
   // {
   //   name: 'domain-missing-txt',

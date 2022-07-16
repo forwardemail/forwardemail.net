@@ -100,7 +100,17 @@ async function ensurePaidToDate(ctx, next) {
     return next();
   }
 
-  ctx.flash('error', message);
+  // ctx.flash('error', message);
+
+  // NOTE: toast notification is less obtrusive
+  ctx.flash('custom', {
+    title: ctx.request.t('Warning'),
+    html: message,
+    type: 'error',
+    toast: true,
+    position: 'top'
+  });
+
   if (ctx.pathWithoutLocale !== '/my-account') return next();
   const redirectTo = ctx.state.l('/my-account/billing/make-payment');
   if (ctx.accepts('html')) ctx.redirect(redirectTo);

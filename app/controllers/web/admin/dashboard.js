@@ -227,10 +227,10 @@ async function getBody(ctx) {
     chart: {
       height: 300,
       toolbar: {
-        show: false
+        show: true
       },
       zoom: {
-        enabled: false
+        enabled: true
       }
     }
   };
