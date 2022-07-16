@@ -2,18 +2,18 @@ if user && _.isObject(user) && user.plan !== 'free' && _.isDate(user[config.user
   - const hasPlanExpired = new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now();
   - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID]);
   if hasPlanExpired
-    .container.mt-3
+    .container
       .row
         .col-12
           .alert.alert-danger.text-center.small.rounded-0.mb-0
-            != t('Your plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).format('M/D/YY'))
+            != t('Your plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).format("M/D/YY"))
             = " "
             if hasSubscription && isSANB(user[config.userFields.stripeSubscriptionID])
               != t('<a class="alert-link" href="%s">Make payment</a> or <a class="alert-link" href="%s">update card</a> immediately.', `${config.urls.web}/${locale}/my-account/billing/make-payment`, `${config.urls.web}/${locale}/my-account/billing`)
             else
               != t('<a class="alert-link" href="%s">Make payment</a> to avoid account termination.', `${config.urls.web}/${locale}/my-account/billing/make-payment`)
   else if !hasSubscription
-    .container.mt-3
+    .container
       .row
         .col-12
           .alert.alert-warning.small.text-center.rounded-0.mb-0
