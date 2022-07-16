@@ -136,6 +136,10 @@ block body
                   label(for="input-default-domain")= t("Default Domain")
             .card-footer
               button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
+        .alert.alert-secondary.small.mt-3.mb-0.text-center
+          = t('Need to unsubscribe or cancel your account?')
+          = ' '
+          a(href=l('/my-account/security')).alert-link= t('Delete your account')
       .col-md.mt-3.mt-md-0
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")

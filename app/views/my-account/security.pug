@@ -33,6 +33,30 @@ block body
     .row
       .col
         include ../_breadcrumbs
+        .card.border-dark.mb-3
+          h4.card-header.bg-dark.text-white= t("Delete Account")
+          - const adminDomains = domains.filter((domain) => domain.group === "admin");
+          if adminDomains.length > 0
+            .card-body
+              .alert.alert-warning.small= t("You must remove yourself as an admin from or delete these domains before you can delete your account:")
+              ul.small
+                each domain in adminDomains
+                  li: a(
+                    href=l(`/my-account/domains/${domain.name}`),
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )= domain.name
+          else
+            .card-body
+              .alert.alert-danger.small.mb-0= t("Deleting your account is irreversable.  Please take extreme caution when deleting your account.")
+            .card-footer.text-right
+              form.ajax-form.confirm-prompt(
+                action=l("/my-account"),
+                method="POST"
+              )
+                input(type="hidden", name="_method", value="DELETE")
+                input(type="hidden", name="_csrf", value=_csrf)
+                button.btn.btn-sm.btn-danger(type="submit")= t("Delete Account")
         if passport && passport.otp
           .card.border-dark.mb-3
             h4.card-header.bg-dark.text-white= t("Two-Factor Authentication")
@@ -63,10 +87,10 @@ block body
                 rel="noopener noreferrer",
                 target="_blank"
               )= t("Learn more")
-        .card.border-dark.mb-3
+        .card.border-dark
           h4.card-header.bg-dark.text-white= t("Developer Access")
           .card-body
-            .form-group.row
+            .row
               label.control-label.col-md-4.col-form-label.text-md-right= t("API token")
               .col-md-8
                 .input-group
@@ -84,7 +108,7 @@ block body
                       i.fa.fa-clipboard
                       = " "
                       = t("Copy")
-                p.small.form-text.text-muted= t("Keep your token secure and never share it publicly")
+                .small.form-text.text-muted= t("Keep your token secure and never share it publicly")
           .card-footer.text-right
             ul.list-inline.mb-0
               li.list-inline-item
@@ -94,31 +118,6 @@ block body
                   button.btn.btn-danger(type="submit")= t("Reset API Token")
               li.list-inline-item
                 a.btn.btn-dark(href=l("/email-forwarding-api"))= t("Learn more")
-        .card.border-dark
-          h4.card-header.bg-dark.text-white= t("Delete Account")
-          - const adminDomains = domains.filter((domain) => domain.group === "admin");
-          if adminDomains.length > 0
-            .card-body
-              p= t("Your account is currently an admin of these domains:")
-              ul
-                each domain in adminDomains
-                  li: a(
-                    href=l(`/my-account/domains/${domain.name}`),
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )= domain.name
-              p.mb-0= t("You must remove yourself from or delete these domains before you can delete your account.")
-          else
-            .card-body
-              p= t("Deleting your account is irreversable.  Please take extreme caution when deleting your account.")
-            .card-footer.text-right
-              form.ajax-form.confirm-prompt(
-                action=l("/my-account"),
-                method="POST"
-              )
-                input(type="hidden", name="_method", value="DELETE")
-                input(type="hidden", name="_csrf", value=_csrf)
-                button.btn.btn-danger(type="submit")= t("Delete Account")
   .container
     .row.text-center.my-5
       .col
