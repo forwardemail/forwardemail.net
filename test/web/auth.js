@@ -24,7 +24,7 @@ test('creates new user', async (t) => {
   });
 
   t.is(res.status, 302);
-  t.is(res.header.location, '/en/my-account/domains');
+  t.is(res.header.location, '/en/my-account');
 });
 
 test('rejects new user with disposable email', async (t) => {
@@ -68,7 +68,7 @@ test('successfully registers with strong password', async (t) => {
   });
 
   t.is(res.body.message, undefined);
-  t.is(res.header.location, '/en/my-account/domains');
+  t.is(res.header.location, '/en/my-account');
   t.is(res.status, 302);
 });
 
@@ -82,7 +82,7 @@ test('successfully registers with stronger password', async (t) => {
   });
 
   t.is(res.body.message, undefined);
-  t.is(res.header.location, '/en/my-account/domains');
+  t.is(res.header.location, '/en/my-account');
   t.is(res.status, 302);
 });
 

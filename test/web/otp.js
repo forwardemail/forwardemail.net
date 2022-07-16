@@ -71,7 +71,7 @@ test('POST otp/login > successful', async (t) => {
   });
 
   t.is(res.status, 200);
-  t.is(res.body.redirectTo, '/en/my-account/domains');
+  t.is(res.body.redirectTo, '/en/my-account');
 });
 
 test('POST otp/login > invalid OTP passcode', async (t) => {
