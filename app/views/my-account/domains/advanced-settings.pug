@@ -21,7 +21,7 @@ block append stylesheets
 
 mixin planRequired(isTeam = false)
   if domain.plan === 'free' || (isTeam && domain.plan !== 'team')
-    .alert.alert-warning!= t('Please <a class="alert-link" href="%s">upgrade to the <span class="notranslate">%s</span> plan</a> to unlock this feature.', l(`/my-account/domains/${domain.name}/billing?plan=${isTeam ? "team" : "enhanced_protection"}`), isTeam ? "Team" : "Enhanced Protection")
+    .alert.alert-warning.text-center!= t('Please <a class="alert-link" href="%s">upgrade to the <span class="notranslate">%s</span> plan</a> to unlock this feature.', l(`/my-account/domains/${domain.name}/billing?plan=${isTeam ? "team" : "enhanced_protection"}`), isTeam ? "Team" : "Enhanced Protection")
 
 block body
   - const isDisabled = domain.plan === "free";
@@ -128,11 +128,26 @@ block body
       .col
         if domain.group === 'admin'
           .card.border-dark.mb-3
+            h4.card-header.bg-dark.text-white= t("Delete Domain")
+            .card-body
+              .alert.alert-danger.small.mb-0= t("Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.")
+            .card-footer.text-right
+              form.ajax-form.confirm-prompt(
+                action=l(`/my-account/domains/${domain.name}`),
+                method="POST"
+              )
+                input(type="hidden", name="_method", value="DELETE")
+                input(type="hidden", name="_csrf", value=_csrf)
+                button.btn.btn-sm.btn-danger(type="submit")
+                  i.fa.fa-trash
+                  = " "
+                  = t("Delete Domain")
+        if domain.group === 'admin'
+          .card.border-dark.mb-3
             h4.card-header.bg-dark.text-white= t("Current Plan")
             .card-body
-              p.card-text
-                != t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a href="%s">Billing</a> page and our <a href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/pricing?domain=${domain.name}`))
-            .card-footer
+              .alert.alert-success.small.mb-0!= t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a class="alert-link" href="%s">Billing</a> page and our <a class="alert-link" href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/pricing?domain=${domain.name}`))
+            .card-footer.text-right
               .btn-group
                 button.btn.btn-lg.btn-primary.dropdown-toggle(
                   type="button",
@@ -168,7 +183,7 @@ block body
             h4.card-header.bg-dark.text-white= t("Manage Team")
             .card-body
               +planRequired(true)
-              p.card-text= t("Members have shared access to this domain, and you can invite new members, remove existing members, or manage permissions for them below.")
+              .alert.alert-info.small= t("Members have shared access to this domain, and you can invite new members, remove existing members, or manage permissions for them below.")
               .table-responsive
                 table.table.table-hover.table-bordered(class=hasInvites ? "" : "mb-0")
                   thead.thead-dark
@@ -239,7 +254,7 @@ block body
                                     = " "
                                     = t("Delete Member")
               if hasInvites
-                p.card-text= t("Pending invitations are listed below.")
+                .alert.alert-warning.small= t("Pending invitations are listed below.")
                 .table-responsive
                   table.table.table-hover.table-bordered.mb-0
                     thead.thead-dark
@@ -295,7 +310,7 @@ block body
                                       = " "
                                       = t("Delete Invite")
 
-            .card-footer
+            .card-footer.text-right
               //- TODO: this should be a right-clickable link with re-usable form in the modal (and modal-anchor)
               button.btn.btn-lg.btn-primary(
                 type="button",
@@ -305,6 +320,138 @@ block body
                 i.fa.fa-user-plus
                 = " "
                 = t("Invite New Member")
+
+        //- Spam Scanner Settings
+        if domain.group === 'admin'
+          form.ajax-form.confirm-prompt.card.border-dark.mb-3(
+            action=ctx.path,
+            method="POST",
+            disabled=isDisabled
+          )
+            input(type="hidden", name="_method", value="PUT")
+            input(type="hidden", name="_csrf", value=_csrf)
+            input(
+              type="hidden",
+              name="_section",
+              value="spam_scanner_settings"
+            )
+            h4.card-header.bg-dark.text-white= t("Spam Scanner Settings")
+            .card-body
+              +planRequired(false)
+              p.card-text
+                != t('<a class="notranslate" target="_blank" rel="noopener noreferrer" href="%s">Spam Scanner</a> is the open-source technology we built <i>ourselves</i> for anti-spam, phishing, and virus protection.', "https://spamscanner.net")
+                = " "
+                != t("Since it was created by the same team that brought you Forward Email, it also abides by the same privacy-first and zero-logging policies.")
+                = " "
+                != t('You can learn more at <a target="_blank" rel="noopener noreferrer" href="%s" class="notranslate">%s</a>.', "https://spamscanner.net", "https://spamscanner.net")
+              .form-group.form-check
+                input#input-has-adult-protection.form-check-input(
+                  type="checkbox",
+                  disabled=isDisabled,
+                  name="has_adult_content_protection",
+                  value="true",
+                  checked=domain.has_adult_content_protection
+                )
+                label.form-check-label(for="input-has-adult-protection")= t("Adult-related content protection")
+                p.form-text.small.text-black-50!= t("If you uncheck this, then links will <u>not be scanned</u> for adult-related content.")
+              .form-group.form-check
+                input#input-has-phishing-protection.form-check-input(
+                  type="checkbox",
+                  disabled=isDisabled,
+                  name="has_phishing_protection",
+                  value="true",
+                  checked=domain.has_phishing_protection
+                )
+                label.form-check-label(for="input-has-phishing-protection")= t("Phishing protection")
+                p.form-text.small.text-black-50!= t('If you uncheck this, then links will <u>not be scanned</u> for malware, domain swapping, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor phishing in general.', "https://en.wikipedia.org/wiki/IDN_homograph_attack")
+              .form-group.form-check
+                input#input-has-executable-protection.form-check-input(
+                  type="checkbox",
+                  disabled=isDisabled,
+                  name="has_executable_protection",
+                  value="true",
+                  checked=domain.has_executable_protection
+                )
+                label.form-check-label(for="input-has-executable-protection")= t("Executable protection")
+                p.form-text.small.text-black-50!= t('If you uncheck this, then links and attachments will <u>not be scanned</u> for potentially-malicious <a target="_blank" rel="noopener noreferrer" href="%s">executable</a> file types, extensions, names, headers, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor <a target="_blank" rel="noopener noreferrer" href="%s">magic numbers</a>.', "https://github.com/spamscanner/spamscanner/blob/master/executables.json", "https://en.wikipedia.org/wiki/IDN_homograph_attack", "https://en.wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files")
+              .form-group.form-check
+                input#input-has-virus-protection.form-check-input(
+                  type="checkbox",
+                  disabled=isDisabled,
+                  name="has_virus_protection",
+                  value="true",
+                  checked=domain.has_virus_protection
+                )
+                label.form-check-label(for="input-has-virus-protection")= t("Virus protection")
+                p.form-text.small.text-black-50!= t('If you uncheck this, then attachments will <u>not be scanned</u> for trojans, viruses, malware, nor other malicious threats with <a target="_blank" rel="noopener noreferrer" href="%s" class="notranslate">ClamAV</a>.', "https://www.clamav.net/")
+            .card-footer.text-right
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  button.confirm-prompt.btn.btn-lg.btn-secondary(
+                    type="reset",
+                    disabled=isDisabled
+                  )= t("Reset")
+                li.list-inline-item
+                  button.btn.btn-lg.btn-primary(
+                    type="submit",
+                    disabled=isDisabled
+                  )= t("Save")
+        if domain.group === 'admin'
+          form.ajax-form.confirm-prompt.card.border-dark.mb-3(
+            action=ctx.path,
+            method="POST",
+            disabled=isDisabled
+          )
+            input(type="hidden", name="_method", value="PUT")
+            input(type="hidden", name="_csrf", value=_csrf)
+            h4.card-header.bg-dark.text-white= t("Custom SMTP Port Forwarding")
+            .card-body
+              +planRequired(false)
+              .form-group.floating-label
+                input#input-port.form-control.form-control-lg(
+                  type="port",
+                  disabled=isDisabled,
+                  required,
+                  name="smtp_port",
+                  value=domain.smtp_port,
+                  placeholder=" ",
+                  aria-describedby="help-port"
+                )
+                label(for="input-port")= t("Port number (SMTP)")
+              .alert.alert-secondary.small#help-port
+                = t("Do not modify this unless you know what you are doing.  This will forward all emails to the specific port for all aliases and their recipients.  For example, if you are forwarding to info@example.com, and input port number 1337 here, then our server will forward email to example.com on port 1337 (as opposed to the standard SMTP port of 25).")
+                if domain.plan === 'free'
+                  = " "
+                  != t('If you are on the free plan, then you can use the <a href="%s">"forward-email-port"</a> DNS <span class="notranslate">TXT</span> record.', l("/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25"))
+            .card-footer.text-right
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  button.confirm-prompt.btn.btn-lg.btn-secondary(
+                    type="reset",
+                    disabled=isDisabled
+                  )= t("Reset")
+                li.list-inline-item
+                  button.btn.btn-lg.btn-primary(
+                    type="submit",
+                    disabled=isDisabled
+                  )= t("Save")
+        .card.border-dark
+          h4.card-header.bg-dark.text-white= t("Maximum Recipients Per Alias")
+          .card-body
+            if domain.group === 'admin'
+              +planRequired(false)
+            p.card-text
+              != t('You are currently limited to forwarding to <strong class="notranslate">%d</strong> recipients per alias.', domain.max_recipients_per_alias <= 0 ? config.maxForwardedAddresses : domain.max_recipients_per_alias)
+              = " "
+              != t('If you need to increase this limit, then please contact <span class="notranslate">%s</span> and include a valid reason.', domain.group === "admin" ? t("us") : t("your domain's administrator"))
+          if domain.group === 'admin'
+            .card-footer.text-right
+              a.btn.btn-lg.btn-primary(
+                href=l("/help"),
+                role="button",
+                data-target="#modal-help",
+                disabled=isDisabled
+              )= t("Increase limit")
 
         //- Has Recipient Verification
         if domain.group === 'admin'
@@ -333,7 +480,7 @@ block body
                 )
                 label.form-check-label(for="input-has-recipient-verification")= t("Requires recipients to click email verification link")
                 p.form-text.small.text-black-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
-            .card-footer
+            .card-footer.text-right
               ul.list-inline.mb-0
                 li.list-inline-item
                   button.confirm-prompt.btn.btn-lg.btn-secondary(
@@ -446,7 +593,7 @@ block body
 
               //- TODO: eventually let users customize the text portion (for now we use html-to-text)
 
-            .card-footer
+            .card-footer.text-right
               ul.list-inline.mb-0
                 li.list-inline-item
                   button.confirm-prompt.btn.btn-lg.btn-secondary(
@@ -459,153 +606,6 @@ block body
                     disabled=isCustomVerificationDisabled
                   )= t("Save")
 
-        //- Spam Scanner Settings
-        if domain.group === 'admin'
-          form.ajax-form.confirm-prompt.card.border-dark.mb-3(
-            action=ctx.path,
-            method="POST",
-            disabled=isDisabled
-          )
-            input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=_csrf)
-            input(
-              type="hidden",
-              name="_section",
-              value="spam_scanner_settings"
-            )
-            h4.card-header.bg-dark.text-white= t("Spam Scanner Settings")
-            .card-body
-              +planRequired(false)
-              p.card-text
-                != t('<a class="notranslate" target="_blank" rel="noopener noreferrer" href="%s">Spam Scanner</a> is the open-source technology we built <i>ourselves</i> for anti-spam, phishing, and virus protection.', "https://spamscanner.net")
-                = " "
-                != t("Since it was created by the same team that brought you Forward Email, it also abides by the same privacy-first and zero-logging policies.")
-                = " "
-                != t('You can learn more at <a target="_blank" rel="noopener noreferrer" href="%s" class="notranslate">%s</a>.', "https://spamscanner.net", "https://spamscanner.net")
-              .form-group.form-check
-                input#input-has-adult-protection.form-check-input(
-                  type="checkbox",
-                  disabled=isDisabled,
-                  name="has_adult_content_protection",
-                  value="true",
-                  checked=domain.has_adult_content_protection
-                )
-                label.form-check-label(for="input-has-adult-protection")= t("Adult-related content protection")
-                p.form-text.small.text-black-50!= t("If you uncheck this, then links will <u>not be scanned</u> for adult-related content.")
-              .form-group.form-check
-                input#input-has-phishing-protection.form-check-input(
-                  type="checkbox",
-                  disabled=isDisabled,
-                  name="has_phishing_protection",
-                  value="true",
-                  checked=domain.has_phishing_protection
-                )
-                label.form-check-label(for="input-has-phishing-protection")= t("Phishing protection")
-                p.form-text.small.text-black-50!= t('If you uncheck this, then links will <u>not be scanned</u> for malware, domain swapping, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor phishing in general.', "https://en.wikipedia.org/wiki/IDN_homograph_attack")
-              .form-group.form-check
-                input#input-has-executable-protection.form-check-input(
-                  type="checkbox",
-                  disabled=isDisabled,
-                  name="has_executable_protection",
-                  value="true",
-                  checked=domain.has_executable_protection
-                )
-                label.form-check-label(for="input-has-executable-protection")= t("Executable protection")
-                p.form-text.small.text-black-50!= t('If you uncheck this, then links and attachments will <u>not be scanned</u> for potentially-malicious <a target="_blank" rel="noopener noreferrer" href="%s">executable</a> file types, extensions, names, headers, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor <a target="_blank" rel="noopener noreferrer" href="%s">magic numbers</a>.', "https://github.com/spamscanner/spamscanner/blob/master/executables.json", "https://en.wikipedia.org/wiki/IDN_homograph_attack", "https://en.wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files")
-              .form-group.form-check
-                input#input-has-virus-protection.form-check-input(
-                  type="checkbox",
-                  disabled=isDisabled,
-                  name="has_virus_protection",
-                  value="true",
-                  checked=domain.has_virus_protection
-                )
-                label.form-check-label(for="input-has-virus-protection")= t("Virus protection")
-                p.form-text.small.text-black-50!= t('If you uncheck this, then attachments will <u>not be scanned</u> for trojans, viruses, malware, nor other malicious threats with <a target="_blank" rel="noopener noreferrer" href="%s" class="notranslate">ClamAV</a>.', "https://www.clamav.net/")
-            .card-footer
-              ul.list-inline.mb-0
-                li.list-inline-item
-                  button.confirm-prompt.btn.btn-lg.btn-secondary(
-                    type="reset",
-                    disabled=isDisabled
-                  )= t("Reset")
-                li.list-inline-item
-                  button.btn.btn-lg.btn-primary(
-                    type="submit",
-                    disabled=isDisabled
-                  )= t("Save")
-        if domain.group === 'admin'
-          form.ajax-form.confirm-prompt.card.border-dark.mb-3(
-            action=ctx.path,
-            method="POST",
-            disabled=isDisabled
-          )
-            input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=_csrf)
-            h4.card-header.bg-dark.text-white= t("Custom SMTP Port Forwarding")
-            .card-body
-              +planRequired(false)
-              .form-group.floating-label
-                input#input-port.form-control.form-control-lg(
-                  type="port",
-                  disabled=isDisabled,
-                  required,
-                  name="smtp_port",
-                  value=domain.smtp_port,
-                  placeholder=" ",
-                  aria-describedby="help-port"
-                )
-                label(for="input-port")= t("Port number (SMTP)")
-              p.card-text.small#help-port.form-text.text-muted
-                = t("Do not modify this unless you know what you are doing.  This will forward all emails to the specific port for all aliases and their recipients.  For example, if you are forwarding to info@example.com, and input port number 1337 here, then our server will forward email to example.com on port 1337 (as opposed to the standard SMTP port of 25).")
-                if domain.plan === 'free'
-                  = " "
-                  != t('If you are on the free plan, then you can use the <a href="%s">"forward-email-port"</a> DNS <span class="notranslate">TXT</span> record.', l("/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25"))
-            .card-footer
-              ul.list-inline.mb-0
-                li.list-inline-item
-                  button.confirm-prompt.btn.btn-lg.btn-secondary(
-                    type="reset",
-                    disabled=isDisabled
-                  )= t("Reset")
-                li.list-inline-item
-                  button.btn.btn-lg.btn-primary(
-                    type="submit",
-                    disabled=isDisabled
-                  )= t("Save")
-        .card.border-dark.mb-3
-          h4.card-header.bg-dark.text-white= t("Maximum Recipients Per Alias")
-          .card-body
-            if domain.group === 'admin'
-              +planRequired(false)
-            p.card-text
-              != t('You are currently limited to forwarding to <strong class="notranslate">%d</strong> recipients per alias.', domain.max_recipients_per_alias <= 0 ? config.maxForwardedAddresses : domain.max_recipients_per_alias)
-              = " "
-              != t('If you need to increase this limit, then please contact <span class="notranslate">%s</span> and include a valid reason.', domain.group === "admin" ? t("us") : t("your domain's administrator"))
-          if domain.group === 'admin'
-            .card-footer
-              a.btn.btn-lg.btn-primary(
-                href=l("/help"),
-                role="button",
-                data-target="#modal-help",
-                disabled=isDisabled
-              )= t("Increase limit")
-        if domain.group === 'admin'
-          .card.border-dark.mb-3
-            h4.card-header.bg-dark.text-white= t("Delete Domain")
-            .card-body
-              = t("Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.")
-            .card-footer
-              form.ajax-form.confirm-prompt(
-                action=l(`/my-account/domains/${domain.name}`),
-                method="POST"
-              )
-                input(type="hidden", name="_method", value="DELETE")
-                input(type="hidden", name="_csrf", value=_csrf)
-                button.btn.btn-sm.btn-danger(type="submit")
-                  i.fa.fa-trash
-                  = " "
-                  = t("Delete Domain")
     .row.text-center.my-5
       .col
         a.btn.btn-outline-secondary(

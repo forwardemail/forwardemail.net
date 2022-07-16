@@ -9,6 +9,14 @@ html(lang=locale)
       title= subject
       link(rel="stylesheet", href=manifest("css/app.css"), data-inline)
   body.email
+    .container.mt-3
+      .row
+        .col-12
+          .alert.alert-light.text-center.small.mb-0
+            .small
+              != t("Need to unsubscribe?")
+              = ' '
+              a(href=`${config.urls.web}/${locale}/my-account/security`).alert-link= t('Delete your account')
     block body
       block messages
         include _messages

@@ -1150,12 +1150,18 @@ async function retrieveDomainBilling(ctx) {
         );
       });
       if (domains.length > 0) {
-        const message = ctx.translate('USER_UPGRADED_ACCOUNT_NOT_DOMAINS');
+        const message = ctx.translate(
+          'USER_UPGRADED_ACCOUNT_NOT_DOMAINS_MESSAGE'
+        );
+        const subject = ctx.translate(
+          'USER_UPGRADED_ACCOUNT_NOT_DOMAINS_SUBJECT'
+        );
         if (ctx.accepts('html')) ctx.flash('warning', message);
         emailHelper({
           template: 'alert',
           message: {
-            to: ctx.state.user[config.userFields.fullEmail]
+            to: ctx.state.user[config.userFields.fullEmail],
+            subject
           },
           locals: { user: ctx.state.user.toObject(), message }
         })
