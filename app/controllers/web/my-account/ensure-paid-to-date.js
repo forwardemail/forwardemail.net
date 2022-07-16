@@ -8,6 +8,7 @@ const config = require('#config');
 async function ensurePaidToDate(ctx, next) {
   // return early if we're already on profile, security, or billing
   if (
+    (!ctx.api && ctx.method !== 'GET') ||
     ctx.pathWithoutLocale.startsWith('/my-account/billing') ||
     ctx.state.user.plan === 'free' ||
     !_.isDate(ctx.state.user[config.userFields.planExpiresAt]) ||
