@@ -203,6 +203,7 @@ async function mapper(id) {
 
   const ids = await Users.distinct('_id', {
     plan: { $ne: 'free' },
+    group: 'user',
     [config.userFields.isBanned]: false,
     [config.userFields.hasVerifiedEmail]: true,
     [config.userFields.planExpiresAt]: {
