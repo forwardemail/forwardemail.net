@@ -5,7 +5,7 @@ block content
     .row
       .col-12
         .card.border-dark.d-block
-          h5.card-header.bg-dark.text-white.text-center
+          h1.h5.card-header.bg-dark.text-white.text-center
             if payment.method === 'free_beta_program'
               = emoji('tada')
               = ' '
@@ -21,14 +21,13 @@ block content
               )
             h1.h3.text-center.mt-3.mb-0= t('Receipt')
             .small!= prefixHTMLPathBasedAnchors(receiptHTML, config.urls.web)
-            hr
             ul.list-inline.text-center
-              li.list-inline-item
+              li.list-inline-item.mt-3
                 a.btn.btn-md.btn-primary(href=`${config.urls.web}/${locale}/my-account/billing/make-payment`)= t("Make Payment")
               if isSANB(user[config.userFields.stripeSubscriptionID])
-                li.list-inline-item
+                li.list-inline-item.mt-3
                   a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Card')
               if !isSANB(user[config.userFields.stripeSubscriptionID]) && !isSANB(user[config.userFields.paypalSubscriptionID])
-                li.list-inline-item
+                li.list-inline-item.mt-3
                   a.btn.btn-md.btn-success(href=`${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)= t("Enable Auto-Renew")
           .card-footer.small.text-muted.text-center= t("Your receipt is also attached as a PDF to this email.")

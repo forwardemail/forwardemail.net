@@ -5,7 +5,7 @@ block content
     .row
       .col-12
         .card.border-dark.d-block.text-center
-          h5.card-header.bg-dark.text-white= t("Change your email")
+          h1.h5.card-header.bg-dark.text-white= t("Change your email")
           .card-body
             .card-text
               p!= t("If you wish to change your email from <strong>%s</strong> to <strong>%s</strong>, then click the link below within %s.", user[config.passportLocalMongoose.usernameField], user[config.userFields.changeEmailNewAddress], dayjs(user[config.userFields.changeEmailTokenExpiresAt]).locale(locale).fromNow(true))

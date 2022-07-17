@@ -175,8 +175,6 @@ async function createDomainBilling(ctx) {
       }
 
       const options = {
-        // TODO: add alipay and others
-        payment_method_types: ['card'],
         mode: paymentType === 'one-time' ? 'payment' : 'subscription',
         customer: ctx.state.user[config.userFields.stripeCustomerID],
         client_reference_id: reference,
@@ -190,6 +188,7 @@ async function createDomainBilling(ctx) {
             description
           }
         ],
+        locale: ctx.locale,
         cancel_url: `${config.urls.web}${ctx.path}${
           isMakePayment || isEnableAutoRenew ? '' : `/?plan=${plan}`
         }`,
@@ -199,6 +198,14 @@ async function createDomainBilling(ctx) {
           isMakePayment || isEnableAutoRenew ? '' : `plan=${plan}&`
         }session_id={CHECKOUT_SESSION_ID}`
       };
+
+      if (paymentType !== 'one-time')
+        options.subscription_data = {
+          description,
+          metadata: {
+            plan
+          }
+        };
 
       ctx.logger.info('stripe.checkout.sessions.create', { options });
 

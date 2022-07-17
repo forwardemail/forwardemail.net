@@ -1,4 +1,5 @@
 const process = require('process');
+const os = require('os');
 const { parentPort } = require('worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -8,6 +9,8 @@ const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
+const isSANB = require('is-string-and-not-blank');
+const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
 const config = require('#config');
@@ -15,8 +18,8 @@ const email = require('#helpers/email');
 const logger = require('#helpers/logger');
 const { Users, Domains } = require('#models');
 
+const concurrency = config.env === 'development' ? 1 : os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');
-
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -39,132 +42,157 @@ if (parentPort)
 
 graceful.listen();
 
-async function mapper(_id) {
+// eslint-disable-next-line complexity
+async function mapper(id) {
   // return early if the job was already cancelled
   if (isCancelled) return;
 
-  try {
-    const domain = await Domains.findById(_id)
-      .populate('members.user')
-      .lean()
-      .exec();
+  const user = await Users.findById(id).lean().exec();
 
-    // it could have been deleted by the user mid-process
-    if (!domain) return;
+  // ensure not banned
+  if (user[config.userFields.isBanned]) return;
 
-    logger.info('checking domain', { domain });
+  // if on free plan then ignore
+  if (user.plan === 'free') return;
 
-    if (!['team', 'enhanced_protection'].includes(domain.plan))
-      throw new Error(
-        `Domain "${domain.name}" was on an unknown "${domain.plan}" plan`
-      );
+  // if they started a subscription then ignore
+  if (
+    isSANB(user[config.userFields.stripeSubscriptionID]) ||
+    isSANB(user[config.userFields.paypalSubscriptionID])
+  )
+    return;
 
-    let admins = domain.members.filter(
-      (member) =>
-        _.isObject(member) &&
-        _.isObject(member.user) &&
-        member.group === 'admin'
-    );
+  // if user has zero domains on paid plans then ignore (another job will downgrade them)
+  const count = await Domains.countDocuments({
+    plan: { $ne: 'free' },
+    user: user._id
+  });
+  if (count === 0) return;
 
-    const validMembers = admins.filter((member) =>
-      domain.plan === 'enhanced_protection'
-        ? ['team', 'enhanced_protection'].includes(member.user.plan)
-        : member.user.plan === 'team'
-    );
+  // ensure plan has expiry
+  if (!_.isDate(user[config.userFields.planExpiresAt])) return;
+  // ensure plan expires < 1 month from now
+  if (
+    dayjs(user[config.userFields.planExpiresAt]).isAfter(
+      dayjs().add(1, 'month')
+    )
+  )
+    return;
 
-    const now = new Date();
-    const oneMonthFromNow = dayjs(now).add(30, 'day').toDate();
-
-    // this pretty much only hits this conditional when we first launched publicly (out of free beta program)
-    if (validMembers.length === 0) {
-      admins = await Promise.all(
-        admins.map(async (member) => {
-          //
-          // if the user hasn't tried a paid plan yet
-          // then update their `plan_set_at` date and give them 30 days free
-          // so that we don't allow them to switch back
-          // and forth between free and paid plans
-          // and abuse the service to get it for free
-          //
-          const $set = { plan: domain.plan };
-          member.user.plan = domain.plan;
-          if (
-            !_.isDate(member.user[config.userFields.planSetAt]) ||
-            !_.isDate(member.user[config.userFields.planExpiresAt])
-          ) {
-            $set[config.userFields.planSetAt] = now;
-            member.user[config.userFields.planSetAt] = now;
-            $set[config.userFields.planExpiresAt] = oneMonthFromNow;
-            member.user[config.userFields.planExpiresAt] = oneMonthFromNow;
-          }
-
-          await Users.findByIdAndUpdate(member.user._id, { $set });
-          return member;
-        })
-      );
-
-      // send email
+  // if final notice sent then ensure it's been 1 month since final notice
+  if (_.isDate(user[config.userFields.paymentReminderFinalNoticeSentAt])) {
+    // if it has been more than a month then ban the user and email admins
+    // otherwise return early since we've already notified them
+    if (
+      dayjs().isAfter(
+        dayjs(user[config.userFields.paymentReminderFinalNoticeSentAt]).add(
+          1,
+          'month'
+        )
+      )
+    ) {
+      await Users.findByIdAndUpdate(user._id, {
+        $set: {
+          [config.userFields.isBanned]: true
+        }
+      });
       await email({
-        template: 'migrate-plans',
+        template: 'alert',
         message: {
-          to: admins.map((member) => member.user[config.userFields.fullEmail])
+          to: config.email.message.from,
+          subject: 'Banned user for late payments'
         },
-        locals: { domain }
+        locals: {
+          message: `${
+            user.email
+          } has been banned for late payment: <pre><code>${JSON.stringify(
+            user,
+            null,
+            2
+          )}</code></pre>`
+        }
       });
     }
 
-    // this assumes that there's at least one admin of this domain
-    // with an account plan that matches the minimum plan required
-    // for the domain's current plan
-    // (e.g. if the domain was on team, then at least 1 admin had team plan)
-    // however we want to only send a reminder at these intervals:
-    // - 1d
-    // - 3d
-    // - 7d
-    // - 15d
-    // - 30d
+    return;
+  }
 
-    //
-    // go through each admin and check how long
-    // ago we sent them a payment reminder email
-    //
-    const emails = [];
-    for (const member of admins) {
-      // if the user doesn't have a plan set yet or it has no expiration date then keep going
-      // (this shouldn't ever happen unless the user was added as an admin afterwards, in which case we don't want to blast them)
-      if (
-        !_.isDate(member.user[config.userFields.planSetAt]) ||
-        !_.isDate(member.user[config.userFields.planExpiresAt])
-      ) {
-        logger.fatal(
-          `${member.user.email} was missing plan set or expiration date`
-        );
-        continue;
-      }
+  // ensure final notice is only sent after 3 weeks past follow-up
+  if (_.isDate(user[config.userFields.paymentReminderFollowUpSentAt])) {
+    if (
+      dayjs().isBefore(
+        dayjs(user[config.userFields.paymentReminderFollowUpSentAt]).add(
+          3,
+          'weeks'
+        )
+      )
+    )
+      return;
+  } else if (
+    // otherwise ensure follow up isn't sent until 1 week after initial notice
+    _.isDate(user[config.userFields.paymentReminderInitialSentAt]) &&
+    dayjs().isBefore(
+      dayjs(user[config.userFields.paymentReminderInitialSentAt]).add(1, 'week')
+    )
+  )
+    return;
 
-      // TODO: Date diff calculation is off
-      // TODO: Group emails to domains and send one email vs multiple (prevent spam)
+  //
+  // fetch account summary for the user
+  // (super helpful to remind users of what domains they have with us)
+  //
+  // the table we render in emails has the following
+  //
+  // domain name | plan | member group | has mx | has txt
+  // (link)
+  //
+  const domains = await Domains.find({
+    'members.user': user._id
+  })
+    .sort('name')
+    .lean()
+    .exec();
 
-      const diff =
-        dayjs(member.user[config.userFields.planExpiresAt]).diff(now, 'day') +
-        1;
+  try {
+    await email({
+      template: 'payment-reminder',
+      message: {
+        to: user[config.userFields.receiptEmail]
+          ? user[config.userFields.receiptEmail]
+          : user[config.userFields.fullEmail],
+        ...(user[config.userFields.receiptEmail]
+          ? { cc: user[config.userFields.fullEmail] }
+          : {})
+      },
+      locals: { user, domains }
+    });
 
-      if (diff !== 1 && diff !== 3 && diff !== 7 && diff !== 15 && diff !== 30)
-        continue;
-
-      emails.push({
-        template: 'payment-reminder',
-        message: {
-          to: member.user[config.userFields.fullEmail]
-        },
-        locals: { domain, diff }
+    if (!_.isDate(user[config.userFields.paymentReminderInitialSentAt])) {
+      await Users.findByIdAndUpdate(user._id, {
+        $set: {
+          [config.userFields.paymentReminderInitialSentAt]: new Date()
+        }
       });
+      return;
     }
 
-    if (emails.length === 0) return;
+    if (!_.isDate(user[config.userFields.paymentReminderFollowUpSentAt])) {
+      await Users.findByIdAndUpdate(user._id, {
+        $set: {
+          [config.userFields.paymentReminderFollowUpSentAt]: new Date()
+        }
+      });
+      return;
+    }
 
-    // NOTE: store when we sent payment reminder at and don't resend twice if we send hourly (only once per interval)
-    await Promise.all(emails.map((eml) => email(eml)));
+    if (!_.isDate(user[config.userFields.paymentReminderFinalNoticeSentAt])) {
+      await Users.findByIdAndUpdate(user._id, {
+        $set: {
+          [config.userFields.paymentReminderFinalNoticeSentAt]: new Date()
+        }
+      });
+      return;
+    }
   } catch (err) {
     logger.error(err);
   }
@@ -173,14 +201,37 @@ async function mapper(_id) {
 (async () => {
   await mongoose.connect();
 
-  // async iterator cursor (stream)
-  logger.info('starting billing');
-  const query = Domains.find({ plan: { $ne: 'free' } })
-    .select('_id')
-    .lean();
-  for await (const _id of query) {
-    logger.info('iterating over _id', { _id: _id.toString() });
-    await mapper(_id);
+  const ids = await Users.distinct('_id', {
+    plan: { $ne: 'free' },
+    [config.userFields.isBanned]: false,
+    [config.userFields.hasVerifiedEmail]: true,
+    [config.userFields.planExpiresAt]: {
+      $lte: dayjs().add(1, 'month').toDate()
+    },
+    //
+    // NOTE: users on subscriptions will automatically have
+    //       their subscriptions cancelled and removed if they
+    //       are late on payments or if they manually cancel from PayPal
+    //       (the sync jobs will take care of this automatically)
+    //       (we don't want to annoy people on subscriptions with messages)
+    //
+    [config.userFields.stripeSubscriptionID]: { $exists: false },
+    [config.userFields.paypalSubscriptionID]: { $exists: false }
+    // TODO: we can optimize this query more with date filtering in the future
+  });
+
+  //
+  // NOTE: we send an initial notice
+  //       then a follow-up one week later
+  //       then a final notice three weeks later
+  //       and then finally ban the account one month later
+  //       (so users technically have 2 months after they receive initial notice before they get banned)
+  //       (and they only get banned if we successfully have sent them each notice in order)
+  //
+  try {
+    await pMap(ids, mapper, { concurrency });
+  } catch (err) {
+    logger.fatal(err);
   }
 
   if (parentPort) parentPort.postMessage('done');
