@@ -2,8 +2,12 @@ body.email {
   max-width: 600px !important;
   padding-top: 0;
   margin: 0 auto !important;
+  .container {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
   img {
     max-width: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
 }
