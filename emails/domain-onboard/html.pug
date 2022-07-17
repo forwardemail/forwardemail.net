@@ -5,7 +5,7 @@ block content
     .row
       .col-12
         .card.border-dark.d-block.text-center
-          h5.card-header.bg-dark.text-white= domains ? t("You added new domains!") : t("Welcoming your new domain!")
+          h1.h5.card-header.bg-dark.text-white= domains ? t("You added new domains!") : t("Welcoming your new domain!")
           .card-body.text-center.p-0
             a(
               href=domains ? `${config.urls.web}/${locale}/my-account/domains` : `${config.urls.web}/${locale}/my-account/domains/${domain.name}`
@@ -26,10 +26,10 @@ block content
                 .p-3
                   h2.h5= t("Did you want enhanced privacy and protection?")
                   p.card-text
-                    != t("Some of <strong>your domains are on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.")
+                    != t('Some of <strong>your domains are on the free plan</strong>, which means <strong class="text-danger">your forwarding addresses are publicly searchable</strong> over DNS lookups.')
                     = " "
                     = t("If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.")
-                  a.btn.btn-lg.btn-success(
+                  a.btn.btn-lg.btn-danger(
                     href=user.plan === 'free' ? `${config.urls.web}/${locale}/my-account/upgrade?plan=enhanced_protection` : `${config.urls.web}/${locale}/my-account/domains/${domains[0].name}/billing?plan=enhanced_protection`,
                     role="button"
                   )= t("Upgrade now")
@@ -37,10 +37,10 @@ block content
               .p-3
                 h2.h5= t("Did you want enhanced privacy and protection?")
                 p.card-text
-                  != t("Currently <strong>your domain is on the free plan</strong>, which means <strong>your forwarding addresses are publicly searchable</strong> over DNS lookups.")
+                  != t('Currently <strong>your domain is on the free plan</strong>, which means <strong class="text-danger">your forwarding addresses are publicly searchable</strong> over DNS lookups.')
                   = " "
                   = t("If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.")
-                a.btn.btn-lg.btn-success(
+                a.btn.btn-lg.btn-danger(
                   href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`,
                   role="button"
                 )= t("Upgrade now")

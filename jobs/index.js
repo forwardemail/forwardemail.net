@@ -1,7 +1,7 @@
 const path = require('path');
 const process = require('process');
 
-// const dayjs = require('dayjs-with-plugins');
+const dayjs = require('dayjs-with-plugins');
 const { boolean } = require('boolean');
 
 // const config = require('#config');
@@ -22,11 +22,11 @@ const jobs = [
     timeout: 0,
     path: path.join(__dirname, 'stripe', 'index.js')
   },
-  // {
-  //   name: 'billing',
-  //   date: dayjs().startOf('day').add(10, 'hour').toDate(),
-  //   interval: '1d'
-  // },
+  {
+    name: 'billing',
+    date: dayjs().startOf('day').add(10, 'hour').toDate(),
+    interval: '1d'
+  },
   {
     name: 'check-domains',
     interval: '1h',
@@ -75,12 +75,12 @@ const jobs = [
     name: 'fix-non-free-users',
     interval: '1m',
     timeout: 0
+  },
+  {
+    name: 'domain-missing-txt',
+    interval: '1d',
+    timeout: 0
   }
-  // {
-  //   name: 'domain-missing-txt',
-  //   interval: '24h',
-  //   timeout: 0
-  // }
 ];
 
 if (process.env.NODE_ENV === 'production') {

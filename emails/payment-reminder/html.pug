@@ -5,35 +5,63 @@ block content
     .row
       .col-12
         .card.border-dark.d-block
-          h5.card-header.bg-dark.text-white.text-center!= t('<span class="notranslate">%d</span> Day Payment Reminder', diff)
+          h1.h5.card-header.bg-dark.text-white.text-center
+            != t('Your plan <span class="notranslate">%s</span> <span class="notranslate">%s</span>', new Date(user[config.userFields.planExpiresAt]).getTime() > Date.now() ? t('expires') : t('expired'), dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow())
           .card-body.p-0
-            a(href=config.urls.web)
+            a(href=`${config.urls.web}/${locale}/my-account/billing`)
               img.img-responsive(
-                src=`${config.urls.web}/img/emails/self-test.gif`,
+                src=`${config.urls.web}/img/emails/${_.sample(['domain-onboard', 'domain-verified', 'self-test', 'welcome'])}.gif`,
                 alt="",
                 data-inline-ignore
               )
-            .p-3
-              p.card-text
-                = t("If you're not aware, we publicly launched our service (out of beta) on November 23, 2020.")
-                = " "
-                != t("The beta program had started on January 11, 2020, which means we shared almost an entire year of free service.")
-              p.card-text
-                strong!= t("Don't worry, this is just a reminder &ndash; your service is still online.")
-              p.card-text
-                = t("We're now accepting payment for our service and hope that you will continue to support us!")
-                = " "
-                = t("Payments will go towards funding new features, making the service even faster, adding more servers, growing our team, and buying us coffee.")
-                = " "
-                = t("Since you were using the beta program, we're asking you to complete your billing information by clicking the button below.")
-                = " "
-                = t("All major payment methods are accepted, including debit cards, credit cards, and PayPal.")
-              p.card-text
-                != t('If you want to keep your email service for <strong class="notranslate">%s</strong>, then you need to make a payment for your account\'s <span class="notranslate">%s</span> plan.', domain.name, t(titleize(humanize(domain.plan))))
-                = " "
-                != t("Feel free to reach out with any feature requests, questions, or if you need help &ndash; we're here!")
-              a.btn.btn-lg.btn-block.btn-success(
-                href=`${config.urls.web}/${locale}/my-account/billing`,
-                role="button"
-              )= t("Pay by card or PayPal")
-          .card-footer.text-center.small.text-muted= t("If you no longer use our service, then please let us know.")
+            .p-3.text-center
+              if _.isDate(user[config.userFields.paymentReminderFollowUpSentAt])
+                p.card-text: strong.text-danger!= t('This is your <u>final notice</u> to make payment.')
+                p.card-text.mb-0= t('Make payment now to avoid account termination.')
+              else if _.isDate(user[config.userFields.paymentReminderInitialSentAt])
+                p.card-text: strong.text-danger!= t('This is a follow-up to a previous notice.')
+                p.card-text.mb-0= t('Make payment now to avoid account termination.')
+              else if new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
+                p.card-text: strong= t("Don't worry! Your account is still active.")
+                p.card-text.mb-0!= t('Make payment now to avoid account termination.')
+              else
+                p.card-text: strong= t("Don't worry! Your account is still active.")
+                p.card-text.mb-0!= t('Your plan expires on <span class="text-danger font-weight-bold notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).format('M/D/YY'))
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item.mt-3
+                  a.btn.btn-lg.btn-danger(href=`${config.urls.web}/${locale}/my-account/billing/make-payment`)= t("Make Payment")
+                if isSANB(user[config.userFields.stripeSubscriptionID])
+                  li.list-inline-item.mt-3
+                    a.btn.btn-lg.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Card')
+                if !isSANB(user[config.userFields.stripeSubscriptionID]) && !isSANB(user[config.userFields.paypalSubscriptionID])
+                  li.list-inline-item.mt-3
+                    a.btn.btn-lg.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)= t("Enable Auto-Renew")
+            //- we have a safeguard to prevent sending emails if domain count is zero
+            //- but including this here just in case in the future there's a bug
+            if domains.length > 0
+              .p-3
+                h2.h5.text-center.mb-3= t('Account Summary')
+                table.table.table-bordered.small
+                  thead.thead-dark
+                    tr
+                      th= t('Domain Name')
+                      th= t('Plan')
+                      th.text-center= t('MX')
+                      th.text-center!= t('<span class="notranslate">TXT</span>')
+                  tbody
+                    //- NOTE: we only want to render the first 10 in case some have huge lists
+                    each domain in domains.slice(0, 10)
+                      tr
+                        td.align-middle
+                          .markdown-body.ml-0.mr-0: code= domain.name
+                        td.align-middle!= t(titleize(humanize(domain.plan)))
+                        td.text-center.align-middle= emoji(domain.has_mx_record ? "white_check_mark" : "x")
+                        td.text-center.align-middle= emoji(domain.has_txt_record ? "white_check_mark" : "x")
+                    if domains.length >= 10
+                      tr
+                        td.align-middle.text-center.text-muted(colspan=4)!= t('... and <span class="notranslate">%d</span> more domain names.', domains.length - 10)
+                .text-muted.small.font-italic.text-center
+                  .small!= t('Please note that MX and <span class="notranslate">TXT</span> statuses may be inaccurate.')
+
+          .card-footer.text-center.small.text-muted
+            = t('If you do not make payment, then your account will be banned.')
