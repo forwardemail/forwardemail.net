@@ -2454,5 +2454,7 @@
   "Need to unsubscribe?": "Need to unsubscribe?",
   "Delete your account": "Delete your account",
   "Payment due <span class=\"notranslate\">%s</span>.": "Payment due <span class=\"notranslate\">%s</span>.",
-  "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>."
+  "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.": "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>.",
+  "Thank you for joining our beta program!": "Thank you for joining our beta program!",
+  "You earned free credit!": "You earned free credit!"
 }
