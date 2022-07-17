@@ -1,7 +1,6 @@
 const path = require('path');
 const process = require('process');
 
-const dayjs = require('dayjs-with-plugins');
 const { boolean } = require('boolean');
 
 // const config = require('#config');
@@ -24,8 +23,8 @@ const jobs = [
   },
   {
     name: 'billing',
-    date: dayjs().startOf('day').add(10, 'hour').toDate(),
-    interval: '1d'
+    interval: '1h',
+    timeout: 0
   },
   {
     name: 'check-domains',
