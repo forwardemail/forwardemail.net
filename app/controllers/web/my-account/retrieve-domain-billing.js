@@ -354,12 +354,16 @@ async function retrieveDomainBilling(ctx) {
 
           if (!paymentMethod) throw ctx.translateError('UNKNOWN_ERROR');
 
-          ({
-            brand: method,
-            exp_month: expMonth,
-            exp_year: expYear,
-            last4
-          } = paymentMethod.card);
+          if (paymentMethod.type === 'card') {
+            ({
+              brand: method,
+              exp_month: expMonth,
+              exp_year: expYear,
+              last4
+            } = paymentMethod.card);
+          } else {
+            method = paymentMethod.type;
+          }
         } else if (session.subscription) {
           const subscription = await stripe.subscriptions.retrieve(
             session.subscription
@@ -408,12 +412,16 @@ async function retrieveDomainBilling(ctx) {
 
             if (!paymentMethod) throw ctx.translateError('UNKNOWN_ERROR');
 
-            ({
-              brand: method,
-              exp_month: expMonth,
-              exp_year: expYear,
-              last4
-            } = paymentMethod.card);
+            if (paymentMethod.type === 'card') {
+              ({
+                brand: method,
+                exp_month: expMonth,
+                exp_year: expYear,
+                last4
+              } = paymentMethod.card);
+            } else {
+              method = paymentMethod.type;
+            }
           }
         }
       } catch (err) {

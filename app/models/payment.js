@@ -64,6 +64,15 @@ const Payment = new mongoose.Schema({
     required: true,
     lowercase: true,
     enum: [
+      // defaults to unknown if any errors occur
+      // (this is also a type from Stripe payment_method.card.brand)
+      // (and we have a job that detects unknown methods to notify us)
+      'unknown',
+      // paypal
+      'paypal',
+      // if we give free credit to users
+      'free_beta_program',
+      // when stripe's payment.type === 'card'
       'amex',
       'diners',
       'discover',
@@ -71,9 +80,38 @@ const Payment = new mongoose.Schema({
       'mastercard',
       'unionpay',
       'visa',
-      'unknown',
-      'paypal',
-      'free_beta_program'
+      // <https://stripe.com/docs/api/payment_methods/object?lang=node>
+      // otherwise when it's !== 'card' we use payment.type as value
+      'acss_debit',
+      'affirm',
+      'afterpay_clearpay',
+      'alipay',
+      'au_becs_debit',
+      'bacs_debit',
+      'bancontact',
+      'blik',
+      'boleto',
+      // unsupported
+      // 'card',
+      // 'card_present',
+      // 'customer_balance',
+      'eps',
+      'fpx',
+      'giropay',
+      'grabpay',
+      'ideal',
+      'interac_present',
+      'klarna',
+      'konbini',
+      'link',
+      'oxxo',
+      'p24',
+      'paynow',
+      'promptpay',
+      'sepa_debit',
+      'sofort',
+      'us_bank_account',
+      'wechat_pay'
     ]
   },
   // this is the duration of time added
