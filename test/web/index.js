@@ -66,7 +66,6 @@ test('GET /:locale/privacy', async (t) => {
 test('GET /:locale/help', async (t) => {
   const { web } = t.context;
   const res = await web.get('/en/help');
-
-  t.is(res.status, 200);
-  t.assert(res.text.includes('Send message'));
+  t.is(res.status, 302);
+  t.is(res.header.location, '/en/login');
 });

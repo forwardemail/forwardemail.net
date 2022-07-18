@@ -1,12 +1,12 @@
 if domains.length > 0
   .p-3
-    h2.h5.text-center.mb-3= t('Account Summary')
+    h2.h5.text-center.mb-3= t("Account Summary")
     table.table.table-bordered.small
       thead.thead-dark
         tr
-          th= t('Domain Name')
-          th= t('Plan')
-          th.text-center= t('MX')
+          th= t("Domain Name")
+          th= t("Plan")
+          th.text-center= t("MX")
           th.text-center!= t('<span class="notranslate">TXT</span>')
       tbody
         //- NOTE: we only want to render the first 10 in case some have huge lists
