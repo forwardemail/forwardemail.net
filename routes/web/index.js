@@ -68,7 +68,22 @@ localeRouter
     ctx.redirect(ctx.state.l('/email-forwarding-api'));
   })
   .get('/email-forwarding-api', web.myAccount.retrieveDomains, web.api)
-  .get('/help', render('help'))
+  .get(
+    '/help',
+    policies.ensureLoggedIn,
+    policies.ensureOtp,
+    web.myAccount.ensureNotBanned,
+    render('help')
+  )
+  .post(
+    '/help',
+    policies.ensureLoggedIn,
+    policies.ensureOtp,
+    web.myAccount.ensureNotBanned,
+    policies.ensureCaptcha,
+    rateLimit(3, 'help'),
+    web.help
+  )
   .get('/about', render('about'))
   .get(
     '/domain-registration',
@@ -116,7 +131,6 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/'));
   })
-  .post('/help', policies.ensureCaptcha, web.help)
   .get('/forgot-password', policies.ensureLoggedOut, render('forgot-password'))
   .post(
     '/forgot-password',

@@ -9,6 +9,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const numeral = require('numeral');
 const pluralize = require('pluralize');
+const splitLines = require('split-lines');
 const striptags = require('striptags');
 const titleize = require('titleize');
 const toEmoji = require('gemoji/name-to-emoji');
@@ -61,5 +62,6 @@ module.exports = {
   titleize,
   validator,
   prefixHTMLPathBasedAnchors,
-  accounting
+  accounting,
+  splitLines
 };

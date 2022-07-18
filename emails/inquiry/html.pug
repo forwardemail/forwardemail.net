@@ -5,20 +5,15 @@ block content
     .row
       .col-12
         .card.border-dark.d-block
-          h1.h5.card-header.bg-dark.text-white.text-center= t("Help request")
-          .card-body
-            p.card-text
-              if inquiry.is_email_only
-                = t("Thank you for submitting a help request on our website.  We will get back to you soon!")
-              else
-                = t("Below is a copy of your request submitted on ")
-                = dayjs(inquiry.created_at).format("MM/DD/YY")
-                = t(" at ")
-                = dayjs(inquiry.created_at).format("h:mm A")
-                = "."
-                hr
-                p: pre: code= inquiry.message
-                hr
-                br
-                = t("We will review your request and reply as soon as possible.")
-          .card-footer.text-center.small.text-muted= t("If you did not submit this request, then please reply to let us know.")
+          h1.h5.card-header.bg-dark.text-white.text-center= t("Your Help Request")
+          .card-body.p-0
+            //- replace line breaks with <br>
+            .p-3
+              .card-text.text-monospace.small!= splitLines(inquiry.message).join('<br />')
+            if domains.length > 0
+              hr
+              include ../_account-summary
+          .card-footer.text-center.small.text-muted
+            strong= t("Have attachments?")
+            = ' '
+            = t('Reply to this email with them.')

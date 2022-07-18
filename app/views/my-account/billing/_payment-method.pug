@@ -43,14 +43,16 @@ mixin paymentMethod(payment)
     if payment.is_apple_pay
       = ' '
       = t('via')
-      = ' '
-      i.fa.fa-cc-apple-pay
+      if !returnHTML
+        = ' '
+        i.fa.fa-cc-apple-pay
       = ' '
       = 'Apple Pay'
     else if payment.is_google_pay
       = ' '
       = t('via')
       = ' '
-      i.fa.fa-google-pay
-      = ' '
+      if !returnHTML
+        i.fa.fa-google-pay
+        = ' '
       = 'Google Pay'
