@@ -1,0 +1,24 @@
+if domains.length > 0
+  .p-3
+    h2.h5.text-center.mb-3= t('Account Summary')
+    table.table.table-bordered.small
+      thead.thead-dark
+        tr
+          th= t('Domain Name')
+          th= t('Plan')
+          th.text-center= t('MX')
+          th.text-center!= t('<span class="notranslate">TXT</span>')
+      tbody
+        //- NOTE: we only want to render the first 10 in case some have huge lists
+        each domain in domains.slice(0, 10)
+          tr
+            td.align-middle
+              .markdown-body.ml-0.mr-0: code= domain.name
+            td.align-middle!= t(titleize(humanize(domain.plan)))
+            td.text-center.align-middle= emoji(domain.has_mx_record ? "white_check_mark" : "x")
+            td.text-center.align-middle= emoji(domain.has_txt_record ? "white_check_mark" : "x")
+        if domains.length >= 10
+          tr
+            td.align-middle.text-center.text-muted(colspan=4)!= t('... and <span class="notranslate">%d</span> more domain names.', domains.length - 10)
+    .text-muted.small.font-italic.text-center
+      .small!= t('Please note that MX and <span class="notranslate">TXT</span> statuses may be inaccurate.')

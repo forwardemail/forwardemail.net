@@ -1,28 +1,14 @@
 const sanitize = require('sanitize-html');
-const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const validator = require('validator');
 
 const email = require('#helpers/email');
-const { Inquiries } = require('#models');
+const { Domains, Inquiries } = require('#models');
 const config = require('#config');
 
 async function help(ctx) {
-  let { body } = ctx.request;
-
-  if (config.env === 'test') ctx.ip = ctx.ip || '127.0.0.1';
-
-  body = _.pick(body, ['email', 'message']);
-
-  if (!_.isString(body.email) || !validator.isEmail(body.email))
-    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
-
-  if (!_.isUndefined(body.message) && !_.isString(body.message))
-    delete body.message;
-
-  // TODO: implement spamscanner
+  const { body } = ctx.request;
 
   if (_.isString(body.message)) {
     body.message = sanitize(body.message, {
@@ -31,40 +17,23 @@ async function help(ctx) {
     });
   }
 
-  if (_.isString(body.message)) {
-    if (!isSANB(body.message))
-      throw Boom.badRequest(ctx.translateError('INVALID_MESSAGE'));
-    if (body.message.length > config.supportRequestMaxLength)
-      throw Boom.badRequest(ctx.translateError('INVALID_MESSAGE'));
-  } else {
-    body.message = ctx.translate('SUPPORT_REQUEST_MESSAGE');
-    body.is_email_only = true;
-  }
+  if (!isSANB(body.message))
+    throw Boom.badRequest(ctx.translateError('INVALID_MESSAGE'));
 
-  // check if we already sent a support request in the past day
-  // with this given ip address or email, otherwise create and email
-  const count = await Inquiries.countDocuments({
-    $or: [
-      {
-        ip: ctx.ip
-      },
-      {
-        email: body.email
-      }
-    ],
-    created_at: {
-      $gte: dayjs().subtract(1, 'day').toDate()
-    }
-  });
-
-  if (count > 0 && config.env !== 'development')
-    throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_LIMIT'));
+  if (body.message.length > config.supportRequestMaxLength)
+    throw Boom.badRequest(ctx.translateError('INVALID_MESSAGE'));
 
   try {
+    const domains = await Domains.find({
+      'members.user': ctx.state.user._id
+    })
+      .sort('name')
+      .lean()
+      .exec();
+
     const inquiry = await Inquiries.create({
-      ...body,
-      ip: ctx.ip,
-      locale: ctx.locale
+      user: ctx.state.user._id,
+      message: body.message
     });
 
     ctx.logger.debug('created inquiry', inquiry);
@@ -72,13 +41,13 @@ async function help(ctx) {
     await email({
       template: 'inquiry',
       message: {
-        to: body.email,
+        to: ctx.state.user[config.userFields.fullEmail],
         cc: config.email.message.from
       },
       locals: {
-        locale: ctx.locale,
-        inquiry,
-        isPremium: ctx.isAuthenticated() && ctx.state.user.plan !== 'free'
+        user: ctx.state.user.toObject(),
+        domains,
+        inquiry
       }
     });
 
@@ -90,7 +59,7 @@ async function help(ctx) {
       ctx.body = { message, resetForm: true, hideModal: true };
     }
   } catch (err) {
-    ctx.logger.error(err, { body });
+    ctx.logger.error(err);
     throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_ERROR'));
   }
 }

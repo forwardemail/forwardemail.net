@@ -12,16 +12,6 @@ block body
               if ctx.pathWithoutLocale !== '/faq'
                 p.card-text.font-weight-bold.text-center!= t('Have you read our <a href="%s" target="_blank" rel="noopener noreferrer">FAQ</a> yet?', l("/faq"))
               .form-group.floating-label
-                input#input-email.form-control(
-                  required,
-                  autocomplete="email",
-                  name="email",
-                  type="email",
-                  value=user ? user.email : "",
-                  placeholder="name@example.com"
-                )
-                label(for="input-email")= t("Email address")
-              .form-group.floating-label
                 textarea#input-message.form-control(
                   rows="3",
                   required,

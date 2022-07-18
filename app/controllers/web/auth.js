@@ -16,7 +16,7 @@ const email = require('#helpers/email');
 const env = require('#config/env');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const sendVerificationEmail = require('#helpers/send-verification-email');
-const { Users, Inquiries } = require('#models');
+const { Users } = require('#models');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const options = { length: 10, type: 'numeric' };
@@ -709,27 +709,15 @@ async function verify(ctx) {
 
   const pendingRecovery = ctx.state.user[config.userFields.pendingRecovery];
   if (pendingRecovery) {
-    const body = {};
-    body.email = ctx.state.user.email;
-    body.message = ctx.translate('SUPPORT_REQUEST_MESSAGE');
-    body.is_email_only = true;
-    const inquiry = await Inquiries.create({
-      ...body,
-      ip: ctx.ip
-    });
-
-    ctx.logger.debug('created inquiry', inquiry);
-
     try {
       await email({
         template: 'recovery',
         message: {
-          to: ctx.state.user.email,
+          to: ctx.state.user[config.userFields.fullEmail],
           cc: config.email.message.from
         },
         locals: {
-          locale: ctx.locale,
-          inquiry
+          user: ctx.state.user.toObject()
         }
       });
     } catch (err) {

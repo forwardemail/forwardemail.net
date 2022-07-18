@@ -1,1 +1,1 @@
-= `${emoji(isPremium ? "star" : "mega")} ${isPremium ? "PREMIUM SUPPORT: " : ""}${t("Your Help Request")} #${Date.now()}`
+= `${emoji(user.plan === 'free' ? "mega" : "star")} ${user.plan === 'free' ? '' : 'Premium Support: '}${t("Your Help Request")} #${new Date(inquiry.created_at).getTime()}`
