@@ -22,8 +22,14 @@ mixin paymentMethod(payment)
         when 'free_beta_program'
         when 'unknown'
           i.fa.fa-gift
-        default
+        when 'alipay'
+          i.fa.fa-alipay
+        when 'ideal'
+          i.fa.fa-ideal
+        when 'unionpay'
           i.fa.fa-credit-card
+        default
+          i.fa.fa-money-check-alt
       = " "
     = titleize(humanize(payment.method))
     if payment.last4
@@ -34,3 +40,17 @@ mixin paymentMethod(payment)
     if payment.exp_month && payment.exp_year
       = ' '
       span.text-uppercase= `(${payment.exp_month}/${payment.exp_year.toString().slice(2)})`
+    if payment.is_apple_pay
+      = ' '
+      = t('via')
+      = ' '
+      i.fa.fa-cc-apple-pay
+      = ' '
+      = 'Apple Pay'
+    else if payment.is_google_pay
+      = ' '
+      = t('via')
+      = ' '
+      i.fa.fa-google-pay
+      = ' '
+      = 'Google Pay'

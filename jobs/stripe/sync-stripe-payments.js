@@ -279,6 +279,8 @@ async function syncStripePayments({ errorThreshold }) {
           payment.duration = duration;
 
           // always sync payment method
+          payment.is_apple_pay = false;
+          payment.is_google_pay = false;
           if (stripeCharge.payment_method_details.type === 'card') {
             payment.method = stripeCharge.payment_method_details.card.brand;
             payment.exp_month =
@@ -286,6 +288,18 @@ async function syncStripePayments({ errorThreshold }) {
             payment.exp_year =
               stripeCharge.payment_method_details.card.exp_year;
             payment.last4 = stripeCharge.payment_method_details.card.last4;
+            if (_.isObject(stripeCharge.payment_method_details.card.wallet)) {
+              if (
+                stripeCharge.payment_method_details.card.wallet.type ===
+                'apple_pay'
+              )
+                payment.is_apple_pay = true;
+              else if (
+                stripeCharge.payment_method_details.card.wallet.type ===
+                'google_pay'
+              )
+                payment.is_google_pay = true;
+            }
           } else {
             payment.method = stripeCharge.payment_method_details.type;
             payment.exp_month = undefined;
@@ -331,6 +345,18 @@ async function syncStripePayments({ errorThreshold }) {
             payment.exp_year =
               stripeCharge.payment_method_details.card.exp_year;
             payment.last4 = stripeCharge.payment_method_details.card.last4;
+            if (_.isObject(stripeCharge.payment_method_details.card.wallet)) {
+              if (
+                stripeCharge.payment_method_details.card.wallet.type ===
+                'apple_pay'
+              )
+                payment.is_apple_pay = true;
+              else if (
+                stripeCharge.payment_method_details.card.wallet.type ===
+                'google_pay'
+              )
+                payment.is_google_pay = true;
+            }
           } else {
             payment.method = stripeCharge.payment_method_details.type;
             payment.exp_month = undefined;

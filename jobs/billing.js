@@ -207,6 +207,7 @@ async function mapper(id) {
     [config.userFields.isBanned]: false,
     [config.userFields.hasVerifiedEmail]: true,
     [config.userFields.planExpiresAt]: {
+      // NOTE: if you change this then also update `app/models/user.js` save hook
       $lte: dayjs().add(1, 'month').toDate()
     },
     //

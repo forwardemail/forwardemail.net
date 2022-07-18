@@ -336,6 +336,8 @@ async function retrieveDomainBilling(ctx) {
       let last4;
       let paymentIntentId;
       let invoiceId;
+      let isApplePay = false;
+      let isGooglePay = false;
 
       try {
         if (session.payment_intent) {
@@ -361,6 +363,12 @@ async function retrieveDomainBilling(ctx) {
               exp_year: expYear,
               last4
             } = paymentMethod.card);
+            if (_.isObject(paymentMethod.card.wallet)) {
+              if (paymentMethod.card.wallet.type === 'apple_pay')
+                isApplePay = true;
+              else if (paymentMethod.card.wallet.type === 'google_pay')
+                isGooglePay = true;
+            }
           } else {
             method = paymentMethod.type;
           }
@@ -419,6 +427,12 @@ async function retrieveDomainBilling(ctx) {
                 exp_year: expYear,
                 last4
               } = paymentMethod.card);
+              if (_.isObject(paymentMethod.card.wallet)) {
+                if (paymentMethod.card.wallet.type === 'apple_pay')
+                  isApplePay = true;
+                else if (paymentMethod.card.wallet.type === 'google_pay')
+                  isGooglePay = true;
+              }
             } else {
               method = paymentMethod.type;
             }
@@ -536,7 +550,9 @@ async function retrieveDomainBilling(ctx) {
               ? dayjs.unix(paymentIntent.created).toDate()
               : now,
             stripe_invoice_id: invoiceId,
-            stripe_subscription_id: session.subscription
+            stripe_subscription_id: session.subscription,
+            is_apple_pay: isApplePay,
+            is_google_pay: isGooglePay
           });
           // log the payment just for sanity
           ctx.logger.info('stripe payment created', { payment });
