@@ -82,26 +82,29 @@ async function syncStripePayments({ errorThreshold }) {
       try {
         if (paymentIntent.status !== 'succeeded') return;
 
-        // charges will usually just be an array of the successful charge,
-        // but I think it may be possible a failed charge could be there as well
-        // so we need to find the successful one for any payment details
-        const stripeCharge = paymentIntent.charges.data.find(
-          (charge) => charge.paid && charge.status === 'succeeded'
-        );
+        //
+        // charges includes a `data` Array with only one charge (the latest/successful)
+        // (unless we explicitly filter using "payment_intent" filter for all charges)
+        // <https://stripe.com/docs/api/payment_intents/object?lang=node#payment_intent_object-charges>
+        //
+        const [stripeCharge] = paymentIntent.charges.data;
+        if (
+          !stripeCharge ||
+          !stripeCharge.paid ||
+          stripeCharge.status !== 'succeeded'
+        )
+          throw new Error('No successful stripe charge on payment intent.');
 
-        logger.info(`charge ${stripeCharge?.id}`);
+        logger.info(`charge ${stripeCharge.id}`);
 
         let amountRefunded;
         if (stripeCharge.refunded)
-          ({ amount_refunded: amountRefunded } = stripeCharge);
+          amountRefunded = stripeCharge.amount_refunded;
 
         const hasInvoice = isSANB(paymentIntent.invoice);
 
         // one time payments have no invoice nor subscription
         const isOneTime = !hasInvoice;
-
-        if (!stripeCharge)
-          throw new Error('No successful stripe charge on payment intent.');
 
         // there should only ever be 1 checkout
         // session per successful payment intent
@@ -146,7 +149,10 @@ async function syncStripePayments({ errorThreshold }) {
           (key) => STRIPE_MAPPING[plan][kind][key] === priceId
         );
 
+        //
+        // support legacy price ids
         // <https://github.com/forwardemail/forwardemail.net/commit/c9777a86f37741b6b7dc73483926c0f71d7d5ce8>
+        //
         if (!durationMatch) {
           if (priceId === 'price_1HbLh0LFuf8FuIPJD4lYB3Jz') {
             durationMatch = '60d';
@@ -231,8 +237,16 @@ async function syncStripePayments({ errorThreshold }) {
               )
             );
 
-          // always sync duration
-          payment.duration = duration;
+          if (
+            isSANB(payment.stripe_session_id) &&
+            (!checkoutSession ||
+              payment.stripe_session_id !== checkoutSession.id)
+          )
+            throw new Error(
+              'Saved payment.stripe_session_id does not match billing history sync'.concat(
+                errorDetails
+              )
+            );
 
           if (paymentIntent.amount !== payment.amount)
             throw new Error(
@@ -240,72 +254,6 @@ async function syncStripePayments({ errorThreshold }) {
                 errorDetails
               )
             );
-
-          if (stripeCharge.payment_method_details.card.brand !== payment.method)
-            throw new Error(
-              'Saved payment.method does not match method from billing history sync'.concat(
-                errorDetails
-              )
-            );
-
-          //
-          // the non-required fields need to be validated and set
-          //
-          if (
-            isSANB(payment.exp_month) &&
-            stripeCharge.payment_method_details.card.exp_month !==
-              payment.exp_month
-          )
-            throw new Error(
-              'Saved payment.exp_month does not match exp_month from billing history sync'.concat(
-                errorDetails
-              )
-            );
-
-          payment.exp_month =
-            stripeCharge.payment_method_details.card.exp_month;
-
-          if (
-            isSANB(payment.exp_year) &&
-            stripeCharge.payment_method_details.card.exp_year !==
-              payment.exp_year
-          )
-            throw new Error(
-              'Saved payment.exp_year does not match exp_year from billing history sync'.concat(
-                errorDetails
-              )
-            );
-
-          payment.exp_year = stripeCharge.payment_method_details.card.exp_year;
-
-          if (
-            isSANB(payment.last4) &&
-            stripeCharge.payment_method_details.card.last4 !== payment.last4
-          )
-            throw new Error(
-              'Saved payment.last4 does not match last4 from billing history sync'.concat(
-                errorDetails
-              )
-            );
-
-          payment.last4 = stripeCharge.payment_method_details.card.last4;
-
-          if (
-            isSANB(payment.stripe_session_id) &&
-            (!checkoutSession ||
-              payment.stripe_session_id !== checkoutSession.id)
-          ) {
-            throw new Error(
-              'Saved payment.stripe_session_id does not match billing history sync'.concat(
-                errorDetails
-              )
-            );
-          }
-
-          if (checkoutSession && isSANB(checkoutSession.client_reference_id))
-            payment.reference = checkoutSession.client_reference_id;
-
-          payment.stripe_session_id = checkoutSession?.id;
 
           if (
             isSANB(payment.stripe_invoice_id) &&
@@ -317,8 +265,6 @@ async function syncStripePayments({ errorThreshold }) {
               )
             );
 
-          payment.stripe_invoice_id = invoice?.id;
-
           if (
             isSANB(payment.stripe_payment_intent_id) &&
             payment.stripe_payment_intent_id !== paymentIntent.id
@@ -329,6 +275,29 @@ async function syncStripePayments({ errorThreshold }) {
               )
             );
 
+          // always sync duration
+          payment.duration = duration;
+
+          // always sync payment method
+          if (stripeCharge.payment_method_details.type === 'card') {
+            payment.method = stripeCharge.payment_method_details.card.brand;
+            payment.exp_month =
+              stripeCharge.payment_method_details.card.exp_month;
+            payment.exp_year =
+              stripeCharge.payment_method_details.card.exp_year;
+            payment.last4 = stripeCharge.payment_method_details.card.last4;
+          } else {
+            payment.method = stripeCharge.payment_method_details.type;
+            payment.exp_month = undefined;
+            payment.exp_year = undefined;
+            payment.last4 = undefined;
+          }
+
+          if (checkoutSession && isSANB(checkoutSession.client_reference_id))
+            payment.reference = checkoutSession.client_reference_id;
+
+          payment.stripe_session_id = checkoutSession?.id;
+          payment.stripe_invoice_id = invoice?.id;
           payment.stripe_payment_intent_id = paymentIntent.id;
           payment.stripe_subscription_id = invoice?.subscription;
           payment.invoice_at = dayjs.unix(paymentIntent.created).toDate();
@@ -347,16 +316,27 @@ async function syncStripePayments({ errorThreshold }) {
             kind,
             duration,
             amount: paymentIntent.amount,
-            method: stripeCharge.payment_method_details.card.brand,
-            exp_month: stripeCharge.payment_method_details.card.exp_month,
-            exp_year: stripeCharge.payment_method_details.card.exp_year,
-            last4: stripeCharge.payment_method_details.card.last4,
+            amount_refunded: amountRefunded,
             stripe_session_id: checkoutSession?.id,
             stripe_payment_intent_id: paymentIntent?.id,
             stripe_invoice_id: invoice?.id,
             stripe_subscription_id: invoice?.subscription,
             invoice_at: dayjs.unix(paymentIntent.created).toDate()
           };
+
+          if (stripeCharge.payment_method_details.type === 'card') {
+            payment.method = stripeCharge.payment_method_details.card.brand;
+            payment.exp_month =
+              stripeCharge.payment_method_details.card.exp_month;
+            payment.exp_year =
+              stripeCharge.payment_method_details.card.exp_year;
+            payment.last4 = stripeCharge.payment_method_details.card.last4;
+          } else {
+            payment.method = stripeCharge.payment_method_details.type;
+            payment.exp_month = undefined;
+            payment.exp_year = undefined;
+            payment.last4 = undefined;
+          }
 
           if (checkoutSession && isSANB(checkoutSession.client_reference_id))
             payment.reference = checkoutSession.client_reference_id;

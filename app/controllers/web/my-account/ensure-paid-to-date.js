@@ -72,6 +72,9 @@ async function ensurePaidToDate(ctx, next) {
     // send a one-time email if the user was late on payments
     if (!_.isDate(ctx.state.user[config.userFields.apiPastDueSentAt])) {
       try {
+        // mark that we sent this email (otherwise multiple requests will cause multiple emails)
+        ctx.state.user[config.userFields.apiPastDueSentAt] = new Date();
+        await ctx.state.user.save();
         await emailHelper({
           template: 'alert',
           message: {
@@ -90,10 +93,10 @@ async function ensurePaidToDate(ctx, next) {
           },
           locals: { message }
         });
-        // mark that we sent this email
-        ctx.state.user[config.userFields.apiPastDueSentAt] = new Date();
-        await ctx.state.user.save();
       } catch (err) {
+        // mark that we did not send this email
+        ctx.state.user[config.userFields.apiPastDueSentAt] = undefined;
+        await ctx.state.user.save();
         ctx.logger.fatal(err);
       }
     }
