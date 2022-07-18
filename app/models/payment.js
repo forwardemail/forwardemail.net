@@ -57,6 +57,8 @@ const Payment = new mongoose.Schema({
     required: true,
     default: 0
   },
+  is_apple_pay: { type: Boolean, default: false },
+  is_google_pay: { type: Boolean, default: false },
   method: {
     default: 'unknown',
     type: String,
