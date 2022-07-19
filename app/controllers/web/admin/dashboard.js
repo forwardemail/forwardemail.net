@@ -62,7 +62,8 @@ async function getBody(ctx) {
       const docs = await Payments.aggregate([
         {
           $match: {
-            kind: 'one-time'
+            kind: 'one-time',
+            method: { $nin: ['free_beta_program'] }
           }
         },
         {
@@ -111,7 +112,8 @@ async function getBody(ctx) {
       const docs = await Payments.aggregate([
         {
           $match: {
-            kind: 'subscription'
+            kind: 'subscription',
+            method: { $nin: ['free_beta_program'] }
           }
         },
         {
