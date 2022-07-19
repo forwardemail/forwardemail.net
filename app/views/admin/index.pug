@@ -23,21 +23,45 @@ block body
     .row.mb-3
       .col
         .d-flex.flex-wrap.rounded.border.bg-white
-          .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
-            h2.h6.text-muted.text-uppercase= t("Total users")
+          .p-3.p-md-3.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
+            h2.h6.text-muted.text-uppercase= t("Users")
             #metrics-total-users.display-4.font-weight-bold -
           .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
-            h2.h6.text-muted.text-uppercase= t("Total domains")
+            h2.h6.text-muted.text-uppercase= t("Domains")
             #metrics-total-domains.display-4.font-weight-bold -
           .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
-            h2.h6.text-muted.text-uppercase= t("Total aliases")
+            h2.h6.text-muted.text-uppercase= t("Aliases")
             #metrics-total-aliases.display-4.font-weight-bold -
+          .p-3.p-md-4.p-lg-5.d-flex.flex-column.flex-grow-1.justify-content-center
+            h2.h6.text-muted.text-uppercase= t("Subscriptions")
+            #metrics-total-subscriptions.display-4.font-weight-bold -
     .row.mb-3
       .col
         .card
           .card-body
             h2.h6.text-muted.text-uppercase.mb-0= t("Growth since launch")
             #line-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
+
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h6.text-muted.text-uppercase.mb-0= t("One-time payment revenue since launch")
+            #one-time-revenue-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
+
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h6.text-muted.text-uppercase.mb-0= t("Subscription payment revenue since launch")
+            #subscription-revenue-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
+
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h6.text-muted.text-uppercase.mb-0= t("Total revenue since launch")
+            #revenue-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
     //-.
       .row.mb-3
         .col

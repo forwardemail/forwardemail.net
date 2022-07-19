@@ -207,6 +207,7 @@ module.exports = {
   USERS: 'Users',
   DOMAINS: 'Domains',
   ALIASES: 'Aliases',
+  PAYMENTS: 'Payments',
   ALIAS_WITH_PLUS_UNSUPPORTED:
     'Aliases cannot have a "+" symbol as this is a built-in filtering feature (similar to Gmail).',
   EMAIL_FAILED_TO_SEND:

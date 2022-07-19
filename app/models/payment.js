@@ -26,14 +26,16 @@ const Payment = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
+    index: true
   },
   reference: {
     type: String,
     required: true,
     trim: true,
     uppercase: true,
-    unique: true
+    unique: true,
+    index: true
   },
   amount: {
     type: Number,
@@ -49,7 +51,8 @@ const Payment = new mongoose.Schema({
   // for automatic subscription payments
   invoice_at: {
     type: Date,
-    required: true
+    required: true,
+    index: true
   },
   receipt_sent_at: Date,
   amount_formatted: {
@@ -65,6 +68,7 @@ const Payment = new mongoose.Schema({
     trim: true,
     required: true,
     lowercase: true,
+    index: true,
     enum: [
       // defaults to unknown if any errors occur
       // (this is also a type from Stripe payment_method.card.brand)
@@ -132,25 +136,27 @@ const Payment = new mongoose.Schema({
   plan: {
     type: String,
     required: true,
-    enum: ['enhanced_protection', 'team']
+    enum: ['enhanced_protection', 'team'],
+    index: true
   },
   // note that we use "kind" here instead of "type"
   // since it is a reserved word in Schema definitions
   kind: {
     type: String,
     required: true,
-    enum: ['one-time', 'subscription']
+    enum: ['one-time', 'subscription'],
+    index: true
   },
   exp_month: Number,
   exp_year: Number,
   last4: String,
-  stripe_session_id: String,
-  stripe_invoice_id: String,
-  stripe_subscription_id: String,
-  stripe_payment_intent_id: String,
-  paypal_order_id: String,
-  [config.userFields.paypalSubscriptionID]: String,
-  paypal_transaction_id: String
+  stripe_session_id: { type: String, index: true },
+  stripe_invoice_id: { type: String, index: true },
+  stripe_payment_intent_id: { type: String, index: true },
+  [config.userFields.stripeSubscriptionID]: { type: String, index: true },
+  paypal_order_id: { type: String, index: true },
+  [config.userFields.paypalSubscriptionID]: { type: String, index: true },
+  paypal_transaction_id: { type: String, index: true }
 });
 
 Payment.virtual('description').get(function () {
