@@ -92,7 +92,7 @@ graceful.listen();
               },
               {
                 last_checked_at: {
-                  $lte: dayjs().subtract(2, 'hour').toDate()
+                  $lte: dayjs().subtract(1, 'week').toDate()
                 }
               }
             ]
