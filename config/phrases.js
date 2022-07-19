@@ -40,7 +40,7 @@ module.exports = {
   INVALID_TOKEN: 'Invalid CSRF token.',
   INVALID_VERIFICATION_PIN: 'The verification code entered was invalid.',
   INVALID_PAYMENT_METHOD:
-    'Payment method must be either credit card, debit card, or PayPal.',
+    'Payment method must be either card, wallet, bank, or PayPal.',
   INVALID_PAYMENT_TYPE: 'Payment type must be either one-time or subscription.',
   INVALID_PAYMENT_DURATION: 'Payment duration was invalid.',
   JAVASCRIPT_REQUIRED: 'Please enable JavaScript to continue.',
@@ -151,6 +151,8 @@ module.exports = {
   ENHANCED_PROTECTION_PLAN:
     'You have successfully upgraded to the Enhanced Protection Plan.',
   TEAM_PLAN: 'You have successfully upgraded to the Team Plan.',
+  AUTO_RENEW_STARTS:
+    'Auto-renew successfully enabled (starts on <span class="notranslate">%s</span>)',
   AUTO_RENEW_ENABLED:
     'You have successfully subscribed and enabled auto-renew.',
   ACCOUNT_BANNED: 'Your account has been banned.',
@@ -284,5 +286,9 @@ module.exports = {
   PAST_DUE_REQUIRED_ONE_TIME:
     'Your account is <strong class="notranslate">%s</strong> past due. You must pay this amount before you can enable auto-renew.',
   AND: 'and',
+  PLAN_MORE_THAN_TWO_YEARS_FROM_EXPIRY:
+    'You cannot start a subscription nor enable auto-renew more than two years from your plan\'s current expiration date of <span class="notranslate">%s</span>.  Please try again <span class="notranslate">%s</span>.',
+  MONTH: 'month',
+  YEAR: 'year',
   ...STATUSES
 };

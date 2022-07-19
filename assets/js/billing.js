@@ -96,11 +96,9 @@ function createPayPalSubscription(data, actions) {
     throw new Error(
       `The plan "${window.USER_PLAN}" does not have a duration for "${duration}"`
     );
-  return actions.subscription.create({
+  const options = {
     intent: 'subscription',
     plan_id: PAYPAL_MAPPING[window.USER_PLAN][duration],
-    // start time is current time + 1 minute
-    start_time: new Date(Date.now() + 1000 * 60).toISOString(),
     subscriber: {
       email_address: window.USER.email
     },
@@ -116,7 +114,11 @@ function createPayPalSubscription(data, actions) {
         .replace('localhost:3000', 'forwardemail.net')
         .replace('http://', 'https://')
     }
-  });
+  };
+  // TODO: we need to validate the subscription start_time on the server-side
+  // start time is current time + 1 minute
+  if (window.PLAN_EXPIRES_AT) options.start_time = window.PLAN_EXPIRES_AT; // new Date(Date.now() + 1000 * 60).toISOString()
+  return actions.subscription.create(options);
 }
 
 async function createPayPalOrder() {
@@ -166,6 +168,16 @@ $formBilling.on('submit', async function (ev) {
 
     // Check if any errors occurred
     if (response.err) throw response.err;
+
+    // If there is a redirection in the body then
+    // we can assume there was an error and redirect the user
+    if (
+      typeof response.body === 'object' &&
+      typeof response.body.redirectTo === 'string'
+    ) {
+      window.location = response.body.redirectTo;
+      return;
+    }
 
     // Prepare a message if the body is not accurate
     if (

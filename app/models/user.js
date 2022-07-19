@@ -136,6 +136,10 @@ object[config.userFields.paymentReminderInitialSentAt] = Date;
 object[config.userFields.paymentReminderFollowUpSentAt] = Date;
 object[config.userFields.paymentReminderFinalNoticeSentAt] = Date;
 
+// VISA trial subscription requirement notifications
+object[config.userFields.stripeTrialSentAt] = Date;
+object[config.userFields.paypalTrialSentAt] = Date;
+
 // when the user upgraded to a paid plan
 object[config.userFields.planSetAt] = {
   type: Date,
@@ -436,6 +440,18 @@ User.pre('save', function (next) {
     if (!isSANB(this[prop])) this[prop] = undefined;
   }
 
+  next();
+});
+
+//
+// if the user does not have a subscription then
+// unset visa trial subscription requirement notifications
+//
+User.pre('save', function (next) {
+  if (!isSANB(this[config.userFields.stripeSubscriptionID]))
+    this[config.userFields.stripeTrialSentAt] = undefined;
+  if (!isSANB(this[config.userFields.paypalSubscriptionID]))
+    this[config.userFields.paypalTrialSentAt] = undefined;
   next();
 });
 

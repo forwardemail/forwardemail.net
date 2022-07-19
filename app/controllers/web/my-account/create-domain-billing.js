@@ -199,13 +199,72 @@ async function createDomainBilling(ctx) {
         }session_id={CHECKOUT_SESSION_ID}`
       };
 
-      if (paymentType !== 'one-time')
+      if (paymentType !== 'one-time') {
         options.subscription_data = {
           description,
           metadata: {
             plan
           }
         };
+
+        //
+        // if the user's plan expires in the future
+        // then we don't want to charge them right away
+        // (we want to check them when their plan expires)
+        //
+        // (note that we could use `billing_cycle_anchor` if we had custom subscription creation)
+        // (where we'd have to store stripe cards in advance for each user in order to setup subscriptions)
+        // (the alternative is to either set `trial_ends` or `trial_period_days`)
+        // <https://stackoverflow.com/a/63375898>
+        //
+        if (
+          dayjs(ctx.state.user[config.userFields.planExpiresAt]).isAfter(
+            dayjs()
+          )
+        ) {
+          //
+          // NOTE: this same logic is in retrieve-domain-billing
+          //
+          // if it's more than 48 hours out then we can use `trial_ends`
+          // otherwise we need to use `trial_period_days` in order for accuracy
+          const hours = dayjs(
+            ctx.state.user[config.userFields.planExpiresAt]
+          ).diff(dayjs(), 'hours');
+          //
+          // NOTE: maximum number of trial period days is 730 (2 years)
+          //       so we have a safeguard here (since 730 * 24 = 17520 hours)
+          //       (we also have this same safeguard on the route itself to load the form)
+          //       (but this is in place in case the user has two tabs open)
+          //
+          if (hours >= 17520) {
+            ctx.flash(
+              'warning',
+              ctx.translate(
+                'PLAN_MORE_THAN_TWO_YEARS_FROM_EXPIRY',
+                dayjs(ctx.state.user[config.userFields.planExpiresAt]).format(
+                  'M/D/YY'
+                ),
+                dayjs(ctx.state.user[config.userFields.planExpiresAt])
+                  .subtract(2, 'years')
+                  .locale(ctx.locale)
+                  .fromNow()
+              )
+            );
+            const redirectTo = ctx.state.l('/my-account/billing');
+            if (ctx.accepts('html')) ctx.redirect(redirectTo);
+            else ctx.body = { redirectTo };
+            return;
+          }
+
+          if (hours > 48) {
+            options.subscription_data.trial_end = dayjs(
+              ctx.state.user[config.userFields.planExpiresAt]
+            ).unix();
+          } else {
+            options.subscription_data.trial_period_days = hours > 24 ? 2 : 1;
+          }
+        }
+      }
 
       ctx.logger.info('stripe.checkout.sessions.create', { options });
 

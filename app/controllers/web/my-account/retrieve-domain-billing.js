@@ -5,6 +5,8 @@ const accounting = require('accounting');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
+const parseErr = require('parse-err');
+const striptags = require('striptags');
 
 const env = require('#config/env');
 const config = require('#config');
@@ -48,54 +50,93 @@ async function retrieveDomainBilling(ctx) {
       isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
     ) {
       throw Boom.badRequest(ctx.translateError('SUBSCRIPTION_ALREADY_ACTIVE'));
-    } else if (
-      _.isDate(ctx.state.user[config.userFields.planExpiresAt]) &&
-      new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
-        Date.now() &&
-      // and the user must have at least one domain still on a paid plan
-      ctx.state.domains.some(
-        (domain) =>
-          domain.plan !== 'free' &&
-          domain.members.some(
-            (member) =>
-              member.user.id === ctx.state.user.id && member.group === 'admin'
-          )
-      )
-    ) {
-      //
-      // NOTE: if it is over a year then we need to specify the # of months
-      //       and we could use thresholds from dayjs but this is simpler
-      //       <https://day.js.org/docs/en/customization/relative-time>
-      //       (but note we don't want to specify # months if not a complete month)
-      //
-      let str = dayjs(ctx.state.user[config.userFields.planExpiresAt])
-        .locale(ctx.locale)
-        .fromNow(true);
-      // subtract years difference and if there are > 0 months then add affix
-      const years = dayjs().diff(
-        ctx.state.user[config.userFields.planExpiresAt],
-        'years'
-      );
-      if (years > 0) {
-        const months = dayjs().diff(
-          dayjs(ctx.state.user[config.userFields.planExpiresAt]).add(
-            years,
-            'years'
-          ),
-          'months'
+    } else if (_.isDate(ctx.state.user[config.userFields.planExpiresAt])) {
+      if (
+        dayjs(ctx.state.user[config.userFields.planExpiresAt]).isAfter(dayjs())
+      ) {
+        //
+        // NOTE: this same logic is in create-domain-billing
+        //
+        // if it's more than 48 hours out then we can use `trial_ends`
+        // otherwise we need to use `trial_period_days` in order for accuracy
+        const hours = dayjs(
+          ctx.state.user[config.userFields.planExpiresAt]
+        ).diff(dayjs(), 'hours');
+        //
+        // NOTE: maximum number of trial period days is 730 (2 years)
+        //       so we have a safeguard here (since 730 * 24 = 17520 hours)
+        //       (we also have this same safeguard on the route itself to load the form)
+        //       (but this is in place in case the user has two tabs open)
+        //
+        if (hours >= 17520) {
+          ctx.flash(
+            'warning',
+            ctx.translate(
+              'PLAN_MORE_THAN_TWO_YEARS_FROM_EXPIRY',
+              dayjs(ctx.state.user[config.userFields.planExpiresAt]).format(
+                'M/D/YY'
+              ),
+              dayjs(ctx.state.user[config.userFields.planExpiresAt])
+                .subtract(2, 'years')
+                .locale(ctx.locale)
+                .fromNow()
+            )
+          );
+          const redirectTo = ctx.state.l('/my-account/billing');
+          if (ctx.accepts('html')) ctx.redirect(redirectTo);
+          else ctx.body = { redirectTo };
+          return;
+        }
+      } else if (
+        new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
+          Date.now() &&
+        // and the user must have at least one domain still on a paid plan
+        ctx.state.domains.some(
+          (domain) =>
+            domain.plan !== 'free' &&
+            domain.members.some(
+              (member) =>
+                member.user.id === ctx.state.user.id && member.group === 'admin'
+            )
+        )
+      ) {
+        //
+        // NOTE: if it is over a year then we need to specify the # of months
+        //       and we could use thresholds from dayjs but this is simpler
+        //       <https://day.js.org/docs/en/customization/relative-time>
+        //       (but note we don't want to specify # months if not a complete month)
+        //
+        let str = dayjs(ctx.state.user[config.userFields.planExpiresAt])
+          .locale(ctx.locale)
+          .fromNow(true);
+        // subtract years difference and if there are > 0 months then add affix
+        const years = dayjs().diff(
+          ctx.state.user[config.userFields.planExpiresAt],
+          'years'
         );
-        if (months > 0)
-          str += ` ${ctx.translate('AND')} ${dayjs()
-            .add(months, 'months')
-            .locale(ctx.locale)
-            .fromNow(true)}`;
+        if (years > 0) {
+          const months = dayjs().diff(
+            dayjs(ctx.state.user[config.userFields.planExpiresAt]).add(
+              years,
+              'years'
+            ),
+            'months'
+          );
+          if (months > 0)
+            str += ` ${ctx.translate('AND')} ${dayjs()
+              .add(months, 'months')
+              .locale(ctx.locale)
+              .fromNow(true)}`;
+        }
+
+        ctx.flash('warning', ctx.translate('PAST_DUE_REQUIRED_ONE_TIME', str));
+        const redirectTo = ctx.state.l('/my-account/billing/make-payment');
+        if (ctx.accepts('html')) ctx.redirect(redirectTo);
+        else ctx.body = { redirectTo };
+        return;
       }
 
-      ctx.flash('warning', ctx.translate('PAST_DUE_REQUIRED_ONE_TIME', str));
-      const redirectTo = ctx.state.l('/my-account/billing/make-payment');
-      if (ctx.accepts('html')) ctx.redirect(redirectTo);
-      else ctx.body = { redirectTo };
-      return;
+      ctx.query.plan = ctx.state.user.plan;
     } else {
       ctx.query.plan = ctx.state.user.plan;
     }
@@ -338,6 +379,7 @@ async function retrieveDomainBilling(ctx) {
       let invoiceId;
       let isApplePay = false;
       let isGooglePay = false;
+      let subscription;
 
       try {
         if (session.payment_intent) {
@@ -373,68 +415,74 @@ async function retrieveDomainBilling(ctx) {
             method = paymentMethod.type;
           }
         } else if (session.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(
+          subscription = await stripe.subscriptions.retrieve(
             session.subscription
           );
 
           if (!subscription) throw ctx.translateError('UNKNOWN_ERROR');
 
-          //
-          // NOTE: subscription has a `latest_invoice` property we could also use
-          //       (but this is most likely the most accurate way to do this)
-          //
+          // if there is no payment_intent then that must mean it
+          // was a subscription that starts in the future and we
+          // can also validate that this is the case by the status
+          // `subscription.status` will be equal to "trialing"
+          if (subscription.status !== 'trialing') {
+            //
+            // NOTE: subscription has a `latest_invoice` property we could also use
+            //       (but this is most likely the most accurate way to do this)
+            //
 
-          const invoices = await stripe.invoices.list({
-            limit: 100, // it'd be impossible for a customer to hit this (at least right now)
-            customer: session.customer,
-            subscription: session.subscription
-          });
+            const invoices = await stripe.invoices.list({
+              limit: 100, // it'd be impossible for a customer to hit this (at least right now)
+              customer: session.customer,
+              subscription: subscription.id
+            });
 
-          // never would happen but just having it here
-          if (invoices.has_more) {
-            ctx.logger.fatal(new Error('Invoices had more', { session }));
-          } else {
-            invoices.data = _.sortBy(invoices.data, 'created');
-
-            if (
-              !invoices ||
-              !invoices.data ||
-              !invoices.data[0] ||
-              !invoices.data[0].id ||
-              !invoices.data[0].payment_intent
-            )
-              throw ctx.translateError('UNKNOWN_ERROR');
-
-            invoiceId = invoices.data[0].id;
-            paymentIntentId = invoices.data[0].payment_intent;
-
-            paymentIntent = await stripe.paymentIntents.retrieve(
-              invoices.data[0].payment_intent
-            );
-
-            if (!paymentIntent) throw ctx.translateError('UNKNOWN_ERROR');
-
-            const paymentMethod = await stripe.paymentMethods.retrieve(
-              paymentIntent.payment_method
-            );
-
-            if (!paymentMethod) throw ctx.translateError('UNKNOWN_ERROR');
-
-            if (paymentMethod.type === 'card') {
-              ({
-                brand: method,
-                exp_month: expMonth,
-                exp_year: expYear,
-                last4
-              } = paymentMethod.card);
-              if (_.isObject(paymentMethod.card.wallet)) {
-                if (paymentMethod.card.wallet.type === 'apple_pay')
-                  isApplePay = true;
-                else if (paymentMethod.card.wallet.type === 'google_pay')
-                  isGooglePay = true;
-              }
+            // never would happen but just having it here
+            if (invoices.has_more) {
+              ctx.logger.fatal(new Error('Invoices had more', { session }));
             } else {
-              method = paymentMethod.type;
+              invoices.data = _.sortBy(invoices.data, 'created');
+
+              if (
+                !invoices ||
+                !invoices.data ||
+                !invoices.data[0] ||
+                !invoices.data[0].id ||
+                !invoices.data[0].payment_intent
+              )
+                throw ctx.translateError('UNKNOWN_ERROR');
+
+              invoiceId = invoices.data[0].id;
+              paymentIntentId = invoices.data[0].payment_intent;
+
+              paymentIntent = await stripe.paymentIntents.retrieve(
+                invoices.data[0].payment_intent
+              );
+
+              if (!paymentIntent) throw ctx.translateError('UNKNOWN_ERROR');
+
+              const paymentMethod = await stripe.paymentMethods.retrieve(
+                paymentIntent.payment_method
+              );
+
+              if (!paymentMethod) throw ctx.translateError('UNKNOWN_ERROR');
+
+              if (paymentMethod.type === 'card') {
+                ({
+                  brand: method,
+                  exp_month: expMonth,
+                  exp_year: expYear,
+                  last4
+                } = paymentMethod.card);
+                if (_.isObject(paymentMethod.card.wallet)) {
+                  if (paymentMethod.card.wallet.type === 'apple_pay')
+                    isApplePay = true;
+                  else if (paymentMethod.card.wallet.type === 'google_pay')
+                    isGooglePay = true;
+                }
+              } else {
+                method = paymentMethod.type;
+              }
             }
           }
         }
@@ -469,13 +517,13 @@ async function retrieveDomainBilling(ctx) {
           : now;
       }
 
-      if (session.mode === 'subscription' && session.subscription) {
+      if (subscription) {
         // if user already has a subscription then switch them and cancel the old one
         // (in case webhook ran faster than redirect)
         if (
           isSANB(ctx.state.user[config.userFields.stripeSubscriptionID]) &&
           ctx.state.user[config.userFields.stripeSubscriptionID] !==
-            session.subscription
+            subscription.id
         ) {
           try {
             await stripe.subscriptions.del(
@@ -501,75 +549,82 @@ async function retrieveDomainBilling(ctx) {
 
         // save the new subscription ID to their account (so they can 1-click cancel subscriptions)
         ctx.state.user[config.userFields.stripeSubscriptionID] =
-          session.subscription;
+          subscription.id;
       }
 
-      try {
-        //
-        // NOTE: we don't want to re-create the payment if the stripe webhook already did
-        //
-        const $or = [
-          {
-            user: ctx.state.user._id,
-            stripe_session_id: session.id
+      //
+      // we only want to create or find an existing payment
+      // if it was not a subscription
+      // OR not a subscription trial
+      //
+      if (!subscription || subscription.status !== 'trialing') {
+        try {
+          //
+          // NOTE: we don't want to re-create the payment if the stripe webhook already did
+          //
+          const $or = [
+            {
+              user: ctx.state.user._id,
+              stripe_session_id: session.id
+            }
+          ];
+          if (invoiceId)
+            $or.push({
+              user: ctx.state.user._id,
+              stripe_invoice_id: invoiceId
+            });
+          if (paymentIntentId)
+            $or.push({
+              user: ctx.state.user._id,
+              stripe_payment_intent_id: paymentIntentId
+            });
+          if (session.client_reference_id)
+            $or.push({
+              user: ctx.state.user._id,
+              reference: session.client_reference_id
+            });
+          let payment = await Payments.findOne({ $or });
+          if (payment) {
+            ctx.logger.info('stripe payment existed', { payment });
+          } else {
+            payment = await Payments.create({
+              user: ctx.state.user._id,
+              reference: session.client_reference_id,
+              amount: session.amount_total,
+              method,
+              exp_month: expMonth,
+              exp_year: expYear,
+              last4,
+              stripe_session_id: session.id,
+              stripe_payment_intent_id: paymentIntentId,
+              duration: ms(key),
+              plan: ctx.query.plan,
+              kind: subscription ? 'subscription' : 'one-time',
+              invoice_at: paymentIntent
+                ? dayjs.unix(paymentIntent.created).toDate()
+                : now,
+              stripe_invoice_id: invoiceId,
+              stripe_subscription_id: subscription?.id,
+              is_apple_pay: isApplePay,
+              is_google_pay: isGooglePay
+            });
+            // log the payment just for sanity
+            ctx.logger.info('stripe payment created', { payment });
           }
-        ];
-        if (invoiceId)
-          $or.push({
-            user: ctx.state.user._id,
-            stripe_invoice_id: invoiceId
-          });
-        if (paymentIntentId)
-          $or.push({
-            user: ctx.state.user._id,
-            stripe_payment_intent_id: paymentIntentId
-          });
-        if (session.client_reference_id)
-          $or.push({
-            user: ctx.state.user._id,
-            reference: session.client_reference_id
-          });
-        let payment = await Payments.findOne({ $or });
-        if (payment) {
-          ctx.logger.info('stripe payment existed', { payment });
-        } else {
-          payment = await Payments.create({
-            user: ctx.state.user._id,
-            reference: session.client_reference_id,
-            amount: session.amount_total,
-            method,
-            exp_month: expMonth,
-            exp_year: expYear,
-            last4,
-            stripe_session_id: session.id,
-            stripe_payment_intent_id: paymentIntentId,
-            duration: ms(key),
-            plan: ctx.query.plan,
-            kind: session.mode === 'subscription' ? 'subscription' : 'one-time',
-            invoice_at: paymentIntent
-              ? dayjs.unix(paymentIntent.created).toDate()
-              : now,
-            stripe_invoice_id: invoiceId,
-            stripe_subscription_id: session.subscription,
-            is_apple_pay: isApplePay,
-            is_google_pay: isGooglePay
-          });
-          // log the payment just for sanity
-          ctx.logger.info('stripe payment created', { payment });
+        } catch (err) {
+          ctx.logger.fatal(err);
+          // email admins here
+          emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              subject: `Error retrieving/creating stripe payment for ${ctx.state.user.email}`
+            },
+            locals: { message: err.message }
+          })
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
         }
-      } catch (err) {
-        ctx.logger.fatal(err);
-        // email admins here
-        emailHelper({
-          template: 'alert',
-          message: {
-            to: config.email.message.from,
-            subject: `Error retrieving/creating stripe payment for ${ctx.state.user.email}`
-          },
-          locals: { message: err.message }
-        })
-          .then()
-          .catch((err) => ctx.logger.fatal(err));
       }
 
       // save the user
@@ -590,10 +645,43 @@ async function retrieveDomainBilling(ctx) {
           .catch((err) => ctx.logger.fatal(err));
       }
 
+      //
+      // send the user an email that they successfully enabled auto-renew
+      // and also inform them when they will be first billed
+      // (by leveraging `subscription.billing_cycle_anchor` (unix timestamp))
+      //
+      if (subscription && subscription.status === 'trialing') {
+        const subject = striptags(
+          ctx.translate(
+            'AUTO_RENEW_STARTS',
+            dayjs.unix(subscription.billing_cycle_anchor).format('M/D/YY')
+          )
+        );
+        const message = ctx.translate('AUTO_RENEW_ENABLED');
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: ctx.state.user[config.userFields.receiptEmail]
+              ? ctx.state.user[config.userFields.receiptEmail]
+              : ctx.state.user[config.userFields.fullEmail],
+            ...(ctx.state.user[config.userFields.receiptEmail]
+              ? { cc: ctx.state.user[config.userFields.fullEmail] }
+              : {}),
+            subject
+          },
+          locals: {
+            user: ctx.state.user.toObject(),
+            message
+          }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
+
       // cancel the user's paypal subscription if they had one
       // and if the session.mode was equal to subscription
       if (
-        session.mode === 'subscription' &&
+        subscription &&
         isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
       ) {
         try {
@@ -714,7 +802,11 @@ async function retrieveDomainBilling(ctx) {
               subject: `Error while capturing PayPal order payment for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${JSON.stringify(err, null, 2)}</code></pre>`
+              message: `<pre><code>${JSON.stringify(
+                parseErr(err),
+                null,
+                2
+              )}</code></pre>`
             }
           })
             .then()
@@ -813,11 +905,7 @@ async function retrieveDomainBilling(ctx) {
         !isSANB(body.id) ||
         !isSANB(body.plan_id) ||
         !_.isObject(body.subscriber) ||
-        !isSANB(body.subscriber.payer_id) ||
-        !_.isObject(body.billing_info) ||
-        !_.isObject(body.billing_info.last_payment) ||
-        !_.isObject(body.billing_info.last_payment.amount) ||
-        !isSANB(body.billing_info.last_payment.amount.value)
+        !isSANB(body.subscriber.payer_id)
       )
         throw ctx.translateError('UNKNOWN_ERROR');
 
@@ -876,11 +964,6 @@ async function retrieveDomainBilling(ctx) {
       if (!isMakePayment && !isEnableAutoRenew)
         ctx.state.user.plan = ctx.query.plan;
 
-      // parse the amount for later
-      const amount = Number(body.billing_info.last_payment.amount.value);
-      if (!_.isFinite(amount) || amount <= 0)
-        throw ctx.translateError('UNKNOWN_ERROR');
-
       // get the date
       let now = new Date();
       if (body.create_time) {
@@ -899,53 +982,70 @@ async function retrieveDomainBilling(ctx) {
       }
 
       // these all occur in parallel, but the only one we need to work is saving domain
-      try {
-        //
-        // NOTE: we don't want to re-create the payment if the paypal webhook already did
-        //
-        let payment = await Payments.findOne({
-          user: ctx.state.user._id,
-          paypal_subscription_id: body.id,
-          invoice_at: now
-        });
-        if (payment) {
-          ctx.logger.info('paypal payment existed', { payment });
-        } else {
-          payment = await Payments.create({
+
+      //
+      // we only want to create or find an existing payment
+      // if it was not a subscription trial
+      //
+      const hasPayment =
+        _.isObject(body.billing_info) &&
+        _.isObject(body.billing_info.last_payment) &&
+        _.isObject(body.billing_info.last_payment.amount) &&
+        body.billing_info.last_payment.amount.value;
+      if (hasPayment) {
+        try {
+          // parse the amount for later
+          const amount = Number(body.billing_info.last_payment.amount.value);
+          if (!_.isFinite(amount) || amount <= 0)
+            throw ctx.translateError('UNKNOWN_ERROR');
+
+          //
+          // NOTE: we don't want to re-create the payment if the paypal webhook already did
+          //
+          let payment = await Payments.findOne({
             user: ctx.state.user._id,
-            // NOTE: paypal subscriptions don't allow you to pass a reference
-            amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
-            method: 'paypal',
-            duration: ms(duration),
-            plan: ctx.query.plan,
-            kind: 'subscription',
             paypal_subscription_id: body.id,
-            //
-            // NOTE: there is no way to get the `paypal_transaction_id`
-            //       because the PayPal API response does not include it
-            //       and when you search for transactions from a subscription
-            //       (even if you include start_time in the query in the past)
-            //       it will not return any results, and transactions will be empty
-            //       (and we don't want to do an artificial delay here just to populate date)
-            //
             invoice_at: now
           });
-          // log the payment just for sanity
-          ctx.logger.info('paypal payment created', { payment });
+          if (payment) {
+            ctx.logger.info('paypal payment existed', { payment });
+          } else {
+            payment = await Payments.create({
+              user: ctx.state.user._id,
+              // NOTE: paypal subscriptions don't allow you to pass a reference
+              amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
+              method: 'paypal',
+              duration: ms(duration),
+              plan: ctx.query.plan,
+              kind: 'subscription',
+              paypal_subscription_id: body.id,
+              //
+              // NOTE: there is no way to get the `paypal_transaction_id`
+              //       because the PayPal API response does not include it
+              //       and when you search for transactions from a subscription
+              //       (even if you include start_time in the query in the past)
+              //       it will not return any results, and transactions will be empty
+              //       (and we don't want to do an artificial delay here just to populate date)
+              //
+              invoice_at: now
+            });
+            // log the payment just for sanity
+            ctx.logger.info('paypal payment created', { payment });
+          }
+        } catch (err) {
+          ctx.logger.fatal(err);
+          // email admins here
+          emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
+            },
+            locals: { message: err.message }
+          })
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
         }
-      } catch (err) {
-        ctx.logger.fatal(err);
-        // email admins here
-        emailHelper({
-          template: 'alert',
-          message: {
-            to: config.email.message.from,
-            subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
-          },
-          locals: { message: err.message }
-        })
-          .then()
-          .catch((err) => ctx.logger.fatal(err));
       }
 
       // save the user
@@ -961,6 +1061,39 @@ async function retrieveDomainBilling(ctx) {
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: { message: err.message }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
+
+      //
+      // send the user an email that they successfully enabled auto-renew
+      // and also inform them when they will be first billed
+      // (by leveraging `subscription.billing_cycle_anchor` (unix timestamp))
+      //
+      if (!hasPayment) {
+        const subject = striptags(
+          ctx.translate(
+            'AUTO_RENEW_STARTS',
+            dayjs(new Date(body.start_time)).format('M/D/YY')
+          )
+        );
+        const message = ctx.translate('AUTO_RENEW_ENABLED');
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: ctx.state.user[config.userFields.receiptEmail]
+              ? ctx.state.user[config.userFields.receiptEmail]
+              : ctx.state.user[config.userFields.fullEmail],
+            ...(ctx.state.user[config.userFields.receiptEmail]
+              ? { cc: ctx.state.user[config.userFields.fullEmail] }
+              : {}),
+            subject
+          },
+          locals: {
+            user: ctx.state.user.toObject(),
+            message
+          }
         })
           .then()
           .catch((err) => ctx.logger.fatal(err));
@@ -1109,15 +1242,14 @@ async function retrieveDomainBilling(ctx) {
     }
 
     // flash message and redirect
-    if (!ctx.api)
-      ctx.flash(
-        'success',
-        isMakePayment
-          ? ctx.translate('ONE_TIME_PAYMENT_SUCCESSFUL')
-          : isEnableAutoRenew
-          ? ctx.translate('AUTO_RENEW_ENABLED')
-          : ctx.translate(`${ctx.query.plan.toUpperCase()}_PLAN`)
-      );
+    ctx.flash(
+      'success',
+      isMakePayment
+        ? ctx.translate('ONE_TIME_PAYMENT_SUCCESSFUL')
+        : isEnableAutoRenew
+        ? ctx.translate('AUTO_RENEW_ENABLED')
+        : ctx.translate(`${ctx.query.plan.toUpperCase()}_PLAN`)
+    );
 
     // pro-rated refund manual email if necessary based off:
     // `originalPlanExpiresAt` (if it was a valid date)

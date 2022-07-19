@@ -67,7 +67,7 @@ block body
               else
                 = emoji('tada')
                 = ' '
-                != t('You have an active <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('debit or credit card') : 'PayPal')
+                != t('You have an active <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('card, wallet, or bank') : 'PayPal')
 
   .container.py-3.py-sm-5.position-relative
     .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
@@ -80,7 +80,7 @@ block body
               else
                 = t('Auto-renew disabled')
             if hasSubscription && hasPlanExpired
-              .alert.alert-warning.small!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('debit or credit card') : 'PayPal')
+              .alert.alert-warning.small!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('card, wallet, or bank') : 'PayPal')
             t(titleize(humanize(user.plan)))
             if !hasPlanExpired
               .alert.alert-warning.small

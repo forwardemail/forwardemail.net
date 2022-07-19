@@ -1929,7 +1929,7 @@ Yes. Regardless of which plan you are on, you will pay only one monthly rate –
 
 ## Which payment methods do you accept
 
-We accept debit and credit cards using [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com/) – for one-time payments or monthly, quarterly, or yearly subscriptions.
+We accept cards, wallets, and bank transfers using [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com/) – for one-time payments or monthly, quarterly, or yearly subscriptions.
 
 
 ## Will you ever increase prices

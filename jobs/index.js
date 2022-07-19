@@ -79,6 +79,12 @@ const jobs = [
     name: 'domain-missing-txt',
     interval: '1d',
     timeout: 0
+  },
+  // <https://support.stripe.com/questions/2020-visa-trial-subscription-requirement-changes-guide>
+  {
+    name: 'visa-trial-subscription-requirement',
+    interval: '1h',
+    timeout: 0
   }
 ];
 

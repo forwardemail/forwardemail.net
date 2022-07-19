@@ -151,6 +151,8 @@ const config = {
 
   // user fields (change these if you want camel case or whatever)
   userFields: {
+    stripeTrialSentAt: 'stripe_trial_sent_at',
+    paypalTrialSentAt: 'paypal_trial_sent_at',
     paymentReminderInitialSentAt: 'payment_reminder_initial_sent_at',
     paymentReminderFollowUpSentAt: 'payment_reminder_follow_up_sent_at',
     paymentReminderFinalNoticeSentAt: 'payment_reminder_final_notice_sent_at',
