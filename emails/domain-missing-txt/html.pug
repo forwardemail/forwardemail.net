@@ -19,13 +19,13 @@ block content
               h1.h3!= t("Oops!")
               if domains.length === 1
                 p.card-text!= t('Your domain <strong><span class="notranslate">%s</span></strong> may not be delivering emails &ndash; we detected it may be missing required DNS TXT records.', domains[0].name)
-                a.btn.btn-lg.btn-danger(
+                a.btn.btn-lg.btn-success(
                   href=`${config.urls.web}/${locale}/my-account/domains/${domains[0].name}`,
                   role="button"
-                )= t("Verify records")
+                )= t("Verify Records")
               else
                 p.card-text!= t('Several of your domains may not be not delivering emails &ndash; we detected they may be missing required DNS TXT records.')
-                a.btn.btn-lg.btn-danger(
+                a.btn.btn-lg.btn-success(
                   href=`${config.urls.web}/${locale}/my-account/domains`,
                   role="button"
                 )= t("Verify Records")
