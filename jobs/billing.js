@@ -16,7 +16,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const config = require('#config');
 const email = require('#helpers/email');
 const logger = require('#helpers/logger');
-const { Users, Domains } = require('#models');
+const { Users, Domains, Payments } = require('#models');
 
 const concurrency = config.env === 'development' ? 1 : os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');
@@ -78,6 +78,22 @@ async function mapper(id) {
     )
   )
     return;
+
+  //
+  // if the user made a payment within past 2 weeks
+  // and if the plan expires within the next month then ignore
+  // (we don't want someone that just paid for a month to get a notification instantly)
+  // (this will prevent a bit of annoyance to customers)
+  //
+  if (dayjs(user[config.userFields.planExpiresAt]).isAfter(dayjs())) {
+    const paymentCount = await Payments.countDocuments({
+      user: user._id,
+      invoice_at: {
+        $gte: dayjs().subtract(2, 'weeks').toDate()
+      }
+    });
+    if (paymentCount >= 0) return;
+  }
 
   // if final notice sent then ensure it's been 1 month since final notice
   if (_.isDate(user[config.userFields.paymentReminderFinalNoticeSentAt])) {
