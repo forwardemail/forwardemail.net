@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.bg-dark.text-white.text-center
+            != t('Your first auto-renewal charge')
+          .card-body.p-0
+            a(href=`${config.urls.web}/${locale}/my-account/billing`)
+              img.img-responsive(
+                src=`${config.urls.web}/img/emails/${_.sample(['domain-onboard', 'domain-verified', 'self-test', 'welcome'])}.gif`,
+                alt="",
+                data-inline-ignore
+              )
+            .p-3.text-center
+              p.card-text: strong= t('Thank you for enabling auto-renew.')
+              p.card-text.mb-0
+                = t('In order to be compliant with payment processing requirements, we are informing you of an upcoming charge.')
+                = ' '
+                != t('Your <span class="notranslate">%s</span> will be charged <span class="notranslate">%s</span> every <span class="notranslate">%s</span> starting on <span class="notranslate">%s</span>.', isSANB(user[config.userFields.paypalSubscriptionID]) ? t('PayPal account') : t('payment method'), formattedAmount, frequency, dayjs(firstChargeDate).format('M/D/YY'))
+              ul.list-inline.text-center.mb-0
+                if isSANB(user[config.userFields.stripeSubscriptionID])
+                  li.list-inline-item.mt-3
+                    a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Card')
+                li.list-inline-item.mt-3
+                  a.btn.btn-md.btn-primary(href=`${config.urls.web}/${locale}/my-account/billing`)= t("Manage Billing")
+            include ../_account-summary
+
+          .card-footer.text-center.small.text-muted
+            = t('We will automatically send you receipts by email.')

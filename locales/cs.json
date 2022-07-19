@@ -2622,5 +2622,13 @@
   "What domains were detected?": "What domains were detected?",
   "Your domain <strong><span class=\"notranslate\">%s</span></strong> may not be delivering emails &ndash; we detected it may be missing required DNS TXT records.": "Your domain <strong><span class=\"notranslate\">%s</span></strong> may not be delivering emails &ndash; we detected it may be missing required DNS TXT records.",
   "Verify records": "Verify records",
-  "Currently <strong>you are on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups.": "Currently <strong>you are on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups."
+  "Currently <strong>you are on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups.": "Currently <strong>you are on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups.",
+  "Your first auto-renewal charge will be on <span class=\"notranslate\">%s</span>": "Your first auto-renewal charge will be on <span class=\"notranslate\">%s</span>",
+  "Your first auto-renewal charge": "Your first auto-renewal charge",
+  "Thank you for enabling auto-renew.": "Thank you for enabling auto-renew.",
+  "In order to be compliant with payment processing requirements, we are informing you of an upcoming charge.": "In order to be compliant with payment processing requirements, we are informing you of an upcoming charge.",
+  "PayPal account": "PayPal account",
+  "Your <span class=\"notranslate\">%s</span> will be charged <span class=\"notranslate\">%s</span> every <span class=\"notranslate\">%s</span> starting on <span class=\"notranslate\">%s</span>.": "Your <span class=\"notranslate\">%s</span> will be charged <span class=\"notranslate\">%s</span> every <span class=\"notranslate\">%s</span> starting on <span class=\"notranslate\">%s</span>.",
+  "We will automatically send you receipts by email.": "We will automatically send you receipts by email.",
+  "We accept cards, wallets, and bank transfers using ": "We accept cards, wallets, and bank transfers using "
 }

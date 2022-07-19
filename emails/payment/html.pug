@@ -30,4 +30,6 @@ block content
               if !isSANB(user[config.userFields.stripeSubscriptionID]) && !isSANB(user[config.userFields.paypalSubscriptionID])
                 li.list-inline-item.mt-3
                   a.btn.btn-md.btn-success(href=`${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)= t("Enable Auto-Renew")
+              li.list-inline-item.mt-3
+                a.btn.btn-md.btn-primary(href=`${config.urls.web}/${locale}/my-account/billing`)= t("Manage Billing")
           .card-footer.small.text-muted.text-center= t("Your receipt is also attached as a PDF to this email.")

@@ -21,6 +21,10 @@ block append scripts
     script.
       window.USER_PLAN = "#{ctx.query.plan}";
 
+  if dayjs(user[config.userFields.planExpiresAt]).isAfter(dayjs())
+    script.
+      window.PLAN_EXPIRES_AT = "#{new Date(user[config.userFields.planExpiresAt]).toISOString()}";
+
 block body
   - const isMakePayment = ctx.pathWithoutLocale === "/my-account/billing/make-payment";
   - const isEnableAutoRenew = ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew";
@@ -100,6 +104,8 @@ block body
                   if months > 0
                     - str += ` ${t('and')} ${dayjs().add(months, 'months').locale(locale).fromNow(true)}`;
                 != t('Your account is <strong class="notranslate">%s</strong> past due.', str)
+            if isEnableAutoRenew && !hasPlanExpired
+              .alert.alert-primary!= t('Don\'t worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).format('M/D/YY'))
             form#form-billing(action=ctx.path, method="POST")
               input(type="hidden", name="_csrf", value=_csrf)
 
@@ -118,7 +124,7 @@ block body
                   )
                   label.form-check-label(
                     for="input-payment-method-credit-card"
-                  )= t("Debit or Credit Card")
+                  )= t("Card, Wallet, or Bank")
                 .form-check.form-check-inline
                   input#input-payment-method-paypal.form-check-input(
                     type="radio",

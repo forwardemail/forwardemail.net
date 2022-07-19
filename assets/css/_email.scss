@@ -18,4 +18,8 @@ body.email {
     max-width: 100%;
     object-fit: cover;
   }
+  pre {
+    // override since we don't want side-scrolling emails
+    white-space: pre-wrap;
+  }
 }

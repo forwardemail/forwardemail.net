@@ -102,6 +102,7 @@
     "p-series": "2",
     "p-timeout": "4",
     "parse-domain": "2",
+    "parse-err": "^0.0.12",
     "parse-logs": "1.0.0",
     "passport-local-mongoose": "7.1.2",
     "paypal-rest-sdk": "1.8.1",
