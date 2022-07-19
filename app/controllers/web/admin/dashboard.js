@@ -6,7 +6,7 @@ const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 
 const config = require('#config');
-const { Users, Domains, Aliases } = require('#models');
+const { Users, Domains, Aliases, Payments } = require('#models');
 const locales = require('#config/locales');
 
 const models = { Users, Domains, Aliases };
@@ -31,36 +31,262 @@ const DAYS_OF_WEEK = [
 */
 
 async function getBody(ctx) {
+  const bannedUserIds = await Users.distinct('_id', {
+    [config.userFields.isBanned]: true
+  });
   const [
     totalUsers,
     totalDomains,
     totalAliases,
-    // monthlyRevenue,
+    totalSubscriptions,
+    oneTimeRevenueChart,
+    subscriptionRevenueChart,
+    revenueChart,
     lineChart,
     // heatmap,
     pieChart
   ] = await Promise.all([
     Users.countDocuments({ [config.userFields.hasVerifiedEmail]: true }),
-    Domains.countDocuments(),
-    Aliases.countDocuments(),
-    // Promise.resolve(0),
+    Domains.countDocuments({
+      'members.user': { $nin: bannedUserIds },
+      has_mx_record: true
+    }),
+    Aliases.countDocuments({ user: { $nin: bannedUserIds } }),
+    Users.countDocuments({
+      $or: [
+        { [config.userFields.stripeSubscriptionID]: { $exists: true } },
+        { [config.userFields.paypalSubscriptionID]: { $exists: true } }
+      ]
+    }),
+    (async () => {
+      const docs = await Payments.aggregate([
+        {
+          $match: {
+            kind: 'one-time'
+          }
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+            },
+            total: { $sum: '$amount' }
+          }
+        },
+        {
+          $sort: {
+            _id: 1
+          }
+        }
+      ]);
+      const series = [
+        {
+          name: 'Total',
+          data: docs.map((doc) => [doc._id, Math.round(doc.total / 100)])
+        }
+      ];
+      return {
+        series,
+        chart: {
+          type: 'area'
+        },
+        dataLabels: {
+          enabled: true
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        tooltip: {
+          x: {
+            format: 'y/M'
+          }
+        },
+        colors: ['#20C1ED']
+      };
+    })(),
+    (async () => {
+      const docs = await Payments.aggregate([
+        {
+          $match: {
+            kind: 'subscription'
+          }
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+            },
+            total: { $sum: '$amount' }
+          }
+        },
+        {
+          $sort: {
+            _id: 1
+          }
+        }
+      ]);
+      const series = [
+        {
+          name: 'Total',
+          data: docs.map((doc) => [doc._id, Math.round(doc.total / 100)])
+        }
+      ];
+      return {
+        series,
+        chart: {
+          type: 'area'
+        },
+        dataLabels: {
+          enabled: true
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        tooltip: {
+          x: {
+            format: 'y/M'
+          }
+        },
+        colors: ['#20C1ED']
+      };
+    })(),
+    (async () => {
+      // revenue chart (payments over time grouped by invoice_at)
+      const [docs, stripe, paypal] = await Promise.all([
+        Payments.aggregate([
+          {
+            $match: {
+              method: {
+                $nin: ['free_beta_program']
+              }
+            }
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+              },
+              total: { $sum: '$amount' }
+            }
+          },
+          {
+            $sort: {
+              _id: 1
+            }
+          }
+        ]),
+        // stripe
+        Payments.aggregate([
+          {
+            $match: {
+              method: {
+                $nin: ['unknown', 'paypal', 'free_beta_program']
+              }
+            }
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+              },
+              total: { $sum: '$amount' }
+            }
+          },
+          {
+            $sort: {
+              _id: 1
+            }
+          }
+        ]),
+        // paypal
+        Payments.aggregate([
+          {
+            $match: {
+              method: 'paypal'
+            }
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+              },
+              total: { $sum: '$amount' }
+            }
+          },
+          {
+            $sort: {
+              _id: 1
+            }
+          }
+        ])
+      ]);
+
+      const series = [
+        {
+          name: 'Total',
+          data: docs.map((doc) => [doc._id, Math.round(doc.total / 100)])
+        },
+        {
+          name: 'Stripe',
+          data: stripe.map((doc) => [doc._id, Math.round(doc.total / 100)])
+        },
+        {
+          name: 'PayPal',
+          data: paypal.map((doc) => [doc._id, Math.round(doc.total / 100)])
+        }
+      ];
+
+      return {
+        series,
+        chart: {
+          type: 'area'
+        },
+        dataLabels: {
+          enabled: true
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        tooltip: {
+          x: {
+            format: 'y/M'
+          }
+        },
+        colors: ['#20C1ED', '#269C32', '#ffc107']
+      };
+    })(),
     (async () => {
       const series = [];
-
       await Promise.all(
         Object.keys(models).map(async (name) => {
           const docs = await models[name].aggregate([
             {
               $match: {
                 ...(name === 'Users'
-                  ? { [config.userFields.hasVerifiedEmail]: true }
+                  ? {
+                      [config.userFields.hasVerifiedEmail]: true,
+                      [config.userFields.isBanned]: false
+                    }
+                  : name === 'Aliases'
+                  ? { user: { $nin: bannedUserIds } }
+                  : name === 'Domains'
+                  ? { 'members.user': { $nin: bannedUserIds } }
                   : {})
               }
             },
             {
               $group: {
                 _id: {
-                  $dateToString: { format: '%Y/%m/%d', date: '$created_at' }
+                  $dateToString: { format: '%Y/%m', date: '$created_at' }
                 },
                 count: { $sum: 1 }
               }
@@ -74,7 +300,7 @@ async function getBody(ctx) {
 
           series.push({
             name,
-            data: docs.map((doc) => [doc._id, doc.count])
+            data: docs.map((doc) => [doc._id, Math.round(doc.count)])
           });
         })
       );
@@ -85,7 +311,7 @@ async function getBody(ctx) {
           type: 'area'
         },
         dataLabels: {
-          enabled: false
+          enabled: true
         },
         stroke: {
           curve: 'smooth'
@@ -95,7 +321,7 @@ async function getBody(ctx) {
         },
         tooltip: {
           x: {
-            format: 'y/M/d'
+            format: 'y/M'
           }
         },
         colors: ['#20C1ED', '#269C32', '#ffc107']
@@ -180,9 +406,21 @@ async function getBody(ctx) {
     */
     (async () => {
       const [free, enhancedProtection, team] = await Promise.all([
-        Domains.countDocuments({ plan: 'free' }),
-        Domains.countDocuments({ plan: 'enhanced_protection' }),
-        Domains.countDocuments({ plan: 'team' })
+        Domains.countDocuments({
+          plan: 'free',
+          has_mx_record: true,
+          'members.user': { $nin: bannedUserIds }
+        }),
+        Domains.countDocuments({
+          plan: 'enhanced_protection',
+          has_mx_record: true,
+          'members.user': { $nin: bannedUserIds }
+        }),
+        Domains.countDocuments({
+          plan: 'team',
+          has_mx_record: true,
+          'members.user': { $nin: bannedUserIds }
+        })
       ]);
       return {
         series: [free, enhancedProtection, team],
@@ -222,7 +460,7 @@ async function getBody(ctx) {
 
   const options = {
     dataLabels: {
-      enabled: false
+      enabled: true
     },
     chart: {
       height: 300,
@@ -253,6 +491,12 @@ async function getBody(ctx) {
       {
         selector: '#metrics-total-aliases',
         value: totalAliases ? numeral(totalAliases).format('0,0') : '-'
+      },
+      {
+        selector: '#metrics-total-subscriptions',
+        value: totalSubscriptions
+          ? numeral(totalSubscriptions).format('0,0')
+          : '-'
       }
       // {
       //   selector: '#metrics-monthly-revenue',
@@ -260,6 +504,18 @@ async function getBody(ctx) {
       // }
     ],
     charts: [
+      {
+        selector: '#revenue-chart',
+        options: _.merge({}, options, revenueChart || {})
+      },
+      {
+        selector: '#one-time-revenue-chart',
+        options: _.merge({}, options, oneTimeRevenueChart || {})
+      },
+      {
+        selector: '#subscription-revenue-chart',
+        options: _.merge({}, options, subscriptionRevenueChart || {})
+      },
       {
         selector: '#line-chart',
         options: _.merge({}, options, lineChart || {})
