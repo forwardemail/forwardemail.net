@@ -1326,21 +1326,6 @@ async function retrieveDomainBilling(ctx) {
       }
     }
 
-    // email admins here (in the background)
-    ctx.logger.info('checkout');
-    emailHelper({
-      template: 'alert',
-      message: {
-        to: config.email.message.from,
-        subject: 'A Customer Just Checked Out!'
-      },
-      locals: {
-        message: `<p><strong>${ctx.state.user.email}</strong> just checked out with the "${ctx.query.plan}" plan`
-      }
-    })
-      .then()
-      .catch((err) => ctx.logger.fatal(err));
-
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
   } catch (err) {
