@@ -58,11 +58,13 @@ graceful.listen();
           { [config.userFields.stripeSubscriptionID]: { $exists: true } },
           { [config.userFields.stripeTrialSentAt]: { $exists: false } },
           ...(paidStripeSubscriptionIds.length > 0
-            ? {
-                [config.userFields.stripeSubscriptionID]: {
-                  $nin: paidStripeSubscriptionIds
+            ? [
+                {
+                  [config.userFields.stripeSubscriptionID]: {
+                    $nin: paidStripeSubscriptionIds
+                  }
                 }
-              }
+              ]
             : [])
         ]
       },
@@ -71,11 +73,13 @@ graceful.listen();
           { [config.userFields.paypalSubscriptionID]: { $exists: true } },
           { [config.userFields.paypalTrialSentAt]: { $exists: false } },
           ...(paidPayPalSubscriptionIds.length > 0
-            ? {
-                [config.userFields.paypalSubscriptionID]: {
-                  $nin: paidPayPalSubscriptionIds
+            ? [
+                {
+                  [config.userFields.paypalSubscriptionID]: {
+                    $nin: paidPayPalSubscriptionIds
+                  }
                 }
-              }
+              ]
             : [])
         ]
       }
