@@ -2310,9 +2310,14 @@
   "You successfully upgraded your account &ndash; however we noticed that you have one or more domains that are not on the same plan you upgraded to. Please configure each domain to use your current plan by using the drop-down menu located at the <a href=\"/my-account/domains\">Domains</a> page.  You can feel free to mix and match domains to be configured on different plans (e.g. you can have some on the free plan, and others on upgraded paid plans).": "Sie haben Ihr Konto erfolgreich aktualisiert – wir haben jedoch festgestellt, dass Sie eine oder mehrere Domains haben, die nicht denselben Plan haben, auf den Sie aktualisiert haben. Bitte konfigurieren Sie jede Domain so, dass sie Ihren aktuellen Plan verwendet, indem Sie das Dropdown-Menü auf der Seite „ <a href=\"/my-account/domains\">Domains</a> “ verwenden. Sie können gerne Domains mischen und anpassen, um sie für verschiedene Pläne zu konfigurieren (z. B. können Sie einige im kostenlosen Plan und andere in aktualisierten kostenpflichtigen Plänen haben).",
   "You cannot start a subscription nor enable auto-renew more than two years from your plan's current expiration date of <span class=\"notranslate\">%s</span>.  Please try again <span class=\"notranslate\">%s</span>.": "Sie können ein Abonnement nicht mehr als zwei Jahre nach dem aktuellen Ablaufdatum Ihres Plans von <span class=\"notranslate\">%s</span> beginnen oder die automatische Verlängerung aktivieren. Bitte versuchen Sie es erneut <span class=\"notranslate\">%s</span> .",
   "year": "Jahr",
-  "Two-factor auth": "Two-factor auth",
-  "Don't worry! Your account is secure.": "Don't worry! Your account is secure.",
-  "This is a friendly reminder for your protection.": "This is a friendly reminder for your protection.",
-  "Enable two-factor auth": "Enable two-factor auth",
-  "Did you want to enable two-factor auth?": "Did you want to enable two-factor auth?"
+  "Two-factor auth": "Zwei-Faktor-Authentifizierung",
+  "Don't worry! Your account is secure.": "Mach dir keine Sorgen! Ihr Konto ist sicher.",
+  "This is a friendly reminder for your protection.": "Dies ist eine freundliche Erinnerung zu Ihrem Schutz.",
+  "Enable two-factor auth": "Aktivieren Sie die Zwei-Faktor-Authentifizierung",
+  "Did you want to enable two-factor auth?": "Wollten Sie die Zwei-Faktor-Authentifizierung aktivieren?",
+  "Currently <strong>your domain is on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups.": "Derzeit <strong>ist Ihre Domain im kostenlosen Plan</strong> , was bedeutet, dass <strong class=\"text-danger\">Ihre Weiterleitungsadressen über DNS-Lookups öffentlich durchsuchbar sind</strong> .",
+  "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Führen Sie die Zahlung durch</a> oder <a class=\"alert-link\" href=\"%s\">aktualisieren Sie die Karte</a> sofort.",
+  "You must make payment to avoid account termination.": "Sie müssen eine Zahlung leisten, um eine Kontokündigung zu vermeiden.",
+  "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Der Firmenname hat sich von <span class=\"notranslate\">%s</span> in <span class=\"notranslate\">%s</span> geändert",
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresszeile1 hat sich von <span class=\"notranslate\">%s</span> in <span class=\"notranslate\">%s</span> geändert"
 }
