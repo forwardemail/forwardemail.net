@@ -2645,9 +2645,14 @@
   "You successfully upgraded your account &ndash; however we noticed that you have one or more domains that are not on the same plan you upgraded to. Please configure each domain to use your current plan by using the drop-down menu located at the <a href=\"/my-account/domains\">Domains</a> page.  You can feel free to mix and match domains to be configured on different plans (e.g. you can have some on the free plan, and others on upgraded paid plans).": "Úspěšně jste upgradovali svůj účet – všimli jsme si však, že máte jednu nebo více domén, které nemají stejný plán, na který jste upgradovali. Nakonfigurujte prosím každou doménu tak, aby používala váš aktuální plán, pomocí rozbalovací nabídky na stránce <a href=\"/my-account/domains\">Domény</a> . Můžete bez obav kombinovat domény, které chcete nakonfigurovat v různých plánech (např. můžete mít některé v bezplatném plánu a jiné v upgradovaných placených plánech).",
   "You cannot start a subscription nor enable auto-renew more than two years from your plan's current expiration date of <span class=\"notranslate\">%s</span>.  Please try again <span class=\"notranslate\">%s</span>.": "Nemůžete zahájit předplatné ani povolit automatické obnovení déle než dva roky od aktuálního data vypršení vašeho plánu <span class=\"notranslate\">%s</span> . Zkuste to znovu <span class=\"notranslate\">%s</span> .",
   "year": "rok",
-  "Two-factor auth": "Two-factor auth",
-  "Don't worry! Your account is secure.": "Don't worry! Your account is secure.",
-  "This is a friendly reminder for your protection.": "This is a friendly reminder for your protection.",
-  "Enable two-factor auth": "Enable two-factor auth",
-  "Did you want to enable two-factor auth?": "Did you want to enable two-factor auth?"
+  "Two-factor auth": "Dvoufaktorová autentizace",
+  "Don't worry! Your account is secure.": "Nebojte se! Váš účet je zabezpečený.",
+  "This is a friendly reminder for your protection.": "Toto je přátelská připomínka pro vaši ochranu.",
+  "Enable two-factor auth": "Povolit dvoufaktorové ověření",
+  "Did you want to enable two-factor auth?": "Chtěli jste povolit dvoufaktorové ověření?",
+  "Currently <strong>your domain is on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups.": "V současné době <strong>je vaše doména v bezplatném plánu</strong> , což znamená, že <strong class=\"text-danger\">vaše adresy pro přesměrování lze veřejně vyhledávat pomocí vyhledávání</strong> DNS.",
+  "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "Okamžitě <a class=\"alert-link\" href=\"%s\">proveďte platbu</a> nebo <a class=\"alert-link\" href=\"%s\">aktualizujte kartu</a> .",
+  "You must make payment to avoid account termination.": "Abyste předešli zrušení účtu, musíte provést platbu.",
+  "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Název společnosti se změnil z <span class=\"notranslate\">%s</span> na <span class=\"notranslate\">%s</span>",
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Řádek adresy 1 se změnil z <span class=\"notranslate\">%s</span> na <span class=\"notranslate\">%s</span>"
 }

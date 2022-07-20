@@ -2494,5 +2494,10 @@
   "Don't worry! Your account is secure.": "Don't worry! Your account is secure.",
   "This is a friendly reminder for your protection.": "This is a friendly reminder for your protection.",
   "Enable two-factor auth": "Enable two-factor auth",
-  "Did you want to enable two-factor auth?": "Did you want to enable two-factor auth?"
+  "Did you want to enable two-factor auth?": "Did you want to enable two-factor auth?",
+  "Currently <strong>your domain is on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups.": "Currently <strong>your domain is on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups.",
+  "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.",
+  "You must make payment to avoid account termination.": "You must make payment to avoid account termination.",
+  "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>"
 }

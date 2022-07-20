@@ -2363,9 +2363,14 @@
   "You successfully upgraded your account &ndash; however we noticed that you have one or more domains that are not on the same plan you upgraded to. Please configure each domain to use your current plan by using the drop-down menu located at the <a href=\"/my-account/domains\">Domains</a> page.  You can feel free to mix and match domains to be configured on different plans (e.g. you can have some on the free plan, and others on upgraded paid plans).": "Du har opgraderet din konto – men vi har bemærket, at du har et eller flere domæner, der ikke er på det samme abonnement, som du opgraderede til. Konfigurer hvert domæne til at bruge din nuværende plan ved at bruge rullemenuen på siden <a href=\"/my-account/domains\">Domæner</a> . Du kan være velkommen til at blande og matche domæner, der skal konfigureres på forskellige planer (f.eks. kan du have nogle på den gratis plan og andre på opgraderede betalte planer).",
   "You cannot start a subscription nor enable auto-renew more than two years from your plan's current expiration date of <span class=\"notranslate\">%s</span>.  Please try again <span class=\"notranslate\">%s</span>.": "Du kan ikke starte et abonnement eller aktivere automatisk fornyelse mere end to år fra din plans aktuelle udløbsdato på <span class=\"notranslate\">%s</span> . Prøv venligst igen <span class=\"notranslate\">%s</span> .",
   "year": "år",
-  "Two-factor auth": "Two-factor auth",
-  "Don't worry! Your account is secure.": "Don't worry! Your account is secure.",
-  "This is a friendly reminder for your protection.": "This is a friendly reminder for your protection.",
-  "Enable two-factor auth": "Enable two-factor auth",
-  "Did you want to enable two-factor auth?": "Did you want to enable two-factor auth?"
+  "Two-factor auth": "To-faktor auth",
+  "Don't worry! Your account is secure.": "Bare rolig! Din konto er sikker.",
+  "This is a friendly reminder for your protection.": "Dette er en venlig påmindelse om din beskyttelse.",
+  "Enable two-factor auth": "Aktiver to-faktor godkendelse",
+  "Did you want to enable two-factor auth?": "Vil du aktivere to-faktor godkendelse?",
+  "Currently <strong>your domain is on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups.": "I øjeblikket <strong>er dit domæne på den gratis plan</strong> , hvilket betyder, at <strong class=\"text-danger\">dine videresendelsesadresser er offentligt søgbare</strong> via DNS-opslag.",
+  "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Foretag betaling</a> eller <a class=\"alert-link\" href=\"%s\">opdater kortet med</a> det samme.",
+  "You must make payment to avoid account termination.": "Du skal foretage betaling for at undgå kontoopsigelse.",
+  "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Firmanavn er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>",
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresselinje1 er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>"
 }
