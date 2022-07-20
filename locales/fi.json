@@ -2462,5 +2462,13 @@
   "PayPal account": "PayPal account",
   "Your <span class=\"notranslate\">%s</span> will be charged <span class=\"notranslate\">%s</span> every <span class=\"notranslate\">%s</span> starting on <span class=\"notranslate\">%s</span>.": "Your <span class=\"notranslate\">%s</span> will be charged <span class=\"notranslate\">%s</span> every <span class=\"notranslate\">%s</span> starting on <span class=\"notranslate\">%s</span>.",
   "We will automatically send you receipts by email.": "We will automatically send you receipts by email.",
-  "We accept cards, wallets, and bank transfers using ": "We accept cards, wallets, and bank transfers using "
+  "We accept cards, wallets, and bank transfers using ": "We accept cards, wallets, and bank transfers using ",
+  "Priority support requests": "Priority support requests",
+  "We accept cards, wallets, and bank transfers using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"alert-link\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "We accept cards, wallets, and bank transfers using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"alert-link\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.",
+  "Card, Wallet, or Bank": "Card, Wallet, or Bank",
+  "This domain is currently on the <span class=\"notranslate\">%s</span> plan. Visit your <a class=\"alert-link\" href=\"%s\">Billing</a> page and our <a class=\"alert-link\" href=\"%s\">Pricing</a> page to learn more and compare plans.": "This domain is currently on the <span class=\"notranslate\">%s</span> plan. Visit your <a class=\"alert-link\" href=\"%s\">Billing</a> page and our <a class=\"alert-link\" href=\"%s\">Pricing</a> page to learn more and compare plans.",
+  "Need to unsubscribe or cancel your account?": "Need to unsubscribe or cancel your account?",
+  "email": "email",
+  "group": "group",
+  "Don't worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class=\"notranslate\">%s</span>.": "Don't worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class=\"notranslate\">%s</span>."
 }
