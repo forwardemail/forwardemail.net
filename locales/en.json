@@ -2489,5 +2489,10 @@
   "Need to unsubscribe or cancel your account?": "Need to unsubscribe or cancel your account?",
   "Need email for your domain?": "Need email for your domain?",
   "Skip ahead to the instructions to setup email for your domain.": "Skip ahead to the instructions to setup email for your domain.",
-  "Don't worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class=\"notranslate\">%s</span>.": "Don't worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class=\"notranslate\">%s</span>."
+  "Don't worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class=\"notranslate\">%s</span>.": "Don't worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class=\"notranslate\">%s</span>.",
+  "Two-factor auth": "Two-factor auth",
+  "Don't worry! Your account is secure.": "Don't worry! Your account is secure.",
+  "This is a friendly reminder for your protection.": "This is a friendly reminder for your protection.",
+  "Enable two-factor auth": "Enable two-factor auth",
+  "Did you want to enable two-factor auth?": "Did you want to enable two-factor auth?"
 }
