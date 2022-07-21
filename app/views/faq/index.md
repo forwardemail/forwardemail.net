@@ -1116,16 +1116,14 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 
 ## Do you offer a money back guarantee on paid plans
 
-Yes!  We offer a 30-day money back guarantee on all paids plans if you are not satisfied with our service.
-
-We do not ask any questions and simply process the refund within 5-7 business days.
-
-To request a refund, please send an email from the email address verified on your account to: <refunds@forwardemail.net>
+Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
 
 
 ## If I switch plans do you pro-rate and refund the difference
 
-Yes, we will manually process your refund for you and email you once complete.  You will get a notification regarding the refund amount when you switch plans.
+We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+
+Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
 
 
 ## Do you support webhooks

@@ -42,6 +42,7 @@ const updateProfile = require('./update-profile');
 const validateAlias = require('./validate-alias');
 const validateDomain = require('./validate-domain');
 const verifyRecords = require('./verify-records');
+const setConversionAndRefundStateHelpers = require('./set-conversion-and-refund-state-helpers');
 
 module.exports = {
   cancelEmailChange,
@@ -87,5 +88,6 @@ module.exports = {
   updateProfile,
   validateAlias,
   validateDomain,
-  verifyRecords
+  verifyRecords,
+  setConversionAndRefundStateHelpers
 };

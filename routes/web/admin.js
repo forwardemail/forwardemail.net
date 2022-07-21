@@ -10,6 +10,18 @@ router
   .use(policies.ensureAdmin)
   .use(policies.ensureOtp)
   .use(web.breadcrumbs)
+  // don't cache anything
+  // <https://github.com/koa-modules/koa-no-cache/issues/5>
+  .use((ctx, next) => {
+    ctx.set('Surrogate-Control', 'no-store');
+    ctx.set(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, proxy-revalidate'
+    );
+    ctx.set('Pragma', 'no-cache');
+    ctx.set('Expires', '0');
+    return next();
+  })
   .get('/', web.admin.dashboard)
 
   // users

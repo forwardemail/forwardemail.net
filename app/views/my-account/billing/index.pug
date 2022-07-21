@@ -14,7 +14,15 @@ block body
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
-          p.lead.text-center!= t('You are currently on the <span class="notranslate">%s</span> plan.', t(titleize(humanize(user.plan))))
+          .alert.alert-warning.small.text-center!= t('You are currently on the <span class="notranslate">%s</span> plan.', t(titleize(humanize(user.plan))))
+
+          //-
+          //- if the user was within 30 days of their plan_set_at
+          //- then inform them that they will be getting a full refund
+          //-
+          if user.plan !== 'free' && paymentCount === 0 && paymentIds.length > 0 && dayjs().isBefore(dayjs(user[config.userFields.planSetAt]).add(30, 'days'))
+            .alert.alert-success.small.text-center!= t("Don't worry &ndash; we'll automatically refund previous payments.")
+
           if user.plan === 'free'
             a.btn.btn-lg.btn-block.btn-success.mb-3(
               href=l("/my-account/billing/upgrade?plan=enhanced_protection")
@@ -23,13 +31,27 @@ block body
               href=l("/my-account/billing/upgrade?plan=team")
             )= t("Upgrade to Team")
           else if user.plan === 'enhanced_protection'
-            a.btn.btn-lg.btn-block.btn-primary.mb-3(
+            a.btn.btn-lg.btn-block.btn-dark.mb-3(
               href=l("/my-account/billing/upgrade?plan=team")
-            )= t("Upgrade to Team")
+            )
+              = t("Upgrade to Team")
+              if conversion.team.length > 0 && (paymentCount !== 0 || paymentIds.length === 0)
+                br
+                span.badge.badge-pill.badge-success
+                  = t('Conversion Credit:')
+                  = ' '
+                  = dayjs().add(_.sumBy(conversion.team, 'duration'), 'ms').locale(ctx.locale).fromNow(true)
           else if user.plan === 'team'
             a.btn.btn-lg.btn-block.btn-dark.mb-3(
               href=l("/my-account/billing/upgrade?plan=enhanced_protection")
-            )= t("Downgrade to Enhanced Protection")
+            )
+              = t("Downgrade to Enhanced Protection")
+              if conversion.enhanced_protection.length > 0 && (paymentCount !== 0 || paymentIds.length === 0)
+                br
+                span.badge.badge-pill.badge-success
+                  = t('Conversion Credit:')
+                  = ' '
+                  = dayjs().add(_.sumBy(conversion.enhanced_protection, 'duration'), 'ms').locale(ctx.locale).fromNow(true)
           if ['enhanced_protection', 'team'].includes(user.plan)
             form.confirm-prompt(
               action=l("/my-account/billing/upgrade"),
@@ -56,7 +78,7 @@ block body
       .container
         .row
           .col
-            .alert.text-center.mb-0.small(class=hasPlanExpired ? 'alert-danger' : 'alert-success')
+            .alert.text-center.mb-0(class=hasPlanExpired ? 'alert-danger' : 'alert-success')
               if hasPlanExpired
                 != t('Your plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format('M/D/YY'))
                 = ' '
@@ -74,38 +96,34 @@ block body
       if user.plan !== 'free'
         .col-12.col-lg-6.d-flex
           .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-            h2.display-5.font-weight-bold
+            h2.display-5.font-weight-bold.mb-0
               if hasSubscription
                 = t('Auto-renew enabled')
               else
                 = t('Auto-renew disabled')
             if hasSubscription && hasPlanExpired
-              .alert.alert-warning.small!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('card, wallet, or bank') : 'PayPal')
-            t(titleize(humanize(user.plan)))
-            if !hasPlanExpired
-              .alert.alert-warning.small
+              .alert.alert-warning.small.mt-3.mb-0!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t('card, wallet, or bank') : 'PayPal')
+            else if !hasPlanExpired
+              .alert.alert-warning.small.mt-3.mb-0
                 != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
             ul.list-inline.text-center.mb-0
               li.list-inline-item
-                a.btn.btn-sm.btn-primary(href=l("/my-account/billing/make-payment"))= t("Make Payment")
+                a.btn.btn-sm.btn-primary.mt-3(href=l("/my-account/billing/make-payment"))= t("Make Payment")
               if isSANB(user[config.userFields.stripeSubscriptionID])
                 li.list-inline-item
                   form(action=l("/my-account/billing/update-card"), method='POST').ajax-form
                     input(type="hidden", name="_csrf", value=_csrf)
-                    button.btn.btn-sm.btn-dark(type="submit")= t("Update Card")
-              else if isSANB(user[config.userFields.paypalSubscriptionID])
-                li.list-inline-item
-                  a(href=config.env === 'production' ? 'https://www.paypal.com' : 'https://www.sandbox.paypal.com', target='_blank', rel='noopener noreferrer').btn.btn-sm.btn-dark!= t('Go to <span class="notranslate">%s</span>', 'PayPal')
+                    button.btn.btn-sm.btn-dark.mt-3(type="submit")= t("Update Payment Method")
               if hasSubscription
                 li.list-inline-item
                   form.confirm-prompt(action=l("/my-account/billing"), method="POST")
                     input(type="hidden", name="_csrf", value=_csrf)
                     input(type="hidden", name="_method", value="DELETE")
-                    button.btn.btn-sm.btn-danger(type="submit")
+                    button.btn.btn-sm.btn-danger.mt-3(type="submit")
                       = t("Cancel Subscription")
               else
                 li.list-inline-item
-                  a.btn.btn-sm.btn-success(href=l("/my-account/billing/enable-auto-renew"))= t("Enable Auto-Renew")
+                  a.btn.btn-sm.btn-success.mt-3(href=l("/my-account/billing/enable-auto-renew"))= t("Enable Auto-Renew")
       .col-12.d-flex(class=user.plan === "free" ? "" : "col-lg-6")
         .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
           h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))

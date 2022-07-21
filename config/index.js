@@ -59,6 +59,7 @@ const config = {
   // app
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
   email: {
+    subjectPrefix: `${env.APP_NAME} – `,
     message: {
       from: env.EMAIL_DEFAULT_FROM
     },

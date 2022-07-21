@@ -31,7 +31,12 @@ async function mapper(id) {
   if (!payment) throw new Error('Payment does not exist');
 
   // if the receipt was sent somehow already then ignore it
-  if (_.isDate(payment.receipt_sent_at)) {
+  if (payment.amount_refunded > 0 && _.isDate(payment.refund_receipt_sent_at)) {
+    logger.info('Payment refund receipt already sent');
+    return;
+  }
+
+  if (payment.amount_refunded === 0 && _.isDate(payment.receipt_sent_at)) {
     logger.info('Payment receipt already sent');
     return;
   }
@@ -69,6 +74,18 @@ async function mapper(id) {
     payment.reference
   }.pdf`;
 
+  const $set = {
+    receipt_sent_at: new Date()
+  };
+
+  let bcc;
+  if (payment.method === 'plan_conversion') {
+    bcc = config.email.message.from;
+  } else if (payment.amount_refunded > 0) {
+    bcc = config.email.message.from;
+    $set.refund_receipt_sent_at = $set.receipt_sent_at;
+  }
+
   // send email
   await email({
     template: 'payment',
@@ -79,6 +96,7 @@ async function mapper(id) {
       ...(user[config.userFields.receiptEmail]
         ? { cc: user[config.userFields.fullEmail] }
         : {}),
+      bcc,
       attachments: [
         {
           filename,
@@ -93,24 +111,37 @@ async function mapper(id) {
     }
   });
 
-  await Payments.findByIdAndUpdate(payment._id, {
-    $set: {
-      receipt_sent_at: new Date()
-    }
-  });
+  await Payments.findByIdAndUpdate(payment._id, { $set });
 }
 
 (async () => {
   await mongoose.connect();
 
   const ids = await Payments.distinct('_id', {
-    // within the past 24 hours
-    invoice_at: {
-      $gte: dayjs().subtract(24, 'hour').toDate()
-    },
-    receipt_sent_at: {
-      $exists: false
-    }
+    $or: [
+      {
+        // within the past 24 hours
+        invoice_at: {
+          $gte: dayjs().subtract(24, 'hour').toDate()
+        },
+        receipt_sent_at: {
+          $exists: false
+        }
+      },
+      {
+        // has a refund and hasn't yet received refund receipt email
+        amount_refunded: {
+          $gt: 0
+        },
+        refund_receipt_sent_at: {
+          $exists: false
+        },
+        // and it's not the free_beta_program method or a plan_conversion
+        method: {
+          $nin: ['free_beta_program', 'plan_conversion']
+        }
+      }
+    ]
   });
   await pMapSeries(ids, mapper);
 

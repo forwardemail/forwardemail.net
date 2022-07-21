@@ -33,11 +33,11 @@ In no event shall Forward Email or its suppliers be liable for any damages (incl
 
 ## Refunds
 
-We offer a 30-day money back guarantee on all paid plans if you are not satisfied with our service.
+Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
 
-We do not ask any questions and simply process the refund within 5-7 business days.
+We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
 
-To request a refund, please send an email from the email address verified on your account to: <refunds@forwardemail.net>
+Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
 
 
 ## Service Level Agreement ("SLA")

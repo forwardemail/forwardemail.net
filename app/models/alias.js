@@ -328,7 +328,7 @@ Alias.pre('save', async function (next) {
 
       // if user is not admin of the domain and it is a global domain
       // then the user can only have up to 5 aliases at a time on the domain
-      if (domain.is_global && !alias._wasNew) {
+      if (domain.is_global && !alias.isNew) {
         const aliasCount = await alias.constructor.countDocuments({
           user: user._id,
           domain: domain._id,

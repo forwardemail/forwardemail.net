@@ -1,4 +1,5 @@
 const pMapSeries = require('p-map-series');
+const parseErr = require('parse-err');
 
 const emailHelper = require('#helpers/email');
 const Payments = require('#models/payment');
@@ -36,12 +37,13 @@ async function mapper(id) {
   )
     shouldSave = true;
 
-  //
-  // NOTE: right now we don't do partial refunds on Stripe nor paypal
-  //       so it is safe to assume that if we have a refund it's the full amount
-  //       otherwise we'd have ot use `response.body.purchase_units[0].payments.refunds[x].amount[y].value`
-  //
-  // if there were any refunds then we need to aggregate them
+  if (
+    new Date(payment.invoice_at).getTime() !==
+    new Date(response.body.create_time).getTime()
+  ) {
+    shouldSave = true;
+  }
+
   let amountRefunded = 0;
   if (capture.status === 'REFUNDED') {
     amountRefunded = payment.amount;
@@ -51,25 +53,12 @@ async function mapper(id) {
       capture
     });
   } else if (capture.status === 'PARTIALLY_REFUNDED') {
-    // NOTE: we do not support partial refunds right now
-    logger.info('partially refunded', { payment, capture });
-    // email admins here since we're not supposed to do this
-    emailHelper({
-      template: 'alert',
-      message: {
-        to: config.email.message.from,
-        subject: 'Partial PayPal Order Refund Detected'
-      },
-      locals: {
-        message: `We should not be giving partial refunds because our logic does not check for it.  The body response was: <pre><code>${JSON.stringify(
-          response.body,
-          null,
-          2
-        )}</code></pre>`
-      }
-    })
-      .then()
-      .catch((err) => logger.error(err));
+    // lookup the refund and parse the amount refunded
+    const agent = await paypalAgent();
+    const { body: refund } = await agent.get(
+      `/v2/payments/refunds/${capture.id}`
+    );
+    amountRefunded = Math.round(Number(refund.amount.value) * 100);
   }
 
   if (payment.amount_refunded !== amountRefunded) shouldSave = true;
@@ -77,6 +66,7 @@ async function mapper(id) {
   if (shouldSave) {
     payment.paypal_transaction_id = capture.id;
     payment.amount_refunded = amountRefunded;
+    payment.invoice_at = new Date(response.body.create_time);
     await payment.save();
   }
 }
@@ -114,7 +104,11 @@ async function syncPayPalOrderPayments() {
         subject: 'Sync PayPal Orders had an error'
       },
       locals: {
-        message: err.message
+        message: `<pre><code>${JSON.stringify(
+          parseErr(err),
+          null,
+          2
+        )}</code></pre>`
       }
     });
   }

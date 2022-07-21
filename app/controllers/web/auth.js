@@ -6,6 +6,7 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const qrcode = require('qrcode');
 const sanitizeHtml = require('sanitize-html');
+const titleize = require('titleize');
 const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
@@ -141,7 +142,7 @@ async function login(ctx, next) {
 
         if (!user) {
           if (info) throw info;
-          throw ctx.translateError('UNKNOWN_ERROR');
+          throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
         }
 
         // redirect user to their last locale they were using
@@ -298,7 +299,16 @@ async function recoveryKey(ctx) {
     type === 'warning' ? 'OTP_RECOVERY_RESET' : 'OTP_RECOVERY_SUCCESS'
   );
   if (ctx.accepts('html')) {
-    ctx.flash(type, message);
+    ctx.flash('custom', {
+      title: ctx.request.t(titleize(type)),
+      text: message,
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
+
     ctx.redirect(redirectTo);
   } else {
     ctx.body = {
@@ -606,7 +616,15 @@ async function verify(ctx) {
     !ctx.state.user[config.userFields.pendingRecovery]
   ) {
     const message = ctx.translate('EMAIL_ALREADY_VERIFIED');
-    ctx.flash('success', message);
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: message,
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 10000,
+      position: 'top'
+    });
     if (ctx.accepts('html')) {
       ctx.redirect(redirectTo);
     } else {
@@ -678,7 +696,15 @@ async function verify(ctx) {
       return;
     }
 
-    ctx.flash('success', message);
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: message,
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 10000,
+      position: 'top'
+    });
   }
 
   // if it's a GET request then render the page
@@ -731,7 +757,17 @@ async function verify(ctx) {
     : ctx.translate('EMAIL_VERIFICATION_SUCCESS');
 
   redirectTo = pendingRecovery ? '/logout' : redirectTo;
-  ctx.flash('success', message);
+
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: message,
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
+
   if (ctx.accepts('html')) {
     ctx.redirect(redirectTo);
   } else {

@@ -21,7 +21,8 @@ block append scripts
     script.
       window.USER_PLAN = "#{ctx.query.plan}";
 
-  if dayjs(user[config.userFields.planExpiresAt]).isAfter(dayjs())
+  //- this is equivalent to isEnableAutoRenew (but in pug you can't define variables twice and variables can't be shared between blocks)
+  if ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew" && dayjs(user[config.userFields.planExpiresAt]).isAfter(dayjs())
     script.
       window.PLAN_EXPIRES_AT = "#{new Date(user[config.userFields.planExpiresAt]).toISOString()}";
 
@@ -84,6 +85,14 @@ block body
               else
                 != t('Upgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
           .card-body
+            if !isMakePayment && !isEnableAutoRenew
+              if user.plan !== 'free' && user.plan !== ctx.query.plan
+                //-
+                //- if the user was within 30 days of their plan_set_at
+                //- then inform them that they will be getting a full refund
+                //-
+                if paymentCount === 0 && paymentIds.length > 0 && dayjs().isBefore(dayjs(user[config.userFields.planSetAt]).add(30, 'days'))
+                  .alert.alert-success.small!= t("Don't worry &ndash; we'll automatically refund previous payments.")
             - const hasPlanExpired = new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
             - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
             if isMakePayment && hasSubscription && !hasPlanExpired
@@ -106,7 +115,7 @@ block body
                 != t('Your account is <strong class="notranslate">%s</strong> past due.', str)
             if isEnableAutoRenew && !hasPlanExpired
               .alert.alert-primary!= t('Don\'t worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).format('M/D/YY'))
-            form#form-billing(action=ctx.path, method="POST")
+            form#form-billing(action=ctx.path, method="POST", autocomplete="off")
               input(type="hidden", name="_csrf", value=_csrf)
 
               if !isMakePayment && !isEnableAutoRenew

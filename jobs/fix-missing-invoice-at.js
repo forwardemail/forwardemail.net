@@ -155,6 +155,7 @@ async function mapper(id) {
         throw err;
       }
 
+      // NOTE: this should actually be body.start_time
       if (!body.create_time) {
         const err = new Error('Body create time missing');
         err.body = JSON.stringify(body, null, 2);

@@ -861,9 +861,13 @@ async function ensureUserHasValidPlan(user, locale) {
 
   logger.error('Member did not have valid plan', { errors });
 
-  if (errors.length === 1) throw Boom.badRequest(errors[0].message);
+  if (errors.length === 1) {
+    const err = Boom.badRequest(errors[0].message);
+    err.no_email = true;
+    throw err;
+  }
 
-  throw Boom.badRequest(`
+  const err = Boom.badRequest(`
     <p class="font-weight-bold text-danger">${i18n.translate(
       'ERRORS_OCCURRED',
       locale
@@ -872,6 +876,8 @@ async function ensureUserHasValidPlan(user, locale) {
       .map((e) => e.message)
       .join('</li><li>')}</li><ul>
   `);
+  err.no_email = true;
+  throw err;
 }
 
 Domain.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;

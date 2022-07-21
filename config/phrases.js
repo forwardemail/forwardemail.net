@@ -51,7 +51,7 @@ module.exports = {
     'Your email address has been successfully verified.',
   EMAIL_ALREADY_VERIFIED: 'Your email address is already verified.',
   EMAIL_VERIFICATION_SENT:
-    'A verification code has been sent to your email address. Please verify your account within 7 days or it will be automatically deleted.',
+    'A verification code has been sent to your email address.',
   EMAIL_VERIFICATION_EXPIRED:
     'Your current email verification code has expired and we have sent a new one to your email address.',
   INVALID_OTP_PASSCODE: 'Invalid two-factor authentication passcode.',
@@ -229,6 +229,8 @@ module.exports = {
   MAKE_PAYMENT: 'Make Payment',
   DOMAIN_PLAN_UPGRADE_REQUIRED:
     'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan. Please <a class="font-weight-bold" href="%s">upgrade your account</a> to this plan to continue.',
+  DOMAIN_PLAN_DOWNGRADE_REQUIRED:
+    'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan. Please <a class="font-weight-bold" href="%s">downgrade this domain</a> to continue.',
   MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED:
     'Domain name <span class="notranslate">%s</span> has a potentially malicious domain name extension and must have at least one admin that is signed up for a paid plan. Please <a class="font-weight-bold" href="%s">upgrade your account</a> to a paid plan to continue.',
   UPGRADE: 'Upgrade',
@@ -242,9 +244,15 @@ module.exports = {
     'You do not currently have an active subscription, or it was recently cancelled.',
   SUBSCRIPTION_CANCELLED: 'You have successfully cancelled your subscription.',
   ONE_TIME_PAYMENT_SUCCESSFUL: 'You have successfully made a one-time payment.',
-  REFUND_PROCESSING:
-    'We will manually process your pro-rated refund in the amount of <span class="notranslate">%s USD</span> and email you when complete.',
   CAPTCHA_SERVICE_ERROR: 'Captcha service error.',
+  REFUND_ERROR_OCCURRED:
+    'An error occurred while processing refunds. We have been notified by email.',
+  REFUND_SUCCESSFUL:
+    'We have successfully processed a total refunded amount of <span class="notranslate">%s</span>.',
+  CONVERSION_ERROR_OCCURRED:
+    'An error occurred while converting your existing credit between plans. We have been notified by email.',
+  CONVERSION_SUCCESS:
+    'You successfully switched plans and received a conversion credit of <span class="notranslate">%s</span>.',
   CAPTCHA_NOT_VERIFIED: 'Captcha not verified.',
   MISSING_VERIFICATION_LINK:
     'Missing "VERIFICATION_LINK" in HTML template string.  This variable must be included at least once either in text or link format.',

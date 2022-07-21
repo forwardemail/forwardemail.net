@@ -28,16 +28,17 @@ block content
                 p.card-text: strong= t("Don't worry! Your account is still active.")
                 p.card-text.mb-0!= t('Your plan expires on <span class="text-danger font-weight-bold notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).format('M/D/YY'))
               ul.list-inline.text-center.mb-0
-                li.list-inline-item.mt-3
-                  a.btn.btn-md.btn-danger(href=`${config.urls.web}/${locale}/my-account/billing/make-payment`)= t("Make Payment")
-                if isSANB(user[config.userFields.stripeSubscriptionID])
-                  li.list-inline-item.mt-3
-                    a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Card')
                 if !isSANB(user[config.userFields.stripeSubscriptionID]) && !isSANB(user[config.userFields.paypalSubscriptionID])
                   li.list-inline-item.mt-3
-                    a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)= t("Enable Auto-Renew")
+                    a.btn.btn-md.btn-danger(href=`${config.urls.web}/${locale}/my-account/billing/make-payment`)= t("Make Payment")
+                if isSANB(user[config.userFields.stripeSubscriptionID])
+                  li.list-inline-item.mt-3
+                    a.btn.btn-md.btn-primary(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Payment Method')
+                if !isSANB(user[config.userFields.stripeSubscriptionID]) && !isSANB(user[config.userFields.paypalSubscriptionID])
+                  li.list-inline-item.mt-3
+                    a.btn.btn-md.btn-success(href=`${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)= t("Enable Auto-Renew")
                 li.list-inline-item.mt-3
-                  a.btn.btn-md.btn-primary(href=`${config.urls.web}/${locale}/my-account/billing`)= t("Manage Billing")
+                  a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing`)= t("Manage Billing")
             include ../_account-summary
 
           .card-footer.text-center.small.text-muted

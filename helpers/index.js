@@ -10,6 +10,7 @@ const sendVerificationEmail = require('./send-verification-email');
 const toObject = require('./to-object');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
 const { paypalAgent, paypal } = require('./paypal');
+const refund = require('./refund');
 
 module.exports = {
   email,
@@ -25,5 +26,6 @@ module.exports = {
   encrypt,
   decrypt,
   paypalAgent,
-  paypal
+  paypal,
+  refund
 };
