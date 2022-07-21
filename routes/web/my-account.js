@@ -30,7 +30,11 @@ router
   .get('/', (ctx) => {
     ctx.redirect(ctx.state.l('/my-account/domains'));
   })
-  .delete('/', web.myAccount.remove)
+  .delete(
+    '/',
+    web.myAccount.setConversionAndRefundStateHelpers,
+    web.myAccount.remove
+  )
   .get(
     '/billing',
     web.myAccount.retrieveBilling,

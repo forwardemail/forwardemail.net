@@ -2,7 +2,6 @@ const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const accounting = require('accounting');
-const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
 
@@ -11,7 +10,7 @@ const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const refundHelper = require('#helpers/refund');
-const { Domains, Aliases, Payments } = require('#models');
+const { Domains, Aliases } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
@@ -32,23 +31,15 @@ async function remove(ctx) {
   });
 
   // handle refunds
-  const paymentIds = await Payments.distinct('_id', {
-    user: ctx.state.user._id,
-    plan: ctx.state.user.plan,
-    invoice_at: {
-      $gte: ctx.state.user[config.userFields.planSetAt],
-      $lte: dayjs(ctx.state.user[config.userFields.planSetAt])
-        .add(30, 'days')
-        .toDate()
-    }
-  });
-
-  if (paymentIds.length > 0) {
+  if (ctx.state.paymentIds.length > 0) {
     //
     // this helper function will simply return early if the payment was already refunded
     // note that we iterate in series due to PayPal API rate limitations
     //
-    const refundedPayments = await pMapSeries(paymentIds, refundHelper);
+    const refundedPayments = await pMapSeries(
+      ctx.state.paymentIds,
+      refundHelper
+    );
 
     // flash a message with a total of how much was refunded
     ctx.flash(
