@@ -3,17 +3,20 @@ const Stripe = require('stripe');
 const _ = require('lodash');
 const accounting = require('accounting');
 const dayjs = require('dayjs-with-plugins');
+const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
+const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const striptags = require('striptags');
 
-const env = require('#config/env');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
-const { paypalAgent } = require('#helpers/paypal');
+const env = require('#config/env');
 const logger = require('#helpers/logger');
+const refundHelper = require('#helpers/refund');
 const { Domains, Payments } = require('#models');
+const { paypalAgent } = require('#helpers/paypal');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_PLAN_MAPPING } =
   config.payments;
@@ -33,8 +36,10 @@ async function retrieveDomainBilling(ctx) {
       ? '/my-account/billing'
       : `/my-account/domains/${ctx.state.domain.name}`
   );
-  const originalPlanExpiresAt = ctx.state.user[config.userFields.planExpiresAt];
-  const originalPlan = ctx.state.user.plan;
+  const originalPlanSetAt = new Date(
+    ctx.state.user[config.userFields.planSetAt]
+  );
+  const originalPlan = `${ctx.state.user.plan}`;
 
   if (isMakePayment)
     if (ctx.state.user.plan === 'free')
@@ -151,6 +156,9 @@ async function retrieveDomainBilling(ctx) {
 
     let domain;
     if (!isAccountUpgrade && !isMakePayment && !isEnableAutoRenew) {
+      if (!ctx.state.domain)
+        throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+
       domain = await Domains.findById(ctx.state.domain._id);
 
       if (!domain)
@@ -236,19 +244,26 @@ async function retrieveDomainBilling(ctx) {
         if (!isValid)
           errors.push(
             ctx.translateError(
-              'DOMAIN_PLAN_UPGRADE_REQUIRED',
+              'DOMAIN_PLAN_DOWNGRADE_REQUIRED',
               domain.name,
               ctx.translate(domain.plan.toUpperCase()),
-              ctx.state.l(
-                `/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
-              )
+              ctx.query.plan === 'free'
+                ? ctx.state.l(
+                    `/my-account/domains/${domain.name}/billing?plan=free`
+                  )
+                : ctx.state.l(`/my-account/domains/${domain.name}/billing`)
             )
           );
       }
 
       if (errors.length > 0) {
-        if (errors.length === 1) throw Boom.badRequest(errors[0].message);
-        throw Boom.badRequest(`
+        if (errors.length === 1) {
+          const err = Boom.badRequest(errors[0].message);
+          err.no_email = true;
+          throw err;
+        }
+
+        const err = Boom.badRequest(`
           <p class="font-weight-bold text-danger">${ctx.translate(
             'ERRORS_OCCURRED'
           )}</p>
@@ -256,6 +271,8 @@ async function retrieveDomainBilling(ctx) {
             .map((e) => e.message)
             .join('</li><li>')}</li><ul>
         `);
+        err.no_email = true;
+        throw err;
       }
     }
 
@@ -274,6 +291,49 @@ async function retrieveDomainBilling(ctx) {
         (ctx.query.plan === 'enhanced_protection' &&
           !['team', 'enhanced_protection'].includes(ctx.state.user.plan)))
     ) {
+      //
+      // if the user is switching between plans and had conversion credit
+      // then automatically convert the user and give them the free credit
+      // (but not if we were going to give them a full refund)
+      //
+      if (
+        isAccountUpgrade &&
+        originalPlan !== ctx.query.plan &&
+        ctx.state.conversion[ctx.query.plan].length > 0 &&
+        (ctx.state.paymentCount !== 0 || ctx.state.paymentIds.length === 0)
+      ) {
+        const now = new Date();
+        ctx.state.user.plan = ctx.query.plan;
+        await Domains.ensureUserHasValidPlan(ctx.state.user, ctx.locale);
+        ctx.state.user[config.userFields.planSetAt] = now;
+        // initial save to lock user (prevent duplicate free credits)
+        await ctx.state.user.save();
+        await Payments.create(
+          ctx.state.conversion[ctx.query.plan].map((payment) => ({
+            ...payment,
+            invoice_at: now
+          }))
+        );
+        ctx.flash(
+          'success',
+          ctx.translate(
+            'CONVERSION_SUCCESS',
+            dayjs()
+              .add(
+                _.sumBy(ctx.state.conversion[ctx.query.plan], 'duration'),
+                'ms'
+              )
+              .locale(ctx.locale)
+              .fromNow(true)
+          )
+        );
+        // final save to update expiration date
+        await ctx.state.user.save();
+        if (ctx.accepts('html')) ctx.redirect(redirectTo);
+        else ctx.body = { redirectTo };
+        return;
+      }
+
       ctx.state.breadcrumbHeaderCentered = true;
       if (isAccountUpgrade) {
         ctx.state.breadcrumbs.pop();
@@ -497,7 +557,13 @@ async function retrieveDomainBilling(ctx) {
               ? `Error retrieving Stripe Payment Method ID ${paymentIntent.payment_method} for ${ctx.state.user.email}`
               : `Stripe Payment Intent/Method Error for ${ctx.state.user.email}`
           },
-          locals: { message: err.message }
+          locals: {
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
+          }
         })
           .then()
           .catch((err) => ctx.logger.fatal(err));
@@ -540,7 +606,13 @@ async function retrieveDomainBilling(ctx) {
                   ctx.state.user[config.userFields.stripeSubscriptionID]
                 } for ${ctx.state.user.email}`
               },
-              locals: { message: err.message }
+              locals: {
+                message: `<pre><code>${JSON.stringify(
+                  parseErr(err),
+                  null,
+                  2
+                )}</code></pre>`
+              }
             })
               .then()
               .catch((err) => ctx.logger.fatal(err));
@@ -620,7 +692,13 @@ async function retrieveDomainBilling(ctx) {
               to: config.email.message.from,
               subject: `Error retrieving/creating stripe payment for ${ctx.state.user.email}`
             },
-            locals: { message: err.message }
+            locals: {
+              message: `<pre><code>${JSON.stringify(
+                parseErr(err),
+                null,
+                2
+              )}</code></pre>`
+            }
           })
             .then()
             .catch((err) => ctx.logger.fatal(err));
@@ -639,7 +717,13 @@ async function retrieveDomainBilling(ctx) {
             to: config.email.message.from,
             subject: `Error saving user for ${ctx.state.user.email}`
           },
-          locals: { message: err.message }
+          locals: {
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
+          }
         })
           .then()
           .catch((err) => ctx.logger.fatal(err));
@@ -704,7 +788,13 @@ async function retrieveDomainBilling(ctx) {
                 ctx.state.user[config.userFields.paypalSubscriptionID]
               } for ${ctx.state.user.email}`
             },
-            locals: { message: err.message }
+            locals: {
+              message: `<pre><code>${JSON.stringify(
+                parseErr(err),
+                null,
+                2
+              )}</code></pre>`
+            }
           })
             .then()
             .catch((err) => ctx.logger.fatal(err));
@@ -755,13 +845,7 @@ async function retrieveDomainBilling(ctx) {
         throw ctx.translateError('UNKNOWN_ERROR');
 
       let now = new Date();
-      if (body.create_time) {
-        now = new Date(body.create_time);
-      } else if (
-        body?.purchase_units?.[0]?.payments?.captures?.[0]?.create_time
-      ) {
-        now = new Date(body.purchase_units[0].payments.captures[0].create_time);
-      }
+      if (body.create_time) now = new Date(body.create_time);
 
       if (!_.isDate(now)) now = new Date();
 
@@ -864,7 +948,13 @@ async function retrieveDomainBilling(ctx) {
             to: config.email.message.from,
             subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
           },
-          locals: { message: err.message }
+          locals: {
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
+          }
         })
           .then()
           .catch((err) => ctx.logger.fatal(err));
@@ -882,7 +972,13 @@ async function retrieveDomainBilling(ctx) {
             to: config.email.message.from,
             subject: `Error saving user for ${ctx.state.user.email}`
           },
-          locals: { message: err.message }
+          locals: {
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
+          }
         })
           .then()
           .catch((err) => ctx.logger.fatal(err));
@@ -933,7 +1029,13 @@ async function retrieveDomainBilling(ctx) {
                 ctx.state.user[config.userFields.paypalSubscriptionID]
               } for ${ctx.state.user.email}`
             },
-            locals: { message: err.message }
+            locals: {
+              message: `<pre><code>${JSON.stringify(
+                parseErr(err),
+                null,
+                2
+              )}</code></pre>`
+            }
           })
             .then()
             .catch((err) => ctx.logger.fatal(err));
@@ -966,12 +1068,8 @@ async function retrieveDomainBilling(ctx) {
 
       // get the date
       let now = new Date();
-      if (body.create_time) {
-        now = new Date(body.create_time);
-      } else if (
-        body?.purchase_units?.[0]?.payments?.captures?.[0]?.create_time
-      ) {
-        now = new Date(body.purchase_units[0].payments.captures[0].create_time);
+      if (body.start_time) {
+        now = new Date(body.start_time);
       }
 
       if (!_.isDate(now)) now = new Date();
@@ -992,6 +1090,7 @@ async function retrieveDomainBilling(ctx) {
         _.isObject(body.billing_info.last_payment) &&
         _.isObject(body.billing_info.last_payment.amount) &&
         body.billing_info.last_payment.amount.value;
+
       if (hasPayment) {
         try {
           // parse the amount for later
@@ -1000,13 +1099,56 @@ async function retrieveDomainBilling(ctx) {
             throw ctx.translateError('UNKNOWN_ERROR');
 
           //
+          // NOTE: we NEED to have this artificial delay here because
+          //       PayPal yet again has issues with their API...
+          //
+          // artificial delay since it seems that PayPal doesn't
+          // instantly create transactions for a subscription
+          // - 5s was tested and was too fast
+          // - 10s was tested and was too fast
+          // - 25s was tested and worked but was too slow
+          // - and 15s was tested and worked (seemingly) reliably
+          // (if we have anything more than 15-20s it seems we may get Timeout error)
+          //
+          await delay(ms('15s'));
+
+          // attempt to lookup the transactions
+          let transactionId;
+          const agent = await paypalAgent();
+          const { body: { transactions } = {} } = await agent.get(
+            `/v1/billing/subscriptions/${
+              body.id
+            }/transactions?start_time=${dayjs()
+              .subtract(1, 'day')
+              .toDate()
+              .toISOString()}&end_time=${dayjs()
+              .add(1, 'day')
+              .toDate()
+              .toISOString()}`
+          );
+
+          if (Array.isArray(transactions) && transactions.length > 0) {
+            transactionId = transactions[0].id;
+            if (_.isDate(new Date(transactions[0].time)))
+              now = new Date(transactions[0].time);
+          }
+
+          //
           // NOTE: we don't want to re-create the payment if the paypal webhook already did
           //
-          let payment = await Payments.findOne({
-            user: ctx.state.user._id,
-            paypal_subscription_id: body.id,
-            invoice_at: now
-          });
+          const $or = [
+            {
+              user: ctx.state.user._id,
+              paypal_subscription_id: body.id,
+              invoice_at: now
+            }
+          ];
+          if (transactionId)
+            $or.push({
+              user: ctx.state.user._id,
+              paypal_transaction_id: transactionId
+            });
+          let payment = await Payments.findOne({ $or });
           if (payment) {
             ctx.logger.info('paypal payment existed', { payment });
           } else {
@@ -1019,14 +1161,7 @@ async function retrieveDomainBilling(ctx) {
               plan: ctx.query.plan,
               kind: 'subscription',
               paypal_subscription_id: body.id,
-              //
-              // NOTE: there is no way to get the `paypal_transaction_id`
-              //       because the PayPal API response does not include it
-              //       and when you search for transactions from a subscription
-              //       (even if you include start_time in the query in the past)
-              //       it will not return any results, and transactions will be empty
-              //       (and we don't want to do an artificial delay here just to populate date)
-              //
+              paypal_transaction_id: transactionId,
               invoice_at: now
             });
             // log the payment just for sanity
@@ -1041,7 +1176,13 @@ async function retrieveDomainBilling(ctx) {
               to: config.email.message.from,
               subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
             },
-            locals: { message: err.message }
+            locals: {
+              message: `<pre><code>${JSON.stringify(
+                parseErr(err),
+                null,
+                2
+              )}</code></pre>`
+            }
           })
             .then()
             .catch((err) => ctx.logger.fatal(err));
@@ -1060,7 +1201,13 @@ async function retrieveDomainBilling(ctx) {
             to: config.email.message.from,
             subject: `Error saving user for ${ctx.state.user.email}`
           },
-          locals: { message: err.message }
+          locals: {
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
+          }
         })
           .then()
           .catch((err) => ctx.logger.fatal(err));
@@ -1118,7 +1265,13 @@ async function retrieveDomainBilling(ctx) {
                 ctx.state.user[config.userFields.stripeSubscriptionID]
               } for ${ctx.state.user.email}`
             },
-            locals: { message: err.message }
+            locals: {
+              message: `<pre><code>${JSON.stringify(
+                parseErr(err),
+                null,
+                2
+              )}</code></pre>`
+            }
           })
             .then()
             .catch((err) => ctx.logger.fatal(err));
@@ -1203,7 +1356,13 @@ async function retrieveDomainBilling(ctx) {
                       ctx.state.user[config.userFields.stripeSubscriptionID]
                     } for ${ctx.state.user.email}`
                   },
-                  locals: { message: err.message }
+                  locals: {
+                    message: `<pre><code>${JSON.stringify(
+                      parseErr(err),
+                      null,
+                      2
+                    )}</code></pre>`
+                  }
                 })
                   .then()
                   .catch((err) => ctx.logger.fatal(err));
@@ -1231,7 +1390,13 @@ async function retrieveDomainBilling(ctx) {
                       ctx.state.user[config.userFields.paypalSubscriptionID]
                     } for ${ctx.state.user.email}`
                   },
-                  locals: { message: err.message }
+                  locals: {
+                    message: `<pre><code>${JSON.stringify(
+                      parseErr(err),
+                      null,
+                      2
+                    )}</code></pre>`
+                  }
                 })
                   .then()
                   .catch((err) => ctx.logger.fatal(err));
@@ -1251,39 +1416,139 @@ async function retrieveDomainBilling(ctx) {
         : ctx.translate(`${ctx.query.plan.toUpperCase()}_PLAN`)
     );
 
-    // pro-rated refund manual email if necessary based off:
-    // `originalPlanExpiresAt` (if it was a valid date)
-    // `originalPlan` (if it swapped between team <-> enhanced_protection
-    // (do things that don't scale)
+    //
+    // if the user switched plans and were not originally on the free plan then
+    // refund the user's last payment completely if it was within 30 days from their plan start date
+    //
     if (
       isAccountUpgrade &&
-      !isEnableAutoRenew &&
-      !isMakePayment &&
-      _.isDate(originalPlanExpiresAt) &&
+      originalPlan !== 'free' &&
       ctx.query.plan !== originalPlan &&
-      originalPlan !== 'free'
+      dayjs().isBefore(dayjs(originalPlanSetAt).add(30, 'days')) &&
+      ctx.state.paymentCount === 0 &&
+      ctx.state.paymentIds.length > 0
     ) {
-      // get the total number of days that need pro-rated (if negative then none)
-      // (note that we add one day as a buffer to ensure they get a full refund)
-      const diff = dayjs(originalPlanExpiresAt).diff(new Date(), 'days') + 1;
-      if (diff > 0) {
-        const cost = originalPlan === 'team' ? 9 : 3;
-        const amount = Number(accounting.toFixed((cost / 30) * diff, 2));
-        const message = ctx.translate(
-          'REFUND_PROCESSING',
-          accounting.formatMoney(amount)
+      //
+      // refund all payments that the user made
+      // on both stripe and/or paypal
+      // (find all payments that have invoice_at >= original_plan_set_at)
+      // (and invoice_at <= original_plan_set_at + 30 days)
+      // (and that were of the same original plan)
+      //
+      // if the user had any payments in the past before original_plan_set_at
+      // then we can assume that they're not a first-time customer (and this does not apply)
+      //
+      try {
+        //
+        // this helper function will simply return early if the payment was already refunded
+        // note that we iterate in series due to PayPal API rate limitations
+        //
+        const refundedPayments = await pMapSeries(
+          ctx.state.paymentIds,
+          refundHelper
         );
-        ctx.logger.info('refund', { diff, cost, amount, message });
-        if (ctx.accepts('html')) ctx.flash('info', message);
+
+        // flash a message with a total of how much was refunded
+        ctx.flash(
+          'success',
+          ctx.translate(
+            'REFUND_SUCCESSFUL',
+            accounting.formatMoney(
+              Math.round(_.sumBy(refundedPayments, 'amount_refunded') / 100)
+            )
+          )
+        );
+
+        //
+        // users will automatically get PDF receipts in the background
+        // (thanks to the logic in `jobs/payment-email.js` to detect refunds)
+        // (note that we BCC support@ inbox in order to monitor refund abusers)
+        //
+      } catch (err) {
+        ctx.logger.fatal(err);
+        // flash an error message to users that
+        // an error occurred while refunding payments
+        // and we will follow-up by email
+        ctx.flash('error', ctx.translate('REFUND_ERROR_OCCURRED'));
         // email admins here (in the background)
         emailHelper({
           template: 'alert',
           message: {
             to: config.email.message.from,
-            subject: 'A Customer Needs Refunded!'
+            subject: `A refund error occurred for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<p><strong>${ctx.state.user.email}</strong> just checked out with the "${ctx.query.plan}" plan and was on the "${originalPlan}" plan: ${message}`
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
+          }
+        })
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      }
+    }
+    //
+    // NOTE: we render to users in advance the amount of credit users will get awarded
+    //       when they switch between Enhanced Protection and Team plans
+    //       (that way they don't think they need to pay for another 2 years for example)
+    //
+    // NOTE: issue new credit to the closest duration or zero
+    //       based off the conversion between the paid plans amounts
+    //       (we will already handle full refunds if in 30 days above)
+    //
+    // NOTE: we need this here in case when we deploy anyone was going through checkout
+    //
+    else if (
+      isAccountUpgrade &&
+      originalPlan !== 'free' &&
+      ctx.query.plan !== 'free' &&
+      originalPlan !== ctx.query.plan &&
+      ctx.state.conversion[ctx.query.plan].length > 0
+    ) {
+      try {
+        const now = new Date();
+        await Payments.create(
+          ctx.state.conversion[ctx.query.plan].map((payment) => ({
+            ...payment,
+            invoice_at: now
+          }))
+        );
+        ctx.flash(
+          'success',
+          ctx.translate(
+            'CONVERSION_SUCCESS',
+            dayjs()
+              .add(
+                _.sumBy(ctx.state.conversion[ctx.query.plan], 'duration'),
+                'ms'
+              )
+              .locale(ctx.locale)
+              .fromNow(true)
+          )
+        );
+        await ctx.state.user.save();
+      } catch (err) {
+        ctx.logger.fatal(err);
+
+        // flash an error message to users that
+        // an error occurred while refunding payments
+        // and we will follow-up by email
+        ctx.flash('error', ctx.translate('CONVERSION_ERROR_OCCURRED'));
+        // email admins here (in the background)
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `A refund error occurred for ${ctx.state.user.email}`
+          },
+          locals: {
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
           }
         })
           .then()
@@ -1332,18 +1597,20 @@ async function retrieveDomainBilling(ctx) {
     ctx.logger.fatal(err);
 
     // email admins here (in the background)
-    emailHelper({
-      template: 'alert',
-      message: {
-        to: config.email.message.from,
-        subject: `An error occurred for ${ctx.state.user.email} on billing`
-      },
-      locals: {
-        message: `<p><strong>URL:</strong> ${ctx.url}</p><p><strong>Error Message:</strong> ${err.message}</p>`
-      }
-    })
-      .then()
-      .catch((err) => ctx.logger.fatal(err));
+    if (!err.no_email) {
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: `An error occurred for ${ctx.state.user.email} on billing`
+        },
+        locals: {
+          message: `<p><strong>URL:</strong> ${ctx.url}</p><p><strong>Error Message:</strong> ${err.message}</p>`
+        }
+      })
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+    }
 
     if (ctx.accepts('html')) {
       ctx.flash('error', err.message);

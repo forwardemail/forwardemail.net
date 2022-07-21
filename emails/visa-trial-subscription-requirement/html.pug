@@ -23,7 +23,7 @@ block content
               ul.list-inline.text-center.mb-0
                 if isSANB(user[config.userFields.stripeSubscriptionID])
                   li.list-inline-item.mt-3
-                    a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Card')
+                    a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Payment Method')
                 li.list-inline-item.mt-3
                   a.btn.btn-md.btn-primary(href=`${config.urls.web}/${locale}/my-account/billing`)= t("Manage Billing")
             include ../_account-summary

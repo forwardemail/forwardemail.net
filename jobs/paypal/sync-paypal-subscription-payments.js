@@ -2,6 +2,7 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
+const parseErr = require('parse-err');
 
 const Payments = require('#models/payment');
 const Users = require('#models/user');
@@ -157,33 +158,20 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
                     10
                   ) * 100;
 
-                // NOTE: this is in cents
                 let amountRefunded = 0;
-
                 // if the transaction was refunded or partially
                 // refunded then we need to check and update it
                 if (transaction.status === 'REFUNDED') {
                   amountRefunded = amount;
                 } else if (transaction.status === 'PARTIALLY_REFUNDED') {
-                  // NOTE: we do not support partial refunds right now
-                  logger.info('partially refunded', { transaction });
-                  // email admins here since we're not supposed to do this
-                  emailHelper({
-                    template: 'alert',
-                    message: {
-                      to: config.email.message.from,
-                      subject: 'Partial PayPal Subscription Refund Detected'
-                    },
-                    locals: {
-                      message: `We should not be giving partial refunds because our logic does not check for it.  The transaction response was: <pre><code>${JSON.stringify(
-                        transaction,
-                        null,
-                        2
-                      )}</code></pre>`
-                    }
-                  })
-                    .then()
-                    .catch((err) => logger.error(err));
+                  // lookup the refund and parse the amount refunded
+                  const agent = await paypalAgent();
+                  const { body: refund } = await agent.get(
+                    `/v2/payments/refunds/${transaction.id}`
+                  );
+                  amountRefunded = Math.round(
+                    Number(refund.amount.value) * 100
+                  );
                 }
 
                 if (payment) {
@@ -197,24 +185,11 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
                   // transaction time is different than invoice_at, which is used for plan expiry calculation
                   // (see jobs/fix-missing-invoice-at.js)
                   if (
-                    new Date(payment.invoice_at).getTime() ===
-                    new Date(payment.created_at).getTime()
+                    new Date(payment.invoice_at).getTime() !==
+                    new Date(transaction.time).getTime()
                   ) {
-                    logger.info(
-                      `changing payment.invoice_at ${payment.invoice_at?.toISOString()} to match transaction or subscription`,
-                      { subscription, transaction }
-                    );
-                    // if the payment's invoice_at was equal to created_at
-                    // then this is a legacy bug and we need to update it
-                    // if the create_time when formatted equals the transaction time
-                    // then use that as it's probably when the subscription was started
-                    payment.invoice_at =
-                      dayjs(new Date(subscription.create_time)).format(
-                        'MM/DD/YYYY'
-                      ) ===
-                      dayjs(new Date(transaction.time)).format('MM/DD/YYYY')
-                        ? new Date(subscription.create_time)
-                        : dayjs(new Date(transaction.time)).toDate();
+                    // if the payment's invoice_at was not equal to transaction time
+                    payment.invoice_at = new Date(transaction.time);
                     shouldSave = true;
                   }
 
@@ -252,7 +227,7 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
                     amount_refunded: amountRefunded,
                     [config.userFields.paypalSubscriptionID]: subscription.id,
                     paypal_transaction_id: transaction.id,
-                    invoice_at: new Date(subscription.create_time)
+                    invoice_at: new Date(transaction.time)
                   };
                   createdCount++;
                   logger.info('creating new payment');
@@ -273,7 +248,13 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
                     to: config.email.message.from,
                     subject: `${customer.email} had an issue syncing a transaction from paypal subscription ${subscriptionId} and transaction ${transaction.id}`
                   },
-                  locals: { message: err.message }
+                  locals: {
+                    message: `<pre><code>${JSON.stringify(
+                      parseErr(err),
+                      null,
+                      2
+                    )}</code></pre>`
+                  }
                 });
 
                 if (errorEmails.length >= errorThreshold) throw thresholdError;
@@ -325,7 +306,13 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
                 to: config.email.message.from,
                 subject: `${customer.email} has an issue syncing all payments from paypal subscription ${subscriptionId} that were not synced by the sync-payment-histories job`
               },
-              locals: { message: err.message }
+              locals: {
+                message: `<pre><code>${JSON.stringify(
+                  parseErr(err),
+                  null,
+                  2
+                )}</code></pre>`
+              }
             });
 
             if (errorEmails.length >= errorThreshold) throw thresholdError;

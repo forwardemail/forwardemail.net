@@ -218,6 +218,7 @@ async function createDomainBilling(ctx) {
         // <https://stackoverflow.com/a/63375898>
         //
         if (
+          isEnableAutoRenew &&
           dayjs(ctx.state.user[config.userFields.planExpiresAt]).isAfter(
             dayjs()
           )

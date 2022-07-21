@@ -55,6 +55,7 @@ const Payment = new mongoose.Schema({
     index: true
   },
   receipt_sent_at: Date,
+  refund_receipt_sent_at: Date,
   amount_formatted: {
     type: String,
     required: true,
@@ -78,6 +79,8 @@ const Payment = new mongoose.Schema({
       'paypal',
       // if we give free credit to users
       'free_beta_program',
+      // if we convert between plans
+      'plan_conversion',
       // when stripe's payment.type === 'card'
       'amex',
       'diners',
@@ -174,6 +177,9 @@ Payment.virtual('description').get(function () {
 });
 
 async function getUniqueReference(payment) {
+  // if the payment was not new then return early
+  if (!payment.isNew) return payment.reference;
+
   const count = await payment.constructor.countDocuments({
     _id: { $ne: payment._id },
     reference: payment.reference

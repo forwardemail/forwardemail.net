@@ -8,6 +8,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
+const parseErr = require('parse-err');
 
 const getAllStripePaymentIntents = require('./get-all-stripe-payment-intents');
 
@@ -65,7 +66,13 @@ async function syncStripePayments({ errorThreshold }) {
           to: config.email.message.from,
           subject: `Problem syncing billing history for ${customer.email} - could not retrieve customer payments`
         },
-        locals: { message: err.message }
+        locals: {
+          message: `<pre><code>${JSON.stringify(
+            parseErr(err),
+            null,
+            2
+          )}</code></pre>`
+        }
       });
 
       if (errorEmails.length >= errorThreshold) throw thresholdError;
@@ -388,7 +395,13 @@ async function syncStripePayments({ errorThreshold }) {
             to: config.email.message.from,
             subject: `Problem syncing billing history for ${customer.email} - payment_intent ${paymentIntent.id}`
           },
-          locals: { message: err.message }
+          locals: {
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
+          }
         });
 
         if (errorEmails.length >= errorThreshold) {
@@ -455,7 +468,9 @@ async function syncStripePayments({ errorThreshold }) {
     try {
       const missed = await Payments.find({
         user: customer._id,
-        method: { $nin: ['unknown', 'paypal', 'free_beta_program'] },
+        method: {
+          $nin: ['unknown', 'paypal', 'free_beta_program', 'plan_conversion']
+        },
         stripe_payment_intent_id: { $exists: false }
       })
         .lean()
@@ -494,7 +509,13 @@ async function syncStripePayments({ errorThreshold }) {
           to: config.email.message.from,
           subject: `${customer.email} has stripe payments that were not synced by the sync-payment-histories job`
         },
-        locals: { message: err.message }
+        locals: {
+          message: `<pre><code>${JSON.stringify(
+            parseErr(err),
+            null,
+            2
+          )}</code></pre>`
+        }
       });
 
       if (errorEmails.length >= errorThreshold) {

@@ -15,6 +15,18 @@ router
   .use(web.breadcrumbs)
   .use(web.myAccount.retrieveDomains)
   .use(web.myAccount.ensurePaidToDate)
+  // don't cache anything
+  // <https://github.com/koa-modules/koa-no-cache/issues/5>
+  .use((ctx, next) => {
+    ctx.set('Surrogate-Control', 'no-store');
+    ctx.set(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, proxy-revalidate'
+    );
+    ctx.set('Pragma', 'no-cache');
+    ctx.set('Expires', '0');
+    return next();
+  })
   .get('/', (ctx) => {
     ctx.redirect(ctx.state.l('/my-account/domains'));
   })
@@ -22,6 +34,7 @@ router
   .get(
     '/billing',
     web.myAccount.retrieveBilling,
+    web.myAccount.setConversionAndRefundStateHelpers,
     paginate.middleware(10, 50),
     web.myAccount.listBilling
   )
@@ -29,6 +42,7 @@ router
     '/billing',
     web.myAccount.cancelSubscription,
     web.myAccount.retrieveBilling,
+    web.myAccount.setConversionAndRefundStateHelpers,
     paginate.middleware(10, 50),
     web.myAccount.listBilling
   )
@@ -49,6 +63,7 @@ router
   .get(
     '/billing/make-payment',
     rateLimit(50, 'retrieve domain billing'),
+    web.myAccount.setConversionAndRefundStateHelpers,
     web.myAccount.retrieveDomainBilling
   )
   .post(
@@ -59,6 +74,7 @@ router
   .get(
     '/billing/enable-auto-renew',
     rateLimit(50, 'retrieve domain billing'),
+    web.myAccount.setConversionAndRefundStateHelpers,
     web.myAccount.retrieveDomainBilling
   )
   .post(
@@ -69,6 +85,7 @@ router
   .get(
     '/billing/upgrade',
     rateLimit(50, 'retrieve domain billing'),
+    web.myAccount.setConversionAndRefundStateHelpers,
     web.myAccount.retrieveDomainBilling
   )
   .post(
@@ -226,6 +243,7 @@ router
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
     rateLimit(50, 'retrieve domain billing'),
+    web.myAccount.setConversionAndRefundStateHelpers,
     web.myAccount.retrieveDomainBilling
   )
   .post(

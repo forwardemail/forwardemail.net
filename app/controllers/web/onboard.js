@@ -176,7 +176,15 @@ async function onboard(ctx, next) {
     if (!ctx.state.user[config.userFields.hasVerifiedEmail]) {
       try {
         ctx.state.user = await sendVerificationEmail(ctx);
-        ctx.flash('success', ctx.translate('EMAIL_VERIFICATION_SENT'));
+        ctx.flash('custom', {
+          title: ctx.request.t('Success'),
+          text: ctx.translate('EMAIL_VERIFICATION_SENT'),
+          type: 'success',
+          toast: true,
+          showConfirmButton: false,
+          timer: 10000,
+          position: 'top'
+        });
       } catch (err) {
         // if email failed to send then verify the user automatically
         if (err.has_email_failed) {

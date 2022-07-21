@@ -63,7 +63,7 @@ async function getBody(ctx) {
         {
           $match: {
             kind: 'one-time',
-            method: { $nin: ['free_beta_program'] }
+            method: { $nin: ['free_beta_program', 'plan_conversion'] }
           }
         },
         {
@@ -113,7 +113,7 @@ async function getBody(ctx) {
         {
           $match: {
             kind: 'subscription',
-            method: { $nin: ['free_beta_program'] }
+            method: { $nin: ['free_beta_program', 'plan_conversion'] }
           }
         },
         {
@@ -165,7 +165,7 @@ async function getBody(ctx) {
           {
             $match: {
               method: {
-                $nin: ['free_beta_program']
+                $nin: ['free_beta_program', 'plan_conversion']
               }
             }
           },
@@ -188,7 +188,12 @@ async function getBody(ctx) {
           {
             $match: {
               method: {
-                $nin: ['unknown', 'paypal', 'free_beta_program']
+                $nin: [
+                  'unknown',
+                  'paypal',
+                  'free_beta_program',
+                  'plan_conversion'
+                ]
               }
             }
           },

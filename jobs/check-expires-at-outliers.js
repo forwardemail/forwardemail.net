@@ -29,6 +29,7 @@ graceful.listen();
   await mongoose.connect();
 
   const ids = await Users.distinct('_id', {});
+  const arr = [];
 
   async function mapper(id) {
     const user = await Users.findById(id).lean().exec();
@@ -38,11 +39,7 @@ graceful.listen();
       invoice_at: {
         // safeguard in case migration didn't run
         // (note we have another issue for setting `planSetAt` in a user pre-validate hook)
-        $gte: dayjs(new Date(user[config.userFields.planSetAt]))
-          // add a buffer due to second differences in historical `plan_set_at`
-          // with comparison to Stripe/PayPal API's
-          .subtract(1, 'minute')
-          .toDate()
+        $gte: dayjs(new Date(user[config.userFields.planSetAt])).toDate()
       },
       // payments must match the user's current plan
       plan: user.plan
@@ -62,11 +59,13 @@ graceful.listen();
       plan: user.plan
     });
     if (count1 !== count2) {
-      console.log('there is a difference', { count1, count2, user });
+      arr.push(`${user.email} has a difference of ${count2 - count1}`);
     }
   }
 
   await pMap(ids, mapper, { concurrency });
+
+  logger.info('arr', { arr });
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

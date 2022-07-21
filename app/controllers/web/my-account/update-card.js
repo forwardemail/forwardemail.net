@@ -48,7 +48,7 @@ async function redirectToPortal(ctx) {
       ctx.logger.fatal(err);
     }
 
-    throw ctx.translateError('UNKNOWN_ERROR');
+    throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
   }
 }
 
