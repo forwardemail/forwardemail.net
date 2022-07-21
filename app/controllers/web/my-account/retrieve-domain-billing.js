@@ -845,7 +845,13 @@ async function retrieveDomainBilling(ctx) {
         throw ctx.translateError('UNKNOWN_ERROR');
 
       let now = new Date();
-      if (body.create_time) now = new Date(body.create_time);
+      if (body.create_time) {
+        now = new Date(body.create_time);
+      } else if (
+        body?.purchase_units?.[0]?.payments?.captures?.[0]?.create_time
+      ) {
+        now = new Date(body.purchase_units[0].payments.captures[0].create_time);
+      }
 
       if (!_.isDate(now)) now = new Date();
 
