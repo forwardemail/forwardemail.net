@@ -37,9 +37,20 @@ async function mapper(id) {
   )
     shouldSave = true;
 
+  let invoiceAt;
+  if (response.body.create_time) {
+    invoiceAt = new Date(response.body.create_time);
+  } else if (
+    response.body?.purchase_units?.[0]?.payments?.captures?.[0]?.create_time
+  ) {
+    invoiceAt = new Date(
+      response.body.purchase_units[0].payments.captures[0].create_time
+    );
+  }
+
   if (
-    new Date(payment.invoice_at).getTime() !==
-    new Date(response.body.create_time).getTime()
+    invoiceAt &&
+    new Date(payment.invoice_at).getTime() !== invoiceAt.getTime()
   ) {
     shouldSave = true;
   }
@@ -66,7 +77,7 @@ async function mapper(id) {
   if (shouldSave) {
     payment.paypal_transaction_id = capture.id;
     payment.amount_refunded = amountRefunded;
-    payment.invoice_at = new Date(response.body.create_time);
+    if (invoiceAt) payment.invoice_at = invoiceAt;
     await payment.save();
   }
 }
