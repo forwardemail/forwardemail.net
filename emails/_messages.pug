@@ -19,4 +19,4 @@ if user && _.isObject(user) && user.plan !== 'free' && _.isDate(user[config.user
           .alert.alert-warning.small.text-center.rounded-0.mb-0
             != t('Payment due <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow())
             = " "
-            != t('Need to <a class="alert-link" href="%s">enable auto-renew</a>?', `${config.urls.web}/${locale}/my-account/billing/make-payment`, `${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)
+            != t('Need to <a class="alert-link" href="%s">enable auto-renew</a>?', `${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)
