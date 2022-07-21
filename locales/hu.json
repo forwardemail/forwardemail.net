@@ -2654,5 +2654,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "Azonnal <a class=\"alert-link\" href=\"%s\">fizessen</a> vagy <a class=\"alert-link\" href=\"%s\">frissítse a kártyát</a> .",
   "You must make payment to avoid account termination.": "Fizetnie kell a számla megszüntetésének elkerülése érdekében.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "A cég neve <span class=\"notranslate\">%s</span> -ról <span class=\"notranslate\">%s</span> -ra módosult",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Az 1. címsor: <span class=\"notranslate\">%s</span> , új cím: <span class=\"notranslate\">%s</span>"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Az 1. címsor: <span class=\"notranslate\">%s</span> , új cím: <span class=\"notranslate\">%s</span>",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee"
 }

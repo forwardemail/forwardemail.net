@@ -2486,5 +2486,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Maksa</a> tai <a class=\"alert-link\" href=\"%s\">päivitä kortti</a> välittömästi.",
   "You must make payment to avoid account termination.": "Sinun on suoritettava maksu välttääksesi tilin sulkemisen.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Yrityksen nimi on muuttunut <span class=\"notranslate\">%s</span> :sta <span class=\"notranslate\">%s</span>",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Osoiterivi1 on muuttunut <span class=\"notranslate\">%s</span> :sta <span class=\"notranslate\">%s</span> ksi"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Osoiterivi1 on muuttunut <span class=\"notranslate\">%s</span> :sta <span class=\"notranslate\">%s</span> ksi",
+  "A verification code has been sent to your email address.": "A verification code has been sent to your email address."
 }

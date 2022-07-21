@@ -2653,5 +2653,6 @@
   "Currently <strong>your domain is on the free plan</strong>, which means <strong class=\"text-danger\">your forwarding addresses are publicly searchable</strong> over DNS lookups.": "Hiện tại <strong>miền của bạn đang ở gói miễn phí</strong> , có nghĩa là <strong class=\"text-danger\">các địa chỉ chuyển tiếp của bạn có thể được tìm kiếm công khai</strong> qua tra cứu DNS.",
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Thực hiện thanh toán</a> hoặc <a class=\"alert-link\" href=\"%s\">cập nhật thẻ</a> ngay lập tức.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Tên Công ty đã thay đổi từ <span class=\"notranslate\">%s</span> thành <span class=\"notranslate\">%s</span>",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Dòng địa chỉ1 đã thay đổi từ <span class=\"notranslate\">%s</span> thành <span class=\"notranslate\">%s</span>"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Dòng địa chỉ1 đã thay đổi từ <span class=\"notranslate\">%s</span> thành <span class=\"notranslate\">%s</span>",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee"
 }

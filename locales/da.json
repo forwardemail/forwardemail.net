@@ -2372,5 +2372,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Foretag betaling</a> eller <a class=\"alert-link\" href=\"%s\">opdater kortet med</a> det samme.",
   "You must make payment to avoid account termination.": "Du skal foretage betaling for at undgå kontoopsigelse.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Firmanavn er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresselinje1 er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresselinje1 er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>",
+  "A verification code has been sent to your email address.": "A verification code has been sent to your email address."
 }

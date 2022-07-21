@@ -2654,5 +2654,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Utfør betaling</a> eller <a class=\"alert-link\" href=\"%s\">oppdater kortet</a> umiddelbart.",
   "You must make payment to avoid account termination.": "Du må betale for å unngå kontooppsigelse.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Firmanavn er endret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresselinje1 er endret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresselinje1 er endret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee"
 }

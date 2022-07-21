@@ -2654,5 +2654,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">בצע תשלום</a> או <a class=\"alert-link\" href=\"%s\">עדכן את הכרטיס</a> באופן מיידי.",
   "You must make payment to avoid account termination.": "עליך לבצע תשלום כדי למנוע סגירת חשבון.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "שם החברה השתנה מ- <span class=\"notranslate\">%s</span> ל- <span class=\"notranslate\">%s</span>",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "שורת כתובת1 השתנתה מ- <span class=\"notranslate\">%s</span> ל- <span class=\"notranslate\">%s</span>"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "שורת כתובת1 השתנתה מ- <span class=\"notranslate\">%s</span> ל- <span class=\"notranslate\">%s</span>",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee"
 }
