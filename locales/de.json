@@ -2319,5 +2319,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Führen Sie die Zahlung durch</a> oder <a class=\"alert-link\" href=\"%s\">aktualisieren Sie die Karte</a> sofort.",
   "You must make payment to avoid account termination.": "Sie müssen eine Zahlung leisten, um eine Kontokündigung zu vermeiden.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Der Firmenname hat sich von <span class=\"notranslate\">%s</span> in <span class=\"notranslate\">%s</span> geändert",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresszeile1 hat sich von <span class=\"notranslate\">%s</span> in <span class=\"notranslate\">%s</span> geändert"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresszeile1 hat sich von <span class=\"notranslate\">%s</span> in <span class=\"notranslate\">%s</span> geändert",
+  "A verification code has been sent to your email address.": "A verification code has been sent to your email address."
 }

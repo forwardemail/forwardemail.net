@@ -2654,5 +2654,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Voer onmiddellijk een betaling uit</a> of <a class=\"alert-link\" href=\"%s\">update de kaart</a> .",
   "You must make payment to avoid account termination.": "U moet betalen om beëindiging van uw account te voorkomen.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Bedrijfsnaam is gewijzigd van <span class=\"notranslate\">%s</span> in <span class=\"notranslate\">%s</span>",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresregel1 is gewijzigd van <span class=\"notranslate\">%s</span> in <span class=\"notranslate\">%s</span>"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adresregel1 is gewijzigd van <span class=\"notranslate\">%s</span> in <span class=\"notranslate\">%s</span>",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee"
 }

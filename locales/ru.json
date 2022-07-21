@@ -2654,5 +2654,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">Оплатите</a> или <a class=\"alert-link\" href=\"%s\">обновите карту</a> немедленно.",
   "You must make payment to avoid account termination.": "Вы должны произвести оплату, чтобы избежать закрытия аккаунта.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Название компании изменено с <span class=\"notranslate\">%s</span> на <span class=\"notranslate\">%s</span>",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Адрес Line1 изменился с <span class=\"notranslate\">%s</span> на <span class=\"notranslate\">%s</span>"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Адрес Line1 изменился с <span class=\"notranslate\">%s</span> на <span class=\"notranslate\">%s</span>",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee"
 }

@@ -2654,5 +2654,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "Hemen <a class=\"alert-link\" href=\"%s\">ödeme yapın</a> veya <a class=\"alert-link\" href=\"%s\">kartı güncelleyin</a> .",
   "You must make payment to avoid account termination.": "Hesabın kapatılmasını önlemek için ödeme yapmanız gerekir.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Şirket Adı <span class=\"notranslate\">%s</span> iken <span class=\"notranslate\">%s</span> olarak değiştirildi",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adres Satırı1 <span class=\"notranslate\">%s</span> iken <span class=\"notranslate\">%s</span> s olarak değişti"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Adres Satırı1 <span class=\"notranslate\">%s</span> iken <span class=\"notranslate\">%s</span> s olarak değişti",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee"
 }

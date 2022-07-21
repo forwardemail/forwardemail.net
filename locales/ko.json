@@ -2654,5 +2654,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "즉시 <a class=\"alert-link\" href=\"%s\">결제</a> 하거나 <a class=\"alert-link\" href=\"%s\">카드를 업데이트</a> 하십시오.",
   "You must make payment to avoid account termination.": "계정 해지를 방지하려면 결제해야 합니다.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "회사 이름이 <span class=\"notranslate\">%s</span> 에서 <span class=\"notranslate\">%s</span> s(으)로 변경되었습니다.",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "주소 입력란 1이 <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> 으)로 변경되었습니다."
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "주소 입력란 1이 <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> 으)로 변경되었습니다.",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee"
 }

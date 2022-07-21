@@ -2654,5 +2654,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "<a class=\"alert-link\" href=\"%s\">قم بالدفع</a> أو <a class=\"alert-link\" href=\"%s\">تحديث البطاقة</a> على الفور.",
   "You must make payment to avoid account termination.": "يجب عليك الدفع لتجنب إنهاء الحساب.",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "تم تغيير اسم الشركة من <span class=\"notranslate\">%s</span> إلى <span class=\"notranslate\">%s</span>",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "تم تغيير سطر العنوان 1 من <span class=\"notranslate\">%s</span> إلى <span class=\"notranslate\">%s</span>"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "تم تغيير سطر العنوان 1 من <span class=\"notranslate\">%s</span> إلى <span class=\"notranslate\">%s</span>",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee"
 }

@@ -2319,5 +2319,6 @@
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> or <a class=\"alert-link\" href=\"%s\">update card</a> immediately.": "立即<a class=\"alert-link\" href=\"%s\">付款</a>或<a class=\"alert-link\" href=\"%s\">更新卡</a>。",
   "You must make payment to avoid account termination.": "您必须付款以避免帐户终止。",
   "Company Name has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "公司名称已从<span class=\"notranslate\">%s</span>更改为<span class=\"notranslate\">%s</span>",
-  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "地址 Line1 已从<span class=\"notranslate\">%s</span>更改为<span class=\"notranslate\">%s</span>"
+  "Address Line1 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "地址 Line1 已从<span class=\"notranslate\">%s</span>更改为<span class=\"notranslate\">%s</span>",
+  "A verification code has been sent to your email address.": "A verification code has been sent to your email address."
 }
