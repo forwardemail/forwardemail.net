@@ -5,10 +5,14 @@ block content
     .row
       .col-12
         .card.border-dark.d-block.text-center
-          h1.h5.card-header.bg-dark.text-white= domains ? t("You added new domains!") : t("Welcoming your new domain!")
+          h1.h5.card-header.bg-dark.text-white
+            if errorMessage
+              = t("Your domain needs attention!")
+            else
+              = t("Welcoming your new domain!")
           .card-body.text-center.p-0
             a(
-              href=domains ? `${config.urls.web}/${locale}/my-account/domains` : `${config.urls.web}/${locale}/my-account/domains/${domain.name}`
+              href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
             )
               img.img-fluid.d-block.align-top(
                 src=`${config.urls.web}/img/emails/domain-onboard.gif`,
@@ -16,24 +20,17 @@ block content
                 data-inline-ignore
               )
             .p-3
-              h1.h3!= t("Congrats!")
-              if domains
-                p.card-text!= t('You added <span class="notranslate">%d</span> new domains.', domains.length)
-              else
-                p.card-text!= t('<span class="notranslate">%s</span> you added the domain <strong><span class="notranslate">%s</span></strong>.', capitalize(dayjs(domain.created_at).locale(locale).fromNow()), domain.name)
-            if domains
-              if domains.find(domain => domain.plan === 'free')
-                .p-3
-                  h2.h5= t("Did you want enhanced privacy and protection?")
-                  p.card-text
-                    != t('Some of <strong>your domains are on the free plan</strong>, which means <strong class="text-danger">your forwarding addresses are publicly searchable</strong> over DNS lookups.')
-                    = " "
-                    = t("If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.")
-                  a.btn.btn-lg.btn-danger(
-                    href=user.plan === 'free' ? `${config.urls.web}/${locale}/my-account/upgrade?plan=enhanced_protection` : `${config.urls.web}/${locale}/my-account/domains/${domains[0].name}/billing?plan=enhanced_protection`,
-                    role="button"
-                  )= t("Upgrade now")
-            else if domain.plan === 'free'
+              h1.h3
+                if errorMessage
+                  != t("Almost There!")
+                else
+                  != t("Congrats!")
+              p.card-text!= t('<span class="notranslate">%s</span> you added the domain <strong><span class="notranslate">%s</span></strong>.', capitalize(dayjs(domain.created_at).locale(locale).fromNow()), domain.name)
+            if errorMessage
+              .p-3
+                h2.h5= t("Issues Detected")
+                p.card-text!= prefixHTMLPathBasedAnchors(errorMessage, config.urls.web)
+            if domain.plan === 'free'
               .p-3
                 h2.h5= t("Did you want enhanced privacy and protection?")
                 p.card-text
@@ -52,17 +49,18 @@ block content
                   = t("DNS records haven't propagated or may not be configured properly.")
                   = " "
                   = t("If we detect successful changes, then we'll notify you by email.")
-              .px-3.py-5.bg-dark.mt-3
-                h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
-                ul.list-inline.mb-3
-                  li.list-inline-item.mr-5
-                    = emoji(mx ? "white_check_mark" : "x")
-                    .mt-2.text-monospace.text-uppercase.text-white= t("MX")
-                  li.list-inline-item
-                    = emoji(txt ? "white_check_mark" : "x")
-                    .mt-2.text-monospace.text-uppercase.text-white= "TXT"
+            .px-3.py-5.bg-dark.mt-3
+              h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
+              ul.list-inline.mb-3
+                li.list-inline-item.mr-5
+                  = emoji(mx ? "white_check_mark" : "x")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("MX")
+                li.list-inline-item
+                  = emoji(txt ? "white_check_mark" : "x")
+                  .mt-2.text-monospace.text-uppercase.text-white= "TXT"
+              if !mx || !txt
                 a.btn.btn-lg.btn-danger(
-                  href=domains ? `${config.urls.web}/${locale}/my-account/domains` : `${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
+                  href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
                   role="button"
                 )
                   = t("Verify Records")
