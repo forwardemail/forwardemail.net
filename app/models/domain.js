@@ -614,13 +614,25 @@ async function getVerificationResults(domain, client = false) {
       const testEmail = `test@${domain.name}`;
       try {
         const addresses = await app.validateMX(testEmail);
-        const exchanges = new Set(
-          addresses.map((mxAddress) => mxAddress.exchange)
+        const exchanges = addresses.map((mxAddress) => mxAddress.exchange);
+        const hasOtherExchanges = exchanges.some(
+          (exchange) => !exchanges.includes(exchange)
         );
         const hasAllExchanges = app.config.exchanges.every((exchange) =>
-          exchanges.has(exchange)
+          exchanges.includes(exchange)
         );
-        if (hasAllExchanges) mx = true;
+        if (hasOtherExchanges)
+          errors.push(
+            Boom.badRequest(
+              i18n.translateError(
+                'MX_HAS_OTHER',
+                domain.locale,
+                EXCHANGES,
+                domain.name
+              )
+            )
+          );
+        else if (hasAllExchanges) mx = true;
         else
           errors.push(
             Boom.badRequest(

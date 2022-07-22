@@ -168,6 +168,8 @@ module.exports = {
     'At least one admin user must belong to the domain.',
   INVALID_VERIFICATION_RECORD:
     'Verification record must only use characters A-Z and numbers 0-9.',
+  MX_HAS_OTHER:
+    '<p class="mb-0">We have detected that your domain has multiple MX server providers. Please ensure that the <strong>ONLY</strong> DNS MX records are:</p><ul class="markdown-body ml-0 mr-0 mb-3"><span class="notranslate">%s</span></ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren\'t the same).<a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.</p>',
   MISSING_DNS_MX:
     '<p class="mb-0">Domain is missing required DNS MX records of:</p><ul class="markdown-body ml-0 mr-0 mb-3"><span class="notranslate">%s</span></ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren\'t the same).<a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.</p>',
   MISSING_VERIFICATION_RECORD:
