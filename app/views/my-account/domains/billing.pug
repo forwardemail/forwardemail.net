@@ -224,11 +224,11 @@ block body
                         disabled=!isMakePayment || dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'year')),
                         selected=defaultSelected === '2y'
                       )= t("2 years ($72 USD)")
-                    option(value="1y", selected=defaultSelected === '1y', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'year')))= t("1 year ($36 USD)")
-                    option(value="180d", selected=defaultSelected === '180d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year')))= t("6 months ($18 USD)")
-                    option(value="90d", selected=defaultSelected === '90d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months')))= t("3 months ($9 USD)")
-                    option(value="60d", selected=defaultSelected === '60d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months')))= t("2 months ($6 USD)")
-                    option(value="30d", selected=defaultSelected === '30d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months')))= t("1 month ($3 USD)")
+                    option(value="1y", selected=defaultSelected === '1y', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'year')))= t("1 year ($36 USD)")
+                    option(value="180d", selected=defaultSelected === '180d', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year')))= t("6 months ($18 USD)")
+                    option(value="90d", selected=defaultSelected === '90d', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months')))= t("3 months ($9 USD)")
+                    option(value="60d", selected=defaultSelected === '60d', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months')))= t("2 months ($6 USD)")
+                    option(value="30d", selected=defaultSelected === '30d', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months')))= t("1 month ($3 USD)")
                   else if plan === 'team'
                     //- since subscription is the default, we disable these
                     if !isEnableAutoRenew
@@ -244,11 +244,11 @@ block body
                         disabled=!isMakePayment || dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'year')),
                         selected=defaultSelected === '2y'
                       )= t("2 years ($216 USD)")
-                    option(value="1y", selected=defaultSelected === '1y', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'year')))= t("1 year ($108 USD)")
-                    option(value="180d", selected=defaultSelected === '180d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year')))= t("6 months ($54 USD)")
-                    option(value="90d", selected=defaultSelected === '90d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months')))= t("3 months ($27 USD)")
-                    option(value="60d", selected=defaultSelected === '60d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months')))= t("2 months ($18 USD)")
-                    option(value="30d", selected=defaultSelected === '30d', disabled=dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months')))= t("1 month ($9 USD)")
+                    option(value="1y", selected=defaultSelected === '1y', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'year')))= t("1 year ($108 USD)")
+                    option(value="180d", selected=defaultSelected === '180d', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year')))= t("6 months ($54 USD)")
+                    option(value="90d", selected=defaultSelected === '90d', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months')))= t("3 months ($27 USD)")
+                    option(value="60d", selected=defaultSelected === '60d', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months')))= t("2 months ($18 USD)")
+                    option(value="30d", selected=defaultSelected === '30d', disabled=user.plan !== 'free' && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months')))= t("1 month ($9 USD)")
 
               //- Continue (Stripe)
               button#stripe-button-container.btn.btn-success.btn-lg.btn-block(
