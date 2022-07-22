@@ -126,8 +126,6 @@ async function mapper(id) {
     // set locale of domain
     domain.locale = locale;
 
-    logger.info('checking domain', { domain, to, locale });
-
     // store the before state
     const { has_mx_record: mxBefore, has_txt_record: txtBefore } = domain;
 
@@ -136,8 +134,6 @@ async function mapper(id) {
       domain,
       client
     );
-
-    if (errors.length > 0) logger.error(...errors, { domain });
 
     //
     // run a save on the domain name
