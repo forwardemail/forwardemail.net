@@ -386,6 +386,18 @@ User.pre('save', async function (next) {
       user[config.userFields.planSetAt]
     );
     for (const payment of payments) {
+      //
+      // payments cannot be counted for credit that were
+      // disputed/refunded on stripe or paypal (excluding beta and plan conversions)
+      // (except for ones which we've manually adjusted or grandfathered in)
+      //
+      if (
+        !payment.is_refund_credit_allowed &&
+        payment.amount_refunded > 0 &&
+        !['free_beta_program', 'plan_conversion'].includes(payment.method)
+      )
+        continue;
+
       user[config.userFields.planExpiresAt] = dayjs(
         user[config.userFields.planExpiresAt]
       )

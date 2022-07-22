@@ -159,7 +159,11 @@ const Payment = new mongoose.Schema({
   [config.userFields.stripeSubscriptionID]: { type: String, index: true },
   paypal_order_id: { type: String, index: true },
   [config.userFields.paypalSubscriptionID]: { type: String, index: true },
-  paypal_transaction_id: { type: String, index: true }
+  paypal_transaction_id: { type: String, index: true },
+  is_refund_credit_allowed: {
+    type: Boolean,
+    default: false
+  }
 });
 
 Payment.virtual('description').get(function () {
