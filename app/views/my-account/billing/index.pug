@@ -71,7 +71,7 @@ block body
       .col
         include ../../_breadcrumbs
 
-    - const hasPlanExpired = new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
+    - const hasPlanExpired = user.plan !== 'free' && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
     - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
 
     if user.plan !== 'free' && (hasPlanExpired || hasSubscription)
