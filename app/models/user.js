@@ -373,7 +373,6 @@ User.pre('save', async function (next) {
       plan: user.plan
     })
       .sort('invoice_at')
-      .select('duration')
       .lean()
       .exec();
 
