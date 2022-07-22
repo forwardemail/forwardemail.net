@@ -158,6 +158,16 @@ async function mapper(id) {
         });
       }
 
+      // reset multiple exchanges error so we alert users if they have multiple MX in the future
+      if (!mxBefore && mx && _.isDate(domain.multiple_exchanges_sent_at)) {
+        domain.multiple_exchanges_sent_at = undefined;
+        await Domains.findByIdAndUpdate(domain._id, {
+          $unset: {
+            multiple_exchanges_sent_at: 1
+          }
+        });
+      }
+
       // set the values (since we are skipping some verification)
       domain.has_txt_record = txt;
       domain.has_mx_record = mx;
@@ -174,21 +184,68 @@ async function mapper(id) {
       }
     });
 
+    // include helpful error message if needed
+    let errorMessage;
+    if (errors.length === 1) errorMessage = errors[0].message;
+    else if (errors.length > 1)
+      errorMessage = `<ul class="text-left mb-0">${errors
+        .map((e) => `<li class="mb-3">${e && e.message ? e.message : e}</li>`)
+        .join('')}</ul>`;
+
+    // if had no dns errors and mx record but no txt
+    // then send configuration issue email
+    if (!hasDNSError && mx && !txt && !_.isDate(domain.missing_txt_sent_at)) {
+      await email({
+        template: 'domain-configuration-issue',
+        message: { to },
+        locals: {
+          locale,
+          domain,
+          errorMessage
+        }
+      });
+      // store that we sent this email
+      await Domains.findByIdAndUpdate(domain._id, {
+        $set: {
+          missing_txt_sent_at: new Date()
+        }
+      });
+    }
+    // if had no dns errors and no mx record
+    // and errors contains multiple mx record error
+    // then send configuration issue email
+    else if (
+      !hasDNSError &&
+      !mx &&
+      errors.some((err) => err.has_multiple_exchanges) &&
+      !_.isDate(domain.multiple_exchanges_sent_at)
+    ) {
+      await email({
+        template: 'domain-configuration-issue',
+        message: { to },
+        locals: {
+          locale,
+          domain,
+          errorMessage
+        }
+      });
+      // store that we sent this email
+      await Domains.findByIdAndUpdate(domain._id, {
+        $set: {
+          multiple_exchanges_sent_at: new Date()
+        }
+      });
+    }
     // if verification was not passing and now is
     // then send email (if we haven't sent one yet)
-    if (
+    else if (
+      // we don't want to send emails to bulk API created
+      !domain.is_api &&
       !_.isDate(domain.verified_email_sent_at) &&
       (!mxBefore || !txtBefore) &&
       mx &&
       txt
     ) {
-      // include helpful error message if needed
-      let errorMessage;
-      if (errors.length === 1) errorMessage = errors[0].message;
-      else if (errors.length > 1)
-        errorMessage = `<ul class="text-left mb-0">${errors
-          .map((e) => `<li class="mb-3">${e && e.message ? e.message : e}</li>`)
-          .join('')}</ul>`;
       // send the domain verified email
       await email({
         template: 'domain-verified',
@@ -210,7 +267,12 @@ async function mapper(id) {
             : { onboard_email_sent_at: now })
         }
       });
-    } else if (!_.isDate(domain.onboard_email_sent_at) && !hasDNSError) {
+    } else if (
+      // we don't want to send emails to bulk API created
+      !domain.is_api &&
+      !_.isDate(domain.onboard_email_sent_at) &&
+      !hasDNSError
+    ) {
       // send the onboard email
       await email({
         template: 'domain-onboard',
@@ -219,7 +281,8 @@ async function mapper(id) {
           locale,
           domain,
           txt,
-          mx
+          mx,
+          errorMessage
         }
       });
       // store that we sent this email

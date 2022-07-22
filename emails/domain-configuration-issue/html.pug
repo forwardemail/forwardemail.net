@@ -1,0 +1,53 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.bg-dark.text-white.text-center= t("Configuration issue!")
+          .card-body.p-0
+            a(
+              href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
+            )
+              img.img-fluid.d-block.align-top(
+                src=`${config.urls.web}/img/emails/self-test.gif`,
+                alt="",
+                data-inline-ignore
+              )
+            .p-3.text-center
+              h1.h3!= t("Oops!")
+              p.card-text
+                != t('Your domain <strong><span class="notranslate">%s</span></strong> has a DNS configuration issue.', domain.name)
+                = ' '
+                != t('This means that your important emails <strong class="text-danger">could have email forwarding issues</strong>.')
+              if errorMessage
+                p.card-text!= t('Please correct these issues as soon as possible:')
+                != prefixHTMLPathBasedAnchors(errorMessage, config.urls.web)
+            if user.plan === 'free'
+              .p-3.text-center
+                h2.h5= t("Did you want enhanced privacy and protection?")
+                p.card-text
+                  != t('Currently <strong>you are on the free plan</strong>, which means <strong class="text-danger">your forwarding addresses are publicly searchable</strong> over DNS lookups.')
+                  = " "
+                  = t("If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.")
+                a.btn.btn-lg.btn-danger(
+                  href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`,
+                  role="button"
+                )= t("Upgrade now")
+            .px-3.py-5.bg-dark.mt-3
+              h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
+              ul.list-inline.mb-3
+                li.list-inline-item.mr-5
+                  = emoji(mx ? "white_check_mark" : "x")
+                  .mt-2.text-monospace.text-uppercase.text-white= t("MX")
+                li.list-inline-item
+                  = emoji(txt ? "white_check_mark" : "x")
+                  .mt-2.text-monospace.text-uppercase.text-white= "TXT"
+              if !mx || !txt
+                a.btn.btn-lg.btn-danger(
+                  href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
+                  role="button"
+                )
+                  = t("Verify Records")
+          .card-footer.text-center.small.text-muted= t("If you have any questions or comments, then please let us know")

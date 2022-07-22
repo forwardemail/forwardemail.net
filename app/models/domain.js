@@ -197,6 +197,7 @@ const Domain = new mongoose.Schema({
   onboard_email_sent_at: Date,
   verified_email_sent_at: Date,
   missing_txt_sent_at: Date,
+  multiple_exchanges_sent_at: Date,
   // default option to require `has_recipient_verification`
   // on all aliases for verification emails to send
   has_recipient_verification: {
@@ -341,6 +342,13 @@ Domain.pre('validate', async function (next) {
       // reset missing txt so we alert users if they are missing a TXT in future again
       if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
         domain.missing_txt_sent_at = undefined;
+      // reset multiple exchanges error so we alert users if they have multiple MX in the future
+      if (
+        !domain.has_mx_record &&
+        mx &&
+        _.isDate(domain.multiple_exchanges_sent_at)
+      )
+        domain.multiple_exchanges_sent_at = undefined;
       domain.has_txt_record = txt;
       domain.has_mx_record = mx;
     }
@@ -621,18 +629,18 @@ async function getVerificationResults(domain, client = false) {
         const hasAllExchanges = app.config.exchanges.every((exchange) =>
           exchanges.includes(exchange)
         );
-        if (hasOtherExchanges)
-          errors.push(
-            Boom.badRequest(
-              i18n.translateError(
-                'MX_HAS_OTHER',
-                domain.locale,
-                EXCHANGES,
-                domain.name
-              )
+        if (hasOtherExchanges) {
+          const err = Boom.badRequest(
+            i18n.translateError(
+              'MX_HAS_OTHER',
+              domain.locale,
+              EXCHANGES,
+              domain.name
             )
           );
-        else if (hasAllExchanges) mx = true;
+          err.has_multiple_exchanges = hasAllExchanges;
+          errors.push(err);
+        } else if (hasAllExchanges) mx = true;
         else
           errors.push(
             Boom.badRequest(
