@@ -32,7 +32,7 @@
     "accounting": "0.4.1",
     "apexcharts": "3.35.3",
     "array-join-conjunction": "1.0.0",
-    "aws-sdk": "2.1179.0",
+    "aws-sdk": "2.1180.0",
     "axe": "9.0.0",
     "basic-auth": "2.0.1",
     "boolean": "3.2.0",
@@ -54,7 +54,7 @@
     "delay": "5.0.0",
     "detect-libc": "2.0.1",
     "email-addresses": "5.0.0",
-    "email-templates": "10.0.0",
+    "email-templates": "10.0.1",
     "fast-safe-stringify": "2.1.1",
     "forward-email": "9.0.1",
     "gemoji": "6",
@@ -214,7 +214,7 @@
     "stylelint-scss": "4.3.0",
     "supertest": "6.2.4",
     "through2": "4.0.2",
-    "xo": "0.50.0"
+    "xo": "0.51.0"
   },
   "engines": {
     "node": ">=14.8"

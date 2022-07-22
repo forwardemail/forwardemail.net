@@ -9,7 +9,7 @@ block content
             != t('Your plan <span class="notranslate">%s</span> <span class="notranslate">%s</span>', new Date(user[config.userFields.planExpiresAt]).getTime() > Date.now() ? t('expires') : t('expired'), dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow())
           .card-body.p-0
             a(href=`${config.urls.web}/${locale}/my-account/billing`)
-              img.img-responsive(
+              img.img-fluid(
                 src=`${config.urls.web}/img/emails/${_.sample(['domain-onboard', 'domain-verified', 'self-test', 'welcome'])}.gif`,
                 alt="",
                 data-inline-ignore

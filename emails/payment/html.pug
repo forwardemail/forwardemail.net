@@ -17,7 +17,7 @@ block content
                 = t("Thank you!")
           .card-body.p-0
             a(href=config.urls.web)
-              img.img-responsive(
+              img.img-fluid(
                 src=`${config.urls.web}/img/emails/${_.sample(['domain-onboard', 'domain-verified', 'self-test', 'welcome'])}.gif`,
                 alt="",
                 data-inline-ignore
