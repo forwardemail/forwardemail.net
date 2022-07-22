@@ -9,7 +9,7 @@ block content
             != t('Your first auto-renewal charge')
           .card-body.p-0
             a(href=`${config.urls.web}/${locale}/my-account/billing`)
-              img.img-fluid(
+              img.img-fluid.d-block.align-top(
                 src=`${config.urls.web}/img/emails/${_.sample(['domain-onboard', 'domain-verified', 'self-test', 'welcome'])}.gif`,
                 alt="",
                 data-inline-ignore
