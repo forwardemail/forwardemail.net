@@ -691,6 +691,11 @@ async function getVerificationResults(domain, client = false) {
       Boom.badRequest(i18n.translateError('AUTOMATED_CHECK', domain.locale))
     );
 
+  if (!txt && !mx)
+    errors.push(
+      Boom.badRequest(i18n.translateError('NAMESERVER_CHECK', domain.locale))
+    );
+
   return { txt, mx, errors: _.uniqBy(errors, 'message') };
 }
 
