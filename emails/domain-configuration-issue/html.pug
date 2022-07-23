@@ -24,7 +24,7 @@ block content
               if errorMessage
                 p.card-text!= t('Please correct these issues as soon as possible:')
                 != prefixHTMLPathBasedAnchors(errorMessage, config.urls.web)
-            if user.plan === 'free'
+            if domain.plan === 'free'
               .p-3.text-center
                 h2.h5= t("Did you want enhanced privacy and protection?")
                 p.card-text
