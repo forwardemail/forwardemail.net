@@ -11,6 +11,7 @@ const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
+const safeStringify = require('fast-safe-stringify');
 const splitLines = require('split-lines');
 const validator = require('validator');
 const { ungzip } = require('node-gzip');
@@ -45,9 +46,14 @@ async function mapper(list) {
   logger.info('updating list', { list });
   const res = await got(list.url, {
     responseType: 'buffer',
-    decompress: false
+    decompress: false,
+    // <https://github.com/sindresorhus/got/discussions/1813#discussioncomment-3249169>
+    retry: { statusCodes: [...got.defaults.options.retry.statusCodes, 404] }
   });
-  if (res.headers['content-type'] === 'application/octet-stream')
+  if (
+    res.headers['content-type'] === 'application/octet-stream' ||
+    res.headers['content-encoding'] === 'gzip'
+  )
     res.body = await ungzip(res.body);
   const lines = splitLines(res.body.toString());
   const ips = [];
@@ -86,7 +92,7 @@ async function mapper(list) {
         subject: 'Update UCEPROTECT had an error'
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(
+        message: `<pre><code>${safeStringify(
           parseErr(err),
           null,
           2
