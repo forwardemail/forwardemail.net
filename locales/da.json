@@ -2386,5 +2386,7 @@
   "An error occurred while converting your existing credit between plans. We have been notified by email.": "Der opstod en fejl under konvertering af din eksisterende kredit mellem abonnementer. Vi har fået besked på e-mail.",
   "You successfully switched plans and received a conversion credit of <span class=\"notranslate\">%s</span>.": "Du skiftede plan og modtog en konverteringskredit på <span class=\"notranslate\">%s</span> .",
   "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)": "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)",
-  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?"
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee",
+  " record using one or more of the provided examples below:": " record using one or more of the provided examples below:"
 }

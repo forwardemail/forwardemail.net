@@ -2500,5 +2500,7 @@
   "An error occurred while converting your existing credit between plans. We have been notified by email.": "Virhe muunnettaessa olemassa olevaa luottoa suunnitelmien välillä. Meille on ilmoitettu sähköpostitse.",
   "You successfully switched plans and received a conversion credit of <span class=\"notranslate\">%s</span>.": "Vaihdoit onnistuneesti suunnitelmaa ja sait <span class=\"notranslate\">%s</span> .",
   "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)": "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)",
-  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?"
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee",
+  " record using one or more of the provided examples below:": " record using one or more of the provided examples below:"
 }
