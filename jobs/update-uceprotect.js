@@ -48,7 +48,9 @@ async function mapper(list) {
     responseType: 'buffer',
     decompress: false,
     // <https://github.com/sindresorhus/got/discussions/1813#discussioncomment-3249169>
-    retry: { statusCodes: [...got.defaults.options.retry.statusCodes, 404] }
+    retry: {
+      statusCodes: [...got.defaults.options.retry.statusCodes, 403, 404]
+    }
   });
   if (
     res.headers['content-type'] === 'application/octet-stream' ||
