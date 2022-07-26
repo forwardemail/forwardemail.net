@@ -1,10 +1,12 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const ms = require('ms');
+const isSANB = require('is-string-and-not-blank');
 
 const emailHelper = require('#helpers/email');
 const config = require('#config');
 
+// eslint-disable-next-line complexity
 async function ensurePaidToDate(ctx, next) {
   // return early if we're already on profile, security, or billing
   if (
@@ -13,7 +15,10 @@ async function ensurePaidToDate(ctx, next) {
     ctx.state.user.plan === 'free' ||
     !_.isDate(ctx.state.user[config.userFields.planExpiresAt]) ||
     new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() >=
-      Date.now()
+      Date.now() ||
+    // or if the user has a subscription then don't show the error
+    isSANB(ctx.state.user[config.userFields.stripeSubscriptionID]) ||
+    isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
   )
     return next();
 
