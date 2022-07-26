@@ -1431,9 +1431,12 @@ Regular expressions are not supported on <a href="/free-disposable-addresses" ta
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
 
-<strong>Simple Example:</strong> If I want all emails that go to `elon@example.com` or `musk@example.com` to forward to `user@gmail.com`:
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `elon@example.com` or `musk@example.com` to forward to `user@gmail.com`:
+</div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -1454,7 +1457,10 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
   </tbody>
 </table>
 
-<strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+</div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -1475,7 +1481,10 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
   </tbody>
 </table>
 
-<strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+</div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -1496,7 +1505,10 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
   </tbody>
 </table>
 
-<strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>)::
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+</div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -1513,6 +1525,30 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Disable Example:</strong> If you want all emails that match a certain pattern to be disabled (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with an exclamation mark "!":
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(elon|musk)$/:!</code></td>
     </tr>
   </tbody>
 </table>
