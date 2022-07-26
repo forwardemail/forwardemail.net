@@ -80,6 +80,11 @@ const jobs = [
     name: 'visa-trial-subscription-requirement',
     interval: '1h',
     timeout: 0
+  },
+  {
+    name: 'update-uceprotect',
+    interval: '1h',
+    timeout: '5m'
   }
 ];
 

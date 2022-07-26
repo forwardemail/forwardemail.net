@@ -39,12 +39,12 @@ block content
               h2.display-6.font-weight-light.mb-3.text-uppercase.text-white= t("Verification Status")
               ul.list-inline.mb-3
                 li.list-inline-item.mr-5
-                  = emoji(mx ? "white_check_mark" : "x")
+                  = emoji(domain.has_mx_record ? "white_check_mark" : "x")
                   .mt-2.text-monospace.text-uppercase.text-white= t("MX")
                 li.list-inline-item
-                  = emoji(txt ? "white_check_mark" : "x")
+                  = emoji(domain.has_mx_record ? "white_check_mark" : "x")
                   .mt-2.text-monospace.text-uppercase.text-white= "TXT"
-              if !mx || !txt
+              if !domain.has_mx_record || !domain.has_txt_record
                 a.btn.btn-lg.btn-danger(
                   href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
                   role="button"

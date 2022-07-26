@@ -57,7 +57,7 @@ async function ensurePaidToDate(ctx, next) {
               : { cc: config.email.message.from }),
             subject: ctx.translate('PAYMENT_PAST_DUE_API_RESTRICTED')
           },
-          locals: { message }
+          locals: { message, user: ctx.state.user.toObject() }
         });
         // mark that we sent this email
         ctx.state.user[config.userFields.apiRestrictedSentAt] = new Date();
