@@ -2334,5 +2334,7 @@
   "An error occurred while converting your existing credit between plans. We have been notified by email.": "Beim Umwandeln Ihres vorhandenen Guthabens zwischen Plänen ist ein Fehler aufgetreten. Wir wurden per E-Mail benachrichtigt.",
   "You successfully switched plans and received a conversion credit of <span class=\"notranslate\">%s</span>.": "Sie haben den Plan erfolgreich gewechselt und eine Conversion-Gutschrift von <span class=\"notranslate\">%s</span> erhalten.",
   "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)": "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)",
-  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?"
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?",
+  "Automatic refunds with 30-day money-back guarantee": "Automatic refunds with 30-day money-back guarantee",
+  " record using one or more of the provided examples below:": " record using one or more of the provided examples below:"
 }

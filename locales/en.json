@@ -2507,5 +2507,8 @@
   "You have been refunded": "You have been refunded",
   "Update Payment Method": "Update Payment Method",
   "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)": "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)",
-  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?"
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?",
+  "<p class=\"mb-0\">Domain is missing required DNS MX records of:</p><ul class=\"markdown-body ml-0 mr-0 mb-3\"><span class=\"notranslate\">%s</span></ul><p class=\"mb-0\">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren't the same). <a class=\"font-weight-bold\" href=\"/faq?domain=%s\" target=\"_blank\">Read our FAQ</a> for detailed instructions.</p>": "<p class=\"mb-0\">Domain is missing required DNS MX records of:</p><ul class=\"markdown-body ml-0 mr-0 mb-3\"><span class=\"notranslate\">%s</span></ul><p class=\"mb-0\">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren't the same). <a class=\"font-weight-bold\" href=\"/faq?domain=%s\" target=\"_blank\">Read our FAQ</a> for detailed instructions.</p>",
+  "Please ensure that your DNS nameservers are set properly too (e.g. if you are using a DNS provider such as Cloudflare &ndash; which may be a different provider than your domain registrar).": "Please ensure that your DNS nameservers are set properly too (e.g. if you are using a DNS provider such as Cloudflare &ndash; which may be a different provider than your domain registrar).",
+  " record using one or more of the provided examples below:": " record using one or more of the provided examples below:"
 }

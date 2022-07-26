@@ -2668,5 +2668,7 @@
   "An error occurred while converting your existing credit between plans. We have been notified by email.": "เกิดข้อผิดพลาดขณะแปลงเครดิตที่มีอยู่ระหว่างแผน เราได้รับแจ้งทางอีเมล",
   "You successfully switched plans and received a conversion credit of <span class=\"notranslate\">%s</span>.": "คุณเปลี่ยนแผนสำเร็จและได้รับเครดิตการแปลงเป็น <span class=\"notranslate\">%s</span>",
   "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)": "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)",
-  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?"
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?",
+  "Please <a class=\"alert-link\" href=\"%s\">contact us</a> to unlock this feature.": "Please <a class=\"alert-link\" href=\"%s\">contact us</a> to unlock this feature.",
+  " record using one or more of the provided examples below:": " record using one or more of the provided examples below:"
 }

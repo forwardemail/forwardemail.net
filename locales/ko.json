@@ -2668,5 +2668,7 @@
   "An error occurred while converting your existing credit between plans. We have been notified by email.": "플랜 간에 기존 크레딧을 변환하는 동안 오류가 발생했습니다. 이메일로 알려드렸습니다.",
   "You successfully switched plans and received a conversion credit of <span class=\"notranslate\">%s</span>.": "계획을 성공적으로 변경하고 <span class=\"notranslate\">%s</span> 전환 크레딧을 받았습니다.",
   "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)": "Your Receipt [<span class=\"notranslate\">%s</span>] (<span class=\"notranslate\">%s</span>)",
-  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?"
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?",
+  "Please <a class=\"alert-link\" href=\"%s\">contact us</a> to unlock this feature.": "Please <a class=\"alert-link\" href=\"%s\">contact us</a> to unlock this feature.",
+  " record using one or more of the provided examples below:": " record using one or more of the provided examples below:"
 }
