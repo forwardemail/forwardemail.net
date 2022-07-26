@@ -276,8 +276,6 @@ async function mapper(id) {
         locals: {
           locale,
           domain,
-          txt,
-          mx,
           errorMessage
         }
       });
