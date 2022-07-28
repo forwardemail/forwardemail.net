@@ -42,7 +42,7 @@ block content
                   = emoji(domain.has_mx_record ? "white_check_mark" : "x")
                   .mt-2.text-monospace.text-uppercase.text-white= t("MX")
                 li.list-inline-item
-                  = emoji(domain.has_mx_record ? "white_check_mark" : "x")
+                  = emoji(domain.has_txt_record ? "white_check_mark" : "x")
                   .mt-2.text-monospace.text-uppercase.text-white= "TXT"
               if !domain.has_mx_record || !domain.has_txt_record
                 a.btn.btn-lg.btn-danger(
