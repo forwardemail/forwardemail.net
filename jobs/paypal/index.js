@@ -21,7 +21,11 @@ graceful.listen();
 (async () => {
   await mongoose.connect();
 
+  //
   // NOTE: we have to do this in series due to PayPal 429 API rate limitations
+  //       (it seems like the limit is 50 requests per minute with 5 min backoff)
+  //       <https://github.com/airbytehq/airbyte/issues/4415#issue-933070375>
+  //
   try {
     await syncPayPalOrderPayments();
 

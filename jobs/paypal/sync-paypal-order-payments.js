@@ -1,3 +1,5 @@
+const delay = require('delay');
+const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 
@@ -6,6 +8,8 @@ const Payments = require('#models/payment');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const { paypalAgent } = require('#helpers/paypal');
+
+const FIVE_SECONDS = ms('5s');
 
 async function mapper(id) {
   const payment = await Payments.findById(id);
@@ -80,6 +84,15 @@ async function mapper(id) {
     if (invoiceAt) payment.invoice_at = invoiceAt;
     await payment.save();
   }
+
+  //
+  // the mapper makes a max of ~4 requests per ID call
+  // therefore if the limit on the PayPal API side is 50 requests per minute
+  // we can do 50/4=~12.5 ids in 1 minute
+  // therefore we need a delay of ~5 seconds in between each
+  // 60/5 = 12 (and 12*4 = 48)
+  //
+  await delay(FIVE_SECONDS);
 }
 
 async function syncPayPalOrderPayments() {

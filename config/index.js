@@ -369,7 +369,6 @@ const config = {
     '.work',
     '.xin',
     '.xn--tckwe',
-    '.xyz',
     '.zip'
   ],
 
