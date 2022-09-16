@@ -2875,5 +2875,6 @@
   "You can retrieve a domain alias by either its": "Du kan hente et domænealias ved enten dets",
   "or its": "eller dens",
   "Assuming you are using our service to forward emails,": "Forudsat at du bruger vores service til at videresende e-mails,",
-  "See our": "Se vores"
+  "See our": "Se vores",
+  "every hour and feed it into our Redis database with a 7 day expiry.": "every hour and feed it into our Redis database with a 7 day expiry."
 }

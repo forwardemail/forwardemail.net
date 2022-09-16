@@ -3156,5 +3156,6 @@
   "You can retrieve a domain alias by either its": "A domain aliast bármelyikével lekérheti",
   "or its": "vagy annak",
   "Assuming you are using our service to forward emails,": "Feltéve, hogy szolgáltatásunkat e-mailek továbbítására használja,",
-  "See our": "Lásd a mi"
+  "See our": "Lásd a mi",
+  "every hour and feed it into our Redis database with a 7 day expiry.": "every hour and feed it into our Redis database with a 7 day expiry."
 }

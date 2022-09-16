@@ -3156,5 +3156,6 @@
   "You can retrieve a domain alias by either its": "אתה יכול לאחזר כינוי דומיין לפי אחד מהם",
   "or its": "או שלה",
   "Assuming you are using our service to forward emails,": "בהנחה שאתה משתמש בשירות שלנו כדי להעביר מיילים,",
-  "See our": "ראה שלנו"
+  "See our": "ראה שלנו",
+  "every hour and feed it into our Redis database with a 7 day expiry.": "every hour and feed it into our Redis database with a 7 day expiry."
 }

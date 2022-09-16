@@ -3156,5 +3156,6 @@
   "You can retrieve a domain alias by either its": "يمكنك استرداد اسم نطاق مستعار إما من خلال",
   "or its": "أو لها",
   "Assuming you are using our service to forward emails,": "بافتراض أنك تستخدم خدمتنا لإعادة توجيه رسائل البريد الإلكتروني ،",
-  "See our": "انظر لدينا"
+  "See our": "انظر لدينا",
+  "every hour and feed it into our Redis database with a 7 day expiry.": "every hour and feed it into our Redis database with a 7 day expiry."
 }

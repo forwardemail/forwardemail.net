@@ -2824,5 +2824,6 @@
   "You can retrieve a domain alias by either its": "You can retrieve a domain alias by either its",
   "or its": "or its",
   "Assuming you are using our service to forward emails,": "Assuming you are using our service to forward emails,",
-  "See our": "See our"
+  "See our": "See our",
+  "every hour and feed it into our Redis database with a 7 day expiry.": "every hour and feed it into our Redis database with a 7 day expiry."
 }

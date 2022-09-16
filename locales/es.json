@@ -3156,5 +3156,6 @@
   "You can retrieve a domain alias by either its": "Puede recuperar un alias de dominio ya sea por su",
   "or its": "o su",
   "Assuming you are using our service to forward emails,": "Suponiendo que está utilizando nuestro servicio para reenviar correos electrónicos,",
-  "See our": "Vea nuestro"
+  "See our": "Vea nuestro",
+  "every hour and feed it into our Redis database with a 7 day expiry.": "every hour and feed it into our Redis database with a 7 day expiry."
 }

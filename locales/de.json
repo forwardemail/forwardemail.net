@@ -2824,5 +2824,6 @@
   "You can retrieve a domain alias by either its": "Sie können einen Domain-Alias entweder über seinen abrufen",
   "or its": "oder seine",
   "Assuming you are using our service to forward emails,": "Angenommen, Sie nutzen unseren Dienst zum Weiterleiten von E-Mails,",
-  "See our": "Siehe unsere"
+  "See our": "Siehe unsere",
+  "every hour and feed it into our Redis database with a 7 day expiry.": "every hour and feed it into our Redis database with a 7 day expiry."
 }

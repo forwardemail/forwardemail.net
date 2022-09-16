@@ -2988,5 +2988,6 @@
   "You can retrieve a domain alias by either its": "Voit hakea verkkotunnuksen aliaksen joko sen perusteella",
   "or its": "tai sen",
   "Assuming you are using our service to forward emails,": "Olettaen, että käytät palveluamme sähköpostien edelleenlähettämiseen,",
-  "See our": "Katso meidän"
+  "See our": "Katso meidän",
+  "every hour and feed it into our Redis database with a 7 day expiry.": "every hour and feed it into our Redis database with a 7 day expiry."
 }
