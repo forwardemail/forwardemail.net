@@ -3156,5 +3156,6 @@
   "You can retrieve a domain alias by either its": "Alias domény můžete načíst buď jeho",
   "or its": "nebo jeho",
   "Assuming you are using our service to forward emails,": "Za předpokladu, že používáte naši službu k přeposílání e-mailů,",
-  "See our": "Podívejte se na naše"
+  "See our": "Podívejte se na naše",
+  "every hour and feed it into our Redis database with a 7 day expiry.": "every hour and feed it into our Redis database with a 7 day expiry."
 }
