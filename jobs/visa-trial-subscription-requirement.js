@@ -10,7 +10,9 @@ const Stripe = require('stripe');
 const _ = require('lodash');
 const accounting = require('accounting');
 const dayjs = require('dayjs-with-plugins');
+const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
@@ -31,6 +33,8 @@ const graceful = new Graceful({
   mongooses: [mongoose],
   logger
 });
+
+const THREE_SECONDS = ms('3s');
 
 graceful.listen();
 
@@ -306,6 +310,13 @@ graceful.listen();
           }
         });
       }
+
+      //
+      // NOTE: we can only do ~50 requests per minute with PayPal API
+      //       and this does 2 API requests per call
+      //       and with a 3s delay we can get 60/3 = 20 in 1 min (so 40 requests total)
+      //
+      await delay(THREE_SECONDS);
     }
   }
 
