@@ -5,6 +5,11 @@ const config = require('#config');
 const { Payments } = require('#models');
 
 async function setConversionAndRefundStateHelpers(ctx, next) {
+  const THIRTY_DAYS_AGO = dayjs()
+    .startOf('day')
+    .subtract(30, 'days')
+    .toDate()
+    .getTime();
   const [paymentCount, paymentIds] = await Promise.all([
     Payments.countDocuments({
       user: ctx.state.user._id,
@@ -24,7 +29,13 @@ async function setConversionAndRefundStateHelpers(ctx, next) {
             $nin: ['free_beta_program', 'plan_conversion']
           },
           invoice_at: {
-            $gte: ctx.state.user[config.userFields.planSetAt],
+            // NOTE: must be greater than 30 days ago or after their plan was set
+            //       (whichever is sooner/greater)
+            $gte:
+              new Date(ctx.state.user[config.userFields.planSetAt]).getTime() >
+              THIRTY_DAYS_AGO
+                ? new Date(ctx.state.user[config.userFields.planSetAt])
+                : new Date(THIRTY_DAYS_AGO),
             $lte: dayjs(ctx.state.user[config.userFields.planSetAt])
               .add(30, 'days')
               .toDate()
