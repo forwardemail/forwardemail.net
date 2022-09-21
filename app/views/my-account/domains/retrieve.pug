@@ -65,44 +65,43 @@ block body
           i.fa.fa-refresh
           = " "
           = t("Verify Records")
-      if !domain.has_mx_record
-        .container
-          .row
-            .col
-              .card.border-dark.mt-5
-                h1.h5.card-header.bg-dark.text-white= t("MX Records Required")
-                .card-body
-                  p!= t("Set these <strong>MX records</strong> as the <u>only MX records</u> to your domain's DNS:")
-                  .table-responsive
-                    table.table.table-striped.table-hover.mt-2
-                      thead.thead-dark
-                        tr
-                          th Name/Host/Alias
-                          th.text-center TTL
-                          th Type
-                          th Priority
-                          th Value
-                      tbody
-                        tr
-                          td: em "@", ".", or blank
-                          td.text-center 3600
-                          td MX
-                          td 10
-                          td: code mx1.forwardemail.net
-                        tr
-                          td: em "@", ".", or blank
-                          td.text-center 3600
-                          td MX
-                          td 10
-                          td: code mx2.forwardemail.net
-                  if modalFAQTable
-                    .text-center.mt-2
-                      button.btn.btn-danger.btn-lg(
-                        type="button",
-                        data-toggle="modal",
-                        data-target="#modal-faq-table"
-                      )= t("Need help?")
-      if domain.plan === 'free' && !domain.has_txt_record
+      .container
+        .row
+          .col
+            .card.border-dark.mt-5
+              h1.h5.card-header.bg-dark.text-white= t("MX Records Required")
+              .card-body
+                p!= t("Set these <strong>MX records</strong> as the <u>only MX records</u> to your domain's DNS:")
+                .table-responsive
+                  table.table.table-striped.table-hover.mt-2
+                    thead.thead-dark
+                      tr
+                        th Name/Host/Alias
+                        th.text-center TTL
+                        th Type
+                        th Priority
+                        th Value
+                    tbody
+                      tr
+                        td: em "@", ".", or blank
+                        td.text-center 3600
+                        td MX
+                        td 10
+                        td: code mx1.forwardemail.net
+                      tr
+                        td: em "@", ".", or blank
+                        td.text-center 3600
+                        td MX
+                        td 10
+                        td: code mx2.forwardemail.net
+                if modalFAQTable
+                  .text-center.mt-2
+                    button.btn.btn-danger.btn-lg(
+                      type="button",
+                      data-toggle="modal",
+                      data-target="#modal-faq-table"
+                    )= t("Need help?")
+      if domain.plan === 'free'
         .container
           .row
             .col
@@ -136,7 +135,7 @@ block body
                         data-toggle="modal",
                         data-target="#modal-faq-table"
                       )= t("Need help?")
-      else if domain.plan !== 'free' && !domain.has_txt_record
+      else
         .container
           .row
             .col
