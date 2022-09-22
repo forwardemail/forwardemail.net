@@ -59,6 +59,9 @@ const config = {
   // app
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
   email: {
+    preview: {
+      openSimulator: false
+    },
     subjectPrefix: `${env.APP_NAME} – `,
     message: {
       from: env.EMAIL_DEFAULT_FROM
@@ -320,11 +323,13 @@ const config = {
   badDomains: [
     '.accountant',
     '.accountants',
+    '.art',
     '.beauty',
     '.bid',
     '.cam',
     '.casa',
     '.cf',
+    '.city',
     '.christmas',
     '.click',
     '.cn',
@@ -342,10 +347,14 @@ const config = {
     '.kim',
     '.loan',
     '.london',
+    '.life',
+    '.live',
     '.men',
     '.ml',
     '.mom',
+    '.monster',
     '.ninja',
+    '.online',
     '.party',
     '.pro',
     '.racing',
@@ -359,6 +368,7 @@ const config = {
     '.space',
     '.stream',
     '.surf',
+    '.tech',
     '.tk',
     '.top',
     '.trade',
