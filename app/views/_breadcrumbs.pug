@@ -19,7 +19,7 @@ if breadcrumbs.length > 1
         = _.isObject(breadcrumbs[0]) ? breadcrumbs[0].header || breadcrumbs[0].name : t(titleize(humanize(breadcrumbs[0])))
     if !breadcrumbHeaderCentered
       .flex-grow-1.ml-md-5.d-md-flex.align-items-center.justify-content-md-end.justify-content-center.mt-3.mt-md-0
-        if domain && ctx && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
+        if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
           ul.list-inline.mb-0
             li.list-inline-item
               a.btn.btn-dark(
@@ -78,7 +78,7 @@ if breadcrumbs.length > 1
                           = ")"
                     .dropdown-divider
                     a.dropdown-item(href=l(`/pricing?domain=${domain.name}`)).small.text-muted= t("See all plan features")
-        else if domain && ctx && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
+        else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0
             if !domain.is_global && domain.group === 'admin'
               li.list-inline-item
@@ -103,7 +103,7 @@ if breadcrumbs.length > 1
                 = t("Add Alias")
                 = " "
                 i.fa.fa-angle-double-right
-        else if ctx
+        else
           case ctx.pathWithoutLocale
             when '/my-account/domains'
               ul.list-inline.mb-0

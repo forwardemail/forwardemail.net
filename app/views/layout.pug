@@ -13,13 +13,13 @@ html.h-100(lang=locale)
       //- languages supported
       //- <https://support.google.com/webmasters/answer/189077?hl=en>
       //- <https://support.google.com/webmasters/answer/182192?hl=en>
-      if typeof ctx === 'object' && ctx.pathWithoutLocale
+      if ctx && ctx.pathWithoutLocale
         link(
           rel="alternate",
           href=`${config.urls.web}${ctx.pathWithoutLocale}`,
           hreflang="x-default"
         )
-      if typeof ctx === 'object' && ctx.pathWithoutLocale && availableLanguages
+      if ctx && ctx.pathWithoutLocale && availableLanguages
         each language in availableLanguages
           link(
             rel="alternate",
@@ -97,11 +97,10 @@ html.h-100(lang=locale)
         crossorigin="anonymous"
       )
       meta(property="og:title", content=meta.title)
-      if ctx && ctx.pathWithoutLocale
-        meta(
-          property="og:url",
-          content=`${config.urls.web}${ctx.pathWithoutLocale}`
-        )
+      meta(
+        property="og:url",
+        content=`${config.urls.web}${ctx.pathWithoutLocale}`
+      )
       meta(property="og:description", content=meta.description)
       meta(property="og:image", content=`${config.urls.web}/img/social.png`)
       meta(name="twitter:card", content="summary_large_image")
@@ -202,14 +201,14 @@ html.h-100(lang=locale)
               email: "#{user.email}",
             };
             window.API_TOKEN = "#{user[config.userFields.apiToken]}";
-        else if ctx && ctx.sessionId
+        else if ctx.sessionId
           script.
             window.USER = {
               id: "#{ctx.sessionId}",
             };
 
       //- build
-      if ctx && !isBot(ctx.get('User-Agent'))
+      if !isBot(ctx.get('User-Agent'))
         script(
           defer,
           src=manifest("js/build.js"),
