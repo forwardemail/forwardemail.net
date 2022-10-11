@@ -14,7 +14,7 @@ if !isHelp
         .modal-body
           form.ajax-form.confirm-prompt(action=l("/help"), method="POST")
             input(type="hidden", name="_csrf", value=_csrf)
-            if ctx && ctx.pathWithoutLocale !== '/faq'
+            if ctx.pathWithoutLocale !== '/faq'
               p.text-center.font-weight-bold
                 != t('Have you read our <a href="%s" target="_blank" rel="noopener noreferrer">FAQ</a> yet?', domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"))
             .form-group.floating-label
@@ -110,7 +110,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
   //- <https://github.com/twbs/bootstrap/issues/25030>
   #navbar-header.collapse.navbar-collapse
     ul.navbar-nav.ml-auto
-      if ctx && !isBot(ctx.get('User-Agent'))
+      if !isBot(ctx.get('User-Agent'))
         li.nav-item.ml-lg-1.mt-1.mt-lg-0.d-lg-none
           a.btn.btn-lg.d-block.text-left.text-lg-center(
             href=l("/"),
@@ -119,24 +119,24 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
       li.nav-item.ml-lg-1.mt-1.mt-lg-0
         a.btn.btn-lg.d-block.text-left.text-lg-center(
           href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l("/pricing"),
-          class=ctx && ctx.pathWithoutLocale.startsWith("/pricing") ? "btn-outline-light" : "btn-dark"
+          class=ctx.pathWithoutLocale.startsWith("/pricing") ? "btn-outline-light" : "btn-dark"
         )= t("Pricing")
       li.nav-item.ml-lg-1.mt-1.mt-lg-0
         a.btn.btn-lg.d-block.text-left.text-lg-center(
           href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
-          class=ctx && ctx.pathWithoutLocale.startsWith("/faq") ? "btn-outline-light" : "btn-dark"
+          class=ctx.pathWithoutLocale.startsWith("/faq") ? "btn-outline-light" : "btn-dark"
         )= t("FAQ")
       li.nav-item.ml-lg-1.mt-1.mt-lg-0
         a.btn.btn-lg.d-block.text-left.text-lg-center(
           href=l("/about"),
-          class=ctx && ctx.pathWithoutLocale.startsWith("/about") ? "btn-outline-light" : "btn-dark"
+          class=ctx.pathWithoutLocale.startsWith("/about") ? "btn-outline-light" : "btn-dark"
         )= t("About")
       li.nav-item.ml-lg-1.mt-1.mt-lg-0
         a.btn.btn-lg.d-block.text-left.text-lg-center(
           href=l("/help"),
           role=isHelp ? "link" : "button",
           data-target=isHelp ? "" : "#modal-help",
-          class=ctx && ctx.pathWithoutLocale.startsWith("/help") ? "btn-outline-light" : "btn-dark"
+          class=ctx.pathWithoutLocale.startsWith("/help") ? "btn-outline-light" : "btn-dark"
         )= t("Help")
       //- links that show only if you're logged in
       if user
@@ -148,20 +148,20 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
               data-toggle="dropdown",
               aria-haspopup="true",
               aria-expanded="false",
-              class=ctx && ctx.pathWithoutLocale.startsWith("/admin") ? "btn-outline-light" : "btn-dark"
+              class=ctx.pathWithoutLocale.startsWith("/admin") ? "btn-outline-light" : "btn-dark"
             )
               = t("Admin")
             .dropdown-menu(aria-labelledby="navbar-dropdown-admin")
               a.dropdown-item(
-                class=ctx && ctx.pathWithoutLocale === "/admin" ? "active" : "",
+                class=ctx.pathWithoutLocale === "/admin" ? "active" : "",
                 href=l("/admin")
               )= t("Dashboard")
               a.dropdown-item(
-                class=ctx && ctx.pathWithoutLocale.startsWith("/admin/users") ? "active" : "",
+                class=ctx.pathWithoutLocale.startsWith("/admin/users") ? "active" : "",
                 href=l("/admin/users")
               )= t("Users")
               a.dropdown-item(
-                class=ctx && ctx.pathWithoutLocale.startsWith("/admin/domains") ? "active" : "",
+                class=ctx.pathWithoutLocale.startsWith("/admin/domains") ? "active" : "",
                 href=l("/admin/domains")
               )= t("Domains")
         li.nav-item.dropdown.ml-lg-1.mt-1.mt-lg-0
@@ -170,25 +170,25 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
             data-toggle="dropdown",
             aria-haspopup="true",
             aria-expanded="false",
-            class=ctx && ctx.pathWithoutLocale.startsWith("/my-account") ? "btn-outline-light" : "btn-dark"
+            class=ctx.pathWithoutLocale.startsWith("/my-account") ? "btn-outline-light" : "btn-dark"
           )
             = t("My Account")
           .dropdown-menu(aria-labelledby="navbar-dropdown-admin")
-            //- a.dropdown-item(class=ctx && ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Dashboard')
+            //- a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Dashboard')
             a.dropdown-item(
-              class=ctx && ctx.pathWithoutLocale.startsWith("/my-account/domains") ? "active" : "",
+              class=ctx.pathWithoutLocale.startsWith("/my-account/domains") ? "active" : "",
               href=l("/my-account/domains")
             )= t("Domains")
             a.dropdown-item(
-              class=ctx && ctx.pathWithoutLocale === "/my-account/profile" ? "active" : "",
+              class=ctx.pathWithoutLocale === "/my-account/profile" ? "active" : "",
               href=l("/my-account/profile")
             )= t("Profile")
             a.dropdown-item(
-              class=ctx && ctx.pathWithoutLocale === "/my-account/security" ? "active" : "",
+              class=ctx.pathWithoutLocale === "/my-account/security" ? "active" : "",
               href=l("/my-account/security")
             )= t("Security")
             a.dropdown-item(
-              class=ctx && ctx.pathWithoutLocale === "/my-account/billing" ? "active" : "",
+              class=ctx.pathWithoutLocale === "/my-account/billing" ? "active" : "",
               href=l("/my-account/billing")
             )= t("Billing")
             a.dropdown-item(href=l("/logout"))= t("Log out")
@@ -200,7 +200,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
             href=l(config.loginRoute),
             data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
             data-target=isRegisterOrLogin ? "" : "#modal-sign-in",
-            class=ctx && ctx.pathWithoutLocale === config.loginRoute ? "btn-outline-light" : "btn-dark"
+            class=ctx.pathWithoutLocale === config.loginRoute ? "btn-outline-light" : "btn-dark"
           )= t("Sign in")
         //-.
           li.nav-item.ml-lg-1.mt-1.mt-lg-0
@@ -212,6 +212,5 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
               = t("Sign up free")
               = " "
               i.fa.fa-angle-double-right
-.alert.alert-info We are currently working to resolve login issues
-if ctx && ctx.pathWithoutLocale === '/'
+if ctx.pathWithoutLocale === '/'
   h1.h6.py-3.px-3.mb-0.text-center.alert.alert-primary.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("We're <span class='font-weight-bold'>the only</span> service that <mark>respects your privacy</mark> and <mark>never stores</mark> your emails.")

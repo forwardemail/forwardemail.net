@@ -74,7 +74,7 @@ mixin registerOrLogin(verb, isModal = false)
           p.mt-3.mb-1.text-center.small
             a.text-black-50(href=l("/forgot-password"))= t("Forget your password?")
       .alert.alert-warning.mt-3.text-center(class=isModal ? "mb-0" : "")
-        - const isRegisterOrLogin = ctx && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
+        - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
         ul.list-inline.mb-0
           if verb === 'sign up'
             li.list-inline-item!= t("Have an account?")
