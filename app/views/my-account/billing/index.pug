@@ -74,12 +74,6 @@ block body
     - const hasPlanExpired = user.plan !== 'free' && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
     - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID])
 
-    .row
-      .alert.alert-info.text-center
-        = 'PLEASE NOTE WE ARE INVESTIGATING AN ISSUE WITH INCORRECT DATA BEING DISPLAYED HERE'
-        = ' '
-        strong= 'OUR DATA MAY DIFFER THAN ACTUAL PAYPAL TRANSACTION INFORMATION AND MAY BE INCORRECTLY SHOWN'
-
     if user.plan !== 'free' && (hasPlanExpired || hasSubscription)
       .container
         .row
