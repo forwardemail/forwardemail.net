@@ -107,25 +107,26 @@ async function mapper(id) {
         )
       )
     ) {
-      await Users.findByIdAndUpdate(user._id, {
-        $set: {
-          [config.userFields.isBanned]: true
-        }
-      });
+      // await Users.findByIdAndUpdate(user._id, {
+      //   $set: {
+      //     [config.userFields.isBanned]: true
+      //   }
+      // });
       await email({
         template: 'alert',
         message: {
-          to: config.email.message.from,
-          subject: 'Banned user for late payments'
+          to: user[config.userFields.receiptEmail]
+            ? user[config.userFields.receiptEmail]
+            : user[config.userFields.fullEmail],
+          ...(user[config.userFields.receiptEmail]
+            ? { cc: user[config.userFields.fullEmail] }
+            : {}),
+          bcc: config.email.message.from,
+          subject:
+            'Please make payment to prevent email forwarding termination *IMPORTANT*'
         },
         locals: {
-          message: `${
-            user.email
-          } has been banned for late payment: <pre><code>${JSON.stringify(
-            user,
-            null,
-            2
-          )}</code></pre>`
+          message: `Your email address ${user.email} is past due on payment. We will terminate email forwarding and suspend your account if this is not resolved.  Please visit <a href="https://forwardemail.net/my-account/billing">https://forwardemail.net/my-account/billing</a> to make payment.`
         }
       });
     }
