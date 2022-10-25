@@ -79,7 +79,24 @@ async function mapper(id) {
   if (payment.amount_refunded !== amountRefunded) shouldSave = true;
 
   if (shouldSave) {
-    payment.paypal_transaction_id = capture.id;
+    // prevent double tx id save
+    if (payment.paypal_transaction_id !== capture.id) {
+      const count = await Payments.countDocuments({
+        paypal_transaction_id: capture.id,
+        _id: {
+          $ne: payment._id
+        }
+      });
+
+      if (count > 0)
+        throw new Error(
+          `Capture ID ${capture.id} was attempting to be duplicated for payment ID ${payment.id}`
+        );
+
+      // otherwise set the tx id
+      payment.paypal_transaction_id = capture.id;
+    }
+
     payment.amount_refunded = amountRefunded;
     if (invoiceAt) payment.invoice_at = invoiceAt;
     await payment.save();
