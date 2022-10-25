@@ -127,6 +127,7 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
                 // we need to have a payment for each transaction of a subscription
                 logger.info(`transaction ${transaction.id}`);
 
+                // TODO: there is def an issue here with mismatch
                 // try to find the payment
                 const paymentCandidates = await Payments.find({
                   user: customer._id,
@@ -178,6 +179,20 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
                   let shouldSave = false;
 
                   if (!payment.paypal_transaction_id) {
+                    // prevent double tx id save
+                    const count = await Payments.countDocuments({
+                      paypal_transaction_id: transaction.id,
+                      _id: {
+                        $ne: payment._id
+                      }
+                    });
+
+                    if (count > 0)
+                      throw new Error(
+                        `Capture ID ${transaction.id} was attempting to be duplicated for payment ID ${payment.id}`
+                      );
+
+                    // otherwise set the tx id
                     payment.paypal_transaction_id = transaction.id;
                     shouldSave = true;
                   }
@@ -217,6 +232,17 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
                     );
                   }
                 } else {
+                  // prevent double tx id save
+                  const count = await Payments.countDocuments({
+                    paypal_transaction_id: transaction.id
+                  });
+
+                  if (count > 0)
+                    throw new Error(
+                      `Capture ID ${transaction.id} was attempting to be duplicated for customer ${customer.email}`
+                    );
+
+                  // otherwise set the tx id
                   const payment = {
                     user: customer._id,
                     method: 'paypal',

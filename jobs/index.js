@@ -16,6 +16,12 @@ const jobs = [
     path: path.join(__dirname, 'paypal', 'index.js')
   },
   {
+    name: 'paypal-dup-tx-id',
+    interval: '30m',
+    timeout: 0,
+    path: path.join(__dirname, 'paypal', 'dup-tx-id.js')
+  },
+  {
     name: 'stripe',
     interval: '1h',
     timeout: 0,
