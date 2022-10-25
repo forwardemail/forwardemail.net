@@ -105,13 +105,9 @@ async function mapper(id) {
           1,
           'month'
         )
-      )
+      ) &&
+      !_.isDate(user[config.userFields.paymentReminderTerminationNoticeSentAt])
     ) {
-      // await Users.findByIdAndUpdate(user._id, {
-      //   $set: {
-      //     [config.userFields.isBanned]: true
-      //   }
-      // });
       await email({
         template: 'alert',
         message: {
@@ -127,6 +123,11 @@ async function mapper(id) {
         },
         locals: {
           message: `Your email address ${user.email} is past due on payment. We will terminate email forwarding and suspend your account if this is not resolved.  Please visit <a href="https://forwardemail.net/my-account/billing">https://forwardemail.net/my-account/billing</a> to make payment.`
+        }
+      });
+      await Users.findByIdAndUpdate(user._id, {
+        $set: {
+          [config.userFields.paymentReminderTerminationNoticeSentAt]: new Date()
         }
       });
     }
