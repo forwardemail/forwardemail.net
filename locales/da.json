@@ -2894,5 +2894,21 @@
   "Correo electrónico has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "E-mail er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>",
   "电子邮件 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "E-mail er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>",
   "API token has been reset.": "API-token er blevet nulstillet.",
-  "E-mail has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "E-mail er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>"
+  "E-mail has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "E-mail er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>",
+  "You must remove yourself as an admin from or delete these domains before you can delete your account:": "You must remove yourself as an admin from or delete these domains before you can delete your account:",
+  "card, wallet, or bank": "card, wallet, or bank",
+  "Add your Enhanced Protection Verification <strong class=\"notranslate\">TXT</strong> record to your domain's DNS:": "Add your Enhanced Protection Verification <strong class=\"notranslate\">TXT</strong> record to your domain's DNS:",
+  "Don't worry &ndash; we'll automatically refund previous payments.": "Don't worry &ndash; we'll automatically refund previous payments.",
+  "Please <a class=\"alert-link\" href=\"%s\">contact us</a> to unlock this feature.": "Please <a class=\"alert-link\" href=\"%s\">contact us</a> to unlock this feature.",
+  "Conversion Credit:": "Conversion Credit:",
+  "Make User": "Make User",
+  "Delete Member": "Delete Member",
+  "Pending invitations are listed below.": "Pending invitations are listed below.",
+  "Email Address": "Email Address",
+  "Delete Invite": "Delete Invite",
+  "Have attachments?": "Have attachments?",
+  "Reply to this email with them.": "Reply to this email with them.",
+  "Change your email": "Change your email",
+  "If you wish to change your email from <strong>%s</strong> to <strong>%s</strong>, then click the link below within %s.": "If you wish to change your email from <strong>%s</strong> to <strong>%s</strong>, then click the link below within %s.",
+  "Confirm now": "Confirm now"
 }

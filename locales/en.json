@@ -3015,5 +3015,20 @@
   "Correo electrónico has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Correo electrónico has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
   "电子邮件 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "电子邮件 has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
   "API token has been reset.": "API token has been reset.",
-  "E-mail has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "E-mail has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>"
+  "E-mail has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "E-mail has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
+  "An error code of \"<span class=\"notranslate\">%s</span>\" occurred while performing the DNS lookup. Please try again.": "An error code of \"<span class=\"notranslate\">%s</span>\" occurred while performing the DNS lookup. Please try again.",
+  "Add your Enhanced Protection Verification <strong class=\"notranslate\">TXT</strong> record to your domain's DNS:": "Add your Enhanced Protection Verification <strong class=\"notranslate\">TXT</strong> record to your domain's DNS:",
+  "Don't worry &ndash; we'll automatically refund previous payments.": "Don't worry &ndash; we'll automatically refund previous payments.",
+  "Domain is missing required DNS <span class=\"notranslate\">TXT</span> record of: <span class=\"notranslate\">%s</span>": "Domain is missing required DNS <span class=\"notranslate\">TXT</span> record of: <span class=\"notranslate\">%s</span>",
+  "Please <a class=\"alert-link\" href=\"%s\">contact us</a> to unlock this feature.": "Please <a class=\"alert-link\" href=\"%s\">contact us</a> to unlock this feature.",
+  "You must remove yourself as an admin from or delete these domains before you can delete your account:": "You must remove yourself as an admin from or delete these domains before you can delete your account:",
+  "via": "via",
+  "card, wallet, or bank": "card, wallet, or bank",
+  "Domain has an incorrect DNS <span class=\"notranslate\">TXT</span> record for verification.  Please ensure <span class=\"notranslate\">%s</span> is the only verification record that exists.": "Domain has an incorrect DNS <span class=\"notranslate\">TXT</span> record for verification.  Please ensure <span class=\"notranslate\">%s</span> is the only verification record that exists.",
+  "Conversion Credit:": "Conversion Credit:",
+  "<strong>This domain has unencrypted aliases stored in DNS <span class=\"notranslate\">TXT</span> records.</strong>  Follow these steps to resolve this issue:<ol class=\"mt-3\"><li><a href=\"%s\">Import <span class=\"notranslate\">TXT</span> Records</a></li><li>Remove any DNS <span class=\"notranslate\">TXT</span> records prefixed with <code class=\"notranslate\">%s=</code> (make sure you <u>DO NOT</u> remove the existing encrypted record)</li><li>Try to <a href=\"%s\">Verify Records</a> again</li></ol>": "<strong>This domain has unencrypted aliases stored in DNS <span class=\"notranslate\">TXT</span> records.</strong>  Follow these steps to resolve this issue:<ol class=\"mt-3\"><li><a href=\"%s\">Import <span class=\"notranslate\">TXT</span> Records</a></li><li>Remove any DNS <span class=\"notranslate\">TXT</span> records prefixed with <code class=\"notranslate\">%s=</code> (make sure you <u>DO NOT</u> remove the existing encrypted record)</li><li>Try to <a href=\"%s\">Verify Records</a> again</li></ol>",
+  "Please try again <span class=\"notranslate\">%s</span>.": "Please try again <span class=\"notranslate\">%s</span>.",
+  "Change your email": "Change your email",
+  "If you wish to change your email from <strong>%s</strong> to <strong>%s</strong>, then click the link below within %s.": "If you wish to change your email from <strong>%s</strong> to <strong>%s</strong>, then click the link below within %s.",
+  "Confirm now": "Confirm now"
 }
