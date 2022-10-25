@@ -135,6 +135,7 @@ object[config.userFields.apiRestrictedSentAt] = Date;
 object[config.userFields.paymentReminderInitialSentAt] = Date;
 object[config.userFields.paymentReminderFollowUpSentAt] = Date;
 object[config.userFields.paymentReminderFinalNoticeSentAt] = Date;
+object[config.userFields.paymentReminderTerminationNoticeSentAt] = Date;
 
 // VISA trial subscription requirement notifications
 object[config.userFields.stripeTrialSentAt] = Date;

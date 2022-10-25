@@ -160,6 +160,8 @@ const config = {
     paymentReminderInitialSentAt: 'payment_reminder_initial_sent_at',
     paymentReminderFollowUpSentAt: 'payment_reminder_follow_up_sent_at',
     paymentReminderFinalNoticeSentAt: 'payment_reminder_final_notice_sent_at',
+    paymentReminderTerminationNoticeSentAt:
+      'payment_reminder_termination_notice_sent_at',
     apiPastDueSentAt: 'api_past_due_sent_at',
     apiRestrictedSentAt: 'api_restricted_sent_at',
     receiptEmail: 'receipt_email',
