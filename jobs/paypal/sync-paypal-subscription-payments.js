@@ -86,6 +86,15 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
         }
       );
 
+      // push the user's subscription ID if it was set but not included
+      if (
+        isSANB(customer[config.userFields.paypalSubscriptionID]) &&
+        !subscriptionIds.includes(
+          customer[config.userFields.paypalSubscriptionID]
+        )
+      )
+        subscriptionIds.push(customer[config.userFields.paypalSubscriptionID]);
+
       // eslint-disable-next-line no-inner-declarations
       async function subscriptionMapper(subscriptionId) {
         let hasError = false;
