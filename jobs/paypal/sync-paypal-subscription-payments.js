@@ -320,10 +320,15 @@ async function syncPayPalSubscriptionPayments({ errorThreshold }) {
             }
 
             // remove it from the user's account
+            // (if and only if the subscription ID matched and was current)
             const user = await Users.findById(customer._id);
             if (!user) throw new Error('User does not exist');
-            user[config.userFields.paypalSubscriptionID] = undefined;
-            await user.save();
+            if (
+              user[config.userFields.paypalSubscriptionID] === subscriptionId
+            ) {
+              user[config.userFields.paypalSubscriptionID] = undefined;
+              await user.save();
+            }
           }
         } catch (err) {
           logger.error(err);
