@@ -5,6 +5,7 @@ const isSANB = require('is-string-and-not-blank');
 const config = require('#config');
 const { Domains, Aliases } = require('#models');
 
+// eslint-disable-next-line complexity
 async function retrieveDomains(ctx, next) {
   ctx.state.domains = [];
 
@@ -31,14 +32,6 @@ async function retrieveDomains(ctx, next) {
     .sort('name') // A-Z domains
     .lean()
     .exec();
-
-  ctx.state.domains = ctx.state.domains.map((domain) => {
-    domain.members = domain.members.filter(
-      (member) =>
-        _.isObject(member.user) && !member.user[config.userFields.isBanned]
-    );
-    return domain;
-  });
 
   let domainAliases = await Aliases.find({
     // if the user is an admin then show all
@@ -87,15 +80,26 @@ async function retrieveDomains(ctx, next) {
     (alias) => alias.domain.name
   );
 
-  ctx.state.domains = ctx.state.domains.map((domain) => {
-    // populate a `group` on the domain based off the user's association
-    let member = domain.members.find(
-      (member) => member.user.id === ctx.state.user.id
-    );
+  let i = ctx.state.domains.length;
+  while (i--) {
+    const domain = ctx.state.domains[i];
 
-    // for all global domains, if the user is not a member
-    // then add them as a member to the domain
-    if (!member && domain.is_global) {
+    let x = domain.members.length;
+    let member;
+    while (x--) {
+      const m = domain.members[x];
+      // ensure members have populated users and are not banned
+      if (!_.isObject(m.user) || m.user[config.userFields.isBanned]) {
+        ctx.state.domains[i].members[x].splice(x, 1);
+        continue;
+      }
+
+      // check if there was a match for the current member (logged in user)
+      if (m.user.id === ctx.state.user.id) member = m;
+    }
+
+    // if the domain was not global and there was no member
+    if (domain.is_global && !member) {
       member = {
         user: {
           _id: ctx.state.user._id,
@@ -107,22 +111,28 @@ async function retrieveDomains(ctx, next) {
         is_virtual: true
       };
       domain.members.push(member);
+    } else if (!member) {
+      // otherwise purge the domain from the list
+      // since the user did not belong to it anymore
+      ctx.state.domains.splice(i, 1);
+      continue;
     }
 
-    const { group } = member;
+    // set a `group` virtual helper alias to the member's group
+    domain.group = member.group;
 
-    // populate an `aliases` Array on the domain based off user's aliases
-    const aliases = [];
+    // populate an `aliases` array on the domain based off user's
+    domain.aliases = [];
 
     if (aliasesByDomain[domain.name])
       for (const alias of aliasesByDomain[domain.name]) {
-        if (group === 'admin' || alias.user.id === ctx.state.user.id)
-          aliases.push({
+        if (domain.group === 'admin' || alias.user.id === ctx.state.user.id)
+          domain.aliases.push({
             ...alias,
             // for each alias set a virtual group helper
             // (if the user is an admin OR if the user is the owner of the alias)
             group:
-              group === 'admin' || alias.user.id === ctx.state.user.id
+              domain.group === 'admin' || alias.user.id === ctx.state.user.id
                 ? 'admin'
                 : 'user'
           });
@@ -138,13 +148,7 @@ async function retrieveDomains(ctx, next) {
           ).length
         : 0
     }));
-
-    return {
-      ...domain,
-      group,
-      aliases
-    };
-  });
+  }
 
   //
   // TODO: is this actually still in use anywhere?
