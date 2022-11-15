@@ -348,7 +348,6 @@ const config = {
     '.jetzt',
     '.kim',
     '.loan',
-    '.london',
     '.life',
     '.live',
     '.men',
