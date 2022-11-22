@@ -1,4 +1,4 @@
-const os = require('os');
+const os = require('node:os');
 
 const Stripe = require('stripe');
 const _ = require('lodash');
@@ -445,8 +445,10 @@ async function syncStripePayments({ errorThreshold }) {
         // - canceled
         // - unpaid
         if (subscription.status !== 'active') {
-          // if the status was not cancelled then attempt to cancel it
-          if (!['canceled', 'cancelled'].includes(subscription.status))
+          // if the status was not a trial and wasn't cancelled then attempt to cancel it
+          if (
+            !['trialing', 'canceled', 'cancelled'].includes(subscription.status)
+          )
             await stripe.subscriptions.del(
               customer[config.userFields.stripeSubscriptionID]
             );
