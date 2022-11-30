@@ -32,8 +32,9 @@ include ../../_pagination
               td.align-middle.text-center
                 = dayjs(log.created_at).format("M/D/YY h:mm A")
               td.align-middle
-                if log.err
-                  pre.mb-0: small: code= log.err.message
+                pre.mb-0
+                  small
+                    code= log.err && log.err.message ? log.err.message : log.message
               td.align-middle.text-center
                 code= log.meta.level
               td.align-middle
