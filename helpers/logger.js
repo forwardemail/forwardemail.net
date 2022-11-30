@@ -94,7 +94,7 @@ async function hook(err, message, meta) {
   }
 }
 
-for (const level of logger.config.levels) {
+for (const level of ['error', 'fatal']) {
   logger.post(level, hook);
 }
 
