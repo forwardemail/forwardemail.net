@@ -1,0 +1,45 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        form.ajax-form.table-ajax-form.card.mb-3(
+          action=ctx.path,
+          method="GET",
+          data-table="#table-logs",
+          data-search-params="mongodb_query,q"
+        )
+          input(type="hidden", name="_csrf", value=_csrf)
+          .card-body
+            .h5.card-title Search for logs
+            .form-group
+              label(for="textarea-mongodb-query") MongoDB query
+              textarea#textarea-mongodb-query.form-control(
+                name="mongodb_query",
+                rows=3,
+                value=ctx.query.mongodb_query || "",
+                placeholder="MongoDB query"
+              )
+              small.form-text.text-muted
+                = "See "
+                a(
+                  href="https://github.com/mongodb-js/query-parser",
+                  target="_blank",
+                  rel="nofollow"
+                ) mongodb-query-parser
+                = " for more insight."
+            .form-group
+              label(for="input-keyword-search") Basic search
+              input#input-keyword-search.form-control(
+                type="text",
+                value=ctx.query.q ? ctx.query.q : "",
+                name="q",
+                placeholder=t("Basic search (e.g. 'meta.level=info meta.is_http=true')")
+              )
+              small.form-text.text-muted
+                | This splits by space and requires an equals sign for values. You can use quotes and also escape quotes in values. Numbers and Booleans are parsed too.
+            button.btn.btn-success(type="submit")= t("Search")
+        #table-logs
+          include ./_table

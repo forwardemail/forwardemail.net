@@ -34,6 +34,9 @@ router
   // domains
   .get('/domains', paginate.middleware(10, 50), web.admin.domains.list)
   .put('/domains/:id', web.admin.domains.update)
-  .delete('/domains/:id', web.admin.domains.remove);
+  .delete('/domains/:id', web.admin.domains.remove)
+
+  // logs
+  .get('/logs', paginate.middleware(10, 50), web.admin.logs.list);
 
 module.exports = router;

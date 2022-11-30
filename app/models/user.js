@@ -675,6 +675,10 @@ User.methods.updateVerificationPin = async function (ctx, revert = false) {
   return this;
 };
 
+//
+// NOTE: this can come before passport-local-mongoose because
+//       the username field of "email" is already marked as unique
+//
 User.plugin(mongooseCommonPlugin, {
   object: 'user',
   omitCommonFields: false,

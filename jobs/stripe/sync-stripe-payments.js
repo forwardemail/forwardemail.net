@@ -1,4 +1,4 @@
-const os = require('node:os');
+const os = require('os');
 
 const Stripe = require('stripe');
 const _ = require('lodash');
@@ -93,6 +93,11 @@ async function syncStripePayments({ errorThreshold }) {
         // charges includes a `data` Array with only one charge (the latest/successful)
         // (unless we explicitly filter using "payment_intent" filter for all charges)
         // <https://stripe.com/docs/api/payment_intents/object?lang=node#payment_intent_object-charges>
+        //
+        // TODO: note that we are on Stripe v10.x and v11+ has a breaking change
+        //       the `paymentIntent.charges` field no longer exists (?)
+        //       <https://github.com/stripe/stripe-node/blob/master/CHANGELOG.md#%EF%B8%8F-removed>
+        //
         //
         const [stripeCharge] = paymentIntent.charges.data;
         if (

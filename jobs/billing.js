@@ -111,9 +111,9 @@ async function mapper(id) {
       await email({
         template: 'alert',
         message: {
-          to: user[config.userFields.receiptEmail]
-            ? user[config.userFields.receiptEmail]
-            : user[config.userFields.fullEmail],
+          to:
+            user[config.userFields.receiptEmail] ||
+            user[config.userFields.fullEmail],
           ...(user[config.userFields.receiptEmail]
             ? { cc: user[config.userFields.fullEmail] }
             : {}),
@@ -175,9 +175,9 @@ async function mapper(id) {
     await email({
       template: 'payment-reminder',
       message: {
-        to: user[config.userFields.receiptEmail]
-          ? user[config.userFields.receiptEmail]
-          : user[config.userFields.fullEmail],
+        to:
+          user[config.userFields.receiptEmail] ||
+          user[config.userFields.fullEmail],
         ...(user[config.userFields.receiptEmail]
           ? { cc: user[config.userFields.fullEmail] }
           : {})

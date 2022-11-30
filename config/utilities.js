@@ -21,7 +21,7 @@ const { parse } = require('node-html-parser');
 const json = (string, replacer = null, space = 2) =>
   JSON.stringify(string, replacer, space);
 
-const emoji = (string) => (toEmoji[string] ? toEmoji[string] : '');
+const emoji = (string) => toEmoji[string] || '';
 
 //
 // this is useful for emails when we're rendering HTML

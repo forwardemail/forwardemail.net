@@ -95,7 +95,7 @@ exports.defineUserFactory = async () => {
   factory.define('user', Users, (buildOptions) => {
     const user = {
       email: factory.sequence('Users.email', (n) => `test${n}@example.com`),
-      password: buildOptions.password ? buildOptions.password : '!@K#NLK!#N'
+      password: buildOptions.password || '!@K#NLK!#N'
     };
 
     if (buildOptions.resetToken) {

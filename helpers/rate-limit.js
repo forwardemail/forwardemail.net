@@ -1,8 +1,9 @@
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const { ratelimit } = require('koa-simple-ratelimit');
+const ratelimit = require('@ladjs/koa-simple-ratelimit');
 
+const logger = require('#helpers/logger');
 const config = require('#config');
 
 // defaults to 10 requests per day
@@ -13,17 +14,19 @@ function rateLimit(max = 10, context, duration = ms('1d')) {
       'Duration must be a string to be parsed with ms() or a finite Number'
     );
   return (ctx, next) => {
-    if (config.env === 'development') return next();
     const affix = isSANB(context)
       ? context
       : `${ctx.hostname} ${ctx.method} ${ctx.pathWithoutLocale}`;
+
     const prefix = _.snakeCase(`limit ${config.env} ${affix}`);
+
     return ratelimit({
-      duration,
-      max,
-      prefix,
       db: ctx.client,
-      id: config.rateLimit.id
+      max,
+      duration,
+      prefix,
+      logger,
+      ...config.rateLimit
     })(ctx, next);
   };
 }

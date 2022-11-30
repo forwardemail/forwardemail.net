@@ -35,23 +35,33 @@ async function webhook(ctx) {
       // TODO: create or update existing payment
       //       (we may also want to upgrade plan; e.g. in case redirect does not occur)
       //       (also need to ensure no conflicts with redirect)
-      case 'charge.succeeded':
+      case 'charge.succeeded': {
         break;
+      }
+
       // TODO: update payments with refund amount
-      case 'charge.refunded':
+      case 'charge.refunded': {
         break;
+      }
+
       // TODO: ban users that dispute charges
       // and cancel their subscriptions (if not already)
-      case 'charge.dispute.created':
+      case 'charge.dispute.created': {
         break;
+      }
+
       // TODO: create subscription for customer if not already set
       //       (also need to ensure no conflicts with redirect)
-      case 'customer.subscription.created':
+      case 'customer.subscription.created': {
         break;
+      }
+
       // TODO: remove stripe subscription from user
       // when cancelled (if not already)
-      case 'customer.subscription.deleted':
+      case 'customer.subscription.deleted': {
         break;
+      }
+
       // TODO: handle other events
       default:
     }
