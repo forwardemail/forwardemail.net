@@ -46,12 +46,17 @@ async function ensurePaidToDate(ctx, next) {
       // send them an email notifying them that access is restricted
       // and only restrict access if this email was able to be sent successfully
       try {
+        // mark that we sent this email
+        ctx.state.user[config.userFields.apiRestrictedSentAt] = new Date();
+        await ctx.state.user.save();
+
+        // send the email after
         await emailHelper({
           template: 'alert',
           message: {
-            to: ctx.state.user[config.userFields.receiptEmail]
-              ? ctx.state.user[config.userFields.receiptEmail]
-              : ctx.state.user[config.userFields.fullEmail],
+            to:
+              ctx.state.user[config.userFields.receiptEmail] ||
+              ctx.state.user[config.userFields.fullEmail],
             ...(ctx.state.user[config.userFields.receiptEmail]
               ? {
                   cc: [
@@ -64,9 +69,6 @@ async function ensurePaidToDate(ctx, next) {
           },
           locals: { message, user: ctx.state.user.toObject() }
         });
-        // mark that we sent this email
-        ctx.state.user[config.userFields.apiRestrictedSentAt] = new Date();
-        await ctx.state.user.save();
         ctx.throw(Boom.paymentRequired(ctx.translateError('PAYMENT_PAST_DUE')));
         return;
       } catch (err) {
@@ -83,9 +85,9 @@ async function ensurePaidToDate(ctx, next) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: ctx.state.user[config.userFields.receiptEmail]
-              ? ctx.state.user[config.userFields.receiptEmail]
-              : ctx.state.user[config.userFields.fullEmail],
+            to:
+              ctx.state.user[config.userFields.receiptEmail] ||
+              ctx.state.user[config.userFields.fullEmail],
             ...(ctx.state.user[config.userFields.receiptEmail]
               ? {
                   cc: [

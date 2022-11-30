@@ -34,7 +34,8 @@ const config = {
         return false;
       // in case user is abusing multiple IP addresses
       return ctx.state.user.id;
-    }
+    },
+    allowlist: env.RATELIMIT_ALLOWLIST
   },
 
   // package.json
@@ -59,9 +60,12 @@ const config = {
   // app
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
   email: {
-    preview: {
-      openSimulator: false
-    },
+    preview:
+      env.NODE_ENV === 'development'
+        ? {
+            openSimulator: false
+          }
+        : false,
     subjectPrefix: `${env.APP_NAME} – `,
     message: {
       from: env.EMAIL_DEFAULT_FROM

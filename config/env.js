@@ -1,11 +1,7 @@
-const process = require('process');
 const path = require('path');
 
-const isSANB = require('is-string-and-not-blank');
-
-const test = isSANB(process.env.NODE_ENV)
-  ? process.env.NODE_ENV.toLowerCase() === 'test'
-  : false;
+// eslint-disable-next-line n/prefer-global/process
+const test = process.env.NODE_ENV === 'test';
 
 // note that we had to specify absolute paths here bc
 // otherwise tests run from the root folder wont work

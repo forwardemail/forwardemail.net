@@ -14,7 +14,27 @@ router
   // hidden
   //
   .get('/test', api.v1.test)
-  .post('/log', api.v1.log.checkToken, api.v1.log.parseLog)
+  .post(
+    '/log',
+    async (ctx, next) => {
+      try {
+        // check if we provided an API secret (e.g. from bree)
+        await api.v1.restricted(ctx, next);
+      } catch {
+        // check the API token of the logged in user
+        await api.v1.log.checkToken(ctx, next);
+      }
+    },
+    //
+    // rate limit logs sent from users
+    //
+    // NOTE: the rate limit helper does not rate limit API secrets
+    //       however the global rate limiter does
+    //       (but we whitelist the IP addresses of our servers)
+    //
+    rateLimit(100, 'log'),
+    api.v1.log.parseLog
+  )
   .post('/stripe', api.v1.stripe)
   .post('/paypal', api.v1.paypal)
 

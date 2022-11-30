@@ -117,7 +117,7 @@ module.exports = (redis) => ({
                 ? []
                 : ['www.sandbox.paypal.com'])
             ],
-            reportUri: reportUri ? reportUri : null
+            reportUri: reportUri || null
           }
         }
       : null,

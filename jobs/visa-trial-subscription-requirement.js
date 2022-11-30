@@ -144,9 +144,9 @@ graceful.listen();
         await emailHelper({
           template: 'visa-trial-subscription-requirement',
           message: {
-            to: user[config.userFields.receiptEmail]
-              ? user[config.userFields.receiptEmail]
-              : user[config.userFields.fullEmail],
+            to:
+              user[config.userFields.receiptEmail] ||
+              user[config.userFields.fullEmail],
             ...(user[config.userFields.receiptEmail]
               ? { cc: user[config.userFields.fullEmail] }
               : {})
@@ -287,9 +287,9 @@ graceful.listen();
         await emailHelper({
           template: 'visa-trial-subscription-requirement',
           message: {
-            to: user[config.userFields.receiptEmail]
-              ? user[config.userFields.receiptEmail]
-              : user[config.userFields.fullEmail],
+            to:
+              user[config.userFields.receiptEmail] ||
+              user[config.userFields.fullEmail],
             ...(user[config.userFields.receiptEmail]
               ? { cc: user[config.userFields.fullEmail] }
               : {})

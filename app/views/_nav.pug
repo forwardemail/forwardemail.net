@@ -164,6 +164,10 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.border-light.border-bo
                 class=ctx.pathWithoutLocale.startsWith("/admin/domains") ? "active" : "",
                 href=l("/admin/domains")
               )= t("Domains")
+              a.dropdown-item(
+                class=ctx.pathWithoutLocale.startsWith("/admin/logs") ? "active" : "",
+                href=l("/admin/logs")
+              )= t("Logs")
         li.nav-item.dropdown.ml-lg-1.mt-1.mt-lg-0
           a#navbar-dropdown-my-account.btn.btn-lg.dropdown-toggle.d-block.text-left.text-lg-center(
             href=l("/my-account"),

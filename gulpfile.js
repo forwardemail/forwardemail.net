@@ -62,6 +62,19 @@ const staticAssets = [
   '!assets/js/**/*'
 ];
 
+//
+// add a logger pre-hook to always ignore_hook so post-hooks don't fire
+// (but only for development and testing environments)
+//
+if (!PROD) {
+  for (const level of logger.config.logger.config.levels) {
+    logger.config.logger.pre(level, function (err, message, meta) {
+      meta.ignore_hook = true;
+      return [err, message, meta];
+    });
+  }
+}
+
 function pug() {
   let stream = src(['app/views/**/*.pug', 'emails/**/*.pug'], {
     since: lastRun(pug)

@@ -3,7 +3,10 @@ module.exports = {
   space: true,
   extends: ['xo-lass'],
   rules: {
-    'no-warning-comments': 'off'
+    'no-warning-comments': 'off',
+    'unicorn/prefer-top-level-await': 'off',
+    'unicorn/no-process-exit': 'off',
+    'unicorn/prefer-node-protocol': 'off'
   },
   overrides: [
     {

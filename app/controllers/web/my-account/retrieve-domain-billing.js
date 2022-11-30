@@ -745,9 +745,9 @@ async function retrieveDomainBilling(ctx) {
         emailHelper({
           template: 'alert',
           message: {
-            to: ctx.state.user[config.userFields.receiptEmail]
-              ? ctx.state.user[config.userFields.receiptEmail]
-              : ctx.state.user[config.userFields.fullEmail],
+            to:
+              ctx.state.user[config.userFields.receiptEmail] ||
+              ctx.state.user[config.userFields.fullEmail],
             ...(ctx.state.user[config.userFields.receiptEmail]
               ? { cc: ctx.state.user[config.userFields.fullEmail] }
               : {}),
@@ -1235,9 +1235,9 @@ async function retrieveDomainBilling(ctx) {
         emailHelper({
           template: 'alert',
           message: {
-            to: ctx.state.user[config.userFields.receiptEmail]
-              ? ctx.state.user[config.userFields.receiptEmail]
-              : ctx.state.user[config.userFields.fullEmail],
+            to:
+              ctx.state.user[config.userFields.receiptEmail] ||
+              ctx.state.user[config.userFields.fullEmail],
             ...(ctx.state.user[config.userFields.receiptEmail]
               ? { cc: ctx.state.user[config.userFields.fullEmail] }
               : {}),

@@ -4,6 +4,7 @@ const Inquiries = require('./inquiry');
 const SelfTests = require('./self-test');
 const Users = require('./user');
 const Payments = require('./payment');
+const Logs = require('./log');
 
 module.exports = {
   Aliases,
@@ -11,5 +12,6 @@ module.exports = {
   Inquiries,
   SelfTests,
   Users,
-  Payments
+  Payments,
+  Logs
 };
