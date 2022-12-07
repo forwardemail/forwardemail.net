@@ -28,7 +28,8 @@ graceful.listen();
     if (process.send) process.send('ready');
     const { port } = api.server.address();
     logger.info(
-      `Lad API server listening on ${port} (LAN: ${ip.address()}:${port})`
+      `Lad API server listening on ${port} (LAN: ${ip.address()}:${port})`,
+      { hide_meta: true }
     );
     await mongoose.connect();
   } catch (err) {

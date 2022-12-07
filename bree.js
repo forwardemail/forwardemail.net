@@ -18,4 +18,4 @@ graceful.listen();
   await bree.start();
 })();
 
-logger.info('Lad bree started');
+logger.info('Lad bree started', { hide_meta: true });

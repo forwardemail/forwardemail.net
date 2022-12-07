@@ -22,7 +22,7 @@ if breadcrumbs.length > 1
         if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
           ul.list-inline.mb-0
             li.list-inline-item
-              a.btn.btn-dark(
+              a.btn.btn-sm.btn-outline-dark(
                 href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
                 role=domain.plan === "free" ? "button" : false,
                 data-target=domain.plan === "free" ? "#modal-upgrade" : false,
@@ -32,23 +32,22 @@ if breadcrumbs.length > 1
                 = " "
                 = t("Aliases")
             li.list-inline-item
-              a.btn.btn-dark(
+              a.btn.btn-sm.btn-outline-dark(
                 href=l(`/my-account/domains/${domain.name}/advanced-settings`)
               )
                 i.fa.fa-fw.fa-tools
                 = " "
-                span.d-none.d-md-inline-block= t("Advanced Settings")
-                span.d-md-none= t("Settings")
+                = t("Settings")
             if domain.group === 'admin'
               li.list-inline-item
-                .btn-group
-                  button.btn.btn-dark.dropdown-toggle(
+                .btn-group.btn-group-sm
+                  button.btn.btn-sm.btn-outline-dark.dropdown-toggle(
                     type="button",
                     data-toggle="dropdown",
                     aria-haspopup="true",
                     aria-expanded="false"
                   )
-                    span.d-none.d-md-inline-block= t("Change Plan")
+                    span.d-none.d-md-inline-block= t("Plan")
                     span.d-md-none= t("Plan")
                   .dropdown-menu.dropdown-menu-right
                     h6.dropdown-header.text-uppercase= t("Change Plan")
@@ -77,7 +76,7 @@ if breadcrumbs.length > 1
                           = t("Current")
                           = ")"
                     .dropdown-divider
-                    a.dropdown-item(href=l(`/pricing?domain=${domain.name}`)).small.text-muted= t("See all plan features")
+                    a.dropdown-item.small.text-muted(href=l(`/pricing?domain=${domain.name}`))= t("See all plan features")
         else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0
             if !domain.is_global && domain.group === 'admin'

@@ -54,6 +54,12 @@ async function retrieveDomain(ctx, next) {
     }
   ];
 
+  if (
+    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}` ||
+    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.id}`
+  )
+    ctx.state.breadcrumbs.push({ name: ctx.state.t('Setup Forwarding') });
+
   // eslint-disable-next-line unicorn/prefer-switch
   if (
     ctx.pathWithoutLocale ===
