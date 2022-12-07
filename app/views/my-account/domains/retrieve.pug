@@ -64,12 +64,12 @@ block body
             = emoji("tada")
     if domain.plan === 'free'
       .alert.alert-danger.small
-        = "Need to keep your forwarding setup private?"
+        = "Need to keep your setup private?"
         br.d-block.d-md-none
         = " "
         a.alert-link(
           href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
-        )= "Click here to unlock Enhanced Protection"
+        )= "Click here for Enhanced Protection"
     .row
       .col-12
         .card.position-relative
@@ -104,7 +104,7 @@ block body
                 )
                   i.fa.fa-list
                   = " "
-                  = t("Browse our list to find your provider")
+                  = t('Browse our list of providers')
       .col-12.mt-3
         .card.position-relative
           if domain.has_mx_record && domain.has_txt_record
@@ -174,7 +174,7 @@ block body
           .card-footer.text-center.text-muted
             small.font-italic
               = "* "
-              = t("This column is only applicable for MX type rows.")
+              = t("This column only applies to MX types.")
     //-.
       ul.list-inline
         li.list-inline-item
