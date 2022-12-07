@@ -40,7 +40,6 @@ mixin registerOrLogin(verb, isModal = false)
         .hr-text.d-flex.text-secondary.align-items-center= t("or")
       - const action = verb === "sign up" ? "/register" : config.loginRoute;
       form.ajax-form(action=l(action), method="POST")
-        input(type="hidden", name="_csrf", value=_csrf)
         .form-group.floating-label
           input.form-control.form-control-lg(
             id=`input-email-${dashify(verb)}`,

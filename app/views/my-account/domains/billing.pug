@@ -64,7 +64,9 @@ block body
             = t("Don't want to pay?")
             br.d-block.d-md-none
             = " "
-            a.alert-link.text-decoration-underline(href=l(`/my-account/domains/${domain.name}`))= t("Click here to use our Free plan")
+            a.alert-link.text-decoration-underline(
+              href=l(`/my-account/domains/${domain.name}`)
+            )= t("Click here to use our Free plan")
           .alert.alert-info.small
             != t('Pay below and <a href="%s" class="alert-link" data-toggle="modal" data-target="#modal-pricing-video">click to learn more</a>.', l("/pricing"))
         .card.border-dark
@@ -117,8 +119,6 @@ block body
               method="POST",
               autocomplete="off"
             )
-              input(type="hidden", name="_csrf", value=_csrf)
-
               if !isMakePayment && !isEnableAutoRenew
                 input(type="hidden", name="plan", value=ctx.query.plan)
 

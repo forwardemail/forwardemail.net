@@ -37,7 +37,6 @@ module.exports = {
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
   INVALID_USER: 'User does not exist.',
   INVALID_MEMBER: 'Member does not exist.',
-  INVALID_TOKEN: 'Invalid CSRF token.',
   INVALID_VERIFICATION_PIN: 'The verification code entered was invalid.',
   INVALID_PAYMENT_METHOD:
     'Payment method must be either card, wallet, bank, or PayPal.',

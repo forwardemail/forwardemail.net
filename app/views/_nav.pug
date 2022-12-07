@@ -13,7 +13,6 @@ if !isHelp
             span(aria-hidden="true") &times;
         .modal-body
           form.ajax-form.confirm-prompt(action=l("/help"), method="POST")
-            input(type="hidden", name="_csrf", value=_csrf)
             if ctx.pathWithoutLocale !== '/faq'
               p.text-center.font-weight-bold
                 != t('Have you read our <a href="%s" target="_blank" rel="noopener noreferrer">FAQ</a> yet?', domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"))

@@ -47,7 +47,6 @@ async function sendRequest(body) {
   const response = await superagent
     .post(window.location.pathname)
     .set({
-      'X-CSRF-Token': window._csrf,
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest'

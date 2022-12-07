@@ -67,7 +67,6 @@ block body
           p.d-block.mb-3.text-muted.font-weight-bold
             != t("Forward any email @your-domain.com, create unlimited aliases, and send email as @your-domain.com.")
           form.ajax-form(action=ctx.path, method="POST")
-            input(type="hidden", name="_csrf", value=_csrf)
             input(type="hidden", name="enhanced_protection", value="true")
             input(type="hidden", name="create_domain", value="true")
             input(type="hidden", name="create_account", value="true")

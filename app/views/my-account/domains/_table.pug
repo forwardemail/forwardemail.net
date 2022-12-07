@@ -77,7 +77,9 @@ table.table.table-hover.table-bordered
                           = t("DNS-based")
                           = ")"
                   .dropdown-divider
-                  a.dropdown-item.small.text-muted(href=l(`/pricing?domain=${domain.name}`))= t("See all plan features")
+                  a.dropdown-item.small.text-muted(
+                    href=l(`/pricing?domain=${domain.name}`)
+                  )= t("See all plan features")
             else
               = t(titleize(humanize(domain.plan)))
           if domain.plan === 'free'
@@ -107,7 +109,6 @@ table.table.table-hover.table-bordered
                     action=l(`/my-account/domains/${domain.name}/verify-records`),
                     method="POST"
                   )
-                    input(type="hidden", name="_csrf", value=_csrf)
                     button.btn.btn-outline-dark(type="submit")
                       i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
           td.align-middle.d-none.d-md-table-cell.text-center
@@ -129,7 +130,6 @@ table.table.table-hover.table-bordered
                     action=l(`/my-account/domains/${domain.name}/verify-records`),
                     method="POST"
                   )
-                    input(type="hidden", name="_csrf", value=_csrf)
                     button.btn.btn-outline-dark(type="submit")
                       i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
           td.align-middle

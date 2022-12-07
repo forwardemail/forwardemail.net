@@ -120,6 +120,18 @@ Log.pre('save', async function (next) {
       )
         return next(ERR_DUP_LOG);
 
+      // don't store logs for JavaScript and CSS source map files
+      if (
+        this?.meta?.request?.url &&
+        this?.meta?.response?.headers?.['content-type'] &&
+        this.meta.response.headers['content-type'].startsWith(
+          'application/json'
+        ) &&
+        (this.meta.request.url.endsWith('.css.map') ||
+          this.meta.request.url.endsWith('.js.map'))
+      )
+        return next(ERR_DUP_LOG);
+
       // filter by meta request id (X-Request-Id)
       if (this?.meta?.request?.id)
         $or.push({

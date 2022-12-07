@@ -76,7 +76,9 @@ if breadcrumbs.length > 1
                           = t("Current")
                           = ")"
                     .dropdown-divider
-                    a.dropdown-item.small.text-muted(href=l(`/pricing?domain=${domain.name}`))= t("See all plan features")
+                    a.dropdown-item.small.text-muted(
+                      href=l(`/pricing?domain=${domain.name}`)
+                    )= t("See all plan features")
         else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0
             if !domain.is_global && domain.group === 'admin'
@@ -85,7 +87,6 @@ if breadcrumbs.length > 1
                   action=l(`/my-account/domains/${domain.name}/aliases/import`),
                   method="POST"
                 )
-                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-dark.text-uppercase.font-weight-bold(
                     type="submit"
                   )
