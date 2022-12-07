@@ -12,6 +12,9 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const ERR_DUP_LOG = new Error('Duplicate log in past hour prevented');
 ERR_DUP_LOG.is_duplicate_log = true;
 
+//
+// NOTE: if you update this, then also update `helpers/logger.js` similar usage
+//
 const IGNORED_CONTENT_TYPES = [
   'application/javascript; charset=utf-8',
   'application/manifest+json',

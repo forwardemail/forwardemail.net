@@ -1,6 +1,36 @@
 extends ../../layout
 
 block body
+  .fixed-bottom.text-right
+    .bg-light.rounded.d-inline-block.p-2.mr-2.mb-2.border.border-dark
+      ul.list-inline.mb-0
+        li.list-inline-item.mr-0
+          a.btn.btn-sm.btn-outline-dark(href="#setup-step-1")
+            span.badge.badge-pill.badge-primary.mr-1
+              i.fa.fa-external-link
+            = t("Step 1")
+        li.list-inline-item.mr-0: i.fa.fa-angle-right.align-middle
+        li.list-inline-item.mr-0
+          a.btn.btn-sm.btn-outline-dark(href="#setup-step-2")
+            span.badge.badge-pill.mr-1(
+              class=domain.has_mx_record && domain.has_txt_record ? "badge-success" : "badge-danger"
+            )
+              if domain.has_mx_record && domain.has_txt_record
+                i.fa.fa-check
+              else
+                i.fa.fa-times
+            = t("Step 2")
+        li.list-inline-item.mr-0: i.fa.fa-angle-right.align-middle
+        li.list-inline-item
+          form.ajax-form(
+            action=l(`/my-account/domains/${domain.name}/verify-records`),
+            method="POST"
+          )
+            input(type="hidden", name="_csrf", value=_csrf)
+            button.btn.btn-success.btn-sm(type="submit")
+              i.fa.fa-refresh
+              = " "
+              = t("Verify")
   include _modal-upgrade
   if modalFAQTable
     #modal-faq-table.modal.fade(
@@ -9,7 +39,7 @@ block body
       aria-labelledby="modal-faq-table-title",
       aria-hidden="true"
     )
-      .modal-dialog.modal-lg(role="document")
+      .modal-dialog.modal-xl(role="document")
         .modal-content
           .modal-header.text-center.d-block
             h4#modal-faq-table-title.modal-title.d-inline-block.ml-4= t("DNS Management Pages")
@@ -20,173 +50,172 @@ block body
             )
               span(aria-hidden="true") &times;
           .modal-body!= modalFAQTable
-  .container-fluid.py-3
+  .container-fluid.pt-3
     .row
       .col
         include ../../_breadcrumbs
-  .py-5.text-center
-    h2.display-5.font-weight-bold.mb-3.text-uppercase= t("Verification Status")
+  .container-fluid.text-center
     if domain.has_mx_record && domain.has_txt_record
-      .alert.alert-success.d-inline-block.mx-2
-        = t("You have successfully completed setup.")
+      .row
+        .col
+          .alert.alert-success
+            = t("You have successfully completed setup.")
+            = " "
+            = emoji("tada")
+    if domain.plan === 'free'
+      .alert.alert-danger.small
+        = "Need to keep your forwarding setup private?"
+        br.d-block.d-md-none
         = " "
-        = emoji("tada")
-    else
-      .alert.alert-danger.d-inline-block.mx-2
-        = t('Follow steps below then "Verify Records"')
-    ul.list-inline
-      li.list-inline-item
-        button.btn.btn-link(
-          type="button",
-          data-placement="bottom",
-          data-toggle="tooltip",
-          data-title=domain.has_mx_record ? t("Verified") : t("Not Verified"),
-          class=domain.has_mx_record ? "text-success" : "text-danger"
-        )
-          i.fa.fa-4x(class=domain.has_mx_record ? "fa-check" : "fa-times")
-        .text-monospace.text-uppercase= t("MX")
-      li.list-inline-item
-        button.btn.btn-link(
-          type="button",
-          data-placement="bottom",
-          data-toggle="tooltip",
-          data-title=domain.has_txt_record ? t("Verified") : t("Not Verified"),
-          class=domain.has_txt_record ? "text-success" : "text-danger"
-        )
-          i.fa.fa-4x(class=domain.has_txt_record ? "fa-check" : "fa-times")
-        .text-monospace.text-uppercase= "TXT"
-    if domain.group === 'admin'
-      form.ajax-form(
-        action=l(`/my-account/domains/${domain.name}/verify-records`),
-        method="POST"
-      )
-        input(type="hidden", name="_csrf", value=_csrf)
-        button.btn.btn-success.btn-lg(type="submit")
-          i.fa.fa-refresh
-          = " "
-          = t("Verify Records")
-      .container
-        .row
-          .col
-            .card.border-dark.mt-5
-              h1.h5.card-header.bg-dark.text-white= t("MX Records Required")
-              .card-body
-                p!= t("Set these <strong>MX records</strong> as the <u>only MX records</u> to your domain's DNS:")
-                .table-responsive
-                  table.table.table-striped.table-hover.mt-2
-                    thead.thead-dark
-                      tr
-                        th Name/Host/Alias
-                        th.text-center TTL
-                        th Type
-                        th Priority
-                        th Value
-                    tbody
-                      tr
-                        td: em "@", ".", or blank
-                        td.text-center 3600
-                        td MX
-                        td 10
-                        td: code mx1.forwardemail.net
-                      tr
-                        td: em "@", ".", or blank
-                        td.text-center 3600
-                        td MX
-                        td 10
-                        td: code mx2.forwardemail.net
-                if modalFAQTable
-                  .text-center.mt-2
-                    button.btn.btn-danger.btn-lg(
-                      type="button",
-                      data-toggle="modal",
-                      data-target="#modal-faq-table"
-                    )= t("Need help?")
-      if domain.plan === 'free'
-        .container
-          .row
-            .col
-              .card.border-dark.mt-5
-                h1.h5.card-header.bg-dark.text-white
-                  = 'TXT'
-                  = ' '
-                  = t("Record Required")
-                .card-body
-                  p!= t("Add this <strong class=\"notranslate\">TXT</strong> record to your domain's DNS for a global catch-all:")
-                  .input-group
-                    input#verification-record.form-control(
-                      type="text",
-                      readonly,
-                      value=`${config.recordPrefix}=${user.email}`
-                    )
-                    .input-group-append
-                      button.btn.btn-primary(
-                        type="button",
-                        data-toggle="clipboard",
-                        data-clipboard-target="#verification-record"
-                      )
-                        i.fa.fa-clipboard
-                        = " "
-                        = t("Copy")
-                  p.text-center.text-muted.py-2.small!= t('Use "@", ".", or blank for the name/host/alias value. Read <a href="%s" class="notranslate" rel="noopener noreferrer" target="_blank">our FAQ section</a> for more options', l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`))
-                  if modalFAQTable
-                    .text-center.mt-3
-                      button.btn.btn-danger.btn-lg(
-                        type="button",
-                        data-toggle="modal",
-                        data-target="#modal-faq-table"
-                      )= t("Need help?")
-      else
-        .container
-          .row
-            .col
-              .card.border-dark.mt-5
-                h1.h5.card-header.bg-dark.text-white
-                  = 'TXT'
-                  = ' '
-                  = t("Record Required")
-                .card-body
-                  p!= t("Add your Enhanced Protection Verification <strong class=\"notranslate\">TXT</strong> record to your domain's DNS:")
-                  .input-group
-                    input#verification-record.form-control(
-                      type="text",
-                      readonly,
-                      value=`${config.recordPrefix}-site-verification=${domain.verification_record}`
-                    )
-                    .input-group-append
-                      button.btn.btn-primary(
-                        type="button",
-                        data-toggle="clipboard",
-                        data-clipboard-target="#verification-record"
-                      )
-                        i.fa.fa-clipboard
-                        = " "
-                        = t("Copy")
-                  p.text-center.text-muted.py-2.small!= t('Use "@", ".", or blank for the name/host/alias value. You <u>must remove</u> any existing "<span class="notranslate">%s</span><span class="notranslate">=</span>" records.', config.recordPrefix)
-                  if modalFAQTable
-                    .text-center.mt-3
-                      button.btn.btn-danger.btn-lg(
-                        type="button",
-                        data-toggle="modal",
-                        data-target="#modal-faq-table"
-                      )= t("Need help?")
+        a.alert-link(
+          href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
+        )= "Click here to unlock Enhanced Protection"
+    .row
+      .col-12
+        .card.position-relative
+          if modalFAQTable
+            .position-absolute.w-100.text-right
+              button.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
+                type="button",
+                data-toggle="modal",
+                data-target="#modal-faq-table"
+              )
+                i.fa.fa-external-link
+                = " "
+                = t("Go to DNS settings")
+          h1#setup-step-1.h5.card-header.text-left.text-md-center= t("Step 1")
+          .card-body
+            //-
+            //- TODO: we should auto-render "Step Completed" and little modal notifications if parts of setup are detected as completed
+            //- TODO: we should render the video here (e.g. for GoDaddy) if detected
+            //- TODO: we should render a link here (e.g. to GoDaddy) based off NS providers parsed from DNS lookup
+            //-       (and we should also highlight in the FAQ table rendered based off this)
+            //- TODO: we should also suggest SPF and DMARC
+            p.small
+              strong= t("In a new tab or window:")
+              = " "
+              != t("Visit the website where you registered your domain &rarr; log in &rarr; go to DNS settings")
+            if modalFAQTable
+              .text-center.mt-3
+                button.btn.btn-primary(
+                  type="button",
+                  data-toggle="modal",
+                  data-target="#modal-faq-table"
+                )
+                  i.fa.fa-list
+                  = " "
+                  = t("Browse our list to find your provider")
+      .col-12.mt-3
+        .card.position-relative
+          if domain.has_mx_record && domain.has_txt_record
+            .position-absolute.w-100.text-right
+              span.badge.badge-pill.badge-success.mt-3.mr-3
+                i.fa.fa-check
+                = " "
+                = t("Completed")
+          else
+            .position-absolute.w-100.text-right
+              span.badge.badge-pill.badge-danger.mt-3.mr-3
+                i.fa.fa-times
+                = " "
+                = t("Not Completed")
+          h1#setup-step-2.h5.card-header.text-left.text-md-center= t("Step 2")
+          .card-body
+            p.small.text-center!= t('Add these DNS records to your domain, wait a few minutes, and then click on the <strong class="text-success">Verify</strong> button below:')
+            .table-responsive
+              table.table.table-striped.table-bordered.table-hover.table-sm
+                thead.thead-dark
+                  tr
+                    th Name/Host/Alias
+                    th.text-center TTL
+                    th Type
+                    th Priority*
+                    th.text-left Value
+                tbody
+                  tr
+                    td.small "@", ".", or leave empty/blank if allowed.
+                    td.text-center: code.text-dark 3600
+                    td MX
+                    td: code.text-dark 10
+                    td.text-left: code.text-dark.text-nowrap mx1.forwardemail.net
+                  tr
+                    td.small "@", ".", or leave empty/blank if allowed.
+                    td.text-center: code.text-dark 3600
+                    td MX
+                    td: code.text-dark 10
+                    td.text-left: code.text-dark.text-nowrap mx2.forwardemail.net
+                  tr
+                    td.small "@", ".", or leave empty/blank if allowed.
+                    td.text-center: code.text-dark 3600
+                    td TXT
+                    td
+                    td.text-left
+                      code.text-dark.text-nowrap
+                        if domain.plan === 'free'
+                          = `${config.recordPrefix}=${user.email}`
+                        else
+                          = `${config.recordPrefix}-site-verification=${domain.verification_record}`
+            .alert.alert-danger.small
+              != t("Set the two MX type rows above as the <strong><u>only</u></strong> <strong>MX</strong> type rows.")
+              = " "
+              != t("If there are existing <strong>MX</strong> type rows, then you must delete them.")
+              span.d-inline.d-md-none
+                = " "
+                = t("Scroll right on the table above to see additional column content.")
+            form.ajax-form(
+              action=l(`/my-account/domains/${domain.name}/verify-records`),
+              method="POST"
+            )
+              input(type="hidden", name="_csrf", value=_csrf)
+              button.btn.btn-success.btn-lg(type="submit")
+                i.fa.fa-refresh
+                = " "
+                = t("Verify")
+          .card-footer.text-center.text-muted
+            small.font-italic
+              = "* "
+              = t("This column is only applicable for MX type rows.")
+    //-.
+      ul.list-inline
+        li.list-inline-item
+          button.btn.btn-link(
+            type="button",
+            data-placement="bottom",
+            data-toggle="tooltip",
+            data-title=domain.has_mx_record ? t("Verified") : t("Not Verified"),
+            class=domain.has_mx_record ? "text-success" : "text-danger"
+          )
+            i.fa.fa-4x(class=domain.has_mx_record ? "fa-check" : "fa-times")
+          .text-monospace.text-uppercase= t("MX")
+        li.list-inline-item
+          button.btn.btn-link(
+            type="button",
+            data-placement="bottom",
+            data-toggle="tooltip",
+            data-title=domain.has_txt_record ? t("Verified") : t("Not Verified"),
+            class=domain.has_txt_record ? "text-success" : "text-danger"
+          )
+            i.fa.fa-4x(class=domain.has_txt_record ? "fa-check" : "fa-times")
+          .text-monospace.text-uppercase= "TXT"
   .container-fluid.py-5
     .position-relative
       .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-        .col-12.d-flex
-          .p-3.p-md-5.m-2.mt-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("1. Set up your domain for email forwarding")
-            p.lead.mb-3= t("Do you need to configure (or re-configure) this domain name for email forwarding?")
-            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-              href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`),
-              target="_blank",
-              rel="noopener noreferrer"
-            )
-              = t("Configure your domain")
-              = " "
-              i.fa.fa-angle-double-right
+        //.
+          .col-12.d-flex
+            .p-3.p-md-5.m-2.mt-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+              h2.display-5.font-weight-bold.mb-3= t("Set up your domain for email forwarding")
+              p.lead.mb-3= t("Do you need to configure (or re-configure) this domain name for email forwarding?")
+              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+                href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`),
+                target="_blank",
+                rel="noopener noreferrer"
+              )
+                = t("Configure your domain")
+                = " "
+                i.fa.fa-angle-double-right
         .col-12.d-flex
           .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("2. Send emails with your domain using Gmail (optional)")
+            h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
             p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
             a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l(`/faq?domain=${domain.name}#how-to-send-mail-as-using-gmail`),
@@ -198,7 +227,7 @@ block body
               i.fa.fa-angle-double-right
         .col-12.d-flex
           .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("3. Still need help with something?")
+            h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
             p.lead.mb-3!= t("We are here to answer your questions, but please be sure to read our FAQ section first.")
             a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/help"),

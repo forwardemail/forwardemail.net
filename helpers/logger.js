@@ -13,6 +13,8 @@ const loggerConfig = require('../config/logger');
 // in order to make the client-side payload less kb
 const Logs = require('#models/log');
 
+const silentSymbol = Symbol.for('axe.silent');
+
 const logger = new Axe(loggerConfig);
 
 const ERR_NOT_CONNECTED_NAMES = new Set([
@@ -20,6 +22,17 @@ const ERR_NOT_CONNECTED_NAMES = new Set([
   'MongoExpiredSessionError',
   'MongoNotConnectedError'
 ]);
+
+//
+// NOTE: if you update this, then also update `app/models/log.js` similar usage
+//
+const IGNORED_CONTENT_TYPES = [
+  'application/javascript; charset=utf-8',
+  'application/manifest+json',
+  'font',
+  'image',
+  'text/css'
+];
 
 // <https://github.com/cabinjs/axe/#send-logs-to-http-endpoint>
 async function hook(err, message, meta) {
@@ -92,6 +105,28 @@ async function hook(err, message, meta) {
       return;
     logger.fatal(err, { ignore_hook: true });
   }
+}
+
+//
+// set the silent symbol in axe to true for successful asset responses
+//
+for (const level of logger.config.levels) {
+  logger.pre(level, function (err, message, meta) {
+    if (
+      meta.is_http &&
+      meta.response &&
+      meta.response.status_code &&
+      meta.response.status_code < 400 &&
+      (meta.response.status_code === 304 ||
+        (meta.response.headers &&
+          meta.response.headers['content-type'] &&
+          IGNORED_CONTENT_TYPES.some((c) =>
+            meta.response.headers['content-type'].startsWith(c)
+          )))
+    )
+      meta[silentSymbol] = true;
+    return [err, message, meta];
+  });
 }
 
 for (const level of ['error', 'fatal']) {

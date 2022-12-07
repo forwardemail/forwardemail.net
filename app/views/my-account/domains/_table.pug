@@ -77,7 +77,7 @@ table.table.table-hover.table-bordered
                           = t("DNS-based")
                           = ")"
                   .dropdown-divider
-                  a.dropdown-item(href=l(`/pricing?domain=${domain.name}`)).small.text-muted= t("See all plan features")
+                  a.dropdown-item.small.text-muted(href=l(`/pricing?domain=${domain.name}`))= t("See all plan features")
             else
               = t(titleize(humanize(domain.plan)))
           if domain.plan === 'free'
@@ -141,7 +141,7 @@ table.table.table-hover.table-bordered
                   )
                     i.fa.fa-fw.fa-cog
                     = " "
-                    = t("Setup")
+                    = t("Setup Forwarding")
               li.list-inline-item.d-block.d-lg-inline-block.mr-0.mr-md-1.my-2
                 a.btn.btn-dark.btn-block(
                   href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
@@ -159,7 +159,7 @@ table.table.table-hover.table-bordered
                   )
                     i.fa.fa-fw.fa-tools
                     = " "
-                    = t("Advanced Settings")
+                    = t("Settings")
               //-.
                 if domain.group === 'admin'
                   li.list-inline-item.d-block.d-lg-inline-block

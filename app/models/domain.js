@@ -696,6 +696,13 @@ async function getVerificationResults(domain, client = false) {
       Boom.badRequest(i18n.translateError('NAMESERVER_CHECK', domain.locale))
     );
 
+  if (!txt || !mx)
+    errors.unshift(
+      Boom.badRequest(
+        i18n.translateError('DNS_CHANGES_TAKE_TIME', domain.locale)
+      )
+    );
+
   return { txt, mx, errors: _.uniqBy(errors, 'message') };
 }
 

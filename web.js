@@ -38,11 +38,13 @@ graceful.listen();
     if (process.send) process.send('ready');
     const { port } = web.server.address();
     logger.info(
-      `Lad web server listening on ${port} (LAN: ${ip.address()}:${port})`
+      `Lad web server listening on ${port} (LAN: ${ip.address()}:${port})`,
+      { hide_meta: true }
     );
     if (config.env === 'development')
       logger.info(
-        `Please visit ${config.urls.web} in your browser for testing`
+        `Please visit ${config.urls.web} in your browser for testing`,
+        { hide_meta: true }
       );
     await mongoose.connect();
   } catch (err) {
