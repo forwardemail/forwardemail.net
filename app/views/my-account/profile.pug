@@ -8,7 +8,6 @@ block body
           h5.modal-title= t("Change password")
         form.ajax-form.confirm-prompt.mt-3(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
-          input(type="hidden", name="_csrf", value=_csrf)
           input(type="hidden", name="change_password", value="true")
           .modal-body
             if user[config.userFields.hasSetPassword]
@@ -57,7 +56,6 @@ block body
                   method="POST"
                 )
                   input(type="hidden", name="_method", value="PUT")
-                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-dark.btn-sm(type="submit")= t("Resend email")
               li.list-inline-item
                 form.ajax-form.confirm-prompt(
@@ -65,13 +63,11 @@ block body
                   method="POST"
                 )
                   input(type="hidden", name="_method", value="PUT")
-                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-danger.btn-sm(type="submit")= t("Cancel change")
     .row
       .col-md
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
-          input(type="hidden", name="_csrf", value=_csrf)
           .card.border-dark
             h4.card-header.bg-dark.text-white= t("Personal Information")
             .card-body.pb-0
@@ -111,15 +107,15 @@ block body
                 label(for="input-family-name")= t("Last name")
               if user[config.userFields.hasSetPassword]
                 .form-group
-                  a.text-danger(
+                  a.text-danger.small(
                     href="#",
                     role="button",
                     data-toggle="modal",
                     data-target="#modal-change-password"
-                  ).small= t("Need to change your password?")
+                  )= t("Need to change your password?")
               if domains && domains.filter(domain => !domain.is_global).length > 0
                 hr
-                .alert.alert-info.small= t('If you set a default domain, then you will be redirected to its section after login.')
+                .alert.alert-info.small= t("If you set a default domain, then you will be redirected to its section after login.")
                 .form-group.floating-label
                   select#input-default-domain.form-control(
                     name=config.userFields.defaultDomain
@@ -137,13 +133,12 @@ block body
             .card-footer
               button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
         .alert.alert-secondary.small.mt-3.mb-0.text-center
-          = t('Need to unsubscribe or cancel your account?')
-          = ' '
-          a(href=l('/my-account/security')).alert-link= t('Delete your account')
+          = t("Need to unsubscribe or cancel your account?")
+          = " "
+          a.alert-link(href=l("/my-account/security"))= t("Delete your account")
       .col-md.mt-3.mt-md-0
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
-          input(type="hidden", name="_csrf", value=_csrf)
           .card.border-dark
             h4.card-header.bg-dark.text-white= t("Company Information")
             .card-body.pb-0
@@ -153,7 +148,7 @@ block body
                   type="email",
                   name=config.userFields.receiptEmail,
                   value=user[config.userFields.receiptEmail],
-                  placeholder="receipts@example.com",
+                  placeholder="receipts@example.com"
                 )
                 label(for="input-receipt-email")= t("Receipt email address")
               hr

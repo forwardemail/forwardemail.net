@@ -27,7 +27,6 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
           if onboardText
             p.text-center.mb-0.text-muted!= onboardText
           form.ajax-form.pt-4.mb-3(action=onboardFormAction, method="POST")
-            input(type="hidden", name="_csrf", value=_csrf)
             .form-row
               .col-12.col-md-6.offset-md-3
                 .form-group.floating-label
@@ -58,7 +57,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                   )
                   label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" data-toggle="modal" data-target="#modal-onboard-pricing-video" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a>', l("/pricing"))
                 if user
-                  input(type='hidden', name='create_domain', value='true')
+                  input(type="hidden", name="create_domain", value="true")
                   //-.
                     .form-check.form-group
                       input#input-create-domain.form-check-input(

@@ -69,12 +69,6 @@ html.h-100(lang=locale)
       meta(name="msapplication-TileColor", content=config.appColor)
       meta(name="theme-color", content="#ffffff")
 
-      //- csrf token
-      if _csrf
-        meta(name="csrf-token", content=_csrf)
-        script.
-          window._csrf = "#{_csrf}";
-
       //- associate with wikipedia
       script(type="application/ld+json").
         {
@@ -224,7 +218,7 @@ html.h-100(lang=locale)
 
         //- hcaptcha (hidden from bots)
         if config.hcaptchaEnabled
-          script(defer, src=`https://hcaptcha.com/1/api.js?hl=${locale}`)
+          script(defer, src=`https://hcaptcha.com/1/api.js?hl=${locale}&recaptchacompat=off`)
 
   body.d-flex.flex-column.min-h-100(role="document")
     - const isHelp = ctx && ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";

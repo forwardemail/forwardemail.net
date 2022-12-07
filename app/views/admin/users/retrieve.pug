@@ -7,7 +7,6 @@ block body
         include ../../_breadcrumbs
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
-          input(type="hidden", name="_csrf", value=_csrf)
           .card.border-dark
             h4.card-header.bg-dark.text-white= result.id
             .card-body

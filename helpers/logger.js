@@ -3,6 +3,7 @@ const Cabin = require('cabin');
 const safeStringify = require('fast-safe-stringify');
 const cuid = require('cuid');
 const superagent = require('superagent');
+
 // this package is ignored in `browser` config in `package.json`
 // in order to make the client-side payload less kb
 const mongoose = require('mongoose');
@@ -24,7 +25,8 @@ const ERR_NOT_CONNECTED_NAMES = new Set([
 ]);
 
 //
-// NOTE: if you update this, then also update `app/models/log.js` similar usage
+// NOTE: if you update the two constants below,
+//       then also update `app/models/log.js` similar usage
 //
 const IGNORED_CONTENT_TYPES = [
   'application/javascript; charset=utf-8',
@@ -33,6 +35,17 @@ const IGNORED_CONTENT_TYPES = [
   'image',
   'text/css'
 ];
+// const NODEMAILER_LOGGER_COMPONENTS = new Set([
+//   'smtp-transport',
+//   'sendmail',
+//   'OAuth2',
+//   'smtp-connection',
+//   'stream-transport',
+//   'json-transport',
+//   'mail',
+//   'ses-transport',
+//   'smtp-pool'
+// ]);
 
 // <https://github.com/cabinjs/axe/#send-logs-to-http-endpoint>
 async function hook(err, message, meta) {
@@ -116,15 +129,40 @@ for (const level of logger.config.levels) {
       meta.is_http &&
       meta.response &&
       meta.response.status_code &&
+      // ignore common assets for successful requests
+      // (we want to see in the console the ones that errored, e.g. 5xx)
       meta.response.status_code < 400 &&
+      // ignore common assets that were not modified (cached)
       (meta.response.status_code === 304 ||
+        // ignore common assets like images and fonts
         (meta.response.headers &&
           meta.response.headers['content-type'] &&
           IGNORED_CONTENT_TYPES.some((c) =>
             meta.response.headers['content-type'].startsWith(c)
-          )))
+          )) ||
+        // ignore JavaScript and CSS source map files
+        (meta.request &&
+          meta.request.url &&
+          meta.response.headers &&
+          meta.response.headers['content-type'] &&
+          meta.response.headers['content-type'].startsWith(
+            'application/json'
+          ))) &&
+      (meta.request.url.endsWith('.css.map') ||
+        meta.request.url.endsWith('.js.map'))
     )
       meta[silentSymbol] = true;
+    //
+    // TODO: we want to ignore nodemailer transport shared logger
+    // note that this list of constants was found from using ripgrep
+    // (e.g. we ran `rg "component" node_modules/nodemailer` to get the list)
+    // <https://github.com/nodemailer/nodemailer/issues/1489>
+    //
+    // if (
+    //   isSANB(meta.component) &&
+    //   NODEMAILER_LOGGER_COMPONENTS.has(meta.component)
+    // )
+    //   meta[silentSymbol] = true;
     return [err, message, meta];
   });
 }

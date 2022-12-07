@@ -18,7 +18,6 @@ block body
             action=l(`${config.otpRoutePrefix}/recovery`),
             method="POST"
           )
-            input(type="hidden", name="_csrf", value=_csrf)
             p= t("If you can't access your authenticator app or lose your recovery keys, then you can submit a request for your account to be unlocked.")
             ol
               li= t("Verify access to your email address with a code emailed to you.")
@@ -30,7 +29,6 @@ block body
     .row
       .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
         form.ajax-form(action=ctx.path, method="POST", autocomplete="off")
-          input(type="hidden", name="_csrf", value=_csrf)
           .form-group.floating-label
             input#input-text.form-control.form-control-lg(
               type="text",

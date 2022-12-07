@@ -17,7 +17,6 @@ mixin sortHeader(name, text, tableSelector)
     data-search-params="sort"
   )
     if tableSelector
-      input(type="hidden", name="_csrf", value=_csrf)
       input(type="hidden", name="sort", value=sort ? sort : "")
     button.btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold(
       type="submit"

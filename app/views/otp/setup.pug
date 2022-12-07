@@ -20,7 +20,6 @@ block body
               else
                 = "    "
         form(action=l("/my-account/recovery-keys"), method="POST")
-          input(type="hidden", name="_csrf", value=_csrf)
           .d-flex.btn-group(role="group")
             button.btn.btn-dark.rounded-top-0(type="submit")
               i.fa.fa-file-download
@@ -40,7 +39,6 @@ block body
           autocomplete="off",
           class=user[config.userFields.otpRecoveryKeys] ? "" : "confirm-prompt"
         )
-          input(type="hidden", name="_csrf", value=_csrf)
           if user[config.userFields.hasSetPassword]
             .form-group.floating-label.mt-4
               input#input-password.form-control.form-control-lg(

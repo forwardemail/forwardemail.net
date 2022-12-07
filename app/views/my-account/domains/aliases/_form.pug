@@ -1,5 +1,4 @@
 - const domainQuery = isSANB(ctx.query.domain) && (validator.isIP(ctx.query.domain) || isFQDN(ctx.query.domain)) ? ctx.query.domain : false;
-input(type="hidden", name="_csrf", value=_csrf)
 if alias
   input(type="hidden", name="_method", value="PUT")
 .form-row
@@ -42,10 +41,7 @@ if alias
     .form-group.col-md-6
       label(for="select-alias-domain")
         = t("Domain Name")
-      select#select-alias-domain.form-control(
-        required,
-        name="domain"
-      )
+      select#select-alias-domain.form-control(required, name="domain")
         each domain, i in domains
           option(
             value=domain.id,
@@ -93,10 +89,7 @@ if alias
     = t("Alias Recipients")
     = " "
     span.text-danger= t("(required)")
-  textarea#textarea-alias-recipients.form-control(
-    name="recipients",
-    rows=1
-  )= alias && Array.isArray(alias.recipients) ? alias.recipients.join(", ") : user.email
+  textarea#textarea-alias-recipients.form-control(name="recipients", rows=1)= alias && Array.isArray(alias.recipients) ? alias.recipients.join(", ") : user.email
   p.form-text.small.text-black-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
 .form-group
   label(for="textarea-alias-description")

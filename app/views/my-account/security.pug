@@ -18,7 +18,6 @@ block body
             action=l(`${config.otpRoutePrefix}/disable`),
             method="POST"
           )
-            input(type="hidden", name="_csrf", value=_csrf)
             if user[config.userFields.hasSetPassword]
               .form-group.floating-label
                 input#input-password.form-control.form-control-lg(
@@ -55,7 +54,6 @@ block body
                 method="POST"
               )
                 input(type="hidden", name="_method", value="DELETE")
-                input(type="hidden", name="_csrf", value=_csrf)
                 button.btn.btn-sm.btn-danger(type="submit")= t("Delete Account")
         if passport && passport.otp
           .card.border-dark.mb-3
@@ -65,7 +63,6 @@ block body
                 h5= t("Recovery keys")
                 p= t("Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.")
                 form(action=l("/my-account/recovery-keys"), method="POST")
-                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-secondary.btn-lg(type="submit")= t("Download recovery keys")
                 button.btn.btn-danger.btn-lg.mt-3(
                   data-toggle="modal",
@@ -114,7 +111,6 @@ block body
               li.list-inline-item
                 form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
                   input(type="hidden", name="_method", value="DELETE")
-                  input(type="hidden", name="_csrf", value=_csrf)
                   button.btn.btn-danger(type="submit")= t("Reset API Token")
               li.list-inline-item
                 a.btn.btn-dark(href=l("/email-forwarding-api"))= t("Learn more")

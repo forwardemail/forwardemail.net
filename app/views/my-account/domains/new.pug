@@ -28,7 +28,6 @@ block body
     .row
       .col-sm-12.col-md-12.col-lg-8.offset-lg-2
         form.ajax-form(action=ctx.path, method="POST")
-          input(type="hidden", name="_csrf", value=_csrf)
           if isSANB(ctx.query.plan) && ['free','enhanced_protection','team'].includes(ctx.query.plan)
             input(type="hidden", name="plan", value=ctx.query.plan)
           .form-group.floating-label

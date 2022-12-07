@@ -51,7 +51,6 @@ block body
               method="POST",
               disabled=isTeamDisabled
             )
-              input(type="hidden", name="_csrf", value=_csrf)
               .form-group
                 label(for="input-invite-email")= t("Email address")
                 input#input-invite-email.form-control(
@@ -137,7 +136,6 @@ block body
                 method="POST"
               )
                 input(type="hidden", name="_method", value="DELETE")
-                input(type="hidden", name="_csrf", value=_csrf)
                 button.btn.btn-sm.btn-danger(type="submit")
                   i.fa.fa-trash
                   = " "
@@ -176,7 +174,7 @@ block body
                           = t("DNS-based")
                           = ")"
                   .dropdown-divider
-                  a.dropdown-item(href=l(`/pricing?domain=${domain.name}`)).small.text-muted= t("See all plan features")
+                  a.dropdown-item.small.text-muted(href=l(`/pricing?domain=${domain.name}`))= t("See all plan features")
         if domain.group === 'admin'
           - const hasInvites = Array.isArray(domain.invites) && domain.invites.length > 0 && domain.plan === "team";
           .card.border-dark.mb-3
@@ -212,11 +210,6 @@ block body
                                 )
                                   input(
                                     type="hidden",
-                                    name="_csrf",
-                                    value=_csrf
-                                  )
-                                  input(
-                                    type="hidden",
                                     name="_method",
                                     value="PUT"
                                   )
@@ -236,11 +229,6 @@ block body
                                   method="POST",
                                   disabled=isTeamDisabled
                                 )
-                                  input(
-                                    type="hidden",
-                                    name="_csrf",
-                                    value=_csrf
-                                  )
                                   input(
                                     type="hidden",
                                     name="_method",
@@ -289,11 +277,6 @@ block body
                                   )
                                     input(
                                       type="hidden",
-                                      name="_csrf",
-                                      value=_csrf
-                                    )
-                                    input(
-                                      type="hidden",
                                       name="_method",
                                       value="DELETE"
                                     )
@@ -329,7 +312,6 @@ block body
             disabled=isDisabled
           )
             input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=_csrf)
             input(
               type="hidden",
               name="_section",
@@ -403,7 +385,6 @@ block body
             disabled=isDisabled
           )
             input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=_csrf)
             h4.card-header.bg-dark.text-white= t("Custom SMTP Port Forwarding")
             .card-body
               +planRequired(false)
@@ -418,7 +399,7 @@ block body
                   aria-describedby="help-port"
                 )
                 label(for="input-port")= t("Port number (SMTP)")
-              .alert.alert-secondary.small#help-port
+              #help-port.alert.alert-secondary.small
                 = t("Do not modify this unless you know what you are doing.  This will forward all emails to the specific port for all aliases and their recipients.  For example, if you are forwarding to info@example.com, and input port number 1337 here, then our server will forward email to example.com on port 1337 (as opposed to the standard SMTP port of 25).")
                 if domain.plan === 'free'
                   = " "
@@ -461,7 +442,6 @@ block body
             disabled=isDisabled
           )
             input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=_csrf)
             input(
               type="hidden",
               name="_section",
@@ -502,7 +482,6 @@ block body
             disabled=isCustomVerificationDisabled
           )
             input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="_csrf", value=_csrf)
             input(
               type="hidden",
               name="_section",

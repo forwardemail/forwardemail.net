@@ -473,10 +473,6 @@ config.email.transport = nodemailer.createTransport({
   debug: boolean(env.TRANSPORT_DEBUG)
 });
 
-// NOTE: override logger here
-// config.email.transport.logger = logger;
-// config.email.transport.transporter.logger = logger;
-
 config.email.views = { ...config.views };
 config.email.views.root = path.join(__dirname, '..', 'emails');
 config.email.juiceResources.webResources = {
