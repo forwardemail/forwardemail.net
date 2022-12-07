@@ -147,9 +147,9 @@ for (const level of logger.config.levels) {
           meta.response.headers['content-type'] &&
           meta.response.headers['content-type'].startsWith(
             'application/json'
-          ))) &&
-      (meta.request.url.endsWith('.css.map') ||
-        meta.request.url.endsWith('.js.map'))
+          ) &&
+          (meta.request.url.endsWith('.css.map') ||
+            meta.request.url.endsWith('.js.map'))))
     )
       meta[silentSymbol] = true;
     //
