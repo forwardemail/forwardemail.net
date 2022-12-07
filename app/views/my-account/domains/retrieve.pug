@@ -4,13 +4,13 @@ block body
   .fixed-bottom.text-right
     .bg-light.rounded.d-inline-block.p-2.mr-2.mb-2.border.border-dark
       ul.list-inline.mb-0
-        li.list-inline-item.mr-0
+        li.list-inline-item
           a.btn.btn-sm.btn-outline-dark(href="#setup-step-1")
             span.badge.badge-pill.badge-primary.mr-1
               i.fa.fa-external-link
             = t("Step 1")
-        li.list-inline-item.mr-0: i.fa.fa-angle-right.align-middle
-        li.list-inline-item.mr-0
+        li.list-inline-item: i.fa.fa-angle-right.align-middle
+        li.list-inline-item
           a.btn.btn-sm.btn-outline-dark(href="#setup-step-2")
             span.badge.badge-pill.mr-1(
               class=domain.has_mx_record && domain.has_txt_record ? "badge-success" : "badge-danger"
@@ -20,7 +20,7 @@ block body
               else
                 i.fa.fa-times
             = t("Step 2")
-        li.list-inline-item.mr-0: i.fa.fa-angle-right.align-middle
+        li.list-inline-item: i.fa.fa-angle-right.align-middle
         li.list-inline-item
           form.ajax-form(
             action=l(`/my-account/domains/${domain.name}/verify-records`),
