@@ -520,6 +520,8 @@ async function getVerificationResults(domain, client = false) {
         }
       } catch (err) {
         logger.warn(err);
+        /*
+        // TODO: ENODATA in particular won't work for subdomains (only root)
         if (err.code === 'ENOTFOUND') {
           const error = Boom.badRequest(
             i18n.translateError('ENOTFOUND', domain.locale)
@@ -539,6 +541,7 @@ async function getVerificationResults(domain, client = false) {
           error.code = err.code;
           errors.push(error);
         }
+        */
       }
     })(),
     //
