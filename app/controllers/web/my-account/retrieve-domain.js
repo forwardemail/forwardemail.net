@@ -104,7 +104,7 @@ async function retrieveDomain(ctx, next) {
 
   Object.assign(ctx.state.meta, data);
 
-  // dynamically load the DNS Managment by Registrar table from FAQ
+  // dynamically load the DNS Management by Registrar table from FAQ
   try {
     const html = pug.renderFile(
       path.join(config.views.root, 'faq', 'index.pug'),

@@ -56,7 +56,7 @@ async function verifyRecords(ctx) {
     // reset redis cache for web and smtp
     if (ctx.client)
       await Promise.all(
-        ['MX', 'TXT'].map(async (type) => {
+        ['NS', 'MX', 'TXT'].map(async (type) => {
           try {
             await app.resolver(domain.name, type, true, ctx.client);
           } catch (err) {
@@ -68,7 +68,7 @@ async function verifyRecords(ctx) {
     // set locale of domain
     domain.locale = ctx.locale;
 
-    const { txt, mx, errors } = await Domains.getVerificationResults(
+    const { ns, txt, mx, errors } = await Domains.getVerificationResults(
       domain,
       ctx.client
     );
@@ -89,6 +89,7 @@ async function verifyRecords(ctx) {
       // set the values (since we are skipping some verification)
       domain.has_txt_record = txt;
       domain.has_mx_record = mx;
+      if (ns) domain.ns = ns;
 
       // skip verification since we just verified it
       domain.skip_verification = true;

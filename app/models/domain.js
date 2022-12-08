@@ -240,7 +240,14 @@ const Domain = new mongoose.Schema({
       trim: true,
       validate: (value) => isURL(value) || value === ''
     }
-  }
+  },
+  // nameservers (Array of either IP or FQDN)
+  ns: [
+    {
+      type: String,
+      validate: (value) => isIP(value) || isFQDN(value)
+    }
+  ]
 });
 
 Domain.plugin(captainHook);
@@ -325,7 +332,7 @@ Domain.pre('validate', async function (next) {
     // (or if we already performed the verification results lookup)
     if (domain.skip_verification) return next();
 
-    const { txt, mx, errors } = await getVerificationResults(
+    const { ns, txt, mx, errors } = await getVerificationResults(
       domain,
       domain.client
     );
@@ -351,6 +358,7 @@ Domain.pre('validate', async function (next) {
         domain.multiple_exchanges_sent_at = undefined;
       domain.has_txt_record = txt;
       domain.has_mx_record = mx;
+      if (ns) domain.ns = ns;
     }
 
     // store when we last checked it
@@ -489,10 +497,50 @@ async function getVerificationResults(domain, client = false) {
 
   const errors = [];
 
+  let ns = false;
   let txt = false;
   let mx = false;
 
   await Promise.all([
+    //
+    // fetch NS records
+    // (we store these in order to render helpful animated gifs and videos for user onboarding)
+    // (and we also can use these to statistically determine which registrar and DNS providers our users use)
+    //
+    (async function () {
+      try {
+        let records = await app.resolver(domain.name, 'NS', false, client);
+        if (Array.isArray(records) && records.length > 0) {
+          // filter records for IP and FQDN only values
+          records = records.filter(
+            (record) => (isSANB(record) && isIP(record)) || isFQDN(record)
+          );
+          // only set `ns` if we have at least one record
+          if (records.length > 1) ns = records;
+        }
+      } catch (err) {
+        logger.warn(err);
+        if (err.code === 'ENOTFOUND') {
+          const error = Boom.badRequest(
+            i18n.translateError('ENOTFOUND', domain.locale)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code === 'ENODATA') {
+          const error = Boom.badRequest(
+            i18n.translateError('MISSING_DNS_NS', domain.locale)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        }
+      }
+    })(),
     //
     // validate TXT records
     //
@@ -703,7 +751,7 @@ async function getVerificationResults(domain, client = false) {
       )
     );
 
-  return { txt, mx, errors: _.uniqBy(errors, 'message') };
+  return { ns, txt, mx, errors: _.uniqBy(errors, 'message') };
 }
 
 Domain.statics.getVerificationResults = getVerificationResults;

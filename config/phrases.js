@@ -159,6 +159,7 @@ module.exports = {
     'Domain is not a registered domain name. <a class="font-weight-bold" href="/domain-registration">Click here to register it now</a>.',
   MISSING_DNS_TXT:
     'Domain is missing required DNS <span class="notranslate">TXT</span> records. <a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.',
+  MISSING_DNS_NS: 'Domain does not have DNS nameservers configured.',
   SINGLE_VERIFICATION_RECORD_REQUIRED:
     'Domain has multiple verification records.  Please ensure there is only one verification record that exists.',
   MULTIPLE_PORT_RECORDS:
@@ -172,7 +173,7 @@ module.exports = {
   MISSING_DNS_MX:
     '<p class="mb-0">Domain is missing required DNS MX records of:</p><ul class="markdown-body ml-0 mr-0 mb-3"><span class="notranslate">%s</span></ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren\'t the same). <a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.</p>',
   DNS_CHANGES_TAKE_TIME:
-    '<p class="mb-0"><strong>Making changes to your DNS records takes time to propagate throughout the Internet.  We have optimized the speed as much as possible, however <u>you may still need to wait a few minutes</u> and then try again.</strong></p>',
+    '<p class="mb-0"><strong>Making changes to your DNS records takes time to propagate throughout the Internet. <span class="text-danger">You may need to wait a few minutes</span> and then try again.</strong></p>',
   MISSING_VERIFICATION_RECORD:
     'Domain is missing required DNS <span class="notranslate">TXT</span> record of: <span class="notranslate">%s</span>',
   INCORRECT_VERIFICATION_RECORD:
