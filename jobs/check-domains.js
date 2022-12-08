@@ -130,7 +130,7 @@ async function mapper(id) {
     const { has_mx_record: mxBefore, has_txt_record: txtBefore } = domain;
 
     // get verification results (and any errors too)
-    const { txt, mx, errors } = await Domains.getVerificationResults(
+    const { ns, txt, mx, errors } = await Domains.getVerificationResults(
       domain,
       client
     );
@@ -167,6 +167,7 @@ async function mapper(id) {
       // set the values (since we are skipping some verification)
       domain.has_txt_record = txt;
       domain.has_mx_record = mx;
+      if (ns) domain.ns = ns;
     }
 
     // store when we last checked it
@@ -176,7 +177,8 @@ async function mapper(id) {
       $set: {
         last_checked_at: domain.last_checked_at,
         has_txt_record: domain.has_txt_record,
-        has_mx_record: domain.has_mx_record
+        has_mx_record: domain.has_mx_record,
+        ...(ns ? { ns } : {})
       }
     });
 
