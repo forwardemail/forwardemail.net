@@ -16,6 +16,7 @@ const superagent = require('superagent');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isIP, isEmail, isPort, isURL } = require('validator');
+const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 
 const pkg = require('../../package.json');
 const Users = require('./user');
@@ -507,6 +508,10 @@ async function getVerificationResults(domain, client = false) {
     // (we store these in order to render helpful animated gifs and videos for user onboarding)
     // (and we also can use these to statistically determine which registrar and DNS providers our users use)
     //
+    // NOTE: this first attempts to fetch the domain name (regardless if it was subdomain or root)
+    //       but if it was a subdomain and had no NS then it parses the parent
+    //
+    // eslint-disable-next-line complexity
     (async function () {
       try {
         let records = await app.resolver(domain.name, 'NS', false, client);
@@ -519,29 +524,80 @@ async function getVerificationResults(domain, client = false) {
           if (records.length > 1) ns = records;
         }
       } catch (err) {
-        logger.warn(err);
-        /*
-        // TODO: ENODATA in particular won't work for subdomains (only root)
-        if (err.code === 'ENOTFOUND') {
-          const error = Boom.badRequest(
-            i18n.translateError('ENOTFOUND', domain.locale)
-          );
-          error.code = err.code;
-          errors.push(error);
-        } else if (err.code === 'ENODATA') {
-          const error = Boom.badRequest(
-            i18n.translateError('MISSING_DNS_NS', domain.locale)
-          );
-          error.code = err.code;
-          errors.push(error);
-        } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
-          const error = Boom.badRequest(
-            i18n.translateError('DNS_RETRY', domain.locale, err.code)
-          );
-          error.code = err.code;
-          errors.push(error);
+        try {
+          const parseResult = parseDomain(fromUrl(domain.name));
+          const rootDomain = (
+            parseResult.type === ParseResultType.Listed &&
+            _.isObject(parseResult.icann) &&
+            isSANB(parseResult.icann.domain)
+              ? `${
+                  parseResult.icann.domain
+                }.${parseResult.icann.topLevelDomains.join('.')}`
+              : domain.name
+          ).toLowerCase();
+          if (rootDomain === domain.name) {
+            logger.warn(err);
+            if (err.code === 'ENOTFOUND') {
+              const error = Boom.badRequest(
+                i18n.translateError('ENOTFOUND', domain.locale)
+              );
+              error.code = err.code;
+              errors.push(error);
+            } else if (err.code === 'ENODATA') {
+              const error = Boom.badRequest(
+                i18n.translateError('MISSING_DNS_NS', domain.locale)
+              );
+              error.code = err.code;
+              errors.push(error);
+            } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
+              const error = Boom.badRequest(
+                i18n.translateError('DNS_RETRY', domain.locale, err.code)
+              );
+              error.code = err.code;
+              errors.push(error);
+            } else {
+              errors.push(err);
+            }
+          } else if (err.code === 'ENOTFOUND' || err.code === 'ENODATA') {
+            //
+            // NOTE: we only want to do this if ENOTFOUND or ENODATA
+            //
+            // perform lookup on root domain and use those values instead
+            //
+            let records = await app.resolver(rootDomain, 'NS', false, client);
+            if (Array.isArray(records) && records.length > 0) {
+              // filter records for IP and FQDN only values
+              records = records.filter(
+                (record) => (isSANB(record) && isIP(record)) || isFQDN(record)
+              );
+              // only set `ns` if we have at least one record
+              if (records.length > 1) ns = records;
+            }
+          }
+        } catch (err) {
+          logger.warn(err);
+          if (err.code === 'ENOTFOUND') {
+            const error = Boom.badRequest(
+              i18n.translateError('ENOTFOUND', domain.locale)
+            );
+            error.code = err.code;
+            errors.push(error);
+          } else if (err.code === 'ENODATA') {
+            const error = Boom.badRequest(
+              i18n.translateError('MISSING_DNS_NS', domain.locale)
+            );
+            error.code = err.code;
+            errors.push(error);
+          } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
+            const error = Boom.badRequest(
+              i18n.translateError('DNS_RETRY', domain.locale, err.code)
+            );
+            error.code = err.code;
+            errors.push(error);
+          } else {
+            errors.push(err);
+          }
         }
-        */
       }
     })(),
     //
