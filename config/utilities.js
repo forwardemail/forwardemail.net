@@ -79,7 +79,7 @@ const NS_PROVIDERS = {
     'domains.com',
     '@'
   ],
-  'gandi.net': ['Gandi.net', 'https://id.gandi.net/login'],
+  'gandi.net': ['Gandi.net', 'https://id.gandi.net/login', 'gandi', ''],
   'googledomains.com': [
     'Google Domains',
     'https://domains.google.com/registrar/',

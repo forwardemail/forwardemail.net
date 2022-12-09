@@ -59,11 +59,11 @@ block body
             data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
           )
   .min-vh-80.text-center.d-flex.flex-column
-    .container.my-auto.pt-3
+    .container-fluid.my-auto.pt-3
       .row
-        .col-12.col-lg-10.offset-lg-1
+        .col-12.col-lg-6.pl-lg-5
           h1.display-4.font-weight-bold.mb-3
-            != t("Email for your domain")
+            != t("Get free and unlimited custom domain emails")
           p.d-block.mb-3.text-muted.font-weight-bold
             != t("Forward any email @your-domain.com, create unlimited aliases, and send email as @your-domain.com.")
           form.ajax-form(action=ctx.path, method="POST")
@@ -94,16 +94,31 @@ block body
                 data-error-callback="hCaptchaError"
               )
             button.btn.btn-success.btn-lg.btn-block(type="submit")
-              = t("Get Started")
+              = t("Setup Forwarding")
               = " "
               i.fa.fa-angle-double-right
           p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
-          a.text-decoration-none.mt-5.d-block.d-md-none.text-monospace.text-uppercase.text-dark(
+        .col-lg-6.d-none.d-lg-block
+          .lazyframe.border.border-dark.d-inline-block(
+            data-vendor="youtube_nocookie",
+            title=t("How to create unlimited email addresses and aliases"),
+            style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
+            data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
+          )
+          ul.list-inline.mt-3.mb-0
+            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
+            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
+            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
+            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
+            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
+          .text-muted.small.text-uppercase.text-monospace.mt-3= t("100% open-source since 2017")
+        .col-12
+          a.text-decoration-none.mt-3.d-block.d-md-none.text-monospace.text-uppercase.text-dark(
             href="#learn-more"
           )
             i.fa.fa-angle-down
             = " "
-            = t("Learn more")
+            = t("Watch Video")
 
     a.text-decoration-none.pt-1.pb-4.pt-md-4.d-none.d-md-block.text-monospace.text-uppercase.text-dark(
       href="#learn-more"
@@ -116,7 +131,7 @@ block body
       .h2.display-3.mb-1.text-danger
         i.fab.fa-youtube
       h1.display-4.text-uppercase.font-weight-bold!= t("Made for <u>you</u>.")
-    .row
+    .row.d-block.d-lg-none
       .col-md.text-center.d-block.mb-5
         .lazyframe.border.border-dark.d-inline-block(
           data-vendor="youtube_nocookie",
@@ -161,7 +176,7 @@ block body
             = t("Shopify Email Forwarding")
           else
             = t("Businesses")
-  #happy-users.container.py-5.d-block
+  #happy-users.container-fluid.py-5.d-block
     .row.text-center.d-block.mb-5
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
