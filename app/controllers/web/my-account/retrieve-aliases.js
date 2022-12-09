@@ -1,8 +1,19 @@
 const RE2 = require('re2');
+const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 
-function retrieveAliases(ctx, next) {
+const config = require('#config');
+const logger = require('#helpers/logger');
+
+const app = new ForwardEmail({
+  logger,
+  recordPrefix: config.recordPrefix,
+  srs: { secret: 'null' },
+  redis: false
+});
+
+async function retrieveAliases(ctx, next) {
   // if there aren't any aliases yet
   // then prompt the user to create one and flash a message
   // otherwise take them to the next middleware
@@ -27,6 +38,30 @@ function retrieveAliases(ctx, next) {
     }
 
     return next();
+  }
+
+  // render the IMPORT TXT button conditionally
+  ctx.state.hasExistingTXT = false;
+  try {
+    const records = await app.resolver(
+      ctx.state.domain.name,
+      'TXT',
+      false,
+      ctx.client
+    );
+    const existingTXT = [];
+    for (const record of records) {
+      if (_.isArray(record)) {
+        for (const str of record) {
+          // eslint-disable-next-line max-depth
+          if (str.includes('forward-email=')) existingTXT.push(str);
+        }
+      }
+    }
+
+    if (existingTXT.length > 0) ctx.state.hasExistingTXT = true;
+  } catch (err) {
+    ctx.logger.error(err);
   }
 
   ctx.flash('custom', {

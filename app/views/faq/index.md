@@ -264,7 +264,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <th class="text-center">TTL</th>
       <th>Type</th>
       <th>Priority</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -315,7 +315,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -356,7 +356,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -387,7 +387,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -418,7 +418,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -473,7 +473,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -504,7 +504,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -535,7 +535,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -558,7 +558,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1071,7 +1071,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1100,7 +1100,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1150,7 +1150,7 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1171,7 +1171,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1444,7 +1444,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1468,7 +1468,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1492,7 +1492,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1516,7 +1516,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1540,7 +1540,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1585,7 +1585,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1614,7 +1614,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1643,7 +1643,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1669,7 +1669,7 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1690,7 +1690,7 @@ Or, you could specify them in two separate lines, such as this:
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1724,7 +1724,7 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>
@@ -1745,7 +1745,7 @@ Or, you could specify them in two separate lines, such as this:
       <th>Name/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Answer/Value</th>
     </tr>
   </thead>
   <tbody>

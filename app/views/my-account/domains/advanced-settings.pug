@@ -127,7 +127,7 @@ block body
       .col
         if domain.group === 'admin'
           .card.border-dark.mb-3
-            h4.card-header.bg-dark.text-white= t("Delete Domain")
+            h2.h6.card-header= t("Delete Domain")
             .card-body
               .alert.alert-danger.small.mb-0= t("Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.")
             .card-footer.text-right
@@ -142,7 +142,7 @@ block body
                   = t("Delete Domain")
         if domain.group === 'admin'
           .card.border-dark.mb-3
-            h4.card-header.bg-dark.text-white= t("Current Plan")
+            h2.h6.card-header= t("Current Plan")
             .card-body
               .alert.alert-success.small.mb-0!= t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a class="alert-link" href="%s">Billing</a> page and our <a class="alert-link" href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/pricing?domain=${domain.name}`))
             .card-footer.text-right
@@ -178,7 +178,7 @@ block body
         if domain.group === 'admin'
           - const hasInvites = Array.isArray(domain.invites) && domain.invites.length > 0 && domain.plan === "team";
           .card.border-dark.mb-3
-            h4.card-header.bg-dark.text-white= t("Manage Team")
+            h2.h6.card-header= t("Manage Team")
             .card-body
               +planRequired(true)
               .alert.alert-info.small= t("Members have shared access to this domain, and you can invite new members, remove existing members, or manage permissions for them below.")
@@ -317,7 +317,7 @@ block body
               name="_section",
               value="spam_scanner_settings"
             )
-            h4.card-header.bg-dark.text-white= t("Spam Scanner Settings")
+            h2.h6.card-header= t("Spam Scanner Settings")
             .card-body
               +planRequired(false)
               p.card-text
@@ -385,7 +385,7 @@ block body
             disabled=isDisabled
           )
             input(type="hidden", name="_method", value="PUT")
-            h4.card-header.bg-dark.text-white= t("Custom SMTP Port Forwarding")
+            h2.h6.card-header= t("Custom SMTP Port Forwarding")
             .card-body
               +planRequired(false)
               .form-group.floating-label
@@ -417,7 +417,7 @@ block body
                     disabled=isDisabled
                   )= t("Save")
         .card.border-dark
-          h4.card-header.bg-dark.text-white= t("Maximum Recipients Per Alias")
+          h2.h6.card-header= t("Maximum Recipients Per Alias")
           .card-body
             if domain.group === 'admin'
               +planRequired(false)
@@ -447,7 +447,7 @@ block body
               name="_section",
               value="recipient_verification"
             )
-            h4.card-header.bg-dark.text-white= t("Recipient Verification")
+            h2.h6.card-header= t("Recipient Verification")
             .card-body
               +planRequired(false)
               .form-group.form-check
@@ -487,7 +487,7 @@ block body
               name="_section",
               value="custom_verification_template"
             )
-            h4.card-header.bg-dark.text-white= t("Custom Verification Template")
+            h2.h6.card-header= t("Custom Verification Template")
             .card-body
               +planRequired(false)
               if !domain.has_custom_verification && domain.plan !== 'free'

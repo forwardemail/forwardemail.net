@@ -59,18 +59,8 @@ block body
         include ../../_breadcrumbs
     .row
       .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-8.offset-lg-2.text-center
-        if user.plan === 'free' && domain
-          .alert.alert-warning.small
-            = t("Don't want to pay?")
-            br.d-block.d-md-none
-            = " "
-            a.alert-link.text-decoration-underline(
-              href=l(`/my-account/domains/${domain.name}`)
-            )= t("Click here to use our Free plan")
-          .alert.alert-info.small
-            != t('Pay below and <a href="%s" class="alert-link" data-toggle="modal" data-target="#modal-pricing-video">click to learn more</a>.', l("/pricing"))
-        .card.border-dark
-          h2.card-header.bg-dark.text-white
+        .card
+          h2.h6.card-header
             if isMakePayment
               = t("Make Payment")
             else if isEnableAutoRenew
@@ -81,9 +71,10 @@ block body
               else
                 != t('Upgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
           .card-body
-            if !isMakePayment && !isEnableAutoRenew
-              .alert.alert-success.small
-                != t("If you cancel within 30 days, then we auto-refund you.")
+            //-.
+              if !isMakePayment && !isEnableAutoRenew
+                .alert.alert-success.small
+                  != t("If you cancel within 30 days, then we auto-refund you.")
             if !isMakePayment && !isEnableAutoRenew
               if user.plan !== 'free' && user.plan !== ctx.query.plan
                 //-
@@ -122,7 +113,7 @@ block body
               if !isMakePayment && !isEnableAutoRenew
                 input(type="hidden", name="plan", value=ctx.query.plan)
 
-              h3.h5= t("Method")
+              //- h3.h5= t("Method")
               .form-group
                 .form-check.form-check-inline
                   input#input-payment-method-credit-card.form-check-input(
@@ -135,7 +126,7 @@ block body
                   label.form-check-label(
                     for="input-payment-method-credit-card"
                   )= t("Card, Wallet, or Bank")
-                .form-check.form-check-inline
+                .form-check.form-check-inline.mr-0
                   input#input-payment-method-paypal.form-check-input(
                     type="radio",
                     required,
@@ -155,7 +146,7 @@ block body
                 //- (the server side will _always_ override this value)
                 input(type="hidden", name="payment_type", value="subscription")
               else
-                h3.h5= t("Payment Type")
+                //- h3.h5= t("Payment Type")
                 .form-group
                   .form-check.form-check-inline
                     input#input-payment-type-subscription.form-check-input(
@@ -168,18 +159,18 @@ block body
                     label.form-check-label(
                       for="input-payment-type-subscription"
                     )= t("Subscription")
-                  .form-check.form-check-inline
+                  .form-check.form-check-inline.mr-0
                     input#input-payment-type-one-time.form-check-input(
                       type="radio",
                       required,
                       name="payment_type",
                       value="one-time"
                     )
-                    label.form-check-label(for="input-payment-type-one-time")= t("One-time")
+                    label.form-check-label(for="input-payment-type-one-time")= t("One-time payment")
 
               //- Length
               //- TODO: default to last one used
-              h3.h5= t("Duration")
+              //- h3.h5= t("Duration")
               .form-group
                 select.form-control.form-control.d-inline-block.w-auto(
                   name="payment_duration",
@@ -302,6 +293,22 @@ block body
               //- Continue (PayPal)
               #paypal-button-container.d-none
 
-          .card-footer.text-muted.text-center.small= t("We'll automatically email you if you're late on a payment.")
-        if !isMakePayment && !isEnableAutoRenew
-          .mt-3.font-weight-bold.text-uppercase.text-decoration-underline= t("30-day automatic money back guarantee")
+          .card-footer.text-muted.text-center.small
+            if !isMakePayment && !isEnableAutoRenew
+              != t("30-day no questions automatic refunds")
+              = ' '
+              = emoji('tada')
+            else
+              = t("We'll automatically email you if you're late on a payment.")
+        if user.plan === 'free' && domain
+          p.small.mt-3.mb-0
+            = t("Don't want to pay yet?")
+            br.d-block.d-md-none
+            = " "
+            a.alert-link.text-decoration-underline(
+              href=l(`/my-account/domains/${domain.name}`)
+            )= t("Switch to the Free plan")
+            = ' '
+            = t('or')
+            = ' '
+            a(href=l('/pricing'), data-toggle='modal', data-target='#modal-pricing-video').alert-link.text-decoration-underline= t('learn more')

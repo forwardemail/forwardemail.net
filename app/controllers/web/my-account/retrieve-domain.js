@@ -1,16 +1,31 @@
 const path = require('path');
 
 const Boom = require('@hapi/boom');
+const ForwardEmail = require('forward-email');
 const Meta = require('koa-meta');
+const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
+const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const { parse } = require('node-html-parser');
+
+const importAliases = require('./import-aliases');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
 
 const meta = new Meta(config.meta, logger);
 
+const app = new ForwardEmail({
+  logger,
+  recordPrefix: config.recordPrefix,
+  srs: { secret: 'null' },
+  redis: false
+});
+
+const EXCHANGES = app.config.exchanges;
+
+// eslint-disable-next-line complexity
 async function retrieveDomain(ctx, next) {
   if (!isSANB(ctx.params.domain_id) && !isSANB(ctx.request.body.domain))
     return ctx.throw(
@@ -25,7 +40,7 @@ async function retrieveDomain(ctx, next) {
     [domain.id, domain.name].includes(id)
   );
 
-  // check if domain exists, and f it doesn't then check
+  // check if domain exists, and if it doesn't then check
   // if we have a pending invite
   if (!ctx.state.domain)
     return ctx.throw(
@@ -34,6 +49,103 @@ async function retrieveDomain(ctx, next) {
 
   // if it's an API request then return early
   if (ctx.api) return next();
+
+  //
+  // populate a virtual helper for rendering views
+  // (e.g. subdomain in Host column for onboarding DNS setup)
+  //
+  try {
+    const parseResult = parseDomain(fromUrl(ctx.state.domain.name));
+    ctx.state.domain.root_name = (
+      parseResult.type === ParseResultType.Listed &&
+      _.isObject(parseResult.icann) &&
+      isSANB(parseResult.icann.domain)
+        ? `${parseResult.icann.domain}.${parseResult.icann.topLevelDomains.join(
+            '.'
+          )}`
+        : ctx.state.domain.name
+    ).toLowerCase();
+  } catch (err) {
+    ctx.logger.fatal(err);
+  }
+
+  ctx.state.hasExistingMX = false;
+  ctx.state.hasExistingTXT = false;
+
+  await Promise.all([
+    (async () => {
+      try {
+        const records = await app.resolver(
+          ctx.state.domain.name,
+          'MX',
+          false,
+          ctx.client
+        );
+        if (
+          _.isArray(records) &&
+          !_.isEmpty(records) &&
+          records.every(
+            (record) =>
+              _.isObject(record) &&
+              _.isString(record.exchange) &&
+              _.isNumber(record.priority)
+          )
+        ) {
+          const existingMX = records.filter(
+            (record) => !EXCHANGES.includes(record.exchange)
+          );
+          if (existingMX.length > 0) {
+            ctx.state.hasExistingMX = true;
+            ctx.state.existingMX = existingMX;
+          }
+        }
+      } catch (err) {
+        ctx.logger.error(err);
+      }
+    })(),
+    (async () => {
+      try {
+        const records = await app.resolver(
+          ctx.state.domain.name,
+          'TXT',
+          false,
+          ctx.client
+        );
+        const existingTXT = [];
+        for (const record of records) {
+          if (_.isArray(record)) {
+            for (const str of record) {
+              // eslint-disable-next-line max-depth
+              if (
+                str.includes('forward-email=') ||
+                str.includes('forward-email-port=')
+              )
+                existingTXT.push(str);
+            }
+          }
+        }
+
+        if (existingTXT.length > 0) {
+          ctx.state.hasExistingTXT = true;
+          ctx.state.existingTXT = existingTXT;
+        }
+      } catch (err) {
+        ctx.logger.error(err);
+      }
+    })()
+  ]);
+
+  //
+  // we need to import existing aliases
+  // if there were existingTXT found
+  //
+  if (ctx.state.hasExistingTXT) {
+    try {
+      await importAliases(ctx);
+    } catch (err) {
+      ctx.logger.error(err);
+    }
+  }
 
   //
   // set breadcrumbs

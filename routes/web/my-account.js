@@ -66,35 +66,32 @@ router
   )
   .get(
     '/billing/make-payment',
-    rateLimit(50, 'retrieve domain billing'),
     web.myAccount.setConversionAndRefundStateHelpers,
     web.myAccount.retrieveDomainBilling
   )
   .post(
     '/billing/make-payment',
-    rateLimit(50, 'create domain billing'),
+    rateLimit(100, 'create domain billing'),
     web.myAccount.createDomainBilling
   )
   .get(
     '/billing/enable-auto-renew',
-    rateLimit(50, 'retrieve domain billing'),
     web.myAccount.setConversionAndRefundStateHelpers,
     web.myAccount.retrieveDomainBilling
   )
   .post(
     '/billing/enable-auto-renew',
-    rateLimit(50, 'create domain billing'),
+    rateLimit(100, 'create domain billing'),
     web.myAccount.createDomainBilling
   )
   .get(
     '/billing/upgrade',
-    rateLimit(50, 'retrieve domain billing'),
     web.myAccount.setConversionAndRefundStateHelpers,
     web.myAccount.retrieveDomainBilling
   )
   .post(
     '/billing/upgrade',
-    rateLimit(50, 'create domain billing'),
+    rateLimit(100, 'create domain billing'),
     web.myAccount.createDomainBilling
   )
   // rate limit 1 year of receipts due to PDF downloading
@@ -246,7 +243,6 @@ router
     '/domains/:domain_id/billing',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
-    rateLimit(50, 'retrieve domain billing'),
     web.myAccount.setConversionAndRefundStateHelpers,
     web.myAccount.retrieveDomainBilling
   )
@@ -254,14 +250,14 @@ router
     '/domains/:domain_id/billing',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
-    rateLimit(50, 'create domain billing'),
+    rateLimit(100, 'create domain billing'),
     web.myAccount.createDomainBilling
   )
   .post(
     '/domains/:domain_id/verify-records',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
-    rateLimit(100, 'verify records'),
+    rateLimit(200, 'verify records'),
     web.myAccount.verifyRecords
   )
   .delete(

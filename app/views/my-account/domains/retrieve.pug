@@ -1,17 +1,22 @@
 extends ../../layout
 
 block body
-  .fixed-bottom.text-right
-    .bg-light.rounded.d-inline-block.p-2.mr-2.mb-2.border.border-dark
+  .fixed-bottom.text-center
+    .bg-dark.p-2.border-top.border-light
       ul.list-inline.mb-0
         li.list-inline-item
-          a.btn.btn-sm.btn-outline-dark(href="#setup-step-1")
-            span.badge.badge-pill.badge-primary.mr-1
-              i.fa.fa-external-link
+          a.btn.btn-sm.btn-light(href="#setup-step-1")
+            span.badge.badge-pill.mr-1(
+              class=domain.has_mx_record && domain.has_txt_record ? "badge-success" : "badge-primary"
+            )
+              if domain.has_mx_record && domain.has_txt_record
+                i.fa.fa-check
+              else
+                i.fa.fa-external-link
             = t("Step 1")
-        li.list-inline-item: i.fa.fa-angle-right.align-middle
+        li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
         li.list-inline-item
-          a.btn.btn-sm.btn-outline-dark(href="#setup-step-2")
+          a.btn.btn-sm.btn-light(href="#setup-step-2")
             span.badge.badge-pill.mr-1(
               class=domain.has_mx_record && domain.has_txt_record ? "badge-success" : "badge-danger"
             )
@@ -20,7 +25,7 @@ block body
               else
                 i.fa.fa-times
             = t("Step 2")
-        li.list-inline-item: i.fa.fa-angle-right.align-middle
+        li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
         li.list-inline-item
           form.ajax-form(
             action=l(`/my-account/domains/${domain.name}/verify-records`),
@@ -31,6 +36,30 @@ block body
               = " "
               = t("Verify")
   include _modal-upgrade
+  if domain.plan === 'free'
+    #modal-pricing-video.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-pricing-video-title",
+      aria-hidden="true"
+    )
+      .modal-dialog.modal-lg(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            h1#modal-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Learn about our plans")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
+          .modal-body
+            .lazyframe(
+              title=t("Free Email Forwarding for Creators"),
+              style="width: 100%; height: 450px",
+              data-vendor="youtube_nocookie",
+              data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
+            )
   if modalFAQTable
     #modal-faq-table.modal.fade(
       tabindex="-1",
@@ -54,25 +83,53 @@ block body
       .col
         include ../../_breadcrumbs
   .container-fluid.text-center
-    if domain.has_mx_record && domain.has_txt_record
-      .row
-        .col
+    .row
+      .col
+        if domain.has_mx_record && domain.has_txt_record
           .alert.alert-success
-            = t("You have successfully completed setup.")
-            = " "
             = emoji("tada")
+            = ' '
+            != t("Congratulations &ndash; you completed all steps!")
+            if domain.plan !== 'free'
+              a.btn.btn-success.ml-3(
+                href=l(`/my-account/domains/${domain.name}/aliases`),
+              )
+                i.fa.fa-fw.fa-users
+                = " "
+                = t("Manage Your Aliases")
+        //-.
+          else
+            .alert.alert-danger
+              != ("Complete both steps to finish setup:")
     if domain.plan === 'free'
-      .alert.alert-danger.small
-        = "Need to keep your setup private?"
+      .alert.alert-warning.small
+        = "Want more privacy?"
         br.d-block.d-md-none
         = " "
         a.alert-link(
           href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
-        )= "Click here for Enhanced Protection"
+        )= "Upgrade now"
+        = ' '
+        = t('or')
+        = ' '
+        a(href=l('/pricing'), data-toggle='modal', data-target='#modal-pricing-video').alert-link= t('learn more')
     .row
       .col-12
+        - const provider = nsProviderLookup(domain)
         .card.position-relative
-          if modalFAQTable
+          if domain.has_mx_record && domain.has_txt_record
+            .position-absolute.w-100.text-right
+              span.badge.badge-pill.badge-success.mt-3.mr-3
+                i.fa.fa-check
+                = " "
+                = t("Completed")
+          else if provider && provider.name && provider.url
+            .position-absolute.w-100.text-right
+              a(href=provider.url, target='_blank', rel='nofollow').badge.badge-pill.badge-primary.mt-3.mr-3
+                i.fa.fa-external-link
+                = " "
+                != t('Go to <span class="notranslate">%s</span>', provider.name)
+          else if modalFAQTable
             .position-absolute.w-100.text-right
               button.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
                 type="button",
@@ -85,16 +142,29 @@ block body
           h1#setup-step-1.h5.card-header.text-left.text-md-center= t("Step 1")
           .card-body
             //-
-            //- TODO: we should auto-render "Step Completed" and little modal notifications if parts of setup are detected as completed
-            //- TODO: we should render the video here (e.g. for GoDaddy) if detected
-            //- TODO: we should render a link here (e.g. to GoDaddy) based off NS providers parsed from DNS lookup
-            //-       (and we should also highlight in the FAQ table rendered based off this)
+            //- TODO: highlight in FAQ if provider exists
             //- TODO: we should also suggest SPF and DMARC
-            p.small
-              strong= t("In a new tab or window:")
-              = " "
-              != t("Visit the website where you registered your domain &rarr; log in &rarr; go to DNS settings")
-            if modalFAQTable
+            //- TODO: link to video
+            p.small.mb-0
+              if provider && provider.name && provider.url
+                != t('Go to <a href="%s" target="_blank" rel="nofollow" class="font-weight-bold notranslate">%s</a>', provider.url, provider.name)
+                != t(' &rarr; log in &rarr; DNS settings')
+                br.d-block.d-md-none
+                != t(' &rarr; scroll down to <strong>Step 2</strong>')
+              else
+                != t("Go to your domain provider")
+                != t(' &rarr; log in &rarr; DNS settings')
+                br.d-block.d-md-none
+                != t(' &rarr; scroll down to <strong>Step 2</strong>')
+            if provider && provider.gif
+              img(src=manifest(`img/guides/${provider.gif}.gif`), alt='', width='480', height='270').d-inline-block.img-thumbnail.mt-3
+            if provider && provider.name && provider.url
+              .text-center.mt-3
+                a(href=provider.url, target='_blank', rel='nofollow').btn.btn-primary
+                  i.fa.fa-external-link
+                  = ' '
+                  != t('Go to <span class="notranslate">%s</span>', provider.name)
+            else if modalFAQTable
               .text-center.mt-3
                 button.btn.btn-primary(
                   type="button",
@@ -120,31 +190,70 @@ block body
                 = t("Not Completed")
           h1#setup-step-2.h5.card-header.text-left.text-md-center= t("Step 2")
           .card-body
-            p.small.text-center!= t('Add these DNS records to your domain, wait a few minutes, and then click on the <strong class="text-success">Verify</strong> button below:')
-            .table-responsive
-              table.table.table-striped.table-bordered.table-hover.table-sm
+            .small.text-center.mb-3
+              != t('Add these records to <strong class="notranslate">%s</strong>', domain.root_name || domain.name)
+              span.d-inline.d-md-none= ':'
+              if hasExistingMX || hasExistingTXT
+                span.d-md-inline.d-none= ':'
+              else
+                span.d-none.d-md-inline= t(' and click ')
+                form.ajax-form.d-none.d-md-inline(
+                  action=l(`/my-account/domains/${domain.name}/verify-records`),
+                  method="POST"
+                )
+                  button.btn.btn-success.btn-sm.d-inline(type="submit")
+                    i.fa.fa-refresh
+                    = " "
+                    = t('Verify')
+              .d-block.d-md-none.my-3.text-muted.small
+                = '('
+                = t("Scroll to the right to see entire table")
+                = ')'
+            .table-responsive.mb-3
+              table.table.table-striped.table-bordered.table-hover.table-sm.mb-0
                 thead.thead-dark
                   tr
                     th Name/Host/Alias
                     th.text-center TTL
                     th Type
-                    th Priority*
-                    th.text-left Value
+                    th Priority
+                    th.text-left Answer/Value
                 tbody
-                  tr
-                    td.small "@", ".", or leave empty/blank if allowed.
+                  tr(class=domain.has_mx_record ? 'table-success' : domain.has_txt_record ? 'table-warning' : '')
+                    td.small
+                      if !domain.root_name || domain.root_name === domain.name
+                        if provider && typeof provider.host === 'string'
+                          = provider.host
+                        else
+                          | "@", ".", or leave empty/blank if allowed.
+                      else
+                        code.text-dark= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
                     td.text-center: code.text-dark 3600
                     td MX
                     td: code.text-dark 10
                     td.text-left: code.text-dark.text-nowrap mx1.forwardemail.net
-                  tr
-                    td.small "@", ".", or leave empty/blank if allowed.
+                  tr(class=domain.has_mx_record ? 'table-success' : domain.has_txt_record ? 'table-warning' : '')
+                    td.small
+                      if !domain.root_name || domain.root_name === domain.name
+                        if provider && typeof provider.host === 'string'
+                          = provider.host
+                        else
+                          | "@", ".", or leave empty/blank if allowed.
+                      else
+                        code.text-dark= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
                     td.text-center: code.text-dark 3600
                     td MX
                     td: code.text-dark 10
                     td.text-left: code.text-dark.text-nowrap mx2.forwardemail.net
-                  tr
-                    td.small "@", ".", or leave empty/blank if allowed.
+                  tr(class=domain.has_txt_record ? 'table-success' : domain.has_mx_record ? 'table-warning' : '')
+                    td.small
+                      if !domain.root_name || domain.root_name === domain.name
+                        if provider && typeof provider.host === 'string'
+                          = provider.host
+                        else
+                          | "@", ".", or leave empty/blank if allowed.
+                      else
+                        code.text-dark= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
                     td.text-center: code.text-dark 3600
                     td TXT
                     td
@@ -154,25 +263,33 @@ block body
                           = `${config.recordPrefix}=${user.email}`
                         else
                           = `${config.recordPrefix}-site-verification=${domain.verification_record}`
-            .alert.alert-danger.small
-              != t("Set the two MX type rows above as the <strong><u>only</u></strong> <strong>MX</strong> type rows.")
-              = " "
-              != t("If there are existing <strong>MX</strong> type rows, then you must delete them.")
-              span.d-inline.d-md-none
-                = " "
-                = t("Scroll right on the table above to see additional column content.")
+                if hasExistingMX || hasExistingTXT
+                  tr.table-danger.small.text-left.text-md-center
+                    th(colspan=5, scope='row')!= t("You must delete these records:")
+                if hasExistingMX
+                  each record in existingMX
+                    tr.table-danger
+                      td(colspan=2)
+                      td MX
+                      td.text-monospace.small= record.priority
+                      td.text-monospace.text-left.small= record.exchange
+                if hasExistingTXT
+                  each record in existingTXT
+                    tr.table-danger
+                      td(colspan=2)
+                      td TXT
+                      td
+                        td.text-monospace.text-left.small= record
+
+
             form.ajax-form(
               action=l(`/my-account/domains/${domain.name}/verify-records`),
               method="POST"
             )
-              button.btn.btn-success.btn-lg(type="submit")
+              button.btn.btn-success.btn-lg.btn-block(type="submit")
                 i.fa.fa-refresh
                 = " "
                 = t("Verify")
-          .card-footer.text-center.text-muted
-            small.font-italic
-              = "* "
-              = t("This column only applies to MX types.")
     //-.
       ul.list-inline
         li.list-inline-item
