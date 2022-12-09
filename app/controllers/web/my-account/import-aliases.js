@@ -38,6 +38,7 @@ async function importAliases(ctx) {
 
   //
   // NOTE: eventually rewrite this, it was a quick hack
+  //       (this also conditionally gets invoked every time retrieveDomain controller runs)
   //
   const aliases = [];
   const catchAll = [];
@@ -49,7 +50,7 @@ async function importAliases(ctx) {
     );
     if (existing)
       errors.push(
-        ctx.translate(
+        ctx.translateError(
           'IMPORT_ALIAS_ALREADY_EXISTS',
           element.name,
           element.recipient
@@ -59,7 +60,7 @@ async function importAliases(ctx) {
       if (element.recipient) match.recipients.push(element.recipient);
       else
         errors.push(
-          ctx.translate('IMPORT_ALIAS_DISABLED_NOBODY', element.name)
+          ctx.translateError('IMPORT_ALIAS_DISABLED_NOBODY', element.name)
         );
     } else {
       aliases.push({
@@ -67,7 +68,7 @@ async function importAliases(ctx) {
         user: ctx.state.user._id,
         domain: ctx.state.domain._id,
         name: element.name,
-        recipients: [element.recipient]
+        recipients: [element.recipient || ctx.state.user.email]
       });
     }
   }
@@ -79,7 +80,7 @@ async function importAliases(ctx) {
     );
     if (existing)
       errors.push(
-        ctx.translate(
+        ctx.translateError(
           'IMPORT_ALIAS_ALREADY_EXISTS',
           element.name,
           element.recipient
@@ -95,6 +96,7 @@ async function importAliases(ctx) {
       });
   }
 
+  // TODO: we don't support importing regular expressions
   for (const element of globalForwardingAddresses) {
     // if it was a fqdn, ip, or email address then add global alias
     // otherwise throw an error that it was an invalid global
@@ -107,7 +109,7 @@ async function importAliases(ctx) {
       if (existing) {
         if (existing.recipients.includes(element))
           errors.push(
-            ctx.translate('IMPORT_CATCHALL_ALREADY_INCLUDES', element)
+            ctx.translateError('IMPORT_CATCHALL_ALREADY_INCLUDES', element)
           );
         else catchAll.push(element);
       } else if (match) match.recipients.push(element);
@@ -185,14 +187,16 @@ async function importAliases(ctx) {
     `/my-account/domains/${ctx.state.domain.name}/aliases`
   );
 
-  if (ctx.accepts('html')) {
-    if (!ctx.api) ctx.flash('info', message);
-    ctx.redirect(redirectTo);
-  } else {
-    ctx.body = {
-      message,
-      redirectTo
-    };
+  if (!ctx.state.hasExistingTXT) {
+    if (ctx.accepts('html')) {
+      if (!ctx.api) ctx.flash('info', message);
+      ctx.redirect(redirectTo);
+    } else {
+      ctx.body = {
+        message,
+        redirectTo
+      };
+    }
   }
 }
 

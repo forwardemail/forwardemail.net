@@ -33,7 +33,7 @@ block body
       .col
         include ../_breadcrumbs
         .card.border-dark.mb-3
-          h4.card-header.bg-dark.text-white= t("Delete Account")
+          h2.h6.card-header= t("Delete Account")
           - const adminDomains = domains.filter((domain) => domain.group === "admin");
           if adminDomains.length > 0
             .card-body
@@ -57,7 +57,7 @@ block body
                 button.btn.btn-sm.btn-danger(type="submit")= t("Delete Account")
         if passport && passport.otp
           .card.border-dark.mb-3
-            h4.card-header.bg-dark.text-white= t("Two-Factor Authentication")
+            h2.h6.card-header= t("Two-Factor Authentication")
             .card-body
               if user[config.passport.fields.otpEnabled]
                 h5= t("Recovery keys")
@@ -85,7 +85,7 @@ block body
                 target="_blank"
               )= t("Learn more")
         .card.border-dark
-          h4.card-header.bg-dark.text-white= t("Developer Access")
+          h2.h6.card-header= t("Developer Access")
           .card-body
             .row
               label.control-label.col-md-4.col-form-label.text-md-right= t("API token")
