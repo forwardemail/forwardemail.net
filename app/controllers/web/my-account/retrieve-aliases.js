@@ -42,26 +42,28 @@ async function retrieveAliases(ctx, next) {
 
   // render the IMPORT TXT button conditionally
   ctx.state.hasExistingTXT = false;
-  try {
-    const records = await app.resolver(
-      ctx.state.domain.name,
-      'TXT',
-      false,
-      ctx.client
-    );
-    const existingTXT = [];
-    for (const record of records) {
-      if (_.isArray(record)) {
-        for (const str of record) {
-          // eslint-disable-next-line max-depth
-          if (str.includes('forward-email=')) existingTXT.push(str);
+  if (ctx.state.domain.plan !== 'free') {
+    try {
+      const records = await app.resolver(
+        ctx.state.domain.name,
+        'TXT',
+        false,
+        ctx.client
+      );
+      const existingTXT = [];
+      for (const record of records) {
+        if (_.isArray(record)) {
+          for (const str of record) {
+            // eslint-disable-next-line max-depth
+            if (str.includes('forward-email=')) existingTXT.push(str);
+          }
         }
       }
-    }
 
-    if (existingTXT.length > 0) ctx.state.hasExistingTXT = true;
-  } catch (err) {
-    ctx.logger.error(err);
+      if (existingTXT.length > 0) ctx.state.hasExistingTXT = true;
+    } catch (err) {
+      ctx.logger.error(err);
+    }
   }
 
   ctx.flash('custom', {
