@@ -2142,5 +2142,6 @@
   "If you wish to change your email from <strong>%s</strong> to <strong>%s</strong>, then click the link below within %s.": "If you wish to change your email from <strong>%s</strong> to <strong>%s</strong>, then click the link below within %s.",
   "Confirm now": "Confirm now",
   "is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).": "is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).",
-  ", click on \"Setup\" next to your domain, and then click on \"Settings\".  If you would like to learn more about paid plans see our": ", click on \"Setup\" next to your domain, and then click on \"Settings\".  If you would like to learn more about paid plans see our"
+  ", click on \"Setup\" next to your domain, and then click on \"Settings\".  If you would like to learn more about paid plans see our": ", click on \"Setup\" next to your domain, and then click on \"Settings\".  If you would like to learn more about paid plans see our",
+  "Answer/Value": "Answer/Value"
 }

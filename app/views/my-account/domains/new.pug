@@ -43,7 +43,7 @@ block body
               type="text"
             )
             label(for="input-domain")= t("Domain name")
-          if !isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan)
+          if user.plan === 'free' && (!isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan))
             .form-check.form-group
               input#input-enhanced-protection.form-check-input(
                 type="checkbox",

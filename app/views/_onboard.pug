@@ -48,14 +48,15 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                     required
                   )
                   label(for="input-onboard-email")= t("Your existing email")
-                .form-check.form-group
-                  input#input-enhanced-protection.form-check-input(
-                    type="checkbox",
-                    name="enhanced_protection",
-                    checked,
-                    value="true"
-                  )
-                  label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" data-toggle="modal" data-target="#modal-onboard-pricing-video" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a>', l("/pricing"))
+                if !user || user.plan === 'free'
+                  .form-check.form-group
+                    input#input-enhanced-protection.form-check-input(
+                      type="checkbox",
+                      name="enhanced_protection",
+                      checked,
+                      value="true"
+                    )
+                    label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" data-toggle="modal" data-target="#modal-onboard-pricing-video" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a>', l("/pricing"))
                 if user
                   input(type="hidden", name="create_domain", value="true")
                   //-.

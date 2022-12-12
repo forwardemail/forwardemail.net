@@ -4,6 +4,7 @@ const _ = require('lodash');
 const accounting = require('accounting');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
@@ -15,7 +16,7 @@ const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const refundHelper = require('#helpers/refund');
-const { Domains, Payments } = require('#models');
+const { Aliases, Domains, Payments } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_PLAN_MAPPING } =
@@ -31,7 +32,7 @@ async function retrieveDomainBilling(ctx) {
     ctx.pathWithoutLocale === '/my-account/billing/make-payment';
   const isEnableAutoRenew =
     ctx.pathWithoutLocale === '/my-account/billing/enable-auto-renew';
-  const redirectTo = ctx.state.l(
+  let redirectTo = ctx.state.l(
     isAccountUpgrade || isMakePayment || isEnableAutoRenew
       ? '/my-account/billing'
       : `/my-account/domains/${ctx.state.domain.name}`
@@ -40,6 +41,36 @@ async function retrieveDomainBilling(ctx) {
     ctx.state.user[config.userFields.planSetAt]
   );
   const originalPlan = `${ctx.state.user.plan}`;
+
+  //
+  // if `domain` querystring was provided this was mainly because
+  // certain tlds require the user to be on a paid plan to create them
+  // (so we validate that this is the case and then render hidden input and alert)
+  //
+  if (
+    isAccountUpgrade &&
+    ctx.accepts('html') &&
+    ctx.state.user.plan === 'free' &&
+    isSANB(ctx.query.domain) &&
+    isFQDN(ctx.query.domain)
+  ) {
+    const hasBadDomain = config.badDomains.some((ext) =>
+      ctx.query.domain.toLowerCase().endsWith(ext)
+    );
+    if (hasBadDomain) {
+      // only render the modal when we have initial intent
+      if (
+        !isSANB(ctx.query.session_id) &&
+        !isSANB(ctx.query.paypal_order_id) &&
+        !isSANB(ctx.query.paypal_subscription_id)
+      )
+        ctx.flash(
+          'warning',
+          ctx.translate('MALICIOUS_DOMAIN', ctx.query.domain.toLowerCase())
+        );
+      ctx.state.bad_domain = ctx.query.domain.toLowerCase();
+    }
+  }
 
   if (isMakePayment)
     if (ctx.state.user.plan === 'free')
@@ -1594,6 +1625,42 @@ async function retrieveDomainBilling(ctx) {
         })
           .then()
           .catch((err) => ctx.logger.fatal(err));
+      }
+    }
+
+    //
+    // if there was a bad domain in query from redirect
+    // and it was account upgrade, then we should create the domain
+    // and also create it with a default alias (and subsequently redirect the user)
+    //
+    if (isAccountUpgrade && ctx.state.bad_domain) {
+      try {
+        const domain = await Domains.create({
+          members: [{ user: ctx.state.user._id, group: 'admin' }],
+          name: ctx.state.bad_domain,
+          locale: ctx.locale,
+          plan: ctx.state.user.plan,
+          client: ctx.client
+        });
+        await Aliases.create({
+          user: ctx.state.user._id,
+          domain: domain._id,
+          name: '*',
+          recipients: [ctx.state.user.email],
+          locale: ctx.locale
+        });
+        if (domain.name.startsWith('www.'))
+          ctx.flash(
+            'error',
+            ctx
+              .translate('WWW_WARNING')
+              .replace(/example.com/g, domain.name.replace('www.', ''))
+          );
+        // redirect user to the domain to setup forwarding
+        redirectTo = `/my-account/domains/${domain.name}`;
+      } catch (err) {
+        ctx.logger.fatal(err);
+        ctx.flash('error', err.message);
       }
     }
 

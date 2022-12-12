@@ -238,7 +238,9 @@ module.exports = {
   DOMAIN_PLAN_DOWNGRADE_REQUIRED:
     'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan. Please <a class="font-weight-bold" href="%s">downgrade this domain</a> to continue.',
   MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED:
-    'Domain name <span class="notranslate">%s</span> has a potentially malicious domain name extension and must have at least one admin that is signed up for a paid plan. Please <a class="font-weight-bold" href="%s">upgrade your account</a> to a paid plan to continue.',
+    'Domain name <span class="notranslate">%s</span> has a domain name extension that is frequently used for spam operations. Please <a class="font-weight-bold" href="%s">upgrade your account</a> to a paid plan to continue.',
+  MALICIOUS_DOMAIN:
+    'Domain name <span class="notranslate">%s</span> has a domain name extension that is frequently abused for spam operations.  We require that users with this domain name extension upgrade to a paid plan in order to use our service.',
   UPGRADE: 'Upgrade',
   BILLING: 'Billing',
   ENABLE_AUTO_RENEW: 'Enable Auto-Renew',

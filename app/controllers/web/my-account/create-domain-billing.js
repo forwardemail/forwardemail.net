@@ -1,14 +1,15 @@
 const Boom = require('@hapi/boom');
+const Stripe = require('stripe');
 const _ = require('lodash');
+const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
+const humanize = require('humanize-string');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const cryptoRandomString = require('crypto-random-string');
-const humanize = require('humanize-string');
-const titleize = require('titleize');
-const Stripe = require('stripe');
 const slug = require('speakingurl');
 const striptags = require('striptags');
+const titleize = require('titleize');
 
 const env = require('#config/env');
 const config = require('#config');
@@ -29,7 +30,8 @@ async function createDomainBilling(ctx) {
       plan,
       payment_method: paymentMethod,
       payment_type: paymentType,
-      payment_duration: paymentDuration
+      payment_duration: paymentDuration,
+      domain
     } = ctx.request.body;
 
     const isMakePayment =
@@ -199,6 +201,14 @@ async function createDomainBilling(ctx) {
         }session_id={CHECKOUT_SESSION_ID}`
       };
 
+      //
+      // for those with bad domains (the tld is often used for spam)
+      // we need to append this to redirect querystring so that
+      // the user doesn't have to attempt to create the domain again
+      //
+      if (isSANB(domain) && isFQDN(domain))
+        options.success_url += `&domain=${domain}`;
+
       if (paymentType !== 'one-time') {
         options.subscription_data = {
           description,
@@ -333,6 +343,14 @@ async function createDomainBilling(ctx) {
             }
           ]
         };
+
+        //
+        // for those with bad domains (the tld is often used for spam)
+        // we need to append this to redirect querystring so that
+        // the user doesn't have to attempt to create the domain again
+        //
+        if (isSANB(domain) && isFQDN(domain))
+          requestBody.application_context.return_url += `&domain=${domain}`;
 
         try {
           const agent = await paypalAgent();

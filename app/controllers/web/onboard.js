@@ -122,7 +122,8 @@ async function onboard(ctx, next) {
         members: [{ user: ctx.state.user._id, group: 'admin' }],
         name: ctx.request.body.domain,
         locale: ctx.locale,
-        client: ctx.client
+        client: ctx.client,
+        plan: ctx.state.user.plan
       });
       // create a default alias for the user pointing to the admin
       await Aliases.create({
@@ -210,7 +211,8 @@ async function onboard(ctx, next) {
         name: ctx.request.body.domain,
         locale: ctx.locale,
         skip_verification: !boolean(ctx.query.redirect_to_domain),
-        client: ctx.client
+        client: ctx.client,
+        plan: ctx.state.user.plan
       });
 
       // create a default alias for the user pointing to the admin
@@ -228,7 +230,7 @@ async function onboard(ctx, next) {
       // redirect to /my-account/domains/new?domain=$domain&plan=enhanced_protection
       if (err && err.isBoom && err.output && err.output.statusCode === 402) {
         const redirectTo = ctx.state.l(
-          '/my-account/billing/upgrade?plan=enhanced_protection'
+          `/my-account/billing/upgrade?plan=enhanced_protection&domain=${ctx.request.body.domain}`
         );
         if (ctx.accepts('html')) ctx.redirect(redirectTo);
         else ctx.body = { redirectTo };
@@ -252,9 +254,27 @@ async function onboard(ctx, next) {
   }
 
   // redirect user if they wanted to upgrade
-  if (ctx.state.domain && boolean(ctx.request.body.enhanced_protection)) {
+  if (
+    ctx.state.domain &&
+    ctx.isAuthenticated() &&
+    ctx.state.user.plan === 'free' &&
+    boolean(ctx.request.body.enhanced_protection)
+  ) {
     const redirectTo = ctx.state.l(
       `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+    );
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
+  }
+
+  //
+  // redirect user to setup forwarding on the domain with our guide
+  // (this overrides the FAQ tutorial and helps people use our interface and Verify Records button)
+  //
+  if (ctx.isAuthenticated() && ctx.state.domain) {
+    const redirectTo = ctx.state.l(
+      `/my-account/domains/${ctx.state.domain.name}`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };

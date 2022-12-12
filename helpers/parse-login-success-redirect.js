@@ -26,7 +26,7 @@ async function parseLoginSuccessRedirect(ctx) {
       // remove the default domain from the user
       await Users.findByIdAndUpdate(ctx.state.user._id, {
         $unset: {
-          [config.userFields.defaultDomain]: ''
+          [config.userFields.defaultDomain]: 1
         }
       });
     }
