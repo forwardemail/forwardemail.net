@@ -59,6 +59,8 @@ block body
         include ../../_breadcrumbs
     .row
       .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-8.offset-lg-2.text-center
+        if bad_domain
+          .alert.alert-warning.small!= t('You must upgrade to a paid plan for: <strong class="notranslate">%s</strong>', bad_domain)
         .card
           h2.h6.card-header
             if isMakePayment
@@ -112,6 +114,9 @@ block body
             )
               if !isMakePayment && !isEnableAutoRenew
                 input(type="hidden", name="plan", value=ctx.query.plan)
+
+              if bad_domain
+                input(type="hidden", name="domain", value=bad_domain)
 
               //- h3.h5= t("Method")
               .form-group
