@@ -63,9 +63,10 @@ block body
       .row
         .col-12.col-lg-6.pl-lg-5
           h1.display-4.font-weight-bold.mb-3
-            != t("Get free and unlimited custom domain emails")
-          p.d-block.mb-3.text-muted.font-weight-bold
-            != t("Forward any email @your-domain.com, create unlimited aliases, and send email as @your-domain.com.")
+            != t("Send and receive with your custom domain")
+          //-.
+            p.d-block.mb-3.text-muted.font-weight-bold
+              != t("Forward any email @your-domain.com, create unlimited aliases, and send email as @your-domain.com.")
           form.ajax-form(action=ctx.path, method="POST")
             input(type="hidden", name="enhanced_protection", value="true")
             .form-group.floating-label
@@ -92,7 +93,7 @@ block body
                 data-error-callback="hCaptchaError"
               )
             button.btn.btn-success.btn-lg.btn-block(type="submit")
-              = t("Setup Forwarding")
+              = t("Sign up for free")
               = " "
               i.fa.fa-angle-double-right
           p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
