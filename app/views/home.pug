@@ -68,8 +68,6 @@ block body
             != t("Forward any email @your-domain.com, create unlimited aliases, and send email as @your-domain.com.")
           form.ajax-form(action=ctx.path, method="POST")
             input(type="hidden", name="enhanced_protection", value="true")
-            input(type="hidden", name="create_domain", value="true")
-            input(type="hidden", name="create_account", value="true")
             .form-group.floating-label
               input.form-control.form-control-lg(
                 type="text",

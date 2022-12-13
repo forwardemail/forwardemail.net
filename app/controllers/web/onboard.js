@@ -112,7 +112,7 @@ async function onboard(ctx, next) {
   )
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_DOMAIN')));
 
-  if (ctx.isAuthenticated() && boolean(ctx.request.body.create_domain)) {
+  if (ctx.isAuthenticated()) {
     const match = ctx.state.domains.find(
       (domain) => domain.name === ctx.request.body.domain
     );
@@ -134,10 +134,7 @@ async function onboard(ctx, next) {
         locale: ctx.locale
       });
     }
-  } else if (
-    !ctx.isAuthenticated() &&
-    boolean(ctx.request.body.create_account)
-  ) {
+  } else if (!ctx.isAuthenticated()) {
     const query = {
       email: ctx.request.body.email,
       locale: ctx.locale
@@ -253,12 +250,11 @@ async function onboard(ctx, next) {
     );
   }
 
-  // redirect user if they wanted to upgrade
+  // prompt user if they want to upgrade
   if (
     ctx.state.domain &&
     ctx.isAuthenticated() &&
-    ctx.state.user.plan === 'free' &&
-    boolean(ctx.request.body.enhanced_protection)
+    ctx.state.user.plan === 'free'
   ) {
     const redirectTo = ctx.state.l(
       `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`

@@ -103,12 +103,12 @@ block body
               != ("Complete both steps to finish setup:")
     if domain.plan === 'free'
       .alert.alert-warning.small
-        = "Want more privacy?"
+        = t("Want more privacy?")
         br.d-block.d-md-none
         = " "
         a.alert-link(
           href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
-        )= "Upgrade now"
+        )= t("Upgrade now")
         = ' '
         = t('or')
         = ' '
@@ -245,25 +245,41 @@ block body
                     td MX
                     td: code.text-dark 10
                     td.text-left: code.text-dark.text-nowrap mx2.forwardemail.net
-                  tr(class=domain.has_txt_record ? 'table-success' : domain.has_mx_record ? 'table-warning' : '')
-                    td.small
-                      if !domain.root_name || domain.root_name === domain.name
-                        if provider && typeof provider.host === 'string'
-                          = provider.host
+                  if domain.plan === 'free' && hasExistingTXT
+                    each record in existingTXT
+                      tr.table-success
+                        td.small
+                          if !domain.root_name || domain.root_name === domain.name
+                            if provider && typeof provider.host === 'string'
+                              = provider.host
+                            else
+                              | "@", ".", or leave empty/blank if allowed.
+                          else
+                            code.text-dark= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
+                        td.text-center: code.text-dark 3600
+                        td TXT
+                        td
+                        td.text-left: code.text-dark.text-nowrap= record
+                  else
+                    tr(class=domain.has_txt_record ? 'table-success' : domain.has_mx_record ? 'table-warning' : '')
+                      td.small
+                        if !domain.root_name || domain.root_name === domain.name
+                          if provider && typeof provider.host === 'string'
+                            = provider.host
+                          else
+                            | "@", ".", or leave empty/blank if allowed.
                         else
-                          | "@", ".", or leave empty/blank if allowed.
-                      else
-                        code.text-dark= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                    td.text-center: code.text-dark 3600
-                    td TXT
-                    td
-                    td.text-left
-                      code.text-dark.text-nowrap
-                        if domain.plan === 'free'
-                          = `${config.recordPrefix}=${user.email}`
-                        else
-                          = `${config.recordPrefix}-site-verification=${domain.verification_record}`
-                if hasExistingMX || hasExistingTXT
+                          code.text-dark= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
+                      td.text-center: code.text-dark 3600
+                      td TXT
+                      td
+                      td.text-left
+                        code.text-dark.text-nowrap
+                          if domain.plan === 'free'
+                            = `${config.recordPrefix}=${user.email}`
+                          else
+                            = `${config.recordPrefix}-site-verification=${domain.verification_record}`
+                if hasExistingMX || (hasExistingTXT && domain.plan !== 'free')
                   tr.table-danger.small.text-left.text-md-center
                     th(colspan=5, scope='row')!= t("You must delete these records:")
                 if hasExistingMX
@@ -273,7 +289,7 @@ block body
                       td MX
                       td.text-monospace.small= record.priority
                       td.text-monospace.text-left.small= record.exchange
-                if hasExistingTXT
+                if hasExistingTXT && domain.plan !== 'free'
                   each record in existingTXT
                     tr.table-danger
                       td(colspan=2)
@@ -281,6 +297,12 @@ block body
                       td
                         td.text-monospace.text-left.small= record
 
+            if domain.plan === 'free'
+              .alert.alert-warning.small
+                = t("Need to configure more aliases on the free plan?")
+                br.d-block.d-md-none
+                = " "
+                a(href=l('/faq#dns-configuration-options')).alert-link= t('See Options A to G in our FAQ')
 
             form.ajax-form(
               action=l(`/my-account/domains/${domain.name}/verify-records`),
