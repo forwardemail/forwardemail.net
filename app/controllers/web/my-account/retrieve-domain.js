@@ -105,7 +105,6 @@ async function retrieveDomain(ctx, next) {
     })(),
     (async () => {
       try {
-        if (ctx.state.domain.plan === 'free') return;
         const records = await app.resolver(
           ctx.state.domain.name,
           'TXT',

@@ -285,7 +285,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>

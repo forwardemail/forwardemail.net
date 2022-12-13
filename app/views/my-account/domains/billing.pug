@@ -61,6 +61,18 @@ block body
       .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-8.offset-lg-2.text-center
         if bad_domain
           .alert.alert-warning.small!= t('You must upgrade to a paid plan for: <strong class="notranslate">%s</strong>', bad_domain)
+        else if user.plan === 'free' && domain
+          .alert.alert-warning.small
+            = t("Not ready to upgrade?")
+            br.d-block.d-md-none
+            = " "
+            a.alert-link.text-decoration-underline(
+              href=l(`/my-account/domains/${domain.name}`)
+            )= t("Switch to the Free plan")
+            = ' '
+            = t('or')
+            = ' '
+            a(href=l('/pricing'), data-toggle='modal', data-target='#modal-pricing-video').alert-link.text-decoration-underline= t('learn more')
         .card
           h2.h6.card-header
             if isMakePayment
@@ -305,15 +317,3 @@ block body
               = emoji('tada')
             else
               = t("We'll automatically email you if you're late on a payment.")
-        if user.plan === 'free' && domain
-          p.small.mt-3.mb-0
-            = t("Don't want to pay yet?")
-            br.d-block.d-md-none
-            = " "
-            a.alert-link.text-decoration-underline(
-              href=l(`/my-account/domains/${domain.name}`)
-            )= t("Switch to the Free plan")
-            = ' '
-            = t('or')
-            = ' '
-            a(href=l('/pricing'), data-toggle='modal', data-target='#modal-pricing-video').alert-link.text-decoration-underline= t('learn more')
