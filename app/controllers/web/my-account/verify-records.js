@@ -60,7 +60,7 @@ async function verifyRecords(ctx) {
           try {
             await app.resolver(domain.name, type, true, ctx.client);
           } catch (err) {
-            ctx.logger.fatal(err);
+            ctx.logger.warn(err);
           }
         })
       );

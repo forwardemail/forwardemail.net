@@ -590,10 +590,16 @@ async function catchError(ctx, next) {
   try {
     await next();
   } catch (err) {
-    if (ctx.params.provider === 'google' && err.consent_required) {
+    // <https://blog.timekit.io/google-oauth-invalid-grant-nightmare-and-how-to-fix-it-9f4efaf1da35>
+    // <https://blog.zakwest.co.uk/how-to-use-time-cloudflare-com-on-linux/>
+    if (
+      ctx.params.provider === 'google' &&
+      (err.consent_required || err.code === 'invalid_grant')
+    ) {
       ctx.logger.warn(err);
       return ctx.redirect('/auth/google/consent');
     }
+
     ctx.logger.error(err);
     ctx.flash('error', err.message);
     ctx.redirect('/login');
