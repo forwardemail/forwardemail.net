@@ -3202,5 +3202,20 @@
   "Confirm now": "Confirm now",
   "is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).": "is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).",
   ", click on \"Setup\" next to your domain, and then click on \"Settings\".  If you would like to learn more about paid plans see our": ", click on \"Setup\" next to your domain, and then click on \"Settings\".  If you would like to learn more about paid plans see our",
-  "Answer/Value": "Answer/Value"
+  "Answer/Value": "Answer/Value",
+  "Upgrade by January 1st to keep using <span class=\"notranslate\">@mailsire.com</span>": "Upgrade by January 1st to keep using <span class=\"notranslate\">@mailsire.com</span>",
+  "Thanks for using <span class=\"notranslate\">@mailsire.com</span>": "Thanks for using <span class=\"notranslate\">@mailsire.com</span>",
+  "Account upgrade required": "Account upgrade required",
+  "You have used our free beta service for <span class=\"notranslate\">%s</span>.": "You have used our free beta service for <span class=\"notranslate\">%s</span>.",
+  "Support us by upgrading to account to Enhanced Protection &ndash; only $3 per month.": "Support us by upgrading to account to Enhanced Protection &ndash; only $3 per month.",
+  "We accept one-time payments and subscriptions via card, wallet, bank, or PayPal.": "We accept one-time payments and subscriptions via card, wallet, bank, or PayPal.",
+  "Upgrade Now": "Upgrade Now",
+  "Alias Summary": "Alias Summary",
+  "You have until January 1, 2023 to upgrade!": "You have until January 1, 2023 to upgrade!",
+  "Thanks for using <span class=\"notranslate\">@secret.fyi</span>": "Thanks for using <span class=\"notranslate\">@secret.fyi</span>",
+  "Upgrade by January 1st to keep using <span class=\"notranslate\">@secret.fyi</span>": "Upgrade by January 1st to keep using <span class=\"notranslate\">@secret.fyi</span>",
+  "Upgrade by January 1st to keep using <span class=\"notranslate\">@hash.fyi</span>": "Upgrade by January 1st to keep using <span class=\"notranslate\">@hash.fyi</span>",
+  "Thanks for using <span class=\"notranslate\">@hash.fyi</span>": "Thanks for using <span class=\"notranslate\">@hash.fyi</span>",
+  "Upgrade by January 1st to keep using <span class=\"notranslate\">@hideaddress.net</span>": "Upgrade by January 1st to keep using <span class=\"notranslate\">@hideaddress.net</span>",
+  "Thanks for using <span class=\"notranslate\">@hideaddress.net</span>": "Thanks for using <span class=\"notranslate\">@hideaddress.net</span>"
 }

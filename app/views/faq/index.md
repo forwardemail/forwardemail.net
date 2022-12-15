@@ -1419,7 +1419,7 @@ We support two regular expression flags including `i` and `g`.  The case-insensi
 
 Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
 
-Regular expressions are not supported on <a href="/free-disposable-addresses" target="_blank">free global vanity domains</a> (as this could be a security vulnerability).
+Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>

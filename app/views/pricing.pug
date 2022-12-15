@@ -21,11 +21,6 @@ block body
             data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
           )
   .py-5.bg-light
-    .text-center.mb-5
-      .h2.display-3.mb-1.text-danger
-        i.fa.fa-heart
-      h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t("Our Features")
-      .small.text-black-50.text-uppercase= t("We strive for perfection")
     .container
       .row.mb-5
         .col.text-center
@@ -53,11 +48,11 @@ block body
                 != `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t("Unlimited disposable email addresses")}`
                 = " "
                 a.btn.btn-link.text-primary.py-0(
-                  href=l("/free-disposable-addresses"),
+                  href=l("/disposable-addresses"),
                   role="button",
                   data-toggle="tooltip",
                   data-placement="bottom",
-                  title=`${t('Use a custom domain or one of our free vanity domains:')} ${ajc(config.vanityDomains)}`
+                  title=`${t('Use custom domains or one of our vanity domains:')} ${ajc(config.vanityDomains)}`
                 )
                   i.fa.fa-question-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold

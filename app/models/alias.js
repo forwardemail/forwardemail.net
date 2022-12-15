@@ -233,7 +233,7 @@ Alias.pre('save', async function (next) {
         [config.userFields.isBanned]: false
       })
         .lean()
-        .select('id')
+        .select('id plan')
         .exec()
     ]);
 
@@ -328,7 +328,18 @@ Alias.pre('save', async function (next) {
 
       // if user is not admin of the domain and it is a global domain
       // then the user can only have up to 5 aliases at a time on the domain
-      if (domain.is_global && !alias.isNew) {
+      if (domain.is_global) {
+        // user must be on a paid plan to use a global domain
+        if (user.plan === 'free')
+          throw Boom.paymentRequired(
+            i18n.translateError(
+              'PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS',
+              alias.locale,
+              `/${alias.locale}/my-account/billing/upgrade?plan=enhanced_protection`
+            )
+          );
+
+        // user cannot exceed the max alias count on a global domain
         const aliasCount = await alias.constructor.countDocuments({
           user: user._id,
           domain: domain._id,
@@ -336,10 +347,13 @@ Alias.pre('save', async function (next) {
             $ne: alias.name
           }
         });
-        if (aliasCount > 5)
-          throw Boom.badRequest(
+        if (aliasCount > 5) {
+          const err = Boom.badRequest(
             i18n.translateError('REACHED_MAX_ALIAS_COUNT', alias.locale)
           );
+          err.is_max_alias_count = true;
+          throw err;
+        }
       }
     }
 
@@ -362,23 +376,19 @@ Alias.pre('save', async function (next) {
 
     // domain must be on a paid plan in order to require verification
     if (domain.plan === 'free' && alias.has_recipient_verification)
-      return next(
-        Boom.badRequest(
-          i18n.translateError(
-            'PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION',
-            alias.locale
-          )
+      throw Boom.badRequest(
+        i18n.translateError(
+          'PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION',
+          alias.locale
         )
       );
 
     // domain must not be a global plan in order to require verification
     if (domain.is_global && alias.has_recipient_verification)
-      return next(
-        Boom.badRequest(
-          i18n.translateError(
-            'PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION',
-            alias.locale
-          )
+      throw Boom.badRequest(
+        i18n.translateError(
+          'PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION',
+          alias.locale
         )
       );
 
