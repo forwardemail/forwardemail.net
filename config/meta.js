@@ -56,9 +56,9 @@ module.exports = function (config) {
     ],
     '/logout': [`Sign out of ${lad}`, 'Sign out of your account'],
     '/register': [`Sign up ${lad}`, `Create a ${config.appName} account`],
-    '/free-disposable-addresses': [
-      `Free Disposable Addresses ${lad}`,
-      'Try free and disposable email addresses with our short and memorable vanity domains, or you can use a custom domain name for free disposable addresses.'
+    '/disposable-addresses': [
+      `Disposable Addresses ${lad}`,
+      'Try disposable email addresses with our short and memorable vanity domains, or you can use a custom domain name for disposable addresses.'
     ],
     '/guides': [
       `Guides ${lad}`,
