@@ -63,7 +63,7 @@ async function retrieveAliases(ctx, next) {
 
       if (existingTXT.length > 0) ctx.state.hasExistingTXT = true;
     } catch (err) {
-      ctx.logger.error(err);
+      ctx.logger.warn(err);
     }
   }
 
