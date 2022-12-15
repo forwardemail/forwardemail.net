@@ -3048,5 +3048,7 @@
   "Upgrade by January 1st to keep using <span class=\"notranslate\">@hash.fyi</span>": "Upgrade by January 1st to keep using <span class=\"notranslate\">@hash.fyi</span>",
   "Thanks for using <span class=\"notranslate\">@hash.fyi</span>": "Thanks for using <span class=\"notranslate\">@hash.fyi</span>",
   "Upgrade by January 1st to keep using <span class=\"notranslate\">@hideaddress.net</span>": "Upgrade by January 1st to keep using <span class=\"notranslate\">@hideaddress.net</span>",
-  "Thanks for using <span class=\"notranslate\">@hideaddress.net</span>": "Thanks for using <span class=\"notranslate\">@hideaddress.net</span>"
+  "Thanks for using <span class=\"notranslate\">@hideaddress.net</span>": "Thanks for using <span class=\"notranslate\">@hideaddress.net</span>",
+  "global vanity domains": "global vanity domains",
+  "... and <span class=\"notranslate\">%d</span> more aliases.": "... and <span class=\"notranslate\">%d</span> more aliases."
 }
