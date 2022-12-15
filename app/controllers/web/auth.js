@@ -590,9 +590,11 @@ async function catchError(ctx, next) {
   try {
     await next();
   } catch (err) {
-    ctx.logger.error(err);
-    if (ctx.params.provider === 'google' && err.consent_required)
+    if (ctx.params.provider === 'google' && err.consent_required) {
+      ctx.logger.warn(err);
       return ctx.redirect('/auth/google/consent');
+    }
+    ctx.logger.error(err);
     ctx.flash('error', err.message);
     ctx.redirect('/login');
   }

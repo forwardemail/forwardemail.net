@@ -18,6 +18,14 @@ module.exports = {
   HELLO: 'Hello',
   WWW_WARNING:
     'It looks like you accidentally included "www." in your domain name.  Did you mean example.com instead of www.example.com?',
+  INVALID_PROFILE_RESPONSE:
+    'Invalid profile response, please delete this site from your third-party sign-in preferences and try again.',
+  INVALID_PROFILE_ID:
+    'Invalid profile identifier, please delete this site from your third-party sign-in preferences and try again.',
+  CONSENT_REQUIRED:
+    'Offline access consent required to generate a new refresh token.',
+  OTP_NOT_ENABLED: 'OTP authentication is not enabled.',
+  OTP_TOKEN_DOES_NOT_EXIST: 'OTP token does not exist for validation.',
   INVALID_API_CREDENTIALS: 'Invalid API credentials.',
   INVALID_API_TOKEN: 'Invalid API token.',
   INVALID_EMAIL: 'Email address was invalid.',

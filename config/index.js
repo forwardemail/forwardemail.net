@@ -258,7 +258,8 @@ const config = {
       // otp
       otpToken: 'otp_token',
       otpEnabled: 'otp_enabled'
-    }
+    },
+    phrases
   },
 
   // passport-local-mongoose options
