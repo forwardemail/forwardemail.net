@@ -45,17 +45,6 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold.border-top!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t("Unlimited custom domain names")}`
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t("Unlimited email addresses and aliases")}`
               li.list-group-item.d-flex.align-items-center.font-weight-bold
-                != `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t("Unlimited disposable email addresses")}`
-                = " "
-                a.btn.btn-link.text-primary.py-0(
-                  href=l("/disposable-addresses"),
-                  role="button",
-                  data-toggle="tooltip",
-                  data-placement="bottom",
-                  title=`${t('Use custom domains or one of our vanity domains:')} ${ajc(config.vanityDomains)}`
-                )
-                  i.fa.fa-question-circle
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
                 != `<i class="fa fa-fw fa-shield-alt text-primary mr-3"></i> ${t("Phishing, executable, and virus protection")}`
                 = " "
                 a.btn.btn-link.text-primary.py-0(
@@ -140,20 +129,17 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-bolt text-primary mr-3"></i> ${t("Instant DNS propagation (zero wait-time)")}`
               li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-tasks text-primary mr-3"></i> ${t("Easy to use email alias and import manager")}`
               li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-bell.text-primary.mr-3
-                = t("Optional recipient verification emails")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-tools.text-primary.mr-3
                 = t("Customize spam, phishing, and filtering settings")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-palette.text-primary.mr-3
-                = t("Custom-branded recipient verification emails")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-code.text-primary.mr-3
                 = t("Exclusive access to API features")
                 = " "
                 a.btn.btn-link.text-dark.py-0(href=l("/email-forwarding-api"))
                   i.fa.fa-link
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-bell.text-primary.mr-3
+                = t("Custom recipient verification (optional)")
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t("Forward newsletters to a bulk recipient list")}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t("Automatic refunds with 30-day money-back guarantee")}`
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('99.99% Uptime Service Level Agreement ("SLA")')}`
