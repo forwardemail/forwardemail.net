@@ -16,13 +16,35 @@ async function createAlias(ctx, next) {
         Boom.badRequest(ctx.translateError('ALIAS_WITH_PLUS_UNSUPPORTED'))
       );
 
-    ctx.state.alias = await Aliases.create({
-      ...ctx.state.body,
-      is_api: boolean(ctx.api),
-      user: ctx.state.user._id,
-      domain: ctx.state.domain._id,
-      locale: ctx.locale
-    });
+    try {
+      ctx.state.alias = await Aliases.create({
+        ...ctx.state.body,
+        is_api: boolean(ctx.api),
+        user: ctx.state.user._id,
+        domain: ctx.state.domain._id,
+        locale: ctx.locale
+      });
+    } catch (err) {
+      // if there was a payment required error before creating the alias
+      // and it was a global alias, then it indicates it requires an upgrade
+      if (
+        !ctx.api &&
+        err &&
+        err.isBoom &&
+        err.output &&
+        err.output.statusCode === 402
+      ) {
+        const redirectTo = ctx.state.l(
+          '/my-account/billing/upgrade?plan=enhanced_protection'
+        );
+        ctx.flash('warning', err.message);
+        if (ctx.accepts('html')) ctx.redirect(redirectTo);
+        else ctx.body = { redirectTo };
+        return;
+      }
+
+      throw err;
+    }
 
     if (ctx.api) {
       ctx.state.alias = toObject(Aliases, ctx.state.alias);

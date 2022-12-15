@@ -546,6 +546,7 @@ User.pre('save', async function (next) {
     return next(err);
   }
 
+  // TODO: prevent user from signing up with one of our global vanity names
   next();
 });
 

@@ -91,11 +91,15 @@ localeRouter
     web.onboard,
     render('domain-registration')
   )
+  .get('/free-disposable-addresses', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/disposable-addresses'));
+  })
   .get(
-    '/free-disposable-addresses',
+    '/disposable-addresses',
     web.myAccount.retrieveDomains,
     web.onboard,
-    render('free-disposable-addresses')
+    render('disposable-addresses')
   )
   .get(
     '/reserved-email-addresses',

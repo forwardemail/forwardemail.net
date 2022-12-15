@@ -36,7 +36,8 @@ if alias
             i.fa.fa-at
     ul.list-inline
       li.list-inline-item.small.text-black-50= t('Use an asterisk "*" for a catch-all alias.')
-      li.list-inline-item.small.text-black-50!= t('We also support <a href="%s" target="_blank">regular expressions</a>.', l("/faq#do-you-support-regular-expressions-or-regex"))
+      if !domain || !domain.is_global
+        li.list-inline-item.small.text-black-50!= t('We also support <a href="%s" target="_blank">regular expressions</a>.', l("/faq#do-you-support-regular-expressions-or-regex"))
   if !domain
     .form-group.col-md-6
       label(for="select-alias-domain")
@@ -55,7 +56,7 @@ if alias
               = ")"
             if domain.is_global
               = " ("
-              = t("Free Vanity Domain")
+              = t("Vanity Domain")
               = ")"
       - const hasFreeDomains = domains.some((domain) => !domain.plan || domain.plan === "free");
       ul.list-inline.form-text

@@ -1,18 +1,20 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
+const os = require('os');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
 const { Aliases, Users, Domains } = require('#models');
 
+const concurrency = Math.round(os.cpus().length * 2);
 const breeSharedConfig = sharedConfig('BREE');
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
@@ -27,34 +29,33 @@ graceful.listen();
 
   logger.info('starting lowercase job');
 
-  const ids = await Aliases.distinct('_id', {});
-  const len = ids.length;
-  let count = 0;
+  const bannedUserIds = await Users.distinct('_id', {
+    [config.userFields.isBanned]: true
+  });
+  const ids = await Aliases.distinct('_id', { user: { $nin: bannedUserIds } });
 
   // eslint-disable-next-line complexity
   async function mapper(alias) {
     // allows us to recursively call mapper()
     if (typeof alias !== 'object' || typeof alias.save !== 'function') {
-      count++;
       alias = await Aliases.findById(alias);
     }
-
-    console.log(`${count}/${len}`);
 
     if (!alias) {
       console.error('Alias does not exist');
       return;
     }
 
+    // force EN for locale
+    alias.locale = 'en';
+
     try {
       await alias.save();
     } catch (err) {
-      console.error('alias', alias, 'error', err);
       if (
         err.has_exceeded_unique_count ||
         err.is_reserved_word ||
-        err.message ===
-          'User cannot have more than (5) aliases on global domains.'
+        err.is_max_alias_count
       ) {
         // if it's a global domain then ban the user
         const domain = await Domains.findById(alias.domain);
@@ -62,18 +63,52 @@ graceful.listen();
         if (domain.is_global) {
           const user = await Users.findById(alias.user);
           if (!user) throw new Error('User does not exist');
-          // TODO: if the user not on a paid plan then ban them
+          // if the user not on a paid plan then ban them
           if (user.plan === 'free') {
-            console.log('BANNING', user);
+            console.log(
+              '!!! BANNING !!!',
+              'user.email',
+              user.email,
+              'err',
+              err.message,
+              'alias',
+              alias.name,
+              'domain',
+              domain.name
+            );
             user[config.userFields.isBanned] = true;
             await user.save();
           }
 
-          console.log('REMOVING', alias);
-          await alias.remove();
+          /*
+          // NOTE: don't remove for paying customers
+          console.log(
+            '~~~ WE SHOULD REMOVE ALIAS ~~~',
+            'user.email',
+            user.email,
+            'user.plan',
+            user.plan,
+            'err',
+            err.message,
+            'alias',
+            alias.name,
+            'domain',
+            domain.name
+          );
+          // TODO: await alias.remove();
+          */
         } else {
           // else we need to trim the recipients past max count
           // and we can use exceeded by count
+          console.log(
+            'trimming aliases past max count',
+            alias.recipients,
+            'alias.name',
+            alias.name,
+            'domain.name',
+            domain.name
+          );
+
           for (let i = 1; i <= err.exceeded_by_count; i++) {
             alias.recipients.pop();
           }
@@ -90,7 +125,13 @@ graceful.listen();
         const domain = await Domains.findById(alias.domain);
         if (!domain) throw new Error('Domain does not exist');
         if (domain.is_global) {
-          // remove alias because it was invalid
+          console.log(
+            'need to remove alias b/c was global',
+            'alias',
+            alias.name,
+            'domain',
+            domain.name
+          );
           await alias.remove();
         } else {
           switch (err.message) {
@@ -167,23 +208,17 @@ graceful.listen();
         console.log('Reassigning alias', alias, 'to admin member', adminMember);
         alias.user = adminMember.user;
         await mapper(alias);
-      } else {
+      } else if (
+        err.message !== 'Paid plan is required for recipient verification'
+      ) {
         const user = await Users.findById(alias.user);
-        if (user[config.userFields.isBanned]) {
-          console.log(
-            'User was banned and alias had an issue',
-            user,
-            alias,
-            err
-          );
-        } else {
-          throw err;
-        }
+        if (!user[config.userFields.isBanned])
+          console.log('UNHANDLED ERROR', err);
       }
     }
   }
 
-  await pMapSeries(ids, mapper);
+  await pMap(ids, mapper, { concurrency });
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
