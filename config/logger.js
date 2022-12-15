@@ -17,7 +17,6 @@ module.exports = {
   meta: {
     show: env.AXE_SHOW_META
   },
-  // eslint-disable-next-line no-undef
-  silent: typeof window !== 'undefined' && isProduction,
+  silent: isProduction,
   name: env.APP_NAME
 };
