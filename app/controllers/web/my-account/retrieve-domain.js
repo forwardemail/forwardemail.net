@@ -100,7 +100,7 @@ async function retrieveDomain(ctx, next) {
           }
         }
       } catch (err) {
-        ctx.logger.error(err);
+        ctx.logger.warn(err);
       }
     })(),
     (async () => {
@@ -130,7 +130,7 @@ async function retrieveDomain(ctx, next) {
           ctx.state.existingTXT = existingTXT;
         }
       } catch (err) {
-        ctx.logger.error(err);
+        ctx.logger.warn(err);
       }
     })()
   ]);
@@ -143,7 +143,7 @@ async function retrieveDomain(ctx, next) {
     try {
       await importAliases(ctx);
     } catch (err) {
-      ctx.logger.error(err);
+      ctx.logger.warn(err);
     }
   }
 

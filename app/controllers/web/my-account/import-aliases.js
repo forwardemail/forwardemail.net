@@ -28,7 +28,7 @@ async function importAliases(ctx) {
       ctx.client
     ));
   } catch (err) {
-    ctx.logger.error(err);
+    ctx.logger.warn(err);
     if (err.code === 'ENOTFOUND')
       throw Boom.badRequest(ctx.translateError('ENOTFOUND'));
     if (err.code === 'ENODATA')
