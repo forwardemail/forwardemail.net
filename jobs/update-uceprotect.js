@@ -29,7 +29,7 @@ const graceful = new Graceful({
 const LISTS = [
   {
     name: 'UCEPROTECT Level 1',
-    prefix: 'blacklist',
+    prefix: 'blocklist',
     url: 'http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz'
   },
   {
