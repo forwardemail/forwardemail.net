@@ -11,6 +11,19 @@ async function retrieveDomains(ctx, next) {
 
   if (!ctx.isAuthenticated()) return next();
 
+  //
+  // NOTE: if user is authenticated but hasn't yet authenticated OTP
+  //       we do not want to share account information on non /my-account pages
+  //       (this is the same code as @ladjs/policies function ensureOtp)
+  //
+  if (ctx.state.user[config.passport.fields.otpEnabled] && !ctx.session.otp) {
+    ctx.session.returnTo = ctx.originalUrl || ctx.req.url;
+    const redirectTo = ctx.state.l(config.loginOtpRoute);
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return next();
+  }
+
   const query = {
     $or: [{ 'members.user': ctx.state.user._id }]
   };
