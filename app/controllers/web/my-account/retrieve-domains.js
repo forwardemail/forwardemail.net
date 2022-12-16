@@ -90,7 +90,7 @@ async function retrieveDomains(ctx, next) {
       const m = domain.members[x];
       // ensure members have populated users and are not banned
       if (!_.isObject(m.user) || m.user[config.userFields.isBanned]) {
-        ctx.state.domains[i].members[x].splice(x, 1);
+        ctx.state.domains[i].members.splice(x, 1);
         continue;
       }
 
