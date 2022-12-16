@@ -9,11 +9,11 @@
 * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
 * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
 * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-* [How do you handle your IP addresses becoming blacklisted](#how-do-you-handle-your-ip-addresses-becoming-blacklisted)
+* [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
 * [What are no-reply addresses](#what-are-no-reply-addresses)
-* [Do you have a whitelist](#do-you-have-a-whitelist)
+* [Do you have an allowlist](#do-you-have-an-allowlist)
 * [Do you have a greylist](#do-you-have-a-greylist)
-* [Do you have a blacklist](#do-you-have-a-blacklist)
+* [Do you have a blocklist](#do-you-have-a-blocklist)
 * [Do you have rate limiting](#do-you-have-rate-limiting)
 * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
   * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
@@ -663,7 +663,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Optional Add-on:
   </strong>
   <span>
-    If you're the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to whitelist yourself.  To do this, simply <a class="alert-link" href="https://support.google.com/a/answer/60751?hl=en&ref_topic=1685627" target="_blank" rel="noopener noreferrer">follow these instructions by Gmail</a> on this topic.
+    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
   </span>
 </div>
 
@@ -778,13 +778,13 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 
 Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't whitelisted against our [Blacklist](#do-you-have-a-blacklist).  Finally, if a sender is not whitelisted, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [blocklist](#do-you-have-a-blocklist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
 
 * `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [Blacklist](#do-you-have-a-blacklist).  We finally check senders that are not on the whitelist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [Whitelisting](#do-you-have-a-whitelist) for more information).
+* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [blocklist](#do-you-have-a-blocklist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 100 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [Blacklist](#do-you-have-a-blacklist).
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 100 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [blocklist](#do-you-have-a-blocklist).
 
 * `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
@@ -840,7 +840,7 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
 14. For each processed recipient's Forwarding Addresses, we then perform the following operations:
 
-    * The address is checked against our [Blacklist](#do-you-have-a-blacklist), and if it was listed, then a 554 error code will occur and the sender will receive a bounce for this recipient.
+    * The address is checked against our [blocklist](#do-you-have-a-blocklist), and if it was listed, then a 554 error code will occur and the sender will receive a bounce for this recipient.
     * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
     * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
 
@@ -872,14 +872,14 @@ Otherwise if the recipient is an email address, then we will attempt to send the
 
 If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blacklisted (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
 
 
-## How do you handle your IP addresses becoming blacklisted
+## How do you handle your IP addresses becoming blocked
 
-We routinely monitor all major DNS blacklists and if any of our mail exchange ("MX") IP addresses are listed in a major blacklist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
+We routinely monitor all major DNS blocklists and if any of our mail exchange ("MX") IP addresses are listed in a major blocklist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
 
-At the time of this writing, we are listed in several DNS whitelists as well, and we take monitoring blacklists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
+At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring blocklists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
 
 
 ## What are no-reply addresses
@@ -895,20 +895,20 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply@`
 
 
-## Do you have a whitelist
+## Do you have an allowlist
 
-Yes, we update a whitelist daily based off the most popular root FQDN used at the DNS level.  This list consists of approximately 200,000 to 300,000 unique root domain names.
+Yes, we update an allowlist daily based off the most popular root FQDN used at the DNS level.  This list consists of approximately 200,000 to 300,000 unique root domain names.
 
 Popular providers such as Google (Gmail), Yahoo, Microsoft (Outlook), Amazon (Amazon SES), Meta (Facebook), Twitter, Netflix, Spotify, and more are included.
 
-If you are a sender or using a sender not on the whitelist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).
+If you are a sender or using a sender not on our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).
 
-Whitelist requests can be sent to <whitelist@forwardemail.net> (please provide a complete description and reason for whitelisting, links to websites, and your businesses' certificate of formation to be whitelisted).
+Allowlist requests can be sent to <allowlist@forwardemail.net> (please provide a complete description and reason for being added to the allowlist, links to websites, and your businesses' certificate of formation to be listed in our allowlist).
 
 
 ## Do you have a greylist
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our whitelist and lasts in our cache for 30 days.
+Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
 
 For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
 
@@ -918,27 +918,27 @@ The key consists of either the FQDN root domain or the sender's IP address.  Thi
 
 For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
 
-Note that greylisting does not apply to any sender on our [Whitelist](#do-you-have-a-whitelist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
 
 
-## Do you have a blacklist
+## Do you have a blocklist
 
-Yes, we operate our own private blacklist and update it automatically in real-time and manually based off spam and malicious activity detected.  Blacklisted senders will receive a 554 error message.
+Yes, we operate our own private blocklist and update it automatically in real-time and manually based off spam and malicious activity detected.  Blocked senders will receive a 554 error message.
 
-We also pull from the UCEPROTECT Level 1 Blacklist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our Redis database with a 7 day expiry.
+We also pull from the UCEPROTECT Level 1 blocklist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our Redis database with a 7 day expiry.
 
-Blacklist removal requests can be sent to <whitelist@forwardemail.net> (please provide a complete description and reason for whitelisting, links to websites, and your businesses' certificate of formation to be whitelisted).
+Allowlist requests (or blocklist removal requests) can be sent to <allowlist@forwardemail.net> (please provide a complete description and reason for being added to the allowlist, links to websites, and your businesses' certificate of formation to be listed in our allowlist).
 
 
 ## Do you have rate limiting
 
-Yes, we have rate limiting which applies only to senders not on the [Whitelist](#do-you-have-a-whitelist).
+Yes, we have rate limiting which applies only to senders not on the [allowlist](#do-you-have-an-allowlist).
 
 We only permit up to 100 connections per hour, per sender resolved FQDN root domain (or) sender remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
 
 If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
 
-Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is whitelisted.
+Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
 
 If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
 
@@ -976,7 +976,7 @@ If the MAIL FROM is blank OR contains (case-insensitive) one of the following us
 * `webmaster@`
 * `www@`
 
-If the sender's IP is listed (and not in our [Whitelist](#do-you-have-a-whitelist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blacklisted by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our whitelist so we can resolve the issue if necessary.
+If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
 
 The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
 
@@ -1852,7 +1852,7 @@ Yes, absolutely.  For example if you're sending an email to `hello@example.com` 
 
 ## How do you prevent spammers and ensure good email forwarding reputation
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blacklisted](#how-do-you-handle-your-ip-addresses-becoming-blacklisted) above.
+See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
 
 
 ## What should I do if I receive spam emails
@@ -1917,7 +1917,7 @@ Unfortunately Apple does not allow this, regardless of which service you use.  H
 
 Yes, however "relatively unknown" senders are rate limited to 1,000 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
 
-By "relatively unknown", we mean senders that do not appear in the [Whitelist](#do-you-have-a-whitelist).
+By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
 
 If this limit is exceeded we send a "421" response code which tells the senders mail server to retry again later.
 

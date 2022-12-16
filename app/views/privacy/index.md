@@ -13,9 +13,9 @@
 ## Information Not Collected
 
 * We do not store any emails to disk storage (everything is processed in-memory).
-* We do not store any metadata about emails (except when we detect spammers and/or malicious activity; e.g. we will blacklist senders with certain metadata).
+* We do not store any metadata about emails (except when we detect spammers and/or malicious activity; e.g. we will blocklist senders with certain metadata).
 * We do not store any logs for SMTP traffic.
-* We do not store any IP addresses for SMTP traffic (except when we detect spammers and/or malicious activity; e.g. we will blacklist senders with certain hostnames or IP addresses).
+* We do not store any IP addresses for SMTP traffic (except when we detect spammers and/or malicious activity; e.g. we will blocklist senders with certain hostnames or IP addresses).
 
 
 ## Information Collected
