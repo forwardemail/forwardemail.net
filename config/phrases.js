@@ -30,6 +30,8 @@ module.exports = {
   INVALID_API_TOKEN: 'Invalid API token.',
   INVALID_EMAIL: 'Email address was invalid.',
   INVALID_FILE: 'File upload was invalid.',
+  INVALID_KEY_VALUE:
+    'Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.',
   INVALID_MESSAGE: `Your message was invalid, as it was either blank or more than (${env.SUPPORT_REQUEST_MAX_LENGTH}) characters.`,
   INVALID_PASSWORD: 'Password was invalid.',
   INVALID_PASSWORD_CONFIRM: 'Password confirmation did not match new password.',

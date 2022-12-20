@@ -66,3 +66,5 @@ mixin paginate(tableSelector)
             class=ctx.query.limit === limit ? "active" : "",
             href=paginate.href({ page: 1, limit })
           )= t(limit.toString())
+  if itemCount && itemCount > 1
+    p.small.text-muted.text-center!= t('<span class="notranslate">%d</span> results found', itemCount)

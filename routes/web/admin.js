@@ -24,6 +24,24 @@ router
   })
   .get('/', web.admin.dashboard)
 
+  // allowlist
+  .get('/allowlist', paginate.middleware(10, 50), web.admin.allowlist.list)
+  .post('/allowlist', web.admin.allowlist.validate, web.admin.allowlist.create)
+  .delete(
+    '/allowlist',
+    web.admin.allowlist.validate,
+    web.admin.allowlist.remove
+  )
+
+  // blocklist
+  .get('/blocklist', paginate.middleware(10, 50), web.admin.blocklist.list)
+  .post('/blocklist', web.admin.blocklist.validate, web.admin.blocklist.create)
+  .delete(
+    '/blocklist',
+    web.admin.blocklist.validate,
+    web.admin.blocklist.remove
+  )
+
   // users
   .get('/users', paginate.middleware(10, 50), web.admin.users.list)
   .get('/users/:id', web.admin.users.retrieve)

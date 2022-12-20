@@ -1,6 +1,8 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
 
 const { Users } = require('#models');
@@ -23,6 +25,21 @@ async function list(ctx) {
         { [field]: { $regex: ctx.query.q, $options: 'i' } },
         { [field]: { $regex: _.escapeRegExp(ctx.query.q), $options: 'i' } }
       );
+    }
+
+    // filter for non-banned and verified users
+    query[config.userFields.isBanned] = false;
+    query[config.userFields.hasVerifiedEmail] = true;
+  }
+
+  if (isSANB(ctx.query.mongodb_query)) {
+    try {
+      query = parser.parseFilter(ctx.query.mongodb_query);
+      if (!query || Object.keys(query).length === 0)
+        throw new Error('Query was not parsed propery');
+    } catch (err) {
+      ctx.logger.warn(err);
+      return ctx.throw(Boom.badRequest(err.message));
     }
   }
 

@@ -9,8 +9,13 @@ include ../../_pagination
           +sortHeader('name', 'Name', '#table-domains')
         th(scope="col")
           +sortHeader('is_global', 'Global', '#table-domains')
+        th(scope="col").align-middle= t('Members')
         th(scope="col")
           +sortHeader('plan', 'Plan', '#table-domains')
+        th(scope="col")
+          +sortHeader('has_mx_record', 'MX', '#table-domains')
+        th(scope="col")
+          +sortHeader('has_txt_record', 'TXT', '#table-domains')
         th(scope="col")
           +sortHeader('max_recipients_per_alias', 'Max Recipients', '#table-domains')
         th(scope="col")
@@ -19,7 +24,7 @@ include ../../_pagination
       tbody
         if domains.length === 0
           tr
-            td.alert.alert-info(colspan="5")
+            td.alert.alert-info(colspan="9")
               = t("No domains exist for that search.")
         else
           each domain in domains
@@ -29,8 +34,27 @@ include ../../_pagination
               td.align-middle.text-center
                 if domain.is_global
                   i.fa.fa-fw.fa-check.fa-2x.text-success
+              td.align-middle
+                ul.list-inline
+                  each member in domain.members
+                    li.list-inline-item
+                      a(href=l(`/admin/users?mongodb_query={ email: "${member.user.email}" }`), class=member.group === 'admin' ? '' : 'text-muted').small.text-monospace= member.user.email
+                      = ' '
+                      = '('
+                      code.text-muted= member.user.id
+                      = ')'
               td.align-middle.text-center
                 = t(titleize(humanize(domain.plan)))
+              td.align-middle.text-center
+                if domain.has_mx_record
+                  i.fa.fa-fw.fa-check.fa-2x.text-success
+                else
+                  i.fa.fa-fw.fa-times.fa-2x.text-danger
+              td.align-middle.text-center
+                if domain.has_txt_record
+                  i.fa.fa-fw.fa-check.fa-2x.text-success
+                else
+                  i.fa.fa-fw.fa-times.fa-2x.text-danger
               td.align-middle.text-center
                 form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/admin/domains/${domain.id}`),

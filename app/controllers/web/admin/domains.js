@@ -25,6 +25,7 @@ async function list(ctx) {
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
       .sort(ctx.query.sort || '-created_at')
+      .populate('members.user', 'id email')
       .lean()
       .exec(),
     Domains.countDocuments(query)
