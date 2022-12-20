@@ -1,0 +1,34 @@
+include ../../_sort-header
+include ../../_pagination
+
+.table-responsive
+  table.table.table-hover.table-bordered
+    thead.thead-dark
+      tr
+        th(scope="col")
+          +sortHeader('key', 'Key', '#table-results')
+        th.text-center.align-middle(scope="col")= t("Actions")
+      tbody
+        if results.length === 0
+          tr
+            td.alert.alert-info(colspan="5")
+              = t("No keys exist for that search.")
+        else
+          each key in results
+            tr
+              td.align-middle
+                .markdown-body.ml-0.mr-0: code= key.replace('allowlist:', '')
+              td.align-middle
+                form.ajax-form.confirm-prompt(
+                  action=l('/admin/allowlist'),
+                  method="POST",
+                  autocomplete="off"
+                )
+                  input(type="hidden", name="_method", value="DELETE")
+                  input(type="hidden", name="value", value=key.replace('allowlist:', ''))
+                  button.btn.btn-danger(
+                    type="submit",
+                    data-toggle="tooltip",
+                    data-title=t("Remove")
+                  ): i.fa.fa-fw.fa-remove
++paginate('#table-results')

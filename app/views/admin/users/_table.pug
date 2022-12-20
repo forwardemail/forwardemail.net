@@ -12,6 +12,8 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('email', null, '#table-users')
         th(scope="col")
+          +sortHeader('plan', null, '#table-users')
+        th(scope="col")
           +sortHeader('group', null, '#table-users')
         th(scope="col")
           +sortHeader('created_at', 'Created', '#table-users')
@@ -31,8 +33,14 @@ include ../../_pagination
           tr
             td.align-middle= user[config.passport.fields.givenName]
             td.align-middle= user[config.passport.fields.familyName]
-            td.align-middle: a(href=`mailto:${user.email}`, target="_blank")= user.email
-            td.align-middle= titleize(user.group)
+            td.align-middle
+              a(href=`mailto:${user.email}`, target="_blank")= user.email
+              = ' '
+              = '('
+              code.text-muted= user.id
+              = ')'
+            td.align-middle= titleize(humanize(user.plan))
+            td.align-middle= titleize(humanize(user.group))
             td.align-middle= dayjs(user.created_at).format("M/D/YY h:mm A")
             td.align-middle= dayjs(user.updated_at).format("M/D/YY h:mm A")
             td.align-middle= dayjs(user.last_login_at).format("M/D/YY h:mm A")

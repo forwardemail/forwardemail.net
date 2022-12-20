@@ -1,0 +1,126 @@
+const Boom = require('@hapi/boom');
+const RE2 = require('re2');
+const _ = require('lodash');
+const isFQDN = require('is-fqdn');
+const isSANB = require('is-string-and-not-blank');
+const paginate = require('koa-ctx-paginate');
+const { isEmail, isIP } = require('validator');
+
+async function list(ctx) {
+  let results = await ctx.client.keys('blocklist:*');
+
+  if (isSANB(ctx.query.key)) {
+    const regex = new RE2(
+      _.escapeRegExp(ctx.query.key) + '|' + ctx.query.key,
+      'gi'
+    );
+
+    // go in reverse so we can mutate the array
+    let i = results.length;
+    while (i--) {
+      if (!regex.test(results[i].replace('blocklist:', '')))
+        results.splice(i, 1);
+    }
+  }
+
+  if (isSANB(ctx.query.sort)) {
+    if (ctx.query.sort === 'key' || ctx.query.sort === '-key')
+      results = results.sort();
+    if (ctx.query.sort === '-key') results = results.reverse();
+  }
+
+  const itemCount = results.length;
+  const pageCount = Math.ceil(itemCount / ctx.query.limit);
+
+  // slice for page
+  results = results.slice(
+    ctx.paginate.skip,
+    ctx.query.limit + ctx.paginate.skip
+  );
+
+  if (ctx.accepts('html'))
+    return ctx.render('admin/blocklist', {
+      results,
+      pageCount,
+      itemCount,
+      pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
+    });
+
+  const table = await ctx.render('admin/blocklist/_table', {
+    results,
+    pageCount,
+    itemCount,
+    pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
+  });
+
+  ctx.body = { table };
+}
+
+async function validate(ctx, next) {
+  //
+  // NOTE: values can be:
+  //
+  // "fqdn"
+  // "email"
+  // "ip"
+  // "fqdn:email"
+  // "ip:email"
+  //
+  if (!isSANB(ctx.request.body.value))
+    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_KEY_VALUE')));
+
+  if (
+    ctx.request.body.value
+      .split(':')
+      .some((val) => !isFQDN(val) && !isEmail(val) && !isIP(val))
+  )
+    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_KEY_VALUE')));
+
+  return next();
+}
+
+async function create(ctx) {
+  // store in the blocklist
+  await ctx.client.set(
+    `blocklist:${ctx.request.body.value.toLowerCase()}`,
+    'true'
+  );
+
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: ctx.translate('REQUEST_OK'),
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
+
+  if (ctx.accepts('html')) ctx.redirect('back');
+  else ctx.body = { reloadPage: true };
+}
+
+async function remove(ctx) {
+  // remove it from the blocklist
+  await ctx.client.del(`blocklist:${ctx.request.body.value.toLowerCase()}`);
+
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: ctx.translate('REQUEST_OK'),
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
+
+  if (ctx.accepts('html')) ctx.redirect('back');
+  else ctx.body = { reloadPage: true };
+}
+
+module.exports = {
+  list,
+  validate,
+  create,
+  remove
+};

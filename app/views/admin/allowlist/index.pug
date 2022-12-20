@@ -1,0 +1,24 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        form.ajax-form.table-ajax-form(
+          action=ctx.path,
+          method="GET",
+          data-table="#table-results",
+          data-search-params="key"
+        )
+          .input-group.mb-3
+            input#input-value-search.form-control(
+              type="text",
+              value=ctx.query.key ? ctx.query.key : "",
+              name="key",
+              placeholder=t("Search by key")
+            )
+            .input-group-append
+              button.btn.btn-success(type="submit")= t("Search")
+        #table-results
+          include ./_table
