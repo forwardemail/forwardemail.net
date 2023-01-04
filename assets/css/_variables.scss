@@ -20,7 +20,10 @@ $font-family-monospace: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New
 
 $font-family-base: $font-family-sans-serif;
 
-$headings-font-family: Domine, $font-family-sans-serif;
+// $headings-font-family: Poppins, $font-family-sans-serif;
+$headings-font-family: $font-family-sans-serif;
+$headings-font-weight:        700;
+$lead-font-weight:            400;
 
 $blue: #20C1ED;
 $cyan: #9DE5F9;

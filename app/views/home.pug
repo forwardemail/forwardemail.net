@@ -10,7 +10,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-watch-video-title.h4.text-sans-serif.d-inline-block.ml-4= t("Made for you")
+          h1#modal-watch-video-title.h4.d-inline-block.ml-4= t("Made for you")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -29,7 +29,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-for-creators-title.h4.text-sans-serif.d-inline-block.ml-4= t("Email Forwarding for Creators")
+          h1#modal-for-creators-title.h4.d-inline-block.ml-4= t("Email Forwarding for Creators")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -48,7 +48,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-for-developers-title.h4.text-sans-serif.d-inline-block.ml-4= t("Email Forwarding for Developers")
+          h1#modal-for-developers-title.h4.d-inline-block.ml-4= t("Email Forwarding for Developers")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -67,7 +67,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-for-businesses-title.h4.text-sans-serif.d-inline-block.ml-4= t("Email Forwarding for Businesses")
+          h1#modal-for-businesses-title.h4.d-inline-block.ml-4= t("Email Forwarding for Businesses")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -81,7 +81,7 @@ block body
     .container.my-auto.pt-5
       .row
         .col-12.col-lg-6.text-md-left
-          h1.font-weight-bold.mb-3
+          h1.mb-3
             != t("<mark>Unlimited email</mark> for custom domains")
           p.d-block.mb-3
             != t('For <span class="notranslate">%d</span> years and counting, we continue to provide email service for creators, developers, and businesses to send and receive with custom domains.', dayjs().endOf('year').diff(dayjs('1/1/17', 'M-D/YY'), 'year'))
@@ -142,7 +142,7 @@ block body
     .row.text-center.d-block.mb-5
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
-      h1.font-weight-bold!= t("Happy users")
+      h1!= t("Happy users")
     .row.row-cols-1.row-cols-md-2
       //- DHH
       .col
@@ -365,7 +365,7 @@ block body
   .pt-5.pb-lg-5.text-center.bg-light
     .h2.display-3.mb-1.text-danger
       i.fa.fa-heart
-    h1.font-weight-bold.mb-0= t("Features")
+    h1.mb-0= t("Features")
   .bg-light.pb-5.position-relative
     .container
       .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
@@ -489,7 +489,7 @@ block body
       .row.text-center.d-block.mb-5
         .h2.display-3.mb-1.text-danger
           i.fab.fa-youtube
-        h1.font-weight-bold!= t("Made for <u>you</u>")
+        h1!= t("Made for you")
       .row
         .col-md.text-center.mb-3.mb-lg-0
           button.btn.btn-outline-dark.btn-lg(
