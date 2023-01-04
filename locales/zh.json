@@ -971,7 +971,7 @@
   "Which payment methods do you accept?": "你们接受哪些付款方式？",
   "We accept debit and credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "<a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">我们接受使用 Stripe</a>和<a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal 的</a>借记卡和信用卡。",
   "Do you accept one-time payments and subscriptions?": "你们接受一次性付款和订阅吗？",
-  "<span class=\"font-weight-bold\">Yes.</span>. We accept both one-time payments or monthly, quarterly, and yearly subscriptions.": "<span class=\"font-weight-bold\">是的。</span> .我们接受一次性付款或按月、按季度和按年订阅。",
+  "<span class=\"font-weight-bold\">Yes.</span> We accept both one-time payments or monthly, quarterly, and yearly subscriptions.": "<span class=\"font-weight-bold\">是的。</span> .我们接受一次性付款或按月、按季度和按年订阅。",
   "Will you ever increase prices?": "你会涨价吗？",
   "<span class=\"font-weight-bold\">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.": "<span class=\"font-weight-bold\">号</span>的价格不会提升。与其他公司不同，我们也永远不会关闭我们的服务。",
   "Do you offer a money-back guarantee?": "你们提供退款保证吗？",

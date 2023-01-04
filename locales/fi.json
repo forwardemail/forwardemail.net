@@ -1501,7 +1501,7 @@
   "Browser extension (coming soon)": "Selainlaajennus (tulossa pian)",
   "We accept debit and credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "Hyväksymme pankki- ja luottokortit <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripen</a> ja <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPalin kautta</a> .",
   "Do you accept one-time payments and subscriptions?": "Hyväksytkö kertamaksut ja tilaukset?",
-  "<span class=\"font-weight-bold\">Yes.</span>. We accept both one-time payments or monthly, quarterly, and yearly subscriptions.": "<span class=\"font-weight-bold\">Joo.</span> . Hyväksymme sekä kertamaksut että kuukausittaiset, neljännesvuosittaiset ja vuosittaiset tilaukset.",
+  "<span class=\"font-weight-bold\">Yes.</span> We accept both one-time payments or monthly, quarterly, and yearly subscriptions.": "<span class=\"font-weight-bold\">Joo.</span> . Hyväksymme sekä kertamaksut että kuukausittaiset, neljännesvuosittaiset ja vuosittaiset tilaukset.",
   "Our expertise allowed us to build our own custom solution that uses memory-based streams, and is lightning fast and privacy-focused.": "Asiantuntemuksemme mahdollisti oman mukautetun ratkaisumme, joka käyttää muistipohjaisia streameja ja on salamannopea ja yksityisyyteen keskittyvä.",
   "#1 Ranked Forwarding Service &ndash; Since 2017": "#1. Sijoitettu huolintapalvelu &ndash; Vuodesta 2017 lähtien",
   "Unlimited Email Forwarding": "Rajoittamaton sähköpostin edelleenlähetys",
