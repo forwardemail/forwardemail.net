@@ -1720,7 +1720,7 @@
   "Browser extension (coming soon)": "브라우저 확장(곧 제공 예정)",
   "We accept debit and credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "<a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> 및 <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal을</a> 사용하여 직불카드 및 신용카드를 사용할 수 있습니다.",
   "Do you accept one-time payments and subscriptions?": "일회성 결제 및 구독을 수락합니까?",
-  "<span class=\"font-weight-bold\">Yes.</span>. We accept both one-time payments or monthly, quarterly, and yearly subscriptions.": "<span class=\"font-weight-bold\">예.</span> . 일회성 결제 또는 월별, 분기별 및 연간 구독을 모두 허용합니다.",
+  "<span class=\"font-weight-bold\">Yes.</span> We accept both one-time payments or monthly, quarterly, and yearly subscriptions.": "<span class=\"font-weight-bold\">예.</span> . 일회성 결제 또는 월별, 분기별 및 연간 구독을 모두 허용합니다.",
   "Our expertise allowed us to build our own custom solution that uses memory-based streams, and is lightning fast and privacy-focused.": "우리의 전문 지식을 통해 메모리 기반 스트림을 사용하고 번개처럼 빠르고 개인 정보에 중점을 둔 맞춤형 솔루션을 구축할 수 있었습니다.",
   "We're <span class='font-weight-bold'>the only</span> service that <mark>respects your privacy</mark> and <mark>never stores</mark> your emails.": "우리는 <span class='font-weight-bold'>유일한</span> 서비스<mark> 귀하의 개인 정보를 존중합니다</mark> 그리고<mark> 절대 저장하지 않는다</mark> 당신의 이메일.",
   "Get Started": "시작하다",

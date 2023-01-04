@@ -1720,7 +1720,7 @@
   "Browser extension (coming soon)": "ブラウザ拡張機能（近日公開）",
   "We accept debit and credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "<a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a>と<a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>を使用したデビットカードとクレジットカードをご利用いただけます。",
   "Do you accept one-time payments and subscriptions?": "1回限りの支払いとサブスクリプションを受け入れますか？",
-  "<span class=\"font-weight-bold\">Yes.</span>. We accept both one-time payments or monthly, quarterly, and yearly subscriptions.": "<span class=\"font-weight-bold\">はい。</span> 。 1回限りの支払い、または月次、四半期、年次のサブスクリプションの両方を受け入れます。",
+  "<span class=\"font-weight-bold\">Yes.</span> We accept both one-time payments or monthly, quarterly, and yearly subscriptions.": "<span class=\"font-weight-bold\">はい。</span> 。 1回限りの支払い、または月次、四半期、年次のサブスクリプションの両方を受け入れます。",
   "Our expertise allowed us to build our own custom solution that uses memory-based streams, and is lightning fast and privacy-focused.": "私たちの専門知識により、メモリベースのストリームを使用し、超高速でプライバシーに重点を置いた独自のカスタムソリューションを構築することができました。",
   "We're <span class='font-weight-bold'>the only</span> service that <mark>respects your privacy</mark> and <mark>never stores</mark> your emails.": "私たち<span class='font-weight-bold'>だけ</span>が<mark>あなたのプライバシーを尊重します</mark>と<mark>決して保存しない</mark>あなたのメール。",
   "Get Started": "はじめに",
