@@ -10,6 +10,7 @@ const config = require('#config');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const { web } = require('#controllers');
+const { nsProviders } = require('#config/utilities');
 
 const router = new Router();
 
@@ -211,6 +212,10 @@ localeRouter
     rateLimit(5, 'create user'),
     web.auth.register
   );
+
+for (const provider of nsProviders) {
+  localeRouter.get(`/guides/${provider.slug}`, render('guides/provider'));
+}
 
 localeRouter.use(myAccount.routes()).use(admin.routes()).use(otp.routes());
 

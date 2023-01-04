@@ -6,7 +6,6 @@ const {
   userFields,
   passport,
   appName,
-  loginRoute,
   hcaptchaEnabled,
   hcaptchaSecretKey
 } = require('#config');
@@ -17,7 +16,7 @@ const policies = new Policies(
     schemeName: appName,
     hasVerifiedEmail: userFields.hasVerifiedEmail,
     verifyRoute,
-    loginRoute,
+    loginRoute: '/register',
     loginOtpRoute,
     passport,
     hcaptchaEnabled,

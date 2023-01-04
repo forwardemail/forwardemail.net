@@ -14,6 +14,7 @@
 // before returning them to be rendered in tags such as
 // `<title>` and `<meta name="description">`
 //
+const { nsProviders } = require('#config/utilities');
 
 module.exports = function (config) {
   // currently we cannot use the `|` pipe character due to this issue
@@ -92,6 +93,15 @@ module.exports = function (config) {
     ],
     '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in']
   };
+
+  // guides for each provider
+  for (const provider of nsProviders) {
+    meta[`/guides/${provider.slug}`] = [
+      `Free Email Forwarding for <span class="notranslate">${provider.name}</span>`,
+      `Set up free email forwarding for your <span class="notranslate">${provider.name}</span> domain name. Get unlimited ${provider.name} email aliases, send and receive email, and more.`
+    ];
+  }
+
   meta[config.loginRoute] = [`Log in ${lad}`, 'Log in to your account'];
   meta[config.verifyRoute] = [
     `Verify email ${lad}`,

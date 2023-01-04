@@ -54,52 +54,69 @@ function prefixHTMLPathBasedAnchors(html, baseURI) {
 //
 const NS_PROVIDERS = {
   awsdns: [
+    'amazon-route-53',
     'Amazon Route 53',
     'https://console.aws.amazon.com/route53/',
     false,
     ''
   ],
-  azure: ['Azure', 'https://portal.azure.com/'],
+  azure: ['azure', 'Azure', 'https://portal.azure.com/'],
   'cloudflare.com': [
+    'cloudflare',
     'Cloudflare',
     'https://dash.cloudflare.com/login',
     'cloudflare',
     '@'
   ],
-  'dnsmadeeasy.com': ['DNS Made Easy', 'https://auth.dnsmadeeasy.com/'],
+  'dnsmadeeasy.com': [
+    'dns-made-easy',
+    'DNS Made Easy',
+    'https://auth.dnsmadeeasy.com/'
+  ],
   'domaincontrol.com': [
+    'godaddy',
     'GoDaddy',
     'https://sso.godaddy.com/?realm=idp&app=dashboard.api&path=%2fvh-login-redirect',
     'godaddy',
     '@'
   ],
   'dns-for-domains.com': [
+    'domains.com',
     'Domains.com',
     'https://domains.com/',
     'domains.com',
     '@'
   ],
-  'gandi.net': ['Gandi.net', 'https://id.gandi.net/login', 'gandi', ''],
+  'gandi.net': [
+    'gandi',
+    'Gandi.net',
+    'https://id.gandi.net/login',
+    'gandi',
+    ''
+  ],
   'googledomains.com': [
+    'google-domains',
     'Google Domains',
     'https://domains.google.com/registrar/',
     'google',
     ''
   ],
   'name.com': [
+    'name.com',
     'Name.com',
     'https://www.name.com/account/login',
     'name.com',
     ''
   ],
-  'nsone.net': ['NS1', 'https://ns1.com/'],
+  'nsone.net': ['ns1', 'NS1', 'https://ns1.com/'],
   'registrar-servers.com': [
+    'namecheap',
     'Namecheap',
     'https://www.namecheap.com/myaccount/login/?ReturnUrl=%2f#',
     'namecheap',
     '@'
   ],
-  'wixdns.net': ['Wix', 'https://users.wix.com/signin?forceRender=true']
+  'wixdns.net': ['wix', 'Wix', 'https://users.wix.com/signin?forceRender=true']
 };
 
 const NS_PROVIDER_KEYS = Object.keys(NS_PROVIDERS);
@@ -113,8 +130,8 @@ function nsProviderLookup(domain) {
 
   for (const [i, NS_PROVIDER_REGEX] of NS_PROVIDER_REGEXES.entries()) {
     if (domain.ns.some((r) => NS_PROVIDER_REGEX.test(r))) {
-      const [name, url, gif, host] = NS_PROVIDERS[NS_PROVIDER_KEYS[i]];
-      provider = { name, url, gif, host };
+      const [slug, name, url, gif, host] = NS_PROVIDERS[NS_PROVIDER_KEYS[i]];
+      provider = { slug, name, url, gif, host };
       break;
     }
   }
@@ -122,8 +139,15 @@ function nsProviderLookup(domain) {
   return provider;
 }
 
+const nsProviders = [];
+for (const key of NS_PROVIDER_KEYS) {
+  const [slug, name, url, gif, host] = NS_PROVIDERS[key];
+  nsProviders.push({ slug, name, url, gif, host });
+}
+
 module.exports = {
   _,
+  nsProviders,
   nsProviderLookup,
   ajc,
   boolean,
