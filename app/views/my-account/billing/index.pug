@@ -10,7 +10,7 @@ block body
     .modal-dialog(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h4#modal-change-plan-title.text-sans-serif.d-inline-block.ml-4= t("Change Plan")
+          h4#modal-change-plan-title.d-inline-block.ml-4= t("Change Plan")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -98,7 +98,7 @@ block body
       if user.plan !== 'free'
         .col-12.col-lg-6.d-flex
           .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-            h2.display-5.font-weight-bold.mb-0
+            h2.mb-0
               if hasSubscription
                 = t("Auto-renew enabled")
               else
@@ -136,7 +136,7 @@ block body
                   )= t("Enable Auto-Renew")
       .col-12.d-flex(class=user.plan === "free" ? "" : "col-lg-6")
         .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-          h2.display-5.font-weight-bold= t(titleize(humanize(user.plan)))
+          h2= t(titleize(humanize(user.plan)))
           .small.text-muted.text-uppercase.mb-3
             != t('Plan started on <span class="notranslate">%s</span>', dayjs(user[config.userFields.planSetAt]).format("M/D/YY"))
           button.btn.btn-sm.btn-dark.btn-success(

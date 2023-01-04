@@ -10,7 +10,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-pricing-video-title.h4.text-sans-serif.d-inline-block.ml-4= t("Learn about our plans")
+          h1#modal-pricing-video-title.h4.d-inline-block.ml-4= t("Learn about our plans")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -24,7 +24,7 @@ block body
     .container
       .row.mb-5
         .col.text-center
-          h2.font-weight-bold.mb-3
+          h2.mb-3
             = t("Lightning fast email service.")
           button.btn.btn-dark.btn-lg(
             type="button",
@@ -274,7 +274,7 @@ block body
             .small.text-black-50.text-uppercase!= t('See Q&A below and <a href="%s">read our FAQ</a> for more', l("/faq"))
         .row.mt-5
           .col
-            h2.font-weight-bold= t("What is the difference between Free and Enhanced Protection?")
+            h2= t("What is the difference between Free and Enhanced Protection?")
             p.lead
               = t("The Free plan requires you to use public DNS records to store your forwarding configuration.")
               = " "
@@ -294,7 +294,7 @@ block body
               strong.bg-warning!= new Array(8).fill("&bull;").join("")
         .row.my-5
           .col
-            h2.font-weight-bold= t("Is pricing per account or per domain?")
+            h2= t("Is pricing per account or per domain?")
             p.lead
               != t("Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.")
               = " "
@@ -303,39 +303,39 @@ block body
               != t("For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.")
         .row.my-5
           .col
-            h2.font-weight-bold= t("Do you support email best practices?")
+            h2= t("Do you support email best practices?")
             p.lead
               != t('<span class="font-weight-bold">Yes.</span> We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans.')
               = " "
               = t("We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.")
         .row.my-5
           .col
-            h2.font-weight-bold!= t('Can I configure <a href="%s" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', "https://spamscanner.net")
+            h2!= t('Can I configure <a href="%s" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', "https://spamscanner.net")
             p.lead
               != t('<span class="font-weight-bold">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href="%s">Settings</a>.', sortedDomains && sortedDomains[0] && sortedDomains[0].name ? l(`/my-account/domains/${sortedDomains[0].name}/advanced-settings`) : l("/my-account/domains"))
         .row.my-5
           .col
-            h2.font-weight-bold= t("Do you offer unlimited domains for one price?")
+            h2= t("Do you offer unlimited domains for one price?")
             p.lead!= t('<span class="font-weight-bold">Yes.</span> Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.')
         .row.my-5
           .col
-            h2.font-weight-bold= t("Which payment methods do you accept?")
+            h2= t("Which payment methods do you accept?")
             p.lead!= t('We accept cards, wallets, and bank transfers using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noopener noreferrer">Stripe</a> and <a class="alert-link" href="https://www.paypal.com" target="_blank" rel="noopener noreferrer">PayPal</a>.')
         .row.my-5
           .col
-            h2.font-weight-bold= t("Do you accept one-time payments and subscriptions?")
+            h2= t("Do you accept one-time payments and subscriptions?")
             p.lead!= t('<span class="font-weight-bold">Yes.</span>. We accept both one-time payments or monthly, quarterly, and yearly subscriptions.')
         .row.my-5
           .col
-            h2.font-weight-bold= t("Will you ever increase prices?")
+            h2= t("Will you ever increase prices?")
             p.lead!= t('<span class="font-weight-bold">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.')
         .row.my-5
           .col
-            h2.font-weight-bold= t("Do you offer a money-back guarantee?")
+            h2= t("Do you offer a money-back guarantee?")
             p.lead!= t('<span class="font-weight-bold">Yes.</span> We offer a 30 day money-back guarantee &ndash; with no questions asked.')
         .row.my-5
           .col
-            h2.font-weight-bold= t("Do you store SMTP logs or write to disk?")
+            h2= t("Do you store SMTP logs or write to disk?")
             p.lead
               != t('<span class="font-weight-bold">No.</span> We have a <a href="%s">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.', l("/privacy"))
               = " "
@@ -347,7 +347,7 @@ block body
             p.lead.font-weight-bold: u= t("We don't track you like other services do.")
         .row.my-5
           .col
-            h2.font-weight-bold= t("Do you have any other questions?")
+            h2= t("Do you have any other questions?")
             p.lead= t("We are always available and usually respond within minutes of your help request.")
             ul.list-inline
               li.list-inline-item
