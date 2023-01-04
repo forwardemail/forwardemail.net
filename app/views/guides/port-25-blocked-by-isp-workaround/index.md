@@ -26,4 +26,4 @@ If your ISP blocks outbound port 25, then you will have to find an alternate sol
 
 ## How can I check if my ISP blocks ports
 
-See our [list of ports blocked by Internet Service Providers](/list-of-ports-blocked-by-isps).
+You can run `telnet forwardemail.net 25` from command line or terminal to see if your outbound port 25 connection is blocked.
