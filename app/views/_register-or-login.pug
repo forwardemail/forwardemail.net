@@ -1,90 +1,91 @@
 mixin registerOrLogin(verb, isModal = false)
-  .container(class=isModal ? "" : "py-3")
+  div(class=isModal ? "" : "container py-3")
     if !isModal
       .text-center
         h1.my-3.py-3
           = t(`${humanize(verb)} now`)
-    div(class=isModal ? "" : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
-      if passport && passport.google
-        a.btn-auth.btn-auth-google.btn-auth-google-dark.my-3(
-          href="/auth/google",
-          role="button"
-        )
-          .btn-auth-wrapper
-            span.btn-auth-icon
-            span.btn-auth-text= t(`${humanize(verb)} with Google`)
-        //-.
-          a.btn-auth.btn-auth-google.btn-auth-google-light.my-3(href='/auth/google', role="button")
+    div(class=isModal ? "" : "row")
+      div(class=isModal ? "" : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
+        if passport && passport.google
+          a.btn-auth.btn-auth-google.btn-auth-google-dark.mb-3(
+            href="/auth/google",
+            role="button"
+          )
             .btn-auth-wrapper
               span.btn-auth-icon
               span.btn-auth-text= t(`${humanize(verb)} with Google`)
-      if passport && passport.github
-        a.btn-auth.btn-auth-github.btn-auth-github-dark.my-3(
-          href="/auth/github",
-          role="button"
-        )
-          .btn-auth-wrapper
-            span.btn-auth-icon
-            span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
-        //-.
-          a.btn-auth.btn-auth-github.btn-auth-github-light.my-3(href='/auth/github', role="button")
+          //-.
+            a.btn-auth.btn-auth-google.btn-auth-google-light.my-3(href='/auth/google', role="button")
+              .btn-auth-wrapper
+                span.btn-auth-icon
+                span.btn-auth-text= t(`${humanize(verb)} with Google`)
+        if passport && passport.github
+          a.btn-auth.btn-auth-github.btn-auth-github-dark.mb-3(
+            href="/auth/github",
+            role="button",
+          )
             .btn-auth-wrapper
               span.btn-auth-icon
               span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
-      if passport && (passport.google || passport.github)
-        .hr-text.d-flex.text-secondary.align-items-center= t("or")
-      - const action = verb === "sign up" ? "/register" : config.loginRoute;
-      form.ajax-form(action=l(action), method="POST")
-        .form-group.floating-label
-          input.form-control.form-control-lg(
-            id=`input-email-${dashify(verb)}`,
-            type="email",
-            required,
-            name="email",
-            placeholder="name@example.com",
-            autocomplete="email"
-          )
-          label(for=`input-email-${dashify(verb)}`)= t("Email address")
-        .form-group.floating-label
-          input.form-control.form-control-lg(
-            id=`input-password-${dashify(verb)}`,
-            type="password",
-            required,
-            name="password",
-            placeholder=" ",
-            autocomplete=verb === "sign up" ? "off" : "current-password"
-          )
-          label(for=`input-password-${dashify(verb)}`)= t("Password")
-        if config.hcaptchaEnabled
-          .h-captcha(
-            data-sitekey=config.hcaptchaSiteKey,
-            data-error-callback="hCaptchaError",
-            data-tabindex=isModal ? "-1" : false
-          )
-        button.btn.btn-success.btn-lg.btn-block(type="submit")= t(capitalize(verb))
-        if verb === 'sign up'
-          p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
-        else if verb === 'log in'
-          p.mt-3.mb-1.text-center.small
-            a.text-black-50(href=l("/forgot-password"))= t("Forget your password?")
-      .alert.alert-warning.mt-3.text-center(class=isModal ? "mb-0" : "")
-        - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
-        ul.list-inline.mb-0
+          //-.
+            a.btn-auth.btn-auth-github.btn-auth-github-light.my-3(href='/auth/github', role="button")
+              .btn-auth-wrapper
+                span.btn-auth-icon
+                span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
+        if passport && (passport.google || passport.github)
+          .hr-text.d-flex.text-secondary.align-items-center= t("or")
+        - const action = verb === "sign up" ? "/register" : config.loginRoute;
+        form.ajax-form(action=l(action), method="POST")
+          .form-group.floating-label
+            input.form-control.form-control-lg(
+              id=`input-email-${dashify(verb)}`,
+              type="email",
+              required,
+              name="email",
+              placeholder="name@example.com",
+              autocomplete="email"
+            )
+            label(for=`input-email-${dashify(verb)}`)= t("Email address")
+          .form-group.floating-label
+            input.form-control.form-control-lg(
+              id=`input-password-${dashify(verb)}`,
+              type="password",
+              required,
+              name="password",
+              placeholder=" ",
+              autocomplete=verb === "sign up" ? "off" : "current-password"
+            )
+            label(for=`input-password-${dashify(verb)}`)= t("Password")
+          if config.hcaptchaEnabled
+            .h-captcha(
+              data-sitekey=config.hcaptchaSiteKey,
+              data-error-callback="hCaptchaError",
+              data-tabindex=isModal ? "-1" : false
+            )
+          button.btn.btn-success.btn-lg.btn-block(type="submit")= t(capitalize(verb))
           if verb === 'sign up'
-            li.list-inline-item!= t("Have an account?")
-            li.list-inline-item
-              a.alert-link(
-                href=l(config.loginRoute),
-                data-dismiss-modal=isRegisterOrLogin ? false : "true",
-                data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
-                data-target=isRegisterOrLogin ? "" : "#modal-log-in"
-              )= t("Log in")
-          else
-            li.list-inline-item!= t("Don't have an account?")
-            li.list-inline-item
-              a.alert-link(
-                href=l("/register"),
-                data-dismiss-modal=isRegisterOrLogin ? false : "true",
-                data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
-                data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
-              )= t("Sign up")
+            p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
+          else if verb === 'log in'
+            p.mt-3.mb-1.text-center.small
+              a.text-black-50(href=l("/forgot-password"))= t("Forget your password?")
+        .alert.alert-warning.mt-3.text-center(class=isModal ? "mb-0" : "")
+          - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
+          ul.list-inline.mb-0
+            if verb === 'sign up'
+              li.list-inline-item!= t("Have an account?")
+              li.list-inline-item
+                a.alert-link(
+                  href=l(config.loginRoute),
+                  data-dismiss-modal=isRegisterOrLogin ? false : "true",
+                  data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
+                  data-target=isRegisterOrLogin ? "" : "#modal-log-in"
+                )= t("Log in")
+            else
+              li.list-inline-item!= t("Don't have an account?")
+              li.list-inline-item
+                a.alert-link(
+                  href=l("/register"),
+                  data-dismiss-modal=isRegisterOrLogin ? false : "true",
+                  data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
+                  data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
+                )= t("Sign up")
