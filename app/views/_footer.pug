@@ -1,25 +1,26 @@
 footer.mt-auto
-  if !isHelp
-    .bg-primary.text-center.py-3.border-top.border-dark
-      .container
-        .row
-          if !user
-            .col-6
-              a.btn.btn-dark.text-uppercase.font-weight-bold(
-                href=l("/register"),
-                role="button",
-                data-toggle="modal-anchor",
-                data-target="#modal-sign-up"
-              )
-                = t("Sign up")
-                = " "
-                i.fa.fa-angle-double-right
-          div(class=user ? "col-12" : "col-6")
-            a.btn.btn-dark.text-uppercase.font-weight-bold(
-              href=l("/help"),
-              role=isHelp ? "link" : "button",
-              data-target=isHelp ? "" : "#modal-help"
-            )= t("Need help?")
+  //-.
+    if !isHelp
+      .bg-primary.text-center.py-3.border-top.border-dark
+        .container
+          .row
+            if !user
+              .col-6
+                a.btn.btn-dark(
+                  href=l("/register"),
+                  role="button",
+                  data-toggle="modal-anchor",
+                  data-target="#modal-sign-up"
+                )
+                  = t("Sign up")
+                  = " "
+                  i.fa.fa-angle-double-right.align-middle
+            div(class=user ? "col-12" : "col-6")
+              a.btn.btn-dark(
+                href=l("/help"),
+                role=isHelp ? "link" : "button",
+                data-target=isHelp ? "" : "#modal-help"
+              )= t("Need help?")
   .bg-dark.text-white
     .container.py-5.text-center.text-lg-left
       .d-flex.flex-column.flex-lg-row
@@ -52,7 +53,6 @@ footer.mt-auto
                 height=50,
                 alt="Go to top"
               )
-            .small.d-block.text-muted.mt-3!= "&copy; Niftylettuce, LLC."
         .flex-wrap.flex-fill
           h1.h5.mb-2= t("Resources")
           ul.list-unstyled.mb-0
@@ -74,6 +74,7 @@ footer.mt-auto
             li: a.d-block.text-light.py-2.py-md-0(
               href=l("/reserved-email-addresses")
             )= t("Reserved Email Addresses")
+            //- li: a.d-block.text-light.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill
           h1.h5.mb-2= t("Guides")

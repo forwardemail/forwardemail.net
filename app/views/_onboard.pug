@@ -8,7 +8,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-onboard-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Enhanced Protection Plan")
+          h1#modal-onboard-pricing-video-title.h4.text-sans-serif.d-inline-block.ml-4= t("Enhanced Protection Plan")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -19,46 +19,47 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
             data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
           )
   div&attributes(attributes)
-    .container-fluid.bg-light.py-5(class=onboardContainerClass)
-      .row
-        .col
-          if onboardHeader
-            h1.text-center!= onboardHeader
-          if onboardText
-            p.text-center.mb-0.text-muted!= onboardText
-          form.ajax-form.pt-4.mb-3(action=onboardFormAction, method="POST")
-            .form-row
-              .col-12.col-md-6.offset-md-3
-                .form-group.floating-label
-                  input#input-onboard-domain.form-control.form-control-lg(
-                    type="text",
-                    name="domain",
-                    value=domain,
-                    required,
-                    placeholder="example.com"
-                  )
-                  label(for="input-onboard-domain")= t("Your custom domain")
-                .form-group.floating-label
-                  input#input-onboard-email.form-control.form-control-lg(
-                    type="email",
-                    autocomplete="email",
-                    name="email",
-                    value=email,
-                    placeholder="name@gmail.com",
-                    required
-                  )
-                  label(for="input-onboard-email")= t("Your existing email")
-                if config.hcaptchaEnabled
-                  .h-captcha(
-                    data-sitekey=config.hcaptchaSiteKey,
-                    data-error-callback="hCaptchaError"
-                  )
-                button.btn.btn-success.btn-lg.btn-block(type="submit")
-                  = t("Continue")
-                  = " "
-                  i.fa.fa-angle-double-right
-                p#help-create-account.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
-          if onboardKeepReading
-            p.text-center.mb-0.small: a.text-black-50.font-weight-bold(
-              href=onboardKeepReading
-            )= t("Not interested?  Click here to keep reading")
+    .bg-light.py-5(class=onboardContainerClass)
+      .container
+        .row
+          .col
+            if onboardHeader
+              h1.text-center!= onboardHeader
+            if onboardText
+              p.text-center.mb-0.text-muted!= onboardText
+            form.ajax-form.pt-4.mb-3(action=onboardFormAction, method="POST")
+              .form-row
+                .col-12.col-md-6.offset-md-3
+                  .form-group.floating-label
+                    input#input-onboard-domain.form-control.form-control-lg(
+                      type="text",
+                      name="domain",
+                      value=domain,
+                      required,
+                      placeholder="example.com"
+                    )
+                    label(for="input-onboard-domain")= t("Your custom domain")
+                  .form-group.floating-label
+                    input#input-onboard-email.form-control.form-control-lg(
+                      type="email",
+                      autocomplete="email",
+                      name="email",
+                      value=email,
+                      placeholder="name@gmail.com",
+                      required
+                    )
+                    label(for="input-onboard-email")= t("Your existing email")
+                  if config.hcaptchaEnabled
+                    .h-captcha(
+                      data-sitekey=config.hcaptchaSiteKey,
+                      data-error-callback="hCaptchaError"
+                    )
+                  button.btn.btn-success.btn-lg.btn-block(type="submit")
+                    = t("Continue")
+                    = " "
+                    i.fa.fa-angle-double-right.align-middle
+                  p#help-create-account.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
+            if onboardKeepReading
+              p.text-center.mb-0.small: a.text-black-50.font-weight-bold(
+                href=onboardKeepReading
+              )= t("Not interested?  Click here to keep reading")

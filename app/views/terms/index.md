@@ -6,6 +6,7 @@ By accessing this web site, you are agreeing to be bound by these web site Terms
 ## Table of Contents
 
 * [Disclaimer](#disclaimer)
+* [Unlimited Usage](#unlimited-usage)
 * [Limitations](#limitations)
 * [Refunds](#refunds)
 * [Service Level Agreement ("SLA")](#service-level-agreement-sla)
@@ -24,6 +25,15 @@ By accessing this web site, you are agreeing to be bound by these web site Terms
 ## Disclaimer
 
 The materials on Forward Email's web site are provided "as is". Forward Email makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties, including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights. Further, Forward Email does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its Internet web site or otherwise relating to such materials or on any sites linked to this site.
+
+
+## Unlimited Usage
+
+Regarding "unlimited" usage in our service, we automatically rate limit and may temporarily restrict or slow usage when necessary to maintain quality of service for all customers.
+
+If we determine your usage of services differs from normal user behavior, is deemed to be spam or malicious activity by our team, or for any other reason under our sole discretion – then we may restrict or slow usage.
+
+We may or may not notify you in advance of restrictions already imposed or that will be imposed on your account and the service in general.
 
 
 ## Limitations

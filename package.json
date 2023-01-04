@@ -208,7 +208,6 @@
     "nyc": "15.1.0",
     "parse-git-config": "3.0.0",
     "postcss": "8.4.20",
-    "postcss-font-magician": "3.0.0",
     "postcss-preset-env": "7.8.3",
     "postcss-reporter": "7.0.5",
     "postcss-scss": "4.0.6",

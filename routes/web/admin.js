@@ -33,14 +33,10 @@ router
     web.admin.allowlist.remove
   )
 
-  // blocklist
-  .get('/blocklist', paginate.middleware(10, 50), web.admin.blocklist.list)
-  .post('/blocklist', web.admin.blocklist.validate, web.admin.blocklist.create)
-  .delete(
-    '/blocklist',
-    web.admin.blocklist.validate,
-    web.admin.blocklist.remove
-  )
+  // denylist
+  .get('/denylist', paginate.middleware(10, 50), web.admin.denylist.list)
+  .post('/denylist', web.admin.denylist.validate, web.admin.denylist.create)
+  .delete('/denylist', web.admin.denylist.validate, web.admin.denylist.remove)
 
   // users
   .get('/users', paginate.middleware(10, 50), web.admin.users.list)

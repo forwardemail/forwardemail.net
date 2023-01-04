@@ -5,7 +5,7 @@ block body
     .modal-dialog(role="document")
       .modal-content
         .modal-header.d-block.text-center
-          h5.modal-title= t("Change password")
+          h5.text-sans-serif= t("Change password")
         form.ajax-form.confirm-prompt.mt-3(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
           input(type="hidden", name="change_password", value="true")
@@ -42,7 +42,7 @@ block body
               aria-label=t("Cancel")
             )= t("Cancel")
             button.btn.btn-primary(type="submit")= user[config.userFields.hasSetPassword] ? t("Change password") : t("Set an account password")
-  .container-fluid.py-3
+  .container.py-3
     .row
       .col
         include ../_breadcrumbs

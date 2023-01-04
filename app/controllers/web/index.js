@@ -16,6 +16,7 @@ const myAccount = require('./my-account');
 const onboard = require('./onboard');
 const otp = require('./otp');
 const report = require('./report');
+const denylist = require('./denylist');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -124,5 +125,6 @@ module.exports = {
   otp,
   report,
   reservedEmailAddresses,
-  recipientVerification
+  recipientVerification,
+  denylist
 };

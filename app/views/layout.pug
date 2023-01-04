@@ -105,6 +105,65 @@ html.h-100(lang=locale)
         content=`${config.urls.web}/img/twitter.png`
       )
 
+    //- preload and prefetch content
+    //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content>
+    //- <https://developers.google.com/speed/pagespeed/insights/>
+    block preload
+      - const fonts = [ 'domine-latin-400', 'domine-latin-700', 'fa-brands-400', 'fa-regular-400', 'fa-solid-900', 'nunito-sans-latin-400', 'nunito-sans-latin-700' ]
+      each font in fonts
+        //- integrity attribute not currently supported
+        //- <https://crbug.com/981419>
+        link(
+          rel="preload",
+          href=manifest(`fonts/${font}.woff2`),
+          as="font",
+          crossorigin="anonymous"
+        )
+        link(
+          rel="preload",
+          href=manifest(`fonts/${font}.woff`),
+          as="font",
+          crossorigin="anonymous"
+        )
+
+    block prefetch
+      each asset in ['img/github-logo.svg', 'img/google-logo.svg']
+        link(
+          rel="prefetch",
+          href=manifest(asset),
+          as="image",
+          crossorigin="anonymous"
+        )
+
+    //- preload stylesheets
+    block preloadStylesheets
+      //- integrity attribute not currently supported
+      //- <https://crbug.com/981419>
+      //-
+      //- preload before css
+      //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload>
+      link(
+        rel="preload",
+        href=manifest("css/app.css"),
+        as="style",
+        crossorigin="anonymous"
+      )
+
+    //- preload scripts
+    block preloadScripts
+      //- integrity attribute not currently supported
+      //- <https://crbug.com/981419>
+      //-
+      //- preload before js
+      //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload>
+      if !isBot(ctx.get('User-Agent'))
+        link(
+          rel="preload",
+          href=manifest("js/build.js"),
+          as="script",
+          crossorigin="anonymous"
+        )
+
     //- css file
     block stylesheets
       link(
@@ -113,38 +172,6 @@ html.h-100(lang=locale)
         integrity=manifest("css/app.css", "integrity"),
         crossorigin="anonymous"
       )
-
-    //- preload and prefetch content
-    //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content>
-    //- <https://developers.google.com/speed/pagespeed/insights/>
-    block preload
-      each asset in [ 'fonts/fa-brands-400.woff', 'fonts/fa-solid-900.woff' ]
-        //- integrity attribute not currently supported
-        //- <https://crbug.com/981419>
-        link(
-          rel="preload",
-          href=manifest(asset),
-          as="font",
-          crossorigin="anonymous"
-        )
-
-    block prefetch
-      each asset in ['img/github-logo.svg', 'img/google-logo.svg']
-        link(
-          rel="preload",
-          href=manifest(asset),
-          as="image",
-          crossorigin="anonymous"
-        )
-      each asset in [ 'fonts/fa-brands-400.ttf', 'fonts/fa-solid-900.ttf' ]
-        //- integrity attribute not currently supported
-        //- <https://crbug.com/981419>
-        link(
-          rel="prefetch",
-          href=manifest(asset),
-          as="font",
-          crossorigin="anonymous"
-        )
 
     //- scripts
     //- prettier-ignore

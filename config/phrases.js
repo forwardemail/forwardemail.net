@@ -30,6 +30,9 @@ module.exports = {
   INVALID_API_TOKEN: 'Invalid API token.',
   INVALID_EMAIL: 'Email address was invalid.',
   INVALID_FILE: 'File upload was invalid.',
+  INVALID_DENYLIST_VALUE:
+    'Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.',
+  INVALID_DENYLIST_REQUEST: 'Value was not currently found in our denylist.',
   INVALID_KEY_VALUE:
     'Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.',
   INVALID_MESSAGE: `Your message was invalid, as it was either blank or more than (${env.SUPPORT_REQUEST_MAX_LENGTH}) characters.`,

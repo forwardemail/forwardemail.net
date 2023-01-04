@@ -89,8 +89,7 @@ async function registerOrLogin(ctx) {
     return;
   }
 
-  ctx.state.verb =
-    ctx.pathWithoutLocale === '/register' ? 'sign up' : 'sign in';
+  ctx.state.verb = ctx.pathWithoutLocale === '/register' ? 'sign up' : 'log in';
 
   return ctx.render('register-or-login');
 }

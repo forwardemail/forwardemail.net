@@ -54,6 +54,7 @@ module.exports = function (config) {
       `Help ${lad}`,
       `Ask ${config.appName} your questions or leave comments`
     ],
+    '/denylist': [`Denylist ${lad}`, 'Denylist removal request'],
     '/logout': [`Sign out of ${lad}`, 'Sign out of your account'],
     '/register': [`Sign up ${lad}`, `Create a ${config.appName} account`],
     '/disposable-addresses': [
@@ -91,7 +92,7 @@ module.exports = function (config) {
     ],
     '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in']
   };
-  meta[config.loginRoute] = [`Sign in ${lad}`, 'Sign in to your account'];
+  meta[config.loginRoute] = [`Log in ${lad}`, 'Log in to your account'];
   meta[config.verifyRoute] = [
     `Verify email ${lad}`,
     `Verify your ${config.appName} email`

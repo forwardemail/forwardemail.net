@@ -20,7 +20,7 @@ const concat = require('gulp-concat');
 const cssnano = require('cssnano');
 const del = require('del');
 const envify = require('@ladjs/gulp-envify');
-const fontMagician = require('postcss-font-magician');
+// const fontMagician = require('postcss-font-magician');
 const getStream = require('get-stream');
 const globby = require('globby');
 const gulpRemark = require('gulp-remark');
@@ -104,6 +104,13 @@ function img() {
 }
 
 function fonts() {
+  return src('assets/fonts/**/*', {
+    base: 'assets',
+    since: lastRun(fonts)
+  }).pipe(dest(config.buildBase));
+}
+
+function faFonts() {
   return src(['node_modules/@fortawesome/fontawesome-free/webfonts/**/*']).pipe(
     dest(path.join(config.buildBase, 'fonts'))
   );
@@ -123,15 +130,13 @@ function css() {
     .pipe(sass().on('error', sass.logError))
     .pipe(
       postcss([
-        fontMagician({
-          foundries: ['custom', 'hosted'],
-          // note if you modify this then you will have to
-          // also modify the font awesome fonts in css folder
-          // <https://caniuse.com/#feat=woff2>
-          formats: 'woff ttf',
-          hosted: [path.join(__dirname, config.buildBase, 'fonts'), '../fonts'],
-          display: 'swap'
-        }),
+        // NOTE: fontMagician does not have support for woff2 automatic detection
+        // <https://github.com/csstools/postcss-font-magician/issues/75#issuecomment-626050812>
+        // fontMagician({
+        //   foundries: ['custom', 'hosted'],
+        //   hosted: [path.join(__dirname, config.buildBase, 'fonts'), '../fonts'],
+        //   display: 'swap'
+        // }),
         postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
         ...(PROD ? [cssnano({ autoprefixer: false })] : []),
         reporter()
@@ -325,7 +330,13 @@ const build = series(
   parallel(
     ...(TEST ? [] : [xo, remark]),
     series(
-      parallel(img, static, markdown, series(fonts, scss, css), bundle),
+      parallel(
+        img,
+        static,
+        markdown,
+        series(fonts, faFonts, scss, css),
+        bundle
+      ),
       sri
     )
   )
@@ -342,7 +353,7 @@ module.exports = {
     watch(['**/*.js', '!assets/js/**/*.js'], xo);
     watch(Mandarin.DEFAULT_PATTERNS, markdown);
     watch('assets/img/**/*', img);
-    watch('assets/css/**/*.scss', series(fonts, scss, css));
+    watch('assets/css/**/*.scss', series(fonts, faFonts, scss, css));
     watch('assets/js/**/*.js', series(xo, bundle));
     watch(['app/views/**/*.pug', 'emails/**/*.pug'], pug);
     watch(staticAssets, static);
@@ -353,6 +364,7 @@ module.exports = {
   static,
   remark,
   fonts,
+  faFonts,
   scss,
   css
 };

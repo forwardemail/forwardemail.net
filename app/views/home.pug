@@ -1,6 +1,25 @@
 extends layout
 
 block body
+  #modal-watch-video.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-watch-video-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          h1#modal-watch-video-title.h4.text-sans-serif.d-inline-block.ml-4= t("Made for you")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          .lazyframe(
+            title=t("How to create unlimited email addresses and aliases"),
+            style="width: 100%; height: 450px",
+            data-vendor="youtube_nocookie",
+            data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
+          )
   #modal-for-creators.modal.fade(
     tabindex="-1",
     role="dialog",
@@ -10,7 +29,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-for-creators-title.h4.modal-title.d-inline-block.ml-4= t("Email Forwarding for Creators")
+          h1#modal-for-creators-title.h4.text-sans-serif.d-inline-block.ml-4= t("Email Forwarding for Creators")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -29,7 +48,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-for-developers-title.h4.modal-title.d-inline-block.ml-4= t("Email Forwarding for Developers")
+          h1#modal-for-developers-title.h4.text-sans-serif.d-inline-block.ml-4= t("Email Forwarding for Developers")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -48,7 +67,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-for-businesses-title.h4.modal-title.d-inline-block.ml-4= t("Email Forwarding for Businesses")
+          h1#modal-for-businesses-title.h4.text-sans-serif.d-inline-block.ml-4= t("Email Forwarding for Businesses")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -58,128 +77,72 @@ block body
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
           )
-  .min-vh-80.text-center.d-flex.flex-column
-    .container-fluid.my-auto.pt-3
+  .min-vh-80.text-center.d-flex.flex-column.bg-light
+    .container.my-auto.pt-5
       .row
-        .col-12.col-lg-6.pl-lg-5
-          h1.display-4.font-weight-bold.mb-3
-            != t("Send and receive with your custom domain")
-          //-.
-            p.d-block.mb-3.text-muted.font-weight-bold
-              != t("Forward any email @your-domain.com, create unlimited aliases, and send email as @your-domain.com.")
-          form.ajax-form(action=ctx.path, method="POST")
-            input(type="hidden", name="enhanced_protection", value="true")
-            .form-group.floating-label
-              input.form-control.form-control-lg(
-                type="text",
-                name="domain",
-                required,
-                placeholder="your-domain.com"
-              )
-              label(for="input-onboard-domain")= t("Your custom domain")
-            .form-group.floating-label
-              input#input-onboard-email.form-control.form-control-lg(
-                type="email",
-                autocomplete="email",
-                name="email",
-                value=email,
-                placeholder="your-name@gmail.com",
-                required
-              )
-              label(for="input-onboard-email")= t("Your existing email")
-            if config.hcaptchaEnabled
-              .text-left.h-captcha(
-                data-sitekey=config.hcaptchaSiteKey,
-                data-error-callback="hCaptchaError"
-              )
-            button.btn.btn-success.btn-lg.btn-block.font-weight-bold.text-uppercase(type="submit")
-              = t("Sign up for free")
-              = " "
-              i.fa.fa-angle-double-right
-          p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
+        .col-12.col-lg-6.text-md-left
+          h1.font-weight-bold.mb-3
+            != t("<mark>Unlimited email</mark> for custom domains")
+          p.d-block.mb-3
+            != t('For <span class="notranslate">%d</span> years and counting, we continue to provide email service for creators, developers, and businesses to send and receive with custom domains.', dayjs().endOf('year').diff(dayjs('1/1/17', 'M-D/YY'), 'year'))
+          .d-block
+            a.btn.btn-success.btn-lg.mb-3(
+              href=l('/register'),
+              data-toggle='modal-anchor',
+              data-target='#modal-sign-up'
+            )
+              = t("Sign up now for free")
+              = ' '
+              .fa.fa-angle-double-right.align-middle
+          ul.list-unstyled.text-muted.mb-0.text-left.d-inline-block
+            li
+              i.fa.fa-fw.fa-check-circle
+              = ' '
+              != t('Unlimited aliases')
+            li
+              i.fa.fa-fw.fa-check-circle
+              = ' '
+              != t('Privacy-focused')
+            li
+              i.fa.fa-fw.fa-check-circle
+              = ' '
+              != t('Open-source')
+            li
+              i.fa.fa-fw.fa-check-circle
+              = ' '
+              != t('No credit card required')
+            li
+              i.fa.fa-fw.fa-check-circle
+              = ' '
+              != t('30-day automatic refunds')
         .col-lg-6.d-none.d-lg-block
-          .lazyframe.border.border-dark.d-inline-block(
+          .lazyframe.border.border-dark.rounded.d-inline-block(
             data-vendor="youtube_nocookie",
             title=t("How to create unlimited email addresses and aliases"),
             style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
             data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
           )
-          ul.list-inline.mt-3.mb-0
-            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
-            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
-            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
-            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
-            li.list-inline-item: i.fa.fa-2x.fa-star.text-warning
-          .text-muted.small.text-uppercase.text-monospace.mt-3= t("100% open-source since 2017")
-        .col-12
-          a.text-decoration-none.mt-3.d-block.d-md-none.text-monospace.text-uppercase.text-dark(
-            href="#learn-more"
+        .col-12.d-block.d-lg-none.py-5.text-md-left
+          button.btn.btn-outline-dark(
+            type="button",
+            data-toggle="modal",
+            data-target="#modal-watch-video"
           )
-            i.fa.fa-angle-down
+            i.fab.fa-youtube.text-danger
             = " "
             = t("Watch Video")
 
-    a.text-decoration-none.pt-1.pb-4.pt-md-4.d-none.d-md-block.text-monospace.text-uppercase.text-dark(
+    a.text-decoration-none.pt-1.pb-4.pt-lg-4.d-none.d-lg-block.text-uppercase.text-dark(
       href="#learn-more"
     )
       i.fa.fa-angle-down
       = " "
       = t("Learn more")
-  #learn-more.container-fluid.bg-light.border-top.border-bottom.py-5.d-block
-    .row.text-center.d-block.mb-5
-      .h2.display-3.mb-1.text-danger
-        i.fab.fa-youtube
-      h1.display-4.text-uppercase.font-weight-bold!= t("Made for <u>you</u>.")
-    .row.d-block.d-lg-none
-      .col-md.text-center.d-block.mb-5
-        .lazyframe.border.border-dark.d-inline-block(
-          data-vendor="youtube_nocookie",
-          title=t("How to create unlimited email addresses and aliases"),
-          style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
-          data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
-        )
-    .row
-      .col-md.text-center.mb-3.mb-md-0
-        button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(
-          type="button",
-          data-toggle="modal",
-          data-target="#modal-for-creators"
-        )
-          i.fa.fa-play-circle
-          = " "
-          if isBot(ctx.get('User-Agent'))
-            = t("Website Email Forwarding")
-          else
-            = t("Creators")
-      .col-md.text-center.mb-3.mb-md-0
-        button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(
-          type="button",
-          data-toggle="modal",
-          data-target="#modal-for-developers"
-        )
-          i.fa.fa-play-circle
-          = " "
-          if isBot(ctx.get('User-Agent'))
-            = t("Startup Email Forwarding")
-          else
-            = t("Developers")
-      .col-md.text-center
-        button.btn.btn-outline-dark.btn-lg.text-uppercase.font-weight-bold(
-          type="button",
-          data-toggle="modal",
-          data-target="#modal-for-businesses"
-        )
-          i.fa.fa-play-circle
-          = " "
-          if isBot(ctx.get('User-Agent'))
-            = t("Shopify Email Forwarding")
-          else
-            = t("Businesses")
-  #happy-users.container-fluid.py-5.d-block
+  #learn-more.container.py-5.d-block
     .row.text-center.d-block.mb-5
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
-      h1.display-4.text-uppercase.font-weight-bold!= t("Happy Users.")
+      h1.font-weight-bold!= t("Happy users")
     .row.row-cols-1.row-cols-md-2
       //- DHH
       .col
@@ -208,7 +171,7 @@ block body
                 .small.text-muted @dhh
             .ml-auto
               i.fa.fa-twitter
-          .mt-3.font-weight-light
+          .mt-3
             | Congrats for fully launching Forward Email – a forwarding service
             | for email that doesn't keep logs or store emails, and which works with ARC to ensure
             | signed forwards don't trip email filters
@@ -217,7 +180,7 @@ block body
             | . I'm a happy user!
             = " "
             = emoji("heart")
-          .mt-2.small.text-muted.font-italic.font-weight-light Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY
+          .mt-2.small.text-muted Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY
       //- Abhi Nemani
       .col.mt-4.mt-md-0
         .p-4.border.border-gray-100.rounded-lg
@@ -245,12 +208,12 @@ block body
                 .small.text-muted @abhinemani
             .ml-auto
               i.fa.fa-twitter
-          .mt-3.font-weight-light
+          .mt-3
             | Have now switched email forwarding from MailGun to
             = " "
-            a(href="https://forwardemail.net") ForwardEmail.net
+            | ForwardEmail.net
             | . Simple and painless (and free!). Just some DNS changes, and it just works. Thanks
-          .mt-2.small.text-muted.font-italic.font-weight-light Government Technology Advisor, Sacramento and Los Angeles
+          .mt-2.small.text-muted Government Technology Advisor, Sacramento and Los Angeles
     .row.row-cols-1.row-cols-md-2
       //- Andrew Escobar
       .col.mt-4
@@ -279,11 +242,11 @@ block body
                 .small.text-muted @andrewe
             .ml-auto
               i.fa.fa-twitter
-          .mt-3.font-weight-light
+          .mt-3
             | This is so dope. Thank you.
             = " "
-            a(href="https://forwardemail.net") forwardemail.net
-          .mt-2.small.text-muted.font-italic.font-weight-light Fintech Explorer and Open Finance Advocate
+            | forwardemail.net
+          .mt-2.small.text-muted Fintech Explorer and Open Finance Advocate
       //- Ullrich Schäfer
       .col.mt-4
         .p-4.border.border-gray-100.rounded-lg
@@ -304,12 +267,12 @@ block body
                 .small.text-muted @stigi
             .ml-auto
               i.fa.fa-twitter
-          .mt-3.font-weight-light
+          .mt-3
             | Thanks so much for
             = " "
-            a(href="https://forwardemail.net") forwardemail.net
+            | forwardemail.net
             | ! It solves a real problem for our little org!
-          .mt-2.small.text-muted.font-italic.font-weight-light Mobile Lead at Pitch, Formerly at Facebook and Soundcloud
+          .mt-2.small.text-muted Mobile Lead at Pitch, Formerly at Facebook and Soundcloud
     .row.row-cols-1.row-cols-md-2
       //- Andre Goncalves
       .col.mt-4
@@ -331,11 +294,11 @@ block body
                 .small.text-muted @andregce
             .ml-auto
               i.fa.fa-twitter
-          .mt-3.font-weight-light
+          .mt-3
             | So they made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
             = " "
-            a(href="https://forwardemail.net") forwardemail.net
-          .mt-2.small.text-muted.font-italic.font-weight-light Computer Engineer, Software Developer
+            | forwardemail.net
+          .mt-2.small.text-muted Computer Engineer, Software Developer
       //- Phil Cockfield
       .col.mt-4
         .p-4.border.border-gray-100.rounded-lg
@@ -356,156 +319,211 @@ block body
                 .small.text-muted @philcockfield
             .ml-auto
               i.fa.fa-twitter
-          .mt-3.font-weight-light
+          .mt-3
             | Thanks for your
             = " "
-            a(href="https://forwardemail.net") forwardemail.net
+            | forwardemail.net
             | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
-          .mt-2.small.text-muted.font-italic.font-weight-light hypersheet, db.team
-  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block
-    h2.display-3.font-weight-bold.text-white.my-3.my-md-5
-      i.fa.fa-fingerprint
-      = " "
-      = t("Protect your inbox.")
-    .row
-      .col-12.col-md-9.col-lg-6
-        p.lead.text-white.mb-3.mb-md-5
-          != t('We use industry standard email header validation and signature checks, spam prevention tools, DNS blocklist lookups, and domain verification.  All powered by Cloudflare\'s <a href="https://blog.cloudflare.com/announcing-1111/" target="_blank" rel="noopener noreferrer" class="text-white">privacy-first consumer DNS service</a>.')
-        a.btn.btn-outline-light.btn-lg.mb-md-5(
-          href=l("/register"),
-          role="button",
-          data-toggle="modal-anchor",
-          data-target="#modal-sign-up"
-        )
-          = t("Stay protected")
-          = " "
-          i.fa.fa-angle-double-right
-      .d-flex.col-md-3.col-lg-6.pt-3
-        img.mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0(
-          src=manifest("img/logo-square.svg"),
-          width=200,
-          height=200,
-          alt=""
-        )
+          .mt-2.small.text-muted hypersheet, db.team
+  .bg-dark.py-3.py-md-5.d-block
+    .container
+      .row
+        .col-12
+          h2.display-3.font-weight-bold.text-white.my-3.my-md-5
+            = t("Enterprise-grade")
+      .row
+        .col-12.col-md-9.col-lg-6
+          p.lead.text-white.mb-3.mb-md-5
+            != t('We use industry standard email header validation and signature checks, spam prevention tools, DNS denylist lookups, DMARC, SPF, DKIM, and ARC verification.')
+          ul.list-inline
+            li.list-inline-item
+              a.btn.btn-outline-light.btn-lg.mb-md-5(
+                href=l("/register"),
+                role="button",
+                data-toggle="modal-anchor",
+                data-target="#modal-sign-up"
+              )
+                = t("Stay protected")
+                = " "
+                i.fa.fa-angle-double-right.align-middle
+            li.list-inline-item.mt-3.mt-md-0
+              a.btn.btn-outline-light.btn-lg.mb-md-5(
+                href='https://spamscanner.net',
+                target='_blank',
+                rel='nofollow'
+              )
+                = t("Spam Scanner")
+                = " "
+                i.fa.fa-external-link
+        .d-flex.col-md-3.col-lg-6.pt-3
+          img.mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0(
+            src=manifest("img/logo-square.svg"),
+            width=200,
+            height=200,
+            alt=""
+          )
   .pt-5.pb-lg-5.text-center.bg-light
     .h2.display-3.mb-1.text-danger
       i.fa.fa-heart
-    h2.display-5.font-weight-light.mb-0.text-uppercase= t("Our Features")
-  .container-fluid.bg-light.pb-5.position-relative
-    .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-      .col-12.col-lg-6.d-flex
-        .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
-          h2.display-5.font-weight-bold.mb-3= t("Privacy First")
-          p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs, and do not write your emails to disk storage.")
-          a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-            href=l("/register"),
-            role="button",
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
-          )
-            = t("Regain your privacy")
+    h1.font-weight-bold.mb-0= t("Features")
+  .bg-light.pb-5.position-relative
+    .container
+      .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
+        .col-12.col-lg-6.d-flex
+          .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t("Privacy First")
+            p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs, and do not write your emails to disk storage.")
+            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              href=l("/register"),
+              role="button",
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Regain your privacy")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+            a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
+              href=l("/register"),
+              role="button",
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Regain your privacy")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+        .col-12.col-lg-6.d-flex
+          .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t("Disposable Addresses")
+            p.lead.mb-3!= t("Create a specific or an anonymous email address that forwards to you.  You can even assign it a label and enable or disable it at any time to keep your inbox tidy.  Your actual email address is never exposed.")
+            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              href=l("/register"),
+              role="button",
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Disposable addresses")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+            a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
+              href=l("/register"),
+              role="button",
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Disposable addresses")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+        .col-12.col-lg-6.d-flex
+          .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t("Multiple Recipients and Wildcards")
+            p.lead.mb-3!= t("You can forward a single address to multiple, and even use wildcard addresses &ndash; also known as catch-all's.  Managing your company's inboxes has never been easier.")
+            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              href=l("/register"),
+              role="button",
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Start forwarding now")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+            a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
+              href=l("/register"),
+              role="button",
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Start forwarding now")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+        .col-12.col-lg-6.d-flex
+          .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t('"Send mail as" with Gmail and Outlook')
+            p.lead.mb-3= t("You'll never have to leave your inbox to send out emails as if they're from your company.  Send and reply-to messages as if they're from you@company.com directly from you@gmail.com or you@outlook.com.")
+            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              href=l("/register"),
+              role="button",
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Configure your inbox")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+            a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
+              href=l("/register"),
+              role="button",
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Configure your inbox")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+  .bg-dark.py-3.py-md-5.d-block
+    .container
+      .row
+        .col-12
+          h2.display-3.font-weight-bold.text-white.my-3.my-md-3
+            = t("Privacy-focused")
+      .row
+        .col-12.col-md-9.col-lg-6
+          p.lead.text-white.mb-3.mb-md-5
+            != t('Unlike other services, we <strong class="font-weight-bold">do not store SMTP logs</strong>, <strong class="font-weight-bold">never store</strong> your emails, and are <strong class="font-weight-bold">100% open-source</strong>.')
             = " "
-            i.fa.fa-angle-double-right
-          a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
-            href=l("/register"),
-            role="button",
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
+            != t('We\'re the <strong class= border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
+          a.btn.btn-outline-light.btn-lg.mb-md-5(
+            href="https://github.com/forwardemail",
+            target="_blank",
+            rel="noopener noreferrer"
           )
-            = t("Regain your privacy")
+            = t("View source code")
             = " "
-            i.fa.fa-angle-double-right
-      .col-12.col-lg-6.d-flex
-        .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
-          h2.display-5.font-weight-bold.mb-3= t("Disposable Addresses")
-          p.lead.mb-3!= t("Create a specific or an anonymous email address that forwards to you.  You can even assign it a label and enable or disable it at any time to keep your inbox tidy.  Your actual email address is never exposed.")
-          a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-            href=l("/register"),
-            role="button",
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
+            i.fa.fa-angle-double-right.align-middle
+        .d-flex.col-md-3.col-lg-6.pt-3
+          img.mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0(
+            src=manifest("img/github-logo-white.svg"),
+            width=200,
+            height=200,
+            alt=""
           )
-            = t("Disposable addresses")
-            = " "
-            i.fa.fa-angle-double-right
-          a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
-            href=l("/register"),
-            role="button",
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
+  .bg-light.border-top.border-bottom.py-5.d-block
+    .container
+      .row.text-center.d-block.mb-5
+        .h2.display-3.mb-1.text-danger
+          i.fab.fa-youtube
+        h1.font-weight-bold!= t("Made for <u>you</u>")
+      .row
+        .col-md.text-center.mb-3.mb-lg-0
+          button.btn.btn-outline-dark.btn-lg(
+            type="button",
+            data-toggle="modal",
+            data-target="#modal-for-creators"
           )
-            = t("Disposable addresses")
+            i.fa.fa-play-circle
             = " "
-            i.fa.fa-angle-double-right
-      .col-12.col-lg-6.d-flex
-        .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
-          h2.display-5.font-weight-bold.mb-3= t("Multiple Recipients and Wildcards")
-          p.lead.mb-3!= t("You can forward a single address to multiple, and even use wildcard addresses &ndash; also known as catch-all's.  Managing your company's inboxes has never been easier.")
-          a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-            href=l("/register"),
-            role="button",
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
+            if isBot(ctx.get('User-Agent'))
+              = t("Website Email Forwarding")
+            else
+              = t("Creators")
+        .col-md.text-center.mb-3.mb-md-0
+          button.btn.btn-outline-dark.btn-lg(
+            type="button",
+            data-toggle="modal",
+            data-target="#modal-for-developers"
           )
-            = t("Start forwarding now")
+            i.fa.fa-play-circle
             = " "
-            i.fa.fa-angle-double-right
-          a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
-            href=l("/register"),
-            role="button",
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
+            if isBot(ctx.get('User-Agent'))
+              = t("Startup Email Forwarding")
+            else
+              = t("Developers")
+        .col-md.text-center
+          button.btn.btn-outline-dark.btn-lg(
+            type="button",
+            data-toggle="modal",
+            data-target="#modal-for-businesses"
           )
-            = t("Start forwarding now")
+            i.fa.fa-play-circle
             = " "
-            i.fa.fa-angle-double-right
-      .col-12.col-lg-6.d-flex
-        .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
-          h2.display-5.font-weight-bold.mb-3= t('"Send mail as" with Gmail')
-          p.lead.mb-3= t("You'll never have to leave your inbox to send out emails as if they're from your company.  Send and reply-to messages as if they're from you@company.com directly from you@gmail.com.")
-          a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-            href=l("/register"),
-            role="button",
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
-          )
-            = t("Configure your inbox")
-            = " "
-            i.fa.fa-angle-double-right
-          a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
-            href=l("/register"),
-            role="button",
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
-          )
-            = t("Configure your inbox")
-            = " "
-            i.fa.fa-angle-double-right
-  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block
-    h2.display-3.font-weight-bold.text-white.my-3.my-md-3
-      i.fa.fa-code
-      = " "
-      = t("100% open-source.")
-    .row
-      .col-12.col-md-9.col-lg-6
-        p.lead.text-white.mb-3.mb-md-5
-          != t('Unlike other services, we <strong class="font-weight-bold">do not store SMTP logs</strong>, <strong class="font-weight-bold">never store</strong> your emails, and are <strong class="font-weight-bold">100% open-source</strong>.')
-          = " "
-          != t('We\'re the <strong class="text-uppercase font-weight-bold border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
-          = " "
-          != t("Made by an open-source and privacy advocate.")
-        a.btn.btn-outline-light.btn-lg.mb-md-5(
-          href="https://github.com/forwardemail",
-          target="_blank",
-          rel="noopener noreferrer"
-        )
-          = t("View source code")
-          = " "
-          i.fa.fa-angle-double-right
-      .d-flex.col-md-3.col-lg-6.pt-3
-        img.mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0(
-          src=manifest("img/github-logo-white.svg"),
-          width=200,
-          height=200,
-          alt=""
-        )
+            if isBot(ctx.get('User-Agent'))
+              = t("Shopify Email Forwarding")
+            else
+              = t("Businesses")
