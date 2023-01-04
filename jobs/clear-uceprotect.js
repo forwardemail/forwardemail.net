@@ -22,14 +22,14 @@ graceful.listen();
 
 (async () => {
   try {
-    // delete all IP's prefixed with backscatter or blocklist
+    // delete all IP's prefixed with backscatter or denylist
     // (this will ensure our latest dataset is accurate)
-    const [blocklistKeys, backscatterKeys] = await Promise.all([
-      client.keys('blocklist:*'),
+    const [denylistKeys, backscatterKeys] = await Promise.all([
+      client.keys('denylist:*'),
       client.keys('backscatter:*')
     ]);
     const pipeline = client.pipeline();
-    for (const key of [...blocklistKeys, ...backscatterKeys]) {
+    for (const key of [...denylistKeys, ...backscatterKeys]) {
       // filter out keys to be IP addresses only
       const [, ip] = key.split(':');
       if (validator.isIP(ip)) pipeline.del(key);

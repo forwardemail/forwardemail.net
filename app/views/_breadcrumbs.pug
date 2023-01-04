@@ -1,6 +1,6 @@
 if breadcrumbs.length > 1
   nav.d-none.d-md-block(aria-label="breadcrumb")
-    ol.breadcrumb.justify-content-center.justify-content-md-start.mb-3.py-1.small
+    ol.breadcrumb.justify-content-center.justify-content-md-start.mb-3.py-1.small.bg-light
       each breadcrumb, i in breadcrumbs
         if i === breadcrumbs.length - 1
           li.breadcrumb-item.active(aria-current="page")
@@ -87,14 +87,14 @@ if breadcrumbs.length > 1
                   action=l(`/my-account/domains/${domain.name}/aliases/import`),
                   method="POST"
                 )
-                  button.btn.btn-dark.text-uppercase.font-weight-bold(
+                  button.btn.btn-dark(
                     type="submit"
                   )
                     != t('Import <span class="notranslate">TXT</span> Records')
                     = " "
                     i.fa.fa-cloud-download-alt
             li.list-inline-item
-              a.btn.btn-primary.text-uppercase.font-weight-bold(
+              a.btn.btn-primary(
                 href=l(`/my-account/domains/${domain.name}/aliases/new`),
                 role="button",
                 data-toggle="modal-anchor",
@@ -102,13 +102,13 @@ if breadcrumbs.length > 1
               )
                 = t("Add Alias")
                 = " "
-                i.fa.fa-angle-double-right
+                i.fa.fa-angle-double-right.align-middle
         else
           case ctx.pathWithoutLocale
             when '/my-account/domains'
               ul.list-inline.mb-0
                 li.list-inline-item
-                  a.btn.btn-primary.text-uppercase.font-weight-bold(
+                  a.btn.btn-primary(
                     href=l("/my-account/domains/new"),
                     role="button",
                     data-toggle="modal-anchor",
@@ -116,10 +116,10 @@ if breadcrumbs.length > 1
                   )
                     = t("Add Domain")
                     = " "
-                    i.fa.fa-angle-double-right
+                    i.fa.fa-angle-double-right.align-middle
                 if domains.length > 0
                   li.list-inline-item
-                    a.btn.btn-primary.text-uppercase.font-weight-bold(
+                    a.btn.btn-primary(
                       href=l("/my-account/domains/aliases/new"),
                       role="button",
                       data-toggle="modal-anchor",
@@ -127,6 +127,6 @@ if breadcrumbs.length > 1
                     )
                       = t("Add Alias")
                       = " "
-                      i.fa.fa-angle-double-right
+                      i.fa.fa-angle-double-right.align-middle
             default
               = " "

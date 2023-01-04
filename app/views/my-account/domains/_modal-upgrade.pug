@@ -7,7 +7,7 @@
   .modal-dialog(role="document")
     .modal-content
       .modal-header.text-center.d-block
-        h4#modal-upgrade-title.modal-title.d-inline-block.ml-4= t("Upgrade your domain's plan")
+        h4#modal-upgrade-title.text-sans-serif.d-inline-block.ml-4= t("Upgrade your domain's plan")
         button.close(type="button", data-dismiss="modal", aria-label="Close")
           span(aria-hidden="true") &times;
       .modal-body.lead
@@ -19,6 +19,6 @@
           )
             = t("Upgrade to Enhanced Protection")
             = " "
-            i.fa.fa-angle-double-right
+            i.fa.fa-angle-double-right.align-middle
         else
           p= t("To upgrade your domain's plan, just close this modal and then click on the Current Plan dropdown button.")

@@ -10,7 +10,7 @@ block body
     .modal-dialog(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h4#modal-change-plan-title.modal-title.d-inline-block.ml-4= t("Change Plan")
+          h4#modal-change-plan-title.text-sans-serif.d-inline-block.ml-4= t("Change Plan")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -66,7 +66,7 @@ block body
             aria-label=t("Cancel")
           )= t("Cancel")
 
-  .container-fluid.py-3
+  .container.py-3
     .row
       .col
         include ../../_breadcrumbs
@@ -94,7 +94,7 @@ block body
                 != t('You have an active <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t("card, wallet, or bank") : "PayPal")
 
   .container.py-3.py-sm-5.position-relative
-    .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
+    .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
       if user.plan !== 'free'
         .col-12.col-lg-6.d-flex
           .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg

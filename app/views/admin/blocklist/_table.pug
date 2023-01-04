@@ -17,15 +17,15 @@ include ../../_pagination
           each key in results
             tr
               td.align-middle
-                .markdown-body.ml-0.mr-0: code= key.replace('blocklist:', '')
+                .markdown-body.ml-0.mr-0: code= key.replace('denylist:', '')
               td.align-middle
                 form.ajax-form.confirm-prompt(
-                  action=l('/admin/blocklist'),
+                  action=l('/admin/denylist'),
                   method="POST",
                   autocomplete="off"
                 )
                   input(type="hidden", name="_method", value="DELETE")
-                  input(type="hidden", name="value", value=key.replace('blocklist:', ''))
+                  input(type="hidden", name="value", value=key.replace('denylist:', ''))
                   button.btn.btn-danger(
                     type="submit",
                     data-toggle="tooltip",

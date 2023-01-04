@@ -13,6 +13,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.text-sans-serif {
+  font-family: $font-family-sans-serif;
+}
+
 .text-decoration-underline {
   text-decoration: underline !important;
 }
@@ -49,4 +53,8 @@ mark {
     scroll-behavior: auto !important;
     transition-duration: 0s !important;
   }
+}
+
+.dropdown-toggle::after {
+  vertical-align:middle;
 }

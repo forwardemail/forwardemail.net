@@ -39,7 +39,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            h1#modal-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Learn about our plans")
+            h1#modal-pricing-video-title.h4.text-sans-serif.d-inline-block.ml-4= t("Learn about our plans")
             button.close(
               type="button",
               data-dismiss="modal",
@@ -53,7 +53,7 @@ block body
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
-  .container-fluid.py-3
+  .container.py-3
     .row
       .col
         include ../../_breadcrumbs
@@ -305,7 +305,7 @@ block body
               )
                 = t("Continue")
                 = " "
-                i.fa.fa-angle-double-right
+                i.fa.fa-angle-double-right.align-middle
 
               //- Continue (PayPal)
               #paypal-button-container.d-none

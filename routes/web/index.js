@@ -37,6 +37,24 @@ localeRouter
     rateLimit(50, 'onboard'),
     web.onboard
   )
+  // TODO: wip
+  // denylist removal (only 5 requests per 24 hours and removal is instant for paid users)
+  // .get(
+  //   '/denylist',
+  //   policies.ensureLoggedIn,
+  //   policies.ensureOtp,
+  //   web.myAccount.ensureNotBanned,
+  //   render('denylist')
+  // )
+  // .post(
+  //   '/denylist',
+  //   policies.ensureLoggedIn,
+  //   policies.ensureOtp,
+  //   web.myAccount.ensureNotBanned,
+  //   policies.ensureCaptcha,
+  //   rateLimit(5, 'denylist'),
+  //   web.denylist
+  // )
   // recipient verification
   .get('/v/:text', web.recipientVerification)
   .get('/dashboard', (ctx) => {

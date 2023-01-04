@@ -13,7 +13,7 @@
 * [What are no-reply addresses](#what-are-no-reply-addresses)
 * [Do you have an allowlist](#do-you-have-an-allowlist)
 * [Do you have a greylist](#do-you-have-a-greylist)
-* [Do you have a blocklist](#do-you-have-a-blocklist)
+* [Do you have a denylist](#do-you-have-a-denylist)
 * [Do you have rate limiting](#do-you-have-rate-limiting)
 * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
   * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
@@ -117,41 +117,41 @@
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Sign in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Sign in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
+      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
 the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
     </tr>
     <tr>
@@ -160,19 +160,19 @@ the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa f
         <br />
         <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
       </td>
-      <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
     </tr>
     <tr>
       <td>
@@ -180,7 +180,7 @@ the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa f
         <br />
         <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
       </td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
     </tr>
     <tr>
       <td>
@@ -188,7 +188,7 @@ the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa f
         <br />
         <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
       </td>
-      <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
     </tr>
     <tr>
       <td>
@@ -196,15 +196,15 @@ the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa f
         <br />
         <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
       </td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
     </tr>
     <tr>
       <td>
@@ -212,11 +212,11 @@ the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa f
         <br />
         <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
       </td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
+      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
 Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     </tr>
     <tr>
@@ -225,15 +225,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Sign in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
     </tr>
     <tr>
       <td>Other</td>
@@ -710,7 +710,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 
 5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Elon Musk")
+6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
 
 7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. "<hello@example.com>")
 
@@ -778,13 +778,13 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 
 Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [blocklist](#do-you-have-a-blocklist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
 
 * `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [blocklist](#do-you-have-a-blocklist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 100 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [blocklist](#do-you-have-a-blocklist).
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 100 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [denylist](#do-you-have-a-denylist).
 
 * `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
@@ -840,7 +840,7 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
 14. For each processed recipient's Forwarding Addresses, we then perform the following operations:
 
-    * The address is checked against our [blocklist](#do-you-have-a-blocklist), and if it was listed, then a 554 error code will occur and the sender will receive a bounce for this recipient.
+    * The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 554 error code will occur and the sender will receive a bounce for this recipient.
     * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
     * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
 
@@ -877,9 +877,9 @@ If we detect that an email server we are attempting to deliver to has one or mor
 
 ## How do you handle your IP addresses becoming blocked
 
-We routinely monitor all major DNS blocklists and if any of our mail exchange ("MX") IP addresses are listed in a major blocklist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
+We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
 
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring blocklists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
+At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
 
 
 ## What are no-reply addresses
@@ -921,13 +921,13 @@ For example, if an email comes from `test.example.com` before we see an email co
 Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
 
 
-## Do you have a blocklist
+## Do you have a denylist
 
-Yes, we operate our own private blocklist and update it automatically in real-time and manually based off spam and malicious activity detected.  Blocked senders will receive a 554 error message.
+Yes, we operate our own private denylist and update it automatically in real-time and manually based off spam and malicious activity detected.  Denied senders will receive a 554 error message.
 
-We also pull from the UCEPROTECT Level 1 blocklist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our Redis database with a 7 day expiry.
+We also pull from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our Redis database with a 7 day expiry.
 
-Allowlist requests (or blocklist removal requests) can be sent to <allowlist@forwardemail.net> (please provide a complete description and reason for being added to the allowlist, links to websites, and your businesses' certificate of formation to be listed in our allowlist).
+Allowlist requests (or denylist removal requests) can be sent to <allowlist@forwardemail.net> (please provide a complete description and reason for being added to the allowlist, links to websites, and your businesses' certificate of formation to be listed in our allowlist).
 
 
 ## Do you have rate limiting
@@ -1435,7 +1435,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `elon@example.com` or `musk@example.com` to forward to `user@gmail.com`:
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -1452,7 +1452,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=/^(elon|musk)$/:user@gmail.com</code></td>
+      <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -1548,7 +1548,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=/^(elon|musk)$/:!</code></td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
     </tr>
   </tbody>
 </table>
@@ -1784,7 +1784,7 @@ Yes, the default limit is 10.  This does NOT mean that you can only have 10 alia
 
 ## Can I recursively forward emails
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:elon@example.com` and `elon:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `elon@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails.
+Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails.
 
 
 ## Can people unregister or register my email forwarding without my permission

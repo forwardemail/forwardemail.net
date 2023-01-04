@@ -10,7 +10,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Learn about our plans")
+          h1#modal-pricing-video-title.h4.text-sans-serif.d-inline-block.ml-4= t("Learn about our plans")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -26,7 +26,7 @@ block body
         .col.text-center
           h2.font-weight-bold.mb-3
             = t("Lightning fast email service.")
-          button.btn.btn-dark.btn-lg.text-uppercase.font-weight-bold(
+          button.btn.btn-dark.btn-lg(
             type="button",
             data-toggle="modal",
             data-target="#modal-pricing-video"
@@ -94,14 +94,13 @@ block body
                 sup.d-inline-block.h6.text-black-50
                   = "/"
                   = t("month")
-              .small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t("Unlimited domains")
               .p-2
-                a.btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold(
+                a.btn.btn-lg.btn-block.btn-success(
                   href=l("/my-account/domains/new")
                 )
                   = t("Setup Forwarding")
                   = " "
-                  i.fa.fa-angle-double-right
+                  i.fa.fa-angle-double-right.align-middle
         .col.mt-3.mt-lg-0
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
             .px-3.py-4
@@ -150,18 +149,17 @@ block body
                 sup.d-inline-block.h6.text-black-50
                   = "/"
                   = t("month")
-              .small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t("Unlimited domains")
               .p-2
                 if sortedDomains.length === 0
-                  a.btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold(
+                  a.btn.btn-lg.btn-block.btn-success(
                     href=l("/my-account/domains/new?plan=enhanced_protection")
                   )
                     = t("Setup Forwarding")
                     = " "
-                    i.fa.fa-angle-double-right
+                    i.fa.fa-angle-double-right.align-middle
                 else
                   .btn-group.btn-block
-                    button.btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold.dropdown-toggle(
+                    button.btn.btn-lg.btn-block.btn-success.dropdown-toggle(
                       type="button",
                       data-toggle="dropdown",
                       aria-haspopup="true",
@@ -210,18 +208,17 @@ block body
                 sup.d-inline-block.h6.text-black-50
                   = "/"
                   = t("month")
-              .small.bg-dark.text-white.py-1.px-2.font-weight-bold.rounded.d-inline-block.mx-auto.text-center.text-uppercase.progress-bar-animated.progress-bar-striped= t("Unlimited domains")
               .p-2
                 if sortedDomains.length === 0
-                  a.btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold(
+                  a.btn.btn-lg.btn-block.btn-success(
                     href=l("/my-account/domains/new?plan=team")
                   )
                     = t("Setup Forwarding")
                     = " "
-                    i.fa.fa-angle-double-right
+                    i.fa.fa-angle-double-right.align-middle
                 else
                   .btn-group.btn-block
-                    button.btn.btn-lg.btn-block.btn-success.text-uppercase.font-weight-bold.dropdown-toggle(
+                    button.btn.btn-lg.btn-block.btn-success.dropdown-toggle(
                       type="button",
                       data-toggle="dropdown",
                       aria-haspopup="true",
@@ -265,7 +262,7 @@ block body
               li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t("Dedicated support from our team of experts")}`
             .d-flex.flex-column.flex-grow-1.justify-content-end
               .p-2
-                a.btn.btn-lg.btn-block.btn-dark.text-uppercase.font-weight-bold(
+                a.btn.btn-lg.btn-block.btn-dark(
                   href=l("/help"),
                   role="button",
                   data-target="#modal-help"
@@ -273,7 +270,7 @@ block body
       .text-center
         .row.my-5
           .col
-            h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t("Frequently Asked Questions")
+            h1.h2.mb-0= t("Frequently Asked Questions")
             .small.text-black-50.text-uppercase!= t('See Q&A below and <a href="%s">read our FAQ</a> for more', l("/faq"))
         .row.mt-5
           .col
@@ -354,13 +351,13 @@ block body
             p.lead= t("We are always available and usually respond within minutes of your help request.")
             ul.list-inline
               li.list-inline-item
-                a.btn.btn-lg.btn-dark.text-uppercase.font-weight-bold(
+                a.btn.btn-lg.btn-dark(
                   href=l("/help"),
                   role="button",
                   data-target="#modal-help"
                 )= t("Contact Help")
               li.list-inline-item
-                a.btn.btn-lg.btn-primary.text-uppercase.font-weight-bold(
+                a.btn.btn-lg.btn-primary(
                   href=l("/faq")
                 )= t("Read FAQ")
         .mt-5.text-truncate

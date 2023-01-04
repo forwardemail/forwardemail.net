@@ -46,7 +46,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            h1#modal-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Learn about our plans")
+            h1#modal-pricing-video-title.h4.text-sans-serif.d-inline-block.ml-4= t("Learn about our plans")
             button.close(
               type="button",
               data-dismiss="modal",
@@ -70,7 +70,7 @@ block body
       .modal-dialog.modal-xl(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            h4#modal-faq-table-title.modal-title.d-inline-block.ml-4= t("DNS Management Pages")
+            h4#modal-faq-table-title.text-sans-serif.d-inline-block.ml-4= t("DNS Management Pages")
             button.close(
               type="button",
               data-dismiss="modal",
@@ -78,11 +78,11 @@ block body
             )
               span(aria-hidden="true") &times;
           .modal-body!= modalFAQTable
-  .container-fluid.pt-3
+  .container.pt-3
     .row
       .col
         include ../../_breadcrumbs
-  .container-fluid.text-center
+  .container.text-center
     .row
       .col
         if domain.has_mx_record && domain.has_txt_record
@@ -334,9 +334,9 @@ block body
           )
             i.fa.fa-4x(class=domain.has_txt_record ? "fa-check" : "fa-times")
           .text-monospace.text-uppercase= "TXT"
-  .container-fluid.py-5
+  .container.py-5
     .position-relative
-      .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
+      .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
         //.
           .col-12.d-flex
             .p-3.p-md-5.m-2.mt-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
@@ -349,7 +349,7 @@ block body
               )
                 = t("Configure your domain")
                 = " "
-                i.fa.fa-angle-double-right
+                i.fa.fa-angle-double-right.align-middle
         .col-12.d-flex
           .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
@@ -361,7 +361,7 @@ block body
             )
               = t("Setup your Gmail")
               = " "
-              i.fa.fa-angle-double-right
+              i.fa.fa-angle-double-right.align-middle
         .col-12.d-flex
           .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
@@ -373,7 +373,7 @@ block body
             )
               = t("Ask us a question")
               = " "
-              i.fa.fa-angle-double-right
+              i.fa.fa-angle-double-right.align-middle
     .row.text-center.mt-5
       .col
         a.btn.btn-outline-secondary(href=l("/my-account/domains"))

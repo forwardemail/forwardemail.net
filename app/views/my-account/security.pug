@@ -10,7 +10,7 @@ block body
     .modal-dialog(role="document")
       .modal-content
         .modal-header.d-block.text-center
-          h4#modal-disable-otp-title.modal-title.d-inline-block.ml-4= t("Disable OTP")
+          h4#modal-disable-otp-title.text-sans-serif.d-inline-block.ml-4= t("Disable OTP")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body.text-center
@@ -28,7 +28,7 @@ block body
                 )
                 label(for="input-password")= t("Confirm Password")
             button.btn.btn-danger.btn-lg.btn-block(type="submit")= t("Disable OTP")
-  .container-fluid.py-3
+  .container.py-3
     .row
       .col
         include ../_breadcrumbs

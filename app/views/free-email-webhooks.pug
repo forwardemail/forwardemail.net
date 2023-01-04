@@ -6,14 +6,11 @@ block body
   - const hash = "do-you-support-webhooks";
   if !user
     +onboard(t('Need email forwarding webhooks?'), t('Skip ahead to the instructions to forward emails to webhooks.'), l(`/faq?hash=${hash}`), l(`/faq#${hash}`), 'border-bottom')
-  .container-fluid.bg-dark.py-3.px-5.py-md-5.d-block.text-center
-    .row
-      .col-md-12
-        p.lead.mb-0.text-white.font-weight-bold
-          t= t("Easily set up webhooks for email delivery. We are the best alternative to Mailgun.")
   .container.py-5
     .text-center.mb-5
-      h1.h2.display-5.font-weight-light.mb-0.text-uppercase= t("Email webhooks")
-      .small.text-black-50.text-uppercase= t("Setup an email webhook in minutes")
-      p.text-muted.my-5.text-center
+      h1.h2.mb-0= t("Email webhooks")
+      .small.text-black-50.text-uppercase.mb-3= t("Setup an email webhook in minutes")
+      p.lead.mb-3
+        = t("Easily set up webhooks for email delivery. We are the best alternative to Mailgun.")
+      p.text-muted.mb-5.text-center
         a.btn.btn-lg.btn-primary(href=l(`/faq#${hash}`))= t("Create free email webhooks")

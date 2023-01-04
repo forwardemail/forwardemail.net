@@ -7,7 +7,7 @@ const paginate = require('koa-ctx-paginate');
 const { isEmail, isIP } = require('validator');
 
 async function list(ctx) {
-  let results = await ctx.client.keys('blocklist:*');
+  let results = await ctx.client.keys('denylist:*');
 
   if (isSANB(ctx.query.key)) {
     const regex = new RE2(
@@ -18,7 +18,7 @@ async function list(ctx) {
     // go in reverse so we can mutate the array
     let i = results.length;
     while (i--) {
-      if (!regex.test(results[i].replace('blocklist:', '')))
+      if (!regex.test(results[i].replace('denylist:', '')))
         results.splice(i, 1);
     }
   }
@@ -39,14 +39,14 @@ async function list(ctx) {
   );
 
   if (ctx.accepts('html'))
-    return ctx.render('admin/blocklist', {
+    return ctx.render('admin/denylist', {
       results,
       pageCount,
       itemCount,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
-  const table = await ctx.render('admin/blocklist/_table', {
+  const table = await ctx.render('admin/denylist/_table', {
     results,
     pageCount,
     itemCount,
@@ -80,9 +80,9 @@ async function validate(ctx, next) {
 }
 
 async function create(ctx) {
-  // store in the blocklist
+  // store in the denylist
   await ctx.client.set(
-    `blocklist:${ctx.request.body.value.toLowerCase()}`,
+    `denylist:${ctx.request.body.value.toLowerCase()}`,
     'true'
   );
 
@@ -101,8 +101,8 @@ async function create(ctx) {
 }
 
 async function remove(ctx) {
-  // remove it from the blocklist
-  await ctx.client.del(`blocklist:${ctx.request.body.value.toLowerCase()}`);
+  // remove it from the denylist
+  await ctx.client.del(`denylist:${ctx.request.body.value.toLowerCase()}`);
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),

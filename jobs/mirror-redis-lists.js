@@ -22,13 +22,13 @@ graceful.listen();
 (async () => {
   try {
     // mirror the keys for our migration
-    const [blacklistedKeys, whitelistedKeys] = await Promise.all([
+    const [denylistedKeys, whitelistedKeys] = await Promise.all([
       client.keys('blacklist:*'),
       client.keys('whitelist:*')
     ]);
     const pipeline = client.pipeline();
-    for (const key of blacklistedKeys) {
-      pipeline.set(key.replace('blacklist:', 'blocklist:'), 'true');
+    for (const key of denylistedKeys) {
+      pipeline.set(key.replace('blacklist:', 'denylist:'), 'true');
     }
 
     for (const key of whitelistedKeys) {

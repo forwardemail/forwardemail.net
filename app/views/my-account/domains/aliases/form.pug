@@ -2,7 +2,7 @@ extends ../../../layout
 
 block body
   include ../_modal-domain
-  .container-fluid.pt-3
+  .container.pt-3
     .row
       .col
         include ../../../_breadcrumbs
@@ -14,7 +14,7 @@ block body
             action=l(`/my-account/domains/${domain.name}/aliases/import`),
             method="POST"
           )
-            button.btn.btn-lg.btn-dark.text-uppercase.font-weight-bold(
+            button.btn.btn-lg.btn-dark(
               type="submit"
             )
               != t('Import <span class="notranslate">TXT</span> Records')

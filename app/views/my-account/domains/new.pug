@@ -10,7 +10,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-onboard-pricing-video-title.h4.modal-title.d-inline-block.ml-4= t("Enhanced Protection Plan")
+          h1#modal-onboard-pricing-video-title.h4.text-sans-serif.d-inline-block.ml-4= t("Enhanced Protection Plan")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -20,7 +20,7 @@ block body
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
           )
-  .container-fluid.pt-3
+  .container.pt-3
     .row
       .col
         include ../../_breadcrumbs
@@ -44,14 +44,11 @@ block body
             )
             label(for="input-domain")= t("Domain name")
           if user.plan === 'free' && (!isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan))
-            .form-check.form-group
-              input#input-enhanced-protection.form-check-input(
-                type="checkbox",
-                name="plan",
-                value="enhanced_protection",
-                checked
-              )
-              label.form-check-label(for="input-enhanced-protection")!= t('Upgrade to <a href="%s" data-toggle="modal" data-target="#modal-onboard-pricing-video" target="_blank" rel="noopener noreferrer" class="notranslate">Enhanced Protection</a>', l("/pricing"))
+            input(
+              type="hidden",
+              name="plan",
+              value="enhanced_protection"
+            )
           if user.group === 'admin'
             .form-group.form-check
               input#input-is-global.form-check-input(
