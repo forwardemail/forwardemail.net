@@ -148,6 +148,10 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
             )
               = t("Guides")
             .dropdown-menu(aria-labelledby="navbar-dropdown-guides")
+              a.dropdown-item(
+                href=l('/guides/send-mail-as-using-gmail'),
+                class=ctx.pathWithoutLocale === '/guides/send-mail-as-using-gmail' ? 'active' : ''
+              )= t('Send Mail As using Gmail')
               each provider in nsProviders
                 a.dropdown-item(
                   href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),

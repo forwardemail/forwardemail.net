@@ -140,6 +140,11 @@ localeRouter
     render('email-forwarding-regex-pattern-filter')
   )
   .get(
+    '/guides/send-mail-as-using-gmail',
+    web.guides.sendMailAs,
+    render('guides/send-mail-as-using-gmail')
+  )
+  .get(
     '/guides/port-25-blocked-by-isp-workaround',
     web.onboard,
     render('guides/port-25-blocked-by-isp-workaround')
