@@ -16,7 +16,11 @@ async function retrieveDomains(ctx, next) {
   //       we do not want to share account information on non /my-account pages
   //       (this is the same code as @ladjs/policies function ensureOtp)
   //
-  if (ctx.state.user[config.passport.fields.otpEnabled] && !ctx.session.otp) {
+  if (
+    ctx.state.user[config.passport.fields.otpEnabled] &&
+    ctx.session &&
+    !ctx.session.otp
+  ) {
     ctx.session.returnTo = ctx.originalUrl || ctx.req.url;
     const redirectTo = ctx.state.l(config.loginOtpRoute);
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
