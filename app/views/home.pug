@@ -140,201 +140,202 @@ block body
       i.fa.fa-angle-down
       = " "
       = t("Learn more")
-  #learn-more.container.py-5.d-block
-    .row.text-center.d-block.mb-5
+  #learn-more.bg-fixed.bg-postcard
+    .text-center.d-block.d-md-none.mt-5
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
       h1!= t("Happy users")
-    .row.row-cols-1.row-cols-md-2
-      //- DHH
-      .col
-        .p-4.border.border-gray-100.rounded-lg
-          a.d-flex.align-items-top.text-decoration-none(
-            href="https://twitter.com/dhh/status/1331183379686055936",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            img.rounded-circle(
-              width=50,
-              height=50,
-              src=manifest("img/testimonials/dhh.jpg"),
-              alt="dhh"
+    .container.py-5.d-block
+      .row.row-cols-1.row-cols-md-2
+        //- DHH
+        .col
+          .p-4.border.border-gray-100.bg-white.rounded-lg
+            a.d-flex.align-items-top.text-decoration-none(
+              href="https://twitter.com/dhh/status/1331183379686055936",
+              target="_blank",
+              rel="noopener noreferrer"
             )
-            .d-flex.flex-column.ml-2.font-weight-bold.text-dark
-              div
+              img.rounded-circle(
+                width=50,
+                height=50,
+                src=manifest("img/testimonials/dhh.jpg"),
+                alt="dhh"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-dark
                 div
-                  | DHH
-                  img.ml-1(
-                    src=manifest("img/testimonials/twitter-verified.svg"),
-                    width=20,
-                    height=20,
-                    alt="Verified"
-                  )
-                .small.text-muted @dhh
-            .ml-auto
-              i.fa.fa-twitter
-          .mt-3
-            | Congrats for fully launching Forward Email – a forwarding service
-            | for email that doesn't keep logs or store emails, and which works with ARC to ensure
-            | signed forwards don't trip email filters
-            = " "
-            = emoji("clap")
-            | . I'm a happy user!
-            = " "
-            = emoji("heart")
-          .mt-2.small.text-muted Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY
-      //- Abhi Nemani
-      .col.mt-4.mt-md-0
-        .p-4.border.border-gray-100.rounded-lg
-          a.d-flex.align-items-top.text-decoration-none(
-            href="https://twitter.com/abhinemani/status/1187406737101545473",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            img.rounded-circle(
-              width=50,
-              height=50,
-              src=manifest("img/testimonials/abhinemani.jpg"),
-              alt="abhinemani"
+                  div
+                    | DHH
+                    img.ml-1(
+                      src=manifest("img/testimonials/twitter-verified.svg"),
+                      width=20,
+                      height=20,
+                      alt="Verified"
+                    )
+                  .small.text-muted @dhh
+              .ml-auto
+                i.fa.fa-twitter
+            .mt-3
+              | Congrats for fully launching Forward Email – a forwarding service
+              | for email that doesn't keep logs or store emails, and which works with ARC to ensure
+              | signed forwards don't trip email filters
+              = " "
+              = emoji("clap")
+              | . I'm a happy user!
+              = " "
+              = emoji("heart")
+            .mt-2.small.text-muted Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY
+        //- Abhi Nemani
+        .col.mt-4.mt-md-0
+          .p-4.border.border-gray-100.bg-white.rounded-lg
+            a.d-flex.align-items-top.text-decoration-none(
+              href="https://twitter.com/abhinemani/status/1187406737101545473",
+              target="_blank",
+              rel="noopener noreferrer"
             )
-            .d-flex.flex-column.ml-2.font-weight-bold.text-dark
-              div
+              img.rounded-circle(
+                width=50,
+                height=50,
+                src=manifest("img/testimonials/abhinemani.jpg"),
+                alt="abhinemani"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-dark
                 div
-                  | abhi nemani
-                  img.ml-1(
-                    src=manifest("img/testimonials/twitter-verified.svg"),
-                    width=20,
-                    height=20,
-                    alt="Verified"
-                  )
-                .small.text-muted @abhinemani
-            .ml-auto
-              i.fa.fa-twitter
-          .mt-3
-            | Have now switched email forwarding from MailGun to
-            = " "
-            | ForwardEmail.net
-            | . Simple and painless (and free!). Just some DNS changes, and it just works. Thanks
-          .mt-2.small.text-muted Government Technology Advisor, Sacramento and Los Angeles
-    .row.row-cols-1.row-cols-md-2
-      //- Andrew Escobar
-      .col.mt-4
-        .p-4.border.border-gray-100.rounded-lg
-          a.d-flex.align-items-top.text-decoration-none(
-            href="https://twitter.com/andrewe/status/1016554126711275520",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            img.rounded-circle(
-              width=50,
-              height=50,
-              src=manifest("img/testimonials/andrewe.jpg"),
-              alt="andrewe"
+                  div
+                    | abhi nemani
+                    img.ml-1(
+                      src=manifest("img/testimonials/twitter-verified.svg"),
+                      width=20,
+                      height=20,
+                      alt="Verified"
+                    )
+                  .small.text-muted @abhinemani
+              .ml-auto
+                i.fa.fa-twitter
+            .mt-3
+              | Have now switched email forwarding from MailGun to
+              = " "
+              | ForwardEmail.net
+              | . Simple and painless (and free!). Just some DNS changes, and it just works. Thanks
+            .mt-2.small.text-muted Government Technology Advisor, Sacramento and Los Angeles
+      .row.row-cols-1.row-cols-md-2
+        //- Andrew Escobar
+        .col.mt-4
+          .p-4.border.border-gray-100.bg-white.rounded-lg
+            a.d-flex.align-items-top.text-decoration-none(
+              href="https://twitter.com/andrewe/status/1016554126711275520",
+              target="_blank",
+              rel="noopener noreferrer"
             )
-            .d-flex.flex-column.ml-2.font-weight-bold.text-dark
-              div
+              img.rounded-circle(
+                width=50,
+                height=50,
+                src=manifest("img/testimonials/andrewe.jpg"),
+                alt="andrewe"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-dark
                 div
-                  | Andrew Escobar (Andres)
-                  img.ml-1(
-                    src=manifest("img/testimonials/twitter-verified.svg"),
-                    width=20,
-                    height=20,
-                    alt="Verified"
-                  )
-                .small.text-muted @andrewe
-            .ml-auto
-              i.fa.fa-twitter
-          .mt-3
-            | This is so dope. Thank you.
-            = " "
-            | forwardemail.net
-          .mt-2.small.text-muted Fintech Explorer and Open Finance Advocate
-      //- Ullrich Schäfer
-      .col.mt-4
-        .p-4.border.border-gray-100.rounded-lg
-          a.d-flex.align-items-top.text-decoration-none(
-            href="https://twitter.com/stigi/status/1070084392402460674",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            img.rounded-circle(
-              width=50,
-              height=50,
-              src=manifest("img/testimonials/stigi.jpg"),
-              alt="stigi"
+                  div
+                    | Andrew Escobar (Andres)
+                    img.ml-1(
+                      src=manifest("img/testimonials/twitter-verified.svg"),
+                      width=20,
+                      height=20,
+                      alt="Verified"
+                    )
+                  .small.text-muted @andrewe
+              .ml-auto
+                i.fa.fa-twitter
+            .mt-3
+              | This is so dope. Thank you.
+              = " "
+              | forwardemail.net
+            .mt-2.small.text-muted Fintech Explorer and Open Finance Advocate
+        //- Ullrich Schäfer
+        .col.mt-4
+          .p-4.border.border-gray-100.bg-white.rounded-lg
+            a.d-flex.align-items-top.text-decoration-none(
+              href="https://twitter.com/stigi/status/1070084392402460674",
+              target="_blank",
+              rel="noopener noreferrer"
             )
-            .d-flex.flex-column.ml-2.font-weight-bold.text-dark
-              div
-                div Ullrich Schäfer
-                .small.text-muted @stigi
-            .ml-auto
-              i.fa.fa-twitter
-          .mt-3
-            | Thanks so much for
-            = " "
-            | forwardemail.net
-            | ! It solves a real problem for our little org!
-          .mt-2.small.text-muted Mobile Lead at Pitch, Formerly at Facebook and Soundcloud
-    .row.row-cols-1.row-cols-md-2
-      //- Andre Goncalves
-      .col.mt-4
-        .p-4.border.border-gray-100.rounded-lg
-          a.d-flex.align-items-top.text-decoration-none(
-            href="https://twitter.com/andregce/status/1290014041465933824",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            img.rounded-circle(
-              width=50,
-              height=50,
-              src=manifest("img/testimonials/andregce.jpg"),
-              alt="andregce"
+              img.rounded-circle(
+                width=50,
+                height=50,
+                src=manifest("img/testimonials/stigi.jpg"),
+                alt="stigi"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-dark
+                div
+                  div Ullrich Schäfer
+                  .small.text-muted @stigi
+              .ml-auto
+                i.fa.fa-twitter
+            .mt-3
+              | Thanks so much for
+              = " "
+              | forwardemail.net
+              | ! It solves a real problem for our little org!
+            .mt-2.small.text-muted Mobile Lead at Pitch, Formerly at Facebook and Soundcloud
+      .row.row-cols-1.row-cols-md-2
+        //- Andre Goncalves
+        .col.mt-4
+          .p-4.border.border-gray-100.bg-white.rounded-lg
+            a.d-flex.align-items-top.text-decoration-none(
+              href="https://twitter.com/andregce/status/1290014041465933824",
+              target="_blank",
+              rel="noopener noreferrer"
             )
-            .d-flex.flex-column.ml-2.font-weight-bold.text-dark
-              div
-                div Andre Goncalves
-                .small.text-muted @andregce
-            .ml-auto
-              i.fa.fa-twitter
-          .mt-3
-            | So they made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
-            = " "
-            | forwardemail.net
-          .mt-2.small.text-muted Computer Engineer, Software Developer
-      //- Phil Cockfield
-      .col.mt-4
-        .p-4.border.border-gray-100.rounded-lg
-          a.d-flex.align-items-top.text-decoration-none(
-            href="https://twitter.com/philcockfield/status/1035659754587095040",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            img.rounded-circle(
-              width=50,
-              height=50,
-              src=manifest("img/testimonials/philcockfield.jpg"),
-              alt="philcockfield"
+              img.rounded-circle(
+                width=50,
+                height=50,
+                src=manifest("img/testimonials/andregce.jpg"),
+                alt="andregce"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-dark
+                div
+                  div Andre Goncalves
+                  .small.text-muted @andregce
+              .ml-auto
+                i.fa.fa-twitter
+            .mt-3
+              | So they made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
+              = " "
+              | forwardemail.net
+            .mt-2.small.text-muted Computer Engineer, Software Developer
+        //- Phil Cockfield
+        .col.mt-4
+          .p-4.border.border-gray-100.bg-white.rounded-lg
+            a.d-flex.align-items-top.text-decoration-none(
+              href="https://twitter.com/philcockfield/status/1035659754587095040",
+              target="_blank",
+              rel="noopener noreferrer"
             )
-            .d-flex.flex-column.ml-2.font-weight-bold.text-dark
-              div
-                div Phil
-                .small.text-muted @philcockfield
-            .ml-auto
-              i.fa.fa-twitter
-          .mt-3
-            | Thanks for your
-            = " "
-            | forwardemail.net
-            | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
-          .mt-2.small.text-muted hypersheet, db.team
-  .bg-dark.py-3.py-md-5.d-block
+              img.rounded-circle(
+                width=50,
+                height=50,
+                src=manifest("img/testimonials/philcockfield.jpg"),
+                alt="philcockfield"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-dark
+                div
+                  div Phil
+                  .small.text-muted @philcockfield
+              .ml-auto
+                i.fa.fa-twitter
+            .mt-3
+              | Thanks for your
+              = " "
+              | forwardemail.net
+              | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
+            .mt-2.small.text-muted hypersheet, db.team
+  .bg-dark.py-3.py-md-5.d-block#enterprise-grade.overflow-hidden
     .container
       .row
         .col-12
           h2.display-3.font-weight-bold.text-white.my-3.my-md-5
             = t("Enterprise-grade")
       .row
-        .col-12.col-md-9.col-lg-8
+        .col-12.col-lg-8
           p.lead.text-white
             != t("We are <strong>email security</strong> and <strong>deliverability experts</strong>.")
           ul.list-unstyled.text-white.text-left.d-inline-block.mb-3.mb-md-5
@@ -376,18 +377,16 @@ block body
                 href=l('/help')
               )
                 = t("Contact")
-        .d-flex.col-md-3.col-lg-4.pt-3
-          img.mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0(
-            src=manifest("img/logo-square.svg"),
-            width=200,
+        .d-flex.col-12.col-lg-4.pt-3.text-center
+          img.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0(
+            src=manifest("img/art/group.svg"),
+            width=369,
             height=200,
             alt=""
           )
-  .pt-5.pb-lg-5.text-center.bg-light
-    .h2.display-3.mb-1.text-danger
-      i.fa.fa-heart
-    h1.mb-0= t("Features")
-  .bg-light.pb-5.position-relative
+  .py-5.position-relative#features.bg-fixed.bg-stars
+    .text-center.mb-lg-5
+      h1.mb-0= t("Features")
     .container
       .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
         .col-12.col-lg-6.d-flex
@@ -492,7 +491,7 @@ block body
             height=200,
             alt=""
           )
-  .bg-light.border-top.border-bottom.py-5.d-block
+  .border-top.border-bottom.py-5.d-block.bg-light
     .container
       .row.text-center.d-block.mb-5
         .h2.display-3.mb-1.text-danger
