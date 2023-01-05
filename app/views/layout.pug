@@ -137,29 +137,25 @@ html.h-100(lang=locale)
 
     //- preload stylesheets
     block preloadStylesheets
-      //- integrity attribute not currently supported
-      //- <https://crbug.com/981419>
-      //-
       //- preload before css
       //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload>
       link(
         rel="preload",
         href=manifest("css/app.css"),
+        integrity=manifest("css/app.css", "integrity"),
         as="style",
         crossorigin="anonymous"
       )
 
     //- preload scripts
     block preloadScripts
-      //- integrity attribute not currently supported
-      //- <https://crbug.com/981419>
-      //-
       //- preload before js
       //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload>
       if !isBot(ctx.get('User-Agent'))
         link(
           rel="preload",
           href=manifest("js/build.js"),
+          integrity=manifest("js/build.js", "integrity"),
           as="script",
           crossorigin="anonymous"
         )
