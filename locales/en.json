@@ -3097,5 +3097,14 @@
   "Log in now": "Log in now",
   "Manage Your Aliases": "Manage Your Aliases",
   "You can run": "You can run",
-  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked.",
+  "Port 25 blocked by ISP": "Port 25 blocked by ISP",
+  "<mark>Free email forwarding</mark> for custom domains": "<mark>Free email forwarding</mark> for custom domains",
+  "Free Email Forwarding for <span class=\"notranslate\">GoDaddy</span>": "Free Email Forwarding for <span class=\"notranslate\">GoDaddy</span>",
+  "Set up free email forwarding for your <span class=\"notranslate\">GoDaddy</span> domain name. Get unlimited GoDaddy email aliases, send and receive email, and more.": "Set up free email forwarding for your <span class=\"notranslate\">GoDaddy</span> domain name. Get unlimited GoDaddy email aliases, send and receive email, and more.",
+  "Free <span class=\"notranslate\">GoDaddy</span> Email Forwarding": "Free <span class=\"notranslate\">GoDaddy</span> Email Forwarding",
+  "Follow our guide to setup email forwarding with <span class=\"notranslate\">GoDaddy</span> for your domain.": "Follow our guide to setup email forwarding with <span class=\"notranslate\">GoDaddy</span> for your domain.",
+  "Setup Email with <span class=\"notranslate\">GoDaddy</span>": "Setup Email with <span class=\"notranslate\">GoDaddy</span>",
+  "Follow these two steps below": "Follow these two steps below",
+  "Edit <span class=\"notranslate\">user@gmail.com</span> to your email:": "Edit <span class=\"notranslate\">user@gmail.com</span> to your email:"
 }
