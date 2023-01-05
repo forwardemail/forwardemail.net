@@ -2258,5 +2258,11 @@
   "Edit <span class=\"notranslate\">user@gmail.com</span> to your email:": "Bearbeiten <span class=\"notranslate\">user@gmail.com</span> in Ihrer E-Mail:",
   "Please click below to verify forwarding from <code class=\"notranslate\">%s</code> to <code class=\"notranslate\">%s</code>.": "Bitte klicken Sie unten, um die Weiterleitung von <code class=\"notranslate\">%s</code> zu <code class=\"notranslate\">%s</code> zu bestätigen.",
   "Please verify your email forwarding address": "Bitte überprüfen Sie Ihre E-Mail-Weiterleitungsadresse",
-  "Address Country has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Address Country has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>"
+  "Address Country has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "Address Country has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
+  "Send Mail As using Gmail": "Send Mail As using Gmail",
+  "Free Email Forwarding for <span class=\"notranslate\">Azure</span>": "Free Email Forwarding for <span class=\"notranslate\">Azure</span>",
+  "Set up free email forwarding for your <span class=\"notranslate\">Azure</span> domain name. Get unlimited Azure email aliases, send and receive email, and more.": "Set up free email forwarding for your <span class=\"notranslate\">Azure</span> domain name. Get unlimited Azure email aliases, send and receive email, and more.",
+  "Free <span class=\"notranslate\">Azure</span> Email Forwarding": "Free <span class=\"notranslate\">Azure</span> Email Forwarding",
+  "Follow our guide to setup email forwarding with <span class=\"notranslate\">Azure</span> for your domain.": "Follow our guide to setup email forwarding with <span class=\"notranslate\">Azure</span> for your domain.",
+  "Setup Email with <span class=\"notranslate\">Azure</span>": "Setup Email with <span class=\"notranslate\">Azure</span>"
 }
