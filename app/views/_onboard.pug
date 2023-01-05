@@ -58,7 +58,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                     = t("Continue")
                     = " "
                     i.fa.fa-angle-double-right.align-middle
-                  p#help-create-account.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
+                  p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
             if onboardKeepReading
               p.text-center.mb-0.small: a.text-black-50.font-weight-bold(
                 href=onboardKeepReading

@@ -5,11 +5,6 @@ include ../_onboard
 block body
   if !user
     +onboard(t('Need docs with real data and keys?'), t('Simply sign up or log in to have your API keys and real account data populated below.'), l(`/faq?redirect_to=${l('/email-forwarding-api')}`), '#top', 'border-bottom')
-  .fixed-bottom.text-right.mb-2.mr-2
-    a(href='#table-of-contents').btn.btn-dark.text-center
-      i.fa.fa-list
-      = ' '
-      = t('Table of Contents')
   .py-5
     .text-center
       .h2.display-3.mb-1.text-primary

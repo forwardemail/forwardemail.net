@@ -48,7 +48,7 @@ function fixTableOfContents(content) {
 }
 */
 
-function fixTableOfContents(content) {
+function fixTableOfContents(content, i18n, options) {
   const root = parse(content);
 
   const h1 = root.querySelector('h1');
@@ -66,19 +66,21 @@ function fixTableOfContents(content) {
   const ul = root.querySelector('ul');
   if (!ul) return content;
 
-  const links = ul.querySelectorAll('a');
-  if (links.length === 0) return content;
+  const lis = ul.querySelectorAll('li');
+  if (lis.length === 0) return content;
 
   a.setAttribute('id', 'top');
   a.setAttribute('href', '#top');
-  a2.setAttribute('id', 'table-of-contents');
-  a2.setAttribute('href', '#table-of-contents');
 
   const h2s = root.querySelectorAll('h2');
 
-  for (const link of links) {
-    const { text } = link;
-    const href = link.getAttribute('href');
+  for (const li of lis) {
+    const a = li.querySelector('a');
+    const { text } = a;
+    // eslint-disable-next-line unicorn/prefer-dom-node-dataset
+    a.setAttribute('data-dismiss', 'modal');
+    a.setAttribute('class', 'list-group-item list-group-item-action');
+    const href = a.getAttribute('href');
     const id = href.slice(1);
     for (const h of h2s) {
       const anchor = h.querySelector('a');
@@ -89,32 +91,78 @@ function fixTableOfContents(content) {
         anchor.setAttribute('id', id);
       }
     }
+
+    li.replaceWith(a);
   }
 
-  return root.toString();
+  const str = i18n.api.t({
+    phrase: 'Table of Contents',
+    locale: (options && options.locale) || i18n.getLocale()
+  });
+
+  ul.rawTagName = 'div';
+  ul.setAttribute('class', 'list-group');
+
+  const ulStr = ul.toString();
+  h2.remove();
+  ul.remove();
+
+  const search = i18n.api.t({
+    phrase: 'Search page',
+    locale: (options && options.locale) || i18n.getLocale()
+  });
+
+  return `
+    <div class="fixed-bottom bg-dark border-top border-light p-2 text-center">
+      <ul class="list-inline mb-0">
+        <li class="list-inline-item text-white">
+          ${search}
+        </li>
+        <li class="list-inline-item"><i class="fa fa-angle-right align-middle text-white"></i></li>
+        <li class="list-inline-item">
+          <a data-toggle="modal-anchor" data-target="#modal-table-of-contents" class="btn btn-success">
+            <i class="fa fa-search"></i> ${str}
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="modal fade" id="modal-table-of-contents" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header text-center d-block">
+            <h1 class="h4 d-inline-block ml-4">${str}</h1>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+          </div>
+          <div class="modal-body">${ulStr}</div>
+        </div>
+      </div>
+    </div>
+    <div class="markdown-body">${root.toString()}</div>
+  `;
 }
+
+//
+// NOTE: we want our own instance of i18n that does not auto reload files
+//
+const i18n = new I18N({
+  ...i18nConfig,
+  autoReload: false,
+  updateFiles: false,
+  syncFiles: false,
+  logger
+});
 
 module.exports = {
   md(string, options) {
-    if (!isSANB(options.locale))
-      return `<div class="markdown-body">${fixTableOfContents(
-        markdown.render(string)
-      )}</div>`;
-    //
-    // NOTE: we want our own instance of i18n that does not auto reload files
-    //
-    const i18n = new I18N({
-      ...i18nConfig,
-      autoReload: false,
-      updateFiles: false,
-      syncFiles: false,
-      logger
-    });
-    return `<div class="markdown-body">${fixTableOfContents(
+    if (typeof options !== 'object' || !isSANB(options.locale))
+      return fixTableOfContents(markdown.render(string), i18n, options);
+    return fixTableOfContents(
       i18n.api.t({
         phrase: markdown.render(string),
-        locale: options.locale
-      })
-    )}</div>`;
+        locale: (options && options.locale) || i18n.getLocale()
+      }),
+      i18n,
+      options
+    );
   }
 };
