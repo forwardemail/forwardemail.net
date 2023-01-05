@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "Kezelje álneveit",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "Érvénytelen domain név, IP-cím, e-mail cím. Kérjük, javítsa ki az elutasító listák eltávolítási kérelmét, és próbálja újra.",
   "Value was not currently found in our denylist.": "Az érték jelenleg nem található az elutasító listánkban.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Az érték érvénytelen, ennek a következőnek kell lennie: FQDN, EMAIL, IP, FQDN:email vagy IP:email."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Az érték érvénytelen, ennek a következőnek kell lennie: FQDN, EMAIL, IP, FQDN:email vagy IP:email.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

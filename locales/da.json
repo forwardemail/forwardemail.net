@@ -3001,5 +3001,7 @@
   "Manage Your Aliases": "Administrer dine aliaser",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "Ugyldigt domænenavn, IP-adresse, e-mailadresse. Ret venligst din anmodning om fjernelse af denyliste, og prøv igen.",
   "Value was not currently found in our denylist.": "Værdien blev i øjeblikket ikke fundet i vores afvisningsliste.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Værdien var ugyldig, skal være FQDN, EMAIL, IP, FQDN:e-mail eller IP:e-mail."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Værdien var ugyldig, skal være FQDN, EMAIL, IP, FQDN:e-mail eller IP:e-mail.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

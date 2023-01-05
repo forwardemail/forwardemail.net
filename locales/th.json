@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "จัดการนามแฝงของคุณ",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "ชื่อโดเมน ที่อยู่ IP ที่อยู่อีเมลไม่ถูกต้อง โปรดแก้ไขคำขอลบรายการที่ไม่อนุญาตของคุณแล้วลองอีกครั้ง",
   "Value was not currently found in our denylist.": "ไม่พบค่าในรายการปฏิเสธของเราในขณะนี้",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "ค่าไม่ถูกต้อง ต้องเป็น FQDN, EMAIL, IP, FQDN:email หรือ IP:email"
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "ค่าไม่ถูกต้อง ต้องเป็น FQDN, EMAIL, IP, FQDN:email หรือ IP:email",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

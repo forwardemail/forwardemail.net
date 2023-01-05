@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "נהל את הכינויים שלך",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "שם דומיין, כתובת IP, כתובת דואר אלקטרוני לא חוקיים. תקן את בקשת ההסרה של רשימת הדחיה ונסה שוב.",
   "Value was not currently found in our denylist.": "הערך לא נמצא כרגע ברשימת הדחיות שלנו.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "הערך לא חוקי, חייב להיות FQDN, EMAIL, IP, FQDN:email או IP:email."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "הערך לא חוקי, חייב להיות FQDN, EMAIL, IP, FQDN:email או IP:email.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "Beheer uw aliassen",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "Ongeldige domeinnaam, IP-adres, e-mailadres. Corrigeer uw verwijderingsverzoek van de weigeringslijst en probeer het opnieuw.",
   "Value was not currently found in our denylist.": "Waarde is momenteel niet gevonden in onze weigeringslijst.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Waarde was ongeldig, moet FQDN, EMAIL, IP, FQDN:email of IP:email zijn."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Waarde was ongeldig, moet FQDN, EMAIL, IP, FQDN:email of IP:email zijn.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

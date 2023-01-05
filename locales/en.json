@@ -3095,5 +3095,7 @@
   "Log in &#124; <span class=\"notranslate\">Forward Email</span>": "Log in &#124; <span class=\"notranslate\">Forward Email</span>",
   "Log in to your account": "Log in to your account",
   "Log in now": "Log in now",
-  "Manage Your Aliases": "Manage Your Aliases"
+  "Manage Your Aliases": "Manage Your Aliases",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }
