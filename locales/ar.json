@@ -3276,5 +3276,11 @@
   "Follow our guide to setup email forwarding with <span class=\"notranslate\">GoDaddy</span> for your domain.": "اتبع دليلنا لإعداد إعادة توجيه البريد الإلكتروني باستخدام <span class=\"notranslate\">GoDaddy</span> لنطاقك.",
   "Setup Email with <span class=\"notranslate\">GoDaddy</span>": "قم بإعداد البريد الإلكتروني باستخدام <span class=\"notranslate\">GoDaddy</span>",
   "Follow these two steps below": "اتبع هاتين الخطوتين أدناه",
-  "Edit <span class=\"notranslate\">user@gmail.com</span> to your email:": "قم بتحرير <span class=\"notranslate\">user@gmail.com</span> إلى بريدك الإلكتروني:"
+  "Edit <span class=\"notranslate\">user@gmail.com</span> to your email:": "قم بتحرير <span class=\"notranslate\">user@gmail.com</span> إلى بريدك الإلكتروني:",
+  "Send Mail As using Gmail": "Send Mail As using Gmail",
+  "Free Email Forwarding for <span class=\"notranslate\">Azure</span>": "Free Email Forwarding for <span class=\"notranslate\">Azure</span>",
+  "Set up free email forwarding for your <span class=\"notranslate\">Azure</span> domain name. Get unlimited Azure email aliases, send and receive email, and more.": "Set up free email forwarding for your <span class=\"notranslate\">Azure</span> domain name. Get unlimited Azure email aliases, send and receive email, and more.",
+  "Free <span class=\"notranslate\">Azure</span> Email Forwarding": "Free <span class=\"notranslate\">Azure</span> Email Forwarding",
+  "Follow our guide to setup email forwarding with <span class=\"notranslate\">Azure</span> for your domain.": "Follow our guide to setup email forwarding with <span class=\"notranslate\">Azure</span> for your domain.",
+  "Setup Email with <span class=\"notranslate\">Azure</span>": "Setup Email with <span class=\"notranslate\">Azure</span>"
 }
