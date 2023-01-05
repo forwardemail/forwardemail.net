@@ -7,18 +7,26 @@
   .modal-dialog(role="document")
     .modal-content
       .modal-header.text-center.d-block
-        h4#modal-upgrade-title.d-inline-block.ml-4= t("Upgrade your domain's plan")
+        h4#modal-upgrade-title.d-inline-block.ml-4= t("Unlock this feature")
         button.close(type="button", data-dismiss="modal", aria-label="Close")
           span(aria-hidden="true") &times;
-      .modal-body.lead
-        p= t("Please upgrade your domain's plan to use our privacy-focused and encrypted email alias manager (instead of managing your aliases for free with public DNS records).")
-        p!= t('If you would like to learn more about DNS-based aliases (free plan), then please <a href="%s">follow these instructions on our FAQ page</a>.', domain ? l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`) : l("/faq#how-do-i-get-started-and-set-up-email-forwarding"))
+      .modal-body.text-center
+        p.lead.mb-0= t("Upgrade to unlock our alias manager.")
+        .alert.alert-warning.my-3
+          strong.font-weight-bold= t('Not ready?')
+          = ' '
+          a(href=domain ? l(`/faq?domain=${domain.name}#dns-configuration-options`) : l("/faq#dns-configuration-options"), target='_blank').alert-link= t('Visit our FAQ for more options')
         if domain && domain.plan === 'free'
           a.btn.btn-dark.btn-lg.btn-block(
             href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
           )
-            = t("Upgrade to Enhanced Protection")
+            = t("Upgrade Now")
             = " "
             i.fa.fa-angle-double-right.align-middle
         else
-          p= t("To upgrade your domain's plan, just close this modal and then click on the Current Plan dropdown button.")
+          a.btn.btn-dark.btn-lg.btn-block(
+            href=l('/my-account/billing/upgrade?plan=enhanced_protection')
+          )
+            = t("Upgrade Now")
+            = " "
+            i.fa.fa-angle-double-right.align-middle
