@@ -688,6 +688,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
+<div id="send-mail-as-content">
+
 1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
 
 2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
@@ -751,6 +753,8 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
 
 17. Once you've done that, go back to the email and click the link to "confirm the request". You need to do this step and the previous step for the email to be correctly configured.
+
+</div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">

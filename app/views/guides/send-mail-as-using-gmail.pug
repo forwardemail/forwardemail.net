@@ -1,0 +1,44 @@
+extends ../layout
+
+block body
+  .fixed-bottom.text-center
+    .bg-dark.p-2.border-top.border-light
+      ul.list-inline.mb-0
+        li.list-inline-item
+          a.btn.btn-sm.btn-light(href="#quick-video-guide")
+            i.fab.fa-youtube.text-danger
+            = ' '
+            = t("Video")
+        li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+        li.list-inline-item
+          a.btn.btn-sm.btn-light(href="#step-by-step-instructions")
+            span.badge.badge-pill.mr-1.badge-success
+              i.fa.fa-list-ol
+            = t("Instructions")
+  .container.py-5
+    .row
+      .col-12
+        h1.mb-0.text-center!= t('How to Send Mail As using Gmail')
+        .alert.my-3.alert-warning.text-center
+          i.fa.fa-exclamation-circle.font-weight-bold
+          = ' '
+          strong.font-weight-bold= t('Important:')
+          = ' '
+          span= t('Your domain must be verified before starting this guide.')
+          = ' '
+          a(href=user ? l('/my-account/domains') : l('/my-account/domains/new'), target='_blank').alert-link
+            = t('Click here to verify your domain')
+        .card.mt-3#quick-video-guide
+          h1.h5.card-header.text-center= t("Quick Video Guide")
+          .card-body.text-center
+            .lazyframe.border.border-dark.rounded.d-inline-block(
+              data-vendor="youtube_nocookie",
+              title=t("How to Send Mail As using Gmail"),
+              style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
+              data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
+            )
+      .col-12.mt-3#step-by-step-instructions
+        .card
+          h1.h5.card-header.text-center= t("Step by Step Instructions")
+          .card-body.markdown-body
+            != sendMailAsContent

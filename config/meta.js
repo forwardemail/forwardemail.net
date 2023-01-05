@@ -66,6 +66,10 @@ module.exports = function (config) {
       `Guides ${lad}`,
       'Follow our easy and simple guides and step by step instructions.'
     ],
+    '/guides/send-mail-as-using-gmail': [
+      `How to Send Mail As using Gmail ${lad}`,
+      'Follow our quick video guide and step by step instructions to setup your domain name with Send Mail As using Gmail.'
+    ],
     '/guides/port-25-blocked-by-isp-workaround': [
       `Port 25 blocked by ISP workaround ${lad}`,
       'Our service allows you to workaround port blocking set by your Internet Service Provider on port 25.  Simple follow our guide to workaround this issue in minutes.'

@@ -102,6 +102,10 @@ footer.mt-auto
         .flex-wrap.flex-fill
           h1.h5.mb-2= t("Guides")
           ul.list-unstyled.mb-0
+            li
+              a.d-block.text-light.py-2.py-md-0(
+                href=l('/guides/send-mail-as-using-gmail')
+              )= t('Send Mail As using Gmail')
             each provider in nsProviders
               li
                 a.d-block.text-light.py-2.py-md-0(
