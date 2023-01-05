@@ -2244,5 +2244,7 @@
   "Confirm password": "Kennwort bestätigen",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "Ungültiger Domänenname, IP-Adresse, E-Mail-Adresse. Bitte korrigieren Sie Ihre Anfrage zum Entfernen der Ablehnungsliste und versuchen Sie es erneut.",
   "Value was not currently found in our denylist.": "Der Wert wurde derzeit nicht in unserer Ablehnungsliste gefunden.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Wert war ungültig, muss FQDN, E-MAIL, IP, FQDN:E-Mail oder IP:E-Mail sein."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Wert war ungültig, muss FQDN, E-MAIL, IP, FQDN:E-Mail oder IP:E-Mail sein.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

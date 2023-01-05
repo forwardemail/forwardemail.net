@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "Spravujte své aliasy",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "Neplatný název domény, IP adresa, e-mailová adresa. Opravte prosím svůj požadavek na odstranění ze seznamu odmítnutých a zkuste to znovu.",
   "Value was not currently found in our denylist.": "Hodnota nebyla aktuálně nalezena v našem seznamu odmítnutých.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Hodnota byla neplatná, musí být FQDN, EMAIL, IP, FQDN:email nebo IP:email."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Hodnota byla neplatná, musí být FQDN, EMAIL, IP, FQDN:email nebo IP:email.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

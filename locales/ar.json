@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "إدارة الأسماء المستعارة الخاصة بك",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "اسم المجال غير صالح وعنوان IP وعنوان البريد الإلكتروني. يرجى تصحيح طلب إزالة denylist الخاص بك والمحاولة مرة أخرى.",
   "Value was not currently found in our denylist.": "لم يتم العثور على القيمة حاليًا في منشئنا.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "كانت القيمة غير صالحة ، يجب أن تكون FQDN أو EMAIL أو IP أو FQDN: البريد الإلكتروني أو IP: البريد الإلكتروني."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "كانت القيمة غير صالحة ، يجب أن تكون FQDN أو EMAIL أو IP أو FQDN: البريد الإلكتروني أو IP: البريد الإلكتروني.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

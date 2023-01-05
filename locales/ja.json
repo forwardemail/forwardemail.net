@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "エイリアスを管理する",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "ドメイン名、IP アドレス、メールアドレスが無効です。拒否リストの削除リクエストを修正して、もう一度お試しください。",
   "Value was not currently found in our denylist.": "現在、拒否リストに値が見つかりませんでした。",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "値が無効です。FQDN、EMAIL、IP、FQDN:email、または IP:email である必要があります。"
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "値が無効です。FQDN、EMAIL、IP、FQDN:email、または IP:email である必要があります。",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

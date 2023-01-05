@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "Управляйте своими псевдонимами",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "Неверное доменное имя, IP-адрес, адрес электронной почты. Исправьте свой запрос на удаление списка запрещенных и повторите попытку.",
   "Value was not currently found in our denylist.": "В настоящее время значение не найдено в нашем списке запрещенных.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Недопустимое значение. Должно быть FQDN, EMAIL, IP, FQDN:email или IP:email."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Недопустимое значение. Должно быть FQDN, EMAIL, IP, FQDN:email или IP:email.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

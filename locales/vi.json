@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "Quản lý bí danh của bạn",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "Tên miền, địa chỉ IP, địa chỉ email không hợp lệ. Vui lòng sửa yêu cầu xóa danh sách từ chối của bạn và thử lại.",
   "Value was not currently found in our denylist.": "Giá trị hiện không được tìm thấy trong danh sách từ chối của chúng tôi.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Giá trị không hợp lệ, phải là FQDN, EMAIL, IP, FQDN:email hoặc IP:email."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Giá trị không hợp lệ, phải là FQDN, EMAIL, IP, FQDN:email hoặc IP:email.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

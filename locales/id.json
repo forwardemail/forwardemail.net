@@ -3265,5 +3265,7 @@
   "Manage Your Aliases": "Kelola Alias Anda",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "Nama domain, alamat IP, alamat email tidak valid. Perbaiki permintaan penghapusan daftar tolak Anda dan coba lagi.",
   "Value was not currently found in our denylist.": "Nilai saat ini tidak ditemukan di daftar tolak kami.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Nilai tidak valid, harus berupa FQDN, EMAIL, IP, FQDN:email, atau IP:email."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Nilai tidak valid, harus berupa FQDN, EMAIL, IP, FQDN:email, atau IP:email.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

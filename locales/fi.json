@@ -3109,5 +3109,7 @@
   "Manage Your Aliases": "Hallitse aliaksiasi",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "Virheellinen verkkotunnuksen nimi, IP-osoite, sähköpostiosoite. Korjaa kieltoluettelon poistopyyntösi ja yritä uudelleen.",
   "Value was not currently found in our denylist.": "Arvoa ei tällä hetkellä löytynyt hylkäysluettelostamme.",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Arvo oli virheellinen, sen on oltava FQDN, EMAIL, IP, FQDN:email tai IP:email."
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "Arvo oli virheellinen, sen on oltava FQDN, EMAIL, IP, FQDN:email tai IP:email.",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }

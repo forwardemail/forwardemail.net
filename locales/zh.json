@@ -2954,5 +2954,7 @@
   "Manage Your Aliases": "管理您的别名",
   "Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.": "无效的域名、IP 地址、电子邮件地址。请更正您的黑名单删除请求，然后重试。",
   "Value was not currently found in our denylist.": "目前未在我们的拒绝名单中找到值。",
-  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "值无效，必须是 FQDN、EMAIL、IP、FQDN:email 或 IP:email。"
+  "Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.": "值无效，必须是 FQDN、EMAIL、IP、FQDN:email 或 IP:email。",
+  "You can run": "You can run",
+  "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked."
 }
