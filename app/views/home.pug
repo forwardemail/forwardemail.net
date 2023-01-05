@@ -77,16 +77,16 @@ block body
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
           )
-  .min-vh-80.text-center.d-flex.flex-column.bg-light
+  .min-vh-80.d-flex.flex-column.bg-light
     .container.my-auto.pt-5
       .row
-        .col-12.col-lg-6.text-md-left
+        .col-12.col-lg-6
           h1.mb-3
             != t("<mark>Free email forwarding</mark> for custom domains")
-          p.d-block.mb-3
+          p
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for thousands of creators, developers, and businesses.', dayjs().endOf('year').diff(dayjs('1/1/17', 'M-D/YY'), 'year'))
             = ' '
-            != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@your-domain.com</span> for free!')
+            != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@your-domain.com</span>.')
           .d-block
             a.btn.btn-success.btn-lg.mb-3(
               href=l('/register'),
@@ -134,12 +134,13 @@ block body
             = " "
             = t("Watch Video")
 
-    a.text-decoration-none.pt-1.pb-4.pt-lg-4.d-none.d-lg-block.text-uppercase.text-dark(
-      href="#learn-more"
-    )
-      i.fa.fa-angle-down
-      = " "
-      = t("Learn more")
+    .text-center
+      a.text-decoration-none.pt-1.pb-4.pt-lg-4.d-none.d-lg-block.text-uppercase.text-dark(
+        href="#learn-more"
+      )
+        i.fa.fa-angle-down
+        = " "
+        = t("Learn more")
   #learn-more.bg-fixed.bg-postcard.border-top.border-dark
     .text-center.d-block.d-md-none.mt-5
       .h2.display-3.mb-1.text-danger
