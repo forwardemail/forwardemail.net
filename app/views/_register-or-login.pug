@@ -7,31 +7,25 @@ mixin registerOrLogin(verb, isModal = false)
     div(class=isModal ? "" : "row")
       div(class=isModal ? "" : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
         if passport && passport.google
-          a.btn-auth.btn-auth-google.btn-auth-google-dark.mb-3(
+          a.btn-auth.btn-auth-google.btn-auth-google-dark.mb-3.text-decoration-none(
             href="/auth/google",
             role="button"
           )
             .btn-auth-wrapper
-              span.btn-auth-icon
+              span.btn-auth-icon.lazyload.no-js(data-src=manifest("img/google-logo.svg"))
+              noscript
+                span.btn-auth-icon(style=`background-image:url("${manifest("img/google-logo.svg")}")`)
               span.btn-auth-text= t(`${humanize(verb)} with Google`)
-          //-.
-            a.btn-auth.btn-auth-google.btn-auth-google-light.my-3(href='/auth/google', role="button")
-              .btn-auth-wrapper
-                span.btn-auth-icon
-                span.btn-auth-text= t(`${humanize(verb)} with Google`)
         if passport && passport.github
-          a.btn-auth.btn-auth-github.btn-auth-github-dark.mb-3(
+          a.btn-auth.btn-auth-github.btn-auth-github-dark.mb-3.text-decoration-none(
             href="/auth/github",
             role="button",
           )
             .btn-auth-wrapper
-              span.btn-auth-icon
+              span.btn-auth-icon.lazyload.no-js(data-src=manifest("img/github-logo.svg"))
+              noscript
+                span.btn-auth-icon(style=`background-image:url("${manifest("img/github-logo.svg")}")`)
               span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
-          //-.
-            a.btn-auth.btn-auth-github.btn-auth-github-light.my-3(href='/auth/github', role="button")
-              .btn-auth-wrapper
-                span.btn-auth-icon
-                span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
         if passport && (passport.google || passport.github)
           .hr-text.d-flex.text-secondary.align-items-center= t("or")
         - const action = verb === "sign up" ? "/register" : config.loginRoute;

@@ -1,0 +1,85 @@
+// NOTE: since font magician doesn't support woff2 yet
+//       we do this and link(preload) manually
+
+// poppins-latin-400
+// @font-face {
+//   font-family: 'Poppins';
+//   font-style: normal;
+//   font-display: optional;
+//   font-weight: 400;
+//   src:
+//     local('Poppins Regular'),
+//     local('Poppins-Regular'),
+//     url('../fonts/poppins-latin-400.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+//     url('../fonts/poppins-latin-400.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+// }
+
+// // poppins-latin-700
+// @font-face {
+//   font-family: 'Poppins';
+//   font-style: normal;
+//   font-display: optional;
+//   font-weight: 700;
+//   src:
+//     local('Poppins Bold'),
+//     local('Poppins-Bold'),
+//     url('../fonts/poppins-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+//     url('../fonts/poppins-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+// }
+
+// domine-latin-400
+// @font-face {
+//   font-family: 'Domine';
+//   font-style: normal;
+//   font-display: optional;
+//   font-weight: 400;
+//   src:
+//     local('Domine'),
+//     local('Domine-Regular'),
+//     url('../fonts/domine-latin-400.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+//     url('../fonts/domine-latin-400.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+// }
+
+// // domine-latin-700
+// @font-face {
+//   font-family: 'Domine';
+//   font-style: normal;
+//   font-display: optional;
+//   font-weight: 700;
+//   src:
+//     local('Domine Bold'),
+//     local('Domine-Bold'),
+//     url('../fonts/domine-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+//     url('../fonts/domine-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+// }
+
+// fa-brands-400
+// fa-regular-400
+// fa-solid-900
+
+// nunito-sans-latin-400
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-display: optional;
+  font-weight: 400;
+  src:
+    local('Nunito Sans Regular'),
+    local('NunitoSans-Regular'),
+    url('../fonts/nunito-sans-latin-400.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('../fonts/nunito-sans-latin-400.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+
+// nunito-sans-latin-700
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-display: optional;
+  font-weight: 700;
+  src:
+    local('Nunito Sans Bold'),
+    local('NunitoSans-Bold'),
+    url('../fonts/nunito-sans-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('../fonts/nunito-sans-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}

@@ -68,13 +68,20 @@ mark {
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
-  }
-  .bg-postcard {
-    background-image: url('../img/art/postcard.svg');
     background-color: #E6FAFF;
   }
-  .bg-stars {
-    background-image: url('../img/art/stars.svg');
-    background-color: #E6FAFF;
+}
+
+@include media-breakpoint-down(md) {
+  .bg-fixed {
+    background-image: none !important;
+  }
+}
+
+html {
+  &.no-js {
+    .no-js {
+      display: none !important;
+    }
   }
 }

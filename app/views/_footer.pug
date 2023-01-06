@@ -46,9 +46,16 @@ footer.mt-auto
                   li: a.dropdown-item(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
           hr.d-lg-none.w-100
           .mt-auto
-            a(href="#")
-              img.d-inline-block.mx-lg-auto(
-                src=manifest("img/logo-square.svg"),
+            a(href="#", aria-label=t("Go to top"))
+              noscript
+                img.d-inline-block.mx-lg-auto(
+                  src=manifest("img/logo-square.svg"),
+                  width=50,
+                  height=50,
+                  alt="Go to top"
+                )
+              img.lazyload.no-js.d-inline-block.mx-lg-auto(
+                data-src=manifest("img/logo-square.svg"),
                 width=50,
                 height=50,
                 alt="Go to top"

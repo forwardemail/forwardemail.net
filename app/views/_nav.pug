@@ -72,12 +72,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
       href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l()
     )
       span.sr-only.sr-only-focusable Forward Email
-      img.d-inline-block.mr-1(
-        src=manifest("img/logo-square.svg"),
-        width=30,
-        height=30,
-        alt=""
-      )
+      include ../../assets/img/logo-square-30-30.svg
       h1.h4.m-0.align-middle.d-inline-block
         span.font-weight-bold.text-primary Forward
         span.font-weight-normal.text-info Email
@@ -155,7 +150,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
             )= t("Pricing")
           li.nav-item.dropdown
             //- TODO: add the /guides page
-            a#navbar-dropdown-guides.btn.dropdown-toggle.d-block.text-left(
+            a#navbar-dropdown-guides.btn.dropdown-toggle.d-block.text-left.no-js(
               role="button",
               href="#",
               data-toggle="dropdown",
@@ -176,7 +171,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
                 )= provider.name
           li.nav-item.dropdown
             //- TODO: add the /resources page
-            a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left(
+            a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(
               role="button",
               href="#",
               data-toggle="dropdown",
@@ -282,6 +277,6 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
                 data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
               )
                 = t("Sign up free")
-//-.
-  if ctx.pathWithoutLocale === '/'
-    h1.h6.py-3.px-3.mb-0.text-center.alert.alert-primary.border-top-0.border-left-0.border-right-0.rounded-0.small!= t('TODO')
+if user
+  noscript
+    .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t('Please enable JavaScript to use our website.')
