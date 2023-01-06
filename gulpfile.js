@@ -146,7 +146,12 @@ function css() {
     )
     .pipe(
       purgecss({
-        content: ['build/**/*.js', 'app/views/**/*.pug', 'emails/**/*.pug'],
+        content: [
+          'build/**/*.js',
+          'app/views/**/*.md',
+          'app/views/**/*.pug',
+          'emails/**/*.pug'
+        ],
         // <https://github.com/FullHuman/purgecss/blob/55c26d2790b8502f115180cfe02aba5720c84b7b/docs/configuration.md>
         defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
         extractors: [
@@ -155,7 +160,14 @@ function css() {
             extensions: ['pug']
           }
         ],
-        sourceMap: false
+        sourceMap: false,
+        safelist: [
+          'navbar-dark',
+          'bg-dark',
+          'navbar-light',
+          'bg-white',
+          'flex-grow-1'
+        ]
       })
     );
 
