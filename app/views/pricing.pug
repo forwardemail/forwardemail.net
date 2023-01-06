@@ -1,35 +1,39 @@
 extends layout
 
 block body
-  #modal-pricing-video.modal.fade(
-    tabindex="-1",
-    role="dialog",
-    aria-labelledby="modal-pricing-video-title",
-    aria-hidden="true"
-  )
-    .modal-dialog.modal-lg(role="document")
-      .modal-content
-        .modal-header.text-center.d-block
-          h1#modal-pricing-video-title.h4.d-inline-block.ml-4= t("Learn about our plans")
-          button.close(type="button", data-dismiss="modal", aria-label="Close")
-            span(aria-hidden="true") &times;
-        .modal-body
-          .lazyframe(
-            title=t("Free Email Forwarding for Creators"),
-            style="width: 100%; height: 450px",
-            data-vendor="youtube_nocookie",
-            data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
-          )
+  if !isBot(ctx.get('User-Agent'))
+    #modal-pricing-video.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-pricing-video-title",
+      aria-hidden="true"
+    )
+      .modal-dialog.modal-lg(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            h1#modal-pricing-video-title.h4.d-inline-block.ml-4= t("Learn about our plans")
+            button.close(type="button", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+          .modal-body
+            .lazyframe(
+              title=t("Free Email Forwarding for Creators"),
+              style="width: 100%; height: 450px",
+              data-vendor="youtube_nocookie",
+              data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
+            )
   .py-5.bg-light
     .container
       .row.mb-5
         .col.text-center
           h2.mb-3
             = t("Lightning fast email service.")
-          button.btn.btn-dark.btn-lg(
-            type="button",
-            data-toggle="modal",
-            data-target="#modal-pricing-video"
+          a.btn.btn-dark.btn-lg(
+            role=isBot(ctx.get('User-Agent')) ? false : "button",
+            data-toggle=isBot(ctx.get('User-Agent')) ? false : "modal",
+            data-target=isBot(ctx.get('User-Agent')) ? false : "#modal-pricing-video",
+            target='_blank',
+            rel='nofollow',
+            href='https://www.youtube.com/watch?v=q7zfEpn2NdA'
           )
             i.fa.fa-play-circle
             = " "
@@ -62,6 +66,7 @@ block body
                   role="button",
                   data-toggle="tooltip",
                   data-placement="bottom",
+                  aria-label=t('Spam Scanner'),
                   title=t("We built our own anti-spam, phishing, and virus protection software called Spam Scanner. It abides by the same privacy-first and zero logging policies.")
                 )
                   i.fa.fa-question-circle
@@ -86,7 +91,7 @@ block body
                 = " "
                 = t("Unlimited email webhooks")
                 = " "
-                a.btn.btn-link.text-dark.py-0(href=l("/free-email-webhooks"))
+                a.btn.btn-link.text-dark.py-0(href=l("/free-email-webhooks"), aria-label=t('Webhooks'))
                   i.fa.fa-link
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
@@ -94,7 +99,8 @@ block body
                 = t("Unlimited email regex filtering")
                 = " "
                 a.btn.btn-link.text-dark.py-0(
-                  href=l("/email-forwarding-regex-pattern-filter")
+                  href=l("/email-forwarding-regex-pattern-filter"),
+                  aria-label=t('Regex filtering')
                 )
                   i.fa.fa-link
               li.list-group-item.d-flex.align-items-center
@@ -103,7 +109,8 @@ block body
                 = t("Custom port forwarding")
                 = " "
                 a.btn.btn-link.text-dark.py-0(
-                  href=l("/guides/port-25-blocked-by-isp-workaround")
+                  href=l("/guides/port-25-blocked-by-isp-workaround"),
+                  aria-label=t('Port 25 Workaround')
                 )
                   i.fa.fa-link
             .d-flex.flex-column.flex-grow-1.justify-content-end
@@ -139,10 +146,11 @@ block body
                 = ' '
                 = t("Enhanced email forwarding privacy")
                 = " "
-                button.btn.btn-link.text-primary.py-0(
+                button.btn.btn-link.text-primary.py-0.no-js(
                   role="button",
                   data-toggle="tooltip",
                   data-placement="bottom",
+                  aria-label=t('Encrypted Configuration'),
                   title=t("No publicly searchable DNS records are used.  Instead we store your configuration in a secure and backed-up database.")
                 )
                   i.fa.fa-question-circle
@@ -161,7 +169,7 @@ block body
                 i.fa.fa-fw.fa-code.text-primary.mr-3
                 = t("Exclusive access to API features")
                 = " "
-                a.btn.btn-link.text-dark.py-0(href=l("/email-forwarding-api"))
+                a.btn.btn-link.text-dark.py-0(href=l("/email-forwarding-api"), aria-label=t('API Features'))
                   i.fa.fa-link
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-bell.text-primary.mr-3
@@ -421,8 +429,15 @@ block body
                   href=l("/faq")
                 )= t("Read FAQ")
         .mt-5.text-truncate
-          img(
-            src=manifest("img/logo-square.svg"),
+          noscript
+            img(
+              src=manifest("img/logo-square.svg"),
+              width=400,
+              height=400,
+              alt=""
+            ).img-fluid
+          img.lazyload.no-js(
+            data-src=manifest("img/logo-square.svg"),
             width=400,
             height=400,
             alt=""

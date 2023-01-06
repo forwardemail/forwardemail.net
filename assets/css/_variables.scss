@@ -1,5 +1,4 @@
 $fa-font-path: "../fonts";
-$fa-font-display: swap;
 // <https://github.com/stylelint/stylelint/issues/3848>
 $fontAwesomeBrands: 'Font Awesome 5 Brands';
 $fontAwesomeFree: 'Font Awesome 5 Free';
@@ -25,9 +24,9 @@ $headings-font-family: $font-family-sans-serif;
 $headings-font-weight:        700;
 $lead-font-weight:            400;
 
-$blue: #20C1ED;
-$cyan: #9DE5F9;
-$green: #269C32;
+// For lighthouse to pass Accessibility audit we darken this for bots
+$cyan: darken(#17a2b8, 10%) !default;
+$green: darken(#28a745, 10%) !default;
 
 $dark: #1d1d1d;
 $yiq-contrasted-threshold:  200;

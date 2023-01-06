@@ -4,6 +4,7 @@ const Clipboard = require('clipboard');
 const Popper = require('popper.js');
 const debounce = require('lodash/debounce');
 const lazyframe = require('lazyframe');
+const Lazyload = require('lazyload');
 const { randomstring } = require('@sidoshi/random-string');
 
 // load jQuery and Bootstrap
@@ -245,6 +246,13 @@ $body.on('hide.bs.modal', '.modal', function () {
 // <https://github.com/vb/lazyframe>
 //
 lazyframe('.lazyframe', { autoplay: false, initinview: true });
+
+//
+// lazyload
+// <https://github.com/tuupola/lazyload>
+//
+// eslint-disable-next-line no-new
+new Lazyload();
 
 //
 // strip protocol from input[name="domain"][type="text"]

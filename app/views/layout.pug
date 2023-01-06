@@ -1,5 +1,7 @@
-doctype html
-html.h-100(lang=locale)
+//- Pug makes it DOCTYPE if we do this:
+//- `doctype html`
+!= '<!doctype html>'
+html.h-100.no-js(lang=locale)
   head
     block meta
       meta(charset="utf-8")
@@ -69,6 +71,10 @@ html.h-100(lang=locale)
       meta(name="msapplication-TileColor", content=config.appColor)
       meta(name="theme-color", content="#ffffff")
 
+      //- <https://stackoverflow.com/a/14912932>
+      script.
+        document.documentElement.className = 'h-100';
+
       //- associate with wikipedia
       script(type="application/ld+json").
         {
@@ -105,143 +111,39 @@ html.h-100(lang=locale)
         content=`${config.urls.web}/img/twitter.png`
       )
 
-    //- preload and prefetch content
-    //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content>
-    //- <https://developers.google.com/speed/pagespeed/insights/>
-    block preload
-      - const fonts = [ 'fa-brands-400', 'fa-regular-400', 'fa-solid-900', 'nunito-sans-latin-400', 'nunito-sans-latin-700' ]
-      each font in fonts
-        //- integrity attribute not currently supported
-        //- <https://crbug.com/981419>
-        link(
-          rel="preload",
-          href=manifest(`fonts/${font}.woff2`),
-          as="font",
-          crossorigin="anonymous"
-        )
-        link(
-          rel="preload",
-          href=manifest(`fonts/${font}.woff`),
-          as="font",
-          crossorigin="anonymous"
-        )
-
-    block prefetch
-      each asset in ['img/github-logo.svg', 'img/google-logo.svg']
-        link(
-          rel="prefetch",
-          href=manifest(asset),
-          as="image",
-          crossorigin="anonymous"
-        )
-
-    //- preload stylesheets
-    block preloadStylesheets
-      //- preload before css
-      //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload>
+    //- prefetch fonts
+    //- https://caniuse.com/link-rel-prefetch
+    - const fonts = [ 'fa-solid-900', 'fa-brands-400' ]
+    if !isBot(ctx.get('User-Agent'))
+      - fonts.push('nunito-sans-latin-400')
+      - fonts.push('nunito-sans-latin-700')
+    each font in fonts
+      //- integrity attribute not currently supported
+      //- <https://crbug.com/981419>
       link(
         rel="preload",
-        href=manifest("css/app.css"),
-        integrity=manifest("css/app.css", "integrity"),
-        as="style",
+        href=manifest(`fonts/${font}.woff2`),
+        as="font",
         crossorigin="anonymous"
       )
-
-    //- preload scripts
-    block preloadScripts
-      //- preload before js
-      //- <https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload>
-      if !isBot(ctx.get('User-Agent'))
-        link(
-          rel="preload",
-          href=manifest("js/build.js"),
-          integrity=manifest("js/build.js", "integrity"),
-          as="script",
-          crossorigin="anonymous"
-        )
 
     //- css file
     block stylesheets
-      link(
-        rel="stylesheet",
-        href=manifest("css/app.css"),
-        integrity=manifest("css/app.css", "integrity"),
-        crossorigin="anonymous"
-      )
-
-    //- scripts
-    //- prettier-ignore
-    block scripts
-      //- flash messaging (with koa-better-flash and sweetalert2)
-      script.
-        window._types = {
-          success: "#{ t('Success') }",
-          error: "#{ t('Error') }",
-          info: "#{ t('Info') }",
-          warning: "#{ t('Warning') }",
-          question: "#{ t('Question') }"
-        };
-      script.
-        window._messages = !{json(flash(), null, null)};
-
-      //- set defaults for sweetalert2
-      //- <https://github.com/limonte/sweetalert2/issues/763>
-      script.
-        window._swalDefaults = {
-          confirmButtonText: "#{ t('OK') }",
-          cancelButtonText: "#{ t('Cancel') }",
-          closeButtonAriaLabel: "#{ t('Close this dialog') }",
-          reverseButtons: true,
-        };
-
-      //- set defaults for confirm prompt sweetalert2 modal
-      script.
-        window._confirmPromptTitle = "#{ t('Are you sure?') }";
-        window._confirmPromptHTML = "#{ t('Please confirm if you wish to continue.') }";
-
-      //- set the locale to be used by front-end assets
-      script.
-        window.LOCALE = "#{locale}";
-
-      //- set the API endpoint to be used by front-end assets
-      script.
-        window.API_URL = "#{config.urls.api}";
-
-      //- set the user and API key to be used by CabinJS
-      if config.env !== 'test'
-        //- set the user and API key to be used by CabinJS
-        if user
-          script.
-            window.USER = {
-              id: "#{user.id}",
-              name: "#{user[config.passport.fields.displayName]}",
-              email: "#{user.email}",
-            };
-            window.API_TOKEN = "#{user[config.userFields.apiToken]}";
-        else if ctx.sessionId
-          script.
-            window.USER = {
-              id: "#{ctx.sessionId}",
-            };
-
-      //- build
-      if !isBot(ctx.get('User-Agent'))
-        script(
-          defer,
-          src=manifest("js/build.js"),
-          integrity=manifest("js/build.js", "integrity"),
+      if isBot(ctx.get('User-Agent'))
+        link(
+          rel="stylesheet",
+          href=manifest("css/app.css"),
+          integrity=manifest("css/app.css", "integrity"),
           crossorigin="anonymous"
         )
-        //- analytics via plausible.io
-        script(
-          defer,
-          data-domain="forwardemail.net",
-          src="https://plausible.io/js/plausible.js"
+      else
+        link(
+          rel="stylesheet",
+          href=manifest("css/app-fonts.css"),
+          integrity=manifest("css/app-fonts.css", "integrity"),
+          crossorigin="anonymous"
         )
 
-        //- hcaptcha (hidden from bots)
-        if config.hcaptchaEnabled
-          script(defer, src=`https://hcaptcha.com/1/api.js?hl=${locale}&recaptchacompat=off`)
 
   body.d-flex.flex-column.min-h-100(role="document")
     - const isHelp = ctx && ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
@@ -261,3 +163,78 @@ html.h-100(lang=locale)
     //- footer
     block footer
       include _footer
+
+    //- scripts
+    //- prettier-ignore
+    block scripts
+      if !isBot(ctx.get('User-Agent'))
+        //- flash messaging (with koa-better-flash and sweetalert2)
+        script(defer).
+          window._types = {
+            success: "#{ t('Success') }",
+            error: "#{ t('Error') }",
+            info: "#{ t('Info') }",
+            warning: "#{ t('Warning') }",
+            question: "#{ t('Question') }"
+          };
+        script(defer).
+          window._messages = !{json(flash(), null, null)};
+
+        //- set defaults for sweetalert2
+        //- <https://github.com/limonte/sweetalert2/issues/763>
+        script(defer).
+          window._swalDefaults = {
+            confirmButtonText: "#{ t('OK') }",
+            cancelButtonText: "#{ t('Cancel') }",
+            closeButtonAriaLabel: "#{ t('Close this dialog') }",
+            reverseButtons: true,
+          };
+
+        //- set defaults for confirm prompt sweetalert2 modal
+        script(defer).
+          window._confirmPromptTitle = "#{ t('Are you sure?') }";
+          window._confirmPromptHTML = "#{ t('Please confirm if you wish to continue.') }";
+
+        //- set the locale to be used by front-end assets
+        script(defer).
+          window.LOCALE = "#{locale}";
+
+        //- set the API endpoint to be used by front-end assets
+        script(defer).
+          window.API_URL = "#{config.urls.api}";
+
+      //- set the user and API key to be used by CabinJS
+      if config.env !== 'test' && !isBot(ctx.get('User-Agent'))
+        //- set the user and API key to be used by CabinJS
+        if user
+          script(defer).
+            window.USER = {
+              id: "#{user.id}",
+              name: "#{user[config.passport.fields.displayName]}",
+              email: "#{user.email}",
+            };
+            window.API_TOKEN = "#{user[config.userFields.apiToken]}";
+        else if ctx.sessionId
+          script(defer).
+            window.USER = {
+              id: "#{ctx.sessionId}",
+            };
+
+      //- build
+      script(
+        defer,
+        src=manifest("js/build.js"),
+        integrity=manifest("js/build.js", "integrity"),
+        crossorigin="anonymous"
+      )
+      if !isBot(ctx.get('User-Agent'))
+        //- analytics via plausible.io
+        script(
+          defer,
+          data-domain="forwardemail.net",
+          src="https://plausible.io/js/plausible.js"
+        )
+
+        //- hcaptcha (hidden from bots)
+        if config.hcaptchaEnabled
+          script(defer, src=`https://hcaptcha.com/1/api.js?hl=${locale}&recaptchacompat=off`)
