@@ -34,6 +34,8 @@ const pngquant = require('imagemin-pngquant');
 const postcss = require('gulp-postcss');
 const postcssPresetEnv = require('postcss-preset-env');
 const pugLinter = require('gulp-pug-linter');
+const purgeFromPug = require('purgecss-from-pug');
+const purgecss = require('gulp-purgecss');
 const reporter = require('postcss-reporter');
 const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
@@ -126,7 +128,7 @@ function css() {
   let stream = src('assets/css/**/*.scss', {
     base: 'assets'
   })
-    .pipe(sourcemaps.init())
+    // .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(
       postcss([
@@ -141,9 +143,24 @@ function css() {
         ...(PROD ? [cssnano({ autoprefixer: false })] : []),
         reporter()
       ])
+    )
+    .pipe(
+      purgecss({
+        content: ['build/**/*.js', 'app/views/**/*.pug', 'emails/**/*.pug'],
+        // <https://github.com/FullHuman/purgecss/blob/55c26d2790b8502f115180cfe02aba5720c84b7b/docs/configuration.md>
+        defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
+        extractors: [
+          {
+            extractor: purgeFromPug,
+            extensions: ['pug']
+          }
+        ],
+        sourceMap: false
+      })
     );
 
-  stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
+  // stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
+  stream = stream.pipe(dest(config.buildBase));
 
   if (DEV) stream = stream.pipe(lr(config.livereload));
 
@@ -334,8 +351,8 @@ const build = series(
         img,
         static,
         markdown,
-        series(fonts, faFonts, scss, css),
-        bundle
+        bundle,
+        series(fonts, faFonts, scss, css)
       ),
       sri
     )
