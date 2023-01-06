@@ -42,10 +42,18 @@ block body
                 = t("Free")
               p.text-center.mb-0= t("Basic plan to get started")
             ul.list-group.list-group-flush
-              li.list-group-item.d-flex.align-items-center.font-weight-bold.border-top!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t("Unlimited custom domain names")}`
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t("Unlimited email addresses and aliases")}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold.border-top
+                i.fa.fa-fw.fa-infinity.text-primary.mr-3
+                = ' '
+                = t("Unlimited custom domain names")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
-                != `<i class="fa fa-fw fa-shield-alt text-primary mr-3"></i> ${t("Phishing, executable, and virus protection")}`
+                i.fa.fa-fw.fa-infinity.text-primary.mr-3
+                = ' '
+                = t("Unlimited email addresses and aliases")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-shield-alt.text-primary.mr-3
+                = ' '
+                = t("Phishing, executable, and virus protection")
                 = " "
                 a.btn.btn-link.text-primary.py-0(
                   href="https://spamscanner.net",
@@ -58,10 +66,21 @@ block body
                 )
                   i.fa.fa-question-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold
-                != `<i class="fa fa-fw fa-paperclip text-primary mr-3"></i> ${t("50MB attachment limit")}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('"Send mail as" with Gmail and Outlook')}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t("Catch-all email addresses")}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t("Multiple recipients per email address")}`
+                i.fa.fa-fw.fa-paperclip.text-primary.mr-3
+                = ' '
+                != t("50MB attachment limit")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t('"Send mail as" with Gmail and Outlook')
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t("Catch-all email addresses")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t("Multiple recipients per email address")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
                 = " "
@@ -116,7 +135,9 @@ block body
                 = " "
                 = t("Everything included in Free, plus:")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
-                != `<i class="fa fa-fw fa-lock text-primary mr-3"></i> ${t("Enhanced email forwarding privacy")}`
+                i.fa.fa-fw.fa-lock.text-primary.mr-3
+                = ' '
+                = t("Enhanced email forwarding privacy")
                 = " "
                 button.btn.btn-link.text-primary.py-0(
                   role="button",
@@ -125,8 +146,14 @@ block body
                   title=t("No publicly searchable DNS records are used.  Instead we store your configuration in a secure and backed-up database.")
                 )
                   i.fa.fa-question-circle
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-bolt text-primary mr-3"></i> ${t("Instant DNS propagation (zero wait-time)")}`
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-tasks text-primary mr-3"></i> ${t("Easy to use email alias and import manager")}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-bolt.text-primary.mr-3
+                = ' '
+                = t("Instant DNS propagation (zero wait-time)")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-tasks.text-primary.mr-3
+                = ' '
+                = t("Easy to use email alias and import manager")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-tools.text-primary.mr-3
                 = t("Customize spam, phishing, and filtering settings")
@@ -139,9 +166,18 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-bell.text-primary.mr-3
                 = t("Custom recipient verification (optional)")
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t("Forward newsletters to a bulk recipient list")}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t("Automatic refunds with 30-day money-back guarantee")}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t('99.99% Uptime Service Level Agreement ("SLA")')}`
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t("Forward newsletters to a bulk recipient list")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t("Automatic refunds with 30-day money-back guarantee")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t('99.99% Uptime Service Level Agreement ("SLA")')
             .d-flex.flex-column.flex-grow-1.justify-content-end
               h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
                 .small.d-inline-block.text-monospace $
@@ -198,9 +234,18 @@ block body
                 i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = " "
                 = t("Everything included in Enhanced Protection, plus:")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-infinity text-primary mr-3"></i> ${t("Unlimited member access management")}`
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-sitemap text-primary mr-3"></i> ${t("Shared organizational access to domain")}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t("Priority support requests")}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-infinity.text-primary.mr-3
+                = ' '
+                = t("Unlimited member access management")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-sitemap.text-primary.mr-3
+                = ' '
+                = t("Shared organizational access to domain")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t("Priority support requests")
             .d-flex.flex-column.flex-grow-1.justify-content-end
               h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
                 .small.d-inline-block.text-monospace $
@@ -255,11 +300,26 @@ block body
                 i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = " "
                 = t("Everything included in Team, plus:")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-file-signature text-primary mr-3"></i> ${t("Custom licensing agreement")}`
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-drafting-compass text-primary mr-3"></i> ${t("Technical infrastructure design and support")}`
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-palette text-primary mr-3"></i> ${t("Enterprise-grade custom-branded solutions")}`
-              li.list-group-item.d-flex.align-items-center.font-weight-bold!= `<i class="fa fa-fw fa-server text-primary mr-3"></i> ${t("Managed deployment with dedicated IP's")}`
-              li.list-group-item.d-flex.align-items-center!= `<i class="fa fa-fw fa-plus text-primary mr-3"></i> ${t("Dedicated support from our team of experts")}`
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-file-signature.text-primary.mr-3
+                = ' '
+                = t("Custom licensing agreement")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-drafting-compass.text-primary.mr-3
+                = ' '
+                = t("Technical infrastructure design and support")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-palette.text-primary.mr-3
+                = ' '
+                = t("Enterprise-grade custom-branded solutions")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-server.text-primary.mr-3
+                = ' '
+                = t("Managed deployment with dedicated IP's")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t("Dedicated support from our team of experts")
             .d-flex.flex-column.flex-grow-1.justify-content-end
               .p-2
                 a.btn.btn-lg.btn-block.btn-dark(
