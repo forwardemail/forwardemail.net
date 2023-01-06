@@ -28,7 +28,7 @@ async function onboard(ctx, next) {
     const filteredDomains = Array.isArray(ctx.state.domains)
       ? ctx.state.domains.filter((domain) => !domain.is_global)
       : [];
-    ctx.state.domain =
+    ctx.state.domainName =
       filteredDomains.length > 0 &&
       _.isObject(filteredDomains[0]) &&
       isSANB(filteredDomains[0].name) &&
@@ -42,17 +42,17 @@ async function onboard(ctx, next) {
       isSANB(ctx.query.domain) &&
       (isFQDN(ctx.query.domain) || isIP(ctx.query.domain))
     )
-      ctx.state.domain = ctx.query.domain;
+      ctx.state.domainName = ctx.query.domain;
 
     if (isSANB(ctx.query.email) && isEmail(ctx.query.email))
       ctx.state.email = ctx.query.email;
 
-    if (ctx.state.domain && ctx.state.domain.startsWith('www.'))
+    if (ctx.state.domainName && ctx.state.domainName.startsWith('www.'))
       ctx.flash(
         'error',
         ctx
           .translate('WWW_WARNING')
-          .replace('example.com', ctx.state.domain.replace('www.', ''))
+          .replace('example.com', ctx.state.domainName.replace('www.', ''))
       );
 
     const { filePath } = await email.getTemplatePath(
@@ -72,12 +72,12 @@ async function onboard(ctx, next) {
 
     let html = pug.renderFile(filePath, ctx.state);
 
-    if (ctx.state.domain)
+    if (ctx.state.domainName)
       html = html.replace(
         /example.com/g,
-        ctx.state.domain.startsWith('www.')
-          ? ctx.state.domain.replace('www.', '')
-          : ctx.state.domain
+        ctx.state.domainName.startsWith('www.')
+          ? ctx.state.domainName.replace('www.', '')
+          : ctx.state.domainName
       );
 
     if (

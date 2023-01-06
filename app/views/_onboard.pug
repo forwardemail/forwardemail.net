@@ -34,7 +34,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                     input#input-onboard-domain.form-control.form-control-lg(
                       type="text",
                       name="domain",
-                      value=domain,
+                      value=domainName ? domainName : domain && domain.name || '',
                       required,
                       placeholder="example.com"
                     )
