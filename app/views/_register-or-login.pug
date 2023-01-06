@@ -37,7 +37,7 @@ mixin registerOrLogin(verb, isModal = false)
         - const action = verb === "sign up" ? "/register" : config.loginRoute;
         form.ajax-form(action=l(action), method="POST")
           .form-group.floating-label
-            input.form-control.form-control-lg(
+            input.form-control(
               id=`input-email-${dashify(verb)}`,
               type="email",
               required,
@@ -47,7 +47,7 @@ mixin registerOrLogin(verb, isModal = false)
             )
             label(for=`input-email-${dashify(verb)}`)= t("Email address")
           .form-group.floating-label
-            input.form-control.form-control-lg(
+            input.form-control(
               id=`input-password-${dashify(verb)}`,
               type="password",
               required,
@@ -62,7 +62,11 @@ mixin registerOrLogin(verb, isModal = false)
               data-error-callback="hCaptchaError",
               data-tabindex=isModal ? "-1" : false
             )
-          button.btn.btn-success.btn-lg.btn-block(type="submit")= t(capitalize(verb))
+          button.btn.btn-success.btn-lg.btn-block(type="submit")
+            if verb === 'sign up'
+              = t('Sign up free')
+            else
+              = t(capitalize(verb))
           if verb === 'sign up'
             p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
           else if verb === 'log in'
@@ -88,4 +92,4 @@ mixin registerOrLogin(verb, isModal = false)
                   data-dismiss-modal=isRegisterOrLogin ? false : "true",
                   data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
                   data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
-                )= t("Sign up")
+                )= t("Sign up free")
