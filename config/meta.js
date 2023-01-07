@@ -101,7 +101,7 @@ module.exports = function (config) {
   // guides for each provider
   for (const provider of nsProviders) {
     meta[`/guides/${provider.slug}`] = [
-      `Free Email Forwarding for <span class="notranslate">${provider.name}</span>`,
+      `Free Email Forwarding for <span class="notranslate">${provider.name}</span> ${lad}`,
       `Set up free email forwarding for your <span class="notranslate">${provider.name}</span> domain name. Get unlimited ${provider.name} email aliases, send and receive email, and more.`
     ];
   }
