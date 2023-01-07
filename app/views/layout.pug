@@ -71,9 +71,10 @@ html.h-100.no-js(lang=locale)
       meta(name="msapplication-TileColor", content=config.appColor)
       meta(name="theme-color", content="#ffffff")
 
-      //- <https://stackoverflow.com/a/14912932>
       script.
         document.documentElement.className = 'h-100';
+      if isBot(ctx.get('User-Agent'))
+        style= '.is-bot { display: none !important; }'
 
       //- associate with wikipedia
       script(type="application/ld+json").
@@ -144,8 +145,7 @@ html.h-100.no-js(lang=locale)
           crossorigin="anonymous"
         )
 
-
-  body.d-flex.flex-column.min-h-100(role="document")
+  body.d-flex.flex-column.min-h-100(role="document", onload=isBot(ctx.get('User-Agent')) ? "if (typeof lazyload === 'function') { lazyload(); }" : '')
     - const isHelp = ctx && ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx && ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
 
@@ -220,14 +220,22 @@ html.h-100.no-js(lang=locale)
               id: "#{ctx.sessionId}",
             };
 
-      //- build
-      script(
-        defer,
-        src=manifest("js/build.js"),
-        integrity=manifest("js/build.js", "integrity"),
-        crossorigin="anonymous"
-      )
-      if !isBot(ctx.get('User-Agent'))
+      if isBot(ctx.get('User-Agent'))
+        //- lazyload only support for bots
+        script(
+          defer,
+          src=manifest("js/lazyload.js"),
+          integrity=manifest("js/lazyload.js", "integrity"),
+          crossorigin="anonymous"
+        )
+      else
+        //- build
+        script(
+          defer,
+          src=manifest("js/build.js"),
+          integrity=manifest("js/build.js", "integrity"),
+          crossorigin="anonymous"
+        )
         //- analytics via plausible.io
         script(
           defer,

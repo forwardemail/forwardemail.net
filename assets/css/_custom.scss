@@ -83,5 +83,8 @@ html {
     .no-js {
       display: none !important;
     }
+    img.lazyload, span.lazyload {
+      display: none !important;
+    }
   }
 }
