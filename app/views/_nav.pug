@@ -69,7 +69,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
   class=user ? 'navbar-dark bg-dark' : 'navbar-light bg-white'
 )
   .container
-    a.navbar-brand.d-inline-block.m-0.d-flex.align-items-center(
+    a.navbar-brand.d-inline-block.m-0(
       href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l()
     )
       span.sr-only.sr-only-focusable Forward Email

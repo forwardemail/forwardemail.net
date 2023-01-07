@@ -118,6 +118,12 @@ function faFonts() {
   );
 }
 
+function scss() {
+  return src('assets/css/**/*.scss', {
+    base: 'assets'
+  }).pipe(postcss());
+}
+
 function css() {
   let stream = src('assets/css/**/*.scss', {
     base: 'assets'
@@ -364,7 +370,13 @@ const build = series(
   parallel(
     ...(TEST ? [] : [xo, remark]),
     series(
-      parallel(img, static, markdown, bundle, series(fonts, faFonts, css)),
+      parallel(
+        img,
+        static,
+        markdown,
+        bundle,
+        series(fonts, faFonts, scss, css)
+      ),
       sri
     )
   )
@@ -381,7 +393,7 @@ module.exports = {
     watch(['**/*.js', '!assets/js/**/*.js'], xo);
     watch(Mandarin.DEFAULT_PATTERNS, markdown);
     watch('assets/img/**/*', img);
-    watch('assets/css/**/*.scss', series(fonts, faFonts, css));
+    watch('assets/css/**/*.scss', series(fonts, faFonts, scss, css));
     watch('assets/js/**/*.js', series(xo, bundle));
     watch(['app/views/**/*.pug', 'emails/**/*.pug'], pug);
     watch(staticAssets, static);
@@ -393,6 +405,7 @@ module.exports = {
   remark,
   fonts,
   faFonts,
+  scss,
   css
 };
 
