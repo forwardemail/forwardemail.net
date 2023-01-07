@@ -25,8 +25,8 @@ $headings-font-weight:        700;
 $lead-font-weight:            400;
 
 // For lighthouse to pass Accessibility audit we darken this for bots
-$cyan: color.scale(#17a2b8, $lightness: -10%) !default;
-$green: color.scale(#28a745, $lightness: -10%) !default;
+$cyan: darken(#17a2b8, 10%) !default;
+$green: darken(#28a745, 10%) !default;
 
 $dark: #1d1d1d;
 $yiq-contrasted-threshold:  200;
