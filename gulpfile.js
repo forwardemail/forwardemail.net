@@ -166,7 +166,13 @@ function css() {
           'bg-dark',
           'navbar-light',
           'bg-white',
-          'flex-grow-1'
+          'flex-grow-1',
+          'fa-search',
+          'markdown-body',
+          'anchor',
+          'octicon-link',
+          'lazyframe',
+          'floating-label'
         ]
       })
     );
@@ -190,6 +196,7 @@ function xo() {
 async function bundle() {
   const since = lastRun(bundle);
   const polyfillPath = path.join(config.buildBase, 'js', 'polyfill.js');
+  const lazyloadPath = path.join(config.buildBase, 'js', 'lazyload.js');
   const factorBundlePath = path.join(
     config.buildBase,
     'js',
@@ -230,6 +237,10 @@ async function bundle() {
         'polyfill.js'
       ),
       polyfillPath
+    ),
+    fs.promises.copyFile(
+      path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.min.js'),
+      lazyloadPath
     ),
     getFactorBundle()
   ]);

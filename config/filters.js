@@ -113,7 +113,7 @@ function fixTableOfContents(content, i18n, options) {
   });
 
   return `
-    <div class="fixed-bottom bg-dark border-top border-light p-2 text-center">
+    <div class="fixed-bottom bg-dark border-top border-light p-2 text-center is-bot no-js">
       <ul class="list-inline mb-0">
         <li class="list-inline-item text-white">
           ${search}

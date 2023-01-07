@@ -40,30 +40,31 @@ if !isHelp && user
 
 if !user && !registerOrLogin
   include _register-or-login
-  each verb in [ 'sign up', 'log in' ]
-    .modal.fade(
-      tabindex="-1",
-      role="dialog",
-      id=`modal-${dashify(verb)}`,
-      aria-labelledby=`modal-${dashify(verb)}-title`,
-      aria-hidden="true"
-    )
-      .modal-dialog(role="document")
-        .modal-content
-          .modal-header.text-center.d-block
-            h1.h4.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
-              if verb === 'sign up'
-                = t("Sign up now")
-              else
-                = t("Welcome back!")
-            button.close(
-              type="button",
-              data-dismiss="modal",
-              aria-label="Close"
-            )
-              span(aria-hidden="true") &times;
-          .modal-body
-            +registerOrLogin(verb, true)
+  if !isBot(ctx.get('User-Agent')) && ctx.pathWithoutLocale !== '/register' && ctx.pathWithoutLocale !== config.loginRoute
+    each verb in [ 'sign up', 'log in' ]
+      .modal.fade(
+        tabindex="-1",
+        role="dialog",
+        id=`modal-${dashify(verb)}`,
+        aria-labelledby=`modal-${dashify(verb)}-title`,
+        aria-hidden="true"
+      )
+        .modal-dialog(role="document")
+          .modal-content
+            .modal-header.text-center.d-block
+              h1.h4.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
+                if verb === 'sign up'
+                  = t("Sign up now")
+                else
+                  = t("Welcome back!")
+              button.close(
+                type="button",
+                data-dismiss="modal",
+                aria-label="Close"
+              )
+                span(aria-hidden="true") &times;
+            .modal-body
+              +registerOrLogin(verb, true)
 nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
   class=user ? 'navbar-dark bg-dark' : 'navbar-light bg-white'
 )
@@ -73,7 +74,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
     )
       span.sr-only.sr-only-focusable Forward Email
       include ../../assets/img/logo-square-30-30.svg
-      h1.h4.m-0.align-middle.d-inline-block
+      h1.h4.m-0.align-middle(class=isBot(ctx.get('User-Agent')) ? 'd-none d-md-inline-block' : 'd-inline-block').no-js
         span.font-weight-bold.text-primary Forward
         span.font-weight-normal.text-info Email
         //- span.text-success .net
@@ -89,7 +90,35 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
         )
           = t("Upgrade")
     else if !user
-      ul.list-inline.ml-auto.mr-3.d-inline-block.d-lg-none.mb-0
+      ul.list-inline.ml-auto.d-inline-block.d-lg-none.mb-0
+        //- do same for noscript
+        if isBot(ctx.get('User-Agent'))
+          li.list-inline-item
+            a.btn.btn-link.text-dark.btn-sm(
+              href=l("/pricing"),
+              class=ctx.pathWithoutLocale.startsWith('/pricing') ? 'text-decoration-underline' : ''
+            )
+              = t("Pricing")
+          li.list-inline-item
+            a.btn.btn-link.text-dark.btn-sm(
+              href=l("/faq"),
+              class=ctx.pathWithoutLocale.startsWith('/faq') ? 'text-decoration-underline' : ''
+            )
+              = t("FAQ")
+        else
+          noscript
+            li.list-inline-item
+              a.btn.btn-link.text-dark.btn-sm(
+                href=l("/pricing"),
+                class=ctx.pathWithoutLocale.startsWith('/pricing') ? 'text-decoration-underline' : ''
+              )
+                = t("Pricing")
+            li.list-inline-item
+              a.btn.btn-link.text-dark.btn-sm(
+                href=l("/faq"),
+                class=ctx.pathWithoutLocale.startsWith('/faq') ? 'text-decoration-underline' : ''
+              )
+                = t("FAQ")
         if ctx.pathWithoutLocale !== config.loginRoute
           li.list-inline-item.d-none.d-sm-inline-block.d-lg-none
             a.btn.btn-sm.btn-outline-dark(
@@ -106,16 +135,17 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
               data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
             )
               = t("Sign up")
-
-    button.navbar-toggler.d-lg-none(
-      type="button",
-      data-toggle="collapse",
-      data-target="#navbar-header",
-      aria-controls="navbar-header",
-      aria-expanded="false",
-      aria-label=t("Toggle navigation")
-    )
-      span.navbar-toggler-icon
+      .no-js.is-bot.d-inline-block.mr-3
+    if !isBot(ctx.get('User-Agent'))
+      button.navbar-toggler.d-lg-none.no-js(
+        type="button",
+        data-toggle="collapse",
+        data-target="#navbar-header",
+        aria-controls="navbar-header",
+        aria-expanded="false",
+        aria-label=t("Toggle navigation")
+      )
+        span.navbar-toggler-icon
     //- once we have responsive border utilities added to bootstrap
     //- then we can apply them to the anchor tags inside the navbar
     //- so that on mobile devices there is no border around the links
@@ -148,50 +178,63 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
               href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l("/pricing"),
               class=ctx.pathWithoutLocale.startsWith("/pricing") ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
             )= t("Pricing")
-          li.nav-item.dropdown
-            //- TODO: add the /guides page
-            a#navbar-dropdown-guides.btn.dropdown-toggle.d-block.text-left.no-js(
-              role="button",
-              href="#",
-              data-toggle="dropdown",
-              aria-haspopup="true",
-              aria-expanded="false",
-              class=ctx.pathWithoutLocale.startsWith('/guides') ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
-            )
-              = t("Guides")
-            .dropdown-menu(aria-labelledby="navbar-dropdown-guides")
-              a.dropdown-item(
-                href=l('/guides/send-mail-as-using-gmail'),
-                class=ctx.pathWithoutLocale === '/guides/send-mail-as-using-gmail' ? 'active' : ''
-              )= t('Send Mail As using Gmail')
-              each provider in nsProviders
-                a.dropdown-item(
-                  href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
-                  class=ctx.pathWithoutLocale === `/guides/${provider.slug}` ? "active" : ""
-                )= provider.name
-          li.nav-item.dropdown
-            //- TODO: add the /resources page
-            a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(
-              role="button",
-              href="#",
-              data-toggle="dropdown",
-              aria-haspopup="true",
-              aria-expanded="false",
-              class=ctx.pathWithoutLocale === '/help' || ctx.pathWithoutLocale === '/faq' ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
-            )
-              = t("Resources")
-            .dropdown-menu(aria-labelledby="navbar-dropdown-resources")
-              a.dropdown-item(
+          noscript
+            li.nav-item
+              a.btn.d-block.text-left(
                 href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
-                class=ctx.pathWithoutLocale.startsWith("/faq") ? "active" : "",
+                class=ctx.pathWithoutLocale.startsWith("/faq") ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
               )= t("FAQ")
-              a.dropdown-item(
-                href=l("/help"),
-                role=isHelp || !user ? "link" : "button",
-                data-target=isHelp || !user ? "" : "#modal-help",
-                data-toggle=isHelp || !user ? "" : "modal-anchor",
-                class=ctx.pathWithoutLocale.startsWith("/help") ? "active" : "",
-              )= t("Help")
+          if isBot(ctx.get('User-Agent'))
+            li.nav-item.no-js
+              a.btn.d-block.text-left(
+                href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
+                class=ctx.pathWithoutLocale.startsWith("/faq") ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
+              )= t("FAQ")
+          else
+            //- TODO: add the /guides page
+            li.nav-item.dropdown.no-js
+              a#navbar-dropdown-guides.btn.dropdown-toggle.d-block.text-left.no-js(
+                role="button",
+                href="#",
+                data-toggle="dropdown",
+                aria-haspopup="true",
+                aria-expanded="false",
+                class=ctx.pathWithoutLocale.startsWith('/guides') ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
+              )
+                = t("Guides")
+              .dropdown-menu(aria-labelledby="navbar-dropdown-guides")
+                a.dropdown-item(
+                  href=l('/guides/send-mail-as-using-gmail'),
+                  class=ctx.pathWithoutLocale === '/guides/send-mail-as-using-gmail' ? 'active' : ''
+                )= t('Send Mail As using Gmail')
+                each provider in nsProviders
+                  a.dropdown-item(
+                    href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
+                    class=ctx.pathWithoutLocale === `/guides/${provider.slug}` ? "active" : ""
+                  )= provider.name
+            li.nav-item.dropdown.no-js
+              //- TODO: add the /resources page
+              a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(
+                role="button",
+                href="#",
+                data-toggle="dropdown",
+                aria-haspopup="true",
+                aria-expanded="false",
+                class=ctx.pathWithoutLocale === '/help' || ctx.pathWithoutLocale === '/faq' ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
+              )
+                = t("Resources")
+              .dropdown-menu(aria-labelledby="navbar-dropdown-resources")
+                a.dropdown-item(
+                  href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
+                  class=ctx.pathWithoutLocale.startsWith("/faq") ? "active" : "",
+                )= t("FAQ")
+                a.dropdown-item(
+                  href=l("/help"),
+                  role=isHelp || !user ? "link" : "button",
+                  data-target=isHelp || !user ? "" : "#modal-help",
+                  data-toggle=isHelp || !user ? "" : "modal-anchor",
+                  class=ctx.pathWithoutLocale.startsWith("/help") ? "active" : "",
+                )= t("Help")
 
         //- links that show only if you're logged in
         if user

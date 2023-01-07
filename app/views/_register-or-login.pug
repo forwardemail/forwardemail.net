@@ -12,7 +12,9 @@ mixin registerOrLogin(verb, isModal = false)
             role="button"
           )
             .btn-auth-wrapper
-              span.btn-auth-icon.lazyload.no-js(data-src=manifest("img/google-logo.svg"))
+              span.btn-auth-icon.lazyload(
+                data-src=manifest("img/google-logo.svg")
+              )
               noscript
                 span.btn-auth-icon(style=`background-image:url("${manifest("img/google-logo.svg")}")`)
               span.btn-auth-text= t(`${humanize(verb)} with Google`)
@@ -22,7 +24,9 @@ mixin registerOrLogin(verb, isModal = false)
             role="button",
           )
             .btn-auth-wrapper
-              span.btn-auth-icon.lazyload.no-js(data-src=manifest("img/github-logo.svg"))
+              span.btn-auth-icon.lazyload(
+                data-src=manifest("img/github-logo.svg")
+              )
               noscript
                 span.btn-auth-icon(style=`background-image:url("${manifest("img/github-logo.svg")}")`)
               span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
@@ -51,6 +55,8 @@ mixin registerOrLogin(verb, isModal = false)
             )
             label(for=`input-password-${dashify(verb)}`)= t("Password")
           if config.hcaptchaEnabled
+            noscript
+              .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t('Please enable JavaScript to use our website.')
             .h-captcha(
               data-sitekey=config.hcaptchaSiteKey,
               data-error-callback="hCaptchaError",

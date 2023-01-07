@@ -78,7 +78,7 @@ block body
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
             )
-  .min-vh-80.d-flex.flex-column.bg-light
+  .min-vh-80.d-flex.flex-column
     .container.my-auto.pt-5
       .row
         .col-12.col-lg-6
@@ -136,7 +136,7 @@ block body
               style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
               data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
             )
-        .col-12.d-block.d-lg-none.py-5.text-md-left
+        .col-12.d-block.d-lg-none.mt-3.mb-5.text-md-left
           a.btn.btn-outline-dark(
             role="button",
             data-toggle="modal",
@@ -149,14 +149,15 @@ block body
             = " "
             = t("Watch Video")
 
-    .text-center
-      a.text-decoration-none.pt-1.pb-4.pt-lg-4.d-none.d-lg-block.text-uppercase.text-dark(
-        href="#learn-more"
-      )
-        i.fa.fa-angle-down
-        = " "
-        = t("Learn more")
-  #learn-more.bg-fixed.border-top.border-dark.lazyload(data-src=manifest('img/art/postcard.svg'))
+    a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-dark.mx-auto(
+      href="#learn-more"
+    )
+      i.fa.fa-angle-double-down
+      = " "
+      = t("Learn more")
+      = " "
+      i.fa.fa-angle-double-down
+  #learn-more.bg-fixed.border-md-top.border-dark.lazyload(data-src=manifest('img/art/postcard.svg'))
     .text-center.d-block.d-md-none.mt-5
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
@@ -178,7 +179,7 @@ block body
                   src=manifest("img/testimonials/dhh.jpg"),
                   alt="dhh"
                 )
-              img.lazyload.no-js.rounded-circle(
+              img.lazyload.rounded-circle(
                 width=50,
                 height=50,
                 data-src=manifest("img/testimonials/dhh.jpg"),
@@ -195,7 +196,7 @@ block body
                         height=20,
                         alt="Verified"
                       )
-                    img.lazyload.no-js.ml-1(
+                    img.lazyload.ml-1(
                       data-src=manifest("img/testimonials/twitter-verified.svg"),
                       width=20,
                       height=20,
@@ -229,7 +230,7 @@ block body
                   src=manifest("img/testimonials/abhinemani.jpg"),
                   alt="abhinemani"
                 )
-              img.lazyload.no-js.rounded-circle(
+              img.lazyload.rounded-circle(
                 width=50,
                 height=50,
                 data-src=manifest("img/testimonials/abhinemani.jpg"),
@@ -246,7 +247,7 @@ block body
                         height=20,
                         alt="Verified"
                       )
-                    img.lazyload.no-js.ml-1(
+                    img.lazyload.ml-1(
                       data-src=manifest("img/testimonials/twitter-verified.svg"),
                       width=20,
                       height=20,
@@ -277,7 +278,7 @@ block body
                   height=50,
                   alt="Verified"
                 )
-              img.lazyload.no-js.rounded-circle(
+              img.lazyload.rounded-circle(
                 width=50,
                 height=50,
                 data-src=manifest("img/testimonials/andrewe.jpg"),
@@ -294,7 +295,7 @@ block body
                         height=20,
                         alt="Verified"
                       )
-                    img.lazyload.no-js.ml-1(
+                    img.lazyload.ml-1(
                       data-src=manifest("img/testimonials/twitter-verified.svg"),
                       width=20,
                       height=20,
@@ -323,7 +324,7 @@ block body
                   src=manifest("img/testimonials/stigi.jpg"),
                   alt="stigi"
                 )
-              img.lazyload.no-js.rounded-circle(
+              img.lazyload.rounded-circle(
                 width=50,
                 height=50,
                 data-src=manifest("img/testimonials/stigi.jpg"),
@@ -357,7 +358,7 @@ block body
                   src=manifest("img/testimonials/andregce.jpg"),
                   alt="andregce"
                 )
-              img.lazyload.no-js.rounded-circle(
+              img.lazyload.rounded-circle(
                 width=50,
                 height=50,
                 data-src=manifest("img/testimonials/andregce.jpg"),
@@ -389,7 +390,7 @@ block body
                   src=manifest("img/testimonials/philcockfield.jpg"),
                   alt="philcockfield"
                 )
-              img.lazyload.no-js.rounded-circle(
+              img.lazyload.rounded-circle(
                 width=50,
                 height=50,
                 data-src=manifest("img/testimonials/philcockfield.jpg"),
@@ -464,7 +465,7 @@ block body
               height=200,
               alt=""
             )
-          img.lazyload.no-js.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
+          img.lazyload.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
             data-src=manifest("img/art/group.svg"),
             width=369,
             height=200,
@@ -570,15 +571,15 @@ block body
                 rel="noopener noreferrer"
               )
                 = t("Source Code")
-        .d-flex.col-md-3.col-lg-4.pt-3
-          noscript
-            img.mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
+        .d-flex.col-md-3.col-lg-4.pt-3.text-center
+          noscript.ml-auto.mr-auto.mr-md-none
+            img.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
               src=manifest("img/github-logo-white.svg"),
               width=200,
               height=200,
               alt=""
             )
-          img.lazyload.no-js.mt-auto.ml-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
+          img.lazyload.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
             data-src=manifest("img/github-logo-white.svg"),
             width=200,
             height=200,

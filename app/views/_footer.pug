@@ -25,25 +25,27 @@ footer.mt-auto
     .container.py-5.text-center.text-lg-left
       .d-flex.flex-column.flex-lg-row
         .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1
-          hr.d-lg-none.w-100
-          .dropdown.dropup
-            a#navbar-dropdown-language-btn.btn.btn-outline-light.dropdown-toggle(
-              href=ctx.url,
-              role="button",
-              data-toggle="dropdown",
-              aria-haspopup="true",
-              aria-expanded="false"
-            )
-              = `${titleize(t(currentLanguage))} ${ctx.locale !== "en" && currentLanguage !== titleize(currentLanguage) ? `(${titleize(currentLanguage)})` : ""}`
-            ul#navbar-dropdown-language-ul.dropdown-menu(
-              role="menu",
-              aria-expanded="false",
-              aria-hidden="true",
-              aria-labelledby="navbar-dropdown-language-btn"
-            )
-              each language in availableLanguages
-                if language.locale !== locale
-                  li: a.dropdown-item(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
+          if !isBot(ctx.get('User-Agent'))
+            .no-js
+              hr.d-lg-none.w-100
+              .dropdown.dropup
+                a#navbar-dropdown-language-btn.btn.btn-outline-light.dropdown-toggle(
+                  href=ctx.url,
+                  role="button",
+                  data-toggle="dropdown",
+                  aria-haspopup="true",
+                  aria-expanded="false"
+                )
+                  = `${titleize(t(currentLanguage))} ${ctx.locale !== "en" && currentLanguage !== titleize(currentLanguage) ? `(${titleize(currentLanguage)})` : ""}`
+                ul#navbar-dropdown-language-ul.dropdown-menu(
+                  role="menu",
+                  aria-expanded="false",
+                  aria-hidden="true",
+                  aria-labelledby="navbar-dropdown-language-btn"
+                )
+                  each language in availableLanguages
+                    if language.locale !== locale
+                      li: a.dropdown-item(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
           hr.d-lg-none.w-100
           .mt-auto
             a(href="#", aria-label=t("Go to top"))
@@ -54,15 +56,48 @@ footer.mt-auto
                   height=50,
                   alt="Go to top"
                 )
-              img.lazyload.no-js.d-inline-block.mx-lg-auto(
+              img.d-inline-block.mx-lg-auto.lazyload(
                 data-src=manifest("img/logo-square.svg"),
                 width=50,
                 height=50,
                 alt="Go to top"
               )
         .flex-wrap.flex-fill
-          h1.h5.mb-2= t("Resources")
+          h1.h5.mb-2= t("Guides")
+          ul.list-unstyled.mb-0
+            li
+              a.d-block.text-light.py-2.py-md-0(
+                href=l('/guides/send-mail-as-using-gmail')
+              )= t('Send Mail As using Gmail')
+            each provider in nsProviders
+              li
+                a.d-block.text-light.py-2.py-md-0(
+                  href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
+                )= provider.name
+        hr.d-lg-none.w-100
+        .flex-wrap.flex-fill
+          h1.h5.mb-2= t("Developers")
           ul.list-unstyled.mb-0.mb-lg-3
+            li: a.d-block.text-light.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/email-forwarding-regex-pattern-filter")
+            )= t("Email Forwarding Regex Pattern Filter")
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/email-forwarding-api")
+            )= t("Email Forwarding API")
+            li: a.d-block.text-light.py-2.py-md-0(
+              href="https://github.com/forwardemail/free-email-forwarding/releases",
+              target="_blank",
+              rel="noopener noreferrer"
+            )= t("Releases")
+            li: a.d-block.text-light.py-2.py-md-0(
+              href="https://github.com/forwardemail",
+              target="_blank",
+              rel="noopener noreferrer"
+            )= t("Source Code")
+          hr.d-lg-none.w-100
+          h1.h5.mb-2= t("Resources")
+          ul.list-unstyled.mb-0
             li: a.d-block.text-light.py-2.py-md-0(
               href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l("/pricing")
             )= t("Pricing")
@@ -85,39 +120,6 @@ footer.mt-auto
               href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
             )= t("Port 25 blocked by ISP")
             //- li: a.d-block.text-light.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
-          hr.d-lg-none.w-100
-          h1.h5.mb-2= t("Developers")
-          ul.list-unstyled.mb-0
-            li: a.d-block.text-light.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/email-forwarding-regex-pattern-filter")
-            )= t("Email Forwarding Regex Pattern Filter")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/email-forwarding-api")
-            )= t("Email Forwarding API")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href="https://github.com/forwardemail/free-email-forwarding/releases",
-              target="_blank",
-              rel="noopener noreferrer"
-            )= t("Releases")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href="https://github.com/forwardemail",
-              target="_blank",
-              rel="noopener noreferrer"
-            )= t("Source Code")
-        hr.d-lg-none.w-100
-        .flex-wrap.flex-fill
-          h1.h5.mb-2= t("Guides")
-          ul.list-unstyled.mb-0
-            li
-              a.d-block.text-light.py-2.py-md-0(
-                href=l('/guides/send-mail-as-using-gmail')
-              )= t('Send Mail As using Gmail')
-            each provider in nsProviders
-              li
-                a.d-block.text-light.py-2.py-md-0(
-                  href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
-                )= provider.name
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
@@ -132,29 +134,63 @@ footer.mt-auto
                 rel="noopener noreferrer"
               )
                 = t("Status Page")
-          .mt-lg-auto.mt-3
-            ul.list-inline.mb-0
-              li.list-inline-item
-                a.d-inline-block.text-light(
-                  data-toggle="tooltip",
-                  title=t("GitHub"),
-                  href="https://github.com/forwardemail",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                )
-                  i.fa.fa-2x.fa-github
-                  span.sr-only.sr-only-focusable
-                    = " "
-                    = t("GitHub")
-              li.list-inline-item
-                a.d-inline-block.text-light(
-                  data-toggle="tooltip",
-                  title=t("Email"),
-                  href="mailto:support@forwardemail.net",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                )
-                  i.fa.fa-2x.fa-envelope
-                  span.sr-only.sr-only-focusable
-                    = " "
-                    = t("Email")
+              if isBot(ctx.get('User-Agent'))
+                li
+                  a.d-block.text-light.py-2.py-md-0(
+                    title=t("GitHub"),
+                    href="https://github.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )= t("GitHub")
+                li
+                  a.d-block.text-light.py-2.py-md-0(
+                    title=t("Email"),
+                    href="mailto:support@forwardemail.net",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )= t("Email")
+
+          if !isBot(ctx.get('User-Agent'))
+            .mt-lg-auto.mt-3
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  a.d-inline-block.text-light(
+                    data-toggle="tooltip",
+                    title=t("GitHub"),
+                    href="https://github.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa.fa-2x.fa-github
+                    span.sr-only.sr-only-focusable
+                      = " "
+                      = t("GitHub")
+                li.list-inline-item
+                  a.d-inline-block.text-light(
+                    data-toggle="tooltip",
+                    title=t("Email"),
+                    href="mailto:support@forwardemail.net",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa.fa-2x.fa-envelope
+                    span.sr-only.sr-only-focusable
+                      = " "
+                      = t("Email")
+        if isBot(ctx.get('User-Agent'))
+          hr.d-lg-none.w-100
+          .flex-wrap.flex-fill.d-flex.flex-column
+            div
+              h1.h5.mb-2= t("Languages")
+              ul.list-unstyled.mb-0.small
+                each language in availableLanguages
+                  li: a.d-block.text-light.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
+        else
+          noscript
+            hr.d-lg-none.w-100
+            .flex-wrap.flex-fill.d-flex.flex-column
+              div
+                h1.h5.mb-2= t("Languages")
+                ul.list-unstyled.mb-0.small
+                  each language in availableLanguages
+                    li: a.d-block.text-light.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
