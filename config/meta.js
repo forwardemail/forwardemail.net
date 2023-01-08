@@ -28,8 +28,8 @@ module.exports = function (config) {
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
     '/': [
-      `The Best Free Email Forwarding Service for Custom Domains ${lad}`,
-      config.pkg.description
+      `Free Email Forwarding Service for Custom Domains ${lad}`,
+      'Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class="notranslate">you@your-domain.com</span>.'
     ],
     '/about': [`About ${lad}`, `Learn more about ${config.appName}`],
     '/pricing': [
