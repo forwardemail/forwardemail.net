@@ -63,7 +63,7 @@ footer.mt-auto
                 alt="Go to top"
               )
         .flex-wrap.flex-fill
-          h1.h5.mb-2= t("Guides")
+          h3.h5.mb-2= t("Guides")
           ul.list-unstyled.mb-0
             li
               a.d-block.text-light.py-2.py-md-0(
@@ -76,7 +76,7 @@ footer.mt-auto
                 )= provider.name
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill
-          h1.h5.mb-2= t("Developers")
+          h3.h5.mb-2= t("Developers")
           ul.list-unstyled.mb-0.mb-lg-3
             li: a.d-block.text-light.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
             li: a.d-block.text-light.py-2.py-md-0(
@@ -96,7 +96,7 @@ footer.mt-auto
               rel="noopener noreferrer"
             )= t("Source Code")
           hr.d-lg-none.w-100
-          h1.h5.mb-2= t("Resources")
+          h3.h5.mb-2= t("Resources")
           ul.list-unstyled.mb-0
             li: a.d-block.text-light.py-2.py-md-0(
               href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l("/pricing")
@@ -124,7 +124,7 @@ footer.mt-auto
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
-            h1.h5.mb-2= t("Company")
+            h3.h5.mb-2= t("Company")
             ul.list-unstyled.mb-0
               li: a.d-block.text-light.py-2.py-md-0(href=l("/about"))= t("About")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
@@ -182,7 +182,7 @@ footer.mt-auto
           hr.d-lg-none.w-100
           .flex-wrap.flex-fill.d-flex.flex-column
             div
-              h1.h5.mb-2= t("Languages")
+              h3.h5.mb-2= t("Languages")
               ul.list-unstyled.mb-0.small
                 each language in availableLanguages
                   li: a.d-block.text-light.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
@@ -191,7 +191,7 @@ footer.mt-auto
             hr.d-lg-none.w-100
             .flex-wrap.flex-fill.d-flex.flex-column
               div
-                h1.h5.mb-2= t("Languages")
+                h3.h5.mb-2= t("Languages")
                 ul.list-unstyled.mb-0.small
                   each language in availableLanguages
                     li: a.d-block.text-light.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`

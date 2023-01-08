@@ -11,7 +11,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            h1#modal-watch-video-title.h4.d-inline-block.ml-4= t("Made for you")
+            #modal-watch-video-title.h4.d-inline-block.ml-4= t("Made for you")
             button.close(type="button", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
           .modal-body
@@ -30,7 +30,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            h1#modal-for-creators-title.h4.d-inline-block.ml-4= t("Email Forwarding for Creators")
+            #modal-for-creators-title.h4.d-inline-block.ml-4= t("Email Forwarding for Creators")
             button.close(type="button", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
           .modal-body
@@ -49,7 +49,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            h1#modal-for-developers-title.h4.d-inline-block.ml-4= t("Email Forwarding for Developers")
+            #modal-for-developers-title.h4.d-inline-block.ml-4= t("Email Forwarding for Developers")
             button.close(type="button", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
           .modal-body
@@ -68,7 +68,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            h1#modal-for-businesses-title.h4.d-inline-block.ml-4= t("Email Forwarding for Businesses")
+            #modal-for-businesses-title.h4.d-inline-block.ml-4= t("Email Forwarding for Businesses")
             button.close(type="button", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
           .modal-body
@@ -161,7 +161,7 @@ block body
     .text-center.d-block.d-md-none.mt-5
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
-      h1!= t("Happy users")
+      .h1!= t("Happy users")
     .container.py-5.d-block
       .row.row-cols-1.row-cols-md-2
         //- DHH
@@ -473,12 +473,12 @@ block body
           )
   .py-5.position-relative#features.bg-fixed.lazyload(data-src=manifest('img/art/stars.svg'))
     .text-center.mb-lg-5
-      h1.mb-0= t("Features")
+      .h1.mb-0= t("Features")
     .container
       .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
         .col-12.col-lg-6.d-flex
           .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-dark.bg-md-white.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("Privacy First")
+            h2.display-5.font-weight-bold.mb-3= t("Privacy-focused")
             p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs, and do not write your emails to disk storage.")
             a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/privacy")
@@ -551,7 +551,7 @@ block body
       .row
         .col-12
           h2.display-3.font-weight-bold.text-white.my-3.my-md-3
-            = t("Privacy-focused")
+            = t("Open-source")
       .row
         .col-12.col-md-9.col-lg-8
           p.lead.text-white.mb-3.mb-md-5
@@ -590,7 +590,7 @@ block body
       .row.text-center.d-block.mb-5
         .h2.display-3.mb-1.text-danger
           i.fab.fa-youtube
-        h1!= t("Made for you")
+        .h1!= t("Made for you")
       .row
         .col-md.text-center.mb-3.mb-lg-0
           a.btn.btn-outline-dark.btn-lg(

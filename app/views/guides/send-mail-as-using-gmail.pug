@@ -30,7 +30,7 @@ block body
           a(href=user ? l('/my-account/domains') : l('/my-account/domains/new'), target='_blank').alert-link
             = t('Click here to verify your domain')
         .card.mt-3#quick-video-guide
-          h1.h5.card-header.text-center= t("Quick Video Guide")
+          h2.h5.card-header.text-center= t("Quick Video Guide")
           .card-body.text-center
             if isBot(ctx.get('User-Agent'))
               a.btn.btn-outline-dark.btn-lg(
@@ -50,6 +50,6 @@ block body
               )
       .col-12.mt-3#step-by-step-instructions
         .card
-          h1.h5.card-header.text-center= t("Step by Step Instructions")
+          h2.h5.card-header.text-center= t("Step by Step Instructions")
           .card-body.markdown-body
             != sendMailAsContent
