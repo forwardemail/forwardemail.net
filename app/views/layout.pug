@@ -12,20 +12,26 @@ html.h-100.no-js(lang=locale)
         meta(name="description", content=meta.description)
       meta(name="viewport", content="width=device-width, initial-scale=1")
 
+      //- canonical
+      link(rel="canonical", href=`${config.urls.web}${ctx.path}`)
+
       //- languages supported
       //- <https://support.google.com/webmasters/answer/189077?hl=en>
       //- <https://support.google.com/webmasters/answer/182192?hl=en>
       if ctx && ctx.pathWithoutLocale
+        //- <https://webmasters.stackexchange.com/questions/126514/should-en-and-x-default-be-included-on-the-same-page-for-hreflang-tags>
+        //- <https://www.searchviu.com/en/multiple-hreflang-tags-one-url/>
+        //- <https://twitter.com/JohnMu/status/837326127089729536>
         link(
           rel="alternate",
-          href=`${config.urls.web}${ctx.pathWithoutLocale}`,
+          href=`${config.urls.web}/${defaultLocale}${ctx.pathWithoutLocale === '/' ? '' : ctx.pathWithoutLocale}`,
           hreflang="x-default"
         )
       if ctx && ctx.pathWithoutLocale && availableLanguages
         each language in availableLanguages
           link(
             rel="alternate",
-            href=`${config.urls.web}/${language.locale}${ctx.pathWithoutLocale}`,
+            href=`${config.urls.web}/${language.locale}${ctx.pathWithoutLocale === '/' ? '' : ctx.pathWithoutLocale}`,
             hreflang=language.locale
           )
 
@@ -100,7 +106,7 @@ html.h-100.no-js(lang=locale)
       meta(property="og:title", content=meta.title)
       meta(
         property="og:url",
-        content=`${config.urls.web}${ctx.pathWithoutLocale}`
+        content=`${config.urls.web}${ctx.path}`
       )
       meta(property="og:description", content=meta.description)
       meta(property="og:image", content=`${config.urls.web}/img/social.png`)

@@ -20,7 +20,7 @@ block body
                 rows=3,
                 placeholder="MongoDB query"
               )= ctx.query.mongodb_query || ''
-              small.form-text.text-muted!= t('See <a class="notranslate" href="https://github.com/mongodb-js/query-parser" target="_blank" rel="nofollow">mongodb-query-parser</a> for more insight.')
+              small.form-text.text-muted!= t('See <a class="notranslate" href="https://github.com/mongodb-js/query-parser" target="_blank" rel="noopener noreferrer">mongodb-query-parser</a> for more insight.')
             .form-group
               label(for="input-keyword-search")= t('Basic search')
               input#input-keyword-search.form-control(

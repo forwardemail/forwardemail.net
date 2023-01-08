@@ -18,6 +18,7 @@ const otp = require('./otp');
 const report = require('./report');
 const denylist = require('./denylist');
 const guides = require('./guides');
+const sitemap = require('./sitemap');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -128,5 +129,6 @@ module.exports = {
   reservedEmailAddresses,
   recipientVerification,
   denylist,
-  guides
+  guides,
+  sitemap
 };

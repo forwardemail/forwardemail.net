@@ -121,6 +121,8 @@ const config = {
     // A complete reference of options for Pug (default):
     // <https://pugjs.org/api/reference.html>
     locals: {
+      // i18n default locale
+      defaultLocale: i18n.defaultLocale,
       // Even though pug deprecates this, we've added `pretty`
       // in `koa-views` package, so this option STILL works
       // <https://github.com/queckezz/koa-views/pull/111>

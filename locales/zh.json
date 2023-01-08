@@ -2852,7 +2852,7 @@
   "See Options A to G in our FAQ": "请参阅常见问题解答中的选项 A 至 G",
   "Send emails with your domain using Gmail (optional)": "使用 Gmail 使用您的域发送电子邮件（可选）",
   "Still need help with something?": "还需要帮助吗？",
-  "Go to <a href=\"%s\" target=\"_blank\" rel=\"nofollow\" class=\"font-weight-bold notranslate\">%s</a>": "前往<a href=\"%s\" target=\"_blank\" rel=\"nofollow\" class=\"font-weight-bold notranslate\">%s</a>",
+  "Go to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold notranslate\">%s</a>": "前往<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold notranslate\">%s</a>",
   "Go to <span class=\"notranslate\">%s</span>": "前往<span class=\"notranslate\">%s</span>",
   "Custom recipient verification (optional)": "自定义收件人验证（可选）",
   "<span class=\"font-weight-bold\">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href=\"%s\">Settings</a>.": "<span class=\"font-weight-bold\">是的。</span>您可以从<a href=\"%s\">“设置”</a>切换成人相关内容、网络钓鱼、可执行文件和病毒的过滤器。",
@@ -3067,7 +3067,7 @@
   "Denylist": "拒绝名单",
   "Good afternoon": "下午好",
   "Search for users": "搜索用户",
-  "See <a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"nofollow\">mongodb-query-parser</a> for more insight.": "有关更多信息，请参阅<a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"nofollow\">mongodb-query-parser</a> 。",
+  "See <a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"noopener noreferrer\">mongodb-query-parser</a> for more insight.": "有关更多信息，请参阅<a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"noopener noreferrer\">mongodb-query-parser</a> 。",
   "Basic search": "基本搜索",
   "Search by first name, last name, or email": "按名字、姓氏或电子邮件搜索",
   "plan": "计划"

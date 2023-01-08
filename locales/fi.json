@@ -3012,7 +3012,7 @@
   "See Options A to G in our FAQ": "Katso vaihtoehdot A–G usein kysytyistä kysymyksistämme",
   "Send emails with your domain using Gmail (optional)": "Sähköpostien lähettäminen verkkotunnuksellasi Gmailin avulla (valinnainen)",
   "Still need help with something?": "Tarvitsetko vielä apua johonkin?",
-  "Go to <a href=\"%s\" target=\"_blank\" rel=\"nofollow\" class=\"font-weight-bold notranslate\">%s</a>": "Siirry osoitteeseen <a href=\"%s\" target=\"_blank\" rel=\"nofollow\" class=\"font-weight-bold notranslate\">%s</a>",
+  "Go to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold notranslate\">%s</a>": "Siirry osoitteeseen <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold notranslate\">%s</a>",
   "Go to <span class=\"notranslate\">%s</span>": "Siirry osoitteeseen <span class=\"notranslate\">%s</span>",
   "Custom recipient verification (optional)": "Muokattu vastaanottajan vahvistus (valinnainen)",
   "<span class=\"font-weight-bold\">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href=\"%s\">Settings</a>.": "<span class=\"font-weight-bold\">Joo.</span> Voit vaihtaa suodattimia aikuisille tarkoitetulle sisällölle, tietojenkalastelulle, suoritettaville tiedostoille ja viruksille <a href=\"%s\">Asetuksista</a> .",
@@ -3222,7 +3222,7 @@
   "Denylist": "Kieltäjä",
   "Good afternoon": "Hyvää iltapäivää",
   "Search for users": "Etsi käyttäjiä",
-  "See <a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"nofollow\">mongodb-query-parser</a> for more insight.": "Katso lisätietoja kohdasta <a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"nofollow\">mongodb-query-parser</a> .",
+  "See <a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"noopener noreferrer\">mongodb-query-parser</a> for more insight.": "Katso lisätietoja kohdasta <a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"noopener noreferrer\">mongodb-query-parser</a> .",
   "Basic search": "Perushaku",
   "Search by first name, last name, or email": "Hae etunimellä, sukunimellä tai sähköpostiosoitteella",
   "plan": "suunnitelma"

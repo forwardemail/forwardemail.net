@@ -64,7 +64,7 @@ block body
         .card.position-relative.mt-3
           if provider && provider.name && provider.url
             .position-absolute.w-100.text-right
-              a(href=provider.url, target='_blank', rel='nofollow').badge.badge-pill.badge-primary.mt-3.mr-3
+              a(href=provider.url, target='_blank', rel='noopener noreferrer').badge.badge-pill.badge-primary.mt-3.mr-3
                 i.fa.fa-external-link
                 = " "
                 != t('Go to <span class="notranslate">%s</span>', provider.name)
@@ -86,7 +86,7 @@ block body
             //- TODO: link to video
             p.small.mb-0
               if provider && provider.name && provider.url
-                != t('Go to <a href="%s" target="_blank" rel="nofollow" class="font-weight-bold notranslate">%s</a>', provider.url, provider.name)
+                != t('Go to <a href="%s" target="_blank" rel="noopener noreferrer" class="font-weight-bold notranslate">%s</a>', provider.url, provider.name)
                 != t(' &rarr; log in &rarr; DNS settings')
                 br.d-block.d-md-none
                 != t(' &rarr; scroll down to <strong>Step 2</strong>')
@@ -99,7 +99,7 @@ block body
               img(src=manifest(`img/guides/${provider.gif}.gif`), alt='', width='480', height='270').d-inline-block.img-thumbnail.mt-3
             if provider && provider.name && provider.url
               .text-center.mt-3
-                a(href=provider.url, target='_blank', rel='nofollow').btn.btn-primary
+                a(href=provider.url, target='_blank', rel='noopener noreferrer').btn.btn-primary
                   i.fa.fa-external-link
                   = ' '
                   != t('Go to <span class="notranslate">%s</span>', provider.name)

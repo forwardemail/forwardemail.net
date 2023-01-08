@@ -123,7 +123,7 @@ block body
             a.btn.btn-outline-dark(
               href='https://www.youtube.com/watch?v=oWEVGMPXMbA',
               target='_blank',
-              rel='nofollow'
+              rel='noopener noreferrer'
             )
               i.fab.fa-youtube.text-danger
               = " "
@@ -143,7 +143,7 @@ block body
             data-target="#modal-watch-video",
             href='https://www.youtube.com/watch?v=oWEVGMPXMbA',
             target='_blank',
-            rel='nofollow'
+            rel='noopener noreferrer'
           )
             i.fab.fa-youtube.text-danger
             = " "
@@ -449,7 +449,7 @@ block body
               a.btn.btn-outline-light.btn-lg.mb-md-5(
                 href='https://spamscanner.net',
                 target='_blank',
-                rel='nofollow'
+                rel='noopener noreferrer'
               )
                 = t("Spam Scanner")
             li.list-inline-item.mt-3.mt-md-0
@@ -597,7 +597,7 @@ block body
             role=isBot(ctx.get('User-Agent')) ? false : "button",
             href='https://www.youtube.com/watch?v=ql9rtNpTid4',
             target='_blank',
-            rel='nofollow',
+            rel='noopener noreferrer',
             data-toggle=isBot(ctx.get('User-Agent')) ? false : "modal",
             data-target=isBot(ctx.get('User-Agent')) ? false : "#modal-for-creators"
           )
@@ -614,7 +614,7 @@ block body
             data-target=isBot(ctx.get('User-Agent')) ? false : "#modal-for-developers"
             href='https://www.youtube.com/watch?v=1e9UyIoFu4Y',
             target='_blank',
-            rel='nofollow'
+            rel='noopener noreferrer'
           )
             i.fa.fa-play-circle
             = " "
@@ -629,7 +629,7 @@ block body
             data-target=isBot(ctx.get('User-Agent')) ? false : "#modal-for-businesses",
             href='https://www.youtube.com/watch?v=--p9LdmVSAw',
             target='_blank',
-            rel='nofollow'
+            rel='noopener noreferrer'
           )
             i.fa.fa-play-circle
             = " "

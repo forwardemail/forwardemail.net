@@ -24,12 +24,22 @@ router
 
     return next();
   })
+  // sitemap
+  .get('/sitemap.xml', web.sitemap)
   // report URI support (not locale specific)
   .post('/report', web.report);
 
 const localeRouter = new Router({ prefix: '/:locale' });
 
 localeRouter
+  // add HTTP Link header to GET requests
+  // for canonical urls for search engines
+  // <https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls#rel-canonical-header-method>
+  .use((ctx, next) => {
+    if (ctx.method === 'GET')
+      ctx.set('Link', `<${config.urls.web}${ctx.path}>; rel="canonical"`);
+    return next();
+  })
   .get('/', web.auth.homeOrDomains)
   .post(
     '/',

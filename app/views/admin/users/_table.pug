@@ -34,7 +34,7 @@ include ../../_pagination
             td.align-middle= user[config.passport.fields.givenName]
             td.align-middle= user[config.passport.fields.familyName]
             td.align-middle
-              a(href=`mailto:${user.email}`, target="_blank")= user.email
+              a(href=`mailto:${user.email}`, target="_blank", rel="noopener noreferrer")= user.email
               = ' '
               = '('
               code.text-muted= user.id

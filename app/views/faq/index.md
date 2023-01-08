@@ -73,7 +73,7 @@
     Enhanced Privacy Protection:
   </strong>
   <span>
-    If you would like to hide your information from being publicly searchable over the Internet, then please go to <a class="alert-link" href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan before starting this guide.
+    If you would like to hide your information from being publicly searchable over the Internet, then please go to <a class="alert-link" href="/my-account/domains" target="_blank">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan before starting this guide.
     Publicly searchable information on free plans includes, but is not limited to: aliases, forwarded addresses, recipients, and advanced settings such as custom port forwarding.
     If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/pricing">Pricing</a> page &ndash; otherwise keep reading!
     All plans abide by our <a class="alert-link" href="/privacy">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.

@@ -104,11 +104,12 @@ footer.mt-auto
             li: a.d-block.text-light.py-2.py-md-0(
               href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
             )= t("FAQ")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/help"),
-              role=isHelp ? "link" : "button",
-              data-target=isHelp ? "" : "#modal-help"
-            )= t("Help")
+            if !isBot(ctx.get('User-Agent'))
+              li: a.d-block.text-light.py-2.py-md-0(
+                href=l("/help"),
+                role=isHelp ? "link" : "button",
+                data-target=isHelp ? "" : "#modal-help"
+              )= t("Help")
             li: a.d-block.text-light.py-2.py-md-0(
               href=l("/disposable-addresses")
             )= t("Disposable Addresses")

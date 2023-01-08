@@ -32,7 +32,7 @@ module.exports = function (config) {
       config.pkg.description
     ],
     '/about': [`About ${lad}`, `Learn more about ${config.appName}`],
-    '/features': [
+    '/pricing': [
       `Pricing ${lad}`,
       'Free email forwarding for domains with features including Custom Domain Email Forwarding, Disposable Addresses, Multiple Recipients, Wildcards, and more!'
     ],
@@ -115,8 +115,5 @@ module.exports = function (config) {
     `Two Factor Auth ${lad}`,
     'Authenticate yourself with optional OTP to log in'
   ];
-  // legacy support
-  meta['/pricing'] = meta['/features'];
-  meta['/api'] = meta['/email-forwarding-api'];
   return meta;
 };
