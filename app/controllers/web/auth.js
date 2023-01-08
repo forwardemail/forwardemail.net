@@ -87,7 +87,9 @@ async function registerOrLogin(ctx) {
   return ctx.render('register-or-login');
 }
 
-async function homeOrDomains(ctx) {
+async function homeOrDomains(ctx, next) {
+  if (ctx.pathWithoutLocale !== '/') return next();
+
   // If the user is logged in then take them to their account
   if (ctx.isAuthenticated())
     return ctx.redirect(
