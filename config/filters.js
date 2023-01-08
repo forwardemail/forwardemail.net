@@ -130,7 +130,7 @@ function fixTableOfContents(content, i18n, options) {
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header text-center d-block">
-            <h1 class="h4 d-inline-block ml-4">${str}</h1>
+            <div class="h4 d-inline-block ml-4">${str}</div>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
           </div>
           <div class="modal-body">${ulStr}</div>

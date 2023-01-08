@@ -8,7 +8,7 @@ if !isHelp && user && !isBot(ctx.get('User-Agent'))
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h1#modal-help-title.h4.d-inline-block.ml-4= t("Ask a question")
+          #modal-help-title.h4.d-inline-block.ml-4= t("Ask a question")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -52,7 +52,7 @@ if !user && !registerOrLogin
         .modal-dialog(role="document")
           .modal-content
             .modal-header.text-center.d-block
-              h1.h4.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
+              .h4.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
                 if verb === 'sign up'
                   = t("Sign up now")
                 else
@@ -74,7 +74,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
     )
       span.sr-only.sr-only-focusable Forward Email
       include ../../assets/img/logo-square-30-30.svg
-      h1.h4.m-0.align-middle(class=isBot(ctx.get('User-Agent')) ? 'd-none d-md-inline-block' : 'd-inline-block').no-js
+      .h4.m-0.align-middle(class=isBot(ctx.get('User-Agent')) ? 'd-none d-md-inline-block' : 'd-inline-block').no-js
         span.font-weight-bold.text-primary Forward
         span.font-weight-normal.text-info Email
         //- span.text-success .net

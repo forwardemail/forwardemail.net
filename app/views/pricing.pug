@@ -11,7 +11,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            h1#modal-pricing-video-title.h4.d-inline-block.ml-4= t("Learn about our plans")
+            #modal-pricing-video-title.h4.d-inline-block.ml-4= t("Learn about our plans")
             button.close(type="button", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
           .modal-body
@@ -25,7 +25,7 @@ block body
     .container
       .row.mb-5
         .col.text-center
-          h2.mb-3
+          .h2.mb-3
             = t("Lightning fast email service.")
           a.btn.btn-dark.btn-lg(
             role=isBot(ctx.get('User-Agent')) ? false : "button",
@@ -42,7 +42,7 @@ block body
         .col
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-black-50.border
             .px-3.py-4
-              h1.h3.text-center.font-weight-bold
+              .h3.text-center.font-weight-bold
                 = t("Free")
               p.text-center.mb-0= t("Basic plan to get started")
             ul.list-group.list-group-flush
@@ -114,7 +114,7 @@ block body
                 )
                   i.fa.fa-link
             .d-flex.flex-column.flex-grow-1.justify-content-end
-              h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
+              .h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
                 .small.d-inline-block.text-monospace $
                 span.d-inline-block.text-monospace 0
                 sup.d-inline-block.h6.text-black-50
@@ -130,7 +130,7 @@ block body
         .col.mt-3.mt-lg-0
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
             .px-3.py-4
-              h1.h3.text-center.font-weight-bold
+              .h3.text-center.font-weight-bold
                 i.fa.fa-shield.d-block.d-lg-inline.mb-2.mb-lg-0
                 = " "
                 = t("Enhanced Protection")
@@ -187,7 +187,7 @@ block body
                 = ' '
                 = t('99.99% Uptime Service Level Agreement ("SLA")')
             .d-flex.flex-column.flex-grow-1.justify-content-end
-              h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
+              .h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
                 .small.d-inline-block.text-monospace $
                 span.d-inline-block.text-monospace 3
                 sup.d-inline-block.h6.text-black-50
@@ -231,7 +231,7 @@ block body
         .col.mt-3
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
             .px-3.py-4
-              h1.h3.text-center.font-weight-bold
+              .h3.text-center.font-weight-bold
                 i.fa.fa-users.d-block.d-lg-inline.mb-2.mb-lg-0
                 = " "
                 = t("Team")
@@ -255,7 +255,7 @@ block body
                 = ' '
                 = t("Priority support requests")
             .d-flex.flex-column.flex-grow-1.justify-content-end
-              h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
+              .h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
                 .small.d-inline-block.text-monospace $
                 span.d-inline-block.text-monospace 9
                 sup.d-inline-block.h6.text-black-50
@@ -299,7 +299,7 @@ block body
         .col.mt-3
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
             .px-3.py-4
-              h1.h3.text-center.font-weight-bold
+              .h3.text-center.font-weight-bold
                 = t("Enterprise")
               p.text-center.mb-0= t("Custom solutions and licensing")
             ul.list-group.list-group-flush
@@ -338,11 +338,11 @@ block body
       .text-center
         .row.my-5
           .col
-            h1.h2.mb-0= t("Frequently Asked Questions")
+            h1.mb-0= t("Frequently Asked Questions")
             .small.text-black-50.text-uppercase!= t('See Q&A below and <a href="%s">read our FAQ</a> for more', l("/faq"))
         .row.mt-5
           .col
-            h2= t("What is the difference between Free and Enhanced Protection?")
+            h2.h3= t("What is the difference between Free and Enhanced Protection?")
             p.lead
               = t("The Free plan requires you to use public DNS records to store your forwarding configuration.")
               = " "
@@ -351,12 +351,12 @@ block body
               = t("Unlike the Free plan, the Enhanced Protection plan uses a cryptographically generated random string to store your forwarding configuration privately.")
         .row.mb-5
           .col-12.col-md-6.my-3.my-md-0
-            h2.h3= t("Free Plan")
+            .h2.h3= t("Free Plan")
             p.lead.text-monospace
               = "forward-email="
               strong.bg-warning= user ? user.email : "user@gmail.com"
           .col-12.col-md-6
-            h2.h3= t("Enhanced Protection Plan")
+            .h2.h3= t("Enhanced Protection Plan")
             p.lead.text-monospace
               = "forward-email-site-verification="
               strong.bg-warning!= new Array(8).fill("&bull;").join("")

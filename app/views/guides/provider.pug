@@ -78,7 +78,7 @@ block body
                 i.fa.fa-external-link
                 = " "
                 = t("Go to DNS settings")
-          h1#setup-step-1.h5.card-header.text-left.text-md-center= t("Step 1")
+          h2#setup-step-1.h5.card-header.text-left.text-md-center= t("Step 1")
           .card-body
             //-
             //- TODO: highlight in FAQ if provider exists
@@ -120,7 +120,7 @@ block body
               i.fa.fa-times
               = " "
               = t("Not Completed")
-          h1#setup-step-2.h5.card-header.text-left.text-md-center= t("Step 2")
+          h2#setup-step-2.h5.card-header.text-left.text-md-center= t("Step 2")
           .card-body
             .small.text-center.mb-3
               != t('Add these records to <strong class="notranslate">%s</strong>', domain ? domain.root_name || domain.name : 'your-domain.com')
