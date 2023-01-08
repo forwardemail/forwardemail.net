@@ -5,7 +5,6 @@ const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const qrcode = require('qrcode');
-const sanitizeHtml = require('sanitize-html');
 const titleize = require('titleize');
 const validator = require('validator');
 const { authenticator } = require('otplib');
@@ -21,12 +20,6 @@ const { Users } = require('#models');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const options = { length: 10, type: 'numeric' };
-
-const sanitize = (string) =>
-  sanitizeHtml(string, {
-    allowedTags: [],
-    allowedAttributes: []
-  });
 
 function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(ctx.state.l());
@@ -100,15 +93,6 @@ async function homeOrDomains(ctx) {
     return ctx.redirect(
       ctx.state.l(config.passportCallbackOptions.successReturnToOrRedirect)
     );
-  // Manually set page title since we don't define Home route in config/meta
-  ctx.state.meta = {
-    title: sanitize(
-      ctx.request.t(
-        `Free Email Forwarding for Custom Domains &#124; <span class="notranslate">${config.appName}</span>`
-      )
-    ),
-    description: sanitize(ctx.request.t(config.pkg.description))
-  };
 
   return ctx.render('home');
 }
