@@ -130,7 +130,7 @@
     "rev-hash": "3",
     "sanitize-html": "2.8.1",
     "signale": "1.4.0",
-    "sitemap": "^7.1.1",
+    "sitemap": "7.1.1",
     "speakingurl": "14.0.1",
     "spinkit": "2.0.1",
     "split-lines": "2",
