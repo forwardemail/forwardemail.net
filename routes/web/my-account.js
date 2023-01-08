@@ -9,15 +9,11 @@ const web = require('#controllers/web');
 const router = new Router({ prefix: '/my-account' });
 
 router
-  .use(policies.ensureLoggedIn)
-  .use(policies.ensureOtp)
-  .use(web.myAccount.ensureNotBanned)
-  .use(web.breadcrumbs)
-  .use(web.myAccount.retrieveDomains)
-  .use(web.myAccount.ensurePaidToDate)
-  // don't cache anything
-  // <https://github.com/koa-modules/koa-no-cache/issues/5>
   .use((ctx, next) => {
+    // don't allow robots
+    ctx.set('X-Robots-Tag', 'none');
+    // don't cache anything
+    // <https://github.com/koa-modules/koa-no-cache/issues/5>
     ctx.set('Surrogate-Control', 'no-store');
     ctx.set(
       'Cache-Control',
@@ -27,6 +23,12 @@ router
     ctx.set('Expires', '0');
     return next();
   })
+  .use(policies.ensureLoggedIn)
+  .use(policies.ensureOtp)
+  .use(web.myAccount.ensureNotBanned)
+  .use(web.breadcrumbs)
+  .use(web.myAccount.retrieveDomains)
+  .use(web.myAccount.ensurePaidToDate)
   .get('/', (ctx) => {
     ctx.redirect(ctx.state.l('/my-account/domains'));
   })

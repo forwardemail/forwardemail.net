@@ -42,8 +42,7 @@ block body
                 each domain in adminDomains
                   li: a(
                     href=l(`/my-account/domains/${domain.name}`),
-                    target="_blank",
-                    rel="noopener noreferrer"
+                    target="_blank"
                   )= domain.name
           else
             .card-body

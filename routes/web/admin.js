@@ -7,12 +7,11 @@ const web = require('#controllers/web');
 const router = new Router({ prefix: '/admin' });
 
 router
-  .use(policies.ensureAdmin)
-  .use(policies.ensureOtp)
-  .use(web.breadcrumbs)
-  // don't cache anything
-  // <https://github.com/koa-modules/koa-no-cache/issues/5>
   .use((ctx, next) => {
+    // don't allow robots
+    ctx.set('X-Robots-Tag', 'none');
+    // don't cache anything
+    // <https://github.com/koa-modules/koa-no-cache/issues/5>
     ctx.set('Surrogate-Control', 'no-store');
     ctx.set(
       'Cache-Control',
@@ -22,6 +21,9 @@ router
     ctx.set('Expires', '0');
     return next();
   })
+  .use(policies.ensureAdmin)
+  .use(policies.ensureOtp)
+  .use(web.breadcrumbs)
   .get('/', web.admin.dashboard)
 
   // allowlist

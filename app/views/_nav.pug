@@ -1,4 +1,4 @@
-if !isHelp && user
+if !isHelp && user && !isBot(ctx.get('User-Agent'))
   #modal-help.modal.fade(
     tabindex="-1",
     role="dialog",
@@ -164,14 +164,16 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
               href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
               class=ctx.pathWithoutLocale.startsWith("/faq") ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
             )= t("FAQ")
-          li.nav-item.mr-md-3
-            a.btn.d-block.text-left(
-              href=l("/help"),
-              role=isHelp ? "link" : "button",
-              data-target=isHelp ? "" : "#modal-help",
-              data-toggle=isHelp ? "" : "modal-anchor",
-              class=ctx.pathWithoutLocale.startsWith("/help") ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
-            )= t("Help")
+          //- don't index 401 not authorized pages
+          if !isBot(ctx.get('User-Agent'))
+            li.nav-item.mr-md-3
+              a.btn.d-block.text-left(
+                href=l("/help"),
+                role=isHelp ? "link" : "button",
+                data-target=isHelp ? "" : "#modal-help",
+                data-toggle=isHelp ? "" : "modal-anchor",
+                class=ctx.pathWithoutLocale.startsWith("/help") ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
+              )= t("Help")
         else
           li.nav-item.mr-md-3
             a.btn.d-block.text-left(
@@ -212,29 +214,37 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
                     href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
                     class=ctx.pathWithoutLocale === `/guides/${provider.slug}` ? "active" : ""
                   )= provider.name
-            li.nav-item.dropdown.no-js
-              //- TODO: add the /resources page
-              a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(
-                role="button",
-                href="#",
-                data-toggle="dropdown",
-                aria-haspopup="true",
-                aria-expanded="false",
-                class=ctx.pathWithoutLocale === '/help' || ctx.pathWithoutLocale === '/faq' ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
-              )
-                = t("Resources")
-              .dropdown-menu(aria-labelledby="navbar-dropdown-resources")
-                a.dropdown-item(
+            //- don't index 401 not authorized pages
+            if isBot(ctx.get('User-Agent'))
+              li.nav-item
+                a.btn.btn-outline-dark.d-block.text-left(
                   href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
                   class=ctx.pathWithoutLocale.startsWith("/faq") ? "active" : "",
                 )= t("FAQ")
-                a.dropdown-item(
-                  href=l("/help"),
-                  role=isHelp || !user ? "link" : "button",
-                  data-target=isHelp || !user ? "" : "#modal-help",
-                  data-toggle=isHelp || !user ? "" : "modal-anchor",
-                  class=ctx.pathWithoutLocale.startsWith("/help") ? "active" : "",
-                )= t("Help")
+            else
+              li.nav-item.dropdown.no-js
+                //- TODO: add the /resources page
+                a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(
+                  role="button",
+                  href="#",
+                  data-toggle="dropdown",
+                  aria-haspopup="true",
+                  aria-expanded="false",
+                  class=ctx.pathWithoutLocale === '/help' || ctx.pathWithoutLocale === '/faq' ? `btn-link ${user ? 'text-white' : 'text-dark'} text-decoration-underline` : `btn-link ${user ? 'text-white' : 'text-dark'}`
+                )
+                  = t("Resources")
+                .dropdown-menu(aria-labelledby="navbar-dropdown-resources")
+                  a.dropdown-item(
+                    href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
+                    class=ctx.pathWithoutLocale.startsWith("/faq") ? "active" : "",
+                  )= t("FAQ")
+                  a.dropdown-item(
+                    href=l("/help"),
+                    role=isHelp || !user ? "link" : "button",
+                    data-target=isHelp || !user ? "" : "#modal-help",
+                    data-toggle=isHelp || !user ? "" : "modal-anchor",
+                    class=ctx.pathWithoutLocale.startsWith("/help") ? "active" : "",
+                  )= t("Help")
 
         //- links that show only if you're logged in
         if user
