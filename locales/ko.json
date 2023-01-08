@@ -203,7 +203,7 @@
   "Managed deployment with dedicated IP's": "전용 IP로 관리되는 배포",
   "Dedicated support from our team of experts": "전문가 팀의 전담 지원",
   "Contact Sales": "영업팀에 문의",
-  "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "일회성 결제 및 월별 또는 연간 구독의 경우 <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe를</a> 사용하고 <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal로</a> 결제하는 신용 카드를 사용할 수 있습니다.",
+  "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "일회성 결제 및 월간 또는 연간 구독의 경우 <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe를</a> 사용한 신용 카드 및 <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> 결제를 허용합니다.",
   "Türkçe": "터키어",
   "Thank you": "감사합니다",
   "You have successfully registered.": "성공적으로 등록되었습니다.",
@@ -1358,7 +1358,6 @@
   "Can I configure <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> settings?": "<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">스팸 스캐너</a> 설정을 구성 할 수 있습니까?",
   "<span class=\"font-weight-bold\">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href=\"%s\">Advanced Settings</a>.": "<span class=\"font-weight-bold\">예.</span> <a href=\"%s\">고급 설정</a> 에서 성인 관련 콘텐츠, 피싱, 실행 파일 및 바이러스에 대한 필터를 전환 할 수 있습니다.",
   "<span class=\"font-weight-bold\">Yes.</span> Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.": "<span class=\"font-weight-bold\">예.</span> 어떤 플랜을 사용하든 모든 도메인에 적용되는 월별 요금을 한 번만 지불하면됩니다.",
-  "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "일회성 결제 및 월간 또는 연간 구독의 경우 <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe를</a> 사용한 신용 카드 및 <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> 결제를 허용합니다.",
   "<span class=\"font-weight-bold\">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.": "<span class=\"font-weight-bold\">아니요.</span> 가격은 절대 인상되지 않습니다. 다른 회사와 달리 서비스를 중단하지 않습니다.",
   "<span class=\"font-weight-bold\">Yes.</span> We offer a 30 day money-back guarantee &ndash; with no questions asked.": "<span class=\"font-weight-bold\">예.</span> 30 일 환불 보장을 제공합니다.",
   "Do you store logs or write to disk?": "로그를 저장하거나 디스크에 기록합니까?",
@@ -3380,5 +3379,10 @@
   "plan": "계획",
   "Free Email Forwarding for <span class=\"notranslate\">Name.com</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Name.com</span> 에 대한 무료 이메일 전달 &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarding for <span class=\"notranslate\">Namecheap</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Namecheap</span> 에 대한 무료 이메일 전달 &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free Email Forwarding for <span class=\"notranslate\">Wix</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Wix</span> 용 무료 이메일 포워딩 &#124; <span class=\"notranslate\">Forward Email</span>"
+  "Free Email Forwarding for <span class=\"notranslate\">Wix</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Wix</span> 용 무료 이메일 포워딩 &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Free Email Forwarding Service for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Free Email Forwarding Service for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.",
+  "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.",
+  "via": "via",
+  "reset your password": "reset your password"
 }
