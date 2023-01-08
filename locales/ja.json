@@ -203,7 +203,7 @@
   "Managed deployment with dedicated IP's": "専用IPによる管理された導入",
   "Dedicated support from our team of experts": "専門家チームによる専用サポート",
   "Contact Sales": "お問い合わせ",
-  "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "<a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a>を使用したクレジットカードと<a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>での支払いを受け付けます–一度限りの支払いと月額または年額のサブスクリプション。",
+  "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "<a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a>を使用したクレジットカードと<a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>での支払いを受け付けます– 1回限りの支払い、月次または年次のサブスクリプション。",
   "Türkçe": "トルコ人",
   "Thank you": "ありがとうございました",
   "You have successfully registered.": "登録に成功しました。",
@@ -1358,7 +1358,6 @@
   "Can I configure <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> settings?": "<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">スパムスキャナーの</a>設定を構成できますか？",
   "<span class=\"font-weight-bold\">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href=\"%s\">Advanced Settings</a>.": "<span class=\"font-weight-bold\">はい。</span><a href=\"%s\">詳細設定</a>から、アダルト関連のコンテンツ、フィッシング、実行可能ファイル、ウイルスのフィルタを切り替えることができます。",
   "<span class=\"font-weight-bold\">Yes.</span> Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.": "<span class=\"font-weight-bold\">はい。</span>どのプランを使用しているかに関係なく、月額料金は1つだけです。これは、すべてのドメインをカバーします。",
-  "We accept credit cards using <a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and payment with <a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> &ndash; for one-time payments and monthly or yearly subscriptions.": "<a class=\"alert-link\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a>を使用したクレジットカードと<a class=\"alert-link\" href=\"https://paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>での支払いを受け付けます– 1回限りの支払い、月次または年次のサブスクリプション。",
   "<span class=\"font-weight-bold\">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.": "<span class=\"font-weight-bold\">いいえ。</span>価格が上がることはありません。他社とは異なり、サービスを停止することもありません。",
   "<span class=\"font-weight-bold\">Yes.</span> We offer a 30 day money-back guarantee &ndash; with no questions asked.": "<span class=\"font-weight-bold\">はい。</span> 30日間の返金保証を提供しており、質問はありません。",
   "Do you store logs or write to disk?": "ログを保存しますか、それともディスクに書き込みますか？",
@@ -3380,5 +3379,10 @@
   "plan": "予定",
   "Free Email Forwarding for <span class=\"notranslate\">Name.com</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Name.com</span>の無料メール転送 &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarding for <span class=\"notranslate\">Namecheap</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Namecheap</span>の無料メール転送 &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free Email Forwarding for <span class=\"notranslate\">Wix</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Wix</span>の無料メール転送 &#124; <span class=\"notranslate\">Forward Email</span>"
+  "Free Email Forwarding for <span class=\"notranslate\">Wix</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Wix</span>の無料メール転送 &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Free Email Forwarding Service for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Free Email Forwarding Service for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.",
+  "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.",
+  "via": "via",
+  "reset your password": "reset your password"
 }
