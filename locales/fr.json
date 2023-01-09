@@ -3385,5 +3385,16 @@
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "Vous acceptez notre <a href=\"%s\" target=\"_blank\">politique de confidentialité</a> et nos <a href=\"%s\" target=\"_blank\">conditions</a> .",
   "via": "via",
   "reset your password": "reset your password",
-  "Software License": "Software License"
+  "Software License": "Software License",
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Wix</span>.": "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Wix</span>.",
+  "Frequently Asked Questions &#124; <span class=\"notranslate\">Forward Email</span>": "Frequently Asked Questions &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Free DNS email forwarding configuration, questions, guides, and answers.": "Free DNS email forwarding configuration, questions, guides, and answers.",
+  "Manage your Forward Email account, domains, and email forwarding aliases.": "Manage your Forward Email account, domains, and email forwarding aliases.",
+  "Privacy-focused, open-source, and free email forwarding service. Send and receive as <span class=\"notranslate\">you@your-domain.com</span>.": "Privacy-focused, open-source, and free email forwarding service. Send and receive as <span class=\"notranslate\">you@your-domain.com</span>.",
+  "Get a free account for custom domain email forwarding service.": "Get a free account for custom domain email forwarding service.",
+  "Get disposable email forwarding addresses using your custom domain name.": "Get disposable email forwarding addresses using your custom domain name.",
+  "Read our terms and conditions of use for our email forwarding service.": "Read our terms and conditions of use for our email forwarding service.",
+  "Learn more about Forward Email and the history of our service.": "Learn more about Forward Email and the history of our service.",
+  "Read our privacy policy for our email forwarding service.": "Read our privacy policy for our email forwarding service.",
+  "Authenticate yourself with optional OTP to log in.": "Authenticate yourself with optional OTP to log in."
 }
