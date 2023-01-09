@@ -2,6 +2,7 @@ const I18N = require('@ladjs/i18n');
 const isSANB = require('is-string-and-not-blank');
 const { parse } = require('node-html-parser');
 
+const phrases = require('#config/phrases');
 const i18nConfig = require('#config/i18n');
 const logger = require('#helpers/logger');
 const markdown = require('#helpers/markdown');
@@ -113,7 +114,7 @@ function fixTableOfContents(content, i18n, options) {
   }
 
   const str = i18n.api.t({
-    phrase: 'Table of Contents',
+    phrase: phrases.TABLE_OF_CONTENTS,
     locale: (options && options.locale) || i18n.getLocale()
   });
 
@@ -125,7 +126,7 @@ function fixTableOfContents(content, i18n, options) {
   ul.remove();
 
   const search = i18n.api.t({
-    phrase: 'Search page',
+    phrase: phrases.SEARCH_PAGE,
     locale: (options && options.locale) || i18n.getLocale()
   });
 

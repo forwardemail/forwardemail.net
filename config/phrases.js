@@ -15,6 +15,8 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  SEARCH_PAGE: 'Search page',
+  TABLE_OF_CONTENTS: 'Table of Contents',
   HELLO: 'Hello',
   WWW_WARNING:
     'It looks like you accidentally included "www." in your domain name.  Did you mean example.com instead of www.example.com?',
