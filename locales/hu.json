@@ -3384,5 +3384,6 @@
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "Adatvédelemre összpontosító, nyílt forráskódú és ingyenes e-mail-továbbítási szolgáltatás alkotók, fejlesztők és vállalkozások számára. Küldjön és fogadjon e-maileket a <span class=\"notranslate\">you@your-domain.com</span> .",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "Ön elfogadja <a href=\"%s\" target=\"_blank\">adatvédelmi szabályzatunkat</a> és <a href=\"%s\" target=\"_blank\">feltételeinket</a> .",
   "via": "keresztül",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }

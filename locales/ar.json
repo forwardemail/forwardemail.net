@@ -3384,5 +3384,6 @@
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "خدمة إعادة توجيه بريد إلكتروني تركز على الخصوصية ومفتوحة المصدر ومجانية للمبدعين والمطورين والشركات. أرسل واستقبل البريد الإلكتروني كـ <span class=\"notranslate\">you@your-domain.com</span> .",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "أنت توافق على <a href=\"%s\" target=\"_blank\">سياسة الخصوصية</a> <a href=\"%s\" target=\"_blank\">والشروط</a> الخاصة بنا.",
   "via": "عبر",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }

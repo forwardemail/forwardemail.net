@@ -3390,5 +3390,6 @@
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "Personvernfokusert, åpen kildekode og gratis videresendingstjeneste for e-post for skapere, utviklere og bedrifter. Send og motta e-post som <span class=\"notranslate\">you@your-domain.com</span> .",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "Du godtar våre <a href=\"%s\" target=\"_blank\">retningslinjer for personvern</a> og <a href=\"%s\" target=\"_blank\">vilkår</a> .",
   "via": "via",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }

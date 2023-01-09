@@ -3384,5 +3384,6 @@
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "크리에이터, 개발자, 비즈니스를 위한 개인 정보 보호에 중점을 둔 오픈 소스 무료 이메일 전달 서비스입니다. <span class=\"notranslate\">you@your-domain.com</span> 으로 이메일을 보내고 받습니다.",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "귀하는 당사의 <a href=\"%s\" target=\"_blank\">개인정보 보호정책</a> 및 <a href=\"%s\" target=\"_blank\">약관</a> 에 동의합니다.",
   "via": "~을 통해",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }
