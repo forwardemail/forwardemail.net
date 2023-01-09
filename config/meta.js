@@ -29,38 +29,56 @@ module.exports = function (config) {
     // in the title bar in the user's browser
     '/': [
       `Free Email Forwarding Service for Custom Domains ${lad}`,
-      'Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class="notranslate">you@your-domain.com</span>.'
+      'Privacy-focused, open-source, and free email forwarding service. Send and receive as <span class="notranslate">you@your-domain.com</span>.'
     ],
-    '/about': [`About ${lad}`, `Learn more about ${config.appName}`],
+    '/about': [
+      `About ${lad}`,
+      `Learn more about ${config.appName} and the history of our service.`
+    ],
     '/pricing': [
       `Pricing ${lad}`,
-      'Free email forwarding for domains with features including Custom Domain Email Forwarding, Disposable Addresses, Multiple Recipients, Wildcards, and more!'
+      'Custom domain DNS email forwarding with disposable addresses, unlimited aliases, catch-all, and more.'
     ],
-    '/faq': [`FAQ ${lad}`, 'Read frequently asked questions about our service'],
+    '/faq': [
+      `Frequently Asked Questions ${lad}`,
+      'Free DNS email forwarding configuration, questions, guides, and answers.'
+    ],
     '/email-forwarding-api': [
       `Email Forwarding API ${lad}`,
-      'Programmatic API access to email forwarding aliases, domains, and more.'
+      'Developers love our RESTful email forwarding API for custom domains.'
     ],
     '/free-email-webhooks': [
       `Free Email Webhooks ${lad}`,
-      'Create free email forwarding webhooks.  We are the best alternative to Mailgun.'
+      'Send email with HTTP using our developer webhooks and DNS email forwarding service.'
     ],
     '/email-forwarding-regex-pattern-filter': [
       `Email Forwarding Regex Pattern Filter ${lad}`,
-      'Create email forwarding aliases with regex pattern filtering and substitution.'
+      'Send email with regular expression matching and DNS email forwarding service.'
     ],
-    '/terms': [`Terms ${lad}`, 'Read our terms and conditions of use'],
-    '/privacy': [`Privacy Policy ${lad}`, 'Read our privacy policy'],
+    '/terms': [
+      `Terms ${lad}`,
+      'Read our terms and conditions of use for our email forwarding service.'
+    ],
+    '/privacy': [
+      `Privacy Policy ${lad}`,
+      'Read our privacy policy for our email forwarding service.'
+    ],
     '/help': [
       `Help ${lad}`,
       `Ask ${config.appName} your questions or leave comments`
     ],
-    '/denylist': [`Denylist ${lad}`, 'Denylist removal request'],
-    '/logout': [`Sign out of ${lad}`, 'Sign out of your account'],
-    '/register': [`Sign up ${lad}`, `Create a ${config.appName} account`],
+    '/denylist': [
+      `Denylist ${lad}`,
+      'Submit your email, domain, or IP address for DNS denylist removal.'
+    ],
+    '/logout': [`Sign out of ${lad}`, 'Sign out of your account now.'],
+    '/register': [
+      `Sign up ${lad}`,
+      'Get a free account for custom domain email forwarding service.'
+    ],
     '/disposable-addresses': [
       `Disposable Addresses ${lad}`,
-      'Try disposable email addresses with our short and memorable vanity domains, or you can use a custom domain name for disposable addresses.'
+      'Get disposable email forwarding addresses using your custom domain name.'
     ],
     '/guides': [
       `Guides ${lad}`,
@@ -68,52 +86,55 @@ module.exports = function (config) {
     ],
     '/guides/send-mail-as-using-gmail': [
       `How to Send Mail As using Gmail ${lad}`,
-      'Follow our quick video guide and step by step instructions to setup your domain name with Send Mail As using Gmail.'
+      'Send email from your business custom domain name with Gmail Send Mail As.'
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
       `Port 25 blocked by ISP workaround ${lad}`,
-      'Our service allows you to workaround port blocking set by your Internet Service Provider on port 25.  Simple follow our guide to workaround this issue in minutes.'
+      'Workaround port blocking set by your Internet Service Provider on port 25.'
     ],
     '/domain-registration': [
       `Register a domain name ${lad}`,
-      'Buy a custom domain name for email forwarding'
+      'Buy a custom domain name for email forwarding.'
     ],
     '/reserved-email-addresses': [
       `Reserved Email Addresses ${lad}`,
-      'List of 1250+ email addresses reserved for security concerns'
+      'List of 1250+ email addresses reserved for security concerns.'
     ],
     '/my-account': [
       `My Account ${lad}`,
-      `Manage your ${config.appName} profile`
+      `Manage your ${config.appName} account, domains, and email forwarding aliases.`
     ],
-    '/admin': [`Admin ${lad}`, `Access your ${config.appName} admin`],
+    '/admin': [`Admin ${lad}`, `Access your ${config.appName} admin.`],
     '/forgot-password': [
       `Forgot password ${lad}`,
-      'Reset your account password'
+      'Reset your account password to regain access to your account.'
     ],
     '/reset-password': [
       `Reset password ${lad}`,
-      'Confirm your password reset token'
+      'Confirm your password reset token.'
     ],
-    '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in']
+    '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in.']
   };
 
   // guides for each provider
   for (const provider of nsProviders) {
     meta[`/guides/${provider.slug}`] = [
       `Free Email Forwarding for <span class="notranslate">${provider.name}</span> ${lad}`,
-      `Set up free email forwarding for your <span class="notranslate">${provider.name}</span> domain name. Get unlimited ${provider.name} email aliases, send and receive email, and more.`
+      `Free and custom domain email forwarding DNS service for <span class="notranslate">${provider.name}</span>.`
     ];
   }
 
-  meta[config.loginRoute] = [`Log in ${lad}`, 'Log in to your account'];
+  meta[config.loginRoute] = [
+    `Log in ${lad}`,
+    'Log in to your free email forwarding service account.'
+  ];
   meta[config.verifyRoute] = [
     `Verify email ${lad}`,
-    `Verify your ${config.appName} email`
+    `Verify your ${config.appName} email address.`
   ];
   meta[config.otpRoutePrefix] = [
     `Two Factor Auth ${lad}`,
-    'Authenticate yourself with optional OTP to log in'
+    'Authenticate yourself with optional OTP to log in.'
   ];
   return meta;
 };
