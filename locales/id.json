@@ -3384,5 +3384,6 @@
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "Berfokus pada privasi, sumber terbuka, dan layanan penerusan email gratis untuk pembuat, pengembang, dan bisnis. Kirim dan terima email sebagai <span class=\"notranslate\">you@your-domain.com</span> .",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "Anda menyetujui <a href=\"%s\" target=\"_blank\">Kebijakan Privasi</a> dan <a href=\"%s\" target=\"_blank\">Ketentuan</a> kami.",
   "via": "melalui",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }

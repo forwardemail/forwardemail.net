@@ -3075,5 +3075,6 @@
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "面向创作者、开发者和企业的注重隐私的开源免费电子邮件转发服务。以<span class=\"notranslate\">you@your-domain.com</span>的身份发送和接收电子邮件。",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "您同意我们的<a href=\"%s\" target=\"_blank\">隐私政策</a>和<a href=\"%s\" target=\"_blank\">条款</a>。",
   "via": "通过",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }

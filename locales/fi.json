@@ -3230,5 +3230,6 @@
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "Yksityisyyteen keskittyvä, avoimen lähdekoodin ja ilmainen sähköpostin edelleenlähetyspalvelu sisällöntuottajille, kehittäjille ja yrityksille. Lähetä ja vastaanota sähköpostia <span class=\"notranslate\">you@your-domain.com</span> .",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "Hyväksyt <a href=\"%s\" target=\"_blank\">tietosuojakäytäntömme</a> ja <a href=\"%s\" target=\"_blank\">käyttöehtomme</a> .",
   "via": "kautta",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }

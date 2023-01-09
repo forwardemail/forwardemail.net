@@ -2395,5 +2395,6 @@
   "Free Email Forwarding Service for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Kostenloser E-Mail-Weiterleitungsdienst für benutzerdefinierte Domänen &#124; <span class=\"notranslate\">Forward Email</span>",
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "Datenschutzorientierter, quelloffener und kostenloser E-Mail-Weiterleitungsdienst für Ersteller, Entwickler und Unternehmen. Senden und empfangen Sie E-Mails als <span class=\"notranslate\">you@your-domain.com</span> .",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "Sie stimmen unseren <a href=\"%s\" target=\"_blank\">Datenschutzrichtlinien</a> und <a href=\"%s\" target=\"_blank\">Bedingungen</a> zu.",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }

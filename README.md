@@ -5,7 +5,7 @@
   <a href="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml"><img src="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml/badge.svg" alt="build status" /></a>
   <a href="https://github.com/sindresorhus/xo"><img src="https://img.shields.io/badge/code_style-XO-5ed9c7.svg" alt="code style" /></a>
   <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/styled_with-prettier-ff69b4.svg" alt="styled with prettier" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/forwardemail/forwardemail.net.svg" alt="license" /></a>
+  <a href="https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE"><img src="https://img.shields.io/github/license/forwardemail/forwardemail.net.svg" alt="license" /></a>
 </div>
 <br />
 

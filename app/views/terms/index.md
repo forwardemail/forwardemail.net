@@ -18,7 +18,7 @@ By accessing this web site, you are agreeing to be bound by these web site Terms
 * [Links](#links)
 * [Site Terms of Use Modifications](#site-terms-of-use-modifications)
 * [Governing Law](#governing-law)
-* [License](#license)
+* [Software License](#software-license)
 * [Additional Disclosures](#additional-disclosures)
 
 
@@ -98,9 +98,9 @@ Any claim relating to Forward Email's web site shall be governed by the laws of 
 General Terms and Conditions applicable to Use of a Web Site.
 
 
-## License
+## Software License
 
-[Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © [Niftylettuce, LLC.](https://niftylettuce.com/)
+[Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE)
 
 
 ## Additional Disclosures

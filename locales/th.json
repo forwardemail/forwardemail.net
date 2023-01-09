@@ -3384,5 +3384,6 @@
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "เน้นความเป็นส่วนตัว เป็นโอเพ่นซอร์ส และบริการส่งต่ออีเมลฟรีสำหรับผู้สร้าง นักพัฒนา และธุรกิจ ส่งและรับอีเมลเป็น <span class=\"notranslate\">you@your-domain.com</span>",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "คุณยอมรับ <a href=\"%s\" target=\"_blank\">นโยบายความเป็นส่วนตัว</a> และ <a href=\"%s\" target=\"_blank\">ข้อกำหนด</a> ของเรา",
   "via": "ทาง",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }

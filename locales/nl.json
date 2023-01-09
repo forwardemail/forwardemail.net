@@ -3384,5 +3384,6 @@
   "Privacy-focused, open-source, and free email forwarding service for creators, developers, and businesses. Send and receive email as <span class=\"notranslate\">you@your-domain.com</span>.": "Op privacy gerichte, open-source en gratis service voor het doorsturen van e-mail voor videomakers, ontwikkelaars en bedrijven. E-mail verzenden en ontvangen als <span class=\"notranslate\">you@your-domain.com</span> .",
   "You agree to our <a href=\"%s\" target=\"_blank\">Privacy Policy</a> and <a href=\"%s\" target=\"_blank\">Terms</a>.": "U gaat akkoord met ons <a href=\"%s\" target=\"_blank\">privacybeleid</a> en onze <a href=\"%s\" target=\"_blank\">voorwaarden</a> .",
   "via": "via",
-  "reset your password": "reset your password"
+  "reset your password": "reset your password",
+  "Software License": "Software License"
 }
