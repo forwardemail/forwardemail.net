@@ -53,10 +53,9 @@ module.exports = (redis) => ({
           '/img/(.*)',
           '/js/(.*)',
           '/fonts/(.*)',
-          '/browserconfig(.*)',
-          '/robots(.*)',
-          '/site(.*)',
-          '/favicon(.*)'
+          '/browserconfig.xml',
+          '/robots.txt',
+          '/site.webmanifest'
         ]
       }
     : false,

@@ -65,6 +65,16 @@ footer.mt-auto
         .flex-wrap.flex-fill
           h3.h5.mb-2= t("Guides")
           ul.list-unstyled.mb-0
+            //- TODO: once we launch SMTP/IMAP we can unlock this and add more
+            //-.
+              li
+                a.d-block.text-light.py-2.py-md-0(
+                  href=l('/guides/send-email-with-your-own-domain')
+                )= t('Send email with your own domain')
+              li
+                a.d-block.text-light.py-2.py-md-0(
+                  href=l('/guides/free-professional-business-email-with-custom-domain')
+                )= t('Free professional business email with custom domain')
             li
               a.d-block.text-light.py-2.py-md-0(
                 href=l('/guides/send-mail-as-using-gmail')
