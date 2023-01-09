@@ -129,12 +129,13 @@ footer.mt-auto
               li: a.d-block.text-light.py-2.py-md-0(href=l("/about"))= t("About")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/terms"))= t("Terms")
-              li: a.d-block.text-light.py-2.py-md-0(
-                href="https://status.forwardemail.net/",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                = t("Status Page")
+              if !isBot(ctx.get('User-Agent'))
+                li: a.d-block.text-light.py-2.py-md-0(
+                  href="https://status.forwardemail.net/",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  = t("Status Page")
               if isBot(ctx.get('User-Agent'))
                 li
                   a.d-block.text-light.py-2.py-md-0(
