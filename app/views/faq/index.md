@@ -1988,9 +1988,6 @@ The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and
 
 At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
 
-
-##
-
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/

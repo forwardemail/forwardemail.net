@@ -33,7 +33,7 @@ async function listAliases(ctx) {
 
   domain.aliases = _.sortBy(domain.aliases, sortFn ? [sortFn] : ['name']);
 
-  if (!sortFn || (isSANB(ctx.query.sort) && ctx.query.sort.startsWith('-')))
+  if (isSANB(ctx.query.sort) && ctx.query.sort.startsWith('-'))
     domain.aliases = _.reverse(domain.aliases);
 
   // slice for page

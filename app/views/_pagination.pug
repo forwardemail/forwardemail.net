@@ -1,6 +1,6 @@
 mixin paginate(tableSelector)
   if pageCount && pageCount > 1
-    nav.d-flex.justify-content-center(aria-label="Page navigation")
+    nav.d-flex.justify-content-center.mt-3.mt-md-0(aria-label="Page navigation")
       ul.pagination
         if paginate.hasPreviousPages
           li.page-item
@@ -67,4 +67,4 @@ mixin paginate(tableSelector)
             href=paginate.href({ page: 1, limit })
           )= t(limit.toString())
   if itemCount && itemCount > 1
-    p.small.text-muted.text-center!= t('<span class="notranslate">%d</span> results found', itemCount)
+    p(class=pageCount && pageCount > 1 ? '' : 'mt-3 mt-md-0').small.text-muted.text-center!= t('<span class="notranslate">%d</span> results found', itemCount)
