@@ -4,23 +4,19 @@ include ../../../_pagination
 - let numCols = 4;
 
 .table-responsive
-  table.table.table-hover.table-bordered
+  table.table.table-hover.table-bordered.table-sm
     thead.thead-dark
       tr
         th(scope="col")
           +sortHeader('name', 'Alias', '#table-aliases')
-        if domain.group === 'admin' && domain.plan === 'team'
-          - numCols++;
-          th(scope="col")
-            +sortHeader('user', 'Team Member', '#table-aliases')
         if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
           - numCols++;
-          th(scope="col")
-            +sortHeader('description', 'Description & Labels', '#table-aliases')
-        th.text-center(scope="col")
+          th.d-none.d-lg-table-cell(scope="col")
+            +sortHeader('description', 'Description', '#table-aliases')
+        th.text-center.d-none.d-lg-table-cell(scope="col")
           +sortHeader('is_enabled', 'Active', '#table-aliases')
-        th.align-middle(scope="col")= t("Recipients")
-        th.text-center.text-md-left.align-middle(scope="col")= t("Quick Links")
+        th.align-middle(scope="col").d-none.d-lg-table-cell= t("Recipients")
+        th.text-center.text-md-left.align-middle.d-none.d-lg-table-cell(scope="col")= t("Quick Links")
     tbody
       if domain.aliases.length === 0
         td.alert.alert-info(colspan=numCols)= t("No aliases exist for that search.")
@@ -28,22 +24,120 @@ include ../../../_pagination
         each alias in domain.aliases
           tr
             td.align-middle
-              p.mb-0.markdown-body.ml-0.mr-0: code= `${alias.name}@${domain.name}`
-            if domain.group === 'admin' && domain.plan === 'team'
-              td.align-middle= alias.user.email
+              p.mb-0.markdown-body.ml-0.mr-0
+                button.btn.btn-sm.btn-link.d-lg-none(
+                  type="button",
+                  data-placement="bottom",
+                  data-toggle="tooltip",
+                  data-title=alias.is_enabled ? t("Enabled") : t("Disabled"),
+                  class=alias.is_enabled ? "text-success" : "text-danger"
+                )
+                  i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
+                code.text-nowrap= `${alias.name}@${domain.name}`
+              //- on mobile we need to render this different
+              .d-lg-none.p-2
+                if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
+                  if isSANB(alias.description)
+                    p.mb-1.small= alias.description
+                  if Array.isArray(alias.labels)
+                    ul.list-inline.mb-1
+                      each label in alias.labels
+                        li.list-inline-item
+                          span.badge.text-monospace.font-weight-normal(
+                            class=label === "catch-all" ? "badge-success" : "badge-primary"
+                          )= label === "catch-all" ? t("catch-all") : label
+                  if domain.group === 'admin' && domain.plan === 'team'
+                    p.mb-1.small.text-muted.text-nowrap
+                      small
+                        = t('By')
+                        = ': '
+                        = alias.user.email
+                p.font-weight-bold.small.mb-1
+                  = t('Recipients')
+                  = ':'
+                ul.list-inline.mb-1
+                  //- no recipient verification required
+                  if domain.plan === 'free' || !alias.has_recipient_verification
+                    each recipient in alias.recipients
+                      li.list-inline-item.markdown-body
+                        code.badge.badge-dark.text-monospace.font-weight-normal.text-nowrap
+                          if validator.isEmail(recipient) || validator.isURL(recipient)
+                            = recipient
+                          else
+                            = `${alias.name}@${recipient}`
+                  else
+                    each recipient in alias.recipients
+                      li.list-inline-item.badge.badge-dark.text-monospace.font-weight-normal.mb-1.markdown-body
+                        if alias.verified_recipients.includes(recipient)
+                          //- Verified
+                          button.btn.btn-sm.btn-link.text-success(
+                            type="button",
+                            data-placement="bottom",
+                            data-toggle="tooltip",
+                            data-title=t("Verified")
+                          )
+                            i.fa.fa-fw.fa-check
+                        else if alias.pending_recipients.includes(recipient)
+                          //- Sent and Pending
+                          button.btn.btn-sm.btn-link.text-primary(
+                            type="button",
+                            data-placement="bottom",
+                            data-toggle="tooltip",
+                            data-title=t("Pending Verification")
+                          )
+                            i.fa.fa-fw.fa-info-circle
+                        else
+                          //- Not Sent (Queued)
+                          button.btn.btn-sm.btn-link.text-warning(
+                            type="button",
+                            data-placement="bottom",
+                            data-toggle="tooltip",
+                            data-title=t("Queued Verification Email")
+                          )
+                            i.fa.fa-fw.fa-exclamation-circle
+                        if validator.isEmail(recipient) || validator.isURL(recipient)
+                          code.text-nowrap= recipient
+                        else
+                          code.text-nowrap= `${alias.name}@${recipient}`
+
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    a.btn.btn-sm.btn-dark(
+                      href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
+                    )
+                      i.fa.fa-pencil
+                      = " "
+                      = t("Edit Alias")
+                  li.list-inline-item
+                    form.ajax-form.confirm-prompt.d-inline-block(
+                      action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
+                      method="POST"
+                    )
+                      input(type="hidden", name="_method", value="DELETE")
+                      button.btn.btn-sm.btn-danger(type="submit")
+                        i.fa.fa-trash
+                        = " "
+                        = t("Delete Alias")
+
             if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
-              td.align-middle
+              td.align-middle.d-none.d-lg-table-cell
                 if isSANB(alias.description)
                   p.mb-0.small= alias.description
                 if Array.isArray(alias.labels)
                   ul.list-inline.mb-0
                     each label in alias.labels
-                      li.list-inline-item.h5
-                        span.badge.badge-pill.text-monospace.font-weight-normal.py-2.px-3(
+                      li.list-inline-item
+                        span.badge.text-monospace.font-weight-normal(
                           class=label === "catch-all" ? "badge-success" : "badge-primary"
                         )= label === "catch-all" ? t("catch-all") : label
-            td.align-middle.text-center
-              button.btn.btn-link(
+                if domain.group === 'admin' && domain.plan === 'team'
+                  .small.text-muted.text-nowrap
+                    small
+                      = t('By')
+                      = ': '
+                      = alias.user.email
+            td.align-middle.text-center.d-none.d-lg-table-cell
+              button.btn.btn-sm.btn-link(
                 type="button",
                 data-placement="bottom",
                 data-toggle="tooltip",
@@ -51,23 +145,23 @@ include ../../../_pagination
                 class=alias.is_enabled ? "text-success" : "text-danger"
               )
                 i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
-            td.align-middle
+            td.align-middle.d-none.d-lg-table-cell
               ul.list-inline.mb-0
                 //- no recipient verification required
                 if domain.plan === 'free' || !alias.has_recipient_verification
                   each recipient in alias.recipients
-                    li.list-inline-item.h5
-                      span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal.py-2.px-3
+                    li.list-inline-item.markdown-body
+                      code.badge.badge-dark.text-monospace.font-weight-normal.text-nowrap
                         if validator.isEmail(recipient) || validator.isURL(recipient)
                           = recipient
                         else
                           = `${alias.name}@${recipient}`
                 else
                   each recipient in alias.recipients
-                    li.list-inline-item.badge.badge-pill.badge-dark.text-monospace.font-weight-normal.py-2.px-3.mb-1
+                    li.list-inline-item.badge.badge-dark.text-monospace.font-weight-normal.mb-1.markdown-body
                       if alias.verified_recipients.includes(recipient)
                         //- Verified
-                        button.btn.btn-link.text-success(
+                        button.btn.btn-sm.btn-link.text-success(
                           type="button",
                           data-placement="bottom",
                           data-toggle="tooltip",
@@ -76,7 +170,7 @@ include ../../../_pagination
                           i.fa.fa-fw.fa-check
                       else if alias.pending_recipients.includes(recipient)
                         //- Sent and Pending
-                        button.btn.btn-link.text-primary(
+                        button.btn.btn-sm.btn-link.text-primary(
                           type="button",
                           data-placement="bottom",
                           data-toggle="tooltip",
@@ -85,7 +179,7 @@ include ../../../_pagination
                           i.fa.fa-fw.fa-info-circle
                       else
                         //- Not Sent (Queued)
-                        button.btn.btn-link.text-warning(
+                        button.btn.btn-sm.btn-link.text-warning(
                           type="button",
                           data-placement="bottom",
                           data-toggle="tooltip",
@@ -93,22 +187,22 @@ include ../../../_pagination
                         )
                           i.fa.fa-fw.fa-exclamation-circle
                       if validator.isEmail(recipient) || validator.isURL(recipient)
-                        = recipient
+                        code.text-nowrap= recipient
                       else
-                        = `${alias.name}@${recipient}`
-            td.align-middle(style="width: 20%")
-              a.btn.btn-dark.mb-1(
+                        code.text-nowrap= `${alias.name}@${recipient}`
+            td.align-middle.d-none.d-lg-table-cell(style="width: 20%")
+              a.btn.btn-sm.btn-dark.btn-block.mb-1(
                 href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
               )
                 i.fa.fa-pencil
                 = " "
                 = t("Edit Alias")
-              form.ajax-form.confirm-prompt.d-inline-block(
+              form.ajax-form.confirm-prompt.d-block(
                 action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
                 method="POST"
               )
                 input(type="hidden", name="_method", value="DELETE")
-                button.btn.btn-danger(type="submit")
+                button.btn.btn-sm.btn-danger.btn-block(type="submit")
                   i.fa.fa-trash
                   = " "
                   = t("Delete Alias")

@@ -20,19 +20,19 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
     div&attributes(attributes)
-      .bg-light.py-5(class=onboardContainerClass)
+      .bg-light.py-3.py-md-5(class=onboardContainerClass)
         .container
           .row
             .col
               if onboardHeader
-                h2.h1.text-center!= onboardHeader
+                h2.h3.text-center!= onboardHeader
               if onboardText
-                p.text-center.mb-0.text-muted!= onboardText
-              form.ajax-form.pt-4.mb-3(action=onboardFormAction, method="POST")
+                p.text-center.mb-0.text-muted.small!= onboardText
+              form.ajax-form.pt-3.mb-3(action=onboardFormAction, method="POST")
                 .form-row
                   .col-12.col-md-6.offset-md-3
                     .form-group.floating-label
-                      input#input-onboard-domain.form-control.form-control-lg(
+                      input#input-onboard-domain.form-control(
                         type="text",
                         name="domain",
                         value=domainName ? domainName : domain && domain.name || '',
@@ -41,7 +41,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                       )
                       label(for="input-onboard-domain")= t("Your custom domain")
                     .form-group.floating-label
-                      input#input-onboard-email.form-control.form-control-lg(
+                      input#input-onboard-email.form-control(
                         type="email",
                         autocomplete="email",
                         name="email",
@@ -55,12 +55,12 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                         data-sitekey=config.hcaptchaSiteKey,
                         data-error-callback="hCaptchaError"
                       )
-                    button.btn.btn-success.btn-lg.btn-block(type="submit")
+                    button.btn.btn-success.btn-block(type="submit")
                       = t("Continue")
                       = " "
                       i.fa.fa-angle-double-right.align-middle
-                    p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
+                    p.mt-3.mb-0.text-center.small.text-black-50: small!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
               if onboardKeepReading
-                p.text-center.mb-0.small: a.text-black-50.font-weight-bold(
+                p.text-center.mb-0.small: a.text-black-50.font-weight-bold.small(
                   href=onboardKeepReading
                 )= t("Not interested?  Click here to keep reading")

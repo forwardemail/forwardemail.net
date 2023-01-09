@@ -49,6 +49,7 @@ function fixTableOfContents(content) {
 }
 */
 
+// eslint-disable-next-line complexity
 function fixTableOfContents(content, i18n, options) {
   const root = parse(content);
 
@@ -84,10 +85,94 @@ function fixTableOfContents(content, i18n, options) {
     const anchor = header.querySelector('a');
     if (!anchor) continue;
     anchor.setAttribute('class', 'anchor');
+
+    if (lis.length > 5) {
+      // eslint-disable-next-line unicorn/prefer-dom-node-dataset
+      anchor.setAttribute('data-toggle', 'collapse');
+      anchor.setAttribute('role', 'button');
+      anchor.setAttribute('aria-expanded', 'false');
+      anchor.setAttribute(
+        'aria-controls',
+        `collapse-${anchor.getAttribute('id')}`
+      );
+      // eslint-disable-next-line unicorn/prefer-dom-node-dataset
+      anchor.setAttribute(
+        'data-target',
+        `#collapse-${anchor.getAttribute('id')}`
+      );
+    }
+
     anchor.removeAttribute('aria-hidden');
     anchor.set_content(
       '<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>'
     );
+
+    //
+    // if this header was an <h2> then we can assume it to be table of contents
+    // and for each next sibling element, up until the next <h2> we push it to an array
+    // of nodes, and then we replace all these nodes with one combined node wrapped in a div
+    // (similar to this example: <https://stackoverflow.com/a/7968463>)
+    //
+    if (
+      lis.length > 5 &&
+      header.rawTagName === 'h2' &&
+      (!header.nextElementSibling ||
+        (header.nextElementSibling && header.nextElementSibling !== ul)) &&
+      anchor.getAttribute('id') !== 'table-of-contents'
+    ) {
+      //
+      // get the child node of the header that is a text node (nodeType === 3)
+      // and then replace it with an anchor tag wrapped and custom styled
+      // a.btn.btn-link.btn-block.text-left.text-dark.font-weight-bold.p-0
+      //
+
+      // replace the text node
+      const lastChildRawText = header.lastChild.rawText;
+      // eslint-disable-next-line unicorn/prefer-dom-node-remove
+      header.removeChild(header.lastChild);
+
+      // add a question mark as well as collapse styling
+      // eslint-disable-next-line unicorn/prefer-dom-node-append
+      header.appendChild(
+        parse(
+          `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-dark font-weight-bold p-0" href="#${anchor.getAttribute(
+            'id'
+          )}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${anchor.getAttribute(
+            'id'
+          )}" data-target="#collapse-${anchor.getAttribute(
+            'id'
+          )}">${lastChildRawText}${options.isFAQ ? '?' : ''}</a>`
+        )
+      );
+
+      let node = header;
+      let html = '';
+      const nodes = [];
+      while (
+        node.nextElementSibling &&
+        node.nextElementSibling.rawTagName !== 'h2'
+      ) {
+        node = node.nextElementSibling;
+        html += node.toString();
+        nodes.push(node);
+      }
+
+      //
+      // get outer HTML of all these nodes joined together
+      // and then remove all of the nodes
+      // and then after the current <h2> we need to append it wrapped
+      //
+      for (const node of nodes) {
+        node.remove();
+      }
+
+      header.replaceWith(
+        header.toString() +
+          `<div class="collapse" id="collapse-${anchor.getAttribute(
+            'id'
+          )}">${html}</div>`
+      );
+    }
   }
 
   const h2s = root.querySelectorAll('h2');
@@ -95,11 +180,20 @@ function fixTableOfContents(content, i18n, options) {
   for (const li of lis) {
     const a = li.querySelector('a');
     const { text } = a;
-    // eslint-disable-next-line unicorn/prefer-dom-node-dataset
-    a.setAttribute('data-dismiss', 'modal');
-    a.setAttribute('class', 'list-group-item list-group-item-action');
     const href = a.getAttribute('href');
     const id = href.slice(1);
+    // eslint-disable-next-line unicorn/prefer-dom-node-dataset
+    a.setAttribute('data-dismiss', 'modal');
+    a.setAttribute('aria-controls', `collapse-${id}`);
+    // eslint-disable-next-line unicorn/prefer-dom-node-dataset
+    a.setAttribute('data-target', `#collapse-${id}`);
+    // eslint-disable-next-line unicorn/prefer-dom-node-dataset
+    a.setAttribute('data-toggle', 'collapse');
+    a.setAttribute('class', 'list-group-item list-group-item-action');
+    // add a question mark
+    a.firstChild._rawText = `${a.firstChild._rawText}${
+      options.isFAQ ? '?' : ''
+    }`;
     for (const h of h2s) {
       const anchor = h.querySelector('a');
       if (!anchor) continue;
@@ -129,6 +223,9 @@ function fixTableOfContents(content, i18n, options) {
     phrase: phrases.SEARCH_PAGE,
     locale: (options && options.locale) || i18n.getLocale()
   });
+
+  if (lis.length <= 5)
+    return `<div class="markdown-body">${root.toString()}</div>`;
 
   return `
     <div class="fixed-bottom bg-dark border-top border-light p-2 text-center is-bot no-js">

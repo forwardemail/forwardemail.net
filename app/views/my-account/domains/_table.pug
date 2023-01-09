@@ -2,7 +2,7 @@ include ../../_sort-header
 include ../../_pagination
 
 .table-responsive
-  table.table.table-hover.table-bordered
+  table.table.table-hover.table-bordered.table-sm
     thead.thead-dark
       tr
         th(scope="col")
@@ -34,8 +34,8 @@ include ../../_pagination
                   = t('Plan')
             td.align-middle.d-none.d-lg-table-cell
               if domain.group === 'admin'
-                .btn-group
-                  button.btn.btn-dark.dropdown-toggle(
+                .btn-group.btn-group-sm
+                  button.btn.btn-sm.btn-dark.dropdown-toggle(
                     type="button",
                     data-toggle="dropdown",
                     aria-haspopup="true",
@@ -84,7 +84,7 @@ include ../../_pagination
             if domain.plan === 'free'
               td.align-middle.d-none.d-lg-table-cell.text-center= t("DNS-based")
             else
-              td.align-middle.d-none.d-lg-table-cell.text-center.h4: a.badge.badge-pill.badge-dark.px-3.py-2.font-weight-normal(
+              td.align-middle.d-none.d-lg-table-cell.text-center.h4: a.badge.badge-dark.font-weight-normal(
                 href=l(`/my-account/domains/${domain.name}/aliases`),
                 data-toggle="tooltip",
                 title=t("Manage Aliases")
@@ -93,7 +93,7 @@ include ../../_pagination
               if !domain.is_global || domain.is_global && domain.group === 'admin'
                 ul.list-inline.mb-0
                   li.list-inline-item
-                    button.btn.btn-link(
+                    button.btn.btn-sm.btn-link(
                       type="button",
                       data-placement="bottom",
                       data-toggle="tooltip",
@@ -108,13 +108,13 @@ include ../../_pagination
                       action=l(`/my-account/domains/${domain.name}/verify-records`),
                       method="POST"
                     )
-                      button.btn.btn-outline-dark(type="submit")
+                      button.btn.btn-sm.btn-outline-dark(type="submit")
                         i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
             td.align-middle.d-none.d-lg-table-cell.text-center
               if !domain.is_global || domain.is_global && domain.group === 'admin'
                 ul.list-inline.mb-0
                   li.list-inline-item
-                    button.btn.btn-link(
+                    button.btn.btn-sm.btn-link(
                       type="button",
                       data-placement="bottom",
                       data-toggle="tooltip",
@@ -129,20 +129,20 @@ include ../../_pagination
                       action=l(`/my-account/domains/${domain.name}/verify-records`),
                       method="POST"
                     )
-                      button.btn.btn-outline-dark(type="submit")
+                      button.btn.btn-sm.btn-outline-dark(type="submit")
                         i.fa.fa-fw.fa-refresh.d-block.d-lg-inline
             td.align-middle
               ul.list-inline.mb-0
                 if domain.group === 'admin'
                   li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
-                    a.btn.btn-dark.btn-block(
+                    a.btn.btn-sm.btn-dark.btn-block(
                       href=l(`/my-account/domains/${domain.name}`)
                     )
                       i.fa.fa-fw.fa-cog
                       = " "
                       = t("Setup Forwarding")
                 li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
-                  a.btn.btn-dark.btn-block(
+                  a.btn.btn-sm.btn-dark.btn-block(
                     href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
                     role=domain.plan === "free" ? "button" : false,
                     data-target=domain.plan === "free" ? "#modal-upgrade" : false,
@@ -153,8 +153,8 @@ include ../../_pagination
                     = t("Aliases")
                 if domain.group === 'admin'
                   li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
-                    .btn-group.btn-block
-                      button.btn.btn-dark.btn-block.dropdown-toggle(
+                    .btn-group.btn-block.btn-group-sm
+                      button.btn.btn-sm.btn-dark.btn-block.dropdown-toggle(
                         type="button",
                         data-toggle="dropdown",
                         aria-haspopup="true",
@@ -186,7 +186,7 @@ include ../../_pagination
                           href=l(`/pricing?domain=${domain.name}`)
                         )= t("See all plan features")
                   li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
-                    a.btn.btn-dark.btn-block(
+                    a.btn.btn-sm.btn-dark.btn-block(
                       href=l(`/my-account/domains/${domain.name}/advanced-settings`)
                     )
                       i.fa.fa-fw.fa-tools
@@ -195,7 +195,7 @@ include ../../_pagination
                 //-.
                   if domain.group === 'admin'
                     li.list-inline-item.d-block
-                      a(href=l(`/my-account/domains/${domain.name}/billing`)).btn.btn-dark.btn-block
+                      a(href=l(`/my-account/domains/${domain.name}/billing`)).btn.btn-sm.btn-dark.btn-block
                         i.fa.fa-fw.fa-receipt
                         = ' '
                         = t('Billing')
