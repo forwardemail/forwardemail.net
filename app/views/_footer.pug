@@ -115,8 +115,11 @@ footer.mt-auto
           hr.d-lg-none.w-100
           h3.h5.mb-2= t("Resources")
           ul.list-unstyled.mb-0
+            - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email")
+            if !isBot(ctx.get('User-Agent'))
+              - pricingPageHref += '#learn-more'
             li: a.d-block.text-light.py-2.py-md-0(
-              href=domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email")
+              href=pricingPageHref
             )
               if isBot(ctx.get('User-Agent'))
                 = t("Private Business Email")
