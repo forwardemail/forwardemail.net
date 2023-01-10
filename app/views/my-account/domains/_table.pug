@@ -77,7 +77,7 @@ include ../../_pagination
                             = ")"
                     .dropdown-divider
                     a.dropdown-item.small.text-muted(
-                      href=l(`/pricing?domain=${domain.name}`)
+                      href=l(`/private-business-email?domain=${domain.name}`)
                     )= t("See all plan features")
               else
                 = t(titleize(humanize(domain.plan)))
@@ -183,7 +183,7 @@ include ../../_pagination
                                 = ")"
                         .dropdown-divider
                         a.dropdown-item.small.text-muted(
-                          href=l(`/pricing?domain=${domain.name}`)
+                          href=l(`/private-business-email?domain=${domain.name}`)
                         )= t("See all plan features")
                   li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
                     a.btn.btn-sm.btn-dark.btn-block(

@@ -74,10 +74,14 @@ localeRouter
   })
   .get('/features', (ctx) => {
     ctx.status = 301;
-    ctx.redirect(ctx.state.l('/pricing'));
+    ctx.redirect(ctx.state.l('/private-business-email'));
+  })
+  .get('/pricing', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/private-business-email'));
   })
   .get(
-    '/pricing',
+    '/private-business-email',
     web.myAccount.retrieveDomains,
     web.myAccount.sortedDomains,
     render('pricing')

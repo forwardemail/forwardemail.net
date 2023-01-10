@@ -77,7 +77,7 @@ $('a[data-toggle="modal-anchor"]').on('click.modalAnchor', modalAnchor);
 // Adjust the hash of the page as you scroll down
 // (e.g. if you scroll past a section "Section A" to "Section B"
 // then the URL bar will update to #section-b
-$(window).on('scroll.changeHashOnScroll', changeHashOnScroll);
+$(window).on('scroll.changeHashOnScroll', debounce(changeHashOnScroll, 100));
 
 // Handle hash change when user clicks on links
 $body.on('click.handleHashChange', "a[href^='#']", handleHashChange);

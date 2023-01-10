@@ -144,7 +144,7 @@ block body
           .card.border-dark.mb-3
             h2.h6.card-header= t("Current Plan")
             .card-body
-              .alert.alert-success.small.mb-0!= t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a class="alert-link" href="%s">Billing</a> page and our <a class="alert-link" href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/pricing?domain=${domain.name}`))
+              .alert.alert-success.small.mb-0!= t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a class="alert-link" href="%s">Billing</a> page and our <a class="alert-link" href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/private-business-email?domain=${domain.name}`))
             .card-footer.text-right
               .btn-group
                 button.btn.btn-lg.btn-primary.dropdown-toggle(
@@ -174,7 +174,7 @@ block body
                           = t("DNS-based")
                           = ")"
                   .dropdown-divider
-                  a.dropdown-item.small.text-muted(href=l(`/pricing?domain=${domain.name}`))= t("See all plan features")
+                  a.dropdown-item.small.text-muted(href=l(`/private-business-email?domain=${domain.name}`))= t("See all plan features")
         if domain.group === 'admin'
           - const hasInvites = Array.isArray(domain.invites) && domain.invites.length > 0 && domain.plan === "team";
           .card.border-dark.mb-3

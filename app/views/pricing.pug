@@ -1,7 +1,7 @@
 extends layout
 
 block body
-  if !isBot(ctx.get('User-Agent'))
+  if !isBot(ctx.get('User-Agent')) && !user
     #modal-pricing-video.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -11,144 +11,234 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            #modal-pricing-video-title.h4.d-inline-block.ml-4= t("Learn about our plans")
+            #modal-pricing-video-title.h4.d-inline-block.ml-4= t("Private Business Email")
             button.close(type="button", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
           .modal-body
             .lazyframe(
-              title=t("Free Email Forwarding for Creators"),
+              title=t("Private Business Email"),
               style="width: 100%; height: 450px",
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
-  .py-3.py-md-4.py-lg-5.bg-light
+  if !user
+    .min-vh-80.d-flex.flex-column
+      .container.my-auto.pt-5
+        .row
+          .col-12.col-lg-6
+            h1.mb-3= t('Private Business Email')
+            p
+              = t('Free, professional, and private business email addresses.')
+              = ' '
+              != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@your-domain.com</span>.')
+            .d-block
+              a.btn.btn-success.btn-lg.mb-3(
+                href=l('/register'),
+                data-toggle='modal-anchor',
+                data-target='#modal-sign-up'
+              )
+                = t("Sign up free")
+                = ' '
+                .fa.fa-angle-double-right.align-middle
+            ul.list-unstyled.mb-0.text-left.d-inline-block
+              li
+                i.fa.fa-fw.fa-check-circle.text-success
+                = ' '
+                != t('Professional email with your domain')
+              li
+                i.fa.fa-fw.fa-check-circle.text-success
+                = ' '
+                != t('Works with <a class="font-weight-bold" href="%s">Gmail</a>, Outlook, and more', l('/guides/send-mail-as-using-gmail'))
+              li
+                i.fa.fa-fw.fa-check-circle.text-success
+                = ' '
+                != t('Manage your aliases from any device')
+              li
+                i.fa.fa-fw.fa-check-circle.text-success
+                = ' '
+                != t('Completely free to get started')
+              li
+                i.fa.fa-fw.fa-check-circle.text-success
+                = ' '
+                != t('Switch between plans at any time')
+          if isBot(ctx.get('User-Agent'))
+            .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
+              a.btn.btn-outline-dark(
+                href='https://www.youtube.com/watch?v=q7zfEpn2NdA'
+                target='_blank',
+                rel='noopener noreferrer'
+              )
+                i.fab.fa-youtube.text-danger
+                = " "
+                = t("Watch Video")
+          else
+            .col-lg-6.d-none.d-lg-block
+              .lazyframe.border.border-dark.rounded.d-inline-block(
+                data-vendor="youtube_nocookie",
+                title=t("Private Business Email"),
+                style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
+                data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
+              )
+          .col-12.d-block.d-lg-none.mt-3.mb-5.text-md-left
+            a.btn.btn-outline-dark(
+              role="button",
+              data-toggle="modal",
+              data-target="#modal-pricing-video",
+              href='https://www.youtube.com/watch?v=q7zfEpn2NdA'
+              target='_blank',
+              rel='noopener noreferrer'
+            )
+              i.fab.fa-youtube.text-danger
+              = " "
+              = t("Watch Video")
+
+      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-dark.mx-auto(
+        href="#learn-more"
+      )
+        i.fa.fa-angle-double-down
+        = " "
+        = t("Pricing and details")
+        = " "
+        i.fa.fa-angle-double-down
+  div(id=user ? false : 'learn-more', class=user ? '' : 'border-md-top border-dark', data-src=manifest('img/art/stars.svg')).bg-fixed.lazyload.py-3.py-md-4.py-lg-5
+    .text-center.d-block.d-md-none.my-3
+      .h1.mb-0= t("Pricing")
     .container
-      .row.mb-5
-        .col.text-center
-          .h2.mb-3
-            = t("Lightning fast email service.")
-          a.btn.btn-dark.btn-lg(
-            role=isBot(ctx.get('User-Agent')) ? false : "button",
-            data-toggle=isBot(ctx.get('User-Agent')) ? false : "modal",
-            data-target=isBot(ctx.get('User-Agent')) ? false : "#modal-pricing-video",
-            target='_blank',
-            rel='noopener noreferrer',
-            href='https://www.youtube.com/watch?v=q7zfEpn2NdA'
-          )
-            i.fa.fa-play-circle
-            = " "
-            = t("Learn about plans")
-      .row.row-cols-1.row-cols-lg-2
+      .row.row-cols-1.row-cols-lg-3
         .col
-          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-black-50.border
+          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
             .px-3.py-4
               .h3.text-center.font-weight-bold
                 = t("Free")
-              p.text-center.mb-0= t("Basic plan to get started")
-            ul.list-group.list-group-flush
-              li.list-group-item.d-flex.align-items-center.font-weight-bold.border-top
-                i.fa.fa-fw.fa-infinity.text-primary.mr-3
-                = ' '
-                = t("Unlimited custom domain names")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-infinity.text-primary.mr-3
-                = ' '
-                = t("Unlimited email addresses and aliases")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-shield-alt.text-primary.mr-3
-                = ' '
-                = t("Phishing, executable, and virus protection")
-                = " "
-                a.btn.btn-link.text-primary.py-0(
-                  href="https://spamscanner.net",
-                  target="_blank",
-                  rel="noopener noreferrer",
-                  role="button",
-                  data-toggle="tooltip",
-                  data-placement="bottom",
-                  aria-label=t('Spam Scanner'),
-                  title=t("We built our own anti-spam, phishing, and virus protection software called Spam Scanner. It abides by the same privacy-first and zero logging policies.")
-                )
-                  i.fa.fa-question-circle
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-paperclip.text-primary.mr-3
-                = ' '
-                != t("50MB attachment limit")
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = ' '
-                = t('"Send mail as" with Gmail and Outlook')
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = ' '
-                = t("Catch-all email addresses")
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = ' '
-                = t("Multiple recipients per email address")
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = " "
-                = t("Unlimited email webhooks")
-                = " "
-                a.btn.btn-link.text-dark.py-0(href=l("/free-email-webhooks"), aria-label=t('Webhooks'))
-                  i.fa.fa-link
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = " "
-                = t("Unlimited email regex filtering")
-                = " "
-                a.btn.btn-link.text-dark.py-0(
-                  href=l("/email-forwarding-regex-pattern-filter"),
-                  aria-label=t('Regex filtering')
-                )
-                  i.fa.fa-link
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = " "
-                = t("Custom port forwarding")
-                = " "
-                a.btn.btn-link.text-dark.py-0(
-                  href=l("/guides/port-25-blocked-by-isp-workaround"),
-                  aria-label=t('Port 25 Workaround')
-                )
-                  i.fa.fa-link
-            .d-flex.flex-column.flex-grow-1.justify-content-end
-              .h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
-                .small.d-inline-block.text-monospace $
-                span.d-inline-block.text-monospace 0
-                sup.d-inline-block.h6.text-black-50
-                  = "/"
-                  = t("month")
-                  = ' '
+              p.text-center.mb-3= t("Basic plan to get started")
+              .lead.text-center.mb-3
+                span.h4.mb-0.font-weight-bold.d-inline-block $0
+                span.d-inline-block.h6.text-black-50.ml-1
                   = t('for unlimited domains')
-              .p-2
-                a.btn.btn-lg.btn-block.btn-success(
-                  href=l("/my-account/domains/new")
-                )
-                  = t("Setup Forwarding")
+              a.btn.btn-lg.btn-block.btn-success(
+                href=l("/my-account/domains/new")
+              )
+                if user
+                  i.fa.fa-plus
+                  = " "
+                  = t("Add New Domain")
+                else
+                  = t("Get started for free")
                   = " "
                   i.fa.fa-angle-double-right.align-middle
+            .d-flex.flex-column
+              ul.list-group.list-group-flush
+                li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.text-white.font-weight-bold
+                  i.fa.fa-fw.fa-infinity.text-primary.mr-3
+                  = ' '
+                  = t("Unlimited domains and aliases")
+                li.list-group-item.d-flex.align-items-center.font-weight-bold
+                  i.fa.fa-fw.fa-shield-alt.text-primary.mr-3
+                  = ' '
+                  = t("Advanced spam protection")
+                  = " "
+                  a.btn.btn-link.text-primary.py-0(
+                    href="https://spamscanner.net",
+                    target="_blank",
+                    rel="noopener noreferrer",
+                    role="button",
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    aria-label=t('Spam Scanner'),
+                    title=t("We built our own anti-spam, phishing, and virus protection software called Spam Scanner. It abides by the same privacy-first and zero logging policies.")
+                  )
+                    i.fa.fa-question-circle
+                li.list-group-item.d-flex.align-items-center.font-weight-bold
+                  i.fa.fa-fw.fa-paperclip.text-primary.mr-3
+                  = ' '
+                  != t("50MB attachment limit")
+                li.list-group-item.d-flex.align-items-center
+                  i.fa.fa-fw.fa-plus.text-primary.mr-3
+                  = ' '
+                  = t('Send mail with Gmail and Outlook')
+                li.list-group-item.d-flex.align-items-center
+                  i.fa.fa-fw.fa-plus.text-primary.mr-3
+                  = ' '
+                  = t("Catch-all email addresses")
+                li.list-group-item.d-flex.align-items-center
+                  i.fa.fa-fw.fa-plus.text-primary.mr-3
+                  = ' '
+                  = t("Multiple recipients per alias")
+                li.list-group-item.d-flex.align-items-center
+                  i.fa.fa-fw.fa-plus.text-primary.mr-3
+                  = " "
+                  = t("Send emails to webhooks")
+                  = " "
+                  a.btn.btn-link.text-dark.py-0(href=l("/free-email-webhooks"), aria-label=t('Webhooks'))
+                    i.fa.fa-link
+                li.list-group-item.d-flex.align-items-center
+                  i.fa.fa-fw.fa-plus.text-primary.mr-3
+                  = " "
+                  = t("Regular expression filtering")
+                  = " "
+                  a.btn.btn-link.text-dark.py-0(
+                    href=l("/email-forwarding-regex-pattern-filter"),
+                    aria-label=t('Regex filtering')
+                  )
+                    i.fa.fa-link
         .col.mt-3.mt-lg-0
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
             .px-3.py-4
               .h3.text-center.font-weight-bold
-                i.fa.fa-shield.d-block.d-lg-inline.mb-2.mb-lg-0
-                = " "
-                = t("Enhanced Protection")
-              p.text-center.mb-0= t("Advanced features and support")
+                = t("Enhanced")
+              p.text-center.mb-3= t("Advanced features and privacy")
+              .lead.text-center.mb-3
+                span.h4.mb-0.font-weight-bold.d-inline-block $3
+                span.d-inline-block.h6.text-black-50.ml-1
+                  = t('for unlimited domains')
+
+              if sortedDomains.length === 0
+                a.btn.btn-lg.btn-block.btn-success(
+                  href=l("/my-account/domains/new?plan=enhanced_protection")
+                )
+                  = t("Get started for free")
+                  = " "
+                  i.fa.fa-angle-double-right.align-middle
+              else
+                .btn-group.btn-block
+                  button.btn.btn-lg.btn-block.btn-success.dropdown-toggle(
+                    type="button",
+                    data-toggle="dropdown",
+                    aria-haspopup="true",
+                    aria-expanded="false"
+                  )= t("Select Domain")
+                  .dropdown-menu.w-100
+                    each domain in sortedDomains
+                      a.dropdown-item(
+                        href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`),
+                        class=domain.plan === "enhanced_protection" ? "disabled" : "",
+                        aria-disabled=domain.plan === "enhanced_protection" ? "true" : "false"
+                      )
+                        = domain.name
+                        if domain.plan === 'enhanced_protection'
+                          = " ("
+                          = t("already on this plan")
+                          = ")"
+                    .dropdown-divider
+                    a.dropdown-item(
+                      href=l("/my-account/domains/new?plan=enhanced_protection")
+                    )
+                      i.fa.fa-plus
+                      = " "
+                      = t("Add New Domain")
+
             ul.list-group.list-group-flush
               li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.text-white.font-weight-bold
                 i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
                 i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = " "
-                = t("Everything included in Free, plus:")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-lock.text-primary.mr-3
+                = t("Everything in Free, plus:")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold.bg-danger.text-white
+                i.fa.fa-fw.fa-lock.mr-3
                 = ' '
-                = t("Enhanced email forwarding privacy")
+                = t("Secure inbox privacy")
                 = " "
-                button.btn.btn-link.text-primary.py-0.no-js(
+                button.btn.btn-link.text-white.py-0.no-js(
                   role="button",
                   data-toggle="tooltip",
                   data-placement="bottom",
@@ -157,294 +247,246 @@ block body
                 )
                   i.fa.fa-question-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-bolt.text-primary.mr-3
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
                 = ' '
-                = t("Instant DNS propagation (zero wait-time)")
+                = t("30-day refund guarantee")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-tasks.text-primary.mr-3
                 = ' '
-                = t("Easy to use email alias and import manager")
+                = t("Manage and import aliases")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-tools.text-primary.mr-3
-                = t("Customize spam, phishing, and filtering settings")
+                = t("Custom spam filtering")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-code.text-primary.mr-3
-                = t("Exclusive access to API features")
+                = t("Developer API access")
                 = " "
                 a.btn.btn-link.text-dark.py-0(href=l("/email-forwarding-api"), aria-label=t('API Features'))
                   i.fa.fa-link
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
+              li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-bell.text-primary.mr-3
-                = t("Custom recipient verification (optional)")
+                = t("Opt-in recipient verification")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
                 = ' '
-                = t("Forward newsletters to a bulk recipient list")
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = ' '
-                = t("Automatic refunds with 30-day money-back guarantee")
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = ' '
-                = t('99.99% Uptime Service Level Agreement ("SLA")')
-            .d-flex.flex-column.flex-grow-1.justify-content-end
-              .h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
-                .small.d-inline-block.text-monospace $
-                span.d-inline-block.text-monospace 3
-                sup.d-inline-block.h6.text-black-50
-                  = "/"
-                  = t("month")
-                  = ' '
-                  = t('for unlimited domains')
-              .p-2
-                if sortedDomains.length === 0
-                  a.btn.btn-lg.btn-block.btn-success(
-                    href=l("/my-account/domains/new?plan=enhanced_protection")
-                  )
-                    = t("Setup Forwarding")
-                    = " "
-                    i.fa.fa-angle-double-right.align-middle
-                else
-                  .btn-group.btn-block
-                    button.btn.btn-lg.btn-block.btn-success.dropdown-toggle(
-                      type="button",
-                      data-toggle="dropdown",
-                      aria-haspopup="true",
-                      aria-expanded="false"
-                    )= t("Select Domain")
-                    .dropdown-menu.w-100
-                      each domain in sortedDomains
-                        a.dropdown-item(
-                          href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`),
-                          class=domain.plan === "enhanced_protection" ? "disabled" : "",
-                          aria-disabled=domain.plan === "enhanced_protection" ? "true" : "false"
-                        )
-                          = domain.name
-                          if domain.plan === 'enhanced_protection'
-                            = " ("
-                            = t("already on this plan")
-                            = ")"
-                      .dropdown-divider
-                      a.dropdown-item(
-                        href=l("/my-account/domains/new?plan=enhanced_protection")
-                      )
-                        i.fa.fa-plus
-                        = " "
-                        = t("Add New Custom Domain")
-        .col.mt-3
+                = t('99.99% service uptime')
+        .col.mt-3.mt-lg-0
           .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
             .px-3.py-4
               .h3.text-center.font-weight-bold
-                i.fa.fa-users.d-block.d-lg-inline.mb-2.mb-lg-0
-                = " "
                 = t("Team")
-              p.text-center.mb-0= t("For small groups and organizations")
+              p.text-center.mb-3= t("For groups and organizations")
+              .lead.text-center.mb-3
+                span.h4.mb-0.font-weight-bold.d-inline-block $9
+                span.d-inline-block.h6.text-black-50.ml-1
+                  = t('for unlimited domains')
+              if sortedDomains.length === 0
+                a.btn.btn-lg.btn-block.btn-success(
+                  href=l("/my-account/domains/new?plan=team")
+                )
+                  = t("Get started for free")
+                  = " "
+                  i.fa.fa-angle-double-right.align-middle
+              else
+                .btn-group.btn-block
+                  button.btn.btn-lg.btn-block.btn-success.dropdown-toggle(
+                    type="button",
+                    data-toggle="dropdown",
+                    aria-haspopup="true",
+                    aria-expanded="false"
+                  )= t("Select Domain")
+                  .dropdown-menu.w-100
+                    each domain in sortedDomains
+                      a.dropdown-item(
+                        href=l(`/my-account/domains/${domain.name}/billing?plan=team`),
+                        class=domain.plan === "team" ? "disabled" : "",
+                        aria-disabled=domain.plan === "team" ? "true" : "false"
+                      )
+                        = domain.name
+                        if domain.plan === 'team'
+                          = " ("
+                          = t("already on this plan")
+                          = ")"
+                    .dropdown-divider
+                    a.dropdown-item(
+                      href=l("/my-account/domains/new?plan=team")
+                    )
+                      i.fa.fa-plus
+                      = " "
+                      = t("Add New Domain")
             ul.list-group.list-group-flush
               li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.font-weight-bold.text-white
                 i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
                 i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = " "
-                = t("Everything included in Enhanced Protection, plus:")
+                = t("Everything in Enhanced, plus:")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-infinity.text-primary.mr-3
                 = ' '
-                = t("Unlimited member access management")
+                = t('Unlimited team members')
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-users.text-primary.mr-3
+                = ' '
+                = t('Team permission management')
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-sitemap.text-primary.mr-3
                 = ' '
-                = t("Shared organizational access to domain")
+                = t('Shared organizational access')
               li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                i.fa.fa-fw.fa-bullhorn.text-primary.mr-3
                 = ' '
                 = t("Priority support requests")
-            .d-flex.flex-column.flex-grow-1.justify-content-end
-              .h2.display-4.mb-0.text-center.pt-2.px-2.pb-0
-                .small.d-inline-block.text-monospace $
-                span.d-inline-block.text-monospace 9
-                sup.d-inline-block.h6.text-black-50
-                  = "/"
-                  = t("month")
-                  = ' '
-                  = t('for unlimited domains')
-              .p-2
-                if sortedDomains.length === 0
-                  a.btn.btn-lg.btn-block.btn-success(
-                    href=l("/my-account/domains/new?plan=team")
-                  )
-                    = t("Setup Forwarding")
-                    = " "
-                    i.fa.fa-angle-double-right.align-middle
-                else
-                  .btn-group.btn-block
-                    button.btn.btn-lg.btn-block.btn-success.dropdown-toggle(
-                      type="button",
-                      data-toggle="dropdown",
-                      aria-haspopup="true",
-                      aria-expanded="false"
-                    )= t("Select Domain")
-                    .dropdown-menu.w-100
-                      each domain in sortedDomains
-                        a.dropdown-item(
-                          href=l(`/my-account/domains/${domain.name}/billing?plan=team`),
-                          class=domain.plan === "team" ? "disabled" : "",
-                          aria-disabled=domain.plan === "team" ? "true" : "false"
-                        )
-                          = domain.name
-                          if domain.plan === 'team'
-                            = " ("
-                            = t("already on this plan")
-                            = ")"
-                      .dropdown-divider
-                      a.dropdown-item(
-                        href=l("/my-account/domains/new?plan=team")
-                      )
-                        i.fa.fa-plus
-                        = " "
-                        = t("Add New Custom Domain")
-        .col.mt-3
-          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
-            .px-3.py-4
-              .h3.text-center.font-weight-bold
-                = t("Enterprise")
-              p.text-center.mb-0= t("Custom solutions and licensing")
-            ul.list-group.list-group-flush
-              li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.font-weight-bold.text-white
-                i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
-                i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
-                = " "
-                = t("Everything included in Team, plus:")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-file-signature.text-primary.mr-3
-                = ' '
-                = t("Custom licensing agreement")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-drafting-compass.text-primary.mr-3
-                = ' '
-                = t("Technical infrastructure design and support")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
-                i.fa.fa-fw.fa-palette.text-primary.mr-3
-                = ' '
-                = t("Enterprise-grade custom-branded solutions")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold
+              li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-server.text-primary.mr-3
                 = ' '
-                = t("Managed deployment with dedicated IP's")
+                = t("Exceed standard rate limiting")
               li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                i.fa.fa-fw.fa-palette.text-primary.mr-3
                 = ' '
-                = t("Dedicated support from our team of experts")
-            .d-flex.flex-column.flex-grow-1.justify-content-end
-              .p-2
-                a.btn.btn-lg.btn-block.btn-dark(
-                  href=l("/help"),
-                  role="button",
-                  data-target="#modal-help"
-                )= t("Contact Sales")
-      .text-center
-        .row.my-5
-          .col
-            h1.mb-0= t("Frequently Asked Questions")
-            .small.text-black-50.text-uppercase!= t('See Q&A below and <a href="%s">read our FAQ</a> for more', l("/faq"))
-        .row.mt-5
-          .col
-            h2.h3= t("What is the difference between Free and Enhanced Protection?")
-            p.lead
-              = t("The Free plan requires you to use public DNS records to store your forwarding configuration.")
-              = " "
-              = t("Anyone with a computer can lookup your forwarding configuration in a terminal if you are on the Free plan.")
-              = " "
-              = t("Unlike the Free plan, the Enhanced Protection plan uses a cryptographically generated random string to store your forwarding configuration privately.")
-        .row.mb-5
-          .col-12.col-md-6.my-3.my-md-0
-            .h2.h3= t("Free Plan")
-            p.lead.text-monospace
-              = "forward-email="
-              strong.bg-warning= user ? user.email : "user@gmail.com"
-          .col-12.col-md-6
-            .h2.h3= t("Enhanced Protection Plan")
-            p.lead.text-monospace
-              = "forward-email-site-verification="
-              strong.bg-warning!= new Array(8).fill("&bull;").join("")
-        .row.my-5
-          .col
-            h2= t("Is pricing per account or per domain?")
-            p.lead
-              != t("Our pricing is per account, not per domain &ndash; unlike other providers we do not charge extra.")
-              = " "
-              = t("You also have the ability to mix and match plans and domains.")
-              = " "
-              != t("For example you can set some domains on the Free plan (DNS-based) &ndash; and others on the Enhanced Protection or Team plans.")
-        .row.my-5
-          .col
-            h2= t("Do you support email best practices?")
-            p.lead
-              != t('<span class="font-weight-bold">Yes.</span> We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans.')
-              = " "
-              = t("We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.")
-        .row.my-5
-          .col
-            h2!= t('Can I configure <a href="%s" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', "https://spamscanner.net")
-            p.lead
-              != t('<span class="font-weight-bold">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href="%s">Settings</a>.', sortedDomains && sortedDomains[0] && sortedDomains[0].name ? l(`/my-account/domains/${sortedDomains[0].name}/advanced-settings`) : l("/my-account/domains"))
-        .row.my-5
-          .col
-            h2= t("Do you offer unlimited domains for one price?")
-            p.lead!= t('<span class="font-weight-bold">Yes.</span> Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.')
-        .row.my-5
-          .col
-            h2= t("Which payment methods do you accept?")
-            p.lead!= t('We accept cards, wallets, and bank transfers using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noopener noreferrer">Stripe</a> and <a class="alert-link" href="https://www.paypal.com" target="_blank" rel="noopener noreferrer">PayPal</a>.')
-        .row.my-5
-          .col
-            h2= t("Do you accept one-time payments and subscriptions?")
-            p.lead!= t('<span class="font-weight-bold">Yes.</span> We accept both one-time payments or monthly, quarterly, and yearly subscriptions.')
-        .row.my-5
-          .col
-            h2= t("Will you ever increase prices?")
-            p.lead!= t('<span class="font-weight-bold">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.')
-        .row.my-5
-          .col
-            h2= t("Do you offer a money-back guarantee?")
-            p.lead!= t('<span class="font-weight-bold">Yes.</span> We offer a 30 day money-back guarantee &ndash; with no questions asked.')
-        .row.my-5
-          .col
-            h2= t("Do you store SMTP logs or write to disk?")
-            p.lead
-              != t('<span class="font-weight-bold">No.</span> We have a <a href="%s">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.', l("/privacy"))
-              = " "
-              = t("You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.")
-              = " "
-              = t("This common practice is a huge security risk for you, and is another reason why we built our service.")
-              = " "
-              = t("Our expertise allowed us to build our own custom solution that uses memory-based streams, and is lightning fast and privacy-focused.")
-            p.lead.font-weight-bold: u= t("We don't track you like other services do.")
-        .row.my-5
-          .col
-            h2= t("Do you have any other questions?")
-            p.lead= t("We are always available and usually respond within minutes of your help request.")
-            ul.list-inline
-              li.list-inline-item
-                a.btn.btn-lg.btn-dark(
-                  href=l("/help"),
-                  role="button",
-                  data-target="#modal-help"
-                )= t("Contact Help")
-              li.list-inline-item
-                a.btn.btn-lg.btn-primary(
-                  href=l("/faq")
-                )= t("Read FAQ")
-        .mt-5.text-truncate
-          noscript
-            img(
-              src=manifest("img/logo-square.svg"),
-              width=400,
-              height=400,
-              alt=""
-            ).img-fluid
-          img.lazyload(
-            data-src=manifest("img/logo-square.svg"),
-            width=400,
-            height=400,
-            alt=""
-          ).img-fluid
+                = t("Custom recipient verification")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-drafting-compass.text-primary.mr-3
+                = ' '
+                = t("Early access to new features")
+
+    .text-center.d-block.mt-3.mt-md-5
+      a.text-decoration-none.text-uppercase.text-dark.mx-auto(
+        href="#frequently-asked-questions"
+      )
+        i.fa.fa-angle-double-down
+        = " "
+        = t("Frequently Asked Questions")
+        = " "
+        i.fa.fa-angle-double-down
+
+  .bg-dark.py-3.py-md-5.d-block
+    .container
+      .row
+        .col-12
+          h2.display-3.font-weight-bold.text-white.my-3.my-md-3
+            = t("Professional Email")
+      .row
+        .col-12.col-md-8
+          p.lead.text-white.mb-3.mb-md-5
+            = t('Send and receive email with your custom business domain name.')
+            = " "
+            = t('We are privacy-focused, secure, and trusted by the open-source community.')
+          ul.list-inline
+            li.list-inline-item
+              a.btn.btn-outline-light.btn-lg(
+                href='#frequently-asked-questions',
+              )
+                = t("Frequently Asked Questions")
+            li.list-inline-item
+              a.btn.btn-outline-light.btn-lg.mt-3.mt-lg-0(
+                href=l('/privacy')
+              )
+                = t("Privacy Policy")
+        .d-flex.col-md-4.pt-3.text-center
+          noscript.ml-auto.mr-auto.mr-md-none
+            img.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
+              src=manifest("img/art/waving.svg"),
+              width=423,
+              height=200,
+              alt=t("Professional Private Business Email")
+            )
+          img.lazyload.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
+            data-src=manifest("img/art/waving.svg"),
+            width=423,
+            height=200,
+            alt=t("Professional Private Business Email")
+          )
+
+  .container.py-5#frequently-asked-questions
+    .row
+      .col
+        h2= t('Frequently Asked Questions')
+        p.lead
+          = t('Browse commonly asked questions and answers about pricing below.')
+    .row.my-3
+      .col-12
+        h3.h5.border-bottom.border-dark-50= t("What is the difference between Free and Enhanced?")
+        p
+          = t("The Free plan requires you to use public DNS records to store your forwarding configuration.")
+          = " "
+          = t("Anyone with a computer can lookup your forwarding configuration in a terminal if you are on the Free plan.")
+          = " "
+          = t("Unlike the Free plan, the Enhanced plan uses a cryptographically generated random string to store your forwarding configuration privately.")
+    .row.my-3
+      .col-12.col-sm-6.text-center
+        h4.border-dark-50.mb-4= t("Free")
+        strong.bg-danger.rounded.p-3.text-white
+          i.fa.fa-lock-open
+          = ' '
+          = user ? user.email : "user@gmail.com"
+      .col-12.col-sm-6.text-center.mt-5.mt-sm-0
+        h4.border-dark-50.mb-4= t("Enhanced")
+        strong.bg-success.rounded.p-3.text-white
+          i.fa.fa-lock
+          = ' '
+          != new Array(16).fill("&bull;").join("")
+    .row.my-3.mt-5
+      .col
+        h3.h5.border-bottom.border-dark-50= t("Do you offer unlimited domains for one price?")
+        p!= t('<span class="font-weight-bold">Yes.</span> Regardless of which plan you are on, you will pay only one month rate &ndash; which covers all of your domains.')
+    .row.my-3
+      .col
+        h3.h5.border-bottom.border-dark-50= t("Which payment methods do you accept?")
+        p!= t('We accept cards, wallets, and bank transfers using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noopener noreferrer">Stripe</a> and <a class="alert-link" href="https://www.paypal.com" target="_blank" rel="noopener noreferrer">PayPal</a>.')
+    .row.my-3
+      .col
+        h3.h5.border-bottom.border-dark-50= t("Do you accept one-time payments and subscriptions?")
+        p!= t('<span class="font-weight-bold">Yes.</span> We accept both one-time payments or month, quarterly, and yearly subscriptions.')
+    .row.my-3
+      .col
+        h3.h5.border-bottom.border-dark-50= t("Do you offer a money-back guarantee?")
+        p!= t('<span class="font-weight-bold">Yes.</span> We offer a 30 day money-back guarantee &ndash; with no questions asked.')
+    .row.my-3
+      .col
+        h3.h5.border-bottom.border-dark-50= t("Will you ever increase prices?")
+        p!= t('<span class="font-weight-bold">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.')
+    .row.my-3
+      .col
+        h3.h5.border-bottom.border-dark-50!= t('Can I configure <a href="%s" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', "https://spamscanner.net")
+        p
+          != t('<span class="font-weight-bold">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href="%s" class="font-weight-bold">Settings</a>.', sortedDomains && sortedDomains[0] && sortedDomains[0].name ? l(`/my-account/domains/${sortedDomains[0].name}/advanced-settings`) : l("/my-account/domains"))
+    .row.my-3
+      .col
+        h3.h5.border-bottom.border-dark-50= t("Do you store SMTP logs or write to disk?")
+        p
+          != t('<span class="font-weight-bold">No.</span> We have a <a href="%s" class="font-weight-bold">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.', l("/privacy"))
+          = " "
+          = t("You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.")
+          = " "
+          = t("This common practice is a huge security risk for you, and is another reason why we built our service.")
+          = " "
+          = t("Our expertise allowed us to build our own custom solution that uses memory-based streams, and is lightning fast and privacy-focused.")
+        p.font-weight-bold: u= t("We don't track you like other services do.")
+    .row
+      .col
+        h3.h5.border-bottom.border-dark-50= t("Do you have a question?")
+        p= t("Read our dedicated page for frequently asked questions or submit a help request.")
+        ul.list-inline
+          li.list-inline-item
+            a.btn.btn-lg.btn-primary(
+              href=l("/faq")
+            )= t("Read FAQ")
+          li.list-inline-item
+            a.btn.btn-lg.btn-dark(
+              href=l("/help"),
+              role="button",
+              data-target="#modal-help"
+            )= t("Contact Help")
+    .row
+      .col
+        a.btn.btn-lg.btn-success(
+          href=l("/my-account/domains/new")
+        )
+          if user
+            i.fa.fa-plus
+            = " "
+            = t("Add New Domain")
+          else
+            = t("Get started for free")
+            = " "
+            i.fa.fa-angle-double-right.align-middle
