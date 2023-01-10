@@ -6,7 +6,7 @@ block body
   - const hash = "do-you-support-webhooks";
   if !user
     +onboard(t('Need email forwarding webhooks?'), t('Skip ahead to the instructions to forward emails to webhooks.'), l(`/faq?hash=${hash}`), l(`/faq#${hash}`), 'border-bottom')
-  .container.py-5
+  .container.py-3.py-md-4.py-lg-5
     .text-center.mb-5
       h1.h2.mb-0= t("Email webhooks")
       .small.text-black-50.text-uppercase.mb-3= t("Setup an email webhook in minutes")

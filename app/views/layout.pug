@@ -13,7 +13,8 @@ html.h-100.no-js(lang=locale)
       meta(name="viewport", content="width=device-width, initial-scale=1")
 
       //- canonical
-      link(rel="canonical", href=`${config.urls.web}${ctx.path}`)
+      if ctx
+        link(rel="canonical", href=`${config.urls.web}${ctx.path}`)
 
       //- languages supported
       //- <https://support.google.com/webmasters/answer/189077?hl=en>
@@ -79,7 +80,7 @@ html.h-100.no-js(lang=locale)
 
       script.
         document.documentElement.className = 'h-100';
-      if isBot(ctx.get('User-Agent'))
+      if ctx && isBot(ctx.get('User-Agent'))
         style= '.is-bot { display: none !important; }'
 
       //- associate with wikipedia
@@ -121,7 +122,7 @@ html.h-100.no-js(lang=locale)
     //- prefetch fonts
     //- https://caniuse.com/link-rel-prefetch
     - const fonts = [ 'fa-solid-900', 'fa-brands-400' ]
-    if !isBot(ctx.get('User-Agent'))
+    if !ctx || !isBot(ctx.get('User-Agent'))
       - fonts.push('nunito-sans-latin-400')
       - fonts.push('nunito-sans-latin-700')
     each font in fonts
@@ -136,7 +137,7 @@ html.h-100.no-js(lang=locale)
 
     //- css file
     block stylesheets
-      if isBot(ctx.get('User-Agent'))
+      if ctx && isBot(ctx.get('User-Agent'))
         link(
           rel="stylesheet",
           href=manifest("css/app.css"),
@@ -151,7 +152,7 @@ html.h-100.no-js(lang=locale)
           crossorigin="anonymous"
         )
 
-  body.d-flex.flex-column.min-h-100(role="document", onload=isBot(ctx.get('User-Agent')) ? "if (typeof lazyload === 'function') { lazyload(); }" : '')
+  body.d-flex.flex-column.min-h-100(role="document", onload=ctx && isBot(ctx.get('User-Agent')) ? "if (typeof lazyload === 'function') { lazyload(); }" : '')
     - const isHelp = ctx && ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx && ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
 
@@ -173,7 +174,7 @@ html.h-100.no-js(lang=locale)
     //- scripts
     //- prettier-ignore
     block scripts
-      if !isBot(ctx.get('User-Agent'))
+      if ctx && !isBot(ctx.get('User-Agent'))
         //- flash messaging (with koa-better-flash and sweetalert2)
         script(defer).
           window._types = {
@@ -210,7 +211,7 @@ html.h-100.no-js(lang=locale)
           window.API_URL = "#{config.urls.api}";
 
       //- set the user and API key to be used by CabinJS
-      if config.env !== 'test' && !isBot(ctx.get('User-Agent'))
+      if config.env !== 'test' && ctx && !isBot(ctx.get('User-Agent'))
         //- set the user and API key to be used by CabinJS
         if user
           script(defer).
@@ -226,7 +227,7 @@ html.h-100.no-js(lang=locale)
               id: "#{ctx.sessionId}",
             };
 
-      if isBot(ctx.get('User-Agent'))
+      if ctx && isBot(ctx.get('User-Agent'))
         //- lazyload only support for bots
         script(
           defer,
