@@ -3474,5 +3474,14 @@
   "<span class=\"font-weight-bold\">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href=\"%s\" class=\"font-weight-bold\">Settings</a>.": "<span class=\"font-weight-bold\">Ja.</span> Du kan bytte filtre for voksenrelatert innhold, phishing, kjørbare filer og virus fra <a href=\"%s\" class=\"font-weight-bold\">Innstillinger</a> .",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">Nei.</span> Vi har en <a href=\"%s\" class=\"font-weight-bold\">personvernpolicy</a> som strengt tatt ikke lagrer SMTP-logger, metadata eller e-poster.",
   "Do you have a question?": "Har du et spørsmål?",
-  "Read our dedicated page for frequently asked questions or submit a help request.": "Les vår dedikerte side for vanlige spørsmål eller send inn en forespørsel om hjelp."
+  "Read our dedicated page for frequently asked questions or submit a help request.": "Les vår dedikerte side for vanlige spørsmål eller send inn en forespørsel om hjelp.",
+  "Free email forwarding - Send email with custom domain": "Free email forwarding - Send email with custom domain",
+  "How to set up free email forwarding, private business email, and send mail with custom domain.": "How to set up free email forwarding, private business email, and send mail with custom domain.",
+  "Send Email Custom Domain": "Send Email Custom Domain",
+  "Send Mail As with Gmail Custom Domain": "Send Mail As with Gmail Custom Domain",
+  "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.",
+  "Unlimited email emails": "Unlimited email emails",
+  "Privacy-focused and open-source": "Privacy-focused and open-source",
+  "Lightning fast technology": "Lightning fast technology",
+  "Secure email encryption": "Secure email encryption"
 }

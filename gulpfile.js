@@ -172,7 +172,8 @@ function css() {
           'anchor',
           'octicon-link',
           'lazyframe',
-          'floating-label'
+          'floating-label',
+          'email'
         ]
       })
     );

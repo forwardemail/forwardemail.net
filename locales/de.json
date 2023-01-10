@@ -2479,5 +2479,14 @@
   "<span class=\"font-weight-bold\">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href=\"%s\" class=\"font-weight-bold\">Settings</a>.": "<span class=\"font-weight-bold\">Ja.</span> Sie können Filter für nicht jugendfreie Inhalte, Phishing, ausführbare Dateien und Viren in den <a href=\"%s\" class=\"font-weight-bold\">Einstellungen umschalten</a> .",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">Nein.</span> Wir haben eine <a href=\"%s\" class=\"font-weight-bold\">Datenschutzrichtlinie</a> , nach der SMTP-Protokolle, Metadaten oder E-Mails strikt nicht gespeichert werden.",
   "Do you have a question?": "Hast du eine Frage?",
-  "Read our dedicated page for frequently asked questions or submit a help request.": "Lesen Sie unsere spezielle Seite für häufig gestellte Fragen oder senden Sie eine Hilfeanfrage."
+  "Read our dedicated page for frequently asked questions or submit a help request.": "Lesen Sie unsere spezielle Seite für häufig gestellte Fragen oder senden Sie eine Hilfeanfrage.",
+  "Free email forwarding - Send email with custom domain": "Free email forwarding - Send email with custom domain",
+  "How to set up free email forwarding, private business email, and send mail with custom domain.": "How to set up free email forwarding, private business email, and send mail with custom domain.",
+  "Send Email Custom Domain": "Send Email Custom Domain",
+  "Send Mail As with Gmail Custom Domain": "Send Mail As with Gmail Custom Domain",
+  "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.",
+  "Unlimited email emails": "Unlimited email emails",
+  "Privacy-focused and open-source": "Privacy-focused and open-source",
+  "Lightning fast technology": "Lightning fast technology",
+  "Secure email encryption": "Secure email encryption"
 }

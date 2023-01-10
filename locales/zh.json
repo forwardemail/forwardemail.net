@@ -3160,5 +3160,14 @@
   "<span class=\"font-weight-bold\">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href=\"%s\" class=\"font-weight-bold\">Settings</a>.": "<span class=\"font-weight-bold\">是的。</span>您可以从<a href=\"%s\" class=\"font-weight-bold\">“设置”</a>切换成人相关内容、网络钓鱼、可执行文件和病毒的过滤器。",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "不可以<span class=\"font-weight-bold\">。</span>我们有严格不存储 SMTP 日志、元数据或电子邮件的<a href=\"%s\" class=\"font-weight-bold\">隐私</a>政策。",
   "Do you have a question?": "你有问题吗？",
-  "Read our dedicated page for frequently asked questions or submit a help request.": "阅读我们的专用页面以了解常见问题或提交帮助请求。"
+  "Read our dedicated page for frequently asked questions or submit a help request.": "阅读我们的专用页面以了解常见问题或提交帮助请求。",
+  "Free email forwarding - Send email with custom domain": "Free email forwarding - Send email with custom domain",
+  "How to set up free email forwarding, private business email, and send mail with custom domain.": "How to set up free email forwarding, private business email, and send mail with custom domain.",
+  "Send Email Custom Domain": "Send Email Custom Domain",
+  "Send Mail As with Gmail Custom Domain": "Send Mail As with Gmail Custom Domain",
+  "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.",
+  "Unlimited email emails": "Unlimited email emails",
+  "Privacy-focused and open-source": "Privacy-focused and open-source",
+  "Lightning fast technology": "Lightning fast technology",
+  "Secure email encryption": "Secure email encryption"
 }

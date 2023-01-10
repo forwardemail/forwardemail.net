@@ -19,18 +19,30 @@ block body
   .container.py-3.py-md-4.py-lg-5
     .row
       .col-12
-        h1.mb-0.text-center!= t('How to Send Mail As using Gmail')
-        .alert.my-3.alert-warning.text-center
-          i.fa.fa-exclamation-circle.font-weight-bold
-          = ' '
-          strong.font-weight-bold= t('Important:')
-          = ' '
-          span= t('Your domain must be verified before starting this guide.')
-          = ' '
-          a(href=user ? l('/my-account/domains') : l('/my-account/domains/new'), target='_blank').alert-link
-            = t('Click here to verify your domain')
+        h1.mb-0.text-center
+          if isBot(ctx.get('User-Agent'))
+            != t('Send Email with Custom Domain')
+          else
+            != t('Send Mail As with Gmail')
+        if !isBot(ctx.get('User-Agent'))
+          .alert.my-3.alert-primary.text-center
+            = t('Not using Gmail?')
+            = ' '
+            a(href=l('/faq')).alert-link
+              = t('Read our FAQ')
+          .alert.my-3.alert-danger.text-center
+            i.fa.fa-exclamation-circle.font-weight-bold
+            = ' '
+            = t('Verification Required')
+            = ' '
+            a(href=user ? l('/my-account/domains') : l('/my-account/domains/new'), target='_blank').alert-link
+              = t('Click to verify')
         .card.mt-3#quick-video-guide
-          h2.h5.card-header.text-center= t("Quick Video Guide")
+          h2.h5.card-header.text-center
+            if isBot(ctx.get('User-Agent'))
+              = t('How to use Gmail\'s "Send Mail As" with your Custom Domain')
+            else
+              = t("Quick Video Guide")
           .card-body.text-center
             if isBot(ctx.get('User-Agent'))
               a.btn.btn-outline-dark.btn-lg(
@@ -50,6 +62,10 @@ block body
               )
       .col-12.mt-3#step-by-step-instructions
         .card
-          h2.h5.card-header.text-center= t("Step by Step Instructions")
+          h2.h5.card-header.text-center
+            if isBot(ctx.get('User-Agent'))
+              = t("How to fix send mail as Gmail not working?")
+            else
+              = t("Step by Step Instructions")
           .card-body.markdown-body
             != sendMailAsContent
