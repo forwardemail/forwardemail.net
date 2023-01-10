@@ -116,8 +116,12 @@ footer.mt-auto
           h3.h5.mb-2= t("Resources")
           ul.list-unstyled.mb-0
             li: a.d-block.text-light.py-2.py-md-0(
-              href=domain && domain.name ? l(`/pricing?domain=${domain.name}`) : l("/pricing")
-            )= t("Pricing")
+              href=domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email")
+            )
+              if isBot(ctx.get('User-Agent'))
+                = t("Private Business Email")
+              else
+                = t("Pricing")
             li: a.d-block.text-light.py-2.py-md-0(
               href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
             )= t("FAQ")

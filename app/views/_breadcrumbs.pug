@@ -77,7 +77,7 @@ if breadcrumbs.length > 1
                           = ")"
                     .dropdown-divider
                     a.dropdown-item.small.text-muted(
-                      href=l(`/pricing?domain=${domain.name}`)
+                      href=l(`/private-business-email?domain=${domain.name}`)
                     )= t("See all plan features")
         else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0

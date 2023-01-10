@@ -35,9 +35,9 @@ module.exports = function (config) {
       `About ${lad}`,
       `Learn more about ${config.appName} and the history of our service.`
     ],
-    '/pricing': [
-      `Pricing ${lad}`,
-      'Custom domain DNS email forwarding with disposable addresses, unlimited aliases, catch-all, and more.'
+    '/private-business-email': [
+      `Private Business Email ${lad}`,
+      'Create your private, secure, and professional business email for free.'
     ],
     '/faq': [
       `Frequently Asked Questions ${lad}`,
