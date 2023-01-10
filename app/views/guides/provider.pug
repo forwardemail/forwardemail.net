@@ -123,7 +123,7 @@ block body
           h2#setup-step-2.h5.card-header.text-left.text-md-center= t("Step 2")
           .card-body
             .small.text-center.mb-3
-              != t('Add these records to <strong class="notranslate">%s</strong>', domain ? domain.root_name || domain.name : 'your-domain.com')
+              != t('Add these records to <strong class="notranslate">%s</strong>', domain ? domain.root_name || domain.name : 'yourdomain.com')
               span.d-inline.d-md-none= ':'
               span.d-none.d-md-inline= t(' and click ')
               if domain && domain.name
@@ -260,7 +260,7 @@ block body
             h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
             p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
             a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-              href=l('/guides/send-mail-as-using-gmail'),
+              href=l('/guides/send-mail-as-gmail-custom-domain'),
               target="_blank",
               rel="noopener noreferrer"
             )

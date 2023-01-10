@@ -84,8 +84,12 @@ footer.mt-auto
                 )= t('Free business email address')
             li
               a.d-block.text-light.py-2.py-md-0(
-                href=l('/guides/send-mail-as-using-gmail')
-              )= t('Send Mail As using Gmail')
+                href=l('/guides/send-mail-as-gmail-custom-domain')
+              )
+                if isBot(ctx.get('User-Agent'))
+                  = t("Send Email Custom Domain")
+                else
+                  = t('Send Mail As with Gmail Custom Domain')
             each provider in nsProviders
               li
                 a.d-block.text-light.py-2.py-md-0(
@@ -117,7 +121,7 @@ footer.mt-auto
           ul.list-unstyled.mb-0
             - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email")
             if !isBot(ctx.get('User-Agent'))
-              - pricingPageHref += '#learn-more'
+              - pricingPageHref += '?pricing=true'
             li: a.d-block.text-light.py-2.py-md-0(
               href=pricingPageHref
             )

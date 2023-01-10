@@ -3468,5 +3468,14 @@
   "<span class=\"font-weight-bold\">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href=\"%s\" class=\"font-weight-bold\">Settings</a>.": "<span class=\"font-weight-bold\">예.</span> <a href=\"%s\" class=\"font-weight-bold\">설정</a> 에서 성인 관련 콘텐츠, 피싱, 실행 파일 및 바이러스에 대한 필터를 전환할 수 있습니다.",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">아니요</span> . SMTP 로그, 메타데이터 또는 이메일을 엄격하게 저장하지 않는 <a href=\"%s\" class=\"font-weight-bold\">개인정보 보호</a> 정책이 있습니다.",
   "Do you have a question?": "질문 있습니까?",
-  "Read our dedicated page for frequently asked questions or submit a help request.": "자주 묻는 질문에 대한 전용 페이지를 읽거나 도움 요청을 제출하십시오."
+  "Read our dedicated page for frequently asked questions or submit a help request.": "자주 묻는 질문에 대한 전용 페이지를 읽거나 도움 요청을 제출하십시오.",
+  "Free email forwarding - Send email with custom domain": "Free email forwarding - Send email with custom domain",
+  "How to set up free email forwarding, private business email, and send mail with custom domain.": "How to set up free email forwarding, private business email, and send mail with custom domain.",
+  "Send Email Custom Domain": "Send Email Custom Domain",
+  "Send Mail As with Gmail Custom Domain": "Send Mail As with Gmail Custom Domain",
+  "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.",
+  "Unlimited email emails": "Unlimited email emails",
+  "Privacy-focused and open-source": "Privacy-focused and open-source",
+  "Lightning fast technology": "Lightning fast technology",
+  "Secure email encryption": "Secure email encryption"
 }

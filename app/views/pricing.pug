@@ -1,7 +1,7 @@
 extends layout
 
 block body
-  if !isBot(ctx.get('User-Agent')) && !user
+  if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
     #modal-pricing-video.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -21,16 +21,17 @@ block body
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
-  if !user
+  if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
     .min-vh-80.d-flex.flex-column
       .container.my-auto.pt-5
         .row
           .col-12.col-lg-6
-            h1.mb-3= t('Private Business Email')
+            h1.mb-3
+              = t('Set up your private business email for free')
             p
-              = t('Free, professional, and private business email addresses.')
+              = t('Create your free, private, and professional business email.')
               = ' '
-              != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@your-domain.com</span>.')
+              != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
             .d-block
               a.btn.btn-success.btn-lg.mb-3(
                 href=l('/register'),
@@ -44,11 +45,15 @@ block body
               li
                 i.fa.fa-fw.fa-check-circle.text-success
                 = ' '
-                != t('Professional email with your domain')
+                != t('Completely free to get started')
               li
                 i.fa.fa-fw.fa-check-circle.text-success
                 = ' '
-                != t('Works with <a class="font-weight-bold" href="%s">Gmail</a>, Outlook, and more', l('/guides/send-mail-as-using-gmail'))
+                != t('Professional email with custom domain')
+              li
+                i.fa.fa-fw.fa-check-circle.text-success
+                = ' '
+                != t('Works with <a class="font-weight-bold" href="%s">Gmail</a>, Outlook, and more', l('/guides/send-mail-as-gmail-custom-domain'))
               li
                 i.fa.fa-fw.fa-check-circle.text-success
                 = ' '
@@ -56,11 +61,8 @@ block body
               li
                 i.fa.fa-fw.fa-check-circle.text-success
                 = ' '
-                != t('Completely free to get started')
-              li
-                i.fa.fa-fw.fa-check-circle.text-success
-                = ' '
-                != t('Switch between plans at any time')
+                a(href='#learn-more').font-weight-bold
+                  = t('Premium features for only $3')
           if isBot(ctx.get('User-Agent'))
             .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
               a.btn.btn-outline-dark(
@@ -100,14 +102,14 @@ block body
         = t("Pricing and details")
         = " "
         i.fa.fa-angle-double-down
-  div(id=user ? false : 'learn-more', class=user ? '' : 'border-md-top border-dark', data-src=manifest('img/art/stars.svg')).bg-fixed.lazyload.py-3.py-md-4.py-lg-5
+  div(id=user || (!isBot(ctx.get('User-Agent')) && boolean(ctx.query.pricing)) ? false : 'learn-more', class=user || (!isBot(ctx.get('User-Agent')) && boolean(ctx.query.pricing)) ? '' : 'border-md-top border-dark', data-src=manifest('img/art/stars.svg')).bg-fixed.lazyload.py-3.py-md-4.py-lg-5
     .text-center.d-block.d-md-none.my-3
       .h1.mb-0= t("Pricing")
     .container
       .row.row-cols-1.row-cols-lg-3
         .col
-          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
-            .px-3.py-4
+          .d-flex.flex-column.rounded-lg.bg-white.h-100
+            .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Free")
               p.text-center.mb-3= t("Basic plan to get started")
@@ -115,7 +117,7 @@ block body
                 span.h4.mb-0.font-weight-bold.d-inline-block $0
                 span.d-inline-block.h6.text-black-50.ml-1
                   = t('for unlimited domains')
-              a.btn.btn-lg.btn-block.btn-success(
+              a.btn.btn-block.btn-success(
                 href=l("/my-account/domains/new")
               )
                 if user
@@ -123,67 +125,66 @@ block body
                   = " "
                   = t("Add New Domain")
                 else
-                  = t("Get started for free")
+                  = t("Sign up free")
                   = " "
                   i.fa.fa-angle-double-right.align-middle
-            .d-flex.flex-column
-              ul.list-group.list-group-flush
-                li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.text-white.font-weight-bold
-                  i.fa.fa-fw.fa-infinity.text-primary.mr-3
-                  = ' '
-                  = t("Unlimited domains and aliases")
-                li.list-group-item.d-flex.align-items-center.font-weight-bold
-                  i.fa.fa-fw.fa-shield-alt.text-primary.mr-3
-                  = ' '
-                  = t("Advanced spam protection")
-                  = " "
-                  a.btn.btn-link.text-primary.py-0(
-                    href="https://spamscanner.net",
-                    target="_blank",
-                    rel="noopener noreferrer",
-                    role="button",
-                    data-toggle="tooltip",
-                    data-placement="bottom",
-                    aria-label=t('Spam Scanner'),
-                    title=t("We built our own anti-spam, phishing, and virus protection software called Spam Scanner. It abides by the same privacy-first and zero logging policies.")
-                  )
-                    i.fa.fa-question-circle
-                li.list-group-item.d-flex.align-items-center.font-weight-bold
-                  i.fa.fa-fw.fa-paperclip.text-primary.mr-3
-                  = ' '
-                  != t("50MB attachment limit")
-                li.list-group-item.d-flex.align-items-center
-                  i.fa.fa-fw.fa-plus.text-primary.mr-3
-                  = ' '
-                  = t('Send mail with Gmail and Outlook')
-                li.list-group-item.d-flex.align-items-center
-                  i.fa.fa-fw.fa-plus.text-primary.mr-3
-                  = ' '
-                  = t("Catch-all email addresses")
-                li.list-group-item.d-flex.align-items-center
-                  i.fa.fa-fw.fa-plus.text-primary.mr-3
-                  = ' '
-                  = t("Multiple recipients per alias")
-                li.list-group-item.d-flex.align-items-center
-                  i.fa.fa-fw.fa-plus.text-primary.mr-3
-                  = " "
-                  = t("Send emails to webhooks")
-                  = " "
-                  a.btn.btn-link.text-dark.py-0(href=l("/free-email-webhooks"), aria-label=t('Webhooks'))
-                    i.fa.fa-link
-                li.list-group-item.d-flex.align-items-center
-                  i.fa.fa-fw.fa-plus.text-primary.mr-3
-                  = " "
-                  = t("Regular expression filtering")
-                  = " "
-                  a.btn.btn-link.text-dark.py-0(
-                    href=l("/email-forwarding-regex-pattern-filter"),
-                    aria-label=t('Regex filtering')
-                  )
-                    i.fa.fa-link
+            ul.list-group.list-group-flush.mb-1
+              li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.text-white.font-weight-bold
+                i.fa.fa-fw.fa-infinity.text-primary.mr-3
+                = ' '
+                = t("Unlimited email aliases")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-shield-alt.text-primary.mr-3
+                = ' '
+                = t("Spam protection")
+                = " "
+                a.btn.btn-link.text-primary.py-0(
+                  href="https://spamscanner.net",
+                  target="_blank",
+                  rel="noopener noreferrer",
+                  role="button",
+                  data-toggle="tooltip",
+                  data-placement="bottom",
+                  aria-label=t('Spam Scanner'),
+                  title=t("We built our own anti-spam, phishing, and virus protection software called Spam Scanner. It abides by the same privacy-first and zero logging policies.")
+                )
+                  i.fa.fa-question-circle
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-paperclip.text-primary.mr-3
+                = ' '
+                != t("50MB attachment limit")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t('Send mail with Gmail and Outlook')
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t("Catch-all email addresses")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = ' '
+                = t("Multiple recipients per alias")
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = " "
+                = t("Send emails to webhooks")
+                = " "
+                a.btn.btn-link.text-dark.py-0(href=l("/free-email-webhooks"), aria-label=t('Webhooks'))
+                  i.fa.fa-link
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-plus.text-primary.mr-3
+                = " "
+                = t("Regular expression filtering")
+                = " "
+                a.btn.btn-link.text-dark.py-0(
+                  href=l("/email-forwarding-regex-pattern-filter"),
+                  aria-label=t('Regex filtering')
+                )
+                  i.fa.fa-link
         .col.mt-3.mt-lg-0
-          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
-            .px-3.py-4
+          .d-flex.flex-column.rounded-lg.bg-white.h-100
+            .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Enhanced")
               p.text-center.mb-3= t("Advanced features and privacy")
@@ -193,15 +194,15 @@ block body
                   = t('for unlimited domains')
 
               if sortedDomains.length === 0
-                a.btn.btn-lg.btn-block.btn-success(
+                a.btn.btn-block.btn-success(
                   href=l("/my-account/domains/new?plan=enhanced_protection")
                 )
-                  = t("Get started for free")
+                  = t("Sign up free")
                   = " "
                   i.fa.fa-angle-double-right.align-middle
               else
                 .btn-group.btn-block
-                  button.btn.btn-lg.btn-block.btn-success.dropdown-toggle(
+                  button.btn.btn-block.btn-success.dropdown-toggle(
                     type="button",
                     data-toggle="dropdown",
                     aria-haspopup="true",
@@ -227,13 +228,13 @@ block body
                       = " "
                       = t("Add New Domain")
 
-            ul.list-group.list-group-flush
+            ul.list-group.list-group-flush.mb-1
               li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.text-white.font-weight-bold
                 i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
                 i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = " "
-                = t("Everything in Free, plus:")
-              li.list-group-item.d-flex.align-items-center.font-weight-bold.bg-danger.text-white
+                = t("Everything in Free plus:")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold.bg-success.text-white
                 i.fa.fa-fw.fa-lock.mr-3
                 = ' '
                 = t("Secure inbox privacy")
@@ -271,8 +272,8 @@ block body
                 = ' '
                 = t('99.99% service uptime')
         .col.mt-3.mt-lg-0
-          .d-flex.flex-column.rounded-lg.bg-white.h-100.border-dark.border
-            .px-3.py-4
+          .d-flex.flex-column.rounded-lg.bg-white.h-100
+            .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Team")
               p.text-center.mb-3= t("For groups and organizations")
@@ -281,15 +282,15 @@ block body
                 span.d-inline-block.h6.text-black-50.ml-1
                   = t('for unlimited domains')
               if sortedDomains.length === 0
-                a.btn.btn-lg.btn-block.btn-success(
+                a.btn.btn-block.btn-success(
                   href=l("/my-account/domains/new?plan=team")
                 )
-                  = t("Get started for free")
+                  = t("Sign up free")
                   = " "
                   i.fa.fa-angle-double-right.align-middle
               else
                 .btn-group.btn-block
-                  button.btn.btn-lg.btn-block.btn-success.dropdown-toggle(
+                  button.btn.btn-block.btn-success.dropdown-toggle(
                     type="button",
                     data-toggle="dropdown",
                     aria-haspopup="true",
@@ -314,12 +315,12 @@ block body
                       i.fa.fa-plus
                       = " "
                       = t("Add New Domain")
-            ul.list-group.list-group-flush
+            ul.list-group.list-group-flush.mb-1
               li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.font-weight-bold.text-white
                 i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
                 i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = " "
-                = t("Everything in Enhanced, plus:")
+                = t("Everything in Enhanced plus:")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-infinity.text-primary.mr-3
                 = ' '
@@ -487,6 +488,6 @@ block body
             = " "
             = t("Add New Domain")
           else
-            = t("Get started for free")
+            = t("Sign up free")
             = " "
             i.fa.fa-angle-double-right.align-middle

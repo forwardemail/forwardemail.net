@@ -3468,5 +3468,14 @@
   "<span class=\"font-weight-bold\">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href=\"%s\" class=\"font-weight-bold\">Settings</a>.": "<span class=\"font-weight-bold\">ใช่.</span> คุณสามารถสลับตัวกรองสำหรับเนื้อหาสำหรับผู้ใหญ่ ฟิชชิง โปรแกรมปฏิบัติการ และไวรัสได้จาก <a href=\"%s\" class=\"font-weight-bold\">การตั้งค่า</a>",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.": "<span class=\"font-weight-bold\">ไม่</span> เรามี <a href=\"%s\" class=\"font-weight-bold\">นโยบายความ</a> เป็นส่วนตัวที่จะไม่จัดเก็บบันทึก SMTP ข้อมูลเมตา หรืออีเมลโดยเด็ดขาด",
   "Do you have a question?": "คุณมีคำถาม?",
-  "Read our dedicated page for frequently asked questions or submit a help request.": "อ่านหน้าเฉพาะของเราสำหรับคำถามที่พบบ่อยหรือส่งคำร้องขอความช่วยเหลือ"
+  "Read our dedicated page for frequently asked questions or submit a help request.": "อ่านหน้าเฉพาะของเราสำหรับคำถามที่พบบ่อยหรือส่งคำร้องขอความช่วยเหลือ",
+  "Free email forwarding - Send email with custom domain": "Free email forwarding - Send email with custom domain",
+  "How to set up free email forwarding, private business email, and send mail with custom domain.": "How to set up free email forwarding, private business email, and send mail with custom domain.",
+  "Send Email Custom Domain": "Send Email Custom Domain",
+  "Send Mail As with Gmail Custom Domain": "Send Mail As with Gmail Custom Domain",
+  "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.",
+  "Unlimited email emails": "Unlimited email emails",
+  "Privacy-focused and open-source": "Privacy-focused and open-source",
+  "Lightning fast technology": "Lightning fast technology",
+  "Secure email encryption": "Secure email encryption"
 }

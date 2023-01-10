@@ -153,8 +153,12 @@ localeRouter
     web.onboard,
     render('email-forwarding-regex-pattern-filter')
   )
+  .get('/guides/send-mail-as-using-gmail', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/guides/send-mail-as-gmail-custom-domain'));
+  })
   .get(
-    '/guides/send-mail-as-using-gmail',
+    '/guides/send-mail-as-gmail-custom-domain',
     web.guides.sendMailAs,
     render('guides/send-mail-as-using-gmail')
   )

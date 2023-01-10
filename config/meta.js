@@ -28,16 +28,16 @@ module.exports = function (config) {
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
     '/': [
-      `Free Email Forwarding Service for Custom Domains ${lad}`,
-      'Privacy-focused, open-source, and free email forwarding service. Send and receive as <span class="notranslate">you@your-domain.com</span>.'
+      'Free email forwarding - Send email with custom domain',
+      'How to set up free email forwarding, private business email, and send mail with custom domain.'
     ],
     '/about': [
       `About ${lad}`,
       `Learn more about ${config.appName} and the history of our service.`
     ],
     '/private-business-email': [
-      `Private Business Email ${lad}`,
-      'Create your private, secure, and professional business email for free.'
+      'Private business email - Create free professional email',
+      'Create your private, free, and professional business email for free.'
     ],
     '/faq': [
       `Frequently Asked Questions ${lad}`,
@@ -84,9 +84,9 @@ module.exports = function (config) {
       `Guides ${lad}`,
       'Follow our easy and simple guides and step by step instructions.'
     ],
-    '/guides/send-mail-as-using-gmail': [
-      `How to Send Mail As using Gmail ${lad}`,
-      'Send email from your business custom domain name with Gmail Send Mail As.'
+    '/guides/send-mail-as-gmail-custom-domain': [
+      'Send email with custom domain - Gmail not working?',
+      'Set up email with custom domain and Gmail to send mail as. Send mail as not working? Follow our video and instructions to fix the issue.'
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
       `Port 25 blocked by ISP workaround ${lad}`,

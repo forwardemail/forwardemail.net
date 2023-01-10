@@ -77,18 +77,25 @@ block body
           else
             .alert.alert-danger
               != ("Complete both steps to finish setup:")
-    if domain.plan === 'free'
-      .alert.alert-warning.small
-        = t("Want more privacy?")
-        br.d-block.d-md-none
-        = " "
-        a.alert-link(
-          href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
-        )= t("Upgrade now")
-        = ' '
-        = t('or')
-        = ' '
-        a(href=l('/private-business-email'), target='_blank').alert-link= t('learn more')
+        else
+          .alert.alert-danger
+            i.fa.fa-exclamation-circle.font-weight-bold
+            = ' '
+            strong.font-weight-bold= t('Important:')
+            = ' '
+            span= t('Follow the instructions below to complete setup and verify your domain.')
+        if domain.plan === 'free'
+          .alert.alert-warning.small
+            = t("Need secure and private email?")
+            br.d-block.d-md-none
+            = " "
+            a.alert-link(
+              href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
+            )= t("Upgrade now")
+            = ' '
+            = t('or')
+            = ' '
+            a(href=l('/private-business-email'), target='_blank').alert-link= t('learn more')
     .row
       .col-12
         - const provider = nsProviderLookup(domain)
@@ -330,7 +337,7 @@ block body
             h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
             p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
             a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-              href=l('/guides/send-mail-as-using-gmail'),
+              href=l('/guides/send-mail-as-gmail-custom-domain'),
               target="_blank"
             )
               = t("Setup your Gmail")
