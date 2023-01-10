@@ -22,7 +22,7 @@ footer.mt-auto
                 data-target=isHelp ? "" : "#modal-help"
               )= t("Need help?")
   .bg-dark.text-white
-    .container.py-5.text-center.text-lg-left
+    .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
       .d-flex.flex-column.flex-lg-row
         .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1
           if !isBot(ctx.get('User-Agent'))
@@ -65,16 +65,23 @@ footer.mt-auto
         .flex-wrap.flex-fill
           h3.h5.mb-2= t("Guides")
           ul.list-unstyled.mb-0
-            //- TODO: once we launch SMTP/IMAP we can unlock this and add more
             //-.
               li
                 a.d-block.text-light.py-2.py-md-0(
-                  href=l('/guides/send-email-with-your-own-domain')
-                )= t('Send email with your own domain')
+                  href=l('/guides/professional-business-email')
+                )= t('Professional business email')
               li
                 a.d-block.text-light.py-2.py-md-0(
-                  href=l('/guides/free-professional-business-email-with-custom-domain')
-                )= t('Free professional business email with custom domain')
+                  href=l('/guides/how-to-setup-business-email')
+                )= t('How to setup business email')
+              li
+                a.d-block.text-light.py-2.py-md-0(
+                  href=l('/guides/custom-domain-email-service')
+                )= t('Custom domain email service')
+              li
+                a.d-block.text-light.py-2.py-md-0(
+                  href=l('/guides/free-business-email-address')
+                )= t('Free business email address')
             li
               a.d-block.text-light.py-2.py-md-0(
                 href=l('/guides/send-mail-as-using-gmail')

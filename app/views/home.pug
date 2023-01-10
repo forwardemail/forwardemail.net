@@ -119,7 +119,7 @@ block body
               = ' '
               != t('30-day automatic refunds')
         if isBot(ctx.get('User-Agent'))
-          .col-12.d-none.d-lg-block.py-5
+          .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
             a.btn.btn-outline-dark(
               href='https://www.youtube.com/watch?v=oWEVGMPXMbA',
               target='_blank',
@@ -162,7 +162,7 @@ block body
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
       .h1!= t("Happy users")
-    .container.py-5.d-block
+    .container.py-3.py-md-4.py-lg-5.d-block
       .row.row-cols-1.row-cols-md-2
         //- DHH
         .col
@@ -471,7 +471,7 @@ block body
             height=200,
             alt=""
           )
-  .py-5.position-relative#features.bg-fixed.lazyload(data-src=manifest('img/art/stars.svg'))
+  .py-3.py-md-4.py-lg-5.position-relative#features.bg-fixed.lazyload(data-src=manifest('img/art/stars.svg'))
     .text-center.mb-lg-5
       .h1.mb-0= t("Features")
     .container
@@ -585,7 +585,7 @@ block body
             height=200,
             alt=""
           )
-  .border-top.border-bottom.py-5.d-block.bg-light
+  .border-top.border-bottom.py-3.py-md-4.py-lg-5.d-block.bg-light
     .container
       .row.text-center.d-block.mb-5
         .h2.display-3.mb-1.text-danger
