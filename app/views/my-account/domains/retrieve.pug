@@ -36,30 +36,6 @@ block body
               = " "
               = t("Verify")
   include _modal-upgrade
-  if domain.plan === 'free'
-    #modal-pricing-video.modal.fade(
-      tabindex="-1",
-      role="dialog",
-      aria-labelledby="modal-pricing-video-title",
-      aria-hidden="true"
-    )
-      .modal-dialog.modal-lg(role="document")
-        .modal-content
-          .modal-header.text-center.d-block
-            h1#modal-pricing-video-title.h4.d-inline-block.ml-4= t("Learn about our plans")
-            button.close(
-              type="button",
-              data-dismiss="modal",
-              aria-label="Close"
-            )
-              span(aria-hidden="true") &times;
-          .modal-body
-            .lazyframe(
-              title=t("Free Email Forwarding for Creators"),
-              style="width: 100%; height: 450px",
-              data-vendor="youtube_nocookie",
-              data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
-            )
   if modalFAQTable
     #modal-faq-table.modal.fade(
       tabindex="-1",
@@ -112,7 +88,7 @@ block body
         = ' '
         = t('or')
         = ' '
-        a(href=l('/private-business-email'), data-toggle='modal', data-target='#modal-pricing-video').alert-link= t('learn more')
+        a(href=l('/private-business-email'), target='_blank').alert-link= t('learn more')
     .row
       .col-12
         - const provider = nsProviderLookup(domain)
