@@ -28,6 +28,8 @@ block body
           .col-12.col-lg-6
             h1.mb-3
               = t('Set up your private business email for free')
+              if isBot(ctx.get('User-Agent'))
+                = '.'
             p
               = t('Create your free, private, and professional business email.')
               = ' '
