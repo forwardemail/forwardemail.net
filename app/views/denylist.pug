@@ -11,7 +11,7 @@ block body
               != t('Need expedited removal?')
               br.d-block.d-md-none
               = ' '
-              a(href=l('/my-account/billing/upgrade?plan=enhanced_protection'), target='_blank').alert-link.text-decoration-underline= t('Upgrade now')
+              a(href=l('/my-account/billing/upgrade?plan=enhanced_protection'), target='_blank').alert-link.text-decoration-underline= t('Upgrade for $3')
           form.ajax-form(
             action=ctx.path,
             method="POST"
