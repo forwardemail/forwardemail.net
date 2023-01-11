@@ -1,33 +1,34 @@
 extends layout
 
 block body
-  .container.py-3
-    .row
-      .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
-        form.ajax-form.confirm-prompt(action=l("/help"), method="POST")
-          .card.border-dark
-            h4.card-header.bg-dark.text-white.text-center= t("Ask a question")
-            .card-body
-              if ctx.pathWithoutLocale !== '/faq'
-                p.card-text.font-weight-bold.text-center!= t('Have you read our <a href="%s" target="_blank" rel="noopener noreferrer">FAQ</a> yet?', l("/faq"))
-              .form-group.floating-label
-                textarea#input-message.form-control(
-                  rows="3",
-                  required,
-                  maxlength=config.supportRequestMaxLength,
-                  name="message",
-                  placeholder=t("Write your message")
-                )
-                label(for="input-message")= t("Message")
-              if config.hcaptchaEnabled
-                .h-captcha(
-                  data-sitekey=config.hcaptchaSiteKey,
-                  data-error-callback="hCaptchaError"
-                )
-            .card-footer
-              button.btn.btn-block.btn-success.btn-lg(
-                type="submit",
-                data-toggle="tooltip",
-                data-placement="bottom",
-                title=t("We'll be in contact with you!")
-              )= t("Send message")
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .row
+        .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+          form.ajax-form.confirm-prompt(action=l("/help"), method="POST")
+            .card.border-dark
+              h4.card-header.bg-dark.text-white.text-center= t("Ask a question")
+              .card-body
+                if ctx.pathWithoutLocale !== '/faq'
+                  p.card-text.font-weight-bold.text-center!= t('Have you read our <a href="%s" target="_blank" rel="noopener noreferrer">FAQ</a> yet?', l("/faq"))
+                .form-group.floating-label
+                  textarea#input-message.form-control(
+                    rows="3",
+                    required,
+                    maxlength=config.supportRequestMaxLength,
+                    name="message",
+                    placeholder=t("Write your message")
+                  )
+                  label(for="input-message")= t("Message")
+                if config.hcaptchaEnabled
+                  .h-captcha(
+                    data-sitekey=config.hcaptchaSiteKey,
+                    data-error-callback="hCaptchaError"
+                  )
+              .card-footer
+                button.btn.btn-block.btn-success.btn-lg(
+                  type="submit",
+                  data-toggle="tooltip",
+                  data-placement="bottom",
+                  title=t("We'll be in contact with you!")
+                )= t("Send message")

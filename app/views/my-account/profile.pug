@@ -42,185 +42,186 @@ block body
               aria-label=t("Cancel")
             )= t("Cancel")
             button.btn.btn-primary(type="submit")= user[config.userFields.hasSetPassword] ? t("Change password") : t("Set an account password")
-  .container.py-3
-    .row
-      .col
-        include ../_breadcrumbs
-        if user[config.userFields.changeEmailNewAddress]
-          .alert.alert-warning(role="alert")
-            ul.list-inline.mb-0
-              li.list-inline-item.mb-3.mb-md-0!= t("Email change confirmation link has been sent to: <span class='notranslate font-weight-bold'>%s</span>", user[config.userFields.changeEmailNewAddress])
-              li.list-inline-item
-                form.ajax-form.confirm-prompt(
-                  action=`${ctx.path}/resend-email-change`,
-                  method="POST"
-                )
-                  input(type="hidden", name="_method", value="PUT")
-                  button.btn.btn-dark.btn-sm(type="submit")= t("Resend email")
-              li.list-inline-item
-                form.ajax-form.confirm-prompt(
-                  action=`${ctx.path}/cancel-email-change`,
-                  method="POST"
-                )
-                  input(type="hidden", name="_method", value="PUT")
-                  button.btn.btn-danger.btn-sm(type="submit")= t("Cancel change")
-    .row
-      .col-md
-        form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
-          input(type="hidden", name="_method", value="PUT")
-          .card.border-dark
-            h2.h6.card-header= t("Personal Information")
-            .card-body.pb-0
-              .form-group.floating-label.mt-3
-                input#input-email.form-control(
-                  type="email",
-                  required,
-                  name="email",
-                  value=user.email,
-                  placeholder="name@example.com",
-                  readonly=!user[config.userFields.hasSetPassword]
-                )
-                label(for="input-email")= t("Email address")
-              if !user[config.userFields.hasSetPassword]
-                button.btn.btn-danger.btn-sm.mb-3(
-                  type="button",
-                  data-toggle="modal",
-                  data-target="#modal-change-password"
-                )= t("Set a password to change your email")
-              else if user[config.userFields.changeEmailNewAddress]
-                .alert.alert-warning.small!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
-              .form-group.floating-label
-                input#input-given-name.form-control(
-                  type="text",
-                  name=config.passport.fields.givenName,
-                  value=user[config.passport.fields.givenName],
-                  placeholder=t("First name")
-                )
-                label(for="input-given-name")= t("First name")
-              .form-group.floating-label
-                input#input-family-name.form-control(
-                  type="text",
-                  name=config.passport.fields.familyName,
-                  value=user[config.passport.fields.familyName],
-                  placeholder=t("Last name")
-                )
-                label(for="input-family-name")= t("Last name")
-              if user[config.userFields.hasSetPassword]
-                .form-group
-                  a.text-danger.small(
-                    href="#",
-                    role="button",
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .row
+        .col
+          include ../_breadcrumbs
+          if user[config.userFields.changeEmailNewAddress]
+            .alert.alert-warning(role="alert")
+              ul.list-inline.mb-0
+                li.list-inline-item.mb-3.mb-md-0!= t("Email change confirmation link has been sent to: <span class='notranslate font-weight-bold'>%s</span>", user[config.userFields.changeEmailNewAddress])
+                li.list-inline-item
+                  form.ajax-form.confirm-prompt(
+                    action=`${ctx.path}/resend-email-change`,
+                    method="POST"
+                  )
+                    input(type="hidden", name="_method", value="PUT")
+                    button.btn.btn-dark.btn-sm(type="submit")= t("Resend email")
+                li.list-inline-item
+                  form.ajax-form.confirm-prompt(
+                    action=`${ctx.path}/cancel-email-change`,
+                    method="POST"
+                  )
+                    input(type="hidden", name="_method", value="PUT")
+                    button.btn.btn-danger.btn-sm(type="submit")= t("Cancel change")
+      .row
+        .col-md
+          form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
+            input(type="hidden", name="_method", value="PUT")
+            .card.border-dark
+              h2.h6.card-header= t("Personal Information")
+              .card-body.pb-0
+                .form-group.floating-label.mt-3
+                  input#input-email.form-control(
+                    type="email",
+                    required,
+                    name="email",
+                    value=user.email,
+                    placeholder="name@example.com",
+                    readonly=!user[config.userFields.hasSetPassword]
+                  )
+                  label(for="input-email")= t("Email address")
+                if !user[config.userFields.hasSetPassword]
+                  button.btn.btn-danger.btn-sm.mb-3(
+                    type="button",
                     data-toggle="modal",
                     data-target="#modal-change-password"
-                  )= t("Need to change your password?")
-              if domains && domains.filter(domain => !domain.is_global).length > 0
-                hr
-                .alert.alert-info.small= t("If you set a default domain, then you will be redirected to its section after login.")
+                  )= t("Set a password to change your email")
+                else if user[config.userFields.changeEmailNewAddress]
+                  .alert.alert-warning.small!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
                 .form-group.floating-label
-                  select#input-default-domain.form-control(
-                    name=config.userFields.defaultDomain
+                  input#input-given-name.form-control(
+                    type="text",
+                    name=config.passport.fields.givenName,
+                    value=user[config.passport.fields.givenName],
+                    placeholder=t("First name")
+                  )
+                  label(for="input-given-name")= t("First name")
+                .form-group.floating-label
+                  input#input-family-name.form-control(
+                    type="text",
+                    name=config.passport.fields.familyName,
+                    value=user[config.passport.fields.familyName],
+                    placeholder=t("Last name")
+                  )
+                  label(for="input-family-name")= t("Last name")
+                if user[config.userFields.hasSetPassword]
+                  .form-group
+                    a.text-danger.small(
+                      href="#",
+                      role="button",
+                      data-toggle="modal",
+                      data-target="#modal-change-password"
+                    )= t("Need to change your password?")
+                if domains && domains.filter(domain => !domain.is_global).length > 0
+                  hr
+                  .alert.alert-info.small= t("If you set a default domain, then you will be redirected to its section after login.")
+                  .form-group.floating-label
+                    select#input-default-domain.form-control(
+                      name=config.userFields.defaultDomain
+                    )
+                      option(
+                        value="None",
+                        selected=!user[config.userFields.defaultDomain]
+                      )= t("None")
+                      each domain in domains.filter(domain => !domain.is_global)
+                        option(
+                          value=domain._id,
+                          selected=user[config.userFields.defaultDomain] && user[config.userFields.defaultDomain].toString() === domain.id
+                        )= domain.name
+                    label(for="input-default-domain")= t("Default Domain")
+              .card-footer
+                button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
+          .alert.alert-secondary.small.mt-3.mb-0.text-center
+            = t("Need to unsubscribe or cancel your account?")
+            = " "
+            a.alert-link(href=l("/my-account/security"))= t("Delete your account")
+        .col-md.mt-3.mt-md-0
+          form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
+            input(type="hidden", name="_method", value="PUT")
+            .card.border-dark
+              h2.h6.card-header= t("Company Information")
+              .card-body.pb-0
+                .alert.alert-warning.small!= t("Receipts are automatically emailed to you.  If you set a receipt email address below, then receipts will be sent there and you will receive a copy too.")
+                .form-group.floating-label.mt-3
+                  input#input-receipt-email.form-control(
+                    type="email",
+                    name=config.userFields.receiptEmail,
+                    value=user[config.userFields.receiptEmail],
+                    placeholder="receipts@example.com"
+                  )
+                  label(for="input-receipt-email")= t("Receipt email address")
+                hr
+                .form-group.floating-label
+                  input#input-company-name.form-control(
+                    type="text",
+                    name=config.userFields.companyName,
+                    value=user[config.userFields.companyName],
+                    placeholder=t("Company name")
+                  )
+                  label(for="input-company-name")= t("Company name")
+                .form-group.floating-label
+                  input#input-address-line1.form-control(
+                    type="text",
+                    name=config.userFields.addressLine1,
+                    value=user[config.userFields.addressLine1],
+                    placeholder=t("Street address or PO Box")
+                  )
+                  label(for="input-address-line1")= t("Street address or PO Box")
+                .form-group.floating-label
+                  input#input-address-line2.form-control(
+                    type="text",
+                    name=config.userFields.addressLine2,
+                    value=user[config.userFields.addressLine2],
+                    placeholder=t("Apartment, suite, unit, or building")
+                  )
+                  label(for="input-address-line2")= t("Apartment, suite, unit, or building")
+                .form-group.floating-label
+                  input#input-address-city.form-control(
+                    type="text",
+                    name=config.userFields.addressCity,
+                    value=user[config.userFields.addressCity],
+                    placeholder=t("City, district, suburb, town, or village")
+                  )
+                  label(for="input-address-city")= t("City, district, suburb, town, or village")
+                .form-group.floating-label
+                  input#input-address-state.form-control(
+                    type="text",
+                    name=config.userFields.addressState,
+                    value=user[config.userFields.addressState],
+                    placeholder=t("State, county, province, or region")
+                  )
+                  label(for="input-address-state")= t("State, county, province, or region")
+                .form-group.floating-label
+                  input#input-address-zip.form-control(
+                    type="text",
+                    name=config.userFields.addressZip,
+                    value=user[config.userFields.addressZip],
+                    placeholder=t("ZIP or postal code")
+                  )
+                  label(for="input-address-zip")= t("ZIP or postal code")
+                .form-group.floating-label
+                  select#select-address-country.form-control(
+                    name=config.userFields.addressCountry
                   )
                     option(
                       value="None",
-                      selected=!user[config.userFields.defaultDomain]
+                      selected=!isSANB(user[config.userFields.addressCountry])
                     )= t("None")
-                    each domain in domains.filter(domain => !domain.is_global)
+                    each country in countries
                       option(
-                        value=domain._id,
-                        selected=user[config.userFields.defaultDomain] && user[config.userFields.defaultDomain].toString() === domain.id
-                      )= domain.name
-                  label(for="input-default-domain")= t("Default Domain")
-            .card-footer
-              button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
-        .alert.alert-secondary.small.mt-3.mb-0.text-center
-          = t("Need to unsubscribe or cancel your account?")
-          = " "
-          a.alert-link(href=l("/my-account/security"))= t("Delete your account")
-      .col-md.mt-3.mt-md-0
-        form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
-          input(type="hidden", name="_method", value="PUT")
-          .card.border-dark
-            h2.h6.card-header= t("Company Information")
-            .card-body.pb-0
-              .alert.alert-warning.small!= t("Receipts are automatically emailed to you.  If you set a receipt email address below, then receipts will be sent there and you will receive a copy too.")
-              .form-group.floating-label.mt-3
-                input#input-receipt-email.form-control(
-                  type="email",
-                  name=config.userFields.receiptEmail,
-                  value=user[config.userFields.receiptEmail],
-                  placeholder="receipts@example.com"
-                )
-                label(for="input-receipt-email")= t("Receipt email address")
-              hr
-              .form-group.floating-label
-                input#input-company-name.form-control(
-                  type="text",
-                  name=config.userFields.companyName,
-                  value=user[config.userFields.companyName],
-                  placeholder=t("Company name")
-                )
-                label(for="input-company-name")= t("Company name")
-              .form-group.floating-label
-                input#input-address-line1.form-control(
-                  type="text",
-                  name=config.userFields.addressLine1,
-                  value=user[config.userFields.addressLine1],
-                  placeholder=t("Street address or PO Box")
-                )
-                label(for="input-address-line1")= t("Street address or PO Box")
-              .form-group.floating-label
-                input#input-address-line2.form-control(
-                  type="text",
-                  name=config.userFields.addressLine2,
-                  value=user[config.userFields.addressLine2],
-                  placeholder=t("Apartment, suite, unit, or building")
-                )
-                label(for="input-address-line2")= t("Apartment, suite, unit, or building")
-              .form-group.floating-label
-                input#input-address-city.form-control(
-                  type="text",
-                  name=config.userFields.addressCity,
-                  value=user[config.userFields.addressCity],
-                  placeholder=t("City, district, suburb, town, or village")
-                )
-                label(for="input-address-city")= t("City, district, suburb, town, or village")
-              .form-group.floating-label
-                input#input-address-state.form-control(
-                  type="text",
-                  name=config.userFields.addressState,
-                  value=user[config.userFields.addressState],
-                  placeholder=t("State, county, province, or region")
-                )
-                label(for="input-address-state")= t("State, county, province, or region")
-              .form-group.floating-label
-                input#input-address-zip.form-control(
-                  type="text",
-                  name=config.userFields.addressZip,
-                  value=user[config.userFields.addressZip],
-                  placeholder=t("ZIP or postal code")
-                )
-                label(for="input-address-zip")= t("ZIP or postal code")
-              .form-group.floating-label
-                select#select-address-country.form-control(
-                  name=config.userFields.addressCountry
-                )
-                  option(
-                    value="None",
-                    selected=!isSANB(user[config.userFields.addressCountry])
-                  )= t("None")
-                  each country in countries
-                    option(
-                      value=country,
-                      selected=user[config.userFields.addressCountry] === country
-                    )= t(country)
-                label(for="select-address-country")= t("Country name")
-              .form-group.floating-label
-                input#input-vat.form-control(
-                  type="text",
-                  name=config.userFields.companyVAT,
-                  value=user[config.userFields.companyVAT],
-                  placeholder=t("Company VAT tax number")
-                )
-                label(for="input-vat")= t("Company VAT tax number")
-            .card-footer
-              button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
+                        value=country,
+                        selected=user[config.userFields.addressCountry] === country
+                      )= t(country)
+                  label(for="select-address-country")= t("Country name")
+                .form-group.floating-label
+                  input#input-vat.form-control(
+                    type="text",
+                    name=config.userFields.companyVAT,
+                    value=user[config.userFields.companyVAT],
+                    placeholder=t("Company VAT tax number")
+                  )
+                  label(for="input-vat")= t("Company VAT tax number")
+              .card-footer
+                button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")

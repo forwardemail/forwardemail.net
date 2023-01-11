@@ -1,51 +1,52 @@
 extends ../layout
 
 block body
-  .container.py-3
-    .row
-      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3.text-center
-        h1.my-3.py-3= t("Setup OTP")
-        .alert.alert-warning(role="alert")
-          i.fa.fa-exclamation-triangle
-          = " "
-          = t("Download your emergency recovery keys below.")
-        textarea#otp-recovery-keys.form-control.text-monospace.text-center.rounded-bottom-0.border-dark(
-          rows="5"
-        )
-          each key, i in user[config.userFields.otpRecoveryKeys]
-            = key
-            if i !== user[config.userFields.otpRecoveryKeys].length - 1
-              if i % 2
-                = "\n"
-              else
-                = "    "
-        form(action=l("/my-account/recovery-keys"), method="POST")
-          .d-flex.btn-group(role="group")
-            button.btn.btn-dark.rounded-top-0(type="submit")
-              i.fa.fa-file-download
-              = " "
-              = t("Download")
-            button.btn.btn-dark.rounded-top-0(
-              type="button",
-              data-toggle="clipboard",
-              data-clipboard-text=user[config.userFields.otpRecoveryKeys].join("\r\n")
-            )
-              i.fa.fa-clipboard
-              = " "
-              = t("Copy")
-        form(
-          action=ctx.path,
-          method="POST",
-          autocomplete="off",
-          class=user[config.userFields.otpRecoveryKeys] ? "" : "confirm-prompt"
-        )
-          if user[config.userFields.hasSetPassword]
-            .form-group.floating-label.mt-4
-              input#input-password.form-control.form-control-lg(
-                type="password",
-                autocomplete="off",
-                name="password",
-                required
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .row
+        .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3.text-center
+          h1.my-3.py-3= t("Setup OTP")
+          .alert.alert-warning(role="alert")
+            i.fa.fa-exclamation-triangle
+            = " "
+            = t("Download your emergency recovery keys below.")
+          textarea#otp-recovery-keys.form-control.text-monospace.text-center.rounded-bottom-0.border-dark(
+            rows="5"
+          )
+            each key, i in user[config.userFields.otpRecoveryKeys]
+              = key
+              if i !== user[config.userFields.otpRecoveryKeys].length - 1
+                if i % 2
+                  = "\n"
+                else
+                  = "    "
+          form(action=l("/my-account/recovery-keys"), method="POST")
+            .d-flex.btn-group(role="group")
+              button.btn.btn-dark.rounded-top-0(type="submit")
+                i.fa.fa-file-download
+                = " "
+                = t("Download")
+              button.btn.btn-dark.rounded-top-0(
+                type="button",
+                data-toggle="clipboard",
+                data-clipboard-text=user[config.userFields.otpRecoveryKeys].join("\r\n")
               )
-              label(for="input-password")= t("Confirm Password")
-          button.btn.btn-primary.btn-lg.btn-block.mt-2(type="submit")= t("Continue")
+                i.fa.fa-clipboard
+                = " "
+                = t("Copy")
+          form(
+            action=ctx.path,
+            method="POST",
+            autocomplete="off",
+            class=user[config.userFields.otpRecoveryKeys] ? "" : "confirm-prompt"
+          )
+            if user[config.userFields.hasSetPassword]
+              .form-group.floating-label.mt-4
+                input#input-password.form-control.form-control-lg(
+                  type="password",
+                  autocomplete="off",
+                  name="password",
+                  required
+                )
+                label(for="input-password")= t("Confirm Password")
+            button.btn.btn-primary.btn-lg.btn-block.mt-2(type="submit")= t("Continue")

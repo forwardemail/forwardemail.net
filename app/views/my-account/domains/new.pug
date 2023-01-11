@@ -20,54 +20,55 @@ block body
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
           )
-  .container.pt-3
-    .row
-      .col
-        include ../../_breadcrumbs
-  .container.py-3
-    .row
-      .col-sm-12.col-md-12.col-lg-8.offset-lg-2
-        form.ajax-form(action=ctx.path, method="POST")
-          if isSANB(ctx.query.plan) && ['free','enhanced_protection','team'].includes(ctx.query.plan)
-            input(type="hidden", name="plan", value=ctx.query.plan)
-          .form-group.floating-label
-            input#input-domain.form-control.form-control-lg(
-              required,
-              value=isSANB(ctx.query.domain) && isFQDN(ctx.query.domain) ? ctx.query.domain : "",
-              name="domain",
-              autocomplete="off",
-              placeholder="example.com",
-              autocorrect="off",
-              spellcheck="false",
-              autocapitalize="off",
-              type="text"
-            )
-            label(for="input-domain")= t("Domain name")
-          if user.plan === 'free' && (!isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan))
-            input(
-              type="hidden",
-              name="plan",
-              value="enhanced_protection"
-            )
-          if user.group === 'admin'
-            .form-group.form-check
-              input#input-is-global.form-check-input(
-                type="checkbox",
-                name="is_global",
-                value="true"
-              )
-              label.form-check-label(for="input-is-global")= t("Global domain")
-          button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
-        .alert.alert-warning.mt-3.text-center
-          ul.list-inline.mb-0
-            li.list-inline-item= t("Don't have a domain name?")
-            li.list-inline-item
-              a.alert-link(href=l("/domain-registration"))= t("Register a domain")
-    - const filteredDomains = domains.filter((domain) => !domain.is_global || domain.group === "admin");
-    if filteredDomains.length > 0
-      .row.text-center.my-5
+  .min-vh-80.d-flex.flex-column
+    .container.pt-3
+      .row
         .col
-          a.btn.btn-outline-secondary(href=l("/my-account/domains"))
-            i.fa.fa-angle-double-left
-            = " "
-            = t("Back to Domains")
+          include ../../_breadcrumbs
+    .container.py-3
+      .row
+        .col-sm-12.col-md-12.col-lg-8.offset-lg-2
+          form.ajax-form(action=ctx.path, method="POST")
+            if isSANB(ctx.query.plan) && ['free','enhanced_protection','team'].includes(ctx.query.plan)
+              input(type="hidden", name="plan", value=ctx.query.plan)
+            .form-group.floating-label
+              input#input-domain.form-control.form-control-lg(
+                required,
+                value=isSANB(ctx.query.domain) && isFQDN(ctx.query.domain) ? ctx.query.domain : "",
+                name="domain",
+                autocomplete="off",
+                placeholder="example.com",
+                autocorrect="off",
+                spellcheck="false",
+                autocapitalize="off",
+                type="text"
+              )
+              label(for="input-domain")= t("Domain name")
+            if user.plan === 'free' && (!isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan))
+              input(
+                type="hidden",
+                name="plan",
+                value="enhanced_protection"
+              )
+            if user.group === 'admin'
+              .form-group.form-check
+                input#input-is-global.form-check-input(
+                  type="checkbox",
+                  name="is_global",
+                  value="true"
+                )
+                label.form-check-label(for="input-is-global")= t("Global domain")
+            button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
+          .alert.alert-warning.mt-3.text-center
+            ul.list-inline.mb-0
+              li.list-inline-item= t("Don't have a domain name?")
+              li.list-inline-item
+                a.alert-link(href=l("/domain-registration"))= t("Register a domain")
+      - const filteredDomains = domains.filter((domain) => !domain.is_global || domain.group === "admin");
+      if filteredDomains.length > 0
+        .row.text-center.my-5
+          .col
+            a.btn.btn-outline-secondary(href=l("/my-account/domains"))
+              i.fa.fa-angle-double-left
+              = " "
+              = t("Back to Domains")

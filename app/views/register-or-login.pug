@@ -1,5 +1,6 @@
 extends layout
 
 block body
-  include _register-or-login
-  +registerOrLogin(verb)
+  .min-vh-80.d-flex.flex-column
+    include _register-or-login
+    +registerOrLogin(verb)

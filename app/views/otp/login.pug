@@ -24,37 +24,38 @@ block body
               li= t("Wait 3-5 business days for an administrative follow-up email.")
               li= t("Access to your account will be unlocked for you.")
             button.btn.btn-primary.btn-block.btn-lg(type="submit")= t("Continue")
-  .container.py-3
-    h1.my-3.py-3.text-center= t("Two-Factor Check")
-    .row
-      .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
-        form.ajax-form(action=ctx.path, method="POST", autocomplete="off")
-          .form-group.floating-label
-            input#input-text.form-control.form-control-lg(
-              type="text",
-              autofocus,
-              autocomplete="off",
-              name="passcode",
-              placeholder=" "
-            )
-            label(for="input-passcode")= t("Passcode")
-          .form-group.form-check
-            input#otp-remember-me.form-check-input(
-              type="checkbox",
-              name="otp_remember_me",
-              value="true"
-            )
-            label.form-check-label(for="otp-remember-me")= t("Don't ask me again in this browser")
-          button.btn.btn-primary.btn-block.btn-lg(type="submit")= t("Continue")
-        .alert.alert-warning.mt-3.text-center
-          ul.list-inline.mb-0
-            li.list-inline-item= t("Having trouble?")
-            li.list-inline-item
-              a.alert-link(href=l(`${config.otpRoutePrefix}/keys`))= t("Use a recovery key")
-        ul.list-inline.text-center.mb-0
-          li.list-inline-item.small.text-muted= t("Lose your recovery keys?")
-          li.list-inline-item.small: a.text-danger(
-            href="#",
-            data-toggle="modal-anchor",
-            data-target="#modal-recovery"
-          )= t("Request account recovery")
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      h1.my-3.py-3.text-center= t("Two-Factor Check")
+      .row
+        .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+          form.ajax-form(action=ctx.path, method="POST", autocomplete="off")
+            .form-group.floating-label
+              input#input-text.form-control.form-control-lg(
+                type="text",
+                autofocus,
+                autocomplete="off",
+                name="passcode",
+                placeholder=" "
+              )
+              label(for="input-passcode")= t("Passcode")
+            .form-group.form-check
+              input#otp-remember-me.form-check-input(
+                type="checkbox",
+                name="otp_remember_me",
+                value="true"
+              )
+              label.form-check-label(for="otp-remember-me")= t("Don't ask me again in this browser")
+            button.btn.btn-primary.btn-block.btn-lg(type="submit")= t("Continue")
+          .alert.alert-warning.mt-3.text-center
+            ul.list-inline.mb-0
+              li.list-inline-item= t("Having trouble?")
+              li.list-inline-item
+                a.alert-link(href=l(`${config.otpRoutePrefix}/keys`))= t("Use a recovery key")
+          ul.list-inline.text-center.mb-0
+            li.list-inline-item.small.text-muted= t("Lose your recovery keys?")
+            li.list-inline-item.small: a.text-danger(
+              href="#",
+              data-toggle="modal-anchor",
+              data-target="#modal-recovery"
+            )= t("Request account recovery")

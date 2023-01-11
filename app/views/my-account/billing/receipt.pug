@@ -1,45 +1,46 @@
 extends ../../layout
 
 block body
-  .container.py-3
-    .row
-      .col
-        include ../../_breadcrumbs
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .row
+        .col
+          include ../../_breadcrumbs
 
-  .container
-    .row
-      .col
-        .alert.alert-info.text-center.small!= t('Need to change invoice information? <a href="%s" class="alert-link notranslate">Update company/VAT info</a>', l("/my-account/profile"))
-    .row
-      ul.list-inline.mb-0.mx-auto
-        li.list-inline-item
-          a.btn.btn-danger(
-            href=l(`/my-account/billing/${dayjs(payment.invoice_at).format('YYYY-MM-DD')}-${payment.reference.toUpperCase()}.pdf`),
-            data-toggle="tooltip",
-            data-placement="bottom",
-            title=t("Download")
-          )
-            i.fa.fa-file-pdf
+    .container
+      .row
+        .col
+          .alert.alert-info.text-center.small!= t('Need to change invoice information? <a href="%s" class="alert-link notranslate">Update company/VAT info</a>', l("/my-account/profile"))
+      .row
+        ul.list-inline.mb-0.mx-auto
+          li.list-inline-item
+            a.btn.btn-danger(
+              href=l(`/my-account/billing/${dayjs(payment.invoice_at).format('YYYY-MM-DD')}-${payment.reference.toUpperCase()}.pdf`),
+              data-toggle="tooltip",
+              data-placement="bottom",
+              title=t("Download")
+            )
+              i.fa.fa-file-pdf
+              = " "
+              = t("Download")
+          li.list-inline-item
+            a.btn.btn-dark#btn-print(
+              href=l(`/my-account/billing/${dayjs(payment.invoice_at).format('YYYY-MM-DD')}-${payment.reference.toUpperCase()}.html`),
+              target="_blank",
+              data-toggle="tooltip",
+              data-placement="bottom",
+              title=t("Print")
+            )
+              i.fa.fa-print
+              = " "
+              = t("Print")
+      .row
+        .col
+          hr
+          include _receipt
+      .row.text-center.my-3
+        .col
+          a.btn.btn-outline-secondary(href=l("/my-account/billing"))
+            i.fa.fa-angle-double-left
             = " "
-            = t("Download")
-        li.list-inline-item
-          a.btn.btn-dark#btn-print(
-            href=l(`/my-account/billing/${dayjs(payment.invoice_at).format('YYYY-MM-DD')}-${payment.reference.toUpperCase()}.html`),
-            target="_blank",
-            data-toggle="tooltip",
-            data-placement="bottom",
-            title=t("Print")
-          )
-            i.fa.fa-print
-            = " "
-            = t("Print")
-    .row
-      .col
-        hr
-        include _receipt
-    .row.text-center.my-3
-      .col
-        a.btn.btn-outline-secondary(href=l("/my-account/billing"))
-          i.fa.fa-angle-double-left
-          = " "
-          = t("Back to Billing")
+            = t("Back to Billing")
