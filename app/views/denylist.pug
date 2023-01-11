@@ -1,34 +1,35 @@
 extends layout
 
 block body
-  .container.py-3
-    .text-center: h1.my-3.py-3= t("Denylist removal")
-    .row
-      .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
-        if user.plan === 'free'
-          .alert.alert-warning.text-center.mb-3
-            != t('Need expedited removal?')
-            br.d-block.d-md-none
-            = ' '
-            a(href=l('/my-account/billing/upgrade?plan=enhanced_protection'), target='_blank').alert-link.text-decoration-underline= t('Upgrade now')
-        form.ajax-form(
-          action=ctx.path,
-          method="POST"
-        )
-          .form-group.floating-label
-            input#input-q.form-control.form-control-lg(
-              type="text",
-              required,
-              name="q",
-              value=isSANB(ctx.query.q) ? ctx.query.q : '',
-              readonly=isSANB(ctx.query.q) && (!isFQDN(ctx.query.q) && !validator.isEmail(ctx.query.q) && !validator.isIP(ctx.query.q)),
-              placeholder=" ",
-              autocomplete="off"
-            )
-            label(for="input-q")= t("Email, domain name, or IP address")
-          if config.hcaptchaEnabled
-            .h-captcha(
-              data-sitekey=config.hcaptchaSiteKey,
-              data-error-callback="hCaptchaError"
-            )
-          button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Submit Request")
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .text-center: h1.my-3.py-3= t("Denylist removal")
+      .row
+        .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+          if user.plan === 'free'
+            .alert.alert-warning.text-center.mb-3
+              != t('Need expedited removal?')
+              br.d-block.d-md-none
+              = ' '
+              a(href=l('/my-account/billing/upgrade?plan=enhanced_protection'), target='_blank').alert-link.text-decoration-underline= t('Upgrade now')
+          form.ajax-form(
+            action=ctx.path,
+            method="POST"
+          )
+            .form-group.floating-label
+              input#input-q.form-control.form-control-lg(
+                type="text",
+                required,
+                name="q",
+                value=isSANB(ctx.query.q) ? ctx.query.q : '',
+                readonly=isSANB(ctx.query.q) && (!isFQDN(ctx.query.q) && !validator.isEmail(ctx.query.q) && !validator.isIP(ctx.query.q)),
+                placeholder=" ",
+                autocomplete="off"
+              )
+              label(for="input-q")= t("Email, domain name, or IP address")
+            if config.hcaptchaEnabled
+              .h-captcha(
+                data-sitekey=config.hcaptchaSiteKey,
+                data-error-callback="hCaptchaError"
+              )
+            button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Submit Request")

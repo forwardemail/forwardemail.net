@@ -66,121 +66,122 @@ block body
             aria-label=t("Cancel")
           )= t("Cancel")
 
-  .container.py-3
-    .row
-      .col
-        include ../../_breadcrumbs
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .row
+        .col
+          include ../../_breadcrumbs
 
-    - const hasPlanExpired = user.plan !== "free" && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now();
-    - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID]);
+      - const hasPlanExpired = user.plan !== "free" && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now();
+      - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID]);
 
-    if user.plan !== 'free' && (hasPlanExpired || hasSubscription)
+      if user.plan !== 'free' && (hasPlanExpired || hasSubscription)
+        .container
+          .row
+            .col
+              .alert.text-center.mb-0(
+                class=hasPlanExpired ? "alert-danger" : "alert-success"
+              )
+                if hasPlanExpired
+                  != t('Your plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
+                  = " "
+                  if hasSubscription && isSANB(user[config.userFields.stripeSubscriptionID])
+                    = t("Make payment or update card immediately to avoid account termination.")
+                  else
+                    = t("Make payment immediately to avoid account termination.")
+                else
+                  = emoji("tada")
+                  = " "
+                  != t('You have an active <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t("card, wallet, or bank") : "PayPal")
+
+    .container.py-3.py-sm-5.position-relative
+      .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
+        if user.plan !== 'free'
+          .col-12.col-lg-6.d-flex
+            .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
+              h2.mb-0
+                if hasSubscription
+                  = t("Auto-renew enabled")
+                else
+                  = t("Auto-renew disabled")
+              if hasSubscription && hasPlanExpired
+                .alert.alert-warning.small.mt-3.mb-0!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t("card, wallet, or bank") : "PayPal")
+              else if !hasPlanExpired
+                .alert.alert-warning.small.mt-3.mb-0
+                  != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item
+                  a.btn.btn-sm.btn-primary.mt-3(
+                    href=l("/my-account/billing/make-payment")
+                  )= t("Make Payment")
+                if isSANB(user[config.userFields.stripeSubscriptionID])
+                  li.list-inline-item
+                    form.ajax-form(
+                      action=l("/my-account/billing/update-card"),
+                      method="POST"
+                    )
+                      button.btn.btn-sm.btn-dark.mt-3(type="submit")= t("Update Payment Method")
+                if hasSubscription
+                  li.list-inline-item
+                    form.confirm-prompt(
+                      action=l("/my-account/billing"),
+                      method="POST"
+                    )
+                      input(type="hidden", name="_method", value="DELETE")
+                      button.btn.btn-sm.btn-danger.mt-3(type="submit")
+                        = t("Cancel Subscription")
+                else
+                  li.list-inline-item
+                    a.btn.btn-sm.btn-success.mt-3(
+                      href=l("/my-account/billing/enable-auto-renew")
+                    )= t("Enable Auto-Renew")
+        .col-12.d-flex(class=user.plan === "free" ? "" : "col-lg-6")
+          .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
+            h2= t(titleize(humanize(user.plan)))
+            .small.text-muted.text-uppercase.mb-3
+              != t('Plan started on <span class="notranslate">%s</span>', dayjs(user[config.userFields.planSetAt]).format("M/D/YY"))
+            button.btn.btn-sm.btn-dark.btn-success(
+              type="button",
+              data-toggle="modal",
+              data-target="#modal-change-plan"
+            )= t("Change Plan")
+    if payments.length > 0
       .container
         .row
           .col
-            .alert.text-center.mb-0(
-              class=hasPlanExpired ? "alert-danger" : "alert-success"
-            )
-              if hasPlanExpired
-                != t('Your plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
-                = " "
-                if hasSubscription && isSANB(user[config.userFields.stripeSubscriptionID])
-                  = t("Make payment or update card immediately to avoid account termination.")
-                else
-                  = t("Make payment immediately to avoid account termination.")
-              else
-                = emoji("tada")
-                = " "
-                != t('You have an active <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t("card, wallet, or bank") : "PayPal")
-
-  .container.py-3.py-sm-5.position-relative
-    .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-      if user.plan !== 'free'
-        .col-12.col-lg-6.d-flex
-          .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-            h2.mb-0
-              if hasSubscription
-                = t("Auto-renew enabled")
-              else
-                = t("Auto-renew disabled")
-            if hasSubscription && hasPlanExpired
-              .alert.alert-warning.small.mt-3.mb-0!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t("card, wallet, or bank") : "PayPal")
-            else if !hasPlanExpired
-              .alert.alert-warning.small.mt-3.mb-0
-                != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
-            ul.list-inline.text-center.mb-0
-              li.list-inline-item
-                a.btn.btn-sm.btn-primary.mt-3(
-                  href=l("/my-account/billing/make-payment")
-                )= t("Make Payment")
-              if isSANB(user[config.userFields.stripeSubscriptionID])
-                li.list-inline-item
-                  form.ajax-form(
-                    action=l("/my-account/billing/update-card"),
-                    method="POST"
-                  )
-                    button.btn.btn-sm.btn-dark.mt-3(type="submit")= t("Update Payment Method")
-              if hasSubscription
-                li.list-inline-item
-                  form.confirm-prompt(
-                    action=l("/my-account/billing"),
-                    method="POST"
-                  )
-                    input(type="hidden", name="_method", value="DELETE")
-                    button.btn.btn-sm.btn-danger.mt-3(type="submit")
-                      = t("Cancel Subscription")
-              else
-                li.list-inline-item
-                  a.btn.btn-sm.btn-success.mt-3(
-                    href=l("/my-account/billing/enable-auto-renew")
-                  )= t("Enable Auto-Renew")
-      .col-12.d-flex(class=user.plan === "free" ? "" : "col-lg-6")
-        .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-          h2= t(titleize(humanize(user.plan)))
-          .small.text-muted.text-uppercase.mb-3
-            != t('Plan started on <span class="notranslate">%s</span>', dayjs(user[config.userFields.planSetAt]).format("M/D/YY"))
-          button.btn.btn-sm.btn-dark.btn-success(
-            type="button",
-            data-toggle="modal",
-            data-target="#modal-change-plan"
-          )= t("Change Plan")
-  if payments.length > 0
-    .container
-      .row
-        .col
-          h3.text-center.mb-3= t("Receipts")
-          //-.
-            form.ajax-form.table-ajax-form.mb-3.px-3(
-              action=ctx.path,
-              method="GET",
-              data-table="#table-payments"
-            )
-              .form-row
-                .col.form-group.floating-label
-                  input#input-keyword-search.form-control(
-                    type="text",
-                    value=ctx.query.keyword ? ctx.query.keyword : '',
-                    name="keyword",
-                    placeholder=t("Keyword")
-                  )
-                  label(for="input-keyword-search")= t('Keyword')
-              .form-row
-                .col.form-group.floating-label
-                  input#input-start-date.form-control(
-                    type="date",
-                    value=ctx.query.start_date ? ctx.query.start_date : '',
-                    name="start_date"
-                  )
-                  label(for="input-start-date")= t('Start Date')
-                .col.form-group.floating-label
-                  input#input-end-date.form-control(
-                    type="date",
-                    value=ctx.query.end_date ? ctx.query.end_date : '',
-                    name="end_date"
-                  )
-                  label(for="input-end-date")= t('End Date')
-              .row
-                .col
-                  button.btn.btn-success.btn-block(type="submit")= t('Search')
-          #table-payments.mb-0
-            include ./_table.pug
+            h3.text-center.mb-3= t("Receipts")
+            //-.
+              form.ajax-form.table-ajax-form.mb-3.px-3(
+                action=ctx.path,
+                method="GET",
+                data-table="#table-payments"
+              )
+                .form-row
+                  .col.form-group.floating-label
+                    input#input-keyword-search.form-control(
+                      type="text",
+                      value=ctx.query.keyword ? ctx.query.keyword : '',
+                      name="keyword",
+                      placeholder=t("Keyword")
+                    )
+                    label(for="input-keyword-search")= t('Keyword')
+                .form-row
+                  .col.form-group.floating-label
+                    input#input-start-date.form-control(
+                      type="date",
+                      value=ctx.query.start_date ? ctx.query.start_date : '',
+                      name="start_date"
+                    )
+                    label(for="input-start-date")= t('Start Date')
+                  .col.form-group.floating-label
+                    input#input-end-date.form-control(
+                      type="date",
+                      value=ctx.query.end_date ? ctx.query.end_date : '',
+                      name="end_date"
+                    )
+                    label(for="input-end-date")= t('End Date')
+                .row
+                  .col
+                    button.btn.btn-success.btn-block(type="submit")= t('Search')
+            #table-payments.mb-0
+              include ./_table.pug

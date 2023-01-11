@@ -29,267 +29,268 @@ block append scripts
 block body
   - const isMakePayment = ctx.pathWithoutLocale === "/my-account/billing/make-payment";
   - const isEnableAutoRenew = ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew";
-  .container.py-3
-    .row
-      .col
-        include ../../_breadcrumbs
-    .row
-      .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-8.offset-lg-2.text-center
-        if bad_domain
-          .alert.alert-warning.small!= t('You must upgrade to a paid plan for: <strong class="notranslate">%s</strong>', bad_domain)
-        else if user.plan === 'free' && domain
-          .alert.alert-warning.small
-            = t("Not ready to upgrade?")
-            br.d-block.d-md-none
-            = " "
-            a.alert-link.text-decoration-underline(
-              href=l(`/my-account/domains/${domain.name}`)
-            )= t("Switch to the Free plan")
-            = ' '
-            = t('or')
-            = ' '
-            a(href=l('/private-business-email'), target='_blank').alert-link.text-decoration-underline= t('learn more')
-        .card
-          h2.h6.card-header
-            if isMakePayment
-              = t("Make Payment")
-            else if isEnableAutoRenew
-              = t("Enable Auto-Renew")
-            else
-              if user.plan === 'team' && ctx.query.plan === 'enhanced_protection'
-                != t('Downgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
-              else
-                != t('Upgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
-          .card-body
-            //-.
-              if !isMakePayment && !isEnableAutoRenew
-                .alert.alert-success.small
-                  != t("If you cancel within 30 days, then we auto-refund you.")
-            if !isMakePayment && !isEnableAutoRenew
-              if user.plan !== 'free' && user.plan !== ctx.query.plan
-                //-
-                //- if the user was within 30 days of their plan_set_at
-                //- then inform them that they will be getting a full refund
-                //-
-                if paymentCount === 0 && paymentIds.length > 0 && dayjs().isBefore(dayjs(user[config.userFields.planSetAt]).add(30, 'days'))
-                  .alert.alert-success.small!= t("Don't worry &ndash; we'll automatically refund previous payments.")
-            - const hasPlanExpired = user.plan !== "free" && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now();
-            - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID]);
-            if isMakePayment && hasSubscription && !hasPlanExpired
-              .alert.alert-warning.small!= t("One-time payments will extend your plan duration independently from your current subscription.")
-            if hasPlanExpired
-              .alert.alert-danger
-                //-
-                //- NOTE: if it is over a year then we need to specify the # of months
-                //-       and we could use thresholds from dayjs but this is simpler
-                //-       <https://day.js.org/docs/en/customization/relative-time>
-                //-       (but note we don't want to specify # months if not a complete month)
-                //-
-                - let str = dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow(true);
-                //- subtract years difference and if there are > 0 months then add affix
-                - const years = dayjs().diff(user[config.userFields.planExpiresAt], "years");
-                if years > 0
-                  - const months = dayjs().diff(dayjs(user[config.userFields.planExpiresAt]).add(years, "years"), "months");
-                  if months > 0
-                    - str += ` ${t("and")} ${dayjs().add(months, "months").locale(locale).fromNow(true)}`;
-                != t('Your account is <strong class="notranslate">%s</strong> past due.', str)
-            if isEnableAutoRenew && !hasPlanExpired
-              .alert.alert-primary!= t('Don\'t worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).format("M/D/YY"))
-            form#form-billing(
-              action=ctx.path,
-              method="POST",
-              autocomplete="off"
-            )
-              if !isMakePayment && !isEnableAutoRenew
-                input(type="hidden", name="plan", value=ctx.query.plan)
-
-              if bad_domain
-                input(type="hidden", name="domain", value=bad_domain)
-
-              //- h3.h5= t("Method")
-              .form-group
-                .form-check.form-check-inline
-                  input#input-payment-method-credit-card.form-check-input(
-                    type="radio",
-                    checked,
-                    required,
-                    name="payment_method",
-                    value="credit_card"
-                  )
-                  label.form-check-label(
-                    for="input-payment-method-credit-card"
-                  )= t("Card, Wallet, or Bank")
-                .form-check.form-check-inline.mr-0
-                  input#input-payment-method-paypal.form-check-input(
-                    type="radio",
-                    required,
-                    name="payment_method",
-                    value="paypal"
-                  )
-                  label.form-check-label(for="input-payment-method-paypal")= t("PayPal")
-
-              //- Payment Type
-              //- TODO: default to last one used
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .row
+        .col
+          include ../../_breadcrumbs
+      .row
+        .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-8.offset-lg-2.text-center
+          if bad_domain
+            .alert.alert-warning.small!= t('You must upgrade to a paid plan for: <strong class="notranslate">%s</strong>', bad_domain)
+          else if user.plan === 'free' && domain
+            .alert.alert-warning.small
+              = t("Not ready to upgrade?")
+              br.d-block.d-md-none
+              = " "
+              a.alert-link.text-decoration-underline(
+                href=l(`/my-account/domains/${domain.name}`)
+              )= t("Switch to the Free plan")
+              = ' '
+              = t('or')
+              = ' '
+              a(href=l('/private-business-email'), target='_blank').alert-link.text-decoration-underline= t('learn more')
+          .card
+            h2.h6.card-header
               if isMakePayment
-                //- the main reason for including this is merely for client-side JS
-                //- (the server side will _always_ override this value)
-                input(type="hidden", name="payment_type", value="one-time")
+                = t("Make Payment")
               else if isEnableAutoRenew
-                //- the main reason for including this is merely for client-side JS
-                //- (the server side will _always_ override this value)
-                input(type="hidden", name="payment_type", value="subscription")
+                = t("Enable Auto-Renew")
               else
-                //- h3.h5= t("Payment Type")
+                if user.plan === 'team' && ctx.query.plan === 'enhanced_protection'
+                  != t('Downgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
+                else
+                  != t('Upgrade to <strong class="notranslate">%s</strong>', t(titleize(humanize(ctx.query.plan))))
+            .card-body
+              //-.
+                if !isMakePayment && !isEnableAutoRenew
+                  .alert.alert-success.small
+                    != t("If you cancel within 30 days, then we auto-refund you.")
+              if !isMakePayment && !isEnableAutoRenew
+                if user.plan !== 'free' && user.plan !== ctx.query.plan
+                  //-
+                  //- if the user was within 30 days of their plan_set_at
+                  //- then inform them that they will be getting a full refund
+                  //-
+                  if paymentCount === 0 && paymentIds.length > 0 && dayjs().isBefore(dayjs(user[config.userFields.planSetAt]).add(30, 'days'))
+                    .alert.alert-success.small!= t("Don't worry &ndash; we'll automatically refund previous payments.")
+              - const hasPlanExpired = user.plan !== "free" && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now();
+              - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID]);
+              if isMakePayment && hasSubscription && !hasPlanExpired
+                .alert.alert-warning.small!= t("One-time payments will extend your plan duration independently from your current subscription.")
+              if hasPlanExpired
+                .alert.alert-danger
+                  //-
+                  //- NOTE: if it is over a year then we need to specify the # of months
+                  //-       and we could use thresholds from dayjs but this is simpler
+                  //-       <https://day.js.org/docs/en/customization/relative-time>
+                  //-       (but note we don't want to specify # months if not a complete month)
+                  //-
+                  - let str = dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow(true);
+                  //- subtract years difference and if there are > 0 months then add affix
+                  - const years = dayjs().diff(user[config.userFields.planExpiresAt], "years");
+                  if years > 0
+                    - const months = dayjs().diff(dayjs(user[config.userFields.planExpiresAt]).add(years, "years"), "months");
+                    if months > 0
+                      - str += ` ${t("and")} ${dayjs().add(months, "months").locale(locale).fromNow(true)}`;
+                  != t('Your account is <strong class="notranslate">%s</strong> past due.', str)
+              if isEnableAutoRenew && !hasPlanExpired
+                .alert.alert-primary!= t('Don\'t worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).format("M/D/YY"))
+              form#form-billing(
+                action=ctx.path,
+                method="POST",
+                autocomplete="off"
+              )
+                if !isMakePayment && !isEnableAutoRenew
+                  input(type="hidden", name="plan", value=ctx.query.plan)
+
+                if bad_domain
+                  input(type="hidden", name="domain", value=bad_domain)
+
+                //- h3.h5= t("Method")
                 .form-group
                   .form-check.form-check-inline
-                    input#input-payment-type-subscription.form-check-input(
+                    input#input-payment-method-credit-card.form-check-input(
                       type="radio",
                       checked,
                       required,
-                      name="payment_type",
-                      value="subscription"
+                      name="payment_method",
+                      value="credit_card"
                     )
                     label.form-check-label(
-                      for="input-payment-type-subscription"
-                    )= t("Subscription")
+                      for="input-payment-method-credit-card"
+                    )= t("Card, Wallet, or Bank")
                   .form-check.form-check-inline.mr-0
-                    input#input-payment-type-one-time.form-check-input(
+                    input#input-payment-method-paypal.form-check-input(
                       type="radio",
                       required,
-                      name="payment_type",
-                      value="one-time"
+                      name="payment_method",
+                      value="paypal"
                     )
-                    label.form-check-label(for="input-payment-type-one-time")= t("One-time payment")
+                    label.form-check-label(for="input-payment-method-paypal")= t("PayPal")
 
-              //- Length
-              //- TODO: default to last one used
-              //- h3.h5= t("Duration")
-              .form-group
-                select.form-control.form-control.d-inline-block.w-auto(
-                  name="payment_duration",
-                  required
+                //- Payment Type
+                //- TODO: default to last one used
+                if isMakePayment
+                  //- the main reason for including this is merely for client-side JS
+                  //- (the server side will _always_ override this value)
+                  input(type="hidden", name="payment_type", value="one-time")
+                else if isEnableAutoRenew
+                  //- the main reason for including this is merely for client-side JS
+                  //- (the server side will _always_ override this value)
+                  input(type="hidden", name="payment_type", value="subscription")
+                else
+                  //- h3.h5= t("Payment Type")
+                  .form-group
+                    .form-check.form-check-inline
+                      input#input-payment-type-subscription.form-check-input(
+                        type="radio",
+                        checked,
+                        required,
+                        name="payment_type",
+                        value="subscription"
+                      )
+                      label.form-check-label(
+                        for="input-payment-type-subscription"
+                      )= t("Subscription")
+                    .form-check.form-check-inline.mr-0
+                      input#input-payment-type-one-time.form-check-input(
+                        type="radio",
+                        required,
+                        name="payment_type",
+                        value="one-time"
+                      )
+                      label.form-check-label(for="input-payment-type-one-time")= t("One-time payment")
+
+                //- Length
+                //- TODO: default to last one used
+                //- h3.h5= t("Duration")
+                .form-group
+                  select.form-control.form-control.d-inline-block.w-auto(
+                    name="payment_duration",
+                    required
+                  )
+                    - const plan = ctx.query.plan || user.plan;
+                    - let defaultSelected = "1y";
+                    //- TODO: we should do server-side validation for minimum payment_duration required (but its not essential)
+                    if hasPlanExpired && !isEnableAutoRenew
+                      //- if the plan expired more than 1 months ago then default to 1 month
+                      if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'month'))
+                        - defaultSelected = "30d";
+                      //- if the plan expired more than 2 months ago then default to 2 month
+                      if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months'))
+                        - defaultSelected = "60d";
+                      //- if the plan expired more than 3 months ago then default to 3 month
+                      if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months'))
+                        - defaultSelected = "90d";
+                      //- if the plan expired more than 6 months ago then default to 6 month
+                      if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months'))
+                        - defaultSelected = "180d";
+                      //- if the plan expired more than 1 year ago then default to 1 year
+                      if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year'))
+                        - defaultSelected = "1y";
+                      //- if the plan expired more than 2 year ago then default to 2 year
+                      if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'year'))
+                        - defaultSelected = "2y";
+                      //- if the plan expired more than 3 years ago then default to 3 year
+                      if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'years'))
+                        - defaultSelected = "3y";
+                    if plan === 'enhanced_protection'
+                      //- since subscription is the default, we disable these
+                      if !isEnableAutoRenew
+                        option(
+                          value="3y",
+                          data-no-subscription,
+                          disabled=!isMakePayment,
+                          selected=defaultSelected === "3y"
+                        )= t("3 years ($108 USD)")
+                        option(
+                          value="2y",
+                          data-no-subscription,
+                          disabled=!isMakePayment || dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, "year")),
+                          selected=defaultSelected === "2y"
+                        )= t("2 years ($72 USD)")
+                      option(
+                        value="1y",
+                        selected=defaultSelected === "1y",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, "year"))
+                      )= t("1 year ($36 USD)")
+                      option(
+                        value="180d",
+                        selected=defaultSelected === "180d",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, "year"))
+                      )= t("6 months ($18 USD)")
+                      option(
+                        value="90d",
+                        selected=defaultSelected === "90d",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, "months"))
+                      )= t("3 months ($9 USD)")
+                      option(
+                        value="60d",
+                        selected=defaultSelected === "60d",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, "months"))
+                      )= t("2 months ($6 USD)")
+                      option(
+                        value="30d",
+                        selected=defaultSelected === "30d",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, "months"))
+                      )= t("1 month ($3 USD)")
+                    else if plan === 'team'
+                      //- since subscription is the default, we disable these
+                      if !isEnableAutoRenew
+                        option(
+                          value="3y",
+                          data-no-subscription,
+                          disabled=!isMakePayment,
+                          selected=defaultSelected === "3y"
+                        )= t("3 years ($324 USD)")
+                        option(
+                          value="2y",
+                          data-no-subscription,
+                          disabled=!isMakePayment || dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, "year")),
+                          selected=defaultSelected === "2y"
+                        )= t("2 years ($216 USD)")
+                      option(
+                        value="1y",
+                        selected=defaultSelected === "1y",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, "year"))
+                      )= t("1 year ($108 USD)")
+                      option(
+                        value="180d",
+                        selected=defaultSelected === "180d",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, "year"))
+                      )= t("6 months ($54 USD)")
+                      option(
+                        value="90d",
+                        selected=defaultSelected === "90d",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, "months"))
+                      )= t("3 months ($27 USD)")
+                      option(
+                        value="60d",
+                        selected=defaultSelected === "60d",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, "months"))
+                      )= t("2 months ($18 USD)")
+                      option(
+                        value="30d",
+                        selected=defaultSelected === "30d",
+                        disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, "months"))
+                      )= t("1 month ($9 USD)")
+
+                //- Continue (Stripe)
+                button#stripe-button-container.btn.btn-success.btn-lg.btn-block(
+                  type="submit"
                 )
-                  - const plan = ctx.query.plan || user.plan;
-                  - let defaultSelected = "1y";
-                  //- TODO: we should do server-side validation for minimum payment_duration required (but its not essential)
-                  if hasPlanExpired && !isEnableAutoRenew
-                    //- if the plan expired more than 1 months ago then default to 1 month
-                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'month'))
-                      - defaultSelected = "30d";
-                    //- if the plan expired more than 2 months ago then default to 2 month
-                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'months'))
-                      - defaultSelected = "60d";
-                    //- if the plan expired more than 3 months ago then default to 3 month
-                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'months'))
-                      - defaultSelected = "90d";
-                    //- if the plan expired more than 6 months ago then default to 6 month
-                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, 'months'))
-                      - defaultSelected = "180d";
-                    //- if the plan expired more than 1 year ago then default to 1 year
-                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, 'year'))
-                      - defaultSelected = "1y";
-                    //- if the plan expired more than 2 year ago then default to 2 year
-                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, 'year'))
-                      - defaultSelected = "2y";
-                    //- if the plan expired more than 3 years ago then default to 3 year
-                    if dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, 'years'))
-                      - defaultSelected = "3y";
-                  if plan === 'enhanced_protection'
-                    //- since subscription is the default, we disable these
-                    if !isEnableAutoRenew
-                      option(
-                        value="3y",
-                        data-no-subscription,
-                        disabled=!isMakePayment,
-                        selected=defaultSelected === "3y"
-                      )= t("3 years ($108 USD)")
-                      option(
-                        value="2y",
-                        data-no-subscription,
-                        disabled=!isMakePayment || dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, "year")),
-                        selected=defaultSelected === "2y"
-                      )= t("2 years ($72 USD)")
-                    option(
-                      value="1y",
-                      selected=defaultSelected === "1y",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, "year"))
-                    )= t("1 year ($36 USD)")
-                    option(
-                      value="180d",
-                      selected=defaultSelected === "180d",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, "year"))
-                    )= t("6 months ($18 USD)")
-                    option(
-                      value="90d",
-                      selected=defaultSelected === "90d",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, "months"))
-                    )= t("3 months ($9 USD)")
-                    option(
-                      value="60d",
-                      selected=defaultSelected === "60d",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, "months"))
-                    )= t("2 months ($6 USD)")
-                    option(
-                      value="30d",
-                      selected=defaultSelected === "30d",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, "months"))
-                    )= t("1 month ($3 USD)")
-                  else if plan === 'team'
-                    //- since subscription is the default, we disable these
-                    if !isEnableAutoRenew
-                      option(
-                        value="3y",
-                        data-no-subscription,
-                        disabled=!isMakePayment,
-                        selected=defaultSelected === "3y"
-                      )= t("3 years ($324 USD)")
-                      option(
-                        value="2y",
-                        data-no-subscription,
-                        disabled=!isMakePayment || dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, "year")),
-                        selected=defaultSelected === "2y"
-                      )= t("2 years ($216 USD)")
-                    option(
-                      value="1y",
-                      selected=defaultSelected === "1y",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, "year"))
-                    )= t("1 year ($108 USD)")
-                    option(
-                      value="180d",
-                      selected=defaultSelected === "180d",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(1, "year"))
-                    )= t("6 months ($54 USD)")
-                    option(
-                      value="90d",
-                      selected=defaultSelected === "90d",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(6, "months"))
-                    )= t("3 months ($27 USD)")
-                    option(
-                      value="60d",
-                      selected=defaultSelected === "60d",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(3, "months"))
-                    )= t("2 months ($18 USD)")
-                    option(
-                      value="30d",
-                      selected=defaultSelected === "30d",
-                      disabled=user.plan !== "free" && dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs().subtract(2, "months"))
-                    )= t("1 month ($9 USD)")
+                  = t("Continue")
+                  = " "
+                  i.fa.fa-angle-double-right.align-middle
 
-              //- Continue (Stripe)
-              button#stripe-button-container.btn.btn-success.btn-lg.btn-block(
-                type="submit"
-              )
-                = t("Continue")
-                = " "
-                i.fa.fa-angle-double-right.align-middle
+                //- Continue (PayPal)
+                #paypal-button-container.d-none
 
-              //- Continue (PayPal)
-              #paypal-button-container.d-none
-
-          .card-footer.text-muted.text-center.small
-            if !isMakePayment && !isEnableAutoRenew
-              != t("30-day no questions automatic refunds")
-              = ' '
-              = emoji('tada')
-            else
-              = t("We'll automatically email you if you're late on a payment.")
+            .card-footer.text-muted.text-center.small
+              if !isMakePayment && !isEnableAutoRenew
+                != t("30-day no questions automatic refunds")
+                = ' '
+                = emoji('tada')
+              else
+                = t("We'll automatically email you if you're late on a payment.")

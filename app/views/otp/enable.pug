@@ -133,49 +133,51 @@ block body
                         = " "
                         = t("App Store")
                 td.align-middle.text-center: i.fa.fa-times-circle.text-danger
-  .container.py-3
-    .row
-      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3
-        h1.my-3.py-3.text-center= t("Setup OTP")
-        form(action=ctx.path, method="POST")
-          .form-group
-            label(for="otp-step-one")
-              != t('<strong>Step 1:</strong> Install and open an <a href="#" data-toggle="modal-anchor" data-target="#authenticator-apps-modal">authenticator app</a>.')
-          .form-group
-            label(for="otp-step-two")
-              != t("<strong>Step 2:</strong> Scan this QR code and enter its generated token:")
-            img.d-block.my-3(src=qrcode, width=250, height=250, alt="")
-          .form-group.floating-label
-            input#input-token.form-control.form-control-lg.verification-form(
-              type="text",
-              name="token",
-              required,
-              placeholder=" "
-            )
-            label(for="input-token") Verification Token
-          .form-group
-            a.btn.btn-link.text-center.text-primary(
-              href="#",
-              data-toggle="collapse",
-              data-target="#otp-copy"
-            )
-              = t("Can’t scan the QR code?  Configure with this code")
-              = " "
-              i.fa.fa-angle-down
-            #otp-copy.collapse
-              .input-group.input-group-lg.floating-label.form-group
-                input#otp-token.form-control(
-                  type="text",
-                  readonly,
-                  value=user[config.passport.fields.otpToken]
-                )
-                .input-group-append
-                  button.btn.btn-dark(
-                    type="button",
-                    data-toggle="clipboard",
-                    data-clipboard-target="#otp-token"
+
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .row
+        .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3
+          h1.my-3.py-3.text-center= t("Setup OTP")
+          form(action=ctx.path, method="POST")
+            .form-group
+              label(for="otp-step-one")
+                != t('<strong>Step 1:</strong> Install and open an <a href="#" data-toggle="modal-anchor" data-target="#authenticator-apps-modal">authenticator app</a>.')
+            .form-group
+              label(for="otp-step-two")
+                != t("<strong>Step 2:</strong> Scan this QR code and enter its generated token:")
+              img.d-block.my-3(src=qrcode, width=250, height=250, alt="")
+            .form-group.floating-label
+              input#input-token.form-control.form-control-lg.verification-form(
+                type="text",
+                name="token",
+                required,
+                placeholder=" "
+              )
+              label(for="input-token") Verification Token
+            .form-group
+              a.btn.btn-link.text-center.text-primary(
+                href="#",
+                data-toggle="collapse",
+                data-target="#otp-copy"
+              )
+                = t("Can’t scan the QR code?  Configure with this code")
+                = " "
+                i.fa.fa-angle-down
+              #otp-copy.collapse
+                .input-group.input-group-lg.floating-label.form-group
+                  input#otp-token.form-control(
+                    type="text",
+                    readonly,
+                    value=user[config.passport.fields.otpToken]
                   )
-                    i.fa.fa-clipboard
-                    = " "
-                    = t("Copy")
-          button.btn.btn-lg.btn-block.btn-primary(type="submit")= t("Complete Setup")
+                  .input-group-append
+                    button.btn.btn-dark(
+                      type="button",
+                      data-toggle="clipboard",
+                      data-clipboard-target="#otp-token"
+                    )
+                      i.fa.fa-clipboard
+                      = " "
+                      = t("Copy")
+            button.btn.btn-lg.btn-block.btn-primary(type="submit")= t("Complete Setup")
