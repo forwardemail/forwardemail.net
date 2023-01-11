@@ -216,7 +216,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
                   href=l('/guides/send-mail-as-gmail-custom-domain'),
                   class=ctx.pathWithoutLocale === '/guides/send-mail-as-gmail-custom-domain' ? 'active' : ''
                 )
-                  = t('Send Mail As with Gmail Custom Domain')
+                  = t('Send Mail As with Gmail')
                 each provider in nsProviders
                   a.dropdown-item(
                     href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
