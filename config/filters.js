@@ -84,6 +84,12 @@ function fixTableOfContents(content, i18n, options) {
   for (const header of root.querySelectorAll('h1,h2,h3,h4,h5,h6')) {
     const anchor = header.querySelector('a');
     if (!anchor) continue;
+    let id = anchor.getAttribute('id');
+    if (!id && anchor.getAttribute('href'))
+      id = anchor.getAttribute('href').slice(1);
+
+    if (!id) continue;
+
     anchor.setAttribute('class', 'anchor');
 
     if (lis.length > 5) {
@@ -91,15 +97,9 @@ function fixTableOfContents(content, i18n, options) {
       anchor.setAttribute('data-toggle', 'collapse');
       anchor.setAttribute('role', 'button');
       anchor.setAttribute('aria-expanded', 'false');
-      anchor.setAttribute(
-        'aria-controls',
-        `collapse-${anchor.getAttribute('id')}`
-      );
+      anchor.setAttribute('aria-controls', `collapse-${id}`);
       // eslint-disable-next-line unicorn/prefer-dom-node-dataset
-      anchor.setAttribute(
-        'data-target',
-        `#collapse-${anchor.getAttribute('id')}`
-      );
+      anchor.setAttribute('data-target', `#collapse-${id}`);
     }
 
     anchor.removeAttribute('aria-hidden');
@@ -118,7 +118,7 @@ function fixTableOfContents(content, i18n, options) {
       header.rawTagName === 'h2' &&
       (!header.nextElementSibling ||
         (header.nextElementSibling && header.nextElementSibling !== ul)) &&
-      anchor.getAttribute('id') !== 'table-of-contents'
+      id !== 'table-of-contents'
     ) {
       //
       // get the child node of the header that is a text node (nodeType === 3)
@@ -135,13 +135,9 @@ function fixTableOfContents(content, i18n, options) {
       // eslint-disable-next-line unicorn/prefer-dom-node-append
       header.appendChild(
         parse(
-          `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-dark font-weight-bold p-0" href="#${anchor.getAttribute(
-            'id'
-          )}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${anchor.getAttribute(
-            'id'
-          )}" data-target="#collapse-${anchor.getAttribute(
-            'id'
-          )}">${lastChildRawText}${options.isFAQ ? '?' : ''}</a>`
+          `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-dark font-weight-bold p-0" href="#${id}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${id}" data-target="#collapse-${id}">${lastChildRawText}${
+            options.isFAQ && !lastChildRawText.endsWith('?') ? '?' : ''
+          }</a>`
         )
       );
 
@@ -168,9 +164,7 @@ function fixTableOfContents(content, i18n, options) {
 
       header.replaceWith(
         header.toString() +
-          `<div class="collapse" id="collapse-${anchor.getAttribute(
-            'id'
-          )}">${html}</div>`
+          `<div class="collapse" id="collapse-${id}">${html}</div>`
       );
     }
   }
@@ -192,7 +186,7 @@ function fixTableOfContents(content, i18n, options) {
     a.setAttribute('class', 'list-group-item list-group-item-action');
     // add a question mark
     a.firstChild._rawText = `${a.firstChild._rawText}${
-      options.isFAQ ? '?' : ''
+      options.isFAQ && !a.firstChild._rawText.endsWith('?') ? '?' : ''
     }`;
     for (const h of h2s) {
       const anchor = h.querySelector('a');
