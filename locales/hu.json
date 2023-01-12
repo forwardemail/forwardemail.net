@@ -3502,5 +3502,13 @@
   "Premium features for only $3": "Prémium funkciók mindössze 3 dollárért",
   "Send Email with Custom Domain": "E-mail küldése egyéni domainnel",
   "How to use Gmail's \"Send Mail As\" with your Custom Domain": "A Gmail „E-mail küldése másként” funkció használata egyéni domainjével",
-  "How to fix send mail as Gmail not working?": "Hogyan lehet kijavítani, hogy a Gmail nem működik?"
+  "How to fix send mail as Gmail not working?": "Hogyan lehet kijavítani, hogy a Gmail nem működik?",
+  "Need secure and private email?": "Need secure and private email?",
+  "Upgrade for $3": "Upgrade for $3",
+  "Follow the instructions below to complete setup and verify your domain.": "Follow the instructions below to complete setup and verify your domain.",
+  "Verify your Forward Email email address.": "Verify your Forward Email email address.",
+  "By": "By",
+  "Refund": "Refund",
+  "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
+  "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription."
 }

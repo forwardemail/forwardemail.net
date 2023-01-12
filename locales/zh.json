@@ -3194,5 +3194,14 @@
   "Premium features for only $3": "高级功能仅需 3 美元",
   "Send Email with Custom Domain": "使用自定义域发送电子邮件",
   "How to use Gmail's \"Send Mail As\" with your Custom Domain": "如何将 Gmail 的“发送邮件为”与您的自定义域一起使用",
-  "How to fix send mail as Gmail not working?": "如何修复发送邮件作为 Gmail 不起作用？"
+  "How to fix send mail as Gmail not working?": "如何修复发送邮件作为 Gmail 不起作用？",
+  "Need secure and private email?": "Need secure and private email?",
+  "Upgrade for $3": "Upgrade for $3",
+  "Follow the instructions below to complete setup and verify your domain.": "Follow the instructions below to complete setup and verify your domain.",
+  "Verify your Forward Email email address.": "Verify your Forward Email email address.",
+  "By": "By",
+  "Queued Verification Email": "Queued Verification Email",
+  "Refund": "Refund",
+  "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
+  "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription."
 }

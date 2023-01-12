@@ -35,14 +35,20 @@ block body
               = ' '
               != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
             .d-block
-              a.btn.btn-success.btn-lg.mb-3(
-                href=l('/register'),
-                data-toggle='modal-anchor',
-                data-target='#modal-sign-up'
-              )
-                = t("Sign up free")
-                = ' '
-                .fa.fa-angle-double-right.align-middle
+              ul.list-inline.mb-3
+                li.list-inline-item
+                  a.btn.btn-success.btn-lg(
+                    href=l('/register'),
+                    data-toggle='modal-anchor',
+                    data-target='#modal-sign-up'
+                  )
+                    = t("Sign up free")
+                li.list-inline-item.mt-1.mt-md-0
+                  a.btn.btn-dark.btn-lg(
+                    href='#features'
+                  )
+                    = t("View features")
+
             ul.list-unstyled.mb-0.text-left.d-inline-block
               li
                 i.fa.fa-fw.fa-check-circle.text-success
@@ -63,7 +69,7 @@ block body
               li
                 i.fa.fa-fw.fa-check-circle.text-success
                 = ' '
-                a(href='#learn-more').font-weight-bold
+                a(href='#features').font-weight-bold
                   = t('Premium features for only $3')
           if isBot(ctx.get('User-Agent'))
             .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
@@ -97,14 +103,14 @@ block body
               = t("Watch Video")
 
       a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-dark.mx-auto(
-        href="#learn-more"
+        href="#features"
       )
         i.fa.fa-angle-double-down
         = " "
-        = t("Pricing and details")
+        = t("Features and Pricing")
         = " "
         i.fa.fa-angle-double-down
-  div(id=user || (!isBot(ctx.get('User-Agent')) && boolean(ctx.query.pricing)) ? false : 'learn-more', class=user || (!isBot(ctx.get('User-Agent')) && boolean(ctx.query.pricing)) ? '' : 'border-md-top border-dark', data-src=manifest('img/art/stars.svg')).bg-fixed.lazyload.py-3.py-md-4.py-lg-5
+  div(id=user || (!isBot(ctx.get('User-Agent')) && boolean(ctx.query.pricing)) ? false : 'features', class=user || (!isBot(ctx.get('User-Agent')) && boolean(ctx.query.pricing)) ? '' : 'border-md-top border-dark', data-src=manifest('img/art/stars.svg')).bg-fixed.lazyload.py-3.py-md-4.py-lg-5
     .text-center.d-block.d-md-none.my-3
       .h1.mb-0= t("Pricing")
     .container
@@ -157,8 +163,7 @@ block body
                 != t("50MB attachment limit")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = ' '
-                = t('Send mail with Gmail and Outlook')
+                span!= t('Works with <a class="font-weight-bold" href="%s">Gmail</a>, Outlook, and more', l('/guides/send-mail-as-gmail-custom-domain'))
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
                 = ' '
@@ -169,21 +174,15 @@ block body
                 = t("Multiple recipients per alias")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = " "
-                = t("Send emails to webhooks")
-                = " "
-                a.btn.btn-link.text-dark.py-0(href=l("/free-email-webhooks"), aria-label=t('Webhooks'))
-                  i.fa.fa-link
+                a.font-weight-bold(href=l("/free-email-webhooks"), aria-label=t('Webhooks'))
+                  = t("Send emails to webhooks")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-primary.mr-3
-                = " "
-                = t("Regular expression filtering")
-                = " "
-                a.btn.btn-link.text-dark.py-0(
+                a.font-weight-bold(
                   href=l("/email-forwarding-regex-pattern-filter"),
                   aria-label=t('Regex filtering')
                 )
-                  i.fa.fa-link
+                  = t("Regular expression filtering")
         .col.mt-3.mt-lg-0
           .d-flex.flex-column.rounded-lg.bg-white.h-100
             .px-md-3.py-md-3.my-3.my-md-0
@@ -262,10 +261,8 @@ block body
                 = t("Custom spam filtering")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-code.text-primary.mr-3
-                = t("Developer API access")
-                = " "
-                a.btn.btn-link.text-dark.py-0(href=l("/email-forwarding-api"), aria-label=t('API Features'))
-                  i.fa.fa-link
+                a.font-weight-bold(href=l("/email-forwarding-api"), aria-label=t('API Features'))
+                  = t("Developer API access")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-bell.text-primary.mr-3
                 = t("Opt-in recipient verification")

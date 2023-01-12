@@ -3240,5 +3240,14 @@
   "Premium features for only $3": "Premium-funktioner for kun $3",
   "Send Email with Custom Domain": "Send e-mail med brugerdefineret domæne",
   "How to use Gmail's \"Send Mail As\" with your Custom Domain": "Sådan bruger du Gmails \"Send mail som\" med dit brugerdefinerede domæne",
-  "How to fix send mail as Gmail not working?": "Hvordan rettes send mail, da Gmail ikke fungerer?"
+  "How to fix send mail as Gmail not working?": "Hvordan rettes send mail, da Gmail ikke fungerer?",
+  "Need secure and private email?": "Need secure and private email?",
+  "Upgrade for $3": "Upgrade for $3",
+  "Follow the instructions below to complete setup and verify your domain.": "Follow the instructions below to complete setup and verify your domain.",
+  "Verify your Forward Email email address.": "Verify your Forward Email email address.",
+  "By": "By",
+  "Queued Verification Email": "Queued Verification Email",
+  "Refund": "Refund",
+  "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
+  "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription."
 }

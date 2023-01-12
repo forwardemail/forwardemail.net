@@ -85,7 +85,12 @@ function fixTableOfContents(content, i18n, options) {
     const anchor = header.querySelector('a');
     if (!anchor) continue;
 
-    const id = header.getAttribute('id');
+    let id = header.getAttribute('id');
+
+    if (!id && anchor.getAttribute('href'))
+      id = anchor.getAttribute('href').slice(1);
+
+    if (!id) continue;
 
     anchor.setAttribute('class', 'anchor');
 

@@ -92,14 +92,19 @@ block body
             = ' '
             != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
           .d-block
-            a.btn.btn-success.btn-lg.mb-3(
-              href=l('/register'),
-              data-toggle='modal-anchor',
-              data-target='#modal-sign-up'
-            )
-              = t("Sign up free")
-              = ' '
-              .fa.fa-angle-double-right.align-middle
+            ul.list-inline.mb-3
+              li.list-inline-item
+                a.btn.btn-success.btn-lg(
+                  href=l('/register'),
+                  data-toggle='modal-anchor',
+                  data-target='#modal-sign-up'
+                )
+                  = t("Sign up free")
+              li.list-inline-item.mt-1.mt-md-0
+                a.btn.btn-dark.btn-lg(
+                  href=l('/private-business-email?pricing=true')
+                )
+                  = t("View features")
           ul.list-unstyled.mb-0.text-left.d-inline-block
             if !isBot(ctx.get('User-Agent'))
               li.font-weight-bold

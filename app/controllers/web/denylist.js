@@ -1,38 +1,39 @@
-// const Boom = require('@hapi/boom');
-// const isFQDN = require('is-fqdn');
-// const isSANB = require('is-string-and-not-blank');
-// const { isEmail, isIP } = require('validator');
+const Boom = require('@hapi/boom');
+const _ = require('lodash');
+const isFQDN = require('is-fqdn');
+const isSANB = require('is-string-and-not-blank');
+const { boolean } = require('boolean');
+const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
+const { isEmail, isIP } = require('validator');
 
-// const { decrypt } = require('#helpers');
+const config = require('#config');
+const { email, decrypt } = require('#helpers');
+const { Inquiries } = require('#models');
 
-// TODO: void a user's refund capability if they have submitted denylist removal request
-
-function denylist(ctx, next) {
-  return next();
-}
-
-/*
-async function denylist(ctx, next) {
+// eslint-disable-next-line complexity
+async function validate(ctx, next) {
+  //
   // ctx.request.body.q
   // IP, FQDN, Email, or encrypted value
   // check against redis to ensure it's listed in denylist
-  //
-  // if it is not in denylist then error
-  //
-  // if it is already in whitelist then error
-  //
-  // if paid, then make instant and email admins
-  // otherwise email admins with request and cc the user
-  //
-  // note that we need to update terms to prevent removal requests
-  // for users that have boolean marked for instant removal
   //
   if (!isSANB(ctx.request.body.q))
     return ctx.throw(
       Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'))
     );
 
+  // safeguard in case we render email links wrong for admins in future
+  if (
+    ctx.state.user.group === 'admin' &&
+    isSANB(ctx.request.body.email) &&
+    !isEmail(ctx.request.body.email)
+  )
+    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
+
   let { q } = ctx.request.body;
+
+  // normalize by converting to lowercase and trimming
+  q = q.toLowerCase().trim();
 
   if (!isFQDN(q) && !isIP(q) && !isEmail(q)) {
     // check if it was encrypted value and can be decrypted without error
@@ -53,37 +54,245 @@ async function denylist(ctx, next) {
       );
   }
 
-  // normalize by converting to lowercase and trimming
-  q = q.toLowerCase();
+  // if the value was an IP address then check against backscatter
+  // and if it was listed in backscatter then prevent the user
+  if (isIP(q)) {
+    const isBackscatter = await ctx.client.get(`backscatter:${q}`);
+    if (boolean(isBackscatter))
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('BACKSCATTER', q, q, q))
+      );
+  }
+
+  if (isEmail(q) || isFQDN(q)) {
+    const parseResult = parseDomain(fromUrl(q));
+    // set the root domain value in state for validate fn
+    ctx.state.rootDomain = (
+      parseResult.type === ParseResultType.Listed &&
+      _.isObject(parseResult.icann) &&
+      isSANB(parseResult.icann.domain)
+        ? `${parseResult.icann.domain}.${parseResult.icann.topLevelDomains.join(
+            '.'
+          )}`
+        : q
+    ).toLowerCase();
+  }
+
+  console.log('ctx.state.rootDomain', ctx.state.rootDomain);
+  console.log('q', q);
 
   // check that the value is in the denylist
-  const result = await ctx.client.get(`denylist:${q}`);
-  if (!result || !boolean(result)) {
-    // if the value was not === "true" then we have to clean it up
-    if (result)
-      ctx.client
-        .del(`denylist:${q}`)
-        .then()
-        .catch((err) => ctx.logger.fatal(err));
+  // (or the root value is in the denylist)
+  let result = false;
+  try {
+    result = await ctx.client.get(`denylist:${q}`);
+    if (!result || !boolean(result)) {
+      // if the value was not === "true" then we have to clean it up
+      if (result) {
+        ctx.client
+          .del(`denylist:${q}`)
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+        result = false;
+      }
+
+      //
+      // check the root value in the denylist if it was an email or fqdn
+      // (and if it was an email then also check denylist:domain:email combo)
+      //
+      if (
+        ctx.state.rootDomain && // if it was an email or if the root domain value was different
+        // then we need to check denylist against root value and if it was an email
+        // then we need to check the combo of denylist:root:email
+        (isEmail(q) || ctx.state.rootDomain !== q)
+      ) {
+        result = await ctx.client.get(`denylist:${ctx.state.rootDomain}`);
+
+        if (!result || !boolean(result)) {
+          // if the value was not === "true" then we have to clean it up
+          // eslint-disable-next-line max-depth
+          if (result) {
+            ctx.client
+              .del(`denylist:${ctx.state.rootDomain}`)
+              .then()
+              .catch((err) => ctx.logger.fatal(err));
+            result = false;
+          }
+
+          // if it was an email then check `denylist:root:email` combo
+          // eslint-disable-next-line max-depth
+          if (isEmail(q)) {
+            result = await ctx.client.get(
+              `denylist:${ctx.state.rootDomain}:${q}`
+            );
+            // eslint-disable-next-line max-depth
+            if (
+              (!result || !boolean(result)) && // if the value was not === "true" then we have to clean it up
+              result
+            ) {
+              ctx.client
+                .del(`denylist:${ctx.state.rootDomain}:${q}`)
+                .then()
+                .catch((err) => ctx.logger.fatal(err));
+              result = false;
+            }
+          }
+        }
+      }
+    }
+  } catch (err) {
+    ctx.logger.fatal(err);
+    // we don't want to expose redis errors to client
+    return ctx.throw(Boom.clientTimeout(ctx.translateError('WEBSITE_OUTAGE')));
+  }
+
+  if (!result)
     return ctx.throw(
       Boom.badRequest(ctx.translateError('INVALID_DENYLIST_REQUEST'))
     );
+
+  // set this in ctx state for next route middleware
+  ctx.state.q = q;
+
+  return next();
+}
+
+//
+// NOTE: this will void a user's refund capability if they have submitted denylist removal request
+//       (see user[config.userFields.hasDenylistRequests] in user model and in refund helper)
+//       (we also alert the user to the voiding of the refund policy in the view for denylist requests)
+//
+// eslint-disable-next-line complexity
+async function remove(ctx) {
+  // we have `ctx.state.q` to work with from validate fn
+  // `denylist:${ctx.state.q}`
+
+  // if user is on free plan then send an email
+  // with link for admins to /denylist?q=ctx.state.q
+  if (ctx.state.user.group !== 'admin') {
+    //
+    // if it was allowlisted domain but denylisted email
+    // then we should email admins because it's either a false positive
+    // automatic spam activity detected bug or a spammer
+    //
+    let isAllowlisted = false;
+    if (isEmail(ctx.state.q) && ctx.state.rootDomain) {
+      try {
+        isAllowlisted = await ctx.client.get(
+          `allowlist:${ctx.state.rootDomain}`
+        );
+        isAllowlisted = boolean(isAllowlisted);
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
+    }
+
+    // email admins here
+    email({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        replyTo: ctx.state.user[config.userFields.fullEmail],
+        subject: `Denylist Removal: ${ctx.state.q}${
+          isAllowlisted ? ' *Root domain allowlisted*' : ''
+        }`
+      },
+      locals: {
+        //
+        // NOTE: prefixHTMLPathBasedAnchors will add the full URL for us
+        //
+        message: `<p class="text-center"><code>${ctx.state.q}</code> for <code>${ctx.state.user.email}</code></p><p class="mb-0"><a class="btn btn-lg btn-dark btn-block" href="/denylist?q=${ctx.state.q}&email=${ctx.state.user.email}">Process Removal</a></p>`
+      }
+    })
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
   }
 
-  // if within first 30 days of plan_set_at then send email otherwise make it instant
+  // store inquiry
+  try {
+    const inquiry = await Inquiries.create({
+      user: ctx.state.user._id,
+      message: ctx.state.q,
+      is_denylist: true
+    });
 
-  // if it was an email address then we need to check the root domain if it was denylisted
-  // if it was an email address then check root domain to see if it was whitelisted
-  // and if so, then we need to check the denylist:domain:email combination
+    ctx.logger.debug('created inquiry', { inquiry });
+  } catch (err) {
+    ctx.logger.fatal(err);
+    throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_ERROR'));
+  }
 
-  // if it was whitelisted domain but denylisted email then we need to manually email admins
+  // return early if the user is free with a message we have been notified
+  if (ctx.state.user.group !== 'admin' && ctx.state.user.plan === 'free') {
+    const message = ctx.translate('SUPPORT_REQUEST_SENT');
+    if (ctx.accepts('html')) {
+      ctx.flash('success', message);
+      ctx.redirect('back');
+    } else {
+      ctx.body = { message, resetForm: true, hideModal: true };
+    }
 
-  // otherwise the value was in the denylist
-  // so we need to make it instant (and email admins) if the user was paid
-  // otherwise we need to send an email to admins for removal request submission
+    return;
+  }
 
-  // if it was an admin then grant the removal immediately
+  // delete from all denylists
+  try {
+    if (isIP(ctx.state.q)) {
+      // del ip
+      await ctx.client.del(`denylist:${ctx.state.q}`);
+    } else {
+      // del email and/or domain
+      await ctx.client.del(`denylist:${ctx.state.q}`);
+      // del root domain
+      if (ctx.state.rootDomain && ctx.state.q !== ctx.state.rootDomain)
+        await ctx.client.del(`denylist:${ctx.state.rootDomain}`);
+      // if it was an email then delete the combo
+      if (isEmail(ctx.state.q) && ctx.state.rootDomain)
+        await ctx.client.del(`denylist:${ctx.state.rootDomain}:${ctx.state.q}`);
+    }
+  } catch (err) {
+    ctx.logger.fatal(err);
+    throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_ERROR'));
+  }
+
+  const message = ctx.translate('DENYLIST_REMOVAL_SUCCESS', ctx.state.q);
+
+  // if it was an admin and there was ?email that was valid then email the user
+  if (
+    ctx.state.user.group === 'admin' &&
+    isSANB(ctx.request.body.email) &&
+    isEmail(ctx.request.body.email)
+  )
+    email({
+      template: 'alert',
+      message: {
+        to: ctx.request.body.email,
+        subject: `Denylist Removal Success: ${ctx.state.q}`
+      },
+      locals: { message: `<p class="text-center mb-0">${message}</p>` }
+    })
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+  // set `user[config.userFields.hasDenylistRequests]` to true (iff false)
+  if (
+    ctx.state.user.group !== 'admin' &&
+    !ctx.state.user[config.userFields.hasDenylistRequests]
+  ) {
+    ctx.state.user[config.userFields.hasDenylistRequests] = true;
+    try {
+      await ctx.state.user.save();
+    } catch (err) {
+      ctx.logger.fatal(err);
+    }
+  }
+
+  if (ctx.accepts('html')) {
+    ctx.flash('success', message);
+    ctx.redirect('back');
+  } else {
+    ctx.body = { message, resetForm: true, hideModal: true };
+  }
 }
-*/
 
-module.exports = denylist;
+module.exports = { validate, remove };

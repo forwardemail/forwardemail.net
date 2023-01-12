@@ -12,7 +12,7 @@ const parseErr = require('parse-err');
 const striptags = require('striptags');
 
 const config = require('#config');
-const emailHelper = require('#helpers/email');
+const nmailHelper = require('#helpers/email');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const refundHelper = require('#helpers/refund');
@@ -71,6 +71,12 @@ async function retrieveDomainBilling(ctx) {
       ctx.state.bad_domain = ctx.query.domain.toLowerCase();
     }
   }
+
+  //
+  // denylist support (redirects user after upgrade)
+  //
+  if (isSANB(ctx.query.denylist))
+    ctx.state.denylist = ctx.query.denylist.toLowerCase().trim();
 
   if (isMakePayment)
     if (ctx.state.user.plan === 'free')
@@ -1657,11 +1663,20 @@ async function retrieveDomainBilling(ctx) {
               .replace(/example.com/g, domain.name.replace('www.', ''))
           );
         // redirect user to the domain to setup forwarding
-        redirectTo = `/my-account/domains/${domain.name}`;
+        redirectTo = ctx.state.l(`/my-account/domains/${domain.name}`);
       } catch (err) {
         ctx.logger.fatal(err);
         ctx.flash('error', err.message);
       }
+    }
+
+    //
+    // if the user was submitting a denylist request
+    // then we need to redirect them back to the same page
+    //
+    if (isAccountUpgrade && ctx.state.denylist) {
+      ctx.flash('success', ctx.translate('INSTANT_DENYLIST_AVAILABLE'));
+      redirectTo = ctx.state.l(`/denylist?q=${ctx.state.denylist}`);
     }
 
     if (ctx.accepts('html')) ctx.redirect(redirectTo);

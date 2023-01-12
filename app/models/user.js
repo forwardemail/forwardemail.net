@@ -63,7 +63,8 @@ const omitExtraFields = [
   config.userFields.stripeSubscriptionID,
   config.userFields.paypalPayerID,
   config.userFields.paypalSubscriptionID,
-  config.userFields.addressHTML
+  config.userFields.addressHTML,
+  config.userFields.hasDenylistRequests
 ];
 
 const User = new mongoose.Schema({
@@ -175,6 +176,11 @@ object[config.userFields.defaultDomain] = {
 // rate limit whitelisting
 // TODO: change to allowlist
 object[config.userFields.isRateLimitWhitelisted] = {
+  type: Boolean,
+  default: false
+};
+
+object[config.userFields.hasDenylistRequests] = {
   type: Boolean,
   default: false
 };

@@ -28,7 +28,7 @@
     "@ladjs/mongoose": "4.0.2",
     "@ladjs/mongoose-error-messages": "1.0.0",
     "@ladjs/pick-original": "1.0.0",
-    "@ladjs/policies": "9.0.0",
+    "@ladjs/policies": "10.0.0",
     "@ladjs/proxy": "3.0.3",
     "@ladjs/redis": "1.1.1",
     "@ladjs/shared-config": "8.0.0",
@@ -288,5 +288,8 @@
     "start": "nps",
     "test": "nps test",
     "watch": "nps watch"
+  },
+  "resolutions": {
+    "eslint-plugin-import": "2.26.0"
   }
 }

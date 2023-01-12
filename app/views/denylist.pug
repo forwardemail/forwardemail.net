@@ -3,30 +3,44 @@ extends layout
 block body
   .min-vh-80.d-flex.flex-column
     .container.py-3
-      .text-center: h1.my-3.py-3= t("Denylist removal")
+      .text-center: h1.my-3.py-3= t("Denylist Removal")
       .row
         .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
           if user.plan === 'free'
             .alert.alert-warning.text-center.mb-3
-              != t('Need expedited removal?')
+              != t('Need instant removal?')
               br.d-block.d-md-none
               = ' '
-              a(href=l('/my-account/billing/upgrade?plan=enhanced_protection'), target='_blank').alert-link.text-decoration-underline= t('Upgrade for $3')
+              if isSANB(ctx.query.q) && ctx.query.q !== 'true'
+                a(href=l(`/my-account/billing/upgrade?plan=enhanced_protection&denylist=${ctx.query.q}`)).alert-link.text-decoration-underline= t('Upgrade for $3')
+              else
+                a(href=l('/my-account/billing/upgrade?plan=enhanced_protection&denylist=true')).alert-link.text-decoration-underline= t('Upgrade for $3')
+          else if !user[config.hasDenylistRequests] && user[config.userFields.planSetAt] >= dayjs().startOf('day').subtract(30, 'days').toDate().getTime()
+            .alert.alert-warning.text-center.mb-3
+              != t('Submitting your request will void our refund policy.')
+          .alert.alert-primary.text-center.mb-3
+            != t('Requests are not permanent and removals may be reversed.')
           form.ajax-form(
             action=ctx.path,
             method="POST"
           )
+            if user.group === 'admin' && isSANB(ctx.query.email) && validator.isEmail(ctx.query.email)
+              input(type='hidden', name='email', value=ctx.query.email.toLowerCase().trim())
             .form-group.floating-label
               input#input-q.form-control.form-control-lg(
                 type="text",
                 required,
                 name="q",
-                value=isSANB(ctx.query.q) ? ctx.query.q : '',
-                readonly=isSANB(ctx.query.q) && (!isFQDN(ctx.query.q) && !validator.isEmail(ctx.query.q) && !validator.isIP(ctx.query.q)),
+                value=isSANB(ctx.query.q) && ctx.query.q !== 'true' ? ctx.query.q : '',
+                readonly=isSANB(ctx.query.q) && (!isFQDN(ctx.query.q) && !validator.isEmail(ctx.query.q) && !validator.isIP(ctx.query.q) && ctx.query.q !== 'true'),
                 placeholder=" ",
                 autocomplete="off"
               )
-              label(for="input-q")= t("Email, domain name, or IP address")
+              label(for="input-q")
+                if isSANB(ctx.query.q) && (!isFQDN(ctx.query.q) && !validator.isEmail(ctx.query.q) && !validator.isIP(ctx.query.q) && ctx.query.q !== 'true')
+                  = t("Encrypted value to protect privacy")
+                else
+                  = t("Email, domain name, or IP address")
             if config.hcaptchaEnabled
               .h-captcha(
                 data-sitekey=config.hcaptchaSiteKey,

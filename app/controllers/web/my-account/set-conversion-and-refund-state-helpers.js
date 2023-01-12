@@ -20,43 +20,46 @@ async function setConversionAndRefundStateHelpers(ctx, next) {
           .toDate()
       }
     }),
-    Payments.distinct('_id', {
-      $and: [
-        {
-          user: ctx.state.user._id,
-          plan: ctx.state.user.plan,
-          method: {
-            $nin: ['free_beta_program', 'plan_conversion']
-          },
-          invoice_at: {
-            // NOTE: must be greater than 30 days ago or after their plan was set
-            //       (whichever is sooner/greater)
-            $gte:
-              new Date(ctx.state.user[config.userFields.planSetAt]).getTime() >
-              THIRTY_DAYS_AGO
-                ? new Date(ctx.state.user[config.userFields.planSetAt])
-                : new Date(THIRTY_DAYS_AGO),
-            $lte: dayjs(ctx.state.user[config.userFields.planSetAt])
-              .add(30, 'days')
-              .toDate()
-          }
-        },
-        {
-          $or: [
+    ctx.state.user[config.userFields.hasDenylistRequests]
+      ? Promise.resolve([])
+      : Payments.distinct('_id', {
+          $and: [
             {
-              // since we don't support partial refunds
-              amount_refunded: 0
+              user: ctx.state.user._id,
+              plan: ctx.state.user.plan,
+              method: {
+                $nin: ['free_beta_program', 'plan_conversion']
+              },
+              invoice_at: {
+                // NOTE: must be greater than 30 days ago or after their plan was set
+                //       (whichever is sooner/greater)
+                $gte:
+                  new Date(
+                    ctx.state.user[config.userFields.planSetAt]
+                  ).getTime() > THIRTY_DAYS_AGO
+                    ? new Date(ctx.state.user[config.userFields.planSetAt])
+                    : new Date(THIRTY_DAYS_AGO),
+                $lte: dayjs(ctx.state.user[config.userFields.planSetAt])
+                  .add(30, 'days')
+                  .toDate()
+              }
             },
             {
-              // since some payments might not have this value
-              amount_refunded: {
-                $exists: false
-              }
+              $or: [
+                {
+                  // since we don't support partial refunds
+                  amount_refunded: 0
+                },
+                {
+                  // since some payments might not have this value
+                  amount_refunded: {
+                    $exists: false
+                  }
+                }
+              ]
             }
           ]
-        }
-      ]
-    })
+        })
   ]);
 
   ctx.state.paymentCount = paymentCount;

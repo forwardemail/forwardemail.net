@@ -1,30 +1,32 @@
 extends ../../layout
 
 block append scripts
-  //- Stripe
-  script(src="https://js.stripe.com/v3/")
-  //- PayPal
-  script(
-    src=`https://www.paypal.com/sdk/js?client-id=${config.paypal.clientID}&vault=true${config.env === 'production' ? '' : '&debug=true'}`
-  )
+  if ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew"
+    script(defer).
+      window.USER_PLAN = "#{user.plan}";
+  else if isSANB(ctx.query.plan)
+    script(defer).
+      window.USER_PLAN = "#{ctx.query.plan}";
+
+  //- this is equivalent to isEnableAutoRenew (but in pug you can't define variables twice and variables can't be shared between blocks)
+  if ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew" && dayjs(user[config.userFields.planExpiresAt]).isAfter(dayjs())
+    script(defer).
+      window.PLAN_EXPIRES_AT = "#{new Date(user[config.userFields.planExpiresAt]).toISOString()}";
+
+  script(defer).
+    window.PAYPAL_NOT_LOADED = "#{ t('Please wait for PayPal to load and try again.') }";
+
   script(
     defer,
     src=manifest("js/billing.js"),
     integrity=manifest("js/billing.js", "integrity"),
     crossorigin="anonymous"
   )
-
-  if ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew"
-    script.
-      window.USER_PLAN = "#{user.plan}";
-  else if isSANB(ctx.query.plan)
-    script.
-      window.USER_PLAN = "#{ctx.query.plan}";
-
-  //- this is equivalent to isEnableAutoRenew (but in pug you can't define variables twice and variables can't be shared between blocks)
-  if ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew" && dayjs(user[config.userFields.planExpiresAt]).isAfter(dayjs())
-    script.
-      window.PLAN_EXPIRES_AT = "#{new Date(user[config.userFields.planExpiresAt]).toISOString()}";
+  //- PayPal
+  script(
+    defer,
+    src=`https://www.paypal.com/sdk/js?client-id=${config.paypal.clientID}&vault=true${config.env === 'production' ? '' : '&debug=true'}`
+  )
 
 block body
   - const isMakePayment = ctx.pathWithoutLocale === "/my-account/billing/make-payment";
@@ -36,6 +38,8 @@ block body
           include ../../_breadcrumbs
       .row
         .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-8.offset-lg-2.text-center
+          noscript
+            .alert.alert-danger!= t('Please enable JavaScript for PayPal checkout option.')
           if bad_domain
             .alert.alert-warning.small!= t('You must upgrade to a paid plan for: <strong class="notranslate">%s</strong>', bad_domain)
           else if user.plan === 'free' && domain
@@ -107,6 +111,9 @@ block body
                 if bad_domain
                   input(type="hidden", name="domain", value=bad_domain)
 
+                if denylist
+                  input(type="hidden", name="denylist", value=denylist)
+
                 //- h3.h5= t("Method")
                 .form-group
                   .form-check.form-check-inline
@@ -120,7 +127,7 @@ block body
                     label.form-check-label(
                       for="input-payment-method-credit-card"
                     )= t("Card, Wallet, or Bank")
-                  .form-check.form-check-inline.mr-0
+                  .form-check.form-check-inline.mr-0.no-js
                     input#input-payment-method-paypal.form-check-input(
                       type="radio",
                       required,
@@ -285,10 +292,12 @@ block body
                   i.fa.fa-angle-double-right.align-middle
 
                 //- Continue (PayPal)
-                #paypal-button-container.d-none
+                #paypal-button-container.d-none.no-js
 
             .card-footer.text-muted.text-center.small
-              if !isMakePayment && !isEnableAutoRenew
+              if denylist
+                != t('Denylist requests will void our refund policy.')
+              else if !isMakePayment && !isEnableAutoRenew
                 != t("30-day no questions automatic refunds")
                 = ' '
                 = emoji('tada')

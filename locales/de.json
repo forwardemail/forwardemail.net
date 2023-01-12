@@ -2513,5 +2513,15 @@
   "Premium features for only $3": "Premium-Funktionen für nur 3 $",
   "Send Email with Custom Domain": "E-Mail mit benutzerdefinierter Domäne senden",
   "How to use Gmail's \"Send Mail As\" with your Custom Domain": "So verwenden Sie „Senden als“ von Google Mail mit Ihrer benutzerdefinierten Domäne",
-  "How to fix send mail as Gmail not working?": "Wie kann ich beheben, dass E-Mails gesendet werden, wenn Google Mail nicht funktioniert?"
+  "How to fix send mail as Gmail not working?": "Wie kann ich beheben, dass E-Mails gesendet werden, wenn Google Mail nicht funktioniert?",
+  "Verify your Forward Email email address.": "Verify your Forward Email email address.",
+  "Follow the instructions below to complete setup and verify your domain.": "Follow the instructions below to complete setup and verify your domain.",
+  "Need secure and private email?": "Need secure and private email?",
+  "Upgrade for $3": "Upgrade for $3",
+  "Confirm your password reset token.": "Confirm your password reset token.",
+  "By": "By",
+  "Access your Forward Email admin.": "Access your Forward Email admin.",
+  "Pending invitations are listed below.": "Pending invitations are listed below.",
+  "Email Address": "Email Address",
+  "Delete Invite": "Delete Invite"
 }

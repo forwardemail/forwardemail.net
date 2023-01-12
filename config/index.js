@@ -207,7 +207,8 @@ const config = {
     addressZip: 'address_zip',
     addressCountry: 'address_country',
     addressHTML: 'address_html',
-    companyVAT: 'company_vat'
+    companyVAT: 'company_vat',
+    hasDenylistRequests: 'has_denylist_requests'
   },
 
   // dynamic otp routes
