@@ -29,6 +29,10 @@ const app = new ForwardEmail({
   redis: false
 });
 
+// <https://1loc.dev/string/check-if-a-string-consists-of-a-repeated-character-sequence/>
+const consistsRepeatedSubstring = (str) =>
+  `${str}${str}`.indexOf(str, 1) !== str.length;
+
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
 const quotedEmailUserUtf8 = new RE2(
   // eslint-disable-next-line no-control-regex
@@ -131,6 +135,10 @@ Alias.pre('validate', function (next) {
 
   // trim and convert to lowercase
   this.name = this.name.trim().toLowerCase();
+
+  // if it consists of wildcards only then convert to wildcard "*" single asterisk
+  if (!this.name.startsWith('/') && consistsRepeatedSubstring(this.name))
+    this.name = '*';
 
   // add wildcard as first label
   if (this.name === '*') this.labels.unshift('catch-all');
@@ -290,6 +298,12 @@ Alias.pre('save', async function (next) {
     if (member.group !== 'admin') {
       // alias name cannot be a wildcard "*" if the user is not an admin
       if (alias.name === '*')
+        throw Boom.badRequest(
+          i18n.translateError('CATCHALL_ADMIN_REQUIRED', alias.locale)
+        );
+
+      // alias cannot be a regex if the user is not an admin
+      if (alias.name.startsWith('/'))
         throw Boom.badRequest(
           i18n.translateError('CATCHALL_ADMIN_REQUIRED', alias.locale)
         );

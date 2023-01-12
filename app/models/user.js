@@ -440,8 +440,10 @@ User.pre('save', async function (next) {
 });
 
 // sanitize input (striptags)
-User.pre('save', function (next) {
+User.pre('validate', function (next) {
   for (const prop of [
+    fields.givenName,
+    fields.familyName,
     config.userFields.companyName,
     config.userFields.addressLine1,
     config.userFields.addressLine2,
