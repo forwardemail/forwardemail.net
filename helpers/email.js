@@ -17,7 +17,7 @@ module.exports = async (data) => {
     logger.info('sent email', { data });
     return res;
   } catch (err) {
-    logger.error(err);
+    logger.error(err, { data });
     throw err;
   }
 };
