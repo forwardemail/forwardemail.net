@@ -17,6 +17,10 @@ const Inquiry = new mongoose.Schema({
     required: true,
     validate: (value) =>
       _.isString(value) && value.length <= config.supportRequestMaxLength
+  },
+  is_denylist: {
+    type: Boolean,
+    default: false
   }
 });
 

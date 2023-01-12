@@ -3502,5 +3502,13 @@
   "Premium features for only $3": "תכונות פרימיום ב-$3 בלבד",
   "Send Email with Custom Domain": "שלח אימייל עם דומיין מותאם אישית",
   "How to use Gmail's \"Send Mail As\" with your Custom Domain": "כיצד להשתמש ב\"שלח דואר בשם\" של Gmail עם הדומיין המותאם אישית שלך",
-  "How to fix send mail as Gmail not working?": "כיצד לתקן שליחת דואר מכיוון ש-Gmail לא עובד?"
+  "How to fix send mail as Gmail not working?": "כיצד לתקן שליחת דואר מכיוון ש-Gmail לא עובד?",
+  "Need secure and private email?": "Need secure and private email?",
+  "Upgrade for $3": "Upgrade for $3",
+  "Follow the instructions below to complete setup and verify your domain.": "Follow the instructions below to complete setup and verify your domain.",
+  "Verify your Forward Email email address.": "Verify your Forward Email email address.",
+  "By": "By",
+  "Refund": "Refund",
+  "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
+  "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription."
 }

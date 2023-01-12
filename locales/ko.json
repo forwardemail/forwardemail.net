@@ -3502,5 +3502,13 @@
   "Premium features for only $3": "단돈 $3의 프리미엄 기능",
   "Send Email with Custom Domain": "사용자 지정 도메인으로 이메일 보내기",
   "How to use Gmail's \"Send Mail As\" with your Custom Domain": "맞춤 도메인에서 Gmail의 \"다른 이름으로 메일 보내기\"를 사용하는 방법",
-  "How to fix send mail as Gmail not working?": "Gmail이 작동하지 않아 메일 보내기를 수정하는 방법은 무엇입니까?"
+  "How to fix send mail as Gmail not working?": "Gmail이 작동하지 않아 메일 보내기를 수정하는 방법은 무엇입니까?",
+  "Need secure and private email?": "Need secure and private email?",
+  "Upgrade for $3": "Upgrade for $3",
+  "Follow the instructions below to complete setup and verify your domain.": "Follow the instructions below to complete setup and verify your domain.",
+  "Verify your Forward Email email address.": "Verify your Forward Email email address.",
+  "By": "By",
+  "Refund": "Refund",
+  "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
+  "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription."
 }

@@ -3502,5 +3502,13 @@
   "Premium features for only $3": "ฟีเจอร์พรีเมียมในราคาเพียง $3",
   "Send Email with Custom Domain": "ส่งอีเมลด้วยโดเมนที่กำหนดเอง",
   "How to use Gmail's \"Send Mail As\" with your Custom Domain": "วิธีใช้ \"ส่งเมลในชื่อ\" ของ Gmail กับโดเมนที่กำหนดเองของคุณ",
-  "How to fix send mail as Gmail not working?": "วิธีแก้ไข send mail เนื่องจาก Gmail ไม่ทำงาน"
+  "How to fix send mail as Gmail not working?": "วิธีแก้ไข send mail เนื่องจาก Gmail ไม่ทำงาน",
+  "Need secure and private email?": "Need secure and private email?",
+  "Upgrade for $3": "Upgrade for $3",
+  "Follow the instructions below to complete setup and verify your domain.": "Follow the instructions below to complete setup and verify your domain.",
+  "Verify your Forward Email email address.": "Verify your Forward Email email address.",
+  "By": "By",
+  "Refund": "Refund",
+  "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
+  "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription."
 }

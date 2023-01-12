@@ -9,11 +9,10 @@ const $formBilling = $('#form-billing');
 const $stripeButtonContainer = $('#stripe-button-container');
 const $paypalButtonContainer = $('#paypal-button-container');
 const $paymentType = $('input[name="payment_type"][type="radio"]');
-const $paymentMethod = $('input[name="payment_method"');
+const $paymentMethod = $('input[name="payment_method"]');
 const $paymentDuration = $('select[name="payment_duration"]');
 const $opts = $paymentDuration.find('option[data-no-subscription]');
 const spinner = new Spinner($);
-const stripe = new window.Stripe(process.env.STRIPE_PUBLISHABLE_KEY);
 
 const url = new URLParse(window.location.href, (query) =>
   qs.parse(query, { ignoreQueryPrefix: true })
@@ -192,13 +191,6 @@ $formBilling.on('submit', async function (ev) {
           response.text ||
           'Invalid response, please try again'
       );
-
-    const { sessionId } = response.body;
-    if (sessionId) {
-      const result = await stripe.redirectToCheckout({ sessionId });
-      spinner.hide();
-      Swal.fire(window._types.error, result.error.message, 'error');
-    }
   } catch (err) {
     spinner.hide();
     Swal.fire(window._types.error, err.message, 'error');
@@ -253,6 +245,16 @@ function updatePayButtons() {
   }
 
   if (paymentMethod === 'paypal') {
+    if (!window.paypal) {
+      Swal.fire(window._types.error, window.PAYPAL_NOT_LOADED, 'error');
+      $('input[name="payment_method"][value="credit_card"]').prop(
+        'checked',
+        true
+      );
+      $('input[name="payment_method"][value="paypal"]').prop('checked', false);
+      return;
+    }
+
     // enable subscription input
     $subscriptionInput.prop('disabled', false);
 

@@ -36,7 +36,7 @@ async function help(ctx) {
       message: body.message
     });
 
-    ctx.logger.debug('created inquiry', inquiry);
+    ctx.logger.debug('created inquiry', { inquiry });
 
     await email({
       template: 'inquiry',
@@ -59,7 +59,7 @@ async function help(ctx) {
       ctx.body = { message, resetForm: true, hideModal: true };
     }
   } catch (err) {
-    ctx.logger.error(err);
+    ctx.logger.fatal(err);
     throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_ERROR'));
   }
 }

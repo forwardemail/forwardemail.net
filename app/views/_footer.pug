@@ -128,7 +128,7 @@ footer.mt-auto
               if isBot(ctx.get('User-Agent'))
                 = t("Private Business Email")
               else
-                = t("Pricing")
+                = t("Features")
             li: a.d-block.text-light.py-2.py-md-0(
               href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
             )= t("FAQ")
@@ -148,7 +148,8 @@ footer.mt-auto
             li: a.d-block.text-light.py-2.py-md-0(
               href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
             )= t("Port 25 blocked by ISP")
-            //- li: a.d-block.text-light.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
+            if !isBot(ctx.get('User-Agent'))
+              li: a.d-block.text-light.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div

@@ -28,7 +28,7 @@ module.exports = function (config) {
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
     '/': [
-      'Free email forwarding - Send email with custom domain',
+      `Free Email Forwarding - Send email custom domain ${lad}`,
       'How to set up free email forwarding, private business email, and send mail with custom domain.'
     ],
     '/about': [
@@ -36,7 +36,7 @@ module.exports = function (config) {
       `Learn more about ${config.appName} and the history of our service.`
     ],
     '/private-business-email': [
-      'Private business email - Create free professional email',
+      `Private Business Email - Free Professional Email ${lad}`,
       'Create your private, free, and professional business email for free.'
     ],
     '/faq': [
@@ -68,7 +68,7 @@ module.exports = function (config) {
       `Ask ${config.appName} your questions or leave comments`
     ],
     '/denylist': [
-      `Denylist ${lad}`,
+      `Denylist Removal ${lad}`,
       'Submit your email, domain, or IP address for DNS denylist removal.'
     ],
     '/logout': [`Sign out of ${lad}`, 'Sign out of your account now.'],

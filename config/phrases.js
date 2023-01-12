@@ -17,6 +17,13 @@ for (const key of Object.keys(statuses.message)) {
 module.exports = {
   SEARCH_PAGE: 'Search page',
   TABLE_OF_CONTENTS: 'Table of Contents',
+  PAYPAL_NOT_LOADED: 'Please wait for PayPal to load and try again.',
+  BACKSCATTER:
+    'The IP <span class="notranslate">%s</span> is denylisted by <a href="https://www.backscatterer.org" target="_blank" rel="noopener noreferrer">https://www.backscatterer.org</a>. To request removal, you must visit <a href="https://www.backscatterer.org/index.php?target=test&ip=%s" target="_blank" rel="noopener noreferrer">https://www.backscatterer.org/index.php?target=test&ip=%s</a>.',
+  INSTANT_DENYLIST_AVAILABLE:
+    'You may now submit your denylist removal request for instant removal.',
+  DENYLIST_REMOVAL_SUCCESS:
+    '<span class="notranslate">%s</span> was successfully removed from our denylist.',
   HELLO: 'Hello',
   WWW_WARNING:
     'It looks like you accidentally included "www." in your domain name.  Did you mean example.com instead of www.example.com?',

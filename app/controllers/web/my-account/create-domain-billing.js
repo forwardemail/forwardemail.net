@@ -31,7 +31,8 @@ async function createDomainBilling(ctx) {
       payment_method: paymentMethod,
       payment_type: paymentType,
       payment_duration: paymentDuration,
-      domain
+      domain,
+      denylist
     } = ctx.request.body;
 
     const isMakePayment =
@@ -126,11 +127,6 @@ async function createDomainBilling(ctx) {
     // stripe
     //
     if (paymentMethod === 'credit_card') {
-      // If the user didn't have JavaScript enabled, then redirect them to Stripe page
-      if (ctx.accepts('html')) {
-        throw ctx.translateError('JAVASCRIPT_REQUIRED');
-      }
-
       //
       // create and validate stripe customer here
       // (ensure valid customer before webhooks hit)
@@ -209,6 +205,8 @@ async function createDomainBilling(ctx) {
       if (isSANB(domain) && isFQDN(domain))
         options.success_url += `&domain=${domain}`;
 
+      if (isSANB(denylist)) options.success_url += `&denylist=${denylist}`;
+
       if (paymentType !== 'one-time') {
         options.subscription_data = {
           description,
@@ -282,7 +280,15 @@ async function createDomainBilling(ctx) {
       const session = await stripe.checkout.sessions.create(options);
 
       ctx.logger.info('stripe.checkout.sessions.create', { session });
-      ctx.body = { sessionId: session.id };
+
+      const redirectTo = session.url;
+      if (ctx.accepts('html')) {
+        ctx.status = 303;
+        ctx.redirect(redirectTo);
+      } else {
+        ctx.body = { redirectTo };
+      }
+
       return;
     }
 
@@ -351,6 +357,9 @@ async function createDomainBilling(ctx) {
         //
         if (isSANB(domain) && isFQDN(domain))
           requestBody.application_context.return_url += `&domain=${domain}`;
+
+        if (isSANB(denylist))
+          requestBody.application_context.return_url += `&denylist=${denylist}`;
 
         try {
           const agent = await paypalAgent();
