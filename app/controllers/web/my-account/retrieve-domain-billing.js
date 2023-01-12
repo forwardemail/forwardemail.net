@@ -12,7 +12,7 @@ const parseErr = require('parse-err');
 const striptags = require('striptags');
 
 const config = require('#config');
-const nmailHelper = require('#helpers/email');
+const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const refundHelper = require('#helpers/refund');

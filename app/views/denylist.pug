@@ -6,7 +6,7 @@ block body
       .text-center: h1.my-3.py-3= t("Denylist Removal")
       .row
         .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
-          if user.plan === 'free'
+          if user.group !== 'admin' && user.plan === 'free'
             .alert.alert-warning.text-center.mb-3
               != t('Need instant removal?')
               br.d-block.d-md-none
@@ -15,11 +15,12 @@ block body
                 a(href=l(`/my-account/billing/upgrade?plan=enhanced_protection&denylist=${ctx.query.q}`)).alert-link.text-decoration-underline= t('Upgrade for $3')
               else
                 a(href=l('/my-account/billing/upgrade?plan=enhanced_protection&denylist=true')).alert-link.text-decoration-underline= t('Upgrade for $3')
-          else if !user[config.hasDenylistRequests] && user[config.userFields.planSetAt] >= dayjs().startOf('day').subtract(30, 'days').toDate().getTime()
+          else if user.group !== 'admin' && !user[config.hasDenylistRequests] && user[config.userFields.planSetAt] >= dayjs().startOf('day').subtract(30, 'days').toDate().getTime()
             .alert.alert-warning.text-center.mb-3
               != t('Submitting your request will void our refund policy.')
-          .alert.alert-primary.text-center.mb-3
-            != t('Requests are not permanent and removals may be reversed.')
+          else if user.group !== 'admin'
+            .alert.alert-primary.text-center.mb-3
+              != t('Requests are not permanent and removals may be reversed.')
           form.ajax-form(
             action=ctx.path,
             method="POST"
