@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Ora puoi inviare la tua richiesta di rimozione dalla lista bloccata per la rimozione immediata.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> è stato rimosso con successo dalla nostra lista bloccata.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> è cambiato da <span class=\"notranslate\">%s</span> a <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Un amministratore ha creato per te un indirizzo di inoltro email."
+  "An administrator created an email forwarding address for you.": "Un amministratore ha creato per te un indirizzo di inoltro email.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Le richieste Webhook HTTP riproveranno fino a 3 volte per ogni tentativo di connessione SMTP, con un timeout massimo di 60 secondi per richiesta POST dell'endpoint.",
+  "Note that this does not mean that it only retries 3 times": "Nota che questo non significa che riprovi solo 3 volte",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", in realtà riproverà continuamente nel tempo inviando un codice SMTP 421 (che indica al mittente di riprovare in un secondo momento) dopo il terzo tentativo di richiesta HTTP POST non riuscito. Ciò significa che l'e-mail riproverà continuamente per giorni fino a quando non viene raggiunto un codice di stato 200.",
+  "We will retry automatically based off the default status and error codes used in": "Riproveremo automaticamente in base allo stato predefinito e ai codici di errore utilizzati in",
+  "(we are maintainers).": "(siamo manutentori).",
+  "(we are maintainers)": "(siamo manutentori)"
 }

@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Bây giờ bạn có thể gửi yêu cầu xóa danh sách từ chối của mình để xóa ngay lập tức.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> đã được xóa thành công khỏi danh sách từ chối của chúng tôi.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> đã thay đổi từ <span class=\"notranslate\">%s</span> thành <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Quản trị viên đã tạo một địa chỉ chuyển tiếp email cho bạn."
+  "An administrator created an email forwarding address for you.": "Quản trị viên đã tạo một địa chỉ chuyển tiếp email cho bạn.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Các yêu cầu HTTP của Webhook sẽ thử lại tối đa 3 lần mỗi lần thử kết nối SMTP, với thời gian chờ tối đa là 60 giây cho mỗi yêu cầu POST của điểm cuối.",
+  "Note that this does not mean that it only retries 3 times": "Lưu ý rằng điều này không có nghĩa là nó chỉ thử lại 3 lần",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", nó sẽ thực sự thử lại liên tục theo thời gian bằng cách gửi mã SMTP là 421 (mã này cho biết người gửi sẽ thử lại sau) sau lần thử yêu cầu HTTP POST thất bại lần thứ 3. Điều này có nghĩa là email sẽ thử lại liên tục trong nhiều ngày cho đến khi đạt được 200 mã trạng thái.",
+  "We will retry automatically based off the default status and error codes used in": "Chúng tôi sẽ tự động thử lại dựa trên trạng thái mặc định và mã lỗi được sử dụng trong",
+  "(we are maintainers).": "(chúng tôi là người bảo trì).",
+  "(we are maintainers)": "(chúng tôi là người bảo trì)"
 }

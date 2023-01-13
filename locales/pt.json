@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Agora você pode enviar sua solicitação de remoção de lista de bloqueio para remoção instantânea.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> foi removido com sucesso da nossa lista de proibições.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> mudou de <span class=\"notranslate\">%s</span> para <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Um administrador criou um endereço de encaminhamento de e-mail para você."
+  "An administrator created an email forwarding address for you.": "Um administrador criou um endereço de encaminhamento de e-mail para você.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "As solicitações HTTP do webhook serão repetidas até 3 vezes a cada tentativa de conexão SMTP, com um tempo limite máximo de 60 segundos por solicitação POST do ponto de extremidade.",
+  "Note that this does not mean that it only retries 3 times": "Observe que isso não significa que ele tenta apenas 3 vezes",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", ele tentará novamente continuamente ao longo do tempo, enviando um código SMTP de 421 (que indica ao remetente uma nova tentativa posterior) após a terceira tentativa de solicitação HTTP POST com falha. Isso significa que o e-mail tentará novamente continuamente por dias até que um código de status 200 seja alcançado.",
+  "We will retry automatically based off the default status and error codes used in": "Tentaremos novamente automaticamente com base no status padrão e nos códigos de erro usados em",
+  "(we are maintainers).": "(somos mantenedores).",
+  "(we are maintainers)": "(somos mantenedores)"
 }

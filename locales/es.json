@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Ahora puede enviar su solicitud de eliminación de la lista de denegación para la eliminación instantánea.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> se eliminó con éxito de nuestra lista de denegación.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> ha cambiado de <span class=\"notranslate\">%s</span> a <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Un administrador creó una dirección de reenvío de correo electrónico para usted."
+  "An administrator created an email forwarding address for you.": "Un administrador creó una dirección de reenvío de correo electrónico para usted.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Las solicitudes HTTP de Webhook se reintentarán hasta 3 veces cada intento de conexión SMTP, con un tiempo de espera máximo de 60 segundos por solicitud POST de extremo.",
+  "Note that this does not mean that it only retries 3 times": "Tenga en cuenta que esto no significa que solo vuelva a intentarlo 3 veces",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", en realidad volverá a intentarlo de forma continua con el tiempo mediante el envío de un código SMTP de 421 (que indica al remitente que vuelva a intentarlo más tarde) después del tercer intento fallido de solicitud HTTP POST. Esto significa que el correo electrónico se volverá a intentar continuamente durante días hasta que se logre un código de estado 200.",
+  "We will retry automatically based off the default status and error codes used in": "Lo volveremos a intentar automáticamente según el estado predeterminado y los códigos de error utilizados en",
+  "(we are maintainers).": "(somos mantenedores).",
+  "(we are maintainers)": "(somos mantenedores)"
 }

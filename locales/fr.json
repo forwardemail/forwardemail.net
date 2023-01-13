@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Vous pouvez maintenant soumettre votre demande de suppression de liste noire pour une suppression instantanée.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> a été supprimé avec succès de notre liste de refus.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> est passé de <span class=\"notranslate\">%s</span> à <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Un administrateur a créé une adresse de transfert d'e-mail pour vous."
+  "An administrator created an email forwarding address for you.": "Un administrateur a créé une adresse de transfert d'e-mail pour vous.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Les requêtes HTTP Webhook réessaieront jusqu'à 3 fois à chaque tentative de connexion SMTP, avec un délai d'attente maximal de 60 secondes par requête POST de point de terminaison.",
+  "Note that this does not mean that it only retries 3 times": "Notez que cela ne signifie pas qu'il ne réessaie que 3 fois",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", il réessayera en continu au fil du temps en envoyant un code SMTP de 421 (qui indique à l'expéditeur de réessayer plus tard) après la 3e tentative de requête HTTP POST échouée. Cela signifie que l'e-mail réessayera continuellement pendant des jours jusqu'à ce qu'un code de statut 200 soit atteint.",
+  "We will retry automatically based off the default status and error codes used in": "Nous réessaierons automatiquement en fonction de l'état par défaut et des codes d'erreur utilisés dans",
+  "(we are maintainers).": "(nous sommes mainteneurs).",
+  "(we are maintainers)": "(nous sommes mainteneurs)"
 }

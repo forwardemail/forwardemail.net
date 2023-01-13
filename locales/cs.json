@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Nyní můžete odeslat žádost o odstranění ze seznamu odmítnutých k okamžitému odstranění.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> byl úspěšně odstraněn z našeho seznamu odmítnutých.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> se změnil z <span class=\"notranslate\">%s</span> na <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Administrátor pro vás vytvořil adresu pro přeposílání e-mailů."
+  "An administrator created an email forwarding address for you.": "Administrátor pro vás vytvořil adresu pro přeposílání e-mailů.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Požadavky Webhook HTTP se budou opakovat až 3krát při každém pokusu o připojení SMTP, s maximálním časovým limitem 60 sekund na požadavek POST koncového bodu.",
+  "Note that this does not mean that it only retries 3 times": "Všimněte si, že to neznamená, že to zkusí pouze 3krát",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", bude se to ve skutečnosti průběžně opakovat v průběhu času odesíláním kódu SMTP 421 (což odesílateli signalizuje opakování později) po 3. neúspěšném pokusu o požadavek HTTP POST. To znamená, že e-mail se bude nepřetržitě opakovat několik dní, dokud nebude dosaženo stavového kódu 200.",
+  "We will retry automatically based off the default status and error codes used in": "Pokusíme se automaticky znovu na základě výchozího stavu a chybových kódů použitých v",
+  "(we are maintainers).": "(jsme správci).",
+  "(we are maintainers)": "(jsme údržbáři)"
 }
