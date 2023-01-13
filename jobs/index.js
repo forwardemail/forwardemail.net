@@ -91,6 +91,12 @@ const jobs = [
     name: 'update-uceprotect',
     interval: '1h',
     timeout: '5m'
+  },
+  // temporarily until we get a clean deploy
+  {
+    name: 'mirror-redis-lists',
+    interval: '30m',
+    timeout: '5m'
   }
 ];
 
