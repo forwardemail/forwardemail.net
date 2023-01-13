@@ -3369,5 +3369,7 @@
   "Click here": "Click here",
   "Please enable JavaScript for PayPal checkout option.": "Please enable JavaScript for PayPal checkout option.",
   "Please wait for PayPal to load and try again.": "Please wait for PayPal to load and try again.",
-  "Confirm your password reset token.": "Confirm your password reset token."
+  "Confirm your password reset token.": "Confirm your password reset token.",
+  "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
+  "An administrator created an email forwarding address for you.": "An administrator created an email forwarding address for you."
 }

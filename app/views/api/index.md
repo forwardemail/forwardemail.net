@@ -39,16 +39,16 @@
 
 Right now we have not yet released any API wrappers, but we plan to do so in the near future. Send an email to <api@forwardemail.net> if you would like to be notified when a particular programming language's API wrapper is released. In the meanwhile, you can use these recommended HTTP request libraries in your application, or simply use [curl](https://stackoverflow.com/a/27442239/3586413) as in the below examples.
 
-| Language   | Library                                                 |
-| ---------- | ------------------------------------------------------- |
-| Ruby       | [Faraday](https://github.com/lostisland/faraday)        |
-| Python     | [requests](https://github.com/psf/requests)             |
-| Java       | [OkHttp](https://github.com/square/okhttp/)             |
-| PHP        | [guzzle](https://github.com/guzzle/guzzle)              |
-| JavaScript | [superagent](https://github.com/visionmedia/superagent) |
-| Node.js    | [superagent](https://github.com/visionmedia/superagent) |
-| Go         | [net/http](https://golang.org/pkg/net/http/)            |
-| .NET       | [RestSharp](https://github.com/restsharp/RestSharp)     |
+| Language   | Library                                                                |
+| ---------- | ---------------------------------------------------------------------- |
+| Ruby       | [Faraday](https://github.com/lostisland/faraday)                       |
+| Python     | [requests](https://github.com/psf/requests)                            |
+| Java       | [OkHttp](https://github.com/square/okhttp/)                            |
+| PHP        | [guzzle](https://github.com/guzzle/guzzle)                             |
+| JavaScript | [superagent](https://github.com/ladjs/superagent) (we are maintainers) |
+| Node.js    | [superagent](https://github.com/ladjs/superagent) (we are maintainers) |
+| Go         | [net/http](https://golang.org/pkg/net/http/)                           |
+| .NET       | [RestSharp](https://github.com/restsharp/RestSharp)                    |
 
 
 ## Base URI

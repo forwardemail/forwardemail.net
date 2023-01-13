@@ -1,5 +1,6 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
@@ -77,9 +78,6 @@ async function validate(ctx, next) {
         : q
     ).toLowerCase();
   }
-
-  console.log('ctx.state.rootDomain', ctx.state.rootDomain);
-  console.log('q', q);
 
   // check that the value is in the denylist
   // (or the root value is in the denylist)
@@ -167,6 +165,45 @@ async function remove(ctx) {
   // we have `ctx.state.q` to work with from validate fn
   // `denylist:${ctx.state.q}`
 
+  // if user already submitted inquiry then return early
+  if (ctx.state.user.group !== 'admin') {
+    const count = await Inquiries.countDocuments({
+      user: ctx.state.user._id,
+      message: ctx.state.q,
+      is_denylist: true,
+      // don't create duplicate requests over 7d period
+      created_at: {
+        $gte: dayjs().subtract(7, 'day').toDate()
+      }
+    });
+
+    if (count > 0) {
+      const message = ctx.translate('SUPPORT_REQUEST_SENT');
+      if (ctx.accepts('html')) {
+        ctx.flash('success', message);
+        ctx.redirect('back');
+      } else {
+        ctx.body = { message, resetForm: true, hideModal: true };
+      }
+    }
+  }
+
+  // store inquiry
+  if (ctx.state.user.group !== 'admin') {
+    try {
+      const inquiry = await Inquiries.create({
+        user: ctx.state.user._id,
+        message: ctx.state.q,
+        is_denylist: true
+      });
+
+      ctx.logger.debug('created inquiry', { inquiry });
+    } catch (err) {
+      ctx.logger.fatal(err);
+      throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_ERROR'));
+    }
+  }
+
   // if user is on free plan then send an email
   // with link for admins to /denylist?q=ctx.state.q
   if (ctx.state.user.group !== 'admin') {
@@ -206,20 +243,6 @@ async function remove(ctx) {
     })
       .then()
       .catch((err) => ctx.logger.fatal(err));
-  }
-
-  // store inquiry
-  try {
-    const inquiry = await Inquiries.create({
-      user: ctx.state.user._id,
-      message: ctx.state.q,
-      is_denylist: true
-    });
-
-    ctx.logger.debug('created inquiry', { inquiry });
-  } catch (err) {
-    ctx.logger.fatal(err);
-    throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_ERROR'));
   }
 
   // return early if the user is free with a message we have been notified
