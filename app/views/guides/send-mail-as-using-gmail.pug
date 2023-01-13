@@ -6,16 +6,16 @@ block body
       .bg-dark.p-2.border-top.border-light
         ul.list-inline.mb-0
           li.list-inline-item
-            a.btn.btn-sm.btn-light(href="#quick-video-guide")
+            a.btn.btn-lg.btn-light(href="#quick-video-guide")
               i.fab.fa-youtube.text-danger
               = ' '
               = t("Video")
           li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
           li.list-inline-item
-            a.btn.btn-sm.btn-light(href="#step-by-step-instructions")
+            a.btn.btn-lg.btn-light(href="#step-by-step-instructions")
               span.badge.badge-pill.mr-1.badge-success
                 i.fa.fa-list-ol
-              = t("Instructions")
+              = t("Steps")
   .container.py-3.py-md-4.py-lg-5
     .row
       .col-12
@@ -33,10 +33,10 @@ block body
           .alert.my-3.alert-danger.text-center
             i.fa.fa-exclamation-circle.font-weight-bold
             = ' '
-            = t('Verification Required')
+            = t('Domain not yet verified?')
             = ' '
             a(href=user ? l('/my-account/domains') : l('/my-account/domains/new'), target='_blank').alert-link
-              = t('Click to verify')
+              = t('Click here')
         .card.mt-3#quick-video-guide
           h2.h5.card-header.text-center
             if isBot(ctx.get('User-Agent'))
