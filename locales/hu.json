@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Mostantól azonnali eltávolításra küldheti el az elutasítólista eltávolítási kérelmét.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> sikeresen eltávolítva az elutasító listáról.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> megváltozott. Régi érték: <span class=\"notranslate\">%s</span> , új érték: <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Egy rendszergazda létrehozott egy e-mail átirányítási címet."
+  "An administrator created an email forwarding address for you.": "Egy rendszergazda létrehozott egy e-mail átirányítási címet.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "A Webhook HTTP-kérelmei legfeljebb háromszor próbálkoznak újra minden SMTP-csatlakozási kísérlettel, végpont POST-kérelmenként legfeljebb 60 másodperces időtúllépéssel.",
+  "Note that this does not mean that it only retries 3 times": "Vegye figyelembe, hogy ez nem jelenti azt, hogy csak háromszor próbálkozik újra",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", valójában egy 421-es SMTP-kód elküldésével (ami a feladónak későbbi újrapróbálkozást jelzi) az idő múlásával folyamatosan újrapróbálkozik a 3. sikertelen HTTP POST-kérés után. Ez azt jelenti, hogy az e-mail napokon keresztül folyamatosan próbálkozik, amíg el nem éri a 200-as állapotkódot.",
+  "We will retry automatically based off the default status and error codes used in": "Automatikusan újrapróbáljuk az alapértelmezett állapot és hibakódok alapján",
+  "(we are maintainers).": "(karbantartók vagyunk).",
+  "(we are maintainers)": "(karbantartók vagyunk)"
 }

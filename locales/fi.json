@@ -3381,5 +3381,11 @@
   "You may now submit your denylist removal request for instant removal.": "Voit nyt lähettää kieltoluettelon poistopyynnön välittömäksi poistamiseksi.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> poistettiin hylkäysluettelostamme.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> on muuttunut arvosta <span class=\"notranslate\">%s</span> arvoon <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Järjestelmänvalvoja loi sinulle sähköpostin edelleenlähetysosoitteen."
+  "An administrator created an email forwarding address for you.": "Järjestelmänvalvoja loi sinulle sähköpostin edelleenlähetysosoitteen.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook-HTTP-pyynnöt yrittävät uudelleen enintään 3 kertaa jokaisella SMTP-yhteysyrityksellä, ja päätepisteen POST-pyyntöä kohden on enintään 60 sekunnin aikakatkaisu.",
+  "Note that this does not mean that it only retries 3 times": "Huomaa, että tämä ei tarkoita, että se yrittää uudelleen vain 3 kertaa",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", se yrittää itse asiassa jatkuvasti uudelleen ajan mittaan lähettämällä SMTP-koodin 421 (mikä osoittaa lähettäjälle uudelleenyrityksen myöhemmin) kolmannen epäonnistuneen HTTP POST -pyynnön jälkeen. Tämä tarkoittaa, että sähköposti yrittää jatkuvasti uudelleen päiviä, kunnes 200 tilakoodi on saavutettu.",
+  "We will retry automatically based off the default status and error codes used in": "Yritämme uudelleen automaattisesti oletustilan ja käytettyjen virhekoodien perusteella",
+  "(we are maintainers).": "(olemme ylläpitäjiä).",
+  "(we are maintainers)": "(olemme ylläpitäjiä)"
 }

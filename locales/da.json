@@ -3273,5 +3273,11 @@
   "You may now submit your denylist removal request for instant removal.": "Du kan nu indsende din anmodning om fjernelse af denylist for øjeblikkelig fjernelse.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> blev fjernet fra vores afvisningsliste.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> er ændret fra <span class=\"notranslate\">%s</span> til <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "En administrator har oprettet en adresse til videresendelse af e-mail til dig."
+  "An administrator created an email forwarding address for you.": "En administrator har oprettet en adresse til videresendelse af e-mail til dig.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook HTTP-anmodninger vil gentage op til 3 gange hvert SMTP-forbindelsesforsøg med en maksimal timeout på 60 sekunder pr. slutpunkts POST-anmodning.",
+  "Note that this does not mean that it only retries 3 times": "Bemærk, at dette ikke betyder, at den kun prøver igen 3 gange",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", vil den faktisk prøve igen løbende over tid ved at sende en SMTP-kode på 421 (hvilket indikerer, at afsenderen prøver igen senere) efter det 3. mislykkede HTTP POST-anmodningsforsøg. Dette betyder, at e-mailen vil prøve igen kontinuerligt i dagevis, indtil en 200-statuskode er opnået.",
+  "We will retry automatically based off the default status and error codes used in": "Vi vil prøve igen automatisk baseret på standardstatus og fejlkoder, der bruges i",
+  "(we are maintainers).": "(vi er vedligeholdere).",
+  "(we are maintainers)": "(vi er vedligeholdere)"
 }

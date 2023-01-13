@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Тепер ви можете подати запит на видалення зі списку заборонених для миттєвого видалення.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> успішно видалено з нашого списку заборонених.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> змінено з <span class=\"notranslate\">%s</span> на <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Адміністратор створив для вас адресу електронної пошти для пересилання."
+  "An administrator created an email forwarding address for you.": "Адміністратор створив для вас адресу електронної пошти для пересилання.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "HTTP-запити Webhook повторюватимуться щонайбільше 3 рази за кожну спробу з’єднання SMTP із максимальним тайм-аутом 60 секунд на запит POST кінцевої точки.",
+  "Note that this does not mean that it only retries 3 times": "Зауважте, що це не означає, що він повторює лише 3 рази",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", він фактично буде постійно повторювати спробу з часом, надсилаючи код SMTP 421 (що вказує відправнику на повторну спробу пізніше) після третьої невдалої спроби запиту HTTP POST. Це означає, що електронний лист буде повторюватися протягом кількох днів, доки не буде досягнуто код статусу 200.",
+  "We will retry automatically based off the default status and error codes used in": "Ми повторимо спробу автоматично на основі статусу за умовчанням і кодів помилок, які використовуються в",
+  "(we are maintainers).": "(ми супроводжувачі).",
+  "(we are maintainers)": "(ми супроводжувачі)"
 }

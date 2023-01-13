@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Теперь вы можете отправить запрос на удаление черного списка для мгновенного удаления.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> был успешно удален из нашего черного списка.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> изменился с <span class=\"notranslate\">%s</span> на <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Администратор создал для вас адрес для переадресации электронной почты."
+  "An administrator created an email forwarding address for you.": "Администратор создал для вас адрес для переадресации электронной почты.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "HTTP-запросы Webhook будут повторяться до 3 раз при каждой попытке подключения SMTP с максимальным тайм-аутом 60 секунд на POST-запрос конечной точки.",
+  "Note that this does not mean that it only retries 3 times": "Обратите внимание, что это не означает, что он повторяет попытку только 3 раза.",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", он будет фактически повторять попытки с течением времени, отправляя SMTP-код 421 (что указывает отправителю на повторную попытку позже) после 3-й неудачной попытки HTTP-запроса POST. Это означает, что электронное письмо будет повторяться непрерывно в течение нескольких дней, пока не будет достигнут код состояния 200.",
+  "We will retry automatically based off the default status and error codes used in": "Мы автоматически повторим попытку в зависимости от состояния по умолчанию и кодов ошибок, используемых в",
+  "(we are maintainers).": "(мы ремонтники).",
+  "(we are maintainers)": "(мы сопровождающие)"
 }

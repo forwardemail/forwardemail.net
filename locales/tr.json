@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Artık, anında kaldırılması için reddedilen liste kaldırma talebinizi gönderebilirsiniz.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> , reddetme listemizden başarıyla kaldırıldı.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> , <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> değişti",
-  "An administrator created an email forwarding address for you.": "Bir yönetici sizin için bir e-posta yönlendirme adresi oluşturdu."
+  "An administrator created an email forwarding address for you.": "Bir yönetici sizin için bir e-posta yönlendirme adresi oluşturdu.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook HTTP istekleri, uç nokta POST isteği başına maksimum 60 saniyelik bir zaman aşımı ile her SMTP bağlantı denemesinde 3 defaya kadar yeniden deneyecek.",
+  "Note that this does not mean that it only retries 3 times": "Bunun yalnızca 3 kez yeniden denendiği anlamına gelmediğini unutmayın.",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", 3. başarısız HTTP POST istek girişiminden sonra 421 SMTP kodu (gönderenin daha sonra yeniden denemesini belirtir) göndererek aslında zaman içinde sürekli olarak yeniden deneyecektir. Bu, e-postanın 200 durum kodu elde edilene kadar günlerce sürekli olarak yeniden deneneceği anlamına gelir.",
+  "We will retry automatically based off the default status and error codes used in": "Kullanılan varsayılan durum ve hata kodlarına göre otomatik olarak yeniden deneyeceğiz.",
+  "(we are maintainers).": "(biz bakıcıyız).",
+  "(we are maintainers)": "(biz bakıcıyız)"
 }

@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "すぐに削除するために、拒否リストの削除リクエストを送信できます。",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span>は拒否リストから正常に削除されました。",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span>は<span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>変更されました",
-  "An administrator created an email forwarding address for you.": "管理者がメール転送アドレスを作成しました。"
+  "An administrator created an email forwarding address for you.": "管理者がメール転送アドレスを作成しました。",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook HTTP リクエストは、SMTP 接続の試行ごとに最大 3 回再試行され、エンドポイントの POST リクエストごとに最大 60 秒のタイムアウトが設定されます。",
+  "Note that this does not mean that it only retries 3 times": "これは、3 回だけ再試行するという意味ではないことに注意してください。",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": "、実際には、HTTP POST 要求の試行が 3 回失敗した後、SMTP コード 421 を送信することにより (送信者に後で再試行することを示します)、継続的に再試行します。これは、ステータス コード 200 が達成されるまで、電子メールが数日間連続して再試行されることを意味します。",
+  "We will retry automatically based off the default status and error codes used in": "で使用されるデフォルトのステータス コードとエラー コードに基づいて、自動的に再試行されます。",
+  "(we are maintainers).": "(私たちはメンテナーです)。",
+  "(we are maintainers)": "(私たちはメンテナーです)"
 }

@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Możesz teraz przesłać prośbę o usunięcie z listy odrzuconych w celu natychmiastowego usunięcia.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> został pomyślnie usunięty z naszej listy odrzuconych.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> zmienił się z <span class=\"notranslate\">%s</span> na <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Administrator utworzył dla Ciebie adres do przekazywania poczty."
+  "An administrator created an email forwarding address for you.": "Administrator utworzył dla Ciebie adres do przekazywania poczty.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Żądania Webhook HTTP będą ponawiane do 3 razy przy każdej próbie połączenia SMTP, z maksymalnym limitem czasu 60 sekund na żądanie POST punktu końcowego.",
+  "Note that this does not mean that it only retries 3 times": "Zauważ, że nie oznacza to, że ponawia próbę tylko 3 razy",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", w rzeczywistości będzie ponawiał próbę w czasie, wysyłając kod SMTP 421 (co oznacza, że nadawca spróbuje ponownie później) po trzeciej nieudanej próbie żądania HTTP POST. Oznacza to, że wiadomość e-mail będzie ponawiana nieprzerwanie przez kilka dni, aż do osiągnięcia kodu stanu 200.",
+  "We will retry automatically based off the default status and error codes used in": "Spróbujemy ponownie automatycznie na podstawie domyślnego stanu i kodów błędów używanych w",
+  "(we are maintainers).": "(jesteśmy konserwatorami).",
+  "(we are maintainers)": "(jesteśmy konserwatorami)"
 }

@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "U kunt nu uw weigeringsverzoek voor onmiddellijke verwijdering indienen.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> is met succes verwijderd van onze weigeringslijst.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> is veranderd van <span class=\"notranslate\">%s</span> naar <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Een beheerder heeft een e-mail doorstuuradres voor u gemaakt."
+  "An administrator created an email forwarding address for you.": "Een beheerder heeft een e-mail doorstuuradres voor u gemaakt.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook HTTP-verzoeken proberen tot 3 keer elke poging tot SMTP-verbinding opnieuw, met een maximale time-out van 60 seconden per POST-verzoek van het eindpunt.",
+  "Note that this does not mean that it only retries 3 times": "Merk op dat dit niet betekent dat het slechts 3 keer opnieuw probeert",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", zal het in de loop van de tijd continu opnieuw proberen door een SMTP-code van 421 te verzenden (wat aangeeft dat de afzender het later opnieuw probeert) na de 3e mislukte poging tot HTTP POST-verzoek. Dit betekent dat de e-mail dagenlang continu opnieuw probeert totdat een 200-statuscode is bereikt.",
+  "We will retry automatically based off the default status and error codes used in": "We zullen het automatisch opnieuw proberen op basis van de standaardstatus en foutcodes die in zijn gebruikt",
+  "(we are maintainers).": "(wij zijn beheerders).",
+  "(we are maintainers)": "(wij zijn beheerders)"
 }

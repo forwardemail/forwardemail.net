@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Du kan nu skicka in din begäran om borttagning av denylist för omedelbar borttagning.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> har tagits bort från vår avvisningslista.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> har ändrats från <span class=\"notranslate\">%s</span> till <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "En administratör skapade en adress för vidarebefordran av e-post åt dig."
+  "An administrator created an email forwarding address for you.": "En administratör skapade en adress för vidarebefordran av e-post åt dig.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook HTTP-förfrågningar kommer att försöka igen upp till 3 gånger varje SMTP-anslutningsförsök, med en maximal timeout på 60 sekunder per slutpunkts POST-begäran.",
+  "Note that this does not mean that it only retries 3 times": "Observera att detta inte betyder att den bara försöker igen 3 gånger",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", kommer den faktiskt att försöka igen kontinuerligt över tiden genom att skicka en SMTP-kod på 421 (vilket indikerar att avsändaren försöker igen senare) efter det tredje misslyckade försöket med HTTP POST-begäran. Detta innebär att e-postmeddelandet kommer att försöka igen kontinuerligt i dagar tills en 200-statuskod uppnås.",
+  "We will retry automatically based off the default status and error codes used in": "Vi kommer att försöka igen automatiskt baserat på standardstatus och felkoder som används i",
+  "(we are maintainers).": "(vi är underhållare).",
+  "(we are maintainers)": "(vi är underhållare)"
 }

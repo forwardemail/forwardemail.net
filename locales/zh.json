@@ -3227,5 +3227,11 @@
   "You may now submit your denylist removal request for instant removal.": "您现在可以提交您的黑名单删除请求以立即删除。",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span>已成功从我们的黑名单中删除。",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span>已从<span class=\"notranslate\">%s</span>更改为<span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "管理员为您创建了电子邮件转发地址。"
+  "An administrator created an email forwarding address for you.": "管理员为您创建了电子邮件转发地址。",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook HTTP 请求将在每次 SMTP 连接尝试时最多重试 3 次，每个端点 POST 请求的最大超时时间为 60 秒。",
+  "Note that this does not mean that it only retries 3 times": "请注意，这并不意味着它只重试 3 次",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": "，它实际上会在第三次 HTTP POST 请求尝试失败后通过发送 421 的 SMTP 代码（向发件人表示稍后重试）来连续重试。这意味着电子邮件将连续重试几天，直到达到 200 状态代码。",
+  "We will retry automatically based off the default status and error codes used in": "我们将根据中使用的默认状态和错误代码自动重试",
+  "(we are maintainers).": "（我们是维护者）。",
+  "(we are maintainers)": "（我们是维护者）"
 }

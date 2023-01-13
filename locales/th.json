@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "ตอนนี้คุณสามารถส่งคำขอลบรายการที่ไม่อนุญาตเพื่อลบทันที",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> ถูกลบออกจากรายการที่ไม่อนุญาตของเราเรียบร้อยแล้ว",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> ได้เปลี่ยนจาก <span class=\"notranslate\">%s</span> เป็น <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "ผู้ดูแลระบบได้สร้างที่อยู่สำหรับส่งต่ออีเมลให้กับคุณ"
+  "An administrator created an email forwarding address for you.": "ผู้ดูแลระบบได้สร้างที่อยู่สำหรับส่งต่ออีเมลให้กับคุณ",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "คำขอ HTTP ของ Webhook จะลองใหม่สูงสุด 3 ครั้งทุกครั้งที่พยายามเชื่อมต่อ SMTP โดยมีการหมดเวลาสูงสุด 60 วินาทีต่อคำขอ POST ปลายทาง",
+  "Note that this does not mean that it only retries 3 times": "โปรดทราบว่านี่ไม่ได้หมายความว่าจะลองใหม่เพียง 3 ครั้งเท่านั้น",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": "ที่จริงแล้วจะลองใหม่อย่างต่อเนื่องเมื่อเวลาผ่านไปโดยการส่งรหัส SMTP 421 (ซึ่งระบุถึงผู้ส่งให้ลองใหม่ในภายหลัง) หลังจากความพยายามขอ HTTP POST ครั้งที่ 3 ล้มเหลว ซึ่งหมายความว่าอีเมลจะลองใหม่อย่างต่อเนื่องเป็นเวลาหลายวันจนกว่าจะถึงรหัสสถานะ 200",
+  "We will retry automatically based off the default status and error codes used in": "เราจะลองใหม่โดยอัตโนมัติตามสถานะเริ่มต้นและรหัสข้อผิดพลาดที่ใช้",
+  "(we are maintainers).": "(เราเป็นผู้ดูแล)",
+  "(we are maintainers)": "(เราเป็นผู้ดูแล)"
 }

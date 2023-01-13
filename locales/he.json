@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "כעת תוכל להגיש את בקשתך להסרת רשימת הדנים להסרה מיידית.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> הוסר בהצלחה מרשימת ההכחשה שלנו.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> השתנה מ- <span class=\"notranslate\">%s</span> ל- <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "מנהל מערכת יצר עבורך כתובת להעברת דוא\"ל."
+  "An administrator created an email forwarding address for you.": "מנהל מערכת יצר עבורך כתובת להעברת דוא\"ל.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "בקשות HTTP של Webhook ינסו שוב עד 3 פעמים בכל ניסיון חיבור SMTP, עם פסק זמן מקסימלי של 60 שניות לכל בקשת POST של נקודת קצה.",
+  "Note that this does not mean that it only retries 3 times": "שימו לב שזה לא אומר שהוא מנסה שוב רק 3 פעמים",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", הוא למעשה ינסה שוב ברציפות לאורך זמן על ידי שליחת קוד SMTP של 421 (מה שמציין לשולח ניסיון חוזר מאוחר יותר) לאחר ניסיון בקשת ה-HTTP POST הכושל השלישי. המשמעות היא שהמייל ינסה שוב ברציפות במשך ימים עד להשגת קוד סטטוס 200.",
+  "We will retry automatically based off the default status and error codes used in": "ננסה שוב באופן אוטומטי בהתבסס על מצב ברירת המחדל וקודי השגיאה שבהם נעשה שימוש",
+  "(we are maintainers).": "(אנחנו מתחזקים).",
+  "(we are maintainers)": "(אנחנו מתחזקים)"
 }

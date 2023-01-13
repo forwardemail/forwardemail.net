@@ -2541,5 +2541,11 @@
   "You may now submit your denylist removal request for instant removal.": "Sie können jetzt Ihren Antrag auf Entfernung aus der Denylist zur sofortigen Entfernung einreichen.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> wurde erfolgreich von unserer Ablehnungsliste entfernt.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> wurde von <span class=\"notranslate\">%s</span> zu <span class=\"notranslate\">%s</span> geändert",
-  "An administrator created an email forwarding address for you.": "Ein Administrator hat eine E-Mail-Weiterleitungsadresse für Sie erstellt."
+  "An administrator created an email forwarding address for you.": "Ein Administrator hat eine E-Mail-Weiterleitungsadresse für Sie erstellt.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook-HTTP-Anforderungen werden bei jedem SMTP-Verbindungsversuch bis zu dreimal wiederholt, mit einem maximalen Timeout von 60 Sekunden pro Endpunkt-POST-Anforderung.",
+  "Note that this does not mean that it only retries 3 times": "Beachten Sie, dass dies nicht bedeutet, dass es nur dreimal wiederholt wird",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", wird es im Laufe der Zeit kontinuierlich wiederholt, indem es einen SMTP-Code von 421 sendet (was dem Absender anzeigt, dass es später erneut versucht wird), nachdem der dritte fehlgeschlagene HTTP-POST-Anforderungsversuch fehlgeschlagen ist. Dies bedeutet, dass die E-Mail tagelang wiederholt versucht, bis ein Statuscode von 200 erreicht wird.",
+  "We will retry automatically based off the default status and error codes used in": "Wir werden es basierend auf dem Standardstatus und den verwendeten Fehlercodes automatisch erneut versuchen",
+  "(we are maintainers).": "(Wir sind Betreuer).",
+  "(we are maintainers)": "(wir sind Betreuer)"
 }

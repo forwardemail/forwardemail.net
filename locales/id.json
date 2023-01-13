@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "Anda sekarang dapat mengirimkan permintaan penghapusan daftar tolak untuk penghapusan instan.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> berhasil dihapus dari daftar tolak kami.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> telah berubah dari <span class=\"notranslate\">%s</span> menjadi <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "Administrator membuat alamat penerusan email untuk Anda."
+  "An administrator created an email forwarding address for you.": "Administrator membuat alamat penerusan email untuk Anda.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Permintaan HTTP webhook akan mencoba lagi hingga 3 kali setiap upaya koneksi SMTP, dengan batas waktu maksimal 60 detik per permintaan POST titik akhir.",
+  "Note that this does not mean that it only retries 3 times": "Perhatikan bahwa ini tidak berarti hanya mencoba ulang 3 kali",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", itu sebenarnya akan mencoba lagi terus menerus dari waktu ke waktu dengan mengirimkan kode SMTP 421 (yang menunjukkan kepada pengirim coba lagi nanti) setelah upaya permintaan HTTP POST ke-3 gagal. Ini berarti email akan mencoba lagi terus menerus selama berhari-hari hingga kode status 200 tercapai.",
+  "We will retry automatically based off the default status and error codes used in": "Kami akan mencoba lagi secara otomatis berdasarkan status default dan kode kesalahan yang digunakan",
+  "(we are maintainers).": "(kami adalah pengelola).",
+  "(we are maintainers)": "(kami adalah pengelola)"
 }

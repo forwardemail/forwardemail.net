@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "이제 즉시 제거를 위해 거부 목록 제거 요청을 제출할 수 있습니다.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> 이 거부 목록에서 성공적으로 제거되었습니다.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> 이(가) <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> 으)로 변경되었습니다.",
-  "An administrator created an email forwarding address for you.": "관리자가 귀하를 위해 이메일 전달 주소를 생성했습니다."
+  "An administrator created an email forwarding address for you.": "관리자가 귀하를 위해 이메일 전달 주소를 생성했습니다.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook HTTP 요청은 SMTP 연결 시도마다 최대 3회 재시도하며 엔드포인트 POST 요청당 최대 시간 제한은 60초입니다.",
+  "Note that this does not mean that it only retries 3 times": "3번만 재시도한다는 의미는 아닙니다.",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", 세 번째 실패한 HTTP POST 요청 시도 후 SMTP 코드 421(발신자에게 나중에 다시 시도함을 나타냄)을 전송하여 시간이 지남에 따라 실제로 지속적으로 재시도합니다. 이는 이메일이 200 상태 코드에 도달할 때까지 며칠 동안 지속적으로 재시도함을 의미합니다.",
+  "We will retry automatically based off the default status and error codes used in": "에 사용된 기본 상태 및 오류 코드를 기반으로 자동으로 다시 시도합니다.",
+  "(we are maintainers).": "(우리는 관리자입니다).",
+  "(we are maintainers)": "(우리는 관리자입니다)"
 }

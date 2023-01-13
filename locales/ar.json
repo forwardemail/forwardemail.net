@@ -3538,5 +3538,11 @@
   "You may now submit your denylist removal request for instant removal.": "يمكنك الآن إرسال طلب إزالة denylist الخاص بك للإزالة الفورية.",
   "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "تمت إزالة <span class=\"notranslate\">%s</span> بنجاح من القائم بأعمالنا.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "تم تغيير٪ <span class=\"notranslate\">%s</span> من <span class=\"notranslate\">%s</span> إلى <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "أنشأ المسؤول عنوان إعادة توجيه البريد الإلكتروني لك."
+  "An administrator created an email forwarding address for you.": "أنشأ المسؤول عنوان إعادة توجيه البريد الإلكتروني لك.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "ستعيد طلبات Webhook HTTP محاولة ما يصل إلى 3 مرات في كل محاولة اتصال SMTP ، مع مهلة 60 ثانية كحد أقصى لكل طلب POST لنقطة النهاية.",
+  "Note that this does not mean that it only retries 3 times": "لاحظ أن هذا لا يعني أنه يعيد المحاولة 3 مرات فقط",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": "، ستتم إعادة المحاولة بشكل مستمر بمرور الوقت عن طريق إرسال رمز SMTP لـ 421 (والذي يشير إلى إعادة المحاولة للمرسل لاحقًا) بعد المحاولة الثالثة لطلب HTTP POST الفاشلة. هذا يعني أن البريد الإلكتروني سيعيد المحاولة باستمرار لعدة أيام حتى يتم الوصول إلى رمز الحالة 200.",
+  "We will retry automatically based off the default status and error codes used in": "سنعيد المحاولة تلقائيًا استنادًا إلى الحالة الافتراضية ورموز الخطأ المستخدمة في",
+  "(we are maintainers).": "(نحن أمناء).",
+  "(we are maintainers)": "(نحن مشرفون)"
 }

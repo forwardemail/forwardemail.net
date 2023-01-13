@@ -3371,5 +3371,11 @@
   "Please wait for PayPal to load and try again.": "Please wait for PayPal to load and try again.",
   "Confirm your password reset token.": "Confirm your password reset token.",
   "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> has changed from <span class=\"notranslate\">%s</span> to <span class=\"notranslate\">%s</span>",
-  "An administrator created an email forwarding address for you.": "An administrator created an email forwarding address for you."
+  "An administrator created an email forwarding address for you.": "An administrator created an email forwarding address for you.",
+  "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.": "Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.",
+  "Note that this does not mean that it only retries 3 times": "Note that this does not mean that it only retries 3 times",
+  ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.",
+  "We will retry automatically based off the default status and error codes used in": "We will retry automatically based off the default status and error codes used in",
+  "(we are maintainers).": "(we are maintainers).",
+  "(we are maintainers)": "(we are maintainers)"
 }
