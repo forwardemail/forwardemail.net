@@ -53,7 +53,13 @@ graceful.listen();
     try {
       await alias.save();
     } catch (err) {
-      const user = await Users.findById(alias.user).lean().exec();
+      if (
+        err.message ===
+          'User cannot have more than (5) aliases on global domains.' ||
+        err.message === 'Alias already exists for domain.'
+      )
+        return;
+      const user = await Users.findById(alias.user);
       const domain = await Domains.findById(alias.domain).lean().exec();
       if (!user) {
         console.log('User does not exist', alias.user);
@@ -62,6 +68,17 @@ graceful.listen();
 
       if (!domain) {
         console.log('Domain does not exist', alias.domain);
+        return;
+      }
+
+      if (
+        err.message ===
+          'User must be a domain admin to create a catch-all alias.' &&
+        domain.is_global
+      ) {
+        console.log('banning', user.email);
+        user[config.userFields.isBanned] = true;
+        await user.save();
         return;
       }
 

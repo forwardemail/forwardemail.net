@@ -137,7 +137,11 @@ Alias.pre('validate', function (next) {
   this.name = this.name.trim().toLowerCase();
 
   // if it consists of wildcards only then convert to wildcard "*" single asterisk
-  if (!this.name.startsWith('/') && consistsRepeatedSubstring(this.name))
+  if (
+    !this.name.startsWith('/') &&
+    this.name.includes('*') &&
+    consistsRepeatedSubstring(this.name)
+  )
     this.name = '*';
 
   // add wildcard as first label
