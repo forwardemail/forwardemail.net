@@ -232,6 +232,10 @@ async function remove(ctx) {
         replyTo: ctx.state.user[config.userFields.fullEmail],
         subject: `Denylist Removal: ${ctx.state.q}${
           isAllowlisted ? ' *Root domain allowlisted*' : ''
+        }${
+          ctx.state.user.plan === 'free'
+            ? ''
+            : ' *Already removed by paid user*'
         }`
       },
       locals: {
