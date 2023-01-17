@@ -3233,5 +3233,13 @@
   ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": "，它实际上会在第三次 HTTP POST 请求尝试失败后通过发送 421 的 SMTP 代码（向发件人表示稍后重试）来连续重试。这意味着电子邮件将连续重试几天，直到达到 200 状态代码。",
   "We will retry automatically based off the default status and error codes used in": "我们将根据中使用的默认状态和错误代码自动重试",
   "(we are maintainers).": "（我们是维护者）。",
-  "(we are maintainers)": "（我们是维护者）"
+  "(we are maintainers)": "（我们是维护者）",
+  "- the original": "- the original",
+  "email address for the message.": "email address for the message.",
+  "This is useful for determining where an email was originally delivered to.": "This is useful for determining where an email was originally delivered to.",
+  "There is a Thunderbird plugin for adding an": "There is a Thunderbird plugin for adding an",
+  "X-Original-To": "X-Original-To",
+  "column.": "column.",
+  "Newly added in v10.0.0 of Forward Email.": "Newly added in v10.0.0 of Forward Email.",
+  "Existing value if any is preserved as": "Existing value if any is preserved as"
 }

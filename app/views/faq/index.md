@@ -820,17 +820,17 @@ This section describes our process related to the SMTP protocol command `DATA` i
 11. We will add the following headers to the message for debugging and abuse prevention purposes:
 
     * `X-Original-To` - the original `RCPT TO` email address for the message.
-      - This is useful for determining where an email was originally delivered to.
-      - There is a Thunderbird plugin for adding an [X-Original-To](https://addons.thunderbird.net/en-us/thunderbird/addon/x-original-to-column/) column.
-      - Newly added in v10.0.0 of Forward Email.
-      - Existing value if any is preserved as `X-Original-Preserved-To`.
+      * This is useful for determining where an email was originally delivered to.
+      * There is a Thunderbird plugin for adding an [X-Original-To](https://addons.thunderbird.net/en-us/thunderbird/addon/x-original-to-column/) column.
+      * Newly added in v10.0.0 of Forward Email.
+      * Existing value if any is preserved as `X-Original-Preserved-To`.
     * `X-ForwardEmail-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
     * `X-ForwardEmail-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
     * `X-ForwardEmail-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
     * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-      - Existing value if any is preserved as `X-Original-Report-Abuse`.
+      * Existing value if any is preserved as `X-Original-Report-Abuse`.
     * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-      - Existing value if any is preserved as `X-Original-Report-Abuse-To`.
+      * Existing value if any is preserved as `X-Original-Report-Abuse-To`.
 
 12. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
