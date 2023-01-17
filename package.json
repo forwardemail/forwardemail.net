@@ -281,6 +281,9 @@
     "type": "git",
     "url": "https://github.com/forwardemail/forwardemail.net"
   },
+  "resolutions": {
+    "eslint-plugin-import": "2.26.0"
+  },
   "scripts": {
     "build": "nps build",
     "lint": "nps lint",
@@ -289,8 +292,5 @@
     "start": "nps",
     "test": "nps test",
     "watch": "nps watch"
-  },
-  "resolutions": {
-    "eslint-plugin-import": "2.26.0"
   }
 }

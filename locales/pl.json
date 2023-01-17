@@ -3544,5 +3544,13 @@
   ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": ", w rzeczywistości będzie ponawiał próbę w czasie, wysyłając kod SMTP 421 (co oznacza, że nadawca spróbuje ponownie później) po trzeciej nieudanej próbie żądania HTTP POST. Oznacza to, że wiadomość e-mail będzie ponawiana nieprzerwanie przez kilka dni, aż do osiągnięcia kodu stanu 200.",
   "We will retry automatically based off the default status and error codes used in": "Spróbujemy ponownie automatycznie na podstawie domyślnego stanu i kodów błędów używanych w",
   "(we are maintainers).": "(jesteśmy konserwatorami).",
-  "(we are maintainers)": "(jesteśmy konserwatorami)"
+  "(we are maintainers)": "(jesteśmy konserwatorami)",
+  "- the original": "- the original",
+  "email address for the message.": "email address for the message.",
+  "This is useful for determining where an email was originally delivered to.": "This is useful for determining where an email was originally delivered to.",
+  "There is a Thunderbird plugin for adding an": "There is a Thunderbird plugin for adding an",
+  "X-Original-To": "X-Original-To",
+  "column.": "column.",
+  "Newly added in v10.0.0 of Forward Email.": "Newly added in v10.0.0 of Forward Email.",
+  "Existing value if any is preserved as": "Existing value if any is preserved as"
 }

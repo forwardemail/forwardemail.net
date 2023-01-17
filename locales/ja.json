@@ -3544,5 +3544,13 @@
   ", it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.": "、実際には、HTTP POST 要求の試行が 3 回失敗した後、SMTP コード 421 を送信することにより (送信者に後で再試行することを示します)、継続的に再試行します。これは、ステータス コード 200 が達成されるまで、電子メールが数日間連続して再試行されることを意味します。",
   "We will retry automatically based off the default status and error codes used in": "で使用されるデフォルトのステータス コードとエラー コードに基づいて、自動的に再試行されます。",
   "(we are maintainers).": "(私たちはメンテナーです)。",
-  "(we are maintainers)": "(私たちはメンテナーです)"
+  "(we are maintainers)": "(私たちはメンテナーです)",
+  "- the original": "- the original",
+  "email address for the message.": "email address for the message.",
+  "This is useful for determining where an email was originally delivered to.": "This is useful for determining where an email was originally delivered to.",
+  "There is a Thunderbird plugin for adding an": "There is a Thunderbird plugin for adding an",
+  "X-Original-To": "X-Original-To",
+  "column.": "column.",
+  "Newly added in v10.0.0 of Forward Email.": "Newly added in v10.0.0 of Forward Email.",
+  "Existing value if any is preserved as": "Existing value if any is preserved as"
 }
