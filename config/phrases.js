@@ -15,6 +15,7 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  ENCRYPTED_VALUE: 'encrypted value',
   SEARCH_PAGE: 'Search page',
   TABLE_OF_CONTENTS: 'Table of Contents',
   PAYPAL_NOT_LOADED: 'Please wait for PayPal to load and try again.',

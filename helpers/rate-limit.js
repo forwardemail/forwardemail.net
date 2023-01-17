@@ -14,6 +14,9 @@ function rateLimit(max = 10, context, duration = ms('1d')) {
       'Duration must be a string to be parsed with ms() or a finite Number'
     );
   return (ctx, next) => {
+    if (ctx.isAuthenticated() && ctx.state.user.group === 'admin')
+      return next();
+
     const affix = isSANB(context)
       ? context
       : `${ctx.hostname} ${ctx.method} ${ctx.pathWithoutLocale}`;

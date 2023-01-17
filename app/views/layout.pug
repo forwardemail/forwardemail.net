@@ -250,6 +250,6 @@ html.h-100.no-js(lang=locale)
           src="https://plausible.io/js/plausible.js"
         )
 
-        //- hcaptcha (hidden from bots)
-        if config.hcaptchaEnabled
+        //- hcaptcha (hidden from bots and admins)
+        if config.hcaptchaEnabled && (!user || user.group !== 'admin')
           script(defer, src=`https://hcaptcha.com/1/api.js?hl=${locale}&recaptchacompat=off`)

@@ -42,6 +42,7 @@ async function validate(ctx, next) {
     // otherwise throw the same error as above
     try {
       q = decrypt(q);
+      ctx.state.isEncrypted = true;
     } catch (err) {
       ctx.logger.warn(err);
       return ctx.throw(
@@ -164,6 +165,7 @@ async function validate(ctx, next) {
 async function remove(ctx) {
   // we have `ctx.state.q` to work with from validate fn
   // `denylist:${ctx.state.q}`
+  const redirectTo = ctx.state.l('/denylist');
 
   // if user already submitted inquiry then return early
   if (ctx.state.user.group !== 'admin') {
@@ -179,11 +181,11 @@ async function remove(ctx) {
 
     if (count > 0) {
       const message = ctx.translate('SUPPORT_REQUEST_SENT');
+      ctx.flash('success', message);
       if (ctx.accepts('html')) {
-        ctx.flash('success', message);
-        ctx.redirect('back');
+        ctx.redirect(redirectTo);
       } else {
-        ctx.body = { message, resetForm: true, hideModal: true };
+        ctx.body = { redirectTo };
       }
     }
   }
@@ -229,7 +231,6 @@ async function remove(ctx) {
       template: 'alert',
       message: {
         to: config.email.message.from,
-        replyTo: ctx.state.user[config.userFields.fullEmail],
         subject: `Denylist Removal: ${ctx.state.q}${
           isAllowlisted ? ' *Root domain allowlisted*' : ''
         }${
@@ -252,11 +253,11 @@ async function remove(ctx) {
   // return early if the user is free with a message we have been notified
   if (ctx.state.user.group !== 'admin' && ctx.state.user.plan === 'free') {
     const message = ctx.translate('SUPPORT_REQUEST_SENT');
+    ctx.flash('success', message);
     if (ctx.accepts('html')) {
-      ctx.flash('success', message);
-      ctx.redirect('back');
+      ctx.redirect(redirectTo);
     } else {
-      ctx.body = { message, resetForm: true, hideModal: true };
+      ctx.body = { redirectTo };
     }
 
     return;
@@ -282,7 +283,12 @@ async function remove(ctx) {
     throw Boom.badRequest(ctx.translateError('SUPPORT_REQUEST_ERROR'));
   }
 
-  const message = ctx.translate('DENYLIST_REMOVAL_SUCCESS', ctx.state.q);
+  const message = ctx.translate(
+    'DENYLIST_REMOVAL_SUCCESS',
+    ctx.state.isEncrypted && ctx.state.user.group !== 'admin'
+      ? ctx.translate('ENCRYPTED_VALUE')
+      : ctx.state.q
+  );
 
   // if it was an admin and there was ?email that was valid then email the user
   if (
@@ -314,11 +320,11 @@ async function remove(ctx) {
     }
   }
 
+  ctx.flash('success', message);
   if (ctx.accepts('html')) {
-    ctx.flash('success', message);
-    ctx.redirect('back');
+    ctx.redirect(redirectTo);
   } else {
-    ctx.body = { message, resetForm: true, hideModal: true };
+    ctx.body = { redirectTo };
   }
 }
 
