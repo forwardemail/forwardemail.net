@@ -12,6 +12,7 @@ const settings = require('./settings');
 const stripe = require('./stripe');
 const test = require('./test');
 const users = require('./users');
+const upgrade = require('./upgrade');
 
 module.exports = {
   aliases,
@@ -27,5 +28,6 @@ module.exports = {
   settings,
   stripe,
   test,
-  users
+  users,
+  upgrade
 };

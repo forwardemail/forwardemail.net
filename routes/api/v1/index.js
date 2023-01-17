@@ -50,6 +50,7 @@ router
     api.v1.maxForwardedAddresses
   )
   .post('/self-test', api.v1.restricted, api.v1.selfTest)
+  .post('/upgrade', api.v1.restricted, api.v1.upgrade)
 
   //
   // public
