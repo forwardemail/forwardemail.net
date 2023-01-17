@@ -41,6 +41,9 @@ const config = {
   // package.json
   pkg,
 
+  // max aliases per global domains
+  maxAliasPerGlobalDomain: 50,
+
   // max recipients per alias (matches `forward-email` package)
   maxForwardedAddresses: env.MAX_FORWARDED_ADDRESSES,
 
@@ -346,6 +349,7 @@ const config = {
     '.click',
     '.cn',
     '.co.il',
+    '.com.tr',
     '.com.tw',
     '.country',
     '.cricket',

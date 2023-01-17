@@ -245,7 +245,7 @@ Alias.pre('save', async function (next) {
         [config.userFields.isBanned]: false
       })
         .lean()
-        .select('id plan')
+        .select('id plan group')
         .exec()
     ]);
 
@@ -357,20 +357,28 @@ Alias.pre('save', async function (next) {
             )
           );
 
-        // user cannot exceed the max alias count on a global domain
-        const aliasCount = await alias.constructor.countDocuments({
-          user: user._id,
-          domain: domain._id,
-          name: {
-            $ne: alias.name
+        if (user.group !== 'admin') {
+          // user cannot exceed the max alias count on a global domain
+          const aliasCount = await alias.constructor.countDocuments({
+            user: user._id,
+            domain: domain._id,
+            name: {
+              $ne: alias.name
+            }
+          });
+
+          // eslint-disable-next-line max-depth
+          if (aliasCount > config.maxAliasPerGlobalDomain) {
+            const err = Boom.badRequest(
+              i18n.translateError(
+                'REACHED_MAX_ALIAS_COUNT',
+                alias.locale,
+                config.maxAliasPerGlobalDomain
+              )
+            );
+            err.is_max_alias_count = true;
+            throw err;
           }
-        });
-        if (aliasCount > 5) {
-          const err = Boom.badRequest(
-            i18n.translateError('REACHED_MAX_ALIAS_COUNT', alias.locale)
-          );
-          err.is_max_alias_count = true;
-          throw err;
         }
       }
     }

@@ -100,7 +100,7 @@ module.exports = {
   RESERVED_WORD_ADMIN_REQUIRED:
     'User must be a domain admin to create an alias with a reserved word (see the page on <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s/reserved-email-addresses">Reserved Email Addresses</a>).',
   REACHED_MAX_ALIAS_COUNT:
-    'User cannot have more than (5) aliases on global domains.',
+    'User cannot have more than <span class="notranslate">%d</span> aliases on global domains.',
   EXCEEDED_UNIQUE_COUNT:
     'You have exceeded the maximum count of (<span class="notranslate">%s</span>) recipients per alias.  Please <a class="font-weight-bold" href="/help">contact us</a> if you wish to have this limit increased.  We review requests on a unique basis.  Please provide us with information about your forwarding purposes if possible.',
   DOMAIN_DOES_NOT_EXIST_ANYWHERE: 'Domain does not exist.',
