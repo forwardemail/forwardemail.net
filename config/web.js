@@ -141,9 +141,11 @@ module.exports = (redis) => ({
   session: {
     errorHandler(err, type, ctx) {
       if (
+        err.message === 'Connection is closed.' ||
         err.name === 'RedisError' ||
         err.name === 'MaxRetriesPerRequestError' ||
-        Object.getPrototypeOf(err.constructor).name === 'RedisError'
+        (err.constructor &&
+          Object.getPrototypeOf(err.constructor).name === 'RedisError')
       ) {
         ctx.logger.error(err);
         throw Boom.clientTimeout(ctx.translateError('WEBSITE_OUTAGE'));

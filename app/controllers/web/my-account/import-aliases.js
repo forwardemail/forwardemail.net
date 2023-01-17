@@ -121,6 +121,8 @@ async function importAliases(ctx) {
           recipients: [element]
         });
     } else {
+      // TODO: webhook global forwarding addresses are not working right now
+      // we should alert admins of this (e.g. using validator.isURL)
       ctx.logger.error(
         new Error(`Invalid global forwarding address of ${element}`),
         { domain: ctx.state.domain }
