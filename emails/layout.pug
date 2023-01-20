@@ -18,8 +18,8 @@ html(lang=locale)
                 != t("Need to unsubscribe?")
                 = " "
                 a.alert-link(
-                  href=`${config.urls.web}/${locale}/my-account/security`
-                )= t("Delete your account")
+                  href=`${config.urls.web}/${locale}/my-account`
+                )= t("My Account")
     block body
       block messages
         include _messages

@@ -51,8 +51,6 @@ test('GET otp/login > successful', async (t) => {
   // GET login page
   const res = await web.get(`/en${config.loginOtpRoute}`);
 
-  console.log('res.status', res.status);
-  console.log('res.text', res.text);
   t.is(res.status, 200);
   t.snapshot(res.text.replace(/<head>[\S\s]*<\/head>/, ''));
 });

@@ -69,6 +69,8 @@ async function createDomain(ctx, next) {
       const redirectTo = ctx.state.l(
         `/my-account/billing/upgrade?plan=enhanced_protection&domain=${ctx.request.body.domain}`
       );
+      // all messages are already translated based off domain locale
+      ctx.flash('warning', err.message);
       if (ctx.accepts('html')) ctx.redirect(redirectTo);
       else ctx.body = { redirectTo };
       return;

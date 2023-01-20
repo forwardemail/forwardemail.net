@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.bg-dark.text-white.text-center
+            != t('Email forwarding is paused')
+          .card-body.p-0
+            .p-3.text-center
+              h1.h3.text-danger= t('Your account is past due')
+              p.card-text.mb-0= t('Please log in and make payment to resume service.')
+              ul.list-inline.text-center.mb-0.my-auto
+                li.list-inline-item.mt-3
+                  a.btn.btn-md.btn-danger(href=`${config.urls.web}/${locale}/my-account/billing/make-payment`)= t("Make Payment")
+                li.list-inline-item.mt-3
+                  a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing`)= t("Manage Billing")
+            .p-3.text-center
+              h2.h5= t("What will happen if I don't pay?")
+              p.small.card-text
+                = t('Email forwarding is currently paused and suspended.')
+                = ' '
+                = t('This means that you may be missing important emails.')
+                = ' '
+                = t('We are currently responding to senders with a retry status code.')
+                = ' '
+                = t('Senders will eventually stop retrying and you may not receive their emails.')
+            .p-3.text-center
+              h2.h5= t("How quickly do you resume service?")
+              p.small.card-text
+                = t('As soon as you complete payment for past due balance, then we will immediately and instantly resume your email forwarding service.')
+          .card-footer.text-center.small.text-muted
+            = t('You must make payment to resume email service.')

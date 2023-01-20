@@ -53,24 +53,8 @@ async function retrieveDomainBilling(ctx) {
     ctx.state.user.plan === 'free' &&
     isSANB(ctx.query.domain) &&
     isFQDN(ctx.query.domain)
-  ) {
-    const hasBadDomain = config.badDomains.some((ext) =>
-      ctx.query.domain.toLowerCase().endsWith(ext)
-    );
-    if (hasBadDomain) {
-      // only render the modal when we have initial intent
-      if (
-        !isSANB(ctx.query.session_id) &&
-        !isSANB(ctx.query.paypal_order_id) &&
-        !isSANB(ctx.query.paypal_subscription_id)
-      )
-        ctx.flash(
-          'warning',
-          ctx.translate('MALICIOUS_DOMAIN', ctx.query.domain.toLowerCase())
-        );
-      ctx.state.bad_domain = ctx.query.domain.toLowerCase();
-    }
-  }
+  )
+    ctx.state.bad_domain = ctx.query.domain.toLowerCase();
 
   //
   // denylist support (redirects user after upgrade)

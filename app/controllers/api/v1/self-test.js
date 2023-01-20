@@ -68,8 +68,8 @@ async function selfTest(ctx) {
     await SelfTests.create(emails.map((email) => ({ email })));
 
     pMap(emails, mapper, { concurrency })
-      .then(() => {})
-      .catch((err) => ctx.logger.error(err));
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
 
     // send successful response
     ctx.body = 'OK';

@@ -155,13 +155,32 @@ module.exports = (redis) => ({
       throw err;
     }
   },
+  hookBeforeSetup(app) {
+    app.use((ctx, next) => {
+      // if the referrer was Vercel then redirect to the guide
+      if (
+        ctx.method === 'GET' &&
+        ctx.accepts('html') &&
+        !ctx.path.endsWith('/guides/vercel') &&
+        ctx.get('Referrer') &&
+        ctx.get('Referrer').startsWith('https://vercel.com')
+      ) {
+        ctx.redirect('/guides/vercel');
+        return;
+      }
+
+      return next();
+    });
+  },
   hookBeforeRoutes(app) {
     app.use((ctx, next) => {
       // if either mongoose or redis are not connected
       // then render website outage message to users
       if (
-        mongoose.connection.readyState !== 1 ||
-        (ctx.client && ctx.client.status !== 'ready')
+        ctx.method === 'GET' &&
+        ctx.accepts('html') &&
+        (mongoose.connection.readyState !== 1 ||
+          (ctx.client && ctx.client.status !== 'ready'))
       )
         ctx.flash('warning', ctx.translate('WEBSITE_OUTAGE'));
 

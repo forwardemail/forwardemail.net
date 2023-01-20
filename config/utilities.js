@@ -116,7 +116,14 @@ const NS_PROVIDERS = {
     'namecheap',
     '@'
   ],
-  'wixdns.net': ['wix', 'Wix', 'https://users.wix.com/signin?forceRender=true']
+  'wixdns.net': ['wix', 'Wix', 'https://users.wix.com/signin?forceRender=true'],
+  'vercel-dns.com': [
+    'vercel',
+    'Vercel',
+    'https://vercel.com/dashboard/domains',
+    'vercel',
+    '@'
+  ]
 };
 
 const NS_PROVIDER_KEYS = Object.keys(NS_PROVIDERS);

@@ -26,7 +26,7 @@ const UpgradeReminder = new mongoose.Schema({
     }
   ],
   // this is an array of emails that have been sent an email
-  recipients: [
+  sent_recipients: [
     {
       type: String,
       trim: true,

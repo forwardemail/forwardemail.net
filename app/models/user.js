@@ -4,6 +4,7 @@ const captainHook = require('captain-hook');
 const countryList = require('country-list');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
@@ -64,7 +65,8 @@ const omitExtraFields = [
   config.userFields.paypalPayerID,
   config.userFields.paypalSubscriptionID,
   config.userFields.addressHTML,
-  config.userFields.hasDenylistRequests
+  config.userFields.hasDenylistRequests,
+  config.userFields.approvedDomains
 ];
 
 const User = new mongoose.Schema({
@@ -184,6 +186,15 @@ object[config.userFields.hasDenylistRequests] = {
   type: Boolean,
   default: false
 };
+
+object[config.userFields.approvedDomains] = [
+  {
+    type: String,
+    trim: true,
+    lowercase: true,
+    validate: (value) => isFQDN(value)
+  }
+];
 
 // api token for basic auth
 object[config.userFields.apiToken] = {
@@ -430,6 +441,8 @@ User.pre('save', async function (next) {
         user[config.userFields.paymentReminderInitialSentAt] = undefined;
         user[config.userFields.paymentReminderFollowUpSentAt] = undefined;
         user[config.userFields.paymentReminderFinalNoticeSentAt] = undefined;
+        user[config.userFields.paymentReminderTerminationNoticeSentAt] =
+          undefined;
       }
     }
 

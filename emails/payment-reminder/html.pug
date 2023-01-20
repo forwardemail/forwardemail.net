@@ -17,7 +17,8 @@ block content
             .p-3.text-center
               if _.isDate(user[config.userFields.paymentReminderFollowUpSentAt])
                 p.card-text: strong.text-danger!= t('This is your <u>final notice</u> to make payment.')
-                p.card-text.mb-0= t('Make payment now to avoid account termination.')
+                p.card-text: strong.text-danger= t('Email forwarding is currently paused.')
+                p.card-text.mb-0= t('Make payment now to resume email forwarding.')
               else if _.isDate(user[config.userFields.paymentReminderInitialSentAt])
                 p.card-text: strong.text-danger!= t('This is a follow-up to a previous notice.')
                 p.card-text.mb-0= t('Make payment now to avoid account termination.')

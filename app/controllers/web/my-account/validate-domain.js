@@ -4,7 +4,10 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const splitLines = require('split-lines');
 const { boolean } = require('boolean');
+const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const { isIP } = require('validator');
+
+const config = require('#config');
 
 // eslint-disable-next-line complexity
 async function validateDomain(ctx, next) {
@@ -40,6 +43,66 @@ async function validateDomain(ctx, next) {
 
     return;
   }
+
+  //
+  // check if domain is on the allowlist or denylist
+  //
+  const parseResult = parseDomain(fromUrl(ctx.request.body.domain));
+  const rootDomain = (
+    parseResult.type === ParseResultType.Listed &&
+    _.isObject(parseResult.icann) &&
+    isSANB(parseResult.icann.domain)
+      ? `${parseResult.icann.domain}.${parseResult.icann.topLevelDomains.join(
+          '.'
+        )}`
+      : ctx.request.body.domain
+  ).toLowerCase();
+
+  let isAllowlist = false;
+  let isDenylist = false;
+  try {
+    [isAllowlist, isDenylist] = await Promise.all([
+      ctx.client.get(`allowlist:${rootDomain}`),
+      ctx.client.get(`denylist:${rootDomain}`)
+    ]);
+    isAllowlist = boolean(isAllowlist);
+    isDenylist = boolean(isDenylist);
+  } catch (err) {
+    ctx.logger.fatal(err);
+  }
+
+  // if it was allowlisted then notify them to contact help
+  // (we would manually create)
+  if (
+    isAllowlist &&
+    !ctx.state.user[config.userFields.approvedDomains].includes(rootDomain)
+  ) {
+    ctx.logger.fatal(
+      new Error(
+        `Account approval required for: ${ctx.request.body.domain} (${rootDomain})`
+      )
+    );
+    return ctx.throw(
+      Boom.badRequest(
+        ctx.translateError(
+          'ALLOWLIST_DOMAIN_NOT_ALLOWED',
+          rootDomain,
+          ctx.state.l('/help')
+        )
+      )
+    );
+  }
+
+  if (isDenylist)
+    return ctx.throw(
+      Boom.badRequest(
+        ctx.translateError(
+          'DENYLIST_DOMAIN_NOT_ALLOWED',
+          rootDomain,
+          ctx.state.l(`/denylist?q=${rootDomain}`)
+        )
+      )
+    );
 
   if (isSANB(ctx.request.body.plan)) {
     if (

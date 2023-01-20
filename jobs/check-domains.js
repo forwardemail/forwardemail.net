@@ -12,10 +12,8 @@ const dayjs = require('dayjs-with-plugins');
 const pMapSeries = require('p-map-series');
 const sharedConfig = require('@ladjs/shared-config');
 
-const config = require('#config');
 const logger = require('#helpers/logger');
 const email = require('#helpers/email');
-const Users = require('#models/user');
 const Domains = require('#models/domain');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -76,32 +74,6 @@ if (parentPort)
 
 graceful.listen();
 
-async function getToAndMajorityLocaleByDomain(domain) {
-  // get all the admins we should send the email to
-  const users = await Users.find({
-    _id: {
-      $in: domain.members
-        .filter((member) => member.group === 'admin')
-        .map((member) => member.user)
-    },
-    [config.userFields.hasVerifiedEmail]: true,
-    [config.userFields.isBanned]: false
-  })
-    .select(`email ${config.lastLocaleField}`)
-    .lean()
-    .exec();
-
-  if (users.length === 0) throw new Error('Domain had zero admins');
-
-  const to = _.uniq(users.map((user) => user.email));
-
-  // <https://stackoverflow.com/a/49731453>
-  const locales = users.map((user) => user[config.lastLocaleField]);
-  const locale = _.head(_(locales).countBy().entries().maxBy(_.last));
-
-  return { to, locale };
-}
-
 // eslint-disable-next-line complexity
 async function mapper(id) {
   // return early if the job was already cancelled
@@ -122,7 +94,7 @@ async function mapper(id) {
       return;
 
     // get recipients and the majority favored locale
-    const { to, locale } = await getToAndMajorityLocaleByDomain(domain);
+    const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(domain);
 
     // set locale of domain
     domain.locale = locale;
