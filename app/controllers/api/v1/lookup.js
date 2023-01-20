@@ -80,7 +80,12 @@ async function lookup(ctx) {
           _id: {
             $in: adminUserIds
           },
-          plan: domain.plan,
+          // if the domain was on a team plan, then the user must be on team plan
+          // if the domain was on enhanced plan, then user can be on team or enhanced
+          plan:
+            domain.plan === 'enhanced_protection'
+              ? { $in: ['team', 'enhanced_protection'] }
+              : domain.plan,
           [config.userFields.hasVerifiedEmail]: true,
           [config.userFields.isBanned]: false,
           [config.userFields.planExpiresAt]: {
@@ -92,7 +97,10 @@ async function lookup(ctx) {
           _id: {
             $in: adminUserIds
           },
-          plan: domain.plan,
+          plan:
+            domain.plan === 'enhanced_protection'
+              ? { $in: ['team', 'enhanced_protection'] }
+              : domain.plan,
           [config.userFields.hasVerifiedEmail]: true,
           [config.userFields.isBanned]: false,
           [config.userFields.planExpiresAt]: {
