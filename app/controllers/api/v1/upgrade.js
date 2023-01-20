@@ -45,8 +45,10 @@ async function upgrade(ctx) {
     //       then they get pushed to an array called `sent_recipients`
     //
     const pendingRecipients = [];
+    if (!_.isArray(upgradeReminder.sent_recipients))
+      upgradeReminder.sent_recipients = [];
     for (const email of emails) {
-      if (!upgradeReminder.recipients.includes(email))
+      if (!upgradeReminder.sent_recipients.includes(email))
         pendingRecipients.push(email);
     }
 
