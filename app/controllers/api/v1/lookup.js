@@ -1,12 +1,15 @@
 const Boom = require('@hapi/boom');
-const isSANB = require('is-string-and-not-blank');
 const RE2 = require('re2');
+const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
+const isSANB = require('is-string-and-not-blank');
 const regexParser = require('regex-parser');
 
 const config = require('#config');
 const Domains = require('#models/domain');
 const Users = require('#models/user');
 const Aliases = require('#models/alias');
+const email = require('#helpers/email');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
@@ -47,22 +50,151 @@ async function lookup(ctx) {
     return;
   }
 
+  //
+  // if the domain is on a team plan, then ensure at least one admin
+  // has a team plan subscription and has paid to date
+  //
+  // else if domain is on enhanced protection plan, then lookup
+  // the admin of the domain and ensure that they are paid to date
+  //
+  //
+  if (!domain.is_global) {
+    const adminUserIds = domain.members
+      .filter((member) => member.group === 'admin')
+      .map((member) => member.user);
+
+    // safeguard in case no admins exist due to data corruption
+    if (adminUserIds.length === 0) {
+      ctx.logger.fatal(
+        new Error(`Empty admin user ids: ${domain.name} (${domain.id})`),
+        { domain }
+      );
+      ctx.body = [];
+      return;
+    }
+
+    const count = await Users.countDocuments({
+      $or: [
+        // ensure that the user has a plan that expires in the future
+        {
+          _id: {
+            $in: adminUserIds
+          },
+          plan: domain.plan,
+          [config.userFields.hasVerifiedEmail]: true,
+          [config.userFields.isBanned]: false,
+          [config.userFields.planExpiresAt]: {
+            $gte: new Date()
+          }
+        },
+        // OR that they have not yet received a follow up reminder and expiry is in the past
+        {
+          _id: {
+            $in: adminUserIds
+          },
+          plan: domain.plan,
+          [config.userFields.hasVerifiedEmail]: true,
+          [config.userFields.isBanned]: false,
+          [config.userFields.planExpiresAt]: {
+            $lt: new Date()
+          },
+          [config.userFields.paymentReminderFollowUpSentAt]: {
+            $exists: false
+          }
+        }
+      ]
+    })
+      .lean()
+      .exec();
+
+    //
+    // if there were no valid users then email all admins for this domain
+    // and mark when we last sent this notification for the domain
+    // (if it was sent once, then wait until 2 weeks after to send again)
+    // (finally after one month from when originally sent, don't send again)
+    //
+    if (count === 0) {
+      ctx.logger.fatal(
+        new Error(`Suspended domain: ${domain.name} (${domain.id})`),
+        { domain }
+      );
+
+      //
+      // safeguard to resend emails if 24 hours have passed
+      //
+      // NOTE: this only goes out to actively used domains in real-time
+      //
+      if (
+        _.isDate(domain.email_suspended_sent_at) &&
+        dayjs(domain.email_suspended_sent_at)
+          .add(1, 'day')
+          .toDate()
+          .getTime() <= Date.now()
+      ) {
+        ctx.logger.fatal(
+          new Error(
+            `Resending suspended email to domain: ${domain.name} (${domain.id})`
+          ),
+          { domain }
+        );
+        domain.email_suspended_sent_at = null;
+      }
+
+      // store when we sent this immediately in case parallel requests
+      if (!_.isDate(domain.email_suspended_sent_at)) {
+        await Domains.findByIdAndUpdate(domain._id, {
+          $set: {
+            email_suspended_sent_at: new Date()
+          }
+        });
+
+        Domains.getToAndMajorityLocaleByDomain(domain)
+          .then((obj) => {
+            email({
+              template: 'email-suspended',
+              message: { to: obj.to },
+              locals: {
+                domain,
+                locale: obj.locale
+              }
+            })
+              .then()
+              .catch((err) => ctx.logger.error(err));
+          })
+          .catch((err) => ctx.logger.error(err));
+      }
+
+      // suspend forwarding by returning empty array (which causes 421 retry)
+      ctx.body = [];
+      return;
+    }
+
+    // if the count was not zero and
+    // the domain had a value set for when emails were sent
+    // then we need to remove that date
+    if (_.isDate(domain.email_suspended_sent_at))
+      Domains.findByIdAndUpdate(domain._id, {
+        $unset: {
+          email_suspended_sent_at: 1
+        }
+      })
+        .then()
+        .catch((err) => ctx.logger.error(err));
+  }
+
   const username = isSANB(ctx.query.username)
     ? ctx.query.username.toLowerCase()
     : false;
 
-  if (domain.plan !== 'free') {
-    for (const alias of aliases) {
-      if (alias.has_recipient_verification) {
-        const recipients = [];
-        for (const recipient of alias.recipients) {
-          // eslint-disable-next-line max-depth
-          if (alias.verified_recipients.includes(recipient))
-            recipients.push(recipient);
-        }
-
-        alias.recipients = recipients;
+  for (const alias of aliases) {
+    if (alias.has_recipient_verification) {
+      const recipients = [];
+      for (const recipient of alias.recipients) {
+        if (alias.verified_recipients.includes(recipient))
+          recipients.push(recipient);
       }
+
+      alias.recipients = recipients;
     }
   }
 

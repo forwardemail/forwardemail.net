@@ -98,7 +98,7 @@ async function ensurePaidToDate(ctx, next) {
               : { cc: config.email.message.from }),
             subject
           },
-          locals: { message }
+          locals: { message, locale: ctx.state.user[config.lastLocale] }
         });
       } catch (err) {
         // mark that we did not send this email

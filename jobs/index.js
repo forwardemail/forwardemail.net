@@ -91,6 +91,11 @@ const jobs = [
     name: 'update-uceprotect',
     interval: '1h',
     timeout: '5m'
+  },
+  {
+    name: 'upgrade-reminder-email',
+    interval: '6h',
+    timeout: '10m'
   }
 ];
 

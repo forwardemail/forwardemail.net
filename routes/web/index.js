@@ -38,6 +38,7 @@ localeRouter
   .use((ctx, next) => {
     if (ctx.method === 'GET')
       ctx.set('Link', `<${config.urls.web}${ctx.path}>; rel="canonical"`);
+
     return next();
   })
   .get('/', web.auth.homeOrDomains)

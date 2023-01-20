@@ -13,6 +13,7 @@ const isSANB = require('is-string-and-not-blank');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
+const i18n = require('#helpers/i18n');
 const config = require('#config');
 const email = require('#helpers/email');
 const logger = require('#helpers/logger');
@@ -118,11 +119,20 @@ async function mapper(id) {
             ? { cc: user[config.userFields.fullEmail] }
             : {}),
           bcc: config.email.message.from,
-          subject:
-            'Please make payment to prevent email forwarding termination *IMPORTANT*'
+          subject: i18n.api.t({
+            phrase: config.i18n.phrases.EMAIL_FORWARDING_PAUSED,
+            locale: user[config.lastLocaleField]
+          })
         },
         locals: {
-          message: `Your email address ${user.email} is past due on payment. We will terminate email forwarding and suspend your account if this is not resolved.  Please visit <a href="https://forwardemail.net/my-account/billing">https://forwardemail.net/my-account/billing</a> to make payment.`
+          message: i18n.api.t(
+            {
+              phrase: config.i18n.phrases.EMAIL_PAST_DUE,
+              locale: user[config.lastLocaleField]
+            },
+            user.email
+          ),
+          locale: user[config.lastLocaleField]
         }
       });
       await Users.findByIdAndUpdate(user._id, {

@@ -6,9 +6,6 @@ const { isEmail } = require('validator');
 
 const { UpgradeReminders } = require('#models');
 
-// TODO: also send one-time email in lookup if account was past due and respond with empty array
-// TODO: verify records tool should also check against list of bad domains
-
 async function upgrade(ctx) {
   try {
     if (isSANB(ctx.request.body.emails))
@@ -20,9 +17,10 @@ async function upgrade(ctx) {
     )
       throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
+    // limit to 5 emails max (safeguard in case SMTP code that also has slice(0, 5) is removed)
     const emails = _.uniq(
       ctx.request.body.emails.map((email) => email.toLowerCase())
-    );
+    ).slice(0, 5);
 
     if (emails.some((email) => !isEmail(email)))
       throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
@@ -39,8 +37,13 @@ async function upgrade(ctx) {
         domain: ctx.request.body.domain
       });
 
+    //
     // iterate over `upgradeReminder.recipients` for recipients that were already sent
     // and create in-memory a `pendingRecipients` array
+    //
+    // NOTE: once we actually send the emails in jobs/upgrade-reminder-email.js
+    //       then they get pushed to an array called `sent_recipients`
+    //
     const pendingRecipients = [];
     for (const email of emails) {
       if (!upgradeReminder.recipients.includes(email))

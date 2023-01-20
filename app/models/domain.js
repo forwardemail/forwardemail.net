@@ -76,6 +76,7 @@ const EXCHANGES = app.config.exchanges
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
+const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(/mail|disposable|inbox/gi);
 const REGEX_VERIFICATION = new RE2(/[^\da-z]/gi);
 
 const Member = new mongoose.Schema({
@@ -145,6 +146,7 @@ const Domain = new mongoose.Schema({
     default: true
   },
   last_checked_at: Date,
+  email_suspended_sent_at: Date,
   is_api: {
     type: Boolean,
     default: false
@@ -325,46 +327,108 @@ Domain.pre('validate', function (next) {
   next();
 });
 
+// prevent new domains from being created with a plan
+// that the user is not yet subscribed to, and also
+// enforce that when domains are saved, they are required
+// to have at least one admin with the plan of the domain
+// (otherwise throw an error that tells them what's wrong)
 Domain.pre('validate', async function (next) {
   try {
     const domain = this;
 
-    // helper virtual to skip verification results
-    // (e.g. when onboarding a user that's just visiting the API/FAQ page)
-    // (or if we already performed the verification results lookup)
-    if (domain.skip_verification) return next();
-
-    const { ns, txt, mx, errors } = await getVerificationResults(
-      domain,
-      domain.client
+    const { isGood, isDisposable, isRestricted } = getNameRestrictions(
+      domain.name
     );
 
-    //
-    // run a save on the domain name
-    // (as long as `errors` does not have a temporary DNS error)
-    //
-    const hasDNSError =
-      Array.isArray(errors) &&
-      errors.some((err) => err.code && DNS_RETRY_CODES.has(err.code));
+    if (domain.plan === 'free' && isGood && !isDisposable) return next();
 
-    if (!hasDNSError) {
-      // reset missing txt so we alert users if they are missing a TXT in future again
-      if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
-        domain.missing_txt_sent_at = undefined;
-      // reset multiple exchanges error so we alert users if they have multiple MX in the future
+    const users = await Users.find({
+      _id: { $in: domain.members.map((m) => m.user) }
+    })
+      .lean()
+      .select('plan email')
+      .exec();
+
+    let hasPaidPlan = false;
+
+    const hasValidPlan = users.some((user) => {
+      if (PAID_PLANS.includes(user.plan)) hasPaidPlan = true;
+      if (domain.plan === 'team' && user.plan === 'team') return true;
       if (
-        !domain.has_mx_record &&
-        mx &&
-        _.isDate(domain.multiple_exchanges_sent_at)
+        domain.plan === 'enhanced_protection' &&
+        PAID_PLANS.includes(user.plan)
       )
-        domain.multiple_exchanges_sent_at = undefined;
-      domain.has_txt_record = txt;
-      domain.has_mx_record = mx;
-      if (ns) domain.ns = ns;
+        return true;
+      return false;
+    });
+
+    // if it is a restricted domain then ensure has paid plan
+    // and ensure every user has a restricted extension (no personal emails allowed)
+    if (isRestricted) {
+      const badUserEmails = [];
+      for (const user of users) {
+        if (
+          config.restrictedDomains.every(
+            (ext) => !user.email.endsWith(`.${ext}`)
+          )
+        )
+          badUserEmails.push(user.email);
+      }
+
+      if (badUserEmails.length > 0)
+        logger.fatal(
+          new Error(
+            `Restricted domain had personal emails: ${domain.name} (${domain.id})`
+          ),
+          { domain, badUserEmails }
+        );
+
+      // if the domain is not on a paid plan then it's not valid
+      if (!hasPaidPlan)
+        throw Boom.paymentRequired(
+          i18n.translateError(
+            'RESTRICTED_PLAN_UPGRADE_REQUIRED',
+            domain.locale,
+            domain.name,
+            `/${domain.locale}/my-account/billing/upgrade?plan=enhanced_protection`
+          )
+        );
+    } else if (!hasPaidPlan && !isGood) {
+      throw Boom.paymentRequired(
+        i18n.translateError(
+          'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
+          domain.locale,
+          domain.name,
+          `/${domain.locale}/my-account/billing/upgrade?plan=enhanced_protection`
+        )
+      );
     }
 
-    // store when we last checked it
-    domain.last_checked_at = new Date();
+    // if the domain contained any of these words then require paid upgrade
+    // - mail
+    // - disposable
+    // - inbox
+    if (!hasPaidPlan && isDisposable) {
+      throw Boom.paymentRequired(
+        i18n.translateError(
+          'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
+          domain.locale,
+          domain.name,
+          `/${domain.locale}/my-account/billing/upgrade?plan=enhanced_protection`
+        )
+      );
+    }
+
+    if (!hasValidPlan && domain.plan !== 'free')
+      throw Boom.paymentRequired(
+        i18n.translateError(
+          'DOMAIN_PLAN_UPGRADE_REQUIRED',
+          domain.locale,
+          domain.name,
+          i18n.translate(domain.plan.toUpperCase(), domain.locale),
+          `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
+        )
+      );
 
     next();
   } catch (err) {
@@ -450,6 +514,53 @@ Domain.pre('validate', function (next) {
   next();
 });
 
+Domain.pre('save', async function (next) {
+  try {
+    const domain = this;
+
+    // helper virtual to skip verification results
+    // (e.g. when onboarding a user that's just visiting the API/FAQ page)
+    // (or if we already performed the verification results lookup)
+    if (domain.skip_verification) return next();
+
+    const { ns, txt, mx, errors } = await getVerificationResults(
+      domain,
+      domain.client
+    );
+
+    //
+    // run a save on the domain name
+    // (as long as `errors` does not have a temporary DNS error)
+    //
+    const hasDNSError =
+      Array.isArray(errors) &&
+      errors.some((err) => err.code && DNS_RETRY_CODES.has(err.code));
+
+    if (!hasDNSError) {
+      // reset missing txt so we alert users if they are missing a TXT in future again
+      if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
+        domain.missing_txt_sent_at = undefined;
+      // reset multiple exchanges error so we alert users if they have multiple MX in the future
+      if (
+        !domain.has_mx_record &&
+        mx &&
+        _.isDate(domain.multiple_exchanges_sent_at)
+      )
+        domain.multiple_exchanges_sent_at = undefined;
+      domain.has_txt_record = txt;
+      domain.has_mx_record = mx;
+      if (ns) domain.ns = ns;
+    }
+
+    // store when we last checked it
+    domain.last_checked_at = new Date();
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 Domain.plugin(mongooseCommonPlugin, {
   object: 'domain',
   omitExtraFields: [
@@ -457,7 +568,11 @@ Domain.plugin(mongooseCommonPlugin, {
     'is_api',
     'onboard_email_sent_at',
     'verified_email_sent_at',
-    'last_checked_at'
+    'last_checked_at',
+    'email_suspended_sent_at',
+    'missing_txt_sent_at',
+    'multiple_exchanges_sent_at',
+    'ns'
   ],
   mongooseHidden: {
     virtuals: {
@@ -816,6 +931,52 @@ async function getVerificationResults(domain, client = false) {
 
 Domain.statics.getVerificationResults = getVerificationResults;
 
+function getNameRestrictions(domainName) {
+  const isGood = config.goodDomains.some((ext) =>
+    domainName.endsWith(`.${ext}`)
+  );
+  const isDisposable = REGEX_MAIL_DISPOSABLE_INBOX.test(domainName);
+  // NOTE: this also takes into account `nic.ext` for registrars
+  const isRestricted = config.restrictedDomains.some(
+    (ext) =>
+      domainName === ext ||
+      domainName.endsWith(`.${ext}`) ||
+      domainName === `nic.${ext}`
+  );
+
+  return { isGood, isDisposable, isRestricted };
+}
+
+Domain.statics.getNameRestrictions = getNameRestrictions;
+
+async function getToAndMajorityLocaleByDomain(domain) {
+  // get all the admins we should send the email to
+  const users = await Users.find({
+    _id: {
+      $in: domain.members
+        .filter((member) => member.group === 'admin')
+        .map((member) => member.user)
+    },
+    [config.userFields.hasVerifiedEmail]: true,
+    [config.userFields.isBanned]: false
+  })
+    .select(`email ${config.lastLocaleField}`)
+    .lean()
+    .exec();
+
+  if (users.length === 0) throw new Error('Domain had zero admins');
+
+  const to = _.uniq(users.map((user) => user.email));
+
+  // <https://stackoverflow.com/a/49731453>
+  const locales = users.map((user) => user[config.lastLocaleField]);
+  const locale = _.head(_(locales).countBy().entries().maxBy(_.last));
+
+  return { to, locale };
+}
+
+Domain.statics.getToAndMajorityLocaleByDomain = getToAndMajorityLocaleByDomain;
+
 // eslint-disable-next-line complexity
 async function getTxtAddresses(
   domainName,
@@ -1021,68 +1182,6 @@ async function ensureUserHasValidPlan(user, locale) {
 }
 
 Domain.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
-
-// prevent new domains from being created with a plan
-// that the user is not yet subscribed to, and also
-// enforce that when domains are saved, they are required
-// to have at least one admin with the plan of the domain
-// (otherwise throw an error that tells them what's wrong)
-Domain.pre('save', async function (next) {
-  try {
-    const domain = this;
-
-    const hasBadDomain = config.badDomains.some((ext) =>
-      domain.name.endsWith(ext)
-    );
-
-    if (domain.plan === 'free' && !hasBadDomain) return next();
-
-    const users = await Users.find({
-      _id: { $in: domain.members.map((m) => m.user) }
-    })
-      .lean()
-      .select('plan')
-      .exec();
-
-    let hasPaidPlan = false;
-
-    const hasValidPlan = users.some((user) => {
-      if (PAID_PLANS.includes(user.plan)) hasPaidPlan = true;
-      if (domain.plan === 'team' && user.plan === 'team') return true;
-      if (
-        domain.plan === 'enhanced_protection' &&
-        PAID_PLANS.includes(user.plan)
-      )
-        return true;
-      return false;
-    });
-
-    if (hasBadDomain && !hasPaidPlan)
-      throw Boom.paymentRequired(
-        i18n.translateError(
-          'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
-          domain.locale,
-          domain.name,
-          `/${domain.locale}/my-account/billing/upgrade?plan=enhanced_protection`
-        )
-      );
-
-    if (!hasValidPlan && domain.plan !== 'free')
-      throw Boom.paymentRequired(
-        i18n.translateError(
-          'DOMAIN_PLAN_UPGRADE_REQUIRED',
-          domain.locale,
-          domain.name,
-          i18n.translate(domain.plan.toUpperCase(), domain.locale),
-          `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
-        )
-      );
-
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
 
 Domain.postCreate((domain, next) => {
   // log that the domain was created

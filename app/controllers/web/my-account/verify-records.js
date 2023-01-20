@@ -54,6 +54,30 @@ async function verifyRecords(ctx) {
         Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
       );
 
+    //
+    // attempt to validate the domain
+    // (this will bubble up any payment 402 errors)
+    //
+    try {
+      await domain.validate();
+    } catch (err) {
+      if (err && err.isBoom && err.output && err.output.statusCode === 402) {
+        const redirectTo = ctx.state.l(
+          domain.plan === 'free'
+            ? `/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+            : `/my-account/billing/upgrade?plan=${domain.plan}`
+        );
+
+        // all messages are already translated based off domain locale
+        ctx.flash('warning', err.message);
+        if (ctx.accepts('html')) ctx.redirect(redirectTo);
+        else ctx.body = { redirectTo };
+      }
+
+      ctx.throw(Boom.badRequest(err));
+      return;
+    }
+
     // reset redis cache for web and smtp
     if (ctx.client)
       await Promise.all(

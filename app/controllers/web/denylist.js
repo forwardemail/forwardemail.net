@@ -187,6 +187,8 @@ async function remove(ctx) {
       } else {
         ctx.body = { redirectTo };
       }
+
+      return;
     }
   }
 
