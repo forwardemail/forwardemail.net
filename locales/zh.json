@@ -3308,5 +3308,10 @@
   "In January 2023, we launched a re-designed website, which is": "In January 2023, we launched a re-designed website, which is",
   "optimized for page speed across all devices": "optimized for page speed across all devices",
   "Emails are delivered on average in under 5 seconds.": "Emails are delivered on average in under 5 seconds.",
-  "We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory."
+  "We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.",
+  "Free Email Forwarding for <span class=\"notranslate\">Vercel</span> &#124; <span class=\"notranslate\">Forward Email</span>": "Free Email Forwarding for <span class=\"notranslate\">Vercel</span> &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Vercel</span>.": "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Vercel</span>.",
+  "Free <span class=\"notranslate\">Vercel</span> Email Forwarding": "Free <span class=\"notranslate\">Vercel</span> Email Forwarding",
+  "Follow our guide to setup email forwarding with <span class=\"notranslate\">Vercel</span> for your domain.": "Follow our guide to setup email forwarding with <span class=\"notranslate\">Vercel</span> for your domain.",
+  "Setup Email with <span class=\"notranslate\">Vercel</span>": "Setup Email with <span class=\"notranslate\">Vercel</span>"
 }
