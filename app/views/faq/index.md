@@ -61,7 +61,7 @@
 
 ## How fast is this service
 
-**Emails are delivered on average in under 5 seconds.**  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.
+Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.
 
 
 ## How do I get started and set up email forwarding
