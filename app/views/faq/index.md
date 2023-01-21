@@ -3,6 +3,7 @@
 
 ## Table of Contents
 
+* [How fast is this service](#how-fast-is-this-service)
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
@@ -56,7 +57,11 @@
 * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
 * [Will you ever increase prices](#will-you-ever-increase-prices)
 * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [How fast is this service](#how-fast-is-this-service)
+
+
+## How fast is this service
+
+**Emails are delivered on average in under 5 seconds.**  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.
 
 
 ## How do I get started and set up email forwarding
@@ -1987,17 +1992,6 @@ No. Prices will never increase. Unlike other companies, we will never shutdown o
 
 We use CloudFlare's privacy-first consumer DNS service (see [announcement here][cloudflare-dns]).  We set `1.1.1.3` and `1.0.0.3` as the DNS servers (see <https://developers.cloudflare.com/1.1.1.1/1.1.1.1-for-families/>) using `/etc/resolv.conf` on our servers and test environments.
 
-
-## How fast is this service
-
-The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and focuses on performance through streams.  [Nodemailer's][nodemailer] prolific author Andris Reinman ([@andris9](https://github.com/andris9)) helped us switch off using the `mailparser` library and use `mailsplit` instead with some custom transform logic to split the header and the body of the message without affecting the body.  This allows us to perform operations on headers very fast (such as security checks and for SPF/DKIM/DMARC compliance).
-
-**In other words, the latest version of this service uses streams purely now and is lightning fast.**  The older version v1 also had some logic not in the most optimal order of operations – but now v2 does less memory/network intense operations first (and returns early if possible to send a response as quickly as possible to the SMTP client).  We plan to continue to optimize speed, enhance features, and improve this service over time.
-
-At no point in time do we write to disk or store emails – everything is done in-memory thanks to Node.js's streams and transforms! :tada:
-
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
-
-[nodemailer]: https://github.com/nodemailer/nodemailer

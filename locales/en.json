@@ -3428,5 +3428,21 @@
   "How quickly do you resume service?": "How quickly do you resume service?",
   "As soon as you complete payment for past due balance, then we will immediately and instantly resume your email forwarding service.": "As soon as you complete payment for past due balance, then we will immediately and instantly resume your email forwarding service.",
   "You must make payment to resume email service.": "You must make payment to resume email service.",
-  "Email forwarding paused for <span class=\"notranslate\">%s</span>": "Email forwarding paused for <span class=\"notranslate\">%s</span>"
+  "Email forwarding paused for <span class=\"notranslate\">%s</span>": "Email forwarding paused for <span class=\"notranslate\">%s</span>",
+  "In February of 2021, we refactored our codebase to remove all": "In February of 2021, we refactored our codebase to remove all",
+  "dependencies – which allowed our stack to become 100%": "dependencies – which allowed our stack to become 100%",
+  "On September 27, 2021,": "On September 27, 2021,",
+  "we added support": "we added support",
+  "for email forwarding aliases to match": "for email forwarding aliases to match",
+  "regular expressions": "regular expressions",
+  "Throughout 2022 we were hyperfocused and overlooked updating this page – but here are some highlights:": "Throughout 2022 we were hyperfocused and overlooked updating this page – but here are some highlights:",
+  "Answered thousands of customer support requests and re-designed the onboarding experience.": "Answered thousands of customer support requests and re-designed the onboarding experience.",
+  "Improved email deliverability through optimized code logic and robust error handling.": "Improved email deliverability through optimized code logic and robust error handling.",
+  "Worked with major domain name registrars to fight spam campaigns.": "Worked with major domain name registrars to fight spam campaigns.",
+  "Maximized resiliency and redundancy across our Web, API, and SMTP servers.": "Maximized resiliency and redundancy across our Web, API, and SMTP servers.",
+  "Added real-time spam learning, defense against account impersonation, and blocking of complex attack vectors.": "Added real-time spam learning, defense against account impersonation, and blocking of complex attack vectors.",
+  "In January 2023, we launched a re-designed website, which is": "In January 2023, we launched a re-designed website, which is",
+  "optimized for page speed across all devices": "optimized for page speed across all devices",
+  "Emails are delivered on average in under 5 seconds.": "Emails are delivered on average in under 5 seconds.",
+  "We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory."
 }
