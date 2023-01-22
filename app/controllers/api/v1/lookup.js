@@ -88,8 +88,9 @@ async function lookup(ctx) {
               : domain.plan,
           [config.userFields.hasVerifiedEmail]: true,
           [config.userFields.isBanned]: false,
+          // plan expired 30 day grace window
           [config.userFields.planExpiresAt]: {
-            $gte: new Date()
+            $gte: dayjs().subtract(1, 'month').toDate()
           }
         },
         // OR that they have not yet received a follow up reminder and expiry is in the past
