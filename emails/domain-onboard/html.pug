@@ -41,6 +41,7 @@ block content
                   href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`,
                   role="button"
                 )= t("Upgrade for $3")
+            //- TODO: render this email differently
             if !domain.has_mx_record || !domain.has_txt_record
               .p-3
                 h2.h5

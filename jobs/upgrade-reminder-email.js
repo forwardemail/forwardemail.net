@@ -7,8 +7,10 @@ const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
+const Redis = require('@ladjs/redis');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
+const { boolean } = require('boolean');
 
 const config = require('#config');
 const email = require('#helpers/email');
@@ -17,8 +19,10 @@ const { Users, Domains, UpgradeReminders } = require('#models');
 
 const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
+  redisClients: [client],
   mongooses: [mongoose],
   logger
 });
@@ -42,6 +46,20 @@ graceful.listen();
 async function mapper(upgradeReminder) {
   // return early if the job was already cancelled
   if (isCancelled) return;
+
+  // check if the domain was banned and if so then don't send
+  const domainBanned = await client.get(`denylist:${upgradeReminder.domain}`);
+  if (boolean(domainBanned)) return;
+
+  // check if the mail was banned and if so then don't send
+  const cleanQueue = [];
+  for (const addr of upgradeReminder.queue) {
+    // eslint-disable-next-line no-await-in-loop
+    const emailBanned = await client.get(`denylist:${addr}`);
+    if (!boolean(emailBanned)) cleanQueue.push(addr);
+  }
+
+  if (cleanQueue.length === 0) return;
 
   // if the domain does not have a 402 payment required error
   // then we don't need to prompt the user to upgrade
@@ -68,7 +86,7 @@ async function mapper(upgradeReminder) {
     logger.info('sending email', { upgradeReminder });
     await email({
       template: 'upgrade-reminder',
-      message: { to: upgradeReminder.queue },
+      message: { to: cleanQueue },
       locals: {
         domain: upgradeReminder.domain,
         isGood,
@@ -81,7 +99,7 @@ async function mapper(upgradeReminder) {
     await UpgradeReminders.findByIdAndUpdate(upgradeReminder._id, {
       $addToSet: {
         sent_recipients: {
-          $each: upgradeReminder.queue
+          $each: cleanQueue
         }
       }
     });
