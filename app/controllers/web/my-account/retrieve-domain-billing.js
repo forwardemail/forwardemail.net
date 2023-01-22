@@ -1668,6 +1668,8 @@ async function retrieveDomainBilling(ctx) {
   } catch (err) {
     ctx.logger.fatal(err);
 
+    // TODO: suppress bugs here
+
     // email admins here (in the background)
     if (!err.no_email) {
       emailHelper({
