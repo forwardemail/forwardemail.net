@@ -1,1 +1,1 @@
-= striptags(Date.now() < 1675231200000 ? t('Paid plan required for <span class="notranslate">%s</span> by February 1, 2023', domain) : t('Email suspended for <span class="notranslate">%s</span>', domain))
+= striptags(Date.now() < dayjs('3/1/2023', 'M/D/YYYY').toDate().getTime() ? t('Paid plan required for <span class="notranslate">%s</span> by March 1, 2023', domain) : t('Email suspended for <span class="notranslate">%s</span>', domain))
