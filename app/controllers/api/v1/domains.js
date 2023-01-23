@@ -56,6 +56,24 @@ function json(domain) {
 }
 
 async function list(ctx) {
+  // hide global domain names if not admin of
+  // the global domain and had zero aliases
+  ctx.state.domains = ctx.state.domains.filter((domain) => {
+    if (!domain.is_global) return true;
+    if (
+      domain.members.some(
+        (member) =>
+          // if the logged in user was not member
+          // and if the logged in user had no aliases
+          member.user.id === ctx.state.user.id &&
+          member.is_virtual &&
+          member.alias_count === 0
+      )
+    )
+      return false;
+    return true;
+  });
+
   const data = ctx.state.domains.map((d) => json(d));
   ctx.body = data;
 }

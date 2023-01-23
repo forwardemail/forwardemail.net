@@ -4,6 +4,7 @@ const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const regexParser = require('regex-parser');
+const { boolean } = require('boolean');
 
 const config = require('#config');
 const Domains = require('#models/domain');
@@ -58,7 +59,7 @@ async function lookup(ctx) {
   // the admin of the domain and ensure that they are paid to date
   //
   //
-  if (!domain.is_global) {
+  if (!domain.is_global && !boolean(ctx.query.ignore_billing)) {
     const adminUserIds = domain.members
       .filter((member) => member.group === 'admin')
       .map((member) => member.user);
