@@ -130,14 +130,15 @@ async function lookup(ctx) {
       );
 
       //
-      // safeguard to resend emails if 24 hours have passed
+      // safeguard to resend emails if 1 week has passed
+      // but don't send if termination notice already sent
       //
       // NOTE: this only goes out to actively used domains in real-time
       //
       if (
         _.isDate(domain.email_suspended_sent_at) &&
         dayjs(domain.email_suspended_sent_at)
-          .add(1, 'day')
+          .add(1, 'week')
           .toDate()
           .getTime() <= Date.now()
       ) {
