@@ -27,7 +27,7 @@ block content
                 if isRestricted
                   != t('Your domain name extension is restricted for public, education, and government use.')
                 else if !isGood
-                  != t('Your domain name extension (also known as a <a href="%s" class="notranslate" rel="noopener noreferrer" target="_blank">gTLD</a>) is frequently used for spam operations.', 'https://en.wikipedia.org/wiki/Generic_top-level_domain')
+                  != t('Your domain name extension (also known as a <span class="notranslate">TLD</span>) is frequently used for spam operations.')
                 else if isDisposable
                   != t('Your domain name includes reserved keywords such as "mail", "disposable", and "inbox".')
                 = ' '
@@ -82,8 +82,8 @@ block content
               p.small.card-text!= t('<span class="font-weight-bold">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.')
             if !isDisposable && !isGood
               .p-3.text-center
-                h2.h5!= t('What <span class="notranslate">gTLDs</span> can still be used for free?')
-                p.small.card-text!= t('We support these <span class="notranslate">gTLDs</span> on free plans:')
+                h2.h5!= t('What <span class="notranslate">TLDs</span> can still be used for free?')
+                p.small.card-text!= t('We support these <span class="notranslate">TLDs</span> on free plans:')
                 ul.list-inline.small
                   each tld in config.goodDomains
                     li.list-inline-item: code= `.${tld}`
