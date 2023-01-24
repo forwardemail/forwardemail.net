@@ -33,7 +33,7 @@ graceful.listen();
     // ex... if errorTolerance = 50, and there are 50 stripe error emails sent, the stripe function will stop looping and
     // send a final email that the script needs work or that the service is down - so as to not flood inboxes with thousands of emails
     // note that the tolerance applies to each payment provider not to the entire script
-    await syncPayPalSubscriptionPayments({ errorThreshold: 5 });
+    await syncPayPalSubscriptionPayments();
   } catch (err) {
     logger.error(err);
   }
