@@ -74,11 +74,15 @@ async function mapper(id) {
 
   // save the subscription ID to the profile
   user[config.userFields.paypalSubscriptionID] = id;
+  user[config.userFields.paypalPayerID] = subscription.subscriber.payer_id;
 
-  if (user.plan === 'free') {
-    const plan = Object.keys(PAYPAL_PLANS).find((plan) =>
-      PAYPAL_PLANS[plan].includes(subscription.plan_id)
-    );
+  const plan = Object.keys(PAYPAL_PLANS).find((plan) =>
+    PAYPAL_PLANS[plan].includes(subscription.plan_id)
+  );
+
+  if (!plan) throw new Error('Plan does not exist');
+
+  if (user.plan !== plan) {
     console.log(`setting user plan from ${user.plan} to ${plan}`);
     user.plan = plan;
   }
