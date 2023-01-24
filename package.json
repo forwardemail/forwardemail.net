@@ -41,7 +41,6 @@
     "aws-sdk": "2.1298.0",
     "axe": "11.2.1",
     "basic-auth": "2.0.1",
-    "bitcoin-regex": "^2.0.0",
     "boolean": "3.2.0",
     "bootstrap": "4.6.2",
     "bree": "9.1.3",
