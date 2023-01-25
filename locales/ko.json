@@ -3625,5 +3625,7 @@
   "Free <span class=\"notranslate\">Vercel</span> Email Forwarding": "무료 <span class=\"notranslate\">Vercel</span> 이메일 전달",
   "Follow our guide to setup email forwarding with <span class=\"notranslate\">Vercel</span> for your domain.": "귀하의 도메인에 대해 <span class=\"notranslate\">Vercel</span> 로 이메일 전달을 설정하려면 가이드를 따르십시오.",
   "Setup Email with <span class=\"notranslate\">Vercel</span>": "<span class=\"notranslate\">Vercel</span> 로 이메일 설정",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.",
+  "In February 2021, we refactored our codebase to remove all": "In February 2021, we refactored our codebase to remove all",
+  "In January 2023, we launched a re-designed and page-speed optimized website.": "In January 2023, we launched a re-designed and page-speed optimized website."
 }
