@@ -32,18 +32,10 @@ In August 2020, we added support for the [Authenticated Received Chain][arc] ("A
 
 On November 23, 2020 we publicly launched out of our beta program.
 
-In February of 2021, we refactored our codebase to remove all [Python](https://en.wikipedia.org/wiki/Python_\(programming_language\)) dependencies – which allowed our stack to become 100% [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [Node.js](https://en.wikipedia.org/wiki/Node.js).
+In February 2021, we refactored our codebase to remove all [Python](https://en.wikipedia.org/wiki/Python_\(programming_language\)) dependencies – which allowed our stack to become 100% [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [Node.js](https://en.wikipedia.org/wiki/Node.js).
 
 On September 27, 2021, [we added support](/email-forwarding-regex-pattern-filter) for email forwarding aliases to match [regular expressions](https://en.wikipedia.org/wiki/Regular_expression).
 
-Throughout 2022 we were hyperfocused and overlooked updating this page – but here are some highlights:
-
-* Answered thousands of customer support requests and re-designed the onboarding experience.
-* Improved email deliverability through optimized code logic and robust error handling.
-* Worked with major domain name registrars to fight spam campaigns.
-* Maximized resiliency and redundancy across our Web, API, and SMTP servers.
-* Added real-time spam learning, defense against account impersonation, and blocking of complex attack vectors.
-
-In January 2023, we launched a re-designed website, which is [optimized for page speed across all devices](https://pagespeed.web.dev/report?url=https%3A%2F%2Fforwardemail.net%2Fen\&form_factor=desktop).
+In January 2023, we launched a re-designed and page-speed optimized website.
 
 [arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain
