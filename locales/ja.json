@@ -3625,5 +3625,7 @@
   "Free <span class=\"notranslate\">Vercel</span> Email Forwarding": "無料<span class=\"notranslate\">Vercel</span>メール転送",
   "Follow our guide to setup email forwarding with <span class=\"notranslate\">Vercel</span> for your domain.": "ガイドに従って、 <span class=\"notranslate\">Vercel</span>でドメインのメール転送を設定します。",
   "Setup Email with <span class=\"notranslate\">Vercel</span>": "<span class=\"notranslate\">Vercel</span>でメールを設定する",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.",
+  "In February 2021, we refactored our codebase to remove all": "In February 2021, we refactored our codebase to remove all",
+  "In January 2023, we launched a re-designed and page-speed optimized website.": "In January 2023, we launched a re-designed and page-speed optimized website."
 }

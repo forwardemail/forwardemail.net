@@ -3625,5 +3625,7 @@
   "Free <span class=\"notranslate\">Vercel</span> Email Forwarding": "Ücretsiz <span class=\"notranslate\">Vercel</span> E-posta Yönlendirme",
   "Follow our guide to setup email forwarding with <span class=\"notranslate\">Vercel</span> for your domain.": "Etki alanınız için <span class=\"notranslate\">Vercel</span> ile e-posta yönlendirmeyi ayarlamak için kılavuzumuzu takip edin.",
   "Setup Email with <span class=\"notranslate\">Vercel</span>": "<span class=\"notranslate\">Vercel</span> ile E-posta Kurulumu",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.",
+  "In February 2021, we refactored our codebase to remove all": "In February 2021, we refactored our codebase to remove all",
+  "In January 2023, we launched a re-designed and page-speed optimized website.": "In January 2023, we launched a re-designed and page-speed optimized website."
 }

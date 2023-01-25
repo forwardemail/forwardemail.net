@@ -3360,5 +3360,7 @@
   "Free <span class=\"notranslate\">Vercel</span> Email Forwarding": "Gratis <span class=\"notranslate\">Vercel</span> e-mail videresendelse",
   "Follow our guide to setup email forwarding with <span class=\"notranslate\">Vercel</span> for your domain.": "Følg vores guide til opsætning af videresendelse af e-mail med <span class=\"notranslate\">Vercel</span> for dit domæne.",
   "Setup Email with <span class=\"notranslate\">Vercel</span>": "Konfigurer e-mail med <span class=\"notranslate\">Vercel</span>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.",
+  "In February 2021, we refactored our codebase to remove all": "In February 2021, we refactored our codebase to remove all",
+  "In January 2023, we launched a re-designed and page-speed optimized website.": "In January 2023, we launched a re-designed and page-speed optimized website."
 }
