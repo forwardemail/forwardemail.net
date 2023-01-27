@@ -826,7 +826,6 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
     * `X-Original-To` - the original `RCPT TO` email address for the message.
       * This is useful for determining where an email was originally delivered to.
-      * There is a Thunderbird plugin for adding an [X-Original-To](https://addons.thunderbird.net/en-us/thunderbird/addon/x-original-to-column/) column.
       * Newly added in v10.0.0 of Forward Email.
       * Existing value if any is preserved as `X-Original-Preserved-To`.
     * `X-ForwardEmail-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
