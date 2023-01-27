@@ -90,7 +90,7 @@ async function mapper(id) {
   await user.save();
 
   // create and sync payments
-  const errorEmails = await syncPayPalSubscriptionPaymentsByUser(user);
+  const errorEmails = await syncPayPalSubscriptionPaymentsByUser([], user);
 
   if (errorEmails.length > 0) {
     try {
