@@ -4,7 +4,7 @@ const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 const syncStripePayments = require('./sync-stripe-payments');
-// const checkDuplicateSubscriptions = require('./check-duplicate-subscriptions');
+const checkDuplicateSubscriptions = require('./check-duplicate-subscriptions');
 const logger = require('#helpers/logger');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -22,12 +22,13 @@ graceful.listen();
   //
   // get all stripe customers and check for
   // users with multiple active subscriptions
+  // (this also syncs emails, subscription ids, and resolves duplicate subscriptions)
   //
-  // try {
-  //   await checkDuplicateSubscriptions();
-  // } catch (err) {
-  //   logger.error(err);
-  // }
+  try {
+    await checkDuplicateSubscriptions();
+  } catch (err) {
+    logger.error(err);
+  }
 
   // set an amount of errors that causes the script to bail out completely.
   // ex... if errorTolerance = 50, and there are 50 stripe error emails sent, the stripe function will stop looping and

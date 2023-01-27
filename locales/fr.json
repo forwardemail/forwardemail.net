@@ -3625,7 +3625,13 @@
   "Free <span class=\"notranslate\">Vercel</span> Email Forwarding": "Redirection gratuite des e-mails <span class=\"notranslate\">Vercel</span>",
   "Follow our guide to setup email forwarding with <span class=\"notranslate\">Vercel</span> for your domain.": "Suivez notre guide pour configurer le transfert d&#39;e-mails avec <span class=\"notranslate\">Vercel</span> pour votre domaine.",
   "Setup Email with <span class=\"notranslate\">Vercel</span>": "Configuration de la messagerie avec <span class=\"notranslate\">Vercel</span>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.",
-  "In February 2021, we refactored our codebase to remove all": "In February 2021, we refactored our codebase to remove all",
-  "In January 2023, we launched a re-designed and page-speed optimized website.": "In January 2023, we launched a re-designed and page-speed optimized website."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Les e-mails sont livrés en moyenne en moins de 5 secondes. Nous opérons en temps réel, contrairement à d'autres fournisseurs qui s'appuient sur des files d'attente retardées. À aucun moment, nous n'écrivons sur le disque ou ne stockons des e-mails - tout est fait en mémoire.",
+  "In February 2021, we refactored our codebase to remove all": "En février 2021, nous avons refactorisé notre base de code pour supprimer tous",
+  "In January 2023, we launched a re-designed and page-speed optimized website.": "En janvier 2023, nous avons lancé un site Web repensé et optimisé pour la vitesse des pages.",
+  "Upgrade by March 1, 2023": "Upgrade by March 1, 2023",
+  "Your domain name extension (also known as a <span class=\"notranslate\">TLD</span>) is frequently used for spam operations.": "Your domain name extension (also known as a <span class=\"notranslate\">TLD</span>) is frequently used for spam operations.",
+  "We require domains with this extension to upgrade to a paid plan by March 1, 2023.": "We require domains with this extension to upgrade to a paid plan by March 1, 2023.",
+  "What <span class=\"notranslate\">TLDs</span> can still be used for free?": "What <span class=\"notranslate\">TLDs</span> can still be used for free?",
+  "We support these <span class=\"notranslate\">TLDs</span> on free plans:": "We support these <span class=\"notranslate\">TLDs</span> on free plans:",
+  "Paid plan required for <span class=\"notranslate\">%s</span> by March 1, 2023": "Paid plan required for <span class=\"notranslate\">%s</span> by March 1, 2023"
 }
