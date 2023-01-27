@@ -18,10 +18,7 @@ const PAYPAL_PLANS = {
 };
 const thresholdError = new Error('Error threshold has been met');
 
-async function syncPayPalSubscriptionPaymentsByUser(
-  customer,
-  errorEmails = []
-) {
+async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
   try {
     logger.info(`Syncing paypal subscription payments for ${customer.email}`);
     // first we need to get the distinct paypal order Ids and validate them all
