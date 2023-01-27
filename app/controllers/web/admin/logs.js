@@ -86,7 +86,7 @@ async function list(ctx) {
     }
   }
 
-  const [logs, itemCount] = await Promise.all([
+  const [logs, itemCount, uniqueHosts] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
     Logs.find(query)
       .limit(ctx.query.limit)
@@ -95,7 +95,10 @@ async function list(ctx) {
       .sort(ctx.query.sort || '-created_at')
       .lean()
       .exec(),
-    Logs.countDocuments(query)
+    Logs.countDocuments(query),
+    Logs.distinct('meta.app.hostname', {
+      'meta.app.hostname': { $exists: true }
+    })
   ]);
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
@@ -105,6 +108,7 @@ async function list(ctx) {
       logs,
       pageCount,
       itemCount,
+      uniqueHosts,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
