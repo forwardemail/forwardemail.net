@@ -421,9 +421,25 @@ async function retrieveDomainBilling(ctx) {
 
       ctx.logger.info('stripe.checkout.sessions.retrieve', { session });
 
-      // if payment status was not paid then throw an error
-      if (session.payment_status !== 'paid')
+      // if the session was still in setup mode then it's an obvious error
+      if (
+        !['paid', 'unpaid', 'no_payment_required'].includes(
+          session.payment_status
+        )
+      )
         throw ctx.translateError('UNKNOWN_ERROR');
+
+      if (session.payment_status === 'no_payment_required')
+        throw ctx.translateError('UNKNOWN_ERROR');
+
+      // if payment status was not paid then then it must be an async payment (e.g. bank debit)
+      // and we will email them once the payment has been processed and their plan is upgraded
+      if (session.payment_status === 'unpaid') {
+        const err = ctx.translateError('ASYNC_PAYMENT');
+        err.no_email = true;
+        err.is_success = true;
+        throw err;
+      }
 
       // store customer
       ctx.state.user[config.userFields.stripeCustomerID] = session.customer;
@@ -1703,7 +1719,7 @@ async function retrieveDomainBilling(ctx) {
     }
 
     if (ctx.accepts('html')) {
-      ctx.flash('error', err.message);
+      ctx.flash(err.is_success ? 'success' : 'error', err.message);
       return ctx.redirect(redirectTo);
     }
 
