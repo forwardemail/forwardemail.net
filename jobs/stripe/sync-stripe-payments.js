@@ -114,11 +114,11 @@ async function syncStripePayments() {
 
           // remove it from the user's account
           if (subscription.status !== 'trialing') {
-            const user = await Users.findById(user._id);
+            const existingUser = await Users.findById(user._id);
             // eslint-disable-next-line max-depth
-            if (!user) throw new Error('User does not exist');
-            user[config.userFields.stripeSubscriptionID] = undefined;
-            await user.save();
+            if (!existingUser) throw new Error('User does not exist');
+            existingUser[config.userFields.stripeSubscriptionID] = undefined;
+            await existingUser.save();
           }
         }
       } catch (err) {
