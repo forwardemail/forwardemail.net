@@ -3639,5 +3639,9 @@
   "We require domains with this extension to upgrade to a paid plan by March 1, 2023.": "We require domains with this extension to upgrade to a paid plan by March 1, 2023.",
   "What <span class=\"notranslate\">TLDs</span> can still be used for free?": "What <span class=\"notranslate\">TLDs</span> can still be used for free?",
   "We support these <span class=\"notranslate\">TLDs</span> on free plans:": "We support these <span class=\"notranslate\">TLDs</span> on free plans:",
-  "Paid plan required for <span class=\"notranslate\">%s</span> by March 1, 2023": "Paid plan required for <span class=\"notranslate\">%s</span> by March 1, 2023"
+  "Paid plan required for <span class=\"notranslate\">%s</span> by March 1, 2023": "Paid plan required for <span class=\"notranslate\">%s</span> by March 1, 2023",
+  "If you are on a paid plan, then you must go to": "If you are on a paid plan, then you must go to",
+  "Uncheck \"Active\" checkbox": "Uncheck \"Active\" checkbox",
+  "Continue.": "Continue.",
+  "Other providers": "Other providers"
 }
