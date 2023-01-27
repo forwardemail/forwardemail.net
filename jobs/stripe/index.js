@@ -5,6 +5,7 @@ const { parentPort } = require('worker_threads');
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const Stripe = require('stripe');
+const _ = require('lodash');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
@@ -67,7 +68,8 @@ graceful.listen();
       {}
     );
     await pMap(
-      subscriptionIds,
+      // remove null values
+      _.compact(subscriptionIds),
       async function (id) {
         const subscription = await stripe.subscriptions.retrieve(id);
         if (!subscription)
@@ -114,7 +116,8 @@ graceful.listen();
       {}
     );
     await pMap(
-      paymentIntentIds,
+      // remove null values
+      _.compact(paymentIntentIds),
       async function (id) {
         const count = await Payments.countDocuments({
           stripe_payment_intent_id: id
