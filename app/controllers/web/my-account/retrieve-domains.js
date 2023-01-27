@@ -172,31 +172,52 @@ async function retrieveDomains(ctx, next) {
   // search functionality (with RegExp support)
   //
   if (!ctx.pathWithoutLocale.endsWith('/aliases')) {
-    if (isSANB(ctx.query.name))
-      ctx.state.domains = ctx.state.domains.filter((domain) =>
-        new RE2(_.escapeRegExp(ctx.query.name) + '|' + ctx.query.name).test(
-          domain.name
-        )
-      );
+    if (isSANB(ctx.query.name)) {
+      let regex;
+      try {
+        regex = new RE2(_.escapeRegExp(ctx.query.name) + '|' + ctx.query.name);
+      } catch (err) {
+        ctx.logger.warn(err);
+      }
+
+      if (regex)
+        ctx.state.domains = ctx.state.domains.filter((domain) =>
+          regex.test(domain.name)
+        );
+    }
 
     if (isSANB(ctx.query.alias)) {
-      const aliasRegex = new RE2(
-        _.escapeRegExp(ctx.query.alias) + '|' + ctx.query.alias
-      );
-      ctx.state.domains = ctx.state.domains.filter((domain) =>
-        domain.aliases.some((alias) => aliasRegex.test(alias.name))
-      );
+      let aliasRegex;
+      try {
+        aliasRegex = new RE2(
+          _.escapeRegExp(ctx.query.alias) + '|' + ctx.query.alias
+        );
+      } catch (err) {
+        ctx.logger.warn(err);
+      }
+
+      if (aliasRegex)
+        ctx.state.domains = ctx.state.domains.filter((domain) =>
+          domain.aliases.some((alias) => aliasRegex.test(alias.name))
+        );
     }
 
     if (isSANB(ctx.query.recipient)) {
-      const recipientRegex = new RE2(
-        _.escapeRegExp(ctx.query.recipient) + '|' + ctx.query.recipient
-      );
-      ctx.state.domains = ctx.state.domains.filter((domain) =>
-        domain.aliases.some((alias) =>
-          alias.recipients.some((recipient) => recipientRegex.test(recipient))
-        )
-      );
+      let recipientRegex;
+      try {
+        recipientRegex = new RE2(
+          _.escapeRegExp(ctx.query.recipient) + '|' + ctx.query.recipient
+        );
+      } catch (err) {
+        ctx.logger.warn(err);
+      }
+
+      if (recipientRegex)
+        ctx.state.domains = ctx.state.domains.filter((domain) =>
+          domain.aliases.some((alias) =>
+            alias.recipients.some((recipient) => recipientRegex.test(recipient))
+          )
+        );
     }
   }
 

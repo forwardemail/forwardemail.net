@@ -382,7 +382,22 @@ async function retrieveDomainBilling(ctx) {
     // set/upgrade the user or domain's plan
     if (isAccountUpgrade) {
       ctx.state.user.plan = ctx.query.plan;
-      await Domains.ensureUserHasValidPlan(ctx.state.user, ctx.locale);
+      try {
+        await Domains.ensureUserHasValidPlan(ctx.state.user, ctx.locale);
+      } catch (err) {
+        // if it was a redirect from stripe or paypal
+        // otherwise if it wasn't then flash and error
+        if (
+          isSANB(ctx.query.session_id) ||
+          isSANB(ctx.query.paypal_order_id) ||
+          isSANB(ctx.query.paypal_subscription_id)
+        ) {
+          ctx.logger.fatal(err);
+          ctx.flash('error', err.message);
+        } else {
+          throw err;
+        }
+      }
     } else if (!isMakePayment && !isEnableAutoRenew) {
       domain.plan = ctx.query.plan;
     }
