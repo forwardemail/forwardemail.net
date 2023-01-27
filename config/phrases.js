@@ -107,6 +107,8 @@ module.exports = {
   INVITE_DOES_NOT_EXIST:
     'Invite does not exist with your email address for this domain.',
   DOMAIN_ALREADY_EXISTS: 'Domain already exists on your account.',
+  ASYNC_PAYMENT:
+    'Thank you for completing your checkout session. <strong>Please note that your payment is still pending.</strong> Once it has been successfully processed, then we will notify you by email. Please wait until you receive this email &ndash; and then you can visit our website and refresh the page for the most updated account information.',
   ACCOUNT_DELETE_HAS_DOMAINS:
     'Your account is currently an admin of one or more domain names.  Please delete these domains or remove yourself from them to continue.',
   ACCOUNT_DELETE_SUCCESSFUL: 'Your account was successfully deleted.',
