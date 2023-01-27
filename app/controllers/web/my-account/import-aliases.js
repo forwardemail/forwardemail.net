@@ -1,10 +1,20 @@
 const Boom = require('@hapi/boom');
+const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const { boolean } = require('boolean');
-const { isEmail, isIP } = require('validator');
+const { isURL, isEmail, isIP } = require('validator');
 
 const { Domains, Aliases } = require('#models');
+const config = require('#config');
+const logger = require('#helpers/logger');
+
+const app = new ForwardEmail({
+  logger,
+  recordPrefix: config.recordPrefix,
+  srs: { secret: 'null' },
+  redis: false
+});
 
 // eslint-disable-next-line complexity
 async function importAliases(ctx) {
@@ -96,11 +106,15 @@ async function importAliases(ctx) {
       });
   }
 
-  // TODO: we don't support importing regular expressions
   for (const element of globalForwardingAddresses) {
     // if it was a fqdn, ip, or email address then add global alias
     // otherwise throw an error that it was an invalid global
-    if (isFQDN(element) || isIP(element) || isEmail(element)) {
+    if (
+      isFQDN(element) ||
+      isIP(element) ||
+      isEmail(element) ||
+      isURL(element, app.config.isURLOptions)
+    ) {
       const match = aliases.find((alias) => alias.name === '*');
       const existing = ctx.state.domain.aliases.find(
         (alias) => alias.name === '*'
@@ -120,13 +134,6 @@ async function importAliases(ctx) {
           name: '*',
           recipients: [element]
         });
-    } else {
-      // TODO: webhook global forwarding addresses are not working right now
-      // we should alert admins of this (e.g. using validator.isURL)
-      ctx.logger.error(
-        new Error(`Invalid global forwarding address of ${element}`),
-        { domain: ctx.state.domain }
-      );
     }
   }
 

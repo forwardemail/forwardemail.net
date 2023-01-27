@@ -1,9 +1,12 @@
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
+const humanize = require('humanize-string');
 const memoize = require('memoizee');
 const ms = require('ms');
 const numeral = require('numeral');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
+const titleize = require('titleize');
 
 const config = require('#config');
 const { Users, Domains, Aliases, Payments } = require('#models');
@@ -30,6 +33,55 @@ const DAYS_OF_WEEK = [
 ];
 */
 
+async function getDeliverabilityChart(ctx) {
+  const series = [];
+  // iterate over past 7 days (starting from oldest)
+  // mail_accepted:2023-01-27
+  // mail_rejected:2023-01-27
+  // mail_error:2023-01-27
+  if (ctx.client) {
+    const dates = [];
+    for (let i = 0; i < 7; i++) {
+      dates.unshift(dayjs().subtract(i, 'days').format('YYYY-MM-DD'));
+    }
+
+    await Promise.all(
+      ['mail_accepted', 'mail_rejected', 'mail_error'].map(async (name) => {
+        const results = await ctx.client.mget(
+          dates.map((date) => `${name}:${date}`)
+        );
+        const data = [];
+        for (const [i, date] of dates.entries()) {
+          data.push([date, Number.parseInt(results[i], 10)]);
+        }
+
+        series.push({
+          name: titleize(humanize(name)),
+          data
+        });
+      })
+    );
+  }
+
+  return {
+    series,
+    chart: {
+      type: 'area'
+    },
+    dataLabels: {
+      enabled: true
+    },
+    xaxis: {
+      type: 'datetime'
+    },
+    tooltip: {
+      x: {
+        format: 'yyyy-MM-dd'
+      }
+    }
+  };
+}
+
 async function getBody(ctx) {
   const bannedUserIds = await Users.distinct('_id', {
     [config.userFields.isBanned]: true
@@ -42,9 +94,11 @@ async function getBody(ctx) {
     oneTimeRevenueChart,
     subscriptionRevenueChart,
     revenueChart,
+    deliverabilityChart,
     lineChart,
     // heatmap,
-    pieChart
+    pieChart,
+    localeChart
   ] = await Promise.all([
     Users.countDocuments({ [config.userFields.hasVerifiedEmail]: true }),
     Domains.countDocuments({
@@ -271,6 +325,9 @@ async function getBody(ctx) {
         colors: ['#20C1ED', '#269C32', '#ffc107']
       };
     })(),
+    // deliverability chart
+    getDeliverabilityChart(ctx),
+    // line chart
     (async () => {
       const series = [];
       await Promise.all(
@@ -411,6 +468,7 @@ async function getBody(ctx) {
       };
     })(),
     */
+    // pie chart
     (async () => {
       const [free, enhancedProtection, team] = await Promise.all([
         Domains.countDocuments({
@@ -439,6 +497,30 @@ async function getBody(ctx) {
           position: 'bottom'
         },
         colors: ['#20C1ED', '#8CC63F', '#ffc107']
+      };
+    })(),
+    // locale chart
+    (async () => {
+      const labels = await Users.distinct(config.lastLocaleField, {
+        [config.userFields.hasVerifiedEmail]: true,
+        [config.userFields.isBanned]: false,
+        plan: { $ne: 'free' }
+      });
+      const series = await Promise.all(
+        labels.map((label) =>
+          Users.countDocuments({
+            [config.lastLocaleField]: label,
+            [config.userFields.hasVerifiedEmail]: true,
+            [config.userFields.isBanned]: false,
+            plan: { $ne: 'free' }
+          })
+        )
+      );
+      return {
+        series,
+        labels,
+        chart: { type: 'pie' },
+        legend: { position: 'bottom' }
       };
     })()
   ]);
@@ -524,11 +606,19 @@ async function getBody(ctx) {
         options: _.merge({}, options, subscriptionRevenueChart || {})
       },
       {
+        selector: '#deliverability-chart',
+        options: _.merge({}, options, deliverabilityChart || {})
+      },
+      {
         selector: '#line-chart',
         options: _.merge({}, options, lineChart || {})
       },
       // { selector: '#heatmap', options: _.merge({}, options, heatmap || {}) },
-      { selector: '#pie-chart', options: _.merge({}, options, pieChart || {}) }
+      { selector: '#pie-chart', options: _.merge({}, options, pieChart || {}) },
+      {
+        selector: '#locale-chart',
+        options: _.merge({}, options, localeChart || {})
+      }
     ]
   };
 

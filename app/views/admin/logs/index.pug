@@ -31,5 +31,16 @@ block body
               )
               small.form-text.text-muted= t('This splits by space and requires an equals sign for values. You can use quotes and also escape quotes in values. Numbers and Booleans are parsed too.')
             button.btn.btn-success(type="submit")= t("Search")
+        if uniqueHosts.length > 0
+          .card.mb-3
+            .card-body
+              .h5.card-title= t('Quick filter by host')
+              ul.list-inline.mb-0
+                each host in uniqueHosts
+                  li.list-inline-item
+                    a(href=`${ctx.path}?mongodb_query={ 'meta.app.hostname': '${host}' }`).btn.btn-dark.btn-sm
+                      i.fa.fa-filter
+                      = ' '
+                      = host
         #table-logs
           include ./_table

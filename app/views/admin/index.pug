@@ -39,9 +39,14 @@ block body
       .col
         .card
           .card-body
+            h2.h6.text-muted.text-uppercase.mb-0= t("Deliverability for past 7 days")
+            #deliverability-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
+    .row.mb-3
+      .col
+        .card
+          .card-body
             h2.h6.text-muted.text-uppercase.mb-0= t("Growth since launch")
             #line-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
-
     .row.mb-3
       .col
         .card
@@ -75,3 +80,9 @@ block body
           .card-body
             h2.h6.text-muted.text-uppercase.mb-0= t("Plan distribution")
             #pie-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h6.text-muted.text-uppercase.mb-0= t("Paid locale distribution")
+            #locale-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner
