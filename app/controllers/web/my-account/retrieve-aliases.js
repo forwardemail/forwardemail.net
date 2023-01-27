@@ -21,20 +21,34 @@ async function retrieveAliases(ctx, next) {
     //
     // search functionality (with RegExp support)
     //
-    if (isSANB(ctx.query.name))
-      ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
-        new RE2(_.escapeRegExp(ctx.query.name) + '|' + ctx.query.name).test(
-          alias.name
-        )
-      );
+    if (isSANB(ctx.query.name)) {
+      let regex;
+      try {
+        regex = new RE2(_.escapeRegExp(ctx.query.name) + '|' + ctx.query.name);
+      } catch (err) {
+        ctx.logger.warn(err);
+      }
+
+      if (regex)
+        ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
+          regex.test(alias.name)
+        );
+    }
 
     if (isSANB(ctx.query.recipient)) {
-      const recipientRegex = new RE2(
-        _.escapeRegExp(ctx.query.recipient) + '|' + ctx.query.recipient
-      );
-      ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
-        alias.recipients.some((recipient) => recipientRegex.test(recipient))
-      );
+      let recipientRegex;
+      try {
+        recipientRegex = new RE2(
+          _.escapeRegExp(ctx.query.recipient) + '|' + ctx.query.recipient
+        );
+      } catch (err) {
+        ctx.logger.warn(err);
+      }
+
+      if (recipientRegex)
+        ctx.state.domain.aliases = ctx.state.domain.aliases.filter((alias) =>
+          alias.recipients.some((recipient) => recipientRegex.test(recipient))
+        );
     }
 
     return next();

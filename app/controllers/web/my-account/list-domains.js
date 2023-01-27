@@ -26,22 +26,26 @@ async function listDomains(ctx) {
 
   // filter based on regex keyword
   if (ctx.query.q) {
-    const qRegex = new RE2(
-      _.escapeRegExp(ctx.query.q) + '|' + ctx.query.q,
-      'gi'
-    );
-    domains = domains.filter(
-      (domain) =>
-        qRegex.test(domain.name) ||
-        domain.aliases.some(
-          (alias) =>
-            qRegex.test(alias.name) ||
-            qRegex.test(`${alias.name}@${domain.name}`) ||
-            qRegex.test(alias.description) ||
-            alias.labels.some((label) => qRegex.test(label)) ||
-            alias.recipients.some((recipient) => qRegex.test(recipient))
-        )
-    );
+    let qRegex;
+    try {
+      qRegex = new RE2(_.escapeRegExp(ctx.query.q) + '|' + ctx.query.q, 'gi');
+    } catch (err) {
+      ctx.logger.warn(err);
+    }
+
+    if (qRegex)
+      domains = domains.filter(
+        (domain) =>
+          qRegex.test(domain.name) ||
+          domain.aliases.some(
+            (alias) =>
+              qRegex.test(alias.name) ||
+              qRegex.test(`${alias.name}@${domain.name}`) ||
+              qRegex.test(alias.description) ||
+              alias.labels.some((label) => qRegex.test(label)) ||
+              alias.recipients.some((recipient) => qRegex.test(recipient))
+          )
+      );
   }
 
   const itemCount = domains.length;
