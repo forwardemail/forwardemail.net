@@ -3625,7 +3625,13 @@
   "Free <span class=\"notranslate\">Vercel</span> Email Forwarding": "無料<span class=\"notranslate\">Vercel</span>メール転送",
   "Follow our guide to setup email forwarding with <span class=\"notranslate\">Vercel</span> for your domain.": "ガイドに従って、 <span class=\"notranslate\">Vercel</span>でドメインのメール転送を設定します。",
   "Setup Email with <span class=\"notranslate\">Vercel</span>": "<span class=\"notranslate\">Vercel</span>でメールを設定する",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.",
-  "In February 2021, we refactored our codebase to remove all": "In February 2021, we refactored our codebase to remove all",
-  "In January 2023, we launched a re-designed and page-speed optimized website.": "In January 2023, we launched a re-designed and page-speed optimized website."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.": "メールは平均 5 秒以内に配信されます。遅延キューに依存する他のプロバイダーとは異なり、リアルタイムで動作します。ディスクに書き込んだり、電子メールを保存したりすることは決してありません。すべてがメモリ内で行われます。",
+  "In February 2021, we refactored our codebase to remove all": "2021 年 2 月に、コードベースをリファクタリングしてすべてを削除しました",
+  "In January 2023, we launched a re-designed and page-speed optimized website.": "2023 年 1 月、デザインを一新し、ページ速度を最適化したウェブサイトを立ち上げました。",
+  "Upgrade by March 1, 2023": "Upgrade by March 1, 2023",
+  "Your domain name extension (also known as a <span class=\"notranslate\">TLD</span>) is frequently used for spam operations.": "Your domain name extension (also known as a <span class=\"notranslate\">TLD</span>) is frequently used for spam operations.",
+  "We require domains with this extension to upgrade to a paid plan by March 1, 2023.": "We require domains with this extension to upgrade to a paid plan by March 1, 2023.",
+  "What <span class=\"notranslate\">TLDs</span> can still be used for free?": "What <span class=\"notranslate\">TLDs</span> can still be used for free?",
+  "We support these <span class=\"notranslate\">TLDs</span> on free plans:": "We support these <span class=\"notranslate\">TLDs</span> on free plans:",
+  "Paid plan required for <span class=\"notranslate\">%s</span> by March 1, 2023": "Paid plan required for <span class=\"notranslate\">%s</span> by March 1, 2023"
 }
