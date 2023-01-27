@@ -1588,6 +1588,16 @@ No, it is not recommended, as you can only use one mail exchange server at a tim
 
 ## Can I disable specific aliases
 
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+  </span>
+</div>
+
 Yes! As of February 6, 2020 we have added this feature.  Simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with an exclamation mark.  Note that you must preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing in our paid plans).
 
 If you prefix an alias with "!" (exclamation mark) then it will still return successful respond codes to senders attempting to send to this address, but the emails themselves will go nowhere; to a blackhole.

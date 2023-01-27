@@ -95,6 +95,7 @@ footer.mt-auto
                 a.d-block.text-light.py-2.py-md-0(
                   href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
                 )= provider.name
+            li: a.d-block.text-light.py-2.py-md-0(href=ctx.state.l('/faq#table-dns-management-by-registrar'))= t('Other providers')
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill
           h3.h5.mb-2= t("Developers")
