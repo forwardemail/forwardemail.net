@@ -1274,6 +1274,7 @@ async function retrieveDomainBilling(ctx) {
       }
 
       // cancel the user's stripe subscription if they had one
+      // (since a user shouldn't have both PayPal subscription and Stripe subscription)
       if (isSANB(ctx.state.user[config.userFields.stripeSubscriptionID])) {
         try {
           await stripe.subscriptions.del(
@@ -1288,7 +1289,7 @@ async function retrieveDomainBilling(ctx) {
             template: 'alert',
             message: {
               to: config.email.message.from,
-              subject: `Error deleting Stripe subscription ID ${
+              subject: `Error deleting Stripe subscription ID when user set up PayPal${
                 ctx.state.user[config.userFields.stripeSubscriptionID]
               } for ${ctx.state.user.email}`
             },

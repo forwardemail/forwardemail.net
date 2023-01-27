@@ -4,10 +4,13 @@ const { parentPort } = require('worker_threads');
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const sharedConfig = require('@ladjs/shared-config');
+const parseErr = require('parse-err');
 
 const syncPayPalOrderPayments = require('./sync-paypal-order-payments');
 const syncPayPalSubscriptionPayments = require('./sync-paypal-subscription-payments');
 const logger = require('#helpers/logger');
+const emailHelper = require('#helpers/email');
+const config = require('#config');
 
 const breeSharedConfig = sharedConfig('BREE');
 const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
@@ -28,14 +31,46 @@ graceful.listen();
   //
   try {
     await syncPayPalOrderPayments();
+  } catch (err) {
+    logger.error(err);
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: 'Error with job for PayPal syncing of order payments'
+      },
+      locals: {
+        message: `<pre><code>${JSON.stringify(
+          parseErr(err),
+          null,
+          2
+        )}</code></pre>`
+      }
+    });
+  }
 
-    // set an amount of errors that causes the script to bail out completely.
-    // ex... if errorTolerance = 50, and there are 50 stripe error emails sent, the stripe function will stop looping and
-    // send a final email that the script needs work or that the service is down - so as to not flood inboxes with thousands of emails
-    // note that the tolerance applies to each payment provider not to the entire script
+  // set an amount of errors that causes the script to bail out completely.
+  // ex... if errorTolerance = 50, and there are 50 stripe error emails sent, the stripe function will stop looping and
+  // send a final email that the script needs work or that the service is down - so as to not flood inboxes with thousands of emails
+  // note that the tolerance applies to each payment provider not to the entire script
+  try {
     await syncPayPalSubscriptionPayments();
   } catch (err) {
     logger.error(err);
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: 'Error with job for PayPal syncing of subscription payments'
+      },
+      locals: {
+        message: `<pre><code>${JSON.stringify(
+          parseErr(err),
+          null,
+          2
+        )}</code></pre>`
+      }
+    });
   }
 
   if (parentPort) parentPort.postMessage('done');

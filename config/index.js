@@ -44,6 +44,9 @@ const config = {
   // paypal error threshold (e.g. for jobs)
   paypalErrorThreshold: 5,
 
+  // stripe error threshold (e.g. for jobs)
+  stripeErrorThreshold: 5,
+
   // max aliases per global domains
   maxAliasPerGlobalDomain: 50,
 
