@@ -17,5 +17,6 @@ module.exports = {
   meta: {
     show: env.AXE_SHOW_META
   },
+  silent: env.AXE_SILENT,
   name: env.APP_NAME
 };
