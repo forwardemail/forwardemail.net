@@ -270,8 +270,14 @@ async function lookup(ctx) {
           // `forward-email=/Support/g:forwardemail.net`
           //
           // `forward-email=/SUPPORT/gi:forwardemail.net`
-          const regex = new RE2(regexParser(parsedRegex));
-          return regex.test(username);
+          let regex;
+          try {
+            regex = new RE2(regexParser(parsedRegex));
+          } catch (err) {
+            ctx.logger.fatal(err, { parsedRegex, alias });
+          }
+
+          if (regex) return regex.test(username);
         }
       }
 
