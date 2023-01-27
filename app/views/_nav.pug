@@ -222,6 +222,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-light.border-bottom(
                     href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
                     class=ctx.pathWithoutLocale === `/guides/${provider.slug}` ? "active" : ""
                   )= provider.name
+                a.dropdown-item(href=ctx.state.l('/faq#table-dns-management-by-registrar'))= t('Other providers')
             //- don't index 401 not authorized pages
             if isBot(ctx.get('User-Agent'))
               li.nav-item
