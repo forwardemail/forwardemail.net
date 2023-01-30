@@ -1,7 +1,7 @@
 extends ../../layout
 
 block body
-  .container.py-3
+  .container-fluid.py-3
     .row.mt-1
       .col
         include ../../_breadcrumbs
@@ -12,22 +12,22 @@ block body
           data-search-params="mongodb_query,q"
         )
           .card-body
-            .h5.card-title= t('Search for users')
+            .h5.card-title= t("Search for users")
             .form-group
               label(for="textarea-mongodb-query") MongoDB query
               textarea#textarea-mongodb-query.form-control(
                 name="mongodb_query",
                 rows=3,
                 placeholder="MongoDB query"
-              )= ctx.query.mongodb_query || ''
+              )= ctx.query.mongodb_query || ""
               small.form-text.text-muted!= t('See <a class="notranslate" href="https://github.com/mongodb-js/query-parser" target="_blank" rel="noopener noreferrer">mongodb-query-parser</a> for more insight.')
             .form-group
-              label(for="input-keyword-search")= t('Basic search')
+              label(for="input-keyword-search")= t("Basic search")
               input#input-keyword-search.form-control(
                 type="text",
-                value=ctx.query.q || '',
+                value=ctx.query.q || "",
                 name="q",
-                placeholder=t('Search by first name, last name, or email')
+                placeholder=t("Search by first name, last name, or email")
               )
             button.btn.btn-success(type="submit")= t("Search")
         #table-users

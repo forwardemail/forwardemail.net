@@ -28,10 +28,12 @@ include ../../_pagination
               if domain.is_global
                 .mb-0.mt-2: span.badge.badge-dark.font-weight-bold.text-uppercase= t("Vanity Domain")
               else
-                .mb-0.mt-2: span.badge.font-weight-bold.text-uppercase(class=domain.plan === 'free' ? 'badge-danger' : 'badge-success')
+                .mb-0.mt-2: span.badge.font-weight-bold.text-uppercase(
+                  class=domain.plan === "free" ? "badge-danger" : "badge-success"
+                )
                   = titleize(humanize(domain.plan))
-                  = ' '
-                  = t('Plan')
+                  = " "
+                  = t("Plan")
             td.align-middle.d-none.d-lg-table-cell
               if domain.group === 'admin'
                 .btn-group.btn-group-sm
@@ -160,7 +162,7 @@ include ../../_pagination
                         aria-haspopup="true",
                         aria-expanded="false"
                       )
-                        = t('Change Plan')
+                        = t("Change Plan")
                       .dropdown-menu
                         h6.dropdown-header.text-uppercase= t("Change plan to:")
                         each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)

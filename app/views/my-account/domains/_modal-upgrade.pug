@@ -13,9 +13,12 @@
       .modal-body.text-center
         p.lead.mb-0= t("Upgrade to unlock our alias manager.")
         .alert.alert-warning.my-3
-          strong.font-weight-bold= t('Not ready?')
-          = ' '
-          a(href=domain ? l(`/faq?domain=${domain.name}#dns-configuration-options`) : l("/faq#dns-configuration-options"), target='_blank').alert-link= t('Visit our FAQ for more options')
+          strong.font-weight-bold= t("Not ready?")
+          = " "
+          a.alert-link(
+            href=domain ? l(`/faq?domain=${domain.name}#dns-configuration-options`) : l("/faq#dns-configuration-options"),
+            target="_blank"
+          )= t("Visit our FAQ for more options")
         if domain && domain.plan === 'free'
           a.btn.btn-dark.btn-lg.btn-block(
             href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
@@ -25,7 +28,7 @@
             i.fa.fa-angle-double-right.align-middle
         else
           a.btn.btn-dark.btn-lg.btn-block(
-            href=l('/my-account/billing/upgrade?plan=enhanced_protection')
+            href=l("/my-account/billing/upgrade?plan=enhanced_protection")
           )
             = t("Upgrade Now")
             = " "

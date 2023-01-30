@@ -122,6 +122,13 @@ async function list(ctx) {
   ctx.body = { table };
 }
 
+async function retrieve(ctx) {
+  ctx.state.result = await Logs.findById(ctx.params.id);
+  if (!ctx.state.result) throw Boom.notFound(ctx.translateError('INVALID_LOG'));
+  return ctx.render('admin/logs/retrieve');
+}
+
 module.exports = {
-  list
+  list,
+  retrieve
 };

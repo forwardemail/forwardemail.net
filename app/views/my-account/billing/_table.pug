@@ -13,14 +13,14 @@ mixin receipt(payment)
     )
       i.fa.fa-receipt
     a.btn.btn-danger(
-      href=l(`/my-account/billing/${dayjs(payment.invoice_at).format('YYYY-MM-DD')}-${payment.reference.toUpperCase()}.pdf`),
+      href=l(`/my-account/billing/${dayjs(payment.invoice_at).format("YYYY-MM-DD")}-${payment.reference.toUpperCase()}.pdf`),
       data-toggle="tooltip",
       data-placement="bottom",
       title=t("Download")
     )
       i.fa.fa-file-pdf
     a.btn.btn-dark(
-      href=l(`/my-account/billing/${dayjs(payment.invoice_at).format('YYYY-MM-DD')}-${payment.reference.toUpperCase()}.html`),
+      href=l(`/my-account/billing/${dayjs(payment.invoice_at).format("YYYY-MM-DD")}-${payment.reference.toUpperCase()}.html`),
       target="_blank",
       data-toggle="tooltip",
       data-placement="bottom",

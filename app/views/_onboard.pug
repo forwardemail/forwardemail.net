@@ -10,7 +10,11 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
         .modal-content
           .modal-header.text-center.d-block
             #modal-onboard-pricing-video-title.h4.d-inline-block.ml-4= t("Enhanced Protection Plan")
-            button.close(type="button", data-dismiss="modal", aria-label="Close")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
               span(aria-hidden="true") &times;
           .modal-body
             .lazyframe(
@@ -35,7 +39,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                       input#input-onboard-domain.form-control(
                         type="text",
                         name="domain",
-                        value=domainName ? domainName : domain && domain.name || '',
+                        value=domainName ? domainName : (domain && domain.name) || "",
                         required,
                         placeholder="example.com"
                       )

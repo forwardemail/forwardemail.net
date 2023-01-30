@@ -84,18 +84,20 @@ footer.mt-auto
                 )= t('Free business email address')
             li
               a.d-block.text-light.py-2.py-md-0(
-                href=l('/guides/send-mail-as-gmail-custom-domain')
+                href=l("/guides/send-mail-as-gmail-custom-domain")
               )
                 if isBot(ctx.get('User-Agent'))
                   = t("Send Email Custom Domain")
                 else
-                  = t('Send Mail As with Gmail')
+                  = t("Send Mail As with Gmail")
             each provider in nsProviders
               li
                 a.d-block.text-light.py-2.py-md-0(
-                  href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
+                  href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`)
                 )= provider.name
-            li: a.d-block.text-light.py-2.py-md-0(href=l('/faq#table-dns-management-by-registrar'))= t('Other providers')
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/faq#table-dns-management-by-registrar")
+            )= t("Other providers")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill
           h3.h5.mb-2= t("Developers")
@@ -120,12 +122,10 @@ footer.mt-auto
           hr.d-lg-none.w-100
           h3.h5.mb-2= t("Resources")
           ul.list-unstyled.mb-0
-            - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email")
+            - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
             if !isBot(ctx.get('User-Agent'))
-              - pricingPageHref += '?pricing=true'
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=pricingPageHref
-            )
+              - pricingPageHref += "?pricing=true";
+            li: a.d-block.text-light.py-2.py-md-0(href=pricingPageHref)
               if isBot(ctx.get('User-Agent'))
                 = t("Private Business Email")
               else

@@ -1,7 +1,8 @@
 const Axe = require('axe');
 const Cabin = require('cabin');
-const safeStringify = require('fast-safe-stringify');
 const cuid = require('cuid');
+const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 const superagent = require('superagent');
 
 // this package is ignored in `browser` config in `package.json`
@@ -99,7 +100,7 @@ async function hook(err, message, meta) {
     const response = await request
       .type('application/json')
       .retry(3)
-      .send(safeStringify({ err, message, meta }));
+      .send(safeStringify({ err: parseErr(err), message, meta }));
 
     logger.info('log sent over HTTP', { response, ignore_hook: true });
   } catch (err) {

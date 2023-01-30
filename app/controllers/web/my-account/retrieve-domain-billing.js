@@ -967,7 +967,7 @@ async function retrieveDomainBilling(ctx) {
           },
           {
             user: ctx.state.user._id,
-            reference: body.purchase_units[0].reference_id
+            reference: body.purchase_units[0].invoice_id
           }
         ];
         if (transactionId)
@@ -981,7 +981,7 @@ async function retrieveDomainBilling(ctx) {
         } else {
           payment = await Payments.create({
             user: ctx.state.user._id,
-            reference: body.purchase_units[0].reference_id,
+            reference: body.purchase_units[0].invoice_id,
             amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
             method: 'paypal',
             duration:

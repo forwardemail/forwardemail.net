@@ -9,6 +9,7 @@ By accessing this web site, you are agreeing to be bound by these web site Terms
 * [Unlimited Usage](#unlimited-usage)
 * [Limitations](#limitations)
 * [Refunds](#refunds)
+* [Disputes](#disputes)
 * [Service Level Agreement ("SLA")](#service-level-agreement-sla)
   * [Terms](#terms-1)
   * [Agreement](#agreement)
@@ -48,6 +49,13 @@ Automatic refunds occur when you upgrade, downgrade, or cancel your account with
 We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
 
 Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+
+
+## Disputes
+
+Please contact us if you would like to dispute a transaction or charge from our service.  Do not contact your credit card provider, bank, or PayPal.
+
+Your account will be automatically and permanently banned if you open a dispute with your credit card provider, bank, or PayPal.
 
 
 ## Service Level Agreement ("SLA")

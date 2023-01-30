@@ -6,23 +6,27 @@ block content
       .col-12
         .card.border-dark.d-block
           h1.h5.card-header.bg-dark.text-white.text-center
-            != t(`Thanks for using <span class="notranslate">@${aliases[0].name.split('@')[1]}</span>`)
+            != t(`Thanks for using <span class="notranslate">@${aliases[0].name.split("@")[1]}</span>`)
           .card-body.p-0
-            a(href=`${config.urls.web}/${locale}/my-account/billing/upgrade?plan=enhanced_protection`)
+            a(
+              href=`${config.urls.web}/${locale}/my-account/billing/upgrade?plan=enhanced_protection`
+            )
               img.img-fluid.d-block.align-top(
                 src=`${config.urls.web}/img/emails/${_.sample(['domain-onboard', 'domain-verified', 'self-test', 'welcome'])}.gif`,
                 alt="",
                 data-inline-ignore
               )
             .p-3.text-center
-              p.card-text.text-decoration-underline.font-weight-bold.text-uppercase: strong!= t('Account upgrade required')
+              p.card-text.text-decoration-underline.font-weight-bold.text-uppercase: strong!= t("Account upgrade required")
               p.card-text
                 != t('You have used our free beta service for <span class="notranslate">%s</span>.', dayjs(user.created_at).locale(locale).fromNow(true))
-                = ' '
-                != t('Support us by upgrading to account to Enhanced Protection &ndash; only $3 per month.')
-                = ' '
-                = t('We accept one-time payments and subscriptions via card, wallet, bank, or PayPal.')
-              a.btn.btn-lg.btn-danger(href=`${config.urls.web}/${locale}/my-account/billing?plan=enhanced_protection`)= t("Upgrade Now")
+                = " "
+                != t("Support us by upgrading to account to Enhanced Protection &ndash; only $3 per month.")
+                = " "
+                = t("We accept one-time payments and subscriptions via card, wallet, bank, or PayPal.")
+              a.btn.btn-lg.btn-danger(
+                href=`${config.urls.web}/${locale}/my-account/billing?plan=enhanced_protection`
+              )= t("Upgrade Now")
             .p-3
               h2.h5.text-center.mb-3= t("Alias Summary")
               table.table.table-bordered.small
@@ -41,4 +45,4 @@ block content
                     tr
                       td.align-middle.text-center.text-muted(colspan=4)!= t('... and <span class="notranslate">%d</span> more aliases.', aliases.length - 10)
           .card-footer.text-center.small.text-muted
-            = t('You have until January 1, 2023 to upgrade!')
+            = t("You have until January 1, 2023 to upgrade!")

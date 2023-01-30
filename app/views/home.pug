@@ -12,7 +12,11 @@ block body
         .modal-content
           .modal-header.text-center.d-block
             #modal-watch-video-title.h4.d-inline-block.ml-4= t("Made for you")
-            button.close(type="button", data-dismiss="modal", aria-label="Close")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
               span(aria-hidden="true") &times;
           .modal-body
             .lazyframe(
@@ -31,7 +35,11 @@ block body
         .modal-content
           .modal-header.text-center.d-block
             #modal-for-creators-title.h4.d-inline-block.ml-4= t("Email Forwarding for Creators")
-            button.close(type="button", data-dismiss="modal", aria-label="Close")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
               span(aria-hidden="true") &times;
           .modal-body
             .lazyframe(
@@ -50,7 +58,11 @@ block body
         .modal-content
           .modal-header.text-center.d-block
             #modal-for-developers-title.h4.d-inline-block.ml-4= t("Email Forwarding for Developers")
-            button.close(type="button", data-dismiss="modal", aria-label="Close")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
               span(aria-hidden="true") &times;
           .modal-body
             .lazyframe(
@@ -69,7 +81,11 @@ block body
         .modal-content
           .modal-header.text-center.d-block
             #modal-for-businesses-title.h4.d-inline-block.ml-4= t("Email Forwarding for Businesses")
-            button.close(type="button", data-dismiss="modal", aria-label="Close")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
               span(aria-hidden="true") &times;
           .modal-body
             .lazyframe(
@@ -88,68 +104,68 @@ block body
             else
               != t("<mark>Free email forwarding</mark> for custom domains")
           p
-            != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for thousands of creators, developers, and businesses.', dayjs().endOf('year').diff(dayjs('1/1/17', 'M-D/YY'), 'year'))
-            = ' '
+            != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
+            = " "
             != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
           .d-block
             ul.list-inline.mb-3
               li.list-inline-item
                 a.btn.btn-success.btn-lg(
-                  href=l('/register'),
-                  data-toggle='modal-anchor',
-                  data-target='#modal-sign-up'
+                  href=l("/register"),
+                  data-toggle="modal-anchor",
+                  data-target="#modal-sign-up"
                 )
                   = t("Sign up free")
               li.list-inline-item.mt-1.mt-md-0
                 a.btn.btn-dark.btn-lg(
-                  href=l('/private-business-email?pricing=true')
+                  href=l("/private-business-email?pricing=true")
                 )
                   = t("View features")
           ul.list-unstyled.mb-0.text-left.d-inline-block
             if !isBot(ctx.get('User-Agent'))
               li.font-weight-bold
                 i.fa.fa-fw.fa-check-circle.text-success
-                = ' '
-                != t('No credit card required')
+                = " "
+                != t("No credit card required")
             li
               i.fa.fa-fw.fa-check-circle.text-success
-              = ' '
+              = " "
               if isBot(ctx.get('User-Agent'))
-                a(href=l('/private-business-email'))
-                  = t('Free private business email')
+                a(href=l("/private-business-email"))
+                  = t("Free private business email")
               else
-                != t('Unlimited email aliases')
+                != t("Unlimited email aliases")
             li
               i.fa.fa-fw.fa-check-circle.text-success
-              = ' '
+              = " "
               if isBot(ctx.get('User-Agent'))
-                a(href=l('/guides/send-mail-as-gmail-custom-domain'))
-                  = t('Send email with custom domain')
+                a(href=l("/guides/send-mail-as-gmail-custom-domain"))
+                  = t("Send email with custom domain")
               else
-                != t('Privacy-focused and open-source')
+                != t("Privacy-focused and open-source")
             li
               i.fa.fa-fw.fa-check-circle.text-success
-              = ' '
+              = " "
               if isBot(ctx.get('User-Agent'))
                 a(
                   href="https://github.com/forwardemail",
                   target="_blank",
                   rel="noopener noreferrer"
                 )
-                  = t('Open-source email forwarding')
+                  = t("Open-source email forwarding")
               else
-                != t('Lightning fast technology')
+                != t("Lightning fast technology")
             if !isBot(ctx.get('User-Agent'))
               li
                 i.fa.fa-fw.fa-check-circle.text-success
-                = ' '
-                != t('Secure email encryption')
+                = " "
+                != t("Secure email encryption")
         if isBot(ctx.get('User-Agent'))
           .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
             a.btn.btn-outline-dark(
-              href='https://www.youtube.com/watch?v=oWEVGMPXMbA',
-              target='_blank',
-              rel='noopener noreferrer'
+              href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
+              target="_blank",
+              rel="noopener noreferrer"
             )
               i.fab.fa-youtube.text-danger
               = " "
@@ -167,9 +183,9 @@ block body
             role="button",
             data-toggle="modal",
             data-target="#modal-watch-video",
-            href='https://www.youtube.com/watch?v=oWEVGMPXMbA',
-            target='_blank',
-            rel='noopener noreferrer'
+            href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
+            target="_blank",
+            rel="noopener noreferrer"
           )
             i.fab.fa-youtube.text-danger
             = " "
@@ -183,7 +199,9 @@ block body
       = t("Learn more")
       = " "
       i.fa.fa-angle-double-down
-  #learn-more.bg-fixed.border-md-top.border-dark.lazyload(data-src=manifest('img/art/postcard.svg'))
+  #learn-more.bg-fixed.border-md-top.border-dark.lazyload(
+    data-src=manifest("img/art/postcard.svg")
+  )
     .text-center.d-block.d-md-none.mt-3
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
@@ -192,7 +210,7 @@ block body
       .row.row-cols-1.row-cols-md-2
         //- DHH
         .col
-          .p-4.border.border-light(style='border-width:0.5rem !important;').bg-white
+          .p-4.border.border-light.bg-white(style="border-width: 0.5rem !important")
             a.d-flex.align-items-top.text-decoration-none(
               href="https://twitter.com/dhh/status/1331183379686055936",
               target="_blank",
@@ -243,7 +261,7 @@ block body
             .mt-2.small.text-muted Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY
         //- Abhi Nemani
         .col.mt-4.mt-md-0
-          .p-4.border.border-light(style='border-width:0.5rem !important;').bg-white
+          .p-4.border.border-light.bg-white(style="border-width: 0.5rem !important")
             a.d-flex.align-items-top.text-decoration-none(
               href="https://twitter.com/abhinemani/status/1187406737101545473",
               target="_blank",
@@ -291,7 +309,7 @@ block body
       .row.row-cols-1.row-cols-md-2
         //- Andrew Escobar
         .col.mt-4
-          .p-4.border.border-light(style='border-width:0.5rem !important;').bg-white
+          .p-4.border.border-light.bg-white(style="border-width: 0.5rem !important")
             a.d-flex.align-items-top.text-decoration-none(
               href="https://twitter.com/andrewe/status/1016554126711275520",
               target="_blank",
@@ -337,7 +355,7 @@ block body
             .mt-2.small.text-muted Fintech Explorer and Open Finance Advocate
         //- Ullrich Schäfer
         .col.mt-4
-          .p-4.border.border-light(style='border-width:0.5rem !important;').bg-white
+          .p-4.border.border-light.bg-white(style="border-width: 0.5rem !important")
             a.d-flex.align-items-top.text-decoration-none(
               href="https://twitter.com/stigi/status/1070084392402460674",
               target="_blank",
@@ -371,7 +389,7 @@ block body
       .row.row-cols-1.row-cols-md-2
         //- Andre Goncalves
         .col.mt-4
-          .p-4.border.border-light(style='border-width:0.5rem !important;').bg-white
+          .p-4.border.border-light.bg-white(style="border-width: 0.5rem !important")
             a.d-flex.align-items-top.text-decoration-none(
               href="https://twitter.com/andregce/status/1290014041465933824",
               target="_blank",
@@ -403,7 +421,7 @@ block body
             .mt-2.small.text-muted Computer Engineer, Software Developer
         //- Phil Cockfield
         .col.mt-4
-          .p-4.border.border-light(style='border-width:0.5rem !important;').bg-white
+          .p-4.border.border-light.bg-white(style="border-width: 0.5rem !important")
             a.d-flex.align-items-top.text-decoration-none(
               href="https://twitter.com/philcockfield/status/1035659754587095040",
               target="_blank",
@@ -434,7 +452,7 @@ block body
               | forwardemail.net
               | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
             .mt-2.small.text-muted hypersheet, db.team
-  .bg-dark.py-3.py-md-5.d-block#enterprise-grade.overflow-hidden
+  #enterprise-grade.bg-dark.py-3.py-md-5.d-block.overflow-hidden
     .container
       .row
         .col-12
@@ -450,41 +468,39 @@ block body
           ul.list-unstyled.text-white.text-left.d-inline-block.mb-3.mb-md-5
             li
               i.fa.fa-fw.fa-check-circle.text-success
-              = ' '
+              = " "
               != t("Protection against phishing, malware, viruses, and spam.")
             li
               i.fa.fa-fw.fa-check-circle.text-success
-              = ' '
-              != t('Signature checks for DMARC, SPF, DKIM, SRS, and ARC headers.')
+              = " "
+              != t("Signature checks for DMARC, SPF, DKIM, SRS, and ARC headers.")
             li
               i.fa.fa-fw.fa-check-circle.text-success
-              = ' '
+              = " "
               != t("Databases and servers are hosted in SOC 2 compliant data centers.")
             li
               i.fa.fa-fw.fa-check-circle.text-success
-              = ' '
+              = " "
               != t("Modern and built in-house from scratch without outdated legacy software.")
             li
               i.fa.fa-fw.fa-check-circle.text-success
-              = ' '
+              = " "
               != t("Safeguarded with Backscatter prevention, DNS denylists, and rate limiting.")
           ul.list-inline
             li.list-inline-item
               a.btn.btn-outline-light.btn-lg.mb-md-5(
-                href=l('/email-forwarding-api')
+                href=l("/email-forwarding-api")
               )
                 = t("API Docs")
             li.list-inline-item.mt-3.mt-md-0
               a.btn.btn-outline-light.btn-lg.mb-md-5(
-                href='https://spamscanner.net',
-                target='_blank',
-                rel='noopener noreferrer'
+                href="https://spamscanner.net",
+                target="_blank",
+                rel="noopener noreferrer"
               )
                 = t("Spam Scanner")
             li.list-inline-item.mt-3.mt-md-0
-              a.btn.btn-outline-light.btn-lg.mb-md-5(
-                href=l('/help')
-              )
+              a.btn.btn-outline-light.btn-lg.mb-md-5(href=l("/help"))
                 = t("Contact")
         .d-flex.col-12.col-lg-4.pt-3.text-center
           noscript
@@ -500,7 +516,9 @@ block body
             height=200,
             alt=""
           )
-  .py-3.py-md-4.py-lg-5.position-relative.bg-fixed.lazyload(data-src=manifest('img/art/stars.svg'))
+  .py-3.py-md-4.py-lg-5.position-relative.bg-fixed.lazyload(
+    data-src=manifest("img/art/stars.svg")
+  )
     .text-center.mb-lg-5
       .h1.mb-0= t("Features")
     .container
@@ -592,9 +610,7 @@ block body
             != t('We\'re the <strong class= border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
           ul.list-inline
             li.list-inline-item
-              a.btn.btn-outline-light.btn-lg.mb-md-5(
-                href=l('/privacy')
-              )
+              a.btn.btn-outline-light.btn-lg.mb-md-5(href=l("/privacy"))
                 = t("Privacy Policy")
             li.list-inline-item
               a.btn.btn-outline-light.btn-lg.mb-md-5(
@@ -626,12 +642,12 @@ block body
       .row
         .col-md.text-center.mb-3.mb-lg-0
           a.btn.btn-outline-dark.btn-lg(
-            role=isBot(ctx.get('User-Agent')) ? false : "button",
-            href='https://www.youtube.com/watch?v=ql9rtNpTid4',
-            target='_blank',
-            rel='noopener noreferrer',
-            data-toggle=isBot(ctx.get('User-Agent')) ? false : "modal",
-            data-target=isBot(ctx.get('User-Agent')) ? false : "#modal-for-creators"
+            role=isBot(ctx.get("User-Agent")) ? false : "button",
+            href="https://www.youtube.com/watch?v=ql9rtNpTid4",
+            target="_blank",
+            rel="noopener noreferrer",
+            data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
+            data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-creators"
           )
             i.fa.fa-play-circle
             = " "
@@ -641,12 +657,12 @@ block body
               = t("Creators")
         .col-md.text-center.mb-3.mb-md-0
           a.btn.btn-outline-dark.btn-lg(
-            role=isBot(ctx.get('User-Agent')) ? false : "button",
-            data-toggle=isBot(ctx.get('User-Agent')) ? false : "modal",
-            data-target=isBot(ctx.get('User-Agent')) ? false : "#modal-for-developers"
-            href='https://www.youtube.com/watch?v=1e9UyIoFu4Y',
-            target='_blank',
-            rel='noopener noreferrer'
+            role=isBot(ctx.get("User-Agent")) ? false : "button",
+            data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
+            data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-developers",
+            href="https://www.youtube.com/watch?v=1e9UyIoFu4Y",
+            target="_blank",
+            rel="noopener noreferrer"
           )
             i.fa.fa-play-circle
             = " "
@@ -656,12 +672,12 @@ block body
               = t("Developers")
         .col-md.text-center
           a.btn.btn-outline-dark.btn-lg(
-            role=isBot(ctx.get('User-Agent')) ? false : "button",
-            data-toggle=isBot(ctx.get('User-Agent')) ? false : "modal",
-            data-target=isBot(ctx.get('User-Agent')) ? false : "#modal-for-businesses",
-            href='https://www.youtube.com/watch?v=--p9LdmVSAw',
-            target='_blank',
-            rel='noopener noreferrer'
+            role=isBot(ctx.get("User-Agent")) ? false : "button",
+            data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
+            data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-businesses",
+            href="https://www.youtube.com/watch?v=--p9LdmVSAw",
+            target="_blank",
+            rel="noopener noreferrer"
           )
             i.fa.fa-play-circle
             = " "

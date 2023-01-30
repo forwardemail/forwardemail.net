@@ -1,10 +1,13 @@
 const { Buffer } = require('buffer');
 
+const _ = require('lodash');
+const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const ms = require('ms');
+const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
-const bytes = require('bytes');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -30,6 +33,10 @@ const Log = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'User'
   },
+  domain: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Domain'
+  },
   err: mongoose.Schema.Types.Mixed,
   message: String,
   meta: mongoose.Schema.Types.Mixed,
@@ -39,7 +46,7 @@ const Log = new mongoose.Schema({
   //
   created_at: {
     type: Date,
-    expires: '1d'
+    expires: ms('1d')
   }
 });
 
@@ -64,7 +71,9 @@ const PARTIAL_INDICES = [
   'meta.response.headers.x-request-id',
   'meta.response.status_code',
   'meta.user.ip_address',
-  'user'
+  'meta.app.hostname',
+  'user',
+  'domain'
 ];
 
 for (const index of PARTIAL_INDICES) {
@@ -77,6 +86,16 @@ for (const index of PARTIAL_INDICES) {
     }
   );
 }
+
+//
+// before saving a log ensure that `err` and `meta.err` are parsed
+// (this helps with server-side log saving, and for client-side we parseErr in advance)
+//
+Log.pre('validate', function (next) {
+  if (_.isError(this.err)) this.err = parseErr(this.err);
+  if (_.isError(this.meta.err)) this.meta.err = parseErr(this.meta.err);
+  next();
+});
 
 //
 // we don't want to pollute our db with 404's and 429's

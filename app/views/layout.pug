@@ -1,6 +1,6 @@
 //- Pug makes it DOCTYPE if we do this:
 //- `doctype html`
-!= '<!doctype html>'
+!= "<!doctype html>"
 html.h-100.no-js(lang=locale)
   head
     block meta
@@ -79,9 +79,9 @@ html.h-100.no-js(lang=locale)
       meta(name="theme-color", content="#ffffff")
 
       script.
-        document.documentElement.className = 'h-100';
+        document.documentElement.className = "h-100";
       if ctx && isBot(ctx.get('User-Agent'))
-        style= '.is-bot { display: none !important; }'
+        style= ".is-bot { display: none !important; }"
 
       //- associate with wikipedia
       script(type="application/ld+json").
@@ -105,10 +105,7 @@ html.h-100.no-js(lang=locale)
         crossorigin="anonymous"
       )
       meta(property="og:title", content=meta.title)
-      meta(
-        property="og:url",
-        content=`${config.urls.web}${ctx.path}`
-      )
+      meta(property="og:url", content=`${config.urls.web}${ctx.path}`)
       meta(property="og:description", content=meta.description)
       meta(property="og:image", content=`${config.urls.web}/img/social.png`)
       meta(name="twitter:card", content="summary_large_image")
@@ -121,10 +118,10 @@ html.h-100.no-js(lang=locale)
 
     //- prefetch fonts
     //- https://caniuse.com/link-rel-prefetch
-    - const fonts = [ 'fa-solid-900', 'fa-brands-400' ]
+    - const fonts = ["fa-solid-900", "fa-brands-400"];
     if !ctx || !isBot(ctx.get('User-Agent'))
-      - fonts.push('nunito-sans-latin-400')
-      - fonts.push('nunito-sans-latin-700')
+      - fonts.push("nunito-sans-latin-400");
+      - fonts.push("nunito-sans-latin-700");
     each font in fonts
       //- integrity attribute not currently supported
       //- <https://crbug.com/981419>
@@ -152,7 +149,10 @@ html.h-100.no-js(lang=locale)
           crossorigin="anonymous"
         )
 
-  body.d-flex.flex-column.min-h-100(role="document", onload=ctx && isBot(ctx.get('User-Agent')) ? "if (typeof lazyload === 'function') { lazyload(); }" : '')
+  body.d-flex.flex-column.min-h-100(
+    role="document",
+    onload=ctx && isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : ""
+  )
     - const isHelp = ctx && ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx && ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
 

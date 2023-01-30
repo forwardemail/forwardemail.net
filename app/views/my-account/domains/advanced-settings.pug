@@ -175,7 +175,9 @@ block body
                             = t("DNS-based")
                             = ")"
                     .dropdown-divider
-                    a.dropdown-item.small.text-muted(href=l(`/private-business-email?domain=${domain.name}`))= t("See all plan features")
+                    a.dropdown-item.small.text-muted(
+                      href=l(`/private-business-email?domain=${domain.name}`)
+                    )= t("See all plan features")
           if domain.group === 'admin'
             - const hasInvites = Array.isArray(domain.invites) && domain.invites.length > 0 && domain.plan === "team";
             .card.border-dark.mb-3
@@ -184,7 +186,9 @@ block body
                 +planRequired(true)
                 .alert.alert-info.small= t("Members have shared access to this domain, and you can invite new members, remove existing members, or manage permissions for them below.")
                 .table-responsive
-                  table.table.table-hover.table-bordered(class=hasInvites ? "" : "mb-0")
+                  table.table.table-hover.table-bordered(
+                    class=hasInvites ? "" : "mb-0"
+                  )
                     thead.thead-dark
                       tr
                         th(scope="col")= t("Team Member")
@@ -459,7 +463,9 @@ block body
                     value="true",
                     checked=domain.has_recipient_verification
                   )
-                  label.form-check-label(for="input-has-recipient-verification")= t("Requires recipients to click email verification link")
+                  label.form-check-label(
+                    for="input-has-recipient-verification"
+                  )= t("Requires recipients to click email verification link")
                   p.form-text.small.text-black-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
               .card-footer.text-right
                 ul.list-inline.mb-0

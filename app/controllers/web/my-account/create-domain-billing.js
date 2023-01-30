@@ -318,7 +318,7 @@ async function createDomainBilling(ctx) {
           },
           purchase_units: [
             {
-              reference_id: reference,
+              reference_id: ctx.state.user.id,
               description,
               custom_id: sku,
               invoice_id: reference,

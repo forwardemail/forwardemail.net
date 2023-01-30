@@ -1,36 +1,39 @@
 const auth = require('basic-auth');
 const parseLogs = require('parse-logs');
 
+const env = require('#config/env');
 const Logs = require('#models/log');
 const policies = require('#helpers/policies');
 
+const API_RESTRICTED_SYMBOL = Symbol.for(env.API_RESTRICTED_SYMBOL);
 const ERR_NOT_CONNECTED_NAMES = new Set([
   'MongoPoolClosedError',
   'MongoExpiredSessionError',
   'MongoNotConnectedError'
 ]);
 
-//
-// TODO: integrate logging into the other servers
-//       and leverage the user's API key for logging
-//
 async function parseLog(ctx) {
   ctx.body = 'OK';
   try {
-    const log = parseLogs(ctx.request);
+    const log = ctx[API_RESTRICTED_SYMBOL]
+      ? ctx.request.body
+      : parseLogs(ctx.request);
 
-    // log to context that we received log in the request
-    ctx.logger[log.meta.level](
-      log.err || log.message,
-      Object.assign(
-        log.meta,
-        // prevent double recursive log
-        { ignore_hook: true }
-      )
-    );
-
-    // set the user if they're logged in
-    if (ctx.isAuthenticated()) log.user = ctx.state.user._id;
+    //
+    // if it utilized restricted basic auth middleware
+    // then we can assume it's a trusted server (e.g. bree/smtp)
+    // TODO: we can have prompts to upgrade for buttons "Allow Email" if user on free)
+    // TODO: weekly digest email + dashboard + visual charts + real-time metric counters
+    // TODO: 1d log retention for users on enhanced plan
+    // TODO: 30d log retention for users on team plan
+    // TODO: ensure err.isCodeBug is not rendered to user
+    //
+    if (ctx[API_RESTRICTED_SYMBOL]) {
+      // TODO: lookup the domain by verification_record and store domain id
+    } else if (ctx.isAuthenticated()) {
+      // set the user if they're logged in
+      log.user = ctx.state.user._id;
+    }
 
     // store the log
     try {

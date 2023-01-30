@@ -2,8 +2,8 @@ mixin paymentMethod(payment)
   if payment.method === 'paypal'
     if !returnHTML
       i.fab.fa-paypal
-      = ' '
-    = 'PayPal'
+      = " "
+    = "PayPal"
   else
     if !returnHTML
       case payment.method
@@ -35,26 +35,26 @@ mixin paymentMethod(payment)
       = " "
     = titleize(humanize(payment.method))
     if payment.last4
-      = ' '
-      = t('ending with')
-      = ' '
+      = " "
+      = t("ending with")
+      = " "
       = payment.last4
     if payment.exp_month && payment.exp_year
-      = ' '
+      = " "
       span.text-uppercase= `(${payment.exp_month}/${payment.exp_year.toString().slice(2)})`
     if payment.is_apple_pay
-      = ' '
-      = t('via')
+      = " "
+      = t("via")
       if !returnHTML
-        = ' '
+        = " "
         i.fa.fa-cc-apple-pay
-      = ' '
-      = 'Apple Pay'
+      = " "
+      = "Apple Pay"
     else if payment.is_google_pay
-      = ' '
-      = t('via')
-      = ' '
+      = " "
+      = t("via")
+      = " "
       if !returnHTML
         i.fa.fa-google-pay
-        = ' '
-      = 'Google Pay'
+        = " "
+      = "Google Pay"

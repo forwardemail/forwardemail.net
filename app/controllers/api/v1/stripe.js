@@ -138,8 +138,6 @@ async function webhook(ctx) {
         break;
       }
 
-      // TODO: we also need to do something similar for paypal
-
       // then lookup the session if it existed for the payment intent
       // and lookup the plan mapping, and if it doesn't match then adjust it
       case 'checkout.session.async_payment_succeeded':
@@ -148,8 +146,7 @@ async function webhook(ctx) {
         if (event.data.object.object !== 'checkout.session')
           throw new Error('Event object was not a checkout.session');
         const session = event.data.object;
-        if (session.payment_status !== 'paid')
-          throw new Error('Session was not paid');
+        if (session.payment_status !== 'paid') return;
         // lookup user by customer
         const user = await Users.findOne({
           [config.userFields.stripeCustomerID]: session.customer
@@ -202,8 +199,8 @@ async function webhook(ctx) {
           // lookup the payment intent created date and if its after plan_set_at then adjust it
           if (
             !_.isDate(user[config.userFields.planSetAt]) ||
-            new Date(user[config.userFields.planSetAt]).getTime() <
-              dayjs.unix(paymentIntent.created).toDate().getTime()
+            // if the user changed plans then adjust plan set at
+            user.plan !== productToPlan
           )
             user[config.userFields.planSetAt] = dayjs
               .unix(paymentIntent.created)
@@ -262,8 +259,8 @@ async function webhook(ctx) {
             // eslint-disable-next-line max-depth
             if (
               !_.isDate(user[config.userFields.planSetAt]) ||
-              new Date(user[config.userFields.planSetAt]).getTime() <
-                dayjs.unix(paymentIntent.created).toDate().getTime()
+              // if the user changed plans then adjust plan set at
+              user.plan !== productToPlan
             )
               user[config.userFields.planSetAt] = dayjs
                 .unix(paymentIntent.created)
@@ -339,8 +336,8 @@ async function webhook(ctx) {
         }
 
         // ban the user for opening a dispute
-        if (!user.is_banned) {
-          user.is_banned = true;
+        if (!user[config.userFields.isBanned]) {
+          user[config.userFields.isBanned] = true;
           await user.save();
           // email admins that the user was banned
           await emailHelper({
@@ -409,9 +406,7 @@ async function webhook(ctx) {
       template: 'alert',
       message: {
         to: config.email.message.from,
-        subject: `Error with Stripe Webhook${
-          event && event.id ? ` (Event ID ${event.id})` : ''
-        }`
+        subject: `Error with Stripe Webhook (Event ID ${event.id})`
       },
       locals: {
         message: `<pre><code>${JSON.stringify(
