@@ -77,7 +77,7 @@
     "is-fqdn": "2.0.1",
     "is-string-and-not-blank": "0.0.2",
     "isbot": "3.6.5",
-    "iserror": "^0.0.2",
+    "iserror": "0.0.2",
     "jquery": "3.5.1",
     "jsdom": "16",
     "koa-convert": "2.0.0",
