@@ -15,7 +15,7 @@ block body
         ul.list-inline.mb-0.mx-auto
           li.list-inline-item
             a.btn.btn-danger(
-              href=l(`/my-account/billing/${dayjs(payment.invoice_at).format('YYYY-MM-DD')}-${payment.reference.toUpperCase()}.pdf`),
+              href=l(`/my-account/billing/${dayjs(payment.invoice_at).format("YYYY-MM-DD")}-${payment.reference.toUpperCase()}.pdf`),
               data-toggle="tooltip",
               data-placement="bottom",
               title=t("Download")
@@ -24,8 +24,8 @@ block body
               = " "
               = t("Download")
           li.list-inline-item
-            a.btn.btn-dark#btn-print(
-              href=l(`/my-account/billing/${dayjs(payment.invoice_at).format('YYYY-MM-DD')}-${payment.reference.toUpperCase()}.html`),
+            a#btn-print.btn.btn-dark(
+              href=l(`/my-account/billing/${dayjs(payment.invoice_at).format("YYYY-MM-DD")}-${payment.reference.toUpperCase()}.html`),
               target="_blank",
               data-toggle="tooltip",
               data-placement="bottom",

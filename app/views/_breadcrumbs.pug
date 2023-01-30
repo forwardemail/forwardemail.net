@@ -87,9 +87,7 @@ if breadcrumbs.length > 1
                   action=l(`/my-account/domains/${domain.name}/aliases/import`),
                   method="POST"
                 )
-                  button.btn.btn-dark(
-                    type="submit"
-                  )
+                  button.btn.btn-dark(type="submit")
                     != t('Import <span class="notranslate">TXT</span> Records')
                     = " "
                     i.fa.fa-cloud-download-alt

@@ -9,11 +9,11 @@ block content
           .card-body.p-0
             //- replace line breaks with <br>
             .p-3
-              .card-text.text-monospace.small!= splitLines(inquiry.message).join('<br />')
+              .card-text.text-monospace.small!= splitLines(inquiry.message).join("<br />")
             if domains.length > 0
               hr
               include ../_account-summary
           .card-footer.text-center.small.text-muted
             strong= t("Have attachments?")
-            = ' '
-            = t('Reply to this email with them.')
+            = " "
+            = t("Reply to this email with them.")

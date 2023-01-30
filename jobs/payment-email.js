@@ -43,7 +43,8 @@ async function mapper(id) {
 
   const user = await Users.findOne({
     _id: payment.user,
-    [config.userFields.isBanned]: false,
+    // NOTE: we want to send refund receipts even to banned customers
+    // [config.userFields.isBanned]: false,
     [config.userFields.hasVerifiedEmail]: true
   })
     .lean()

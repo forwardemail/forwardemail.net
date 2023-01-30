@@ -7,41 +7,45 @@ block content
         .card.border-dark.d-block
           h1.h5.card-header.bg-dark.text-white.text-center
             if Date.now() >= dayjs('3/1/2023', 'M/D/YYYY').toDate().getTime()
-              != t('Email forwarding is paused')
+              != t("Email forwarding is paused")
             else
-              != t('Upgrade by March 1, 2023')
+              != t("Upgrade by March 1, 2023")
           .card-body.p-0
             .p-3.text-center
               if Date.now() >= dayjs('3/1/2023', 'M/D/YYYY').toDate().getTime()
-                h1.h3= t('Email forwarding is paused')
+                h1.h3= t("Email forwarding is paused")
                 p.card-text!= t('Upgrade <span class="font-weight-bold notranslate">%s</span> to a paid plan to resume service.', domain)
               else
-                h1.h3= t('Upgrade required')
+                h1.h3= t("Upgrade required")
                 p.card-text!= t('You must upgrade <span class="font-weight-bold notranslate">%s</span> to continue using our service.', domain)
-              a.btn.btn-lg.btn-success(href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`)= t("Upgrade for $3")
+              a.btn.btn-lg.btn-success(
+                href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`
+              )= t("Upgrade for $3")
             hr
-            h2.h4.mt-0.mb-0.text-center= t('Frequently Asked Questions')
+            h2.h4.mt-0.mb-0.text-center= t("Frequently Asked Questions")
             .p-3.text-center
               h2.h5= t("Why do you require a paid plan?")
               p.small.card-text.mb-0
                 if isRestricted
-                  != t('Your domain name extension is restricted for public, education, and government use.')
+                  != t("Your domain name extension is restricted for public, education, and government use.")
                 else if !isGood
                   != t('Your domain name extension (also known as a <span class="notranslate">TLD</span>) is frequently used for spam operations.')
                 else if isDisposable
                   != t('Your domain name includes reserved keywords such as "mail", "disposable", and "inbox".')
-                = ' '
-                = t('We require domains with this extension to upgrade to a paid plan by March 1, 2023.')
-                = ' '
-                = t('This is an effort in order to reduce spam, phishing, malware, and malicious email.')
-                = ' '
-                = t('Our goal is to protect our customers, ensure deliverablity, and maintain a high-quality service.')
+                = " "
+                = t("We require domains with this extension to upgrade to a paid plan by March 1, 2023.")
+                = " "
+                = t("This is an effort in order to reduce spam, phishing, malware, and malicious email.")
+                = " "
+                = t("Our goal is to protect our customers, ensure deliverablity, and maintain a high-quality service.")
             .p-3.text-center
               h2.h5= t("What are the benefits of a paid plan?")
-              p.small.card-text= t('Unlimited domains, secure inbox privacy, opt-in recipient verification, 99.99% service uptime, custom spam filtering, and more.')
-              a.btn.btn-lg.btn-dark(href=`${config.urls.web}/${locale}/private-business-email#features`)= t("View features")
+              p.small.card-text= t("Unlimited domains, secure inbox privacy, opt-in recipient verification, 99.99% service uptime, custom spam filtering, and more.")
+              a.btn.btn-lg.btn-dark(
+                href=`${config.urls.web}/${locale}/private-business-email#features`
+              )= t("View features")
             .p-3.text-center
-              h2.h5= t('What is the difference between free and paid?')
+              h2.h5= t("What is the difference between free and paid?")
               p.small.card-text
                 = t("The Free plan requires you to use public DNS records to store your forwarding configuration.")
                 = " "
@@ -60,11 +64,11 @@ block content
             .p-3.text-center
               h2.h5= t("What will happen if I don't upgrade?")
               p.small.card-text
-                = t('Email forwarding will be suspended and you may not receive emails.')
-                = ' '
-                = t('If you do not upgrade, then we will respond to email messages attempting to be delivered with a retry status code.')
-                = ' '
-                = t('Senders will eventually stop retrying and you may miss important emails.')
+                = t("Email forwarding will be suspended and you may not receive emails.")
+                = " "
+                = t("If you do not upgrade, then we will respond to email messages attempting to be delivered with a retry status code.")
+                = " "
+                = t("Senders will eventually stop retrying and you may miss important emails.")
             .p-3.text-center
               h2.h5= t("Do you offer unlimited domains for one price?")
               p.small.card-text!= t('<span class="font-weight-bold">Yes.</span> Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.')
@@ -87,13 +91,17 @@ block content
                 ul.list-inline.small
                   each tld in config.goodDomains
                     li.list-inline-item: code= `.${tld}`
-                a.btn.btn-sm.btn-dark(href=`${config.urls.web}/${locale}/domain-registration`)= t("Register new domain")
+                a.btn.btn-sm.btn-dark(
+                  href=`${config.urls.web}/${locale}/domain-registration`
+                )= t("Register new domain")
             .p-3.text-center
-              h2.h5!= t('How do I upgrade to a paid plan?')
-              p.small.card-text!= t('Simply click the button below to upgrade in minutes.')
-              a.btn.btn-lg.btn-success(href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`)= t("Upgrade for $3")
+              h2.h5!= t("How do I upgrade to a paid plan?")
+              p.small.card-text!= t("Simply click the button below to upgrade in minutes.")
+              a.btn.btn-lg.btn-success(
+                href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`
+              )= t("Upgrade for $3")
           .card-footer.text-center.small.text-muted
             if Date.now() >= dayjs('3/1/2023', 'M/D/YYYY').toDate().getTime()
-              = t('Upgrade your plan to resume email service.')
+              = t("Upgrade your plan to resume email service.")
             else
-              = t('Upgrade now to prevent missing emails.')
+              = t("Upgrade now to prevent missing emails.")

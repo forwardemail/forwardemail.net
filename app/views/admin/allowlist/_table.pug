@@ -17,15 +17,19 @@ include ../../_pagination
           each key in results
             tr
               td.align-middle
-                .markdown-body.ml-0.mr-0: code= key.replace('allowlist:', '')
+                .markdown-body.ml-0.mr-0: code= key.replace("allowlist:", "")
               td.align-middle
                 form.ajax-form.confirm-prompt(
-                  action=l('/admin/allowlist'),
+                  action=l("/admin/allowlist"),
                   method="POST",
                   autocomplete="off"
                 )
                   input(type="hidden", name="_method", value="DELETE")
-                  input(type="hidden", name="value", value=key.replace('allowlist:', ''))
+                  input(
+                    type="hidden",
+                    name="value",
+                    value=key.replace("allowlist:", "")
+                  )
                   button.btn.btn-danger(
                     type="submit",
                     data-toggle="tooltip",

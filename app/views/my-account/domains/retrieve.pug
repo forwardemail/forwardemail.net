@@ -65,11 +65,11 @@ block body
           if domain.has_mx_record && domain.has_txt_record
             .alert.alert-success
               = emoji("tada")
-              = ' '
+              = " "
               != t("Congratulations &ndash; you completed all steps!")
               if domain.plan !== 'free'
                 a.btn.btn-success.ml-3(
-                  href=l(`/my-account/domains/${domain.name}/aliases`),
+                  href=l(`/my-account/domains/${domain.name}/aliases`)
                 )
                   i.fa.fa-fw.fa-users
                   = " "
@@ -81,10 +81,10 @@ block body
           else
             .alert.alert-danger
               i.fa.fa-exclamation-circle.font-weight-bold
-              = ' '
-              strong.font-weight-bold= t('Important:')
-              = ' '
-              span= t('Follow the instructions below to complete setup and verify your domain.')
+              = " "
+              strong.font-weight-bold= t("Important:")
+              = " "
+              span= t("Follow the instructions below to complete setup and verify your domain.")
           if domain.plan === 'free'
             .alert.alert-warning.small
               = t("Need secure and private email?")
@@ -93,13 +93,13 @@ block body
               a.alert-link(
                 href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
               )= t("Upgrade for $3")
-              = ' '
-              = t('or')
-              = ' '
-              a(href=l('/private-business-email'), target='_blank').alert-link= t('learn more')
+              = " "
+              = t("or")
+              = " "
+              a.alert-link(href=l("/private-business-email"), target="_blank")= t("learn more")
       .row
         .col-12
-          - const provider = nsProviderLookup(domain)
+          - const provider = nsProviderLookup(domain);
           .card.position-relative
             if domain.has_mx_record && domain.has_txt_record
               .position-absolute.w-100.text-right
@@ -109,7 +109,11 @@ block body
                   = t("Completed")
             else if provider && provider.name && provider.url
               .position-absolute.w-100.text-right
-                a(href=provider.url, target='_blank', rel='noopener noreferrer').badge.badge-pill.badge-primary.mt-3.mr-3
+                a.badge.badge-pill.badge-primary.mt-3.mr-3(
+                  href=provider.url,
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
                   i.fa.fa-external-link
                   = " "
                   != t('Go to <span class="notranslate">%s</span>', provider.name)
@@ -132,21 +136,30 @@ block body
               p.small.mb-0
                 if provider && provider.name && provider.url
                   != t('Go to <a href="%s" target="_blank" rel="noopener noreferrer" class="font-weight-bold notranslate">%s</a>', provider.url, provider.name)
-                  != t(' &rarr; log in &rarr; DNS settings')
+                  != t(" &rarr; log in &rarr; DNS settings")
                   br.d-block.d-md-none
-                  != t(' &rarr; scroll down to <strong>Step 2</strong>')
+                  != t(" &rarr; scroll down to <strong>Step 2</strong>")
                 else
                   != t("Go to your domain provider")
-                  != t(' &rarr; log in &rarr; DNS settings')
+                  != t(" &rarr; log in &rarr; DNS settings")
                   br.d-block.d-md-none
-                  != t(' &rarr; scroll down to <strong>Step 2</strong>')
+                  != t(" &rarr; scroll down to <strong>Step 2</strong>")
               if provider && provider.gif
-                img(src=manifest(`img/guides/${provider.gif}.gif`), alt='', width='480', height='270').d-inline-block.img-thumbnail.mt-3
+                img.d-inline-block.img-thumbnail.mt-3(
+                  src=manifest(`img/guides/${provider.gif}.gif`),
+                  alt="",
+                  width="480",
+                  height="270"
+                )
               if provider && provider.name && provider.url
                 .text-center.mt-3
-                  a(href=provider.url, target='_blank', rel='noopener noreferrer').btn.btn-primary
+                  a.btn.btn-primary(
+                    href=provider.url,
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
                     i.fa.fa-external-link
-                    = ' '
+                    = " "
                     != t('Go to <span class="notranslate">%s</span>', provider.name)
               else if modalFAQTable
                 .text-center.mt-3
@@ -176,11 +189,11 @@ block body
             .card-body
               .small.text-center.mb-3
                 != t('Add these records to <strong class="notranslate">%s</strong>', domain.root_name || domain.name)
-                span.d-inline.d-md-none= ':'
+                span.d-inline.d-md-none= ":"
                 if hasExistingMX || hasExistingTXT
-                  span.d-md-inline.d-none= ':'
+                  span.d-md-inline.d-none= ":"
                 else
-                  span.d-none.d-md-inline= t(' and click ')
+                  span.d-none.d-md-inline= t(" and click ")
                   form.ajax-form.d-none.d-md-inline(
                     action=l(`/my-account/domains/${domain.name}/verify-records`),
                     method="POST"
@@ -188,11 +201,11 @@ block body
                     button.btn.btn-success.btn-sm.d-inline(type="submit")
                       i.fa.fa-refresh
                       = " "
-                      = t('Verify')
+                      = t("Verify")
                 .d-block.d-md-none.my-3.text-muted.small
-                  = '('
+                  = "("
                   = t("Scroll to the right to see entire table")
-                  = ')'
+                  = ")"
               .table-responsive.mb-3
                 table.table.table-striped.table-bordered.table-hover.table-sm.mb-0
                   thead.thead-dark
@@ -203,7 +216,9 @@ block body
                       th Priority
                       th.text-left Answer/Value
                   tbody
-                    tr(class=domain.has_mx_record ? 'table-success' : domain.has_txt_record ? 'table-warning' : '')
+                    tr(
+                      class=domain.has_mx_record ? "table-success" : domain.has_txt_record ? "table-warning" : ""
+                    )
                       td.small
                         if !domain.root_name || domain.root_name === domain.name
                           if provider && typeof provider.host === 'string'
@@ -216,7 +231,9 @@ block body
                       td MX
                       td: code.text-dark 10
                       td.text-left: code.text-dark.text-nowrap mx1.forwardemail.net
-                    tr(class=domain.has_mx_record ? 'table-success' : domain.has_txt_record ? 'table-warning' : '')
+                    tr(
+                      class=domain.has_mx_record ? "table-success" : domain.has_txt_record ? "table-warning" : ""
+                    )
                       td.small
                         if !domain.root_name || domain.root_name === domain.name
                           if provider && typeof provider.host === 'string'
@@ -245,7 +262,9 @@ block body
                           td
                           td.text-left: code.text-dark.text-nowrap= record
                     else
-                      tr(class=domain.has_txt_record ? 'table-success' : domain.has_mx_record ? 'table-warning' : '')
+                      tr(
+                        class=domain.has_txt_record ? "table-success" : domain.has_mx_record ? "table-warning" : ""
+                      )
                         td.small
                           if !domain.root_name || domain.root_name === domain.name
                             if provider && typeof provider.host === 'string'
@@ -265,7 +284,7 @@ block body
                               = `${config.recordPrefix}-site-verification=${domain.verification_record}`
                   if hasExistingMX || (hasExistingTXT && domain.plan !== 'free')
                     tr.table-danger.small.text-left.text-md-center
-                      th(colspan=5, scope='row')!= t("You must delete these records:")
+                      th(colspan=5, scope="row")!= t("You must delete these records:")
                   if hasExistingMX
                     each record in existingMX
                       tr.table-danger
@@ -286,7 +305,7 @@ block body
                   = t("Need to configure more aliases on the free plan?")
                   br.d-block.d-md-none
                   = " "
-                  a(href=l('/faq#dns-configuration-options')).alert-link= t('See Options A to G in our FAQ')
+                  a.alert-link(href=l("/faq#dns-configuration-options"))= t("See Options A to G in our FAQ")
 
               form.ajax-form(
                 action=l(`/my-account/domains/${domain.name}/verify-records`),
@@ -338,7 +357,7 @@ block body
               h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
               p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
               a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-                href=l('/guides/send-mail-as-gmail-custom-domain'),
+                href=l("/guides/send-mail-as-gmail-custom-domain"),
                 target="_blank"
               )
                 = t("Setup your Gmail")

@@ -53,6 +53,7 @@ router
   .delete('/domains/:id', web.admin.domains.remove)
 
   // logs
-  .get('/logs', paginate.middleware(10, 50), web.admin.logs.list);
+  .get('/logs', paginate.middleware(10, 50), web.admin.logs.list)
+  .get('/logs/:id', web.admin.logs.retrieve);
 
 module.exports = router;

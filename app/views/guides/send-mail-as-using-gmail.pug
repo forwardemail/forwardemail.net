@@ -8,7 +8,7 @@ block body
           li.list-inline-item
             a.btn.btn-lg.btn-light(href="#quick-video-guide")
               i.fab.fa-youtube.text-danger
-              = ' '
+              = " "
               = t("Video")
           li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
           li.list-inline-item
@@ -21,23 +21,26 @@ block body
       .col-12
         h1.mb-0.text-center
           if isBot(ctx.get('User-Agent'))
-            != t('Send Email with Custom Domain')
+            != t("Send Email with Custom Domain")
           else
-            != t('Send Mail As with Gmail')
+            != t("Send Mail As with Gmail")
         if !isBot(ctx.get('User-Agent'))
           .alert.my-3.alert-primary.text-center
-            = t('Not using Gmail?')
-            = ' '
-            a(href=l('/faq')).alert-link
-              = t('Read our FAQ')
+            = t("Not using Gmail?")
+            = " "
+            a.alert-link(href=l("/faq"))
+              = t("Read our FAQ")
           .alert.my-3.alert-danger.text-center
             i.fa.fa-exclamation-circle.font-weight-bold
-            = ' '
-            = t('Domain not yet verified?')
-            = ' '
-            a(href=user ? l('/my-account/domains') : l('/my-account/domains/new'), target='_blank').alert-link
-              = t('Click here')
-        .card.mt-3#quick-video-guide
+            = " "
+            = t("Domain not yet verified?")
+            = " "
+            a.alert-link(
+              href=user ? l("/my-account/domains") : l("/my-account/domains/new"),
+              target="_blank"
+            )
+              = t("Click here")
+        #quick-video-guide.card.mt-3
           h2.h5.card-header.text-center
             if isBot(ctx.get('User-Agent'))
               = t('How to use Gmail\'s "Send Mail As" with your Custom Domain')
@@ -46,9 +49,9 @@ block body
           .card-body.text-center
             if isBot(ctx.get('User-Agent'))
               a.btn.btn-outline-dark.btn-lg(
-                href='https://www.youtube.com/watch?v=MEheS8gM4Xs'
-                target='_blank',
-                rel='noopener noreferrer'
+                href="https://www.youtube.com/watch?v=MEheS8gM4Xs",
+                target="_blank",
+                rel="noopener noreferrer"
               )
                 i.fab.fa-youtube.text-danger
                 = " "
@@ -60,7 +63,7 @@ block body
                 style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
                 data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
               )
-      .col-12.mt-3#step-by-step-instructions
+      #step-by-step-instructions.col-12.mt-3
         .card
           h2.h5.card-header.text-center
             if isBot(ctx.get('User-Agent'))

@@ -37,10 +37,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
     //   ;
     // }
 
-    // then we need to get all the subscription ids and validate that the one that
-    // works is the subscription id set on the user. Assuming that is good, that will
-    // be the only subscription we have access to I think...
-    // This kind of sucks, but it is the best we can do right now I beleive.
+    // get all subscriptions for the user
     const subscriptionIds = await Payments.distinct(
       config.userFields.paypalSubscriptionID,
       {

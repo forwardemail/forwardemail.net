@@ -1,0 +1,11 @@
+extends ../../layout
+
+block body
+  .container.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        .card.border-dark
+          h4.card-header= result.id
+          .card-body.markdown-body
+            pre: code= JSON.stringify(result, null, 2)

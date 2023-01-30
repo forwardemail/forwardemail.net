@@ -6,26 +6,32 @@ const markdown = require('./markdown');
 const parseLoginSuccessRedirect = require('./parse-login-success-redirect');
 const policies = require('./policies');
 const rateLimit = require('./rate-limit');
+const refund = require('./refund');
 const sendVerificationEmail = require('./send-verification-email');
+const syncPayPalOrderPaymentByPaymentId = require('./sync-paypal-order-payment-by-payment-id');
+const syncPayPalSubscriptionPaymentsByUser = require('./sync-paypal-subscription-payments-by-user');
+const syncStripePaymentIntent = require('./sync-stripe-payment-intent');
 const toObject = require('./to-object');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
 const { paypalAgent, paypal } = require('./paypal');
-const refund = require('./refund');
 
 module.exports = {
+  decrypt,
   email,
+  encrypt,
   getEmailLocals,
   i18n,
   logger,
   markdown,
   parseLoginSuccessRedirect,
+  paypal,
+  paypalAgent,
   policies,
   rateLimit,
+  refund,
   sendVerificationEmail,
-  toObject,
-  encrypt,
-  decrypt,
-  paypalAgent,
-  paypal,
-  refund
+  syncPayPalOrderPaymentByPaymentId,
+  syncPayPalSubscriptionPaymentsByUser,
+  syncStripePaymentIntent,
+  toObject
 };

@@ -19,10 +19,10 @@ block content
               h1.h3!= t("Oops!")
               p.card-text
                 != t('Your domain <strong><span class="notranslate">%s</span></strong> has a DNS configuration issue.', domain.name)
-                = ' '
+                = " "
                 != t('This means that your important emails <strong class="text-danger">could have email forwarding issues</strong>.')
               if errorMessage
-                p.card-text!= t('Please correct these issues as soon as possible:')
+                p.card-text!= t("Please correct these issues as soon as possible:")
                 != prefixHTMLPathBasedAnchors(errorMessage, config.urls.web)
             if domain.plan === 'free'
               .p-3.text-center

@@ -45,11 +45,7 @@ block body
               )
               label(for="input-domain")= t("Domain name")
             if user.plan === 'free' && (!isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan))
-              input(
-                type="hidden",
-                name="plan",
-                value="enhanced_protection"
-              )
+              input(type="hidden", name="plan", value="enhanced_protection")
             if user.group === 'admin'
               .form-group.form-check
                 input#input-is-global.form-check-input(

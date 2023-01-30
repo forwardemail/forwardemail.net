@@ -16,19 +16,23 @@ mixin registerOrLogin(verb, isModal = false)
                 data-src=manifest("img/google-logo.svg")
               )
               noscript
-                span.btn-auth-icon(style=`background-image:url("${manifest("img/google-logo.svg")}")`)
+                span.btn-auth-icon(
+                  style=`background-image:url("${manifest("img/google-logo.svg")}")`
+                )
               span.btn-auth-text= t(`${humanize(verb)} with Google`)
         if passport && passport.github
           a.btn-auth.btn-auth-github.btn-auth-github-dark.mb-3.text-decoration-none(
             href="/auth/github",
-            role="button",
+            role="button"
           )
             .btn-auth-wrapper
               span.btn-auth-icon.lazyload(
                 data-src=manifest("img/github-logo.svg")
               )
               noscript
-                span.btn-auth-icon(style=`background-image:url("${manifest("img/github-logo.svg")}")`)
+                span.btn-auth-icon(
+                  style=`background-image:url("${manifest("img/github-logo.svg")}")`
+                )
               span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
         if passport && (passport.google || passport.github)
           .hr-text.d-flex.text-secondary.align-items-center= t("or")
@@ -56,7 +60,7 @@ mixin registerOrLogin(verb, isModal = false)
             label(for=`input-password-${dashify(verb)}`)= t("Password")
           if config.hcaptchaEnabled
             noscript
-              .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t('Please enable JavaScript to use our website.')
+              .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
             .h-captcha(
               data-sitekey=config.hcaptchaSiteKey,
               data-error-callback="hCaptchaError",
@@ -64,7 +68,7 @@ mixin registerOrLogin(verb, isModal = false)
             )
           button.btn.btn-success.btn-lg.btn-block(type="submit")
             if verb === 'sign up'
-              = t('Sign up free')
+              = t("Sign up free")
             else
               = t(capitalize(verb))
           if verb === 'sign up'

@@ -1,47 +1,46 @@
 include ../../_sort-header
 include ../../_pagination
 
-.table-responsive
-  table.table.table-hover.table-bordered.table-sm
-    thead.thead-dark
-      tr
-        th(scope="col")
-          +sortHeader('id', 'ID', '#table-logs')
-        th(scope="col")
-          +sortHeader('created_at', 'Created', '#table-logs')
-        th(scope="col")
-          +sortHeader('message', 'Message', '#table-logs')
-        th(scope="col")
-          +sortHeader('meta.level', 'Level', '#table-logs')
-        th(scope="col")
-          +sortHeader('user', 'User', '#table-logs')
-        th(scope="col")
-          +sortHeader('meta.is_http', 'HTTP', '#table-logs')
-        //-.
-          th.text-center.align-middle(scope="col")= t("Actions")
-      tbody
-        if logs.length === 0
-          tr
-            td.alert.alert-info(colspan="5")
-              = t("No logs exist for that search.")
-        else
-          each log in logs
-            tr(class=["error", "fatal"].includes(log.meta.level) ? "table-danger" : "")
-              td.align-middle
-                .markdown-body.ml-0.mr-0: code= log.id
-              td.align-middle.text-center
-                = dayjs(log.created_at).format("M/D/YY h:mm A")
-              td.align-middle
-                pre.mb-0
-                  small
-                    code= log.err && log.err.message ? log.err.message : log.message
-              td.align-middle.text-center
-                code= log.meta.level
-              td.align-middle
-                code= log.meta.user ? log.meta.user.email : ""
-              td.align-middle
-                if log.meta.is_http
-                  - let badgeClass = "badge-success";
+table.table.table-hover.table-bordered.table-sm
+  thead.thead-dark
+    tr
+      th(scope="col")
+        +sortHeader('id', 'ID', '#table-logs')
+      th(scope="col")
+        +sortHeader('created_at', 'Created', '#table-logs')
+      th(scope="col")
+        +sortHeader('message', 'Message', '#table-logs')
+      th(scope="col")
+        +sortHeader('meta.level', 'Level', '#table-logs')
+      th(scope="col")
+        +sortHeader('user', 'User', '#table-logs')
+      th(scope="col")
+        +sortHeader('meta.is_http', 'HTTP', '#table-logs')
+      th.text-center.align-middle(scope="col")= t("Actions")
+    tbody
+      if logs.length === 0
+        tr
+          td.alert.alert-info(colspan="5")
+            = t("No logs exist for that search.")
+      else
+        each log in logs
+          tr(class=["error", "fatal"].includes(log.meta.level) ? "table-danger" : "")
+            td.align-middle
+              .markdown-body.ml-0.mr-0: code= log.id
+            td.align-middle.text-center
+              = dayjs(log.created_at).format("M/D/YY h:mm A")
+            td.align-middle
+              pre.mb-0
+                small
+                  code= log.err && log.err.message ? log.err.message : log.message
+            td.align-middle.text-center
+              code= log.meta.level
+            td.align-middle
+              code= log.meta.user ? log.meta.user.email : ""
+            td.align-middle
+              if log.meta.is_http
+                - let badgeClass = "badge-success";
+                if log.meta.response
                   if log.meta.response.status_code
                     if log.meta.response.status_code >= 500
                       - badgeClass = "badge-danger";
@@ -52,11 +51,11 @@ include ../../_pagination
                   ul.list-inline.mb-0
                     if log.meta.response.status_code
                       li.list-inline-item.badge.badge-pill(class=badgeClass)= log.meta.response.status_code
-                    if log.meta.request.method
-                      li.list-inline-item.badge.badge-pill.badge-light= log.meta.request.method
-                    if log.meta.request.url
-                      li.list-inline-item: small: code= log.meta.request.url
-              //-.
-                td.align-middle
-                  = 'None'
+                    if log.meta.request
+                      if log.meta.request.method
+                        li.list-inline-item.badge.badge-pill.badge-light= log.meta.request.method
+                      if log.meta.request.url
+                        li.list-inline-item: small: code= log.meta.request.url
+            td.align-middle.text-center
+              a.btn.btn-dark.btn-sm(href=l(`/admin/logs/${log.id}`), target="_blank"): i.fa.fa-search
 +paginate('#table-logs')

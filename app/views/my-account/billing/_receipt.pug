@@ -27,9 +27,11 @@ if !returnHTML
               br
               | United States of America
               br
-              a.text-decoration-none.text-dark(href="mailto:support@forwardemail.net") support@forwardemail.net
+              a.text-decoration-none.text-dark(
+                href="mailto:support@forwardemail.net"
+              ) support@forwardemail.net
               br
-              a.text-decoration-none.text-dark(href=config.urls.web)= config.urls.web.replace('http://', '').replace('https://', '')
+              a.text-decoration-none.text-dark(href=config.urls.web)= config.urls.web.replace("http://", "").replace("https://", "")
           td.border-0.text-right.d-none.d-sm-block.d-print-block
             u.font-weight-bold= t("Customer")
             address
@@ -47,10 +49,12 @@ if !returnHTML
               a.text-decoration-none.text-dark(href=`mailto:${user.email}`)= user.email
       tr
         td.border-0
-          u.font-weight-bold= t('Date')
+          u.font-weight-bold= t("Date")
           br
           = dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).locale(locale).format("M/D/YY")
-        td.border-0.text-right(class=returnHTML ? '' : 'd-none d-sm-block d-print-block')
+        td.border-0.text-right(
+          class=returnHTML ? "" : "d-none d-sm-block d-print-block"
+        )
           u.font-weight-bold= t("Reference")
           br
           = payment.reference
@@ -65,7 +69,9 @@ if !returnHTML
           u.font-weight-bold= t("Method")
           br
           +paymentMethod(payment)
-        td.border-0.text-right(class=returnHTML ? '' : 'd-none d-sm-block d-print-block')
+        td.border-0.text-right(
+          class=returnHTML ? "" : "d-none d-sm-block d-print-block"
+        )
           u.font-weight-bold= t("Status")
           br
           = t("Paid")
@@ -86,9 +92,9 @@ if !returnHTML
         td.border-0.text-right= accounting.formatMoney(payment.amount / 100)
       if payment.amount_refunded > 0
         tr
-          td.border-0= payment.method === 'free_beta_program' ? t('Discount') : t('Refund')
+          td.border-0= payment.method === "free_beta_program" ? t("Discount") : t("Refund")
           td.border-0.text-right
-            = '-'
+            = "-"
             = accounting.formatMoney(payment.amount_refunded / 100)
     tfoot
       tr

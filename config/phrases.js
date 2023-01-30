@@ -59,6 +59,7 @@ module.exports = {
   INVALID_SLUG: 'Please slightly change values to ensure slug uniqueness.',
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
   INVALID_USER: 'User does not exist.',
+  INVALID_LOG: 'Log does not exist.',
   INVALID_MEMBER: 'Member does not exist.',
   INVALID_VERIFICATION_PIN: 'The verification code entered was invalid.',
   INVALID_PAYMENT_METHOD:

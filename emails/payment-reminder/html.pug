@@ -6,7 +6,7 @@ block content
       .col-12
         .card.border-dark.d-block
           h1.h5.card-header.bg-dark.text-white.text-center
-            != t('Your plan <span class="notranslate">%s</span> <span class="notranslate">%s</span>', new Date(user[config.userFields.planExpiresAt]).getTime() > Date.now() ? t('expires') : t('expired'), dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow())
+            != t('Your plan <span class="notranslate">%s</span> <span class="notranslate">%s</span>', new Date(user[config.userFields.planExpiresAt]).getTime() > Date.now() ? t("expires") : t("expired"), dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow())
           .card-body.p-0
             a(href=`${config.urls.web}/${locale}/my-account/billing`)
               img.img-fluid.d-block.align-top(
@@ -16,30 +16,38 @@ block content
               )
             .p-3.text-center
               if _.isDate(user[config.userFields.paymentReminderFollowUpSentAt])
-                p.card-text: strong.text-danger= t('Email forwarding is currently paused.')
-                p.card-text: strong.text-danger!= t('This is your <u>final notice</u> to make payment.')
-                p.card-text.mb-0= t('Make payment now to resume email forwarding.')
+                p.card-text: strong.text-danger= t("Email forwarding is currently paused.")
+                p.card-text: strong.text-danger!= t("This is your <u>final notice</u> to make payment.")
+                p.card-text.mb-0= t("Make payment now to resume email forwarding.")
               else if _.isDate(user[config.userFields.paymentReminderInitialSentAt])
-                p.card-text: strong.text-danger= t('Email forwarding is currently paused.')
-                p.card-text: strong.text-danger!= t('This is a follow-up to a previous notice.')
-                p.card-text.mb-0= t('Make payment now to resume email forwarding.')
+                p.card-text: strong.text-danger= t("Email forwarding is currently paused.")
+                p.card-text: strong.text-danger!= t("This is a follow-up to a previous notice.")
+                p.card-text.mb-0= t("Make payment now to resume email forwarding.")
               else if new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
-                p.card-text.mb-0!= t('Make payment now to avoid account termination.')
+                p.card-text.mb-0!= t("Make payment now to avoid account termination.")
               else
-                p.card-text.mb-0!= t('Your plan expires on <span class="text-danger font-weight-bold notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).format('M/D/YY'))
+                p.card-text.mb-0!= t('Your plan expires on <span class="text-danger font-weight-bold notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).format("M/D/YY"))
               ul.list-inline.text-center.mb-0
                 if !isSANB(user[config.userFields.stripeSubscriptionID]) && !isSANB(user[config.userFields.paypalSubscriptionID])
                   li.list-inline-item.mt-3
-                    a.btn.btn-md.btn-danger(href=`${config.urls.web}/${locale}/my-account/billing/make-payment`)= t("Make Payment")
+                    a.btn.btn-md.btn-danger(
+                      href=`${config.urls.web}/${locale}/my-account/billing/make-payment`
+                    )= t("Make Payment")
                 if isSANB(user[config.userFields.stripeSubscriptionID])
                   li.list-inline-item.mt-3
-                    a.btn.btn-md.btn-primary(href=`${config.urls.web}/${locale}/my-account/billing/update-card`)= t('Update Payment Method')
+                    a.btn.btn-md.btn-primary(
+                      href=`${config.urls.web}/${locale}/my-account/billing/update-card`
+                    )= t("Update Payment Method")
                 if !isSANB(user[config.userFields.stripeSubscriptionID]) && !isSANB(user[config.userFields.paypalSubscriptionID])
                   li.list-inline-item.mt-3
-                    a.btn.btn-md.btn-success(href=`${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`)= t("Enable Auto-Renew")
+                    a.btn.btn-md.btn-success(
+                      href=`${config.urls.web}/${locale}/my-account/billing/enable-auto-renew`
+                    )= t("Enable Auto-Renew")
                 li.list-inline-item.mt-3
-                  a.btn.btn-md.btn-dark(href=`${config.urls.web}/${locale}/my-account/billing`)= t("Manage Billing")
+                  a.btn.btn-md.btn-dark(
+                    href=`${config.urls.web}/${locale}/my-account/billing`
+                  )= t("Manage Billing")
             include ../_account-summary
 
           .card-footer.text-center.small.text-muted
-            = t('You must make payment to avoid account termination.')
+            = t("You must make payment to avoid account termination.")

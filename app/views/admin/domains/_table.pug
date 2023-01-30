@@ -9,7 +9,7 @@ include ../../_pagination
           +sortHeader('name', 'Name', '#table-domains')
         th(scope="col")
           +sortHeader('is_global', 'Global', '#table-domains')
-        th(scope="col").align-middle= t('Members')
+        th.align-middle(scope="col")= t("Members")
         th(scope="col")
           +sortHeader('plan', 'Plan', '#table-domains')
         th(scope="col")
@@ -38,11 +38,14 @@ include ../../_pagination
                 ul.list-inline
                   each member in domain.members
                     li.list-inline-item
-                      a(href=l(`/admin/users?mongodb_query={ email: "${member.user.email}" }`), class=member.group === 'admin' ? '' : 'text-muted').small.text-monospace= member.user.email
-                      = ' '
-                      = '('
+                      a.small.text-monospace(
+                        href=l(`/admin/users?mongodb_query={ email: "${member.user.email}" }`),
+                        class=member.group === "admin" ? "" : "text-muted"
+                      )= member.user.email
+                      = " "
+                      = "("
                       code.text-muted= member.user.id
-                      = ')'
+                      = ")"
               td.align-middle.text-center
                 = t(titleize(humanize(domain.plan)))
               td.align-middle.text-center
