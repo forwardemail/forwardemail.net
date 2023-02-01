@@ -33,7 +33,7 @@
     - name: copy local profile file to server
       copy:
         src: '{{ input_profile }}'
-        dest: /var/www/production/.gapps-creds.json
+        dest: /var/www/production/.gapp-creds.json
         owner: www-data
         group: www-data
         # https://chmodcommand.com/chmod-660/
