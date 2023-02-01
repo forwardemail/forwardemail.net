@@ -14,8 +14,8 @@ const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
 const mongoose = require('mongoose');
 
-const Users = require('#models/user');
-const Domains = require('#models/domain');
+const Users = require('#models/users');
+const Domains = require('#models/domains');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
