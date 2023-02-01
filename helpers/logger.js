@@ -1,5 +1,3 @@
-const path = require('path');
-
 const Axe = require('axe');
 const Cabin = require('cabin');
 const cuid = require('cuid');
@@ -13,22 +11,8 @@ const mongoose = require('mongoose');
 
 const loggerConfig = require('../config/logger');
 
-//
-// NOTE: this prevents cyclical dependencies
-//
-let Logs = false;
-if (
-  // eslint-disable-next-line no-undef
-  typeof window !== 'object' &&
-  module &&
-  (!module.parent ||
-    module.parent.id !== path.join(__dirname, '..', 'config', 'mongoose.js'))
-)
-  // this package is ignored in `browser` config in `package.json`
-  // in order to make the client-side payload less kb
-  Logs = require('#models/logs');
-
 const silentSymbol = Symbol.for('axe.silent');
+const connectionNameSymbol = Symbol.for('connection.name');
 
 const logger = new Axe(loggerConfig);
 
@@ -64,9 +48,13 @@ async function hook(err, message, meta) {
   if (meta.ignore_hook) return;
 
   // eslint-disable-next-line no-undef
-  if (typeof window !== 'object' && Logs) {
+  if (typeof window !== 'object') {
     try {
-      const log = await Logs.create(
+      const conn = mongoose.connections.find(
+        (conn) => conn[connectionNameSymbol] === 'LOGS_MONGO_URI'
+      );
+      if (!conn) throw new Error('Mongoose connection does not exist');
+      conn.models.Logs.create(
         // eslint-disable-next-line prefer-object-spread
         Object.assign(
           {
@@ -79,18 +67,15 @@ async function hook(err, message, meta) {
             ? { user: new mongoose.Types.ObjectId(meta.user.id) }
             : {}
         )
-      );
-      logger.info('log created', { log, ignore_hook: true });
-      return;
+      )
+        .then((log) => logger.info('log created', { log, ignore_hook: true }))
+        .catch((err) => logger.error(err, { ignore_hook: true }));
     } catch (err) {
       logger.error(err, { ignore_hook: true });
     }
+
+    return;
   }
-
-  // TODO: if !Logs and window not object then we should still try to superagent using restricted key
-
-  // eslint-disable-next-line no-undef
-  if (typeof window !== 'object') return;
 
   try {
     // eslint-disable-next-line no-undef
@@ -113,12 +98,14 @@ async function hook(err, message, meta) {
     // eslint-disable-next-line no-undef
     if (typeof window.API_TOKEN === 'string') request.auth(window.API_TOKEN);
 
-    const response = await request
+    request
       .type('application/json')
       .retry(3)
-      .send(safeStringify({ err: parseErr(err), message, meta }));
-
-    logger.info('log sent over HTTP', { response, ignore_hook: true });
+      .send(safeStringify({ err: parseErr(err), message, meta }))
+      .then((response) =>
+        logger.info('log sent over HTTP', { response, ignore_hook: true })
+      )
+      .catch((err) => logger.error(err, { ignore_hook: true }));
   } catch (err) {
     logger.error(err, { ignore_hook: true });
   }

@@ -5,7 +5,6 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const env = require('#config/env');
 const config = require('#config');
 
 const Inquiries = new mongoose.Schema({
@@ -31,7 +30,6 @@ Inquiries.plugin(mongooseCommonPlugin, {
 });
 
 const conn = mongoose.connections.find(
-  (conn) => conn._connectionString === env.MONGO_URI
+  (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
 );
-if (!conn) throw new Error('Mongoose connection does not exist');
 module.exports = conn.model('Inquiries', Inquiries);
