@@ -243,6 +243,13 @@ async function getPDFReceipt(
 
   const locals = {
     ...config.views.locals,
+    ctx: {
+      path: '/',
+      pathWithoutLocale: '/',
+      get() {
+        return '';
+      }
+    },
     locale,
     payment,
     user,
