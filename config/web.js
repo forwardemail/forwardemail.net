@@ -12,6 +12,7 @@ const cookieOptions = require('./cookies');
 const koaCashConfig = require('./koa-cash');
 const config = require('.');
 const i18n = require('#helpers/i18n');
+const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
 
 const defaultSrc = isSANB(process.env.WEB_HOST)
@@ -139,13 +140,13 @@ module.exports = (redis) => ({
   session: {
     errorHandler(err, type, ctx) {
       if (
+        // <https://github.com/luin/ioredis/issues/1716>
         err.message === 'Connection is closed.' ||
-        err.name === 'RedisError' ||
-        err.name === 'MaxRetriesPerRequestError' ||
-        (err.constructor &&
-          Object.getPrototypeOf(err.constructor).name === 'RedisError')
+        isErrorConstructorName(err, 'MongooseError') ||
+        isErrorConstructorName(err, 'MongoError') ||
+        isErrorConstructorName(err, 'RedisError')
       ) {
-        ctx.logger.error(err);
+        ctx.logger.fatal(err);
         throw Boom.clientTimeout(ctx.translateError('WEBSITE_OUTAGE'));
       }
 
@@ -153,34 +154,49 @@ module.exports = (redis) => ({
       throw err;
     }
   },
-  hookBeforeSetup(app) {
-    app.use((ctx, next) => {
-      // if the referrer was Vercel then redirect to the guide
-      if (
-        ctx.method === 'GET' &&
-        ctx.accepts('html') &&
-        !ctx.path.endsWith('/guides/vercel') &&
-        ctx.get('Referrer') &&
-        ctx.get('Referrer').startsWith('https://vercel.com')
-      ) {
-        ctx.redirect('/guides/vercel');
-        return;
-      }
-
-      return next();
-    });
-  },
-  hookBeforeRoutes(app) {
+  hookBeforePassport(app) {
     app.use((ctx, next) => {
       // if either mongoose or redis are not connected
       // then render website outage message to users
+      const isMongooseDown = mongoose.connections.some(
+        (conn) => conn.readyState !== mongoose.ConnectionStates.connected
+      );
+      const isRedisDown =
+        !ctx.client || (ctx.client.status && ctx.client.status !== 'ready');
+
+      if (isMongooseDown || isRedisDown) {
+        const obj = {};
+        obj.mongoose = mongoose.connections.map((conn) => ({
+          id: conn.id,
+          readyState: conn.readyState,
+          name: conn.name,
+          host: conn.host,
+          port: conn.port
+        }));
+        if (ctx?.client?.status && ctx?.client?._getDescription)
+          obj.redis = {
+            status: ctx.client.status,
+            description: ctx.client._getDescription()
+          };
+        else obj.redis = 'ioredis-mock';
+        ctx.logger.fatal(new Error('Website outage'), obj);
+      }
+
       if (
         ctx.method === 'GET' &&
         ctx.accepts('html') &&
-        (mongoose.connection.readyState !== 1 ||
-          (ctx.client && ctx.client.status !== 'ready'))
-      )
-        ctx.flash('warning', ctx.translate('WEBSITE_OUTAGE'));
+        (isMongooseDown || isRedisDown)
+      ) {
+        ctx.flash('custom', {
+          title: ctx.request.t('Warning'),
+          html: `<small>${ctx.translate('WEBSITE_OUTAGE')}</small>`,
+          type: 'warning',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          position: 'top'
+        });
+      }
 
       return next();
     });

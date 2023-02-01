@@ -1,19 +1,20 @@
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const sharedConfig = require('@ladjs/shared-config');
 const parseErr = require('parse-err');
 
+const mongoose = require('mongoose');
 const syncPayPalOrderPayments = require('./sync-paypal-order-payments');
 const syncPayPalSubscriptionPayments = require('./sync-paypal-subscription-payments');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const emailHelper = require('#helpers/email');
 const config = require('#config');
 
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -22,7 +23,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   //
   // NOTE: we have to do this in series due to PayPal 429 API rate limitations

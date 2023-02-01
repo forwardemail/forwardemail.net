@@ -2,7 +2,7 @@ const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 
 const emailHelper = require('#helpers/email');
-const Payments = require('#models/payment');
+const Payments = require('#models/payments');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const syncPayPalOrderPaymentByPaymentId = require('#helpers/sync-paypal-order-payment-by-payment-id');

@@ -64,7 +64,11 @@ block body
         .card.position-relative.mt-3
           if provider && provider.name && provider.url
             .position-absolute.w-100.text-right
-              a.badge.badge-pill.badge-primary.mt-3.mr-3(href=provider.url, target="_blank", rel="noopener noreferrer")
+              a.badge.badge-pill.badge-primary.mt-3.mr-3(
+                href=provider.url,
+                target="_blank",
+                rel="noopener noreferrer"
+              )
                 i.fa.fa-external-link
                 = " "
                 != t('Go to <span class="notranslate">%s</span>', provider.name)
@@ -145,7 +149,9 @@ block body
                     = " "
                     = t("Verify")
               else
-                a.btn.btn-success.btn-sm.d-none.d-md-inline(href=l("/my-account/domains"))
+                a.btn.btn-success.btn-sm.d-none.d-md-inline(
+                  href=l("/my-account/domains")
+                )
                   i.fa.fa-refresh
                   = " "
                   = t("Verify")

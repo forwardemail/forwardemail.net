@@ -21,7 +21,9 @@ const { boolean } = require('boolean');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const Payments = require('./payment');
+const Payments = require('./payments');
+
+const env = require('#config/env');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -69,7 +71,7 @@ const omitExtraFields = [
   config.userFields.approvedDomains
 ];
 
-const User = new mongoose.Schema({
+const Users = new mongoose.Schema({
   // plan
   plan: {
     type: String,
@@ -172,7 +174,7 @@ object[config.userFields.fullEmail] = {
 
 object[config.userFields.defaultDomain] = {
   type: mongoose.Schema.ObjectId,
-  ref: 'Domain'
+  ref: 'Domains'
 };
 
 // rate limit whitelisting
@@ -336,11 +338,11 @@ object[config.userFields.addressCountry] = {
 };
 
 // finally add the fields
-User.add(object);
+Users.add(object);
 
 // set plan at date to a default value
 // of when user was created or >= their first payment
-User.pre('validate', async function (next) {
+Users.pre('validate', async function (next) {
   // NOTE: this is a fallback in case our migration script hasn't run yet
   if (!_.isDate(this[config.userFields.planSetAt])) {
     const payment = await Payments.findOne(
@@ -360,7 +362,7 @@ User.pre('validate', async function (next) {
 });
 
 // plan expires at should get updated everytime the user is saved
-User.pre('save', async function (next) {
+Users.pre('save', async function (next) {
   const user = this;
   // if user is on the free plan then return early
   if (user.plan === 'free') {
@@ -453,7 +455,7 @@ User.pre('save', async function (next) {
 });
 
 // sanitize input (striptags)
-User.pre('validate', function (next) {
+Users.pre('validate', function (next) {
   for (const prop of [
     fields.givenName,
     fields.familyName,
@@ -476,7 +478,7 @@ User.pre('validate', function (next) {
 // if the user does not have a subscription then
 // unset visa trial subscription requirement notifications
 //
-User.pre('save', function (next) {
+Users.pre('save', function (next) {
   if (!isSANB(this[config.userFields.stripeSubscriptionID]))
     this[config.userFields.stripeTrialSentAt] = undefined;
   if (!isSANB(this[config.userFields.paypalSubscriptionID]))
@@ -484,9 +486,9 @@ User.pre('save', function (next) {
   next();
 });
 
-User.plugin(captainHook);
+Users.plugin(captainHook);
 
-User.virtual(config.userFields.addressHTML).get(function () {
+Users.virtual(config.userFields.addressHTML).get(function () {
   const companyName = this[config.userFields.companyName];
   const name = [
     this[config.passport.fields.givenName],
@@ -516,7 +518,7 @@ User.virtual(config.userFields.addressHTML).get(function () {
   });
 });
 
-User.virtual(config.userFields.verificationPinHasExpired).get(function () {
+Users.virtual(config.userFields.verificationPinHasExpired).get(function () {
   return boolean(
     !this[config.userFields.verificationPinExpiresAt] ||
       new Date(this[config.userFields.verificationPinExpiresAt]).getTime() <
@@ -540,7 +542,7 @@ async function crawlDisposable() {
       throw new Error('Disposable did not crawl data.');
     disposableDomains = json;
   } catch (err) {
-    logger.fatal(err);
+    logger.error(err);
   }
 }
 
@@ -549,7 +551,7 @@ setInterval(crawlDisposable, ms('1d'));
 crawlDisposable();
 
 // this ensures that `email` was already validated, trimmed, lowercased
-User.pre('save', async function (next) {
+Users.pre('save', async function (next) {
   // only do this for new users signing up
   // (we will most likely deprecate disposable; see jobs/check-disposable)
   if (!this.isNew) return next();
@@ -573,7 +575,7 @@ User.pre('save', async function (next) {
   next();
 });
 
-User.pre('validate', async function (next) {
+Users.pre('validate', async function (next) {
   try {
     // create api token if doesn't exist
     if (!isSANB(this[config.userFields.apiToken]))
@@ -630,7 +632,7 @@ User.pre('validate', async function (next) {
 // instead you should use the helper located at
 // `../helpers/send-verification-email.js`
 //
-User.methods.updateVerificationPin = async function (ctx, revert = false) {
+Users.methods.updateVerificationPin = async function (ctx, revert = false) {
   if (revert) {
     this[config.userFields.verificationPinExpiresAt] =
       this[`__${config.userFields.verificationPinExpiresAt}`];
@@ -703,7 +705,7 @@ User.methods.updateVerificationPin = async function (ctx, revert = false) {
 // NOTE: this can come before passport-local-mongoose because
 //       the username field of "email" is already marked as unique
 //
-User.plugin(mongooseCommonPlugin, {
+Users.plugin(mongooseCommonPlugin, {
   object: 'user',
   omitCommonFields: false,
   omitExtraFields,
@@ -715,16 +717,16 @@ User.plugin(mongooseCommonPlugin, {
   }
 });
 
-User.plugin(passportLocalMongoose, config.passportLocalMongoose);
+Users.plugin(passportLocalMongoose, config.passportLocalMongoose);
 
-User.post('init', (doc) => {
+Users.post('init', (doc) => {
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
     doc[`__${fieldName}`] = doc[fieldName];
   }
 });
 
-User.pre('save', function (next) {
+Users.pre('save', function (next) {
   // filter by allowed field updates (otp enabled, profile updates, etc)
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
@@ -742,11 +744,15 @@ User.pre('save', function (next) {
   next();
 });
 
-User.postCreate((user, next) => {
+Users.postCreate((user, next) => {
   logger.info('user created', {
     user: user.toObject()
   });
   next();
 });
 
-module.exports = mongoose.model('User', User);
+const conn = mongoose.connections.find(
+  (conn) => conn._connectionString === env.MONGO_URI
+);
+if (!conn) throw new Error('Mongoose connection does not exist');
+module.exports = conn.model('Users', Users);

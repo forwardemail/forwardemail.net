@@ -4,8 +4,10 @@ require('#config/env');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const accounting = require('accounting');
@@ -15,20 +17,20 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
-const sharedConfig = require('@ladjs/shared-config');
+const mongoose = require('mongoose');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Payments, Domains } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 
 const { PAYPAL_MAPPING, PAYPAL_PLAN_MAPPING } = config.payments;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -39,7 +41,7 @@ const THREE_SECONDS = ms('3s');
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   //
   // we can filter out users with subscriptions
@@ -323,7 +325,7 @@ graceful.listen();
   try {
     await pMapSeries(ids, mapper);
   } catch (err) {
-    logger.fatal(err);
+    logger.error(err);
     // send an email to admins of the error
     await emailHelper({
       template: 'alert',

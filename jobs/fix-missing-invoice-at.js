@@ -4,23 +4,24 @@ require('#config/env');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
-const sharedConfig = require('@ladjs/shared-config');
+const mongoose = require('mongoose');
 
+const setupMongoose = require('#helpers/setup-mongoose');
 const env = require('#config/env');
 const { Payments } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 const config = require('#config');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose });
 const graceful = new Graceful({
   mongooses: [mongoose]
 });
@@ -197,7 +198,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   const ids = await Payments.distinct('_id', {
     // invoice_at: {

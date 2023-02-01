@@ -4,17 +4,16 @@ require('#config/env');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
-const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const sharedConfig = require('@ladjs/shared-config');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
 
+const Graceful = require('@ladjs/graceful');
+
+const mongoose = require('mongoose');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const { Aliases, Users, Domains } = require('#models');
 const config = require('#config');
-
-const breeSharedConfig = sharedConfig('BREE');
-
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -24,7 +23,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   // any domains that have txt and mx
   // and onboard_email_sent_at need verified_email_sent_at

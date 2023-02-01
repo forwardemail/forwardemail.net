@@ -69,4 +69,6 @@ mixin paginate(tableSelector)
             href=paginate.href({ page: 1, limit })
           )= t(limit.toString())
   if itemCount && itemCount > 1
-    p.small.text-muted.text-center(class=pageCount && pageCount > 1 ? "" : "mt-3 mt-md-0")!= t('<span class="notranslate">%d</span> results found', itemCount)
+    p.small.text-muted.text-center(
+      class=pageCount && pageCount > 1 ? "" : "mt-3 mt-md-0"
+    )!= t('<span class="notranslate">%d</span> results found', itemCount)

@@ -57,5 +57,8 @@ table.table.table-hover.table-bordered.table-sm
                       if log.meta.request.url
                         li.list-inline-item: small: code= log.meta.request.url
             td.align-middle.text-center
-              a.btn.btn-dark.btn-sm(href=l(`/admin/logs/${log.id}`), target="_blank"): i.fa.fa-search
+              a.btn.btn-dark.btn-sm(
+                href=l(`/admin/logs/${log.id}`),
+                target="_blank"
+              ): i.fa.fa-search
 +paginate('#table-logs')

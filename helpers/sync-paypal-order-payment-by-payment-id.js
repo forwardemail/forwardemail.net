@@ -1,7 +1,7 @@
 const delay = require('delay');
 const ms = require('ms');
 
-const Payments = require('#models/payment');
+const Payments = require('#models/payments');
 const logger = require('#helpers/logger');
 const { paypalAgent } = require('#helpers/paypal');
 

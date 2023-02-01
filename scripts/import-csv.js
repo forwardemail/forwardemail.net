@@ -5,18 +5,15 @@ const process = require('process');
 const fs = require('fs');
 
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const isSANB = require('is-string-and-not-blank');
-const sharedConfig = require('@ladjs/shared-config');
 const validator = require('validator');
 
+const mongoose = require('mongoose');
 const logger = require('#helpers/logger');
 
-const Users = require('#models/user');
-const Domains = require('#models/domain');
-const Aliases = require('#models/alias');
-
-const breeSharedConfig = sharedConfig('BREE');
+const Users = require('#models/users');
+const Domains = require('#models/domains');
+const Aliases = require('#models/aliases');
 
 // environment variables passed to script:
 // USER_EMAIL=the email of the user that the aliases created will belong to
@@ -26,7 +23,6 @@ if (!isSANB(process.env.USER_EMAIL)) throw new Error('USER_EMAIL missing');
 if (!isSANB(process.env.DOMAIN_NAME)) throw new Error('DOMAIN_NAME missing');
 if (!isSANB(process.env.FILE_PATH)) throw new Error('FILE_PATH missing');
 
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger

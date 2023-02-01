@@ -9,9 +9,9 @@ const parseErr = require('parse-err');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const env = require('#config/env');
-const Users = require('#models/user');
+const Users = require('#models/users');
 const emailHelper = require('#helpers/email');
-const Payments = require('#models/payment');
+const Payments = require('#models/payments');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS } = config.payments;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);

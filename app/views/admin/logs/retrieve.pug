@@ -8,4 +8,6 @@ block body
         .card.border-dark
           h4.card-header= result.id
           .card-body.markdown-body
-            pre: code= JSON.stringify(result, null, 2)
+            pre
+              code.hljs.language-json
+                != hljs.highlight(JSON.stringify(result, null, 2), { language: "json", ignoreIllegals: true }).value

@@ -12,6 +12,9 @@ const config = require('#config');
 const { Users, Domains, Aliases, Payments } = require('#models');
 const locales = require('#config/locales');
 
+// <https://stackoverflow.com/a/44096051>
+const timezone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 const models = { Users, Domains, Aliases };
 const loadedLocales = {};
 
@@ -123,7 +126,7 @@ async function getBody(ctx) {
         {
           $group: {
             _id: {
-              $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+              $dateToString: { format: '%Y/%m', date: '$invoice_at', timezone }
             },
             total: { $sum: '$amount' }
           }
@@ -173,7 +176,7 @@ async function getBody(ctx) {
         {
           $group: {
             _id: {
-              $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+              $dateToString: { format: '%Y/%m', date: '$invoice_at', timezone }
             },
             total: { $sum: '$amount' }
           }
@@ -226,7 +229,11 @@ async function getBody(ctx) {
           {
             $group: {
               _id: {
-                $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+                $dateToString: {
+                  format: '%Y/%m',
+                  date: '$invoice_at',
+                  timezone
+                }
               },
               total: { $sum: '$amount' }
             }
@@ -254,7 +261,11 @@ async function getBody(ctx) {
           {
             $group: {
               _id: {
-                $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+                $dateToString: {
+                  format: '%Y/%m',
+                  date: '$invoice_at',
+                  timezone
+                }
               },
               total: { $sum: '$amount' }
             }
@@ -275,7 +286,11 @@ async function getBody(ctx) {
           {
             $group: {
               _id: {
-                $dateToString: { format: '%Y/%m', date: '$invoice_at' }
+                $dateToString: {
+                  format: '%Y/%m',
+                  date: '$invoice_at',
+                  timezone
+                }
               },
               total: { $sum: '$amount' }
             }
@@ -350,7 +365,11 @@ async function getBody(ctx) {
             {
               $group: {
                 _id: {
-                  $dateToString: { format: '%Y/%m', date: '$created_at' }
+                  $dateToString: {
+                    format: '%Y/%m',
+                    date: '$created_at',
+                    timezone
+                  }
                 },
                 count: { $sum: 1 }
               }

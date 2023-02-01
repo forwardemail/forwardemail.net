@@ -1,4 +1,4 @@
-#########################################################
+/#########################################################
 ## Configure the section below replacing "TODO" values ##
 #########################################################
 
@@ -87,7 +87,6 @@ SSL_CA_PATH="/var/www/production/.ssl-ca"
 WEB_PROTOCOL={{HTTP_PROTOCOL}}
 WEB_PORT={{HTTP_PORT}}
 WEB_URL={{WEB_PROTOCOL}}://{{WEB_HOST}}
-WEB_MONGO_URI={{{MONGO_URI}}}
 
 WEB_REDIS_HOST={{REDIS_HOST}}
 WEB_REDIS_PASSWORD={{REDIS_PASSWORD}}
@@ -99,7 +98,6 @@ WEB_SSL_CA_PATH={{{SSL_CA_PATH}}}
 API_PROTOCOL={{HTTP_PROTOCOL}}
 API_PORT={{HTTP_PORT}}
 API_URL={{API_PROTOCOL}}://{{API_HOST}}
-API_MONGO_URI={{{MONGO_URI}}}
 
 API_REDIS_HOST={{REDIS_HOST}}
 API_REDIS_PASSWORD={{REDIS_PASSWORD}}
@@ -108,6 +106,5 @@ API_SSL_KEY_PATH={{{SSL_KEY_PATH}}}
 API_SSL_CERT_PATH={{{SSL_CERT_PATH}}}
 API_SSL_CA_PATH={{{SSL_CA_PATH}}}
 
-BREE_MONGO_URI={{{MONGO_URI}}}
 BREE_REDIS_HOST={{REDIS_HOST}}
 BREE_REDIS_PASSWORD={{REDIS_PASSWORD}}

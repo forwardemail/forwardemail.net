@@ -37,7 +37,7 @@ graceful.listen();
 
     await pipeline.exec();
   } catch (err) {
-    logger.fatal(err);
+    logger.error(err);
   }
 
   if (parentPort) parentPort.postMessage('done');

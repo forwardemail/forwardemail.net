@@ -17,15 +17,16 @@ const wkhtmltopdf = require('wkhtmltopdf');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
+const env = require('#config/env');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 
 const inline = pify(webResourceInliner.html);
 
-const Payment = new mongoose.Schema({
+const Payments = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
-    ref: 'User',
+    ref: 'Users',
     required: true,
     index: true
   },
@@ -166,7 +167,7 @@ const Payment = new mongoose.Schema({
   }
 });
 
-Payment.virtual('description').get(function () {
+Payments.virtual('description').get(function () {
   const duration = dayjs()
     .add(this.duration, 'millisecond')
     .locale(this.locale)
@@ -197,7 +198,7 @@ async function getUniqueReference(payment) {
   return payment.reference;
 }
 
-Payment.pre('validate', async function (next) {
+Payments.pre('validate', async function (next) {
   try {
     this.amount_formatted = accounting.formatMoney(
       Number.isFinite(this.amount_refunded) &&
@@ -219,7 +220,7 @@ Payment.pre('validate', async function (next) {
   }
 });
 
-Payment.plugin(mongooseCommonPlugin, {
+Payments.plugin(mongooseCommonPlugin, {
   object: 'payment',
   defaultLocale: i18n.getLocale()
 });
@@ -296,6 +297,10 @@ async function getPDFReceipt(
   return wkhtmltopdf(inlinedHTML, options);
 }
 
-Payment.statics.getPDFReceipt = getPDFReceipt;
+Payments.statics.getPDFReceipt = getPDFReceipt;
 
-module.exports = mongoose.model('Payment', Payment);
+const conn = mongoose.connections.find(
+  (conn) => conn._connectionString === env.MONGO_URI
+);
+if (!conn) throw new Error('Mongoose connection does not exist');
+module.exports = conn.model('Payments', Payments);

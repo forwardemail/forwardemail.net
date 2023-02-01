@@ -4,24 +4,25 @@ const { parentPort } = require('worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const pMap = require('p-map');
-const sharedConfig = require('@ladjs/shared-config');
+const mongoose = require('mongoose');
 
 const i18n = require('#helpers/i18n');
 const config = require('#config');
 const email = require('#helpers/email');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, Payments } = require('#models');
 
 const concurrency = config.env === 'development' ? 1 : os.cpus().length;
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -227,7 +228,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   const ids = await Users.distinct('_id', {
     plan: { $ne: 'free' },
@@ -261,7 +262,7 @@ async function mapper(id) {
   try {
     await pMap(ids, mapper, { concurrency });
   } catch (err) {
-    logger.fatal(err);
+    logger.error(err);
   }
 
   if (parentPort) parentPort.postMessage('done');

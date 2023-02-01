@@ -5,18 +5,19 @@ const os = require('os');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
-const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const pMap = require('p-map');
-const sharedConfig = require('@ladjs/shared-config');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
 
+const Graceful = require('@ladjs/graceful');
+const pMap = require('p-map');
+
+const mongoose = require('mongoose');
 const config = require('#config');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const { Aliases, Users, Domains } = require('#models');
 
 const concurrency = Math.round(os.cpus().length * 2);
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -25,7 +26,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   logger.info('starting lowercase job');
 

@@ -112,7 +112,7 @@ block body
         = t("Features and Pricing")
         = " "
         i.fa.fa-angle-double-down
-  div.bg-fixed.lazyload.py-3.py-md-4.py-lg-5(
+  .bg-fixed.lazyload.py-3.py-md-4.py-lg-5(
     id=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing)) ? false : "features",
     class=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing)) ? "" : "border-md-top border-dark",
     data-src=manifest("img/art/stars.svg")

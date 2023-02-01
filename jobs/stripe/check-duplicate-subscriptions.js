@@ -10,7 +10,7 @@ const getAllStripeCustomers = require('./get-all-stripe-customers');
 const env = require('#config/env');
 const config = require('#config');
 const logger = require('#helpers/logger');
-const Users = require('#models/user');
+const Users = require('#models/users');
 const emailHelper = require('#helpers/email');
 
 const concurrency = os.cpus().length;
@@ -69,7 +69,7 @@ async function mapper(customer) {
   ];
 
   if (subscriptions.length > 1) {
-    logger.fatal(
+    logger.error(
       new Error(
         `We may need to refund: User had multiple subscriptions ${user.email} (${customer.id})`
       )

@@ -243,7 +243,7 @@ async function retrieveDomainBilling(ctx) {
 
           // if the user did not exist then return early
           if (!member.user || !member.user.id) {
-            logger.fatal(
+            logger.error(
               new Error(`Member in ${domain.name} no longer exists`)
             );
             continue;

@@ -5,21 +5,17 @@ const process = require('process');
 const os = require('os');
 
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const sharedConfig = require('@ladjs/shared-config');
 const pMap = require('p-map');
 
-const Users = require('#models/user');
+const mongoose = require('mongoose');
+const Users = require('#models/users');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const syncPayPalSubscriptionPaymentsByUser = require('#helpers/sync-paypal-subscription-payments-by-user');
 const { paypalAgent } = require('#helpers/paypal');
 
-const breeSharedConfig = sharedConfig('BREE');
-
 const concurrency = os.cpus().length;
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger

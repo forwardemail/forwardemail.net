@@ -53,7 +53,10 @@ block body
               = " "
               = t("or")
               = " "
-              a.alert-link.text-decoration-underline(href=l("/private-business-email"), target="_blank")= t("learn more")
+              a.alert-link.text-decoration-underline(
+                href=l("/private-business-email"),
+                target="_blank"
+              )= t("learn more")
           .card
             h2.h6.card-header
               if isMakePayment

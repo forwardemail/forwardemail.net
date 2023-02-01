@@ -12,8 +12,8 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
 const logger = require('#helpers/logger');
-const Users = require('#models/user');
-const Payments = require('#models/payment');
+const Users = require('#models/users');
+const Payments = require('#models/payments');
 
 const concurrency = os.cpus().length;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);

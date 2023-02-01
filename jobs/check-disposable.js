@@ -4,19 +4,18 @@ require('#config/env');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const sharedConfig = require('@ladjs/shared-config');
 const superagent = require('superagent');
 
-const Users = require('#models/user');
-const Aliases = require('#models/alias');
-const Domains = require('#models/domain');
+const mongoose = require('mongoose');
+const Users = require('#models/users');
+const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const logger = require('#helpers/logger');
-
-const breeSharedConfig = sharedConfig('BREE');
-
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+const setupMongoose = require('#helpers/setup-mongoose');
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -26,7 +25,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   const { text } = await superagent.get(
     'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'

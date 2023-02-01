@@ -2,6 +2,8 @@ const test = require('ava');
 
 const utils = require('../utils');
 
+test.before(utils.setupMongoose);
+test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupWebServer);
 
 test('redirects to correct locale', async (t) => {

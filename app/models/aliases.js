@@ -16,8 +16,10 @@ const { isIP, isEmail, isURL } = require('validator');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const Domains = require('./domain');
-const Users = require('./user');
+const Domains = require('./domains');
+const Users = require('./users');
+
+const env = require('#config/env');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -39,20 +41,20 @@ const quotedEmailUserUtf8 = new RE2(
   /^([\s\u0001-\u0008\u000E-\u001F!\u0023-\u005B\u005D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i
 );
 
-const Alias = new mongoose.Schema({
+const Aliases = new mongoose.Schema({
   is_api: {
     type: Boolean,
     default: false
   },
   user: {
     type: mongoose.Schema.ObjectId,
-    ref: 'User',
+    ref: 'Users',
     required: true,
     index: true
   },
   domain: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Domain',
+    ref: 'Domains',
     required: true,
     index: true
   },
@@ -122,9 +124,9 @@ const Alias = new mongoose.Schema({
   ]
 });
 
-Alias.plugin(captainHook);
+Aliases.plugin(captainHook);
 
-Alias.pre('validate', function (next) {
+Aliases.pre('validate', function (next) {
   // require alias name
   if (
     !isSANB(this.name) ||
@@ -199,7 +201,7 @@ Alias.pre('validate', function (next) {
 
 // prevent wildcards from being disabled
 // (they either need deleted or enabled, too confusing otherwise)
-Alias.pre('validate', function (next) {
+Aliases.pre('validate', function (next) {
   if (this.name === '*' && !this.is_enabled)
     return next(
       new Error(
@@ -211,14 +213,14 @@ Alias.pre('validate', function (next) {
 
 // this must be kept before other `pre('save')` hooks as
 // it populates "id" String automatically for comparisons
-Alias.plugin(mongooseCommonPlugin, {
+Aliases.plugin(mongooseCommonPlugin, {
   object: 'alias',
   omitExtraFields: ['is_api'],
   defaultLocale: i18n.getLocale()
 });
 
 // eslint-disable-next-line complexity
-Alias.pre('save', async function (next) {
+Aliases.pre('save', async function (next) {
   const alias = this;
   try {
     // domain and user must exist
@@ -424,4 +426,8 @@ Alias.pre('save', async function (next) {
   }
 });
 
-module.exports = mongoose.model('Alias', Alias);
+const conn = mongoose.connections.find(
+  (conn) => conn._connectionString === env.MONGO_URI
+);
+if (!conn) throw new Error('Mongoose connection does not exist');
+module.exports = conn.model('Aliases', Aliases);
