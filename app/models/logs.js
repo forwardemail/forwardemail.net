@@ -12,6 +12,9 @@ const safeStringify = require('fast-safe-stringify');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
+const Users = require('./users');
+const Domains = require('./domains');
+
 const ERR_DUP_LOG = new Error('Duplicate log in past hour prevented');
 ERR_DUP_LOG.is_duplicate_log = true;
 
@@ -31,11 +34,11 @@ const MAX_BYTES = bytes('20KB');
 const Logs = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Users'
+    ref: Users
   },
   domain: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Domains'
+    ref: Domains
   },
   err: mongoose.Schema.Types.Mixed,
   message: String,
