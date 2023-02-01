@@ -36,7 +36,11 @@ table.table.table-hover.table-bordered.table-sm
             td.align-middle.text-center
               code= log.meta.level
             td.align-middle
-              code= log.user && log.user.email ? log.user.email: log.meta.user ? log.meta.user.email : ""
+              code
+                if log.user && log.user.email
+                  = log.user.email
+                else if log.meta && log.meta.user && log.meta.user.email
+                  = log.meta.user.email
             td.align-middle
               if log.meta.is_http
                 - let badgeClass = "badge-success";
