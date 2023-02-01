@@ -84,7 +84,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const ids = await Users.distinct('_id', {
     account_updates: {

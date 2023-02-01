@@ -278,7 +278,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   //
   // TODO: in the future when we integrate historical checks

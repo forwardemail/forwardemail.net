@@ -13,19 +13,21 @@ const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
 const mongoose = require('mongoose');
 
+const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, Payments } = require('#models');
 const config = require('#config');
 
 const concurrency = os.cpus().length;
 const graceful = new Graceful({
-  mongooses: [mongoose]
+  mongooses: [mongoose],
+  logger
 });
 
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   let owed = 0;
   let predicted = 0;

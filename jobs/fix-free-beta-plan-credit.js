@@ -29,7 +29,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   async function mapper(id) {
     const user = await Users.findById(id);

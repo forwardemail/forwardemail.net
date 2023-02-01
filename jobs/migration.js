@@ -23,7 +23,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   // any domains that have txt and mx
   // and onboard_email_sent_at need verified_email_sent_at

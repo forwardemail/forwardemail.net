@@ -66,7 +66,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const ids = await Users.distinct('_id', {
     plan: { $ne: 'free' },

@@ -25,7 +25,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const { text } = await superagent.get(
     'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'

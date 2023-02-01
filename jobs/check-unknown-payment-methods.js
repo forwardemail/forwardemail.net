@@ -24,7 +24,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const count = await Payments.countDocuments({ method: 'unknown' });
 

@@ -41,7 +41,7 @@ const THREE_SECONDS = ms('3s');
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   //
   // we can filter out users with subscriptions

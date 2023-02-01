@@ -26,7 +26,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   // delete unverified and unpaid users from 7+ days ago
   {

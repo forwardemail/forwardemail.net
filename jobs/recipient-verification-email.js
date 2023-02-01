@@ -154,7 +154,7 @@ async function mapper(alias) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   //
   // find all aliases that haven't been sent verification emails yet

@@ -113,7 +113,7 @@ async function mapper(upgradeReminder) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   //
   // find all aliases that haven't been sent verification emails yet

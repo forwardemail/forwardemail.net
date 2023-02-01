@@ -13,13 +13,15 @@ const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
 const mongoose = require('mongoose');
 
+const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Payments } = require('#models');
 const config = require('#config');
 
 const concurrency = os.cpus().length;
 const graceful = new Graceful({
-  mongooses: [mongoose]
+  mongooses: [mongoose],
+  logger
 });
 
 graceful.listen();
@@ -78,7 +80,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const ids = await Users.distinct('_id', {
     plan: { $ne: 'free' }
