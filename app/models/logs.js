@@ -1,5 +1,8 @@
 const { Buffer } = require('buffer');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const _ = require('lodash');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
@@ -8,6 +11,7 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const env = require('#config/env');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -28,14 +32,14 @@ const IGNORED_CONTENT_TYPES = [
 
 const MAX_BYTES = bytes('20KB');
 
-const Log = new mongoose.Schema({
+const Logs = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
-    ref: 'User'
+    ref: 'Users'
   },
   domain: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Domain'
+    ref: 'Domains'
   },
   err: mongoose.Schema.Types.Mixed,
   message: String,
@@ -50,7 +54,7 @@ const Log = new mongoose.Schema({
   }
 });
 
-Log.plugin(mongooseCommonPlugin, {
+Logs.plugin(mongooseCommonPlugin, {
   object: 'log',
   locale: false
 });
@@ -77,7 +81,7 @@ const PARTIAL_INDICES = [
 ];
 
 for (const index of PARTIAL_INDICES) {
-  Log.index(
+  Logs.index(
     { [index]: 1 },
     {
       partialFilterExpression: {
@@ -91,7 +95,7 @@ for (const index of PARTIAL_INDICES) {
 // before saving a log ensure that `err` and `meta.err` are parsed
 // (this helps with server-side log saving, and for client-side we parseErr in advance)
 //
-Log.pre('validate', function (next) {
+Logs.pre('validate', function (next) {
   if (_.isError(this.err)) this.err = parseErr(this.err);
   if (_.isError(this.meta.err)) this.meta.err = parseErr(this.meta.err);
   next();
@@ -102,7 +106,7 @@ Log.pre('validate', function (next) {
 // in addition to API endpoint rate limiting we check for duplicates
 //
 // eslint-disable-next-line complexity
-Log.pre('save', async function (next) {
+Logs.pre('save', async function (next) {
   try {
     //
     // ensure the document is not more than 20 KB
@@ -241,4 +245,9 @@ Log.pre('save', async function (next) {
   }
 });
 
-module.exports = mongoose.model('Log', Log);
+const conn = mongoose.connections.find(
+  (conn) => conn._connectionString === env.LOGS_MONGO_URI
+);
+
+if (!conn) throw new Error('Mongoose connection does not exist');
+module.exports = conn.model('Logs', Logs);

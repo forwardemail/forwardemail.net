@@ -7,9 +7,9 @@ const regexParser = require('regex-parser');
 const { boolean } = require('boolean');
 
 const config = require('#config');
-const Domains = require('#models/domain');
-const Users = require('#models/user');
-const Aliases = require('#models/alias');
+const Domains = require('#models/domains');
+const Users = require('#models/users');
+const Aliases = require('#models/aliases');
 const email = require('#helpers/email');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];

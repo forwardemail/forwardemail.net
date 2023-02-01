@@ -5,18 +5,14 @@ const process = require('process');
 const os = require('os');
 
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const sharedConfig = require('@ladjs/shared-config');
 const pMap = require('p-map');
 
+const mongoose = require('mongoose');
 const logger = require('#helpers/logger');
 
-const Payments = require('#models/payment');
-
-const breeSharedConfig = sharedConfig('BREE');
+const Payments = require('#models/payments');
 
 const concurrency = os.cpus().length;
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger

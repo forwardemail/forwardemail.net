@@ -1,19 +1,19 @@
-const Aliases = require('./alias');
-const Domains = require('./domain');
-const Inquiries = require('./inquiry');
-const SelfTests = require('./self-test');
-const Users = require('./user');
-const Payments = require('./payment');
-const Logs = require('./log');
+const Aliases = require('./aliases');
+const Domains = require('./domains');
+const Inquiries = require('./inquiries');
+const Logs = require('./logs');
+const Payments = require('./payments');
+const SelfTests = require('./self-tests');
 const UpgradeReminders = require('./upgrade-reminders');
+const Users = require('./users');
 
 module.exports = {
   Aliases,
   Domains,
   Inquiries,
-  SelfTests,
-  Users,
-  Payments,
   Logs,
-  UpgradeReminders
+  Payments,
+  SelfTests,
+  UpgradeReminders,
+  Users
 };

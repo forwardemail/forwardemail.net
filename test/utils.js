@@ -11,21 +11,32 @@ const { factory, MongooseAdapter } = require('factory-girl');
 
 factory.setAdapter(new MongooseAdapter());
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const apiConfig = require('#config/api');
 const config = require('#config');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const webConfig = require('#config/web');
 const { Users } = require('#models');
-
-let mongod;
 
 //
 // setup utilities
 //
 exports.setupMongoose = async () => {
-  mongod = await MongoMemoryServer.create();
-  const uri = mongod.getUri();
-  await mongoose.connect(uri);
+  await Promise.all(
+    mongoose.connections.map(async (connection) => {
+      const index = connection._connectionString.lastIndexOf('/');
+      const dbName = connection._connectionString.slice(index + 1);
+      const mongod = await MongoMemoryServer.create({ instance: { dbName } });
+      const uri = mongod.getUri();
+      connection._connectionString = uri;
+      connection.mongod = mongod;
+    })
+  );
+
+  await setupMongoose();
 };
 
 exports.setupWebServer = async (t) => {
@@ -84,7 +95,9 @@ exports.loginUser = async (t) => {
 //
 exports.teardownMongoose = async () => {
   await mongoose.disconnect();
-  await mongod.stop();
+  await Promise.all(
+    mongoose.connections.map((connection) => connection.mongod.stop())
+  );
 };
 
 //

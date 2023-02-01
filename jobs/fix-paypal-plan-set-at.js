@@ -4,18 +4,19 @@ require('#config/env');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const dayjs = require('dayjs-with-plugins');
 const pMapSeries = require('p-map-series');
-const sharedConfig = require('@ladjs/shared-config');
+const mongoose = require('mongoose');
 
+const setupMongoose = require('#helpers/setup-mongoose');
 const { Users } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 const config = require('#config');
 
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose });
 const graceful = new Graceful({
   mongooses: [mongoose]
 });
@@ -52,7 +53,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   const ids = await Users.distinct('_id', {
     [config.userFields.paypalSubscriptionID]: {

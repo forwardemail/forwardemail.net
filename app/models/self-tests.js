@@ -5,7 +5,9 @@ const { isEmail } = require('validator');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const SelfTest = new mongoose.Schema({
+const env = require('#config/env');
+
+const SelfTests = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -16,9 +18,13 @@ const SelfTest = new mongoose.Schema({
   }
 });
 
-SelfTest.plugin(mongooseCommonPlugin, {
+SelfTests.plugin(mongooseCommonPlugin, {
   object: 'self_test',
   locale: false
 });
 
-module.exports = mongoose.model('SelfTest', SelfTest);
+const conn = mongoose.connections.find(
+  (conn) => conn._connectionString === env.MONGO_URI
+);
+if (!conn) throw new Error('Mongoose connection does not exist');
+module.exports = conn.model('SelfTests', SelfTests);

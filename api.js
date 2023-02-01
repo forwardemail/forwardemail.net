@@ -1,19 +1,21 @@
+const process = require('process');
+
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
-
-const process = require('process');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
 
 const API = require('@ladjs/api');
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
+const mongoose = require('mongoose');
 const ip = require('ip');
 
-const Users = require('#models/user');
 const apiConfig = require('#config/api');
+const Users = require('#models/users');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 const api = new API(apiConfig, Users);
-const mongoose = new Mongoose({ ...api.config.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [api.server],
@@ -31,7 +33,7 @@ graceful.listen();
       `Lad API server listening on ${port} (LAN: ${ip.address()}:${port})`,
       { hide_meta: true }
     );
-    await mongoose.connect();
+    await setupMongoose(logger);
   } catch (err) {
     logger.error(err);
 

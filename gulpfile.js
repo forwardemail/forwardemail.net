@@ -11,6 +11,9 @@ process.env.I18N_UPDATE_FILES = true;
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
 const Mandarin = require('mandarin');
 const RevAll = require('gulp-rev-all');
@@ -173,7 +176,9 @@ function css() {
           'octicon-link',
           'lazyframe',
           'floating-label',
-          'email'
+          'email',
+          /^hljs/,
+          /^language-/
         ]
       })
     );

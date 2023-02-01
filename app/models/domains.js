@@ -19,7 +19,9 @@ const { isIP, isEmail, isPort, isURL } = require('validator');
 const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 
 const pkg = require('../../package.json');
-const Users = require('./user');
+const Users = require('./users');
+
+const env = require('#config/env');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -82,7 +84,7 @@ const REGEX_VERIFICATION = new RE2(/[^\da-z]/gi);
 const Member = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
-    ref: 'User',
+    ref: 'Users',
     index: true
   },
   group: {
@@ -128,7 +130,7 @@ Invite.plugin(mongooseCommonPlugin, {
   locale: false
 });
 
-const Domain = new mongoose.Schema({
+const Domains = new mongoose.Schema({
   has_adult_content_protection: {
     type: Boolean,
     default: true
@@ -254,10 +256,10 @@ const Domain = new mongoose.Schema({
   ]
 });
 
-Domain.plugin(captainHook);
+Domains.plugin(captainHook);
 
 // shared redis client
-Domain.virtual('client')
+Domains.virtual('client')
   .get(function () {
     return this.__client;
   })
@@ -265,7 +267,7 @@ Domain.virtual('client')
     this.__client = client;
   });
 
-Domain.virtual('link')
+Domains.virtual('link')
   .get(function () {
     return this.__link;
   })
@@ -273,7 +275,7 @@ Domain.virtual('link')
     this.__link = link;
   });
 
-Domain.virtual('skip_verification')
+Domains.virtual('skip_verification')
   .get(function () {
     return this.__skip_verification;
   })
@@ -281,7 +283,7 @@ Domain.virtual('skip_verification')
     this.__skip_verification = boolean(skipVerification);
   });
 
-Domain.pre('validate', async function (next) {
+Domains.pre('validate', async function (next) {
   try {
     const domain = this;
     if (!domain.plan) domain.plan = 'free';
@@ -312,7 +314,7 @@ Domain.pre('validate', async function (next) {
   }
 });
 
-Domain.pre('validate', function (next) {
+Domains.pre('validate', function (next) {
   if (
     !Array.isArray(this.members) ||
     this.members.length === 0 ||
@@ -332,7 +334,7 @@ Domain.pre('validate', function (next) {
 // enforce that when domains are saved, they are required
 // to have at least one admin with the plan of the domain
 // (otherwise throw an error that tells them what's wrong)
-Domain.pre('validate', async function (next) {
+Domains.pre('validate', async function (next) {
   try {
     const domain = this;
 
@@ -376,7 +378,7 @@ Domain.pre('validate', async function (next) {
       }
 
       if (badUserEmails.length > 0)
-        logger.fatal(
+        logger.error(
           new Error(
             `Restricted domain had personal emails: ${domain.name} (${domain.id})`
           ),
@@ -436,7 +438,7 @@ Domain.pre('validate', async function (next) {
   }
 });
 
-Domain.pre('validate', function (next) {
+Domains.pre('validate', function (next) {
   const domain = this;
   // domain must be on a paid plan in order to require verification
   if (domain.plan === 'free' && domain.has_recipient_verification)
@@ -451,7 +453,7 @@ Domain.pre('validate', function (next) {
   next();
 });
 
-Domain.pre('validate', function (next) {
+Domains.pre('validate', function (next) {
   const domain = this;
 
   // we return early here in case the boolean was set to false
@@ -514,7 +516,7 @@ Domain.pre('validate', function (next) {
   next();
 });
 
-Domain.pre('save', async function (next) {
+Domains.pre('save', async function (next) {
   try {
     const domain = this;
 
@@ -561,7 +563,7 @@ Domain.pre('save', async function (next) {
   }
 });
 
-Domain.plugin(mongooseCommonPlugin, {
+Domains.plugin(mongooseCommonPlugin, {
   object: 'domain',
   omitExtraFields: [
     'is_global',
@@ -609,7 +611,7 @@ async function getVerificationResults(domain, client = false) {
     // wait one second for DNS changes to propagate
     await delay(ms('1s'));
   } catch (err) {
-    logger.fatal(err);
+    logger.error(err);
   }
 
   const errors = [];
@@ -929,7 +931,7 @@ async function getVerificationResults(domain, client = false) {
   return { ns, txt, mx, errors: _.uniqBy(errors, 'message') };
 }
 
-Domain.statics.getVerificationResults = getVerificationResults;
+Domains.statics.getVerificationResults = getVerificationResults;
 
 function getNameRestrictions(domainName) {
   const isGood = config.goodDomains.some((ext) =>
@@ -947,7 +949,7 @@ function getNameRestrictions(domainName) {
   return { isGood, isDisposable, isRestricted };
 }
 
-Domain.statics.getNameRestrictions = getNameRestrictions;
+Domains.statics.getNameRestrictions = getNameRestrictions;
 
 async function getToAndMajorityLocaleByDomain(domain) {
   // get all the admins we should send the email to
@@ -975,7 +977,7 @@ async function getToAndMajorityLocaleByDomain(domain) {
   return { to, locale };
 }
 
-Domain.statics.getToAndMajorityLocaleByDomain = getToAndMajorityLocaleByDomain;
+Domains.statics.getToAndMajorityLocaleByDomain = getToAndMajorityLocaleByDomain;
 
 // eslint-disable-next-line complexity
 async function getTxtAddresses(
@@ -1098,7 +1100,7 @@ async function getTxtAddresses(
   };
 }
 
-Domain.statics.getTxtAddresses = getTxtAddresses;
+Domains.statics.getTxtAddresses = getTxtAddresses;
 
 async function ensureUserHasValidPlan(user, locale) {
   // if the user was on the team plan
@@ -1131,7 +1133,7 @@ async function ensureUserHasValidPlan(user, locale) {
 
       // if the user did not exist then return early
       if (!member.user || !member.user.id) {
-        logger.fatal(new Error(`Member in ${domain.name} no longer exists.`));
+        logger.error(new Error(`Member in ${domain.name} no longer exists.`));
         continue;
       }
 
@@ -1181,9 +1183,9 @@ async function ensureUserHasValidPlan(user, locale) {
   throw err;
 }
 
-Domain.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
+Domains.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
 
-Domain.postCreate((domain, next) => {
+Domains.postCreate((domain, next) => {
   // log that the domain was created
   logger.info('domain created', {
     domain: domain.toObject()
@@ -1192,4 +1194,8 @@ Domain.postCreate((domain, next) => {
   next();
 });
 
-module.exports = mongoose.model('Domain', Domain);
+const conn = mongoose.connections.find(
+  (conn) => conn._connectionString === env.MONGO_URI
+);
+if (!conn) throw new Error('Mongoose connection does not exist');
+module.exports = conn.model('Domains', Domains);

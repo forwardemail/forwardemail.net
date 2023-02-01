@@ -4,20 +4,19 @@ require('#config/env');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
-const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const dayjs = require('dayjs-with-plugins');
-const sharedConfig = require('@ladjs/shared-config');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
 
-const Aliases = require('#models/alias');
-const Domains = require('#models/domain');
-const Users = require('#models/user');
+const Graceful = require('@ladjs/graceful');
+const dayjs = require('dayjs-with-plugins');
+
+const mongoose = require('mongoose');
+const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
+const Users = require('#models/users');
 const config = require('#config');
 const logger = require('#helpers/logger');
-
-const breeSharedConfig = sharedConfig('BREE');
-
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+const setupMongoose = require('#helpers/setup-mongoose');
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -27,7 +26,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   // delete unverified and unpaid users from 7+ days ago
   {

@@ -2,20 +2,21 @@ const process = require('process');
 const { parentPort } = require('worker_threads');
 const os = require('os');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const sharedConfig = require('@ladjs/shared-config');
 const parseErr = require('parse-err');
 const pMap = require('p-map');
 
+const mongoose = require('mongoose');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
-const Payments = require('#models/payment');
+const Payments = require('#models/payments');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 const concurrency = os.cpus().length;
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -31,7 +32,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   //
   // count the number of duplicate paypal tx ids

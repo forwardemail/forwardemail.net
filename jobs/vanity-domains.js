@@ -4,21 +4,23 @@ require('#config/env');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const Redis = require('@ladjs/redis');
 const sharedConfig = require('@ladjs/shared-config');
 
+const mongoose = require('mongoose');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const config = require('#config');
 
-const Users = require('#models/user');
-const Domains = require('#models/domain');
+const Users = require('#models/users');
+const Domains = require('#models/domains');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
-
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -29,7 +31,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   // get all admins
   const admins = await Users.find({

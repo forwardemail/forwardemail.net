@@ -28,12 +28,12 @@ async function sendVerificationEmail(ctx) {
     ctx.state.user[config.userFields.verificationPinSentAt] = new Date();
     await ctx.state.user.save();
   } catch (err) {
-    logger.fatal(err);
+    logger.error(err);
     // revert if there was an error
     try {
       ctx.state.user = await ctx.state.user.updateVerificationPin(ctx, true);
     } catch (err) {
-      logger.fatal(err);
+      logger.error(err);
     }
 
     const error = Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));

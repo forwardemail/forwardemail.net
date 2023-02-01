@@ -3,18 +3,21 @@ require('#config/env');
 
 const process = require('process');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 const Redis = require('@ladjs/redis');
 
+const mongoose = require('mongoose');
 const config = require('#config');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, UpgradeReminders } = require('#models');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   redisClients: [client],
   mongooses: [mongoose],
@@ -24,7 +27,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   // group together emails by domain count
   const upgradeReminders = await UpgradeReminders.find({}).lean().exec();

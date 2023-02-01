@@ -5,23 +5,25 @@ const process = require('process');
 const os = require('os');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const _ = require('lodash');
 const pMap = require('p-map');
-const sharedConfig = require('@ladjs/shared-config');
 const shortID = require('mongodb-short-id');
+const mongoose = require('mongoose');
 
 const config = require('#config');
 const email = require('#helpers/email');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, Aliases } = require('#models');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const concurrency = os.cpus().length;
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -152,7 +154,7 @@ async function mapper(alias) {
 }
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   //
   // find all aliases that haven't been sent verification emails yet

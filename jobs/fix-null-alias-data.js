@@ -5,17 +5,18 @@ const process = require('process');
 const os = require('os');
 const { parentPort } = require('worker_threads');
 
-const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
-const pMap = require('p-map');
-const sharedConfig = require('@ladjs/shared-config');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
 
-const Aliases = require('#models/alias');
+const Graceful = require('@ladjs/graceful');
+const pMap = require('p-map');
+
+const mongoose = require('mongoose');
+const Aliases = require('#models/aliases');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 const concurrency = os.cpus().length;
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -24,7 +25,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   const $or = [];
   const props = [];

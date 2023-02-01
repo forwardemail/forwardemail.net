@@ -6,7 +6,7 @@ const { isPort } = require('validator');
 
 const logger = require('#helpers/logger');
 const config = require('#config');
-const Domains = require('#models/domain');
+const Domains = require('#models/domains');
 
 const app = new ForwardEmail({
   logger,

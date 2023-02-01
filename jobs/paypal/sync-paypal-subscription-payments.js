@@ -1,6 +1,6 @@
 const pReduce = require('p-reduce');
 
-const Users = require('#models/user');
+const Users = require('#models/users');
 const config = require('#config');
 const syncPayPalSubscriptionPaymentsByUser = require('#helpers/sync-paypal-subscription-payments-by-user');
 const emailHelper = require('#helpers/email');

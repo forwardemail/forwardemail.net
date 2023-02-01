@@ -1,18 +1,21 @@
-// eslint-disable-next-line import/no-unassigned-import
-require('#config/env');
-
 const process = require('process');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/env');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const Redis = require('@ladjs/redis');
 const Web = require('@ladjs/web');
 const ip = require('ip');
+const mongoose = require('mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 
-const Users = require('#models/user');
+const Users = require('#models/users');
 const config = require('#config');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const webConfig = require('#config/web');
 
 const webSharedConfig = sharedConfig('WEB');
@@ -22,7 +25,6 @@ const redis = new Redis(
   webSharedConfig.redisMonitor
 );
 
-const mongoose = new Mongoose({ ...webSharedConfig.mongoose, logger });
 const web = new Web(webConfig(redis), Users);
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -46,7 +48,7 @@ graceful.listen();
         `Please visit ${config.urls.web} in your browser for testing`,
         { hide_meta: true }
       );
-    await mongoose.connect();
+    await setupMongoose(logger);
   } catch (err) {
     logger.error(err);
 

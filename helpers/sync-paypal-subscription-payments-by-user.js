@@ -4,8 +4,8 @@ const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 
-const Payments = require('#models/payment');
-const Users = require('#models/user');
+const Payments = require('#models/payments');
+const Users = require('#models/users');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
@@ -289,7 +289,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
         if (err === thresholdError) throw err;
 
         if (err.status === 404)
-          logger.fatal(new Error('paypal subscription does not exist'), {
+          logger.error(new Error('paypal subscription does not exist'), {
             customer
           });
         else {

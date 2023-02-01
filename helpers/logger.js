@@ -1,3 +1,5 @@
+const path = require('path');
+
 const Axe = require('axe');
 const Cabin = require('cabin');
 const cuid = require('cuid');
@@ -11,19 +13,24 @@ const mongoose = require('mongoose');
 
 const loggerConfig = require('../config/logger');
 
-// this package is ignored in `browser` config in `package.json`
-// in order to make the client-side payload less kb
-const Logs = require('#models/log');
+//
+// NOTE: this prevents cyclical dependencies
+//
+let Logs = false;
+if (
+  // eslint-disable-next-line no-undef
+  typeof window !== 'object' &&
+  module &&
+  (!module.parent ||
+    module.parent.id !== path.join(__dirname, '..', 'config', 'mongoose.js'))
+)
+  // this package is ignored in `browser` config in `package.json`
+  // in order to make the client-side payload less kb
+  Logs = require('#models/logs');
 
 const silentSymbol = Symbol.for('axe.silent');
 
 const logger = new Axe(loggerConfig);
-
-const ERR_NOT_CONNECTED_NAMES = new Set([
-  'MongoPoolClosedError',
-  'MongoExpiredSessionError',
-  'MongoNotConnectedError'
-]);
 
 //
 // NOTE: if you update the two constants below,
@@ -56,9 +63,9 @@ async function hook(err, message, meta) {
   //
   if (meta.ignore_hook) return;
 
-  try {
-    // eslint-disable-next-line no-undef
-    if (typeof window !== 'object') {
+  // eslint-disable-next-line no-undef
+  if (typeof window !== 'object' && Logs) {
+    try {
       const log = await Logs.create(
         // eslint-disable-next-line prefer-object-spread
         Object.assign(
@@ -75,8 +82,17 @@ async function hook(err, message, meta) {
       );
       logger.info('log created', { log, ignore_hook: true });
       return;
+    } catch (err) {
+      logger.error(err, { ignore_hook: true });
     }
+  }
 
+  // TODO: if !Logs and window not object then we should still try to superagent using restricted key
+
+  // eslint-disable-next-line no-undef
+  if (typeof window !== 'object') return;
+
+  try {
     // eslint-disable-next-line no-undef
     if (typeof window.API_URL !== 'string')
       throw new Error('API URL was not in the window global');
@@ -104,20 +120,7 @@ async function hook(err, message, meta) {
 
     logger.info('log sent over HTTP', { response, ignore_hook: true });
   } catch (err) {
-    // if it was a duplicate log then return early
-    if (err.is_duplicate_log) return;
-    // if @ladjs/graceful was disconnected mongo/mongoose then we can't write to db
-    if (
-      err &&
-      (ERR_NOT_CONNECTED_NAMES.has(err.name) ||
-        (err.errors &&
-          err.errors._id &&
-          err.errors._id.reason &&
-          err.errors._id.reason.name &&
-          ERR_NOT_CONNECTED_NAMES.has(err.errors._id.reason.name)))
-    )
-      return;
-    logger.fatal(err, { ignore_hook: true });
+    logger.error(err, { ignore_hook: true });
   }
 }
 

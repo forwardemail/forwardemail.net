@@ -5,6 +5,7 @@ const ajc = require('array-join-conjunction');
 const capitalize = require('capitalize');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
+const hljs = require('highlight.js');
 const humanize = require('humanize-string');
 const isBot = require('isbot');
 const isFQDN = require('is-fqdn');
@@ -154,25 +155,26 @@ for (const key of NS_PROVIDER_KEYS) {
 
 module.exports = {
   _,
-  nsProviders,
-  nsProviderLookup,
+  accounting,
   ajc,
   boolean,
   capitalize,
   dashify,
   dayjs,
   emoji,
+  hljs,
   humanize,
   isBot,
   isFQDN,
   isSANB,
   json,
+  nsProviderLookup,
+  nsProviders,
   numeral,
   pluralize,
+  prefixHTMLPathBasedAnchors,
+  splitLines,
   striptags,
   titleize,
-  validator,
-  prefixHTMLPathBasedAnchors,
-  accounting,
-  splitLines
+  validator
 };

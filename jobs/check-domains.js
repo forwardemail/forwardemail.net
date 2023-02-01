@@ -4,21 +4,25 @@ require('#config/env');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const pMapSeries = require('p-map-series');
 const sharedConfig = require('@ladjs/shared-config');
+const mongoose = require('mongoose');
 
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const email = require('#helpers/email');
-const Domains = require('#models/domain');
+const Domains = require('#models/domains');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [client],
@@ -274,7 +278,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   //
   // TODO: in the future when we integrate historical checks

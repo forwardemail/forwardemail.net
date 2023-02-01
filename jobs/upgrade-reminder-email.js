@@ -5,22 +5,26 @@ const process = require('process');
 const os = require('os');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const Redis = require('@ladjs/redis');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 const { boolean } = require('boolean');
+const mongoose = require('mongoose');
 
 const config = require('#config');
 const email = require('#helpers/email');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, UpgradeReminders } = require('#models');
 
 const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+
 const graceful = new Graceful({
   redisClients: [client],
   mongooses: [mongoose],
@@ -76,7 +80,7 @@ async function mapper(upgradeReminder) {
 
   // if queue size is greater than 10 then it must be abused for disposable service
   if (upgradeReminder.queue.length > 10) {
-    logger.fatal(`${upgradeReminder.domain} has more than 10 recipients`, {
+    logger.error(`${upgradeReminder.domain} has more than 10 recipients`, {
       upgradeReminder
     });
     return;
@@ -109,7 +113,7 @@ async function mapper(upgradeReminder) {
 }
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   //
   // find all aliases that haven't been sent verification emails yet

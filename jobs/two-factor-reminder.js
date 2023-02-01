@@ -5,22 +5,24 @@ const process = require('process');
 const os = require('os');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
-const sharedConfig = require('@ladjs/shared-config');
+const mongoose = require('mongoose');
 
 const Users = require('../app/models/user');
 const Domains = require('../app/models/domain');
 const config = require('#config');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const email = require('#helpers/email');
 
-const breeSharedConfig = sharedConfig('BREE');
 const concurrency = os.cpus().length;
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -87,7 +89,7 @@ async function mapper(_id) {
 }
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   const _ids = await Domains.distinct('members.user', {
     plan: {

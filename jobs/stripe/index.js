@@ -2,13 +2,15 @@ const os = require('os');
 const process = require('process');
 const { parentPort } = require('worker_threads');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
-const Mongoose = require('@ladjs/mongoose');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
-const sharedConfig = require('@ladjs/shared-config');
+const mongoose = require('mongoose');
 
 const syncStripePayments = require('./sync-stripe-payments');
 const checkDuplicateSubscriptions = require('./check-duplicate-subscriptions');
@@ -17,12 +19,12 @@ const config = require('#config');
 const env = require('#config/env');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Payments } = require('#models');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const concurrency = os.cpus().length;
-const breeSharedConfig = sharedConfig('BREE');
-const mongoose = new Mongoose({ ...breeSharedConfig.mongoose, logger });
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -31,7 +33,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose();
 
   //
   // get all stripe customers and check for

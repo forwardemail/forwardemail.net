@@ -1,9 +1,14 @@
 const { Buffer } = require('buffer');
+
+const ObjectID = require('bson-objectid');
+const delay = require('delay');
 const test = require('ava');
 
 const utils = require('../utils');
+
 const config = require('#config');
 const phrases = require('#config/phrases');
+const { Logs } = require('#models');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
@@ -48,4 +53,22 @@ test('rate limits account signups', async (t) => {
   t.is(res.status, 400);
   res = await api.post('/v1/account');
   t.is(res.status, 429);
+});
+
+test('creates log', async (t) => {
+  const { api } = t.context;
+  const log = {
+    message: new ObjectID().toString(),
+    meta: {
+      level: 'info'
+    }
+  };
+  const res = await api.post('/v1/log').send(log);
+  t.is(res.status, 200);
+
+  // since Logs.create in the API controller uses .then()
+  await delay(100);
+
+  const match = await Logs.findOne({ message: log.message });
+  t.true(typeof match === 'object');
 });
