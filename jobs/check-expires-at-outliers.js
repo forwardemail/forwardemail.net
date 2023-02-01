@@ -27,7 +27,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const ids = await Users.distinct('_id', {});
   const arr = [];

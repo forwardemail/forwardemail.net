@@ -12,13 +12,15 @@ const dayjs = require('dayjs-with-plugins');
 const pMapSeries = require('p-map-series');
 const mongoose = require('mongoose');
 
+const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 const config = require('#config');
 
 const graceful = new Graceful({
-  mongooses: [mongoose]
+  mongooses: [mongoose],
+  logger
 });
 
 graceful.listen();
@@ -53,7 +55,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const ids = await Users.distinct('_id', {
     [config.userFields.paypalSubscriptionID]: {

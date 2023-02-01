@@ -117,7 +117,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const ids = await Payments.distinct('_id', {
     $or: [

@@ -26,7 +26,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   logger.info('starting lowercase job');
 

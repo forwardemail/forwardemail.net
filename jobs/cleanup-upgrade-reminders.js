@@ -27,7 +27,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   // group together emails by domain count
   const upgradeReminders = await UpgradeReminders.find({}).lean().exec();

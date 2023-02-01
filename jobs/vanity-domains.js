@@ -31,7 +31,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   // get all admins
   const admins = await Users.find({

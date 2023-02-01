@@ -17,7 +17,7 @@ require('#config/mongoose');
 const apiConfig = require('#config/api');
 const config = require('#config');
 const logger = require('#helpers/logger');
-const setupMongoose = require('#helpers/setup-mongoose');
+const setupMongooseHelper = require('#helpers/setup-mongoose');
 const webConfig = require('#config/web');
 const { Users } = require('#models');
 
@@ -36,7 +36,7 @@ exports.setupMongoose = async () => {
     })
   );
 
-  await setupMongoose();
+  await setupMongooseHelper(logger);
 };
 
 exports.setupWebServer = async (t) => {

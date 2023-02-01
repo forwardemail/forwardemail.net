@@ -23,7 +23,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   //
   // NOTE: we have to do this in series due to PayPal 429 API rate limitations

@@ -32,7 +32,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   //
   // count the number of duplicate paypal tx ids

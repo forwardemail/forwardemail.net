@@ -15,6 +15,7 @@ const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
 const mongoose = require('mongoose');
 
+const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const env = require('#config/env');
 const { Payments } = require('#models');
@@ -23,7 +24,8 @@ const config = require('#config');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const graceful = new Graceful({
-  mongooses: [mongoose]
+  mongooses: [mongoose],
+  logger
 });
 
 graceful.listen();
@@ -198,7 +200,7 @@ async function mapper(id) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const ids = await Payments.distinct('_id', {
     // invoice_at: {

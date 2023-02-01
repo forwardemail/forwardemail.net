@@ -89,7 +89,7 @@ async function mapper(_id) {
 }
 
 (async () => {
-  await setupMongoose();
+  await setupMongoose(logger);
 
   const _ids = await Domains.distinct('members.user', {
     plan: {
