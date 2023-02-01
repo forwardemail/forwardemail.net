@@ -21,7 +21,6 @@ const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const pkg = require('../../package.json');
 const Users = require('./users');
 
-const env = require('#config/env');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -1195,7 +1194,7 @@ Domains.postCreate((domain, next) => {
 });
 
 const conn = mongoose.connections.find(
-  (conn) => conn._connectionString === env.MONGO_URI
+  (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
 );
 if (!conn) throw new Error('Mongoose connection does not exist');
 module.exports = conn.model('Domains', Domains);

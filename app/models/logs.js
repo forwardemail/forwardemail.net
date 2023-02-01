@@ -1,8 +1,5 @@
 const { Buffer } = require('buffer');
 
-// eslint-disable-next-line import/no-unassigned-import
-require('#config/mongoose');
-
 const _ = require('lodash');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
@@ -11,7 +8,6 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
-const env = require('#config/env');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -246,8 +242,7 @@ Logs.pre('save', async function (next) {
 });
 
 const conn = mongoose.connections.find(
-  (conn) => conn._connectionString === env.LOGS_MONGO_URI
+  (conn) => conn[Symbol.for('connection.name')] === 'LOGS_MONGO_URI'
 );
-
 if (!conn) throw new Error('Mongoose connection does not exist');
 module.exports = conn.model('Logs', Logs);
