@@ -39,7 +39,11 @@ async function ensurePaidToDate(ctx, next) {
     ) {
       // if they were already sent the email then return early
       if (_.isDate(ctx.state.user[config.userFields.apiRestrictedSentAt])) {
-        ctx.throw(Boom.paymentRequired(ctx.translateError('PAYMENT_PAST_DUE')));
+        ctx.throw(
+          Boom.paymentRequired(
+            ctx.translateError('PAYMENT_PAST_DUE_API_RESTRICTED')
+          )
+        );
         return;
       }
 
@@ -69,7 +73,11 @@ async function ensurePaidToDate(ctx, next) {
           },
           locals: { message, user: ctx.state.user.toObject() }
         });
-        ctx.throw(Boom.paymentRequired(ctx.translateError('PAYMENT_PAST_DUE')));
+        ctx.throw(
+          Boom.paymentRequired(
+            ctx.translateError('PAYMENT_PAST_DUE_API_RESTRICTED')
+          )
+        );
         return;
       } catch (err) {
         ctx.logger.fatal(err);
