@@ -113,8 +113,7 @@ Logs.pre('save', async function (next) {
     //
     const bytes = Buffer.byteLength(safeStringify(this.toObject()), 'utf8');
 
-    if (bytes > MAX_BYTES)
-      return next(new Error('Log byte size exceeds maximum'));
+    if (bytes > MAX_BYTES) throw new Error('Log byte size exceeds maximum');
 
     //
     // prepare db query for uniqueness
@@ -131,7 +130,7 @@ Logs.pre('save', async function (next) {
         this?.meta?.response?.status_code === 304 &&
         !this?.meta?.response?.headers?.['content-type']
       )
-        return next(ERR_DUP_LOG);
+        throw ERR_DUP_LOG;
 
       // don't store logs for fonts, images, and other assets
       if (
@@ -140,7 +139,7 @@ Logs.pre('save', async function (next) {
           this.meta.response.headers['content-type'].startsWith(c)
         )
       )
-        return next(ERR_DUP_LOG);
+        throw ERR_DUP_LOG;
 
       // don't store logs for JavaScript and CSS source map files
       if (
@@ -152,7 +151,7 @@ Logs.pre('save', async function (next) {
         (this.meta.request.url.endsWith('.css.map') ||
           this.meta.request.url.endsWith('.js.map'))
       )
-        return next(ERR_DUP_LOG);
+        throw ERR_DUP_LOG;
 
       // filter by meta request id (X-Request-Id)
       if (this?.meta?.request?.id)
@@ -232,11 +231,11 @@ Logs.pre('save', async function (next) {
     if ($or.length > 0) $and.push({ $or });
 
     // safeguard to prevent empty query
-    if ($and.length === 0) return next(ERR_DUP_LOG);
+    if ($and.length === 0) throw ERR_DUP_LOG;
 
     const count = await this.constructor.countDocuments({ $and });
 
-    if (count > 0) return next(ERR_DUP_LOG);
+    if (count > 0) throw ERR_DUP_LOG;
 
     next();
   } catch (err) {
