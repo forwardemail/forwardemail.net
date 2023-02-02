@@ -1,13 +1,15 @@
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
+const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
+const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const parseErr = require('parse-err');
-const _ = require('lodash');
+const titleize = require('titleize');
 
-const { Users } = require('#models');
+const { Users, Domains } = require('#models');
 const config = require('#config');
 const env = require('#config/env');
 const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
@@ -241,6 +243,45 @@ async function processEvent(ctx, event) {
 
       // finally save the user
       await user.save();
+
+      // email the user that their async payment was successful
+      // if and only if some of their domains don't match up
+      const count = await Domains.countDocuments({
+        plan: {
+          $ne: productToPlan
+        },
+        'members.user': {
+          $in: [user._id]
+        }
+      });
+
+      if (count > 0)
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to:
+              user[config.userFields.receiptEmail] ||
+              user[config.userFields.fullEmail],
+            ...(user[config.userFields.receiptEmail]
+              ? {
+                  cc: [
+                    user[config.userFields.fullEmail],
+                    config.email.message.from
+                  ]
+                }
+              : { cc: config.email.message.from }),
+            subject: 'Your payment was successful: please follow these steps'
+          },
+          locals: {
+            message: `
+          <p>Your payment was successful. You need to click "Change Plan" &rarr; "${titleize(
+            humanize(productToPlan)
+          )}" on each of your domains.</p>
+          <p><a href="/my-account/billing" class="btn btn-dark btn-lg" rel="noopener noreferrer" target="_blank">Manage Domains</a></p>
+          `
+          }
+        });
+
       break;
     }
 
