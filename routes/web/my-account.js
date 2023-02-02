@@ -23,9 +23,9 @@ router
     ctx.set('Expires', '0');
     return next();
   })
+  .use(web.myAccount.ensureNotBanned)
   .use(policies.ensureLoggedIn)
   .use(policies.ensureOtp)
-  .use(web.myAccount.ensureNotBanned)
   .use(web.breadcrumbs)
   .use(web.myAccount.retrieveDomains)
   .use(web.myAccount.ensurePaidToDate)
