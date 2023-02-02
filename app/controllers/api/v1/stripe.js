@@ -244,43 +244,45 @@ async function processEvent(ctx, event) {
       // finally save the user
       await user.save();
 
-      // email the user that their async payment was successful
-      // if and only if some of their domains don't match up
-      const count = await Domains.countDocuments({
-        plan: {
-          $ne: productToPlan
-        },
-        'members.user': {
-          $in: [user._id]
-        }
-      });
-
-      if (count > 0)
-        await emailHelper({
-          template: 'alert',
-          message: {
-            to:
-              user[config.userFields.receiptEmail] ||
-              user[config.userFields.fullEmail],
-            ...(user[config.userFields.receiptEmail]
-              ? {
-                  cc: [
-                    user[config.userFields.fullEmail],
-                    config.email.message.from
-                  ]
-                }
-              : { cc: config.email.message.from }),
-            subject: 'Your payment was successful: please follow these steps'
+      if (event.type === 'checkout.session.async_payment_succeeded') {
+        // email the user that their async payment was successful
+        // if and only if some of their domains don't match up
+        const count = await Domains.countDocuments({
+          plan: {
+            $ne: productToPlan
           },
-          locals: {
-            message: `
-          <p>Your payment was successful. You need to click "Change Plan" &rarr; "${titleize(
-            humanize(productToPlan)
-          )}" on each of your domains.</p>
-          <p><a href="/my-account/billing" class="btn btn-dark btn-lg" rel="noopener noreferrer" target="_blank">Manage Domains</a></p>
-          `
+          'members.user': {
+            $in: [user._id]
           }
         });
+
+        if (count > 0)
+          await emailHelper({
+            template: 'alert',
+            message: {
+              to:
+                user[config.userFields.receiptEmail] ||
+                user[config.userFields.fullEmail],
+              ...(user[config.userFields.receiptEmail]
+                ? {
+                    cc: [
+                      user[config.userFields.fullEmail],
+                      config.email.message.from
+                    ]
+                  }
+                : { cc: config.email.message.from }),
+              subject: 'Your payment was successful: please follow these steps'
+            },
+            locals: {
+              message: `
+          <p class="text-center">Manage Domains &rarr; click "Change Plan" &rarr; "${titleize(
+            humanize(productToPlan)
+          )}".</p>
+          <p class="text-center"><a href="/my-account/billing" class="btn btn-dark btn-lg" rel="noopener noreferrer" target="_blank">Manage Domains</a></p>
+          `
+            }
+          });
+      }
 
       break;
     }
