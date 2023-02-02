@@ -62,20 +62,24 @@ async function retrieveDomainBilling(ctx) {
   if (isSANB(ctx.query.denylist))
     ctx.state.denylist = ctx.query.denylist.toLowerCase().trim();
 
-  if (isMakePayment)
+  if (isMakePayment) {
     if (ctx.state.user.plan === 'free')
       throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
     else ctx.query.plan = ctx.state.user.plan;
-  else if (isAccountUpgrade && ctx.query.plan === ctx.state.user.plan)
-    throw Boom.badRequest(ctx.translateError('PLAN_ALREADY_ACTIVE'));
-  else if (isEnableAutoRenew) {
+  } else if (isAccountUpgrade && ctx.query.plan === ctx.state.user.plan) {
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
+  } else if (isEnableAutoRenew) {
     if (ctx.state.user.plan === 'free') {
       throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
     } else if (
       isSANB(ctx.state.user[config.userFields.stripeSubscriptionID]) ||
       isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
     ) {
-      throw Boom.badRequest(ctx.translateError('SUBSCRIPTION_ALREADY_ACTIVE'));
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+      return;
     } else if (_.isDate(ctx.state.user[config.userFields.planExpiresAt])) {
       if (
         dayjs(ctx.state.user[config.userFields.planExpiresAt]).isAfter(dayjs())
@@ -109,6 +113,7 @@ async function retrieveDomainBilling(ctx) {
             )
           );
           const redirectTo = ctx.state.l('/my-account/billing');
+          // eslint-disable-next-line max-depth
           if (ctx.accepts('html')) ctx.redirect(redirectTo);
           else ctx.body = { redirectTo };
           return;
@@ -148,6 +153,8 @@ async function retrieveDomainBilling(ctx) {
             ),
             'months'
           );
+
+          // eslint-disable-next-line max-depth
           if (months > 0)
             str += ` ${ctx.translate('AND')} ${dayjs()
               .add(months, 'months')

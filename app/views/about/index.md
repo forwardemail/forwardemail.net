@@ -9,7 +9,9 @@
 
 ## Foreword
 
-**Forward Email** is a [free and open-source](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [email forwarding](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") service focused on a user's [right to privacy](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"), and was launched in November 2017. It is powered by [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") and operates using the [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), [HTTPS](https://en.wikipedia.org/wiki/HTTPS "HTTPS"), and [SMTP](https://en.wikipedia.org/wiki/SMTP "SMTP") protocols. The service offers unlimited custom domain names, unlimited email addresses and aliases, unlimited disposable email addresses, spam and phishing protection, and other features.  Paid plans are offered for "Enhanced Privacy Protection", whereas the email alias configuration is hidden from the public.
+Forward Email is a [free and open-source](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [email forwarding](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") service focused on a user's [right to privacy](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"), and was launched in November 2017.  It offers unlimited custom domain names, unlimited email addresses and aliases, unlimited disposable email addresses, spam and phishing protection, and other features. It is built with 100% open-source software using [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript"), [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js"), [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), [HTTPS](https://en.wikipedia.org/wiki/HTTPS "HTTPS"), [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security "TLS"), and [SMTP](https://en.wikipedia.org/wiki/SMTP "SMTP").
+
+The service is still owned, maintained, and operated by its same original founding team of designers and developers.
 
 
 ## History
