@@ -915,13 +915,13 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 
 Yes, we maintain an allowlist based off the most popular root domains used at the DNS level.
 
-This allowlist is updated automatically from a job that runs every 30 days – it downloads the [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List"), unzips, and then parses it in-memory for the top 20K root domains.
+This allowlist is updated automatically from a job that runs every 30 days – it downloads the [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List"), unzips, and then parses it in-memory for the top 50K root domains.
 
 Popular domains such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are included.  Domains that are detected to contain adult-content or malware are excluded.  Results are cached for 90 days.
 
 If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).
 
-The following domain name extensions are considered to be allowlisted by default:
+The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -989,7 +989,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">wy.us</code></li>
 </ul>
 
-The Umbrella Popularity List that we parse is filtered for [domain name extensions that match the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
+The Umbrella Popularity List that we parse is filtered for [domain name extensions that match the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
 
 Note that specific senders such as `a@xyz.edu` and `b@gov.au` can still be [denylisted](#do-you-have-a-denylist) (e.g. if we automatically detect spam, phishing, or malware from those senders).
 

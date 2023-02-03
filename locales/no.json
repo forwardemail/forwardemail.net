@@ -3670,5 +3670,9 @@
   "This new rule allows only the following domain name extensions to be used on our free plan:": "This new rule allows only the following domain name extensions to be used on our free plan:",
   "Popular domains such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are included.  Domains that are detected to contain adult-content or malware are excluded.  Results are cached for 90 days.": "Popular domains such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are included.  Domains that are detected to contain adult-content or malware are excluded.  Results are cached for 90 days.",
   ".  We also include": ".  We also include",
-  "partial matches, such as": "partial matches, such as"
+  "partial matches, such as": "partial matches, such as",
+  ", unzips, and then parses it in-memory for the top 50K root domains.": ", unzips, and then parses it in-memory for the top 50K root domains.",
+  "The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):": "The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):",
+  "(with the addition of": "(with the addition of",
+  ").  We also include": ").  We also include"
 }
