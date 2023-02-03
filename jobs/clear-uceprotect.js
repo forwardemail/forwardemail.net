@@ -10,6 +10,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const validator = require('validator');
 
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
@@ -22,6 +23,7 @@ graceful.listen();
 
 (async () => {
   try {
+    await setupMongoose(logger);
     // delete all IP's prefixed with backscatter or denylist
     // (this will ensure our latest dataset is accurate)
     const [denylistKeys, backscatterKeys] = await Promise.all([

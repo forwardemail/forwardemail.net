@@ -57,7 +57,7 @@ block body
                 href=l("/private-business-email"),
                 target="_blank"
               )= t("learn more")
-              = '.'
+              = "."
           .card
             h2.h6.card-header
               if isMakePayment
@@ -84,7 +84,7 @@ block body
                     .alert.alert-success.small!= t("Don't worry &ndash; we'll automatically refund previous payments.")
                 else
                   .alert.alert-success.small
-                    != t("Not satisfied? <strong>Eligible for automatic refund until <span class=\"notranslate\">%s</span></strong>.", dayjs().add(30, 'day').locale(ctx.locale).format("M/D/YY"))
+                    != t('Not satisfied? <strong>Eligible for automatic refund until <span class="notranslate">%s</span></strong>.', dayjs().add(30, "day").locale(ctx.locale).format("M/D/YY"))
               - const hasPlanExpired = user.plan !== "free" && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now();
               - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID]);
               if isMakePayment && hasSubscription && !hasPlanExpired
@@ -137,7 +137,7 @@ block body
                       = t("Card, Wallet, or Bank")
                       = " "
                       a.btn.btn-link.text-dark.p-0.no-js(
-                        href='#',
+                        href="#",
                         role="button",
                         data-toggle="tooltip",
                         data-placement="bottom",
