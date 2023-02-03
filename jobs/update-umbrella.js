@@ -35,6 +35,17 @@ const graceful = new Graceful({
   redisClients: [client],
   logger
 });
+const MAX_RESULTS = 50000;
+// these domains are arbitrary 15K - 50K+ in the list
+// so this is a safeguard (see below logic) to make sure we've included enough results
+const REQUIRED_DOMAINS = [
+  'forwardemail.net',
+  'mailgun.com',
+  'mailgun.info',
+  'sendgrid.net',
+  'postmarkapp.com',
+  'mtasv.net'
+];
 const THREE_MONTHS_TO_MS = ms('90d');
 
 // <https://blog.cloudflare.com/introducing-1-1-1-1-for-families/>
@@ -196,7 +207,9 @@ async function mapper(name) {
         !config.goodDomains.includes(tld) &&
         !parseResult.icann.topLevelDomains.includes('edu') &&
         !parseResult.icann.topLevelDomains.includes('mil') &&
-        !parseResult.icann.topLevelDomains.includes('gov')
+        !parseResult.icann.topLevelDomains.includes('gov') &&
+        tld !== 'biz' &&
+        tld !== 'info'
       )
         continue;
 
@@ -207,9 +220,17 @@ async function mapper(name) {
       // Forward Email was #15562 as of February 3, 2023
       if (rootDomain === 'forwardemail.net')
         logger.info(`Forward Email was #${domains.size}`);
-      // break out when we've surpassed >= 20K in the list and we also hit our domain
-      if (domains.size >= 20000 && domains.has(rootDomain)) break;
+
+      // Add it to the set
       domains.add(rootDomain);
+
+      // Break out when we've surpassed >= MAX_RESULTS in the list and it also has required domains
+      // (e.g. forwardemail.net, mailgun, sendgrid, postmarkapp as loose result checks)
+      if (
+        domains.size >= MAX_RESULTS &&
+        REQUIRED_DOMAINS.every((d) => domains.has(d))
+      )
+        break;
     }
 
     if (domains.size === 0) throw new Error('No domains were found');
