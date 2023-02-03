@@ -93,6 +93,11 @@ const jobs = [
     timeout: '5m'
   },
   {
+    name: 'update-umbrella',
+    interval: '30d',
+    timeout: '5m'
+  },
+  {
     name: 'upgrade-reminder-email',
     interval: '6h',
     timeout: '10m'

@@ -227,6 +227,13 @@ Logs.pre('save', async function (next) {
     // check err.message
     if (this?.err?.message) $or.push({ 'err.message': this.err.message });
 
+    // TODO: use sparse index instead of partial (?)
+    // TODO: if err.responseCode and !err.bounces && !meta.session.resolvedClientHostname && meta.session.remoteAddress
+    // TODO: else if err.responseCode and !err.bounces && meta.session.allowlistValue
+    // TODO: else if err.responseCode and !err.bounces && meta.session.resolvedClientHostname
+    // TODO: $or meta.session.fingerprint
+    // TODO: check count over time period for abuse
+
     // push the $or to the $and arr
     if ($or.length > 0) $and.push({ $or });
 

@@ -9,6 +9,7 @@ const I18N = require('@ladjs/i18n');
 
 const i18nConfig = require('#config/i18n');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 //
 // NOTE: we want our own instance of i18n that does not auto reload files
@@ -24,6 +25,7 @@ const i18n = new I18N({
 const mandarin = new Mandarin({ i18n, logger });
 
 (async () => {
+  await setupMongoose(logger);
   await mandarin.translate();
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
