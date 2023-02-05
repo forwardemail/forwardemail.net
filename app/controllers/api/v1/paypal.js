@@ -224,51 +224,57 @@ async function processEvent(ctx) {
         await user.save();
       }
 
-      // create/sync payments for user using the subscription
-      const errorEmails = await syncPayPalSubscriptionPaymentsByUser([], user);
+      if (user) {
+        // create/sync payments for user using the subscription
+        const errorEmails = await syncPayPalSubscriptionPaymentsByUser(
+          [],
+          user
+        );
 
-      if (errorEmails.length > 0) {
-        try {
-          await Promise.all(errorEmails.map((email) => emailHelper(email)));
-        } catch (err) {
-          ctx.logger.error(err);
-        }
-      }
-
-      // if the plans don't match up then sync them
-      let selectedPlan;
-      for (const plan of Object.keys(PAYPAL_PLAN_MAPPING)) {
-        if (selectedPlan) break;
-        for (const duration of Object.keys(PAYPAL_PLAN_MAPPING[plan])) {
-          if (PAYPAL_PLAN_MAPPING[plan][duration] === res.body.plan_id) {
-            selectedPlan = plan;
-            break;
+        if (errorEmails.length > 0) {
+          try {
+            await Promise.all(errorEmails.map((email) => emailHelper(email)));
+          } catch (err) {
+            ctx.logger.error(err);
           }
         }
-      }
 
-      if (!selectedPlan) throw new Error('Plan did not exist');
+        // if the plans don't match up then sync them
+        let selectedPlan;
+        for (const plan of Object.keys(PAYPAL_PLAN_MAPPING)) {
+          if (selectedPlan) break;
+          for (const duration of Object.keys(PAYPAL_PLAN_MAPPING[plan])) {
+            if (PAYPAL_PLAN_MAPPING[plan][duration] === res.body.plan_id) {
+              selectedPlan = plan;
+              break;
+            }
+          }
+        }
 
-      if (user.plan !== selectedPlan) {
-        user.plan = selectedPlan;
-        // get the first payment for the subscription and use the invoice_at
-        const payment = await Payments.findOne(
-          {
-            user: user._id,
-            [config.userFields.paypalSubscriptionID]: res.body.id
-          },
-          null,
-          { sort: { invoice_at: 1 } }
-        );
-        if (!payment)
-          throw new Error(
-            'Payment was missing for user subscription and plan set at was not set'
+        if (!selectedPlan) throw new Error('Plan did not exist');
+
+        if (user.plan !== selectedPlan) {
+          user.plan = selectedPlan;
+          // get the first payment for the subscription and use the invoice_at
+          const payment = await Payments.findOne(
+            {
+              user: user._id,
+              [config.userFields.paypalSubscriptionID]: res.body.id
+            },
+            null,
+            { sort: { invoice_at: 1 } }
           );
-        user[config.userFields.planSetAt] = payment.invoice_at;
+          if (!payment)
+            throw new Error(
+              'Payment was missing for user subscription and plan set at was not set'
+            );
+          user[config.userFields.planSetAt] = payment.invoice_at;
+        }
+
+        // finally save the user
+        await user.save();
       }
 
-      // finally save the user
-      await user.save();
       break;
     }
 
