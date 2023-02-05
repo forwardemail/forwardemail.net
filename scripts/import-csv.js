@@ -4,12 +4,18 @@ require('#config/env');
 const process = require('process');
 const fs = require('fs');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/env');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
 const isSANB = require('is-string-and-not-blank');
 const validator = require('validator');
 
 const mongoose = require('mongoose');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 const Users = require('#models/users');
 const Domains = require('#models/domains');
@@ -31,7 +37,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose(logger);
 
   const user = await Users.findOne({ email: process.env.USER_EMAIL })
     .lean()
