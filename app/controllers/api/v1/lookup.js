@@ -14,6 +14,7 @@ const email = require('#helpers/email');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
+// eslint-disable-next-line complexity
 async function lookup(ctx) {
   if (!isSANB(ctx.query.verification_record))
     return ctx.throw(
@@ -28,6 +29,9 @@ async function lookup(ctx) {
   // legacy compatibility
   if (isSANB(ctx.query.domain)) query.name = ctx.query.domain;
 
+  // safeguard to prevent returning any domain
+  if (_.isEmpty(query)) throw new Error('Domain query was empty');
+
   const domain = await Domains.findOne(query).lean().exec();
 
   if (!domain) {
@@ -35,16 +39,54 @@ async function lookup(ctx) {
     return;
   }
 
-  const bannedUserIds = await Users.distinct('_id', {
-    [config.userFields.isBanned]: true
-  });
+  let aliasQuery = {};
+  // if the domain was is_global then filter for
+  // user ids that are either not banned paid (and not 30d past due)
+  // or not banned admin group users
+  if (domain.is_global) {
+    const [paidUsers, adminUsers] = await Promise.all([
+      // get all not banned, paid users, and expiration is >= 30 days ago
+      Users.distinct('_id', {
+        [config.userFields.isBanned]: false,
+        plan: { $ne: 'free' },
+        [config.userFields.planExpiresAt]: {
+          $gte: dayjs().subtract(30, 'days').toDate()
+        }
+      }),
+      // get all not banned, admin users
+      Users.distinct('_id', {
+        [config.userFields.isBanned]: false,
+        group: 'admin'
+      })
+    ]);
+    aliasQuery = {
+      $or: [
+        {
+          domain: domain._id,
+          user: { $in: paidUsers }
+        },
+        {
+          domain: domain._id,
+          user: { $in: adminUsers }
+        }
+      ]
+    };
+  } else {
+    const bannedUserIds = await Users.distinct('_id', {
+      [config.userFields.isBanned]: true
+    });
 
-  const aliases = await Aliases.find({
-    domain: domain._id,
-    user: { $nin: bannedUserIds }
-  })
-    .lean()
-    .exec();
+    aliasQuery = {
+      domain: domain._id,
+      user: { $nin: bannedUserIds }
+    };
+  }
+
+  // safeguard to prevent returning all aliases
+  if (_.isEmpty(aliasQuery)) throw new Error('Alias query was empty');
+
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+  const aliases = await Aliases.find(aliasQuery).lean().exec();
 
   if (aliases.length === 0) {
     ctx.body = [];

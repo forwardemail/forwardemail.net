@@ -5,7 +5,6 @@ const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
-const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 
@@ -49,7 +48,7 @@ const Logs = new mongoose.Schema({
   //
   created_at: {
     type: Date,
-    expires: ms('1d')
+    expires: '30d'
   }
 });
 

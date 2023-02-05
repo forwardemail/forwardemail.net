@@ -10,8 +10,8 @@ const logger = require('#helpers/logger');
 const config = require('#config');
 const env = require('#config/env');
 const Users = require('#models/users');
-const emailHelper = require('#helpers/email');
 const Payments = require('#models/payments');
+const ThresholdError = require('#helpers/threshold-error');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS } = config.payments;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
@@ -338,25 +338,12 @@ function syncStripePaymentIntent(user) {
             null,
             2
           )}</code></pre>`
-        }
+        },
+        err
       });
 
-      if (errorEmails.length >= config.stripeErrorThreshold) {
-        await emailHelper({
-          template: 'alert',
-          message: {
-            to: config.email.message.from,
-            subject: `Sync Stripe payment histories hit ${config.stripeErrorThreshold} errors during the script`
-          },
-          locals: {
-            message:
-              'This may have occurred because of an error in the script, or the stripe service was down, or another error was causing an abnormal number of payment syncing failures'
-          }
-        });
-
-        logger.error(JSON.stringify(errorEmails, null, 2));
-        throw new Error('Error threshold has been met');
-      }
+      if (errorEmails.length >= config.stripeErrorThreshold)
+        throw new ThresholdError(errorEmails.map((e) => e.err));
     }
 
     return errorEmails;

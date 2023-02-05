@@ -8,6 +8,42 @@ const config = require('#config');
 
 // eslint-disable-next-line complexity
 async function ensurePaidToDate(ctx, next) {
+  // if the user has a global domain and they're not an admin
+  // and they are not on a paid plan or their plan is 30d past due
+  // then alert them with a toast notification
+  // iff they are not on billing page and request is not GET
+  if (
+    !ctx.api &&
+    ctx.method === 'GET' &&
+    !ctx.pathWithoutLocale.startsWith('/my-account/billing') &&
+    ctx.state.user.group !== 'admin' &&
+    // either the user was on a free plan and had some domains
+    ((ctx.state.user.plan === 'free' &&
+      ctx.state.domains.some((d) => d.is_global)) ||
+      // or the user was on paid plan, plan expired, and had some domains
+      (ctx.state.user.plan !== 'free' &&
+        new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
+          Date.now() &&
+        ctx.state.domains.some((d) => d.is_global)))
+  ) {
+    const message = ctx.translate(
+      'VANITY_DOMAINS_NOT_ON_PAID',
+      ctx.state.user.plan === 'free'
+        ? ctx.state.l('/my-account/billing/upgrade?plan=enhanced_protection')
+        : ctx.state.l('/my-account/billing/make-payment'),
+      ctx.state.user.plan === 'free'
+        ? ctx.translate('UPGRADE')
+        : ctx.translate('MAKE_PAYMENT')
+    );
+    ctx.flash('custom', {
+      title: ctx.request.t('Warning'),
+      html: message,
+      type: 'error',
+      toast: true,
+      position: 'top'
+    });
+  }
+
   // return early if we're already on profile, security, or billing
   if (
     (!ctx.api && ctx.method !== 'GET') ||

@@ -16,6 +16,9 @@ const syncStripePaymentIntent = require('./sync-stripe-payment-intent');
 const toObject = require('./to-object');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
 const { paypalAgent, paypal } = require('./paypal');
+// TODO: create an npm package for this and then add it in smtp code too
+const combineErrors = require('./combine-errors');
+const ThresholdError = require('./threshold-error');
 
 module.exports = {
   decrypt,
@@ -37,5 +40,7 @@ module.exports = {
   syncPayPalOrderPaymentByPaymentId,
   syncPayPalSubscriptionPaymentsByUser,
   syncStripePaymentIntent,
-  toObject
+  toObject,
+  combineErrors,
+  ThresholdError
 };

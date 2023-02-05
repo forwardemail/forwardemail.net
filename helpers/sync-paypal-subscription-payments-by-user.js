@@ -10,13 +10,13 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const { paypalAgent } = require('#helpers/paypal');
+const ThresholdError = require('#helpers/threshold-error');
 
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 const PAYPAL_PLANS = {
   enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
   team: Object.values(PAYPAL_PLAN_MAPPING.team)
 };
-const thresholdError = new Error('Error threshold has been met');
 
 async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
   try {
@@ -243,11 +243,12 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
                     null,
                     2
                   )}</code></pre>`
-                }
+                },
+                err
               });
 
               if (errorEmails.length >= config.paypalErrorThreshold)
-                throw thresholdError;
+                throw new ThresholdError(errorEmails.map((e) => e.err));
             }
           }
 
@@ -286,7 +287,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
       } catch (err) {
         logger.error(err);
 
-        if (err === thresholdError) throw err;
+        if (err instanceof ThresholdError) throw err;
 
         if (err.status === 404)
           logger.error(new Error('paypal subscription does not exist'), {
@@ -305,11 +306,12 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
                 null,
                 2
               )}</code></pre>`
-            }
+            },
+            err
           });
 
           if (errorEmails.length >= config.paypalErrorThreshold)
-            throw thresholdError;
+            throw new ThresholdError(errorEmails.map((e) => e.err));
         }
       }
     }
@@ -317,7 +319,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
     await pMapSeries(subscriptionIds, subscriptionMapper);
   } catch (err) {
     logger.error(err, { customer });
-    if (err === thresholdError) {
+    if (err instanceof ThresholdError) {
       try {
         await emailHelper({
           template: 'alert',
@@ -326,8 +328,11 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
             subject: `Sync PayPal payment histories hit ${config.paypalErrorThreshold} errors during the script`
           },
           locals: {
-            message:
-              'This may have occurred because of an error in the script, or the paypal service was down, or another error was causing an abnormal number of payment syncing failures'
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
           }
         });
       } catch (err) {

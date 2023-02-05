@@ -198,7 +198,13 @@ async function processEvent(ctx) {
 
       const user = await Users.findOne({ $or });
 
-      if (isSANB(user[config.userFields.paypalSubscriptionID])) {
+      // there will not be a user found if the user cancelled from our site
+      // because we have logic to unset paypal subscription id from the user obj
+      // in logic such as when a user downgrades within 30d or cancels auto-renew
+      if (
+        user && // cancel the user's subscription
+        isSANB(user[config.userFields.paypalSubscriptionID])
+      ) {
         // if subscription does not match, then cancel the old one
         if (user[config.userFields.paypalSubscriptionID] !== res.body.id) {
           try {

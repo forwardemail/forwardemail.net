@@ -4,6 +4,11 @@ require('#config/env');
 const process = require('process');
 const os = require('os');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/env');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 const Graceful = require('@ladjs/graceful');
 const pMap = require('p-map');
 
@@ -14,6 +19,7 @@ const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const syncPayPalSubscriptionPaymentsByUser = require('#helpers/sync-paypal-subscription-payments-by-user');
 const { paypalAgent } = require('#helpers/paypal');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 const concurrency = os.cpus().length;
 const graceful = new Graceful({
@@ -104,7 +110,7 @@ async function mapper(id) {
 const ids = [];
 
 (async () => {
-  await mongoose.connect();
+  await setupMongoose(logger);
 
   await pMap(ids, mapper, { concurrency });
 
