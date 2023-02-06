@@ -286,10 +286,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
 
         if (err instanceof ThresholdError) throw err;
 
-        if (err.status === 404)
-          logger.error(new Error('paypal subscription does not exist'), {
-            customer
-          });
+        if (err.status === 404) logger.error(err, { customer });
         else {
           errorEmails.push({
             template: 'alert',
