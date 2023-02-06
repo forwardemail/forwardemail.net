@@ -119,6 +119,7 @@
     "p-retry": "4.6.2",
     "p-series": "2",
     "p-timeout": "4",
+    "p-whilst": "2.1.0",
     "parse-domain": "5",
     "parse-err": "1.0.0",
     "parse-logs": "3.0.1",

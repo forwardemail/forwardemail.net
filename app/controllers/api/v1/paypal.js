@@ -108,24 +108,11 @@ async function processEvent(ctx) {
       // body.resource.subscriber.payer_id
       // body.resource.id => subscription ID
       // body.resource.status === 'CANCELLED'
-      const $or = [];
+      if (!isSANB(body.resource.id)) throw new Error('Subscription ID missing');
 
-      if (
-        _.isObject(body.resource.subscriber) &&
-        isSANB(body.resource.subscriber.payer_id)
-      )
-        $or.push({
-          [config.userFields.paypalPayerID]: body.resource.subscriber.payer_id
-        });
-
-      if (isSANB(body.resource.id))
-        $or.push({
-          [config.userFields.paypalSubscriptionID]: body.resource.id
-        });
-
-      if ($or.length === 0) throw new Error('$or was empty');
-
-      const user = await Users.findOne({ $or });
+      const user = await Users.findOne({
+        [config.userFields.paypalSubscriptionID]: body.resource.id
+      });
 
       // there will not be a user found if the user cancelled from our site
       // because we have logic to unset paypal subscription id from the user obj
@@ -186,17 +173,9 @@ async function processEvent(ctx) {
       )
         return;
 
-      // lookup the user
-      const $or = [
-        {
-          [config.userFields.paypalPayerID]: res.body.subscriber.payer_id
-        },
-        {
-          [config.userFields.paypalSubscriptionID]: res.body.id
-        }
-      ];
-
-      const user = await Users.findOne({ $or });
+      const user = await Users.findOne({
+        [config.userFields.paypalSubscriptionID]: res.body.id
+      });
 
       // there will not be a user found if the user cancelled from our site
       // because we have logic to unset paypal subscription id from the user obj

@@ -36,8 +36,13 @@ const PAYPAL_PLANS = {
 graceful.listen();
 
 async function mapper(id) {
+  throw new Error(
+    'Cannot use this script because PayPal Payer ID is not unique'
+  );
+
   // first check to see if the subscription ID is already assigned
   // to an active user, and if so, then ignore it
+  // eslint-disable-next-line no-unreachable
   const count = await Users.countDocuments({
     [config.userFields.paypalSubscriptionID]: id
   });

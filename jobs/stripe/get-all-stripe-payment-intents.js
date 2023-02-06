@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop */
+const pWhilst = require('p-whilst');
 const Stripe = require('stripe');
 const _ = require('lodash');
 
@@ -7,22 +7,23 @@ const env = require('#config/env');
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function getAllStripePaymentIntents(stripeCustomerId) {
-  let paymentIntents = [];
+  const paymentIntents = [];
   let has_more = true;
   let starting_after;
-  do {
-    const res = await stripe.paymentIntents.list({
-      customer: stripeCustomerId,
-      limit: 100,
-      starting_after
-    });
+  await pWhilst(
+    () => has_more,
+    async () => {
+      const res = await stripe.paymentIntents.list({
+        customer: stripeCustomerId,
+        limit: 100,
+        starting_after
+      });
 
-    paymentIntents = [...paymentIntents, ...res.data];
-    has_more = res.has_more;
-    if (has_more && _.last(res.data)) {
-      starting_after = _.last(res.data).id;
+      paymentIntents.push(...res.data);
+      has_more = res.has_more;
+      if (has_more && _.last(res.data)) starting_after = _.last(res.data).id;
     }
-  } while (has_more);
+  );
 
   return paymentIntents;
 }
