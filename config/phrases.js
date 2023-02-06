@@ -341,7 +341,7 @@ module.exports = {
   PAYMENT_PAST_DUE_MESSAGE:
     '<strong class="text-danger">Your account is past due.</strong> Please <a href="%s">make a payment</a> immediately to avoid account termination.',
   VANITY_DOMAINS_NOT_ON_PAID:
-    '<strong class="text-danger">Your vanity domain aliases are disabled due to past due payment.</strong> Please <a href="%s">%s</a> to re-enable them. As of January 1, 2023, we require vanity domain aliases to be on paid plans. We sent notifications in advance of this new policy starting in November 2022. If you no longer use vanity domain aliases, then delete them from <a href="/my-account/domains">Domains</a> &rarr; Vanity Domain &rarr; Aliases.',
+    '<strong class="text-danger">Your vanity domain aliases are disabled due to past due payment.</strong> Please <a href="%s">%s</a> to re-enable them. As of January 1, 2023, we require vanity domain aliases to be on paid plans. We sent notifications in advance of this new policy starting in November 2022. If you no longer use vanity domain aliases, then disable or remove them from <a href="/my-account/domains">Domains</a> &rarr; Vanity Domain &rarr; Aliases.',
   PAST_DUE_REQUIRED_ONE_TIME:
     'Your account is <strong class="notranslate">%s</strong> past due. You must pay this amount before you can enable auto-renew.',
   AND: 'and',
