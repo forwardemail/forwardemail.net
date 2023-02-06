@@ -81,7 +81,10 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
         //
         // this will either error - or it will return the current active subscriptions transactions.
         // https://developer.paypal.com/docs/subscriptions/full-integration/subscription-management/#list-transactions-for-a-subscription
-        const transactions = await getAllPayPalSubscriptionTransactions(subscription, agent);
+        const transactions = await getAllPayPalSubscriptionTransactions(
+          subscription,
+          agent
+        );
 
         logger.info(`${transactions.length} transactions`);
 

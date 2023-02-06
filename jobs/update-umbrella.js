@@ -62,6 +62,8 @@ const list = 'http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip';
 
 graceful.listen();
 
+// TODO: remove all individual denylisted but @outlook @gmail @yandex @yahoo @hotmail @comcast
+
 // <https://radar.cloudflare.com/categorization-feedback/>
 const ENDPOINT = 'https://family.cloudflare-dns.com/dns-query';
 const TIMEOUT = ms('10s');
