@@ -11,6 +11,7 @@ const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const { paypalAgent } = require('#helpers/paypal');
 const ThresholdError = require('#helpers/threshold-error');
+const getAllPayPalSubscriptionTransactions = require('#helpers/get-all-paypal-subscription-transactions');
 
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 const PAYPAL_PLANS = {
@@ -80,180 +81,173 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
         //
         // this will either error - or it will return the current active subscriptions transactions.
         // https://developer.paypal.com/docs/subscriptions/full-integration/subscription-management/#list-transactions-for-a-subscription
-        const { body: { transactions } = {} } = await agent.get(
-          `/v1/billing/subscriptions/${subscriptionId}/transactions?start_time=${
-            subscription.create_time
-          }&end_time=${new Date().toISOString()}`
-        );
+        const transactions = await getAllPayPalSubscriptionTransactions(subscription, agent);
 
-        if (Array.isArray(transactions) && transactions.length > 0) {
-          logger.info(`${transactions.length} transactions`);
+        logger.info(`${transactions.length} transactions`);
 
-          // eslint-disable-next-line no-inner-declarations
-          async function transactionMapper(transaction) {
-            try {
-              // we need to have a payment for each transaction of a subscription
-              logger.info(`transaction ${transaction.id}`);
+        // eslint-disable-next-line no-inner-declarations
+        async function transactionMapper(transaction) {
+          try {
+            // we need to have a payment for each transaction of a subscription
+            logger.info(`transaction ${transaction.id}`);
 
-              // TODO: there is def an issue here with mismatch
-              // try to find the payment
-              const paymentCandidates = await Payments.find({
-                user: customer._id,
-                [config.userFields.paypalSubscriptionID]: subscription.id
-              });
+            // try to find the payment
+            const paymentCandidates = await Payments.find({
+              user: customer._id,
+              [config.userFields.paypalSubscriptionID]: subscription.id
+            });
 
-              // then use it if its on the same day
-              const payment = paymentCandidates.find(
-                (p) =>
-                  transaction.id === p.paypal_transaction_id ||
-                  dayjs(transaction.time).format('MM/DD/YY') ===
-                    dayjs(p.invoice_at).format('MM/DD/YY')
+            // then use it if its on the same day
+            const payment = paymentCandidates.find(
+              (p) =>
+                transaction.id === p.paypal_transaction_id ||
+                dayjs(transaction.time).format('MM/DD/YY') ===
+                  dayjs(p.invoice_at).format('MM/DD/YY')
+            );
+
+            if (
+              isSANB(
+                transaction.amount_with_breakdown.gross_amount.currency_code
+              ) &&
+              transaction.amount_with_breakdown.gross_amount.currency_code !==
+                'USD'
+            )
+              throw new Error(
+                'Paypal transaction amount was not in USD and could not be saved by sync-payment-histories'
               );
 
-              if (
-                isSANB(
-                  transaction.amount_with_breakdown.gross_amount.currency_code
-                ) &&
-                transaction.amount_with_breakdown.gross_amount.currency_code !==
-                  'USD'
-              )
-                throw new Error(
-                  'Paypal transaction amount was not in USD and could not be saved by sync-payment-histories'
-                );
+            const amount =
+              Number.parseInt(
+                transaction.amount_with_breakdown.gross_amount.value,
+                10
+              ) * 100;
 
-              const amount =
-                Number.parseInt(
-                  transaction.amount_with_breakdown.gross_amount.value,
-                  10
-                ) * 100;
+            let amountRefunded = 0;
+            // if the transaction was refunded or partially
+            // refunded then we need to check and update it
+            if (transaction.status === 'REFUNDED') {
+              amountRefunded = amount;
+            } else if (transaction.status === 'PARTIALLY_REFUNDED') {
+              // lookup the refund and parse the amount refunded
+              const agent = await paypalAgent();
+              const { body: refund } = await agent.get(
+                `/v2/payments/refunds/${transaction.id}`
+              );
+              amountRefunded = Math.round(Number(refund.amount.value) * 100);
+            }
 
-              let amountRefunded = 0;
-              // if the transaction was refunded or partially
-              // refunded then we need to check and update it
-              if (transaction.status === 'REFUNDED') {
-                amountRefunded = amount;
-              } else if (transaction.status === 'PARTIALLY_REFUNDED') {
-                // lookup the refund and parse the amount refunded
-                const agent = await paypalAgent();
-                const { body: refund } = await agent.get(
-                  `/v2/payments/refunds/${transaction.id}`
-                );
-                amountRefunded = Math.round(Number(refund.amount.value) * 100);
-              }
+            if (payment) {
+              let shouldSave = false;
 
-              if (payment) {
-                let shouldSave = false;
-
-                if (!payment.paypal_transaction_id) {
-                  // prevent double tx id save
-                  const count = await Payments.countDocuments({
-                    paypal_transaction_id: transaction.id,
-                    _id: {
-                      $ne: payment._id
-                    }
-                  });
-
-                  if (count > 0)
-                    throw new Error(
-                      `Capture ID ${transaction.id} was attempting to be duplicated for payment ID ${payment.id}`
-                    );
-
-                  // otherwise set the tx id
-                  payment.paypal_transaction_id = transaction.id;
-                  shouldSave = true;
-                }
-
-                // transaction time is different than invoice_at, which is used for plan expiry calculation
-                // (see jobs/fix-missing-invoice-at.js)
-                if (
-                  new Date(payment.invoice_at).getTime() !==
-                  new Date(transaction.time).getTime()
-                ) {
-                  // if the payment's invoice_at was not equal to transaction time
-                  payment.invoice_at = new Date(transaction.time);
-                  shouldSave = true;
-                }
-
-                if (payment.plan !== plan)
-                  throw new Error('Paypal plan did not match');
-
-                if (payment.amount_refunded !== amountRefunded) {
-                  payment.amount_refunded = amountRefunded;
-                  shouldSave = true;
-                }
-
-                if (payment.duration !== duration) {
-                  payment.duration = duration;
-                  shouldSave = true;
-                }
-
-                if (shouldSave) {
-                  logger.info(`Updating existing payment ${payment.id}`);
-                  await payment.save();
-                } else {
-                  logger.info(
-                    `payment ${payment.id} already up to date and good to go!`
-                  );
-                }
-              } else {
+              if (!payment.paypal_transaction_id) {
                 // prevent double tx id save
                 const count = await Payments.countDocuments({
-                  paypal_transaction_id: transaction.id
+                  paypal_transaction_id: transaction.id,
+                  _id: {
+                    $ne: payment._id
+                  }
                 });
 
                 if (count > 0)
                   throw new Error(
-                    `Capture ID ${transaction.id} was attempting to be duplicated for customer ${customer.email}`
+                    `Capture ID ${transaction.id} was attempting to be duplicated for payment ID ${payment.id}`
                   );
 
                 // otherwise set the tx id
-                const payment = {
-                  user: customer._id,
-                  method: 'paypal',
-                  kind: 'subscription',
-                  amount,
-                  plan,
-                  duration,
-                  amount_refunded: amountRefunded,
-                  [config.userFields.paypalSubscriptionID]: subscription.id,
-                  paypal_transaction_id: transaction.id,
-                  invoice_at: new Date(transaction.time)
-                };
-                logger.info('creating new payment');
-                await Payments.create(payment);
+                payment.paypal_transaction_id = transaction.id;
+                shouldSave = true;
               }
 
-              // find and save the associated user
-              // so that their plan_expires_at gets updated
-              const user = await Users.findById(customer._id);
-              if (!user) throw new Error('User does not exist');
-              await user.save();
-            } catch (err) {
-              logger.error(err);
-              hasError = true;
-              errorEmails.push({
-                template: 'alert',
-                message: {
-                  to: config.email.message.from,
-                  subject: `${customer.email} had an issue syncing a transaction from paypal subscription ${subscriptionId} and transaction ${transaction.id}`
-                },
-                locals: {
-                  message: `<pre><code>${JSON.stringify(
-                    parseErr(err),
-                    null,
-                    2
-                  )}</code></pre>`
-                },
-                err
+              // transaction time is different than invoice_at, which is used for plan expiry calculation
+              // (see jobs/fix-missing-invoice-at.js)
+              if (
+                new Date(payment.invoice_at).getTime() !==
+                new Date(transaction.time).getTime()
+              ) {
+                // if the payment's invoice_at was not equal to transaction time
+                payment.invoice_at = new Date(transaction.time);
+                shouldSave = true;
+              }
+
+              if (payment.plan !== plan)
+                throw new Error('Paypal plan did not match');
+
+              if (payment.amount_refunded !== amountRefunded) {
+                payment.amount_refunded = amountRefunded;
+                shouldSave = true;
+              }
+
+              if (payment.duration !== duration) {
+                payment.duration = duration;
+                shouldSave = true;
+              }
+
+              if (shouldSave) {
+                logger.info(`Updating existing payment ${payment.id}`);
+                await payment.save();
+              } else {
+                logger.info(
+                  `payment ${payment.id} already up to date and good to go!`
+                );
+              }
+            } else {
+              // prevent double tx id save
+              const count = await Payments.countDocuments({
+                paypal_transaction_id: transaction.id
               });
 
-              if (errorEmails.length >= config.paypalErrorThreshold)
-                throw new ThresholdError(errorEmails.map((e) => e.err));
-            }
-          }
+              if (count > 0)
+                throw new Error(
+                  `Capture ID ${transaction.id} was attempting to be duplicated for customer ${customer.email}`
+                );
 
-          await pMapSeries(transactions, transactionMapper);
+              // otherwise set the tx id
+              const payment = {
+                user: customer._id,
+                method: 'paypal',
+                kind: 'subscription',
+                amount,
+                plan,
+                duration,
+                amount_refunded: amountRefunded,
+                [config.userFields.paypalSubscriptionID]: subscription.id,
+                paypal_transaction_id: transaction.id,
+                invoice_at: new Date(transaction.time)
+              };
+              logger.info('creating new payment');
+              await Payments.create(payment);
+            }
+
+            // find and save the associated user
+            // so that their plan_expires_at gets updated
+            const user = await Users.findById(customer._id);
+            if (!user) throw new Error('User does not exist');
+            await user.save();
+          } catch (err) {
+            logger.error(err);
+            hasError = true;
+            errorEmails.push({
+              template: 'alert',
+              message: {
+                to: config.email.message.from,
+                subject: `${customer.email} had an issue syncing a transaction from paypal subscription ${subscriptionId} and transaction ${transaction.id}`
+              },
+              locals: {
+                message: `<pre><code>${JSON.stringify(
+                  parseErr(err),
+                  null,
+                  2
+                )}</code></pre>`
+              },
+              err
+            });
+
+            if (errorEmails.length >= config.paypalErrorThreshold)
+              throw new ThresholdError(errorEmails.map((e) => e.err));
+          }
         }
+
+        await pMapSeries(transactions, transactionMapper);
 
         // after we have finished syncing subscriptions
         // if the subscription itself was cancelled
