@@ -69,7 +69,15 @@ async function hook(err, message, meta) {
         )
       )
         .then((log) => logger.info('log created', { log, ignore_hook: true }))
-        .catch((err) => logger.error(err, { ignore_hook: true }));
+        .catch((err) => {
+          //
+          // NOTE: this allows us to log mongodb timeout issues (e.g. due to slow queries)
+          //
+          // we should try to create and log the error that occurred
+          // but we should indicate that we should ignore the next log hook
+          if (meta.ignore_next_hook) logger.error(err, { ignore_hook: true });
+          else logger.error(err, { ignore_next_hook: true });
+        });
     } catch (err) {
       logger.error(err, { ignore_hook: true });
     }

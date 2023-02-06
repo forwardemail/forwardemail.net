@@ -1,5 +1,6 @@
 const pWhilst = require('p-whilst');
 const { paypalAgent } = require('#helpers/paypal');
+const logger = require('#helpers/logger');
 
 // subscription is PayPal subscription object
 async function getAllPayPalSubscriptionTransactions(subscription, agent) {
@@ -15,14 +16,24 @@ async function getAllPayPalSubscriptionTransactions(subscription, agent) {
   await pWhilst(
     () => currentPage === 1 || currentPage < totalPages,
     async () => {
-      const res = await agent.get(
-        `/v1/billing/subscriptions/${subscription.id}/transactions?start_time=${
-          subscription.create_time
-        }&end_time=${new Date().toISOString()}`
-      );
-      transactions.push(...res.body.transactions);
+      const url = `/v1/billing/subscriptions/${
+        subscription.id
+      }/transactions?start_time=${
+        subscription.create_time
+      }&end_time=${new Date().toISOString()}`;
+      const res = await agent.get(url);
       currentPage++;
-      totalPages = res.body.total_pages;
+      if (Array.isArray(res.body.transactions)) {
+        transactions.push(...res.body.transactions);
+      } else {
+        logger.error(
+          new Error('PayPal transactions missing from response body'),
+          { url, response: res }
+        );
+      }
+
+      if (Number.isFinite(res.body.total_pages) && res.body.total_pages > 0)
+        totalPages = res.body.total_pages;
       if (totalPages > 1)
         throw new Error(
           'PayPal transactions endpoint had pagination but does not support it'
