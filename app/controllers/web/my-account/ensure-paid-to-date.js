@@ -19,12 +19,22 @@ async function ensurePaidToDate(ctx, next) {
     ctx.state.user.group !== 'admin' &&
     // either the user was on a free plan and had some domains
     ((ctx.state.user.plan === 'free' &&
-      ctx.state.domains.some((d) => d.is_global)) ||
+      ctx.state.domains.some(
+        (d) =>
+          d.is_global &&
+          _.isArray(d.aliases) &&
+          d.aliases.some((a) => a.is_enabled)
+      )) ||
       // or the user was on paid plan, plan expired, and had some domains
       (ctx.state.user.plan !== 'free' &&
         new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
           Date.now() &&
-        ctx.state.domains.some((d) => d.is_global)))
+        ctx.state.domains.some(
+          (d) =>
+            d.is_global &&
+            _.isArray(d.aliases) &&
+            d.aliases.some((a) => a.is_enabled)
+        )))
   ) {
     const message = ctx.translate(
       'VANITY_DOMAINS_NOT_ON_PAID',
