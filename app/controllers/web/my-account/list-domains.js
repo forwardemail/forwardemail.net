@@ -6,6 +6,38 @@ const RE2 = require('re2');
 async function listDomains(ctx) {
   let { domains } = ctx.state;
 
+  // if some of the domains were not global and need setup then toast notification
+  let setupRequired = false;
+  let setupRequiredMultiple = false;
+  for (const domain of domains) {
+    if (domain.is_global && domain.group !== 'admin') continue;
+    if (domain.has_mx_record && domain.has_txt_record) continue;
+    if (setupRequired) {
+      setupRequiredMultiple = true;
+      break;
+    }
+
+    setupRequired = domain.name;
+  }
+
+  if (setupRequired) {
+    const message = setupRequiredMultiple
+      ? ctx.translate('SETUP_REQUIRED_MULTIPLE')
+      : ctx.translate(
+          'SETUP_REQUIRED',
+          ctx.state.l(`/my-account/domains/${setupRequired}`),
+          setupRequired
+        );
+    ctx.flash('custom', {
+      title: ctx.request.t('Error'),
+      showConfirmButton: false,
+      html: message,
+      type: 'error',
+      toast: true,
+      position: 'top'
+    });
+  }
+
   // hide global domain names if not admin of
   // the global domain and had zero aliases
   domains = domains.filter((domain) => {

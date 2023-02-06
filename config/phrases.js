@@ -202,6 +202,9 @@ module.exports = {
     '<p class="mb-0">Domain is missing required DNS MX records of:</p><ul class="markdown-body ml-0 mr-0 mb-3"><span class="notranslate">%s</span></ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren\'t the same). <a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.</p>',
   DNS_CHANGES_TAKE_TIME:
     '<p class="mb-0"><strong>Making changes to your DNS records takes time to propagate throughout the Internet. <span class="text-danger">You may need to wait a few minutes</span> and then try again.</strong></p>',
+  SETUP_REQUIRED:
+    'Setup required for <a href="%s" class="font-weight-bold notranslate">%s</a>.',
+  SETUP_REQUIRED_MULTIPLE: 'Multiple domains require setup below.',
   MISSING_VERIFICATION_RECORD:
     'Domain is missing required DNS <span class="notranslate">TXT</span> record of: <span class="notranslate">%s</span>',
   INCORRECT_VERIFICATION_RECORD:

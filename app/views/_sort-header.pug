@@ -1,4 +1,4 @@
-mixin sortHeader(name, text, tableSelector)
+mixin sortHeader(name, text, tableSelector, btnAlign = 'text-center')
   - const classes = tableSelector ? "ajax-form table-ajax-form" : "";
   -
     const sort = ctx.query.sort === name
@@ -19,6 +19,7 @@ mixin sortHeader(name, text, tableSelector)
     if tableSelector
       input(type="hidden", name="sort", value=sort ? sort : "")
     button.btn.btn-block.text-nowrap.text-reset.text-capitalize.font-weight-bold(
+      class=btnAlign
       type="submit"
     )
       != t(text ? text : name.replace("_", " "))
