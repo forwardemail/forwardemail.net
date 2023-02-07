@@ -140,10 +140,11 @@ async function retrieveDomains(ctx, next) {
 
     // populate an `aliases` array on the domain based off user's
     domain.aliases = [];
+    domain.alias_count = 0;
 
     if (aliasesByDomain[domain.name])
       for (const alias of aliasesByDomain[domain.name]) {
-        if (domain.group === 'admin' || alias.user.id === ctx.state.user.id)
+        if (domain.group === 'admin' || alias.user.id === ctx.state.user.id) {
           domain.aliases.push({
             ...alias,
             // for each alias set a virtual group helper
@@ -153,6 +154,8 @@ async function retrieveDomains(ctx, next) {
                 ? 'admin'
                 : 'user'
           });
+          domain.alias_count++;
+        }
       }
 
     // iterate over domain.members and add `alias_count` virtual property

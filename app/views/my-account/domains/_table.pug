@@ -5,65 +5,140 @@ include ../../_pagination
   table.table.table-hover.table-bordered.table-sm
     thead.thead-dark
       tr
-        th(scope="col")
+        th(scope="col", colspan=2)
           +sortHeader('name', 'Domain Name', '#table-domains', 'text-left')
         th.align-middle(scope="col")= t("Quick Links")
     tbody
       if domains.length === 0
-        td.alert.alert-info(colspan=user.group === "admin" ? "7" : "6")= t("No domains exist for that search.")
+        td.alert.alert-info(colspan=3)= t("No domains exist for that search.")
       else
         each domain in domains
           - domain.plan = domain.plan || "free";
-          tr(class=!domain.has_mx_record || !domain.has_txt_record ? 'table-danger' : '')
-            td.align-middle.p-3
-              h2.h5= domain.name
-              ul.list-inline.mb-0
-                if !domain.is_global || domain.group === 'admin'
+          tr
+            td(
+              class=domain.is_global ? "bg-secondary" : domain.has_mx_record && domain.has_txt_record ? (domain.plan === user.plan ? "bg-success" : "bg-warning") : "bg-danger"
+            )
+            td.align-middle.p-3.position-relative
+              h2.h5.mb-0= domain.name
+              ul.list-inline.mt-1.mb-0
+                if !domain.is_global && domain.group === 'admin' && !domain.has_mx_record || !domain.has_txt_record
+                  li.list-inline-item
+                    a.badge.badge-danger.text-uppercase.stretched-link(
+                      href=l(`/my-account/domains/${domain.name}`)
+                    )
+                      i.fa.fa-fw.fa-times
+                      = " "
+                      = t("Setup Required")
+                if domain.is_global
+                  li.list-inline-item
+                    a.badge.badge-secondary.text-uppercase.stretched-link(
+                      href=l(`/my-account/domains/${domain.name}/aliases`)
+                    )= t("Vanity Domain")
+                else if domain.plan === user.plan && user.plan !== 'free'
                   li.list-inline-item
                     if domain.has_mx_record && domain.has_txt_record
-                      span.badge.badge-success.text-uppercase
-                        i.fa.fa-check
-                        = " "
-                        = t("Setup Verified")
+                      a.badge.badge-success.text-uppercase.stretched-link(
+                        href=l(`/my-account/domains/${domain.name}/aliases`)
+                      )= titleize(humanize(domain.plan))
                     else
-                      a.badge.badge-danger.text-uppercase(
-                        href=l(`/my-account/domains/${domain.name}`)
+                      span.badge.badge-success.text-uppercase
+                        = titleize(humanize(domain.plan))
+                else
+                  li.list-inline-item
+                    if domain.has_mx_record && domain.has_txt_record
+                      a.badge.text-uppercase.stretched-link(
+                        class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning",
+                        href=domain.plan === "free" ? l(`/my-account/domains/${domain.name}`) : l(`/my-account/domains/${domain.name}/aliases`)
+                      )= titleize(humanize(domain.plan))
+                    else
+                      span.badge.text-uppercase(
+                        class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning"
                       )
-                        i.fa.fa-times
-                        = " "
-                        = t("Setup Required")
-                li.list-inline-item
-                  if domain.is_global
-                    span.badge.badge-secondary.text-uppercase= t("Vanity Domain")
-                  else
-                    span.badge.text-uppercase(
-                      class=domain.plan === "free" ? "badge-danger" : "badge-primary"
-                    )
-                      = titleize(humanize(domain.plan))
+                        = titleize(humanize(domain.plan))
             td.align-middle
               ul.list-inline.mb-0
-                if domain.group === 'admin'
-                  li.list-inline-item
+                li.list-inline-item
+                  if domain.plan === 'free'
+                    if user.plan === 'free'
+                      button.btn.btn-sm.btn-link.text-dark.btn-block(
+                        type="button",
+                        data-target="#modal-upgrade",
+                        data-toggle="modal"
+                      )
+                        i.fa.fa-fw.fa-users
+                        = " "
+                        = t("Aliases")
+                    else
+                      form.confirm-prompt(
+                        action=l(`/my-account/domains/${domain.name}/billing`),
+                        data-confirm-prompt-title=t("Switch domain plan?"),
+                        data-confirm-prompt-html=t("To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
+                        method="GET"
+                      )
+                        input(type="hidden", name="plan", value=user.plan)
+                        button.btn.btn-sm.btn-link.text-dark(type="submit")
+                          i.fa.fa-fw.fa-users
+                          = " "
+                          = t("Aliases")
+                  else
                     a.btn.btn-sm.btn-link.text-dark.btn-block(
+                      href=l(`/my-account/domains/${domain.name}/aliases`)
+                    )
+                      i.fa.fa-fw.fa-users
+                      = " "
+                      = t("Aliases")
+                if domain.group === 'admin'
+                  //- TODO: finish this
+                    li.list-inline-item
+                      if domain.plan === 'free'
+                        if user.plan === 'free'
+                          button.btn.btn-sm.btn-link.text-dark.btn-block(
+                            type="button",
+                            data-target="#modal-upgrade",
+                            data-toggle="modal"
+                          )
+                            i.fa.fa-fw.fa-stream
+                            = " "
+                            = t("Logs")
+                        else
+                          form.confirm-prompt(
+                            action=l(`/my-account/domains/${domain.name}/billing`),
+                            data-confirm-prompt-title=t("Switch domain plan?"),
+                            data-confirm-prompt-html=t("To unlock logs for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
+                            method="GET"
+                          )
+                            input(type="hidden", name="plan", value=user.plan)
+                            button.btn.btn-sm.btn-link.text-dark(type="submit")
+                              i.fa.fa-fw.fa-stream
+                              = " "
+                              = t("Logs")
+                      else
+                        a.btn.btn-sm.btn-link.text-dark.btn-block(
+                          href=l(`/my-account/domains/${domain.name}/logs`)
+                        )
+                          i.fa.fa-fw.fa-stream
+                          = " "
+                          = t("Logs")
+                  li.list-inline-item
+                    a.btn.btn-sm.btn-block.btn-link(
+                      class=domain.has_mx_record && domain.has_txt_record ? "text-dark" : "text-danger font-weight-bold",
                       href=l(`/my-account/domains/${domain.name}`)
                     )
                       i.fa.fa-fw.fa-cog
                       = " "
                       = t("Setup")
-                li.list-inline-item
-                  a.btn.btn-sm.btn-link.text-dark.btn-block(
-                    href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
-                    role=domain.plan === "free" ? "button" : false,
-                    data-target=domain.plan === "free" ? "#modal-upgrade" : false,
-                    data-toggle=domain.plan === "free" ? "modal" : false
-                  )
-                    i.fa.fa-fw.fa-users
-                    = " "
-                    = t("Aliases")
+                  li.list-inline-item
+                    a.btn.btn-sm.btn-link.text-dark.btn-block(
+                      href=l(`/my-account/domains/${domain.name}/advanced-settings`)
+                    )
+                      i.fa.fa-fw.fa-tools
+                      = " "
+                      = t("Settings")
                 if domain.group === 'admin'
                   li.list-inline-item
                     .btn-group.btn-block.btn-group-sm
-                      button.btn.btn-sm.btn-link.text-dark.btn-block.dropdown-toggle(
+                      button.btn.btn-sm.btn-link.btn-block.dropdown-toggle(
+                        class=user.plan !== "free" && domain.plan !== user.plan ? "text-warning font-weight-bold" : "text-dark",
                         type="button",
                         data-toggle="dropdown",
                         aria-haspopup="true",
@@ -94,11 +169,4 @@ include ../../_pagination
                         a.dropdown-item.small.text-muted(
                           href=l(`/private-business-email?domain=${domain.name}`)
                         )= t("See all plan features")
-                  li.list-inline-item
-                    a.btn.btn-sm.btn-link.text-dark.btn-block(
-                      href=l(`/my-account/domains/${domain.name}/advanced-settings`)
-                    )
-                      i.fa.fa-fw.fa-tools
-                      = " "
-                      = t("Settings")
 +paginate('#table-domains')

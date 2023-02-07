@@ -35,12 +35,13 @@ block body
           include ../_breadcrumbs
           .card.border-dark.mb-3
             h2.h6.card-header= t("Delete Account")
-            - const adminDomains = domains.filter((domain) => domain.group === "admin");
-            if adminDomains.length > 0
+            - const domainsWithOtherAdmins = domains.some((d) => d.plan === "team" && d.group === "admin" && d.members.some((m) => m.group === "admin" && m.user.id !== user.id));
+            if domainsWithOtherAdmins.length > 0
               .card-body
-                .alert.alert-warning.small= t("You must remove yourself as an admin from or delete these domains before you can delete your account:")
+                .alert.alert-warning.small
+                  = t("Before you can delete your account, you must remove yourself as an admin from (or delete) these Team plan domains:")
                 ul.small
-                  each domain in adminDomains
+                  each domain in domainsWithOtherAdmins
                     li: a(
                       href=l(`/my-account/domains/${domain.name}`),
                       target="_blank"

@@ -282,6 +282,16 @@ Domains.virtual('skip_verification')
     this.__skip_verification = boolean(skipVerification);
   });
 
+Domains.pre('remove', function (next) {
+  if (this.is_global)
+    return next(
+      Boom.badRequest(
+        i18n.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN', this.locale)
+      )
+    );
+  next();
+});
+
 Domains.pre('validate', async function (next) {
   try {
     const domain = this;
@@ -1163,13 +1173,9 @@ async function ensureUserHasValidPlan(user, locale) {
 
   logger.error('Member did not have valid plan', { errors });
 
-  if (errors.length === 1) {
-    const err = Boom.badRequest(errors[0].message);
-    err.no_email = true;
-    throw err;
-  }
+  if (errors.length === 1) throw Boom.badRequest(errors[0].message);
 
-  const err = Boom.badRequest(`
+  throw Boom.badRequest(`
     <p class="font-weight-bold text-danger">${i18n.translate(
       'ERRORS_OCCURRED',
       locale
@@ -1178,8 +1184,6 @@ async function ensureUserHasValidPlan(user, locale) {
       .map((e) => e.message)
       .join('</li><li>')}</li><ul>
   `);
-  err.no_email = true;
-  throw err;
 }
 
 Domains.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;

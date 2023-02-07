@@ -10,7 +10,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const Stripe = require('stripe');
 const _ = require('lodash');
-const accounting = require('accounting');
+const numeral = require('numeral');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
@@ -159,8 +159,8 @@ graceful.listen();
               .unix(subscription.billing_cycle_anchor)
               .toDate(),
             frequency,
-            formattedAmount: accounting.formatMoney(
-              subscription.plan.amount / 100
+            formattedAmount: numeral(subscription.plan.amount / 100).format(
+              '$0,0'
             ),
             domains
           }
@@ -300,7 +300,7 @@ graceful.listen();
             user,
             firstChargeDate: new Date(subscription.start_time),
             frequency,
-            formattedAmount: accounting.formatMoney(amount),
+            formattedAmount: numeral(amount).format('$0,0'),
             domains
           }
         });
