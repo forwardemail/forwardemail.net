@@ -76,14 +76,14 @@ block body
             .alert.alert-success
               = emoji("tada")
               = " "
-              != t("Congratulations &ndash; you completed all steps!")
-              if domain.plan !== 'free'
-                a.btn.btn-success.ml-3(
-                  href=l(`/my-account/domains/${domain.name}/aliases`)
-                )
-                  i.fa.fa-fw.fa-users
-                  = " "
-                  = t("Manage Your Aliases")
+              != t("Congratulations &ndash; you completed setup!")
+          if domain.has_mx_record && domain.has_txt_record && domain.plan !== 'free'
+            a.btn.btn-success.btn-lg.btn-block.mb-3(
+              href=l(`/my-account/domains/${domain.name}/aliases`)
+            )
+              = t("Continue to Aliases")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
           //-.
             else
               .alert.alert-info
