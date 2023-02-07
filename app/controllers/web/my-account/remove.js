@@ -1,7 +1,7 @@
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
-const accounting = require('accounting');
+const numeral = require('numeral');
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
 
@@ -16,19 +16,51 @@ const { paypalAgent } = require('#helpers/paypal');
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function remove(ctx) {
-  // check that we're not an admin of any domains
-  const adminDomains = ctx.state.domains.filter(
-    (domain) => domain.group === 'admin'
+  // check that we're not an admin of any team domains
+  const domainsWithOtherAdmins = ctx.state.domains.some(
+    (d) =>
+      d.plan === 'team' &&
+      d.group === 'admin' &&
+      d.members.some(
+        (m) => m.group === 'admin' && m.user.id !== ctx.state.user.id
+      )
   );
-  if (adminDomains.length > 0)
+  if (domainsWithOtherAdmins.length > 0)
     return ctx.throw(
       Boom.badRequest(ctx.translateError('ACCOUNT_DELETE_HAS_DOMAINS'))
     );
 
-  // delete aliases
-  await Aliases.deleteMany({
-    user: ctx.state.user._id
-  });
+  // safeguard in case admins were of global
+  if (ctx.state.domains.some((d) => d.is_global && d.group === 'admin'))
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN'))
+    );
+
+  // filter domain ids for admin owned domains
+  const domainIds = ctx.state.domains
+    .filter((d) => d.group === 'admin')
+    .map((d) => d._id);
+
+  // delete aliases and domains
+  await Promise.all([
+    Aliases.deleteMany({
+      $or: [
+        {
+          user: ctx.state.user._id
+        },
+        {
+          domain: {
+            $in: domainIds
+          }
+        }
+      ]
+    }),
+    Domains.deleteMany({
+      _id: {
+        $in: domainIds
+      }
+    })
+  ]);
 
   // handle refunds
   if (ctx.state.paymentIds.length > 0) {
@@ -46,9 +78,9 @@ async function remove(ctx) {
       'success',
       ctx.translate(
         'REFUND_SUCCESSFUL',
-        accounting.formatMoney(
+        numeral(
           Math.round(_.sumBy(refundedPayments, 'amount_refunded') / 100)
-        )
+        ).format('$0,0')
       )
     );
   }

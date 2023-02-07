@@ -19,7 +19,7 @@ if breadcrumbs.length > 1
         = _.isObject(breadcrumbs[0]) ? breadcrumbs[0].header || breadcrumbs[0].name : t(titleize(humanize(breadcrumbs[0])))
     if !breadcrumbHeaderCentered
       .flex-grow-1.ml-md-5.d-md-flex.align-items-center.justify-content-md-end.justify-content-center.mt-3.mt-md-0
-        if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
+        if domain && domain.has_mx_record && domain.has_txt_record && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
           ul.list-inline.mb-0
             li.list-inline-item
               a.btn.btn-sm.btn-outline-dark(

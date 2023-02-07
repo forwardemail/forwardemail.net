@@ -171,6 +171,8 @@ module.exports = {
   INVALID_GROUP: 'Group was invalid, must be either admin or user.',
   INVITE_ALREADY_SENT:
     'Invite was already sent to this email address.  Please manually copy the invite link and share it with this person if needed.',
+  CANNOT_REMOVE_GLOBAL_DOMAIN:
+    'You cannot remove a global domain, please contact support.',
   FREE: 'Free',
   ENHANCED_PROTECTION: 'Enhanced Protection',
   TEAM: 'Team',
@@ -203,8 +205,9 @@ module.exports = {
   DNS_CHANGES_TAKE_TIME:
     '<p class="mb-0"><strong>Making changes to your DNS records takes time to propagate throughout the Internet. <span class="text-danger">You may need to wait a few minutes</span> and then try again.</strong></p>',
   SETUP_REQUIRED:
-    'Setup required for <a href="%s" class="font-weight-bold notranslate">%s</a>.',
-  SETUP_REQUIRED_MULTIPLE: 'Multiple domains require setup below.',
+    'Your domain <span class="notranslate font-weight-bold">%s</span> has not yet completed setup. You must follow <a href="%s" class="font-weight-bold">steps 1 and 2</a> as soon as possible to complete setup.',
+  SETUP_NOT_FINISHED: 'Follow steps 1 and 2 below to complete setup.',
+  SETUP_REQUIRED_MULTIPLE: 'Please complete setup for multiple domains below.',
   MISSING_VERIFICATION_RECORD:
     'Domain is missing required DNS <span class="notranslate">TXT</span> record of: <span class="notranslate">%s</span>',
   INCORRECT_VERIFICATION_RECORD:

@@ -35,10 +35,26 @@ const Logs = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: Users
   },
-  domain: {
-    type: mongoose.Schema.ObjectId,
-    ref: Domains
-  },
+  //
+  // NOTE: this is a snapshot array of domains that correlated to this log at the created_at time
+  //       and this is accomplished by both a pre('save') hook and also a job
+  //       that runs indefinitely to process 1000 logs at a time
+  //
+  //       - we always parse `meta.session.envelope.mailFrom.address` hostname (in case the email was attempting to be sent by them to them)
+  //       - we parse `meta.session.envelope.rcptTo[x].address` hostname (note we need to checkSRS)
+  //       - we lookup the verification record with redis/dns cache lookup
+  //       - then we check our DB for all distinct domain values with those record pairs (needs domain + record match)
+  //
+  //       also note that when we render these logs upon lookup to the user
+  //       we strip the other sensitive data (since RCPT TO could be to multiple separate users on our system)
+  //       (e.g. RCPT TO: a@a.com and b@b.com, whereas a.com and b.com are two completely separate and private users)
+  //
+  domains: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: Domains
+    }
+  ],
   err: mongoose.Schema.Types.Mixed,
   message: String,
   meta: mongoose.Schema.Types.Mixed,
@@ -62,7 +78,7 @@ Logs.plugin(mongooseCommonPlugin, {
 // <https://www.mongodb.com/docs/manual/core/index-partial/#comparison-with-sparse-indexes>
 //
 const PARTIAL_INDICES = [
-  'err.message',
+  'err.responseCode',
   'message',
   'meta.is_http', // used for search
   'meta.level',
@@ -75,7 +91,7 @@ const PARTIAL_INDICES = [
   'meta.user.ip_address',
   'meta.app.hostname',
   'user',
-  'domain'
+  'domains'
 ];
 
 for (const index of PARTIAL_INDICES) {
@@ -222,9 +238,6 @@ Logs.pre('save', async function (next) {
       $and.push({
         user: this.user
       });
-
-    // check err.message
-    if (this?.err?.message) $or.push({ 'err.message': this.err.message });
 
     // TODO: use sparse index instead of partial (?)
     // TODO: if err.responseCode and !err.bounces && !meta.session.resolvedClientHostname && meta.session.remoteAddress

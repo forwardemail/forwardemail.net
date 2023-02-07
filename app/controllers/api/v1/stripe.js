@@ -102,9 +102,9 @@ async function processEvent(ctx, event) {
         },
         locals: {
           message: `
-          <p>There was an issue with your payment and you were not charged.</p>
-          <p>Please go to your billing page to try again with a new payment method.</p>
-          <p><a href="/my-account/billing" class="btn btn-dark btn-lg" rel="noopener noreferrer" target="_blank">Manage Billing</a></p>
+          <p class="text-center">There was an issue with your payment &ndash; you were not charged.</p>
+          <p class="text-center">Go to the billing page and try again with a new payment method.</p>
+          <p class="text-center"><a href="/my-account/billing" class="btn btn-dark btn-lg" rel="noopener noreferrer" target="_blank">Manage Billing</a></p>
           `
         }
       });

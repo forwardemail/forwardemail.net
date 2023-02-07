@@ -7,29 +7,45 @@
   .modal-dialog(role="document")
     .modal-content
       .modal-header.text-center.d-block
-        h4#modal-upgrade-title.d-inline-block.ml-4= t("Unlock this feature")
+        h4#modal-upgrade-title.d-inline-block.ml-4
+          if user.plan === 'free'
+            = t("Unlock this feature")
+          else
+            = t("Important step required")
         button.close(type="button", data-dismiss="modal", aria-label="Close")
           span(aria-hidden="true") &times;
       .modal-body.text-center
-        p.lead.mb-0= t("Upgrade to unlock our alias manager.")
-        .alert.alert-warning.my-3
-          strong.font-weight-bold= t("Not ready?")
-          = " "
-          a.alert-link(
-            href=domain ? l(`/faq?domain=${domain.name}#dns-configuration-options`) : l("/faq#dns-configuration-options"),
-            target="_blank"
-          )= t("Visit our FAQ for more options")
+        p.lead.mb-3
+          if user.plan === 'free'
+            = t("Upgrade to unlock this feature.")
+          else
+            = t("Your current plan includes this feature at no extra cost.")
+            = " "
+            != t('To access it for this domain, you need to click "Change Plan" &rarr; "<span class="notranslate">%s</span>", and then follow setup instructions.', titleize(humanize(user.plan)))
+        if user.plan === 'free'
+          .alert.alert-warning.mb-3
+            strong.font-weight-bold= t("Not ready?")
+            = " "
+            a.alert-link(
+              href=domain ? l(`/faq?domain=${domain.name}#dns-configuration-options`) : l("/faq#dns-configuration-options"),
+              target="_blank"
+            )= t("Visit our FAQ for more options")
         if domain && domain.plan === 'free'
           a.btn.btn-dark.btn-lg.btn-block(
             href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
           )
-            = t("Upgrade Now")
+            if user.plan === 'free'
+              = t("Upgrade Now")
+            else
+              = t("Enable Feature")
             = " "
             i.fa.fa-angle-double-right.align-middle
-        else
+        else if user.plan === 'free'
           a.btn.btn-dark.btn-lg.btn-block(
             href=l("/my-account/billing/upgrade?plan=enhanced_protection")
           )
             = t("Upgrade Now")
             = " "
             i.fa.fa-angle-double-right.align-middle
+        else
+          button.btn-dark.btn-lg.btn-block(type="button", data-dismiss="modal")= t("Continue")

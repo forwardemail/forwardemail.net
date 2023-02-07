@@ -147,6 +147,12 @@ async function retrieveDomain(ctx, next) {
     }
   }
 
+  const message = ctx.translate(
+    'SETUP_REQUIRED',
+    ctx.state.domain.name,
+    ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
+  );
+
   //
   // set breadcrumbs
   //
@@ -169,16 +175,29 @@ async function retrieveDomain(ctx, next) {
   if (
     ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}` ||
     ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.id}`
-  )
-    ctx.state.breadcrumbs.push({ name: ctx.state.t('Setup Forwarding') });
+  ) {
+    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record) {
+      ctx.flash('custom', {
+        title: ctx.request.t('Important'),
+        html: ctx.translate('SETUP_NOT_FINISHED'),
+        type: 'info',
+        toast: true,
+        position: 'top'
+      });
+    }
+
+    ctx.state.breadcrumbs.push({ name: ctx.state.t('Setup') });
+  }
 
   // eslint-disable-next-line unicorn/prefer-switch
   if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/aliases`
-  )
+  ) {
+    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
+      ctx.flash('warning', message);
     ctx.state.breadcrumbs.push('aliases');
-  else if (
+  } else if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
   )
@@ -187,6 +206,8 @@ async function retrieveDomain(ctx, next) {
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/aliases/new`
   ) {
+    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
+      ctx.flash('warning', message);
     ctx.state.breadcrumbHeaderCentered = true;
     ctx.state.breadcrumbs.push(
       {
@@ -202,8 +223,14 @@ async function retrieveDomain(ctx, next) {
   } else if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/billing`
-  )
+  ) {
     ctx.state.breadcrumbs.push('billing');
+  } else if (
+    ctx.pathWithoutLocale ===
+      `/my-account/domains/${ctx.state.domain.name}/logs` &&
+    (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
+  )
+    ctx.flash('warning', message);
 
   // load seo metadata
   let data = {};

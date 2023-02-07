@@ -1,40 +1,50 @@
 extends ../../layout
 
+block append scripts
+  if domain.has_mx_record && domain.has_txt_record
+    script(
+      defer,
+      src=manifest("js/confetti.js"),
+      integrity=manifest("js/confetti.js", "integrity"),
+      crossorigin="anonymous"
+    )
+
 block body
-  .fixed-bottom.text-center
-    .bg-dark.p-2.border-top.border-light
-      ul.list-inline.mb-0
-        li.list-inline-item
-          a.btn.btn-sm.btn-light(href="#setup-step-1")
-            span.badge.badge-pill.mr-1(
-              class=domain.has_mx_record && domain.has_txt_record ? "badge-success" : "badge-primary"
+  if !domain.has_mx_record || !domain.has_txt_record
+    .fixed-bottom.text-center
+      .bg-dark.p-2.border-top.border-light
+        ul.list-inline.mb-0
+          li.list-inline-item
+            a.btn.btn-sm.btn-light(href="#setup-step-1")
+              span.badge.badge-pill.mr-1(
+                class=domain.has_mx_record && domain.has_txt_record ? "badge-success" : "badge-primary"
+              )
+                if domain.has_mx_record && domain.has_txt_record
+                  i.fa.fa-check
+                else
+                  i.fa.fa-external-link
+              = t("Step 1")
+          li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item
+            a.btn.btn-sm.btn-light(href="#setup-step-2")
+              span.badge.badge-pill.mr-1(
+                class=domain.has_mx_record && domain.has_txt_record ? "badge-success" : "badge-danger"
+              )
+                if domain.has_mx_record && domain.has_txt_record
+                  i.fa.fa-check
+                else
+                  i.fa.fa-times
+              = t("Step 2")
+          li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item
+            form.ajax-form(
+              action=l(`/my-account/domains/${domain.name}/verify-records`),
+              method="POST"
             )
-              if domain.has_mx_record && domain.has_txt_record
-                i.fa.fa-check
-              else
-                i.fa.fa-external-link
-            = t("Step 1")
-        li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
-        li.list-inline-item
-          a.btn.btn-sm.btn-light(href="#setup-step-2")
-            span.badge.badge-pill.mr-1(
-              class=domain.has_mx_record && domain.has_txt_record ? "badge-success" : "badge-danger"
-            )
-              if domain.has_mx_record && domain.has_txt_record
-                i.fa.fa-check
-              else
-                i.fa.fa-times
-            = t("Step 2")
-        li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
-        li.list-inline-item
-          form.ajax-form(
-            action=l(`/my-account/domains/${domain.name}/verify-records`),
-            method="POST"
-          )
-            button.btn.btn-success.btn-sm(type="submit")
-              i.fa.fa-refresh
-              = " "
-              = t("Verify")
+              button.btn.btn-success.btn-sm(type="submit")
+                i.fa.fa-refresh
+                = " "
+                = t("Verify")
   include _modal-upgrade
   if modalFAQTable
     #modal-faq-table.modal.fade(
@@ -76,28 +86,54 @@ block body
                   = t("Manage Your Aliases")
           //-.
             else
-              .alert.alert-danger
-                != ("Complete both steps to finish setup:")
-          else
-            .alert.alert-danger
-              i.fa.fa-exclamation-circle.font-weight-bold
-              = " "
-              strong.font-weight-bold= t("Important:")
-              = " "
-              span= t("Follow the instructions below to complete setup and verify your domain.")
-          if domain.plan === 'free'
+              .alert.alert-info
+                i.fa.fa-exclamation-circle.font-weight-bold
+                = " "
+                strong.font-weight-bold
+                  = t("Important")
+                  = ": "
+                = " "
+                span= t("Follow the instructions below to complete setup.")
+          if domain.plan === 'free' || user.plan !== 'free' && domain.plan !== user.plan
             .alert.alert-warning.small
-              = t("Need secure and private email?")
-              br.d-block.d-md-none
-              = " "
-              a.alert-link(
-                href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
-              )= t("Upgrade for $3")
-              = " "
-              = t("or")
-              = " "
-              a.alert-link(href=l("/private-business-email"), target="_blank")= t("learn more")
-      .row
+              if user.plan === 'free'
+                = t("Need secure and private email?")
+                br.d-block.d-md-none
+                = " "
+                a.alert-link(
+                  href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
+                )= t("Upgrade for $3")
+                = " "
+                = t("or")
+                = " "
+                a.alert-link(
+                  href=l("/private-business-email"),
+                  target="_blank"
+                )= t("learn more")
+              else
+                != t('Ready to upgrade <span class="notranslate font-weight-bold">%s</span> from <span class="notranslate font-weight-bold">%s</span> to <span class="notranslate font-weight-bold">%s</span>?', domain.name, titleize(humanize(domain.plan)), titleize(humanize(user.plan)))
+                br.d-block.d-md-none
+                = " "
+                a.alert-link(
+                  href=l(`/my-account/domains/${domain.name}/billing?plan=${user.plan}`)
+                )!= t("Click here to switch &ndash; it's free!")
+    if domain.has_mx_record && domain.has_txt_record && user.email.endsWith('@gmail.com') || user.email.endsWith('@google.com') || user.email.endsWith('@googlemail.com')
+      .container.mb-3
+        .position-relative
+          .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
+            .col-12.d-flex
+              .p-3.p-md-5.mb-3.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+                h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
+                p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
+                a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+                  href=l("/guides/send-mail-as-gmail-custom-domain"),
+                  target="_blank"
+                )
+                  = t("Setup your Gmail")
+                  = " "
+                  i.fa.fa-angle-double-right.align-middle
+    .container.text-center.mb-3
+      .row(class=domain.has_mx_record && domain.has_txt_record ? "opacity-50" : "")
         .col-12
           - const provider = nsProviderLookup(domain);
           .card.position-relative
@@ -216,9 +252,7 @@ block body
                       th Priority
                       th.text-left Answer/Value
                   tbody
-                    tr(
-                      class=domain.has_mx_record ? "table-success" : domain.has_txt_record ? "table-warning" : ""
-                    )
+                    tr(class=domain.has_mx_record ? "" : "table-success")
                       td.small
                         if !domain.root_name || domain.root_name === domain.name
                           if provider && typeof provider.host === 'string'
@@ -231,9 +265,7 @@ block body
                       td MX
                       td: code.text-dark 10
                       td.text-left: code.text-dark.text-nowrap mx1.forwardemail.net
-                    tr(
-                      class=domain.has_mx_record ? "table-success" : domain.has_txt_record ? "table-warning" : ""
-                    )
+                    tr(class=domain.has_mx_record ? "" : "table-success")
                       td.small
                         if !domain.root_name || domain.root_name === domain.name
                           if provider && typeof provider.host === 'string'
@@ -248,7 +280,7 @@ block body
                       td.text-left: code.text-dark.text-nowrap mx2.forwardemail.net
                     if domain.plan === 'free' && hasExistingTXT
                       each record in existingTXT
-                        tr.table-success
+                        tr
                           td.small
                             if !domain.root_name || domain.root_name === domain.name
                               if provider && typeof provider.host === 'string'
@@ -262,9 +294,7 @@ block body
                           td
                           td.text-left: code.text-dark.text-nowrap= record
                     else
-                      tr(
-                        class=domain.has_txt_record ? "table-success" : domain.has_mx_record ? "table-warning" : ""
-                      )
+                      tr(class=domain.has_txt_record ? "" : "table-success")
                         td.small
                           if !domain.root_name || domain.root_name === domain.name
                             if provider && typeof provider.host === 'string'
@@ -337,44 +367,6 @@ block body
             )
               i.fa.fa-4x(class=domain.has_txt_record ? "fa-check" : "fa-times")
             .text-monospace.text-uppercase= "TXT"
-    .container.py-3.py-md-4.py-lg-5
-      .position-relative
-        .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-          //-.
-            .col-12.d-flex
-              .p-3.p-md-5.m-2.mt-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-                h2.display-5.font-weight-bold.mb-3= t("Set up your domain for email forwarding")
-                p.lead.mb-3= t("Do you need to configure (or re-configure) this domain name for email forwarding?")
-                a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-                  href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`),
-                  target="_blank"
-                )
-                  = t("Configure your domain")
-                  = " "
-                  i.fa.fa-angle-double-right.align-middle
-          .col-12.d-flex
-            .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-              h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
-              p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
-              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-                href=l("/guides/send-mail-as-gmail-custom-domain"),
-                target="_blank"
-              )
-                = t("Setup your Gmail")
-                = " "
-                i.fa.fa-angle-double-right.align-middle
-          .col-12.d-flex
-            .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-              h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
-              p.lead.mb-3!= t("We are here to answer your questions, but please be sure to read our FAQ section first.")
-              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-                href=l("/help"),
-                role="button",
-                data-target="#modal-help"
-              )
-                = t("Ask us a question")
-                = " "
-                i.fa.fa-angle-double-right.align-middle
       .row.text-center.mt-5
         .col
           a.btn.btn-outline-secondary(href=l("/my-account/domains"))

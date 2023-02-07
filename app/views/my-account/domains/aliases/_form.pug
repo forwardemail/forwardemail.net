@@ -52,15 +52,17 @@ if alias
             if !domain.plan || domain.plan === 'free'
               = " "
               = "("
-              = t("Upgrade plan")
+              if user.plan === 'free'
+                = t("Upgrade plan")
+              else
+                = t("Switch domain plan")
               = ")"
             if domain.is_global
               = " ("
               = t("Vanity Domain")
               = ")"
-      - const hasFreeDomains = domains.some((domain) => !domain.plan || domain.plan === "free");
       ul.list-inline.form-text
-        if hasFreeDomains
+        if user.plan === 'free'
           li.list-inline-item
             a.btn.btn-sm.btn-danger(
               href=domainQuery ? l(`/my-account/domains/${domainQuery}/billing?plan=enhanced_protection`) : l("/my-account/billing/upgrade?plan=enhanced_protection")
@@ -78,13 +80,6 @@ if alias
             i.fa.fa-plus
             = " "
             = t("Add new domain")
-        if hasFreeDomains
-          - const match = domains.find((domain) => domain.name === domainQuery);
-          if match && match.id
-            li.list-inline-item
-              a.btn.btn-sm.btn-link.text-muted(
-                href=l(`/my-account/domains/${match.id}`)
-              )= t("Need free version?")
 .form-group
   label(for="textarea-alias-recipients")
     = t("Alias Recipients")

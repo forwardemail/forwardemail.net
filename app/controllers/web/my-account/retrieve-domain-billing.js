@@ -1,7 +1,7 @@
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
-const accounting = require('accounting');
+const numeral = require('numeral');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
 const isFQDN = require('is-fqdn');
@@ -285,13 +285,9 @@ async function retrieveDomainBilling(ctx) {
       }
 
       if (errors.length > 0) {
-        if (errors.length === 1) {
-          const err = Boom.badRequest(errors[0].message);
-          err.no_email = true;
-          throw err;
-        }
+        if (errors.length === 1) throw Boom.badRequest(errors[0].message);
 
-        const err = Boom.badRequest(`
+        throw Boom.badRequest(`
           <p class="font-weight-bold text-danger">${ctx.translate(
             'ERRORS_OCCURRED'
           )}</p>
@@ -299,8 +295,6 @@ async function retrieveDomainBilling(ctx) {
             .map((e) => e.message)
             .join('</li><li>')}</li><ul>
         `);
-        err.no_email = true;
-        throw err;
       }
     }
 
@@ -443,7 +437,6 @@ async function retrieveDomainBilling(ctx) {
       // and we will email them once the payment has been processed and their plan is upgraded
       if (session.payment_status === 'unpaid') {
         const err = ctx.translateError('ASYNC_PAYMENT');
-        err.no_email = true;
         err.is_success = true;
         throw err;
       }
@@ -1519,9 +1512,9 @@ async function retrieveDomainBilling(ctx) {
           'success',
           ctx.translate(
             'REFUND_SUCCESSFUL',
-            accounting.formatMoney(
+            numeral(
               Math.round(_.sumBy(refundedPayments, 'amount_refunded') / 100)
-            )
+            ).format('$0,0')
           )
         );
 
@@ -1707,23 +1700,7 @@ async function retrieveDomainBilling(ctx) {
   } catch (err) {
     ctx.logger.fatal(err);
 
-    // TODO: suppress bugs here
-
-    // email admins here (in the background)
-    if (!err.no_email) {
-      emailHelper({
-        template: 'alert',
-        message: {
-          to: config.email.message.from,
-          subject: `An error occurred for ${ctx.state.user.email} on billing`
-        },
-        locals: {
-          message: `<p><strong>URL:</strong> ${ctx.url}</p><p><strong>Error Message:</strong> ${err.message}</p>`
-        }
-      })
-        .then()
-        .catch((err) => ctx.logger.fatal(err));
-    }
+    // TODO: suppress bugs here (e.g. redis/mongo with gateway error)
 
     if (ctx.accepts('html')) {
       ctx.flash(err.is_success ? 'success' : 'error', err.message);
