@@ -3,6 +3,7 @@ const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const RE2 = require('re2');
 
+// eslint-disable-next-line complexity
 async function listDomains(ctx) {
   let { domains } = ctx.state;
 
@@ -13,16 +14,13 @@ async function listDomains(ctx) {
     let setupRequiredMultiple = false;
     for (const domain of domains) {
       if (domain.is_global && domain.group !== 'admin') continue;
-      /*
       if (
         domain.group === 'admin' &&
         domain.has_mx_record &&
         domain.has_txt_record
-      ) {
-        hasSomeSetup = true;
+      )
+        // hasSomeSetup = true;
         continue;
-      }
-      */
 
       if (setupRequired) {
         setupRequiredMultiple = true;
