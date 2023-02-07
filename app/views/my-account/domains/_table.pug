@@ -18,22 +18,23 @@ include ../../_pagination
             td.align-middle
               h2.h5= domain.name
               ul.list-inline
-                li.list-inline-item
-                  if domain.has_mx_record && domain.has_txt_record
-                    span.badge.badge-success.font-weight-bold.text-uppercase
-                      i.fa.fa-check
-                      = " "
-                      = t("Setup Verified")
-                  else
-                    a.badge.badge-danger.font-weight-bold.text-uppercase(href=l(`/my-account/domains/${domain.name}`))
-                      i.fa.fa-times
-                      = " "
-                      = t("Setup Required")
+                if !domain.is_global || domain.group === 'admin'
+                  li.list-inline-item
+                    if domain.has_mx_record && domain.has_txt_record
+                      span.badge.badge-success.text-uppercase
+                        i.fa.fa-check
+                        = " "
+                        = t("Setup Verified")
+                    else
+                      a.badge.badge-danger.text-uppercase(href=l(`/my-account/domains/${domain.name}`))
+                        i.fa.fa-times
+                        = " "
+                        = t("Setup Required")
                 li.list-inline-item
                   if domain.is_global
-                    span.badge.badge-secondary.font-weight-bold.text-uppercase= t("Vanity Domain")
+                    span.badge.badge-secondary.text-uppercase= t("Vanity Domain")
                   else
-                    span.badge.badge-secondary.font-weight-bold.text-uppercase
+                    span.badge.text-uppercase(class=domain.plan === 'free' ? 'badge-danger' : 'badge-primary')
                       = titleize(humanize(domain.plan))
                       = " "
                       = t("Plan")
@@ -41,14 +42,14 @@ include ../../_pagination
               ul.list-inline.mb-0
                 if domain.group === 'admin'
                   li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
-                    a.btn.btn-sm.btn-dark.btn-block(
+                    a.btn.btn-sm.btn-link.text-dark.btn-block(
                       href=l(`/my-account/domains/${domain.name}`)
                     )
                       i.fa.fa-fw.fa-cog
                       = " "
                       = t("Setup Forwarding")
                 li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
-                  a.btn.btn-sm.btn-dark.btn-block(
+                  a.btn.btn-sm.btn-link.text-dark.btn-block(
                     href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
                     role=domain.plan === "free" ? "button" : false,
                     data-target=domain.plan === "free" ? "#modal-upgrade" : false,
@@ -60,7 +61,7 @@ include ../../_pagination
                 if domain.group === 'admin'
                   li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
                     .btn-group.btn-block.btn-group-sm
-                      button.btn.btn-sm.btn-dark.btn-block.dropdown-toggle(
+                      button.btn.btn-sm.btn-link.text-dark.btn-block.dropdown-toggle(
                         type="button",
                         data-toggle="dropdown",
                         aria-haspopup="true",
@@ -92,17 +93,10 @@ include ../../_pagination
                           href=l(`/private-business-email?domain=${domain.name}`)
                         )= t("See all plan features")
                   li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
-                    a.btn.btn-sm.btn-dark.btn-block(
+                    a.btn.btn-sm.btn-link.text-dark.btn-block(
                       href=l(`/my-account/domains/${domain.name}/advanced-settings`)
                     )
                       i.fa.fa-fw.fa-tools
                       = " "
                       = t("Settings")
-                //-.
-                  if domain.group === 'admin'
-                    li.list-inline-item.d-block
-                      a(href=l(`/my-account/domains/${domain.name}/billing`)).btn.btn-sm.btn-dark.btn-block
-                        i.fa.fa-fw.fa-receipt
-                        = ' '
-                        = t('Billing')
 +paginate('#table-domains')
