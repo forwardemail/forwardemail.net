@@ -35,11 +35,11 @@ block body
           if domains.length === 0 && !ctx.query.q && !ctx.query.page
             .alert.alert-info= t("No domains exist yet.")
           else
-            - const mismatch = user.plan !== 'free' && domains.some(d => d.group === 'admin' && d.plan !== user.plan)
+            - const mismatch = user.plan !== "free" && domains.some((d) => d.group === "admin" && d.plan !== user.plan);
             if mismatch
               .alert.alert-warning.small
                 != t('One or more of your domains are not on the <span class="notranslate">%s</span> plan.', t(titleize(humanize(user.plan))))
-                = ' '
+                = " "
                 != t('Click "Change Plan" &rarr; "<span class="notranslate">%s</span>" to resolve if needed.', t(titleize(humanize(user.plan))))
             form.ajax-form.table-ajax-form(
               action=ctx.path,

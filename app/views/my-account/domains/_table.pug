@@ -7,17 +7,17 @@ include ../../_pagination
       tr
         th(scope="col")
           +sortHeader('name', 'Domain Name', '#table-domains', 'text-left')
-        th.text-center.align-middle(scope="col")= t("Quick Links")
+        th.align-middle(scope="col")= t("Quick Links")
     tbody
       if domains.length === 0
         td.alert.alert-info(colspan=user.group === "admin" ? "7" : "6")= t("No domains exist for that search.")
       else
         each domain in domains
           - domain.plan = domain.plan || "free";
-          tr
-            td.align-middle
+          tr(class=!domain.has_mx_record || !domain.has_txt_record ? 'table-danger' : '')
+            td.align-middle.p-3
               h2.h5= domain.name
-              ul.list-inline
+              ul.list-inline.mb-0
                 if !domain.is_global || domain.group === 'admin'
                   li.list-inline-item
                     if domain.has_mx_record && domain.has_txt_record
@@ -26,7 +26,9 @@ include ../../_pagination
                         = " "
                         = t("Setup Verified")
                     else
-                      a.badge.badge-danger.text-uppercase(href=l(`/my-account/domains/${domain.name}`))
+                      a.badge.badge-danger.text-uppercase(
+                        href=l(`/my-account/domains/${domain.name}`)
+                      )
                         i.fa.fa-times
                         = " "
                         = t("Setup Required")
@@ -34,21 +36,21 @@ include ../../_pagination
                   if domain.is_global
                     span.badge.badge-secondary.text-uppercase= t("Vanity Domain")
                   else
-                    span.badge.text-uppercase(class=domain.plan === 'free' ? 'badge-danger' : 'badge-primary')
+                    span.badge.text-uppercase(
+                      class=domain.plan === "free" ? "badge-danger" : "badge-primary"
+                    )
                       = titleize(humanize(domain.plan))
-                      = " "
-                      = t("Plan")
             td.align-middle
               ul.list-inline.mb-0
                 if domain.group === 'admin'
-                  li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
+                  li.list-inline-item
                     a.btn.btn-sm.btn-link.text-dark.btn-block(
                       href=l(`/my-account/domains/${domain.name}`)
                     )
                       i.fa.fa-fw.fa-cog
                       = " "
-                      = t("Setup Forwarding")
-                li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
+                      = t("Setup")
+                li.list-inline-item
                   a.btn.btn-sm.btn-link.text-dark.btn-block(
                     href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
                     role=domain.plan === "free" ? "button" : false,
@@ -59,7 +61,7 @@ include ../../_pagination
                     = " "
                     = t("Aliases")
                 if domain.group === 'admin'
-                  li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
+                  li.list-inline-item
                     .btn-group.btn-block.btn-group-sm
                       button.btn.btn-sm.btn-link.text-dark.btn-block.dropdown-toggle(
                         type="button",
@@ -92,7 +94,7 @@ include ../../_pagination
                         a.dropdown-item.small.text-muted(
                           href=l(`/private-business-email?domain=${domain.name}`)
                         )= t("See all plan features")
-                  li.list-inline-item.d-block.mr-0.mr-lg-1.my-2
+                  li.list-inline-item
                     a.btn.btn-sm.btn-link.text-dark.btn-block(
                       href=l(`/my-account/domains/${domain.name}/advanced-settings`)
                     )
