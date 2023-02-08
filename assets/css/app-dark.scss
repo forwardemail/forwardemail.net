@@ -7,7 +7,7 @@
 @import 'node_modules/@forevolve/bootstrap-dark/scss/bootstrap-prefers-dark';
 
 $input-bg:                              $black;
-$input-disabled-bg:                     $gray-800;
+$input-disabled-bg:                     $dark;
 
 @media (prefers-color-scheme: dark) {
   .bg-dark, .bg-themed, .navbar-themed {
@@ -15,9 +15,10 @@ $input-disabled-bg:                     $gray-800;
   }
   .markdown-body {
     .bg-dark {
-      background-color: $gray-800 !important;
+      background-color: $dark !important;
     }
     code {
+      background-color: $dark !important;
       color: $white;
     }
     .octicon-link {
@@ -26,7 +27,6 @@ $input-disabled-bg:                     $gray-800;
   }
   mark, .mark {
     padding: 0;
-    background: transparent;
     color: inherit;
   }
   /*
@@ -49,8 +49,4 @@ $input-disabled-bg:                     $gray-800;
   @import 'node_modules/highlight.js/scss/github-dark';
   @import 'swal2-dark';
   @import 'swal2';
-
-  .btn.focus, .btn:focus {
-    box-shadow: none;
-  }
 }
