@@ -56,9 +56,12 @@ td {
 }
 
 @media (prefers-color-scheme: light) {
+  code {
+    color: $dark;
+  }
   .markdown-body {
     code {
-      color: #24292e;
+      color: $dark;
     }
   }
 }
