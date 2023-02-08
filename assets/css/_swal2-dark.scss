@@ -1,0 +1,73 @@
+// stylelint-disable scss/no-global-function-names
+
+// NOTE: this is from https://github.com/sweetalert2/sweetalert2-themes
+//       and we are locked to v2 for sweetalert v8 compat
+@import 'node_modules/sweetalert2/src/variables';
+
+$swal2-dark-theme-black: #19191a;
+$swal2-dark-theme-white: #e1e1e1;
+
+$swal2-background: $swal2-dark-theme-black;
+$swal2-content-color: $swal2-dark-theme-white;
+$swal2-title-color: $swal2-dark-theme-white;
+$swal2-backdrop: rgba($swal2-dark-theme-black, .75);
+
+// FOOTER
+$swal2-footer-color: darken($swal2-content-color, 15%);
+
+// INPUT
+$swal2-input-color: $swal2-dark-theme-white;
+$swal2-input-background: lighten($swal2-dark-theme-black, 10%);
+
+// VALIDATION MESSAGE
+$swal2-validation-message-background: lighten($swal2-dark-theme-black, 10%);
+$swal2-validation-message-color: $swal2-dark-theme-white;
+
+// QUEUE
+$swal2-progress-step-background: lighten($swal2-dark-theme-black, 25%);
+
+// NOTE: this doesn't work because of this:
+//       <https://github.com/sweetalert2/sweetalert2/issues/1965>
+//       <https://github.com/sweetalert2/sweetalert2/issues/2389>
+//       (the only export without inline styling is ESM, not CJS)
+// @import 'node_modules/sweetalert2/src/sweetalert2';
+
+// INPUT
+.swal2-checkbox,
+.swal2-file,
+.swal2-input,
+.swal2-radio,
+.swal2-range,
+.swal2-select,
+.swal2-textarea {
+  background: $swal2-background !important;
+  color: $swal2-input-color !important;
+}
+
+.swal2-container {
+  &.swal2-shown {
+    background-color: none !important;
+    // background-color: $swal2-backdrop !important;
+  }
+}
+
+.swal2-popup {
+  background: $swal2-background !important;
+}
+
+.swal2-title {
+  color: $swal2-title-color !important;
+}
+
+.swal2-footer {
+  color: $swal2-footer-color !important;
+}
+
+.swal2-content {
+  color: $swal2-content-color !important;
+}
+
+.swal2-validation-message {
+  background: $swal2-validation-message-background !important;
+  color: $swal2-validation-message-color !important;
+}

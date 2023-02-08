@@ -7,7 +7,7 @@ mixin registerOrLogin(verb, isModal = false)
     div(class=isModal ? "" : "row")
       div(class=isModal ? "" : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
         if passport && passport.google
-          a.btn-auth.btn-auth-google.btn-auth-google-dark.mb-3.text-decoration-none(
+          a.btn-auth.btn-auth-google.btn-auth-google-dark.border-themed.border.mb-3.text-decoration-none(
             href="/auth/google",
             role="button"
           )
@@ -21,7 +21,7 @@ mixin registerOrLogin(verb, isModal = false)
                 )
               span.btn-auth-text= t(`${humanize(verb)} with Google`)
         if passport && passport.github
-          a.btn-auth.btn-auth-github.btn-auth-github-dark.mb-3.text-decoration-none(
+          a.btn-auth.btn-auth-github.btn-auth-github-dark.border-themed.border.mb-3.text-decoration-none(
             href="/auth/github",
             role="button"
           )
@@ -72,10 +72,10 @@ mixin registerOrLogin(verb, isModal = false)
             else
               = t(capitalize(verb))
           if verb === 'sign up'
-            p.mt-3.mb-1.text-center.small.text-black-50!= t('You agree to our <a href="%s" target="_blank">Privacy Policy</a> and <a href="%s" target="_blank">Terms</a>.', l("/privacy"), l("/terms"))
+            p.mt-3.mb-1.text-center.small.text-black.text-themed-50!= t('You agree to our <a href="%s" target="_blank">Privacy Policy</a> and <a href="%s" target="_blank">Terms</a>.', l("/privacy"), l("/terms"))
           else if verb === 'log in'
             p.mt-3.mb-1.text-center.small
-              a.text-black-50(href=l("/forgot-password"))= t("Forget your password?")
+              a.text-black.text-themed-50(href=l("/forgot-password"))= t("Forget your password?")
         .alert.alert-warning.mt-3.text-center(class=isModal ? "mb-0" : "")
           - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
           ul.list-inline.mb-0

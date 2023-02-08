@@ -1,13 +1,13 @@
 if breadcrumbs.length > 1
   nav.d-none.d-md-block(aria-label="breadcrumb")
-    ol.breadcrumb.justify-content-center.justify-content-md-start.mb-3.py-1.small.bg-light
+    ol.breadcrumb.justify-content-center.justify-content-md-start.mb-3.py-1.small.bg-light.bg-themed
       each breadcrumb, i in breadcrumbs
         if i === breadcrumbs.length - 1
           li.breadcrumb-item.active(aria-current="page")
             = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
         else
           li.breadcrumb-item
-            a.text-dark(
+            a.text-themed(
               href=_.isObject(breadcrumb) ? breadcrumb.href : `/${breadcrumbs.slice(0, i + 1).join("/")}/`
             )
               = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
@@ -22,7 +22,7 @@ if breadcrumbs.length > 1
         if domain && domain.has_mx_record && domain.has_txt_record && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
           ul.list-inline.mb-0
             li.list-inline-item
-              a.btn.btn-sm.btn-outline-dark(
+              a.btn.btn-sm.btn-outline-dark.text-themed(
                 href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
                 role=domain.plan === "free" ? "button" : false,
                 data-target=domain.plan === "free" ? "#modal-upgrade" : false,
@@ -32,7 +32,7 @@ if breadcrumbs.length > 1
                 = " "
                 = t("Aliases")
             li.list-inline-item
-              a.btn.btn-sm.btn-outline-dark(
+              a.btn.btn-sm.btn-outline-dark.text-themed(
                 href=l(`/my-account/domains/${domain.name}/advanced-settings`)
               )
                 i.fa.fa-fw.fa-tools
@@ -41,7 +41,7 @@ if breadcrumbs.length > 1
             if domain.group === 'admin'
               li.list-inline-item
                 .btn-group.btn-group-sm
-                  button.btn.btn-sm.btn-outline-dark.dropdown-toggle(
+                  button.btn.btn-sm.btn-outline-dark.text-themed.dropdown-toggle(
                     type="button",
                     data-toggle="dropdown",
                     aria-haspopup="true",

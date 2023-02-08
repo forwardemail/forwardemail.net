@@ -60,7 +60,7 @@ include ../../_pagination
                 li.list-inline-item
                   if domain.plan === 'free'
                     if user.plan === 'free'
-                      button.btn.btn-sm.btn-link.text-dark.btn-block(
+                      button.btn.btn-sm.btn-link.text-themed.btn-block(
                         type="button",
                         data-target="#modal-upgrade",
                         data-toggle="modal"
@@ -76,12 +76,12 @@ include ../../_pagination
                         method="GET"
                       )
                         input(type="hidden", name="plan", value=user.plan)
-                        button.btn.btn-sm.btn-link.text-dark(type="submit")
+                        button.btn.btn-sm.btn-link.text-themed(type="submit")
                           i.fa.fa-fw.fa-users
                           = " "
                           = t("Aliases")
                   else
-                    a.btn.btn-sm.btn-link.text-dark.btn-block(
+                    a.btn.btn-sm.btn-link.text-themed.btn-block(
                       href=l(`/my-account/domains/${domain.name}/aliases`)
                     )
                       i.fa.fa-fw.fa-users
@@ -92,7 +92,7 @@ include ../../_pagination
                     li.list-inline-item
                       if domain.plan === 'free'
                         if user.plan === 'free'
-                          button.btn.btn-sm.btn-link.text-dark.btn-block(
+                          button.btn.btn-sm.btn-link.text-themed.btn-block(
                             type="button",
                             data-target="#modal-upgrade",
                             data-toggle="modal"
@@ -108,12 +108,12 @@ include ../../_pagination
                             method="GET"
                           )
                             input(type="hidden", name="plan", value=user.plan)
-                            button.btn.btn-sm.btn-link.text-dark(type="submit")
+                            button.btn.btn-sm.btn-link.text-themed(type="submit")
                               i.fa.fa-fw.fa-stream
                               = " "
                               = t("Logs")
                       else
-                        a.btn.btn-sm.btn-link.text-dark.btn-block(
+                        a.btn.btn-sm.btn-link.text-themed.btn-block(
                           href=l(`/my-account/domains/${domain.name}/logs`)
                         )
                           i.fa.fa-fw.fa-stream
@@ -121,14 +121,14 @@ include ../../_pagination
                           = t("Logs")
                   li.list-inline-item
                     a.btn.btn-sm.btn-block.btn-link(
-                      class=domain.has_mx_record && domain.has_txt_record ? "text-dark" : "text-danger font-weight-bold",
+                      class=domain.has_mx_record && domain.has_txt_record ? "text-themed" : "text-danger font-weight-bold",
                       href=l(`/my-account/domains/${domain.name}`)
                     )
                       i.fa.fa-fw.fa-cog
                       = " "
                       = t("Setup")
                   li.list-inline-item
-                    a.btn.btn-sm.btn-link.text-dark.btn-block(
+                    a.btn.btn-sm.btn-link.text-themed.btn-block(
                       href=l(`/my-account/domains/${domain.name}/advanced-settings`)
                     )
                       i.fa.fa-fw.fa-tools
@@ -138,7 +138,7 @@ include ../../_pagination
                   li.list-inline-item
                     .btn-group.btn-block.btn-group-sm
                       button.btn.btn-sm.btn-link.btn-block.dropdown-toggle(
-                        class=user.plan !== "free" && domain.plan !== user.plan ? "text-warning font-weight-bold" : "text-dark",
+                        class=user.plan !== "free" && domain.plan !== user.plan ? "text-warning font-weight-bold" : "text-themed",
                         type="button",
                         data-toggle="dropdown",
                         aria-haspopup="true",

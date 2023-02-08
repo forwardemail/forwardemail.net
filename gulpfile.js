@@ -23,7 +23,6 @@ const concat = require('gulp-concat');
 const cssnano = require('cssnano');
 const del = require('del');
 const envify = require('@ladjs/gulp-envify');
-// const fontMagician = require('postcss-font-magician');
 const getStream = require('get-stream');
 const globby = require('globby');
 const gulpRemark = require('gulp-remark');
@@ -36,7 +35,9 @@ const nodeSass = require('node-sass');
 const pngquant = require('imagemin-pngquant');
 const postcss = require('gulp-postcss');
 const postcssPresetEnv = require('postcss-preset-env');
+const prettier = require('gulp-prettier');
 const pugLinter = require('gulp-pug-linter');
+const pump = require('pump');
 const purgeFromPug = require('purgecss-from-pug');
 const purgecss = require('gulp-purgecss');
 const reporter = require('postcss-reporter');
@@ -44,6 +45,7 @@ const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
 const sass = require('gulp-sass')(require('sass'));
 const sourcemaps = require('gulp-sourcemaps');
+const stylelint = require('@ronilaukkarinen/gulp-stylelint');
 const terser = require('gulp-terser');
 const through2 = require('through2');
 const unassert = require('gulp-unassert');
@@ -83,7 +85,9 @@ if (!PROD) {
 function pug() {
   let stream = src(['app/views/**/*.pug', 'emails/**/*.pug'], {
     since: lastRun(pug)
-  }).pipe(pugLinter({ reporter: 'default', failAfterError: true }));
+  })
+    .pipe(prettier())
+    .pipe(pugLinter({ reporter: 'default', failAfterError: true }));
 
   if (DEV) stream = stream.pipe(lr(config.livereload));
 
@@ -121,135 +125,118 @@ function faFonts() {
   );
 }
 
-function scss() {
-  return src('assets/css/**/*.scss', {
-    base: 'assets'
-  }).pipe(postcss());
-}
-
 function css() {
-  let stream = src('assets/css/**/*.scss', {
-    base: 'assets'
-  })
-    // .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
-    .pipe(
-      postcss([
-        // NOTE: fontMagician does not have support for woff2 automatic detection
-        // <https://github.com/csstools/postcss-font-magician/issues/75#issuecomment-626050812>
-        // fontMagician({
-        //   foundries: ['custom', 'hosted'],
-        //   hosted: [path.join(__dirname, config.buildBase, 'fonts'), '../fonts'],
-        //   display: 'swap'
-        // }),
-        postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
-        ...(PROD ? [cssnano({ autoprefixer: false })] : []),
-        reporter()
-      ])
-    )
-    .pipe(
-      purgecss({
-        content: [
-          'build/**/*.js',
-          'app/views/**/*.md',
-          'app/views/**/*.pug',
-          'emails/**/*.pug'
-        ],
-        // <https://github.com/FullHuman/purgecss/blob/55c26d2790b8502f115180cfe02aba5720c84b7b/docs/configuration.md>
-        defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
-        extractors: [
-          {
-            extractor: purgeFromPug,
-            extensions: ['pug']
-          }
-        ],
-        sourceMap: false,
-        safelist: [
-          'navbar-dark',
-          'bg-dark',
-          'navbar-light',
-          'bg-white',
-          'flex-grow-1',
-          'fa-search',
-          'markdown-body',
-          'anchor',
-          'octicon-link',
-          'lazyframe',
-          'floating-label',
-          'email',
-          /^hljs/,
-          /^language-/,
-          // the following list was filtered from `rg "class=" app/views/**/*.pug`
-          // (since this does not detect variable-based class names in pug files)
-          'active',
-          'alert-danger',
-          'alert-success',
-          'badge-danger',
-          'badge-primary',
-          'badge-success',
-          'badge-warning',
-          'bg-dark',
-          'bg-white',
-          'bg-success',
-          'bg-warning',
-          'bg-danger',
-          'bg-secondary',
-          'border-dark',
-          'border-md-top',
-          'btn-link',
-          'col',
-          'col-12',
-          'col-6',
-          'col-lg-6',
-          'col-md-6',
-          'col-md-8',
-          'col-sm-12',
-          'confirm-prompt',
-          'container',
-          'container-fluid',
-          'd-inline-block',
-          'd-md-inline-block',
-          'd-none',
-          'd-print-block',
-          'd-sm-block',
-          'disabled',
-          'fa-check',
-          'fa-sort',
-          'fa-sort-down',
-          'fa-sort-up',
-          'fa-times',
-          'flex-grow-1',
-          'font-weight-bold',
-          'mb-0',
-          'mt-3',
-          'mt-md-0',
-          'navbar-dark',
-          'navbar-light',
-          'offset-lg-3',
-          'offset-md-2',
-          'py-3',
-          'opacity-50',
-          'row',
-          'table-danger',
-          'table-success',
-          'text-center',
-          'text-danger',
-          'text-dark',
-          'text-decoration-underline',
-          'text-muted',
-          'text-success',
-          'text-white',
-          'text-warning'
-        ]
-      })
-    );
-
-  // stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
-  stream = stream.pipe(dest(config.buildBase));
-
-  if (DEV) stream = stream.pipe(lr(config.livereload));
-
-  return stream;
+  return pump([
+    src('assets/css/**/*.scss', {
+      base: 'assets',
+      since: lastRun(css)
+    }),
+    stylelint({
+      reporters: [{ formatter: 'string', console: true }]
+    }),
+    // sourcemaps.init()
+    sass().on('error', sass.logError),
+    postcss([
+      postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
+      cssnano({ autoprefixer: false }),
+      reporter()
+    ]),
+    purgecss({
+      content: [
+        'build/**/*.js',
+        'app/views/**/*.md',
+        'app/views/**/*.pug',
+        'emails/**/*.pug'
+      ],
+      // <https://github.com/FullHuman/purgecss/blob/55c26d2790b8502f115180cfe02aba5720c84b7b/docs/configuration.md>
+      defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
+      extractors: [
+        {
+          extractor: purgeFromPug,
+          extensions: ['pug']
+        }
+      ],
+      sourceMap: false,
+      // (since this does not detect variable-based class names in pug files)
+      // the following list was filtered from `rg "class=" app/views/**/*.pug`
+      safelist: [
+        'active',
+        'alert-danger',
+        'alert-success',
+        'anchor',
+        'badge-danger',
+        'badge-primary',
+        'badge-success',
+        'badge-warning',
+        'bg-danger',
+        'bg-dark',
+        'bg-secondary',
+        'bg-success',
+        'bg-warning',
+        'bg-white',
+        'border-dark',
+        'border-md-top',
+        'btn-link',
+        'col',
+        'col-12',
+        'col-6',
+        'col-lg-6',
+        'col-md-6',
+        'col-md-8',
+        'col-sm-12',
+        'confirm-prompt',
+        'container',
+        'container-fluid',
+        'd-inline-block',
+        'd-md-inline-block',
+        'd-none',
+        'd-print-block',
+        'd-sm-block',
+        'disabled',
+        'email',
+        'fa-check',
+        'fa-search',
+        'fa-sort',
+        'fa-sort-down',
+        'fa-sort-up',
+        'fa-times',
+        'flex-grow-1',
+        'floating-label',
+        'font-weight-bold',
+        'lazyframe',
+        'markdown-body',
+        'mb-0',
+        'mt-3',
+        'mt-md-0',
+        'navbar-dark',
+        'navbar-light',
+        'navbar-themed',
+        'octicon-link',
+        'offset-lg-3',
+        'offset-md-2',
+        'opacity-50',
+        'py-3',
+        'row',
+        'table-danger',
+        'table-success',
+        'text-center',
+        'text-danger',
+        'text-dark',
+        'text-decoration-underline',
+        'text-muted',
+        'text-success',
+        'text-warning',
+        'text-white',
+        /^hljs/,
+        /^language-/,
+        /-themed$/,
+        /-themed-/
+      ]
+    }),
+    // sourcemaps.write('./')
+    dest(config.buildBase),
+    ...(DEV ? [lr(config.livereload)] : [])
+  ]);
 }
 
 function xo() {
@@ -436,16 +423,7 @@ const build = series(
   clean,
   parallel(
     ...(TEST ? [] : [xo, remark]),
-    series(
-      parallel(
-        img,
-        static,
-        markdown,
-        bundle,
-        series(fonts, faFonts, scss, css)
-      ),
-      sri
-    )
+    series(parallel(img, static, markdown, bundle, fonts, faFonts, css), sri)
   )
 );
 
@@ -457,10 +435,11 @@ module.exports = {
   markdown,
   watch() {
     lr.listen(config.livereload);
-    watch(['**/*.js', '!assets/js/**/*.js'], xo);
+    watch(['**/*.js', '!gulpfile.js', '!assets/js/**/*.js'], xo);
     watch(Mandarin.DEFAULT_PATTERNS, markdown);
     watch('assets/img/**/*', img);
-    watch('assets/css/**/*.scss', series(fonts, faFonts, scss, css));
+    watch('assets/fonts/**/*', fonts);
+    watch('assets/css/**/*.scss', css);
     watch('assets/js/**/*.js', series(xo, bundle));
     watch(['app/views/**/*.pug', 'emails/**/*.pug'], pug);
     watch(staticAssets, static);
@@ -472,7 +451,6 @@ module.exports = {
   remark,
   fonts,
   faFonts,
-  scss,
   css
 };
 

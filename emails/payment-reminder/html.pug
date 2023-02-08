@@ -5,7 +5,7 @@ block content
     .row
       .col-12
         .card.border-dark.d-block
-          h1.h5.card-header.bg-dark.text-white.text-center
+          h1.h5.card-header.text-center
             != t('Your plan <span class="notranslate">%s</span> <span class="notranslate">%s</span>', new Date(user[config.userFields.planExpiresAt]).getTime() > Date.now() ? t("expires") : t("expired"), dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow())
           .card-body.p-0
             a(href=`${config.urls.web}/${locale}/my-account/billing`)

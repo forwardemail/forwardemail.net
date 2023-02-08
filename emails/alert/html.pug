@@ -5,7 +5,7 @@ block content
     .row
       .col-12
         .card.border-dark.d-block
-          h1.h5.card-header.bg-dark.text-white.text-center= t("System Alert")
+          h1.h5.card-header.text-center= t("System Alert")
           .card-body
             .card-text!= prefixHTMLPathBasedAnchors(message, config.urls.web)
           .card-footer.text-center.small.text-muted= t("This is an automated system alert.")

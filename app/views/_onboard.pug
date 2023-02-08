@@ -24,7 +24,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
     div&attributes(attributes)
-      .bg-light.py-3.py-md-4.py-lg-5(class=onboardContainerClass)
+      .bg-light.bg-themed.py-3.py-md-4.py-lg-5(class=onboardContainerClass)
         .container
           .row
             .col
@@ -63,8 +63,8 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                       = t("Continue")
                       = " "
                       i.fa.fa-angle-double-right.align-middle
-                    p.mt-3.mb-0.text-center.small.text-black-50: small!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
+                    p.mt-3.mb-0.text-center.small.text-black.text-themed-50: small!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
               if onboardKeepReading
-                p.text-center.mb-0.small: a.text-black-50.font-weight-bold.small(
+                p.text-center.mb-0.small: a.text-black.text-themed-50.font-weight-bold.small(
                   href=onboardKeepReading
                 )= t("Not interested?  Click here to keep reading")
