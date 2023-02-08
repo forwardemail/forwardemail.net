@@ -3,7 +3,7 @@ extends ../layout
 block body
   if !isBot(ctx.get('User-Agent'))
     .fixed-bottom.text-center
-      .bg-dark.p-2.border-top.border-light
+      .bg-dark.p-2.border-top.border-themed
         ul.list-inline.mb-0
           li.list-inline-item
             a.btn.btn-lg.btn-light(href="#quick-video-guide")
@@ -48,7 +48,7 @@ block body
               = t("Quick Video Guide")
           .card-body.text-center
             if isBot(ctx.get('User-Agent'))
-              a.btn.btn-outline-dark.btn-lg(
+              a.btn.btn-outline-dark.text-themed.btn-lg(
                 href="https://www.youtube.com/watch?v=MEheS8gM4Xs",
                 target="_blank",
                 rel="noopener noreferrer"
@@ -57,7 +57,7 @@ block body
                 = " "
                 = t("Watch Video")
             else
-              .lazyframe.border.border-light.d-inline-block(
+              .lazyframe.border.border-themed.d-inline-block(
                 data-vendor="youtube_nocookie",
                 title=t("How to Send Mail As using Gmail"),
                 style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",

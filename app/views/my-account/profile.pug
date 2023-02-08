@@ -69,7 +69,7 @@ block body
         .col-md
           form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
             input(type="hidden", name="_method", value="PUT")
-            .card.border-dark
+            .card.border-themed
               h2.h6.card-header= t("Personal Information")
               .card-body.pb-0
                 .form-group.floating-label.mt-3
@@ -140,7 +140,7 @@ block body
         .col-md.mt-3.mt-md-0
           form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
             input(type="hidden", name="_method", value="PUT")
-            .card.border-dark
+            .card.border-themed
               h2.h6.card-header= t("Company Information")
               .card-body.pb-0
                 .alert.alert-warning.small!= t("Receipts are automatically emailed to you.  If you set a receipt email address below, then receipts will be sent there and you will receive a copy too.")

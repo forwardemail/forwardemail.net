@@ -1,6 +1,10 @@
+// stylelint-disable no-invalid-position-at-import-rule
+
 @import 'node_modules/github-markdown-css/github-markdown-light';
 
 .markdown-body {
+  background-color: transparent !important;
+
   // margin-left: 20px;
   // margin-right: 20px;
   font-family: $font-family-sans-serif;
@@ -20,7 +24,6 @@
   }
 
   code {
-    color: #24292e;
     // font-size: 100%;
   }
 
@@ -44,11 +47,18 @@
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     height: 0;
   }
-
 }
 
 td {
   .markdown-body {
     background-color: transparent;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .markdown-body {
+    code {
+      color: #24292e;
+    }
   }
 }

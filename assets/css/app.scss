@@ -1,3 +1,5 @@
+// stylelint-disable no-invalid-position-at-import-rule
+
 // variables
 @import 'variables';
 
@@ -15,11 +17,17 @@ $info: theme-color('info');
 $question: theme-color('light');
 
 // sweetalert2
-@import 'node_modules/sweetalert2/src/sweetalert2';
+@media (prefers-color-scheme: light) {
+  @import 'node_modules/sweetalert2/src/sweetalert2';
+  // sweetalert2 fix
+  @import 'swal2';
+}
 
 // highlight.js
 @import 'node_modules/highlight.js/scss/default';
-@import 'node_modules/highlight.js/scss/github';
+@media (prefers-color-scheme: light) {
+  @import 'node_modules/highlight.js/scss/github';
+}
 
 // font awesome
 @import 'node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
@@ -44,7 +52,9 @@ $question: theme-color('light');
 @import 'node_modules/@ladjs/assets/scss/image-helpers';
 
 // bootstrap floating labels
-@import 'node_modules/@tkrotoff/bootstrap-floating-label/src/bootstrap-floating-label';
+@media (prefers-color-scheme: light) {
+  @import 'node_modules/@tkrotoff/bootstrap-floating-label/src/bootstrap-floating-label';
+}
 
 // lazyframe
 // <https://github.com/vb/lazyframe>
@@ -58,9 +68,6 @@ $question: theme-color('light');
 
 // auth buttons
 @import 'btn-auth';
-
-// sweetalert2 fix
-@import 'swal2';
 
 // responsive borders
 @import 'responsive-borders';

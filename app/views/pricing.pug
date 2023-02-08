@@ -75,7 +75,7 @@ block body
                   = t("Premium features for only $3")
           if isBot(ctx.get('User-Agent'))
             .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
-              a.btn.btn-outline-dark(
+              a.btn.btn-outline-dark.text-themed(
                 href="https://www.youtube.com/watch?v=q7zfEpn2NdA",
                 target="_blank",
                 rel="noopener noreferrer"
@@ -85,14 +85,14 @@ block body
                 = t("Watch Video")
           else
             .col-lg-6.d-none.d-lg-block
-              .lazyframe.border.border-light.d-inline-block(
+              .lazyframe.border.border-themed.d-inline-block(
                 data-vendor="youtube_nocookie",
                 title=t("Private Business Email"),
                 style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
                 data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
               )
           .col-12.d-block.d-lg-none.mt-3.mb-5.text-md-left
-            a.btn.btn-outline-dark(
+            a.btn.btn-outline-dark.text-themed(
               role="button",
               data-toggle="modal",
               data-target="#modal-pricing-video",
@@ -104,7 +104,7 @@ block body
               = " "
               = t("Watch Video")
 
-      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-dark.mx-auto(
+      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
         href="#features"
       )
         i.fa.fa-angle-double-down
@@ -114,7 +114,7 @@ block body
         i.fa.fa-angle-double-down
   .bg-fixed.lazyload.py-3.py-md-4.py-lg-5(
     id=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing)) ? false : "features",
-    class=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing)) ? "" : "border-md-top border-dark",
+    class=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing)) ? "" : "border-md-top border-themed",
     data-src=manifest("img/art/stars.svg")
   )
     .text-center.d-block.d-md-none.my-3
@@ -122,14 +122,14 @@ block body
     .container
       .row.row-cols-1.row-cols-lg-3
         .col
-          .d-flex.flex-column.rounded-lg.bg-white.h-100
+          .d-flex.flex-column.rounded-lg.bg-white.bg-themed.h-100
             .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Free")
               p.text-center.mb-3= t("Basic plan to get started")
               .lead.text-center.mb-3
                 span.h4.mb-0.font-weight-bold.d-inline-block $0
-                span.d-inline-block.h6.text-black-50.ml-1
+                span.d-inline-block.h6.text-black.text-themed-50.ml-1
                   = t("for unlimited domains")
               a.btn.btn-block.btn-success(href=l("/my-account/domains/new"))
                 if user
@@ -141,7 +141,7 @@ block body
                   = " "
                   i.fa.fa-angle-double-right.align-middle
             ul.list-group.list-group-flush.mb-1
-              li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.text-white.font-weight-bold
+              li.list-group-item.d-flex.align-items-center.border-top.border-themed.bg-dark.text-white.font-weight-bold
                 i.fa.fa-fw.fa-infinity.text-primary.mr-3
                 = " "
                 = t("Unlimited email aliases")
@@ -191,14 +191,14 @@ block body
                 )
                   = t("Regular expression filtering")
         .col.mt-3.mt-lg-0
-          .d-flex.flex-column.rounded-lg.bg-white.h-100
+          .d-flex.flex-column.rounded-lg.bg-white.bg-themed.h-100
             .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Enhanced")
               p.text-center.mb-3= t("Advanced features and privacy")
               .lead.text-center.mb-3
                 span.h4.mb-0.font-weight-bold.d-inline-block $3
-                span.d-inline-block.h6.text-black-50.ml-1
+                span.d-inline-block.h6.text-black.text-themed-50.ml-1
                   = t("for unlimited domains")
 
               if sortedDomains.length === 0
@@ -237,7 +237,7 @@ block body
                       = t("Add New Domain")
 
             ul.list-group.list-group-flush.mb-1
-              li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.text-white.font-weight-bold
+              li.list-group-item.d-flex.align-items-center.border-top.border-themed.bg-dark.text-white.font-weight-bold
                 i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
                 i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = " "
@@ -281,14 +281,14 @@ block body
                 = " "
                 = t("99.99% service uptime")
         .col.mt-3.mt-lg-0
-          .d-flex.flex-column.rounded-lg.bg-white.h-100
+          .d-flex.flex-column.rounded-lg.bg-white.bg-themed.h-100
             .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Team")
               p.text-center.mb-3= t("For groups and organizations")
               .lead.text-center.mb-3
                 span.h4.mb-0.font-weight-bold.d-inline-block $9
-                span.d-inline-block.h6.text-black-50.ml-1
+                span.d-inline-block.h6.text-black.text-themed-50.ml-1
                   = t("for unlimited domains")
               if sortedDomains.length === 0
                 a.btn.btn-block.btn-success(
@@ -325,7 +325,7 @@ block body
                       = " "
                       = t("Add New Domain")
             ul.list-group.list-group-flush.mb-1
-              li.list-group-item.d-flex.align-items-center.border-top.border-dark.bg-dark.font-weight-bold.text-white
+              li.list-group-item.d-flex.align-items-center.border-top.border-themed.bg-dark.font-weight-bold.text-white
                 i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
                 i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = " "
@@ -360,7 +360,7 @@ block body
                 = t("Early access to new features")
 
     .text-center.d-block.mt-3.mt-md-5
-      a.text-decoration-none.text-uppercase.text-dark.mx-auto(
+      a.text-decoration-none.text-uppercase.text-themed.mx-auto(
         href="#frequently-asked-questions"
       )
         i.fa.fa-angle-double-down

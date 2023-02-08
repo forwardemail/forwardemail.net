@@ -127,7 +127,7 @@ block body
       .row
         .col
           if domain.group === 'admin'
-            .card.border-dark.mb-3
+            .card.border-themed.mb-3
               h2.h6.card-header= t("Delete Domain")
               .card-body
                 .alert.alert-danger.small.mb-0= t("Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.")
@@ -142,7 +142,7 @@ block body
                     = " "
                     = t("Delete Domain")
           if domain.group === 'admin'
-            .card.border-dark.mb-3
+            .card.border-themed.mb-3
               h2.h6.card-header= t("Current Plan")
               .card-body
                 .alert.alert-success.small.mb-0!= t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a class="alert-link" href="%s">Billing</a> page and our <a class="alert-link" href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/private-business-email?domain=${domain.name}`))
@@ -180,7 +180,7 @@ block body
                     )= t("See all plan features")
           if domain.group === 'admin'
             - const hasInvites = Array.isArray(domain.invites) && domain.invites.length > 0 && domain.plan === "team";
-            .card.border-dark.mb-3
+            .card.border-themed.mb-3
               h2.h6.card-header= t("Manage Team")
               .card-body
                 +planRequired(true)
@@ -311,7 +311,7 @@ block body
 
           //- Spam Scanner Settings
           if domain.group === 'admin'
-            form.ajax-form.confirm-prompt.card.border-dark.mb-3(
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=ctx.path,
               method="POST",
               disabled=isDisabled
@@ -340,7 +340,7 @@ block body
                     checked=domain.has_adult_content_protection
                   )
                   label.form-check-label(for="input-has-adult-protection")= t("Adult-related content protection")
-                  p.form-text.small.text-black-50!= t("If you uncheck this, then links will <u>not be scanned</u> for adult-related content.")
+                  p.form-text.small.text-black.text-themed-50!= t("If you uncheck this, then links will <u>not be scanned</u> for adult-related content.")
                 .form-group.form-check
                   input#input-has-phishing-protection.form-check-input(
                     type="checkbox",
@@ -350,7 +350,7 @@ block body
                     checked=domain.has_phishing_protection
                   )
                   label.form-check-label(for="input-has-phishing-protection")= t("Phishing protection")
-                  p.form-text.small.text-black-50!= t('If you uncheck this, then links will <u>not be scanned</u> for malware, domain swapping, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor phishing in general.', "https://en.wikipedia.org/wiki/IDN_homograph_attack")
+                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then links will <u>not be scanned</u> for malware, domain swapping, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor phishing in general.', "https://en.wikipedia.org/wiki/IDN_homograph_attack")
                 .form-group.form-check
                   input#input-has-executable-protection.form-check-input(
                     type="checkbox",
@@ -360,7 +360,7 @@ block body
                     checked=domain.has_executable_protection
                   )
                   label.form-check-label(for="input-has-executable-protection")= t("Executable protection")
-                  p.form-text.small.text-black-50!= t('If you uncheck this, then links and attachments will <u>not be scanned</u> for potentially-malicious <a target="_blank" rel="noopener noreferrer" href="%s">executable</a> file types, extensions, names, headers, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor <a target="_blank" rel="noopener noreferrer" href="%s">magic numbers</a>.', "https://github.com/spamscanner/spamscanner/blob/master/executables.json", "https://en.wikipedia.org/wiki/IDN_homograph_attack", "https://en.wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files")
+                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then links and attachments will <u>not be scanned</u> for potentially-malicious <a target="_blank" rel="noopener noreferrer" href="%s">executable</a> file types, extensions, names, headers, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor <a target="_blank" rel="noopener noreferrer" href="%s">magic numbers</a>.', "https://github.com/spamscanner/spamscanner/blob/master/executables.json", "https://en.wikipedia.org/wiki/IDN_homograph_attack", "https://en.wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files")
                 .form-group.form-check
                   input#input-has-virus-protection.form-check-input(
                     type="checkbox",
@@ -370,7 +370,7 @@ block body
                     checked=domain.has_virus_protection
                   )
                   label.form-check-label(for="input-has-virus-protection")= t("Virus protection")
-                  p.form-text.small.text-black-50!= t('If you uncheck this, then attachments will <u>not be scanned</u> for trojans, viruses, malware, nor other malicious threats with <a target="_blank" rel="noopener noreferrer" href="%s" class="notranslate">ClamAV</a>.', "https://www.clamav.net/")
+                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then attachments will <u>not be scanned</u> for trojans, viruses, malware, nor other malicious threats with <a target="_blank" rel="noopener noreferrer" href="%s" class="notranslate">ClamAV</a>.', "https://www.clamav.net/")
               .card-footer.text-right
                 ul.list-inline.mb-0
                   li.list-inline-item
@@ -384,7 +384,7 @@ block body
                       disabled=isDisabled
                     )= t("Save")
           if domain.group === 'admin'
-            form.ajax-form.confirm-prompt.card.border-dark.mb-3(
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=ctx.path,
               method="POST",
               disabled=isDisabled
@@ -421,7 +421,7 @@ block body
                       type="submit",
                       disabled=isDisabled
                     )= t("Save")
-          .card.border-dark.mb-3
+          .card.border-themed.mb-3
             h2.h6.card-header= t("Maximum Recipients Per Alias")
             .card-body
               if domain.group === 'admin'
@@ -441,7 +441,7 @@ block body
 
           //- Has Recipient Verification
           if domain.group === 'admin'
-            form.ajax-form.confirm-prompt.card.border-dark.mb-3(
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=ctx.path,
               method="POST",
               disabled=isDisabled
@@ -466,7 +466,7 @@ block body
                   label.form-check-label(
                     for="input-has-recipient-verification"
                   )= t("Requires recipients to click email verification link")
-                  p.form-text.small.text-black-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
+                  p.form-text.small.text-black.text-themed-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
               .card-footer.text-right
                 ul.list-inline.mb-0
                   li.list-inline-item
@@ -483,7 +483,7 @@ block body
           //- Custom Verification Template
           - const isCustomVerificationDisabled = domain.plan === "free" || !domain.has_custom_verification;
           if domain.group === 'admin'
-            form.ajax-form.confirm-prompt.card.border-dark.mb-3(
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=ctx.path,
               method="POST",
               disabled=isCustomVerificationDisabled
@@ -557,7 +557,7 @@ block body
                     type="url"
                   )
                   label(for="input-custom-verification-redirect")= t("Verification redirect link")
-                  p.form-text.small.text-black-50= t("If you set a value here, then once a verification link was clicked and it was successful, it will redirect the users to this URL.")
+                  p.form-text.small.text-black.text-themed-50= t("If you set a value here, then once a verification link was clicked and it was successful, it will redirect the users to this URL.")
 
                 .form-group
                   label(for="#textarea-custom-verification-html")= t("HTML Content")
@@ -573,7 +573,7 @@ block body
 
                 .form-group
                   label= t("HTML Preview")
-                iframe#custom-verification-preview.border.border-dark.mb-3.min-vh-80.w-100(
+                iframe#custom-verification-preview.border.border-themed.mb-3.min-vh-80.w-100(
                   src="about:blank"
                 )
 

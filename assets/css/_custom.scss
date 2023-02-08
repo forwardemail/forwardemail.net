@@ -22,21 +22,25 @@ body {
   overflow-y: auto;
 }
 
-mark {
-  margin: 0 -0.4em;
-  padding: 0.1em 0.4em;
-  border-radius: 0.8em 0.3em;
-  background: transparent;
-  background-image: linear-gradient(
-    to right,
-    rgba(255, 225, 0, 0.1),
-    rgba(255, 225, 0, 0.7) 4%,
-    rgba(255, 225, 0, 0.3)
-  );
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+@media (prefers-color-scheme: light) {
+  .btn-link.text-themed {
+    color: inherit;
+  }
+  mark, .mark {
+    margin: 0 -0.4em;
+    padding: 0.1em 0.4em;
+    border-radius: 0.8em 0.3em;
+    background: transparent;
+    background-image: linear-gradient(
+      to right,
+      rgba(255, 225, 0, 0.1),
+      rgba(255, 225, 0, 0.7) 4%,
+      rgba(255, 225, 0, 0.3)
+    );
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
 }
-
 
 // <https://github.com/forwardemail/forwardemail.net/issues/141>
 // <https://stackoverflow.com/q/58931615>
@@ -61,6 +65,14 @@ mark {
   }
 }
 
+@media (prefers-color-scheme: light) {
+  @include media-breakpoint-up(md) {
+    .bg-fixed {
+      background-color: #E6FAFF;
+    }
+  }
+}
+
 @include media-breakpoint-up(md) {
   .bg-fixed {
     min-height: 100%;
@@ -68,7 +80,6 @@ mark {
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
-    background-color: #E6FAFF;
   }
 }
 
@@ -95,4 +106,15 @@ pre {
 
 .opacity-50 {
   opacity: 0.5;
+}
+
+.text-themed a, a.text-themed, a.text-themed.btn-link {
+  color: inherit;
+  &:hover {
+    color: inherit;
+  }
+}
+
+.btn.focus, .btn:focus {
+  box-shadow: none;
 }

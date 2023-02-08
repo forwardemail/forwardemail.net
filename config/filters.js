@@ -125,7 +125,7 @@ function fixTableOfContents(content, i18n, options) {
       //
       // get the child node of the header that is a text node (nodeType === 3)
       // and then replace it with an anchor tag wrapped and custom styled
-      // a.btn.btn-link.btn-block.text-left.text-dark.font-weight-bold.p-0
+      // a.btn.btn-link.btn-block.text-left.text-themed.font-weight-bold.p-0
       //
 
       // replace the text node
@@ -137,7 +137,7 @@ function fixTableOfContents(content, i18n, options) {
       // eslint-disable-next-line unicorn/prefer-dom-node-append
       header.appendChild(
         parse(
-          `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-dark font-weight-bold p-0" href="#${id}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${id}" data-target="#collapse-${id}">${lastChildRawText}${
+          `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-themed font-weight-bold p-0" href="#${id}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${id}" data-target="#collapse-${id}">${lastChildRawText}${
             options.isFAQ && !lastChildRawText.endsWith('?') ? '?' : ''
           }</a>`
         )
@@ -247,7 +247,7 @@ function fixTableOfContents(content, i18n, options) {
     return `<div class="markdown-body">${root.toString()}</div>`;
 
   return `
-    <div class="fixed-bottom bg-dark border-top border-light p-2 text-center is-bot no-js">
+    <div class="fixed-bottom bg-dark border-top border-themed p-2 text-center is-bot no-js">
       <ul class="list-inline mb-0">
         <li class="list-inline-item text-white">
           ${search}

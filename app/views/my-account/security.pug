@@ -33,7 +33,7 @@ block body
       .row
         .col
           include ../_breadcrumbs
-          .card.border-dark.mb-3
+          .card.border-themed.mb-3
             h2.h6.card-header= t("Delete Account")
             - const domainsWithOtherAdmins = domains.some((d) => d.plan === "team" && d.group === "admin" && d.members.some((m) => m.group === "admin" && m.user.id !== user.id));
             if domainsWithOtherAdmins.length > 0
@@ -57,7 +57,7 @@ block body
                   input(type="hidden", name="_method", value="DELETE")
                   button.btn.btn-sm.btn-danger(type="submit")= t("Delete Account")
           if passport && passport.otp
-            .card.border-dark.mb-3
+            .card.border-themed.mb-3
               h2.h6.card-header= t("Two-Factor Authentication")
               .card-body
                 if user[config.passport.fields.otpEnabled]
@@ -85,7 +85,7 @@ block body
                   rel="noopener noreferrer",
                   target="_blank"
                 )= t("Learn more")
-          .card.border-dark
+          .card.border-themed
             h2.h6.card-header= t("Developer Access")
             .card-body
               .row

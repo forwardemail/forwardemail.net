@@ -10,7 +10,7 @@ block body
             i.fa.fa-exclamation-triangle
             = " "
             = t("Download your emergency recovery keys below.")
-          textarea#otp-recovery-keys.form-control.text-monospace.text-center.rounded-bottom-0.border-dark(
+          textarea#otp-recovery-keys.form-control.text-monospace.text-center.rounded-bottom-0.border-themed(
             rows="5"
           )
             each key, i in user[config.userFields.otpRecoveryKeys]

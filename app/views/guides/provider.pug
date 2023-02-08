@@ -5,7 +5,7 @@ include ../_onboard
 block body
   if !isBot(ctx.get('User-Agent'))
     .fixed-bottom.text-center
-      .bg-dark.p-2.border-top.border-light
+      .bg-dark.p-2.border-top.border-themed
         ul.list-inline.mb-0
           li.list-inline-item
             a.btn.btn-sm.btn-light(href="#setup-step-1")
@@ -60,7 +60,7 @@ block body
     .row
       .col-12
         h1.h2.mb-0!= t(`Setup Email with <span class="notranslate">${provider.name}</span>`)
-        .small.text-black-50.text-uppercase= t("Follow these two steps below")
+        .small.text-black.text-themed-50.text-uppercase= t("Follow these two steps below")
         .card.position-relative.mt-3
           if provider && provider.name && provider.url
             .position-absolute.w-100.text-right
@@ -177,11 +177,11 @@ block body
                         else
                           | "@", ".", or leave empty/blank if allowed.
                       else
-                        code.text-dark= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                    td.text-center: code.text-dark 3600
+                        code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
+                    td.text-center: code.text-themed 3600
                     td MX
-                    td: code.text-dark 10
-                    td.text-left: code.text-dark.text-nowrap mx1.forwardemail.net
+                    td: code.text-themed 10
+                    td.text-left: code.text-themed.text-nowrap mx1.forwardemail.net
                   tr
                     td.small
                       if !domain || !domain.root_name || !domain.name || domain.root_name === domain.name
@@ -190,11 +190,11 @@ block body
                         else
                           | "@", ".", or leave empty/blank if allowed.
                       else
-                        code.text-dark= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                    td.text-center: code.text-dark 3600
+                        code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
+                    td.text-center: code.text-themed 3600
                     td MX
-                    td: code.text-dark 10
-                    td.text-left: code.text-dark.text-nowrap mx2.forwardemail.net
+                    td: code.text-themed 10
+                    td.text-left: code.text-themed.text-nowrap mx2.forwardemail.net
                   tr
                     td.small
                       if !domain || !domain.root_name || domain.root_name === domain.name
@@ -203,14 +203,14 @@ block body
                         else
                           | "@", ".", or leave empty/blank if allowed.
                       else
-                        code.text-dark= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                    td.text-center: code.text-dark 3600
+                        code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
+                    td.text-center: code.text-themed 3600
                     td TXT
                     td
                     td.text-left
                       span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
                       br
-                      code.text-dark.text-nowrap
+                      code.text-themed.text-nowrap
                         = `${config.recordPrefix}=${user ? user.email : "user@gmail.com"}`
 
             .alert.alert-warning.small
@@ -259,10 +259,10 @@ block body
       .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
         //-.
           .col-12.d-flex
-            .p-3.p-md-5.m-2.mt-lg-0.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+            .p-3.p-md-5.m-2.mt-lg-0.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
               h2.display-5.font-weight-bold.mb-3= t("Set up your domain for email forwarding")
               p.lead.mb-3= t("Do you need to configure (or re-configure) this domain name for email forwarding?")
-              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark.text-themed(
                 href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`),
                 target="_blank",
                 rel="noopener noreferrer"
@@ -271,10 +271,10 @@ block body
                 = " "
                 i.fa.fa-angle-double-right.align-middle
         .col-12.d-flex
-          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
             p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
-            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark.text-themed(
               href=l("/guides/send-mail-as-gmail-custom-domain"),
               target="_blank",
               rel="noopener noreferrer"
@@ -283,10 +283,10 @@ block body
               = " "
               i.fa.fa-angle-double-right.align-middle
         .col-12.d-flex
-          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-dark.bg-white.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
             p.lead.mb-3!= t("We are here to answer your questions, but please be sure to read our FAQ section first.")
-            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark.text-themed(
               href=l("/help"),
               role="button",
               data-target="#modal-help"

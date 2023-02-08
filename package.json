@@ -18,6 +18,7 @@
     "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
   ],
   "dependencies": {
+    "@forevolve/bootstrap-dark": "3.0.0",
     "@fortawesome/fontawesome-free": "5.15.4",
     "@hapi/boom": "10.0.0",
     "@koa/router": "12.0.0",
@@ -168,6 +169,7 @@
     "@ladjs/pug-lint": "2.6.1",
     "@ladjs/pug-lint-config-lad": "0.1.1",
     "@prettier/plugin-pug": "2.4.1",
+    "@ronilaukkarinen/gulp-stylelint": "14.0.9",
     "ava": "5.2.0",
     "babel-eslint": "10.1.0",
     "browserify": "17.0.0",
@@ -193,6 +195,7 @@
     "gulp-imagemin": "7",
     "gulp-livereload": "4.0.2",
     "gulp-postcss": "9.0.1",
+    "gulp-prettier": "4.0.0",
     "gulp-pug-linter": "1.5.0",
     "gulp-purgecss": "5.0.0",
     "gulp-remark": "9",
@@ -222,7 +225,8 @@
     "postcss-preset-env": "8.0.1",
     "postcss-reporter": "7.0.5",
     "postcss-scss": "4.0.6",
-    "prettier": "2.8.3",
+    "prettier": "2.8.4",
+    "pump": "3.0.0",
     "purgecss-from-pug": "5.0.0",
     "rc": "1.2.8",
     "remark-cli": "11.0.0",

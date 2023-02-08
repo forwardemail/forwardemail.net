@@ -48,7 +48,7 @@ async function hook(err, message, meta) {
   if (meta.ignore_hook) return;
 
   // eslint-disable-next-line no-undef
-  if (typeof window !== 'object') {
+  if (typeof window !== 'object' && typeof Logs !== 'undefined') {
     try {
       const conn = mongoose.connections.find(
         (conn) => conn[connectionNameSymbol] === 'LOGS_MONGO_URI'
@@ -87,7 +87,7 @@ async function hook(err, message, meta) {
 
   try {
     // eslint-disable-next-line no-undef
-    if (typeof window.API_URL !== 'string')
+    if (typeof window !== 'object' || typeof window.API_URL !== 'string')
       throw new Error('API URL was not in the window global');
 
     const request = superagent

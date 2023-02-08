@@ -27,18 +27,18 @@ if !returnHTML
               br
               | United States of America
               br
-              a.text-decoration-none.text-dark(
+              a.text-decoration-none.text-themed(
                 href="mailto:support@forwardemail.net"
               ) support@forwardemail.net
               br
-              a.text-decoration-none.text-dark(href=config.urls.web)= config.urls.web.replace("http://", "").replace("https://", "")
+              a.text-decoration-none.text-themed(href=config.urls.web)= config.urls.web.replace("http://", "").replace("https://", "")
           td.border-0.text-right.d-none.d-sm-block.d-print-block
             u.font-weight-bold= t("Customer")
             address
               != user[config.userFields.addressHTML]
               if user[config.userFields.addressHTML]
                 br
-              a.text-decoration-none.text-dark(href=`mailto:${user.email}`)= user.email
+              a.text-decoration-none.text-themed(href=`mailto:${user.email}`)= user.email
         tr.d-block.d-sm-none.d-print-none
           td.border-0
             u.font-weight-bold= t("Customer")
@@ -46,7 +46,7 @@ if !returnHTML
               != user[config.userFields.addressHTML]
               if user[config.userFields.addressHTML]
                 br
-              a.text-decoration-none.text-dark(href=`mailto:${user.email}`)= user.email
+              a.text-decoration-none.text-themed(href=`mailto:${user.email}`)= user.email
       tr
         td.border-0
           u.font-weight-bold= t("Date")

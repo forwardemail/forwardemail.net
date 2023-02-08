@@ -6,7 +6,7 @@ block body
       .row
         .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
           form.ajax-form.confirm-prompt(action=l("/help"), method="POST")
-            .card.border-dark
+            .card.border-themed
               h4.card-header.bg-dark.text-white.text-center= t("Ask a question")
               .card-body
                 if ctx.pathWithoutLocale !== '/faq'
