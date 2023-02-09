@@ -20,7 +20,7 @@
   }
 
   code, kbd, pre, .commit-tease-sha, .blob-num, .blob-code-inner, {
-    font-family: $font-family-monospace;
+    font-family: $font-family-monospace !important;
   }
 
   code {
@@ -29,14 +29,14 @@
 
   pre {
     > code {
-      white-space: pre-wrap;
-      display: block;
+      white-space: pre-wrap !important;
+      display: block !important;
     }
   }
 
   pre, .highlight pre {
     // font-size: 100%;
-    padding: 1rem;
+    padding: 1rem !important;
   }
 
   hr {
@@ -51,7 +51,7 @@
 
 td {
   .markdown-body {
-    background-color: transparent;
+    background-color: transparent !important;
   }
 }
 

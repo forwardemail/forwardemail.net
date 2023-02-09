@@ -47,8 +47,7 @@ async function hook(err, message, meta) {
   //
   if (meta.ignore_hook) return;
 
-  // eslint-disable-next-line no-undef
-  if (typeof window !== 'object' && typeof Logs !== 'undefined') {
+  if (mongoose) {
     try {
       const conn = mongoose.connections.find(
         (conn) => conn[connectionNameSymbol] === 'LOGS_MONGO_URI'
