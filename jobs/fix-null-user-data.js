@@ -24,40 +24,44 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+const $or = [];
+const props = [];
+
+async function mapper(id) {
+  const user = await Users.findById(id);
+  if (!user) throw new Error('User does not exist');
+  for (const prop of props) {
+    if (user[prop] === null) {
+      logger.info(`User ${user.email} had null prop of ${prop}`);
+      user[prop] = undefined;
+    }
+  }
+
+  await user.save();
+}
+
 (async () => {
   await setupMongoose(logger);
 
-  const $or = [];
-  const props = [];
-
-  for (const prop of Object.keys(Users.prototype.schema.paths)) {
-    if (Users.prototype.schema.paths[prop].instance === 'String') {
-      $or.push({
-        [prop]: { $type: 10 }
-      });
-      props.push(prop);
-    }
-  }
-
-  const count = await Users.countDocuments({ $or });
-  console.log('count', count);
-
-  const ids = await Users.distinct('_id', { $or });
-
-  async function mapper(id) {
-    const user = await Users.findById(id);
-    if (!user) throw new Error('User does not exist');
-    for (const prop of props) {
-      if (user[prop] === null) {
-        console.log(`User ${user.email} had null prop of ${prop}`);
-        user[prop] = undefined;
+  try {
+    for (const prop of Object.keys(Users.prototype.schema.paths)) {
+      if (Users.prototype.schema.paths[prop].instance === 'String') {
+        $or.push({
+          [prop]: { $type: 10 }
+        });
+        props.push(prop);
       }
     }
 
-    await user.save();
-  }
+    const count = await Users.countDocuments({ $or });
+    logger.info('count', count);
 
-  await pMap(ids, mapper, { concurrency });
+    const ids = await Users.distinct('_id', { $or });
+
+    await pMap(ids, mapper, { concurrency });
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

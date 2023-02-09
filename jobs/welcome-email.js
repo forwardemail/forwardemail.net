@@ -27,46 +27,50 @@ graceful.listen();
 (async () => {
   await setupMongoose(logger);
 
-  const object = {
-    created_at: {
-      $lte: dayjs().subtract(1, 'minute').toDate()
-    }
-  };
-  object[config.userFields.welcomeEmailSentAt] = { $exists: false };
-  object[config.userFields.hasVerifiedEmail] = true;
-  object[config.userFields.isBanned] = false;
-
-  const _ids = await Users.distinct('_id', object);
-
-  // send welcome email
-  await Promise.all(
-    _ids.map(async (_id) => {
-      try {
-        const user = await Users.findById(_id).lean().exec();
-
-        // in case email was sent for whatever reason
-        if (user[config.userFields.welcomeEmailSentAt]) return;
-
-        // send email
-        await email({
-          template: 'welcome',
-          message: {
-            to: user[config.userFields.fullEmail]
-          },
-          locals: { user }
-        });
-
-        // store that we sent this email
-        await Users.findByIdAndUpdate(user._id, {
-          $set: {
-            [config.userFields.welcomeEmailSentAt]: new Date()
-          }
-        });
-      } catch (err) {
-        logger.error(err);
+  try {
+    const object = {
+      created_at: {
+        $lte: dayjs().subtract(1, 'minute').toDate()
       }
-    })
-  );
+    };
+    object[config.userFields.welcomeEmailSentAt] = { $exists: false };
+    object[config.userFields.hasVerifiedEmail] = true;
+    object[config.userFields.isBanned] = false;
+
+    const _ids = await Users.distinct('_id', object);
+
+    // send welcome email
+    await Promise.all(
+      _ids.map(async (_id) => {
+        try {
+          const user = await Users.findById(_id).lean().exec();
+
+          // in case email was sent for whatever reason
+          if (user[config.userFields.welcomeEmailSentAt]) return;
+
+          // send email
+          await email({
+            template: 'welcome',
+            message: {
+              to: user[config.userFields.fullEmail]
+            },
+            locals: { user }
+          });
+
+          // store that we sent this email
+          await Users.findByIdAndUpdate(user._id, {
+            $set: {
+              [config.userFields.welcomeEmailSentAt]: new Date()
+            }
+          });
+        } catch (err) {
+          await logger.error(err);
+        }
+      })
+    );
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

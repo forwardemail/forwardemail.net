@@ -25,23 +25,27 @@ graceful.listen();
 (async () => {
   await setupMongoose(logger);
 
-  logger.info('starting log deletion');
-  const results = await Logs.deleteMany({
-    $or: [
-      // mx1.forwardemail.net and mx2.forwardemail.net have 1d log policy
-      {
-        'meta.app.hostname': {
-          $in: ['mx1.forwardemail.net', 'mx2.forwardemail.net']
+  try {
+    logger.info('starting log deletion');
+    const results = await Logs.deleteMany({
+      $or: [
+        // mx1.forwardemail.net and mx2.forwardemail.net have 1d log policy
+        {
+          'meta.app.hostname': {
+            $in: ['mx1.forwardemail.net', 'mx2.forwardemail.net']
+          },
+          created_at: { $lte: dayjs().subtract(1, 'day').toDate().getTime() }
         },
-        created_at: { $lte: dayjs().subtract(1, 'day').toDate().getTime() }
-      },
-      // all others have 30d
-      {
-        created_at: { $lte: dayjs().subtract(30, 'day').toDate().getTime() }
-      }
-    ]
-  });
-  logger.info('deleted logs', { results });
+        // all others have 30d
+        {
+          created_at: { $lte: dayjs().subtract(30, 'day').toDate().getTime() }
+        }
+      ]
+    });
+    logger.info('deleted logs', { results });
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

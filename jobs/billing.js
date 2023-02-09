@@ -230,39 +230,39 @@ async function mapper(id) {
 (async () => {
   await setupMongoose(logger);
 
-  const ids = await Users.distinct('_id', {
-    plan: { $ne: 'free' },
-    group: 'user',
-    [config.userFields.isBanned]: false,
-    [config.userFields.hasVerifiedEmail]: true,
-    [config.userFields.planExpiresAt]: {
-      // NOTE: if you change this then also update `app/models/user.js` save hook
-      $lte: dayjs().add(1, 'month').toDate()
-    },
-    //
-    // NOTE: users on subscriptions will automatically have
-    //       their subscriptions cancelled and removed if they
-    //       are late on payments or if they manually cancel from PayPal
-    //       (the sync jobs will take care of this automatically)
-    //       (we don't want to annoy people on subscriptions with messages)
-    //
-    [config.userFields.stripeSubscriptionID]: { $exists: false },
-    [config.userFields.paypalSubscriptionID]: { $exists: false }
-    // TODO: we can optimize this query more with date filtering in the future
-  });
-
-  //
-  // NOTE: we send an initial notice
-  //       then a follow-up one week later
-  //       then a final notice three weeks later
-  //       and then finally ban the account one month later
-  //       (so users technically have 2 months after they receive initial notice before they get banned)
-  //       (and they only get banned if we successfully have sent them each notice in order)
-  //
   try {
+    const ids = await Users.distinct('_id', {
+      plan: { $ne: 'free' },
+      group: 'user',
+      [config.userFields.isBanned]: false,
+      [config.userFields.hasVerifiedEmail]: true,
+      [config.userFields.planExpiresAt]: {
+        // NOTE: if you change this then also update `app/models/user.js` save hook
+        $lte: dayjs().add(1, 'month').toDate()
+      },
+      //
+      // NOTE: users on subscriptions will automatically have
+      //       their subscriptions cancelled and removed if they
+      //       are late on payments or if they manually cancel from PayPal
+      //       (the sync jobs will take care of this automatically)
+      //       (we don't want to annoy people on subscriptions with messages)
+      //
+      [config.userFields.stripeSubscriptionID]: { $exists: false },
+      [config.userFields.paypalSubscriptionID]: { $exists: false }
+      // TODO: we can optimize this query more with date filtering in the future
+    });
+
+    //
+    // NOTE: we send an initial notice
+    //       then a follow-up one week later
+    //       then a final notice three weeks later
+    //       and then finally ban the account one month later
+    //       (so users technically have 2 months after they receive initial notice before they get banned)
+    //       (and they only get banned if we successfully have sent them each notice in order)
+    //
     await pMap(ids, mapper, { concurrency });
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
   }
 
   if (parentPort) parentPort.postMessage('done');

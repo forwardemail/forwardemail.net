@@ -26,46 +26,50 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+let owed = 0;
+let predicted = 0;
+
+async function mapper(user) {
+  let months = dayjs().diff(user[config.userFields.planExpiresAt], 'months');
+  const paymentCount = await Payments.countDocuments({ user: user._id });
+  if (paymentCount === 0) months -= 12;
+  if (months < 0) {
+    logger.info(`returning early for ${user.email} with ${months}`);
+    return;
+  }
+
+  const sum = Math.round(months * (user.plan === 'team' ? 9 : 3));
+  owed += sum;
+  const count = await Domains.countDocuments({
+    'members.user': user._id,
+    has_mx_record: true,
+    has_txt_record: true
+  });
+  if (count > 0) predicted += sum;
+  logger.info(
+    `${user.email} owes $${sum} for ${months} months past due ${
+      count > 0 ? '(predicted)' : ''
+    }`
+  );
+}
+
 (async () => {
   await setupMongoose(logger);
 
-  let owed = 0;
-  let predicted = 0;
+  try {
+    const users = await Users.find({
+      plan: { $ne: 'free' },
+      plan_expires_at: { $lt: new Date() }
+    })
+      .lean()
+      .exec();
 
-  const users = await Users.find({
-    plan: { $ne: 'free' },
-    plan_expires_at: { $lt: new Date() }
-  })
-    .lean()
-    .exec();
+    await pMap(users, mapper, { concurrency });
 
-  async function mapper(user) {
-    let months = dayjs().diff(user[config.userFields.planExpiresAt], 'months');
-    const paymentCount = await Payments.countDocuments({ user: user._id });
-    if (paymentCount === 0) months -= 12;
-    if (months < 0) {
-      console.log(`returning early for ${user.email} with ${months}`);
-      return;
-    }
-
-    const sum = Math.round(months * (user.plan === 'team' ? 9 : 3));
-    owed += sum;
-    const count = await Domains.countDocuments({
-      'members.user': user._id,
-      has_mx_record: true,
-      has_txt_record: true
-    });
-    if (count > 0) predicted += sum;
-    console.log(
-      `${user.email} owes $${sum} for ${months} months past due ${
-        count > 0 ? '(predicted)' : ''
-      }`
-    );
+    logger.info('amounts', { owed, predicted });
+  } catch (err) {
+    await logger.error(err);
   }
-
-  await pMap(users, mapper, { concurrency });
-
-  console.log('amounts', { owed, predicted });
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

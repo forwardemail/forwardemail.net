@@ -156,83 +156,87 @@ async function mapper(alias) {
 (async () => {
   await setupMongoose(logger);
 
-  //
-  // find all aliases that haven't been sent verification emails yet
-  // also don't send emails to users that are banned
-  // and don't send emails for non-paid plans just in case
-  //
+  try {
+    //
+    // find all aliases that haven't been sent verification emails yet
+    // also don't send emails to users that are banned
+    // and don't send emails for non-paid plans just in case
+    //
 
-  logger.info('starting recipient verification emails');
+    logger.info('starting recipient verification emails');
 
-  const [bannedUserIds, paidDomainIds] = await Promise.all([
-    Users.distinct('_id', {
-      [config.userFields.isBanned]: true
-    }),
-    Domains.distinct('_id', {
-      plan: { $ne: 'free' },
-      has_mx_record: true,
-      has_txt_record: true
-    })
-  ]);
+    const [bannedUserIds, paidDomainIds] = await Promise.all([
+      Users.distinct('_id', {
+        [config.userFields.isBanned]: true
+      }),
+      Domains.distinct('_id', {
+        plan: { $ne: 'free' },
+        has_mx_record: true,
+        has_txt_record: true
+      })
+    ]);
 
-  const aliases = await Aliases.aggregate([
-    {
-      $match: {
-        has_recipient_verification: true,
-        user: { $nin: bannedUserIds },
-        domain: { $in: paidDomainIds }
-      }
-    },
-    {
-      $project: {
-        id: 1,
-        domain: 1,
-        name: 1,
-        recipients: 1,
-        verified_and_pending: {
-          $setUnion: ['$verified_recipients', '$pending_recipients']
+    const aliases = await Aliases.aggregate([
+      {
+        $match: {
+          has_recipient_verification: true,
+          user: { $nin: bannedUserIds },
+          domain: { $in: paidDomainIds }
         }
-      }
-    },
-    {
-      $lookup: {
-        from: 'domains',
-        as: 'domain',
-        let: { domain_id: '$domain' },
-        pipeline: [
-          { $match: { $expr: { $eq: ['$_id', '$$domain_id'] } } },
-          {
-            $project: {
-              id: 1,
-              name: 1,
-              has_custom_verification: 1,
-              custom_verification: 1
-            }
+      },
+      {
+        $project: {
+          id: 1,
+          domain: 1,
+          name: 1,
+          recipients: 1,
+          verified_and_pending: {
+            $setUnion: ['$verified_recipients', '$pending_recipients']
           }
-        ]
+        }
+      },
+      {
+        $lookup: {
+          from: 'domains',
+          as: 'domain',
+          let: { domain_id: '$domain' },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$domain_id'] } } },
+            {
+              $project: {
+                id: 1,
+                name: 1,
+                has_custom_verification: 1,
+                custom_verification: 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        $unwind: '$domain'
+      },
+      {
+        $project: {
+          id: 1,
+          name: 1,
+          domain: 1,
+          emails: { $setDifference: ['$recipients', '$verified_and_pending'] }
+        }
+      },
+      {
+        $match: { $expr: { $gt: [{ $size: '$emails' }, 0] } }
       }
-    },
-    {
-      $unwind: '$domain'
-    },
-    {
-      $project: {
-        id: 1,
-        name: 1,
-        domain: 1,
-        emails: { $setDifference: ['$recipients', '$verified_and_pending'] }
-      }
-    },
-    {
-      $match: { $expr: { $gt: [{ $size: '$emails' }, 0] } }
-    }
-  ]);
+    ]);
 
-  if (aliases.length > 0) {
-    const pendingRecipients = await pMap(aliases, mapper, { concurrency });
-    logger.info('finished recipient verification emails', {
-      pendingRecipients: pendingRecipients.flat()
-    });
+    if (aliases.length > 0) {
+      const pendingRecipients = await pMap(aliases, mapper, { concurrency });
+      logger.info('finished recipient verification emails', {
+        pendingRecipients: pendingRecipients.flat()
+      });
+    }
+  } catch (err) {
+    await logger.error(err);
   }
 
   if (parentPort) parentPort.postMessage('done');

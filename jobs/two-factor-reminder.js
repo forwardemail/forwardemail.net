@@ -90,45 +90,48 @@ async function mapper(_id) {
 
 (async () => {
   await setupMongoose(logger);
-
-  const _ids = await Domains.distinct('members.user', {
-    plan: {
-      $ne: 'free'
-    }
-  });
-
-  // filter for users that do not have two-factor auth set up yet
-  const userIds = await Users.distinct('_id', {
-    $and: [
-      {
-        _id: { $in: _ids },
-        [config.userFields.hasVerifiedEmail]: true,
-        [config.userFields.isBanned]: false
-      },
-      {
-        $or: [
-          {
-            [config.userFields.twoFactorReminderSentAt]: {
-              $exists: false
-            }
-          },
-          {
-            [config.userFields.twoFactorReminderSentAt]: {
-              $lte: threeMonthsAgo
-            }
-          }
-        ]
-      },
-      {
-        [config.passport.fields.otpEnabled]: false
+  try {
+    const _ids = await Domains.distinct('members.user', {
+      plan: {
+        $ne: 'free'
       }
-    ]
-  });
+    });
 
-  logger.info('sending reminders', { count: userIds.length, _ids });
+    // filter for users that do not have two-factor auth set up yet
+    const userIds = await Users.distinct('_id', {
+      $and: [
+        {
+          _id: { $in: _ids },
+          [config.userFields.hasVerifiedEmail]: true,
+          [config.userFields.isBanned]: false
+        },
+        {
+          $or: [
+            {
+              [config.userFields.twoFactorReminderSentAt]: {
+                $exists: false
+              }
+            },
+            {
+              [config.userFields.twoFactorReminderSentAt]: {
+                $lte: threeMonthsAgo
+              }
+            }
+          ]
+        },
+        {
+          [config.passport.fields.otpEnabled]: false
+        }
+      ]
+    });
 
-  // send emails and update `two_factor_reminder_sent_at` date
-  await pMap(userIds, mapper, { concurrency });
+    logger.info('sending reminders', { count: userIds.length, _ids });
+
+    // send emails and update `two_factor_reminder_sent_at` date
+    await pMap(userIds, mapper, { concurrency });
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

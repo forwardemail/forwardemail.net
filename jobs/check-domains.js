@@ -280,65 +280,69 @@ async function mapper(id) {
 (async () => {
   await setupMongoose(logger);
 
-  //
-  // TODO: in the future when we integrate historical checks
-  //       and routine checking (e.g. 3 in a row fail)
-  //       then we will need to modify this query
-  //
-  // get all non-API created domains (sorted by last_checked_at)
-  const results = await Domains.aggregate([
-    {
-      $match: {
-        $and: [
-          {
-            $or: [
-              {
-                last_checked_at: {
-                  $exists: false
+  try {
+    //
+    // TODO: in the future when we integrate historical checks
+    //       and routine checking (e.g. 3 in a row fail)
+    //       then we will need to modify this query
+    //
+    // get all non-API created domains (sorted by last_checked_at)
+    const results = await Domains.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              $or: [
+                {
+                  last_checked_at: {
+                    $exists: false
+                  }
+                },
+                {
+                  last_checked_at: {
+                    $lte: dayjs().subtract(2, 'hour').toDate()
+                  }
                 }
-              },
-              {
-                last_checked_at: {
-                  $lte: dayjs().subtract(2, 'hour').toDate()
+              ]
+            },
+            {
+              $or: [
+                {
+                  verified_email_sent_at: {
+                    $exists: false
+                  }
+                },
+                {
+                  onboard_email_sent_at: {
+                    $exists: false
+                  }
                 }
-              }
-            ]
-          },
-          {
-            $or: [
-              {
-                verified_email_sent_at: {
-                  $exists: false
-                }
-              },
-              {
-                onboard_email_sent_at: {
-                  $exists: false
-                }
-              }
-            ]
-          }
-        ]
+              ]
+            }
+          ]
+        }
+      },
+      {
+        $sort: {
+          last_checked_at: 1
+        }
+      },
+      {
+        $group: {
+          _id: '$_id'
+        }
       }
-    },
-    {
-      $sort: {
-        last_checked_at: 1
-      }
-    },
-    {
-      $group: {
-        _id: '$_id'
-      }
-    }
-  ]);
+    ]);
 
-  // flatten array
-  const ids = results.map((r) => r._id);
+    // flatten array
+    const ids = results.map((r) => r._id);
 
-  logger.info('checking domains', { count: ids.length });
+    logger.info('checking domains', { count: ids.length });
 
-  await pMapSeries(ids, mapper);
+    await pMapSeries(ids, mapper);
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

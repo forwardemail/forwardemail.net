@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
-const process = require('process');
-const os = require('os');
-const { parentPort } = require('worker_threads');
+const process = require('node:process');
+const os = require('node:os');
+const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
@@ -21,44 +21,53 @@ const graceful = new Graceful({
   mongooses: [mongoose],
   logger
 });
+const props = [];
+const $or = [];
 
 graceful.listen();
+
+async function mapper(id) {
+  const payment = await Payments.findById(id);
+  if (!payment) {
+    throw new Error('payment does not exist');
+  }
+
+  for (const prop of props) {
+    if (payment[prop] === null) {
+      logger.info(`payment ${payment.id} had null prop of ${prop}`);
+      payment[prop] = undefined;
+    }
+  }
+
+  await payment.save();
+}
 
 (async () => {
   await setupMongoose(logger);
 
-  const $or = [];
-  const props = [];
-
-  for (const prop of Object.keys(Payments.prototype.schema.paths)) {
-    if (Payments.prototype.schema.paths[prop].instance === 'String') {
-      $or.push({
-        [prop]: { $type: 10 }
-      });
-      props.push(prop);
-    }
-  }
-
-  const count = await Payments.countDocuments({ $or });
-  console.log('count', count);
-
-  const ids = await Payments.distinct('_id', { $or });
-
-  async function mapper(id) {
-    const payment = await Payments.findById(id);
-    if (!payment) throw new Error('payment does not exist');
-    for (const prop of props) {
-      if (payment[prop] === null) {
-        console.log(`payment ${payment.id} had null prop of ${prop}`);
-        payment[prop] = undefined;
+  try {
+    for (const prop of Object.keys(Payments.prototype.schema.paths)) {
+      if (Payments.prototype.schema.paths[prop].instance === 'String') {
+        $or.push({
+          [prop]: { $type: 10 }
+        });
+        props.push(prop);
       }
     }
 
-    await payment.save();
+    const count = await Payments.countDocuments({ $or });
+    logger.info('count', count);
+
+    const ids = await Payments.distinct('_id', { $or });
+
+    await pMap(ids, mapper, { concurrency });
+  } catch (err) {
+    await logger.error(err);
   }
 
-  await pMap(ids, mapper, { concurrency });
-
-  if (parentPort) parentPort.postMessage('done');
-  else process.exit(0);
+  if (parentPort) {
+    parentPort.postMessage('done');
+  } else {
+    process.exit(0);
+  }
 })();

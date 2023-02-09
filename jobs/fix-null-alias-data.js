@@ -21,47 +21,49 @@ const graceful = new Graceful({
   mongooses: [mongoose],
   logger
 });
+const $or = [];
+const props = [];
 
 graceful.listen();
+async function mapper(id) {
+  const alias = await Aliases.findById(id);
+  if (!alias) throw new Error('Alias does not exist');
+  for (const prop of props) {
+    if (alias[prop] === null) {
+      logger.info(`Alias ${alias.id} had null prop of ${prop}`);
+      alias[prop] = undefined;
+    }
+  }
+
+  try {
+    await alias.save();
+  } catch (err) {
+    console.error(err, { alias });
+  }
+}
 
 (async () => {
   await setupMongoose(logger);
 
-  const $or = [];
-  const props = [];
-
-  for (const prop of Object.keys(Aliases.prototype.schema.paths)) {
-    if (Aliases.prototype.schema.paths[prop].instance === 'String') {
-      $or.push({
-        [prop]: { $type: 10 }
-      });
-      props.push(prop);
-    }
-  }
-
-  const count = await Aliases.countDocuments({ $or });
-  console.log('count', count);
-
-  const ids = await Aliases.distinct('_id', { $or });
-
-  async function mapper(id) {
-    const alias = await Aliases.findById(id);
-    if (!alias) throw new Error('Alias does not exist');
-    for (const prop of props) {
-      if (alias[prop] === null) {
-        console.log(`Alias ${alias.id} had null prop of ${prop}`);
-        alias[prop] = undefined;
+  try {
+    for (const prop of Object.keys(Aliases.prototype.schema.paths)) {
+      if (Aliases.prototype.schema.paths[prop].instance === 'String') {
+        $or.push({
+          [prop]: { $type: 10 }
+        });
+        props.push(prop);
       }
     }
 
-    try {
-      await alias.save();
-    } catch (err) {
-      console.error(err, { alias });
-    }
-  }
+    const count = await Aliases.countDocuments({ $or });
+    logger.info('count', count);
 
-  await pMap(ids, mapper, { concurrency });
+    const ids = await Aliases.distinct('_id', { $or });
+
+    await pMap(ids, mapper, { concurrency });
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

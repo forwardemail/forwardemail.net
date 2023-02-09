@@ -26,7 +26,12 @@ const mandarin = new Mandarin({ i18n, logger });
 
 (async () => {
   await setupMongoose(logger);
-  await mandarin.markdown();
+  try {
+    await mandarin.markdown();
+  } catch (err) {
+    await logger.error(err);
+  }
+
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
 })();

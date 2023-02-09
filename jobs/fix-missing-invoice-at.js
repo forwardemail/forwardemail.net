@@ -39,7 +39,7 @@ async function mapper(id) {
   try {
     payment = await Payments.findById(id);
     if (!payment) throw new Error('Payment does not exist');
-    console.log(`reviewing payment #${payment.reference}`);
+    logger.info(`reviewing payment #${payment.reference}`);
     if (!_.isDate(payment.created_at) || !_.isDate(payment.updated_at)) {
       const clone = payment.toObject();
       await payment.remove();
@@ -176,7 +176,7 @@ async function mapper(id) {
     if (!_.isDate(invoiceAt)) throw new Error('Invoice at was not a date');
 
     if (Math.abs(dayjs(payment.created_at).diff(invoiceAt, 'd')) > 1)
-      console.log(
+      logger.info(
         `setting payment on ${dayjs(payment.created_at).format(
           'M/D/YY h:mm A'
         )} with invoice date of ${dayjs(invoiceAt).format('M/D/YY h:mm A')}`,
@@ -201,15 +201,18 @@ async function mapper(id) {
 
 (async () => {
   await setupMongoose(logger);
+  try {
+    const ids = await Payments.distinct('_id', {
+      // invoice_at: {
+      //   $exists: false
+      // }
+    });
 
-  const ids = await Payments.distinct('_id', {
-    // invoice_at: {
-    //   $exists: false
-    // }
-  });
-
-  // run serially to prevent API rate limiting
-  await pMapSeries(ids, mapper);
+    // run serially to prevent API rate limiting
+    await pMapSeries(ids, mapper);
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

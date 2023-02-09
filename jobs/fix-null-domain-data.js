@@ -24,40 +24,42 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-(async () => {
-  await setupMongoose(logger);
-
-  const $or = [];
-  const props = [];
-
-  for (const prop of Object.keys(Domains.prototype.schema.paths)) {
-    if (Domains.prototype.schema.paths[prop].instance === 'String') {
-      $or.push({
-        [prop]: { $type: 10 }
-      });
-      props.push(prop);
+const $or = [];
+const props = [];
+async function mapper(id) {
+  const domain = await Domains.findById(id);
+  if (!domain) throw new Error('domain does not exist');
+  for (const prop of props) {
+    if (domain[prop] === null) {
+      logger.info(`domain ${domain.id} had null prop of ${prop}`);
+      domain[prop] = undefined;
     }
   }
 
-  const count = await Domains.countDocuments({ $or });
-  console.log('count', count);
+  await domain.save();
+}
 
-  const ids = await Domains.distinct('_id', { $or });
-
-  async function mapper(id) {
-    const domain = await Domains.findById(id);
-    if (!domain) throw new Error('domain does not exist');
-    for (const prop of props) {
-      if (domain[prop] === null) {
-        console.log(`domain ${domain.id} had null prop of ${prop}`);
-        domain[prop] = undefined;
+(async () => {
+  await setupMongoose(logger);
+  try {
+    for (const prop of Object.keys(Domains.prototype.schema.paths)) {
+      if (Domains.prototype.schema.paths[prop].instance === 'String') {
+        $or.push({
+          [prop]: { $type: 10 }
+        });
+        props.push(prop);
       }
     }
 
-    await domain.save();
-  }
+    const count = await Domains.countDocuments({ $or });
+    logger.info('count', count);
 
-  await pMap(ids, mapper, { concurrency });
+    const ids = await Domains.distinct('_id', { $or });
+
+    await pMap(ids, mapper, { concurrency });
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

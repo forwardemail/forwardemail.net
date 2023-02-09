@@ -86,7 +86,7 @@ async function mapper(list) {
   try {
     await pMapSeries(LISTS, mapper);
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {

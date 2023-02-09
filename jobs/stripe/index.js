@@ -43,7 +43,7 @@ graceful.listen();
   try {
     await checkDuplicateSubscriptions();
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {
@@ -92,7 +92,7 @@ graceful.listen();
       { concurrency }
     );
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {
@@ -139,7 +139,7 @@ graceful.listen();
       { concurrency }
     );
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {
@@ -164,7 +164,7 @@ graceful.listen();
   try {
     await syncStripePayments();
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {

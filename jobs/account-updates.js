@@ -79,23 +79,27 @@ async function mapper(id) {
       }
     });
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
   }
 }
 
 (async () => {
   await setupMongoose(logger);
 
-  const ids = await Users.distinct('_id', {
-    account_updates: {
-      $exists: true,
-      $not: { $size: 0 }
-    },
-    [config.userFields.hasVerifiedEmail]: true,
-    [config.userFields.isBanned]: false
-  });
+  try {
+    const ids = await Users.distinct('_id', {
+      account_updates: {
+        $exists: true,
+        $not: { $size: 0 }
+      },
+      [config.userFields.hasVerifiedEmail]: true,
+      [config.userFields.isBanned]: false
+    });
 
-  await pMap(ids, mapper, { concurrency });
+    await pMap(ids, mapper, { concurrency });
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
