@@ -15,7 +15,7 @@ $input-disabled-bg:                     $dark;
   }
   .markdown-body {
     .bg-dark {
-      background-color: $dark !important;
+      background-color: $gray-800 !important;
     }
     code {
       background-color: $dark !important;
@@ -29,6 +29,9 @@ $input-disabled-bg:                     $dark;
     padding: 0;
     color: inherit !important;
     background: none !important;
+  }
+  pre, .highlight pre {
+    padding: 0 !important;
   }
   /*
   .text-themed {

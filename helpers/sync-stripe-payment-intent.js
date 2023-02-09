@@ -253,7 +253,7 @@ function syncStripePaymentIntent(user) {
           payment.last4 = undefined;
         }
 
-        if (checkoutSession && isSANB(checkoutSession.client_reference_id))
+        if (isSANB(checkoutSession?.client_reference_id))
           payment.reference = checkoutSession.client_reference_id;
 
         payment.stripe_session_id = checkoutSession?.id;
