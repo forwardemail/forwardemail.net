@@ -462,7 +462,7 @@ block body
       .col
         h3.h5.border-bottom.border-dark-50= t("Do you store SMTP logs or write to disk?")
         p
-          != t('<span class="font-weight-bold">No.</span> We have a <a href="%s" class="font-weight-bold">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.', l("/privacy"))
+          != t('<span class="font-weight-bold">No.</span> We have a <a href="%s" class="font-weight-bold">Privacy</a> policy of not storing SMTP logs, metadata, nor emails (with the exception of <a href="%s">errors</a>).', l("/privacy"), l("/faq#do-you-store-error-logs"))
           = " "
           = t("You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.")
           = " "

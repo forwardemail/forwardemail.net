@@ -40,4 +40,6 @@ On September 27, 2021, [we added support](/email-forwarding-regex-pattern-filter
 
 In January 2023, we launched a re-designed and page-speed optimized website.
 
+In February 2023, we added support for [error logs](/faq#do-you-store-error-logs) and a [dark mode](https://en.wikipedia.org/wiki/Light-on-dark_color_scheme) website color scheme.
+
 [arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain

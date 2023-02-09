@@ -135,21 +135,15 @@ html.h-100.no-js(lang=locale)
       if isBot(ctx.get('User-Agent'))
         link(
           rel="stylesheet",
-          href=manifest("css/app.css"),
-          integrity=manifest("css/app.css", "integrity"),
+          href=manifest("css/app-bot.css"),
+          integrity=manifest("css/app-bot.css", "integrity"),
           crossorigin="anonymous"
         )
       else
         link(
           rel="stylesheet",
-          href=manifest("css/app-fonts.css"),
-          integrity=manifest("css/app-fonts.css", "integrity"),
-          crossorigin="anonymous"
-        )
-        link(
-          rel="stylesheet",
-          href=manifest("css/app-dark.css"),
-          integrity=manifest("css/app-dark.css", "integrity"),
+          href=manifest("css/app.css"),
+          integrity=manifest("css/app.css", "integrity"),
           crossorigin="anonymous"
         )
 
