@@ -538,7 +538,7 @@ block body
         .col-12.col-lg-6.d-flex
           .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-themed.bg-md-white.bg-themed.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Privacy-focused")
-            p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs, and do not write your emails to disk storage.")
+            p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs (with the exception of errors), and do not write your emails to disk storage.", l("/faq#do-you-store-error-logs"))
             a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark.text-themed(
               href=l("/privacy")
             )
@@ -617,7 +617,7 @@ block body
       .row
         .col-12.col-md-9.col-lg-8
           p.lead.text-white.mb-3.mb-md-5
-            != t('Unlike other services, we <strong class="font-weight-bold">do not store SMTP logs</strong>, <strong class="font-weight-bold">never store</strong> your emails, and are <strong class="font-weight-bold">100% open-source</strong>.')
+            != t('Unlike other services, we <strong class="font-weight-bold">do not store logs</strong> (with the exception of <a href="%s" target="_blank">errors</a>) and are <strong class="font-weight-bold">100% open-source</strong>.', l("/faq#do-you-store-error-logs"))
             = " "
             != t('We\'re the <strong class= border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
           ul.list-inline

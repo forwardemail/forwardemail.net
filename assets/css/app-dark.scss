@@ -27,7 +27,8 @@ $input-disabled-bg:                     $dark;
   }
   mark, .mark {
     padding: 0;
-    color: inherit;
+    color: inherit !important;
+    background: none !important;
   }
   /*
   .text-themed {

@@ -39,6 +39,7 @@
 * [What is the max email size limit](#what-is-the-max-email-size-limit)
 * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
 * [Do you store logs of emails](#do-you-store-logs-of-emails)
+* [Do you store error logs](#do-you-store-error-logs)
 * [Do you read my emails](#do-you-read-my-emails)
 * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
 * [Does it support sub-domains](#does-it-support-sub-domains)
@@ -82,7 +83,7 @@ Emails are delivered on average in under 5 seconds.  We operate in real-time, un
     If you would like to hide your information from being publicly searchable over the Internet, then please go to <a class="alert-link" href="/my-account/domains" target="_blank">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan before starting this guide.
     Publicly searchable information on free plans includes, but is not limited to: aliases, forwarded addresses, recipients, and advanced settings such as custom port forwarding.
     If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page &ndash; otherwise keep reading!
-    All plans abide by our <a class="alert-link" href="/privacy">Privacy</a> policy of strictly not storing SMTP logs, metadata, nor emails.
+    All plans abide by our <a class="alert-link" href="/privacy">Privacy</a> policy of strictly not storing metadata nor emails.
     We don't track you like other services do.
   </span>
 </div>
@@ -1320,6 +1321,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 
 **Here are additional notes regarding webhooks:**
 
+* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
 * Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
 * We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
 * We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
@@ -1951,17 +1953,28 @@ An error with the proper response code is returned if the file size limit is exc
 
 ## Do you store emails and their contents
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+No, we do not store logs – with the [exception of errors](#do-you-store-error-logs). See our [Privacy Policy](/privacy).
 
 
 ## Do you store logs of emails
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+No, we do not store logs – with the [exception of errors](#do-you-store-error-logs).
+
+
+## Do you store error logs
+
+**This feature is a work in progress – we are also working on opt-out functionality.**
+
+As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+
+Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+
+See our [Privacy Policy](/privacy) for more insight.
 
 
 ## Do you read my emails
 
-No, absolutely not.  We do not store SMTP logs.  See our [Privacy Policy](/privacy).
+No, absolutely not.  See our [Privacy Policy](/privacy).
 
 Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
 

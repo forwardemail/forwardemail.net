@@ -14,7 +14,7 @@
 
 * We do not store any emails to disk storage (everything is processed in-memory).
 * We do not store any metadata about emails (except when we detect spammers and/or malicious activity; e.g. we will block senders with certain metadata).
-* We do not store any logs for SMTP traffic.
+* We do not store any logs for SMTP traffic (except for [errors](/faq#do-you-store-error-logs)).
 * We do not store any IP addresses for SMTP traffic (except when we detect spammers and/or malicious activity; e.g. we will block senders with certain hostnames or IP addresses).
 
 
@@ -26,6 +26,7 @@ For transparency, at any time you can <a href="https://github.com/forwardemail" 
 * We store your email address (strictly for functionality).  This email address is stored securely in our MongoDB database.
 * We store your domain name(s) and alias(es) you create (strictly for functionality).  This information is stored securely in our MongoDB database.
 * We store logs for 30 days for Website and API traffic (to increase the quality of our service and customer experience in general).
+* We store [error logs](/faq#do-you-store-error-logs) for 7 days for SMTP traffic (only applies to `4xx` and `5xx` SMTP response codes).
 * Any additional information you voluntarily provide us, such as comments or questions in a <a href="/help">Help request</a>.
 
 

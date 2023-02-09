@@ -27,11 +27,13 @@ const getStream = require('get-stream');
 const globby = require('globby');
 const gulpRemark = require('gulp-remark');
 const gulpXo = require('gulp-xo');
+const filter = require('gulp-filter');
 const imagemin = require('gulp-imagemin');
 const isCI = require('is-ci');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
 const nodeSass = require('node-sass');
+const order = require('gulp-order');
 const pngquant = require('imagemin-pngquant');
 const postcss = require('gulp-postcss');
 const postcssPresetEnv = require('postcss-preset-env');
@@ -62,12 +64,111 @@ const i18n = require('#helpers/i18n');
 const PROD = config.env === 'production';
 const DEV = config.env === 'development';
 const TEST = config.env === 'test';
+
+const CONCAT_CSS_ORDER = [
+  `${config.buildBase}/css/app-light.css`,
+  `${config.buildBase}/css/app-dark.css`
+];
+
 const staticAssets = [
   'assets/**/*',
   '!assets/css/**/*',
   '!assets/img/**/*',
   '!assets/js/**/*'
 ];
+
+const purgeCssOptions = {
+  content: [
+    'build/**/*.js',
+    'app/views/**/*.md',
+    'app/views/**/*.pug',
+    'emails/**/*.pug'
+  ],
+  // <https://github.com/FullHuman/purgecss/blob/55c26d2790b8502f115180cfe02aba5720c84b7b/docs/configuration.md>
+  defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
+  extractors: [
+    {
+      extractor: purgeFromPug,
+      extensions: ['pug']
+    }
+  ],
+  sourceMap: false,
+  // (since this does not detect variable-based class names in pug files)
+  // the following list was filtered from `rg "class=" app/views/**/*.pug`
+  safelist: [
+    'active',
+    'alert-danger',
+    'alert-success',
+    'anchor',
+    'badge-danger',
+    'badge-primary',
+    'badge-success',
+    'badge-warning',
+    'bg-danger',
+    'bg-dark',
+    'bg-secondary',
+    'bg-success',
+    'bg-warning',
+    'bg-white',
+    'border-dark',
+    'border-md-top',
+    'btn-link',
+    'col',
+    'col-12',
+    'col-6',
+    'col-lg-6',
+    'col-md-6',
+    'col-md-8',
+    'col-sm-12',
+    'confirm-prompt',
+    'container',
+    'container-fluid',
+    'd-inline-block',
+    'd-md-inline-block',
+    'd-none',
+    'd-print-block',
+    'd-sm-block',
+    'disabled',
+    'email',
+    'fa-check',
+    'fa-search',
+    'fa-sort',
+    'fa-sort-down',
+    'fa-sort-up',
+    'fa-times',
+    'flex-grow-1',
+    'floating-label',
+    'font-weight-bold',
+    'lazyframe',
+    'markdown-body',
+    'mb-0',
+    'mt-3',
+    'mt-md-0',
+    'navbar-dark',
+    'navbar-light',
+    'navbar-themed',
+    'octicon-link',
+    'offset-lg-3',
+    'offset-md-2',
+    'opacity-50',
+    'py-3',
+    'row',
+    'table-danger',
+    'table-success',
+    'text-center',
+    'text-danger',
+    'text-dark',
+    'text-decoration-underline',
+    'text-muted',
+    'text-success',
+    'text-warning',
+    'text-white',
+    /^hljs/,
+    /^language-/,
+    /-themed$/,
+    /-themed-/
+  ]
+};
 
 //
 // add a logger pre-hook to always ignore_hook so post-hooks don't fire
@@ -126,117 +227,42 @@ function faFonts() {
 }
 
 function css() {
-  return pump([
-    src('assets/css/**/*.scss', {
-      base: 'assets',
-      since: lastRun(css)
-    }),
-    stylelint({
-      reporters: [{ formatter: 'string', console: true }]
-    }),
-    // sourcemaps.init()
-    sass().on('error', sass.logError),
-    postcss([
-      postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
-      cssnano({ autoprefixer: false }),
-      reporter()
-    ]),
-    purgecss({
-      content: [
-        'build/**/*.js',
-        'app/views/**/*.md',
-        'app/views/**/*.pug',
-        'emails/**/*.pug'
-      ],
-      // <https://github.com/FullHuman/purgecss/blob/55c26d2790b8502f115180cfe02aba5720c84b7b/docs/configuration.md>
-      defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
-      extractors: [
-        {
-          extractor: purgeFromPug,
-          extensions: ['pug']
-        }
-      ],
-      sourceMap: false,
-      // (since this does not detect variable-based class names in pug files)
-      // the following list was filtered from `rg "class=" app/views/**/*.pug`
-      safelist: [
-        'active',
-        'alert-danger',
-        'alert-success',
-        'anchor',
-        'badge-danger',
-        'badge-primary',
-        'badge-success',
-        'badge-warning',
-        'bg-danger',
-        'bg-dark',
-        'bg-secondary',
-        'bg-success',
-        'bg-warning',
-        'bg-white',
-        'border-dark',
-        'border-md-top',
-        'btn-link',
-        'col',
-        'col-12',
-        'col-6',
-        'col-lg-6',
-        'col-md-6',
-        'col-md-8',
-        'col-sm-12',
-        'confirm-prompt',
-        'container',
-        'container-fluid',
-        'd-inline-block',
-        'd-md-inline-block',
-        'd-none',
-        'd-print-block',
-        'd-sm-block',
-        'disabled',
-        'email',
-        'fa-check',
-        'fa-search',
-        'fa-sort',
-        'fa-sort-down',
-        'fa-sort-up',
-        'fa-times',
-        'flex-grow-1',
-        'floating-label',
-        'font-weight-bold',
-        'lazyframe',
-        'markdown-body',
-        'mb-0',
-        'mt-3',
-        'mt-md-0',
-        'navbar-dark',
-        'navbar-light',
-        'navbar-themed',
-        'octicon-link',
-        'offset-lg-3',
-        'offset-md-2',
-        'opacity-50',
-        'py-3',
-        'row',
-        'table-danger',
-        'table-success',
-        'text-center',
-        'text-danger',
-        'text-dark',
-        'text-decoration-underline',
-        'text-muted',
-        'text-success',
-        'text-warning',
-        'text-white',
-        /^hljs/,
-        /^language-/,
-        /-themed$/,
-        /-themed-/
-      ]
-    }),
-    // sourcemaps.write('./')
-    dest(config.buildBase),
-    ...(DEV ? [lr(config.livereload)] : [])
-  ]);
+  const f = filter(CONCAT_CSS_ORDER);
+  return pump(
+    [
+      src('assets/css/**/*.scss', {
+        base: 'assets'
+      }),
+      stylelint({
+        reporters: [{ formatter: 'string', console: true }]
+      }),
+      // sourcemaps.init()
+      sass().on('error', sass.logError),
+      postcss([
+        postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
+        cssnano({ autoprefixer: false }),
+        reporter()
+      ]),
+      purgecss(purgeCssOptions),
+      dest(config.buildBase),
+      ...(DEV ? [lr(config.livereload)] : []),
+      // sourcemaps.write('./')
+      f,
+      order(CONCAT_CSS_ORDER, { base: './' }),
+      concat('css/app.css'),
+      postcss([
+        postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
+        cssnano({ autoprefixer: false }),
+        reporter()
+      ]),
+      purgecss(purgeCssOptions),
+      dest(config.buildBase),
+      ...(DEV ? [lr(config.livereload)] : [])
+    ],
+    (err) => {
+      if (err) throw err;
+    }
+  );
 }
 
 function xo() {

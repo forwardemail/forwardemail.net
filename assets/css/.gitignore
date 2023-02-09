@@ -1,0 +1,3 @@
+# cannot use this since we use it in gulpfile.js
+# app-light.scss and app-dark.scss are combined
+app.scss
