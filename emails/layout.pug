@@ -7,7 +7,10 @@ html(lang=locale)
       meta(http-equiv="X-UA-Compatible", content="IE=edge")
       meta(name="x-apple-disable-message-reformatting")
       title= subject
-      link(rel="stylesheet", href=manifest("css/app.css"), data-inline)
+      //- <https://www.caniemail.com/features/css-at-media-prefers-color-scheme/>
+      //- <https://sidemail.io/articles/dark-mode-in-html-email/>
+      //- <https://medium.com/swlh/dark-mode-in-html-email-everything-you-need-to-know-57b2647bf304>
+      link(rel="stylesheet", href=manifest("css/app-light.css"), data-inline)
   body.email
     if user && _.isObject(user)
       .container.mt-3

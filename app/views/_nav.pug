@@ -66,7 +66,7 @@ if !user && !registerOrLogin
             .modal-body
               +registerOrLogin(verb, true)
 nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
-  class=user ? "navbar-dark bg-dark" : "bg-light navbar-themed bg-themed"
+  class=user ? "navbar-dark bg-dark" : "bg-white navbar-themed bg-themed"
 )
   div(
     class=ctx.pathWithoutLocale.startsWith("/admin/") ? "container-fluid" : "container"
