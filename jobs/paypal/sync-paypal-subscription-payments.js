@@ -35,7 +35,7 @@ async function syncPayPalSubscriptionPayments() {
     .lean()
     .exec();
 
-  logger.info(
+  await logger.info(
     `Syncing payments for ${paypalCustomers.length} paypal customers`
   );
 
@@ -49,11 +49,11 @@ async function syncPayPalSubscriptionPayments() {
     try {
       await Promise.all(errorEmails.map((email) => emailHelper(email)));
     } catch (err) {
-      logger.error(err);
+      await logger.error(err);
     }
   }
 
-  logger.info('Paypal subscriptions synced to payments');
+  await logger.info('Paypal subscriptions synced to payments');
 }
 
 module.exports = syncPayPalSubscriptionPayments;

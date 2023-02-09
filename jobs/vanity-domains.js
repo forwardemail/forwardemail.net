@@ -33,51 +33,56 @@ graceful.listen();
 (async () => {
   await setupMongoose(logger);
 
-  // get all admins
-  const admins = await Users.find({
-    group: 'admin'
-  })
-    .lean()
-    .exec();
-  if (admins.length === 0) {
-    logger.info('No admins exist yet');
-    return;
+  try {
+    // get all admins
+    const admins = await Users.find({
+      group: 'admin'
+    })
+      .lean()
+      .exec();
+    if (admins.length === 0) {
+      logger.info('No admins exist yet');
+      return;
+    }
+
+    // go through all config.vanityDomains and create them assigned to admin
+    await Promise.all(
+      config.vanityDomains.map(async (vanityDomain) => {
+        const domain = await Domains.findOne({
+          name: vanityDomain
+        });
+        if (domain) {
+          if (!domain.is_global) {
+            domain.is_global = true;
+            domain.skip_verification = true;
+            await domain.save();
+          }
+
+          if (!domain.plan !== 'team') {
+            domain.plan = 'team';
+            domain.skip_verification = true;
+            await domain.save();
+          }
+
+          return;
+        }
+
+        await Domains.create({
+          name: vanityDomain,
+          plan: 'team',
+          members: admins.map((admin) => ({
+            user: admin._id,
+            group: 'admin'
+          })),
+          is_global: true,
+          client
+        });
+      })
+    );
+  } catch (err) {
+    await logger.error(err);
   }
 
-  // go through all config.vanityDomains and create them assigned to admin
-  await Promise.all(
-    config.vanityDomains.map(async (vanityDomain) => {
-      const domain = await Domains.findOne({
-        name: vanityDomain
-      });
-      if (domain) {
-        if (!domain.is_global) {
-          domain.is_global = true;
-          domain.skip_verification = true;
-          await domain.save();
-        }
-
-        if (!domain.plan !== 'team') {
-          domain.plan = 'team';
-          domain.skip_verification = true;
-          await domain.save();
-        }
-
-        return;
-      }
-
-      await Domains.create({
-        name: vanityDomain,
-        plan: 'team',
-        members: admins.map((admin) => ({
-          user: admin._id,
-          group: 'admin'
-        })),
-        is_global: true,
-        client
-      });
-    })
-  );
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
 })();

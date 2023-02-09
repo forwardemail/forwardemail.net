@@ -43,8 +43,8 @@ async function mapper(id) {
     //   'members.user': user._id
     // });
     // if (count > 0)
-    //   console.log('user is getting free service', user.email, 'count', count);
-    // else console.log('user was beta', user.email);
+    //   logger.info('user is getting free service', user.email, 'count', count);
+    // else logger.info('user was beta', user.email);
     return;
   }
 
@@ -52,7 +52,7 @@ async function mapper(id) {
 
   // if the most recent plan is not equal to the user's current, then change it
   if (user.plan !== payments[0].plan) {
-    console.log(
+    logger.info(
       `switching ${user.email} from ${user.plan} to ${payments[0].plan}`
     );
     user.plan = payments[0].plan;
@@ -69,7 +69,7 @@ async function mapper(id) {
   if (!planSetAt) throw new Error(`No plan set for user ${user.email}`);
 
   if (planSetAt.getTime() !== user[config.userFields.planSetAt])
-    console.log(
+    logger.info(
       `${user.email}: ${dayjs(user[config.userFields.planSetAt]).format(
         'M/D/YY h:mm:ss A'
       )} -> ${dayjs(planSetAt).format('M/D/YY h:mm:ss A')} `
@@ -82,11 +82,15 @@ async function mapper(id) {
 (async () => {
   await setupMongoose(logger);
 
-  const ids = await Users.distinct('_id', {
-    plan: { $ne: 'free' }
-  });
+  try {
+    const ids = await Users.distinct('_id', {
+      plan: { $ne: 'free' }
+    });
 
-  await pMap(ids, mapper, { concurrency });
+    await pMap(ids, mapper, { concurrency });
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

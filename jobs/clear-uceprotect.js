@@ -22,8 +22,8 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
+  await setupMongoose(logger);
   try {
-    await setupMongoose(logger);
     // delete all IP's prefixed with backscatter or denylist
     // (this will ensure our latest dataset is accurate)
     const [denylistKeys, backscatterKeys] = await Promise.all([
@@ -39,7 +39,7 @@ graceful.listen();
 
     await pipeline.exec();
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
   }
 
   if (parentPort) parentPort.postMessage('done');

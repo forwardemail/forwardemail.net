@@ -39,7 +39,7 @@ async function mapper(id) {
     new Date(user[config.userFields.planSetAt]).getTime() >
     new Date(body.create_time).getTime()
   ) {
-    console.log(
+    logger.info(
       'user plan set at needs corrected',
       user.email,
       'it was off by',
@@ -56,15 +56,18 @@ async function mapper(id) {
 
 (async () => {
   await setupMongoose(logger);
+  try {
+    const ids = await Users.distinct('_id', {
+      [config.userFields.paypalSubscriptionID]: {
+        $exists: true
+      }
+    });
 
-  const ids = await Users.distinct('_id', {
-    [config.userFields.paypalSubscriptionID]: {
-      $exists: true
-    }
-  });
-
-  // run serially to prevent API rate limiting
-  await pMapSeries(ids, mapper);
+    // run serially to prevent API rate limiting
+    await pMapSeries(ids, mapper);
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

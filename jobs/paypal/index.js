@@ -33,7 +33,7 @@ graceful.listen();
   try {
     await syncPayPalOrderPayments();
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {
@@ -57,7 +57,7 @@ graceful.listen();
   try {
     await syncPayPalSubscriptionPayments();
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {

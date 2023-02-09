@@ -118,34 +118,37 @@ async function mapper(id) {
 
 (async () => {
   await setupMongoose(logger);
-
-  const ids = await Payments.distinct('_id', {
-    $or: [
-      {
-        // within the past 24 hours
-        invoice_at: {
-          $gte: dayjs().subtract(24, 'hour').toDate()
+  try {
+    const ids = await Payments.distinct('_id', {
+      $or: [
+        {
+          // within the past 24 hours
+          invoice_at: {
+            $gte: dayjs().subtract(24, 'hour').toDate()
+          },
+          receipt_sent_at: {
+            $exists: false
+          }
         },
-        receipt_sent_at: {
-          $exists: false
+        {
+          // has a refund and hasn't yet received refund receipt email
+          amount_refunded: {
+            $gt: 0
+          },
+          refund_receipt_sent_at: {
+            $exists: false
+          },
+          // and it's not the free_beta_program method or a plan_conversion
+          method: {
+            $nin: ['free_beta_program', 'plan_conversion']
+          }
         }
-      },
-      {
-        // has a refund and hasn't yet received refund receipt email
-        amount_refunded: {
-          $gt: 0
-        },
-        refund_receipt_sent_at: {
-          $exists: false
-        },
-        // and it's not the free_beta_program method or a plan_conversion
-        method: {
-          $nin: ['free_beta_program', 'plan_conversion']
-        }
-      }
-    ]
-  });
-  await pMapSeries(ids, mapper);
+      ]
+    });
+    await pMapSeries(ids, mapper);
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

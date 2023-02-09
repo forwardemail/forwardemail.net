@@ -26,47 +26,52 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+const arr = [];
+
+async function mapper(id) {
+  const user = await Users.findById(id).lean().exec();
+  if (!user) throw new Error('User does not exist');
+  const count1 = await Payments.countDocuments({
+    user: user._id,
+    invoice_at: {
+      // safeguard in case migration didn't run
+      // (note we have another issue for setting `planSetAt` in a user pre-validate hook)
+      $gte: dayjs(new Date(user[config.userFields.planSetAt])).toDate()
+    },
+    // payments must match the user's current plan
+    plan: user.plan
+  });
+  const count2 = await Payments.countDocuments({
+    user: user._id,
+    invoice_at: {
+      // safeguard in case migration didn't run
+      // (note we have another issue for setting `planSetAt` in a user pre-validate hook)
+      $gte: dayjs(new Date(user[config.userFields.planSetAt]))
+        // add a buffer due to second differences in historical `plan_set_at`
+        // with comparison to Stripe/PayPal API's
+        .subtract(1, 'day')
+        .toDate()
+    },
+    // payments must match the user's current plan
+    plan: user.plan
+  });
+  if (count1 !== count2) {
+    arr.push(`${user.email} has a difference of ${count2 - count1}`);
+  }
+}
+
 (async () => {
   await setupMongoose(logger);
 
-  const ids = await Users.distinct('_id', {});
-  const arr = [];
+  try {
+    const ids = await Users.distinct('_id', {});
 
-  async function mapper(id) {
-    const user = await Users.findById(id).lean().exec();
-    if (!user) throw new Error('User does not exist');
-    const count1 = await Payments.countDocuments({
-      user: user._id,
-      invoice_at: {
-        // safeguard in case migration didn't run
-        // (note we have another issue for setting `planSetAt` in a user pre-validate hook)
-        $gte: dayjs(new Date(user[config.userFields.planSetAt])).toDate()
-      },
-      // payments must match the user's current plan
-      plan: user.plan
-    });
-    const count2 = await Payments.countDocuments({
-      user: user._id,
-      invoice_at: {
-        // safeguard in case migration didn't run
-        // (note we have another issue for setting `planSetAt` in a user pre-validate hook)
-        $gte: dayjs(new Date(user[config.userFields.planSetAt]))
-          // add a buffer due to second differences in historical `plan_set_at`
-          // with comparison to Stripe/PayPal API's
-          .subtract(1, 'day')
-          .toDate()
-      },
-      // payments must match the user's current plan
-      plan: user.plan
-    });
-    if (count1 !== count2) {
-      arr.push(`${user.email} has a difference of ${count2 - count1}`);
-    }
+    await pMap(ids, mapper, { concurrency });
+
+    if (arr.length > 0) throw new Error('Expires at outliers');
+  } catch (err) {
+    await logger.error(err, { arr });
   }
-
-  await pMap(ids, mapper, { concurrency });
-
-  logger.info('arr', { arr });
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

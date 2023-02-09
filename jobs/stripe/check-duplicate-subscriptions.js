@@ -69,7 +69,7 @@ async function mapper(customer) {
   ];
 
   if (subscriptions.length > 1) {
-    logger.error(
+    await logger.error(
       new Error(
         `We may need to refund: User had multiple subscriptions ${user.email} (${customer.id})`
       )

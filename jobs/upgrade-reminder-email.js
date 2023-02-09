@@ -120,65 +120,68 @@ async function mapper(upgradeReminder) {
   // also don't send emails to users that are banned
   // and don't send emails for non-paid plans just in case
   //
+  try {
+    logger.info('starting upgrade reminder emails');
 
-  logger.info('starting upgrade reminder emails');
+    const bannedUserEmails = await Users.distinct('email', {
+      [config.userFields.isBanned]: true
+    });
 
-  const bannedUserEmails = await Users.distinct('email', {
-    [config.userFields.isBanned]: true
-  });
-
-  let upgradeReminders = await UpgradeReminders.aggregate([
-    {
-      $match: {
-        // TODO: filter somehow?
-        // <https://www.mongodb.com/docs/manual/reference/operator/aggregation/setEquals/>
-      }
-    },
-    {
-      $project: {
-        _id: 1,
-        domain: 1,
-        pending_recipients: {
-          $ifNull: ['$pending_recipients', []]
-        },
-        sent_recipients: {
-          $ifNull: ['$sent_recipients', []]
+    let upgradeReminders = await UpgradeReminders.aggregate([
+      {
+        $match: {
+          // TODO: filter somehow?
+          // <https://www.mongodb.com/docs/manual/reference/operator/aggregation/setEquals/>
         }
-      }
-    },
-    {
-      $project: {
-        _id: 1,
-        domain: 1,
-        queue: {
-          $setDifference: ['$pending_recipients', '$sent_recipients']
+      },
+      {
+        $project: {
+          _id: 1,
+          domain: 1,
+          pending_recipients: {
+            $ifNull: ['$pending_recipients', []]
+          },
+          sent_recipients: {
+            $ifNull: ['$sent_recipients', []]
+          }
         }
+      },
+      {
+        $project: {
+          _id: 1,
+          domain: 1,
+          queue: {
+            $setDifference: ['$pending_recipients', '$sent_recipients']
+          }
+        }
+      },
+      {
+        $match: { $expr: { $gt: [{ $size: '$queue' }, 0] } }
       }
-    },
-    {
-      $match: { $expr: { $gt: [{ $size: '$queue' }, 0] } }
+    ]);
+
+    logger.info(`found ${upgradeReminders.length} upgrade reminders`);
+
+    // filter out from queue where email is not in banned list
+    for (const upgradeReminder of upgradeReminders) {
+      upgradeReminder.queue = upgradeReminder.queue.filter(
+        (email) => !bannedUserEmails.includes(email)
+      );
     }
-  ]);
 
-  logger.info(`found ${upgradeReminders.length} upgrade reminders`);
-
-  // filter out from queue where email is not in banned list
-  for (const upgradeReminder of upgradeReminders) {
-    upgradeReminder.queue = upgradeReminder.queue.filter(
-      (email) => !bannedUserEmails.includes(email)
+    // filter out queue where email has at least one
+    upgradeReminders = upgradeReminders.filter(
+      (upgradeReminder) => upgradeReminder.queue.length > 0
     );
-  }
 
-  // filter out queue where email has at least one
-  upgradeReminders = upgradeReminders.filter(
-    (upgradeReminder) => upgradeReminder.queue.length > 0
-  );
+    logger.info(`filtered ${upgradeReminders.length} upgrade reminders`);
 
-  logger.info(`filtered ${upgradeReminders.length} upgrade reminders`);
-
-  if (upgradeReminders.length > 0) {
-    await pMap(upgradeReminders, mapper, { concurrency });
-    logger.info('sent upgrade reminders', { upgradeReminders });
+    if (upgradeReminders.length > 0) {
+      await pMap(upgradeReminders, mapper, { concurrency });
+      logger.info('sent upgrade reminders', { upgradeReminders });
+    }
+  } catch (err) {
+    await logger.error(err);
   }
 
   if (parentPort) parentPort.postMessage('done');

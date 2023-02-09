@@ -320,7 +320,7 @@ async function mapper(name) {
       }
     });
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {

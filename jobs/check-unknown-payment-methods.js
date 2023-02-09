@@ -26,19 +26,23 @@ graceful.listen();
 (async () => {
   await setupMongoose(logger);
 
-  const count = await Payments.countDocuments({ method: 'unknown' });
+  try {
+    const count = await Payments.countDocuments({ method: 'unknown' });
 
-  if (count > 0)
-    await email({
-      template: 'alert',
-      message: {
-        to: config.email.message.from,
-        subject: `(${count}) Unknown Payment Methods Detected`
-      },
-      locals: {
-        message: `${count} payments had an "unknown" payment method type.`
-      }
-    });
+    if (count > 0)
+      await email({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: `(${count}) Unknown Payment Methods Detected`
+        },
+        locals: {
+          message: `${count} payments had an "unknown" payment method type.`
+        }
+      });
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

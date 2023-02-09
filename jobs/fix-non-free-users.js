@@ -68,21 +68,25 @@ async function mapper(id) {
 (async () => {
   await setupMongoose(logger);
 
-  const ids = await Users.distinct('_id', {
-    plan: { $ne: 'free' },
-    [config.userFields.stripeSubscriptionID]: {
-      $exists: false
-    },
-    [config.userFields.paypalSubscriptionID]: {
-      $exists: false
-    },
-    [config.userFields.planExpiresAt]: {
-      $exists: true,
-      $lt: new Date()
-    }
-  });
+  try {
+    const ids = await Users.distinct('_id', {
+      plan: { $ne: 'free' },
+      [config.userFields.stripeSubscriptionID]: {
+        $exists: false
+      },
+      [config.userFields.paypalSubscriptionID]: {
+        $exists: false
+      },
+      [config.userFields.planExpiresAt]: {
+        $exists: true,
+        $lt: new Date()
+      }
+    });
 
-  await pMap(ids, mapper, { concurrency });
+    await pMap(ids, mapper, { concurrency });
+  } catch (err) {
+    await logger.error(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);

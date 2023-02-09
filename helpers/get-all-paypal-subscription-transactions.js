@@ -26,7 +26,7 @@ async function getAllPayPalSubscriptionTransactions(subscription, agent) {
       if (Array.isArray(res.body.transactions)) {
         transactions.push(...res.body.transactions);
       } else {
-        logger.error(
+        await logger.error(
           new Error('PayPal transactions missing from response body'),
           { url, response: res }
         );

@@ -31,7 +31,7 @@ async function syncPayPalOrderPayments() {
 
     await pMapSeries(ids, syncPayPalOrderPaymentByPaymentId);
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {
