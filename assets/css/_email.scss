@@ -1,26 +1,24 @@
+// <https://github.com/Automattic/juice/pull/442>
+// <https://github.com/Automattic/juice/issues/439>
 body.email {
   max-width: 600px !important;
-  padding: 0;
+  padding: 0 !important;
   margin: 0 auto !important;
   .container {
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
     .row {
-      margin-left: 0;
-      margin-right: 0;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
       .col-12 {
-        padding-left: 5px;
-        padding-right: 5px;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
       }
     }
   }
   img {
-    max-width: 100%;
-    height: auto;
-    object-fit: cover;
-  }
-  pre {
-    // override since we don't want side-scrolling emails
-    white-space: pre-wrap;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: cover !important;
   }
 }

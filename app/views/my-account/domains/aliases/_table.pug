@@ -51,8 +51,8 @@ include ../../../_pagination
                   if domain.group === 'admin' && domain.plan === 'team'
                     p.mb-1.small.text-muted.text-nowrap
                       small
-                        = t("By")
-                        = ": "
+                        i.fa.fa-user
+                        = " "
                         = alias.user.email
                 p.font-weight-bold.small.mb-1
                   = t("Recipients")
@@ -135,8 +135,8 @@ include ../../../_pagination
                 if domain.group === 'admin' && domain.plan === 'team'
                   .small.text-muted.text-nowrap
                     small
-                      = t("By")
-                      = ": "
+                      i.fa.fa-user
+                      = " "
                       = alias.user.email
             td.align-middle.text-center.d-none.d-lg-table-cell
               button.btn.btn-sm.btn-link(
@@ -193,19 +193,22 @@ include ../../../_pagination
                       else
                         code.text-nowrap= `${alias.name}@${recipient}`
             td.align-middle.d-none.d-lg-table-cell(style="width: 20%")
-              a.btn.btn-sm.btn-dark.btn-block.mb-1(
-                href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
-              )
-                i.fa.fa-pencil
-                = " "
-                = t("Edit Alias")
-              form.ajax-form.confirm-prompt.d-block(
-                action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
-                method="POST"
-              )
-                input(type="hidden", name="_method", value="DELETE")
-                button.btn.btn-sm.btn-danger.btn-block(type="submit")
-                  i.fa.fa-trash
-                  = " "
-                  = t("Delete Alias")
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  a.btn.btn-sm.btn-link.text-themed.btn-block(
+                    href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
+                  )
+                    i.fa.fa-pencil
+                    = " "
+                    = t("Edit")
+                li.list-inline-item
+                  form.ajax-form.confirm-prompt.d-block(
+                    action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
+                    method="POST"
+                  )
+                    input(type="hidden", name="_method", value="DELETE")
+                    button.btn.btn-sm.btn-link.text-danger.btn-block(type="submit")
+                      i.fa.fa-trash
+                      = " "
+                      = t("Delete")
 +paginate('#table-aliases')
