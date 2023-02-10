@@ -83,8 +83,8 @@ block body
                   if paymentCount === 0 && paymentIds.length > 0 && dayjs().isBefore(dayjs(user[config.userFields.planSetAt]).add(30, 'days'))
                     .alert.alert-success.small!= t("Don't worry &ndash; we'll automatically refund previous payments.")
                 else
-                  .alert.alert-success.small
-                    != t('Not satisfied? <strong>Eligible for automatic refund until <span class="notranslate">%s</span></strong>.', dayjs().add(30, "day").locale(ctx.locale).format("M/D/YY"))
+                  p.text-success.small.font-weight-bold
+                    != t('Eligible for automatic refund until <span class="notranslate">%s</span>.', dayjs().add(30, "day").locale(ctx.locale).format("M/D/YY"))
               - const hasPlanExpired = user.plan !== "free" && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now();
               - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID]);
               if isMakePayment && hasSubscription && !hasPlanExpired

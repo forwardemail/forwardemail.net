@@ -15,13 +15,14 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pFilter = require('p-filter');
+const pReduce = require('p-reduce');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const superagent = require('superagent');
-const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const { boolean } = require('boolean');
+const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 
 const config = require('#config');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -62,7 +63,13 @@ const list = 'http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip';
 
 graceful.listen();
 
-// TODO: remove all individual denylisted but @outlook @gmail @yandex @yahoo @hotmail @comcast
+// TODO: download and filter out those that appear in top 50k for past 30d worth of results using counter
+// TODO: filter out those that have DMARC with p=reject or strict spf set up
+//       <https://github.com/postalsys/mailauth/issues/27>
+// const dates = [];
+// for (let i = 0; i < 7; i++) {
+//   dates.unshift(dayjs().subtract(i, 'days').format('YYYY-MM-DD'));
+// }
 
 // <https://radar.cloudflare.com/categorization-feedback/>
 const ENDPOINT = 'https://family.cloudflare-dns.com/dns-query';
@@ -270,6 +277,20 @@ async function mapper(name) {
       { concurrency }
     );
 
+    //
+    // NOTE: remove specific keys from denylisted values that are to be removed
+    //       (e.g. "denylist:example.com:some@example.com")
+    //
+    const specificDenylistKeys = await pReduce(
+      filteredDomains,
+      async (arr, domain) => {
+        const keys = await client.keys(`denylist:${domain}:*`);
+        arr.push(...keys);
+        return arr;
+      },
+      []
+    );
+
     // add to the cache for 90d (loose rule based on domain expiration window of 90d)
     const p = client.pipeline();
     for (const domain of filteredDomains) {
@@ -282,6 +303,10 @@ async function mapper(name) {
 
     for (const domain of denylistRemoved) {
       p.del(`denylist:${domain}`);
+    }
+
+    for (const key of specificDenylistKeys) {
+      p.del(key);
     }
 
     await p.exec();

@@ -80,16 +80,7 @@ const config = {
       from: env.EMAIL_DEFAULT_FROM
     },
     send: env.SEND_EMAIL,
-    juiceResources: {
-      preserveImportant: true,
-      preserveFontFaces: false,
-      preserveMediaQueries: false,
-      preserveKeyFrames: false,
-      removeStyleTags: true,
-      insertPreservedExtraCss: false,
-      extraCss: false,
-      preservePseudos: false
-    },
+    juiceResources: {},
     lastLocaleField: 'last_locale',
     i18n: {
       ...i18n,
@@ -520,6 +511,7 @@ config.views.locals.config = _.pick(config, [
   'userFields',
   'vanityDomains',
   'verificationPin',
+  'verifyRoute',
   'goodDomains'
 ]);
 

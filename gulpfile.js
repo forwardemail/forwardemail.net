@@ -22,6 +22,7 @@ const browserify = require('browserify');
 const concat = require('gulp-concat');
 const cssnano = require('cssnano');
 const del = require('del');
+const discardFonts = require('postcss-discard-font-face');
 const envify = require('@ladjs/gulp-envify');
 const getStream = require('get-stream');
 const globby = require('globby');
@@ -32,7 +33,6 @@ const imagemin = require('gulp-imagemin');
 const isCI = require('is-ci');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
-const nodeSass = require('node-sass');
 const order = require('gulp-order');
 const pngquant = require('imagemin-pngquant');
 const postcss = require('gulp-postcss');
@@ -42,19 +42,17 @@ const pugLinter = require('gulp-pug-linter');
 const pump = require('pump');
 const purgeFromPug = require('purgecss-from-pug');
 const purgecss = require('gulp-purgecss');
+const rename = require('gulp-rename');
 const reporter = require('postcss-reporter');
 const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
-const sass = require('gulp-sass')(require('sass'));
+const sass = require('gulp-sass')(require('node-sass'));
 const sourcemaps = require('gulp-sourcemaps');
 const stylelint = require('@ronilaukkarinen/gulp-stylelint');
 const terser = require('gulp-terser');
 const through2 = require('through2');
 const unassert = require('gulp-unassert');
 const { lastRun, watch, series, parallel, src, dest } = require('gulp');
-
-// explicitly set the compiler in case it were to change to dart
-sass.compiler = nodeSass;
 
 const env = require('#config/env');
 const config = require('#config');
@@ -77,13 +75,8 @@ const staticAssets = [
   '!assets/js/**/*'
 ];
 
+// we have a modified version for emails
 const purgeCssOptions = {
-  content: [
-    'build/**/*.js',
-    'app/views/**/*.md',
-    'app/views/**/*.pug',
-    'emails/**/*.pug'
-  ],
   // <https://github.com/FullHuman/purgecss/blob/55c26d2790b8502f115180cfe02aba5720c84b7b/docs/configuration.md>
   defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
   extractors: [
@@ -129,7 +122,6 @@ const purgeCssOptions = {
     'd-print-block',
     'd-sm-block',
     'disabled',
-    'email',
     'fa-check',
     'fa-search',
     'fa-sort',
@@ -243,7 +235,10 @@ function css() {
         cssnano({ autoprefixer: false }),
         reporter()
       ]),
-      purgecss(purgeCssOptions),
+      purgecss({
+        ...purgeCssOptions,
+        content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']
+      }),
       dest(config.buildBase),
       ...(DEV ? [lr(config.livereload)] : []),
       // sourcemaps.write('./')
@@ -255,9 +250,30 @@ function css() {
         cssnano({ autoprefixer: false }),
         reporter()
       ]),
-      purgecss(purgeCssOptions),
+      // TODO: this may not be necessary
+      purgecss({
+        ...purgeCssOptions,
+        content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']
+      }),
       dest(config.buildBase),
-      ...(DEV ? [lr(config.livereload)] : [])
+      ...(DEV ? [lr(config.livereload)] : []),
+      // purge css for email specifically
+      rename('css/app-email.css'),
+      postcss([
+        // TODO: once a majority of clients support this then add back
+        // <https://www.caniemail.com/features/css-at-font-face/>
+        discardFonts(() => false),
+        cssnano({ autoprefixer: false }),
+        reporter()
+      ]),
+      purgecss({
+        ...purgeCssOptions,
+        content: ['emails/**/*.pug'],
+        fontFace: true,
+        keyframes: true,
+        safelist: []
+      }),
+      dest(config.buildBase)
     ],
     (err) => {
       if (err) throw err;

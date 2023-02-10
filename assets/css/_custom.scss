@@ -23,6 +23,12 @@ body {
 }
 
 @media (prefers-color-scheme: light) {
+  .text-themed a, a.text-themed, a.text-themed.btn-link {
+    color: inherit;
+    &:hover {
+      color: inherit;
+    }
+  }
   .btn-link.text-themed {
     color: inherit;
   }
@@ -106,13 +112,6 @@ pre {
 
 .opacity-50 {
   opacity: 0.5;
-}
-
-.text-themed a, a.text-themed, a.text-themed.btn-link {
-  color: inherit;
-  &:hover {
-    color: inherit;
-  }
 }
 
 .btn.focus, .btn:focus {
