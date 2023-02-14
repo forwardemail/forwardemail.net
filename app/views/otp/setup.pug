@@ -38,7 +38,7 @@ block body
             action=ctx.path,
             method="POST",
             autocomplete="off",
-            class=user[config.userFields.otpRecoveryKeys] ? "" : "confirm-prompt"
+            class=user[config.userFields.otpRecoveryKeys] ? false : "confirm-prompt"
           )
             if user[config.userFields.hasSetPassword]
               .form-group.floating-label.mt-4

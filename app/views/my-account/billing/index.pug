@@ -135,7 +135,7 @@ block body
                     a.btn.btn-sm.btn-success.mt-3(
                       href=l("/my-account/billing/enable-auto-renew")
                     )= t("Enable Auto-Renew")
-        .col-12.d-flex(class=user.plan === "free" ? "" : "col-lg-6")
+        .col-12.d-flex(class=user.plan === "free" ? false : "col-lg-6")
           .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
             h2= t(titleize(humanize(user.plan)))
             .small.text-muted.text-uppercase.mb-3

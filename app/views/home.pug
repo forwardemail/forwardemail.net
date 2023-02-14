@@ -162,7 +162,7 @@ block body
                 != t("Secure email encryption")
         if isBot(ctx.get('User-Agent'))
           .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
-            a.btn.btn-outline-dark.text-themed(
+            a.btn.btn-outline-dark(
               href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
               target="_blank",
               rel="noopener noreferrer"
@@ -179,7 +179,7 @@ block body
               data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
             )
         .col-12.d-block.d-lg-none.mt-3.mb-5.text-md-left
-          a.btn.btn-outline-dark.text-themed(
+          a.btn.btn-outline-dark(
             role="button",
             data-toggle="modal",
             data-target="#modal-watch-video",
@@ -539,7 +539,7 @@ block body
           .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-themed.bg-md-white.bg-themed.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Privacy-focused")
             p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs (with the exception of errors), and do not write your emails to disk storage.", l("/faq#do-you-store-error-logs"))
-            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark.text-themed(
+            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/privacy")
             )
               = t("Regain your privacy")
@@ -555,7 +555,7 @@ block body
           .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-themed.bg-md-white.bg-themed.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Disposable Addresses")
             p.lead.mb-3!= t("Create a specific or an anonymous email address that forwards to you.  You can even assign it a label and enable or disable it at any time to keep your inbox tidy.  Your actual email address is never exposed.")
-            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark.text-themed(
+            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/disposable-addresses")
             )
               = t("Disposable addresses")
@@ -571,7 +571,7 @@ block body
           .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-themed.bg-md-white.bg-themed.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Multiple Recipients and Wildcards")
             p.lead.mb-3!= t("You can forward a single address to multiple, and even use wildcard addresses &ndash; also known as catch-all's.  Managing your company's inboxes has never been easier.")
-            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark.text-themed(
+            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/register"),
               role="button",
               data-toggle="modal-anchor",
@@ -593,7 +593,7 @@ block body
           .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-themed.bg-md-white.bg-themed.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t('"Send mail as" with Gmail and Outlook')
             p.lead.mb-3= t("You'll never have to leave your inbox to send out emails as if they're from your company.  Send and reply-to messages as if they're from you@company.com directly from you@gmail.com or you@outlook.com.")
-            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark.text-themed(
+            a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/guides/send-mail-as-gmail-custom-domain")
             )
               = t("Configure your inbox")
@@ -653,7 +653,7 @@ block body
         .h1!= t("Made for you")
       .row
         .col-md.text-center.mb-3.mb-lg-0
-          a.btn.btn-outline-dark.text-themed.btn-lg(
+          a.btn.btn-outline-dark.btn-lg(
             role=isBot(ctx.get("User-Agent")) ? false : "button",
             href="https://www.youtube.com/watch?v=ql9rtNpTid4",
             target="_blank",
@@ -668,7 +668,7 @@ block body
             else
               = t("Creators")
         .col-md.text-center.mb-3.mb-md-0
-          a.btn.btn-outline-dark.text-themed.btn-lg(
+          a.btn.btn-outline-dark.btn-lg(
             role=isBot(ctx.get("User-Agent")) ? false : "button",
             data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
             data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-developers",
@@ -683,7 +683,7 @@ block body
             else
               = t("Developers")
         .col-md.text-center
-          a.btn.btn-outline-dark.text-themed.btn-lg(
+          a.btn.btn-outline-dark.btn-lg(
             role=isBot(ctx.get("User-Agent")) ? false : "button",
             data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
             data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-businesses",

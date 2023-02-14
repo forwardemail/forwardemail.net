@@ -15,7 +15,6 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pFilter = require('p-filter');
-const pReduce = require('p-reduce');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
@@ -281,6 +280,7 @@ async function mapper(name) {
     // NOTE: remove specific keys from denylisted values that are to be removed
     //       (e.g. "denylist:example.com:some@example.com")
     //
+    /*
     const specificDenylistKeys = await pReduce(
       filteredDomains,
       async (arr, domain) => {
@@ -290,6 +290,7 @@ async function mapper(name) {
       },
       []
     );
+    */
 
     // add to the cache for 90d (loose rule based on domain expiration window of 90d)
     const p = client.pipeline();
@@ -305,9 +306,9 @@ async function mapper(name) {
       p.del(`denylist:${domain}`);
     }
 
-    for (const key of specificDenylistKeys) {
-      p.del(key);
-    }
+    // for (const key of specificDenylistKeys) {
+    //   p.del(key);
+    // }
 
     await p.exec();
 

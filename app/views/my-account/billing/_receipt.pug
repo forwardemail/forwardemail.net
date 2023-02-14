@@ -53,7 +53,7 @@ if !returnHTML
           br
           = dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).locale(locale).format("M/D/YY")
         td.border-0.text-right(
-          class=returnHTML ? "" : "d-none d-sm-block d-print-block"
+          class=returnHTML ? false : "d-none d-sm-block d-print-block"
         )
           u.font-weight-bold= t("Reference")
           br
@@ -70,7 +70,7 @@ if !returnHTML
           br
           +paymentMethod(payment)
         td.border-0.text-right(
-          class=returnHTML ? "" : "d-none d-sm-block d-print-block"
+          class=returnHTML ? false : "d-none d-sm-block d-print-block"
         )
           u.font-weight-bold= t("Status")
           br
@@ -89,13 +89,13 @@ if !returnHTML
     tbody
       tr
         td.border-0!= payment.description
-        td.border-0.text-right= numeral(payment.amount / 100).format("$0,0")
+        td.border-0.text-right= numeral(payment.amount / 100).format("$0,0,0.00")
       if payment.amount_refunded > 0
         tr
           td.border-0= payment.method === "free_beta_program" ? t("Discount") : t("Refund")
           td.border-0.text-right
             = "-"
-            = numeral(payment.amount_refunded / 100).format("$0,0")
+            = numeral(payment.amount_refunded / 100).format("$0,0,0.00")
     tfoot
       tr
         th.border-0.align-middle

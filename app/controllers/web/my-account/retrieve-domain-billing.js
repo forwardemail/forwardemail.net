@@ -1514,7 +1514,7 @@ async function retrieveDomainBilling(ctx) {
             'REFUND_SUCCESSFUL',
             numeral(
               Math.round(_.sumBy(refundedPayments, 'amount_refunded') / 100)
-            ).format('$0,0')
+            ).format('$0,0,0.00')
           )
         );
 

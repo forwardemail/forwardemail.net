@@ -105,7 +105,7 @@ async function mapper(id) {
             .toDate(),
           frequency,
           formattedAmount: numeral(subscription.plan.amount / 100).format(
-            '$0,0'
+            '$0,0,0.00'
           ),
           domains
         }
@@ -243,7 +243,7 @@ async function mapper(id) {
           user,
           firstChargeDate: new Date(subscription.start_time),
           frequency,
-          formattedAmount: numeral(amount).format('$0,0'),
+          formattedAmount: numeral(amount).format('$0,0,0.00'),
           domains
         }
       });

@@ -18,9 +18,8 @@ block content
           .card-body.p-0
             a(href=config.urls.web)
               img.img-fluid.d-block.align-top(
-                src=`${config.urls.web}/img/emails/${_.sample(['domain-onboard', 'domain-verified', 'self-test', 'welcome'])}.gif`,
-                alt="",
-                data-inline-ignore
+                src=manifest(`img/emails/${_.sample(["domain-onboard", "domain-verified", "self-test", "welcome"])}.gif`),
+                alt=""
               )
             h1.h3.text-center.mt-3.mb-0= t("Receipt")
             .small!= prefixHTMLPathBasedAnchors(receiptHTML, config.urls.web)

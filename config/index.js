@@ -3,7 +3,6 @@ const path = require('path');
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const base64ToS3 = require('nodemailer-base64-to-s3');
 const consolidate = require('consolidate');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
@@ -99,9 +98,6 @@ const config = {
     clientID: env.PAYPAL_CLIENT_ID,
     secret: env.PAYPAL_SECRET
   },
-
-  // <https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#constructor-property>
-  aws: {},
 
   // build directory
   buildBase: 'build',
@@ -533,23 +529,8 @@ config.email.views = { ...config.views };
 config.email.views.root = path.join(__dirname, '..', 'emails');
 config.email.juiceResources.webResources = {
   relativeTo: config.buildDir,
-  images: true
+  images: false
 };
-
-config.email.transport.use(
-  'compile',
-  base64ToS3({
-    aws: _.merge({}, config.aws, {
-      params: {
-        Bucket: env.AWS_S3_BUCKET
-      }
-    }),
-    cloudFrontDomainName: env.AWS_CLOUDFRONT_DOMAIN,
-    fallbackDir: path.join(config.buildDir, 'img', 'nodemailer'),
-    fallbackPrefix: `${config.urls.web}/img/nodemailer/`,
-    logger
-  })
-);
 
 if (
   !config.email.juiceResources.webResources.images ||

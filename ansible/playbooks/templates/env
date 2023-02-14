@@ -43,28 +43,12 @@ MONGO_HOST=TODO
 #
 MONGO_PASS="TODO"
 
-#
-# aws credentials
-#
-# https://docs.aws.amazon.com/en_pv/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html
-# https://docs.aws.amazon.com/en_pv/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html
-# https://docs.aws.amazon.com/en_pv/sdk-for-javascript/v2/developer-guide/loading-node-credentials-json-file.html
-#
-#
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_S3_BUCKET=TODO
-AWS_CLOUDFRONT_DOMAIN=TODO
-AWS_CLOUDFRONT_DISTRIBUTION_ID=TODO
-
 ########################################################################
 ## Leave the section below alone unless you know what you're doing :) ##
 ########################################################################
 NODE_ENV=production
 
 SEND_EMAIL=true
-
-AWS_PROFILE=default
 
 CACHE_RESPONSES=true
 

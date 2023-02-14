@@ -19,7 +19,7 @@ footer.mt-auto
               a.btn.btn-dark(
                 href=l("/help"),
                 role=isHelp ? "link" : "button",
-                data-target=isHelp ? "" : "#modal-help"
+                data-target=isHelp ? false : "#modal-help"
               )= t("Need help?")
   .bg-dark.text-white
     .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
@@ -137,7 +137,7 @@ footer.mt-auto
               li: a.d-block.text-light.py-2.py-md-0(
                 href=l("/help"),
                 role=isHelp ? "link" : "button",
-                data-target=isHelp ? "" : "#modal-help"
+                data-target=isHelp ? false : "#modal-help"
               )= t("Help")
             li: a.d-block.text-light.py-2.py-md-0(
               href=l("/disposable-addresses")

@@ -235,7 +235,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     ansible-playbook ansible/playbooks/gapp-creds.yml -l 'http:bree'
     ```
 
-15. Copy the `.env.production` file and create an AWS config file on the servers:
+15. Copy the `.env.production` to the servers:
 
     ```sh
     node ansible-playbook ansible/playbooks/env.yml -l 'http:bree'
