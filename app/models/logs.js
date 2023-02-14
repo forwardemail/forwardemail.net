@@ -56,9 +56,6 @@ const IGNORED_CONTENT_TYPES = [
 const MAX_BYTES = bytes('20KB');
 
 const Logs = new mongoose.Schema({
-  // TODO: message needs converted from html-to-text
-  //       (NOTE: err.message will retain original HTML)
-  //
   // TODO: for the job that sets domains array, also set `language` field on documents without it
   // for text search, the language used for stopwords is based off
   // `language` field (note that we have `locale` in other docs)
@@ -120,9 +117,6 @@ Logs.plugin(mongooseCommonPlugin, {
 
 // create full text search index on message
 // TODO: we may also want to do this for `err.message`
-// TODO: this won't work properly b/c message is translated
-//       and even with default_language it won't use stopwords properly
-//       (so we may want to look into creating our own text search with spamscanner)
 Logs.index({ message: 'text' }, { default_language: 'english' });
 
 //
