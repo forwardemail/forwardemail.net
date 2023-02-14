@@ -1,6 +1,7 @@
 const { Buffer } = require('buffer');
 
 const _ = require('lodash');
+const ansiHTML = require('ansi-html-community');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
@@ -93,6 +94,9 @@ const Logs = new mongoose.Schema({
     }
   ],
   err: mongoose.Schema.Types.Mixed,
+  text_message: {
+    type: String
+  },
   message: {
     type: String,
     required: true,
@@ -119,8 +123,7 @@ Logs.plugin(mongooseCommonPlugin, {
 });
 
 // create full text search index on message
-// TODO: we may also want to do this for `err.message`
-Logs.index({ message: 'text' }, { default_language: 'english' });
+Logs.index({ text_message: 'text' }, { default_language: 'english' });
 
 //
 // create sparse (now known as "partial" indices) on common log queries
@@ -173,8 +176,10 @@ Logs.pre('validate', function (next) {
 //
 Logs.pre('save', function (next) {
   try {
+    // convert ansi (chalk) colors to html (mainly for HTTP request logging)
+    this.text_message = ansiHTML(this.message);
     // tokenization and search will be more accurate without HTML in messages
-    this.message = convert(this.message, {
+    this.text_message = convert(this.text_message, {
       wordwrap: false,
       selectors: [
         { selector: 'img', format: 'skip' },
@@ -187,7 +192,7 @@ Logs.pre('save', function (next) {
     });
     // splitLines and join by space
     // (we don't want `\n` in messages since it's irrelevant for search)
-    this.message = splitLines(this.message)
+    this.text_message = splitLines(this.text_message)
       .map((str) => str.trim())
       .join(' ');
     // language detection will be more accurate without HTML in messages
