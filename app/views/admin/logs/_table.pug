@@ -15,7 +15,7 @@ table.table.table-hover.table-bordered.table-sm
       th(scope="col")
         +sortHeader('user', 'User', '#table-logs')
       th.align-middle(scope="col")= t("Request")
-      th.align-middle(scope="col")= t("Status Code")
+      th.align-middle.text-center(scope="col")= t("Status")
       th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if logs.length === 0
@@ -63,7 +63,7 @@ table.table.table-hover.table-bordered.table-sm
                     li.list-inline-item.badge.badge-pill.badge-light= log.meta.request.method
                   if log.meta.request.url
                     li.list-inline-item.badge.badge-pill.badge-dark= log.meta.request.url
-            td.align-middle
+            td.align-middle.text-center
               if log.meta
                 - let badgeClass = "badge-success";
                 - let statusCode;
