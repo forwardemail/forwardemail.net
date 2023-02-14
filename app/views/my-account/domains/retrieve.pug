@@ -125,7 +125,7 @@ block body
               .p-3.p-md-5.mb-3.rounded-lg.border.border-themed.bg-white.bg-themed.border-themed-50.border.d-flex.flex-column.flex-grow-1.align-items-start
                 h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
                 p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
-                a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark.text-themed(
+                a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
                   href=l("/guides/send-mail-as-gmail-custom-domain"),
                   target="_blank"
                 )
@@ -252,7 +252,7 @@ block body
                       th Priority
                       th.text-left Answer/Value
                   tbody
-                    tr(class=domain.has_mx_record ? "" : "table-success")
+                    tr(class=domain.has_mx_record ? false : "table-success")
                       td.small
                         if !domain.root_name || domain.root_name === domain.name
                           if provider && typeof provider.host === 'string'
@@ -265,7 +265,7 @@ block body
                       td MX
                       td: code.text-themed 10
                       td.text-left: code.text-themed.text-nowrap mx1.forwardemail.net
-                    tr(class=domain.has_mx_record ? "" : "table-success")
+                    tr(class=domain.has_mx_record ? false : "table-success")
                       td.small
                         if !domain.root_name || domain.root_name === domain.name
                           if provider && typeof provider.host === 'string'
@@ -294,7 +294,7 @@ block body
                           td
                           td.text-left: code.text-themed.text-nowrap= record
                     else
-                      tr(class=domain.has_txt_record ? "" : "table-success")
+                      tr(class=domain.has_txt_record ? false : "table-success")
                         td.small
                           if !domain.root_name || domain.root_name === domain.name
                             if provider && typeof provider.host === 'string'

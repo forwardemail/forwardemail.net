@@ -608,7 +608,7 @@ async function getBody(ctx) {
       }
       // {
       //   selector: '#metrics-monthly-revenue',
-      //   value: monthlyRevenue ? numeral(monthlyRevenue).format('$0,0') : '-'
+      //   value: monthlyRevenue ? numeral(monthlyRevenue).format('$0,0,0.00') : '-'
       // }
     ],
     charts: [

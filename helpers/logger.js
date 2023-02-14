@@ -47,6 +47,11 @@ async function hook(err, message, meta) {
   //
   if (meta.ignore_hook) return;
 
+  //
+  // if it was a duplicate error then ignore it
+  //
+  if (err && err.is_duplicate_log) return;
+
   if (mongoose) {
     try {
       const conn = mongoose.connections.find(

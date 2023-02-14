@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { convert } = require('html-to-text');
+const { detect } = require('tinyld');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -16,6 +18,29 @@ const Domains = require('./domains');
 
 const ERR_DUP_LOG = new Error('Duplicate log in past hour prevented');
 ERR_DUP_LOG.is_duplicate_log = true;
+
+//
+// MongoDB supported language mapping with tinyld
+// <https://github.com/komodojp/tinyld>
+// <https://www.mongodb.com/docs/manual/reference/text-search-languages/#text-search-languages>
+//
+const LANGUAGES = {
+  da: 'danish',
+  nl: 'dutch',
+  en: 'english',
+  fi: 'finnish',
+  fr: 'french',
+  de: 'german',
+  hu: 'hungarian',
+  it: 'italian',
+  nb: 'norwegian',
+  pt: 'portuguese',
+  ro: 'romanian',
+  ru: 'russian',
+  es: 'spanish',
+  sv: 'swedish',
+  tr: 'turkish'
+};
 
 //
 // NOTE: if you update this, then also update `helpers/logger.js` similar usage
@@ -31,6 +56,18 @@ const IGNORED_CONTENT_TYPES = [
 const MAX_BYTES = bytes('20KB');
 
 const Logs = new mongoose.Schema({
+  // TODO: message needs converted from html-to-text
+  //       (NOTE: err.message will retain original HTML)
+  //
+  // TODO: for the job that sets domains array, also set `language` field on documents without it
+  // for text search, the language used for stopwords is based off
+  // `language` field (note that we have `locale` in other docs)
+  // <https://www.mongodb.com/docs/manual/tutorial/specify-language-for-text-index/>
+  language: {
+    type: String,
+    enum: Object.values(LANGUAGES)
+  },
+
   user: {
     type: mongoose.Schema.ObjectId,
     ref: Users
@@ -56,7 +93,11 @@ const Logs = new mongoose.Schema({
     }
   ],
   err: mongoose.Schema.Types.Mixed,
-  message: String,
+  message: {
+    type: String,
+    required: true,
+    index: true
+  },
   meta: mongoose.Schema.Types.Mixed,
   //
   // NOTE: `mongoose-common-plugin` will automatically set `timestamps` for us
@@ -64,7 +105,11 @@ const Logs = new mongoose.Schema({
   //
   created_at: {
     type: Date,
-    expires: '30d'
+    expires: '7d'
+  },
+  is_restricted: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -73,13 +118,19 @@ Logs.plugin(mongooseCommonPlugin, {
   locale: false
 });
 
+// create full text search index on message
+// TODO: we may also want to do this for `err.message`
+// TODO: this won't work properly b/c message is translated
+//       and even with default_language it won't use stopwords properly
+//       (so we may want to look into creating our own text search with spamscanner)
+Logs.index({ message: 'text' }, { default_language: 'english' });
+
 //
 // create sparse (now known as "partial" indices) on common log queries
 // <https://www.mongodb.com/docs/manual/core/index-partial/#comparison-with-sparse-indexes>
 //
 const PARTIAL_INDICES = [
   'err.responseCode',
-  'message',
   'meta.is_http', // used for search
   'meta.level',
   'meta.request.id',
@@ -91,7 +142,9 @@ const PARTIAL_INDICES = [
   'meta.user.ip_address',
   'meta.app.hostname',
   'user',
-  'domains'
+  // TODO: finish `domains` integration and partial index
+  'domains',
+  'is_restricted'
 ];
 
 for (const index of PARTIAL_INDICES) {
@@ -116,6 +169,27 @@ Logs.pre('validate', function (next) {
 });
 
 //
+// NOTE: this comes after validate because validation ensures `required: true`
+// - before saving ensure that the `message` is converted from html to text
+// - before saving ensure that language is set properly based off detected
+//   language from the `message` property using the `tinyld` package
+//
+Logs.pre('save', function (next) {
+  try {
+    // tokenization and search will be more accurate without HTML in messages
+    this.message = convert(this.message, {
+      selectors: [{ selector: 'img', format: 'skip' }]
+    });
+    // language detection will be more accurate without HTML in messages
+    const language = detect(this.message);
+    this.language = LANGUAGES[language] || 'none';
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+//
 // we don't want to pollute our db with 404's and 429's
 // in addition to API endpoint rate limiting we check for duplicates
 //
@@ -134,7 +208,6 @@ Logs.pre('save', async function (next) {
     // prepare db query for uniqueness
     //
     const $and = [];
-    const $or = [];
 
     //
     // group together HTTP related queries into one conditional for performance
@@ -168,24 +241,57 @@ Logs.pre('save', async function (next) {
       )
         throw ERR_DUP_LOG;
 
+      //
+      // logs have at least one of the following:
+      // - log.is_restricted (this means it was sent by bree, mx1, or mx2)
+      // - log.user (this is a ObjectID user reference, e.g. website traffic)
+      // - log.meta.user.ip_address
+      //
+      // if it was from a trusted and restricted server
+      // or if it had an authenticated user assigned
+      // then we can assume that the request ID's were not spoofed
+      // however they could still be spoofed by the user themselves
+      // that is why we do not look for distinct `X-Request-Id`
+      // ('meta.request.id' nor 'meta.response.headers.x-request-id')
+      //
+      // NOTE: this is commented out due to above
       // filter by meta request id (X-Request-Id)
-      if (this?.meta?.request?.id)
-        $or.push({
-          'meta.request.id': this.meta.request.id
-        });
-
+      // if (this?.meta?.request?.id)
+      //   $and.push(
+      //     {
+      //       'meta.request.id': this.meta.request.id
+      //     },
+      //     {
+      //       'meta.request.id': { $exists: true }
+      //     }
+      //   );
+      //
+      // NOTE: this is commented out due to above
       // filter by meta response headers (X-Request-Id)
-      if (this?.meta?.response?.headers?.['x-request-id'])
-        $or.push({
-          'meta.response.headers.x-request-id':
-            this.meta.response.headers['x-request-id']
-        });
+      // if (this?.meta?.response?.headers?.['x-request-id'])
+      //   $and.push(
+      //     {
+      //       'meta.response.headers.x-request-id':
+      //         this.meta.response.headers['x-request-id']
+      //     },
+      //     {
+      //       'meta.response.headers.x-request-id': { $exists: true }
+      //     }
+      //   );
 
       // if no user but if had a metadata IP address
-      if (!this?.user && this?.meta?.user?.ip_address)
-        $and.push({
-          'meta.user.ip_address': this.meta.user.ip_address
-        });
+      if (!this?.user && this?.meta?.user?.ip_address) {
+        $and.push(
+          {
+            'meta.user.ip_address': this.meta.user.ip_address
+          },
+          {
+            'meta.user.ip_address': {
+              $exists: true
+            }
+          }
+        );
+      }
 
       // check meta.response.status_code
       //       + meta.request.method
@@ -194,18 +300,20 @@ Logs.pre('save', async function (next) {
         this?.meta?.response?.status_code &&
         this?.meta?.request?.method &&
         this?.meta?.request?.url
-      )
-        $and.push({
-          'meta.response.status_code': this.meta.response.status_code,
-          'meta.request.method': this.meta.request.method,
-          'meta.request.url': this.meta.request.url
-        });
-    } else if (this?.message) {
-      //
-      // NOTE: if it was a request, then the `message` would always be unique
-      //       (e.g. the response time might slightly vary)
-      //
-      $and.push({ message: this.message });
+      ) {
+        $and.push(
+          {
+            'meta.response.status_code': this.meta.response.status_code,
+            'meta.request.method': this.meta.request.method,
+            'meta.request.url': this.meta.request.url
+          },
+          {
+            'meta.response.status_code': { $exists: true },
+            'meta.request.method': { $exists: true },
+            'meta.request.url': { $exists: true }
+          }
+        );
+      }
     }
 
     //
@@ -215,39 +323,69 @@ Logs.pre('save', async function (next) {
     // the log must be created within past hour
     // but if it's a fatal or error level, within past 10 minutes
     //
-    let $gte = dayjs().subtract(1, 'hour').toDate();
+    const $gte =
+      this?.meta?.level && ['error', 'fatal'].includes(this.meta.level)
+        ? dayjs().subtract(10, 'minutes').toDate()
+        : dayjs().subtract(1, 'hour').toDate();
+
     if (this?.meta?.level) {
-      $and.push({
-        'meta.level': this.meta.level
-      });
-      if (['error', 'fatal'].includes(this.meta.level))
-        $gte = dayjs().subtract(10, 'minutes').toDate();
+      $and.push(
+        {
+          'meta.level': this.meta.level
+        },
+        {
+          'meta.level': { $exists: true }
+        }
+      );
     }
 
-    //
-    // if it was not an HTTP request then include date query
-    // (we don't want the server itself to pollute the db on its own)
-    //
-    if (!this?.meta?.is_http)
+    if (!this?.meta?.is_http) {
+      //
+      // NOTE: if it was an HTTP request, then the `message` would always be unique
+      //       (e.g. the response time might slightly vary in the message string)
+      //
+      // if (this?.message) $and.push({ $text: { $search: this.message } });
+      if (this?.message)
+        $and.push({
+          message: this.message
+        });
+      //
+      // if it was not an HTTP request then include date query
+      // (we don't want the server itself to pollute the db on its own)
+      //
       $and.push({
         created_at: { $gte }
       });
+    }
+
+    // if it was restricted or not
+    if (typeof this.is_restricted === 'boolean')
+      $and.push(
+        {
+          is_restricted: this.is_restricted
+        },
+        {
+          is_restricted: { $exists: true }
+        }
+      );
 
     // if had a user
-    if (this?.user)
-      $and.push({
-        user: this.user
-      });
+    if (this?.user) {
+      $and.push(
+        {
+          user: this.user
+        },
+        {
+          user: { $exists: true }
+        }
+      );
+    }
 
-    // TODO: use sparse index instead of partial (?)
     // TODO: if err.responseCode and !err.bounces && !meta.session.resolvedClientHostname && meta.session.remoteAddress
     // TODO: else if err.responseCode and !err.bounces && meta.session.allowlistValue
     // TODO: else if err.responseCode and !err.bounces && meta.session.resolvedClientHostname
-    // TODO: $or meta.session.fingerprint
+    // TODO: meta.session.fingerprint
     // TODO: check count over time period for abuse
-
-    // push the $or to the $and arr
-    if ($or.length > 0) $and.push({ $or });
 
     // safeguard to prevent empty query
     if ($and.length === 0) throw ERR_DUP_LOG;

@@ -207,7 +207,9 @@ include ../../../_pagination
                     method="POST"
                   )
                     input(type="hidden", name="_method", value="DELETE")
-                    button.btn.btn-sm.btn-link.text-danger.btn-block(type="submit")
+                    button.btn.btn-sm.btn-link.text-danger.btn-block(
+                      type="submit"
+                    )
                       i.fa.fa-trash
                       = " "
                       = t("Delete")

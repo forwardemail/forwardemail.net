@@ -205,7 +205,7 @@ Payments.pre('validate', async function (next) {
         this.amount_refunded <= this.amount
         ? (this.amount - this.amount_refunded) / 100
         : this.amount / 100
-    ).format('$0,0');
+    ).format('$0,0,0.00');
 
     if (!isSANB(this.reference))
       this.reference = await cryptoRandomString.async(config.referenceOptions);

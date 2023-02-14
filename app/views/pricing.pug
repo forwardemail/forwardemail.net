@@ -75,7 +75,7 @@ block body
                   = t("Premium features for only $3")
           if isBot(ctx.get('User-Agent'))
             .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
-              a.btn.btn-outline-dark.text-themed(
+              a.btn.btn-outline-dark(
                 href="https://www.youtube.com/watch?v=q7zfEpn2NdA",
                 target="_blank",
                 rel="noopener noreferrer"
@@ -92,7 +92,7 @@ block body
                 data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
               )
           .col-12.d-block.d-lg-none.mt-3.mb-5.text-md-left
-            a.btn.btn-outline-dark.text-themed(
+            a.btn.btn-outline-dark(
               role="button",
               data-toggle="modal",
               data-target="#modal-pricing-video",
@@ -114,7 +114,7 @@ block body
         i.fa.fa-angle-double-down
   .bg-fixed.lazyload.py-3.py-md-4.py-lg-5(
     id=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing)) ? false : "features",
-    class=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing)) ? "" : "border-md-top border-themed",
+    class=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing)) ? false : "border-md-top border-themed",
     data-src=manifest("img/art/stars.svg")
   )
     .text-center.d-block.d-md-none.my-3

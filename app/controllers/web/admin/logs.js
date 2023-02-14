@@ -50,14 +50,27 @@ async function list(ctx) {
       }
 
       if (value === 'true' || value === 'false') {
-        query.$and.push({
-          [key]: boolean(value)
-        });
+        query.$and.push(
+          {
+            [key]: boolean(value)
+          },
+          {
+            [key]: { $exists: true }
+          }
+        );
       } else if (Number.isFinite(Number.parseInt(value, 10))) {
-        query.$and.push({
-          [key]: Number.parseInt(value, 10)
-        });
+        query.$and.push(
+          {
+            [key]: Number.parseInt(value, 10)
+          },
+          {
+            [key]: {
+              $exists: true
+            }
+          }
+        );
       } else {
+        // TODO: $exists here
         query.$and.push({
           $or: [
             { [key]: { $regex: value, $options: 'i' } },
@@ -85,6 +98,8 @@ async function list(ctx) {
       return ctx.throw(Boom.badRequest(err.message));
     }
   }
+
+  // TODO: $query should be filtered for partial indices only
 
   let [logs, itemCount, uniqueHosts] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference

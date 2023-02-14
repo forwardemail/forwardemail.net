@@ -6,7 +6,9 @@
   min-height: 100%;
 }
 
-body {
+// NOTE: we have to use class name here otherwise emails get a padding on top
+//       which is especially annoying in email clients like Thunderbird where it pads the top of composition window
+body.app {
   padding-top: 60px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

@@ -1,9 +1,10 @@
 extends ../../layout
 
 block append scripts
+  //- prettier-ignore
   script.
     window.IS_CUSTOM_VERIFICATION_DISABLED = !{domain.plan === 'free' || !domain.has_custom_verification};
-
+  |
   script(
     defer,
     src=manifest("js/advanced-settings.js"),
@@ -107,7 +108,7 @@ block body
               input#invite-link.form-control(
                 type="text",
                 readonly,
-                value=isTeamDisabled ? "" : `${config.urls.web}/my-account/domains/${domain.id}/invites`
+                value=isTeamDisabled ? false : `${config.urls.web}/my-account/domains/${domain.id}/invites`
               )
               .input-group-append
                 button.btn.btn-primary(
@@ -187,7 +188,7 @@ block body
                 .alert.alert-info.small= t("Members have shared access to this domain, and you can invite new members, remove existing members, or manage permissions for them below.")
                 .table-responsive
                   table.table.table-hover.table-bordered(
-                    class=hasInvites ? "" : "mb-0"
+                    class=hasInvites ? false : "mb-0"
                   )
                     thead.thead-dark
                       tr

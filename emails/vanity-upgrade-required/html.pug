@@ -12,9 +12,8 @@ block content
               href=`${config.urls.web}/${locale}/my-account/billing/upgrade?plan=enhanced_protection`
             )
               img.img-fluid.d-block.align-top(
-                src=`${config.urls.web}/img/emails/${_.sample(['domain-onboard', 'domain-verified', 'self-test', 'welcome'])}.gif`,
-                alt="",
-                data-inline-ignore
+                src=manifest(`img/emails/${_.sample(["domain-onboard", "domain-verified", "self-test", "welcome"])}.gif`),
+                alt=""
               )
             .p-3.text-center
               p.card-text.text-decoration-underline.font-weight-bold.text-uppercase: strong!= t("Account upgrade required")

@@ -1,11 +1,11 @@
 mixin registerOrLogin(verb, isModal = false)
-  div(class=isModal ? "" : "container py-3")
+  div(class=isModal ? false : "container py-3")
     if !isModal
       .text-center
         h1.my-3.py-3
           = t(`${humanize(verb)} now`)
-    div(class=isModal ? "" : "row")
-      div(class=isModal ? "" : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
+    div(class=isModal ? false : "row")
+      div(class=isModal ? false : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
         if passport && passport.google
           a.btn-auth.btn-auth-google.btn-auth-google-dark.border-themed.border.mb-3.text-decoration-none(
             href="/auth/google",
@@ -85,8 +85,8 @@ mixin registerOrLogin(verb, isModal = false)
                 a.alert-link(
                   href=l(config.loginRoute),
                   data-dismiss-modal=isRegisterOrLogin ? false : "true",
-                  data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
-                  data-target=isRegisterOrLogin ? "" : "#modal-log-in"
+                  data-toggle=isRegisterOrLogin ? false : "modal-anchor",
+                  data-target=isRegisterOrLogin ? false : "#modal-log-in"
                 )= t("Log in")
             else
               li.list-inline-item!= t("Don't have an account?")
@@ -94,6 +94,6 @@ mixin registerOrLogin(verb, isModal = false)
                 a.alert-link(
                   href=l("/register"),
                   data-dismiss-modal=isRegisterOrLogin ? false : "true",
-                  data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
-                  data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
+                  data-toggle=isRegisterOrLogin ? false : "modal-anchor",
+                  data-target=isRegisterOrLogin ? false : "#modal-sign-up"
                 )= t("Sign up free")

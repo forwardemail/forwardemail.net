@@ -15,6 +15,8 @@ block body
             .h5.card-title= t("Search for logs")
             .form-group
               label(for="textarea-mongodb-query") MongoDB query
+              p.form-text.text-muted!= t("If querying by partial index, include the proper conditions (e.g. <code>{ $and: [ { a: 1 }, { a: { $exists: true } } ] }</code>.")
+              p.form-text.text-muted!= t('If querying by "message" property, then use <a rel="noopener noreferrer" href="https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text">$text</a> operator.')
               textarea#textarea-mongodb-query.form-control(
                 name="mongodb_query",
                 rows=3,

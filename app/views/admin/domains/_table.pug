@@ -40,7 +40,7 @@ include ../../_pagination
                     li.list-inline-item
                       a.small.text-monospace(
                         href=l(`/admin/users?mongodb_query={ email: "${member.user.email}" }`),
-                        class=member.group === "admin" ? "" : "text-muted"
+                        class=member.group === "admin" ? false : "text-muted"
                       )= member.user.email
                       = " "
                       = "("

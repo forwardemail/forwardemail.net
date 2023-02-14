@@ -17,6 +17,10 @@ $input-disabled-bg:                     $dark;
 @media (prefers-color-scheme: dark) {
   .bg-dark, .bg-themed, .navbar-themed {
     background-color: #191d21 !important;
+    .btn-outline-dark {
+      // stylelint-disable scss/at-extend-no-missing-placeholder
+      @extend .text-light;
+    }
   }
   .markdown-body {
     .bg-dark {

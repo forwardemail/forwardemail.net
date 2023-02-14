@@ -125,18 +125,18 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
         if !isBot(ctx.get('User-Agent'))
           if ctx.pathWithoutLocale !== config.loginRoute
             li.list-inline-item.d-none.d-sm-inline-block.d-lg-none
-              a.btn.btn-sm.btn-outline-dark.text-themed(
+              a.btn.btn-sm.btn-outline-dark(
                 role=isRegisterOrLogin ? "link" : "button",
                 href=l(config.loginRoute),
-                data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
-                data-target=isRegisterOrLogin ? "" : "#modal-log-in"
+                data-toggle=isRegisterOrLogin ? false : "modal-anchor",
+                data-target=isRegisterOrLogin ? false : "#modal-log-in"
               )= t("Log in")
           if ctx.pathWithoutLocale !== '/register'
             li.list-inline-item
               a.btn.btn-sm.btn-success(
                 href=l("/register"),
-                data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
-                data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
+                data-toggle=isRegisterOrLogin ? false : "modal-anchor",
+                data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
                 = t("Sign up")
       .no-js.is-bot.d-inline-block.mr-3
@@ -174,8 +174,8 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               a.btn.d-block.text-left(
                 href=l("/help"),
                 role=isHelp ? "link" : "button",
-                data-target=isHelp ? "" : "#modal-help",
-                data-toggle=isHelp ? "" : "modal-anchor",
+                data-target=isHelp ? false : "#modal-help",
+                data-toggle=isHelp ? false : "modal-anchor",
                 class=ctx.pathWithoutLocale.startsWith("/help") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
               )= t("Help")
         else
@@ -232,7 +232,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
             //- don't index 401 not authorized pages
             if isBot(ctx.get('User-Agent'))
               li.nav-item
-                a.btn.btn-outline-dark.text-themed.d-block.text-left(
+                a.btn.btn-outline-dark.d-block.text-left(
                   href=l("/guides/send-mail-as-gmail-custom-domain"),
                   class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "active" : ""
                 )= t("Send Email Custom Domain")
@@ -256,8 +256,8 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                   a.dropdown-item(
                     href=l("/help"),
                     role=isHelp || !user ? "link" : "button",
-                    data-target=isHelp || !user ? "" : "#modal-help",
-                    data-toggle=isHelp || !user ? "" : "modal-anchor",
+                    data-target=isHelp || !user ? false : "#modal-help",
+                    data-toggle=isHelp || !user ? false : "modal-anchor",
                     class=ctx.pathWithoutLocale.startsWith("/help") ? "active" : ""
                   )= t("Help")
 
@@ -334,15 +334,15 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               a.btn.btn-link.text-themed.d-block.text-left(
                 role=isRegisterOrLogin ? "link" : "button",
                 href=l(config.loginRoute),
-                data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
-                data-target=isRegisterOrLogin ? "" : "#modal-log-in"
+                data-toggle=isRegisterOrLogin ? false : "modal-anchor",
+                data-target=isRegisterOrLogin ? false : "#modal-log-in"
               )= t("Log in")
           if ctx.pathWithoutLocale !== '/register'
             li.nav-item.ml-3.d-none.d-lg-inline-block
               a.btn.btn-success.d-block.text-left(
                 href=l("/register"),
-                data-toggle=isRegisterOrLogin ? "" : "modal-anchor",
-                data-target=isRegisterOrLogin ? "" : "#modal-sign-up"
+                data-toggle=isRegisterOrLogin ? false : "modal-anchor",
+                data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
                 = t("Sign up free")
 if user

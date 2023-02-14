@@ -147,9 +147,9 @@ html.h-100.no-js(lang=locale)
           crossorigin="anonymous"
         )
 
-  body.d-flex.flex-column.min-h-100(
+  body.d-flex.flex-column.min-h-100.app(
     role="document",
-    onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : ""
+    onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false
   )
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);

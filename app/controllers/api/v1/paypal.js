@@ -257,12 +257,37 @@ async function processEvent(ctx) {
       break;
     }
 
+    case 'PAYMENT.CAPTURE.REFUNDED':
+    case 'PAYMENT.CAPTURE_REVERSED':
     case 'PAYMENT.SALE.REVERSED':
     case 'PAYMENT.SALE.REFUNDED': {
-      // body.resource.id => paypal transaction id
-      const payment = await Payments.findOne({
-        paypal_transaction_id: body.resource.id
-      });
+      // if the body contained body.resource.sale_id => paypal transaction id
+      // else if the body.resource_type was refund => lookup refund by body.id => get id
+      let payment;
+      if (isSANB(body?.resource?.sale_id)) {
+        payment = await Payments.findOne({
+          paypal_transaction_id: body.resource.sale_id
+        });
+      } else if (isSANB(body?.resource?.invoice_id)) {
+        payment = await Payments.findOne({
+          reference: body.resource.invoice_id
+        });
+      } else if (_.isArray(body?.resource?.links)) {
+        const str = 'https://api.paypal.com/v2/payments/captures/';
+        const link = body.resource.links.find((link) =>
+          link.href.startsWith(str)
+        );
+        if (!link) throw new Error('Link not found with capture endpoint');
+        // the `id` here is a refund so we need to get refund details
+        // and then find the link with '/v2/payments/captures/' in it
+        const id = link.href.replace(str, '');
+        payment = await Payments.findOne({
+          paypal_transaction_id: id
+        });
+      } else {
+        throw new TypeError('No valid sale_id nor id was found');
+      }
+
       if (!payment) throw new Error('Payment does not exist');
 
       // lookup the user
