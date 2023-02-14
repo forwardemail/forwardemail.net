@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const splitLines = require('split-lines');
 const { convert } = require('html-to-text');
 const { detect } = require('tinyld');
 
@@ -15,6 +16,8 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const Users = require('./users');
 const Domains = require('./domains');
+
+const config = require('#config');
 
 const ERR_DUP_LOG = new Error('Duplicate log in past hour prevented');
 ERR_DUP_LOG.is_duplicate_log = true;
@@ -172,8 +175,21 @@ Logs.pre('save', function (next) {
   try {
     // tokenization and search will be more accurate without HTML in messages
     this.message = convert(this.message, {
-      selectors: [{ selector: 'img', format: 'skip' }]
+      wordwrap: false,
+      selectors: [
+        { selector: 'img', format: 'skip' },
+        { selector: 'ul', options: { itemPrefix: ' ' } },
+        {
+          selector: 'a',
+          options: { baseUrl: config.urls.web, linkBrackets: false }
+        }
+      ]
     });
+    // splitLines and join by space
+    // (we don't want `\n` in messages since it's irrelevant for search)
+    this.message = splitLines(this.message)
+      .map((str) => str.trim())
+      .join(' ');
     // language detection will be more accurate without HTML in messages
     const language = detect(this.message);
     this.language = LANGUAGES[language] || 'none';
