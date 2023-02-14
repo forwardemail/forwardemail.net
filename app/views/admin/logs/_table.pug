@@ -14,27 +14,42 @@ table.table.table-hover.table-bordered.table-sm
         +sortHeader('meta.level', 'Level', '#table-logs')
       th(scope="col")
         +sortHeader('user', 'User', '#table-logs')
-      th(scope="col")
-        +sortHeader('meta.is_http', 'HTTP', '#table-logs')
+      th.align-middle(scope="col")= t("Request")
+      th.align-middle(scope="col")= t("Status Code")
       th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if logs.length === 0
         tr
-          td.alert.alert-info(colspan="5")
+          td.alert.alert-info(colspan="7")
             = t("No logs exist for that search.")
       else
         each log in logs
-          tr(class=["error", "fatal"].includes(log.meta.level) ? "table-danger" : "")
+          tr
             td.align-middle
               .markdown-body.ml-0.mr-0: code= log.id
             td.align-middle.text-center
               = dayjs(log.created_at).format("M/D/YY h:mm A")
-            td.align-middle
-              pre.mb-0
-                small
-                  code= log.err && log.err.message ? log.err.message : log.message
+            td.align-middle.small
+              if !log.err && log.meta && log.meta.is_http
+                .markdown-body.ml-0.mb-0
+                  code!= ansiHTML(log.message)
+              else
+                != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
             td.align-middle.text-center
-              code= log.meta.level
+              if log.meta && log.meta.level
+                - let levelBadgeClass = "badge-success";
+                case log.meta.level
+                  when 'fatal'
+                  when 'error'
+                    span.badge.badge-danger= log.meta.level
+                  when 'warning'
+                    span.badge.badge-warning= log.meta.level
+                  when 'info'
+                    span.badge.badge-success= log.meta.level
+                  when 'debug'
+                    span.badge.badge-primary= log.meta.level
+                  default
+                    span.badge.badge-secondary= log.meta.level
             td.align-middle
               code
                 if log.user && log.user.email
@@ -42,24 +57,35 @@ table.table.table-hover.table-bordered.table-sm
                 else if log.meta && log.meta.user && log.meta.user.email
                   = log.meta.user.email
             td.align-middle
-              if log.meta.is_http
+              if log.meta.request
+                ul.list-inline.mb-0
+                  if log.meta.request.method
+                    li.list-inline-item.badge.badge-pill.badge-light= log.meta.request.method
+                  if log.meta.request.url
+                    li.list-inline-item.badge.badge-pill.badge-dark= log.meta.request.url
+            td.align-middle
+              if log.meta
                 - let badgeClass = "badge-success";
-                if log.meta.response
-                  if log.meta.response.status_code
-                    if log.meta.response.status_code >= 500
-                      - badgeClass = "badge-danger";
-                    else if log.meta.response.status_code >= 400
-                      - badgeClass = "badge-warning";
-                    else if log.meta.response.status_code >= 300
-                      - badgeClass = "badge-primary";
-                  ul.list-inline.mb-0
-                    if log.meta.response.status_code
-                      li.list-inline-item.badge.badge-pill(class=badgeClass)= log.meta.response.status_code
-                    if log.meta.request
-                      if log.meta.request.method
-                        li.list-inline-item.badge.badge-pill.badge-light= log.meta.request.method
-                      if log.meta.request.url
-                        li.list-inline-item: small: code= log.meta.request.url
+                - let statusCode;
+
+                if log.meta.is_http && log.meta.response && log.meta.response.status_code
+                  - statusCode = log.meta.response.status_code;
+                else if log.err && log.err.responseCode
+                  - statusCode = log.err.responseCode;
+                else if log.err && log.err.statusCode
+                  - statusCode = log.err.statusCode;
+                else if log.err && log.err.status
+                  - statusCode = log.err.status;
+
+                if statusCode >= 500
+                  - badgeClass = "badge-danger";
+                else if statusCode >= 400
+                  - badgeClass = "badge-warning";
+                else if statusCode >= 300
+                  - badgeClass = "badge-primary";
+
+                if statusCode
+                  span.badge.badge-pill(class=badgeClass)= statusCode
             td.align-middle.text-center
               a.btn.btn-dark.btn-sm(
                 href=l(`/admin/logs/${log.id}`),

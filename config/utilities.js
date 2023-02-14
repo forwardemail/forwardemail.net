@@ -1,7 +1,7 @@
 const RE2 = require('re2');
 const _ = require('lodash');
-const numeral = require('numeral');
 const ajc = require('array-join-conjunction');
+const ansiHTML = require('ansi-html-community');
 const capitalize = require('capitalize');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
@@ -10,6 +10,7 @@ const humanize = require('humanize-string');
 const isBot = require('isbot');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
+const numeral = require('numeral');
 const pluralize = require('pluralize');
 const splitLines = require('split-lines');
 const striptags = require('striptags');
@@ -155,6 +156,7 @@ for (const key of NS_PROVIDER_KEYS) {
 module.exports = {
   _,
   ajc,
+  ansiHTML,
   boolean,
   capitalize,
   dashify,
