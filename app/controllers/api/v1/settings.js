@@ -64,7 +64,7 @@ async function settings(ctx) {
 
       if (verifications.length > 0) {
         if (verifications.length > 1)
-          ctx.logger.error(
+          ctx.logger.warn(
             ctx.translateError('SINGLE_VERIFICATION_RECORD_REQUIRED')
           );
 
@@ -97,12 +97,12 @@ async function settings(ctx) {
         }
       } else if (ports.length > 0) {
         if (ports.length > 1)
-          ctx.logger.error(ctx.translateError('MULTIPLE_PORT_RECORDS'));
+          ctx.logger.warn(ctx.translateError('MULTIPLE_PORT_RECORDS'));
         port = ports[0];
       }
 
       if (!isPort(port)) {
-        ctx.logger.error(ctx.translateError('INVALID_PORT'));
+        ctx.logger.warn(ctx.translateError('INVALID_PORT'));
         port = '25';
       }
 
