@@ -108,7 +108,7 @@ async function lookup(ctx) {
 
     // safeguard in case no admins exist due to data corruption
     if (adminUserIds.length === 0) {
-      ctx.logger.fatal(
+      ctx.logger.warn(
         new Error(`Empty admin user ids: ${domain.name} (${domain.id})`),
         { domain }
       );
@@ -166,7 +166,7 @@ async function lookup(ctx) {
     // (finally after one month from when originally sent, don't send again)
     //
     if (count === 0) {
-      ctx.logger.fatal(
+      ctx.logger.warn(
         new Error(`Suspended domain: ${domain.name} (${domain.id})`),
         { domain }
       );
@@ -184,7 +184,7 @@ async function lookup(ctx) {
           .toDate()
           .getTime() <= Date.now()
       ) {
-        ctx.logger.fatal(
+        ctx.logger.warn(
           new Error(
             `Resending suspended email to domain: ${domain.name} (${domain.id})`
           ),
@@ -316,7 +316,7 @@ async function lookup(ctx) {
           try {
             regex = new RE2(regexParser(parsedRegex));
           } catch (err) {
-            ctx.logger.fatal(err, { parsedRegex, alias });
+            ctx.logger.warn(err, { parsedRegex, alias });
           }
 
           if (regex) return regex.test(username);

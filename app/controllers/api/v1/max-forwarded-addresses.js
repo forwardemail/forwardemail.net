@@ -57,7 +57,7 @@ async function maxForwardedAddresses(ctx) {
 
       if (verifications.length > 0) {
         if (verifications.length > 1)
-          ctx.logger.fatal(
+          ctx.logger.warn(
             ctx.translateError('SINGLE_VERIFICATION_RECORD_REQUIRED'),
             { domain: ctx.query.domain }
           );
