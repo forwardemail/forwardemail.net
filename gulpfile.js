@@ -410,7 +410,7 @@ async function bundle() {
       .pipe(through2.obj((chunk, enc, cb) => cb()))
   );
 
-  let stream = src('build/js/**/*.js', { base: 'build', since })
+  let stream = src('build/js/**/*.js', { base: config.buildBase, since })
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(unassert())
     .pipe(envify(env))
@@ -467,7 +467,7 @@ async function markdown() {
 
 async function sri() {
   await getStream(
-    src('build/**/*.{css,js}')
+    src('build/**/*.{css,js}', { base: config.buildBase })
       .pipe(RevAll.revision())
       .pipe(dest(config.buildBase))
       .pipe(RevAll.manifestFile())
@@ -489,13 +489,18 @@ async function sri() {
   // note that we don't pipe fonts through gulp rev due to binary issues
   //
   await getStream(
-    src([
-      'build/**/*',
-      '!build/**/*.{css,js}',
-      '!build/fonts/**/*',
-      '!build/robots.txt',
-      '!build/browserconfig.xml'
-    ])
+    src(
+      [
+        'build/**/*',
+        '!build/rev-manifest.json',
+        '!build/sri-manifest.json',
+        '!build/**/*.{css,js}',
+        '!build/fonts/**/*',
+        '!build/robots.txt',
+        '!build/browserconfig.xml'
+      ],
+      { base: config.buildBase }
+    )
       .pipe(rev())
       .pipe(dest(config.buildBase))
       .pipe(
@@ -504,6 +509,7 @@ async function sri() {
           base: config.buildBase
         })
       )
+      .pipe(dest(config.buildBase))
       .pipe(revSri({ base: config.buildBase }))
       .pipe(dest(config.buildBase))
       // convert to conventional stream

@@ -135,6 +135,7 @@ const PARTIAL_INDICES = [
   'meta.level',
   'meta.request.id',
   'meta.request.method',
+  'meta.request.pathname',
   'meta.request.url',
   'meta.response.headers.content-type',
   'meta.response.headers.x-request-id',
@@ -308,27 +309,52 @@ Logs.pre('save', async function (next) {
         );
       }
 
-      // check meta.response.status_code
-      //       + meta.request.method
-      //       + meta.request.url
-      if (
-        this?.meta?.response?.status_code &&
-        this?.meta?.request?.method &&
-        this?.meta?.request?.url
-      ) {
+      // check
+      // + meta.response.status_code
+      // + meta.request.method
+      // + meta.request.pathname OR meta.request.url (otherwise unique querystrings won't be detected as duplicates)
+      if (this?.meta?.response?.status_code)
         $and.push(
           {
-            'meta.response.status_code': this.meta.response.status_code,
-            'meta.request.method': this.meta.request.method,
+            'meta.response.status_code': this.meta.response.status_code
+          },
+          {
+            'meta.response.status_code': { $exists: true }
+          }
+        );
+
+      if (this?.meta?.request?.method)
+        $and.push(
+          {
+            'meta.request.method': this.meta.request.method
+          },
+          {
+            'meta.request.method': { $exists: true }
+          }
+        );
+
+      //
+      // NOTE: pathname was added in `parse-request` v6.0.1
+      //       (since /v1/lookup?q=... querystring was polluting logs)
+      //
+      if (this?.meta?.request?.pathname)
+        $and.push(
+          {
+            'meta.request.pathname': this.meta.request.pathname
+          },
+          {
+            'meta.request.pathname': { $exists: true }
+          }
+        );
+      else if (this?.meta?.request?.url)
+        $and.push(
+          {
             'meta.request.url': this.meta.request.url
           },
           {
-            'meta.response.status_code': { $exists: true },
-            'meta.request.method': { $exists: true },
             'meta.request.url': { $exists: true }
           }
         );
-      }
     }
 
     //
