@@ -12,6 +12,7 @@ const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const { isIP, isEmail, isURL } = require('validator');
+const { randomstring } = require('@sidoshi/random-string');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -126,9 +127,16 @@ const Aliases = new mongoose.Schema({
 Aliases.plugin(captainHook);
 
 Aliases.pre('validate', function (next) {
+  // if name was not a string then generate a random one
+  if (!isSANB(this.name)) {
+    this.name = randomstring({
+      characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+      length: 10
+    });
+  }
+
   // require alias name
   if (
-    !isSANB(this.name) ||
     !quotedEmailUserUtf8.test(this.name.trim().toLowerCase()) ||
     (!this.name.trim().startsWith('/') && this.name.includes('+'))
   )

@@ -357,7 +357,7 @@ curl -X GET BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 | Body Parameter               | Required | Type            | Description                                                                                                                                                                         |
 | ---------------------------- | -------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                       | Yes      | String          | Alias name                                                                                                                                                                          |
+| `name`                       | No       | String          | Alias name (if not provided or if blank, then a random alias is generated)                                                                                                          |
 | `recipients`                 | Yes      | String or Array | List of recipients (must be line-break/space/comma separated String or Array of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL's)   |
 | `description`                | No       | String          | Alias description                                                                                                                                                                   |
 | `labels`                     | No       | String or Array | List of labels (must be line-break/space/comma separated String or Array)                                                                                                           |
