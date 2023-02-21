@@ -57,7 +57,7 @@ function validateAlias(ctx, next) {
     );
   }
 
-  body.is_enabled = boolean(body.is_enabled);
+  body.is_enabled = isSANB(body.is_enabled) ? boolean(body.is_enabled) : true;
 
   if (isSANB(body.recipients))
     body.recipients = _.compact(
