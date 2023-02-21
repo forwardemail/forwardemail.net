@@ -78,6 +78,8 @@ function validateAlias(ctx, next) {
     );
   else body.recipients = [];
 
+  if (_.isEmpty(body.recipients)) body.recipients = [ctx.state.user.email];
+
   ctx.state.body = body;
 
   return next();
