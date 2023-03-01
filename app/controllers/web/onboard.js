@@ -122,7 +122,7 @@ async function onboard(ctx, next) {
         members: [{ user: ctx.state.user._id, group: 'admin' }],
         name: ctx.request.body.domain,
         locale: ctx.locale,
-        client: ctx.client,
+        resolver: ctx.resolver,
         plan: ctx.state.user.plan
       });
       // create a default alias for the user pointing to the admin
@@ -208,7 +208,7 @@ async function onboard(ctx, next) {
         name: ctx.request.body.domain,
         locale: ctx.locale,
         skip_verification: !boolean(ctx.query.redirect_to_domain),
-        client: ctx.client,
+        resolver: ctx.resolver,
         plan: ctx.state.user.plan
       });
 

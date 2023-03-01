@@ -249,13 +249,13 @@ const Domains = new mongoose.Schema({
 
 Domains.plugin(captainHook);
 
-// shared redis client
-Domains.virtual('client')
+// shared tangerine resolver
+Domains.virtual('resolver')
   .get(function () {
-    return this.__client;
+    return this.__resolver;
   })
-  .set(function (client) {
-    this.__client = client;
+  .set(function (resolver) {
+    this.__resolver = resolver;
   });
 
 Domains.virtual('link')
@@ -528,7 +528,7 @@ Domains.pre('save', async function (next) {
 
     const { ns, txt, mx, errors } = await getVerificationResults(
       domain,
-      domain.client
+      domain.resolver
     );
 
     //
@@ -579,7 +579,7 @@ Domains.plugin(mongooseCommonPlugin, {
   ],
   mongooseHidden: {
     virtuals: {
-      client: 'hide'
+      resolver: 'hide'
     }
   },
   defaultLocale: i18n.getLocale()
@@ -993,7 +993,6 @@ async function getTxtAddresses(
   if (!isFQDN(domainName))
     throw Boom.badRequest(i18n.translateError('INVALID_FQDN', locale));
 
-  logger.debug('resolveTxt', { domainName });
   const records = await resolver.resolveTxt(domainName, { purgeCache: true });
 
   // verification records that contain `forward-email-site-verification=` prefix

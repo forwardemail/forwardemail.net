@@ -14,7 +14,7 @@ async function createDomain(ctx, next) {
         ctx.state.user.group === 'admin' && boolean(ctx.request.body.is_global),
       locale: ctx.locale,
       plan: ctx.request.body.plan,
-      client: ctx.client,
+      resolver: ctx.resolver,
       ...ctx.state.optionalBooleans
     });
 

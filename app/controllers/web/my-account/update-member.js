@@ -132,7 +132,7 @@ async function updateMember(ctx, next) {
   }
 
   ctx.state.domain.locale = ctx.locale;
-  ctx.state.domain.client = ctx.client;
+  ctx.state.domain.resolver = ctx.resolver;
   ctx.state.domain = await ctx.state.domain.save();
 
   if (ctx.api) return next();
