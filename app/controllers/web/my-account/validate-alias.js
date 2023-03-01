@@ -10,7 +10,6 @@ function validateAlias(ctx, next) {
     'name',
     'description',
     'labels',
-    'is_enabled',
     'recipients'
   ]);
 
@@ -57,7 +56,8 @@ function validateAlias(ctx, next) {
     );
   }
 
-  body.is_enabled = isSANB(body.is_enabled) ? boolean(body.is_enabled) : true;
+  if (typeof ctx.request.body.is_enabled !== 'undefined' || !ctx.api)
+    body.is_enabled = boolean(ctx.request.body.is_enabled);
 
   if (isSANB(body.recipients))
     body.recipients = _.compact(
