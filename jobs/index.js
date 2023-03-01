@@ -94,7 +94,7 @@ const jobs = [
   },
   {
     name: 'update-umbrella',
-    interval: '30d',
+    interval: '1d',
     timeout: '5m'
   },
   {
