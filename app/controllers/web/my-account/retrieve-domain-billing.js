@@ -1346,7 +1346,7 @@ async function retrieveDomainBilling(ctx) {
       await ctx.state.user.save();
     else {
       domain.locale = ctx.locale;
-      domain.client = ctx.client;
+      domain.resolver = ctx.resolver;
       ctx.state.domain = await domain.save();
       //
       // NOTE: this logic is the same as `jobs/fix-non-free-users`
@@ -1662,7 +1662,7 @@ async function retrieveDomainBilling(ctx) {
           name: ctx.state.bad_domain,
           locale: ctx.locale,
           plan: ctx.state.user.plan,
-          client: ctx.client
+          resolver: ctx.resolver
         });
         await Aliases.create({
           user: ctx.state.user._id,
