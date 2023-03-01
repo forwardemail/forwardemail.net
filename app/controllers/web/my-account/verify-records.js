@@ -1,17 +1,7 @@
 const Boom = require('@hapi/boom');
-const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 
-const config = require('#config');
-const logger = require('#helpers/logger');
 const { Domains } = require('#models');
-
-const app = new ForwardEmail({
-  logger,
-  recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' },
-  redis: false
-});
 
 // <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
 // <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
@@ -83,7 +73,7 @@ async function verifyRecords(ctx) {
       await Promise.all(
         ['NS', 'MX', 'TXT'].map(async (type) => {
           try {
-            await app.resolver(domain.name, type, true, ctx.client);
+            await ctx.resolver.resolve(domain.name, type, { purgeCache: true });
           } catch (err) {
             ctx.logger.warn(err);
           }
@@ -95,7 +85,7 @@ async function verifyRecords(ctx) {
 
     const { ns, txt, mx, errors } = await Domains.getVerificationResults(
       domain,
-      ctx.client
+      ctx.resolver
     );
 
     //

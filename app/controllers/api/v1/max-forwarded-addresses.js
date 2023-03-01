@@ -1,18 +1,9 @@
 const Boom = require('@hapi/boom');
-const ForwardEmail = require('forward-email');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 
-const logger = require('#helpers/logger');
 const config = require('#config');
 const Domains = require('#models/domains');
-
-const app = new ForwardEmail({
-  logger,
-  recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' },
-  redis: false
-});
 
 const HTTP_RETRY_ERROR_CODES = new Set([
   'ETIMEDOUT',
@@ -34,26 +25,21 @@ async function maxForwardedAddresses(ctx) {
     // if a verification record was found, then look it up and if it's valid
     // otherwise return default max count
     try {
-      const records = await app.resolver(
-        ctx.query.domain,
-        'TXT',
-        false,
-        ctx.client
-      );
+      const records = await ctx.resolver.resolveTxt(ctx.query.domain);
 
       const verifications = [];
 
       for (const element of records) {
         const record = element.join('').trim(); // join chunks together
-        if (record.startsWith(`${app.config.recordPrefix}-site-verification=`))
+        if (record.startsWith(`${config.recordPrefix}-site-verification=`))
           verifications.push(
             record
-              .replace(`${app.config.recordPrefix}-site-verification=`, '')
+              .replace(`${config.recordPrefix}-site-verification=`, '')
               .trim()
           );
       }
 
-      let { maxForwardedAddresses } = app.config;
+      let { maxForwardedAddresses } = config;
 
       if (verifications.length > 0) {
         if (verifications.length > 1)

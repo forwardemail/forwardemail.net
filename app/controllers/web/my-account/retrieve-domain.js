@@ -1,7 +1,6 @@
 const path = require('path');
 
 const Boom = require('@hapi/boom');
-const ForwardEmail = require('forward-email');
 const Meta = require('koa-meta');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
@@ -16,14 +15,7 @@ const logger = require('#helpers/logger');
 
 const meta = new Meta(config.meta, logger);
 
-const app = new ForwardEmail({
-  logger,
-  recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' },
-  redis: false
-});
-
-const EXCHANGES = app.config.exchanges;
+const EXCHANGES = config.exchanges;
 
 // eslint-disable-next-line complexity
 async function retrieveDomain(ctx, next) {
@@ -75,12 +67,9 @@ async function retrieveDomain(ctx, next) {
   await Promise.all([
     (async () => {
       try {
-        const records = await app.resolver(
-          ctx.state.domain.name,
-          'MX',
-          false,
-          ctx.client
-        );
+        const records = await ctx.resolver.resolveMx(ctx.state.domain.name, {
+          purgeCache: true
+        });
         if (
           _.isArray(records) &&
           !_.isEmpty(records) &&
@@ -105,12 +94,9 @@ async function retrieveDomain(ctx, next) {
     })(),
     (async () => {
       try {
-        const records = await app.resolver(
-          ctx.state.domain.name,
-          'TXT',
-          false,
-          ctx.client
-        );
+        const records = await ctx.resolver.resolveTxt(ctx.state.domain.name, {
+          purgeCache: true
+        });
         const existingTXT = [];
         for (const record of records) {
           if (_.isArray(record)) {

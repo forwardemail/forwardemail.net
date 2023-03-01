@@ -19,9 +19,11 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const email = require('#helpers/email');
 const Domains = require('#models/domains');
+const createTangerine = require('#helpers/create-tangerine');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
+const resolver = createTangerine(client, logger);
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -109,7 +111,7 @@ async function mapper(id) {
     // get verification results (and any errors too)
     const { ns, txt, mx, errors } = await Domains.getVerificationResults(
       domain,
-      client
+      resolver
     );
 
     //

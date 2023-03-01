@@ -67,7 +67,8 @@ const omitExtraFields = [
   config.userFields.paypalSubscriptionID,
   config.userFields.addressHTML,
   config.userFields.hasDenylistRequests,
-  config.userFields.approvedDomains
+  config.userFields.approvedDomains,
+  config.userFields.isRemoved
 ];
 
 const Users = new mongoose.Schema({
@@ -159,6 +160,11 @@ object[config.userFields.planSetAt] = {
 object[config.userFields.planExpiresAt] = Date;
 
 // user fields
+object[config.userFields.isRemoved] = {
+  type: Boolean,
+  default: false
+};
+
 object[config.userFields.isBanned] = {
   type: Boolean,
   default: false,

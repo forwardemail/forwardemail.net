@@ -88,6 +88,9 @@ async function mapper(id) {
     $set.refund_receipt_sent_at = $set.receipt_sent_at;
   }
 
+  // TODO: if user email is removed (e.g. `id@config.removedEmailDomain`)
+  //       then attempt to look up the transaction to get the end users email
+
   // send email
   await email({
     template: 'payment',

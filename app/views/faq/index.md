@@ -13,6 +13,8 @@
 * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
 * [What are no-reply addresses](#what-are-no-reply-addresses)
 * [Do you have an allowlist](#do-you-have-an-allowlist)
+  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
 * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
 * [Do you have a greylist](#do-you-have-a-greylist)
 * [Do you have a denylist](#do-you-have-a-denylist)
@@ -532,8 +534,18 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Option G:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the example and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
   </span>
+</div>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+</div>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -550,7 +562,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+      <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
@@ -914,13 +926,9 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 
 ## Do you have an allowlist
 
-Yes, we maintain an allowlist based off the most popular root domains used at the DNS level.
+Yes, we have a [list of domain name extensions](/#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
 
-This allowlist is updated automatically from a job that runs every 30 days – it downloads the [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List"), unzips, and then parses it in-memory for the top 50K root domains.
-
-Popular domains such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are included.  Domains that are detected to contain adult-content or malware are excluded.  Results are cached for 90 days.
-
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).
+### What domain name extensions are allowlisted by default
 
 The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
 
@@ -990,14 +998,31 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">wy.us</code></li>
 </ul>
 
-The Umbrella Popularity List that we parse is filtered for [domain name extensions that match the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
+### What is your allowlist criteria
 
-Note that specific senders such as `a@xyz.edu` and `b@gov.au` can still be [denylisted](#do-you-have-a-denylist) (e.g. if we automatically detect spam, phishing, or malware from those senders).
+We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+
+* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
+* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Sender root domain must be within top 25,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
+* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
+* Sender root domain must have either A or MX records set.
+* Sender root domain must have either a DMARC record with `p=reject` or `p=quarantine` (OR) have an SPF record with `-all` or `~all` qualifier.
+
+If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+
+Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+
+Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+
+If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if thy receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+
+**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
 
 
 ## What domain name extensions can be used for free
 
-As of March 1, 2023 we enforced a new blanket spam rule to protect our users and service.
+As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
 
 This new rule allows only the following domain name extensions to be used on our free plan:
 

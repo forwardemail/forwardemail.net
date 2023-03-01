@@ -1,5 +1,4 @@
 const Boom = require('@hapi/boom');
-const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
 const _ = require('lodash');
 const captainHook = require('captain-hook');
@@ -20,16 +19,8 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const Domains = require('./domains');
 const Users = require('./users');
 
-const logger = require('#helpers/logger');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
-
-const app = new ForwardEmail({
-  logger,
-  recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' },
-  redis: false
-});
 
 // <https://1loc.dev/string/check-if-a-string-consists-of-a-repeated-character-sequence/>
 const consistsRepeatedSubstring = (str) =>
@@ -116,7 +107,7 @@ const Aliases = new mongoose.Schema({
           isIP(value) ||
           isFQDN(value) ||
           isEmail(value) ||
-          isURL(value, app.config.isURLOptions),
+          isURL(value, config.isURLOptions),
         message:
           'Recipient must be a valid email address, fully-qualified domain name ("FQDN"), IP address, or webhook URL'
       }
@@ -397,7 +388,7 @@ Aliases.pre('save', async function (next) {
     // (this is a nice clean way to ensure 1:1 sync with `forward-email`
     const count =
       !domain.max_recipients_per_alias || domain.max_recipients_per_alias === 0
-        ? app.config.maxForwardedAddresses
+        ? config.maxForwardedAddresses
         : domain.max_recipients_per_alias;
 
     if (alias.recipients.length > count) {

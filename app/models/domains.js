@@ -1,5 +1,4 @@
 const Boom = require('@hapi/boom');
-const ForwardEmail = require('forward-email');
 const RE2 = require('re2');
 const _ = require('lodash');
 const captainHook = require('captain-hook');
@@ -63,14 +62,7 @@ const DNS_RETRY_CODES = new Set([
   'ETIMEOUT'
 ]);
 
-const app = new ForwardEmail({
-  logger,
-  recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' },
-  redis: false
-});
-
-const EXCHANGES = app.config.exchanges
+const EXCHANGES = config.exchanges
   .map((exchange) => `<li><code>10 ${exchange}</code> (10 = Priority)</li>`)
   .join('');
 
@@ -593,8 +585,8 @@ Domains.plugin(mongooseCommonPlugin, {
   defaultLocale: i18n.getLocale()
 });
 
-async function getVerificationResults(domain, client = false) {
-  const verificationRecord = `${app.config.recordPrefix}-site-verification=${domain.verification_record}`;
+async function getVerificationResults(domain, resolver) {
+  const verificationRecord = `${config.recordPrefix}-site-verification=${domain.verification_record}`;
   const verificationMarkdown = `<span class="markdown-body ml-0 mr-0"><code>${verificationRecord}</code></span>`;
   const isPaidPlan = _.isString(domain.plan) && domain.plan !== 'free';
 
@@ -641,7 +633,9 @@ async function getVerificationResults(domain, client = false) {
     // eslint-disable-next-line complexity
     (async function () {
       try {
-        let records = await app.resolver(domain.name, 'NS', false, client);
+        let records = await resolver.resolveNs(domain.name, {
+          purgeCache: true
+        });
         if (Array.isArray(records) && records.length > 0) {
           // filter records for IP and FQDN only values
           records = records.filter(
@@ -691,7 +685,9 @@ async function getVerificationResults(domain, client = false) {
             //
             // perform lookup on root domain and use those values instead
             //
-            let records = await app.resolver(rootDomain, 'NS', false, client);
+            let records = await resolver.resolveNs(rootDomain, {
+              purgeCache: true
+            });
             if (Array.isArray(records) && records.length > 0) {
               // filter records for IP and FQDN only values
               records = records.filter(
@@ -736,7 +732,7 @@ async function getVerificationResults(domain, client = false) {
           domain.name,
           domain.locale,
           true,
-          client
+          resolver
         );
 
         if (isPaidPlan) {
@@ -751,7 +747,7 @@ async function getVerificationResults(domain, client = false) {
                   'PAID_PLAN_HAS_UNENCRYPTED_RECORDS',
                   domain.locale,
                   `/my-account/domains/${domain.name}/aliases`,
-                  app.config.recordPrefix,
+                  config.recordPrefix,
                   `/my-account/domains/${domain.name}`
                 )
               )
@@ -853,15 +849,16 @@ async function getVerificationResults(domain, client = false) {
     // validate MX records
     //
     (async function () {
-      const testEmail = `test@${domain.name}`;
       try {
-        const addresses = await app.validateMX(testEmail);
-        const exchanges = addresses.map((mxAddress) => mxAddress.exchange);
+        const results = await resolver.resolveMx(domain.name, {
+          purgeCache: true
+        });
+        const exchanges = results.map((result) => result.exchange);
         const hasOtherExchanges = exchanges.some(
-          (exchange) => !exchanges.includes(exchange)
+          (exchange) => !config.exchanges.includes(exchange)
         );
-        const hasAllExchanges = app.config.exchanges.every((exchange) =>
-          exchanges.includes(exchange)
+        const hasAllExchanges = exchanges.every((exchange) =>
+          config.exchanges.includes(exchange)
         );
         if (hasOtherExchanges) {
           const err = Boom.badRequest(
@@ -888,8 +885,6 @@ async function getVerificationResults(domain, client = false) {
           );
       } catch (err) {
         logger.warn(err);
-        const regex = new RE2(testEmail, 'g');
-        err.message = err.message.replace(regex, domain.name);
         if (err.code === 'ENOTFOUND') {
           const error = Boom.badRequest(
             i18n.translateError('ENOTFOUND', domain.locale)
@@ -993,13 +988,13 @@ async function getTxtAddresses(
   domainName,
   locale,
   allowEmpty = false,
-  client = false
+  resolver
 ) {
   if (!isFQDN(domainName))
     throw Boom.badRequest(i18n.translateError('INVALID_FQDN', locale));
 
   logger.debug('resolveTxt', { domainName });
-  const records = await app.resolver(domainName, 'TXT', false, client);
+  const records = await resolver.resolveTxt(domainName, { purgeCache: true });
 
   // verification records that contain `forward-email-site-verification=` prefix
   const verifications = [];
@@ -1010,11 +1005,11 @@ async function getTxtAddresses(
   // add support for multi-line TXT records
   for (let i = 0; i < records.length; i++) {
     records[i] = records[i].join('').trim(); // join chunks together
-    if (records[i].startsWith(`${app.config.recordPrefix}=`))
-      validRecords.push(records[i].replace(`${app.config.recordPrefix}=`, ''));
-    if (records[i].startsWith(`${app.config.recordPrefix}-site-verification=`))
+    if (records[i].startsWith(`${config.recordPrefix}=`))
+      validRecords.push(records[i].replace(`${config.recordPrefix}=`, ''));
+    if (records[i].startsWith(`${config.recordPrefix}-site-verification=`))
       verifications.push(
-        records[i].replace(`${app.config.recordPrefix}-site-verification=`, '')
+        records[i].replace(`${config.recordPrefix}-site-verification=`, '')
       );
   }
 
@@ -1049,7 +1044,7 @@ async function getTxtAddresses(
 
     if (
       (lowerCaseAddress.includes(':') || lowerCaseAddress.indexOf('!') === 0) &&
-      !isURL(element, app.config.isURLOptions)
+      !isURL(element, config.isURLOptions)
     ) {
       // > const str = 'foo:https://foo.com'
       // > str.slice(0, str.indexOf(':'))
@@ -1079,12 +1074,12 @@ async function getTxtAddresses(
         (!isFQDN(addr[1]) &&
           !isIP(addr[1]) &&
           !isEmail(addr[1]) &&
-          !isURL(addr[1], app.config.isURLOptions))
+          !isURL(addr[1], config.isURLOptions))
       )
         errors.push(
           new Error(
             // TODO: we may want to replace this with "Invalid Recipients"
-            `Domain has an invalid "${app.config.recordPrefix}" TXT record due to an invalid email address of "${element}".`
+            `Domain has an invalid "${config.recordPrefix}" TXT record due to an invalid email address of "${element}".`
           )
         );
 
@@ -1095,7 +1090,7 @@ async function getTxtAddresses(
       globalForwardingAddresses.push(lowerCaseAddress);
     } else if (isEmail(lowerCaseAddress)) {
       globalForwardingAddresses.push(lowerCaseAddress);
-    } else if (isURL(element, app.config.isURLOptions)) {
+    } else if (isURL(element, config.isURLOptions)) {
       globalForwardingAddresses.push(element);
     }
   }

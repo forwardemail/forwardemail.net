@@ -4,6 +4,7 @@ const routes = require('../routes');
 const config = require('.');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
+const createTangerine = require('#helpers/create-tangerine');
 
 const sharedAPIConfig = sharedConfig('API');
 
@@ -16,5 +17,11 @@ module.exports = {
   },
   routes: routes.api,
   logger,
-  i18n
+  i18n,
+  hookBeforeSetup(app) {
+    app.context.resolver = createTangerine(
+      app.context.client,
+      app.context.logger
+    );
+  }
 };

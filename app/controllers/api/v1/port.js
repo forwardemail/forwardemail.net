@@ -1,19 +1,10 @@
 const Boom = require('@hapi/boom');
-const ForwardEmail = require('forward-email');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const { isPort } = require('validator');
 
-const logger = require('#helpers/logger');
 const config = require('#config');
 const Domains = require('#models/domains');
-
-const app = new ForwardEmail({
-  logger,
-  recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' },
-  redis: false
-});
 
 async function port(ctx) {
   try {
@@ -25,12 +16,7 @@ async function port(ctx) {
     // otherwise if use `forward-email-port` value if it exists and valid
     // otherwise return port 25
     try {
-      const records = await app.resolver(
-        ctx.query.domain,
-        'TXT',
-        false,
-        ctx.client
-      );
+      const records = await ctx.resolver.resolveTxt(ctx.query.domain);
 
       const verifications = [];
       const ports = [];
@@ -38,13 +24,13 @@ async function port(ctx) {
 
       for (const element of records) {
         const record = element.join('').trim(); // join chunks together
-        if (record.startsWith(`${app.config.recordPrefix}-site-verification=`))
+        if (record.startsWith(`${config.recordPrefix}-site-verification=`))
           verifications.push(
-            record.replace(`${app.config.recordPrefix}-site-verification=`, '')
+            record.replace(`${config.recordPrefix}-site-verification=`, '')
           );
 
-        if (record.startsWith(`${app.config.recordPrefix}-port=`))
-          ports.push(record.replace(`${app.config.recordPrefix}-port=`, ''));
+        if (record.startsWith(`${config.recordPrefix}-port=`))
+          ports.push(record.replace(`${config.recordPrefix}-port=`, ''));
       }
 
       if (verifications.length > 0) {

@@ -1,24 +1,15 @@
-const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 const pickOriginal = require('@ladjs/pick-original');
 
 const config = require('#config');
-const logger = require('#helpers/logger');
 const toObject = require('#helpers/to-object');
 const { Users, Aliases, Domains } = require('#models');
-
-const app = new ForwardEmail({
-  logger,
-  recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' },
-  redis: false
-});
 
 function json(domain) {
   const object = toObject(Domains, domain);
   // map max recipients per alias
   if (object.max_recipients_per_alias === 0)
-    object.max_recipients_per_alias = app.config.maxForwardedAddresses;
+    object.max_recipients_per_alias = config.maxForwardedAddresses;
   // members
   if (Array.isArray(domain.members))
     object.members = domain.members.map((m) => {
