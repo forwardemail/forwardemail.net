@@ -175,7 +175,7 @@ async function remove(ctx) {
     ctx.state.user[prop] = undefined;
   }
 
-  ctx.state.user.email = `${ctx.state.user.id}@removed.forwardemail.net`;
+  ctx.state.user.email = `${ctx.state.user.id}@${config.removedEmailDomain}`;
   ctx.state.user[config.lastLocaleField] = i18n.getLocale();
   ctx.state.user[config.passport.fields.appleAccessToken] = undefined;
   ctx.state.user[config.passport.fields.appleProfileID] = undefined;
@@ -197,12 +197,14 @@ async function remove(ctx) {
   ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = undefined;
   ctx.state.user[config.userFields.changeEmailToken] = undefined;
   ctx.state.user[config.userFields.defaultDomain] = undefined;
+  ctx.state.user[config.userFields.receiptEmail] = undefined;
   ctx.state.user[config.userFields.isBanned] = true;
+  ctx.state.user[config.userFields.isRemoved] = true;
+  ctx.state.user[config.userFields.accountUpdates] = [];
   ctx.state.user[config.userFields.otpRecoveryKeys] = [];
-  ctx.state.user[config.userFields.paypalPayerID] = undefined;
-  ctx.state.user[config.userFields.paypalSubscriptionID] = undefined;
-  ctx.state.user[config.userFields.stripeCustomerID] = undefined;
-  ctx.state.user[config.userFields.stripeSubscriptionID] = undefined;
+  // we need to keep these so webhooks work properly for refunding transactions
+  // ctx.state.user[config.userFields.paypalPayerID] = undefined;
+  // ctx.state.user[config.userFields.stripeCustomerID] = undefined;
   await ctx.state.user.save();
 
   if (!ctx.api)

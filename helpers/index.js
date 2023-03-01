@@ -20,6 +20,7 @@ const { paypalAgent, paypal } = require('./paypal');
 const combineErrors = require('./combine-errors');
 const ThresholdError = require('./threshold-error');
 const getAllPayPalSubscriptionTransactions = require('./get-all-paypal-subscription-transactions');
+const createTangerine = require('./create-tangerine');
 
 module.exports = {
   decrypt,
@@ -44,5 +45,6 @@ module.exports = {
   toObject,
   combineErrors,
   ThresholdError,
-  getAllPayPalSubscriptionTransactions
+  getAllPayPalSubscriptionTransactions,
+  createTangerine
 };

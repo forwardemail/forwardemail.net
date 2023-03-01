@@ -1,5 +1,4 @@
 const Boom = require('@hapi/boom');
-const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const { boolean } = require('boolean');
@@ -7,14 +6,6 @@ const { isURL, isEmail, isIP } = require('validator');
 
 const { Domains, Aliases } = require('#models');
 const config = require('#config');
-const logger = require('#helpers/logger');
-
-const app = new ForwardEmail({
-  logger,
-  recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' },
-  redis: false
-});
 
 // eslint-disable-next-line complexity
 async function importAliases(ctx) {
@@ -35,7 +26,7 @@ async function importAliases(ctx) {
       ctx.state.domain.name,
       ctx.locale,
       false,
-      ctx.client
+      ctx.resolver
     ));
   } catch (err) {
     ctx.logger.warn(err);
@@ -113,7 +104,7 @@ async function importAliases(ctx) {
       isFQDN(element) ||
       isIP(element) ||
       isEmail(element) ||
-      isURL(element, app.config.isURLOptions)
+      isURL(element, config.isURLOptions)
     ) {
       const match = aliases.find((alias) => alias.name === '*');
       const existing = ctx.state.domain.aliases.find(

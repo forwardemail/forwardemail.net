@@ -5,9 +5,7 @@ block body
     .row.mt-1
       .col
         include ../../_breadcrumbs
-        .card.border-themed
-          h4.card-header= result.id
-          .card-body.markdown-body
-            pre
-              code.hljs.language-json
-                != hljs.highlight(JSON.stringify(result, null, 2), { language: "json", ignoreIllegals: true }).value
+        .markdown-body
+          pre
+            code.hljs.language-json
+              != hljs.highlight(JSON.stringify(result, null, 2), { language: "json", ignoreIllegals: true }).value

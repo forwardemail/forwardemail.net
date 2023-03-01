@@ -4,13 +4,14 @@ const _ = require('lodash');
 const ansiHTML = require('ansi-html-community');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
+const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const pWaitFor = require('p-wait-for');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const splitLines = require('split-lines');
 const { convert } = require('html-to-text');
-const { detect } = require('tinyld');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -19,6 +20,12 @@ const Users = require('./users');
 const Domains = require('./domains');
 
 const config = require('#config');
+
+// dynamically import lande
+let lande;
+import('lande').then((obj) => {
+  lande = obj.default;
+});
 
 const ERR_DUP_LOG = new Error('Duplicate log in past hour prevented');
 ERR_DUP_LOG.is_duplicate_log = true;
@@ -29,21 +36,21 @@ ERR_DUP_LOG.is_duplicate_log = true;
 // <https://www.mongodb.com/docs/manual/reference/text-search-languages/#text-search-languages>
 //
 const LANGUAGES = {
-  da: 'danish',
-  nl: 'dutch',
-  en: 'english',
-  fi: 'finnish',
-  fr: 'french',
-  de: 'german',
-  hu: 'hungarian',
-  it: 'italian',
-  nb: 'norwegian',
-  pt: 'portuguese',
-  ro: 'romanian',
-  ru: 'russian',
-  es: 'spanish',
-  sv: 'swedish',
-  tr: 'turkish'
+  dan: 'danish',
+  nld: 'dutch',
+  eng: 'english',
+  fin: 'finnish',
+  fra: 'french',
+  deu: 'german',
+  hun: 'hungarian',
+  ita: 'italian',
+  nob: 'norwegian',
+  por: 'portuguese',
+  ron: 'romanian',
+  rus: 'russian',
+  esa: 'spanish',
+  swe: 'swedish',
+  tur: 'turkish'
 };
 
 //
@@ -66,7 +73,7 @@ const Logs = new mongoose.Schema({
   // <https://www.mongodb.com/docs/manual/tutorial/specify-language-for-text-index/>
   language: {
     type: String,
-    enum: Object.values(LANGUAGES)
+    enum: ['none', ...Object.values(LANGUAGES)]
   },
 
   user: {
@@ -109,7 +116,7 @@ const Logs = new mongoose.Schema({
   //
   created_at: {
     type: Date,
-    expires: '7d'
+    expires: '1d'
   },
   is_restricted: {
     type: Boolean,
@@ -196,10 +203,37 @@ Logs.pre('save', function (next) {
     this.text_message = splitLines(this.text_message)
       .map((str) => str.trim())
       .join(' ');
-    // language detection will be more accurate without HTML in messages
-    const language = detect(this.message);
-    this.language = LANGUAGES[language] || 'none';
     next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+Logs.pre('save', async function (next) {
+  try {
+    if (!this.language && isSANB(this.text_message)) {
+      // set default to none
+      // <https://www.mongodb.com/docs/manual/reference/text-search-languages/#text-search-languages>
+      this.language = 'none';
+      // TODO: if the log had a locale set then use that as the language
+      // language detection will be more accurate without HTML in messages
+      if (!lande) await pWaitFor(() => Boolean(lande));
+      const languages = lande(this.text_message);
+      // languages = [
+      //   ['eng', 0.9999921321868896],
+      //   ['deu', 0.000002357382982154377],
+      //   ['heb', 0.000001461773877053929],
+      //   ...
+      // ]
+      for (const lang of languages) {
+        const [name] = lang;
+
+        if (LANGUAGES[name]) {
+          this.language = LANGUAGES[name];
+          break;
+        }
+      }
+    }
   } catch (err) {
     next(err);
   }

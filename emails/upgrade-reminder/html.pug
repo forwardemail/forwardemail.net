@@ -6,13 +6,13 @@ block content
       .col-12
         .card.border-dark.d-block
           h1.h5.card-header.text-center
-            if Date.now() >= dayjs('3/1/2023', 'M/D/YYYY').toDate().getTime()
+            if Date.now() >= dayjs('3/31/2023', 'M/D/YYYY').toDate().getTime()
               != t("Email forwarding is paused")
             else
-              != t("Upgrade by March 1, 2023")
+              != t("Upgrade by March 31, 2023")
           .card-body.p-0
             .p-3.text-center
-              if Date.now() >= dayjs('3/1/2023', 'M/D/YYYY').toDate().getTime()
+              if Date.now() >= dayjs('3/31/2023', 'M/D/YYYY').toDate().getTime()
                 h1.h3= t("Email forwarding is paused")
                 p.card-text!= t('Upgrade <span class="font-weight-bold notranslate">%s</span> to a paid plan to resume service.', domain)
               else
@@ -33,7 +33,7 @@ block content
                 else if isDisposable
                   != t('Your domain name includes reserved keywords such as "mail", "disposable", and "inbox".')
                 = " "
-                = t("We require domains with this extension to upgrade to a paid plan by March 1, 2023.")
+                = t("We require domains with this extension to upgrade to a paid plan by March 31, 2023.")
                 = " "
                 = t("This is an effort in order to reduce spam, phishing, malware, and malicious email.")
                 = " "
@@ -102,7 +102,7 @@ block content
                 href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`
               )= t("Upgrade for $3")
           .card-footer.text-center.small.text-muted
-            if Date.now() >= dayjs('3/1/2023', 'M/D/YYYY').toDate().getTime()
+            if Date.now() >= dayjs('3/31/2023', 'M/D/YYYY').toDate().getTime()
               = t("Upgrade your plan to resume email service.")
             else
               = t("Upgrade now to prevent missing emails.")

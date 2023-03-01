@@ -14,6 +14,7 @@ const config = require('.');
 const i18n = require('#helpers/i18n');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
+const createTangerine = require('#helpers/create-tangerine');
 
 const defaultSrc = isSANB(process.env.WEB_HOST)
   ? [
@@ -153,6 +154,12 @@ module.exports = (redis) => ({
       // unknown error
       throw err;
     }
+  },
+  hookBeforeSetup(app) {
+    app.context.resolver = createTangerine(
+      app.context.client,
+      app.context.logger
+    );
   },
   hookBeforePassport(app) {
     app.use((ctx, next) => {

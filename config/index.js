@@ -49,8 +49,15 @@ const config = {
   // max aliases per global domains
   maxAliasPerGlobalDomain: 50,
 
-  // max recipients per alias (matches `forward-email` package)
+  // exchanges (matches SMTP)
+  exchanges: env.SMTP_EXCHANGE_DOMAINS,
+
+  // max recipients per alias (matches SMTP)
   maxForwardedAddresses: env.MAX_FORWARDED_ADDRESSES,
+
+  // users that remove accounts get email
+  // rewritten to `${user.id}@${removedEmailDomain}`
+  removedEmailDomain: env.REMOVED_EMAIL_DOMAIN,
 
   // server
   env: env.NODE_ENV.toLowerCase(),
@@ -62,8 +69,14 @@ const config = {
   // vanity domains
   vanityDomains: env.VANITY_DOMAINS.sort(),
 
-  // record prefix (matches `forward-email` package)
+  // record prefix (matches SMTP)
   recordPrefix: env.TXT_RECORD_PREFIX,
+
+  // url options for validator (matches SMTP)
+  isURLOptions: {
+    protocols: ['http', 'https'],
+    require_protocol: true
+  },
 
   // app
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
@@ -186,6 +199,7 @@ const config = {
     verificationPinHasExpired: 'verification_pin_has_expired',
     welcomeEmailSentAt: 'welcome_email_sent_at',
     launchEmailSentAt: 'launch_email_sent_at',
+    isRemoved: 'is_removed',
     isBanned: 'is_banned',
     twoFactorReminderSentAt: 'two_factor_reminder_sent_at',
     planSetAt: 'plan_set_at',

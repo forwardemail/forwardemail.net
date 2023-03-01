@@ -1,17 +1,6 @@
 const RE2 = require('re2');
-const ForwardEmail = require('forward-email');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
-
-const config = require('#config');
-const logger = require('#helpers/logger');
-
-const app = new ForwardEmail({
-  logger,
-  recordPrefix: config.recordPrefix,
-  srs: { secret: 'null' },
-  redis: false
-});
 
 async function retrieveAliases(ctx, next) {
   // if there aren't any aliases yet
@@ -58,12 +47,9 @@ async function retrieveAliases(ctx, next) {
   ctx.state.hasExistingTXT = false;
   if (ctx.state.domain.plan !== 'free') {
     try {
-      const records = await app.resolver(
-        ctx.state.domain.name,
-        'TXT',
-        false,
-        ctx.client
-      );
+      const records = await ctx.resolver.resolveTxt(ctx.state.domain.name, {
+        purgeCache: true
+      });
       const existingTXT = [];
       for (const record of records) {
         if (_.isArray(record)) {
