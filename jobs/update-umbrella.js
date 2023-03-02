@@ -408,17 +408,21 @@ async function checkDate(date) {
       (domain) => !badDomains.includes(domain)
     );
     const ttlSet = [];
-    await pMap(goodDomains, async (domain) => {
-      // pttl
-      // <https://redis.io/commands/pttl/>
-      // >= redis v2.8 returns -2 if key does not exist or -1 if key exists but without expire
-      // <= redis v2.6 returns -1 if key does not exist or if no associated expire
-      const result = await client.pttl(`allowlist:${domain}`);
-      if (result < 0 || result > ALLOWLIST_PX_MS) {
-        ttlSet.push(domain);
-        p.set(`allowlist:${domain}`, 'true', 'PX', ALLOWLIST_PX_MS);
-      }
-    });
+    await pMap(
+      goodDomains,
+      async (domain) => {
+        // pttl
+        // <https://redis.io/commands/pttl/>
+        // >= redis v2.8 returns -2 if key does not exist or -1 if key exists but without expire
+        // <= redis v2.6 returns -1 if key does not exist or if no associated expire
+        const result = await client.pttl(`allowlist:${domain}`);
+        if (result < 0 || result > ALLOWLIST_PX_MS) {
+          ttlSet.push(domain);
+          p.set(`allowlist:${domain}`, 'true', 'PX', ALLOWLIST_PX_MS);
+        }
+      },
+      { concurrency }
+    );
     await p.exec();
 
     logger.info('removing previously allowlisted domains that were bad', {
