@@ -1,7 +1,5 @@
-const dns = require('dns');
-
 const commands = require('@ioredis/commands');
-// const Tangerine = require('tangerine');
+const Tangerine = require('tangerine');
 
 // modern approach inspired by `refix` package
 // <https://github.com/luin/ioredis/issues/983#issuecomment-1448839874>
@@ -22,8 +20,7 @@ function refix(client, prefix) {
   return proxy;
 }
 
-// function createTangerine(client, logger = require('./logger')) {
-function createTangerine(client) {
+function createTangerine(client, logger = require('./logger')) {
   if (!client) throw new Error('Client required');
 
   // <https://github.com/forwardemail/tangerine#cache>
@@ -46,16 +43,12 @@ function createTangerine(client) {
     return value;
   };
 
-  /*
   const tangerine = new Tangerine({
     logger,
     cache
   });
 
   return tangerine;
-  */
-
-  return new dns.promises.Resolver();
 }
 
 module.exports = createTangerine;
