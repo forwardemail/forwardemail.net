@@ -3583,5 +3583,12 @@
   "Eligible for automatic refund until <span class=\"notranslate\">%s</span>.": "Eligible for automatic refund until <span class=\"notranslate\">%s</span>.",
   "You will automatically receive unlimited domains for this price.": "You will automatically receive unlimited domains for this price.",
   "Upgrade to unlock this feature.": "Upgrade to unlock this feature.",
-  "Value was not currently found in our denylist.": "Value was not currently found in our denylist."
+  "Value was not currently found in our denylist.": "Value was not currently found in our denylist.",
+  "(\"DoH\") at the application layer.  We also added support for": "(\"DoH\") at the application layer.  We also added support for",
+  "Do you support MTA-STS": "Do you support MTA-STS",
+  "Yes, as of March 2, 2023 we support": "Yes, as of March 2, 2023 we support",
+  ".  You can use": ".  You can use",
+  "this template": "this template",
+  "if you wish to enable it on your domain.": "if you wish to enable it on your domain.",
+  "Turnstile not verified.": "Turnstile not verified."
 }

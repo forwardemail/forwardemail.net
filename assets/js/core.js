@@ -1,5 +1,6 @@
 const URLParse = require('url-parse');
 const $ = require('jquery');
+const Swal = require('sweetalert2');
 const Clipboard = require('clipboard');
 const Popper = require('popper.js');
 const debounce = require('lodash/debounce');
@@ -61,14 +62,46 @@ $('.navbar-collapse').on('hidden.bs.collapse shown.bs.collapse', () => {
   resizeNavbarPadding($);
 });
 
-// Add data-compact to h-captcha onload depending on width
-// 576px = bootstrap md
-const mediaQuery = window.matchMedia('(min-width: 576px)');
-if (!mediaQuery.matches) $('.h-captcha').attr('data-size', 'compact');
+//
+// Handle explicit Cloudflare Turnstile (Advanced Example with Bootstrap/Modals/Responsive Support)
+// <https://github.com/forwardemail/forwardemail.net>
+// <https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#explicitly-render-the-turnstile-widget>
+//
+function handleExplicitTurnstile() {
+  let widgetId = $(this).data('widgetId');
+  if (widgetId) return;
 
-// Handle hCaptcha errors
-window.hCaptchaError = (...args) => {
-  console.error('hCaptchaError', { args });
+  const isModal = $(this).parents('.modal:first').length > 0;
+
+  widgetId = window.turnstile.render(this, {
+    sitekey: window.TURNSTILE_SITE_KEY,
+    tabindex: isModal ? -1 : 0,
+    'error-callback': (err) => console.error(err)
+  });
+
+  if (widgetId) {
+    $(this).data('widgetId', widgetId);
+    return;
+  }
+
+  console.error(new Error('[Cloudflare Turnstile] widgetId missing'));
+  Swal.fire(window._types.error, window.TURNSTILE_RENDER_ERROR, 'error');
+}
+
+// an alternative approach for performance is to use IntersectionObserver API
+window.onloadTurnstileCallback = function () {
+  $('.cf-explicit-turnstile')
+    .filter(function () {
+      // render if not inside modal or if inside modal that's shown
+      // (e.g. in case you render a modal on the page when it loads; which is an anti-pattern)
+      const $modal = $(this).parents('.modal:first');
+      if ($modal.length === 0) return true;
+      return $modal.is(':visible');
+    })
+    .each(handleExplicitTurnstile);
+  $body.on('show.bs.modal hide.bs.modal', '.modal', function () {
+    $(this).find('.cf-explicit-turnstile').each(handleExplicitTurnstile);
+  });
 };
 
 // Handle modals on anchor tags with data-target specified (preserve href)

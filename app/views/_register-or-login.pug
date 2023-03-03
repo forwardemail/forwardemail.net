@@ -58,14 +58,10 @@ mixin registerOrLogin(verb, isModal = false)
               autocomplete=verb === "sign up" ? "off" : "current-password"
             )
             label(for=`input-password-${dashify(verb)}`)= t("Password")
-          if config.hcaptchaEnabled
+          if config.turnstileEnabled
             noscript
               .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
-            .h-captcha(
-              data-sitekey=config.hcaptchaSiteKey,
-              data-error-callback="hCaptchaError",
-              data-tabindex=isModal ? "-1" : false
-            )
+            .cf-explicit-turnstile
           button.btn.btn-success.btn-lg.btn-block(type="submit")
             if verb === 'sign up'
               = t("Sign up free")

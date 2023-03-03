@@ -299,7 +299,6 @@ module.exports = {
     'You do not currently have an active subscription, or it was recently cancelled.',
   SUBSCRIPTION_CANCELLED: 'You have successfully cancelled your subscription.',
   ONE_TIME_PAYMENT_SUCCESSFUL: 'You have successfully made a one-time payment.',
-  CAPTCHA_SERVICE_ERROR: 'Captcha service error.',
   REFUND_ERROR_OCCURRED:
     'An error occurred while processing refunds. We have been notified by email.',
   REFUND_SUCCESSFUL:
@@ -308,7 +307,9 @@ module.exports = {
     'An error occurred while converting your existing credit between plans. We have been notified by email.',
   CONVERSION_SUCCESS:
     'You successfully switched plans and received a conversion credit of <span class="notranslate">%s</span>.',
-  CAPTCHA_NOT_VERIFIED: 'Captcha not verified.',
+  TURNSTILE_NOT_VERIFIED: 'Turnstile not verified.',
+  TURNSTILE_RENDER_ERROR:
+    'Turnstile render error, please refresh and try again or contact us.',
   MISSING_VERIFICATION_LINK:
     'Missing "VERIFICATION_LINK" in HTML template string.  This variable must be included at least once either in text or link format.',
   PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION:
