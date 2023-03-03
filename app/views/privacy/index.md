@@ -44,5 +44,4 @@ If at any time if you wish to remove information that you have provided us with,
 
 ## Additional Disclosures
 
-* This site is protected by Cloudflare and its [Privacy Policy](https://www.cloudflare.com/privacypolicy/) and [Terms of Service](https://www.cloudflare.com/website-terms/) apply.
-* This site is protected by hCaptcha and its [Privacy Policy](https://www.hcaptcha.com/privacy) and [Terms of Service](https://www.hcaptcha.com/terms) apply.
+This site is protected by Cloudflare and its [Privacy Policy](https://www.cloudflare.com/privacypolicy/) and [Terms of Service](https://www.cloudflare.com/website-terms/) apply.

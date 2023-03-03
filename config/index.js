@@ -242,9 +242,9 @@ const config = {
   changeEmailTokenTimeoutMs: ms(env.CHANGE_EMAIL_TOKEN_TIMEOUT_MS),
   changeEmailLimitMs: ms(env.CHANGE_EMAIL_LIMIT_MS),
 
-  hcaptchaEnabled: env.HCAPTCHA_ENABLED,
-  hcaptchaSecretKey: env.HCAPTCHA_SECRET_KEY,
-  hcaptchaSiteKey: env.HCAPTCHA_SITE_KEY,
+  turnstileEnabled: env.TURNSTILE_ENABLED,
+  turnstileSecretKey: env.TURNSTILE_SECRET_KEY,
+  turnstileSiteKey: env.TURNSTILE_SITE_KEY,
 
   // @ladjs/passport configuration (see defaults in package)
   // <https://github.com/ladjs/passport>
@@ -503,8 +503,8 @@ config.views.locals.config = _.pick(config, [
   'appColor',
   'appName',
   'env',
-  'hcaptchaEnabled',
-  'hcaptchaSiteKey',
+  'turnstileEnabled',
+  'turnstileSiteKey',
   'lastLocaleField',
   'loginRoute',
   'maxForwardedAddresses',

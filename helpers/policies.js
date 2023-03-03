@@ -6,8 +6,8 @@ const {
   userFields,
   passport,
   appName,
-  hcaptchaEnabled,
-  hcaptchaSecretKey
+  turnstileEnabled,
+  turnstileSecretKey
 } = require('#config');
 const { Users } = require('#models');
 
@@ -19,8 +19,8 @@ const policies = new Policies(
     loginRoute: '/register',
     loginOtpRoute,
     passport,
-    hcaptchaEnabled,
-    hcaptchaSecretKey
+    turnstileEnabled,
+    turnstileSecretKey
   },
   (apiToken) => {
     return Users.findOne({

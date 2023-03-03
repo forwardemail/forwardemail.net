@@ -75,8 +75,6 @@ module.exports = (redis) => ({
               'plausible.io',
               'www.paypal.com',
               'noembed.com',
-              'hcaptcha.com',
-              '*.hcaptcha.com',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])
@@ -88,19 +86,13 @@ module.exports = (redis) => ({
               'ytimg.com',
               '*.ytimg.com'
             ],
-            styleSrc: [
-              ...defaultSrc,
-              "'unsafe-inline'",
-              'hcaptcha.com',
-              '*.hcaptcha.com'
-            ],
+            styleSrc: [...defaultSrc, "'unsafe-inline'"],
             scriptSrc: [
               ...defaultSrc,
               "'unsafe-inline'",
               'plausible.io',
+              'challenges.cloudflare.com',
               'www.paypal.com',
-              'hcaptcha.com',
-              '*.hcaptcha.com',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])
@@ -109,9 +101,8 @@ module.exports = (redis) => ({
               ...defaultSrc,
               'www.youtube.com',
               '*.youtube-nocookie.com',
+              'challenges.cloudflare.com',
               'www.paypal.com',
-              'hcaptcha.com',
-              '*.hcaptcha.com',
               ...(env.NODE_ENV === 'production'
                 ? []
                 : ['www.sandbox.paypal.com'])

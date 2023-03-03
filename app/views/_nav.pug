@@ -25,12 +25,10 @@ if !isHelp && user && !isBot(ctx.get('User-Agent'))
                 placeholder=t("Write your message")
               )
               label(for="input-message")= t("Message")
-            if config.hcaptchaEnabled
-              .h-captcha(
-                data-sitekey=config.hcaptchaSiteKey,
-                data-error-callback="hCaptchaError",
-                data-tabindex="-1"
-              )
+            if config.turnstileEnabled
+              noscript
+                .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
+              .cf-explicit-turnstile
             button.btn.btn-block.btn-success.btn-lg(
               type="submit",
               data-toggle="tooltip",

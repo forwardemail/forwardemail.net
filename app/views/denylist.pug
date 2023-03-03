@@ -47,9 +47,8 @@ block body
                   = t("Encrypted value to protect privacy")
                 else
                   = t("Email, domain name, or IP address")
-            if config.hcaptchaEnabled
-              .h-captcha(
-                data-sitekey=config.hcaptchaSiteKey,
-                data-error-callback="hCaptchaError"
-              )
+            if config.turnstileEnabled
+              noscript
+                .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
+              .cf-explicit-turnstile
             button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Submit Request")

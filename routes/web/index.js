@@ -45,7 +45,7 @@ localeRouter
   .post(
     '/',
     web.myAccount.retrieveDomains,
-    policies.ensureCaptcha,
+    policies.ensureTurnstile,
     rateLimit(50, 'onboard'),
     web.onboard
   )
@@ -62,7 +62,7 @@ localeRouter
     policies.ensureLoggedIn,
     policies.ensureOtp,
     web.myAccount.ensureNotBanned,
-    policies.ensureCaptcha,
+    policies.ensureTurnstile,
     web.denylist.validate,
     rateLimit(5, 'denylist'),
     web.denylist.remove
@@ -91,7 +91,7 @@ localeRouter
   .post(
     '/faq',
     web.myAccount.retrieveDomains,
-    policies.ensureCaptcha,
+    policies.ensureTurnstile,
     rateLimit(50, 'onboard'),
     web.onboard,
     web.auth.parseReturnOrRedirectTo,
@@ -114,7 +114,7 @@ localeRouter
     policies.ensureLoggedIn,
     policies.ensureOtp,
     web.myAccount.ensureNotBanned,
-    policies.ensureCaptcha,
+    policies.ensureTurnstile,
     rateLimit(3, 'help'),
     web.help
   )
@@ -182,7 +182,7 @@ localeRouter
   .post(
     '/forgot-password',
     policies.ensureLoggedOut,
-    policies.ensureCaptcha,
+    policies.ensureTurnstile,
     rateLimit(10, 'forgot password'),
     web.auth.forgotPassword
   )
@@ -194,7 +194,7 @@ localeRouter
   .post(
     '/reset-password/:token',
     policies.ensureLoggedOut,
-    policies.ensureCaptcha,
+    policies.ensureTurnstile,
     rateLimit(10, 'reset password'),
     web.auth.resetPassword
   )
@@ -219,7 +219,7 @@ localeRouter
   )
   .post(
     config.loginRoute,
-    policies.ensureCaptcha,
+    policies.ensureTurnstile,
     rateLimit(50, 'login'),
     web.auth.login
   )
@@ -232,7 +232,7 @@ localeRouter
   .post(
     '/register',
     policies.ensureLoggedOut,
-    policies.ensureCaptcha,
+    policies.ensureTurnstile,
     rateLimit(5, 'create user'),
     web.auth.register
   );

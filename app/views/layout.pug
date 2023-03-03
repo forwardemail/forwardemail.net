@@ -241,6 +241,7 @@ html.h-100.no-js(lang=locale)
           integrity=manifest("js/build.js", "integrity"),
           crossorigin="anonymous"
         )
+        //- TODO: remove plausible and migrate to our own
         //- analytics via plausible.io
         script(
           defer,
@@ -248,6 +249,9 @@ html.h-100.no-js(lang=locale)
           src="https://plausible.io/js/plausible.js"
         )
 
-        //- hcaptcha (hidden from bots and admins)
-        if config.hcaptchaEnabled && (!user || user.group !== 'admin')
-          script(defer, src=`https://hcaptcha.com/1/api.js?hl=${locale}&recaptchacompat=off`)
+        //- cloudflare turnstile (hidden from bots and admins)
+        if config.turnstileEnabled && (!user || user.group !== 'admin')
+          script(defer).
+            window.TURNSTILE_RENDER_ERROR = "#{ t('Turnstile render error, please try again or contact us.') }";
+            window.TURNSTILE_SITE_KEY = "#{ config.turnstileSiteKey }";
+          script(async, defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onloadTurnstileCallback')
