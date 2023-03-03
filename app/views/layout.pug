@@ -254,4 +254,4 @@ html.h-100.no-js(lang=locale)
           script(defer).
             window.TURNSTILE_RENDER_ERROR = "#{ t('Turnstile render error, please try again or contact us.') }";
             window.TURNSTILE_SITE_KEY = "#{ config.turnstileSiteKey }";
-          script(async, defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onloadTurnstileCallback')
+          script(defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')

@@ -76,6 +76,9 @@ function handleExplicitTurnstile() {
   widgetId = window.turnstile.render(this, {
     sitekey: window.TURNSTILE_SITE_KEY,
     tabindex: isModal ? -1 : 0,
+    action: isModal ? 'modal' : 'page',
+    'expired-callback': (err) => console.error(err),
+    'timeout-callback': (err) => console.error(err),
     'error-callback': (err) => console.error(err)
   });
 
@@ -99,7 +102,7 @@ window.onloadTurnstileCallback = function () {
       return $modal.is(':visible');
     })
     .each(handleExplicitTurnstile);
-  $body.on('show.bs.modal hide.bs.modal', '.modal', function () {
+  $body.on('show.bs.modal', '.modal', function () {
     $(this).find('.cf-explicit-turnstile').each(handleExplicitTurnstile);
   });
 };
