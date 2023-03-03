@@ -77,6 +77,28 @@ function handleExplicitTurnstile() {
     sitekey: window.TURNSTILE_SITE_KEY,
     tabindex: isModal ? -1 : 0,
     action: isModal ? 'modal' : 'page',
+    language:
+      typeof window.LOCALE === 'string' &&
+      [
+        'ar',
+        'de',
+        'en',
+        'es',
+        'fa',
+        'fr',
+        'id',
+        'it',
+        'ja',
+        'ko',
+        'nl',
+        'pl',
+        'pt',
+        'ru',
+        'tr',
+        'zh'
+      ].includes(window.LOCALE)
+        ? window.LOCALE
+        : 'auto',
     'expired-callback': (err) => console.error(err),
     'timeout-callback': (err) => console.error(err),
     'error-callback': (err) => console.error(err)
