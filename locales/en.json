@@ -3594,5 +3594,15 @@
   "switched": "switched",
   "from": "from",
   "hCaptcha": "hCaptcha",
-  "Cloudflare Turnstile": "Cloudflare Turnstile"
+  "Cloudflare Turnstile": "Cloudflare Turnstile",
+  "Turnstile render error, please try again or contact us.": "Turnstile render error, please try again or contact us.",
+  "Requests are not permanent and removals may be reversed.": "Requests are not permanent and removals may be reversed.",
+  "Domain name <span class=\"notranslate\">%s</span> has a domain name extension that is frequently used for spam operations. Please <a class=\"font-weight-bold\" href=\"%s\">upgrade your account</a> to a paid plan to continue. Please see our FAQ for the complete list of <a href=\"https://forwardemail.net/faq#what-domain-name-extensions-can-be-used-for-free\" target=\"_blank\">domain name extensions that can be used for free</a>.": "Domain name <span class=\"notranslate\">%s</span> has a domain name extension that is frequently used for spam operations. Please <a class=\"font-weight-bold\" href=\"%s\">upgrade your account</a> to a paid plan to continue. Please see our FAQ for the complete list of <a href=\"https://forwardemail.net/faq#what-domain-name-extensions-can-be-used-for-free\" target=\"_blank\">domain name extensions that can be used for free</a>.",
+  "Switch domain plan": "Switch domain plan",
+  "One or more of your domains are not on the <span class=\"notranslate\">%s</span> plan.": "One or more of your domains are not on the <span class=\"notranslate\">%s</span> plan.",
+  "Click \"Change Plan\" &rarr; \"<span class=\"notranslate\">%s</span>\" to resolve if needed.": "Click \"Change Plan\" &rarr; \"<span class=\"notranslate\">%s</span>\" to resolve if needed.",
+  "Switch domain plan?": "Switch domain plan?",
+  "To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.": "To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.",
+  "Deliverability for past 7 days": "Deliverability for past 7 days",
+  "Paid locale distribution": "Paid locale distribution"
 }
