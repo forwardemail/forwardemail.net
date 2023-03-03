@@ -42,6 +42,6 @@ In January 2023, we launched a re-designed and page-speed optimized website.
 
 In February 2023, we added support for [error logs](/faq#do-you-store-error-logs) and a [dark mode](https://en.wikipedia.org/wiki/Light-on-dark_color_scheme) website color scheme.
 
-In March 2023, we released [Tangerine](https://github.com/forwardemail/tangerine#readme) and integrated it throughout our infrastructure – this means we use [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+In March 2023, we released [Tangerine](https://github.com/forwardemail/tangerine#readme) and integrated it throughout our infrastructure – this means we use [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.  We also added support for [MTA-STS](/faq#do-you-support-mta-sts).
 
 [arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain

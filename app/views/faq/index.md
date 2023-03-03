@@ -56,6 +56,7 @@
 * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
 * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
 * [What is the difference between Free and Enhanced Protection](#what-is-the-difference-between-free-and-enhanced-protection)
+* [Do you support MTA-STS](#do-you-support-mta-sts)
 * [Do you support email best practices](#do-you-support-email-best-practices)
 * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
 * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
@@ -2132,6 +2133,11 @@ The Free plan requires you to use public DNS records to store your forwarding co
 |            Free Plan           |           Enhanced Protection Plan           |
 | :----------------------------: | :------------------------------------------: |
 | `forward-email=user@gmail.com` | `forward-email-site-verification=m8d7o8K4Il` |
+
+
+## Do you support MTA-STS
+
+Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jimeh/mta-sts-on-github-pages) if you wish to enable it on your domain.
 
 
 ## Do you support email best practices
