@@ -2137,7 +2137,7 @@ The Free plan requires you to use public DNS records to store your forwarding co
 
 ## Do you support MTA-STS
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jimeh/mta-sts-on-github-pages) if you wish to enable it on your domain.
+Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
 
 
 ## Do you support email best practices
