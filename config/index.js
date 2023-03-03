@@ -82,7 +82,7 @@ const config = {
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
   email: {
     preview:
-      env.NODE_ENV === 'development'
+      env.NODE_ENV === 'development' || env.PREVIEW_EMAIL
         ? {
             openSimulator: false
           }
@@ -545,15 +545,10 @@ config.email.juiceResources.webResources = {
   relativeTo: config.buildDir,
   images: false
 };
-
-if (
-  !config.email.juiceResources.webResources.images ||
-  env.NODE_ENV !== 'production'
-)
-  config.email.views.locals.manifest = manifestRev({
-    prepend: `${config.urls.web}/`,
-    manifest: config.manifest
-  });
+config.email.views.locals.manifest = manifestRev({
+  prepend: `${config.urls.web}/`,
+  manifest: config.srimanifest
+});
 
 // launch date is 11/23/2020 at 10:00 AM
 config.launchDate = dayjs('11/23/2020 10:00 AM', 'MM/DD/YYYY h:mm A').toDate();
