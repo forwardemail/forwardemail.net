@@ -3614,5 +3614,9 @@
   ".  You can use": ".  You can use",
   "this template": "this template",
   "if you wish to enable it on your domain.": "if you wish to enable it on your domain.",
-  "Turnstile not verified.": "Turnstile not verified."
+  "Turnstile not verified.": "Turnstile not verified.",
+  "switched": "switched",
+  "from": "from",
+  "hCaptcha": "hCaptcha",
+  "Cloudflare Turnstile": "Cloudflare Turnstile"
 }
