@@ -19,7 +19,7 @@
     "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
   ],
   "dependencies": {
-    "@forevolve/bootstrap-dark": "3.0.0",
+    "@forevolve/bootstrap-dark": "4.0.0",
     "@fortawesome/fontawesome-free": "5.15.4",
     "@hapi/boom": "10.0.1",
     "@ioredis/commands": "1.2.0",

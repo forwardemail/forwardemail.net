@@ -4,7 +4,7 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
-const REGEX_AMOUNT_FORMATTED = new RE2('amount_formatted', 'gi');
+const REGEX_AMOUNT_FORMATTED = new RE2('amount_formatted', 'i');
 
 async function listBilling(ctx) {
   let { payments } = ctx.state;
