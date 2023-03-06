@@ -67,7 +67,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
   class=user ? "navbar-dark bg-dark" : "bg-white navbar-themed bg-themed"
 )
   div(
-    class=ctx.pathWithoutLocale.startsWith("/admin/") ? "container-fluid" : "container"
+    class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/logs") ? "container-fluid" : "container"
   )
     a.navbar-brand.d-inline-block.m-0(
       href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l()

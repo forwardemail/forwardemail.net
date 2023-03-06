@@ -1,17 +1,26 @@
+const dns = require('dns');
+const os = require('os');
 const { Buffer } = require('buffer');
 
+const Graceful = require('@ladjs/graceful');
+const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const ansiHTML = require('ansi-html-community');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const pMap = require('p-map');
 const pWaitFor = require('p-wait-for');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const { convert } = require('html-to-text');
+// const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
+const { isEmail } = require('validator');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -20,6 +29,25 @@ const Users = require('./users');
 const Domains = require('./domains');
 
 const config = require('#config');
+const logger = require('#helpers/logger');
+const createTangerine = require('#helpers/create-tangerine');
+
+const PREFIX = `${config.recordPrefix}-site-verification=`;
+const concurrency = os.cpus().length;
+const webSharedConfig = sharedConfig('WEB');
+// TODO: we should find a way to share the existing redis connection
+const redis = new Redis(
+  webSharedConfig.redis,
+  logger,
+  webSharedConfig.redisMonitor
+);
+
+const resolver = createTangerine(redis, logger);
+
+const graceful = new Graceful({
+  redisClients: [redis]
+});
+graceful.listen();
 
 // dynamically import lande
 let lande;
@@ -64,6 +92,13 @@ const IGNORED_CONTENT_TYPES = [
   'text/css'
 ];
 
+const DNS_ERROR_CODES = new Set([
+  dns.CANCELLED,
+  dns.CONNREFUSED,
+  dns.TIMEOUT,
+  dns.BADRESP
+]);
+
 const MAX_BYTES = bytes('20KB');
 
 const Logs = new mongoose.Schema({
@@ -80,26 +115,13 @@ const Logs = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: Users
   },
-  //
-  // NOTE: this is a snapshot array of domains that correlated to this log at the created_at time
-  //       and this is accomplished by both a pre('save') hook and also a job
-  //       that runs indefinitely to process 1000 logs at a time
-  //
-  //       - we always parse `meta.session.envelope.mailFrom.address` hostname (in case the email was attempting to be sent by them to them)
-  //       - we parse `meta.session.envelope.rcptTo[x].address` hostname (note we need to checkSRS)
-  //       - we lookup the verification record with redis/dns cache lookup
-  //       - then we check our DB for all distinct domain values with those record pairs (needs domain + record match)
-  //
-  //       also note that when we render these logs upon lookup to the user
-  //       we strip the other sensitive data (since RCPT TO could be to multiple separate users on our system)
-  //       (e.g. RCPT TO: a@a.com and b@b.com, whereas a.com and b.com are two completely separate and private users)
-  //
   domains: [
     {
       type: mongoose.Schema.ObjectId,
       ref: Domains
     }
   ],
+  domains_checked_at: Date,
   err: mongoose.Schema.Types.Mixed,
   text_message: {
     type: String
@@ -116,7 +138,7 @@ const Logs = new mongoose.Schema({
   //
   created_at: {
     type: Date,
-    expires: '1d'
+    expires: config.logRetention
   },
   is_restricted: {
     type: Boolean,
@@ -150,8 +172,8 @@ const PARTIAL_INDICES = [
   'meta.user.ip_address',
   'meta.app.hostname',
   'user',
-  // TODO: finish `domains` integration and partial index
   'domains',
+  'domains_checked_at',
   'is_restricted'
 ];
 
@@ -245,6 +267,11 @@ Logs.pre('save', async function (next) {
 //
 // eslint-disable-next-line complexity
 Logs.pre('save', async function (next) {
+  // only run this if the document was new
+  // or if it was run from the parse-logs job
+  // (which sets `skip_duplicate_check = true`)
+  if (!this.isNew || this.skip_duplicate_check) return next();
+
   try {
     //
     // ensure the document is not more than 20 KB
@@ -257,7 +284,16 @@ Logs.pre('save', async function (next) {
     //
     // prepare db query for uniqueness
     //
-    const $and = [];
+    const $and = [
+      //
+      // NOTE: we don't need this b/c we have `this.isNew` check above
+      //
+      // {
+      //   _id: {
+      //     $ne: this._id
+      //   }
+      // }
+    ];
 
     //
     // group together HTTP related queries into one conditional for performance
@@ -469,6 +505,120 @@ Logs.pre('save', async function (next) {
 
     if (count > 0) throw ERR_DUP_LOG;
 
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+//
+// NOTE: there is a snapshot array of domains that correlated to this log at the created_at time
+//       and this is accomplished by both a pre('save') hook and also a job
+//       that runs indefinitely to process 1000 logs at a time (both re-use this static function below)
+//
+//       - we always parse `meta.session.envelope.mailFrom.address` hostname (in case the email was attempting to be sent by them to them)
+//       - we parse `meta.session.envelope.rcptTo[x].address` hostname (note we need to checkSRS)
+//       - we lookup the verification record with redis/dns cache lookup
+//       - then we check our DB for all distinct domain values with those record pairs (needs domain + record match)
+//
+//       also note that when we render these logs upon lookup to the user
+//       we strip the other sensitive data (since RCPT TO could be to multiple separate users on our system)
+//       (e.g. RCPT TO: a@a.com and b@b.com, whereas a.com and b.com are two completely separate and private users)
+//
+async function parseLog(log) {
+  if (!log.is_restricted) return log;
+  if (_.isDate(log.domains_checked_at)) return log;
+  if (log.domains.length > 0) return log;
+  try {
+    const set = new Set();
+
+    // meta.session.envelope.mailFrom.address
+    if (
+      isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
+      isEmail(log.meta.session.envelope.mailFrom.address)
+    ) {
+      set.add(
+        log.meta.session.envelope.mailFrom.address.split('@')[1].toLowerCase()
+      );
+    }
+
+    // meta.session.rcptTo
+    if (
+      Array.isArray(log?.meta?.session?.rcptTo) &&
+      log.meta.session.rcptTo.length > 0
+    ) {
+      for (const rcpt of log.meta.session.rcptTo) {
+        if (_.isObject(rcpt) && isSANB(rcpt.address) && isEmail(rcpt.address)) {
+          set.add(rcpt.address.split('@')[1].toLowerCase());
+        }
+      }
+    }
+
+    // session.resolvedClientHostname
+    if (
+      isSANB(log?.meta?.session?.resolvedClientHostname) &&
+      isFQDN(log.meta.session.resolvedClientHostname)
+    ) {
+      set.add(log.meta.session.resolvedClientHostname);
+    }
+
+    // if no domains were found then return early
+    if (set.size === 0) return log;
+
+    log.domains = await pMap(
+      [...set],
+      async (name) => {
+        try {
+          const records = await resolver.resolveTxt(name);
+          const verifications = [];
+          for (const record of records) {
+            const str = record.join('').trim();
+            if (str.startsWith(PREFIX))
+              verifications.push(str.replace(PREFIX, ''));
+          }
+
+          if (verifications.length === 0) return;
+
+          if (verifications.length > 1) {
+            logger.warn(new Error('Multiple verification records'), {
+              domain: name
+            });
+            return;
+          }
+
+          const domain = await Domains.findOne({
+            name,
+            verification_record: verifications[0],
+            plan: { $ne: 'free' }
+          });
+
+          if (!domain) return;
+
+          return domain._id;
+        } catch (err) {
+          if (DNS_ERROR_CODES.has(err.code)) throw err;
+          logger.error(err);
+        }
+      },
+      { concurrency }
+    );
+
+    // filter out null values
+    log.domains = log.domains.filter(Boolean);
+
+    log.domains_checked_at = new Date();
+  } catch (err) {
+    logger.error(err);
+  }
+
+  return log;
+}
+
+Logs.statics.parseLog = parseLog;
+
+Logs.pre('save', async function (next) {
+  try {
+    await parseLog(this);
     next();
   } catch (err) {
     next(err);

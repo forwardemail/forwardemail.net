@@ -1,3 +1,5 @@
+const os = require('node:os');
+
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
@@ -9,13 +11,13 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 const striptags = require('striptags');
-const superagent = require('superagent');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
-const { isIP, isEmail, isPort, isURL } = require('validator');
 const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
+const { isIP, isEmail, isPort, isURL } = require('validator');
+const { request } = require('undici');
 
 const pkg = require('../../package.json');
 const Users = require('./users');
@@ -25,6 +27,7 @@ const config = require('#config');
 const i18n = require('#helpers/i18n');
 const verificationRecordOptions = require('#config/verification-record');
 
+const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
@@ -594,16 +597,24 @@ async function getVerificationResults(domain, resolver) {
   // attempt to purge Cloudflare cache programmatically
   //
   try {
-    await pMapSeries(CACHE_TYPES, (type) =>
-      superagent
-        .post(CLOUDFLARE_PURGE_CACHE_URL)
-        .query({
+    await pMap(
+      CACHE_TYPES,
+      (type) => {
+        const url = new URL(CLOUDFLARE_PURGE_CACHE_URL);
+        url.searchParams = new URLSearchParams({
           domain: domain.name,
           type
-        })
-        .set('Accept', 'json')
-        .set('User-Agent', USER_AGENT)
-        .timeout(ms('5s'))
+        });
+        return request(url, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'User-Agent': USER_AGENT
+          },
+          signal: AbortSignal.timeout(5000)
+        });
+      },
+      { concurrency }
     );
     logger.info('cleared DNS cache for cloudflare', {
       domain,

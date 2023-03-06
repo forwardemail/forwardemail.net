@@ -94,6 +94,7 @@ async function hook(err, message, meta) {
     if (typeof window !== 'object' || typeof window.API_URL !== 'string')
       throw new Error('API URL was not in the window global');
 
+    // TODO: replace this with undici on server side
     const request = superagent
       // eslint-disable-next-line no-undef
       .post(`${window.API_URL}/v1/log`)

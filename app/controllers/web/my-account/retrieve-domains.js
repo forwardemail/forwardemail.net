@@ -227,14 +227,14 @@ async function retrieveDomains(ctx, next) {
   if (ctx.api) return next();
 
   if (
+    ctx.method === 'GET' &&
+    ['/my-account', '/my-account/domains'].includes(ctx.pathWithoutLocale) &&
     // as part of onboarding redirect users to create a new domain right away
     // unless of course they already had created global vanity domain
     ctx.state.domains.filter(
       (domain) =>
         !domain.is_global || (domain.is_global && domain.aliases.length > 0)
-    ).length === 0 &&
-    ctx.method === 'GET' &&
-    ['/my-account', '/my-account/domains'].includes(ctx.pathWithoutLocale)
+    ).length === 0
   ) {
     if (!ctx.api)
       ctx.flash('custom', {

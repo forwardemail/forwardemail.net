@@ -23,6 +23,8 @@ const utilities = require('./utilities');
 const payments = require('./payments');
 
 const config = {
+  logRetention: env.LOG_RETENTION,
+
   // custom rate limiting lookup for allowing whitelisted customers
   rateLimit: {
     id(ctx) {

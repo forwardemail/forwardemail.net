@@ -13,10 +13,10 @@ const ms = require('ms');
 const passportLocalMongoose = require('passport-local-mongoose');
 const sanitizeHtml = require('sanitize-html');
 const striptags = require('striptags');
-const superagent = require('superagent');
 const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
+const { request } = require('undici');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -27,10 +27,11 @@ const logger = require('#helpers/logger');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 
-if (config.passportLocalMongoose.usernameField !== 'email')
+if (config.passportLocalMongoose.usernameField !== 'email') {
   throw new Error(
     'User model and @ladjs/passport requires that the usernameField is email.'
   );
+}
 
 const countries = countryList.getNames().sort();
 const options = { length: 10, type: 'numeric' };
@@ -72,14 +73,14 @@ const omitExtraFields = [
 ];
 
 const Users = new mongoose.Schema({
-  // plan
+  // Plan
   plan: {
     type: String,
     enum: ['free', 'enhanced_protection', 'team'],
     default: 'free',
     index: true
   },
-  // group permissions
+  // Group permissions
   group: {
     type: String,
     default: 'user',
@@ -99,10 +100,10 @@ const Users = new mongoose.Schema({
   }
 });
 
-// additional variable based properties to add to the schema
+// Additional variable based properties to add to the schema
 const object = {};
 
-// custom receipt email
+// Custom receipt email
 object[config.userFields.receiptEmail] = {
   type: String,
   trim: true,
@@ -110,7 +111,7 @@ object[config.userFields.receiptEmail] = {
   validate: (value) => !value || validator.isEmail(value)
 };
 
-// stripe
+// Stripe
 object[config.userFields.stripeCustomerID] = {
   type: String,
   index: true
@@ -120,7 +121,7 @@ object[config.userFields.stripeSubscriptionID] = {
   index: true
 };
 
-// paypal
+// Paypal
 object[config.userFields.paypalPayerID] = {
   type: String,
   index: true
@@ -130,14 +131,14 @@ object[config.userFields.paypalSubscriptionID] = {
   index: true
 };
 
-// two factor auth reminders
+// Two factor auth reminders
 object[config.userFields.twoFactorReminderSentAt] = Date;
 
-// api past due reminders
+// Api past due reminders
 object[config.userFields.apiPastDueSentAt] = Date;
 object[config.userFields.apiRestrictedSentAt] = Date;
 
-// payment reminders
+// Payment reminders
 object[config.userFields.paymentReminderInitialSentAt] = Date;
 object[config.userFields.paymentReminderFollowUpSentAt] = Date;
 object[config.userFields.paymentReminderFinalNoticeSentAt] = Date;
@@ -147,7 +148,7 @@ object[config.userFields.paymentReminderTerminationNoticeSentAt] = Date;
 object[config.userFields.stripeTrialSentAt] = Date;
 object[config.userFields.paypalTrialSentAt] = Date;
 
-// when the user upgraded to a paid plan
+// When the user upgraded to a paid plan
 object[config.userFields.planSetAt] = {
   type: Date,
   required: true,
@@ -156,10 +157,10 @@ object[config.userFields.planSetAt] = {
   }
 };
 
-// when the user's plan expires
+// When the user's plan expires
 object[config.userFields.planExpiresAt] = Date;
 
-// user fields
+// User fields
 object[config.userFields.isRemoved] = {
   type: Boolean,
   default: false
@@ -182,7 +183,7 @@ object[config.userFields.defaultDomain] = {
   ref: 'Domains'
 };
 
-// rate limit whitelisting
+// Rate limit whitelisting
 // TODO: change to allowlist
 object[config.userFields.isRateLimitWhitelisted] = {
   type: Boolean,
@@ -203,7 +204,7 @@ object[config.userFields.approvedDomains] = [
   }
 ];
 
-// api token for basic auth
+// Api token for basic auth
 object[config.userFields.apiToken] = {
   type: String,
   required: true,
@@ -215,11 +216,11 @@ object[config.userFields.apiToken] = {
 
 object[config.userFields.otpRecoveryKeys] = Array;
 
-// password reset
+// Password reset
 object[config.userFields.resetTokenExpiresAt] = Date;
 object[config.userFields.resetToken] = String;
 
-// email change
+// Email change
 object[config.userFields.changeEmailTokenExpiresAt] = Date;
 object[config.userFields.changeEmailToken] = String;
 object[config.userFields.changeEmailNewAddress] = {
@@ -229,20 +230,20 @@ object[config.userFields.changeEmailNewAddress] = {
   validate: (value) => !value || validator.isEmail(value)
 };
 
-// welcome email
+// Welcome email
 object[config.userFields.welcomeEmailSentAt] = Date;
 
-// launch email (before 11/23/2020 10:00 AM)
+// Launch email (before 11/23/2020 10:00 AM)
 object[config.userFields.launchEmailSentAt] = Date;
 
-// account verification
+// Account verification
 object[config.userFields.hasSetPassword] = {
   type: Boolean,
-  default: false // manually set to true during web/API signup
+  default: false // Manually set to true during web/API signup
 };
 object[config.userFields.hasVerifiedEmail] = {
   type: Boolean,
-  default: true, // manually set to false during web/API signup
+  default: true, // Manually set to false during web/API signup
   index: true
 };
 object[config.userFields.verificationPinExpiresAt] = Date;
@@ -258,10 +259,10 @@ object[config.userFields.pendingRecovery] = {
   default: false
 };
 
-// list of account updates that are batched every 1 min.
+// List of account updates that are batched every 1 min.
 object[config.userFields.accountUpdates] = Array;
 
-// shared field names with @ladjs/passport for consistency
+// Shared field names with @ladjs/passport for consistency
 object[fields.displayName] = {
   type: String,
   required: true,
@@ -283,21 +284,21 @@ object[fields.avatarURL] = {
   trim: true,
   validate: (value) => validator.isURL(value)
 };
-// apple
+// Apple
 object[fields.appleProfileID] = {
   type: String,
   index: true
 };
 object[fields.appleAccessToken] = String;
 object[fields.appleRefreshToken] = String;
-// google
+// Google
 object[fields.googleProfileID] = {
   type: String,
   index: true
 };
 object[fields.googleAccessToken] = String;
 object[fields.googleRefreshToken] = String;
-// github
+// Github
 object[fields.githubProfileID] = {
   type: String,
   index: true
@@ -311,7 +312,7 @@ object[fields.otpEnabled] = {
 };
 object[fields.otpToken] = String;
 
-// shared field names with @ladjs/i18n and email-templates
+// Shared field names with @ladjs/i18n and email-templates
 object[config.lastLocaleField] = {
   type: String,
   default: i18n.getLocale()
@@ -342,10 +343,10 @@ object[config.userFields.addressCountry] = {
   default: 'None'
 };
 
-// finally add the fields
+// Finally add the fields
 Users.add(object);
 
-// set plan at date to a default value
+// Set plan at date to a default value
 // of when user was created or >= their first payment
 Users.pre('validate', async function (next) {
   // NOTE: this is a fallback in case our migration script hasn't run yet
@@ -366,10 +367,10 @@ Users.pre('validate', async function (next) {
   next();
 });
 
-// plan expires at should get updated everytime the user is saved
+// Plan expires at should get updated everytime the user is saved
 Users.pre('save', async function (next) {
   const user = this;
-  // if user is on the free plan then return early
+  // If user is on the free plan then return early
   if (user.plan === 'free') {
     user[config.userFields.planExpiresAt] = new Date(
       user[config.userFields.planSetAt]
@@ -396,7 +397,7 @@ Users.pre('save', async function (next) {
       invoice_at: {
         $gte: new Date(user[config.userFields.planSetAt])
       },
-      // payments must match the user's current plan
+      // Payments must match the user's current plan
       plan: user.plan
     })
       .sort('invoice_at')
@@ -421,8 +422,9 @@ Users.pre('save', async function (next) {
         !payment.is_refund_credit_allowed &&
         payment.amount_refunded > 0 &&
         !['free_beta_program', 'plan_conversion'].includes(payment.method)
-      )
+      ) {
         continue;
+      }
 
       user[config.userFields.planExpiresAt] = dayjs(
         user[config.userFields.planExpiresAt]
@@ -431,14 +433,14 @@ Users.pre('save', async function (next) {
         .toDate();
     }
 
-    // if the new expiry is in the future then reset the API past due sent at reminder
+    // If the new expiry is in the future then reset the API past due sent at reminder
     // and also reset all billing reminders that have been sent
     if (
       new Date(user[config.userFields.planExpiresAt]).getTime() >= Date.now()
     ) {
       user[config.userFields.apiPastDueSentAt] = undefined;
       user[config.userFields.apiRestrictedSentAt] = undefined;
-      // only reset the reminders if it is past the reminder period
+      // Only reset the reminders if it is past the reminder period
       // NOTE: if you change this then also update `jobs/billing.js`
       if (
         dayjs(user[config.userFields.planExpiresAt]).isAfter(
@@ -459,7 +461,7 @@ Users.pre('save', async function (next) {
   }
 });
 
-// sanitize input (striptags)
+// Sanitize input (striptags)
 Users.pre('validate', function (next) {
   for (const prop of [
     fields.givenName,
@@ -472,8 +474,13 @@ Users.pre('validate', function (next) {
     config.userFields.addressZip,
     config.userFields.companyVAT
   ]) {
-    if (isSANB(this[prop])) this[prop] = striptags(this[prop]);
-    if (!isSANB(this[prop])) this[prop] = undefined;
+    if (isSANB(this[prop])) {
+      this[prop] = striptags(this[prop]);
+    }
+
+    if (!isSANB(this[prop])) {
+      this[prop] = undefined;
+    }
   }
 
   next();
@@ -484,10 +491,14 @@ Users.pre('validate', function (next) {
 // unset visa trial subscription requirement notifications
 //
 Users.pre('save', function (next) {
-  if (!isSANB(this[config.userFields.stripeSubscriptionID]))
+  if (!isSANB(this[config.userFields.stripeSubscriptionID])) {
     this[config.userFields.stripeTrialSentAt] = undefined;
-  if (!isSANB(this[config.userFields.paypalSubscriptionID]))
+  }
+
+  if (!isSANB(this[config.userFields.paypalSubscriptionID])) {
     this[config.userFields.paypalTrialSentAt] = undefined;
+  }
+
   next();
 });
 
@@ -501,7 +512,7 @@ Users.virtual(config.userFields.addressHTML).get(function () {
   ]
     .filter(Boolean)
     .join(' ');
-  const arr = [
+  const array = [
     companyName || name ? `<strong>${companyName || name}</strong>` : null,
     this[config.userFields.addressLine1],
     this[config.userFields.addressLine2],
@@ -517,7 +528,7 @@ Users.virtual(config.userFields.addressHTML).get(function () {
       ? this[config.userFields.addressCountry]
       : null
   ];
-  return sanitizeHtml(arr.filter(Boolean).join('<br />'), {
+  return sanitizeHtml(array.filter(Boolean).join('<br />'), {
     allowedTags: ['strong', 'br'],
     allowedAttributes: []
   });
@@ -537,14 +548,17 @@ Users.virtual(config.userFields.verificationPinHasExpired).get(function () {
 let disposableDomains = [];
 async function crawlDisposable() {
   try {
-    const { text } = await superagent
-      .get(
-        'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
-      )
-      .timeout(ms('5s'));
-    const json = JSON.parse(text);
-    if (!Array.isArray(json) || json.length === 0)
+    const { body } = await request(
+      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
+      {
+        signal: AbortSignal.timeout(5000)
+      }
+    );
+    const json = await body.json();
+    if (!Array.isArray(json) || json.length === 0) {
       throw new Error('Disposable did not crawl data.');
+    }
+
     disposableDomains = json;
   } catch (err) {
     logger.error(err);
@@ -555,25 +569,30 @@ setInterval(crawlDisposable, ms('1d'));
 
 crawlDisposable();
 
-// this ensures that `email` was already validated, trimmed, lowercased
+// This ensures that `email` was already validated, trimmed, lowercased
 Users.pre('save', async function (next) {
-  // only do this for new users signing up
+  // Only do this for new users signing up
   // (we will most likely deprecate disposable; see jobs/check-disposable)
-  if (!this.isNew) return next();
+  if (!this.isNew) {
+    return next();
+  }
 
   const domain = this.email.split('@')[1];
-  if (disposableDomains.length === 0) await crawlDisposable();
+  if (disposableDomains.length === 0) {
+    await crawlDisposable();
+  }
+
   // TODO: convert to Set with set.has(x) lookup vs arr.indexOf(x) !== -1
   // eslint-disable-next-line unicorn/prefer-includes
   if (disposableDomains.indexOf(domain) !== -1) {
-    const err = Boom.badRequest(
+    const error = Boom.badRequest(
       i18n.api.t({
         phrase: config.i18n.phrases.DISPOSABLE_EMAIL_NOT_ALLOWED,
         locale: this[config.lastLocaleField]
       })
     );
-    err.no_translate = true;
-    return next(err);
+    error.no_translate = true;
+    return next(error);
   }
 
   // TODO: prevent user from signing up with one of our global vanity names
@@ -582,13 +601,14 @@ Users.pre('save', async function (next) {
 
 Users.pre('validate', async function (next) {
   try {
-    // create api token if doesn't exist
-    if (!isSANB(this[config.userFields.apiToken]))
+    // Create api token if doesn't exist
+    if (!isSANB(this[config.userFields.apiToken])) {
       this[config.userFields.apiToken] = await cryptoRandomString.async({
         length: 24
       });
+    }
 
-    // set the user's display name to their email address
+    // Set the user's display name to their email address
     // but if they have a name or surname set then use that
     this[fields.displayName] = this.email;
     if (isSANB(this[fields.givenName]) || isSANB(this[fields.familyName])) {
@@ -597,34 +617,37 @@ Users.pre('validate', async function (next) {
       }`;
     }
 
-    // set the user's full email address (incl display name)
+    // Set the user's full email address (incl display name)
     this[config.userFields.fullEmail] =
       this[fields.displayName] && this[fields.displayName] !== this.email
         ? `${this[fields.displayName]} <${this.email}>`
         : this.email;
 
-    // if otp authentication values no longer valid
+    // If otp authentication values no longer valid
     // then disable it completely
     if (
       !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
       !this[config.userFields.otpRecoveryKeys] ||
       this[config.userFields.otpRecoveryKeys].length === 0 ||
       !this[config.passport.fields.otpToken]
-    )
+    ) {
       this[fields.otpEnabled] = false;
+    }
 
     if (
       !Array.isArray(this[config.userFields.otpRecoveryKeys]) ||
       this[config.userFields.otpRecoveryKeys].length === 0
-    )
+    ) {
       this[config.userFields.otpRecoveryKeys] = await Promise.all(
         Array.from({ length: 10 })
           .fill()
           .map(() => cryptoRandomString.async(options))
       );
+    }
 
-    if (!this[config.passport.fields.otpToken])
+    if (!this[config.passport.fields.otpToken]) {
       this[config.passport.fields.otpToken] = authenticator.generateSecret();
+    }
 
     next();
   } catch (err) {
@@ -647,13 +670,13 @@ Users.methods.updateVerificationPin = async function (ctx, revert = false) {
     return this;
   }
 
-  // store old values in case we have to revert
+  // Store old values in case we have to revert
   this[`__${config.userFields.verificationPinExpiresAt}`] =
     this[config.userFields.verificationPinExpiresAt];
   this[`__${config.userFields.verificationPin}`] =
     this[config.userFields.verificationPin];
 
-  // set new values if necessary
+  // Set new values if necessary
   if (
     !this[config.userFields.verificationPinExpiresAt] ||
     this[config.userFields.verificationPinHasExpired] ||
@@ -677,7 +700,7 @@ Users.methods.updateVerificationPin = async function (ctx, revert = false) {
     !this[config.userFields.verificationPinSentAt] ||
     (diff && diff >= config.verificationPinEmailIntervalMs);
 
-  // ensure the user waited as long as necessary to send a new pin email
+  // Ensure the user waited as long as necessary to send a new pin email
   if (!sendNewEmail) {
     const message = i18n.api.t(
       {
@@ -690,17 +713,17 @@ Users.methods.updateVerificationPin = async function (ctx, revert = false) {
         .humanize()
     );
     if (ctx) {
-      const err = Boom.badRequest(message);
-      err.no_translate = true;
-      throw err;
+      const error = Boom.badRequest(message);
+      error.no_translate = true;
+      throw error;
     }
 
-    const err = new Error(message);
-    err.no_translate = true;
-    throw err;
+    const error = new Error(message);
+    error.no_translate = true;
+    throw error;
   }
 
-  // save the updated pin
+  // Save the updated pin
   await this.save();
 
   return this;
@@ -732,7 +755,7 @@ Users.post('init', (doc) => {
 });
 
 Users.pre('save', function (next) {
-  // filter by allowed field updates (otp enabled, profile updates, etc)
+  // Filter by allowed field updates (otp enabled, profile updates, etc)
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
     if (this[`__${fieldName}`] && this[`__${fieldName}`] !== this[fieldName]) {
@@ -741,7 +764,7 @@ Users.pre('save', function (next) {
         current: this[fieldName],
         previous: this[`__${fieldName}`]
       });
-      // revert so we don't get into infinite loop
+      // Revert so we don't get into infinite loop
       this[`__${fieldName}`] = this[fieldName];
     }
   }
@@ -759,5 +782,8 @@ Users.postCreate((user, next) => {
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
 );
-if (!conn) throw new Error('Mongoose connection does not exist');
+if (!conn) {
+  throw new Error('Mongoose connection does not exist');
+}
+
 module.exports = conn.model('Users', Users);

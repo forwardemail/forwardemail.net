@@ -98,6 +98,7 @@ module.exports = {
   ALIAS_ALREADY_EXISTS: 'Alias already exists for domain.',
   DOMAIN_IS_VERIFIED: "Domain's DNS records have been verified.",
   DOMAIN_DOES_NOT_EXIST: 'Domain does not exist on your account.',
+  LOG_DOES_NOT_EXIST: 'Log does not exist on your account.',
   RESERVED_WORD_ADMIN_REQUIRED:
     'User must be a domain admin to create an alias with a reserved word (see the page on <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s/reserved-email-addresses">Reserved Email Addresses</a>).',
   REACHED_MAX_ALIAS_COUNT:

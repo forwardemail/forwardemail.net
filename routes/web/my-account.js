@@ -262,6 +262,21 @@ router
     rateLimit(200, 'verify records'),
     web.myAccount.verifyRecords
   )
+  .get(
+    '/logs',
+    // TODO: once out of beta, fix this
+    policies.ensureAdmin,
+    paginate.middleware(10, 50),
+    web.myAccount.listLogs
+  )
+  .get(
+    '/logs/:id',
+    // TODO: once out of beta, fix this
+    policies.ensureAdmin,
+    paginate.middleware(10, 50),
+    web.myAccount.retrieveLog,
+    render('my-account/logs/retrieve')
+  )
   .delete(
     '/domains/:domain_id',
     web.myAccount.retrieveDomain,
