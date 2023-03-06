@@ -43,6 +43,8 @@ const validateAlias = require('./validate-alias');
 const validateDomain = require('./validate-domain');
 const verifyRecords = require('./verify-records');
 const setConversionAndRefundStateHelpers = require('./set-conversion-and-refund-state-helpers');
+const listLogs = require('./list-logs');
+const retrieveLog = require('./retrieve-log');
 
 module.exports = {
   cancelEmailChange,
@@ -89,5 +91,7 @@ module.exports = {
   validateAlias,
   validateDomain,
   verifyRecords,
-  setConversionAndRefundStateHelpers
+  setConversionAndRefundStateHelpers,
+  listLogs,
+  retrieveLog
 };

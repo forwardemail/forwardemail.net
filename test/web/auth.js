@@ -1,8 +1,8 @@
 const util = require('util');
 
 const cryptoRandomString = require('crypto-random-string');
-const superagent = require('superagent');
 const test = require('ava');
+const { request } = require('undici');
 const { factory } = require('factory-girl');
 
 const utils = require('../utils');
@@ -30,12 +30,14 @@ test('creates new user', async (t) => {
 test('rejects new user with disposable email', async (t) => {
   const { web } = t.context;
 
-  const { text } = await superagent.get(
+  const { body } = await request(
     'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
   );
 
+  const json = await body.json();
+
   const res = await web.post('/en/register').send({
-    email: `test@${JSON.parse(text)[0]}`,
+    email: `test@${json[0]}`,
     password: '!@K#NLK!#N'
   });
 

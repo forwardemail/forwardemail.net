@@ -8,7 +8,7 @@ const { parentPort } = require('worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const superagent = require('superagent');
+const { request } = require('undici');
 
 const mongoose = require('mongoose');
 const Users = require('#models/users');
@@ -28,11 +28,16 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    const { text } = await superagent.get(
-      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+    const { body } = await request(
+      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
+      {
+        signal: AbortSignal.timeout(5000)
+      }
     );
 
-    const DISPOSABLE = new Set(JSON.parse(text));
+    const json = await body.json();
+
+    const DISPOSABLE = new Set(json);
 
     const users = await Users.find({ group: 'user', plan: 'free' })
       .select('_id email')

@@ -101,6 +101,16 @@ const jobs = [
     name: 'upgrade-reminder-email',
     interval: '6h',
     timeout: '10m'
+  },
+  {
+    name: 'delete-logs',
+    interval: '1h',
+    timeout: 0
+  },
+  {
+    name: 'parse-logs',
+    interval: '5m',
+    timeout: 0
   }
 ];
 
