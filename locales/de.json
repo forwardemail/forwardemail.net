@@ -2790,5 +2790,8 @@
   "Switch domain plan?": "Switch domain plan?",
   "To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.": "To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.",
   "Deliverability for past 7 days": "Deliverability for past 7 days",
-  "Paid locale distribution": "Paid locale distribution"
+  "Paid locale distribution": "Paid locale distribution",
+  "Need to change invoice information? <a href=\"%s\" class=\"alert-link notranslate\">Update company/VAT info</a>": "Need to change invoice information? <a href=\"%s\" class=\"alert-link notranslate\">Update company/VAT info</a>",
+  "Back to Billing": "Back to Billing",
+  "Submitting your request will void our refund policy.": "Submitting your request will void our refund policy."
 }
