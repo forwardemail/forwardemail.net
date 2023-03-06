@@ -100,7 +100,7 @@ async function listDomains(ctx) {
   if (ctx.query.q) {
     let qRegex;
     try {
-      qRegex = new RE2(_.escapeRegExp(ctx.query.q) + '|' + ctx.query.q, 'gi');
+      qRegex = new RE2(_.escapeRegExp(ctx.query.q) + '|' + ctx.query.q, 'i');
     } catch (err) {
       ctx.logger.warn(err);
     }
@@ -126,7 +126,7 @@ async function listDomains(ctx) {
 
   // sort domains
   let sortFn;
-  if (new RE2('aliases', 'gi').test(ctx.query.sort))
+  if (new RE2('aliases', 'i').test(ctx.query.sort))
     sortFn = (d) => d.aliases.length;
   else if (isSANB(ctx.query.sort))
     sortFn = (d) => d[ctx.query.sort.replace(/^-/, '')];

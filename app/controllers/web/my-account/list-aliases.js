@@ -10,7 +10,7 @@ async function listAliases(ctx) {
   if (ctx.query.q) {
     let qRegex;
     try {
-      qRegex = new RE2(_.escapeRegExp(ctx.query.q) + '|' + ctx.query.q, 'gi');
+      qRegex = new RE2(_.escapeRegExp(ctx.query.q) + '|' + ctx.query.q, 'i');
     } catch (err) {
       ctx.logger.warn(err);
     }

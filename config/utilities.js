@@ -129,7 +129,7 @@ const NS_PROVIDERS = {
 };
 
 const NS_PROVIDER_KEYS = Object.keys(NS_PROVIDERS);
-const NS_PROVIDER_REGEXES = NS_PROVIDER_KEYS.map((key) => new RE2(key, 'gi'));
+const NS_PROVIDER_REGEXES = NS_PROVIDER_KEYS.map((key) => new RE2(key, 'i'));
 
 function nsProviderLookup(domain) {
   // return early if there were no NS providers set

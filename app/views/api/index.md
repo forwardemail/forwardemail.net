@@ -126,7 +126,7 @@ curl -X POST BASE_URI/v1/account \
 > Example Request:
 
 ```sh
-curl -X GET BASE_URI/v1/account \
+curl BASE_URI/v1/account \
   -u API_TOKEN:
 ```
 
@@ -175,7 +175,7 @@ curl -X PUT BASE_URI/v1/account \
 > Example Request:
 
 ```sh
-curl -X GET BASE_URI/v1/domains \
+curl BASE_URI/v1/domains \
   -u API_TOKEN:
 ```
 
@@ -210,7 +210,7 @@ curl -X POST BASE_URI/v1/domains \
 > Example Request:
 
 ```sh
-curl -X GET BASE_URI/v1/domains/DOMAIN_NAME \
+curl BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
@@ -221,7 +221,7 @@ curl -X GET BASE_URI/v1/domains/DOMAIN_NAME \
 > Example Request:
 
 ```sh
-curl -X GET BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
+curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
   -u API_TOKEN:
 ```
 
@@ -266,7 +266,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name \
 > Example Request:
 
 ```sh
-curl -X GET BASE_URI/v1/domains/:domain_name/invites \
+curl BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
 
@@ -347,7 +347,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 > Example Request:
 
 ```sh
-curl -X GET BASE_URI/v1/domains/DOMAIN_NAME/aliases \
+curl BASE_URI/v1/domains/DOMAIN_NAME/aliases \
   -u API_TOKEN:
 ```
 

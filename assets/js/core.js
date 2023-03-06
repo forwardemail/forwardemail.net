@@ -99,8 +99,6 @@ function handleExplicitTurnstile() {
       ].includes(window.LOCALE)
         ? window.LOCALE
         : 'auto',
-    'expired-callback': (err) => console.error(err),
-    'timeout-callback': (err) => console.error(err),
     'error-callback': (err) => console.error(err)
   });
 

@@ -12,7 +12,7 @@ async function list(ctx) {
   if (isSANB(ctx.query.key)) {
     const regex = new RE2(
       _.escapeRegExp(ctx.query.key) + '|' + ctx.query.key,
-      'gi'
+      'i'
     );
 
     // go in reverse so we can mutate the array

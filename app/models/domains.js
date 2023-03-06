@@ -72,8 +72,8 @@ const EXCHANGES = config.exchanges
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(/mail|disposable|inbox/gi);
-const REGEX_VERIFICATION = new RE2(/[^\da-z]/gi);
+const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(/mail|disposable|inbox/i);
+const REGEX_VERIFICATION = new RE2(/[^\da-z]/i);
 
 const Member = new mongoose.Schema({
   user: {
