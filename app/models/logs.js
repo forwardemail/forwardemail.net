@@ -2,6 +2,7 @@ const dns = require('dns');
 const os = require('os');
 const { Buffer } = require('buffer');
 
+// const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
@@ -18,8 +19,8 @@ const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
+const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
-// const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const { isEmail } = require('validator');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
@@ -145,6 +146,14 @@ const Logs = new mongoose.Schema({
     default: false
   }
 });
+
+Logs.virtual('skip_duplicate_check')
+  .get(function () {
+    return this.__skip_duplicate_check;
+  })
+  .set(function (skipDuplicateCheck) {
+    this.__skip_duplicate_check = boolean(skipDuplicateCheck);
+  });
 
 Logs.plugin(mongooseCommonPlugin, {
   object: 'log',
