@@ -1,6 +1,7 @@
 const Axe = require('axe');
 const Cabin = require('cabin');
 const cuid = require('cuid');
+const pWaitFor = require('p-wait-for');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const superagent = require('superagent');
@@ -40,6 +41,7 @@ const IGNORED_CONTENT_TYPES = [
 // ]);
 
 // <https://github.com/cabinjs/axe/#send-logs-to-http-endpoint>
+// eslint-disable-next-line complexity
 async function hook(err, message, meta) {
   //
   // return early if we wish to ignore this
@@ -58,6 +60,15 @@ async function hook(err, message, meta) {
         (conn) => conn[connectionNameSymbol] === 'LOGS_MONGO_URI'
       );
       if (!conn) throw new Error('Mongoose connection does not exist');
+      if (
+        pWaitFor &&
+        (!conn.models || !conn.models.Logs || !conn.models.Logs.create)
+      )
+        await pWaitFor(
+          () =>
+            Boolean(conn.models && conn.models.Logs && conn.models.Logs.create),
+          { timeout: 3000 }
+        );
       conn.models.Logs.create(
         // eslint-disable-next-line prefer-object-spread
         Object.assign(

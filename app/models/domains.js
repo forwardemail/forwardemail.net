@@ -611,7 +611,7 @@ async function getVerificationResults(domain, resolver) {
             Accept: 'application/json',
             'User-Agent': USER_AGENT
           },
-          signal: AbortSignal.timeout(5000)
+          signal: AbortSignal.timeout(10000)
         });
       },
       { concurrency }

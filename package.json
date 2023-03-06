@@ -6,6 +6,7 @@
   "browser": {
     "signale": false,
     "mongoose": false,
+    "p-wait-for": false,
     "#models/logs": false,
     "#config/mongoose": false,
     "#config/env": false
