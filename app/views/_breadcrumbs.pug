@@ -31,13 +31,25 @@ if breadcrumbs.length > 1
                 i.fa.fa-fw.fa-users
                 = " "
                 = t("Aliases")
-            li.list-inline-item
-              a.btn.btn-sm.btn-outline-dark(
-                href=l(`/my-account/domains/${domain.name}/advanced-settings`)
-              )
-                i.fa.fa-fw.fa-tools
-                = " "
-                = t("Settings")
+            if domain.group === 'admin'
+              li.list-inline-item
+                a.btn.btn-sm.btn-outline-dark(
+                  href=domain.plan === "free" ? "#" : l(`/my-account/logs?domains=${domain.name}`),
+                  role=domain.plan === "free" ? "button" : false,
+                  data-target=domain.plan === "free" ? "#modal-upgrade-logs" : false,
+                  data-toggle=domain.plan === "free" ? "modal" : false
+                )
+                  i.fa.fa-fw.fa-stream
+                  = " "
+                  = t("Logs")
+            if domain.group === 'admin'
+              li.list-inline-item
+                a.btn.btn-sm.btn-outline-dark(
+                  href=l(`/my-account/domains/${domain.name}/advanced-settings`)
+                )
+                  i.fa.fa-fw.fa-tools
+                  = " "
+                  = t("Settings")
             if domain.group === 'admin'
               li.list-inline-item
                 .btn-group.btn-group-sm
@@ -92,7 +104,7 @@ if breadcrumbs.length > 1
                     = " "
                     i.fa.fa-cloud-download-alt
             li.list-inline-item
-              a.btn.btn-primary(
+              a.btn.btn-dark(
                 href=l(`/my-account/domains/${domain.name}/aliases/new`),
                 role="button",
                 data-toggle="modal-anchor",
@@ -106,7 +118,7 @@ if breadcrumbs.length > 1
             when '/my-account/domains'
               ul.list-inline.mb-0
                 li.list-inline-item
-                  a.btn.btn-primary(
+                  a.btn.btn-dark(
                     href=l("/my-account/domains/new"),
                     role="button",
                     data-toggle="modal-anchor",
@@ -117,7 +129,7 @@ if breadcrumbs.length > 1
                     i.fa.fa-angle-double-right.align-middle
                 if domains.length > 0
                   li.list-inline-item
-                    a.btn.btn-primary(
+                    a.btn.btn-dark(
                       href=l("/my-account/domains/aliases/new"),
                       role="button",
                       data-toggle="modal-anchor",
@@ -126,5 +138,21 @@ if breadcrumbs.length > 1
                       = t("Add Alias")
                       = " "
                       i.fa.fa-angle-double-right.align-middle
+                if domains.length > 0
+                  li.list-inline-item
+                    if user.plan === 'free'
+                      button.btn.btn-dark(
+                        type="button",
+                        data-target="#modal-upgrade-logs",
+                        data-toggle="modal"
+                      )
+                        i.fa.fa-fw.fa-stream
+                        = " "
+                        = t("Logs")
+                    else
+                      a.btn.btn-dark(href=l("/my-account/logs"))
+                        i.fa.fa-fw.fa-stream
+                        = " "
+                        = t("Logs")
             default
               = " "

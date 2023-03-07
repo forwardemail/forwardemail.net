@@ -8,35 +8,35 @@ block body
   .container-fluid
     .row
       .col
-        h3.h5= t('SMTP Envelope')
+        h3.h5= t("SMTP Envelope")
         table.table.table-hover.table-bordered.table-striped
           tr
-            th= t('Client IP')
+            th= t("Client IP")
             td
               if log.meta && log.meta.session && log.meta.session.remoteAddress
                 = log.meta.session.remoteAddress
           tr
-            th= t('Client Hostname')
+            th= t("Client Hostname")
             td
               if log.meta && log.meta.session && log.meta.session.resolvedClientHostname
                 = log.meta.session.resolvedClientHostname
           tr
-            th!= t('Date &amp; Time')
+            th!= t("Date &amp; Time")
             td
               if log.meta && log.meta.session && log.meta.session.arrivalDate
                 span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.meta.session.arrivalDate).format("M/D/YY h:mm A z")
           tr
-            th= 'MAIL FROM'
+            th= "MAIL FROM"
             td
               if log.mailFrom
                 = log.mailFrom
           tr
-            th= 'RCPT TO'
+            th= "RCPT TO"
             td
               ul.list-inline.mb-0
                 each rcpt in log.rcpts
                   li.list-inline-item= rcpt
-        h3.h5= t('SMTP Response')
+        h3.h5= t("SMTP Response")
         ul.list-inline.alert.alert-secondary
           if log.meta
             - let badgeClass = "badge-success";
@@ -59,7 +59,7 @@ block body
           li.list-inline-item.small.d-inline
             small.text-monospace!= log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
         if _.isObject(log.meta) && _.isObject(log.meta.session) && _.isObject(log.meta.session.headers) && !_.isEmpty(log.meta.session.headers)
-          h3.h5= t('Message Headers')
+          h3.h5= t("Message Headers")
           table.table.table-hover.table-bordered.table-striped
             each key in Object.keys(log.meta.session.headers)
               tr
