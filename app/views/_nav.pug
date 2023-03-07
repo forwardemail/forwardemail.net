@@ -324,7 +324,11 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 class=ctx.pathWithoutLocale === "/my-account/billing" ? "active" : "",
                 href=l("/my-account/billing")
               )= t("Billing")
-              a.dropdown-item(href=l("/logout"))= t("Log out")
+              a.dropdown-item(
+                class=ctx.pathWithoutLocale.startsWith("/my-account/logs") ? "active" : "",
+                href=l("/my-account/logs")
+              )= t("Logs")
+              a.dropdown-item(href=l("/logout"))= t("Sign out")
         //- links that show only if you're logged out
         else
           if ctx.pathWithoutLocale !== config.loginRoute
