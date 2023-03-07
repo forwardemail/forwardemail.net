@@ -63,9 +63,9 @@ block body
           table.table.table-hover.table-bordered.table-striped
             each key in Object.keys(log.meta.session.headers)
               tr
-                - const index = log.meta.session.headers[key].indexOf(': ');
+                - const index = log.meta.session.headers[key].indexOf(':');
                 td
-                  strong= log.meta.session.headers[key].slice(0, index)
+                  strong= log.meta.session.headers[key].slice(0, index).trim()
                 td
                   - const count = index + 2
-                  = log.meta.session.headers[key].slice(count)
+                  = log.meta.session.headers[key].slice(count).trim()
