@@ -1,11 +1,11 @@
 extends ../../layout
 
 block body
-  .container.pt-3
+  .container-fluid.pt-3
     .row
       .col
         include ../../_breadcrumbs
-  .container
+  .container-fluid
     .row
       .col
         h3.h5= t('SMTP Envelope')
@@ -60,12 +60,13 @@ block body
             small.text-monospace!= log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
         if _.isObject(log.meta) && _.isObject(log.meta.session) && _.isObject(log.meta.session.headers) && !_.isEmpty(log.meta.session.headers)
           h3.h5= t('Message Headers')
-          table.table.table-hover.table-bordered.table-striped
-            each key in Object.keys(log.meta.session.headers)
-              tr
-                - const index = log.meta.session.headers[key].indexOf(':');
-                td
-                  strong= log.meta.session.headers[key].slice(0, index).trim()
-                td
-                  - const count = index + 2
-                  = log.meta.session.headers[key].slice(count).trim()
+          .table-responsive
+            table.table.table-hover.table-bordered.table-striped
+              each key in Object.keys(log.meta.session.headers)
+                tr
+                  - const index = log.meta.session.headers[key].indexOf(':');
+                  td
+                    strong= log.meta.session.headers[key].slice(0, index).trim()
+                  td
+                    - const count = index + 2
+                    = log.meta.session.headers[key].slice(count).trim()
