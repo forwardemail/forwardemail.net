@@ -62,21 +62,6 @@ block body
           h3.h5= t('Message Headers')
           table.table.table-hover.table-bordered.table-striped
             each key in Object.keys(log.meta.session.headers)
-              - const index = log.meta.session.headers[key].indexOf(':');
               tr
-                td
-                  strong
-                    if index === -1
-                      //- this is the new UTF-8 decoded value
-                      = key
-                    else
-                      //- legacy support
-                      = log.meta.session.headers[key].slice(0, index).trim()
-                td
-                  if index === -1
-                    //- this is the new UTF-8 decoded value
-                    = log.meta.session.headers[key]
-                  else
-                    //- legacy support
-                    - const count = index + 2
-                    = log.meta.session.headers[key].slice(count).trim()
+                td: strong= key
+                td= log.meta.session.headers[key]
