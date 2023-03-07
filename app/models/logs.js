@@ -553,10 +553,10 @@ async function parseLog(log) {
 
     // meta.session.rcptTo
     if (
-      Array.isArray(log?.meta?.session?.rcptTo) &&
-      log.meta.session.rcptTo.length > 0
+      Array.isArray(log?.meta?.session?.envelope?.rcptTo) &&
+      log.meta.session.envelope.rcptTo.length > 0
     ) {
-      for (const rcpt of log.meta.session.rcptTo) {
+      for (const rcpt of log.meta.session.envelope.rcptTo) {
         if (_.isObject(rcpt) && isSANB(rcpt.address) && isEmail(rcpt.address)) {
           set.add(rcpt.address.split('@')[1].toLowerCase());
         }
