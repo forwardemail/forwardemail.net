@@ -89,7 +89,7 @@ include ../../_pagination
                       = t("Aliases")
                 //- TODO: once out of beta, fix this
                 //- if domain.group === 'admin'
-                if user.group === 'admin' && domain.group === 'admin'
+                if domain.group === 'admin'
                   li.list-inline-item
                     if domain.plan === 'free'
                       if user.plan === 'free'

@@ -2793,5 +2793,10 @@
   "Paid locale distribution": "Paid locale distribution",
   "Need to change invoice information? <a href=\"%s\" class=\"alert-link notranslate\">Update company/VAT info</a>": "Need to change invoice information? <a href=\"%s\" class=\"alert-link notranslate\">Update company/VAT info</a>",
   "Back to Billing": "Back to Billing",
-  "Submitting your request will void our refund policy.": "Submitting your request will void our refund policy."
+  "Submitting your request will void our refund policy.": "Submitting your request will void our refund policy.",
+  "Error logs for": "Error logs for",
+  "rate limiting": "rate limiting",
+  "greylisting": "greylisting",
+  "are not accessible since the connection ends early (e.g. before": "are not accessible since the connection ends early (e.g. before",
+  "commands can be transmitted).": "commands can be transmitted)."
 }

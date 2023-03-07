@@ -103,6 +103,7 @@ router
     web.myAccount.retrieveReceipt
   )
   .get('/domains', paginate.middleware(10, 50), web.myAccount.listDomains)
+  // TODO: document this endpoint
   .post(
     '/aliases',
     web.myAccount.retrieveDomain,
@@ -262,17 +263,9 @@ router
     rateLimit(200, 'verify records'),
     web.myAccount.verifyRecords
   )
-  .get(
-    '/logs',
-    // TODO: once out of beta, fix this
-    policies.ensureAdmin,
-    paginate.middleware(10, 50),
-    web.myAccount.listLogs
-  )
+  .get('/logs', paginate.middleware(10, 50), web.myAccount.listLogs)
   .get(
     '/logs/:id',
-    // TODO: once out of beta, fix this
-    policies.ensureAdmin,
     paginate.middleware(10, 50),
     web.myAccount.retrieveLog,
     render('my-account/logs/retrieve')

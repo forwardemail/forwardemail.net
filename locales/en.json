@@ -3609,5 +3609,10 @@
   "The domain name you entered of <span class=\"font-weight-bold notranslate\">%s</span> is not a valid custom domain name or it requires account approval for usage. Please use a custom domain name or <a href=\"%s\">contact us for account approval</a>.": "The domain name you entered of <span class=\"font-weight-bold notranslate\">%s</span> is not a valid custom domain name or it requires account approval for usage. Please use a custom domain name or <a href=\"%s\">contact us for account approval</a>.",
   "Submitting your request will void our refund policy.": "Submitting your request will void our refund policy.",
   "Domain name <span class=\"notranslate\">%s</span> has a domain name that includes reserved keywords such as \"mail\", \"disposable\", and \"inbox\". Please <a class=\"font-weight-bold\" href=\"%s\">upgrade your account</a> to a paid plan to continue.": "Domain name <span class=\"notranslate\">%s</span> has a domain name that includes reserved keywords such as \"mail\", \"disposable\", and \"inbox\". Please <a class=\"font-weight-bold\" href=\"%s\">upgrade your account</a> to a paid plan to continue.",
-  "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> was successfully removed from our denylist."
+  "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.": "<span class=\"notranslate\">%s</span> was successfully removed from our denylist.",
+  "Error logs for": "Error logs for",
+  "rate limiting": "rate limiting",
+  "greylisting": "greylisting",
+  "are not accessible since the connection ends early (e.g. before": "are not accessible since the connection ends early (e.g. before",
+  "commands can be transmitted).": "commands can be transmitted)."
 }
