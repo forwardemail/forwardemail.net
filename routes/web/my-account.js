@@ -263,9 +263,15 @@ router
     rateLimit(200, 'verify records'),
     web.myAccount.verifyRecords
   )
-  .get('/logs', paginate.middleware(10, 50), web.myAccount.listLogs)
+  .get(
+    '/logs',
+    web.myAccount.ensureUpgradedPlan,
+    paginate.middleware(10, 50),
+    web.myAccount.listLogs
+  )
   .get(
     '/logs/:id',
+    web.myAccount.ensureUpgradedPlan,
     paginate.middleware(10, 50),
     web.myAccount.retrieveLog,
     render('my-account/logs/retrieve')

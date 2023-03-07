@@ -1,12 +1,20 @@
 const Boom = require('@hapi/boom');
 
 function ensureUpgradedPlan(ctx, next) {
-  if (ctx.state.domain.plan !== 'free' && !ctx.state.isTeamPlanRequired)
+  if (
+    ctx.state.domain &&
+    ctx.state.domain.plan !== 'free' &&
+    !ctx.state.isTeamPlanRequired
+  )
     return next();
 
-  const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
-  );
+  if (!ctx.state.domain && ctx.state.user.plan !== 'free') return next();
+
+  const redirectTo = ctx.state.domain
+    ? ctx.state.l(
+        `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+      )
+    : ctx.state.l(`/my-account/billing/upgrade?plan=enhanced_protection`);
 
   const swal = {
     title: ctx.translate('UPGRADE_PLAN'),

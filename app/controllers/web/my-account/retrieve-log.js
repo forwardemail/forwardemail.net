@@ -60,8 +60,6 @@ async function retrieveLog(ctx, next) {
         )
         .map((rcpt) => rcpt.address)
     : [];
-  if (isSANB(log?.meta?.session?.headers?.subject))
-    log.subject = log.meta.session.headers.subject.replace('Subject: ', '');
 
   return next();
 }

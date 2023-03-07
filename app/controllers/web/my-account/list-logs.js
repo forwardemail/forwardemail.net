@@ -102,7 +102,6 @@ async function listLogs(ctx) {
   //
   // - mailFrom = MAIL FROM
   // - rcpts = RCPT FROM (array of recipients filtered for relative user)
-  // - subject (utf8 decoded subject)
   const domainNames = new Set(domainsByUser.map((d) => d.name));
   for (const log of logs) {
     if (
@@ -121,8 +120,6 @@ async function listLogs(ctx) {
           )
           .map((rcpt) => rcpt.address)
       : [];
-    if (isSANB(log?.meta?.session?.headers?.subject))
-      log.subject = log.meta.session.headers.subject.replace('Subject: ', '');
   }
 
   if (ctx.accepts('html'))

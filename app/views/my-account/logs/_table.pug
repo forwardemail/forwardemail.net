@@ -26,7 +26,7 @@ table.table.table-hover.table-bordered.table-sm
         each log in logs
           tr
             td.align-middle
-              .markdown-body.ml-0.mr-0: code= shortID.longToShort(log.id)
+              .markdown-body.ml-0.mr-0: code= log.id
             td.align-middle.text-center.small.text-monospace
               if log.meta && log.meta.session && log.meta.session.arrivalDate
                 span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.meta.session.arrivalDate).format("M/D/YY h:mm A z")
@@ -44,9 +44,15 @@ table.table.table-hover.table-bordered.table-sm
             td.align-middle.small.text-monospace
               //- TODO: show webhook response
               //- TODO: show bounces + additional insight
-              //- TODO: handle utf8 + other decoding for subject line
-              if log.subject
-                code= log.subject
+              if log.meta && log.meta.session && log.meta.session.headers && log.meta.session.headers.Subject
+                //- this is the new UTF-8 decoded value
+                code= log.meta.session.headers.Subject
+              else if log.meta && log.meta.session && log.meta.session.headers && log.meta.session.headers.subject
+                //- legacy support
+                if log.meta.session.headers.subject.includes(':')
+                  code= log.meta.session.headers.subject.split(':')[1]
+                else
+                  code= log.meta.session.headers.subject
             td.align-middle
               ul.list-inline.mb-0
                 if log.meta

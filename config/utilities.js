@@ -12,7 +12,6 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const numeral = require('numeral');
 const pluralize = require('pluralize');
-const shortID = require('mongodb-short-id');
 const splitLines = require('split-lines');
 const striptags = require('striptags');
 const titleize = require('titleize');
@@ -174,7 +173,6 @@ module.exports = {
   numeral,
   pluralize,
   prefixHTMLPathBasedAnchors,
-  shortID,
   splitLines,
   striptags,
   titleize,
