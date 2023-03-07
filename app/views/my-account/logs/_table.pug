@@ -4,13 +4,13 @@ include ../../_pagination
 table.table.table-hover.table-bordered.table-sm
   thead.thead-dark
     tr
-      th.text-center.align-middle(scope="col")= 'ID'
+      th.text-center.align-middle(scope="col")= "ID"
         //- +sortHeader('id', 'ID', '#table-logs')
-      th.text-center.align-middle(scope="col")!= t('Date &amp; Time')
+      th.text-center.align-middle(scope="col")!= t("Date &amp; Time")
         //- +sortHeader('created_at', 'Date &amp; Time', '#table-logs')
-      th.text-center.align-middle(scope="col")= t('Subject')
+      th.text-center.align-middle(scope="col")= t("Subject")
         //- +sortHeader('subject', 'Subject', '#table-logs')
-      th.text-center.align-middle(scope="col")= t('SMTP Response')
+      th.text-center.align-middle(scope="col")= t("SMTP Response")
         //- +sortHeader('status', 'SMTP Response', '#table-logs')
       th.text-center.align-middle(scope="col")= t("Actions")
     tbody
@@ -37,7 +37,7 @@ table.table.table-hover.table-bordered.table-sm
               else if log.meta && log.meta.session && log.meta.session.headers && log.meta.session.headers.subject
                 //- legacy support
                 if log.meta.session.headers.subject.includes(':')
-                  code= log.meta.session.headers.subject.split(':')[1]
+                  code= log.meta.session.headers.subject.split(":")[1]
                 else
                   code= log.meta.session.headers.subject
             td.align-middle
