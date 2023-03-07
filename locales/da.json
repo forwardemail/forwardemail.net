@@ -3524,5 +3524,6 @@
   "rate limiting": "rate limiting",
   "greylisting": "greylisting",
   "are not accessible since the connection ends early (e.g. before": "are not accessible since the connection ends early (e.g. before",
-  "commands can be transmitted).": "commands can be transmitted)."
+  "commands can be transmitted).": "commands can be transmitted).",
+  "Sign out": "Sign out"
 }
