@@ -1995,6 +1995,8 @@ As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes
 
 Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
 
+Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+
 See our [Privacy Policy](/privacy) for more insight.
 
 

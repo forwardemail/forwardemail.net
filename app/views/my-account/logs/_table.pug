@@ -4,19 +4,18 @@ include ../../_pagination
 table.table.table-hover.table-bordered.table-sm
   thead.thead-dark
     tr
-      th(scope="col")
-        +sortHeader('id', 'ID', '#table-logs')
-      //- TODO: render time according to user's current time (prob should use dayjs to render client-side?)
-      th(scope="col")
-        +sortHeader('created_at', 'Date &amp; Time', '#table-logs')
-      th(scope="col")
-        +sortHeader('mail_from', 'MAIL FROM', '#table-logs')
-      th(scope="col")
-        +sortHeader('rcpt_to', 'RCPT TO', '#table-logs')
-      th(scope="col")
-        +sortHeader('subject', 'Subject', '#table-logs')
-      th(scope="col")
-        +sortHeader('status', 'SMTP Code', '#table-logs')
+      th.text-center.align-middle(scope="col")= 'ID'
+        //- +sortHeader('id', 'ID', '#table-logs')
+      th.text-center.align-middle(scope="col")!= t('Date &amp; Time')
+        //- +sortHeader('created_at', 'Date &amp; Time', '#table-logs')
+      th.text-center.align-middle(scope="col")= 'MAIL FROM'
+        //- +sortHeader('mail_from', 'MAIL FROM', '#table-logs')
+      th.text-center.align-middle(scope="col")= 'RCPT TO'
+        //- +sortHeader('rcpt_to', 'RCPT TO', '#table-logs')
+      th.text-center.align-middle(scope="col")= t('Subject')
+        //- +sortHeader('subject', 'Subject', '#table-logs')
+      th.text-center.align-middle(scope="col")= t('SMTP Response')
+        //- +sortHeader('status', 'SMTP Response', '#table-logs')
       th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if logs.length === 0
@@ -29,7 +28,10 @@ table.table.table-hover.table-bordered.table-sm
             td.align-middle
               .markdown-body.ml-0.mr-0: code= shortID.longToShort(log.id)
             td.align-middle.text-center.small.text-monospace
-              = dayjs(log.created_at).format("M/D/YY h:mm A")
+              if log.meta && log.meta.session && log.meta.session.arrivalDate
+                span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.meta.session.arrivalDate).format("M/D/YY h:mm A z")
+              else
+                span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.created_at).format("M/D/YY h:mm A z")
             td.align-middle.small
               if log.mailFrom
                 .markdown-body.ml-0.mr-0: code= log.mailFrom
@@ -40,42 +42,37 @@ table.table.table-hover.table-bordered.table-sm
                     li.list-inline-item
                       .markdown-body.ml-0.mr-0: code= rcpt
             td.align-middle.small.text-monospace
+              //- TODO: show webhook response
+              //- TODO: show bounces + additional insight
               //- TODO: handle utf8 + other decoding for subject line
               if log.subject
                 code= log.subject
-              = 'TODO: View Error Message'
+            td.align-middle
+              ul.list-inline.mb-0
+                if log.meta
+                  - let badgeClass = "badge-success";
+                  - let statusCode;
+                  if log.err && log.err.responseCode
+                    - statusCode = log.err.responseCode;
+                  else if log.err && log.err.statusCode
+                    - statusCode = log.err.statusCode;
+                  else if log.err && log.err.status
+                    - statusCode = log.err.status;
+                  if statusCode >= 500
+                    - badgeClass = "badge-danger";
+                  else if statusCode >= 400
+                    - badgeClass = "badge-warning";
+                  else if statusCode >= 300
+                    - badgeClass = "badge-primary";
+                  if statusCode
+                    li.list-inline-item.d-inline
+                      span.badge.badge-pill(class=badgeClass)= statusCode
+                li.list-inline-item.small.d-inline
+                  small.text-monospace!= log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
             td.align-middle.text-center
-              if log.meta
-                - let badgeClass = "badge-success";
-                - let statusCode;
-
-                if log.meta.is_http && log.meta.response && log.meta.response.status_code
-                  - statusCode = log.meta.response.status_code;
-                else if log.err && log.err.responseCode
-                  - statusCode = log.err.responseCode;
-                else if log.err && log.err.statusCode
-                  - statusCode = log.err.statusCode;
-                else if log.err && log.err.status
-                  - statusCode = log.err.status;
-
-                if statusCode >= 500
-                  - badgeClass = "badge-danger";
-                else if statusCode >= 400
-                  - badgeClass = "badge-warning";
-                else if statusCode >= 300
-                  - badgeClass = "badge-primary";
-
-                if statusCode
-                  span.badge.badge-pill(class=badgeClass)= statusCode
-            td.align-middle.text-center
-              if (_.isObject(meta) && _.isObject(meta.session) && Array.isArray(meta.session.headers))
-                a.btn.btn-dark.btn-sm(
-                  href=l(`/my-account/logs/${log.id}`),
-                  target="_blank"
-                )
-                  i.fa.fa-search
-                  = " "
-                  = t("Headers")
-              else
-                small.text-muted= t("No headers")
+              a.btn.btn-dark.btn-sm(
+                href=l(`/my-account/logs/${log.id}`),
+                target="_blank"
+              )
+                i.fa.fa-search
 +paginate('#table-logs')

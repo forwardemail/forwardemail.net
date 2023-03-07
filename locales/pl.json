@@ -3784,5 +3784,10 @@
   "To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.": "To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.",
   "Deliverability for past 7 days": "Deliverability for past 7 days",
   "Paid locale distribution": "Paid locale distribution",
-  "Submitting your request will void our refund policy.": "Submitting your request will void our refund policy."
+  "Submitting your request will void our refund policy.": "Submitting your request will void our refund policy.",
+  "Error logs for": "Error logs for",
+  "rate limiting": "rate limiting",
+  "greylisting": "greylisting",
+  "are not accessible since the connection ends early (e.g. before": "are not accessible since the connection ends early (e.g. before",
+  "commands can be transmitted).": "commands can be transmitted)."
 }

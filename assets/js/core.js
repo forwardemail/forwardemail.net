@@ -1,11 +1,11 @@
-const URLParse = require('url-parse');
 const $ = require('jquery');
-const Swal = require('sweetalert2');
 const Clipboard = require('clipboard');
+const Lazyload = require('lazyload');
 const Popper = require('popper.js');
+const Swal = require('sweetalert2');
+const URLParse = require('url-parse');
 const debounce = require('lodash/debounce');
 const lazyframe = require('lazyframe');
-const Lazyload = require('lazyload');
 const { randomstring } = require('@sidoshi/random-string');
 
 // load jQuery and Bootstrap
@@ -126,6 +126,22 @@ window.onloadTurnstileCallback = function () {
     $(this).find('.cf-explicit-turnstile').each(handleExplicitTurnstile);
   });
 };
+
+// Re-render dates with user's local time
+$('.dayjs').each(function () {
+  const data = $(this).data();
+  if (!data.time) {
+    console.error(new Error('Dayjs missing time'));
+    return;
+  }
+
+  $(this).text(
+    new Intl.DateTimeFormat(window.LOCALE, {
+      dateStyle: 'short',
+      timeStyle: 'short'
+    }).format(new Date(data.time))
+  );
+});
 
 // Handle modals on anchor tags with data-target specified (preserve href)
 $('a[data-toggle="modal-anchor"]').on('click.modalAnchor', modalAnchor);

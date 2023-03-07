@@ -25,12 +25,15 @@ $input-disabled-bg:                     $dark;
       @extend .text-light;
     }
   }
+  code {
+    color: $white;
+  }
   .markdown-body {
     .bg-dark {
       background-color: $gray-800 !important;
     }
     code {
-      background-color: $dark !important;
+      background-color: $gray-800 !important;
       color: $white;
     }
     .octicon-link {

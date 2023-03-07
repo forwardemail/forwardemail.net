@@ -44,23 +44,19 @@ async function listLogs(ctx) {
   }
 
   let query = {
-    $or: [
-      //
-      // TODO: support this in the future with an activity log or audit trail (?)
-      //
-      // {
-      //   user: ctx.state.user._id
-      // },
-      {
-        is_restricted: {
-          $eq: true,
-          $exists: true
-        },
-        domains: {
-          $in: domainsByUser.map((d) => d._id)
-        }
-      }
-    ]
+    //
+    // TODO: support this in the future with an activity log or audit trail (?)
+    //
+    // user: ctx.state.user._id
+    is_restricted: {
+      $eq: true,
+      $exists: true
+    },
+    'meta.err.responseCode': { $exists: true },
+    domains: {
+      $exists: true,
+      $in: domainsByUser.map((d) => d._id)
+    }
   };
 
   if (domains.size > 0) {
@@ -81,7 +77,8 @@ async function listLogs(ctx) {
         $eq: true,
         $exists: true
       },
-      domains: { $in: domainIds }
+      'meta.err.responseCode': { $exists: true },
+      domains: { $exists: true, $in: domainIds }
     };
   }
 
@@ -124,8 +121,8 @@ async function listLogs(ctx) {
           )
           .map((rcpt) => rcpt.address)
       : [];
-    if (isSANB(log?.meta?.session?.headers?.Subject))
-      log.subject = log.meta.session.headers.Subject;
+    if (isSANB(log?.meta?.session?.headers?.subject))
+      log.subject = log.meta.session.headers.subject.replace('Subject: ', '');
   }
 
   if (ctx.accepts('html'))
