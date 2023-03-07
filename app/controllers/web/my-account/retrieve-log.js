@@ -1,6 +1,7 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
+const mongoose = require('mongoose');
 const { isEmail } = require('validator');
 
 const { Logs } = require('#models');
@@ -27,22 +28,25 @@ async function retrieveLog(ctx, next) {
 
   const domainNames = new Set(domainsByUser.map((d) => d.name));
 
-  ctx.state.log = await Logs.findOne({
-    is_restricted: true,
-    id: ctx.params.id,
-    'meta.err.responseCode': { $exists: true },
-    domains: {
-      $exists: true,
-      $in: domainsByUser.map((d) => d._id)
-    }
+  const log = await Logs.findOne({
+    _id: new mongoose.Types.ObjectId(ctx.params.id)
   })
     .lean()
     .exec();
 
-  if (!ctx.state.log)
+  if (
+    !log ||
+    !log.is_restricted ||
+    !log?.meta?.err?.responseCode ||
+    !Array.isArray(log.domains) ||
+    log.domains.length === 0
+  )
     throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
 
-  const { log } = ctx.state;
+  const domainIdsByUser = new Set(domainsByUser.map((d) => d.id));
+
+  if (log.domains.every((d) => !domainIdsByUser.has(d.toString())))
+    throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
 
   if (
     isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
@@ -60,6 +64,8 @@ async function retrieveLog(ctx, next) {
         )
         .map((rcpt) => rcpt.address)
     : [];
+
+  ctx.state.log = log;
 
   return next();
 }
