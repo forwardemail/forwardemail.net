@@ -8,10 +8,6 @@ table.table.table-hover.table-bordered.table-sm
         //- +sortHeader('id', 'ID', '#table-logs')
       th.text-center.align-middle(scope="col")!= t('Date &amp; Time')
         //- +sortHeader('created_at', 'Date &amp; Time', '#table-logs')
-      th.text-center.align-middle(scope="col")= 'MAIL FROM'
-        //- +sortHeader('mail_from', 'MAIL FROM', '#table-logs')
-      th.text-center.align-middle(scope="col")= 'RCPT TO'
-        //- +sortHeader('rcpt_to', 'RCPT TO', '#table-logs')
       th.text-center.align-middle(scope="col")= t('Subject')
         //- +sortHeader('subject', 'Subject', '#table-logs')
       th.text-center.align-middle(scope="col")= t('SMTP Response')
@@ -32,15 +28,6 @@ table.table.table-hover.table-bordered.table-sm
                 span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.meta.session.arrivalDate).format("M/D/YY h:mm A z")
               else
                 span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.created_at).format("M/D/YY h:mm A z")
-            td.align-middle.small
-              if log.mailFrom
-                .markdown-body.ml-0.mr-0: code= log.mailFrom
-            td.align-middle.small
-              if Array.isArray(log.rcpts) && log.rcpts.length > 0
-                ul.list-inline.mb-0
-                  each rcpt in log.rcpts
-                    li.list-inline-item
-                      .markdown-body.ml-0.mr-0: code= rcpt
             td.align-middle.small.text-monospace
               //- TODO: show webhook response
               //- TODO: show bounces + additional insight

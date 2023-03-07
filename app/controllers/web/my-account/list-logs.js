@@ -1,13 +1,10 @@
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
-const { isEmail } = require('validator');
 
 const { Logs } = require('#models');
 
-// eslint-disable-next-line complexity
 async function listLogs(ctx) {
   //
   // NOTE: this is a safeguard since logs are sensitive
@@ -94,33 +91,6 @@ async function listLogs(ctx) {
   ]);
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
-
-  //
-  // iterate through all logs and add virtual properties relative to the logged in user
-  // (this helps keep sensitive data safe in edge cases like multiple RCPT TO on same service)
-  // (and it also keeps a lot of logic out of the view rendering)
-  //
-  // - mailFrom = MAIL FROM
-  // - rcpts = RCPT FROM (array of recipients filtered for relative user)
-  const domainNames = new Set(domainsByUser.map((d) => d.name));
-  for (const log of logs) {
-    if (
-      isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
-      isEmail(log.meta.session.envelope.mailFrom.address)
-    )
-      log.mailFrom = log.meta.session.envelope.mailFrom.address;
-    log.rcpts = _.isArray(log?.meta?.session?.envelope.rcptTo)
-      ? log.meta.session.envelope.rcptTo
-          .filter(
-            (rcpt) =>
-              _.isObject(rcpt) &&
-              isSANB(rcpt.address) &&
-              isEmail(rcpt.address) &&
-              domainNames.has(rcpt.address.split('@')[1].toLowerCase())
-          )
-          .map((rcpt) => rcpt.address)
-      : [];
-  }
 
   if (ctx.accepts('html'))
     return ctx.render('my-account/logs', {
