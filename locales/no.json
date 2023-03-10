@@ -3820,5 +3820,6 @@
   "Unsubscribe": "Avslutte abonnementet",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Hvis du ønsker å avslutte abonnementet på alle våre e-poster, må du slette kontoen din på denne siden.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> er ikke bekreftet.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> hadde en feil, vennligst oppdater og prøv igjen eller kontakt oss."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> hadde en feil, vennligst oppdater og prøv igjen eller kontakt oss.",
+  "Sign out": "Sign out"
 }

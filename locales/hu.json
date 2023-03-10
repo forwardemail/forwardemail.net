@@ -3815,5 +3815,6 @@
   "Unsubscribe": "Leiratkozás",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Ha le szeretne iratkozni az összes e-mailünkről, kérjük, törölje fiókját ezen az oldalon.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> nincs ellenőrizve.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> hiba lépett fel. Kérjük, frissítse, és próbálja újra, vagy lépjen kapcsolatba velünk."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> hiba lépett fel. Kérjük, frissítse, és próbálja újra, vagy lépjen kapcsolatba velünk.",
+  "Sign out": "Sign out"
 }

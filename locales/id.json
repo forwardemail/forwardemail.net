@@ -3815,5 +3815,6 @@
   "Unsubscribe": "Berhenti berlangganan",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Jika Anda ingin berhenti berlangganan dari semua email kami, silakan hapus akun Anda di halaman ini.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> tidak diverifikasi.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> mengalami kesalahan, segarkan dan coba lagi atau hubungi kami."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> mengalami kesalahan, segarkan dan coba lagi atau hubungi kami.",
+  "Sign out": "Sign out"
 }

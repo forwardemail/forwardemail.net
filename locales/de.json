@@ -2824,5 +2824,6 @@
   "Unsubscribe": "Abbestellen",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Wenn Sie alle unsere E-Mails abbestellen möchten, löschen Sie bitte Ihr Konto auf dieser Seite.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> nicht verifiziert.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> hatte einen Fehler, bitte aktualisieren Sie und versuchen Sie es erneut oder kontaktieren Sie uns."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> hatte einen Fehler, bitte aktualisieren Sie und versuchen Sie es erneut oder kontaktieren Sie uns.",
+  "Sign out": "Sign out"
 }

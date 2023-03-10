@@ -3658,5 +3658,6 @@
   "Unsubscribe": "Lopeta tilaus",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Jos haluat lopettaa kaikkien sähköpostiemme tilauksen, poista tilisi tällä sivulla.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> ei ole vahvistettu.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> oli virhe. Päivitä ja yritä uudelleen tai ota meihin yhteyttä."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> oli virhe. Päivitä ja yritä uudelleen tai ota meihin yhteyttä.",
+  "Sign out": "Sign out"
 }

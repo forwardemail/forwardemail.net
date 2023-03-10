@@ -3815,5 +3815,6 @@
   "Unsubscribe": "abonelikten çık",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Tüm e-postalarımızın aboneliğinden çıkmak istiyorsanız, lütfen bu sayfadaki hesabınızı silin.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> doğrulanmadı.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> bir hata oluştu, lütfen yenileyip tekrar deneyin veya bizimle iletişime geçin."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> bir hata oluştu, lütfen yenileyip tekrar deneyin veya bizimle iletişime geçin.",
+  "Sign out": "Sign out"
 }
