@@ -35,6 +35,13 @@ async function checkGitHubIssues() {
         }
       }
     );
+    if (
+      typeof ACTIVE_GITHUB_ISSUES === 'object' &&
+      Array.isArray(ACTIVE_GITHUB_ISSUES.data)
+    )
+      ACTIVE_GITHUB_ISSUES.data = ACTIVE_GITHUB_ISSUES.data.filter(
+        (obj) => obj.user.login === 'titanism'
+      );
   } catch (err) {
     logger.fatal(err);
   }
