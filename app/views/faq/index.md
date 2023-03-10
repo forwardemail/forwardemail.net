@@ -825,7 +825,7 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
 4. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
 
-5. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried more than 500 times, and if so, then it will be rejected with a 550 error code.
+5. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
 
 6. If the message had a "To" header, and if any of the message's "To" headers were directed towards SRS rewritten addresses using our domain name, then we will rewrite them (this namely applies for vacation responders).
 
