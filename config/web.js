@@ -196,10 +196,11 @@ module.exports = (redis) => ({
           title: ctx.request.t('Warning'),
           html: `<small>${ctx.translate(
             'ACTIVE_INCIDENT',
-            ACTIVE_GITHUB_ISSUES.data.length > 1
-              ? 'https://status.forwardemail.net'
-              : ACTIVE_GITHUB_ISSUES.data[0].html_url ||
-                  'https://status.forwardemail.net',
+            'https://status.forwardemail.net',
+            // ACTIVE_GITHUB_ISSUES.data.length > 1
+            //   ? 'https://status.forwardemail.net'
+            //   : ACTIVE_GITHUB_ISSUES.data[0].html_url ||
+            //       'https://status.forwardemail.net',
             ACTIVE_GITHUB_ISSUES.data[0].title ||
               'Please view our status page for more information.'
           )}</small>`,
