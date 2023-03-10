@@ -3634,5 +3634,6 @@
   "If you're receiving email, then <u>your action is still required</u>.": "If you're receiving email, then <u>your action is still required</u>.",
   "Click here to resolve": "Click here to resolve",
   "Follow setup for <strong class=\"text-decoration-underline\">each</strong> of <a href=\"%s\">your domains</a>:": "Follow setup for <strong class=\"text-decoration-underline\">each</strong> of <a href=\"%s\">your domains</a>:",
-  "If you're receiving email, then <u class=\"text-danger\">your action is still required</u>.": "If you're receiving email, then <u class=\"text-danger\">your action is still required</u>."
+  "If you're receiving email, then <u class=\"text-danger\">your action is still required</u>.": "If you're receiving email, then <u class=\"text-danger\">your action is still required</u>.",
+  "Unsubscribe": "Unsubscribe"
 }
