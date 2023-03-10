@@ -5,6 +5,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
+const { Octokit } = require('@octokit/core');
 
 const routes = require('../routes');
 const env = require('./env');
@@ -15,6 +16,35 @@ const i18n = require('#helpers/i18n');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
 const createTangerine = require('#helpers/create-tangerine');
+
+const octokit = new Octokit({
+  auth: env.GITHUB_OCTOKIT_TOKEN
+});
+
+let ACTIVE_GITHUB_ISSUES = {};
+
+async function checkGitHubIssues() {
+  try {
+    ACTIVE_GITHUB_ISSUES = await octokit.request(
+      'GET /repos/{owner}/{repo}/issues',
+      {
+        owner: 'forwardemail',
+        repo: 'status.forwardemail.net',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      }
+    );
+  } catch (err) {
+    logger.fatal(err);
+  }
+}
+
+// GitHub API is limited to 5K requests per hour
+// (if we check every 10 seconds, then that is 360 requests per hour)
+// (if we check every minute, then that is 60 requests per hour)
+checkGitHubIssues();
+setInterval(checkGitHubIssues, 60000);
 
 const defaultSrc = isSANB(process.env.WEB_HOST)
   ? [
@@ -153,7 +183,35 @@ module.exports = (redis) => ({
     );
   },
   hookBeforePassport(app) {
-    app.use((ctx, next) => {
+    app.use(async (ctx, next) => {
+      let position = 'bottom';
+
+      // TODO: make https://status.forwardemail.net into an env var and replace it everywhere with ripgrep
+      if (
+        typeof ACTIVE_GITHUB_ISSUES === 'object' &&
+        Array.isArray(ACTIVE_GITHUB_ISSUES.data) &&
+        ACTIVE_GITHUB_ISSUES.data.length > 0
+      ) {
+        ctx.flash('custom', {
+          title: ctx.request.t('Warning'),
+          html: `<small>${ctx.translate(
+            'ACTIVE_INCIDENT',
+            ACTIVE_GITHUB_ISSUES.data.length > 1
+              ? 'https://status.forwardemail.net'
+              : ACTIVE_GITHUB_ISSUES.data[0].html_url ||
+                  'https://status.forwardemail.net',
+            ACTIVE_GITHUB_ISSUES.data[0].title ||
+              'Please view our status page for more information.'
+          )}</small>`,
+          type: 'warning',
+          toast: true,
+          showConfirmButton: false,
+          position,
+          timer: 5000
+        });
+        position = 'top';
+      }
+
       // if either mongoose or redis are not connected
       // then render website outage message to users
       const isMongooseDown = mongoose.connections.some(
@@ -191,8 +249,8 @@ module.exports = (redis) => ({
           type: 'warning',
           toast: true,
           showConfirmButton: false,
-          timer: 3000,
-          position: 'top'
+          timer: 5000,
+          position
         });
       }
 

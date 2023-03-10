@@ -3610,7 +3610,6 @@
   "we added support": "เราได้เพิ่มการสนับสนุน",
   "for email forwarding aliases to match": "เพื่อให้ชื่อแทนการส่งต่ออีเมลตรงกัน",
   "regular expressions": "นิพจน์ทั่วไป",
-  "Throughout 2022 we were hyperfocused and overlooked updating this page – but here are some highlights:": "ตลอดปี 2022 เราโฟกัสมากเกินไปและมองข้ามการอัปเดตหน้านี้ แต่นี่คือไฮไลท์บางประการ:",
   "Answered thousands of customer support requests and re-designed the onboarding experience.": "ตอบรับคำขอการสนับสนุนลูกค้านับพันรายการและออกแบบประสบการณ์การต้อนรับใหม่",
   "Improved email deliverability through optimized code logic and robust error handling.": "ปรับปรุงความสามารถในการส่งอีเมลผ่านตรรกะโค้ดที่ปรับให้เหมาะสมและการจัดการข้อผิดพลาดที่มีประสิทธิภาพ",
   "Worked with major domain name registrars to fight spam campaigns.": "ทำงานร่วมกับผู้รับจดทะเบียนชื่อโดเมนรายใหญ่เพื่อต่อสู้กับแคมเปญสแปม",

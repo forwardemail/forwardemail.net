@@ -38,6 +38,7 @@
     "@ladjs/redis": "1.1.1",
     "@ladjs/shared-config": "9.0.1",
     "@ladjs/web": "20.0.14",
+    "@octokit/core": "4.2.0",
     "@sidoshi/random-string": "1.0.0",
     "@tkrotoff/bootstrap-floating-label": "0.8",
     "adm-zip": "0.5.10",
