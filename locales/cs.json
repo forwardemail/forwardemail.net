@@ -3815,5 +3815,19 @@
   "Unsubscribe": "Odhlásit odběr",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> není ověřen.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> došlo k chybě, obnovte stránku a zkuste to znovu nebo nás kontaktujte.",
-  "Sign out": "Sign out"
+  "Sign out": "Sign out",
+  "<strong>Active Incident:</strong> <a class=\"text-themed\" href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"notranslate\">%s</a>": "<strong>Active Incident:</strong> <a class=\"text-themed\" href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"notranslate\">%s</a>",
+  "My Account - Logs": "My Account - Logs",
+  "Date &amp; Time": "Date &amp; Time",
+  "Subject": "Subject",
+  "SMTP Response": "SMTP Response",
+  "Search functionality and more coming soon.": "Search functionality and more coming soon.",
+  "Works with <a class=\"font-weight-bold text-decoration-underline text-themed\" target=\"_blank\" href=\"%s\">Gmail</a>, Outlook, and more": "Works with <a class=\"font-weight-bold text-decoration-underline text-themed\" target=\"_blank\" href=\"%s\">Gmail</a>, Outlook, and more",
+  "Refund Policy": "Refund Policy",
+  "Error Logs": "Error Logs",
+  "Search and analyze error logs": "Search and analyze error logs",
+  "No error logs have been stored yet.  Please check back later.": "No error logs have been stored yet.  Please check back later.",
+  "), we will check to see the message has been attempted to be retried for more than 5 days (which matches": "), we will check to see the message has been attempted to be retried for more than 5 days (which matches",
+  "default postfix behavior": "default postfix behavior",
+  "), and if so, then it will be rejected with a 550 error code.": "), and if so, then it will be rejected with a 550 error code."
 }
