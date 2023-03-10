@@ -94,6 +94,7 @@ const purgeCssOptions = {
     'active',
     'alert-danger',
     'alert-success',
+    'alert-link',
     'align-middle',
     'anchor',
     'badge-danger',
@@ -314,6 +315,11 @@ function css() {
         // `rg "class=" app/models`
         // `rg "class=" config/index.js`
         safelist: [
+          'alert-link',
+          'font-weight-bold',
+          'text-decoration-underline',
+          'text-monospace',
+          'small',
           'code',
           'font-weight-bold',
           'markdown-body',
