@@ -22,10 +22,10 @@ footer
           li.list-inline-item.small: a.text-muted(
             href=`${config.urls.web}/${locale}/terms`
           )= t("Terms")
-  if user && _.isObject(user)
-    .row
-      .col-12.text-center.small
-        a.small.text-muted.text-monospace(
-          href=`${config.urls.web}/${locale}/my-account/security?unsubscribe=true`
-        )
-          != t("Unsubscribe")
+    if user && _.isObject(user)
+      .row
+        .col-12.text-center.small
+          a.small.text-muted.text-monospace(
+            href=`${config.urls.web}/${locale}/my-account/security?unsubscribe=true`
+          )
+            != t("Unsubscribe")
