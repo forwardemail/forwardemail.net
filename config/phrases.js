@@ -325,6 +325,8 @@ module.exports = {
     'Verification link will not be sent until the domain has verified <span class="notranslate">TXT</span> and MX records.',
   DISPOSABLE_EMAIL_NOT_ALLOWED:
     'Disposable email addresses are not allowed.  Try again or contact us for help.',
+  ACTIVE_INCIDENT:
+    '<strong>Active Incident:</strong> <a href="%s" rel="noopener noreferrer" target="_blank" class="notranslate">%s</a>',
   WEBSITE_OUTAGE:
     'We are resolving an issue with our website &ndash; visit our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">Status Page</a> for updates.',
   ERRORS_OCCURRED: 'The following errors occurred:',
