@@ -10,10 +10,7 @@ mixin paginate(tableSelector)
               href=paginate.href({ page: 1 }),
               data-table=tableSelector,
               data-page=1,
-              aria-label=t("First Page"),
-              data-toggle="tooltip",
-              data-placement="bottom",
-              title=t("First Page")
+              aria-label=t("First Page")
             )
               span(aria-hidden="true")
                 i.fa.fa-step-backward
@@ -44,10 +41,7 @@ mixin paginate(tableSelector)
               href=paginate.href({ page: pageCount }),
               data-table=tableSelector,
               data-page=pageCount,
-              aria-label=t("Last Page"),
-              data-toggle="tooltip",
-              data-placement="bottom",
-              title=t("Last Page")
+              aria-label=t("Last Page")
             )
               span(aria-hidden="true")
                 i.fa.fa-step-forward
@@ -56,6 +50,7 @@ mixin paginate(tableSelector)
       button#pagination-menu-link.btn.btn-outline-secondary.btn-sm.dropdown-toggle(
         type="button",
         data-toggle="dropdown",
+        data-boundary="window",
         aria-haspopup="true",
         aria-expanded="false"
       )

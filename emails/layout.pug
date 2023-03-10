@@ -10,15 +10,6 @@ html(lang=locale)
       style
         include ../build/css/app-email.css
   body.email
-    if user && _.isObject(user)
-      .container.mt-3
-        .row
-          .col-12
-            .alert.alert-light.text-center.small.mb-0
-              .small
-                != t("Need to unsubscribe?")
-                = " "
-                a.alert-link(href=`${config.urls.web}/${locale}/my-account`)= t("My Account")
     block body
       block messages
         include _messages

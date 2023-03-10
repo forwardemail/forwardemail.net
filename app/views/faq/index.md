@@ -1989,7 +1989,7 @@ No, we do not store logs – with the [exception of errors](#do-you-store-error-
 
 ## Do you store error logs
 
-**This feature is a work in progress – we are also working on opt-out functionality.**
+**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
 
 As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
 

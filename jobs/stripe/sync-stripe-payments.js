@@ -44,7 +44,7 @@ async function syncStripePayments() {
     // for each time a customer is charged for both one-time and subscriptions
     // we go through each successful charge and ensure there is an existing payment and
     // that if there is - all the information is correct with the invoice
-    let stripePaymentIntents;
+    let stripePaymentIntents = [];
     try {
       stripePaymentIntents = await getAllStripePaymentIntents(
         user[config.userFields.stripeCustomerID]

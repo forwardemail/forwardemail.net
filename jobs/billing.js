@@ -64,15 +64,33 @@ async function mapper(id) {
   )
     return;
 
-  // if user has zero domains on paid plans then ignore (another job will downgrade them)
-  const count = await Domains.countDocuments({
-    plan: { $ne: 'free' },
-    user: user._id
-  });
-  if (count === 0) return;
+  // if every user domain was good, not disposable, and not restricted then return early
+  const domains = await Domains.find({
+    'members.user': user._id
+  })
+    .sort('name')
+    .lean()
+    .exec();
+  let requiresPaidPlan = false;
+  for (const domain of domains) {
+    const member = domain.members.find(
+      (member) => member.user.toString() === user.id
+    );
+    if (!member || member.group !== 'admin') continue;
+    const { isDisposable, isRestricted } = Domains.getNameRestrictions(
+      domain.name
+    );
+    if (isDisposable || isRestricted) {
+      requiresPaidPlan = true;
+      break;
+    }
+  }
+
+  if (!requiresPaidPlan) return;
 
   // ensure plan has expiry
   if (!_.isDate(user[config.userFields.planExpiresAt])) return;
+
   // ensure plan expires < 1 month from now
   if (
     dayjs(user[config.userFields.planExpiresAt]).isAfter(
@@ -175,13 +193,6 @@ async function mapper(id) {
   // domain name | plan | member group | has mx | has txt
   // (link)
   //
-  const domains = await Domains.find({
-    'members.user': user._id
-  })
-    .sort('name')
-    .lean()
-    .exec();
-
   try {
     await email({
       template: 'payment-reminder',
@@ -248,7 +259,10 @@ async function mapper(id) {
       //       (we don't want to annoy people on subscriptions with messages)
       //
       [config.userFields.stripeSubscriptionID]: { $exists: false },
-      [config.userFields.paypalSubscriptionID]: { $exists: false }
+      [config.userFields.paypalSubscriptionID]: { $exists: false },
+      [config.userFields.paymentReminderTerminationNoticeSentAt]: {
+        $exists: false
+      }
       // TODO: we can optimize this query more with date filtering in the future
     });
 

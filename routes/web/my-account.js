@@ -267,12 +267,14 @@ router
     '/logs',
     web.myAccount.ensureUpgradedPlan,
     paginate.middleware(10, 50),
+    rateLimit(100, 'list logs'),
     web.myAccount.listLogs
   )
   .get(
     '/logs/:id',
     web.myAccount.ensureUpgradedPlan,
     paginate.middleware(10, 50),
+    rateLimit(100, 'retrieve logs'),
     web.myAccount.retrieveLog,
     render('my-account/logs/retrieve')
   )
@@ -310,7 +312,15 @@ router
   )
   .put('/profile/cancel-email-change', web.myAccount.cancelEmailChange)
   .delete('/security', web.myAccount.resetAPIToken)
-  .get('/security', render('my-account/security'))
+  .get(
+    '/security',
+    (ctx, next) => {
+      if (ctx.query.unsubscribe === 'true')
+        ctx.flash('warning', ctx.translate('TO_UNSUBSCRIBE_DELETE_ACCOUNT'));
+      return next();
+    },
+    render('my-account/security')
+  )
   .post('/recovery-keys', web.myAccount.recoveryKeys);
 
 module.exports = router;

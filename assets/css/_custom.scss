@@ -24,6 +24,33 @@ body.app {
   overflow-y: auto !important;
 }
 
+.navbar-toggler {
+  outline: transparent !important;
+  border-color: transparent !important;
+  background-color: transparent !important;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  &[aria-expanded*="false"] {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  &[aria-expanded*="true"] {
+    -webkit-transform: rotate(-180deg);
+    -moz-transform: rotate(-180deg);
+    -o-transform: rotate(-180deg);
+    -ms-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+    i.fas.fa-bars:before {
+      content: "\f00d"
+    }
+  }
+}
+
 @media (prefers-color-scheme: light) {
   .text-themed a, a.text-themed, a.text-themed.btn-link {
     color: inherit;

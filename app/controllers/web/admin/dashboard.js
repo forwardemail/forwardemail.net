@@ -49,7 +49,14 @@ async function getDeliverabilityChart(ctx) {
     }
 
     await Promise.all(
-      ['mail_accepted', 'mail_rejected', 'mail_error'].map(async (name) => {
+      [
+        'mail_accepted',
+        'mail_rejected',
+        'mail_error',
+        'bounce_prevented_empty',
+        'bounce_prevented_restricted',
+        'bounce_sent'
+      ].map(async (name) => {
         const results = await ctx.client.mget(
           dates.map((date) => `${name}:${date}`)
         );
