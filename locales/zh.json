@@ -3504,5 +3504,6 @@
   "Unsubscribe": "退订",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "如果您想取消订阅我们所有的电子邮件，请在此页面上删除您的帐户。",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span>未验证。",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span>出错，请刷新并重试或联系我们。"
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span>出错，请刷新并重试或联系我们。",
+  "Sign out": "Sign out"
 }

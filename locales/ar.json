@@ -3815,5 +3815,6 @@
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "إذا كنت ترغب في إلغاء الاشتراك من جميع رسائل البريد الإلكتروني الخاصة بنا ، فيرجى حذف حسابك في هذه الصفحة.",
   "Unsubscribe": "إلغاء الاشتراك",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "لم يتم التحقق من <span class=\"notranslate\">Cloudflare Turnstile</span> .",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "حدث خطأ <span class=\"notranslate\">Cloudflare Turnstile</span> ، يرجى التحديث والمحاولة مرة أخرى أو الاتصال بنا."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "حدث خطأ <span class=\"notranslate\">Cloudflare Turnstile</span> ، يرجى التحديث والمحاولة مرة أخرى أو الاتصال بنا.",
+  "Sign out": "Sign out"
 }

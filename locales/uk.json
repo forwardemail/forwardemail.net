@@ -3815,5 +3815,6 @@
   "Unsubscribe": "Відписатися",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Якщо ви хочете скасувати підписку на всі наші електронні листи, видаліть свій обліковий запис на цій сторінці.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> не перевірено.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> сталася помилка. Оновіть і спробуйте ще раз або зв’яжіться з нами."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> сталася помилка. Оновіть і спробуйте ще раз або зв’яжіться з нами.",
+  "Sign out": "Sign out"
 }

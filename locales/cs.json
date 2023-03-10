@@ -3815,5 +3815,6 @@
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Pokud si přejete odhlásit odběr všech našich e-mailů, smažte prosím svůj účet na této stránce.",
   "Unsubscribe": "Odhlásit odběr",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> není ověřen.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> došlo k chybě, obnovte stránku a zkuste to znovu nebo nás kontaktujte."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> došlo k chybě, obnovte stránku a zkuste to znovu nebo nás kontaktujte.",
+  "Sign out": "Sign out"
 }

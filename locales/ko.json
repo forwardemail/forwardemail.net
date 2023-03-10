@@ -3815,5 +3815,6 @@
   "Unsubscribe": "구독 취소",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "모든 이메일 수신을 거부하려면 이 페이지에서 계정을 삭제하십시오.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> 확인되지 않았습니다.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> 에 오류가 발생했습니다. 새로고침하고 다시 시도하거나 문의해 주세요."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> 에 오류가 발생했습니다. 새로고침하고 다시 시도하거나 문의해 주세요.",
+  "Sign out": "Sign out"
 }

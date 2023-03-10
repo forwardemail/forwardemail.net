@@ -3815,5 +3815,6 @@
   "Unsubscribe": "登録解除",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "すべてのメールの配信停止をご希望の場合は、このページでアカウントを削除してください。",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span>が確認されていません。",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span>でエラーが発生しました。更新して再試行するか、お問い合わせください。"
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span>でエラーが発生しました。更新して再試行するか、お問い合わせください。",
+  "Sign out": "Sign out"
 }

@@ -3815,5 +3815,6 @@
   "Unsubscribe": "בטל את המנוי",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "אם ברצונך לבטל את הרישום לכל הודעות האימייל שלנו, אנא מחק את חשבונך בדף זה.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> לא אומת.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "הייתה שגיאה <span class=\"notranslate\">Cloudflare Turnstile</span> , אנא רענן ונסה שוב או צור איתנו קשר."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "הייתה שגיאה <span class=\"notranslate\">Cloudflare Turnstile</span> , אנא רענן ונסה שוב או צור איתנו קשר.",
+  "Sign out": "Sign out"
 }

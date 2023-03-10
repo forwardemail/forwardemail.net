@@ -3815,5 +3815,6 @@
   "Unsubscribe": "hủy đăng ký",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Nếu bạn muốn hủy đăng ký nhận tất cả các email của chúng tôi, vui lòng xóa tài khoản của bạn trên trang này.",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> chưa được xác minh.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> đã xảy ra lỗi, vui lòng làm mới và thử lại hoặc liên hệ với chúng tôi."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> đã xảy ra lỗi, vui lòng làm mới và thử lại hoặc liên hệ với chúng tôi.",
+  "Sign out": "Sign out"
 }

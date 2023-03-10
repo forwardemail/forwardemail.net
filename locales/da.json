@@ -3549,5 +3549,6 @@
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "Hvis du ønsker at afmelde alle vores e-mails, skal du slette din konto på denne side.",
   "Unsubscribe": "Opsige abonnement",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> ikke verificeret.",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> havde en fejl. Opdater venligst og prøv igen eller kontakt os."
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> havde en fejl. Opdater venligst og prøv igen eller kontakt os.",
+  "Sign out": "Sign out"
 }

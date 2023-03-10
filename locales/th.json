@@ -3815,5 +3815,6 @@
   "Unsubscribe": "ยกเลิกการสมัคร",
   "If you wish to unsubscribe from all of our emails, then please delete your account on this page.": "หากคุณต้องการยกเลิกการสมัครรับอีเมลทั้งหมดของเรา โปรดลบบัญชีของคุณในหน้านี้",
   "<span class=\"notranslate\">Cloudflare Turnstile</span> not verified.": "<span class=\"notranslate\">Cloudflare Turnstile</span> ไม่ผ่านการตรวจสอบ",
-  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> เกิดข้อผิดพลาด โปรดรีเฟรชแล้วลองอีกครั้งหรือติดต่อเรา"
+  "<span class=\"notranslate\">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.": "<span class=\"notranslate\">Cloudflare Turnstile</span> เกิดข้อผิดพลาด โปรดรีเฟรชแล้วลองอีกครั้งหรือติดต่อเรา",
+  "Sign out": "Sign out"
 }
