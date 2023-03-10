@@ -1,0 +1,29 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center= t("Your action is required")
+          .card-body.p-0
+            .p-3.text-center
+              p.card-text: strong.text-decoration-underline!= t("Don't worry &ndash; this only takes a minute!")
+              if domains.length === 1
+                p.card-text!= t('Your domain <span class="notranslate font-weight-bold">%s</span> has not yet completed setup. You must follow <a href="%s" class="font-weight-bold">steps 1 and 2</a> as soon as possible to complete setup.', domains[0].name, `${config.urls.web}/${locale}/my-account/domains/${domains[0].name}`)
+                a.btn.btn-lg.btn-danger(
+                  href=`${config.urls.web}/${locale}/my-account/domains/${domains[0].name}`
+                )= t("Click here to resolve")
+              else
+                p.card-text.mb-0!= t('Follow setup for <strong class="text-decoration-underline">each</strong> of <a href="%s">your domains</a>:', `${config.urls.web}/${locale}/my-account/domains`)
+                each domain in domains.slice(0, 10)
+                  ul.list-inline.text-center.mb-0
+                    li.list-inline-item.mt-3
+                      a.btn.btn-md.btn-dark(
+                        href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
+                      )= domain.name
+                if domains.length >= 10
+                  p.text-muted.text-center.mt-1.mb-0
+                    != t('... and <span class="notranslate">%d</span> more domain names.', domains.length - 10)
+          .card-footer.text-center.small.font-weight-bold
+            != t('If you\'re receiving email, then <u class="text-danger">your action is still required</u>.')

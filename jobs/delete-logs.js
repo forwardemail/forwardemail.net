@@ -32,17 +32,15 @@ graceful.listen();
     // <https://mongoosejs.com/docs/api/querycursor.html#querycursor_QueryCursor-Symbol.asyncIterator>
     // <https://thecodebarbarian.com/whats-new-in-mongoose-53-async-iterators.html
     //
-    for await (const log of Logs.find({})
+    for await (const log of Logs.find({
+      created_at: { $lt: Date.now() - ms(config.logRetention) }
+    })
       .sort({ created_at: 1 })
       .select('created_at')
       .lean()
       .cursor()) {
       try {
-        if (
-          new Date(log.created_at).getTime() <
-          Date.now() - ms(config.logRetention)
-        )
-          await Logs.findByIdAndRemove(log._id);
+        await Logs.deleteOne({ _id: log._id });
       } catch (err) {
         logger.error(err);
       }

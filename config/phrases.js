@@ -205,6 +205,9 @@ module.exports = {
     '<p class="mb-0">Domain is missing required DNS MX records of:</p><ul class="markdown-body ml-0 mr-0 mb-3 notranslate">%s</ul><p class="mb-0">Please ensure you do not have any typos and have both unique records added (e.g. make sure both records aren\'t the same). <a class="font-weight-bold" href="/faq?domain=%s" target="_blank">Read our FAQ</a> for detailed instructions.</p>',
   DNS_CHANGES_TAKE_TIME:
     '<p class="mb-0"><strong>Making changes to your DNS records takes time to propagate throughout the Internet. <span class="text-danger">You may need to wait a few minutes</span> and then try again.</strong></p>',
+  TO_UNSUBSCRIBE_DELETE_ACCOUNT:
+    'If you wish to unsubscribe from all of our emails, then please delete your account on this page.',
+  UNSUBSCRIBE: 'Unsubscribe',
   SETUP_REQUIRED:
     'Your domain <span class="notranslate font-weight-bold">%s</span> has not yet completed setup. You must follow <a href="%s" class="font-weight-bold">steps 1 and 2</a> as soon as possible to complete setup.',
   SETUP_NOT_FINISHED: 'Follow steps 1 and 2 below to complete setup.',
@@ -308,9 +311,10 @@ module.exports = {
     'An error occurred while converting your existing credit between plans. We have been notified by email.',
   CONVERSION_SUCCESS:
     'You successfully switched plans and received a conversion credit of <span class="notranslate">%s</span>.',
-  TURNSTILE_NOT_VERIFIED: 'Turnstile not verified.',
+  TURNSTILE_NOT_VERIFIED:
+    '<span class="notranslate">Cloudflare Turnstile</span> not verified.',
   TURNSTILE_RENDER_ERROR:
-    'Turnstile render error, please refresh and try again or contact us.',
+    '<span class="notranslate">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.',
   MISSING_VERIFICATION_LINK:
     'Missing "VERIFICATION_LINK" in HTML template string.  This variable must be included at least once either in text or link format.',
   PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION:

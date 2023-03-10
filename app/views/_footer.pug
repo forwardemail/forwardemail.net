@@ -33,6 +33,7 @@ footer.mt-auto
                   href=ctx.url,
                   role="button",
                   data-toggle="dropdown",
+                  data-boundary="window",
                   aria-haspopup="true",
                   aria-expanded="false"
                 )
@@ -133,12 +134,6 @@ footer.mt-auto
             li: a.d-block.text-light.py-2.py-md-0(
               href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
             )= t("FAQ")
-            if !isBot(ctx.get('User-Agent'))
-              li: a.d-block.text-light.py-2.py-md-0(
-                href=l("/help"),
-                role=isHelp ? "link" : "button",
-                data-target=isHelp ? false : "#modal-help"
-              )= t("Help")
             li: a.d-block.text-light.py-2.py-md-0(
               href=l("/disposable-addresses")
             )= t("Disposable Addresses")
@@ -156,6 +151,12 @@ footer.mt-auto
           div
             h3.h5.mb-2= t("Company")
             ul.list-unstyled.mb-0
+              if !isBot(ctx.get('User-Agent'))
+                li: a.d-block.text-light.py-2.py-md-0(
+                  href=l("/help"),
+                  role=isHelp ? "link" : "button",
+                  data-target=isHelp ? false : "#modal-help"
+                )= t("Help")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/about"))= t("About")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/terms"))= t("Terms")
@@ -166,49 +167,27 @@ footer.mt-auto
                   rel="noopener noreferrer"
                 )
                   = t("Status Page")
-              if isBot(ctx.get('User-Agent'))
-                li
-                  a.d-block.text-light.py-2.py-md-0(
-                    title=t("GitHub"),
-                    href="https://github.com/forwardemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )= t("GitHub")
-                li
-                  a.d-block.text-light.py-2.py-md-0(
-                    title=t("Email"),
-                    href="mailto:support@forwardemail.net",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )= t("Email")
+              li
+                a.d-block.text-light.py-2.py-md-0(
+                  title=t("GitHub"),
+                  href="https://github.com/forwardemail",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )= t("GitHub")
 
           if !isBot(ctx.get('User-Agent'))
-            .mt-lg-auto.mt-3
-              ul.list-inline.mb-0
-                li.list-inline-item
-                  a.d-inline-block.text-light(
-                    data-toggle="tooltip",
-                    title=t("GitHub"),
-                    href="https://github.com/forwardemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa.fa-2x.fa-github
-                    span.sr-only.sr-only-focusable
-                      = " "
-                      = t("GitHub")
-                li.list-inline-item
-                  a.d-inline-block.text-light(
-                    data-toggle="tooltip",
-                    title=t("Email"),
-                    href="mailto:support@forwardemail.net",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa.fa-2x.fa-envelope
-                    span.sr-only.sr-only-focusable
-                      = " "
-                      = t("Email")
+            .mt-lg-auto.mt-3.text-right
+              a.d-inline-block.text-light(
+                data-toggle="tooltip",
+                title=t("GitHub"),
+                href="https://github.com/forwardemail",
+                target="_blank",
+                rel="noopener noreferrer"
+              )
+                i.fa.fa-2x.fa-github
+                span.sr-only.sr-only-focusable
+                  = " "
+                  = t("GitHub")
         if isBot(ctx.get('User-Agent'))
           hr.d-lg-none.w-100
           .flex-wrap.flex-fill.d-flex.flex-column

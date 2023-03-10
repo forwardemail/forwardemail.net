@@ -194,6 +194,7 @@ const Domains = new mongoose.Schema({
     required: true,
     unique: true
   },
+  restrictions_reminder_sent_at: Date,
   onboard_email_sent_at: Date,
   verified_email_sent_at: Date,
   missing_txt_sent_at: Date,
@@ -949,16 +950,26 @@ async function getVerificationResults(domain, resolver) {
 Domains.statics.getVerificationResults = getVerificationResults;
 
 function getNameRestrictions(domainName) {
+  const parseResult = parseDomain(fromUrl(domainName));
+  const rootDomain = (
+    parseResult.type === ParseResultType.Listed &&
+    _.isObject(parseResult.icann) &&
+    isSANB(parseResult.icann.domain)
+      ? `${parseResult.icann.domain}.${parseResult.icann.topLevelDomains.join(
+          '.'
+        )}`
+      : domainName
+  ).toLowerCase();
   const isGood = config.goodDomains.some((ext) =>
-    domainName.endsWith(`.${ext}`)
+    rootDomain.endsWith(`.${ext}`)
   );
-  const isDisposable = REGEX_MAIL_DISPOSABLE_INBOX.test(domainName);
+  const isDisposable = REGEX_MAIL_DISPOSABLE_INBOX.test(rootDomain);
   // NOTE: this also takes into account `nic.ext` for registrars
   const isRestricted = config.restrictedDomains.some(
     (ext) =>
-      domainName === ext ||
-      domainName.endsWith(`.${ext}`) ||
-      domainName === `nic.${ext}`
+      rootDomain === ext ||
+      rootDomain.endsWith(`.${ext}`) ||
+      rootDomain === `nic.${ext}`
   );
 
   return { isGood, isDisposable, isRestricted };

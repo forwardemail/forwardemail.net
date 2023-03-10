@@ -111,6 +111,18 @@ const jobs = [
     name: 'parse-logs',
     interval: '5m',
     timeout: 0
+  },
+  //
+  // once a month we send a reminder to users
+  // if any domain requires paid plan upgrade (e.g. isDisposable)
+  // then send individual email regarding this domain name
+  // (stating that they have until March 31st to configure it for no extra cost)
+  // otherwise send the same email but without the configuration
+  //
+  {
+    name: 'domain-restrictions-reminder',
+    interval: '5m',
+    timeout: 0
   }
 ];
 

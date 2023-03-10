@@ -32,6 +32,7 @@ if !isHelp && user && !isBot(ctx.get('User-Agent'))
             button.btn.btn-block.btn-success.btn-lg(
               type="submit",
               data-toggle="tooltip",
+              data-container="body",
               data-placement="bottom",
               title=t("We'll be in contact with you!")
             )= t("Send message")
@@ -139,7 +140,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 = t("Sign up")
       .no-js.is-bot.d-inline-block.mr-3
     if !isBot(ctx.get('User-Agent'))
-      button.navbar-toggler.d-lg-none.no-js(
+      button.navbar-toggler.text-themed.d-lg-none.no-js(
         type="button",
         data-toggle="collapse",
         data-target="#navbar-header",
@@ -147,7 +148,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
         aria-expanded="false",
         aria-label=t("Toggle navigation")
       )
-        span.navbar-toggler-icon
+        i.fas.fa-bars
     //- once we have responsive border utilities added to bootstrap
     //- then we can apply them to the anchor tags inside the navbar
     //- so that on mobile devices there is no border around the links
@@ -208,6 +209,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 role="button",
                 href="#",
                 data-toggle="dropdown",
+                data-boundary="window",
                 aria-haspopup="true",
                 aria-expanded="false",
                 class=ctx.pathWithoutLocale.startsWith("/guides") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
@@ -241,6 +243,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                   role="button",
                   href="#",
                   data-toggle="dropdown",
+                  data-boundary="window",
                   aria-haspopup="true",
                   aria-expanded="false",
                   class=ctx.pathWithoutLocale === "/help" || ctx.pathWithoutLocale === "/faq" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
@@ -267,6 +270,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               a#navbar-dropdown-admin.btn.dropdown-toggle.d-block.text-left(
                 href=l("/admin"),
                 data-toggle="dropdown",
+                data-boundary="window",
                 aria-haspopup="true",
                 aria-expanded="false",
                 class=ctx.pathWithoutLocale.startsWith("/admin") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
@@ -301,6 +305,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
             a#navbar-dropdown-my-account.btn.dropdown-toggle.d-block.text-left(
               href=l("/my-account"),
               data-toggle="dropdown",
+              data-boundary="window",
               aria-haspopup="true",
               aria-expanded="false",
               class=ctx.pathWithoutLocale.startsWith("/my-account") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
