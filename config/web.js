@@ -199,25 +199,30 @@ module.exports = (redis) => ({
         Array.isArray(ACTIVE_GITHUB_ISSUES.data) &&
         ACTIVE_GITHUB_ISSUES.data.length > 0
       ) {
-        ctx.flash('custom', {
-          title: ctx.request.t('Warning'),
-          html: `<small>${ctx.translate(
-            'ACTIVE_INCIDENT',
-            'https://status.forwardemail.net',
-            // ACTIVE_GITHUB_ISSUES.data.length > 1
-            //   ? 'https://status.forwardemail.net'
-            //   : ACTIVE_GITHUB_ISSUES.data[0].html_url ||
-            //       'https://status.forwardemail.net',
-            ACTIVE_GITHUB_ISSUES.data[0].title ||
-              'Please view our status page for more information.'
-          )}</small>`,
-          type: 'warning',
-          toast: true,
-          showConfirmButton: false,
-          position,
-          timer: 5000
-        });
-        position = 'top';
+        if (!ctx.session._gh_issue) {
+          ctx.session._gh_issue = true;
+          ctx.flash('custom', {
+            title: ctx.request.t('Warning'),
+            html: `<small>${ctx.translate(
+              'ACTIVE_INCIDENT',
+              'https://status.forwardemail.net',
+              // ACTIVE_GITHUB_ISSUES.data.length > 1
+              //   ? 'https://status.forwardemail.net'
+              //   : ACTIVE_GITHUB_ISSUES.data[0].html_url ||
+              //       'https://status.forwardemail.net',
+              ACTIVE_GITHUB_ISSUES.data[0].title ||
+                'Please view our status page for more information.'
+            )}</small>`,
+            type: 'warning',
+            toast: true,
+            showConfirmButton: false,
+            position,
+            timer: 10000
+          });
+          position = 'top';
+        }
+      } else {
+        ctx.session._gh_issue = false;
       }
 
       // if either mongoose or redis are not connected
