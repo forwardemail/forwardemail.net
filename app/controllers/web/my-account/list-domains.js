@@ -143,6 +143,9 @@ async function listDomains(ctx) {
         : 1;
   }
 
+  // store allDomains used for alias modal dropdown
+  const allDomains = [...domains];
+
   // domains are already pre-sorted A-Z by 'name' so only use sortFn if passed
   if (sortFn) domains = _.sortBy(domains, [sortFn]);
 
@@ -157,6 +160,7 @@ async function listDomains(ctx) {
 
   if (ctx.accepts('html'))
     return ctx.render('my-account/domains', {
+      allDomains,
       domains,
       pageCount,
       itemCount,
@@ -164,6 +168,7 @@ async function listDomains(ctx) {
     });
 
   const table = await ctx.render('my-account/domains/_table', {
+    allDomains,
     domains,
     pageCount,
     itemCount,
