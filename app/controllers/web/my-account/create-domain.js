@@ -18,19 +18,21 @@ async function createDomain(ctx, next) {
       ...ctx.state.optionalBooleans
     });
 
-    // create a default alias for the user pointing to the admin
-    if (ctx.state.recipients.length > 0)
-      await Aliases.create({
-        is_api: boolean(ctx.api),
-        user: ctx.state.user._id,
-        domain: ctx.state.domain._id,
-        name: '*',
-        recipients: ctx.state.recipients,
-        locale: ctx.locale,
-        ...(ctx.state.optionalBooleans.has_recipient_verification
-          ? { has_recipient_verification: true }
-          : {})
-      });
+    // create a default alias for the user pointing to the user or recipients
+    await Aliases.create({
+      is_api: boolean(ctx.api),
+      user: ctx.state.user._id,
+      domain: ctx.state.domain._id,
+      name: '*',
+      recipients:
+        ctx.state.recipients.length > 0
+          ? ctx.state.recipients
+          : [ctx.state.user.email],
+      locale: ctx.locale,
+      ...(ctx.state.optionalBooleans.has_recipient_verification
+        ? { has_recipient_verification: true }
+        : {})
+    });
 
     if (ctx.api) {
       ctx.state.domain = toObject(Domains, ctx.state.domain);
