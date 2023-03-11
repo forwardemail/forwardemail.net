@@ -85,6 +85,7 @@ async function listDomains(ctx) {
     if (
       domain.members.some(
         (member) =>
+          member.group !== 'admin' &&
           // if the logged in user was not member
           // and if the logged in user had no aliases
           member.user.id === ctx.state.user.id &&
