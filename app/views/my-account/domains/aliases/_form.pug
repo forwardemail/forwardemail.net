@@ -43,7 +43,7 @@ if alias
       label(for="select-alias-domain")
         = t("Domain Name")
       select#select-alias-domain.form-control(required, name="domain")
-        each domain, i in domains
+        each domain, i in allDomains || domains
           option(
             value=domain.id,
             selected=domainQuery && domainQuery === domain.name
