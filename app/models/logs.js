@@ -23,41 +23,6 @@ const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isEmail } = require('validator');
 
-const MX_CONNECT_ERR_CATEGORIES = new Set([
-  'dns',
-  'compliancy',
-  'connect',
-  'network',
-  'policy'
-]);
-
-const ALL_DNS_ERROR_CODES = new Set([
-  dns.NODATA,
-  dns.FORMERR,
-  dns.SERVFAIL,
-  dns.NOTFOUND,
-  dns.NOTIMP,
-  dns.REFUSED,
-  dns.BADQUERY,
-  dns.BADNAME,
-  dns.BADFAMILY,
-  dns.BADRESP,
-  dns.CONNREFUSED,
-  dns.TIMEOUT,
-  dns.EOF,
-  dns.FILE,
-  dns.NOMEM,
-  dns.DESTRUCTION,
-  dns.BADSTR,
-  dns.BADFLAGS,
-  dns.NONAME,
-  dns.BADHINTS,
-  dns.NOTINITIALIZED,
-  dns.LOADIPHLPAPI,
-  dns.ADDRGETNETWORKPARAMS,
-  dns.CANCELLED
-]);
-
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
@@ -672,18 +637,8 @@ Logs.pre('save', async function (next) {
     )
       return next();
 
-    //
-    // if it was not denylist and was not dns error then return early
-    //
-    if (
-      // denylist error
-      (!this?.err?.name || this.err.name !== 'DenylistError') &&
-      // dns error
-      (!this.err?.code || !ALL_DNS_ERROR_CODES.has(this.err.code)) &&
-      // mx-connect error
-      (!this?.err?.category ||
-        !MX_CONNECT_ERR_CATEGORIES.has(this.err.category))
-    )
+    // if it was a SMTP response code error log then return early
+    if (!this?.err?.responseCode || !Number.isFinite(this.err.responseCode))
       return next();
 
     if (Array.isArray(this.domains) && this.domains.length > 0) return next();
