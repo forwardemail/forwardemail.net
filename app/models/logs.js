@@ -23,6 +23,33 @@ const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isEmail } = require('validator');
 
+const ALL_DNS_ERROR_CODES = new Set([
+  dns.NODATA,
+  dns.FORMERR,
+  dns.SERVFAIL,
+  dns.NOTFOUND,
+  dns.NOTIMP,
+  dns.REFUSED,
+  dns.BADQUERY,
+  dns.BADNAME,
+  dns.BADFAMILY,
+  dns.BADRESP,
+  dns.CONNREFUSED,
+  dns.TIMEOUT,
+  dns.EOF,
+  dns.FILE,
+  dns.NOMEM,
+  dns.DESTRUCTION,
+  dns.BADSTR,
+  dns.BADFLAGS,
+  dns.NONAME,
+  dns.BADHINTS,
+  dns.NOTINITIALIZED,
+  dns.LOADIPHLPAPI,
+  dns.ADDRGETNETWORKPARAMS,
+  dns.CANCELLED
+]);
+
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
@@ -628,17 +655,36 @@ Logs.statics.parseLog = parseLog;
 Logs.pre('save', async function (next) {
   try {
     await parseLog(this);
-    // if the log was a denylist error,
-    // `domains` is empty
-    // and `domains_checked_at` has a date
-    // then we should delete this log and not store it
-    if (!this?.err?.name || this.err.name !== 'DenylistError') return next();
+    //
+    // if it was not an error from an exchange then return early
+    //
+    if (
+      !this?.meta?.app?.hostname ||
+      !config.exchanges.includes(this.meta.app.hostname)
+    )
+      return next();
+
+    //
+    // if it was not denylist and was not dns error then return early
+    //
+    if (
+      // denylist error
+      (!this?.err?.name || this.err.name !== 'DenylistError') &&
+      // dns error
+      (!this.err?.code || !ALL_DNS_ERROR_CODES.has(this.err.code)) &&
+      // mx-connect error
+      (!this?.err?.category ||
+        (this.err.category !== 'network' &&
+          this.err.category !== 'dns' &&
+          this.err.category !== 'policy'))
+    )
+      return next();
 
     if (Array.isArray(this.domains) && this.domains.length > 0) return next();
 
     if (!_.isDate(this.domains_checked_at)) return next();
 
-    const err = new Error('Denylist error without domains');
+    const err = new Error('Unnecessary log to store without domains');
     err.is_denylist_without_domains = true;
     throw err;
   } catch (err) {
