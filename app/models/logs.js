@@ -23,6 +23,14 @@ const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isEmail } = require('validator');
 
+const MX_CONNECT_ERR_CATEGORIES = new Set([
+  'dns',
+  'compliancy',
+  'connect',
+  'network',
+  'policy'
+]);
+
 const ALL_DNS_ERROR_CODES = new Set([
   dns.NODATA,
   dns.FORMERR,
@@ -674,9 +682,7 @@ Logs.pre('save', async function (next) {
       (!this.err?.code || !ALL_DNS_ERROR_CODES.has(this.err.code)) &&
       // mx-connect error
       (!this?.err?.category ||
-        (this.err.category !== 'network' &&
-          this.err.category !== 'dns' &&
-          this.err.category !== 'policy'))
+        !MX_CONNECT_ERR_CATEGORIES.has(this.err.category))
     )
       return next();
 
