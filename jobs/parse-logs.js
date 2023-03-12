@@ -70,7 +70,12 @@ graceful.listen();
         log.skip_duplicate_check = true;
         await log.save();
       } catch (err) {
-        logger.error(err);
+        if (err.is_denylist_without_domains) {
+          // cleanup old logs
+          await Logs.findByIdAndRemove(log._id);
+        } else {
+          logger.error(err);
+        }
       }
     }
   } catch (err) {

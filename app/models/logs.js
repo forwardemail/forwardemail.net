@@ -628,7 +628,19 @@ Logs.statics.parseLog = parseLog;
 Logs.pre('save', async function (next) {
   try {
     await parseLog(this);
-    next();
+    // if the log was a denylist error,
+    // `domains` is empty
+    // and `domains_checked_at` has a date
+    // then we should delete this log and not store it
+    if (!this?.err?.name || this.err.name !== 'DenylistError') return next();
+
+    if (Array.isArray(this.domains) && this.domains.length > 0) return next();
+
+    if (!_.isDate(this.domains_checked_at)) return next();
+
+    const err = new Error('Denylist error without domains');
+    err.is_denylist_without_domains = true;
+    throw err;
   } catch (err) {
     next(err);
   }
