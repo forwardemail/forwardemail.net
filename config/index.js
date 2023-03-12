@@ -52,9 +52,10 @@ const config = {
   maxAliasPerGlobalDomain: 50,
 
   // exchanges (matches SMTP)
-  exchanges: Array.isArray(env.SMTP_EXCHANGE_DOMAINS)
+  exchanges: (Array.isArray(env.SMTP_EXCHANGE_DOMAINS)
     ? env.SMTP_EXCHANGE_DOMAINS
-    : env.SMTP_EXCHANGE_DOMAINS.split(','),
+    : env.SMTP_EXCHANGE_DOMAINS.split(',')
+  ).map((exchange) => exchange.toLowerCase().trim()),
 
   // max recipients per alias (matches SMTP)
   maxForwardedAddresses: env.MAX_FORWARDED_ADDRESSES,
