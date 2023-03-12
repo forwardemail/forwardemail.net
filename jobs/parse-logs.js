@@ -71,8 +71,12 @@ graceful.listen();
         await log.save();
       } catch (err) {
         if (err.is_denylist_without_domains) {
-          // cleanup old logs
-          await Logs.findByIdAndRemove(log._id);
+          // eslint-disable-next-line max-depth
+          try {
+            await Logs.deleteOne({ _id: log._id });
+          } catch (err) {
+            logger.error(err);
+          }
         } else {
           logger.error(err);
         }
