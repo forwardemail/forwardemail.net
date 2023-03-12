@@ -637,7 +637,7 @@ Logs.pre('save', async function (next) {
     )
       return next();
 
-    // if it was a SMTP response code error log then return early
+    // if it was not a SMTP response code error log then return early
     if (!this?.err?.responseCode || !Number.isFinite(this.err.responseCode))
       return next();
 
