@@ -51,6 +51,8 @@ graceful.listen();
     .lean()
     .exec();
 
+  if (!domain) throw new Error('Domain does not exist');
+
   const stat = await fs.promises.stat(process.env.FILE_PATH);
   if (!stat.isFile()) throw new Error(`${process.env.FILE_PATH} is not a file`);
 
