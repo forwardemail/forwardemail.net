@@ -1,38 +1,56 @@
 ---
-- hosts: "{{ hostlist }}"
+- hosts: "{{ hostlist | default('http,bree') }}"
+  name: Node.js
   become: true
   become_user: root
-  # TODO: install nodejs + pm2 using n as deploy user
   tasks:
-    # install fonts
-    - name: accept fonts license
+    # install n and node lts
+    - name: Install n
+      become: true
+      become_user: deploy
       shell:
-        cmd: 'echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections'
-    - name: install fonts
+        cmd: curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y
+    # install pm2
+    - name: Install pm2
+      become: true
+      become_user: deploy
+      shell:
+        cmd: npm install -g pm2
+    # install fonts
+    - name: Accept fonts license
+      shell:
+        cmd: echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+    - name: Install fonts
       apt:
         name:
+          - xfonts-75dpi
           - ttf-mscorefonts-installer
           - libfontconfig
         update_cache: true
+    # install wkhtmltopdf
+    - name: Install wkhtmltopdf
+      shell: |
+        wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
+        sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb
     # configure pm2
-    - name: create pm2 directory
+    - name: Create pm2 directory
       file:
         path: /var/www
         state: directory
         owner: www-data
         group: www-data
         # https://chmodcommand.com/chmod-770/
-        mode: 0770
+        mode: "0770"
         recurse: true
-    - name: install pm2-logrotate
+    - name: Install pm2-logrotate
       become: true
       become_user: deploy
       shell:
-        cmd: 'pm2 install pm2-logrotate'
-    - name: check that pm2 startup script exists
+        cmd: pm2 install pm2-logrotate
+    - name: Check that pm2 startup script exists
       stat:
         path: /etc/systemd/system/pm2-deploy.service
       register: pm2_startup_result
-    - name: install pm2 startup script
-      command: 'pm2 startup ubuntu -u deploy --hp /home/deploy'
+    - name: Install pm2 startup script
+      command: pm2 startup ubuntu -u deploy --hp /home/deploy
       when: not pm2_startup_result.stat.exists

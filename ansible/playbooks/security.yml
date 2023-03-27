@@ -1,5 +1,7 @@
 ---
-- hosts: "{{ hostlist }}"
+# TODO: set up logrotate for all roles/deps https://github.com/Oefenweb/ansible-logrotated
+- hosts: "{{ hostlist | default('http,bree') }}"
+  name: Security
   become: true
   become_user: root
   handlers:
@@ -9,24 +11,25 @@
     copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
   tasks:
     # update deps
-    - name: update apt
+    - name: Update apt
       apt:
         update_cache: true
 
     # upgrade deps
-    - name: upgrade deps
+    - name: Upgrade deps
       apt:
         upgrade: safe
         update_cache: true
 
     # install deps
-    - name: install deps
+    - name: Install deps
       apt:
         name:
           - build-essential
           - curl
           - git
           - vim
+          - wget
           - libtool
           - automake
           - autoconf
@@ -34,39 +37,41 @@
         update_cache: true
 
     # create devops group
-    - name: create devops group
+    - name: Create devops group
       group:
         name: devops
         state: present
 
-    - name: set devops group to have sudo access
+    - name: Set devops group to have sudo access
       lineinfile:
         path: /etc/sudoers
         state: present
         regexp: ^%devops
-        line: '%devops ALL=(ALL) NOPASSWD: ALL'
+        line: "%devops ALL=(ALL) NOPASSWD: ALL"
         validate: /usr/sbin/visudo -cf %s
 
     # create devops user (with sudo)
-    - name: create a devops user with sudo privileges
+    - name: Create a devops user with sudo privileges
       user:
         name: devops
+        password: "!"
         state: present
         groups: devops,www-data
         append: true
         create_home: true
         shell: /bin/bash
 
-    - name: set authorized key for devops user
+    - name: Set authorized key for devops user
       authorized_key:
         user: devops
         state: present
-        key: '{{ copy_local_key }}'
+        key: "{{ copy_local_key }}"
 
     # create deploy user
-    - name: create a deploy user
+    - name: Create a deploy user
       user:
         name: deploy
+        password: "!"
         state: present
         groups: www-data
         append: true
@@ -75,49 +80,53 @@
         generate_ssh_key: true
         ssh_key_bits: 4096
 
-    - name: set authorized key for deploy user
+    - name: Set authorized key for deploy user
       authorized_key:
         user: deploy
         state: present
-        key: '{{ copy_local_key }}'
+        key: "{{ copy_local_key }}"
 
-    # TODO: change root password to randomly generated value
+    # https://superuser.com/a/1578266
+    - name: Disable root login
+      user:
+        name: root
+        password: "!"
 
     # configure ssh
-    - name: disable root login
+    - name: Disable root SSH login
       lineinfile:
         path: /etc/ssh/sshd_config
         state: present
-        regexp: '^#?PermitRootLogin'
+        regexp: ^#?PermitRootLogin
         line: PermitRootLogin no
       notify: restart ssh
 
-    - name: disable password authentication
+    - name: Disable password authentication
       lineinfile:
         path: /etc/ssh/sshd_config
         state: present
-        regexp: '^PasswordAuthentication'
-        line: 'PasswordAuthentication no'
+        regexp: ^PasswordAuthentication
+        line: PasswordAuthentication no
       notify: restart ssh
 
-    # TODO: we can probably remove the `./templates/security-limits.d-mongod.conf`
     # modify ulimit for devops and deploy
     # https://gist.github.com/visualskyrim/8d93a8be0a3ef6dd6598ec8550f6eadd#file-modify_ulimit-yml-L7
-    - name: configure system settings, file descriptors and number of threads
+    - name: Configure system settings, file descriptors and number of threads
       pam_limits:
-        domain: '*'
-        limit_type: "{{item.limit_type}}"
-        limit_item: "{{item.limit_item}}"
-        value: "{{item.value}}"
+        domain: "*"
+        limit_type: "{{ item.limit_type }}"
+        limit_item: "{{ item.limit_item }}"
+        value: "{{ item.value }}"
       with_items:
-        - {limit_type: '-', limit_item: 'nofile', value: 65536}
-        - {limit_type: '-', limit_item: 'nproc', value: 65536}
-        - {limit_type: 'soft', limit_item: 'memlock', value: unlimited}
-        - {limit_type: 'hard', limit_item: 'memlock', value: unlimited}
-    - name: reload settings from all system configuration files
+        - { limit_type: "-", limit_item: nofile, value: 65536 }
+        - { limit_type: "-", limit_item: nproc, value: 65536 }
+        - { limit_type: soft, limit_item: memlock, value: unlimited }
+        - { limit_type: hard, limit_item: memlock, value: unlimited }
+    - name: Reload settings from all system configuration files
       shell: sysctl --system
 
-- hosts: "{{ hostlist }}"
+- hosts: "{{ hostlist | default('http,bree') }}"
+  name: Security
   become: true
   become_user: root
   vars:
@@ -341,41 +350,30 @@
     # https://github.com/Oefenweb/ansible-swapfile
     - role: swapfile
       swapfile_size: 4GB
-      swapfile_swappiness: '10'
-      swapfile_vfs_cache_pressure: '50'
+      swapfile_swappiness: "10"
+      swapfile_vfs_cache_pressure: "50"
 
     # https://github.com/Oefenweb/ansible-dns
     - role: dns
       dns_nameservers:
         # cloudflare
-        - '1.1.1.1'
-        - '1.0.0.1'
-        - '2606:4700:4700::1111'
-        - '2606:4700:4700::1001'
+        - 1.1.1.1
+        - 1.0.0.1
+        - 2606:4700:4700::1111
+        - 2606:4700:4700::1001
 
     # https://github.com/Oefenweb/ansible-ntp
     - role: ntp
       ntp_servers:
-        - 'time.cloudflare.com'
+        - time.cloudflare.com
 
     # https://github.com/Oefenweb/ansible-timezone
     - role: timezone
-      timezone_zone: 'America/Chicago'
+    #  timezone_zone: 'America/Chicago'
 
     # https://github.com/Oefenweb/ansible-fail2ban
     - role: fail2ban
 
     # https://github.com/jnv/ansible-role-unattended-upgrades
     - role: unattended-upgrades
-
-    # https://github.com/fubarhouse/ansible-role-rust
-    # https://github.com/fubarhouse/ansible-role-rust/issues/20
-    # - role: rust
-
-    # TODO: set up logrotate for all roles/deps
-    #       https://github.com/Oefenweb/ansible-logrotated
-- hosts: http:bree
-  become: true
-  become_user: root
-  roles:
-    - mongo-shell
+      unattended_automatic_reboot: true

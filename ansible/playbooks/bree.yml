@@ -1,9 +1,12 @@
 ---
 - import_playbook: security.yml hostlist=bree
-- import_playbook: python.yml hostlist=bree
+  name: Security
 - import_playbook: node.yml hostlist=bree
+  name: Node.js
 - import_playbook: ssh-keys.yml hostlist=bree
+  name: SSH Keys
 - hosts: bree
+  name: Bree
   become: true
   become_user: root
   roles:
@@ -11,21 +14,21 @@
     - role: fqdn
   tasks:
     # ufw
-    - name: enable ufw
+    - name: Enable ufw
       ufw:
         state: enabled
         policy: deny
         direction: incoming
-    - name: limit ufw ssh
+    - name: Limit ufw ssh
       ufw:
         rule: limit
         port: 22
         proto: tcp
-    - name: allow ssh
+    - name: Allow ssh
       ufw:
         rule: allow
         port: 22
         proto: tcp
-    - name: reload ufw
+    - name: Reload ufw
       ufw:
         state: reloaded
