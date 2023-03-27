@@ -10,6 +10,27 @@
   vars:
     copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
   tasks:
+    - name: Insert/Update disable core dumps
+      blockinfile:
+        path: /etc/security/limits.conf
+        state: present
+        block: |
+          * hard core 0
+          * soft core 0
+
+    - name: Ensure fs.suid_dumpable is set to 0 and added in sysctl
+      sysctl:
+        name: fs.suid_dumpable
+        value: "0"
+        sysctl_set: true
+
+    - name: Insert/Update disable core dumps
+      blockinfile:
+        path: /etc/profile
+        state: "{{ disable_coredump }}"
+        block: |
+          ulimit -S -c 0 > /dev/null 2>&1
+
     # update deps
     - name: Update apt
       apt:
@@ -145,6 +166,12 @@
     #       https://serverdiary.com/linux/how-to-mitigate-tcp-syn-flood-attack-and-resolve-it-on-linux/
     #
     sysctl_settings:
+      # disable coredump
+      - name: fs.suid_dumpable
+        value: 0
+      - name: kernel.core_pattern
+        value: "|/bin/false"
+
       #
       # handle ufw forwarding
       #
