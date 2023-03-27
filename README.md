@@ -79,15 +79,38 @@ See [Requirements](#requirements) below.
 
 ### Ubuntu
 
-Coming soon
+1. Install [n][] and latest Node LTS:
 
-<!-- Download and install wkhtmltopdf from website (manual deb install) -->
+   ```sh
+   curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y
+   ```
 
-<!-- sudo apt-get install xfonts-75dpi -->
+2. Install [pm2][]:
 
-<!-- wget wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb -->
+   ```sh
+   npm i -g pm2
+   ```
 
-<!-- sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb -->
+3. Install fonts:
+
+   ```sh
+   echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+   ```
+
+   ```sh
+   sudo apt-get install xfonts-75dpi ttf-mscorefonts-installer libfontconfig
+   ```
+
+4. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html#stable):
+
+   ```sh
+   wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
+   sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb
+   ```
+
+5. Install MongoDB by following the guide at <https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04>.
+
+6. Install Redis by following the guide at <https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04>.
 
 
 ## Server Infrastructure
@@ -167,38 +190,26 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    node ansible-playbook ansible/playbooks/bree.yml -e 'ansible_user=root' -l 'bree'
    ```
 
-8. Set up the Redis server:
+8. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.
 
    ```sh
-   node ansible-playbook ansible/playbooks/redis.yml -e 'ansible_user=root' -l 'redis'
+   node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'http:bree'
    ```
 
-9. Set up the Mongo server:
+9. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours:
 
    ```sh
-   node ansible-playbook ansible/playbooks/mongo.yml -e 'ansible_user=root' -l 'mongo'
+   cat deployment-keys/api-1-li-dal.forwardemail.net.pub | pbcopy
+
+   #
+   # NOTE: repeat the above command for all servers
+   # and after running the command, it will copy
+   # the key to your clipboard for you to paste as
+   # a new deploy key (make sure to use read-only access)
+   #
    ```
 
-10. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.
-
-    ```sh
-    node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'http:bree'
-    ```
-
-11. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours:
-
-    ```sh
-    cat deployment-keys/api-1-li-dal.forwardemail.net.pub | pbcopy
-
-    #
-    # NOTE: repeat the above command for all servers
-    # and after running the command, it will copy
-    # the key to your clipboard for you to paste as
-    # a new deploy key (make sure to use read-only access)
-    #
-    ```
-
-12. Set up PM2 deployment directories on all the servers:
+10. Set up PM2 deployment directories on all the servers:
 
     ```sh
     pm2 deploy ecosystem-web.json production setup
@@ -212,7 +223,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-bree.json production setup
     ```
 
-13. Create a SSL certificate at [Namecheap][] (we recommend a 5 year wildcard certificate), set up the certificate, and download and extract the ZIP file with the certificate (emailed to you) to your computer. We do not recommend using tools like [LetsEncrypt][] and `certbot` due to complexity when you have (or scale to) a cluster of servers set up behind load balancers.  In other words, we've tried approaches like `lsyncd` in combination with `crontab` for `certbot` renewals and automatic checking.  Furthermore, using this exposes the server(s) to downtime as ports `80` and `443` may need to be shut down so that `certbot` can use them for certificate generation.  This is not a reliable approach, and simply renewing certificates once a year is vastly simpler and also makes using load balancers trivial.  Instead you can use a provider like [Namecheap][] to get a cheap SSL certificate, then run a few commands as we've documented below. This command will prompt you for an absolute file path to the certificates you downloaded. Renewed your certificate after 1 year? Simply follow this step again.  Do not set a password on the certificate files.  When using the `openssl` command (see Namecheap instructions), you need to use `*.example.com` with an asterisk followed by a period if you are registering a wildcard certificate.
+11. Create a SSL certificate at [Namecheap][] (we recommend a 5 year wildcard certificate), set up the certificate, and download and extract the ZIP file with the certificate (emailed to you) to your computer. We do not recommend using tools like [LetsEncrypt][] and `certbot` due to complexity when you have (or scale to) a cluster of servers set up behind load balancers.  In other words, we've tried approaches like `lsyncd` in combination with `crontab` for `certbot` renewals and automatic checking.  Furthermore, using this exposes the server(s) to downtime as ports `80` and `443` may need to be shut down so that `certbot` can use them for certificate generation.  This is not a reliable approach, and simply renewing certificates once a year is vastly simpler and also makes using load balancers trivial.  Instead you can use a provider like [Namecheap][] to get a cheap SSL certificate, then run a few commands as we've documented below. This command will prompt you for an absolute file path to the certificates you downloaded. Renewed your certificate after 1 year? Simply follow this step again.  Do not set a password on the certificate files.  When using the `openssl` command (see Namecheap instructions), you need to use `*.example.com` with an asterisk followed by a period if you are registering a wildcard certificate.
 
     ```sh
     ansible-playbook ansible/playbooks/certificates.yml
@@ -229,19 +240,19 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-api.json production exec "pm2 reload api"
     ```
 
-14. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
+12. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
 
     ```sh
     ansible-playbook ansible/playbooks/gapp-creds.yml -l 'http:bree'
     ```
 
-15. Copy the `.env.production` to the servers:
+13. Copy the `.env.production` to the servers:
 
     ```sh
     node ansible-playbook ansible/playbooks/env.yml -l 'http:bree'
     ```
 
-16. Run an initial deploy to all the servers:
+14. Run an initial deploy to all the servers:
 
     ```sh
     pm2 deploy ecosystem-web.json production
@@ -255,7 +266,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-bree.json production
     ```
 
-17. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
+15. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
 
     ```sh
     pm2 deploy ecosystem-web.json production exec "pm2 save"
@@ -269,21 +280,21 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-bree.json production exec "pm2 save"
     ```
 
-18. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
+16. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
 
-19. Configure your DNS records for the web and API server hostnames and respective IP addresses.
+17. Configure your DNS records for the web and API server hostnames and respective IP addresses.
 
-20. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
+18. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
 
-21. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+19. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
     ```sh
     rm .env.production
     ```
 
-22. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+20. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
-23. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
+21. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
 
 
 ## Contributors

@@ -1,26 +1,22 @@
 ---
 - hosts: web
+  name: HTTP
   become: true
   become_user: root
   tasks:
-    - name: set hostname
+    - name: Set hostname
       hostname:
         name: "{{ lookup('env', 'WEB_HOST') }}"
-    # TODO: deprecate this in Jan 1st 2021
-    - name: allow legacy api
-      ufw:
-        rule: allow
-        port: 4000
-        proto: tcp
   roles:
     # https://github.com/holms/ansible-fqdn
     - role: fqdn
       fqdn: "{{ lookup('env', 'WEB_HOST') }}"
 - hosts: api
+  name: HTTP
   become: true
   become_user: root
   tasks:
-    - name: set hostname
+    - name: Set hostname
       hostname:
         name: "{{ lookup('env', 'API_HOST') }}"
   roles:
@@ -28,72 +24,75 @@
     - role: fqdn
       fqdn: "{{ lookup('env', 'API_HOST') }}"
 - import_playbook: security.yml hostlist="http"
-- import_playbook: python.yml hostlist="http"
+  name: Security
 - import_playbook: node.yml hostlist="http"
+  name: Node.js
 - import_playbook: ssh-keys.yml hostlist="http"
+  name: SSH Keys
 - hosts: web:api
+  name: HTTP
   become: true
   become_user: root
   # this was already defined in the ufw role
   # https://github.com/Oefenweb/ansible-ufw/blob/master/handlers/main.yml
   handlers:
-    - name: reload ufw
+    - name: Reload ufw
       ufw:
         state: reloaded
   tasks:
     # ufw
-    - name: enable ufw
+    - name: Enable ufw
       ufw:
         state: enabled
         policy: deny
         direction: incoming
-    - name: limit ufw ssh
+    - name: Limit ufw ssh
       ufw:
         rule: limit
         port: 22
         proto: tcp
-    - name: set UFW default forward policy to ACCEPT
+    - name: Set UFW default forward policy to ACCEPT
       lineinfile:
         dest: /etc/default/ufw
         line: DEFAULT_FORWARD_POLICY="ACCEPT"
-        regexp: "^DEFAULT_FORWARD_POLICY\\="
-    - name: allow ssh
+        regexp: ^DEFAULT_FORWARD_POLICY\=
+    - name: Allow ssh
       ufw:
         rule: allow
         port: 22
         proto: tcp
-    - name: allow http
+    - name: Allow http
       ufw:
         rule: allow
         port: 80
         proto: tcp
-    - name: allow https
+    - name: Allow https
       ufw:
         rule: allow
         port: 443
         proto: tcp
-    - name: allow http forwarder
+    - name: Allow http forwarder
       ufw:
         rule: allow
         port: "{{ lookup('env', 'PROXY_PORT') }}"
         proto: tcp
-    - name: allow https forwarder
+    - name: Allow https forwarder
       ufw:
         rule: allow
         port: "{{ lookup('env', 'HTTP_PORT') }}"
         proto: tcp
-    - name: reload ufw
+    - name: Reload ufw
       ufw:
         state: reloaded
     #
     # modify ufw setup
     # https://github.com/Oefenweb/ansible-ufw/issues/21
     #
-    - name: 'update ufw before.rules until #21 is resolved'
+    - name: "Update ufw before.rules until #21 is resolved"
       template:
-        src: '{{ playbook_dir }}/templates/before.rules.j2'
+        src: "{{ playbook_dir }}/templates/before.rules.j2"
         dest: /etc/ufw/before.rules
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
       notify: reload ufw
