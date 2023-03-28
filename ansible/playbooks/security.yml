@@ -109,6 +109,14 @@
         state: present
         key: "{{ copy_local_key }}"
 
+    - name: Remove non-interactive from deploy bashrc
+      ansible.builtin.replace:
+        path: /home/deploy/.bashrc
+        regexp: "{{ '      *) return;;' | regex_escape() }}"
+        replace: "      *) :;"
+      tags:
+        - bash
+
     # disable root login
     - name: Disable root login
       lineinfile:
