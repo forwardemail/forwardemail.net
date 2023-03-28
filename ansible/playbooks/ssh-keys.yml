@@ -5,9 +5,27 @@
   become_user: root
   tasks:
     # https://gist.github.com/maxim/871e611d4bc02c633c67
-    - name: Ensure github.com is a known host
+    - name: Ensure github.com is a known host for root
       lineinfile:
         dest: /root/.ssh/known_hosts
+        create: true
+        state: present
+        line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+        regexp: ^github\.com
+    - name: Ensure github.com is a known host for devops
+      become: true
+      become_user: devops
+      lineinfile:
+        dest: /home/devops/.ssh/known_hosts
+        create: true
+        state: present
+        line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+        regexp: ^github\.com
+    - name: Ensure github.com is a known host for deploy
+      become: true
+      become_user: deploy
+      lineinfile:
+        dest: /home/deploy/.ssh/known_hosts
         create: true
         state: present
         line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"

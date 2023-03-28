@@ -197,7 +197,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 9. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours:
 
    ```sh
-   cat deployment-keys/api-1-li-dal.forwardemail.net.pub | pbcopy
+   cat deployment-keys/web-do-sfo3.pub | pbcopy
 
    #
    # NOTE: repeat the above command for all servers
@@ -206,6 +206,18 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    # a new deploy key (make sure to use read-only access)
    #
    ```
+
+   **Or you can also use the `gh` CLI at <https://cli.github.com/manual/gh_repo_deploy-key_add>.**
+
+   ```sh
+   gh repo deploy-key add deployment-keys/api-do-sfo3.pub -R forwardemail/forwardemail.net
+   gh repo deploy-key add deployment-keys/api-vultr-dallas.pub -R forwardemail/forwardemail.net
+   gh repo deploy-key add deployment-keys/bree-vultr-dallas.pub -R forwardemail/forwardemail.net
+   gh repo deploy-key add deployment-keys/web-do-sfo3.pub -R forwardemail/forwardemail.net
+   gh repo deploy-key add deployment-keys/web-vultr-dallas.pub -R forwardemail/forwardemail.net
+   ```
+
+   **Make sure to repeat this step for each deployment key in the `./deployment-keys` folder.**
 
 10. Set up PM2 deployment directories on all the servers:
 
