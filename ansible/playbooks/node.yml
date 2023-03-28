@@ -32,7 +32,7 @@
     - name: Install pnpm
       become: true
       become_user: deploy
-      shell: bash -ilc 'npm install -g pnpm'
+      shell: bash -ilc 'npm install -g pnpm@7'
       when: not pnpm_result.stat.exists
     # install fonts
     - name: Accept fonts license
