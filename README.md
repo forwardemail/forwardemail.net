@@ -98,14 +98,14 @@ See [Requirements](#requirements) below.
    ```
 
    ```sh
-   sudo apt-get install xfonts-75dpi ttf-mscorefonts-installer libfontconfig
+   sudo apt-get install xfonts-75dpi fontconfig libxrender1 xfonts-base ttf-mscorefonts-installer libfontconfig
    ```
 
 4. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html#stable):
 
    ```sh
-   wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
-   sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb
+   wget "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.$(lsb_release -c -s)_$(dpkg --print-architecture).deb"
+   sudo dpkg -i "wkhtmltox_0.12.6.1-2.$(lsb_release -c -s)_$(dpkg --print-architecture).deb"
    ```
 
 5. Install MongoDB by following the guide at <https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04>.
@@ -119,14 +119,12 @@ See [Requirements](#requirements) below.
 
 Our server alias naming convention consists of the following fields, joined together by a hyphen, and converted to lower case:
 
-1. App name
+1. App name (e.g. "web", "api", or "bree")
 2. (Optional) App count (starting with 1) of the application (relative to the same provider and region).  Only applicable for apps with potential count > 1.
-3. Provider name (abbreviated to 2 characters)
-4. Region name (this is the region name given by the provider)
-5. Region country (ISO-3166 alpha-2 code)
-6. Project fully-qualified domain name ([FQDN][] - this is the main project domain name; e.g. `forwardemail.net` or `api.forwardemail.net`)
+3. Provider name (abbreviated to 2 characters, e.g. "do" for "Digital Ocean", but you can optionally use more verbose for providers such as "Vultr" as "vultr")
+4. Region name (this is the region name given by the provider, e.g. "sfo3" for DO's SFO3 region)
 
-For example, one of our web servers is named `web-1-do-nyc3-us.forwardemail.net`, and one of our API servers is named `api-1-do-nyc3-us.api.forwardemail.net`.
+For example, one of our web servers is named `web-do-sfo3` and another is `web-vultr-dallas`.
 
 ### Load Balancing
 
@@ -178,16 +176,16 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    node ansible-playbook ansible/playbooks/ecosystem.yml -l 'localhost'
    ```
 
-6. Set up the web and API server(s) (see [patterns and ansible-playbook flags docs](https://docs.ansible.com/ansible/latest/user_guide/intro_patterns.html#patterns-and-ansible-playbook-flags) if you need help).  If you completely (or partially) run this playbook (or any others below), then the second time you try to run it may not succeed.  This is because we prevent root user access through security hardening.  To workaround this, run the same command but without `-e 'ansible_user=root'` appended as it will default to the `devops` user created.
+6. Set up the web and API server(s) (see [patterns and ansible-playbook flags docs](https://docs.ansible.com/ansible/latest/user_guide/intro_patterns.html#patterns-and-ansible-playbook-flags) if you need help).  If you completely (or partially) run this playbook (or any others below), then the second time you try to run it may not succeed.  This is because we prevent root user access through security hardening.  To workaround this, run the same command but without `--user root` appended as it will default to the `devops` user created.
 
    ```sh
-   node ansible-playbook ansible/playbooks/http.yml -e 'ansible_user=root' -l 'http'
+   node ansible-playbook ansible/playbooks/http.yml --user root -l 'http'
    ```
 
 7. Set up the Bree server(s):
 
    ```sh
-   node ansible-playbook ansible/playbooks/bree.yml -e 'ansible_user=root' -l 'bree'
+   node ansible-playbook ansible/playbooks/bree.yml --user root -l 'bree'
    ```
 
 8. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.

@@ -1,14 +1,15 @@
 ---
-# TODO: set up logrotate for all roles/deps https://github.com/Oefenweb/ansible-logrotated
-- hosts: "{{ hostlist | default('http,bree') }}"
+- hosts: http:bree
   name: Security
   become: true
   become_user: root
-  handlers:
-    - name: restart ssh
-      service: name=ssh state=restarted
   vars:
     copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted
   tasks:
     - name: Insert/Update disable core dumps
       blockinfile:
@@ -27,7 +28,7 @@
     - name: Insert/Update disable core dumps
       blockinfile:
         path: /etc/profile
-        state: "{{ disable_coredump }}"
+        state: present
         block: |
           ulimit -S -c 0 > /dev/null 2>&1
 
@@ -55,6 +56,7 @@
           - automake
           - autoconf
           - nasm
+          - ripgrep
         update_cache: true
 
     # create devops group
@@ -107,28 +109,24 @@
         state: present
         key: "{{ copy_local_key }}"
 
-    # https://superuser.com/a/1578266
+    # disable root login
     - name: Disable root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        line: "{{ item.key }} {{ item.value }}"
+        state: "{{ item.state }}"
+      loop:
+        - { key: PermitRootLogin, value: "yes", state: absent }
+        - { key: PasswordAuthentication, value: "yes", state: absent }
+        - { key: PermitRootLogin, value: "no", state: present }
+        - { key: PasswordAuthentication, value: "no", state: present }
+
+    # https://superuser.com/a/1578266
+    - name: Disable root password
       user:
         name: root
-        password: "!"
-
-    # configure ssh
-    - name: Disable root SSH login
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        state: present
-        regexp: ^#?PermitRootLogin
-        line: PermitRootLogin no
-      notify: restart ssh
-
-    - name: Disable password authentication
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        state: present
-        regexp: ^PasswordAuthentication
-        line: PasswordAuthentication no
-      notify: restart ssh
+        password_lock: true
+      notify: Restart SSH
 
     # modify ulimit for devops and deploy
     # https://gist.github.com/visualskyrim/8d93a8be0a3ef6dd6598ec8550f6eadd#file-modify_ulimit-yml-L7
@@ -146,8 +144,8 @@
     - name: Reload settings from all system configuration files
       shell: sysctl --system
 
-- hosts: "{{ hostlist | default('http,bree') }}"
-  name: Security
+- hosts: http:bree
+  name: Sysctl
   become: true
   become_user: root
   vars:
@@ -181,11 +179,6 @@
         value: 1
       - name: net.ipv6.conf.all.forwarding
         value: 1
-
-      # sets the time before the kernel considers
-      # migrating a process to another core
-      - name: kernel.sched_migration_cost_ns
-        value: 5000000
 
       # handle swapping idle processes to disk
       # https://medium.com/@sauravomar01/linux-kernel-tuning-and-performance-tweaks-d7848178aaa2
@@ -403,4 +396,4 @@
 
     # https://github.com/jnv/ansible-role-unattended-upgrades
     - role: unattended-upgrades
-      unattended_automatic_reboot: true
+      unattended_automatic_reboot_time: "02:00"

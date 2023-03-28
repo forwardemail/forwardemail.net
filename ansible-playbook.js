@@ -29,4 +29,8 @@ process.env.GITHUB_REPO = parse.sync({
 if (!execSync('which ansible-playbook'))
   throw new Error('ansible-playbook is required to be installed on this os');
 
-execSync(`ansible-playbook ${process.argv.slice(2).join(' ')}`);
+try {
+  execSync(`ansible-playbook -i hosts.yml ${process.argv.slice(2).join(' ')}`, { stdio: 'inherit' });
+} catch (err) {
+  console.error(err.stack);
+}
