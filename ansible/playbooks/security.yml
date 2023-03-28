@@ -59,6 +59,10 @@
           - ripgrep
         update_cache: true
 
+    # Silence dubious ownership git warning
+    - name: Silence git safe dir warning
+      shell: git config --global --add safe.directory '*'
+
     # create devops group
     - name: Create devops group
       group:
