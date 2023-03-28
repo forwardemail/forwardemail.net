@@ -82,3 +82,6 @@ deployment-keys
 Thumbs.db
 tmp/
 temp/
+.ssl-ca
+.ssl-cert
+.ssl-key
