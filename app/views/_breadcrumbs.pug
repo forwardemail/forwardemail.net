@@ -21,7 +21,7 @@ if breadcrumbs.length > 1
       .flex-grow-1.ml-md-5.d-md-flex.align-items-center.justify-content-md-end.justify-content-center.mt-3.mt-md-0
         if domain && ((domain.has_mx_record && domain.has_txt_record) || domain.plan !== 'free') && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
           ul.list-inline.mb-0
-            li.list-inline-item
+            li.list-inline-item.mb-1
               a.btn.btn-sm.btn-outline-dark(
                 href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
                 role=domain.plan === "free" ? "button" : false,
@@ -32,7 +32,7 @@ if breadcrumbs.length > 1
                 = " "
                 = t("Aliases")
             if domain.group === 'admin'
-              li.list-inline-item
+              li.list-inline-item.mb-1
                 a.btn.btn-sm.btn-outline-dark(
                   href=domain.plan === "free" ? "#" : l(`/my-account/logs?domains=${domain.name}`),
                   role=domain.plan === "free" ? "button" : false,
@@ -43,7 +43,7 @@ if breadcrumbs.length > 1
                   = " "
                   = t("Logs")
             if domain.group === 'admin'
-              li.list-inline-item
+              li.list-inline-item.mb-1
                 a.btn.btn-sm.btn-outline-dark(
                   href=l(`/my-account/domains/${domain.name}/advanced-settings`)
                 )
@@ -51,7 +51,7 @@ if breadcrumbs.length > 1
                   = " "
                   = t("Settings")
             if domain.group === 'admin'
-              li.list-inline-item
+              li.list-inline-item.mb-1
                 .btn-group.btn-group-sm
                   button.btn.btn-sm.btn-outline-dark.dropdown-toggle(
                     type="button",
@@ -95,7 +95,7 @@ if breadcrumbs.length > 1
         else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
           ul.list-inline.mb-0
             if !domain.is_global && domain.group === 'admin'
-              li.list-inline-item
+              li.list-inline-item.mb-1
                 form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/my-account/domains/${domain.name}/aliases/import`),
                   method="POST"
@@ -104,7 +104,7 @@ if breadcrumbs.length > 1
                     != t('Import <span class="notranslate">TXT</span> Records')
                     = " "
                     i.fa.fa-cloud-download-alt
-            li.list-inline-item
+            li.list-inline-item.mb-1
               a.btn.btn-dark(
                 href=l(`/my-account/domains/${domain.name}/aliases/new`),
                 role="button",
@@ -118,7 +118,7 @@ if breadcrumbs.length > 1
           case ctx.pathWithoutLocale
             when '/my-account/domains'
               ul.list-inline.mb-0
-                li.list-inline-item
+                li.list-inline-item.mb-1
                   a.btn.btn-dark(
                     href=l("/my-account/domains/new"),
                     role="button",
@@ -129,7 +129,7 @@ if breadcrumbs.length > 1
                     = " "
                     i.fa.fa-angle-double-right.align-middle
                 if domains.length > 0
-                  li.list-inline-item
+                  li.list-inline-item.mb-1
                     a.btn.btn-dark(
                       href=l("/my-account/domains/aliases/new"),
                       role="button",
@@ -140,7 +140,7 @@ if breadcrumbs.length > 1
                       = " "
                       i.fa.fa-angle-double-right.align-middle
                 if domains.length > 0
-                  li.list-inline-item
+                  li.list-inline-item.mb-1
                     if user.plan === 'free'
                       button.btn.btn-dark(
                         type="button",
