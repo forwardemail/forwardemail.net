@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "@forevolve/bootstrap-dark": "4.0.0",
-    "@fortawesome/fontawesome-free": "6.4.0",
+    "@fortawesome/fontawesome-free": "5.15.4",
     "@hapi/boom": "10.0.1",
     "@ioredis/commands": "1.2.0",
     "@koa/router": "12.0.0",
