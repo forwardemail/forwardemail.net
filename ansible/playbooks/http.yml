@@ -1,4 +1,10 @@
 ---
+- name: Import security playbook
+  ansible.builtin.import_playbook: security.yml
+- name: Import Node.js playbook
+  ansible.builtin.import_playbook: node.yml
+- name: Import SSH keys playbook
+  ansible.builtin.import_playbook: ssh-keys.yml
 - hosts: web
   name: HTTP
   become: true
@@ -23,12 +29,6 @@
     # https://github.com/holms/ansible-fqdn
     - role: fqdn
       fqdn: "{{ lookup('env', 'API_HOST') }}"
-- import_playbook: security.yml hostlist="http"
-  name: Security
-- import_playbook: node.yml hostlist="http"
-  name: Node.js
-- import_playbook: ssh-keys.yml hostlist="http"
-  name: SSH Keys
 - hosts: web:api
   name: HTTP
   become: true
@@ -36,7 +36,7 @@
   # this was already defined in the ufw role
   # https://github.com/Oefenweb/ansible-ufw/blob/master/handlers/main.yml
   handlers:
-    - name: Reload ufw
+    - name: Reload UFW
       ufw:
         state: reloaded
   tasks:
@@ -81,9 +81,6 @@
         rule: allow
         port: "{{ lookup('env', 'HTTP_PORT') }}"
         proto: tcp
-    - name: Reload ufw
-      ufw:
-        state: reloaded
     #
     # modify ufw setup
     # https://github.com/Oefenweb/ansible-ufw/issues/21
@@ -95,4 +92,4 @@
         owner: root
         group: root
         mode: "0644"
-      notify: reload ufw
+      notify: Reload UFW

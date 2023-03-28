@@ -1,10 +1,10 @@
 ---
-- import_playbook: security.yml hostlist=bree
-  name: Security
-- import_playbook: node.yml hostlist=bree
-  name: Node.js
-- import_playbook: ssh-keys.yml hostlist=bree
-  name: SSH Keys
+- name: Import security playbook
+  ansible.builtin.import_playbook: security.yml
+- name: Import Node.js playbook
+  ansible.builtin.import_playbook: node.yml
+- name: Import SSH keys playbook
+  ansible.builtin.import_playbook: ssh-keys.yml
 - hosts: bree
   name: Bree
   become: true
