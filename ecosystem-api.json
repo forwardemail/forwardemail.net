@@ -13,7 +13,7 @@
     {
       "name": "proxy",
       "script": "proxy.js",
-      "exec_mode": "cluster",
+      "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
       "env_production": {
@@ -24,7 +24,7 @@
   "deploy": {
     "production": {
       "user": "deploy",
-      "host": ["128.199.5.118", "149.28.240.215"],
+      "host": ["149.28.198.68", "164.92.213.75"],
       "ref": "origin/master",
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",
