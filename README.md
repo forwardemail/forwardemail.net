@@ -201,7 +201,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    gh repo deploy-key add deployment-keys/api-do-am-nl.pub -R forwardemail/forwardemail.net
    gh repo deploy-key add deployment-keys/web-vu-sj-ca.pub -R forwardemail/forwardemail.net
    gh repo deploy-key add deployment-keys/web-do-am-nl.pub -R forwardemail/forwardemail.net
-   gh repo deploy-key add deployment-keys/bree-do-am-nl.pub -R forwardemail/forwardemail.net
+   gh repo deploy-key add deployment-keys/bree-vu-sj-ca.pub -R forwardemail/forwardemail.net
    ```
 
 10. Set up PM2 deployment directories on all the servers:
