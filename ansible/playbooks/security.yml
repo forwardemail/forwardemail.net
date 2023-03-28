@@ -59,10 +59,6 @@
           - ripgrep
         update_cache: true
 
-    # Silence dubious ownership git warning
-    - name: Silence git safe dir warning
-      shell: git config --global --add safe.directory '*'
-
     # create devops group
     - name: Create devops group
       group:
@@ -147,6 +143,12 @@
         - { limit_type: hard, limit_item: memlock, value: unlimited }
     - name: Reload settings from all system configuration files
       shell: sysctl --system
+
+    # Silence dubious ownership git warning
+    - name: Silence git safe dir warning
+      become: true
+      become_user: deploy
+      shell: git config --global --add safe.directory '*'
 
 - hosts: http:bree
   name: Sysctl
