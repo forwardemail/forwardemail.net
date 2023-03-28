@@ -194,30 +194,15 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'http:bree'
    ```
 
-9. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours:
+9. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours.  You can also use the `gh` CLI at <https://cli.github.com/manual/gh_repo_deploy-key_add> as shown below (switch the repo/org/repo paths and deployment key paths below to yours):
 
    ```sh
-   cat deployment-keys/web-do-sfo3.pub | pbcopy
-
-   #
-   # NOTE: repeat the above command for all servers
-   # and after running the command, it will copy
-   # the key to your clipboard for you to paste as
-   # a new deploy key (make sure to use read-only access)
-   #
+   gh repo deploy-key add deployment-keys/api-vu-sj-ca.pub -R forwardemail/forwardemail.net
+   gh repo deploy-key add deployment-keys/api-do-am-nl.pub -R forwardemail/forwardemail.net
+   gh repo deploy-key add deployment-keys/web-vu-sj-ca.pub -R forwardemail/forwardemail.net
+   gh repo deploy-key add deployment-keys/web-do-am-nl.pub -R forwardemail/forwardemail.net
+   gh repo deploy-key add deployment-keys/bree-do-am-nl.pub -R forwardemail/forwardemail.net
    ```
-
-   **Or you can also use the `gh` CLI at <https://cli.github.com/manual/gh_repo_deploy-key_add>.**
-
-   ```sh
-   gh repo deploy-key add deployment-keys/api-do-sfo3.pub -R forwardemail/forwardemail.net
-   gh repo deploy-key add deployment-keys/api-vultr-dallas.pub -R forwardemail/forwardemail.net
-   gh repo deploy-key add deployment-keys/bree-vultr-dallas.pub -R forwardemail/forwardemail.net
-   gh repo deploy-key add deployment-keys/web-do-sfo3.pub -R forwardemail/forwardemail.net
-   gh repo deploy-key add deployment-keys/web-vultr-dallas.pub -R forwardemail/forwardemail.net
-   ```
-
-   **Make sure to repeat this step for each deployment key in the `./deployment-keys` folder.**
 
 10. Set up PM2 deployment directories on all the servers:
 
