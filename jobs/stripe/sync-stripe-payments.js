@@ -1,9 +1,7 @@
-const os = require('os');
-
 const Stripe = require('stripe');
 const isSANB = require('is-string-and-not-blank');
 const pReduce = require('p-reduce');
-const pMap = require('p-map');
+const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 
 const getAllStripePaymentIntents = require('./get-all-stripe-payment-intents');
@@ -16,7 +14,6 @@ const Users = require('#models/users');
 const Payments = require('#models/payments');
 const ThresholdError = require('#helpers/threshold-error');
 
-const concurrency = os.cpus().length;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function syncStripePayments() {
@@ -188,7 +185,7 @@ async function syncStripePayments() {
     }
   }
 
-  await pMap(stripeCustomers, mapper, { concurrency });
+  await pMapSeries(stripeCustomers, mapper);
 
   if (errorEmails.length > 0) {
     try {

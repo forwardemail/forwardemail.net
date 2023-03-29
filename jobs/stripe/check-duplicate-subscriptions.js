@@ -1,7 +1,4 @@
-const os = require('os');
-
 const Stripe = require('stripe');
-const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
 const _ = require('lodash');
 
@@ -13,7 +10,6 @@ const logger = require('#helpers/logger');
 const Users = require('#models/users');
 const emailHelper = require('#helpers/email');
 
-const concurrency = os.cpus().length;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 //
@@ -135,7 +131,7 @@ async function checkDuplicateSubscriptions() {
   logger.info('Fetching Stripe customers');
   const customers = await getAllStripeCustomers();
   logger.info(`Started checking ${customers.length} Stripe customers`);
-  await pMap(customers, mapper, { concurrency });
+  await pMapSeries(customers, mapper);
   logger.info(`Finished checking ${customers.length} Stripe customers`);
 }
 
