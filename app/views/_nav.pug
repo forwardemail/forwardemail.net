@@ -75,12 +75,9 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
     )
       span.sr-only.sr-only-focusable Forward Email
       include ../../assets/img/logo-square-30-30.svg
-      .h4.m-0.align-middle.no-js(
+      span.h4.m-0.align-middle.no-js.font-weight-bold.text-themed.ml-2(
         class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block"
-      )
-        span.font-weight-bold.text-primary Forward
-        span.font-weight-normal.text-info Email
-        //- span.text-success .net
+      )= 'Forward Email'
     - const isDomainSpecificUpgrade = domain && domain.name ? ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/billing` : false;
     if user && user.plan === 'free' && !domain && Array.isArray(domains)
       - const filteredDomains = domains.filter((domain) => domain.plan === "free" && !domain.is_global && domain.group === "admin");
@@ -154,7 +151,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
     //- so that on mobile devices there is no border around the links
     //- <https://github.com/twbs/bootstrap/issues/25030>
     #navbar-header.collapse.navbar-collapse
-      ul.navbar-nav.ml-auto
+      ul.navbar-nav.ml-auto.mt-2.mt-md-0
         if user
           if user.plan === 'free' && ctx.pathWithoutLocale !== config.verifyRoute && ctx.pathWithoutLocale !== '/my-account/domains/new' && !ctx.pathWithoutLocale.startsWith('/my-account/billing') && !isDomainSpecificUpgrade && ctx.pathWithoutLocale !== '/denylist'
             li.nav-item.mr-md-3.d-none.d-md-inline-block
