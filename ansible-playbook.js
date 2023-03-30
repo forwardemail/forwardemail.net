@@ -30,7 +30,9 @@ if (!execSync('which ansible-playbook'))
   throw new Error('ansible-playbook is required to be installed on this os');
 
 try {
-  execSync(`ansible-playbook -i hosts.yml ${process.argv.slice(2).join(' ')}`, { stdio: 'inherit' });
+  execSync(`ansible-playbook -i hosts.yml ${process.argv.slice(2).join(' ')}`, {
+    stdio: 'inherit'
+  });
 } catch (err) {
   console.error(err.stack);
 }
