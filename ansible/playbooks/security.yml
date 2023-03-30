@@ -159,6 +159,21 @@
       shell: git config --global --add safe.directory '*'
 
 - hosts: http:bree
+  name: Mongo Shell
+  become: true
+  become_user: root
+  tasks:
+    - name: Setup keys
+      shell: |
+        wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+        echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -c -s)/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+    - name: Install package
+      apt:
+        name:
+          - mongodb-mongosh
+        update_cache: true
+
+- hosts: http:bree
   name: Sysctl
   become: true
   become_user: root
