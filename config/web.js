@@ -120,6 +120,7 @@ module.exports = (redis) => ({
             imgSrc: [
               ...defaultSrc,
               'tracking.qa.paypal.com',
+              'www.paypalobjects.com',
               'ytimg.com',
               '*.ytimg.com'
             ],
