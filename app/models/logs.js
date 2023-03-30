@@ -56,7 +56,7 @@ import('lande').then((obj) => {
   lande = obj.default;
 });
 
-const ERR_DUP_LOG = new Error('Duplicate log in past hour prevented');
+const ERR_DUP_LOG = new Error('Duplicate log');
 ERR_DUP_LOG.is_duplicate_log = true;
 
 //
@@ -439,14 +439,10 @@ Logs.pre('save', async function (next) {
     //
     // log.meta.level (log level)
     //
-    // NOTE: also using this level, we can set a date query range
-    // the log must be created within past hour
-    // but if it's a fatal or error level, within past 10 minutes
-    //
     const $gte =
       this?.meta?.level && ['error', 'fatal'].includes(this.meta.level)
-        ? dayjs().subtract(10, 'minutes').toDate()
-        : dayjs().subtract(1, 'hour').toDate();
+        ? dayjs().subtract(1, 'hour').toDate()
+        : dayjs().subtract(1, 'day').toDate();
 
     if (this?.meta?.level) {
       $and.push(
