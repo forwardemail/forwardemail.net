@@ -14,6 +14,10 @@
 -A PREROUTING -p tcp -m tcp --dport 443 -j REDIRECT --to-port {{ lookup('env', 'HTTP_PORT') }}
 COMMIT
 
+# https://serverfault.com/a/211544
+-t nat -I OUTPUT -p tcp -o lo --dport 80 -j REDIRECT --to-port {{ lookup('env', 'PROXY_PORT') }}
+-t nat -I OUTPUT -p tcp -o lo --dport 443 -j REDIRECT --to-port {{ lookup('env', 'HTTP_PORT') }}
+
 # Don't delete these required lines, otherwise there will be errors
 *filter
 :ufw-before-input - [0:0]
