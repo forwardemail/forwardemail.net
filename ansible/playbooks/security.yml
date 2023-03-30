@@ -57,6 +57,7 @@
           - autoconf
           - nasm
           - ripgrep
+          - redis-tools
         update_cache: true
 
     # create devops group
