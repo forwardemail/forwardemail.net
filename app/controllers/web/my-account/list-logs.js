@@ -1,4 +1,5 @@
 const Boom = require('@hapi/boom');
+const escapeStringRegexp = require('escape-string-regexp');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
@@ -11,16 +12,6 @@ async function listLogs(ctx) {
   //
   if (!ctx.isAuthenticated())
     return ctx.throw(Boom.badRequest(ctx.translateError('LOGIN_REQUIRED')));
-
-  // if user does not have any domains
-  const domainsByUser = ctx.state.domains.filter(
-    (d) =>
-      d.group === 'admin' && (!d.is_global || ctx.state.user.group === 'admin')
-  );
-
-  // safeguard to always ensure at least one domain is queried
-  if (domainsByUser.length === 0)
-    throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   const domains = new Set();
 
@@ -40,43 +31,83 @@ async function listLogs(ctx) {
     }
   }
 
-  let query = {
-    //
-    // TODO: support this in the future with an activity log or audit trail (?)
-    //
-    // user: ctx.state.user._id
-    is_restricted: {
-      $eq: true,
-      $exists: true
-    },
-    'meta.err.responseCode': { $exists: true },
-    domains: {
-      $exists: true,
-      $in: domainsByUser.map((d) => d._id)
+  const filteredDomains =
+    domains.size > 0
+      ? ctx.state.domains.filter((d) => domains.has(d.name))
+      : ctx.state.domains;
+  const aliases = new Set();
+
+  for (const domain of filteredDomains) {
+    for (const alias of domain.aliases) {
+      aliases.add(`${alias.name}@${alias.domain.name}`);
     }
+  }
+
+  //
+  // the query is an $or query with either filtered domains that the user is an admin of
+  // or filtered domains along with RCPT TO matches
+  //
+  const query = {
+    $or: [
+      {
+        is_restricted: {
+          $eq: true,
+          $exists: true
+        },
+        'meta.err.responseCode': { $exists: true },
+        domains: {
+          $exists: true,
+          $in: filteredDomains
+            .filter((d) => d.group === 'admin')
+            .map((d) => d._id)
+        }
+      }
+    ]
   };
 
-  if (domains.size > 0) {
-    const domainIds = [];
-    for (const domain of domains) {
-      const match = domainsByUser.find((d) => d.name === domain);
-      if (!match)
-        throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
-      domainIds.push(match._id);
-    }
-
-    // safeguard to always ensure at least one domain is queried
-    if (domainIds.length === 0)
-      throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
-
-    query = {
+  if (aliases.size > 0) {
+    query.$or.push({
       is_restricted: {
         $eq: true,
         $exists: true
       },
       'meta.err.responseCode': { $exists: true },
-      domains: { $exists: true, $in: domainIds }
-    };
+      domains: {
+        $exists: true,
+        $in: filteredDomains.map((d) => d._id)
+      },
+      'meta.session.envelope.rcptTo.address': {
+        $exists: true,
+        $in: [...aliases]
+      }
+    });
+
+    for (const domain of filteredDomains) {
+      for (const alias of domain.aliases) {
+        const $regex = new RegExp(
+          `^${escapeStringRegexp(alias.name)}+.*@${escapeStringRegexp(
+            alias.domain.name
+          )}$`,
+          'i'
+        );
+        // add regexp support for "+" symbol alias filtering
+        query.$or.push({
+          is_restricted: {
+            $eq: true,
+            $exists: true
+          },
+          'meta.err.responseCode': { $exists: true },
+          domains: {
+            $exists: true,
+            $in: filteredDomains.map((d) => d._id)
+          },
+          'meta.session.envelope.rcptTo.address': {
+            $exists: true,
+            $regex
+          }
+        });
+      }
+    }
   }
 
   const [logs, itemCount] = await Promise.all([

@@ -183,7 +183,9 @@ const PARTIAL_INDICES = [
   'user',
   'domains',
   'domains_checked_at',
-  'is_restricted'
+  'is_restricted',
+  // TODO: most likely need to optimize this in another way besides $exists
+  'meta.session.envelope.rcptTo.address'
 ];
 
 for (const index of PARTIAL_INDICES) {

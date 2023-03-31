@@ -77,7 +77,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
       include ../../assets/img/logo-square-30-30.svg
       span.h4.m-0.align-middle.no-js.font-weight-bold.text-themed.ml-2(
         class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block"
-      )= 'Forward Email'
+      )= "Forward Email"
     - const isDomainSpecificUpgrade = domain && domain.name ? ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/billing` : false;
     if user && user.plan === 'free' && !domain && Array.isArray(domains)
       - const filteredDomains = domains.filter((domain) => domain.plan === "free" && !domain.is_global && domain.group === "admin");
