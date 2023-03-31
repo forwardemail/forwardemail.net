@@ -196,6 +196,8 @@ graceful.listen();
             }
           });
 
+          if (hasDNSError) return false;
+
           return domain;
         });
 

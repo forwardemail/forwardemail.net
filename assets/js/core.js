@@ -128,20 +128,24 @@ window.onloadTurnstileCallback = function () {
 };
 
 // Re-render dates with user's local time
-$('.dayjs').each(function () {
-  const data = $(this).data();
-  if (!data.time) {
-    console.error(new Error('Dayjs missing time'));
-    return;
-  }
+function renderDayjs() {
+  $('.dayjs').each(function () {
+    const data = $(this).data();
+    if (!data.time) {
+      console.error(new Error('Dayjs missing time'));
+      return;
+    }
 
-  $(this).text(
-    new Intl.DateTimeFormat(window.LOCALE, {
-      dateStyle: 'short',
-      timeStyle: 'short'
-    }).format(new Date(data.time))
-  );
-});
+    $(this).text(
+      new Intl.DateTimeFormat(window.LOCALE, {
+        dateStyle: 'short',
+        timeStyle: 'short'
+      }).format(new Date(data.time))
+    );
+  });
+}
+
+renderDayjs();
 
 // Handle modals on anchor tags with data-target specified (preserve href)
 $('a[data-toggle="modal-anchor"]').on('click.modalAnchor', modalAnchor);
@@ -191,6 +195,9 @@ $body.on(
 $body.on('submit.ajaxForm', 'form.ajax-form', ajaxForm);
 // Bind ajax link submission
 $body.on('click', 'a.ajax-form', ajaxForm);
+
+window.addEventListener('tableAjaxFormReloaded', renderDayjs);
+
 // handle popstate
 $(window).on('popstate', handleFormOnPopstate);
 
