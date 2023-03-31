@@ -80,7 +80,6 @@
         name: devops
         password: "!"
         state: present
-        groups: devops,www-data
         append: true
         create_home: true
         shell: /bin/bash
@@ -97,7 +96,6 @@
         name: deploy
         password: "!"
         state: present
-        groups: www-data
         append: true
         create_home: true
         shell: /bin/bash

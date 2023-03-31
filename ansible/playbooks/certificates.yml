@@ -64,8 +64,7 @@
       copy:
         src: "{{ input_key }}"
         dest: /var/www/production/.ssl-key
-        owner: www-data
-        group: www-data
+        owner: deploy
         # https://chmodcommand.com/chmod-660/
         mode: "0660"
 
@@ -74,8 +73,7 @@
       copy:
         src: "{{ input_cert }}"
         dest: /var/www/production/.ssl-cert
-        owner: www-data
-        group: www-data
+        owner: deploy
         # https://chmodcommand.com/chmod-660/
         mode: "0660"
 
@@ -84,8 +82,7 @@
       copy:
         src: "{{ input_bundle }}"
         dest: /var/www/production/.ssl-ca
-        owner: www-data
-        group: www-data
+        owner: deploy
         # https://chmodcommand.com/chmod-660/
         mode: "0660"
       when: (input_bundle is defined) and (input_bundle | length > 0)

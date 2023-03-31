@@ -90,6 +90,5 @@
         src: "{{ playbook_dir }}/templates/before.rules.j2"
         dest: /etc/ufw/before.rules
         owner: root
-        group: root
         mode: "0644"
       notify: Reload UFW
