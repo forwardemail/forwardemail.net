@@ -14,15 +14,23 @@ block content
             .p-3.text-center
               if Date.now() >= dayjs('3/31/2023', 'M/D/YYYY').toDate().getTime()
                 h1.h3= t("Email forwarding is paused")
-                p.card-text!= t('Upgrade <span class="font-weight-bold notranslate">%s</span> to a paid plan to resume service.', domain)
+                p.card-text!= t('Upgrade <span class="font-weight-bold notranslate">%s</span> to Enhanced Protection to resume service.', domain)
               else
                 h1.h3= t("Upgrade required")
                 p.card-text!= t('You must upgrade <span class="font-weight-bold notranslate">%s</span> to continue using our service.', domain)
               a.btn.btn-lg.btn-success(
                 href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`
-              )= t("Upgrade for $3")
+              )= t("Upgrade Now")
             hr
             h2.h4.mt-0.mb-0.text-center= t("Frequently Asked Questions")
+            .p-3.text-center
+              h2.h5= t("Why did I get this email if I'm already on a paid plan?")
+              p.small.card-text.mb-0
+                != t("If your account is already on a paid plan, then you need to switch the domain from Free to Enhanced Protection.")
+                = " "
+                != t('Visit <a href="%s">your domains</a> and click "Change Plan" for this domain to complete setup.', `${config.urls.web}/${locale}/my-account/domains`)
+                = " "
+                != t("Don't worry, the setup process is only two steps!")
             .p-3.text-center
               h2.h5= t("Why do you require a paid plan?")
               p.small.card-text.mb-0
@@ -100,7 +108,7 @@ block content
               p.small.card-text!= t("Simply click the button below to upgrade in minutes.")
               a.btn.btn-lg.btn-success(
                 href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`
-              )= t("Upgrade for $3")
+              )= t("Upgrade Now")
           .card-footer.text-center.small.text-muted
             if Date.now() >= dayjs('3/31/2023', 'M/D/YYYY').toDate().getTime()
               = t("Upgrade your plan to resume email service.")
