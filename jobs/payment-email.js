@@ -84,7 +84,7 @@ async function mapper(id) {
   if (payment.method === 'plan_conversion') {
     bcc = config.email.message.from;
   } else if (payment.amount_refunded > 0) {
-    bcc = config.email.message.from;
+    if (payment.method !== 'free_beta_program') bcc = config.email.message.from;
     $set.refund_receipt_sent_at = $set.receipt_sent_at;
   }
 
