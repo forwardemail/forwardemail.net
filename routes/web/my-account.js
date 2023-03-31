@@ -265,15 +265,12 @@ router
   )
   .get(
     '/logs',
-    web.myAccount.ensureUpgradedPlan,
     paginate.middleware(10, 50),
     rateLimit(100, 'list logs'),
     web.myAccount.listLogs
   )
   .get(
     '/logs/:id',
-    web.myAccount.ensureUpgradedPlan,
-    paginate.middleware(10, 50),
     rateLimit(100, 'retrieve logs'),
     web.myAccount.retrieveLog,
     render('my-account/logs/retrieve')
