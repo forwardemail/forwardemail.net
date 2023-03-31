@@ -33,7 +33,10 @@ mixin paymentMethod(payment)
         default
           i.fa.fa-money-check-alt
       = " "
-    = titleize(humanize(payment.method))
+    if payment.method === 'free_beta_program'
+      = t("Free Credit")
+    else
+      = titleize(humanize(payment.method))
     if payment.last4
       = " "
       = t("ending with")
