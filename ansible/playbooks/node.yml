@@ -58,8 +58,7 @@
       file:
         path: /var/www
         state: directory
-        owner: www-data
-        group: www-data
+        owner: deploy
         # https://chmodcommand.com/chmod-770/
         mode: "0770"
         recurse: true
