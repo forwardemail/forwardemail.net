@@ -41,7 +41,7 @@ const graceful = new Graceful({
 const MAX_ROOT_DOMAINS_PER_LIST = 100000;
 const MAX_RESULTS = process.env.MAX_RESULTS
   ? Number.parseInt(process.env.MAX_RESULTS, 10)
-  : 25000;
+  : 50000;
 const DAYS = process.env.DAYS ? Number.parseInt(process.env.DAYS, 10) : 7;
 // this helps root out spammers that appear less than 50% of the time over past 7 days
 const REQUIRED_FREQUENCY = Math.round(DAYS / 2); // (7 / 2 = 3.5 => 4)
@@ -129,7 +129,7 @@ async function getSPFRecord(name, isRedirect = false) {
 // - [X] must not be categorized as adult-content or malware by Cloudflare
 //       <https://radar.cloudflare.com/categorization-feedback/>
 // - [X] must have either A or MX records
-// - [X] must have either DMARC record with p=reject or p=quarantine
+// - [X] must have either MX or A or DMARC record with p=reject or p=quarantine
 //       OR have an SPF record with -all or ~all qualifier
 // - [X} if criteria met, then cached for 7 days (job runs daily)
 
@@ -138,6 +138,7 @@ async function isBadDomain(name) {
   // check if adult content or malware domain
   if (badDomains.has(name)) return badDomains.get(name);
   let isBad = false;
+  let hasExchanges = false;
   let answer;
   try {
     answer = await resolver.resolve(name);
@@ -150,12 +151,15 @@ async function isBadDomain(name) {
     answer.length === 1 &&
     answer[0] === '0.0.0.0';
 
+  const hasARecords = answer && Array.isArray(answer) && answer.length > 0;
+
   // domain must have A or MX records (AAAA alone isn't useful)
-  if (!isBad && (!answer || !Array.isArray(answer) || answer.length === 0)) {
+  if (!isBad && !hasARecords) {
     try {
       const exchanges = await resolver.resolveMx(name);
-      if (!exchanges || !Array.isArray(exchanges) || exchanges.length === 0)
-        isBad = true;
+      hasExchanges =
+        exchanges && Array.isArray(exchanges) && exchanges.length > 0;
+      if (!hasExchanges) isBad = true;
     } catch {
       isBad = true;
     }
@@ -181,10 +185,12 @@ async function isBadDomain(name) {
     } catch {}
   }
 
-  // if no DMARC record (or) if DMARC record `p` is not equal to `reject` then lookup SPF policy
+  // if no A record (or) no MX (or) DMARC record (or) if DMARC record `p` is not equal to `reject` then lookup SPF policy
   // and if no SPF policy or if SPF policy does not have strict `-all` policy then set to isBad
   if (
     !isBad &&
+    !hasARecords &&
+    !hasExchanges &&
     (!dmarcRecord ||
       !dmarcRecord.p ||
       !['reject', 'quarantine'].includes(dmarcRecord.p))
