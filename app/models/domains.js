@@ -61,7 +61,7 @@ const DNS_RETRY_CODES = new Set([
   'EOF',
   'EREFUSED',
   // NOTE: ESERVFAIL indicates the NS does not work
-  // 'ESERVFAIL',
+  'ESERVFAIL',
   'ETIMEOUT'
 ]);
 
