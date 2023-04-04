@@ -338,6 +338,15 @@ Logs.pre('save', async function (next) {
       )
         throw ERR_DUP_LOG;
 
+      // don't store logs for banned users or rate limiting
+      if (
+        (!this?.meta?.response?.status_code &&
+          this?.err?.output?.statusCode &&
+          this.err.output.statusCode === 403) ||
+        this.err.output.statusCode === 429
+      )
+        throw ERR_DUP_LOG;
+
       //
       // logs have at least one of the following:
       // - log.is_restricted (this means it was sent by bree, mx1, or mx2)
