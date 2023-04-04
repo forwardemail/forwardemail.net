@@ -545,7 +545,7 @@ Users.virtual(config.userFields.verificationPinHasExpired).get(function () {
 //
 // TODO: this should be moved to redis or its own package under forwardemail or @ladjs
 //
-let disposableDomains = [];
+const disposableDomains = new Set();
 async function crawlDisposable() {
   try {
     const { body } = await request(
@@ -559,14 +559,15 @@ async function crawlDisposable() {
       throw new Error('Disposable did not crawl data.');
     }
 
-    disposableDomains = json;
+    for (const d of json) {
+      disposableDomains.add(d);
+    }
   } catch (err) {
     logger.error(err);
   }
 }
 
 setInterval(crawlDisposable, ms('1d'));
-
 crawlDisposable();
 
 // This ensures that `email` was already validated, trimmed, lowercased
@@ -578,13 +579,11 @@ Users.pre('save', async function (next) {
   }
 
   const domain = this.email.split('@')[1];
-  if (disposableDomains.length === 0) {
+  if (disposableDomains.size === 0) {
     await crawlDisposable();
   }
 
-  // TODO: convert to Set with set.has(x) lookup vs arr.indexOf(x) !== -1
-  // eslint-disable-next-line unicorn/prefer-includes
-  if (disposableDomains.indexOf(domain) !== -1) {
+  if (disposableDomains.has(domain)) {
     const error = Boom.badRequest(
       i18n.api.t({
         phrase: config.i18n.phrases.DISPOSABLE_EMAIL_NOT_ALLOWED,

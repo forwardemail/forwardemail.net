@@ -72,7 +72,38 @@ const EXCHANGES = config.exchanges
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(/mail|disposable|inbox/i);
+const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(
+  /disposable|temporary|10minut|24hour|minutemail|tempmail/i
+);
+
+//
+// TODO: this should be moved to redis or its own package under forwardemail or @ladjs
+//
+const disposableDomains = new Set();
+async function crawlDisposable() {
+  try {
+    const { body } = await request(
+      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
+      {
+        signal: AbortSignal.timeout(10000)
+      }
+    );
+    const json = await body.json();
+    if (!Array.isArray(json) || json.length === 0) {
+      throw new Error('Disposable did not crawl data.');
+    }
+
+    for (const d of json) {
+      disposableDomains.add(d);
+    }
+  } catch (err) {
+    logger.error(err);
+  }
+}
+
+setInterval(crawlDisposable, ms('1d'));
+crawlDisposable();
+
 const REGEX_VERIFICATION = new RE2(/[^\da-z]/i);
 
 const Member = new mongoose.Schema({
@@ -963,7 +994,9 @@ function getNameRestrictions(domainName) {
   const isGood = config.goodDomains.some((ext) =>
     rootDomain.endsWith(`.${ext}`)
   );
-  const isDisposable = REGEX_MAIL_DISPOSABLE_INBOX.test(rootDomain);
+  const isDisposable =
+    REGEX_MAIL_DISPOSABLE_INBOX.test(rootDomain) ||
+    disposableDomains.has(rootDomain);
   // NOTE: this also takes into account `nic.ext` for registrars
   const isRestricted = config.restrictedDomains.some(
     (ext) =>
