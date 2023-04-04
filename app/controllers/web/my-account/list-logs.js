@@ -6,6 +6,7 @@ const paginate = require('koa-ctx-paginate');
 
 const { Logs } = require('#models');
 
+// eslint-disable-next-line complexity
 async function listLogs(ctx) {
   //
   // NOTE: this is a safeguard since logs are sensitive
@@ -84,12 +85,16 @@ async function listLogs(ctx) {
 
     for (const domain of filteredDomains) {
       for (const alias of domain.aliases) {
-        const $regex = new RegExp(
-          `^${escapeStringRegexp(alias.name)}+.*@${escapeStringRegexp(
-            alias.domain.name
-          )}$`,
-          'i'
-        );
+        // TODO: regex support
+        const $regex =
+          alias.name === '*'
+            ? new RegExp(`^.*@${escapeStringRegexp(alias.domain.name)}$`, 'i')
+            : new RegExp(
+                `^${escapeStringRegexp(alias.name)}+.*@${escapeStringRegexp(
+                  alias.domain.name
+                )}$`,
+                'i'
+              );
         // add regexp support for "+" symbol alias filtering
         query.$or.push({
           is_restricted: {
@@ -110,34 +115,159 @@ async function listLogs(ctx) {
     }
   }
 
-  const [logs, itemCount] = await Promise.all([
-    // eslint-disable-next-line unicorn/no-array-callback-reference
-    Logs.find(query)
-      .limit(ctx.query.limit)
-      .skip(ctx.paginate.skip)
-      .sort(ctx.query.sort || '-created_at')
-      .lean()
-      .exec(),
-    Logs.countDocuments(query)
-  ]);
+  if (isSANB(ctx.query.q)) {
+    const $regex = new RegExp(escapeStringRegexp(ctx.query.q.trim()), 'i');
 
-  const pageCount = Math.ceil(itemCount / ctx.query.limit);
+    // <https://stackoverflow.com/a/71999502>
+    const arr = [
+      {
+        $addFields: {
+          'meta.session.headers': {
+            $objectToArray: '$meta.session.headers'
+          }
+        }
+      },
+      {
+        $match: {
+          $and: [
+            { ...query },
+            {
+              $or: [
+                {
+                  'meta.session.headers.v': {
+                    $regex
+                  }
+                },
+                {
+                  message: {
+                    $exists: true,
+                    $regex
+                  }
+                },
+                {
+                  'meta.session.resolvedClientHostname': {
+                    $exists: true,
+                    $regex
+                  }
+                },
+                {
+                  'meta.session.remoteAddress': {
+                    $exists: true,
+                    $regex
+                  }
+                },
+                {
+                  'meta.session.envelope.mailFrom.address': {
+                    $exists: true,
+                    $regex
+                  }
+                },
+                {
+                  'meta.session.envelope.rcptTo.address': {
+                    $exists: true,
+                    $regex
+                  }
+                },
+                {
+                  'meta.session.originalFromAddress': {
+                    $exists: true,
+                    $regex
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        $addFields: {
+          'meta.session.headers': {
+            $arrayToObject: '$meta.session.headers'
+          }
+        }
+      }
+    ];
 
-  if (ctx.accepts('html'))
-    return ctx.render('my-account/logs', {
-      logs,
-      pageCount,
-      itemCount,
-      pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
+    let $sort = { created_at: -1 };
+    if (ctx.query.sort) {
+      const order = ctx.query.sort.startsWith('-') ? -1 : 1;
+      $sort = {
+        [order === -1 ? ctx.query.sort.slice(1) : ctx.query.sort]: order
+      };
+    }
+
+    const [logs, results] = await Promise.all([
+      Logs.aggregate([
+        ...arr,
+        {
+          $sort
+        },
+        {
+          $skip: ctx.paginate.skip
+        },
+        {
+          $limit: ctx.query.limit
+        }
+      ]),
+      Logs.aggregate([...arr, { $count: 'count' }])
+    ]);
+
+    ctx.state.logs = logs;
+    ctx.state.itemCount = results[0]?.count;
+  } else {
+    const [logs, itemCount] = await Promise.all([
+      // eslint-disable-next-line unicorn/no-array-callback-reference
+      Logs.find(query)
+        .limit(ctx.query.limit)
+        .skip(ctx.paginate.skip)
+        .sort(ctx.query.sort || '-created_at')
+        .lean()
+        .exec(),
+      Logs.countDocuments(query)
+    ]);
+    ctx.state.logs = logs;
+    ctx.state.itemCount = itemCount;
+  }
+
+  ctx.state.pageCount = Math.ceil(ctx.state.itemCount / ctx.query.limit);
+  ctx.state.pages = paginate.getArrayPages(ctx)(
+    6,
+    ctx.state.pageCount,
+    ctx.query.page
+  );
+
+  if (ctx.state.user.group !== 'admin') {
+    // filter ctx.state.logs for RCPT TO based off user
+    const aliases = new Set();
+    for (const domain of ctx.state.domains) {
+      for (const alias of domain.aliases) {
+        // TODO: regex support
+        aliases.add(`${alias.name}@${alias.domain.name}`);
+      }
+    }
+
+    ctx.state.logs = ctx.state.logs.map((log) => {
+      if (Array.isArray(log?.meta?.session?.envelope?.rcptTo)) {
+        log.meta.session.envelope.rcptTo =
+          log.meta.session.envelope.rcptTo.filter((rcpt) => {
+            // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
+            const username = rcpt.address.includes('+')
+              ? rcpt.address.slice(0, rcpt.address.indexOf('+'))
+              : rcpt.address.split('@')[0];
+            const domain = rcpt.address.split('@')[1];
+            const email = `${username}@${domain}`.toLowerCase();
+            if (aliases.has(`*@${domain}`) || aliases.has(email)) return true;
+            return false;
+          });
+      }
+
+      return log;
     });
+  }
 
-  const table = await ctx.render('my-account/logs/_table', {
-    logs,
-    pageCount,
-    itemCount,
-    pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
-  });
+  if (ctx.accepts('html')) return ctx.render('my-account/logs');
 
+  const table = await ctx.render('my-account/logs/_table');
   ctx.body = { table };
 }
 

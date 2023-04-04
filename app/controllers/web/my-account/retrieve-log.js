@@ -48,6 +48,7 @@ async function retrieveLog(ctx, next) {
     for (const domain of ctx.state.domains) {
       if (!log.domains.some((d) => d.toString() === domain.id)) continue;
       for (const alias of domain.aliases) {
+        // TODO: regex support
         aliases.add(`${alias.name}@${alias.domain.name}`);
       }
     }
@@ -71,7 +72,7 @@ async function retrieveLog(ctx, next) {
             : rcpt.address.split('@')[0];
           const domain = rcpt.address.split('@')[1];
           const email = `${username}@${domain}`.toLowerCase();
-          if (aliases.has(email)) return true;
+          if (aliases.has(`*@${domain}`) || aliases.has(email)) return true;
           return false;
         });
 

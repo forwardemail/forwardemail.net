@@ -62,9 +62,11 @@ mixin registerOrLogin(verb, isModal = false)
             noscript
               .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
             .cf-explicit-turnstile
-          button.btn.btn-success.btn-lg.btn-block(type="submit")
+          button.btn.btn-success.btn-lg.btn-block.font-weight-bold(
+            type="submit"
+          )
             if verb === 'sign up'
-              = t("Sign up free")
+              = t("Get started")
             else
               = t(capitalize(verb))
           if verb === 'sign up'
@@ -92,4 +94,4 @@ mixin registerOrLogin(verb, isModal = false)
                   data-dismiss-modal=isRegisterOrLogin ? false : "true",
                   data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                   data-target=isRegisterOrLogin ? false : "#modal-sign-up"
-                )= t("Sign up free")
+                )= t("Try for free")
