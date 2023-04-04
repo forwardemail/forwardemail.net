@@ -3857,5 +3857,12 @@
   "Industry standard checks for DMARC, SPF, DKIM, SRS, ARC, and MTA-STS.": "Industry standard checks for DMARC, SPF, DKIM, SRS, ARC, and MTA-STS.",
   "Powered by SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Powered by SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.",
   "Unlike other services, we use 100% open-source software we built from scratch.": "Unlike other services, we use 100% open-source software we built from scratch.",
-  "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.": "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more."
+  "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.": "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.",
+  "Email suspended for <span class=\"notranslate\">%s</span>": "Email suspended for <span class=\"notranslate\">%s</span>",
+  "Upgrade <span class=\"font-weight-bold notranslate\">%s</span> to Enhanced Protection to resume service.": "Upgrade <span class=\"font-weight-bold notranslate\">%s</span> to Enhanced Protection to resume service.",
+  "Why did I get this email if I'm already on a paid plan?": "Why did I get this email if I'm already on a paid plan?",
+  "If your account is already on a paid plan, then you need to switch the domain from Free to Enhanced Protection.": "If your account is already on a paid plan, then you need to switch the domain from Free to Enhanced Protection.",
+  "Visit <a href=\"%s\">your domains</a> and click \"Change Plan\" for this domain to complete setup.": "Visit <a href=\"%s\">your domains</a> and click \"Change Plan\" for this domain to complete setup.",
+  "Don't worry, the setup process is only two steps!": "Don't worry, the setup process is only two steps!",
+  "Upgrade your plan to resume email service.": "Upgrade your plan to resume email service."
 }
