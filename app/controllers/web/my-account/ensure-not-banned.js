@@ -1,8 +1,12 @@
+const Boom = require('@hapi/boom');
+
 const config = require('#config');
 
 async function ensureNotBanned(ctx, next) {
   if (!ctx.isAuthenticated()) return next();
   if (ctx.state.user[config.userFields.isBanned]) {
+    if (ctx.api) throw Boom.forbidden(ctx.translateError('ACCOUNT_BANNED'));
+
     const redirectTo = ctx.state.l('/');
     try {
       ctx.logout();
