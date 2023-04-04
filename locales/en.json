@@ -3673,5 +3673,6 @@
   "Industry standard checks for DMARC, SPF, DKIM, SRS, ARC, and MTA-STS.": "Industry standard checks for DMARC, SPF, DKIM, SRS, ARC, and MTA-STS.",
   "Powered by SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Powered by SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.",
   "Unlike other services, we use 100% open-source software we built from scratch.": "Unlike other services, we use 100% open-source software we built from scratch.",
-  "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.": "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more."
+  "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.": "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.",
+  "Domain does not have DNS nameservers configured.": "Domain does not have DNS nameservers configured."
 }
