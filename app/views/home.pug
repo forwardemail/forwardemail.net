@@ -110,18 +110,13 @@ block body
           .d-block
             ul.list-inline.mb-3
               li.list-inline-item
-                a.btn.btn-success.btn-lg(
+                a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase(
                   href=l("/register"),
                   data-toggle="modal-anchor",
                   data-target="#modal-sign-up"
                 )
-                  = t("Sign up free")
-              li.list-inline-item.mt-1.mt-md-0
-                a.btn.btn-dark.btn-lg(
-                  href=l("/private-business-email?pricing=true")
-                )
-                  = t("View features")
-          ul.list-unstyled.mb-0.text-left.d-inline-block
+                  = t("Try for free")
+          ul.list-unstyled.text-left.mb-3
             if !isBot(ctx.get('User-Agent'))
               li.font-weight-bold
                 i.fa.fa-fw.fa-check-circle.text-success
@@ -160,17 +155,38 @@ block body
                 i.fa.fa-fw.fa-check-circle.text-success
                 = " "
                 != t("Secure email encryption")
-        if isBot(ctx.get('User-Agent'))
-          .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
-            a.btn.btn-outline-dark(
-              href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
-              target="_blank",
-              rel="noopener noreferrer"
-            )
-              i.fab.fa-youtube.text-danger
-              = " "
-              = t("Watch Video")
-        else
+          ul.list-inline
+            li.list-inline-item
+              a.btn.btn-outline-dark.font-weight-bold.text-uppercase(
+                href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true")
+              )
+                if isBot(ctx.get('User-Agent'))
+                  = t("Features and Pricing")
+                else
+                  = t("See all features")
+            li.list-inline-item
+              if isBot(ctx.get('User-Agent'))
+                a.btn.btn-outline-dark(
+                  href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fab.fa-youtube.text-danger
+                  = " "
+                  = t("Watch Video")
+              else
+                a.btn.btn-outline-dark.d-inline-block.d-lg-none(
+                  role="button",
+                  data-toggle="modal",
+                  data-target="#modal-watch-video",
+                  href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fab.fa-youtube.text-danger
+                  = " "
+                  = t("Watch Video")
+        if !isBot(ctx.get('User-Agent'))
           .col-lg-6.d-none.d-lg-block
             .lazyframe.border.d-inline-block(
               data-vendor="youtube_nocookie",
@@ -178,19 +194,6 @@ block body
               style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
               data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
             )
-        .col-12.d-block.d-lg-none.mt-3.mb-5.text-md-left
-          a.btn.btn-outline-dark(
-            role="button",
-            data-toggle="modal",
-            data-target="#modal-watch-video",
-            href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            i.fab.fa-youtube.text-danger
-            = " "
-            = t("Watch Video")
-
     a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
       href="#learn-more"
     )
@@ -449,19 +452,23 @@ block body
             li
               i.fa.fa-fw.fa-check-circle.text-success
               = " "
-              != t("Signature checks for DMARC, SPF, DKIM, SRS, and ARC headers.")
+              != t("Industry standard checks for DMARC, SPF, DKIM, SRS, ARC, and MTA-STS.")
             li
               i.fa.fa-fw.fa-check-circle.text-success
               = " "
-              != t("Databases and servers are hosted in SOC 2 compliant data centers.")
+              != t("Powered by SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.")
             li
               i.fa.fa-fw.fa-check-circle.text-success
               = " "
-              != t("Modern and built in-house from scratch without outdated legacy software.")
+              != t("Unlike other services, we use 100% open-source software we built from scratch.")
             li
               i.fa.fa-fw.fa-check-circle.text-success
               = " "
               != t("Safeguarded with Backscatter prevention, DNS denylists, and rate limiting.")
+            li
+              i.fa.fa-fw.fa-check-circle.text-success
+              = " "
+              != t('Global load balancers, application-level DNS over HTTPS ("DoH"), and much more.')
           ul.list-inline
             li.list-inline-item
               a.btn.btn-outline-light.btn-lg.mb-md-5(

@@ -4,68 +4,107 @@ include ../../_pagination
 table.table.table-hover.table-bordered.table-sm
   thead.thead-dark
     tr
-      th.text-center.align-middle(scope="col")= "ID"
-        //- +sortHeader('id', 'ID', '#table-logs')
-      th.text-center.align-middle(scope="col")!= t("Date &amp; Time")
-        //- +sortHeader('created_at', 'Date &amp; Time', '#table-logs')
-      th.text-center.align-middle(scope="col")= t("Subject")
-        //- +sortHeader('subject', 'Subject', '#table-logs')
-      th.text-center.align-middle(scope="col")= t("SMTP Response")
-        //- +sortHeader('status', 'SMTP Response', '#table-logs')
+      th.text-center.align-middle(scope="col")!= t("Log")
       th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if logs.length === 0
         tr
-          td.alert.alert-info(colspan="7")
-            = t("No error logs have been stored yet.  Please check back later.")
+          td.alert.alert-info(colspan="2")
+            if isSANB(ctx.query.q)
+              = t("No logs exist for that search.")
+            else
+              = t("No error logs have been stored yet.  Please check back later.")
       else
         each log in logs
           tr
+            //- TODO: show webhook response
+            //- TODO: show bounces + additional insight
             td.align-middle
-              .markdown-body.ml-0.mr-0: code= log.id
-            td.align-middle.text-center.small.text-monospace
-              if log.meta && log.meta.session && log.meta.session.arrivalDate
-                span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.meta.session.arrivalDate).format("M/D/YY h:mm A z")
-              else
-                span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.created_at).format("M/D/YY h:mm A z")
-            td.align-middle.small.text-monospace
-              //- TODO: show webhook response
-              //- TODO: show bounces + additional insight
-              if log.meta && log.meta.session && log.meta.session.headers && log.meta.session.headers.Subject
-                //- this is the new UTF-8 decoded value
-                code= log.meta.session.headers.Subject
-              else if log.meta && log.meta.session && log.meta.session.headers && log.meta.session.headers.subject
-                //- legacy support
-                if log.meta.session.headers.subject.includes(':')
-                  code= log.meta.session.headers.subject.split(":")[1]
-                else
-                  code= log.meta.session.headers.subject
-            td.align-middle
-              ul.list-inline.mb-0
-                if log.meta
-                  - let badgeClass = "badge-success";
-                  - let statusCode;
-                  if log.err && log.err.responseCode
-                    - statusCode = log.err.responseCode;
-                  else if log.err && log.err.statusCode
-                    - statusCode = log.err.statusCode;
-                  else if log.err && log.err.status
-                    - statusCode = log.err.status;
-                  if statusCode >= 500
-                    - badgeClass = "badge-danger";
-                  else if statusCode >= 400
-                    - badgeClass = "badge-warning";
-                  else if statusCode >= 300
-                    - badgeClass = "badge-primary";
-                  if statusCode
-                    li.list-inline-item.d-inline
-                      span.badge.badge-pill(class=badgeClass)= statusCode
-                li.list-inline-item.small.d-inline
-                  small.text-monospace!= log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
+              ul.list-unstyled.mb-0
+                li
+                  span.badge.badge-pill.badge-dark= "ID"
+                  = " "
+                  span.small: code= log.id
+                li
+                  span.badge.badge-pill.badge-dark= "DATE"
+                  = " "
+                  span.small.text-monospace
+                    if log.meta && log.meta.session && log.meta.session.arrivalDate
+                      span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.meta.session.arrivalDate).format("M/D/YY h:mm A z")
+                    else
+                      span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.created_at).format("M/D/YY h:mm A z")
+                //- MAIL FROM
+                if log.meta && log.meta.session && log.meta.session.envelope && log.meta.session.envelope.mailFrom && log.meta.session.envelope.mailFrom.address
+                  li
+                    span.badge.badge-pill.badge-dark= "MAIL FROM"
+                    = " "
+                    span.small: code= log.meta.session.envelope.mailFrom.address
+                //- RCPT TO
+                if log.meta && log.meta.session && log.meta.session.envelope && log.meta.session.envelope.rcptTo && _.isArray(log.meta.session.envelope.rcptTo) && !_.isEmpty(log.meta.session.envelope.rcptTo)
+                  li
+                    span.badge.badge-pill.badge-dark= "RCPT TO"
+                    = " "
+                    ul.list-inline.d-inline-block.mb-0
+                      each rcpt in log.meta.session.envelope.rcptTo
+                        li.list-inline-item
+                          small: code= rcpt.address
+                //- From Header
+                if log.meta && log.meta.session && log.meta.session.originalFromAddress
+                  li
+                    span.badge.badge-pill.badge-primary= "FROM"
+                    = " "
+                    span.small: code= log.meta.session.originalFromAddress
+                else if log.meta && log.meta.session && log.meta.session.headers && log.meta.session.headers.From
+                  li
+                    span.badge.badge-pill.badge-primary= "FROM"
+                    = " "
+                    span.small: code= log.meta.session.headers.From
+                //- Subject Header
+                if log.meta && log.meta.session && log.meta.session.headers && log.meta.session.headers.Subject
+                  li
+                    span.badge.badge-pill.badge-primary= "SUBJECT"
+                    = " "
+                    span.small: code= log.meta.session.headers.Subject
+                //- Response
+                li
+                  ul.list-inline.mb-0
+                    if log.meta
+                      - let badgeClass = "badge-success";
+                      - let statusCode;
+                      if log.err && log.err.responseCode
+                        - statusCode = log.err.responseCode;
+                      else if log.err && log.err.statusCode
+                        - statusCode = log.err.statusCode;
+                      else if log.err && log.err.status
+                        - statusCode = log.err.status;
+                      if statusCode >= 500
+                        - badgeClass = "badge-danger";
+                      else if statusCode >= 400
+                        - badgeClass = "badge-warning";
+                      else if statusCode >= 300
+                        - badgeClass = "badge-primary";
+                      if statusCode
+                        li.list-inline-item.d-inline
+                          span.badge.badge-pill(class=badgeClass)= statusCode
+                    li.list-inline-item.small.d-inline
+                      small.text-monospace!= log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
             td.align-middle.text-center
-              a.btn.btn-dark.btn-sm(
-                href=l(`/my-account/logs/${log.id}`),
-                target="_blank"
-              )
-                i.fa.fa-search
+              ul.list-inline.mb-0
+                li
+                  a.btn.btn-dark.btn-sm(
+                    href=l(`/my-account/logs/${log.id}`),
+                    target="_blank"
+                  )
+                    = t("View Details")
+                if log.err && log.err.name === 'DenylistError'
+                  - let href = log.err.message.split("you must visit ")[1]
+                  if href
+                    - href = href.split(".;")[0]
+                  if href && href.startsWith('https://forwardemail.net/denylist?q=')
+                    li.mt-1
+                      a.btn.btn-warning.btn-sm(
+                        href=href,
+                        target="_blank"
+                      )
+                        = t("Request Removal")
 +paginate('#table-logs')

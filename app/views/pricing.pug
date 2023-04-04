@@ -41,17 +41,13 @@ block body
             .d-block
               ul.list-inline.mb-3
                 li.list-inline-item
-                  a.btn.btn-success.btn-lg(
+                  a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase(
                     href=l("/register"),
                     data-toggle="modal-anchor",
                     data-target="#modal-sign-up"
                   )
-                    = t("Sign up free")
-                li.list-inline-item.mt-1.mt-md-0
-                  a.btn.btn-dark.btn-lg(href="#features")
-                    = t("View features")
-
-            ul.list-unstyled.mb-0.text-left.d-inline-block
+                    = t("Try for free")
+            ul.list-unstyled.mb-3.text-left
               li
                 i.fa.fa-fw.fa-check-circle.text-success
                 = " "
@@ -75,17 +71,36 @@ block body
                   href="#features"
                 )
                   = t("Premium features for only $3")
-          if isBot(ctx.get('User-Agent'))
-            .col-12.d-none.d-lg-block.py-3.py-md-4.py-lg-5
-              a.btn.btn-outline-dark(
-                href="https://www.youtube.com/watch?v=q7zfEpn2NdA",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                i.fab.fa-youtube.text-danger
-                = " "
-                = t("Watch Video")
-          else
+            ul.list-inline
+              if !isBot(ctx.get('User-Agent'))
+                li.list-inline-item
+                  a.btn.btn-outline-dark.font-weight-bold.text-uppercase(
+                    href="#features"
+                  )
+                    = t("See all features")
+              li.list-inline-item
+                if isBot(ctx.get('User-Agent'))
+                  a.btn.btn-outline-dark(
+                    href="https://www.youtube.com/watch?v=q7zfEpn2NdA",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fab.fa-youtube.text-danger
+                    = " "
+                    = t("Watch Video")
+                else
+                  a.btn.btn-outline-dark.d-inline-block.d-lg-none(
+                    role="button",
+                    data-toggle="modal",
+                    data-target="#modal-pricing-video",
+                    href="https://www.youtube.com/watch?v=q7zfEpn2NdA",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fab.fa-youtube.text-danger
+                    = " "
+                    = t("Watch Video")
+          if !isBot(ctx.get('User-Agent'))
             .col-lg-6.d-none.d-lg-block
               .lazyframe.border.border-themed.d-inline-block(
                 data-vendor="youtube_nocookie",
@@ -93,19 +108,6 @@ block body
                 style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
                 data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
               )
-          .col-12.d-block.d-lg-none.mt-3.mb-5.text-md-left
-            a.btn.btn-outline-dark(
-              role="button",
-              data-toggle="modal",
-              data-target="#modal-pricing-video",
-              href="https://www.youtube.com/watch?v=q7zfEpn2NdA",
-              target="_blank",
-              rel="noopener noreferrer"
-            )
-              i.fab.fa-youtube.text-danger
-              = " "
-              = t("Watch Video")
-
       a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
         href="#features"
       )
@@ -140,13 +142,15 @@ block body
                   span.h4.mb-0.font-weight-bold.d-inline-block $0
                   span.d-inline-block.h6.text-black.text-themed-50.ml-1
                     = t("for unlimited domains")
-              a.btn.btn-block.btn-success(href=l("/my-account/domains/new"))
+              a.btn.btn-block.btn-success.font-weight-bold(
+                href=l("/my-account/domains/new")
+              )
                 if user
                   i.fa.fa-plus
                   = " "
                   = t("Add New Domain")
                 else
-                  = t("Sign up free")
+                  = t("Get started")
                   = " "
                   i.fa.fa-angle-double-right.align-middle
             ul.list-group.list-group-flush.mb-1
@@ -219,10 +223,10 @@ block body
                   span.d-inline-block.h6.text-black.text-themed-50.ml-1
                     = t("for unlimited domains")
               if sortedDomains.length === 0
-                a.btn.btn-block.btn-success(
+                a.btn.btn-block.btn-success.font-weight-bold(
                   href=l("/my-account/domains/new?plan=enhanced_protection")
                 )
-                  = t("Sign up free")
+                  = t("Get started")
                   = " "
                   i.fa.fa-angle-double-right.align-middle
               else
@@ -331,10 +335,10 @@ block body
                   span.d-inline-block.h6.text-black.text-themed-50.ml-1
                     = t("for unlimited domains")
               if sortedDomains.length === 0
-                a.btn.btn-block.btn-success(
+                a.btn.btn-block.btn-success.font-weight-bold(
                   href=l("/my-account/domains/new?plan=team")
                 )
-                  = t("Sign up free")
+                  = t("Get started")
                   = " "
                   i.fa.fa-angle-double-right.align-middle
               else
@@ -532,6 +536,6 @@ block body
             = " "
             = t("Add New Domain")
           else
-            = t("Sign up free")
+            = t("Get started")
             = " "
             i.fa.fa-angle-double-right.align-middle

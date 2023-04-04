@@ -53,7 +53,7 @@ if !user && !registerOrLogin
             .modal-header.text-center.d-block
               .h4.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
                 if verb === 'sign up'
-                  = t("Sign up now")
+                  = t("Try for free")
                 else
                   = t("Welcome back!")
               button.close(
@@ -121,20 +121,20 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
         if !isBot(ctx.get('User-Agent'))
           if ctx.pathWithoutLocale !== config.loginRoute
             li.list-inline-item.d-none.d-sm-inline-block.d-lg-none
-              a.btn.btn-sm.btn-outline-dark(
+              a.btn.btn-link.btn-sm.text-themed(
                 role=isRegisterOrLogin ? "link" : "button",
                 href=l(config.loginRoute),
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                 data-target=isRegisterOrLogin ? false : "#modal-log-in"
               )= t("Log in")
           if ctx.pathWithoutLocale !== '/register'
-            li.list-inline-item
-              a.btn.btn-sm.btn-success(
+            li.list-inline-item.d-none.d-sm-inline-block.d-lg-none
+              a.btn.btn-sm.btn-success.text-uppercase.font-weight-bold(
                 href=l("/register"),
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                 data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
-                = t("Sign up")
+                = t("Try for free")
       .no-js.is-bot.d-inline-block.mr-3
     if !isBot(ctx.get('User-Agent'))
       button.navbar-toggler.text-themed.d-lg-none.no-js(
@@ -175,7 +175,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 class=ctx.pathWithoutLocale.startsWith("/help") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
               )= t("Help")
         else
-          li.nav-item.mr-md-3
+          li.nav-item
             - let pricingHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
             if !isBot(ctx.get('User-Agent'))
               - pricingHref += "?pricing=true";
@@ -342,13 +342,19 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 data-target=isRegisterOrLogin ? false : "#modal-log-in"
               )= t("Log in")
           if ctx.pathWithoutLocale !== '/register'
-            li.nav-item.ml-3.d-none.d-lg-inline-block
-              a.btn.btn-success.d-block.text-left(
+            li.nav-item.ml-0.ml-lg-3
+              a.btn.btn-link.d-block.d-lg-none.text-left.font-weight-bold.text-success(
                 href=l("/register"),
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                 data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
-                = t("Sign up free")
+                = t("Try for free")
+              a.btn.btn-success.text-left.text-uppercase.font-weight-bold.d-none.d-lg-block(
+                href=l("/register"),
+                data-toggle=isRegisterOrLogin ? false : "modal-anchor",
+                data-target=isRegisterOrLogin ? false : "#modal-sign-up"
+              )
+                = t("Try for free")
 if user
   noscript
     .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
