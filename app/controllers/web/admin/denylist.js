@@ -10,10 +10,7 @@ async function list(ctx) {
   let results = await ctx.client.keys('denylist:*');
 
   if (isSANB(ctx.query.key)) {
-    const regex = new RE2(
-      _.escapeRegExp(ctx.query.key) + '|' + ctx.query.key,
-      'i'
-    );
+    const regex = new RE2(_.escapeRegExp(ctx.query.key), 'i');
 
     // go in reverse so we can mutate the array
     let i = results.length;

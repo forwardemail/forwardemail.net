@@ -10,6 +10,7 @@ const { parse } = require('node-html-parser');
 
 const importAliases = require('./import-aliases');
 
+const Aliases = require('#models/aliases');
 const config = require('#config');
 const logger = require('#helpers/logger');
 
@@ -41,6 +42,24 @@ async function retrieveDomain(ctx, next) {
 
   // if it's an API request then return early
   if (ctx.api) return next();
+
+  //
+  // if we're on the advanced settings page, then calculate alias_count for each member
+  //
+  if (
+    ctx.pathWithoutLocale ===
+    `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
+  ) {
+    ctx.state.domain.members = await Promise.all(
+      ctx.state.domain.members.map(async (member) => {
+        member.alias_count = await Aliases.countDocuments({
+          domain: ctx.state.domain._id,
+          user: member.user._id
+        });
+        return member;
+      })
+    );
+  }
 
   //
   // populate a virtual helper for rendering views
@@ -180,6 +199,20 @@ async function retrieveDomain(ctx, next) {
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/aliases`
   ) {
+    // user must be on a paid plan to use a global domain
+    if (
+      !ctx.api &&
+      ctx.state.domain.is_global &&
+      ctx.state.user.group !== 'admin' &&
+      ctx.state.user.plan === 'free'
+    )
+      ctx.flash(
+        'warning',
+        ctx.translate(
+          'PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS',
+          ctx.state.l(`/my-account/billing/upgrade?plan=enhanced_protection`)
+        )
+      );
     if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
       ctx.flash('warning', message);
     ctx.state.breadcrumbs.push('aliases');

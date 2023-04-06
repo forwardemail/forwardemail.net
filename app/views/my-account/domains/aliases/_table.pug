@@ -1,18 +1,14 @@
 include ../../../_sort-header
 include ../../../_pagination
 
-- let numCols = 4;
-
 .table-responsive
   table.table.table-hover.table-bordered.table-sm
     thead.thead-dark
       tr
         th(scope="col")
           +sortHeader('name', 'Alias', '#table-aliases')
-        if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
-          - numCols++;
-          th.d-none.d-lg-table-cell(scope="col")
-            +sortHeader('description', 'Description', '#table-aliases')
+        th.d-none.d-lg-table-cell(scope="col")
+          +sortHeader('description', 'Description', '#table-aliases')
         th.text-center.d-none.d-lg-table-cell(scope="col")
           +sortHeader('is_enabled', 'Active', '#table-aliases')
         th.align-middle.d-none.d-lg-table-cell(scope="col")= t("Recipients")
@@ -21,7 +17,7 @@ include ../../../_pagination
         )= t("Quick Links")
     tbody
       if domain.aliases.length === 0
-        td.alert.alert-info(colspan=numCols)= t("No aliases exist for that search.")
+        td.alert.alert-info(colspan=5)= t("No aliases exist for that search.")
       else
         each alias in domain.aliases
           tr
@@ -121,23 +117,23 @@ include ../../../_pagination
                         = " "
                         = t("Delete Alias")
 
-            if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
-              td.align-middle.d-none.d-lg-table-cell
-                if isSANB(alias.description)
-                  p.mb-0.small= alias.description
-                if Array.isArray(alias.labels)
-                  ul.list-inline.mb-0
-                    each label in alias.labels
-                      li.list-inline-item
-                        span.badge.text-monospace.font-weight-normal(
-                          class=label === "catch-all" ? "badge-success" : "badge-primary"
-                        )= label === "catch-all" ? t("catch-all") : label
-                if domain.group === 'admin' && domain.plan === 'team'
-                  .small.text-muted.text-nowrap
-                    small
-                      i.fa.fa-user
-                      = " "
-                      = alias.user.email
+            td.align-middle.d-none.d-lg-table-cell
+              if isSANB(alias.description)
+                p.mb-0.small= alias.description
+              if Array.isArray(alias.labels)
+                ul.list-inline.mb-0
+                  each label in alias.labels
+                    li.list-inline-item
+                      span.badge.text-monospace.font-weight-normal(
+                        class=label === "catch-all" ? "badge-success" : "badge-primary"
+                      )= label === "catch-all" ? t("catch-all") : label
+              if domain.group === 'admin' && domain.plan === 'team'
+                .small.text-muted.text-nowrap
+                  small
+                    i.fa.fa-user
+                    = " "
+                    = alias.user.email
+
             td.align-middle.text-center.d-none.d-lg-table-cell
               button.btn.btn-sm.btn-link(
                 type="button",

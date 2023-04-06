@@ -1,9 +1,7 @@
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
-const RE2 = require('re2');
 
-// eslint-disable-next-line complexity
 async function listDomains(ctx) {
   let { domains } = ctx.state;
 
@@ -82,54 +80,19 @@ async function listDomains(ctx) {
   // the global domain and had zero aliases
   domains = domains.filter((domain) => {
     if (!domain.is_global) return true;
-    if (
-      domain.members.some(
-        (member) =>
-          member.group !== 'admin' &&
-          // if the logged in user was not member
-          // and if the logged in user had no aliases
-          member.user.id === ctx.state.user.id &&
-          member.is_virtual &&
-          member.alias_count === 0
-      )
-    )
-      return false;
-    return true;
+    const member = domain.members.find((m) => m.user.id === ctx.state.user.id);
+    if (!member) return false;
+    if (member.group === 'admin') return true;
+    if (domain.has_global_aliases) return true;
+    return false;
   });
 
-  // filter based on regex keyword
-  if (ctx.query.q) {
-    let qRegex;
-    try {
-      qRegex = new RE2(_.escapeRegExp(ctx.query.q) + '|' + ctx.query.q, 'i');
-    } catch (err) {
-      ctx.logger.warn(err);
-    }
-
-    if (qRegex)
-      domains = domains.filter(
-        (domain) =>
-          qRegex.test(domain.name) ||
-          domain.aliases.some(
-            (alias) =>
-              qRegex.test(alias.name) ||
-              qRegex.test(`${alias.name}@${domain.name}`) ||
-              qRegex.test(alias.description) ||
-              alias.labels.some((label) => qRegex.test(label)) ||
-              alias.recipients.some((recipient) => qRegex.test(recipient))
-          )
-      );
-  }
-
   const itemCount = domains.length;
-
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
   // sort domains
   let sortFn;
-  if (new RE2('aliases', 'i').test(ctx.query.sort))
-    sortFn = (d) => d.aliases.length;
-  else if (isSANB(ctx.query.sort))
+  if (isSANB(ctx.query.sort))
     sortFn = (d) => d[ctx.query.sort.replace(/^-/, '')];
   else {
     // use the default A-Z sort fn but put not verified at top, followed by mismatch

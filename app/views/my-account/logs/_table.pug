@@ -97,14 +97,11 @@ table.table.table-hover.table-bordered.table-sm
                   )
                     = t("View Details")
                 if log.err && log.err.name === 'DenylistError'
-                  - let href = log.err.message.split("you must visit ")[1]
+                  - let href = log.err.message.split("you must visit ")[1];
                   if href
-                    - href = href.split(".;")[0]
+                    - href = href.split(".;")[0];
                   if href && href.startsWith('https://forwardemail.net/denylist?q=')
                     li.mt-1
-                      a.btn.btn-warning.btn-sm(
-                        href=href,
-                        target="_blank"
-                      )
+                      a.btn.btn-warning.btn-sm(href=href, target="_blank")
                         = t("Request Removal")
 +paginate('#table-logs')

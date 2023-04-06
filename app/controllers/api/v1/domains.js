@@ -22,7 +22,6 @@ function json(domain, isList = false) {
           ? m.toObject()
           : { group: m.group };
         member.user = toObject(Users, m.user);
-        if (_.isFinite(m.alias_count)) member.alias_count = m.alias_count;
         return member;
       });
     // invites
@@ -56,23 +55,19 @@ function json(domain, isList = false) {
 async function list(ctx) {
   // hide global domain names if not admin of
   // the global domain and had zero aliases
-  ctx.state.domains = ctx.state.domains.filter((domain) => {
-    if (!domain.is_global) return true;
-    if (
-      domain.members.some(
-        (member) =>
-          // if the logged in user was not member
-          // and if the logged in user had no aliases
-          member.user.id === ctx.state.user.id &&
-          member.is_virtual &&
-          member.alias_count === 0
-      )
-    )
+  const data = ctx.state.domains
+    .filter((domain) => {
+      if (!domain.is_global) return true;
+      const member = domain.members.find(
+        (m) => m.user.id === ctx.state.user.id
+      );
+      if (!member) return false;
+      if (member.group === 'admin') return true;
+      if (domain.has_global_aliases) return true;
       return false;
-    return true;
-  });
+    })
+    .map((d) => json(d, true));
 
-  const data = ctx.state.domains.map((d) => json(d, true));
   ctx.body = data;
 }
 

@@ -32,34 +32,6 @@ block body
       .row
         .col
           include ../../_breadcrumbs
-      //-
-        if temporaryErrorCount && permanentErrorCount
-          .row.mb-3
-            .col.rounded.border.bg-white.bg-themed.text-center
-              .d-flex.flex-wrap
-                .p-3.p-md-3.d-flex.flex-column.flex-grow-1.justify-content-center
-                  h2.h6.text-muted.text-uppercase= t("Domains")
-                  .display-4.font-weight-bold= numeral(domains.length).format("0,0")
-                .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
-                  h2.h6.text-muted.text-uppercase= t("Aliases")
-                  .display-4.font-weight-bold= numeral(_.sumBy(domains, "alias_count")).format("0,0")
-                .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
-                  h2.h6.text-muted.text-uppercase
-                    = t("Temporary Errors")
-                    = "*"
-                  .display-4.font-weight-bold= numeral(temporaryErrorCount).format("0,0")
-                .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
-                  h2.h6.text-muted.text-uppercase
-                    = t("Permanent Errors")
-                    = "*"
-                  .display-4.font-weight-bold= numeral(permanentErrorCount).format("0,0")
-              p.text-center
-                small.text-muted
-                  = "*"
-                  = " "
-                  = t("Indicates count detected across all domains from previous 7 days.")
-                  = " "
-                  = t("See logs below for insight.")
       .row
         .col
           if domains.length === 0 && !ctx.query.q && (!ctx.query.page || ctx.query.page === 1)

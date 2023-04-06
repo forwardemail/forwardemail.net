@@ -166,11 +166,10 @@ curl -X PUT BASE_URI/v1/account \
 
 > `GET /v1/domains`
 
-| Querystring Parameter | Required | Type                      | Description                      |
-| --------------------- | -------- | ------------------------- | -------------------------------- |
-| `name`                | No       | String (RegExp supported) | Search for domains by name       |
-| `alias`               | No       | String (RegExp supported) | Search for domains by alias name |
-| `recipient`           | No       | String (RegExp supported) | Search for domains by recipient  |
+| Querystring Parameter | Required | Type                      | Description                |
+| --------------------- | -------- | ------------------------- | -------------------------- |
+| `q`                   | No       | String (RegExp supported) | Search for domains by name |
+| `name`                | No       | String (RegExp supported) | Search for domains by name |
 
 > Example Request:
 
@@ -339,10 +338,11 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
-| Querystring Parameter | Required | Type                      | Description                                 |
-| --------------------- | -------- | ------------------------- | ------------------------------------------- |
-| `name`                | No       | String (RegExp supported) | Search for aliases in a domain by name      |
-| `recipient`           | No       | String (RegExp supported) | Search for aliases in a domain by recipient |
+| Querystring Parameter | Required | Type                      | Description                                                 |
+| --------------------- | -------- | ------------------------- | ----------------------------------------------------------- |
+| `q`                   | No       | String (RegExp supported) | Search for aliases in a domain by name, label, or recipient |
+| `name`                | No       | String (RegExp supported) | Search for aliases in a domain by name                      |
+| `recipient`           | No       | String (RegExp supported) | Search for aliases in a domain by recipient                 |
 
 > Example Request:
 

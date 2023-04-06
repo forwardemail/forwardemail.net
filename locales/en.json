@@ -3674,5 +3674,6 @@
   "Powered by SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Powered by SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.",
   "Unlike other services, we use 100% open-source software we built from scratch.": "Unlike other services, we use 100% open-source software we built from scratch.",
   "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.": "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.",
-  "Domain does not have DNS nameservers configured.": "Domain does not have DNS nameservers configured."
+  "Domain does not have DNS nameservers configured.": "Domain does not have DNS nameservers configured.",
+  "Search for aliases in a domain by name, label, or recipient": "Search for aliases in a domain by name, label, or recipient"
 }

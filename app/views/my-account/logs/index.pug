@@ -7,8 +7,8 @@ block body
         include ../../_breadcrumbs
         if ctx.query.domains
           h4
-            = t('Filtered for:')
-            = ' '
+            = t("Filtered for:")
+            = " "
             = ctx.query.domains
         //- TODO: search by date
         form.ajax-form.table-ajax-form(

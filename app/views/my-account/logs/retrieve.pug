@@ -28,14 +28,13 @@ block body
           tr
             th= "MAIL FROM"
             td
-              if log.mailFrom
-                = log.mailFrom
+              = log.meta.session.envelope.mailFrom.address
           tr
             th= "RCPT TO"
             td
               ul.list-inline.mb-0
-                each rcpt in log.rcpts
-                  li.list-inline-item= rcpt
+                each rcpt in log.meta.session.envelope.rcptTo
+                  li.list-inline-item= rcpt.address
         h3.h5= t("SMTP Response")
         ul.list-inline.alert.alert-secondary
           if log.meta

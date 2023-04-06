@@ -1,4 +1,3 @@
-const RE2 = require('re2');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 
@@ -40,6 +39,26 @@ async function retrieveDomains(ctx, next) {
       // has_txt_record: true
     });
 
+  if (ctx.pathWithoutLocale.endsWith('/domains') && isSANB(ctx.query.q)) {
+    query.$or = query.$or.map((obj) => {
+      obj.name = {
+        $regex: _.escapeRegExp(ctx.query.q.trim()),
+        $options: 'i'
+      };
+      return obj;
+    });
+  }
+
+  if (ctx.pathWithoutLocale.endsWith('/domains') && isSANB(ctx.query.name)) {
+    query.$or = query.$or.map((obj) => {
+      obj.name = {
+        $regex: _.escapeRegExp(ctx.query.name.trim()),
+        $options: 'i'
+      };
+      return obj;
+    });
+  }
+
   // eslint-disable-next-line unicorn/no-array-callback-reference
   ctx.state.domains = await Domains.find(query)
     .populate(
@@ -50,42 +69,17 @@ async function retrieveDomains(ctx, next) {
     .lean()
     .exec();
 
-  let domainAliases = await Aliases.find({
-    $or: [
-      // find aliases that are owned by the user's domains
-      {
-        domain: {
-          $in: ctx.state.domains.filter((d) => !d.is_global).map((d) => d._id)
-        }
-      },
-      // NOTE: we can most likely remove this but need to check is_global elsewhere
-      // find aliases that are global and owned by the user
-      // (since our approach seems to be that we correlate user group to owning is_global's)
-      {
-        domain: {
-          $in: ctx.state.domains.filter((d) => d.is_global).map((d) => d._id)
-        },
-        user: ctx.state.user._id
-      }
-    ]
-  })
-    .populate('domain', 'name')
-    .populate(
-      'user',
-      `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
-    )
-    .sort('name')
-    .lean()
-    .exec();
+  const globalDomainIds = ctx.state.domains
+    .filter((d) => d.is_global)
+    .map((d) => d._id);
 
-  domainAliases = domainAliases.filter(
-    (alias) => _.isObject(alias.user) && !alias.user[config.userFields.isBanned]
-  );
-
-  const aliasesByDomain = _.groupBy(
-    domainAliases,
-    (alias) => alias.domain.name
-  );
+  const globalDomainIdsWithAliases =
+    globalDomainIds.length === 0
+      ? []
+      : await Aliases.distinct('domain', {
+          user: ctx.state.user._id,
+          domain: { $in: globalDomainIds }
+        });
 
   let i = ctx.state.domains.length;
   while (i--) {
@@ -95,29 +89,39 @@ async function retrieveDomains(ctx, next) {
     let member;
     while (x--) {
       const m = domain.members[x];
+
       // ensure members have populated users and are not banned
       if (!_.isObject(m.user) || m.user[config.userFields.isBanned]) {
         ctx.state.domains[i].members.splice(x, 1);
         continue;
       }
 
+      // omit properties we don't need to share
+      delete m.user[config.userFields.isBanned];
+
       // check if there was a match for the current member (logged in user)
       if (m.user.id === ctx.state.user.id) member = m;
     }
 
     // if the domain was not global and there was no member
-    if (domain.is_global && !member) {
-      member = {
-        user: {
-          _id: ctx.state.user._id,
-          id: ctx.state.user.id,
-          email: ctx.state.user.email
-        },
-        group: 'user',
-        // store the assignment was virtual
-        is_virtual: true
-      };
-      domain.members.push(member);
+    if (domain.is_global) {
+      // store a boolean for the count
+      if (
+        globalDomainIdsWithAliases.some((_id) => _id.toString() === domain.id)
+      )
+        domain.has_global_aliases = true;
+
+      if (!member) {
+        member = {
+          user: {
+            _id: ctx.state.user._id,
+            id: ctx.state.user.id,
+            email: ctx.state.user.email
+          },
+          group: 'user'
+        };
+        domain.members.push(member);
+      }
     } else if (!member) {
       // otherwise purge the domain from the list
       // since the user did not belong to it anymore
@@ -127,105 +131,47 @@ async function retrieveDomains(ctx, next) {
 
     // set a `group` virtual helper alias to the member's group
     domain.group = member.group;
-
-    // populate an `aliases` array on the domain based off user's
-    domain.aliases = [];
-    domain.alias_count = 0;
-
-    if (aliasesByDomain[domain.name])
-      for (const alias of aliasesByDomain[domain.name]) {
-        if (domain.group === 'admin' || alias.user.id === ctx.state.user.id) {
-          domain.aliases.push({
-            ...alias,
-            // for each alias set a virtual group helper
-            // (if the user is an admin OR if the user is the owner of the alias)
-            group:
-              domain.group === 'admin' || alias.user.id === ctx.state.user.id
-                ? 'admin'
-                : 'user'
-          });
-          domain.alias_count++;
-        }
-      }
-
-    // iterate over domain.members and add `alias_count` virtual property
-    // which counts across the aliases for the given member's user id
-    domain.members = domain.members.map((member) => ({
-      ...member,
-      alias_count: aliasesByDomain[domain.name]
-        ? aliasesByDomain[domain.name].filter(
-            (alias) => alias.user.id === member.user.id
-          ).length
-        : 0
-    }));
-  }
-
-  //
-  // TODO: is this actually still in use anywhere?
-  // search functionality (with RegExp support)
-  //
-  if (!ctx.pathWithoutLocale.endsWith('/aliases')) {
-    if (isSANB(ctx.query.name)) {
-      let regex;
-      try {
-        regex = new RE2(_.escapeRegExp(ctx.query.name) + '|' + ctx.query.name);
-      } catch (err) {
-        ctx.logger.warn(err);
-      }
-
-      if (regex)
-        ctx.state.domains = ctx.state.domains.filter((domain) =>
-          regex.test(domain.name)
-        );
-    }
-
-    if (isSANB(ctx.query.alias)) {
-      let aliasRegex;
-      try {
-        aliasRegex = new RE2(
-          _.escapeRegExp(ctx.query.alias) + '|' + ctx.query.alias
-        );
-      } catch (err) {
-        ctx.logger.warn(err);
-      }
-
-      if (aliasRegex)
-        ctx.state.domains = ctx.state.domains.filter((domain) =>
-          domain.aliases.some((alias) => aliasRegex.test(alias.name))
-        );
-    }
-
-    if (isSANB(ctx.query.recipient)) {
-      let recipientRegex;
-      try {
-        recipientRegex = new RE2(
-          _.escapeRegExp(ctx.query.recipient) + '|' + ctx.query.recipient
-        );
-      } catch (err) {
-        ctx.logger.warn(err);
-      }
-
-      if (recipientRegex)
-        ctx.state.domains = ctx.state.domains.filter((domain) =>
-          domain.aliases.some((alias) =>
-            alias.recipients.some((recipient) => recipientRegex.test(recipient))
-          )
-        );
-    }
   }
 
   if (ctx.api) return next();
 
+  // as part of onboarding redirect users to create a new domain right away
   if (
+    !isSANB(ctx.query.q) &&
+    !isSANB(ctx.query.name) &&
     ctx.method === 'GET' &&
-    ['/my-account', '/my-account/domains'].includes(ctx.pathWithoutLocale) &&
-    // as part of onboarding redirect users to create a new domain right away
-    // unless of course they already had created global vanity domain
-    ctx.state.domains.filter(
-      (domain) =>
-        !domain.is_global || (domain.is_global && domain.aliases.length > 0)
-    ).length === 0
+    ['/my-account', '/my-account/domains'].includes(ctx.pathWithoutLocale)
   ) {
+    // check global alias count which is used for redirection logic
+    // if every domain was global and zero aliases then redirect
+    // or if there was at least one domain that was not global
+    const count = ctx.state.domains.every((d) => !d.is_global)
+      ? 0
+      : await Aliases.countDocuments({
+          domain: {
+            $in: ctx.state.domains.filter((d) => d.is_global).map((d) => d._id)
+          },
+          user: ctx.state.user._id
+        });
+
+    // user must be on a paid plan to use a global domain
+    if (
+      !ctx.api &&
+      ctx.state.user.group !== 'admin' &&
+      ctx.state.user.plan === 'free' &&
+      count > 0
+    )
+      ctx.flash(
+        'warning',
+        ctx.translate(
+          'PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS',
+          ctx.state.l(`/my-account/billing/upgrade?plan=enhanced_protection`)
+        )
+      );
+
+    if (count > 0) return next();
+
+    // otherwise redirect user to create a new domain for onboarding
     if (!ctx.api)
       ctx.flash('custom', {
         title: ctx.request.t(`${ctx.state.emoji('wave')} Welcome!`),

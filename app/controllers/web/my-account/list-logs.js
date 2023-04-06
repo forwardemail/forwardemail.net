@@ -1,10 +1,10 @@
 const Boom = require('@hapi/boom');
-const escapeStringRegexp = require('escape-string-regexp');
+const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
-const { Logs } = require('#models');
+const { Aliases, Logs } = require('#models');
 
 // eslint-disable-next-line complexity
 async function listLogs(ctx) {
@@ -34,15 +34,10 @@ async function listLogs(ctx) {
 
   const filteredDomains =
     domains.size > 0
-      ? ctx.state.domains.filter((d) => domains.has(d.name))
-      : ctx.state.domains;
-  const aliases = new Set();
-
-  for (const domain of filteredDomains) {
-    for (const alias of domain.aliases) {
-      aliases.add(`${alias.name}@${alias.domain.name}`);
-    }
-  }
+      ? ctx.state.domains.filter(
+          (d) => d.plan !== 'free' && domains.has(d.name)
+        )
+      : ctx.state.domains.filter((d) => d.plan !== 'free');
 
   //
   // the query is an $or query with either filtered domains that the user is an admin of
@@ -66,36 +61,40 @@ async function listLogs(ctx) {
     ]
   };
 
-  if (aliases.size > 0) {
-    query.$or.push({
-      is_restricted: {
-        $eq: true,
-        $exists: true
-      },
-      'meta.err.responseCode': { $exists: true },
-      domains: {
-        $exists: true,
-        $in: filteredDomains.map((d) => d._id)
-      },
-      'meta.session.envelope.rcptTo.address': {
-        $exists: true,
-        $in: [...aliases]
-      }
-    });
+  //
+  // go through all domains that the user is not an admin of
+  // and add those respective aliases as an $or query for logs
+  // (e.g. this allows global vanity domain logs for the user)
+  //
+  const nonAdminDomains = filteredDomains.filter((d) => d.group !== 'admin');
+  const nonAdminDomainsToAliases = {};
 
-    for (const domain of filteredDomains) {
-      for (const alias of domain.aliases) {
-        // TODO: regex support
-        const $regex =
-          alias.name === '*'
-            ? new RegExp(`^.*@${escapeStringRegexp(alias.domain.name)}$`, 'i')
-            : new RegExp(
-                `^${escapeStringRegexp(alias.name)}+.*@${escapeStringRegexp(
-                  alias.domain.name
-                )}$`,
-                'i'
-              );
-        // add regexp support for "+" symbol alias filtering
+  if (nonAdminDomains.length > 0) {
+    const aliases = await Aliases.find({
+      user: ctx.state.user._id,
+      domain: {
+        $in: nonAdminDomains.map((d) => d._id)
+      }
+    })
+      .select('name domain')
+      .lean()
+      .exec();
+
+    for (const alias of aliases) {
+      if (!alias.domain) continue;
+
+      const domain = nonAdminDomains.find(
+        (d) => d.id === alias.domain.toString()
+      );
+
+      if (!domain) continue;
+
+      if (!nonAdminDomainsToAliases[domain.id])
+        nonAdminDomainsToAliases[domain.id] = [];
+
+      nonAdminDomainsToAliases[domain.id].push(`${alias.name}@${domain.name}`);
+
+      if (alias.name !== '*') {
         query.$or.push({
           is_restricted: {
             $eq: true,
@@ -104,19 +103,42 @@ async function listLogs(ctx) {
           'meta.err.responseCode': { $exists: true },
           domains: {
             $exists: true,
-            $in: filteredDomains.map((d) => d._id)
+            $in: [domain._id]
           },
           'meta.session.envelope.rcptTo.address': {
             $exists: true,
-            $regex
+            $in: [`${alias.name}@${domain.name}`]
           }
         });
       }
+
+      const $regex =
+        alias.name === '*'
+          ? `^.*@${_.escapeRegExp(domain.name)}$`
+          : `^${_.escapeRegExp(alias.name)}+.*@${_.escapeRegExp(domain.name)}$`;
+
+      // add regexp support for "+" symbol alias filtering
+      query.$or.push({
+        is_restricted: {
+          $eq: true,
+          $exists: true
+        },
+        'meta.err.responseCode': { $exists: true },
+        domains: {
+          $exists: true,
+          $in: [domain._id]
+        },
+        'meta.session.envelope.rcptTo.address': {
+          $exists: true,
+          $regex,
+          $options: 'i'
+        }
+      });
     }
   }
 
   if (isSANB(ctx.query.q)) {
-    const $regex = new RegExp(escapeStringRegexp(ctx.query.q.trim()), 'i');
+    const $regex = _.escapeRegExp(ctx.query.q.trim());
 
     // <https://stackoverflow.com/a/71999502>
     const arr = [
@@ -135,43 +157,50 @@ async function listLogs(ctx) {
               $or: [
                 {
                   'meta.session.headers.v': {
-                    $regex
+                    $regex,
+                    $options: 'i'
                   }
                 },
                 {
                   message: {
                     $exists: true,
-                    $regex
+                    $regex,
+                    $options: 'i'
                   }
                 },
                 {
                   'meta.session.resolvedClientHostname': {
                     $exists: true,
-                    $regex
+                    $regex,
+                    $options: 'i'
                   }
                 },
                 {
                   'meta.session.remoteAddress': {
                     $exists: true,
-                    $regex
+                    $regex,
+                    $options: 'i'
                   }
                 },
                 {
                   'meta.session.envelope.mailFrom.address': {
                     $exists: true,
-                    $regex
+                    $regex,
+                    $options: 'i'
                   }
                 },
                 {
                   'meta.session.envelope.rcptTo.address': {
                     $exists: true,
-                    $regex
+                    $regex,
+                    $options: 'i'
                   }
                 },
                 {
                   'meta.session.originalFromAddress': {
                     $exists: true,
-                    $regex
+                    $regex,
+                    $options: 'i'
                   }
                 }
               ]
@@ -237,15 +266,10 @@ async function listLogs(ctx) {
   );
 
   if (ctx.state.user.group !== 'admin') {
-    // filter ctx.state.logs for RCPT TO based off user
-    const aliases = new Set();
-    for (const domain of ctx.state.domains) {
-      for (const alias of domain.aliases) {
-        // TODO: regex support
-        aliases.add(`${alias.name}@${alias.domain.name}`);
-      }
-    }
-
+    //
+    // go through each log and filter out RCPT TO values
+    // that do not belong to this user
+    //
     ctx.state.logs = ctx.state.logs.map((log) => {
       if (Array.isArray(log?.meta?.session?.envelope?.rcptTo)) {
         log.meta.session.envelope.rcptTo =
@@ -255,8 +279,35 @@ async function listLogs(ctx) {
               ? rcpt.address.slice(0, rcpt.address.indexOf('+'))
               : rcpt.address.split('@')[0];
             const domain = rcpt.address.split('@')[1];
+
+            // get a match where the domain name matches and id existed
+            let isAdmin = false;
+            const match = log.domains.find((logDomain) => {
+              const find = ctx.state.domains.find(
+                (d) => d.id === logDomain.toString() && d.name === domain
+              );
+              if (!find) return false;
+              if (find.group === 'admin') isAdmin = true;
+              return true;
+            });
+
+            if (!match) return false;
+
+            // if the user is not an admin of the domain then filter for individual rcpts
+            if (isAdmin) return true;
+
             const email = `${username}@${domain}`.toLowerCase();
-            if (aliases.has(`*@${domain}`) || aliases.has(email)) return true;
+
+            const domainToAliases = nonAdminDomainsToAliases[match.toString()];
+
+            if (!domainToAliases) return false;
+
+            if (
+              domainToAliases.includes(`*@${domain}`) ||
+              domainToAliases.includes(email)
+            )
+              return true;
+
             return false;
           });
       }
