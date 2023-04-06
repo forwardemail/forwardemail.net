@@ -151,6 +151,7 @@ router
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureTeamPlan,
     web.myAccount.ensureUpgradedPlan,
+    web.myAccount.retrieveAliases,
     web.myAccount.updateMember
   )
 
@@ -160,6 +161,7 @@ router
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureTeamPlan,
     web.myAccount.ensureUpgradedPlan,
+    web.myAccount.retrieveAliases,
     web.myAccount.removeMember
   )
   .get(
@@ -178,8 +180,8 @@ router
     '/domains/:domain_id/aliases',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureUpgradedPlan,
-    web.myAccount.retrieveAliases,
     paginate.middleware(10, 50),
+    web.myAccount.retrieveAliases,
     web.myAccount.listAliases
   )
   .get(
@@ -215,6 +217,7 @@ router
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureUpgradedPlan,
     rateLimit(50, 'import alias'),
+    web.myAccount.retrieveAliases,
     web.myAccount.importAliases
   )
   .get(

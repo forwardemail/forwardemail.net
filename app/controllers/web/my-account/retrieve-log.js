@@ -1,10 +1,9 @@
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const { isEmail } = require('validator');
 
-const { Logs } = require('#models');
+const { Logs, Aliases } = require('#models');
 
 async function retrieveLog(ctx, next) {
   //
@@ -27,78 +26,100 @@ async function retrieveLog(ctx, next) {
     !log.is_restricted ||
     !log?.meta?.err?.responseCode ||
     !Array.isArray(log.domains) ||
-    log.domains.length === 0
+    log.domains.length === 0 ||
+    !Array.isArray(log?.meta?.session?.envelope?.rcptTo) ||
+    log.meta.session.envelope.rcptTo.length === 0
   )
     throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
 
-  // if user is an admin then let them view anything
-  // if user is admin of domain then let them view
-  // if user has an alias that is a recipient of the log then let them view
-  //    (strip the RCPT TO to match the log only)
-  const adminDomainIdsByUser = new Set(
-    ctx.state.domains.filter((d) => d.group === 'admin').map((d) => d.id)
+  //
+  // go through all domains that the user is not an admin of
+  // and add those respective aliases as an $or query for logs
+  // (e.g. this allows global vanity domain logs for the user)
+  //
+  const nonAdminDomains = ctx.state.domains.filter(
+    (d) => d.plan !== 'free' && d.group !== 'admin'
   );
-  const domainIdsByUser = new Set(ctx.state.domains.map((d) => d.id));
-  const domainNames = new Set(ctx.state.domains.map((d) => d.name));
+  const nonAdminDomainsToAliases = {};
 
-  let isValid = ctx.state.user.group === 'admin';
-
-  if (!isValid) {
-    const aliases = new Set();
-    for (const domain of ctx.state.domains) {
-      if (!log.domains.some((d) => d.toString() === domain.id)) continue;
-      for (const alias of domain.aliases) {
-        // TODO: regex support
-        aliases.add(`${alias.name}@${alias.domain.name}`);
+  if (nonAdminDomains.length > 0) {
+    const aliases = await Aliases.find({
+      user: ctx.state.user._id,
+      domain: {
+        $in: nonAdminDomains.map((d) => d._id)
       }
-    }
+    })
+      .select('name domain')
+      .lean()
+      .exec();
 
-    // try to find the domain where the user is an admin
-    if (log.domains.some((d) => adminDomainIdsByUser.has(d.toString()))) {
-      isValid = true;
-    } else if (
-      _.isArray(log?.meta?.session?.envelope?.rcptTo) &&
-      log.domains.some((d) => domainIdsByUser.has(d.toString()))
-    ) {
-      //
-      // else try to find where the user has the domain and their alias is a recipient
-      // (this subsequently filters out the rcptTo array for matches only)
-      //
-      log.meta.session.envelope.rcptTo =
-        log.meta.session.envelope.rcptTo.filter((rcpt) => {
-          // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
-          const username = rcpt.address.includes('+')
-            ? rcpt.address.slice(0, rcpt.address.indexOf('+'))
-            : rcpt.address.split('@')[0];
-          const domain = rcpt.address.split('@')[1];
-          const email = `${username}@${domain}`.toLowerCase();
-          if (aliases.has(`*@${domain}`) || aliases.has(email)) return true;
-          return false;
-        });
+    for (const alias of aliases) {
+      if (!alias.domain) continue;
 
-      if (log.meta.session.envelope.rcptTo.length > 0) isValid = true;
+      const domain = nonAdminDomains.find(
+        (d) => d.id === alias.domain.toString()
+      );
+
+      if (!domain) continue;
+
+      if (!nonAdminDomainsToAliases[domain.id])
+        nonAdminDomainsToAliases[domain.id] = [];
+
+      nonAdminDomainsToAliases[domain.id].push(`${alias.name}@${domain.name}`);
     }
   }
 
-  if (!isValid) throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
+  // filter recipients
+  log.meta.session.envelope.rcptTo = log.meta.session.envelope.rcptTo.filter(
+    (rcpt) => {
+      // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
+      const username = rcpt.address.includes('+')
+        ? rcpt.address.slice(0, rcpt.address.indexOf('+'))
+        : rcpt.address.split('@')[0];
+      const domain = rcpt.address.split('@')[1];
 
+      // get a match where the domain name matches and id existed
+      let isAdmin = false;
+      const match = log.domains.find((logDomain) => {
+        const find = ctx.state.domains.find(
+          (d) => d.id === logDomain.toString() && d.name === domain
+        );
+        if (!find) return false;
+        if (find.group === 'admin') isAdmin = true;
+        return true;
+      });
+
+      if (!match) return false;
+
+      // if the user is not an admin of the domain then filter for individual rcpts
+      if (isAdmin) return true;
+
+      const email = `${username}@${domain}`.toLowerCase();
+
+      const domainToAliases = nonAdminDomainsToAliases[match.toString()];
+
+      if (!domainToAliases) return false;
+
+      if (
+        domainToAliases.includes(`*@${domain}`) ||
+        domainToAliases.includes(email)
+      )
+        return true;
+
+      return false;
+    }
+  );
+
+  // check recipient length after filtering
+  if (log.meta.session.envelope.rcptTo.length === 0)
+    throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
+
+  // ensure MAIL FROM
   if (
-    isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
-    isEmail(log.meta.session.envelope.mailFrom.address)
+    !isSANB(log?.meta?.session?.envelope?.mailFrom?.address) ||
+    !isEmail(log.meta.session.envelope.mailFrom.address)
   )
-    log.mailFrom = log.meta.session.envelope.mailFrom.address;
-
-  log.rcpts = _.isArray(log?.meta?.session?.envelope.rcptTo)
-    ? log.meta.session.envelope.rcptTo
-        .filter(
-          (rcpt) =>
-            _.isObject(rcpt) &&
-            isSANB(rcpt.address) &&
-            isEmail(rcpt.address) &&
-            domainNames.has(rcpt.address.split('@')[1].toLowerCase())
-        )
-        .map((rcpt) => rcpt.address)
-    : [];
+    throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
 
   ctx.state.log = log;
 

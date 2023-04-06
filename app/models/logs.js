@@ -340,10 +340,10 @@ Logs.pre('save', async function (next) {
 
       // don't store logs for banned users or rate limiting
       if (
-        (!this?.meta?.response?.status_code &&
-          this?.err?.output?.statusCode &&
-          this.err.output.statusCode === 403) ||
-        this.err.output.statusCode === 429
+        !this?.meta?.response?.status_code &&
+        Number.isFinite(this?.err?.output?.statusCode) &&
+        (this.err.output.statusCode === 403 ||
+          this.err.output.statusCode === 429)
       )
         throw ERR_DUP_LOG;
 

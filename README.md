@@ -342,8 +342,6 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
 [letsencrypt]: https://letsencrypt.org/
 
-[fqdn]: https://en.wikipedia.org/wiki/Fully_qualified_domain_name
-
 [ansible-guide]: https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html
 
 [mandarin]: https://github.com/ladjs/mandarin

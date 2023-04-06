@@ -3548,5 +3548,6 @@
   "If your account is already on a paid plan, then you need to switch the domain from Free to Enhanced Protection.": "If your account is already on a paid plan, then you need to switch the domain from Free to Enhanced Protection.",
   "Visit <a href=\"%s\">your domains</a> and click \"Change Plan\" for this domain to complete setup.": "Visit <a href=\"%s\">your domains</a> and click \"Change Plan\" for this domain to complete setup.",
   "Don't worry, the setup process is only two steps!": "Don't worry, the setup process is only two steps!",
-  "Upgrade your plan to resume email service.": "Upgrade your plan to resume email service."
+  "Upgrade your plan to resume email service.": "Upgrade your plan to resume email service.",
+  "Search for aliases in a domain by name, label, or recipient": "Search for aliases in a domain by name, label, or recipient"
 }
