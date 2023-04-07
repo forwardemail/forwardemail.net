@@ -2,6 +2,8 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
+const Domains = require('#models/domains');
+
 async function listDomains(ctx) {
   let { domains } = ctx.state;
 
@@ -11,14 +13,21 @@ async function listDomains(ctx) {
     let setupRequired = false;
     let setupRequiredMultiple = false;
     for (const domain of domains) {
-      if (domain.is_global && domain.group !== 'admin') continue;
-      if (
-        domain.group === 'admin' &&
-        domain.has_mx_record &&
-        domain.has_txt_record
-      )
-        // hasSomeSetup = true;
+      if (domain.group !== 'admin') continue;
+      const { isGood, isDisposable, isRestricted } =
+        Domains.getNameRestrictions(domain.name);
+
+      if (domain.plan === 'free' && (!isGood || isDisposable || isRestricted)) {
+        if (setupRequired) {
+          setupRequiredMultiple = true;
+          break;
+        }
+
+        setupRequired = domain.name;
         continue;
+      }
+
+      if (domain.has_mx_record && domain.has_txt_record) continue;
 
       if (setupRequired) {
         setupRequiredMultiple = true;

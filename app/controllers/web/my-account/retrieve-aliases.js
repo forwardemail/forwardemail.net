@@ -73,11 +73,7 @@ async function retrieveAliases(ctx, next) {
     ) ||
     ctx.pathWithoutLocale.startsWith(
       `/my-account/domains/${ctx.state.domain.name}/members/`
-    ) ||
-    ctx.pathWithoutLocale ===
-      `/my-account/domains/${ctx.state.domain.id}/aliases/import` ||
-    ctx.pathWithoutLocale ===
-      `/my-account/domains/${ctx.state.domain.name}/aliases/import`
+    )
   ) {
     // eslint-disable-next-line unicorn/no-array-callback-reference
     ctx.state.domain.aliases = await Aliases.find(query)
@@ -150,11 +146,7 @@ async function retrieveAliases(ctx, next) {
     ) ||
     ctx.pathWithoutLocale.startsWith(
       `/my-account/domains/${ctx.state.domain.name}/members/`
-    ) ||
-    ctx.pathWithoutLocale ===
-      `/my-account/domains/${ctx.state.domain.id}/aliases/import` ||
-    ctx.pathWithoutLocale ===
-      `/my-account/domains/${ctx.state.domain.name}/aliases/import`
+    )
   )
     return next();
 

@@ -217,7 +217,6 @@ router
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureUpgradedPlan,
     rateLimit(50, 'import alias'),
-    web.myAccount.retrieveAliases,
     web.myAccount.importAliases
   )
   .get(

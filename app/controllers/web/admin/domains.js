@@ -63,6 +63,8 @@ async function update(ctx) {
   domain.max_recipients_per_alias =
     body.max_recipients_per_alias || domain.max_recipients_per_alias;
 
+  domain.locale = ctx.locale;
+  domain.resolver = ctx.resolver;
   await domain.save();
 
   ctx.flash('custom', {

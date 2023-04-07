@@ -40,8 +40,8 @@ block body
         .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-8.offset-lg-2.text-center
           noscript
             .alert.alert-danger!= t("Please enable JavaScript for PayPal checkout option.")
-          if bad_domain
-            .alert.alert-warning.small!= t('You must upgrade to a paid plan for: <strong class="notranslate">%s</strong>', bad_domain)
+          if bad_domain || (domain && domain.plan === 'free' && isRestricted || !isGood || isDisposable)
+            .alert.alert-warning.small!= t('You must upgrade to a paid plan for: <strong class="notranslate">%s</strong>', bad_domain || domain.name)
           else if user.plan === 'free' && domain
             .alert.alert-warning.small
               = t("Not ready to upgrade?")

@@ -31,7 +31,6 @@ const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
-const PAID_PLANS = ['enhanced_protection', 'team'];
 
 // <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
 // <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
@@ -301,6 +300,14 @@ Domains.virtual('link')
     this.__link = link;
   });
 
+Domains.virtual('skip_payment_check')
+  .get(function () {
+    return this.__skip_payment_check;
+  })
+  .set(function (skipPaymentCheck) {
+    this.__skip_payment_check = boolean(skipPaymentCheck);
+  });
+
 Domains.virtual('skip_verification')
   .get(function () {
     return this.__skip_verification;
@@ -371,14 +378,15 @@ Domains.pre('validate', function (next) {
 // to have at least one admin with the plan of the domain
 // (otherwise throw an error that tells them what's wrong)
 Domains.pre('validate', async function (next) {
+  // we can skip this for TXT validation since it has duplicate logic
+  if (this.skip_payment_check) return next();
+
   try {
     const domain = this;
 
     const { isGood, isDisposable, isRestricted } = getNameRestrictions(
       domain.name
     );
-
-    if (domain.plan === 'free' && isGood && !isDisposable) return next();
 
     const users = await Users.find({
       _id: { $in: domain.members.map((m) => m.user) }
@@ -387,14 +395,11 @@ Domains.pre('validate', async function (next) {
       .select('plan email')
       .exec();
 
-    let hasPaidPlan = false;
-
     const hasValidPlan = users.some((user) => {
-      if (PAID_PLANS.includes(user.plan)) hasPaidPlan = true;
       if (domain.plan === 'team' && user.plan === 'team') return true;
       if (
         domain.plan === 'enhanced_protection' &&
-        PAID_PLANS.includes(user.plan)
+        ['enhanced_protection', 'team'].includes(user.plan)
       )
         return true;
       return false;
@@ -422,39 +427,42 @@ Domains.pre('validate', async function (next) {
         );
 
       // if the domain is not on a paid plan then it's not valid
-      if (!hasPaidPlan)
+      if (domain.plan === 'free')
         throw Boom.paymentRequired(
           i18n.translateError(
             'RESTRICTED_PLAN_UPGRADE_REQUIRED',
             domain.locale,
             domain.name,
-            `/${domain.locale}/my-account/billing/upgrade?plan=enhanced_protection`
+            `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
           )
         );
-    } else if (!hasPaidPlan && !isGood) {
-      throw Boom.paymentRequired(
-        i18n.translateError(
-          'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
-          domain.locale,
-          domain.name,
-          `/${domain.locale}/my-account/billing/upgrade?plan=enhanced_protection`
-        )
-      );
     }
 
-    // if the domain contained any of these words then require paid upgrade
-    // - mail
-    // - disposable
-    // - inbox
-    if (!hasPaidPlan && isDisposable) {
-      throw Boom.paymentRequired(
-        i18n.translateError(
-          'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
-          domain.locale,
-          domain.name,
-          `/${domain.locale}/my-account/billing/upgrade?plan=enhanced_protection`
-        )
-      );
+    if (domain.plan === 'free') {
+      if (!isGood) {
+        throw Boom.paymentRequired(
+          i18n.translateError(
+            'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
+            domain.locale,
+            domain.name,
+            `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+          )
+        );
+      }
+
+      // if the domain contained any of these words then require paid upgrade
+      // - mail
+      // - disposable
+      // - inbox
+      if (isDisposable)
+        throw Boom.paymentRequired(
+          i18n.translateError(
+            'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
+            domain.locale,
+            domain.name,
+            `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+          )
+        );
     }
 
     if (!hasValidPlan && domain.plan !== 'free')
@@ -663,6 +671,7 @@ async function getVerificationResults(domain, resolver) {
   let ns = false;
   let txt = false;
   let mx = false;
+  let requiresPaidPlan = false;
 
   await Promise.all([
     //
@@ -769,6 +778,7 @@ async function getVerificationResults(domain, resolver) {
     //
     // validate TXT records
     //
+    // eslint-disable-next-line complexity
     (async function () {
       try {
         const result = await getTxtAddresses(
@@ -847,7 +857,48 @@ async function getVerificationResults(domain, resolver) {
             )
           );
         } else if (result.errors.length === 0) {
-          txt = true;
+          const { isGood, isDisposable, isRestricted } = getNameRestrictions(
+            domain.name
+          );
+          if (isRestricted) {
+            requiresPaidPlan = true;
+            errors.push(
+              Boom.paymentRequired(
+                i18n.translateError(
+                  'RESTRICTED_PLAN_UPGRADE_REQUIRED',
+                  domain.locale,
+                  domain.name,
+                  `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+                )
+              )
+            );
+          } else if (!isGood) {
+            requiresPaidPlan = true;
+            errors.push(
+              Boom.paymentRequired(
+                i18n.translateError(
+                  'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
+                  domain.locale,
+                  domain.name,
+                  `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+                )
+              )
+            );
+          } else if (isDisposable) {
+            requiresPaidPlan = true;
+            errors.push(
+              Boom.paymentRequired(
+                i18n.translateError(
+                  'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
+                  domain.locale,
+                  domain.name,
+                  `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+                )
+              )
+            );
+          } else {
+            txt = true;
+          }
         } else {
           errors.push(...result.errors);
         }
@@ -958,22 +1009,24 @@ async function getVerificationResults(domain, resolver) {
     })()
   ]);
 
-  if (!txt || !mx)
-    errors.push(
-      Boom.badRequest(i18n.translateError('AUTOMATED_CHECK', domain.locale))
-    );
+  if (!requiresPaidPlan) {
+    if (!txt || !mx)
+      errors.push(
+        Boom.badRequest(i18n.translateError('AUTOMATED_CHECK', domain.locale))
+      );
 
-  if (!txt && !mx)
-    errors.push(
-      Boom.badRequest(i18n.translateError('NAMESERVER_CHECK', domain.locale))
-    );
+    if (!txt && !mx)
+      errors.push(
+        Boom.badRequest(i18n.translateError('NAMESERVER_CHECK', domain.locale))
+      );
 
-  if (!txt || !mx)
-    errors.unshift(
-      Boom.badRequest(
-        i18n.translateError('DNS_CHANGES_TAKE_TIME', domain.locale)
-      )
-    );
+    if (!txt || !mx)
+      errors.unshift(
+        Boom.badRequest(
+          i18n.translateError('DNS_CHANGES_TAKE_TIME', domain.locale)
+        )
+      );
+  }
 
   return { ns, txt, mx, errors: _.uniqBy(errors, 'message') };
 }
@@ -1182,7 +1235,8 @@ async function ensureUserHasValidPlan(user, locale) {
 
   for (const domain of domains) {
     // determine what plans are required
-    const validPlans = domain.plan === 'team' ? ['team'] : PAID_PLANS;
+    const validPlans =
+      domain.plan === 'team' ? ['team'] : ['enhanced_protection', 'team'];
     let isValid = false;
 
     for (const member of domain.members) {

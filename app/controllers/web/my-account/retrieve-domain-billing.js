@@ -47,6 +47,15 @@ async function retrieveDomainBilling(ctx) {
   // certain tlds require the user to be on a paid plan to create them
   // (so we validate that this is the case and then render hidden input and alert)
   //
+  if (ctx.state.domain && ctx.state.domain.name) {
+    const { isGood, isDisposable, isRestricted } = Domains.getNameRestrictions(
+      ctx.state.domain.name
+    );
+    ctx.state.isGood = isGood;
+    ctx.state.isDisposable = isDisposable;
+    ctx.state.isRestricted = isRestricted;
+  }
+
   if (
     isAccountUpgrade &&
     ctx.accepts('html') &&

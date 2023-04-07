@@ -37,16 +37,23 @@ async function importAliases(ctx) {
     throw err;
   }
 
+  const existingAliases = await Aliases.find({
+    domain: ctx.state.domain._id
+  })
+    .lean()
+    .exec();
+
+  const aliases = [];
+
   //
   // NOTE: eventually rewrite this, it was a quick hack
   //       (this also conditionally gets invoked every time retrieveDomain controller runs)
   //
-  const aliases = [];
   const catchAll = [];
 
   for (const element of ignoredAddresses) {
     const match = aliases.find((alias) => alias.name === element.name);
-    const existing = ctx.state.domain.aliases.find(
+    const existing = existingAliases.find(
       (alias) => alias.name === element.name
     );
     if (existing)
@@ -107,9 +114,7 @@ async function importAliases(ctx) {
       isURL(element, config.isURLOptions)
     ) {
       const match = aliases.find((alias) => alias.name === '*');
-      const existing = ctx.state.domain.aliases.find(
-        (alias) => alias.name === '*'
-      );
+      const existing = existingAliases.find((alias) => alias.name === '*');
       // try to add to existing catch-all record if it wasn't already there
       if (existing) {
         if (existing.recipients.includes(element))

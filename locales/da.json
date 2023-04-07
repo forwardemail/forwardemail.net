@@ -3594,5 +3594,8 @@
   "Visit <a href=\"%s\">your domains</a> and click \"Change Plan\" for this domain to complete setup.": "Visit <a href=\"%s\">your domains</a> and click \"Change Plan\" for this domain to complete setup.",
   "Don't worry, the setup process is only two steps!": "Don't worry, the setup process is only two steps!",
   "Upgrade your plan to resume email service.": "Upgrade your plan to resume email service.",
-  "Search for aliases in a domain by name, label, or recipient": "Search for aliases in a domain by name, label, or recipient"
+  "Search for aliases in a domain by name, label, or recipient": "Search for aliases in a domain by name, label, or recipient",
+  "Did you want enhanced privacy and error logs?": "Did you want enhanced privacy and error logs?",
+  "Upgrading will also unlock your access to <a href=\"%s\" target=\"_blank\">error logs</a>, which helps you to ensure high deliverability and prevent spam false positives.": "Upgrading will also unlock your access to <a href=\"%s\" target=\"_blank\">error logs</a>, which helps you to ensure high deliverability and prevent spam false positives.",
+  "<strong>Upgrading will also unlock your access to <a href=\"%s\" target=\"_blank\">error logs</a></strong>, which helps you to ensure high deliverability and prevent spam false positives.": "<strong>Upgrading will also unlock your access to <a href=\"%s\" target=\"_blank\">error logs</a></strong>, which helps you to ensure high deliverability and prevent spam false positives."
 }

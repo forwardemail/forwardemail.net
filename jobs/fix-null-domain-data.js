@@ -36,6 +36,7 @@ async function mapper(id) {
     }
   }
 
+  domain.skip_verification = true;
   await domain.save();
 }
 

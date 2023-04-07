@@ -49,6 +49,9 @@ async function verifyRecords(ctx) {
     // (this will bubble up any payment 402 errors)
     //
     try {
+      domain.skip_payment_check = true;
+      domain.locale = ctx.locale;
+      domain.resolver = ctx.resolver;
       await domain.validate();
     } catch (err) {
       if (err && err.isBoom && err.output && err.output.statusCode === 402) {
@@ -114,6 +117,8 @@ async function verifyRecords(ctx) {
     domain.last_checked_at = new Date();
 
     // save the domain
+    domain.locale = ctx.locale;
+    domain.resolver = ctx.resolver;
     await domain.save();
 
     let extra;
