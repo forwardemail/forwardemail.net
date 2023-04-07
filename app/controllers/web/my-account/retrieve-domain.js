@@ -183,7 +183,6 @@ async function retrieveDomain(ctx, next) {
       ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.id}`)
   ) {
     // if we're on the setup page and the user is not on paid plan and it's not allowed anymore
-    let checkDNS = false;
     let message;
     if (ctx.state.domain.plan === 'free') {
       const { isGood, isDisposable, isRestricted } =
@@ -216,27 +215,21 @@ async function retrieveDomain(ctx, next) {
           )
         );
         ctx.flash('error', message);
-      } else {
-        checkDNS = true;
       }
-    } else {
-      checkDNS = true;
     }
 
     //
     // attempt to re-verify the domain
     //
-    if (checkDNS) {
-      ctx.state.domain = await Domains.findById(ctx.state.domain._id);
-      ctx.state.domain.skip_payment_check = true;
-      ctx.state.domain.locale = ctx.locale;
-      ctx.state.domain.resolver = ctx.resolver;
+    ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+    ctx.state.domain.skip_payment_check = true;
+    ctx.state.domain.locale = ctx.locale;
+    ctx.state.domain.resolver = ctx.resolver;
 
-      try {
-        ctx.state.domain = await ctx.state.domain.save();
-      } catch (err) {
-        ctx.logger.warn(err);
-      }
+    try {
+      ctx.state.domain = await ctx.state.domain.save();
+    } catch (err) {
+      ctx.logger.warn(err);
     }
 
     if (
