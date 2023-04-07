@@ -187,6 +187,12 @@ module.exports = (redis) => ({
       app.context.client,
       app.context.logger
     );
+    app.use((ctx, next) => {
+      // since we're on an older helmet version due to koa-helmet
+      // <https://github.com/helmetjs/helmet/issues/230>
+      ctx.set('X-XSS-Protection', '0');
+      return next();
+    });
   },
   hookBeforePassport(app) {
     app.use(async (ctx, next) => {
