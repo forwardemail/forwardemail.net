@@ -163,9 +163,7 @@ module.exports = (redis) => ({
     referrerPolicy: {
       policy: 'same-origin'
     },
-    xssFilter: {
-      reportUri
-    }
+    xssFilter: false
   },
   session: {
     errorHandler(err, type, ctx) {
