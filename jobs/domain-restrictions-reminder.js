@@ -208,11 +208,11 @@ graceful.listen();
           if (!d.has_mx_record) return false;
           if (d.plan !== 'free' && d.has_mx_record && d.has_txt_record)
             return false;
-          // filter out domains that already had this email sent in past 1d
+          // filter out domains that already had this email sent in past month
           if (
             _.isDate(d.restrictions_reminder_sent_at) &&
             dayjs(new Date(d.restrictions_reminder_sent_at)).isAfter(
-              dayjs().subtract(1, 'day').toDate()
+              dayjs().subtract(1, 'month').toDate()
             )
           )
             return false;
