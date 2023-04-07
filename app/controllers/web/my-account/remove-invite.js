@@ -19,8 +19,9 @@ async function removeInvite(ctx, next) {
   ctx.state.domain.invites = ctx.state.domain.invites.filter(
     (invite) => invite.email.toLowerCase() !== email.toLowerCase()
   );
-  ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.skip_verification = true;
+  ctx.state.domain.locale = ctx.locale;
+  ctx.state.domain.resolver = ctx.resolver;
   ctx.state.domain = await ctx.state.domain.save();
 
   if (ctx.api) return next();

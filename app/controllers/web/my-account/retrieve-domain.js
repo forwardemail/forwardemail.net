@@ -10,7 +10,7 @@ const { parse } = require('node-html-parser');
 
 const importAliases = require('./import-aliases');
 
-const Aliases = require('#models/aliases');
+const { Domains, Aliases } = require('#models');
 const config = require('#config');
 const logger = require('#helpers/logger');
 
@@ -178,13 +178,75 @@ async function retrieveDomain(ctx, next) {
   ];
 
   if (
-    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}` ||
-    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.id}`
+    ctx.method === 'GET' &&
+    (ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}` ||
+      ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.id}`)
   ) {
-    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record) {
+    // if we're on the setup page and the user is not on paid plan and it's not allowed anymore
+    let checkDNS = false;
+    let message;
+    if (ctx.state.domain.plan === 'free') {
+      const { isGood, isDisposable, isRestricted } =
+        Domains.getNameRestrictions(ctx.state.domain.name);
+
+      if (isRestricted) {
+        message = ctx.translate(
+          'RESTRICTED_PLAN_UPGRADE_REQUIRED',
+          ctx.state.domain.name,
+          ctx.state.l(
+            `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+          )
+        );
+        ctx.flash('error', message);
+      } else if (!isGood) {
+        message = ctx.translate(
+          'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
+          ctx.state.domain.name,
+          ctx.state.l(
+            `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+          )
+        );
+        ctx.flash('error', message);
+      } else if (isDisposable) {
+        message = ctx.translate(
+          'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
+          ctx.state.domain.name,
+          ctx.state.l(
+            `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+          )
+        );
+        ctx.flash('error', message);
+      } else {
+        checkDNS = true;
+      }
+    } else {
+      checkDNS = true;
+    }
+
+    //
+    // attempt to re-verify the domain
+    //
+    if (checkDNS) {
+      ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+      ctx.state.domain.skip_payment_check = true;
+      ctx.state.domain.locale = ctx.locale;
+      ctx.state.domain.resolver = ctx.resolver;
+
+      try {
+        ctx.state.domain = await ctx.state.domain.save();
+      } catch (err) {
+        ctx.logger.warn(err);
+      }
+    }
+
+    if (
+      message ||
+      !ctx.state.domain.has_mx_record ||
+      !ctx.state.domain.has_txt_record
+    ) {
       ctx.flash('custom', {
         title: ctx.request.t('Important'),
-        html: ctx.translate('SETUP_NOT_FINISHED'),
+        html: message || ctx.translate('SETUP_NOT_FINISHED'),
         type: 'info',
         toast: true,
         position: 'top'

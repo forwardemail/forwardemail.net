@@ -278,18 +278,18 @@ module.exports = {
   RESTRICTED_EMAILS_ONLY:
     'Domain has a restricted extension and all users associated with the domain must have email addresses associated with government, public, or state extensions (no personal email addresses are permitted).',
   RESTRICTED_PLAN_UPGRADE_REQUIRED:
-    'Domain name <span class="notranslate">%s</span> has a restricted extension and requires at least one admin to be on a paid plan. Please <a class="font-weight-bold" href="%s">upgrade your account</a> to this plan to continue.',
+    'Domain name <span class="notranslate">%s</span> has a restricted extension and requires at least one admin to be on a paid plan. Please <a class="font-weight-bold" href="%s">upgrade your domain</a> to this plan to continue.',
   DOMAIN_PLAN_UPGRADE_REQUIRED:
-    'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan. Please <a class="font-weight-bold" href="%s">upgrade your account</a> to this plan to continue.',
+    'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan. Please <a class="font-weight-bold" href="%s">upgrade your domain</a> to this plan to continue.',
   DOMAIN_PLAN_DOWNGRADE_REQUIRED:
     'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan. Please <a class="font-weight-bold" href="%s">downgrade this domain</a> to continue.',
   RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED:
-    'Domain name <span class="notranslate">%s</span> has a domain name that includes reserved keywords such as "mail", "disposable", and "inbox". Please <a class="font-weight-bold" href="%s">upgrade your account</a> to a paid plan to continue.',
+    'Domain name <span class="notranslate">%s</span> has a domain name that includes reserved keywords such as "mail", "disposable", and "inbox". Please <a class="font-weight-bold" href="%s">upgrade your domain</a> to this plan to continue.',
   EMAIL_FORWARDING_PAUSED: 'Email forwarding is paused',
   EMAIL_PAST_DUE:
     'Your account registered under <span class="notranslate">%s</span> is past due on payment. We have paused email forwarding and may suspend your account if this is not resolved.  Please visit <a href="https://forwardemail.net/my-account/billing">https://forwardemail.net/my-account/billing</a> to make payment.',
   MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED:
-    'Domain name <span class="notranslate">%s</span> has a domain name extension that is frequently used for spam operations. Please <a class="font-weight-bold" href="%s">upgrade your account</a> to a paid plan to continue. Please see our FAQ for the complete list of <a href="https://forwardemail.net/faq#what-domain-name-extensions-can-be-used-for-free" target="_blank">domain name extensions that can be used for free</a>.',
+    'Domain name <span class="notranslate">%s</span> has a domain name extension that is frequently used for spam operations. Please <a class="font-weight-bold" href="%s">upgrade your domain</a> to continue. Please see our FAQ for the complete list of <a href="https://forwardemail.net/faq#what-domain-name-extensions-can-be-used-for-free" target="_blank">domain name extensions that can be used for free</a>.',
   MALICIOUS_DOMAIN:
     'Domain name <span class="notranslate">%s</span> has a domain name extension that is frequently abused for spam operations.  We require that users with this domain name extension upgrade to a paid plan in order to use our service.  Please see our FAQ for the complete list of <a href="https://forwardemail.net/faq#what-domain-name-extensions-can-be-used-for-free" target="_blank">domain name extensions that can be used for free</a>.',
   UPGRADE: 'Upgrade',

@@ -6,18 +6,11 @@ block content
       .col-12
         .card.border-dark.d-block
           h1.h5.card-header.text-center
-            if Date.now() >= dayjs('3/31/2023', 'M/D/YYYY').toDate().getTime()
-              != t("Email forwarding is paused")
-            else
-              != t("Upgrade by March 31, 2023")
+            != t("Email forwarding is paused")
           .card-body.p-0
             .p-3.text-center
-              if Date.now() >= dayjs('3/31/2023', 'M/D/YYYY').toDate().getTime()
-                h1.h3= t("Email forwarding is paused")
-                p.card-text!= t('Upgrade <span class="font-weight-bold notranslate">%s</span> to Enhanced Protection to resume service.', domain)
-              else
-                h1.h3= t("Upgrade required")
-                p.card-text!= t('You must upgrade <span class="font-weight-bold notranslate">%s</span> to continue using our service.', domain)
+              h1.h3= t("Email forwarding is paused")
+              p.card-text!= t('Upgrade <span class="font-weight-bold notranslate">%s</span> to Enhanced Protection to resume service.', domain)
               a.btn.btn-lg.btn-success(
                 href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`
               )= t("Upgrade Now")
@@ -110,7 +103,4 @@ block content
                 href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`
               )= t("Upgrade Now")
           .card-footer.text-center.small.text-muted
-            if Date.now() >= dayjs('3/31/2023', 'M/D/YYYY').toDate().getTime()
-              = t("Upgrade your plan to resume email service.")
-            else
-              = t("Upgrade now to prevent missing emails.")
+            = t("Upgrade your plan to resume email service.")

@@ -3675,5 +3675,8 @@
   "Unlike other services, we use 100% open-source software we built from scratch.": "Unlike other services, we use 100% open-source software we built from scratch.",
   "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.": "Global load balancers, application-level DNS over HTTPS (\"DoH\"), and much more.",
   "Domain does not have DNS nameservers configured.": "Domain does not have DNS nameservers configured.",
-  "Search for aliases in a domain by name, label, or recipient": "Search for aliases in a domain by name, label, or recipient"
+  "Search for aliases in a domain by name, label, or recipient": "Search for aliases in a domain by name, label, or recipient",
+  "Did you want enhanced privacy and error logs?": "Did you want enhanced privacy and error logs?",
+  "Upgrading will also unlock your access to <a href=\"%s\" target=\"_blank\">error logs</a>, which helps you to ensure high deliverability and prevent spam false positives.": "Upgrading will also unlock your access to <a href=\"%s\" target=\"_blank\">error logs</a>, which helps you to ensure high deliverability and prevent spam false positives.",
+  "<strong>Upgrading will also unlock your access to <a href=\"%s\" target=\"_blank\">error logs</a></strong>, which helps you to ensure high deliverability and prevent spam false positives.": "<strong>Upgrading will also unlock your access to <a href=\"%s\" target=\"_blank\">error logs</a></strong>, which helps you to ensure high deliverability and prevent spam false positives."
 }
