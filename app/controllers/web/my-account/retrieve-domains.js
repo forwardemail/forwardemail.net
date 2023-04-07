@@ -171,6 +171,8 @@ async function retrieveDomains(ctx, next) {
 
     if (count > 0) return next();
 
+    if (ctx.state.domains.some((d) => !d.is_global)) return next();
+
     // otherwise redirect user to create a new domain for onboarding
     if (!ctx.api)
       ctx.flash('custom', {
