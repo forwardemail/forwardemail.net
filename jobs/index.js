@@ -38,6 +38,11 @@ const jobs = [
     timeout: 0
   },
   {
+    name: 'check-bad-domains',
+    interval: '1h',
+    timeout: 0
+  },
+  {
     name: 'welcome-email',
     interval: '1m',
     timeout: 0
