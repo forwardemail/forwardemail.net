@@ -82,7 +82,8 @@ async function retrieveLog(ctx, next) {
       let isAdmin = false;
       const match = log.domains.find((logDomain) => {
         const find = ctx.state.domains.find(
-          (d) => d.id === logDomain.toString() && d.name === domain
+          (d) =>
+            d.id === logDomain.toString() && d.name === domain.toLowerCase()
         );
         if (!find) return false;
         if (find.group === 'admin') isAdmin = true;
