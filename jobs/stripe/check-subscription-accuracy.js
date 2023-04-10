@@ -1,11 +1,13 @@
 const Stripe = require('stripe');
 const pMapSeries = require('p-map-series');
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 
 const getAllStripeCustomers = require('./get-all-stripe-customers');
 
 const env = require('#config/env');
 const config = require('#config');
+const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const Users = require('#models/users');
 const emailHelper = require('#helpers/email');
@@ -21,7 +23,7 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 //
 async function mapper(customer) {
   // check for user on our side
-  const user = await Users.findOne({
+  let user = await Users.findOne({
     [config.userFields.stripeCustomerID]: customer.id
   })
     .lean()
@@ -125,9 +127,76 @@ async function mapper(customer) {
       }
     });
   }
+
+  // lookup when the user's subscription ends
+  user = await Users.findOne({
+    [config.userFields.stripeCustomerID]: customer.id
+  })
+    .lean()
+    .exec();
+
+  if (!user) return;
+
+  // lookup when the user is supposed to get billed next time
+  const subscription = await stripe.subscriptions.retrieve(
+    user[config.userFields.stripeSubscriptionID]
+  );
+
+  if (!subscription.current_period_end) return;
+
+  // ensure they're not more than a day apart and if so then extend it
+  const nextBillDate = dayjs.unix(subscription.current_period_end).toDate();
+  const days = dayjs(new Date(user[config.userFields.planExpiresAt])).diff(
+    nextBillDate,
+    'days'
+  );
+  if (
+    new Date(user[config.userFields.planExpiresAt]).getTime() > Date.now() &&
+    nextBillDate.getTime() > Date.now() &&
+    days > 0
+  ) {
+    await stripe.subscriptions.update(
+      user[config.userFields.stripeSubscriptionID],
+      {
+        trial_end: dayjs(user[config.userFields.planExpiresAt]).unix(),
+        proration_behavior: 'none'
+      }
+    );
+    // send an email here
+    const locale = user[config.lastLocaleField] || 'en';
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to:
+          user[config.userFields.receiptEmail] ||
+          user[config.userFields.fullEmail],
+        ...(user[config.userFields.receiptEmail]
+          ? { cc: user[config.userFields.fullEmail] }
+          : {}),
+        subject: i18n.api.t({
+          phrase: config.i18n.phrases.BILLING_CYCLE_UPDATED_SUBJECT,
+          locale
+        })
+      },
+      locals: {
+        message: i18n.api.t(
+          {
+            phrase: config.i18n.phrases.BILLING_CYCLE_UPDATED_BODY,
+            locale
+          },
+          dayjs(user[config.userFields.planExpiresAt])
+            .locale(locale)
+            .format('M/D/YY'),
+          dayjs(nextBillDate).locale(locale).format('M/D/YY'),
+          `${config.urls.web}/${locale}/my-account/billing`
+        ),
+        locale
+      }
+    });
+  }
 }
 
-async function checkDuplicateSubscriptions() {
+async function checkSubscriptionAccuracy() {
   logger.info('Fetching Stripe customers');
   const customers = await getAllStripeCustomers();
   logger.info(`Started checking ${customers.length} Stripe customers`);
@@ -135,4 +204,4 @@ async function checkDuplicateSubscriptions() {
   logger.info(`Finished checking ${customers.length} Stripe customers`);
 }
 
-module.exports = checkDuplicateSubscriptions;
+module.exports = checkSubscriptionAccuracy;
