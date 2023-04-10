@@ -48,7 +48,10 @@ async function processEvent(ctx, event) {
         [config.userFields.stripeCustomerID]: charge.customer
       });
 
-      if (!user) throw new Error('User did not exist for customer');
+      if (!user) {
+        if (event.type === 'charge.refunded') return;
+        throw new Error('User did not exist for customer');
+      }
 
       //
       // NOTE: this re-uses the payment intent mapper that is also used

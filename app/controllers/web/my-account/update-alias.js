@@ -9,6 +9,7 @@ async function updateAlias(ctx, next) {
   ctx.state.alias = _.extend(ctx.state.alias, ctx.state.body);
   try {
     ctx.state.alias.locale = ctx.locale;
+    ctx.state.alias.is_update = true;
     ctx.state.alias = await ctx.state.alias.save();
     if (ctx.api) {
       ctx.state.alias = toObject(Aliases, ctx.state.alias);

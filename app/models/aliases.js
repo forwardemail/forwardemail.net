@@ -10,6 +10,7 @@ const reservedAdminList = require('reserved-email-addresses-list/admin-list.json
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const slug = require('speakingurl');
 const striptags = require('striptags');
+const { boolean } = require('boolean');
 const { isIP, isEmail, isURL } = require('validator');
 const { randomstring } = require('@sidoshi/random-string');
 
@@ -218,6 +219,14 @@ Aliases.plugin(mongooseCommonPlugin, {
   defaultLocale: i18n.getLocale()
 });
 
+Aliases.virtual('is_update')
+  .get(function () {
+    return this.__is_update;
+  })
+  .set(function (isUpdate) {
+    this.__is_update = boolean(isUpdate);
+  });
+
 // eslint-disable-next-line complexity
 Aliases.pre('save', async function (next) {
   const alias = this;
@@ -349,7 +358,7 @@ Aliases.pre('save', async function (next) {
       // then the user can only have up to 5 aliases at a time on the domain
       if (domain.is_global) {
         // user must be on a paid plan to use a global domain
-        if (user.plan === 'free')
+        if (user.plan === 'free' && !alias.is_update)
           throw Boom.paymentRequired(
             i18n.translateError(
               'PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS',
