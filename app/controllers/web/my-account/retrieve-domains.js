@@ -151,7 +151,8 @@ async function retrieveDomains(ctx, next) {
           domain: {
             $in: ctx.state.domains.filter((d) => d.is_global).map((d) => d._id)
           },
-          user: ctx.state.user._id
+          user: ctx.state.user._id,
+          is_enabled: true
         });
 
     // user must be on a paid plan to use a global domain
