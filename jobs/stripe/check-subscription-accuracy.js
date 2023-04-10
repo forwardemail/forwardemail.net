@@ -128,12 +128,11 @@ async function mapper(customer) {
     });
   }
 
+  // return early since no subscriptions
+  if (subscriptions.length === 0) return;
+
   // lookup when the user's subscription ends
-  user = await Users.findOne({
-    [config.userFields.stripeCustomerID]: customer.id
-  })
-    .lean()
-    .exec();
+  user = await Users.findById(user._id).lean().exec();
 
   if (!user) return;
 
