@@ -13,7 +13,7 @@ const parseErr = require('parse-err');
 const mongoose = require('mongoose');
 
 const syncStripePayments = require('./sync-stripe-payments');
-const checkDuplicateSubscriptions = require('./check-duplicate-subscriptions');
+const checkSubscriptionAccuracy = require('./check-subscription-accuracy');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -39,16 +39,17 @@ graceful.listen();
   // get all stripe customers and check for
   // users with multiple active subscriptions
   // (this also syncs emails, subscription ids, and resolves duplicate subscriptions)
+  // (and it also extends trial for customers that were awarded free credit)
   //
   try {
-    await checkDuplicateSubscriptions();
+    await checkSubscriptionAccuracy();
   } catch (err) {
     await logger.error(err);
     await emailHelper({
       template: 'alert',
       message: {
         to: config.email.message.from,
-        subject: 'Error with job for Stripe checking of duplicate subscriptions'
+        subject: 'Error with job for Stripe checking subscription accuracy'
       },
       locals: {
         message: `<pre><code>${JSON.stringify(
