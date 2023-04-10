@@ -162,7 +162,7 @@ module.exports = {
   PLAN_UPGRADE_REQUIRED:
     'Please <a class="font-weight-bold" href="%s">upgrade to a paid plan</a> to unlock this feature.',
   PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS:
-    'Please <a class="font-weight-bold" target="_blank" href="%s">upgrade to the Enhanced Protection Plan</a> to unlock vanity domains on your account.  To prevent this messages from showing again, please either upgrade or delete all global vanity aliases from your account.',
+    'Please <a class="font-weight-bold" target="_blank" href="%s">upgrade to the Enhanced Protection Plan</a> to unlock vanity domains on your account.  To prevent this messages from showing again, please either upgrade, disable, or delete all global vanity aliases from your account.',
   INVITE_ACCEPTED_ADMIN:
     'You have successfully accepted the invite to this domain and are an admin.',
   INVITE_ACCEPTED_USER:
