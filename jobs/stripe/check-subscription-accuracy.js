@@ -21,6 +21,7 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 // and if there is more than one active subscription or the subscription isn't stored on our side, then store it
 // and it will email admins if any errors occur
 //
+// eslint-disable-next-line complexity
 async function mapper(customer) {
   // check for user on our side
   let user = await Users.findOne({
@@ -149,18 +150,43 @@ async function mapper(customer) {
     nextBillDate,
     'days'
   );
+
   if (
     new Date(user[config.userFields.planExpiresAt]).getTime() > Date.now() &&
     nextBillDate.getTime() > Date.now() &&
     days > 0
   ) {
-    await stripe.subscriptions.update(
-      user[config.userFields.stripeSubscriptionID],
-      {
-        trial_end: dayjs(user[config.userFields.planExpiresAt]).unix(),
-        proration_behavior: 'none'
-      }
-    );
+    // cannot be more than 730 days from now (2 years), otherwise set to 720 days from now
+    let trialEnd = dayjs(user[config.userFields.planExpiresAt]).toDate();
+    try {
+      await stripe.subscriptions.update(
+        user[config.userFields.stripeSubscriptionID],
+        {
+          trial_end: dayjs(trialEnd).unix(),
+          proration_behavior: 'none'
+        }
+      );
+    } catch (err) {
+      if (
+        err.stack &&
+        !err.stack.includes('The maximum number of trial period days is 730')
+      )
+        throw err;
+      if (!subscription.billing_cycle_anchor) throw err;
+      // billing_cycle_anchor + 2 years
+      trialEnd = dayjs
+        .unix(subscription.billing_cycle_anchor)
+        .add(730, 'days')
+        .toDate();
+      await stripe.subscriptions.update(
+        user[config.userFields.stripeSubscriptionID],
+        {
+          trial_end: dayjs(trialEnd).unix(),
+          proration_behavior: 'none'
+        }
+      );
+    }
+
     // send an email here
     const locale = user[config.lastLocaleField] || 'en';
     await emailHelper({
@@ -183,9 +209,7 @@ async function mapper(customer) {
             phrase: config.i18n.phrases.BILLING_CYCLE_UPDATED_BODY,
             locale
           },
-          dayjs(user[config.userFields.planExpiresAt])
-            .locale(locale)
-            .format('M/D/YY'),
+          dayjs(trialEnd).locale(locale).format('M/D/YY'),
           dayjs(nextBillDate).locale(locale).format('M/D/YY'),
           `${config.urls.web}/${locale}/my-account/billing`
         ),
