@@ -220,8 +220,8 @@ async function mapper(customer) {
             phrase: config.i18n.phrases.BILLING_CYCLE_UPDATED_BODY,
             locale
           },
-          dayjs(trialEnd).locale(locale).format('M/D/YY'),
-          dayjs(nextBillDate).locale(locale).format('M/D/YY'),
+          dayjs(trialEnd).locale(locale).format('LL'),
+          dayjs(nextBillDate).locale(locale).format('LL'),
           `${config.urls.web}/${locale}/my-account/billing`
         ),
         locale

@@ -51,7 +51,7 @@ if !returnHTML
         td.border-0
           u.font-weight-bold= t("Date")
           br
-          = dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).locale(locale).format("M/D/YY")
+          = dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).locale(locale).format("LL")
         td.border-0.text-right(
           class=returnHTML ? false : "d-none d-sm-block d-print-block"
         )
