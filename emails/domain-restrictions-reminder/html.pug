@@ -22,7 +22,7 @@ block content
                       a.btn.btn-md.btn-dark(
                         href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
                       )= domain.name
-                if domains.length >= 10
+                if domains.length > 10
                   p.text-muted.text-center.mt-1.mb-0
                     != t('... and <span class="notranslate">%d</span> more domain names.', domains.length - 10)
           .card-footer.text-center.small.font-weight-bold
