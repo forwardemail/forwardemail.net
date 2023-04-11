@@ -17,7 +17,7 @@ if domains.length > 0
             td.align-middle!= t(titleize(humanize(domain.plan)))
             td.text-center.align-middle= emoji(domain.has_mx_record ? "white_check_mark" : "x")
             td.text-center.align-middle= emoji(domain.has_txt_record ? "white_check_mark" : "x")
-        if domains.length >= 10
+        if domains.length > 10
           tr
             td.align-middle.text-center.text-muted(colspan=4)!= t('... and <span class="notranslate">%d</span> more domain names.', domains.length - 10)
     .text-muted.small.text-center
