@@ -144,6 +144,17 @@ async function mapper(customer) {
 
   if (!subscription.current_period_end) return;
 
+  // if subscription has trial and trial end is equal to billing cycle anchor
+  // (this means we've already maximized the duration that we can possibly trial for)
+  if (
+    subscription.billing_cycle_anchor &&
+    subscription.trial_end &&
+    subscription.start_date &&
+    subscription.billing_cycle_anchor === subscription.trial_end &&
+    subscription.billing_cycle_anchor !== subscription.start_date
+  )
+    return;
+
   // ensure they're not more than a day apart and if so then extend it
   const nextBillDate = dayjs.unix(subscription.current_period_end).toDate();
   const days = dayjs(new Date(user[config.userFields.planExpiresAt])).diff(
