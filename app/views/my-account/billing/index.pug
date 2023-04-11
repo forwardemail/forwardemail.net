@@ -108,7 +108,7 @@ block body
                 .alert.alert-warning.small.mt-3.mb-0!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t("card, wallet, or bank") : "PayPal")
               else if !hasPlanExpired
                 .alert.alert-warning.small.mt-3.mb-0
-                  != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
+                  != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("LL"))
               ul.list-inline.text-center.mb-0
                 li.list-inline-item
                   a.btn.btn-sm.btn-primary.mt-3(

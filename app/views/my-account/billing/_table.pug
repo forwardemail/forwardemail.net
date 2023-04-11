@@ -50,7 +50,7 @@ mixin receipt(payment)
       each payment in payments
         tr.small.text-monospace
           td.align-middle.d-none.d-lg-table-cell.text-center: code.lead= payment.reference
-          td.align-middle.text-center= dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).locale(ctx.locale).format("M/D/YY")
+          td.align-middle.text-center= dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).locale(ctx.locale).format("LL")
           td.align-middle
             .d-block.d-lg-none.mb-2
               strong
