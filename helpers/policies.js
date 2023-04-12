@@ -16,7 +16,7 @@ const policies = new Policies(
     schemeName: appName,
     hasVerifiedEmail: userFields.hasVerifiedEmail,
     verifyRoute,
-    loginRoute: '/register',
+    loginRoute: '/login',
     loginOtpRoute,
     passport,
     turnstileEnabled,
