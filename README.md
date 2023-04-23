@@ -338,7 +338,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
 [namecheap]: https://namecheap.com
 
-[npm]: https//www.npmjs.com
+[npm]: https://www.npmjs.com
 
 [letsencrypt]: https://letsencrypt.org/
 
