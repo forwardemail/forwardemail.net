@@ -31,7 +31,8 @@ graceful.listen();
     const { body } = await request(
       'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
       {
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(10000),
+        throwOnError: true
       }
     );
 

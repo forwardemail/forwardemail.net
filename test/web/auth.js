@@ -31,7 +31,10 @@ test('rejects new user with disposable email', async (t) => {
   const { web } = t.context;
 
   const { body } = await request(
-    'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+    'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
+    {
+      throwOnError: true
+    }
   );
 
   const json = await body.json();
