@@ -16,7 +16,7 @@ const striptags = require('striptags');
 const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
-const { request } = require('undici');
+const { request, errors } = require('undici');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -548,14 +548,25 @@ Users.virtual(config.userFields.verificationPinHasExpired).get(function () {
 const disposableDomains = new Set();
 async function crawlDisposable() {
   try {
-    const { body } = await request(
+    const response = await request(
       'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
       {
         signal: AbortSignal.timeout(10000),
         throwOnError: true
       }
     );
-    const json = await body.json();
+
+    // the error code is between 200-400 (e.g. 302 redirect)
+    // in order to mirror the behavior of `throwOnError` we will re-use the undici errors
+    // <https://github.com/nodejs/undici/issues/2093>
+    if (response.statusCode !== 200)
+      throw new errors.ResponseStatusCodeError(
+        `Response status code ${response.statusCode}`,
+        response.statusCode,
+        response.headers
+      );
+
+    const json = await response.body.json();
     if (!Array.isArray(json) || json.length === 0) {
       throw new Error('Disposable did not crawl data.');
     }

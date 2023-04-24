@@ -8,7 +8,7 @@ const { parentPort } = require('worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const { request } = require('undici');
+const { request, errors } = require('undici');
 
 const mongoose = require('mongoose');
 const Users = require('#models/users');
@@ -28,7 +28,7 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    const { body } = await request(
+    const response = await request(
       'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
       {
         signal: AbortSignal.timeout(10000),
@@ -36,7 +36,17 @@ graceful.listen();
       }
     );
 
-    const json = await body.json();
+    // the error code is between 200-400 (e.g. 302 redirect)
+    // in order to mirror the behavior of `throwOnError` we will re-use the undici errors
+    // <https://github.com/nodejs/undici/issues/2093>
+    if (response.statusCode !== 200)
+      throw new errors.ResponseStatusCodeError(
+        `Response status code ${response.statusCode}`,
+        response.statusCode,
+        response.headers
+      );
+
+    const json = await response.body.json();
 
     const DISPOSABLE = new Set(json);
 
