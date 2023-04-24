@@ -14,8 +14,8 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const pMap = require('p-map');
-const pWaitFor = require('p-wait-for');
 const parseErr = require('parse-err');
+const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
@@ -50,20 +50,12 @@ const graceful = new Graceful({
 });
 graceful.listen();
 
-// dynamically import lande
-let lande;
-import('lande').then((obj) => {
-  lande = obj.default;
-});
-
-const ERR_DUP_LOG = new Error('Duplicate log');
-ERR_DUP_LOG.is_duplicate_log = true;
-
 //
 // MongoDB supported language mapping with tinyld
 // <https://github.com/komodojp/tinyld>
 // <https://www.mongodb.com/docs/manual/reference/text-search-languages/#text-search-languages>
 //
+/*
 const LANGUAGES = {
   dan: 'danish',
   nld: 'dutch',
@@ -81,6 +73,7 @@ const LANGUAGES = {
   swe: 'swedish',
   tur: 'turkish'
 };
+*/
 
 //
 // NOTE: if you update this, then also update `helpers/logger.js` similar usage
@@ -103,15 +96,11 @@ const DNS_ERROR_CODES = new Set([
 const MAX_BYTES = bytes('20KB');
 
 const Logs = new mongoose.Schema({
-  // TODO: for the job that sets domains array, also set `language` field on documents without it
-  // for text search, the language used for stopwords is based off
-  // `language` field (note that we have `locale` in other docs)
-  // <https://www.mongodb.com/docs/manual/tutorial/specify-language-for-text-index/>
-  language: {
+  hash: {
     type: String,
-    enum: ['none', ...Object.values(LANGUAGES)]
+    index: true,
+    required: true
   },
-
   user: {
     type: mongoose.Schema.ObjectId,
     ref: Users
@@ -242,32 +231,18 @@ Logs.pre('save', function (next) {
   }
 });
 
-Logs.pre('save', async function (next) {
+Logs.pre('validate', function (next) {
+  //
+  // ensure the document is not more than 20 KB
+  // (prevents someone from sending huge client-side payloads)
+  //
   try {
-    if (!this.language && isSANB(this.text_message)) {
-      // set default to none
-      // <https://www.mongodb.com/docs/manual/reference/text-search-languages/#text-search-languages>
-      this.language = 'none';
-      // TODO: if the log had a locale set then use that as the language
-      // language detection will be more accurate without HTML in messages
-      if (!lande) await pWaitFor(() => Boolean(lande));
-      const languages = lande(this.text_message);
-      // languages = [
-      //   ['eng', 0.9999921321868896],
-      //   ['deu', 0.000002357382982154377],
-      //   ['heb', 0.000001461773877053929],
-      //   ...
-      // ]
-      for (const lang of languages) {
-        const [name] = lang;
+    const bytes = Buffer.byteLength(safeStringify(this.toObject()), 'utf8');
+    if (bytes > MAX_BYTES) throw new Error('Log byte size exceeds maximum');
 
-        if (LANGUAGES[name]) {
-          this.language = LANGUAGES[name];
-          break;
-        }
-      }
-    }
+    next();
   } catch (err) {
+    err.is_duplicate_log = true;
     next(err);
   }
 });
@@ -277,6 +252,217 @@ Logs.pre('save', async function (next) {
 // in addition to API endpoint rate limiting we check for duplicates
 //
 // eslint-disable-next-line complexity
+function getQueryHash(log) {
+  const $and = [];
+  //
+  // prepare db query for uniqueness
+  //
+
+  //
+  // group together HTTP related queries into one conditional for performance
+  //
+  if (log?.meta?.is_http) {
+    // ignore 304 not modified content w/o a content-type response
+    if (
+      log?.meta?.response?.status_code === 304 &&
+      !log?.meta?.response?.headers?.['content-type']
+    )
+      throw new Error('Ignored modified HTTP response');
+
+    // don't store logs for fonts, images, and other assets
+    if (
+      log?.meta?.response?.headers?.['content-type'] &&
+      IGNORED_CONTENT_TYPES.some((c) =>
+        log.meta.response.headers['content-type'].startsWith(c)
+      )
+    )
+      throw new Error('Ignored content type');
+
+    // don't store logs for JavaScript and CSS source map files
+    if (
+      log?.meta?.request?.url &&
+      log?.meta?.response?.headers?.['content-type'] &&
+      log.meta.response.headers['content-type'].startsWith(
+        'application/json'
+      ) &&
+      (log.meta.request.url.endsWith('.css.map') ||
+        log.meta.request.url.endsWith('.js.map'))
+    )
+      throw new Error('Ignored source map file');
+
+    // don't store logs for banned users or rate limiting
+    if (
+      !log?.meta?.response?.status_code &&
+      Number.isFinite(log?.err?.output?.statusCode) &&
+      (log.err.output.statusCode === 403 || log.err.output.statusCode === 429)
+    )
+      throw new Error('Ignored banned user or rate limiting');
+
+    // if no user but if had a metadata IP address
+    if (!log?.user && log?.meta?.user?.ip_address) {
+      $and.push(
+        {
+          'meta.user.ip_address': log.meta.user.ip_address
+        },
+        {
+          'meta.user.ip_address': {
+            $exists: true
+          }
+        }
+      );
+    }
+
+    // check
+    // + meta.response.status_code
+    // + meta.request.method
+    // + meta.request.pathname OR meta.request.url (otherwise unique querystrings won't be detected as duplicates)
+    if (log?.meta?.response?.status_code)
+      $and.push(
+        {
+          'meta.response.status_code': log.meta.response.status_code
+        },
+        {
+          'meta.response.status_code': { $exists: true }
+        }
+      );
+
+    if (log?.meta?.request?.method)
+      $and.push(
+        {
+          'meta.request.method': log.meta.request.method
+        },
+        {
+          'meta.request.method': { $exists: true }
+        }
+      );
+
+    //
+    // NOTE: pathname was added in `parse-request` v6.0.1
+    //       (since /v1/lookup?q=... querystring was polluting logs)
+    //
+    if (log?.meta?.request?.pathname) {
+      // > "/v1/domains/beep.com/aliases/beep".split('/')
+      // [ '', 'v1', 'domains', 'beep.com', 'aliases', 'beep' ]
+      const arr = log.meta.request.pathname.split('/');
+      if (
+        arr[0] === '' &&
+        arr[1] === 'v1' &&
+        arr[2] === 'domains' &&
+        arr[3] &&
+        arr[4] === 'aliases'
+      ) {
+        $and.push(
+          {
+            'meta.request.pathname': {
+              $regex: new RegExp(
+                '^' + _.escapeRegExp(arr.slice(0, 5).join('/'))
+              )
+            }
+          },
+          {
+            'meta.request.pathname': { $exists: true }
+          }
+        );
+      } else {
+        $and.push(
+          {
+            'meta.request.pathname': log.meta.request.pathname
+          },
+          {
+            'meta.request.pathname': { $exists: true }
+          }
+        );
+      }
+    } else if (log?.meta?.request?.url) {
+      $and.push(
+        {
+          'meta.request.url': log.meta.request.url
+        },
+        {
+          'meta.request.url': { $exists: true }
+        }
+      );
+    }
+  }
+
+  //
+  // log.meta.level (log level)
+  //
+  const $gte =
+    log?.meta?.level && ['error', 'fatal'].includes(log.meta.level)
+      ? dayjs(new Date(log.created_at)).startOf('hour').toDate()
+      : dayjs(new Date(log.created_at)).startOf('day').toDate();
+
+  if (log?.meta?.level) {
+    $and.push(
+      {
+        'meta.level': log.meta.level
+      },
+      {
+        'meta.level': { $exists: true }
+      }
+    );
+  }
+
+  if (!log?.meta?.is_http) {
+    //
+    // NOTE: if it was an HTTP request, then the `message` would always be unique
+    //       (e.g. the response time might slightly vary in the message string)
+    //
+    // if (log?.message) $and.push({ $text: { $search: log.message } });
+    if (log?.message)
+      $and.push({
+        message: log.message
+      });
+    //
+    // if it was not an HTTP request then include date query
+    // (we don't want the server itself to pollute the db on its own)
+    $and.push({
+      created_at: { $gte }
+    });
+  }
+
+  // if it was restricted or not
+  if (typeof log.is_restricted === 'boolean')
+    $and.push(
+      {
+        is_restricted: log.is_restricted
+      },
+      {
+        is_restricted: { $exists: true }
+      }
+    );
+
+  // if had a user
+  if (log?.user) {
+    $and.push(
+      {
+        user: log.user
+      },
+      {
+        user: { $exists: true }
+      }
+    );
+  }
+
+  // TODO: if err.responseCode and !err.bounces && !meta.session.resolvedClientHostname && meta.session.remoteAddress
+  // TODO: else if err.responseCode and !err.bounces && meta.session.allowlistValue
+  // TODO: else if err.responseCode and !err.bounces && meta.session.resolvedClientHostname
+  // TODO: check count over time period for abuse
+  // TODO: we should also store dkim, dmarc, spf, etc info that we do for webhooks here
+  // TODO: daily digest email + dashboard + visual charts + real-time metric counters
+
+  // safeguard to prevent empty query
+  if ($and.length === 0) throw new Error('Empty query');
+
+  return revHash(safeStringify({ $and }));
+}
+
+Logs.pre('validate', function (next) {
+  this.hash = getQueryHash(this);
+  next();
+});
+
 Logs.pre('save', async function (next) {
   // only run this if the document was new
   // or if it was run from the parse-logs job
@@ -284,245 +470,15 @@ Logs.pre('save', async function (next) {
   if (!this.isNew || this.skip_duplicate_check) return next();
 
   try {
-    //
-    // ensure the document is not more than 20 KB
-    // (prevents someone from sending huge client-side payloads)
-    //
-    const bytes = Buffer.byteLength(safeStringify(this.toObject()), 'utf8');
+    const exists = await this.constructor.exists({
+      hash: this.hash
+    });
 
-    if (bytes > MAX_BYTES) throw new Error('Log byte size exceeds maximum');
-
-    //
-    // prepare db query for uniqueness
-    //
-    const $and = [
-      //
-      // NOTE: we don't need this b/c we have `this.isNew` check above
-      //
-      // {
-      //   _id: {
-      //     $ne: this._id
-      //   }
-      // }
-    ];
-
-    //
-    // group together HTTP related queries into one conditional for performance
-    //
-    if (this?.meta?.is_http) {
-      // ignore 304 not modified content w/o a content-type response
-      if (
-        this?.meta?.response?.status_code === 304 &&
-        !this?.meta?.response?.headers?.['content-type']
-      )
-        throw ERR_DUP_LOG;
-
-      // don't store logs for fonts, images, and other assets
-      if (
-        this?.meta?.response?.headers?.['content-type'] &&
-        IGNORED_CONTENT_TYPES.some((c) =>
-          this.meta.response.headers['content-type'].startsWith(c)
-        )
-      )
-        throw ERR_DUP_LOG;
-
-      // don't store logs for JavaScript and CSS source map files
-      if (
-        this?.meta?.request?.url &&
-        this?.meta?.response?.headers?.['content-type'] &&
-        this.meta.response.headers['content-type'].startsWith(
-          'application/json'
-        ) &&
-        (this.meta.request.url.endsWith('.css.map') ||
-          this.meta.request.url.endsWith('.js.map'))
-      )
-        throw ERR_DUP_LOG;
-
-      // don't store logs for banned users or rate limiting
-      if (
-        !this?.meta?.response?.status_code &&
-        Number.isFinite(this?.err?.output?.statusCode) &&
-        (this.err.output.statusCode === 403 ||
-          this.err.output.statusCode === 429)
-      )
-        throw ERR_DUP_LOG;
-
-      //
-      // logs have at least one of the following:
-      // - log.is_restricted (this means it was sent by bree, mx1, or mx2)
-      // - log.user (this is a ObjectID user reference, e.g. website traffic)
-      // - log.meta.user.ip_address
-      //
-      // if it was from a trusted and restricted server
-      // or if it had an authenticated user assigned
-      // then we can assume that the request ID's were not spoofed
-      // however they could still be spoofed by the user themselves
-      // that is why we do not look for distinct `X-Request-Id`
-      // ('meta.request.id' nor 'meta.response.headers.x-request-id')
-      //
-      // NOTE: this is commented out due to above
-      // filter by meta request id (X-Request-Id)
-      // if (this?.meta?.request?.id)
-      //   $and.push(
-      //     {
-      //       'meta.request.id': this.meta.request.id
-      //     },
-      //     {
-      //       'meta.request.id': { $exists: true }
-      //     }
-      //   );
-      //
-      // NOTE: this is commented out due to above
-      // filter by meta response headers (X-Request-Id)
-      // if (this?.meta?.response?.headers?.['x-request-id'])
-      //   $and.push(
-      //     {
-      //       'meta.response.headers.x-request-id':
-      //         this.meta.response.headers['x-request-id']
-      //     },
-      //     {
-      //       'meta.response.headers.x-request-id': { $exists: true }
-      //     }
-      //   );
-
-      // if no user but if had a metadata IP address
-      if (!this?.user && this?.meta?.user?.ip_address) {
-        $and.push(
-          {
-            'meta.user.ip_address': this.meta.user.ip_address
-          },
-          {
-            'meta.user.ip_address': {
-              $exists: true
-            }
-          }
-        );
-      }
-
-      // check
-      // + meta.response.status_code
-      // + meta.request.method
-      // + meta.request.pathname OR meta.request.url (otherwise unique querystrings won't be detected as duplicates)
-      if (this?.meta?.response?.status_code)
-        $and.push(
-          {
-            'meta.response.status_code': this.meta.response.status_code
-          },
-          {
-            'meta.response.status_code': { $exists: true }
-          }
-        );
-
-      if (this?.meta?.request?.method)
-        $and.push(
-          {
-            'meta.request.method': this.meta.request.method
-          },
-          {
-            'meta.request.method': { $exists: true }
-          }
-        );
-
-      //
-      // NOTE: pathname was added in `parse-request` v6.0.1
-      //       (since /v1/lookup?q=... querystring was polluting logs)
-      //
-      if (this?.meta?.request?.pathname)
-        $and.push(
-          {
-            'meta.request.pathname': this.meta.request.pathname
-          },
-          {
-            'meta.request.pathname': { $exists: true }
-          }
-        );
-      else if (this?.meta?.request?.url)
-        $and.push(
-          {
-            'meta.request.url': this.meta.request.url
-          },
-          {
-            'meta.request.url': { $exists: true }
-          }
-        );
-    }
-
-    //
-    // log.meta.level (log level)
-    //
-    const $gte =
-      this?.meta?.level && ['error', 'fatal'].includes(this.meta.level)
-        ? dayjs().subtract(1, 'hour').toDate()
-        : dayjs().subtract(1, 'day').toDate();
-
-    if (this?.meta?.level) {
-      $and.push(
-        {
-          'meta.level': this.meta.level
-        },
-        {
-          'meta.level': { $exists: true }
-        }
-      );
-    }
-
-    if (!this?.meta?.is_http) {
-      //
-      // NOTE: if it was an HTTP request, then the `message` would always be unique
-      //       (e.g. the response time might slightly vary in the message string)
-      //
-      // if (this?.message) $and.push({ $text: { $search: this.message } });
-      if (this?.message)
-        $and.push({
-          message: this.message
-        });
-      //
-      // if it was not an HTTP request then include date query
-      // (we don't want the server itself to pollute the db on its own)
-      //
-      $and.push({
-        created_at: { $gte }
-      });
-    }
-
-    // if it was restricted or not
-    if (typeof this.is_restricted === 'boolean')
-      $and.push(
-        {
-          is_restricted: this.is_restricted
-        },
-        {
-          is_restricted: { $exists: true }
-        }
-      );
-
-    // if had a user
-    if (this?.user) {
-      $and.push(
-        {
-          user: this.user
-        },
-        {
-          user: { $exists: true }
-        }
-      );
-    }
-
-    // TODO: if err.responseCode and !err.bounces && !meta.session.resolvedClientHostname && meta.session.remoteAddress
-    // TODO: else if err.responseCode and !err.bounces && meta.session.allowlistValue
-    // TODO: else if err.responseCode and !err.bounces && meta.session.resolvedClientHostname
-    // TODO: meta.session.fingerprint
-    // TODO: check count over time period for abuse
-
-    // safeguard to prevent empty query
-    if ($and.length === 0) throw ERR_DUP_LOG;
-
-    const count = await this.constructor.countDocuments({ $and });
-
-    if (count > 0) throw ERR_DUP_LOG;
+    if (exists) throw new Error('Ignored duplicate log');
 
     next();
   } catch (err) {
+    err.is_duplicate_log = true;
     next(err);
   }
 });
@@ -633,6 +589,12 @@ async function parseLog(log) {
 Logs.statics.parseLog = parseLog;
 
 Logs.pre('save', async function (next) {
+  //
+  // if the log was newly created then we don't want to parse the DNS yet
+  // (it runs in background job via bree, otherwise DNS requests would flood API)
+  //
+  if (this.isNew) return next();
+
   try {
     await parseLog(this);
     //

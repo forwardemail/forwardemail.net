@@ -56,6 +56,11 @@ graceful.listen();
           domains_checked_at: {
             $exists: false
           }
+        },
+        {
+          hash: {
+            $exists: false
+          }
         }
       ]
     };
