@@ -57,7 +57,7 @@ async function checkToken(ctx, next) {
   } catch (err) {
     const credentials = auth(ctx.req);
     if (typeof credentials !== 'undefined') ctx.logger.error(err);
-    return next();
+    if (next) return next();
   }
 }
 

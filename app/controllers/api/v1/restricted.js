@@ -20,7 +20,7 @@ async function restricted(ctx, next) {
 
   ctx[API_RESTRICTED_SYMBOL] = true;
 
-  return next();
+  if (next) return next();
 }
 
 module.exports = restricted;
