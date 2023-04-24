@@ -93,7 +93,7 @@ const DNS_ERROR_CODES = new Set([
   dns.BADRESP
 ]);
 
-const MAX_BYTES = bytes('20KB');
+const MAX_BYTES = bytes('1MB');
 
 const Logs = new mongoose.Schema({
   hash: {
