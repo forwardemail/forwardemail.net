@@ -459,8 +459,13 @@ function getQueryHash(log) {
 }
 
 Logs.pre('validate', function (next) {
-  this.hash = getQueryHash(this);
-  next();
+  try {
+    this.hash = getQueryHash(this);
+    next();
+  } catch (err) {
+    err.is_duplicate_log = true;
+    next(err);
+  }
 });
 
 Logs.pre('save', async function (next) {
