@@ -30,7 +30,7 @@ async function retrieveDomain(ctx, next) {
     : ctx.request.body.domain;
 
   ctx.state.domain = ctx.state.domains.find((domain) =>
-    [domain.id, domain.name].includes(id)
+    ctx.api ? [domain.id, domain.name].includes(id) : domain.name === id
   );
 
   // check if domain exists, and if it doesn't then check

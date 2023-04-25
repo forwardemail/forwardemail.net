@@ -31,7 +31,7 @@ include ../../../_pagination
                   class=alias.is_enabled ? "text-success" : "text-danger"
                 )
                   i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
-                code.text-nowrap= `${alias.name}@${domain.name}`
+                code= `${alias.name}@${domain.name}`
               //- on mobile we need to render this different
               .d-lg-none.p-2
                 if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))

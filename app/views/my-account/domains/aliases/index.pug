@@ -24,7 +24,9 @@ block body
             include _form
             button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
 
-  .container.py-3
+  .py-3(
+    class=typeof isContainerFluid === "boolean" && isContainerFluid === true ? "container-fluid" : "container"
+  )
     .row
       .col
         include ../../../_breadcrumbs
