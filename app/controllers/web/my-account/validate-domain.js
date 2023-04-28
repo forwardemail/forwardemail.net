@@ -5,7 +5,7 @@ const isSANB = require('is-string-and-not-blank');
 const splitLines = require('split-lines');
 const { boolean } = require('boolean');
 const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
-const { isIP } = require('validator');
+const { isEmail, isIP } = require('validator');
 
 const config = require('#config');
 
@@ -113,12 +113,19 @@ async function validateDomain(ctx, next) {
     ctx.request.body.plan = ctx.state.user.plan || 'free';
   }
 
-  // check if we're creating a default catchall
-  ctx.state.recipients = [ctx.state.user.email];
+  ctx.state.recipients = [];
 
-  if (_.isBoolean(ctx.request.body.catchall) && !ctx.request.body.catchall)
-    ctx.state.recipients.pop();
-  else if (isSANB(ctx.request.body.catchall)) {
+  if (isSANB(ctx.request.body.catchall)) {
+    if (ctx.request.body.catchall === 'true') {
+      ctx.request.body.catchall = true;
+    } else if (ctx.request.body.catchall === 'false') {
+      ctx.request.body.catchall = false;
+    }
+  } else if (!_.isBoolean(ctx.request.body.catchall)) {
+    ctx.request.body.catchall = true;
+  }
+
+  if (ctx.api && isSANB(ctx.request.body.catchall)) {
     const rcpts = _.compact(
       _.uniq(
         _.map(
@@ -130,10 +137,17 @@ async function validateDomain(ctx, next) {
           (recipient) => recipient.trim()
         )
       )
-    );
-    for (const rcpt of rcpts) {
-      ctx.state.recipients.push(rcpt);
-    }
+    ).filter((val) => isEmail(val));
+
+    // if no recipients parsed then throw error
+    if (rcpts.length === 0)
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('ALIAS_MUST_HAVE_ONE_RECIPIENT'))
+      );
+
+    ctx.state.recipients = rcpts;
+  } else {
+    ctx.state.recipients.push(ctx.state.user.email);
   }
 
   ctx.state.redirectTo = ctx.state.l(

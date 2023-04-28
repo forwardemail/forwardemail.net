@@ -1,4 +1,5 @@
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const { boolean } = require('boolean');
 
 const toObject = require('#helpers/to-object');
@@ -19,20 +20,31 @@ async function createDomain(ctx, next) {
     });
 
     // create a default alias for the user pointing to the user or recipients
-    await Aliases.create({
-      is_api: boolean(ctx.api),
-      user: ctx.state.user._id,
-      domain: ctx.state.domain._id,
-      name: '*',
-      recipients:
-        ctx.state.recipients.length > 0
-          ? ctx.state.recipients
-          : [ctx.state.user.email],
-      locale: ctx.locale,
-      ...(ctx.state.optionalBooleans.has_recipient_verification
-        ? { has_recipient_verification: true }
-        : {})
-    });
+    if (
+      boolean(ctx.api) &&
+      _.isBoolean(ctx.request.body.catchall) &&
+      !ctx.request.body.catchall
+    ) {
+      // create domain without any aliases yet!
+      ctx.logger.info('created domain without aliases', {
+        domain: ctx.state.domain
+      });
+    } else {
+      await Aliases.create({
+        is_api: boolean(ctx.api),
+        user: ctx.state.user._id,
+        domain: ctx.state.domain._id,
+        name: '*',
+        recipients:
+          ctx.state.recipients.length > 0
+            ? ctx.state.recipients
+            : [ctx.state.user.email],
+        locale: ctx.locale,
+        ...(ctx.state.optionalBooleans.has_recipient_verification
+          ? { has_recipient_verification: true }
+          : {})
+      });
+    }
 
     if (ctx.api) {
       ctx.state.domain = toObject(Domains, ctx.state.domain);

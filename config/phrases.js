@@ -15,6 +15,7 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  ALIAS_MUST_HAVE_ONE_RECIPIENT: 'Alias must have at least one recipient.',
   ENCRYPTED_VALUE: 'encrypted value',
   SEARCH_PAGE: 'Search page',
   TABLE_OF_CONTENTS: 'Table of Contents',
