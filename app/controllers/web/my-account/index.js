@@ -34,6 +34,7 @@ const retrieveInvite = require('./retrieve-invite');
 const retrieveProfile = require('./retrieve-profile');
 const retrieveReceipt = require('./retrieve-receipt');
 const sortedDomains = require('./sorted-domains');
+const resendVerification = require('./resend-verification');
 const updateAlias = require('./update-alias');
 const updateCard = require('./update-card');
 const updateDomain = require('./update-domain');
@@ -83,6 +84,7 @@ module.exports = {
   retrieveProfile,
   retrieveReceipt,
   sortedDomains,
+  resendVerification,
   updateAlias,
   updateCard,
   updateDomain,

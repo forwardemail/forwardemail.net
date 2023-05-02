@@ -244,6 +244,15 @@ router
     web.myAccount.ensureAliasAdmin,
     web.myAccount.removeAlias
   )
+  .post(
+    '/domains/:domain_id/aliases/:alias_id/resend-verification',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.retrieveAlias,
+    web.myAccount.ensureAliasAdmin,
+    rateLimit(20, 'resend verification'),
+    web.myAccount.resendVerification
+  )
   .get(
     '/domains/:domain_id/billing',
     web.myAccount.retrieveDomain,

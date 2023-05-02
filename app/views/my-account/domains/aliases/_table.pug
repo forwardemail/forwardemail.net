@@ -97,6 +97,25 @@ include ../../../_pagination
                           code.text-nowrap= recipient
                         else
                           code.text-nowrap= `${alias.name}@${recipient}`
+                        if !alias.verified_recipients.includes(recipient) && alias.pending_recipients.includes(recipient)
+                          //- Button to resend verification email
+                          form.ajax-form.confirm-prompt.d-inline-block(
+                            action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/resend-verification`),
+                            method="POST",
+                            data-confirm-prompt-title=t("Resend verification email?"),
+                            data-confirm-prompt-html=t("Please confirm if you wish to resend the verification email to <strong>%s</strong>.", recipient)
+                          )
+                            input(
+                              type="hidden",
+                              name="recipient",
+                              value=recipient
+                            )
+                            button.btn.btn-sm.btn-link.text-warning(
+                              data-placement="bottom",
+                              data-toggle="tooltip",
+                              data-title=t("Resend verification email")
+                            )
+                              i.fa.fa-fw.fa-refresh
 
                 ul.list-inline.mb-0
                   li.list-inline-item
@@ -188,6 +207,25 @@ include ../../../_pagination
                         code.text-nowrap= recipient
                       else
                         code.text-nowrap= `${alias.name}@${recipient}`
+                      if !alias.verified_recipients.includes(recipient) && alias.pending_recipients.includes(recipient)
+                        //- Button to resend verification email
+                        form.ajax-form.confirm-prompt.d-inline-block(
+                          action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/resend-verification`),
+                          method="POST",
+                          data-confirm-prompt-title=t("Resend verification email?"),
+                          data-confirm-prompt-html=t("Please confirm if you wish to resend the verification email to <strong>%s</strong>.", recipient)
+                        )
+                          input(
+                            type="hidden",
+                            name="recipient",
+                            value=recipient
+                          )
+                          button.btn.btn-sm.btn-link.text-primary(
+                            data-placement="bottom",
+                            data-toggle="tooltip",
+                            data-title=t("Resend verification email")
+                          )
+                            i.fa.fa-fw.fa-refresh
             td.align-middle.d-none.d-lg-table-cell(style="width: 20%")
               ul.list-inline.mb-0
                 li.list-inline-item
