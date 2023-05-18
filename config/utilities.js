@@ -117,6 +117,14 @@ const NS_PROVIDERS = {
     'namecheap',
     '@'
   ],
+  'squarespacedns.com': [
+    'squarespace',
+    'Squarespace',
+    // <https://support.squarespace.com/hc/en-us/articles/205812348-Accessing-your-Squarespace-managed-domain-s-DNS-settings>
+    'https://account.squarespace.com/project-picker?client_id=helpcenter&redirect_url=%2Fsettings%2Fdomains',
+    'squarespace',
+    '@'
+  ],
   'wixdns.net': ['wix', 'Wix', 'https://users.wix.com/signin?forceRender=true'],
   'vercel-dns.com': [
     'vercel',
