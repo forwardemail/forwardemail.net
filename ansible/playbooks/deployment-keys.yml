@@ -1,8 +1,6 @@
 ---
 - hosts: smtp:http:bree
   name: Deployment Keys
-  become: true
-  become_user: root
   tasks:
     - name: Check if key exists
       stat:

@@ -196,7 +196,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 9. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.
 
    ```sh
-   node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'smtp:http:bree'
+   node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'smtp:http:bree' --user deploy
    ```
 
 10. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours.  You can also use the `gh` CLI at <https://cli.github.com/manual/gh_repo_deploy-key_add> as shown below (switch the repo/org/repo paths and deployment key paths below to yours):
