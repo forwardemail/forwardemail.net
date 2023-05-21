@@ -72,10 +72,11 @@ block body
             each accepted in email.accepted
               li.list-inline-item.d-inline
                 span.badge.badge-pill.badge-success 250
-                span.small.text-monospace
-                = t("Accepted")
                 = ' '
-                = `(${accepted})`
+                span.small.text-monospace
+                  = t("Accepted")
+                  = ' '
+                  = `(${accepted})`
             each rejectedError in email.rejectedErrors
               li
                 if email.envelope.to.length > 1

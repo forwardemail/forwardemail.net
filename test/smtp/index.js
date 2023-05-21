@@ -1,6 +1,8 @@
 const util = require('util');
 const { Writable } = require('node:stream');
 
+// TODO: message body starts with "\" does not hash verify
+
 const Client = require('nodemailer/lib/smtp-connection');
 const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');

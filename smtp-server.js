@@ -1,3 +1,5 @@
+const fs = require('node:fs');
+
 const punycode = require('punycode/');
 
 const RateLimiter = require('async-ratelimiter');
@@ -569,12 +571,16 @@ class SMTP {
 
       // just in case smtp-server changes default and patch semver bump (unlikely but safeguard)
       allowInsecureAuth: false,
-      authOptional: false
+      authOptional: false,
 
-      // TODO: add keys
-      // key: './keys/private.key',
-      // cert: './keys/server.crt'
-      // ca: './keys/ca.crt'
+      // keys
+      ...(config.env === 'production'
+        ? {
+            key: fs.readFileSync(env.WEB_SSL_KEY_PATH),
+            cert: fs.readFileSync(env.WEB_SSL_CERT_PATH),
+            ca: fs.readFileSync(env.WEB_SSL_CA_PATH)
+          }
+        : {})
     });
 
     // kind of hacky but I filed a GH issue
