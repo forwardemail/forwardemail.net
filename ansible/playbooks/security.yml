@@ -80,6 +80,7 @@
         name: devops
         password: "!"
         state: present
+        groups: devops
         append: true
         create_home: true
         shell: /bin/bash
