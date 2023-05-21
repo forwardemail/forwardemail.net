@@ -99,7 +99,7 @@
     - name: Allow port 2465
       ufw:
         rule: allow
-        port: 25
+        port: 2465
         proto: tcp
     #
     # modify ufw setup
