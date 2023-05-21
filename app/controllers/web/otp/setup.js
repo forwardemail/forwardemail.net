@@ -1,5 +1,3 @@
-const process = require('process');
-
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const qrcode = require('qrcode');
@@ -43,7 +41,7 @@ async function setup(ctx) {
       ctx.flash('error', ctx.translate('INVALID_OTP_PASSCODE'));
       ctx.state.otpTokenURI = authenticator.keyuri(
         ctx.state.user.email,
-        process.env.WEB_HOST,
+        config.webHost,
         ctx.state.user[config.passport.fields.otpToken]
       );
       ctx.state.qrcode = await qrcode.toDataURL(ctx.state.otpTokenURI, options);
@@ -76,7 +74,7 @@ async function setup(ctx) {
 
   ctx.state.otpTokenURI = authenticator.keyuri(
     ctx.state.user.email,
-    process.env.WEB_HOST,
+    config.webHost,
     ctx.state.user[config.passport.fields.otpToken]
   );
   ctx.state.qrcode = await qrcode.toDataURL(ctx.state.otpTokenURI, options);

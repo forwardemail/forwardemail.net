@@ -44,10 +44,21 @@ const IGNORED_CONTENT_TYPES = [
 // eslint-disable-next-line complexity
 async function hook(err, message, meta) {
   //
+  // if it was not `error` or `fatal` then we must have the symbol set
+  // in order for this log to get saved and stored
+  //
+  if (
+    meta.level !== 'error' &&
+    meta.level !== 'fatal' &&
+    typeof meta.ignore_hook !== 'boolean'
+  )
+    return;
+
+  //
   // return early if we wish to ignore this
   // (this prevents recursion; see end of this fn)
   //
-  if (meta.ignore_hook) return;
+  if (meta.ignore_hook === true || (err && err.ignoreHook === true)) return;
 
   //
   // if it was a duplicate error then ignore it
@@ -69,20 +80,50 @@ async function hook(err, message, meta) {
             Boolean(conn.models && conn.models.Logs && conn.models.Logs.create),
           { timeout: 3000 }
         );
-      conn.models.Logs.create(
-        // eslint-disable-next-line prefer-object-spread
-        Object.assign(
-          {
-            err,
-            message,
-            meta
-          },
-          // parse `user` from `meta` object if this was associated with a specific user
-          meta && meta.user && meta.user.id
-            ? { user: new mongoose.Types.ObjectId(meta.user.id) }
-            : {}
+
+      const log = { err, message, meta };
+
+      if (typeof log.meta === 'object') {
+        // user
+        if (
+          typeof log.meta.user === 'object' &&
+          typeof log.meta.user.id === 'string' &&
+          mongoose.Types.ObjectId.isValid(log.meta.user.id)
         )
-      )
+          log.user = new mongoose.Types.ObjectId(log.meta.user.id);
+        else if (
+          typeof log.meta.user === 'object' &&
+          mongoose.Types.ObjectId.isValid(log.meta.user)
+        )
+          log.user = log.meta.user;
+
+        // domains
+        if (Array.isArray(log.meta.domains)) {
+          const domains = [];
+          for (const d of log.meta.domains) {
+            // eslint-disable-next-line max-depth
+            if (typeof d === 'object' && mongoose.Types.ObjectId.isValid(d))
+              domains.push(d);
+          }
+
+          if (domains.length > 0) log.domains = domains;
+        }
+
+        // email
+        if (
+          typeof log.meta.email === 'object' &&
+          typeof log.meta.email.id === 'string' &&
+          mongoose.Types.ObjectId.isValid(log.meta.email.id)
+        )
+          log.email = new mongoose.Types.ObjectId(log.meta.email.id);
+        else if (
+          typeof log.meta.email === 'object' &&
+          mongoose.Types.ObjectId.isValid(log.meta.email)
+        )
+          log.email = log.meta.email;
+      }
+
+      return conn.models.Logs.create(log)
         .then((log) => logger.info('log created', { log, ignore_hook: true }))
         .catch((err) => {
           //
@@ -122,7 +163,7 @@ async function hook(err, message, meta) {
     // eslint-disable-next-line no-undef
     if (typeof window.API_TOKEN === 'string') request.auth(window.API_TOKEN);
 
-    request
+    return request
       .type('application/json')
       .retry(3)
       .send(safeStringify({ err: parseErr(err), message, meta }))
@@ -180,9 +221,7 @@ for (const level of logger.config.levels) {
     //   meta[silentSymbol] = true;
     return [err, message, meta];
   });
-}
 
-for (const level of ['error', 'fatal']) {
   logger.post(level, hook);
 }
 

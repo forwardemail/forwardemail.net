@@ -68,7 +68,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
   class=user ? "navbar-dark bg-dark" : "bg-white navbar-themed bg-themed"
 )
   div(
-    class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
+    class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
   )
     a.navbar-brand.d-inline-block.m-0(
       href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l()
@@ -268,6 +268,10 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                   href=l("/admin/domains")
                 )= t("Domains")
                 a.dropdown-item(
+                  class=ctx.pathWithoutLocale.startsWith("/admin/emails") ? "active" : "",
+                  href=l("/admin/emails")
+                )= t("Emails")
+                a.dropdown-item(
                   class=ctx.pathWithoutLocale.startsWith("/admin/logs") ? "active" : "",
                   href=l("/admin/logs")
                 )= t("Logs")
@@ -296,21 +300,25 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 href=l("/my-account/domains")
               )= t("Domains")
               a.dropdown-item(
+                class=ctx.pathWithoutLocale.startsWith("/my-account/emails") ? "active" : "",
+                href=l("/my-account/emails")
+              )= t("Emails")
+              a.dropdown-item(
+                class=ctx.pathWithoutLocale.startsWith("/my-account/logs") ? "active" : "",
+                href=l("/my-account/logs")
+              )= t("Logs")
+              a.dropdown-item(
                 class=ctx.pathWithoutLocale === "/my-account/profile" ? "active" : "",
                 href=l("/my-account/profile")
               )= t("Profile")
-              a.dropdown-item(
-                class=ctx.pathWithoutLocale === "/my-account/security" ? "active" : "",
-                href=l("/my-account/security")
-              )= t("Security")
               a.dropdown-item(
                 class=ctx.pathWithoutLocale === "/my-account/billing" ? "active" : "",
                 href=l("/my-account/billing")
               )= t("Billing")
               a.dropdown-item(
-                class=ctx.pathWithoutLocale.startsWith("/my-account/logs") ? "active" : "",
-                href=l("/my-account/logs")
-              )= t("Logs")
+                class=ctx.pathWithoutLocale === "/my-account/security" ? "active" : "",
+                href=l("/my-account/security")
+              )= t("Security")
               a.dropdown-item(href=l("/logout"))= t("Sign out")
         //- links that show only if you're logged out
         else

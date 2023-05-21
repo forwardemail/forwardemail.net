@@ -2,7 +2,6 @@ const dns = require('dns');
 const os = require('os');
 const { Buffer } = require('buffer');
 
-// const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
@@ -28,6 +27,7 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const Users = require('./users');
 const Domains = require('./domains');
+const Emails = require('./emails');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -108,9 +108,14 @@ const Logs = new mongoose.Schema({
   domains: [
     {
       type: mongoose.Schema.ObjectId,
-      ref: Domains
+      ref: Domains,
+      index: true
     }
   ],
+  email: {
+    type: mongoose.Schema.ObjectId,
+    ref: Emails
+  },
   domains_checked_at: Date,
   err: mongoose.Schema.Types.Mixed,
   text_message: {
@@ -132,7 +137,7 @@ const Logs = new mongoose.Schema({
   },
   is_restricted: {
     type: Boolean,
-    default: false
+    default: true
   }
 });
 
@@ -149,6 +154,7 @@ Logs.plugin(mongooseCommonPlugin, {
   locale: false
 });
 
+// TODO: can we remove this?
 // create full text search index on message
 Logs.index({ text_message: 'text' }, { default_language: 'english' });
 
@@ -157,6 +163,7 @@ Logs.index({ text_message: 'text' }, { default_language: 'english' });
 // <https://www.mongodb.com/docs/manual/core/index-partial/#comparison-with-sparse-indexes>
 //
 const PARTIAL_INDICES = [
+  'email', // conditionally exists if related to a given outbound email
   'err.responseCode',
   'meta.is_http', // used for search
   'meta.level',
@@ -174,7 +181,13 @@ const PARTIAL_INDICES = [
   'domains_checked_at',
   'is_restricted',
   // TODO: most likely need to optimize this in another way besides $exists
-  'meta.session.envelope.rcptTo.address'
+  'meta.session.envelope.rcptTo.address',
+  'meta.err.responseCode',
+  'meta.session.resolvedClientHostname',
+  'meta.session.remoteAddress',
+  'meta.session.envelope.mailFrom.address',
+  'meta.session.originalFromAddress'
+  // meta.session.headers
 ];
 
 for (const index of PARTIAL_INDICES) {
@@ -237,6 +250,16 @@ Logs.pre('validate', function (next) {
   // (prevents someone from sending huge client-side payloads)
   //
   try {
+    // if it is a request to POST /v1/emails
+    // then we need to delete the body from request
+    if (
+      this?.meta?.is_http &&
+      this?.meta?.request?.pathname === '/v1/emails' &&
+      this?.meta?.request?.url === '/v1/emails' &&
+      this?.meta?.request?.body
+    )
+      delete this.meta.request.body;
+
     const bytes = Buffer.byteLength(safeStringify(this.toObject()), 'utf8');
     if (bytes > MAX_BYTES) throw new Error('Log byte size exceeds maximum');
 

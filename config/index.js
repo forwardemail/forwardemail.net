@@ -1,8 +1,10 @@
 const path = require('path');
+const os = require('os');
 
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const bytes = require('bytes');
 const consolidate = require('consolidate');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
@@ -10,6 +12,7 @@ const manifestRev = require('manifest-rev');
 const ms = require('ms');
 const nodemailer = require('nodemailer');
 const zxcvbn = require('zxcvbn');
+const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 
 const pkg = require('../package');
@@ -23,6 +26,38 @@ const utilities = require('./utilities');
 const payments = require('./payments');
 
 const config = {
+  maxRecipients: env.MAX_RECIPIENTS,
+  paidPrefix: `${env.TXT_RECORD_PREFIX}-site-verification=`,
+  freePrefix: `${env.TXT_RECORD_PREFIX}=`,
+  metaTitleAffix: `&#124; <span class="notranslate">${env.APP_NAME}</span>`,
+  webHost: env.WEB_HOST,
+  previewEmailOptions: {
+    open: false,
+    openSimulator: false,
+    simpleParser: {
+      Iconv,
+      skipHtmlToText: true,
+      skipTextLinks: true,
+      skipTextToHtml: true,
+      maxHtmlLengthToParse: bytes('50MB')
+    },
+    returnHTML: true
+  },
+  maxRetryDuration: ms('5d'),
+  concurrency:
+    env.NODE_ENV === 'test' || env.NODE_ENV === 'development'
+      ? 1
+      : os.cpus().length,
+
+  // truth sources (mirrors smtp)
+  truthSources: new Set(
+    _.isArray(env.TRUTH_SOURCES)
+      ? env.TRUTH_SOURCES.map((key) => key.toLowerCase().trim())
+      : isSANB(env.TRUTH_SOURCES)
+      ? env.TRUTH_SOURCES.split(',').map((key) => key.toLowerCase().trim())
+      : []
+  ),
+
   logRetention: env.LOG_RETENTION,
 
   // custom rate limiting lookup for allowing whitelisted customers
@@ -84,12 +119,18 @@ const config = {
   },
 
   // app
+  dkimKeySelector: 'forwardemail', // forwardemail._domainkey.example.com
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
+  abuseEmail: env.EMAIL_ABUSE,
   email: {
     preview:
       env.NODE_ENV === 'development' || env.PREVIEW_EMAIL
         ? {
-            openSimulator: false
+            openSimulator: false,
+            simpleParser: {
+              Iconv,
+              maxHtmlLengthToParse: bytes('50MB')
+            }
           }
         : false,
     subjectPrefix: `${env.APP_NAME} – `,
@@ -289,14 +330,21 @@ const config = {
     attemptsField: 'login_attempts',
     lastLoginField: 'last_login_at',
     usernameLowerCase: true,
-    limitAttempts: true,
-    maxAttempts: env.NODE_ENV === 'development' ? Number.POSITIVE_INFINITY : 10,
+    // NOTE: we rate limit the /login endpoint
+    // limitAttempts: true,
+    // maxAttempts: env.NODE_ENV === 'development' ? Number.POSITIVE_INFINITY : 10,
     digestAlgorithm: 'sha256',
     encoding: 'hex',
     saltlen: 32,
     iterations: 25000,
     keylen: 512,
     passwordValidator(password, fn) {
+      if (typeof password !== 'string' || password.length > 64) {
+        const err = Boom.badRequest(phrases.INVALID_PASSWORD_STRENGTH);
+        err.no_translate = true;
+        return fn(err);
+      }
+
       if (env.NODE_ENV === 'development') return fn();
       // TODO: new fork `zxcvbn3`
       // <https://github.com/hrueger/zxcvbn>
@@ -653,6 +701,7 @@ config.views.locals.manifest = manifestRev({
 
 // add selective `config` object to be used by views
 config.views.locals.config = _.pick(config, [
+  'webHost',
   'appColor',
   'appName',
   'env',

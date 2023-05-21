@@ -135,6 +135,19 @@ include ../../../_pagination
                         i.fa.fa-trash
                         = " "
                         = t("Delete Alias")
+                  //- generate password for alias
+                  //- TODO: support more than one generated password
+                  if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.has_smtp && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
+                    form.ajax-form.confirm-prompt.d-inline-block(
+                      action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/generate-password`),
+                      data-confirm-prompt-title=t("Generate new password?")
+                      data-confirm-prompt-html=t("This will delete all previously created passwords for this alias. We will support multiple passwords soon!")
+                      method="POST"
+                    )
+                      button.btn.btn-sm.btn-success(type="submit")
+                        i.fa.fa-key
+                        = " "
+                        = t("Generate password")
 
             td.align-middle.d-none.d-lg-table-cell
               if isSANB(alias.description)
@@ -247,4 +260,20 @@ include ../../../_pagination
                       i.fa.fa-trash
                       = " "
                       = t("Delete")
+                //- generate password for alias
+                //- TODO: support more than one generated password
+                if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.has_smtp && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
+                  li.list-inline-item
+                    form.ajax-form.confirm-prompt.d--block(
+                      action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/generate-password`),
+                      data-confirm-prompt-title=t("Generate new password?")
+                      data-confirm-prompt-html=t("This will delete all previously created passwords for this alias. We will support multiple passwords soon!")
+                      method="POST"
+                    )
+                      button.btn.btn-sm.btn-link.text-success.btn-block(type="submit")
+                        i.fa.fa-key
+                        = " "
+                        = t("Generate password")
+
+
 +paginate('#table-aliases')

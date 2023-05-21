@@ -55,6 +55,7 @@ async function settings(ctx) {
           );
 
         const domain = await Domains.findOne({
+          name: ctx.query.domain,
           verification_record: verifications[0],
           plan: { $ne: 'free' }
         })

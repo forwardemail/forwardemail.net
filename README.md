@@ -27,7 +27,6 @@
   * [Load Balancing](#load-balancing)
   * [Provisioning](#provisioning)
   * [Deployment](#deployment)
-* [Contributors](#contributors)
 * [License](#license)
 
 
@@ -119,7 +118,7 @@ See [Requirements](#requirements) below.
 
 Our server alias naming convention consists of the following fields, joined together by a hyphen, and converted to lower case:
 
-1. App name (e.g. "web", "api", or "bree")
+1. App name (e.g. "web", "api", "bree", or "smtp")
 2. (Optional) App count (starting with 1) of the application (relative to the same provider and region).  Only applicable for apps with potential count > 1.
 3. Provider name (abbreviated to 2 characters, e.g. "do" for "Digital Ocean", but you can optionally use more verbose for providers such as "Vultr" as "vultr")
 4. Region name (this is the region name given by the provider, e.g. "sfo3" for DO's SFO3 region)
@@ -170,7 +169,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    vim .env.production
    ```
 
-5. Generate [pm2][] [ecosystem files][ecosystem-files] using our automatic template generator. We created an [ansible-playbook.js](ansible-playbook.js) which loads the `.env.production` environment variables rendered with [@ladjs/env][] into `process.env`, which then gets used in the playbooks.  This is a superior, simple, and the only known dotenv approach we know of in Ansible. Newly created `ecosystem-api.json`, `ecosystem-bree.json`, `ecosystem-web.json` files will now be created for you in the root of the repository.  If you ever more add or change IP addresses, you can simply re-run this command.
+5. Generate [pm2][] [ecosystem files][ecosystem-files] using our automatic template generator. We created an [ansible-playbook.js](ansible-playbook.js) which loads the `.env.production` environment variables rendered with [@ladjs/env][] into `process.env`, which then gets used in the playbooks.  This is a superior, simple, and the only known dotenv approach we know of in Ansible. Newly created `ecosystem-api.json`, `ecosystem-bree.json`, `ecosystem-web.json`, and `ecosystem-smtp.json` files will now be created for you in the root of the repository.  If you ever more add or change IP addresses, you can simply re-run this command.
 
    ```sh
    node ansible-playbook ansible/playbooks/ecosystem.yml -l 'localhost'
@@ -188,23 +187,31 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    node ansible-playbook ansible/playbooks/bree.yml --user root -l 'bree'
    ```
 
-8. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.
+8. Set up the SMTP server(s):
 
    ```sh
-   node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'http:bree'
+   node ansible-playbook ansible/playbooks/smtp.yml --user root -l 'smtp'
    ```
 
-9. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours.  You can also use the `gh` CLI at <https://cli.github.com/manual/gh_repo_deploy-key_add> as shown below (switch the repo/org/repo paths and deployment key paths below to yours):
+9. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.
 
    ```sh
-   gh repo deploy-key add deployment-keys/api-vu-sj-ca.pub -R forwardemail/forwardemail.net
-   gh repo deploy-key add deployment-keys/api-do-am-nl.pub -R forwardemail/forwardemail.net
-   gh repo deploy-key add deployment-keys/web-vu-sj-ca.pub -R forwardemail/forwardemail.net
-   gh repo deploy-key add deployment-keys/web-do-am-nl.pub -R forwardemail/forwardemail.net
-   gh repo deploy-key add deployment-keys/bree-vu-sj-ca.pub -R forwardemail/forwardemail.net
+   node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'smtp:http:bree'
    ```
 
-10. Set up PM2 deployment directories on all the servers:
+10. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours.  You can also use the `gh` CLI at <https://cli.github.com/manual/gh_repo_deploy-key_add> as shown below (switch the repo/org/repo paths and deployment key paths below to yours):
+
+    ```sh
+    gh repo deploy-key add deployment-keys/api-vu-sj-ca.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/api-do-am-nl.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/web-vu-sj-ca.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/web-do-am-nl.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/bree-vu-sj-ca.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/smtp-vu-sj-ca.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/smtp-do-am-nl.pub -R forwardemail/forwardemail.net
+    ```
+
+11. Set up PM2 deployment directories on all the servers:
 
     ```sh
     pm2 deploy ecosystem-web.json production setup
@@ -218,7 +225,13 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-bree.json production setup
     ```
 
-11. Create a SSL certificate at [Namecheap][] (we recommend a 5 year wildcard certificate), set up the certificate, and download and extract the ZIP file with the certificate (emailed to you) to your computer. We do not recommend using tools like [LetsEncrypt][] and `certbot` due to complexity when you have (or scale to) a cluster of servers set up behind load balancers.  In other words, we've tried approaches like `lsyncd` in combination with `crontab` for `certbot` renewals and automatic checking.  Furthermore, using this exposes the server(s) to downtime as ports `80` and `443` may need to be shut down so that `certbot` can use them for certificate generation.  This is not a reliable approach, and simply renewing certificates once a year is vastly simpler and also makes using load balancers trivial.  Instead you can use a provider like [Namecheap][] to get a cheap SSL certificate, then run a few commands as we've documented below. This command will prompt you for an absolute file path to the certificates you downloaded. Renewed your certificate after 1 year? Simply follow this step again.  Do not set a password on the certificate files.  When using the `openssl` command (see Namecheap instructions), you need to use `*.example.com` with an asterisk followed by a period if you are registering a wildcard certificate.
+    ```sh
+    pm2 deploy ecosystem-smtp.json production setup
+    ``
+
+    ```
+
+12. Create a SSL certificate at [Namecheap][] (we recommend a 5 year wildcard certificate), set up the certificate, and download and extract the ZIP file with the certificate (emailed to you) to your computer. We do not recommend using tools like [LetsEncrypt][] and `certbot` due to complexity when you have (or scale to) a cluster of servers set up behind load balancers.  In other words, we've tried approaches like `lsyncd` in combination with `crontab` for `certbot` renewals and automatic checking.  Furthermore, using this exposes the server(s) to downtime as ports `80` and `443` may need to be shut down so that `certbot` can use them for certificate generation.  This is not a reliable approach, and simply renewing certificates once a year is vastly simpler and also makes using load balancers trivial.  Instead you can use a provider like [Namecheap][] to get a cheap SSL certificate, then run a few commands as we've documented below. This command will prompt you for an absolute file path to the certificates you downloaded. Renewed your certificate after 1 year? Simply follow this step again.  Do not set a password on the certificate files.  When using the `openssl` command (see Namecheap instructions), you need to use `*.example.com` with an asterisk followed by a period if you are registering a wildcard certificate.
 
     ```sh
     ansible-playbook ansible/playbooks/certificates.yml
@@ -235,19 +248,19 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-api.json production exec "pm2 reload api"
     ```
 
-12. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
+13. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
 
     ```sh
-    ansible-playbook ansible/playbooks/gapp-creds.yml -l 'http:bree'
+    ansible-playbook ansible/playbooks/gapp-creds.yml -l 'smtp:http:bree'
     ```
 
-13. Copy the `.env.production` to the servers:
+14. Copy the `.env.production` to the servers:
 
     ```sh
-    node ansible-playbook ansible/playbooks/env.yml -l 'http:bree'
+    node ansible-playbook ansible/playbooks/env.yml -l 'smtp:http:bree'
     ```
 
-14. Run an initial deploy to all the servers:
+15. Run an initial deploy to all the servers:
 
     ```sh
     pm2 deploy ecosystem-web.json production
@@ -261,7 +274,11 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-bree.json production
     ```
 
-15. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
+    ```sh
+    pm2 deploy ecosystem-smtp.json production
+    ```
+
+16. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
 
     ```sh
     pm2 deploy ecosystem-web.json production exec "pm2 save"
@@ -275,28 +292,25 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-bree.json production exec "pm2 save"
     ```
 
-16. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
+    ```sh
+    pm2 deploy ecosystem-smtp.json production exec "pm2 save"
+    ```
 
-17. Configure your DNS records for the web and API server hostnames and respective IP addresses.
+17. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
 
-18. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
+18. Configure your DNS records for the web and API server hostnames and respective IP addresses.
 
-19. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+19. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
+
+20. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
     ```sh
     rm .env.production
     ```
 
-20. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+21. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
-21. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
-
-
-## Contributors
-
-| Name           | Website                    |
-| -------------- | -------------------------- |
-| **Nick Baugh** | <http://niftylettuce.com/> |
+22. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
 
 
 ## License

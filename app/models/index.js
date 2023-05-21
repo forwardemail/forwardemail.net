@@ -6,6 +6,7 @@ const Payments = require('./payments');
 const SelfTests = require('./self-tests');
 const UpgradeReminders = require('./upgrade-reminders');
 const Users = require('./users');
+const Emails = require('./emails');
 
 module.exports = {
   Aliases,
@@ -15,5 +16,6 @@ module.exports = {
   Payments,
   SelfTests,
   UpgradeReminders,
-  Users
+  Users,
+  Emails
 };

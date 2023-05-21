@@ -11,6 +11,7 @@ module.exports = {
     bree: 'nodemon bree.js',
     api: 'nodemon api.js',
     web: 'nodemon web.js',
+    smtp: 'nodemon smtp.js',
 
     watch: 'gulp watch',
     clean: 'gulp clean',

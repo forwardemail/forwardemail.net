@@ -3,6 +3,7 @@ const Tangerine = require('tangerine');
 
 // modern approach inspired by `refix` package
 // <https://github.com/luin/ioredis/issues/983#issuecomment-1448839874>
+// <https://github.com/luin/ioredis/issues/983#issuecomment-1536728696>
 function refix(client, prefix) {
   const proxy = {};
   Object.setPrototypeOf(proxy, client);
@@ -10,7 +11,26 @@ function refix(client, prefix) {
     proxy[command] = function (...args) {
       const keyIndexes = commands.getKeyIndexes(command, args);
       for (const index of keyIndexes) {
-        args[index] = prefix + args[index];
+        if (args[index] instanceof Map) {
+          const map = new Map();
+          for (const [key, value] of args[index]) {
+            map.set(prefix + key, value);
+          }
+
+          args[index] = map;
+        } else if (
+          typeof args[index] === 'object' &&
+          !Array.isArray(args[index])
+        ) {
+          const obj = {};
+          for (const key of Object.keys(args[index])) {
+            obj[prefix + key] = args[index][key];
+          }
+
+          args[index] = obj;
+        } else {
+          args[index] = prefix + args[index];
+        }
       }
 
       return client[command](...args);

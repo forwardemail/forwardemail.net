@@ -2,7 +2,7 @@ extends ../layout
 
 block body
   if !isBot(ctx.get('User-Agent'))
-    .fixed-bottom.text-center
+    .fixed-bottom.text-center.d-print-none
       .bg-dark.p-2.border-top.border-themed
         ul.list-inline.mb-0
           li.list-inline-item

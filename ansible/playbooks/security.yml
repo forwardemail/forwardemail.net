@@ -1,5 +1,5 @@
 ---
-- hosts: http:bree
+- hosts: smtp:http:bree
   name: Security
   become: true
   become_user: root
@@ -157,7 +157,7 @@
       become_user: deploy
       shell: git config --global --add safe.directory '*'
 
-- hosts: http:bree
+- hosts: smtp:http:bree
   name: Mongo Shell
   become: true
   become_user: root
@@ -172,7 +172,7 @@
           - mongodb-mongosh
         update_cache: true
 
-- hosts: http:bree
+- hosts: smtp:http:bree
   name: Sysctl
   become: true
   become_user: root

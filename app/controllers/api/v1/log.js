@@ -22,12 +22,10 @@ async function parseLog(ctx) {
     // if it utilized restricted basic auth middleware
     // then we can assume it's a trusted server (e.g. bree/smtp)
     //
-    if (ctx[API_RESTRICTED_SYMBOL]) {
-      log.is_restricted = true;
-    } else if (ctx.isAuthenticated()) {
-      // set the user if they're logged in
-      log.user = ctx.state.user._id;
-    }
+    if (!ctx[API_RESTRICTED_SYMBOL]) log.is_restricted = false;
+
+    // set the user if they're logged in
+    if (ctx.isAuthenticated()) log.user = ctx.state.user._id;
 
     // store the log
     await Logs.create(log);

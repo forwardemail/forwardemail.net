@@ -5,17 +5,19 @@ const Meta = require('koa-meta');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
-const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const { parse } = require('node-html-parser');
 
+const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const importAliases = require('./import-aliases');
 
 const { Domains, Aliases } = require('#models');
 const config = require('#config');
 const logger = require('#helpers/logger');
+const parseRootDomain = require('#helpers/parse-root-domain');
 
 const meta = new Meta(config.meta, logger);
 
+const META_TITLE_AFFIX = `| ${config.appName}`;
 const EXCHANGES = config.exchanges;
 
 // eslint-disable-next-line complexity
@@ -40,15 +42,29 @@ async function retrieveDomain(ctx, next) {
       Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
+  const member = ctx.state.domain.members.find((m) =>
+    m?.user?.id
+      ? m.user.id === ctx.state.user.id
+      : m.user.toString() === ctx.state.user.id
+  );
+
+  if (!member) throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
+
+  // set a `group` virtual helper alias to the member's group
+  ctx.state.domain.group = member.group;
+
   // if it's an API request then return early
   if (ctx.api) return next();
 
   //
   // if we're on the advanced settings page, then calculate alias_count for each member
+  // and also lookup DKIM, DMARC, and Return-Path if the user has SMTP Outbound Configuration
   //
   if (
+    ctx.state.domain.group === 'admin' &&
+    ctx.method === 'GET' &&
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
+      `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
   ) {
     ctx.state.domain.members = await Promise.all(
       ctx.state.domain.members.map(async (member) => {
@@ -62,83 +78,117 @@ async function retrieveDomain(ctx, next) {
   }
 
   //
+  // Lookup SMTP Outbound Configuration if the user has SMTP enabled and not suspended
+  //
+  if (
+    ctx.state.domain.group === 'admin' &&
+    ctx.method === 'GET' &&
+    ctx.pathWithoutLocale ===
+      `/my-account/domains/${ctx.state.domain.name}/verify-smtp` &&
+    ctx.state.domain.has_smtp &&
+    !_.isDate(ctx.state.domain.smtp_suspended_sent_at)
+  ) {
+    try {
+      // <https://github.com/postalsys/mailauth#dmarc>
+      // <https://github.com/postalsys/mailauth/pull/29>
+      // <https://github.com/postalsys/mailauth/issues/27>
+      const dmarcRecord = await getDmarcRecord(
+        ctx.state.domain.name,
+        ctx.resolver.resolve
+      );
+      // {
+      //   v: 'DMARC1',
+      //   p: 'none',
+      //   pct: 100,
+      //   rua: 'mailto:foo@bar.com',
+      //   sp: 'none',
+      //   aspf: 'r',
+      //   rr: 'v=DMARC1; p=none; pct=100; rua=mailto:foo@bar.com; sp=none; aspf=r;',
+      //   isOrgRecord: false
+      // }
+      if (
+        dmarcRecord &&
+        (dmarcRecord?.v !== 'DMARC1' ||
+          dmarcRecord?.p !== 'reject' ||
+          dmarcRecord?.pct !== 100)
+      )
+        ctx.state.isDMARCInvalid = true;
+    } catch (err) {
+      ctx.logger.warn(err);
+    }
+  }
+
+  //
   // populate a virtual helper for rendering views
   // (e.g. subdomain in Host column for onboarding DNS setup)
   //
-  try {
-    const parseResult = parseDomain(fromUrl(ctx.state.domain.name));
-    ctx.state.domain.root_name = (
-      parseResult.type === ParseResultType.Listed &&
-      _.isObject(parseResult.icann) &&
-      isSANB(parseResult.icann.domain)
-        ? `${parseResult.icann.domain}.${parseResult.icann.topLevelDomains.join(
-            '.'
-          )}`
-        : ctx.state.domain.name
-    ).toLowerCase();
-  } catch (err) {
-    ctx.logger.fatal(err);
-  }
-
+  ctx.state.domain.root_name = parseRootDomain(ctx.state.domain.name);
   ctx.state.hasExistingMX = false;
   ctx.state.hasExistingTXT = false;
 
-  await Promise.all([
-    (async () => {
-      try {
-        const records = await ctx.resolver.resolveMx(ctx.state.domain.name, {
-          purgeCache: true
-        });
-        if (
-          _.isArray(records) &&
-          !_.isEmpty(records) &&
-          records.every(
-            (record) =>
-              _.isObject(record) &&
-              _.isString(record.exchange) &&
-              _.isNumber(record.priority)
-          )
-        ) {
-          const existingMX = records.filter(
-            (record) => !EXCHANGES.includes(record.exchange)
-          );
-          if (existingMX.length > 0) {
-            ctx.state.hasExistingMX = true;
-            ctx.state.existingMX = existingMX;
-          }
-        }
-      } catch (err) {
-        ctx.logger.warn(err);
-      }
-    })(),
-    (async () => {
-      try {
-        const records = await ctx.resolver.resolveTxt(ctx.state.domain.name, {
-          purgeCache: true
-        });
-        const existingTXT = [];
-        for (const record of records) {
-          if (_.isArray(record)) {
-            for (const str of record) {
-              // eslint-disable-next-line max-depth
-              if (
-                str.includes('forward-email=') ||
-                str.includes('forward-email-port=')
-              )
-                existingTXT.push(str);
+  //
+  // only check dns/mx if we're on the setup page
+  //
+  if (
+    ctx.method === 'GET' &&
+    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}`
+  )
+    await Promise.all([
+      (async () => {
+        try {
+          const records = await ctx.resolver.resolveMx(ctx.state.domain.name, {
+            purgeCache: true
+          });
+          if (
+            _.isArray(records) &&
+            !_.isEmpty(records) &&
+            records.every(
+              (record) =>
+                _.isObject(record) &&
+                _.isString(record.exchange) &&
+                _.isNumber(record.priority)
+            )
+          ) {
+            const existingMX = records.filter(
+              (record) => !EXCHANGES.includes(record.exchange)
+            );
+            if (existingMX.length > 0) {
+              ctx.state.hasExistingMX = true;
+              ctx.state.existingMX = existingMX;
             }
           }
+        } catch (err) {
+          ctx.logger.warn(err);
         }
+      })(),
+      (async () => {
+        try {
+          const records = await ctx.resolver.resolveTxt(ctx.state.domain.name, {
+            purgeCache: true
+          });
+          const existingTXT = [];
+          for (const record of records) {
+            if (_.isArray(record)) {
+              for (const str of record) {
+                // eslint-disable-next-line max-depth
+                if (
+                  str.includes('forward-email=') ||
+                  str.includes('forward-email-port=')
+                )
+                  existingTXT.push(str);
+              }
+            }
+          }
 
-        if (existingTXT.length > 0) {
-          ctx.state.hasExistingTXT = true;
-          ctx.state.existingTXT = existingTXT;
+          if (existingTXT.length > 0) {
+            ctx.state.hasExistingTXT = true;
+            ctx.state.existingTXT = existingTXT;
+          }
+        } catch (err) {
+          ctx.logger.warn(err);
         }
-      } catch (err) {
-        ctx.logger.warn(err);
-      }
-    })()
-  ]);
+      })()
+    ]);
 
   //
   // we need to import existing aliases
@@ -157,6 +207,17 @@ async function retrieveDomain(ctx, next) {
     ctx.state.domain.name,
     ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
   );
+
+  // load seo metadata
+  let data = {};
+  try {
+    data = meta.getByPath(ctx.pathWithoutLocale || ctx.path, ctx.request.t);
+  } catch (err) {
+    logger.error(err);
+    data = meta.getByPath('/', ctx.request.t);
+  }
+
+  Object.assign(ctx.state.meta, data);
 
   //
   // set breadcrumbs
@@ -177,10 +238,39 @@ async function retrieveDomain(ctx, next) {
     }
   ];
 
+  //
+  // NOTE: if the user is on any My Account > Domains page and is an admin of the domain
+  //       then we need to toast alert that they need to complete SMTP configuration if it's not done yet
+  //
+  if (
+    ctx.state.domain.group === 'admin' &&
+    ctx.method === 'GET' &&
+    ctx.state.domain.has_smtp &&
+    !_.isDate(ctx.state.domain.smtp_suspended_sent_at) &&
+    (!ctx.state.domain.has_dkim_record ||
+      !ctx.state.domain.has_return_path_record ||
+      !ctx.state.domain.has_dmarc_record) &&
+    ctx.pathWithoutLocale.startsWith(
+      `/my-account/domains/${ctx.state.domain.name}`
+    ) &&
+    ctx.pathWithoutLocale !==
+      `/my-account/domains/${ctx.state.domain.name}/verify-smtp`
+  )
+    ctx.flash('custom', {
+      title: ctx.request.t('Important'),
+      html: ctx.translate(
+        'EMAIL_SMTP_CONFIGURATION_REQUIRED',
+        ctx.state.domain.name,
+        ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/verify-smtp`)
+      ),
+      type: 'info',
+      toast: true,
+      position: 'top'
+    });
+
   if (
     ctx.method === 'GET' &&
-    (ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}` ||
-      ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.id}`)
+    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}`
   ) {
     // if we're on the setup page and the user is not on paid plan and it's not allowed anymore
     let message;
@@ -228,6 +318,20 @@ async function retrieveDomain(ctx, next) {
 
     try {
       ctx.state.domain = await ctx.state.domain.save();
+      const member = ctx.state.domain.members.find(
+        (m) => m.user.toString() === ctx.state.user.id
+      );
+
+      if (!member) throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
+
+      // set a `group` virtual helper alias to the member's group
+      ctx.state.domain.group = member.group;
+
+      //
+      // populate a virtual helper for rendering views
+      // (e.g. subdomain in Host column for onboarding DNS setup)
+      //
+      ctx.state.domain.root_name = parseRootDomain(ctx.state.domain.name);
     } catch (err) {
       ctx.logger.warn(err);
     }
@@ -246,6 +350,13 @@ async function retrieveDomain(ctx, next) {
       });
     }
 
+    ctx.state.meta.title = ctx.state.t(
+      `${
+        ctx.state.domain.has_mx_record && ctx.state.domain.has_txt_record
+          ? ctx.state.emoji('white_check_mark')
+          : ctx.state.emoji('x')
+      } Setup ${META_TITLE_AFFIX}`
+    );
     ctx.state.breadcrumbs.push({ name: ctx.state.t('Setup') });
   }
 
@@ -256,7 +367,6 @@ async function retrieveDomain(ctx, next) {
   ) {
     // user must be on a paid plan to use a global domain
     if (
-      !ctx.api &&
       ctx.state.domain.is_global &&
       ctx.state.user.group !== 'admin' &&
       ctx.state.user.plan === 'free'
@@ -270,19 +380,37 @@ async function retrieveDomain(ctx, next) {
       );
     if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
       ctx.flash('warning', message);
+
+    ctx.state.meta.title = ctx.state.t(`Aliases ${META_TITLE_AFFIX}`);
     ctx.state.breadcrumbs.push('aliases');
   } else if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
-  )
+  ) {
+    ctx.state.meta.title = ctx.state.t(`Settings ${META_TITLE_AFFIX}`);
     ctx.state.breadcrumbs.push('advanced-settings');
-  else if (
+  } else if (
+    ctx.pathWithoutLocale ===
+    `/my-account/domains/${ctx.state.domain.name}/verify-smtp`
+  ) {
+    ctx.state.meta.title = `${
+      ctx.state.domain.has_dkim_record &&
+      ctx.state.domain.has_return_path_record &&
+      ctx.state.domain.has_dmarc_record
+        ? ctx.state.emoji('white_check_mark')
+        : ctx.state.emoji('x')
+    } ${ctx.state.t('Verify')} SMTP ${META_TITLE_AFFIX}`;
+    ctx.state.breadcrumbs.push({
+      name: `${ctx.state.t('Verify')} SMTP`
+    });
+  } else if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/aliases/new`
   ) {
     if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
       ctx.flash('warning', message);
     ctx.state.breadcrumbHeaderCentered = true;
+    ctx.state.meta.title = ctx.state.t(`Add Alias ${META_TITLE_AFFIX}`);
     ctx.state.breadcrumbs.push(
       {
         name: ctx.state.t('Aliases'),
@@ -298,6 +426,7 @@ async function retrieveDomain(ctx, next) {
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/billing`
   ) {
+    ctx.state.meta.title = ctx.state.t(`Billing ${META_TITLE_AFFIX}`);
     ctx.state.breadcrumbs.push('billing');
   } else if (
     ctx.pathWithoutLocale ===
@@ -305,17 +434,6 @@ async function retrieveDomain(ctx, next) {
     (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
   )
     ctx.flash('warning', message);
-
-  // load seo metadata
-  let data = {};
-  try {
-    data = meta.getByPath(ctx.pathWithoutLocale || ctx.path, ctx.request.t);
-  } catch (err) {
-    logger.error(err);
-    data = meta.getByPath('/', ctx.request.t);
-  }
-
-  Object.assign(ctx.state.meta, data);
 
   // dynamically load the DNS Management by Registrar table from FAQ
   try {

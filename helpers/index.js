@@ -21,6 +21,15 @@ const combineErrors = require('./combine-errors');
 const ThresholdError = require('./threshold-error');
 const getAllPayPalSubscriptionTransactions = require('./get-all-paypal-subscription-transactions');
 const createTangerine = require('./create-tangerine');
+const processEmail = require('./process-email');
+const sendEmail = require('./send-email');
+const isNodemailerError = require('./is-nodemailer-error');
+const getErrorCode = require('./get-error-code');
+const isCodeBug = require('./is-code-bug');
+const createSession = require('./create-session');
+const splitSpaces = require('./split-spaces');
+const getMongoQuery = require('./get-mongo-query');
+const parseRootDomain = require('./parse-root-domain');
 
 module.exports = {
   decrypt,
@@ -46,5 +55,14 @@ module.exports = {
   combineErrors,
   ThresholdError,
   getAllPayPalSubscriptionTransactions,
-  createTangerine
+  createTangerine,
+  processEmail,
+  sendEmail,
+  isNodemailerError,
+  getErrorCode,
+  isCodeBug,
+  createSession,
+  splitSpaces,
+  getMongoQuery,
+  parseRootDomain
 };

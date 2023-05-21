@@ -1,7 +1,12 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const { boolean } = require('boolean');
 
+const config = require('#config');
+const emailHelper = require('#helpers/email');
+const i18n = require('#helpers/i18n');
 const { Domains } = require('#models');
 
 async function list(ctx) {
@@ -63,9 +68,116 @@ async function update(ctx) {
   domain.max_recipients_per_alias =
     body.max_recipients_per_alias || domain.max_recipients_per_alias;
 
+  // has_smtp
+  const hadSMTPAccess = Boolean(domain.has_smtp);
+  if (isSANB(body.has_smtp)) domain.has_smtp = boolean(body.has_smtp);
+
+  // smtp_suspended_sent_at
+  const hadSMTPSuspension = _.isDate(domain.smtp_suspended_sent_at);
+  if (isSANB(body.smtp_suspended_sent_at)) {
+    domain.smtp_suspended_sent_at = boolean(body.smtp_suspended_sent_at)
+      ? new Date()
+      : undefined;
+  }
+
   domain.locale = ctx.locale;
   domain.resolver = ctx.resolver;
   await domain.save();
+
+  // send an email to all admins of the domain
+  const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+
+  //
+  // NOTE: we don't try/catch around emailHelper so admins will know to manually email users
+  //
+
+  //
+  // email domain admins if we suspended or removed suspension for SMTP
+  //
+  if (!hadSMTPSuspension && _.isDate(domain.smtp_suspended_sent_at)) {
+    const subject = i18n.translate(
+      'DOMAIN_IS_ADMIN_SUSPENDED',
+      obj.locale,
+      domain.name
+    );
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: obj.to,
+        bcc: config.email.message.from,
+        subject
+      },
+      locals: {
+        message: subject,
+        locale: obj.locale
+      }
+    });
+  } else if (hadSMTPSuspension && !_.isDate(domain.smtp_suspended_sent_at)) {
+    const subject = i18n.translate(
+      'DOMAIN_SUSPENSION_REMOVED',
+      obj.locale,
+      domain.name
+    );
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: obj.to,
+        bcc: config.email.message.from,
+        subject
+      },
+      locals: {
+        message: subject,
+        locale: obj.locale
+      }
+    });
+  }
+
+  //
+  // email domain admins if we enabled or disabled their SMTP access
+  //
+  if (!hadSMTPAccess && domain.has_smtp) {
+    const subject = i18n.translate(
+      'EMAIL_SMTP_ACCESS_ENABLED_SUBJECT',
+      obj.locale,
+      domain.name
+    );
+    const message = i18n.translate(
+      'EMAIL_SMTP_ACCESS_ENABLED_MESSAGE',
+      obj.locale,
+      domain.name,
+      `${config.urls.web}/${obj.locale}/my-account/domains/${domain.name}/verify-smtp`
+    );
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: obj.to,
+        bcc: config.email.message.from,
+        subject
+      },
+      locals: {
+        message,
+        locale: obj.locale
+      }
+    });
+  } else if (hadSMTPAccess && !domain.has_smtp) {
+    const subject = i18n.translate(
+      'EMAIL_SMTP_ACCESS_DISABLED',
+      obj.locale,
+      domain.name
+    );
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: obj.to,
+        bcc: config.email.message.from,
+        subject
+      },
+      locals: {
+        message: subject,
+        locale: obj.locale
+      }
+    });
+  }
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),

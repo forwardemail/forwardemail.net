@@ -42,7 +42,6 @@ if breadcrumbs.length > 1
                   i.fa.fa-fw.fa-stream
                   = " "
                   = t("Logs")
-            if domain.group === 'admin'
               li.list-inline-item.mb-1
                 a.btn.btn-sm.btn-outline-dark(
                   href=l(`/my-account/domains/${domain.name}/advanced-settings`)
@@ -50,7 +49,6 @@ if breadcrumbs.length > 1
                   i.fa.fa-fw.fa-tools
                   = " "
                   = t("Settings")
-            if domain.group === 'admin'
               li.list-inline-item.mb-1
                 .btn-group.btn-group-sm
                   button.btn.btn-sm.btn-outline-dark.dropdown-toggle(

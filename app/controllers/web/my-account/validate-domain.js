@@ -4,9 +4,9 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const splitLines = require('split-lines');
 const { boolean } = require('boolean');
-const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const { isEmail, isIP } = require('validator');
 
+const parseRootDomain = require('#helpers/parse-root-domain');
 const config = require('#config');
 
 // eslint-disable-next-line complexity
@@ -47,16 +47,7 @@ async function validateDomain(ctx, next) {
   //
   // check if domain is on the allowlist or denylist
   //
-  const parseResult = parseDomain(fromUrl(ctx.request.body.domain));
-  const rootDomain = (
-    parseResult.type === ParseResultType.Listed &&
-    _.isObject(parseResult.icann) &&
-    isSANB(parseResult.icann.domain)
-      ? `${parseResult.icann.domain}.${parseResult.icann.topLevelDomains.join(
-          '.'
-        )}`
-      : ctx.request.body.domain
-  ).toLowerCase();
+  const rootDomain = parseRootDomain(ctx.request.body.domain);
 
   let isAllowlist = false;
   let isDenylist = false;

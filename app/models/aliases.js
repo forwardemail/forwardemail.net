@@ -1,13 +1,20 @@
+const crypto = require('node:crypto');
+const { Buffer } = require('node:buffer');
+const { promisify } = require('node:util');
+
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
 const captainHook = require('captain-hook');
+const cryptoRandomString = require('crypto-random-string');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
+const scmp = require('scmp');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
@@ -23,6 +30,26 @@ const Users = require('./users');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 
+const NO_REPLY_USERNAMES = new Set(noReplyList);
+
+const randomBytes = promisify(crypto.randomBytes);
+
+function pbkdf2(options) {
+  return new Promise((resolve, reject) => {
+    crypto.pbkdf2(
+      options.password,
+      options.salt,
+      options.iterations,
+      options.keylen,
+      options.digestAlgorithm,
+      (err, buffer) => {
+        if (err) return reject(err);
+        resolve(buffer);
+      }
+    );
+  });
+}
+
 // <https://1loc.dev/string/check-if-a-string-consists-of-a-repeated-character-sequence/>
 const consistsRepeatedSubstring = (str) =>
   `${str}${str}`.indexOf(str, 1) !== str.length;
@@ -32,6 +59,29 @@ const quotedEmailUserUtf8 = new RE2(
   // eslint-disable-next-line no-control-regex
   /^([\s\u0001-\u0008\u000E-\u001F!\u0023-\u005B\u005D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i
 );
+
+const Token = new mongoose.Schema({
+  description: {
+    type: String,
+    select: false
+  },
+  salt: {
+    type: String,
+    select: false
+  },
+  hash: {
+    type: String,
+    select: false
+  }
+});
+
+Token.plugin(mongooseCommonPlugin, {
+  object: 'token',
+  omitCommonFields: false,
+  omitExtraFields: ['_id', '__v', 'description', 'salt', 'hash'],
+  uniqueId: false,
+  locale: false
+});
 
 const Aliases = new mongoose.Schema({
   is_api: {
@@ -114,7 +164,8 @@ const Aliases = new mongoose.Schema({
           'Recipient must be a valid email address, fully-qualified domain name ("FQDN"), IP address, or webhook URL'
       }
     }
-  ]
+  ],
+  tokens: [Token]
 });
 
 Aliases.plugin(captainHook);
@@ -215,7 +266,7 @@ Aliases.pre('validate', function (next) {
 // it populates "id" String automatically for comparisons
 Aliases.plugin(mongooseCommonPlugin, {
   object: 'alias',
-  omitExtraFields: ['is_api'],
+  omitExtraFields: ['is_api', 'tokens'],
   defaultLocale: i18n.getLocale()
 });
 
@@ -309,6 +360,17 @@ Aliases.pre('save', async function (next) {
     if (!member)
       throw Boom.notFound(i18n.translateError('INVALID_MEMBER', alias.locale));
 
+    const string = alias.name.replace(/[^\da-z]/g, '');
+
+    // prevent users from registering no-reply usernames
+    if (NO_REPLY_USERNAMES.has(string)) {
+      const err = Boom.badRequest(
+        i18n.translateError('NO_REPLY_USERNAME_DISALLOWED', alias.locale)
+      );
+      err.is_reserved_word = true;
+      throw err;
+    }
+
     if (member.group !== 'admin') {
       // alias name cannot be a wildcard "*" if the user is not an admin
       if (alias.name === '*')
@@ -329,7 +391,6 @@ Aliases.pre('save', async function (next) {
       // (e.g. they could use `"admin@"@example.com` without the `.replace`)
       // <https://github.com/forwardemail/reserved-email-addresses-list>
       //
-      const string = alias.name.replace(/[^\da-z]/g, '');
 
       let reservedMatch = reservedEmailAddressesList.find(
         (addr) => addr === string
@@ -350,7 +411,6 @@ Aliases.pre('save', async function (next) {
           )
         );
         err.is_reserved_word = true;
-
         throw err;
       }
 
@@ -433,6 +493,82 @@ Aliases.pre('save', async function (next) {
     next(err);
   }
 });
+
+Aliases.statics.isValidPassword = async function (tokens = [], password) {
+  if (
+    typeof tokens !== 'object' ||
+    !Array.isArray(tokens) ||
+    tokens.length === 0 ||
+    !password ||
+    typeof password !== 'string'
+  )
+    return false;
+
+  let match = false;
+  for (const token of tokens) {
+    if (
+      typeof token !== 'object' ||
+      !token.salt ||
+      !token.hash ||
+      typeof token.salt !== 'string' ||
+      typeof token.hash !== 'string'
+    )
+      continue;
+
+    // eslint-disable-next-line no-await-in-loop
+    const rawHash = await pbkdf2({
+      password,
+      salt: token.salt,
+      iterations: config.passportLocalMongoose.iterations,
+      keylen: config.passportLocalMongoose.keylen,
+      digestAlgorithm: config.passportLocalMongoose.digestAlgorithm
+    });
+
+    if (
+      scmp(
+        rawHash,
+        Buffer.from(token.hash, config.passportLocalMongoose.encoding)
+      )
+    ) {
+      match = true;
+      break;
+    }
+  }
+
+  return match;
+};
+
+Aliases.methods.createToken = async function (description = '') {
+  if (this.name === '*')
+    throw Boom.badRequest(
+      i18n.translateError('CANNOT_CREATE_TOKEN_FOR_CATCHALL', this.locale)
+    );
+  if (this.name.startsWith('/'))
+    throw Boom.badRequest(
+      i18n.translateError('CANNOT_CREATE_TOKEN_FOR_REGEX', this.locale)
+    );
+  const password = await cryptoRandomString.async({
+    length: 24
+  });
+  const buffer = await randomBytes(config.passportLocalMongoose.saltlen);
+  const salt = buffer.toString(config.passportLocalMongoose.encoding);
+  const rawHash = await pbkdf2({
+    password,
+    salt,
+    iterations: config.passportLocalMongoose.iterations,
+    keylen: config.passportLocalMongoose.keylen,
+    digestAlgorithm: config.passportLocalMongoose.digestAlgorithm
+  });
+  const hash = Buffer.from(rawHash, 'binary').toString(
+    config.passportLocalMongoose.encoding
+  );
+  this.tokens.push({
+    description,
+    salt,
+    hash
+  });
+  return password;
+};
 
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'

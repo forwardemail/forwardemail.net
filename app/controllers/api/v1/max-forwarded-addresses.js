@@ -49,7 +49,8 @@ async function maxForwardedAddresses(ctx) {
           );
 
         const domain = await Domains.findOne({
-          verification_record: { $in: verifications },
+          name: ctx.query.domain,
+          verification_record: verifications[0],
           plan: { $ne: 'free' },
           max_recipients_per_alias: { $gt: maxForwardedAddresses }
         })

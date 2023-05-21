@@ -177,6 +177,23 @@ router
     web.myAccount.updateDomain
   )
   .get(
+    '/domains/:domain_id/verify-smtp',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.ensureSMTPAccess,
+    render('my-account/domains/verify-smtp')
+  )
+  .post(
+    '/domains/:domain_id/verify-smtp',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.ensureSMTPAccess,
+    rateLimit(200, 'verify smtp'),
+    web.myAccount.verifySMTP
+  )
+  .get(
     '/domains/:domain_id/aliases',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureUpgradedPlan,
@@ -253,6 +270,15 @@ router
     rateLimit(20, 'resend verification'),
     web.myAccount.resendVerification
   )
+  .post(
+    '/domains/:domain_id/aliases/:alias_id/generate-password',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.retrieveAlias,
+    web.myAccount.ensureAliasAdmin,
+    rateLimit(20, 'generate alias password'),
+    web.myAccount.generateAliasPassword
+  )
   .get(
     '/domains/:domain_id/billing',
     web.myAccount.retrieveDomain,
@@ -273,6 +299,24 @@ router
     web.myAccount.ensureDomainAdmin,
     rateLimit(200, 'verify records'),
     web.myAccount.verifyRecords
+  )
+  .get(
+    '/emails',
+    paginate.middleware(10, 50),
+    rateLimit(100, 'list emails'),
+    web.myAccount.listEmails
+  )
+  .get(
+    '/emails/:id',
+    rateLimit(100, 'retrieve emails'),
+    web.myAccount.retrieveEmail,
+    render('my-account/emails/retrieve')
+  )
+  .delete(
+    '/emails/:id',
+    rateLimit(100, 'remove emails'),
+    web.myAccount.retrieveEmail,
+    web.myAccount.removeEmail
   )
   .get(
     '/logs',

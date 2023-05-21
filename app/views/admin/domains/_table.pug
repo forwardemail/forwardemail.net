@@ -17,6 +17,10 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('has_txt_record', 'TXT', '#table-domains')
         th(scope="col")
+          +sortHeader('has_smtp', 'SMTP Enabled', '#table-domains')
+        th(scope="col")
+          +sortHeader('smtp_suspended_sent_at', 'SMTP Suspended', '#table-domains')
+        th(scope="col")
           +sortHeader('max_recipients_per_alias', 'Max Recipients', '#table-domains')
         th(scope="col")
           +sortHeader('created_at', 'Created', '#table-domains')
@@ -36,7 +40,7 @@ include ../../_pagination
                   i.fa.fa-fw.fa-check.fa-2x.text-success
               td.align-middle
                 ul.list-inline
-                  each member in domain.members
+                  each member in domain.members.filter(member => member && member.user && member.user.id && member.user.email)
                     li.list-inline-item
                       a.small.text-monospace(
                         href=l(`/admin/users?mongodb_query={ email: "${member.user.email}" }`),
@@ -58,6 +62,53 @@ include ../../_pagination
                   i.fa.fa-fw.fa-check.fa-2x.text-success
                 else
                   i.fa.fa-fw.fa-times.fa-2x.text-danger
+              td.align-middle.text-center
+                form.ajax-form.confirm-prompt.d-inline-block(
+                  action=l(`/admin/domains/${domain.id}`),
+                  method="POST",
+                  autocomplete="off"
+                )
+                  input(type="hidden", name="_method", value="PUT")
+                  input(
+                    type="hidden",
+                    name="has_smtp",
+                    value=(!domain.has_smtp).toString()
+                  )
+                  button.btn.btn-sm(
+                    type="submit",
+                    class=domain.has_smtp ? "btn-danger" : "btn-success"
+                  )
+                    if domain.has_smtp
+                      = "Disable SMTP"
+                    else
+                      = "Enable SMTP"
+              td.align-middle.text-center
+                form.ajax-form.confirm-prompt.d-inline-block(
+                  action=l(`/admin/domains/${domain.id}`),
+                  method="POST",
+                  autocomplete="off"
+                )
+                  input(type="hidden", name="_method", value="PUT")
+                  input(
+                    type="hidden",
+                    name="smtp_suspended_sent_at",
+                    value=_.isDate(domain.smtp_suspended_sent_at) ? "false" : "true"
+                  )
+                  if _.isDate(domain.smtp_suspended_sent_at)
+                    strong= t("Suspended")
+                    = ": "
+                    span.dayjs(
+                      data-time=new Date(domain.smtp_suspended_sent_at).getTime()
+                    )
+                      = dayjs(domain.smtp_suspended_sent_at).format("M/D/YY h:mm A z")
+                  button.btn.btn-sm(
+                    type="submit",
+                    class=_.isDate(domain.smtp_suspended_sent_at) ? "btn-warning" : "btn-danger"
+                  )
+                    if _.isDate(domain.smtp_suspended_sent_at)
+                      = t("Remove suspension")
+                    else
+                      = t("Restrict access")
               td.align-middle.text-center
                 form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/admin/domains/${domain.id}`),

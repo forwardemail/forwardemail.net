@@ -5,6 +5,9 @@
 
 * [How fast is this service](#how-fast-is-this-service)
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
+* [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
+* [Do you support sending email with API](#do-you-support-sending-email-with-api)
+* [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
 * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
@@ -659,24 +662,6 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </span>
 </div>
 
-<!--
-<div class="alert my-3 alert-secondary">
-  <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong class="font-weight-bold">
-    Optional Add-on:
-  </strong>
-  <span>
-    Add a DMARC record for your domain name by following the instructions at <a rel="noopener noreferrer" class="alert-link" href="https://dmarc.postmarkapp.com" target="_blank">https://dmarc.postmarkapp.com</a> (this will allow DMARC verification to pass and help to prevent people from forging emails as if they were from you).
-    If you intend to use <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a>, you can only set the DMARC policy to "p=none", for example:
-    <br /><br />
-    <code>v=DMARC1; p=none; pct=100; rua=mailto:re+random-key@dmarc.postmarkapp.com;</code>
-    <br /><br />
-    Setting other policies, "quarantine" or "reject", may cause sent mails to respectively end up in recipient's spam folder or not delivered at all.
-    DMARC requires both "From" and "Return-Path" to match the same domain. When you use "Send Mail As", your Gmail address would be used as the "Return-Path", instead of your custom domain in "From".
-  </span>
-</div>
--->
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
@@ -686,6 +671,41 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
   </span>
 </div>
+
+
+## Do you support sending email with SMTP
+
+Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+
+Please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Settings" next to your domain, and then follow the instructions for "Outbound SMTP Configuration".
+
+Our SMTP server is `smtp.forwardemail.net`, supports both IPv4 and IPv6, and available over ports `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) – and `465` and `2465` for SSL.
+
+In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be either an alias-specific or a domain-wide (coming soon) generated password.
+
+|                             Protocol                             | Hostname                |            Ports            |        IPv4        |        IPv6        |
+| :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: |
+|                               `SSL`                              | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: |
+
+| Login    | Example                    | Description                                                                                                                                                                               |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com`         | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific or domain-wide (coming soon) generated password.                                                                                                                           |
+
+
+## Do you support sending email with API
+
+Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+
+Please view our section on [Emails](/email-forwarding-api#emails) in our API documentation for options, examples, and more insight.
+
+In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+
+
+## Do you support receiving email with IMAP
+
+We plan to offer this feature in the near future.
 
 
 ## How to Send Mail As using Gmail
@@ -726,7 +746,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
        Important:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Advanced settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
      </span>
    </div>
 
@@ -829,34 +849,29 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
 6. If the message had a "To" header, and if any of the message's "To" headers were directed towards SRS rewritten addresses using our domain name, then we will rewrite them (this namely applies for vacation responders).
 
-7. If the message was missing a "Message-ID" header, then we will add one using either the envelope MAIL FROM parsed FQDN or our domain name.
+7. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
 
-8. If the message was missing a valid "Date" header, then we will add one using the arrival time from the initial connection of the message.
+8. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
 
-9. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+9. We will add the following headers to the message for debugging and abuse prevention purposes:
 
-10. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+   * `X-Original-To` - the original `RCPT TO` email address for the message.
+     * This is useful for determining where an email was originally delivered to.
+     * Will be released in v10+ of Forward Email.
+     * Existing value if any is preserved as `X-Original-Preserved-To`.
+   * `X-ForwardEmail-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
+   * `X-ForwardEmail-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
+   * `X-ForwardEmail-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
+   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
+   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
 
-11. We will add the following headers to the message for debugging and abuse prevention purposes:
+10. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-    * `X-Original-To` - the original `RCPT TO` email address for the message.
-      * This is useful for determining where an email was originally delivered to.
-      * Newly added in v10.0.0 of Forward Email.
-      * Existing value if any is preserved as `X-Original-Preserved-To`.
-    * `X-ForwardEmail-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-    * `X-ForwardEmail-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-    * `X-ForwardEmail-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-    * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-      * Existing value if any is preserved as `X-Original-Report-Abuse`.
-    * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-      * Existing value if any is preserved as `X-Original-Report-Abuse-To`.
-
-12. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
-
-    * If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://dmarc.postmarkapp.com/)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
+    * If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
     * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
 
-13. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+11. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
 
     * We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
     * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
@@ -868,24 +883,24 @@ This section describes our process related to the SMTP protocol command `DATA` i
     * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
     * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
 
-14. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+12. For each processed recipient's Forwarding Addresses, we then perform the following operations:
 
     * The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 554 error code will occur and the sender will receive a bounce for this recipient.
     * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
     * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
 
-15. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+13. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
 
-16. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
+14. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
 
     * If any errors occur while sending emails, then we will store them in-memory for later processing.
     * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
     * If no errors occurred, then we will send a 250 successful SMTP response status code.
     * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
 
-17. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+15. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
 
-18. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+16. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
 
 
 ## How do you handle email delivery issues
@@ -1342,11 +1357,11 @@ However if they do see this message, it's because they were normally used to see
 
 ## Can I remove the via forwardemail dot net in Gmail
 
-This is ONLY applicable if you are using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.  Currently there is no workaround for this, and it affects all service providers (not just us).  The workaround is to use a custom SMTP server.  However we do not offer SMTP yet.
+Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
 
-We plan to release our very own SMTP service (not just forwarding, but email in general), which would alleviate this.  Gmail automatically adds this and there is no current workaround.  Other email forwarding services with similar features to ours will still incur this same issue too (and other email forwarding solutions  simply do not offer the level of privacy we do).
+Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
 
-If you want to get notified when this is released, you can email <smtp@forwardemail.net> and we'll send you a notification once it's released.  Or just sign up for an account here if you haven't already!
+Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
 
 
 ## Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)

@@ -57,7 +57,7 @@ include ../../_pagination
                         = titleize(humanize(domain.plan))
             td.align-middle
               ul.list-inline.mb-0
-                li.list-inline-item
+                li.list-inline-item.d-block.d-sm-inline-block
                   if domain.plan === 'free'
                     if user.plan === 'free'
                       button.btn.btn-sm.btn-link.text-themed.btn-block(
@@ -87,9 +87,40 @@ include ../../_pagination
                       i.fa.fa-fw.fa-users
                       = " "
                       = t("Aliases")
-                //- TODO: once out of beta, fix this
-                //- if domain.group === 'admin'
-                li.list-inline-item
+                //- Emails
+                if !domain.is_global
+                  li.list-inline-item.d-block.d-sm-inline-block
+                    if domain.plan === 'free'
+                      if user.plan === 'free'
+                        button.btn.btn-sm.btn-link.text-themed.btn-block(
+                          type="button",
+                          data-target="#modal-upgrade-logs",
+                          data-toggle="modal"
+                        )
+                          i.fa.fa-fw.fa-envelope
+                          = " "
+                          = t("Emails")
+                      else
+                        form.confirm-prompt(
+                          action=l(`/my-account/domains/${domain.name}/billing`),
+                          data-confirm-prompt-title=t("Switch domain plan?"),
+                          data-confirm-prompt-html=t("To unlock outbound SMTP email for this domain, you need to switch its plan."),
+                          method="GET"
+                        )
+                          input(type="hidden", name="plan", value=user.plan)
+                          button.btn.btn-sm.btn-link.text-themed(type="submit")
+                            i.fa.fa-fw.fa-envelope
+                            = " "
+                            = t("Emails")
+                    else
+                      a.btn.btn-sm.btn-link.text-themed.btn-block(
+                        href=l(`/my-account/emails?domain=${domain.name}`)
+                      )
+                        i.fa.fa-fw.fa-envelope
+                        = " "
+                        = t("Emails")
+                //- Logs
+                li.list-inline-item.d-block.d-sm-inline-block
                   if domain.plan === 'free'
                     if user.plan === 'free'
                       button.btn.btn-sm.btn-link.text-themed.btn-block(
@@ -119,55 +150,55 @@ include ../../_pagination
                       i.fa.fa-fw.fa-stream
                       = " "
                       = t("Logs")
-                  if domain.group === 'admin'
-                    li.list-inline-item
-                      a.btn.btn-sm.btn-block.btn-link(
-                        class=domain.has_mx_record && domain.has_txt_record ? "text-themed" : "text-danger font-weight-bold",
-                        href=l(`/my-account/domains/${domain.name}`)
+                if domain.group === 'admin'
+                  li.list-inline-item.d-block.d-sm-inline-block
+                    a.btn.btn-sm.btn-block.btn-link(
+                      class=domain.has_mx_record && domain.has_txt_record ? "text-themed" : "text-danger font-weight-bold",
+                      href=l(`/my-account/domains/${domain.name}`)
+                    )
+                      i.fa.fa-fw.fa-cog
+                      = " "
+                      = t("Setup")
+                  li.list-inline-item.d-block.d-sm-inline-block
+                    a.btn.btn-sm.btn-link.text-themed.btn-block(
+                      href=l(`/my-account/domains/${domain.name}/advanced-settings`)
+                    )
+                      i.fa.fa-fw.fa-tools
+                      = " "
+                      = t("Settings")
+                  li.list-inline-item.d-block.d-sm-inline-block
+                    .btn-group.btn-block.btn-group-sm
+                      button.btn.btn-sm.btn-link.btn-block.dropdown-toggle(
+                        class=user.plan !== "free" && domain.plan !== user.plan ? "text-warning font-weight-bold" : "text-themed",
+                        type="button",
+                        data-toggle="dropdown",
+                        data-boundary="window",
+                        aria-haspopup="true",
+                        aria-expanded="false"
                       )
-                        i.fa.fa-fw.fa-cog
-                        = " "
-                        = t("Setup")
-                    li.list-inline-item
-                      a.btn.btn-sm.btn-link.text-themed.btn-block(
-                        href=l(`/my-account/domains/${domain.name}/advanced-settings`)
-                      )
-                        i.fa.fa-fw.fa-tools
-                        = " "
-                        = t("Settings")
-                    li.list-inline-item
-                      .btn-group.btn-block.btn-group-sm
-                        button.btn.btn-sm.btn-link.btn-block.dropdown-toggle(
-                          class=user.plan !== "free" && domain.plan !== user.plan ? "text-warning font-weight-bold" : "text-themed",
-                          type="button",
-                          data-toggle="dropdown",
-                          data-boundary="window",
-                          aria-haspopup="true",
-                          aria-expanded="false"
-                        )
-                          = t("Change Plan")
-                        .dropdown-menu
-                          h6.dropdown-header.text-uppercase= t("Change plan to:")
-                          each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
-                            a.dropdown-item(
-                              href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)
-                            )
-                              case plan
-                                when 'enhanced_protection'
-                                  i.fa.fa-fw.fa-shield
-                                  = " "
-                                  = t("Enhanced Protection")
-                                when 'team'
-                                  i.fa.fa-fw.fa-users
-                                  = " "
-                                  = t("Team")
-                                default
-                                  = t("Free")
-                                  = " ("
-                                  = t("DNS-based")
-                                  = ")"
-                          .dropdown-divider
-                          a.dropdown-item.small.text-muted(
-                            href=l(`/private-business-email?domain=${domain.name}`)
-                          )= t("See all plan features")
+                        = t("Change Plan")
+                      .dropdown-menu
+                        h6.dropdown-header.text-uppercase= t("Change plan to:")
+                        each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
+                          a.dropdown-item(
+                            href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)
+                          )
+                            case plan
+                              when 'enhanced_protection'
+                                i.fa.fa-fw.fa-shield
+                                = " "
+                                = t("Enhanced Protection")
+                              when 'team'
+                                i.fa.fa-fw.fa-users
+                                = " "
+                                = t("Team")
+                              default
+                                = t("Free")
+                                = " ("
+                                = t("DNS-based")
+                                = ")"
+                        .dropdown-divider
+                        a.dropdown-item.small.text-muted(
+                          href=l(`/private-business-email?domain=${domain.name}`)
+                        )= t("See all plan features")
 +paginate('#table-domains')

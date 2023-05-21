@@ -64,10 +64,12 @@ async function api(ctx) {
   let html = pug
     .renderFile(filePath, ctx.state)
     .replace(new RE2(/BASE_URI/g), config.urls.api)
+    .replace(new RE2(/AMP4EMAIL/g), 'amp4email')
     .replace(
       new RE2(/EMAIL/g),
       encodeURIComponent(ctx.state.email || 'user@gmail.com')
     )
+    .replace(new RE2(/amp4email/g), 'AMP4EMAIL')
     .replace(new RE2(/DOMAIN_NAME/g), ctx.state.domain_name || 'example.com')
     .replace(new RE2(/ALIAS_ID/g), ':alias_id')
     .replace(new RE2(/MEMBER_ID/g), ':member_id');

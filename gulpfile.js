@@ -176,7 +176,6 @@ const purgeCssOptions = {
     'octicon-link',
     'offset-lg-3',
     'offset-md-2',
-    'opacity-50',
     'p-0',
     'p-2',
     'py-3',

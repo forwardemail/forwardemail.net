@@ -247,7 +247,7 @@ function fixTableOfContents(content, i18n, options) {
     return `<div class="markdown-body">${root.toString()}</div>`;
 
   return `
-    <div class="fixed-bottom bg-dark border-top border-themed p-2 text-center is-bot no-js">
+    <div class="fixed-bottom bg-dark border-top border-themed p-2 text-center is-bot no-js d-print-none">
       <ul class="list-inline mb-0">
         <li class="list-inline-item text-white">
           ${search}

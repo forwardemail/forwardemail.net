@@ -11,7 +11,7 @@ block append scripts
 
 block body
   if !domain.has_mx_record || !domain.has_txt_record
-    .fixed-bottom.text-center
+    .fixed-bottom.text-center.d-print-none
       .bg-dark.p-2.border-top.border-themed
         ul.list-inline.mb-0
           li.list-inline-item
@@ -133,7 +133,7 @@ block body
                   = " "
                   i.fa.fa-angle-double-right.align-middle
     .container.text-center.mb-3
-      .row(class=domain.has_mx_record && domain.has_txt_record ? "opacity-50" : "")
+      .row
         .col-12
           - const provider = nsProviderLookup(domain);
           .card.position-relative
@@ -223,7 +223,34 @@ block body
                   = t("Not Completed")
             h1#setup-step-2.h5.card-header.text-left.text-md-center= t("Step 2")
             .card-body
-              .small.text-center.mb-3
+              if hasExistingMX || (hasExistingTXT && domain.plan !== 'free')
+                - let sum = 0;
+                if hasExistingMX
+                  - sum += existingMX.length;
+                if hasExistingTXT && domain.plan !== 'free'
+                  - sum += existingTXT.length;
+                .alert.alert-danger.d-inline-block.small!= t('You <strong>must delete</strong> these <span class="notranslate">%d</span> records <strong class="text-decoration-underline">before you continue</strong>:', sum)
+                br
+                table.table.table-hover.table-sm.d-inline
+                  thead
+                    tr
+                      th.border-0.align-middle Type
+                      th.border-0.align-middle.text-left Answer/Value
+                  tbody
+                    if hasExistingMX
+                      each record in existingMX
+                        tr
+                          td.align-middle: strong.px-2 MX
+                          td.align-middle.text-monospace.text-left.small= record.exchange
+                    if hasExistingTXT && domain.plan !== 'free'
+                      each record in existingTXT
+                        tr
+                          td.align-middle: strong.px-2 TXT
+                          td.align-middle.text-monospace.text-left.small= record
+                hr
+              .small.text-center.mb-3(
+                class=hasExistingMX || (hasExistingTXT && domain.plan !== "free") ? "alert alert-success" : ""
+              )
                 != t('Add these records to <strong class="notranslate">%s</strong>', domain.root_name || domain.name)
                 span.d-inline.d-md-none= ":"
                 if hasExistingMX || hasExistingTXT
@@ -238,100 +265,124 @@ block body
                       i.fa.fa-refresh
                       = " "
                       = t("Verify")
-                .d-block.d-md-none.my-3.text-muted.small
-                  = "("
-                  = t("Scroll to the right to see entire table")
-                  = ")"
+              .d-block.d-md-none.my-3.text-muted.small
+                = "("
+                = t("Scroll to the right to see entire table")
+                = ")"
               .table-responsive.mb-3
-                table.table.table-striped.table-bordered.table-hover.table-sm.mb-0
-                  thead.thead-dark
+                table.table.table-hover.table-sm.mb-0
+                  thead
                     tr
-                      th Name/Host/Alias
-                      th.text-center TTL
-                      th Type
-                      th Priority
-                      th.text-left Answer/Value
+                      th.border-0
+                      th.border-0.align-middle Name/Host/Alias
+                      th.border-0.align-middle Type
+                      th.border-0.align-middle Priority
+                      th.border-0.align-middle.text-left Answer/Value
                   tbody
-                    tr(class=domain.has_mx_record ? false : "table-success")
-                      td.small
+                    tr
+                      td(class=domain.has_mx_record ? "bg-success" : "bg-danger")
+                      td.align-middle.small
                         if !domain.root_name || domain.root_name === domain.name
                           if provider && typeof provider.host === 'string'
-                            = provider.host
+                            if provider.host === ''
+                              i.text-muted.user-select-none= t("None")
+                            else
+                              = provider.host
                           else
                             | "@", ".", or leave empty/blank if allowed.
                         else
                           code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                      td.text-center: code.text-themed 3600
-                      td MX
-                      td: code.text-themed 10
-                      td.text-left: code.text-themed.text-nowrap mx1.forwardemail.net
-                    tr(class=domain.has_mx_record ? false : "table-success")
-                      td.small
+                      td.align-middle: strong.px-2 MX
+                      td.align-middle: code.text-themed 10
+                      td.align-middle.text-left.py-3
+                        code#copy-mx1.d-block.text-themed.text-nowrap mx1.forwardemail.net
+                        if !domain.has_mx_record
+                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                            type="button",
+                            data-toggle="clipboard",
+                            data-clipboard-target="#copy-mx1"
+                          )
+                            i.fa.fa-clipboard
+                            = " "
+                            = t("Copy")
+                    tr
+                      td(class=domain.has_mx_record ? "bg-success" : "bg-danger")
+                      td.align-middle.small
                         if !domain.root_name || domain.root_name === domain.name
                           if provider && typeof provider.host === 'string'
-                            = provider.host
+                            if provider.host === ''
+                              i.text-muted.user-select-none= t("None")
+                            else
+                              = provider.host
                           else
                             | "@", ".", or leave empty/blank if allowed.
                         else
                           code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                      td.text-center: code.text-themed 3600
-                      td MX
-                      td: code.text-themed 10
-                      td.text-left: code.text-themed.text-nowrap mx2.forwardemail.net
+                      td.align-middle: strong.px-2 MX
+                      td.align-middle: code.text-themed 10
+                      td.align-middle.text-left.py-3
+                        code#copy-mx2.d-block.text-themed.text-nowrap mx2.forwardemail.net
+                        if !domain.has_mx_record
+                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                            type="button",
+                            data-toggle="clipboard",
+                            data-clipboard-target="#copy-mx2"
+                          )
+                            i.fa.fa-clipboard
+                            = " "
+                            = t("Copy")
                     if domain.plan === 'free' && hasExistingTXT
                       each record in existingTXT
                         tr
-                          td.small
+                          td
+                          td.align-middle.small
                             if !domain.root_name || domain.root_name === domain.name
                               if provider && typeof provider.host === 'string'
-                                = provider.host
+                                if provider.host === ''
+                                  i.text-muted.user-select-none= t("None")
+                                else
+                                  = provider.host
                               else
                                 | "@", ".", or leave empty/blank if allowed.
                             else
                               code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                          td.text-center: code.text-themed 3600
-                          td TXT
-                          td
-                          td.text-left: code.text-themed.text-nowrap= record
+                          td.align-middle: strong.px-2 TXT
+                          td.align-middle
+                          td.align-middle.text-left.py-3: code.text-themed.text-nowrap= record
                     else
-                      tr(class=domain.has_txt_record ? false : "table-success")
-                        td.small
+                      tr
+                        td(class=domain.has_txt_record ? "bg-success" : "bg-danger")
+                        td.align-middle.small
                           if !domain.root_name || domain.root_name === domain.name
                             if provider && typeof provider.host === 'string'
-                              = provider.host
+                              if provider.host === ''
+                                i.text-muted.user-select-none= t("None")
+                              else
+                                = provider.host
                             else
                               | "@", ".", or leave empty/blank if allowed.
                           else
                             code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                        td.text-center: code.text-themed 3600
-                        td TXT
-                        td
-                        td.text-left
-                          code.text-themed.text-nowrap
+                        td.align-middle: strong.px-2 TXT
+                        td.align-middle
+                        td.align-middle.text-left.py-3
+                          code#copy-txt.d-block.text-themed.text-nowrap
                             if domain.plan === 'free'
                               = `${config.recordPrefix}=${user.email}`
                             else
                               = `${config.recordPrefix}-site-verification=${domain.verification_record}`
-                  if hasExistingMX || (hasExistingTXT && domain.plan !== 'free')
-                    tr.table-danger.small.text-left.text-md-center
-                      th(colspan=5, scope="row")!= t("You must delete these records:")
-                  if hasExistingMX
-                    each record in existingMX
-                      tr.table-danger
-                        td(colspan=2)
-                        td MX
-                        td.text-monospace.small= record.priority
-                        td.text-monospace.text-left.small= record.exchange
-                  if hasExistingTXT && domain.plan !== 'free'
-                    each record in existingTXT
-                      tr.table-danger
-                        td(colspan=2)
-                        td TXT
-                        td
-                          td.text-monospace.text-left.small= record
-
+                          if !domain.has_txt_record
+                            button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                              type="button",
+                              data-toggle="clipboard",
+                              data-clipboard-target="#copy-txt"
+                            )
+                              i.fa.fa-clipboard
+                              = " "
+                              = t("Copy")
+              .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (5 minutes) as possible.')
               if domain.plan === 'free'
-                .alert.alert-warning.small
+                .alert.alert-primary.small
                   = t("Need to configure more aliases on the free plan?")
                   br.d-block.d-md-none
                   = " "

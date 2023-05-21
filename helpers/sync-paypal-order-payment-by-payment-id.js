@@ -1,5 +1,6 @@
 const delay = require('delay');
 const ms = require('ms');
+const _ = require('lodash');
 
 const Payments = require('#models/payments');
 const logger = require('#helpers/logger');
@@ -7,6 +8,7 @@ const { paypalAgent } = require('#helpers/paypal');
 
 const FIVE_SECONDS = ms('5s');
 
+// eslint-disable-next-line complexity
 async function syncPayPalOrderPaymentByPaymentId(id) {
   const payment = await Payments.findById(id);
 
@@ -26,6 +28,19 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
     const response = await agent.get(
       `/v2/checkout/orders/${payment.paypal_order_id}`
     );
+
+    if (
+      !_.isArray(response.body.purchase_units) ||
+      _.isEmpty(response.body.purchase_units)
+    )
+      throw new Error('Capture does not exist');
+
+    if (
+      !_.isObject(response.body.purchase_units[0]) ||
+      !_.isArray(response.body.purchase_units[0].captures) ||
+      _.isEmpty(response.body.purchase_units[0].captures)
+    )
+      throw new Error('Capture does not exist');
 
     // find the initial transaction
     const [capture] = response.body.purchase_units[0].payments.captures;

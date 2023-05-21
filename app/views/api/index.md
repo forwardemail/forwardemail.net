@@ -13,6 +13,11 @@
   * [Create account](#create-account)
   * [Retrieve account](#retrieve-account)
   * [Update account](#update-account)
+* [Emails](#emails)
+  * [List emails](#list-emails)
+  * [Create email](#create-email)
+  * [Retrieve email](#retrieve-email)
+  * [Delete email](#delete-email)
 * [Domains](#domains)
   * [List domains](#list-domains)
   * [Create domain](#create-domain)
@@ -147,6 +152,112 @@ curl BASE_URI/v1/account \
 curl -X PUT BASE_URI/v1/account \
   -u API_TOKEN: \
   -d "email=EMAIL"
+```
+
+
+## Emails
+
+Please ensure that you have followed setup instructions for your domain.  These instructions can be found at [My Account → Domains → Settings → Outbound SMTP Configuration](/my-account/domains).  You need to ensure setup of DKIM, Return-Path, and DMARC for sending outbound SMTP with your domain.
+
+### List emails
+
+Note that this endpoint does not return an already created email's `message`, `headers`, `accepted`, nor `rejectedErrors` properties.
+
+To return those properties and their values, please use the [Retrieve email](#retrieve-email) endpoint with an email ID.
+
+> `GET /v1/emails`
+
+| Querystring Parameter | Required | Type                      | Description                      |
+| --------------------- | -------- | ------------------------- | -------------------------------- |
+| `q`                   | No       | String (RegExp supported) | Search for emails by metadata    |
+| `domain`              | No       | String (RegExp supported) | Search for emails by domain name |
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/emails \
+  -u API_TOKEN:
+```
+
+### Create email
+
+Our API for creating an email is inspired by and leverages Nodemailer's message option configuration.  Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.
+
+Note that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options.  We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.
+
+You should either pass the single option of `raw` with your raw full email including headers **or** pass individual body parameter options below.
+
+> `POST /v1/emails`
+
+| Body Parameter   | Required | Type             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `from`           | No       | String (Email)   | The email address of the sender (must exist as an alias of the domain).                                                                                                                                                                                                                                                                                                                                                                                          |
+| `to`             | No       | String or Array  | Comma separated list or an Array of recipients for the "To" header.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `cc`             | No       | String or Array  | Comma separated list or an Array of recipients for the "Cc" header.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `bcc`            | No       | String or Array  | Comma separated list or an Array of recipients for the "Bcc" header.                                                                                                                                                                                                                                                                                                                                                                                             |
+| `subject`        | No       | String           | The subject of the email.                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `text`           | No       | String or Buffer | The plaintext version of the message.                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `html`           | No       | String or Buffer | The HTML version of the message.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `attachments`    | No       | Array            | An array of attachment objects (see [Nodemailer's common fields](https://nodemailer.com/message/#common-fields)).                                                                                                                                                                                                                                                                                                                                                |
+| `sender`         | No       | String           | The email address for the "Sender" header (see [Nodemailer's more advanced fields](https://nodemailer.com/message/#more-advanced-fields)).                                                                                                                                                                                                                                                                                                                       |
+| `replyTo`        | No       | String           | The email address for the "Reply-To" header.                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `inReplyTo`      | No       | String           | The Message-Id the message is in reply to.                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `references`     | No       | String or Array  | Space separated list or an Array of Message-Id's.                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `attachDataUrls` | No       | Boolean          | If `true` then converts `data:` images in the HTML content of the message to embedded attachments.                                                                                                                                                                                                                                                                                                                                                               |
+| `watchHtml`      | No       | String           | An Apple Watch specific HTML version of the message ([according to the Nodemailer docs](https://nodemailer.com/message/#content-options]), the latest watches do not require this to be set).                                                                                                                                                                                                                                                                    |
+| `amp`            | No       | String           | An AMP4EMAIL specific HTML version of the message (see [Nodemailer's example](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                     |
+| `icalEvent`      | No       | Object           | An iCalendar event to use as an alternative message content (see [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                               |
+| `alternatives`   | No       | Array            | An Array of alternative message content (see [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                  |
+| `encoding`       | No       | String           | Encoding for the text and HTML strings (defaults to `"utf-8"`, but supports `"hex"` and `"base64"` encoding values as well).                                                                                                                                                                                                                                                                                                                                     |
+| `raw`            | No       | String or Buffer | A custom generated RFC822 formatted message to use (instead of one that is generated by Nodemailer – see [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)).                                                                                                                                                                                                                                                                           |
+| `textEncoding`   | No       | String           | Encoding that is forced to be used for text values (either `"quoted-printable"` or `"base64"`).  The default value is the closest value detected (for ASCII use `"quoted-printable"`).                                                                                                                                                                                                                                                                           |
+| `priority`       | No       | String           | Priority level for the email (can either be `"high"`, `"normal"` (default), or `"low"`).  Note that a value of `"normal"` does not set a priority header (this is the default behavior).  If a value of `"high"` or `"low"` is set, then the `X-Priority`, `X-MSMail-Priority`, and `Importance` headers [will be set accordingly](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
+| `headers`        | No       | Object or Array  | An Object or an Array of additional header fields to set (see [Nodemailer's custom headers](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                                    |
+| `messageId`      | No       | String           | An optional Message-Id value for the "Message-Id" header (a default value will be automatically created if not set – note that the value should [adhere to the RFC2822 specification](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                     |
+| `date`           | No       | String or Date   | An optional Date value that will be used if the Date header is missing after parsing, otherwise the current UTC string will be used if not set.  The date header cannot be more than 30 days in advance of the current time.                                                                                                                                                                                                                                     |
+| `list`           | No       | Object           | An optional Object of `List-*` headers (see [Nodemailer's list headers](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                          |
+
+> Example Request:
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u API_TOKEN: \
+  -d "from=alias@DOMAIN_NAME" \
+  -d "to=EMAIL" \
+  -d "subject=test" \
+  -d "text=test"
+```
+
+> Example Request:
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u API_TOKEN: \
+  -d "raw=`cat file.eml`"
+```
+
+### Retrieve email
+
+> `GET /v1/emails/:id`
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/emails/:id \
+  -u API_TOKEN:
+```
+
+### Delete email
+
+Email deletion will set the status to `"rejected"` (and subsequently not process it in the queue) if and only if the current status is one of `"pending"`, `"queued"`, or `"deferred"`.  We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application.  You can reference our email ID value in your database if desired – this value is returned from both [Create email](#create-email) and [Retrieve email](#retrieve-email) endpoints.
+
+> `DELETE /v1/emails/:id`
+
+> Example Request:
+
+```sh
+curl -X DELETE BASE_URI/v1/emails/:id \
+  -u API_TOKEN:
 ```
 
 

@@ -23,5 +23,6 @@ module.exports = {
       app.context.client,
       app.context.logger
     );
-  }
+  },
+  bodyParserIgnoredPathGlobs: ['/v1/log', '/v1/emails']
 };

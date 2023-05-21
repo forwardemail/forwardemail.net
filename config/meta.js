@@ -22,7 +22,7 @@ module.exports = function (config) {
   // otherwise we'd have `| Lad` below, which is SEO standard
   // so instead we need to use `&#124;` which is the html entity
   // which gets decoded to a `|` in the helper.meta function
-  const lad = `&#124; <span class="notranslate">${config.appName}</span>`;
+  const lad = config.metaTitleAffix;
   const meta = {
     // note that we don't do `Home ${lad}` because if we forget to define
     // meta for a specific route it'd be confusing to see Home
@@ -103,6 +103,27 @@ module.exports = function (config) {
     '/my-account': [
       `My Account ${lad}`,
       `Manage your ${config.appName} account, domains, and email forwarding aliases.`
+    ],
+    '/my-account/domains': [
+      `Domains ${lad}`,
+      `Manage your ${config.appName} domains.`
+    ],
+    '/my-account/emails': [
+      `Emails ${lad}`,
+      `Manage your ${config.appName} emails.`
+    ],
+    '/my-account/logs': [`Logs ${lad}`, `Manage your ${config.appName} logs.`],
+    '/my-account/profile': [
+      `Profile ${lad}`,
+      `Manage your ${config.appName} profile.`
+    ],
+    '/my-account/billing': [
+      `Billing ${lad}`,
+      `Manage your ${config.appName} billing.`
+    ],
+    '/my-account/security': [
+      `Security ${lad}`,
+      `Manage your ${config.appName} security.`
     ],
     '/admin': [`Admin ${lad}`, `Access your ${config.appName} admin.`],
     '/forgot-password': [

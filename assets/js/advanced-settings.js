@@ -52,8 +52,6 @@ const cm = CodeMirror.fromTextArea($editor.get(0), {
 
 function change() {
   const val = cm.getValue();
-  console.log('val', val);
-  console.log('$preview', $preview);
   $preview.contents().find('html').html(val);
 }
 

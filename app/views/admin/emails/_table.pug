@@ -1,0 +1,102 @@
+include ../../_sort-header
+include ../../_pagination
+
+//- TODO: requeue button for admin and user
+
+table.table.table-hover.table-bordered.table-sm
+  thead.thead-dark
+    tr
+      th(scope="col")
+        +sortHeader('id', 'ID', '#table-emails')
+      th(scope="col")
+        +sortHeader('created_at', 'Created', '#table-emails')
+      th.align-middle.text-center(scope="col")
+        +sortHeader('status', 'Status', '#table-emails')
+      th.align-middle.text-center(scope="col")= "MAIL FROM"
+      th.align-middle.text-center(scope="col")= "RCPT TO"
+      th.align-middle.text-center(scope="col")
+        +sortHeader('subject', 'Subject', '#table-emails')
+      th.text-center.align-middle(scope="col")= t("Actions")
+    tbody
+      if emails.length === 0
+        tr
+          td.alert.alert-info(colspan="7")
+            = t("No emails exist for that search.")
+      else
+        each email in emails
+          tr
+            td.align-middle
+              .markdown-body.ml-0.mr-0: code= email.id
+            td.align-middle.text-center.dayjs(
+              data-time=new Date(email.created_at).getTime()
+            )
+              = dayjs(email.created_at).format("M/D/YY h:mm A z")
+            td.align-middle.text-center
+              //- pending (secondary)
+              //- queued (dark)
+              //- sent (success)
+              //- partially_sent (warning)
+              //- deferred (warning)
+              //- bounced (danger)
+              //- rejected (danger)
+              - let className = "badge-secondary";
+              case email.status
+                when 'pending'
+                  - className = "badge-secondary";
+                when 'queued'
+                  - className = "badge-dark";
+                when 'sent'
+                  - className = "badge-success";
+                when 'partially_sent'
+                  - className = "badge-primary";
+                when 'deferred'
+                  - className = "badge-warning";
+                when 'bounced'
+                  - className = "badge-danger";
+                when 'rejected'
+                  - className = "badge-danger";
+              span.badge.text-uppercase(class=className)= titleize(humanize(email.status))
+            td.align-middle.small: code= email.envelope.from
+            td.align-middle
+              ul.list-inline.d-inline-block.mb-0
+                each rcpt in email.envelope.to
+                  li.list-inline-item
+                    small: code= rcpt
+            td.align-middle.small: code= email.subject
+            td.align-middle.text-center
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  a.btn.btn-dark.btn-sm(
+                    href=l(`/admin/emails/${email.id}`),
+                    target="_blank",
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    title=t("View Details")
+                  ): i.fa.fa-fw.fa-search
+                li.list-inline-item
+                  a.btn.btn-primary.btn-sm(
+                    href=l(`/admin/emails/${email.id}.eml`),
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    title=t("Download")
+                  ): i.fa.fa-fw.fa-file-download
+                //- Only allow remove if
+                //- - pending
+                //- - queued
+                //- - deferred
+                if ['pending','queued','deferred'].includes(email.status)
+                  li.list-inline-item
+                    form.ajax-form.confirm-prompt(
+                      action=l(`/admin/emails/${email.id}`),
+                      method="POST",
+                      autocomplete="off"
+                    )
+                      input(type="hidden", name="_method", value="DELETE")
+                      button.btn.btn-danger.btn-sm(
+                        type="submit",
+                        data-toggle="tooltip",
+                        data-title=t("Remove"),
+                        data-placement="bottom"
+                      ): i.fa.fa-fw.fa-remove
+
++paginate('#table-emails')

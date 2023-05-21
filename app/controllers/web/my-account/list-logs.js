@@ -50,7 +50,6 @@ async function listLogs(ctx) {
           $eq: true,
           $exists: true
         },
-        'meta.err.responseCode': { $exists: true },
         domains: {
           $exists: true,
           $in: filteredDomains
@@ -95,21 +94,39 @@ async function listLogs(ctx) {
       nonAdminDomainsToAliases[domain.id].push(`${alias.name}@${domain.name}`);
 
       if (alias.name !== '*') {
-        query.$or.push({
-          is_restricted: {
-            $eq: true,
-            $exists: true
+        query.$or.push(
+          {
+            is_restricted: {
+              $eq: true,
+              $exists: true
+            },
+            domains: {
+              $exists: true,
+              $in: [domain._id]
+            },
+            'meta.session.envelope.rcptTo.address': {
+              $exists: true,
+              $in: [`${alias.name}@${domain.name}`]
+            }
           },
-          'meta.err.responseCode': { $exists: true },
-          domains: {
-            $exists: true,
-            $in: [domain._id]
-          },
-          'meta.session.envelope.rcptTo.address': {
-            $exists: true,
-            $in: [`${alias.name}@${domain.name}`]
+          {
+            is_restricted: {
+              $eq: true,
+              $exists: true
+            },
+            domains: {
+              $exists: true,
+              $in: [domain._id]
+            },
+            email: {
+              $exists: true
+            },
+            'meta.session.envelope.mailFrom.address': {
+              $exists: true,
+              $eq: `${alias.name}@${domain.name}`
+            }
           }
-        });
+        );
       }
 
       const $regex =
@@ -123,7 +140,6 @@ async function listLogs(ctx) {
           $eq: true,
           $exists: true
         },
-        'meta.err.responseCode': { $exists: true },
         domains: {
           $exists: true,
           $in: [domain._id]
@@ -155,6 +171,12 @@ async function listLogs(ctx) {
             { ...query },
             {
               $or: [
+                {
+                  'meta.session.headers.k': {
+                    $regex,
+                    $options: 'i'
+                  }
+                },
                 {
                   'meta.session.headers.v': {
                     $regex,

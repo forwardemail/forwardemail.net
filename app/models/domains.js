@@ -1,31 +1,37 @@
 const os = require('node:os');
+const crypto = require('node:crypto');
+const { promisify } = require('node:util');
 
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
 const captainHook = require('captain-hook');
 const cryptoRandomString = require('crypto-random-string');
+const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
+const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
 const pMap = require('p-map');
+const revHash = require('rev-hash');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
-const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const { isIP, isEmail, isPort, isURL } = require('validator');
 const { request, errors } = require('undici');
 
 const pkg = require('../../package.json');
 const Users = require('./users');
 
-const logger = require('#helpers/logger');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
+const logger = require('#helpers/logger');
 const verificationRecordOptions = require('#config/verification-record');
+const { encrypt } = require('#helpers/encrypt-decrypt');
+const parseRootDomain = require('#helpers/parse-root-domain');
 
 const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
@@ -183,8 +189,29 @@ const Domains = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+
+  //
+  // domains can be individually suspended by admins
+  // or automatically by SMTP outbound responses
+  // (e.g. automatic spam responses from Gmail/Apple)
+  // (note that this only currently affects outbound SMTP)
+  //
+  has_smtp: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  smtp_suspended_sent_at: {
+    type: Date,
+    index: true
+  },
+
+  // when the txt/mx was last checked at
   last_checked_at: Date,
+
+  // if the user was suspended for non-payment, the date of notice sent
   email_suspended_sent_at: Date,
+
   is_api: {
     type: Boolean,
     default: false
@@ -215,6 +242,17 @@ const Domains = new mongoose.Schema({
     trim: true,
     index: true
   },
+  dkim_key_selector: {
+    type: String,
+    default: () => `fe-${revHash(dayjs().format('YYYYMMDDHHmmss'))}`
+  },
+  dkim_private_key: String,
+  // rendered as base64 in front-end
+  dkim_public_key: mongoose.Schema.Types.Buffer,
+  return_path: {
+    type: String,
+    default: 'fe-bounces'
+  },
   has_mx_record: {
     type: Boolean,
     default: false,
@@ -236,6 +274,30 @@ const Domains = new mongoose.Schema({
     required: true,
     unique: true
   },
+
+  //
+  // outbound smtp related
+  //
+  has_dkim_record: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  missing_dkim_sent_at: Date,
+  has_return_path_record: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  missing_return_path_sent_at: Date,
+  has_dmarc_record: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  missing_dmarc_sent_at: Date,
+  smtp_checked_at: Date,
+
   restrictions_reminder_sent_at: Date,
   onboard_email_sent_at: Date,
   verified_email_sent_at: Date,
@@ -336,6 +398,33 @@ Domains.pre('remove', function (next) {
       )
     );
   next();
+});
+
+// set a default dkim key for the user
+Domains.pre('validate', async function (next) {
+  if (isSANB(this.dkim_private_key)) return next();
+  try {
+    const { privateKey, publicKey } = await promisify(crypto.generateKeyPair)(
+      'rsa',
+      {
+        modulusLength: 2048,
+        // default as of nodemailer v6.9.1
+        hashAlgorithm: 'RSA-SHA256',
+        publicKeyEncoding: {
+          type: 'spki',
+          format: 'der'
+        },
+        privateKeyEncoding: {
+          type: 'pkcs8',
+          format: 'pem'
+        }
+      }
+    );
+    this.dkim_private_key = encrypt(privateKey);
+    this.dkim_public_key = publicKey;
+  } catch (err) {
+    next(err);
+  }
 });
 
 Domains.pre('validate', async function (next) {
@@ -581,6 +670,11 @@ Domains.pre('save', async function (next) {
     // (or if we already performed the verification results lookup)
     if (domain.skip_verification) return next();
 
+    // if (!domain.resolver) {
+    //   logger.fatal(new Error('Resolver not passed'));
+    //   return next();
+    // }
+
     const { ns, txt, mx, errors } = await getVerificationResults(
       domain,
       domain.resolver
@@ -626,11 +720,24 @@ Domains.plugin(mongooseCommonPlugin, {
     'is_api',
     'onboard_email_sent_at',
     'verified_email_sent_at',
+    'has_smtp',
+    'smtp_suspended_sent_at',
     'last_checked_at',
     'email_suspended_sent_at',
     'missing_txt_sent_at',
     'multiple_exchanges_sent_at',
-    'ns'
+    'ns',
+    'dkim_key_selector',
+    'dkim_private_key',
+    'dkim_public_key',
+    'return_path',
+    'has_dkim_record',
+    'missing_dkim_sent_at',
+    'has_return_path_record',
+    'missing_return_path_sent_at',
+    'has_dmarc_record',
+    'missing_dmarc_sent_at',
+    'smtp_checked_at'
   ],
   mongooseHidden: {
     virtuals: {
@@ -639,6 +746,261 @@ Domains.plugin(mongooseCommonPlugin, {
   },
   defaultLocale: i18n.getLocale()
 });
+
+async function getNSRecords(domain, resolver) {
+  let ns = false;
+  const errors = [];
+  try {
+    let records = await resolver.resolveNs(domain.name, {
+      purgeCache: true
+    });
+    if (Array.isArray(records) && records.length > 0) {
+      // filter records for IP and FQDN only values
+      records = records.filter(
+        (record) => (isSANB(record) && isIP(record)) || isFQDN(record)
+      );
+      // only set `ns` if we have at least one record
+      if (records.length > 1) ns = records;
+    }
+  } catch (err) {
+    try {
+      const rootDomain = parseRootDomain(domain.name);
+      if (rootDomain === domain.name) {
+        logger.warn(err);
+        if (err.code === 'ENOTFOUND') {
+          const error = Boom.badRequest(
+            i18n.translateError('ENOTFOUND', domain.locale)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code === 'ENODATA') {
+          const error = Boom.badRequest(
+            i18n.translateError('MISSING_DNS_NS', domain.locale)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else {
+          errors.push(err);
+        }
+      } else if (err.code === 'ENOTFOUND' || err.code === 'ENODATA') {
+        //
+        // NOTE: we only want to do this if ENOTFOUND or ENODATA
+        //
+        // perform lookup on root domain and use those values instead
+        //
+        let records = await resolver.resolveNs(rootDomain, {
+          purgeCache: true
+        });
+        if (Array.isArray(records) && records.length > 0) {
+          // filter records for IP and FQDN only values
+          records = records.filter(
+            (record) => (isSANB(record) && isIP(record)) || isFQDN(record)
+          );
+          // only set `ns` if we have at least one record
+          if (records.length > 1) ns = records;
+        }
+      }
+    } catch (err) {
+      logger.warn(err);
+      if (err.code === 'ENOTFOUND') {
+        const error = Boom.badRequest(
+          i18n.translateError('ENOTFOUND', domain.locale)
+        );
+        error.code = err.code;
+        errors.push(error);
+      } else if (err.code === 'ENODATA') {
+        const error = Boom.badRequest(
+          i18n.translateError('MISSING_DNS_NS', domain.locale)
+        );
+        error.code = err.code;
+        errors.push(error);
+      } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
+        const error = Boom.badRequest(
+          i18n.translateError('DNS_RETRY', domain.locale, err.code)
+        );
+        error.code = err.code;
+        errors.push(error);
+      } else {
+        errors.push(err);
+      }
+    }
+  }
+
+  return { ns, errors };
+}
+
+async function verifySMTP(domain, resolver) {
+  //
+  // TODO: attempt to purge Cloudflare cache programmatically
+  //
+
+  const errors = [];
+  let ns = false;
+  let dkim = false;
+  let returnPath = false;
+  let dmarc = false;
+
+  await Promise.all([
+    //
+    // fetch NS records (same as in `getVerificationResults`)
+    //
+    (async function () {
+      const results = await getNSRecords(domain, resolver);
+      ns = results.ns;
+      errors.push(...results.errors);
+    })(),
+
+    //
+    // fetch dkim record (TXT)
+    //
+    (async function () {
+      try {
+        const records = await resolver.resolveTxt(
+          `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+          { purgeCache: true }
+        );
+        const str = `v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString(
+          'base64'
+        )};`;
+        for (const record of records) {
+          const line = record.join('').trim(); // join chunks together
+          if (line === str) {
+            dkim = true;
+            break;
+          }
+        }
+      } catch (err) {
+        logger.warn(err);
+        // TODO: isCodeBug needs integrated anywhere resolver is used
+        if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code !== 'ENOTFOUND') {
+          errors.push(err);
+        }
+      }
+    })(),
+
+    //
+    // fetch return-path record (CNAME)
+    //
+    (async function () {
+      try {
+        const records = await resolver.resolveCname(
+          `${domain.return_path}.${domain.name}`,
+          { purgeCache: true }
+        );
+        if (
+          Array.isArray(records) &&
+          records.includes(
+            config.webHost === 'localhost' && config.env === 'development'
+              ? 'forwardemail.net'
+              : config.webHost
+          )
+        )
+          returnPath = true;
+      } catch (err) {
+        logger.warn(err);
+        // TODO: isCodeBug needs integrated anywhere resolver is used
+        if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code !== 'ENOTFOUND') {
+          errors.push(err);
+        }
+      }
+    })(),
+
+    //
+    // fetch dmarc record (TXT)
+    //
+    (async function () {
+      try {
+        // <https://github.com/postalsys/mailauth#dmarc>
+        // <https://github.com/postalsys/mailauth/pull/29>
+        // <https://github.com/postalsys/mailauth/issues/27>
+        const dmarcRecord = await getDmarcRecord(domain.name, resolver.resolve);
+        // {
+        //   v: 'DMARC1',
+        //   p: 'none',
+        //   pct: 100,
+        //   rua: 'mailto:foo@bar.com',
+        //   sp: 'none',
+        //   aspf: 'r',
+        //   rr: 'v=DMARC1; p=none; pct=100; rua=mailto:foo@bar.com; sp=none; aspf=r;',
+        //   isOrgRecord: false
+        // }
+        if (
+          dmarcRecord &&
+          dmarcRecord.v === 'DMARC1' &&
+          dmarcRecord.p === 'reject' &&
+          dmarcRecord.pct === 100
+        )
+          dmarc = true;
+      } catch (err) {
+        logger.warn(err);
+        // TODO: isCodeBug needs integrated anywhere resolver is used
+        if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code !== 'ENOTFOUND') {
+          errors.push(err);
+        }
+      }
+    })()
+  ]);
+
+  if (!dkim)
+    errors.push(
+      Boom.badRequest(
+        i18n.translateError('INVALID_DKIM_SIGNATURE', domain.locale)
+      )
+    );
+
+  if (!returnPath)
+    errors.push(
+      Boom.badRequest(i18n.translateError('INVALID_RETURN_PATH', domain.locale))
+    );
+
+  if (!dmarc)
+    errors.push(
+      Boom.badRequest(
+        i18n.translateError('INVALID_DMARC_RESULT', domain.locale)
+      )
+    );
+
+  if (!dkim || !returnPath || !dmarc)
+    errors.unshift(
+      Boom.badRequest(
+        i18n.translateError('DNS_CHANGES_TAKE_TIME', domain.locale)
+      )
+    );
+
+  return {
+    ns,
+    dkim,
+    returnPath,
+    dmarc,
+    errors: _.uniqBy(errors, 'message')
+  };
+}
+
+Domains.statics.verifySMTP = verifySMTP;
 
 async function getVerificationResults(domain, resolver) {
   const verificationRecord = `${config.recordPrefix}-site-verification=${domain.verification_record}`;
@@ -694,98 +1056,10 @@ async function getVerificationResults(domain, resolver) {
     // NOTE: this first attempts to fetch the domain name (regardless if it was subdomain or root)
     //       but if it was a subdomain and had no NS then it parses the parent
     //
-    // eslint-disable-next-line complexity
     (async function () {
-      try {
-        let records = await resolver.resolveNs(domain.name, {
-          purgeCache: true
-        });
-        if (Array.isArray(records) && records.length > 0) {
-          // filter records for IP and FQDN only values
-          records = records.filter(
-            (record) => (isSANB(record) && isIP(record)) || isFQDN(record)
-          );
-          // only set `ns` if we have at least one record
-          if (records.length > 1) ns = records;
-        }
-      } catch (err) {
-        try {
-          const parseResult = parseDomain(fromUrl(domain.name));
-          const rootDomain = (
-            parseResult.type === ParseResultType.Listed &&
-            _.isObject(parseResult.icann) &&
-            isSANB(parseResult.icann.domain)
-              ? `${
-                  parseResult.icann.domain
-                }.${parseResult.icann.topLevelDomains.join('.')}`
-              : domain.name
-          ).toLowerCase();
-          if (rootDomain === domain.name) {
-            logger.warn(err);
-            if (err.code === 'ENOTFOUND') {
-              const error = Boom.badRequest(
-                i18n.translateError('ENOTFOUND', domain.locale)
-              );
-              error.code = err.code;
-              errors.push(error);
-            } else if (err.code === 'ENODATA') {
-              const error = Boom.badRequest(
-                i18n.translateError('MISSING_DNS_NS', domain.locale)
-              );
-              error.code = err.code;
-              errors.push(error);
-            } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
-              const error = Boom.badRequest(
-                i18n.translateError('DNS_RETRY', domain.locale, err.code)
-              );
-              error.code = err.code;
-              errors.push(error);
-            } else {
-              errors.push(err);
-            }
-          } else if (err.code === 'ENOTFOUND' || err.code === 'ENODATA') {
-            //
-            // NOTE: we only want to do this if ENOTFOUND or ENODATA
-            //
-            // perform lookup on root domain and use those values instead
-            //
-            let records = await resolver.resolveNs(rootDomain, {
-              purgeCache: true
-            });
-            if (Array.isArray(records) && records.length > 0) {
-              // filter records for IP and FQDN only values
-              records = records.filter(
-                (record) => (isSANB(record) && isIP(record)) || isFQDN(record)
-              );
-              // only set `ns` if we have at least one record
-              if (records.length > 1) ns = records;
-            }
-          }
-        } catch (err) {
-          logger.warn(err);
-          if (err.code === 'ENOTFOUND') {
-            const error = Boom.badRequest(
-              i18n.translateError('ENOTFOUND', domain.locale)
-            );
-            error.code = err.code;
-            errors.push(error);
-          } else if (err.code === 'ENODATA') {
-            const error = Boom.badRequest(
-              i18n.translateError('MISSING_DNS_NS', domain.locale)
-            );
-            error.code = err.code;
-            errors.push(error);
-          } else if (err.code && DNS_RETRY_CODES.has(err.code)) {
-            const error = Boom.badRequest(
-              i18n.translateError('DNS_RETRY', domain.locale, err.code)
-            );
-            error.code = err.code;
-            errors.push(error);
-          } else {
-            errors.push(err);
-          }
-        }
-      }
+      const results = await getNSRecords(domain, resolver);
+      ns = results.ns;
+      errors.push(...results.errors);
     })(),
     //
     // validate TXT records
@@ -1046,16 +1320,7 @@ async function getVerificationResults(domain, resolver) {
 Domains.statics.getVerificationResults = getVerificationResults;
 
 function getNameRestrictions(domainName) {
-  const parseResult = parseDomain(fromUrl(domainName));
-  const rootDomain = (
-    parseResult.type === ParseResultType.Listed &&
-    _.isObject(parseResult.icann) &&
-    isSANB(parseResult.icann.domain)
-      ? `${parseResult.icann.domain}.${parseResult.icann.topLevelDomains.join(
-          '.'
-        )}`
-      : domainName
-  ).toLowerCase();
+  const rootDomain = parseRootDomain(domainName);
   const isGood = config.goodDomains.some((ext) =>
     rootDomain.endsWith(`.${ext}`)
   );
@@ -1124,12 +1389,10 @@ async function getTxtAddresses(
   // add support for multi-line TXT records
   for (let i = 0; i < records.length; i++) {
     records[i] = records[i].join('').trim(); // join chunks together
-    if (records[i].startsWith(`${config.recordPrefix}=`))
-      validRecords.push(records[i].replace(`${config.recordPrefix}=`, ''));
-    if (records[i].startsWith(`${config.recordPrefix}-site-verification=`))
-      verifications.push(
-        records[i].replace(`${config.recordPrefix}-site-verification=`, '')
-      );
+    if (records[i].startsWith(config.freePrefix))
+      validRecords.push(records[i].replace(config.freePrefix, ''));
+    else if (records[i].startsWith(config.paidPrefix))
+      verifications.push(records[i].replace(config.paidPrefix, ''));
   }
 
   // join multi-line TXT records together and replace double w/single commas

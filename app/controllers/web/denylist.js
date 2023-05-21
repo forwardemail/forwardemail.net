@@ -1,15 +1,14 @@
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
-const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const { isEmail, isIP } = require('validator');
 
 const config = require('#config');
 const { email, decrypt } = require('#helpers');
 const { Inquiries } = require('#models');
+const parseRootDomain = require('#helpers/parse-root-domain');
 
 // eslint-disable-next-line complexity
 async function validate(ctx, next) {
@@ -66,19 +65,8 @@ async function validate(ctx, next) {
       );
   }
 
-  if (isEmail(q) || isFQDN(q)) {
-    const parseResult = parseDomain(fromUrl(q));
-    // set the root domain value in state for validate fn
-    ctx.state.rootDomain = (
-      parseResult.type === ParseResultType.Listed &&
-      _.isObject(parseResult.icann) &&
-      isSANB(parseResult.icann.domain)
-        ? `${parseResult.icann.domain}.${parseResult.icann.topLevelDomains.join(
-            '.'
-          )}`
-        : q
-    ).toLowerCase();
-  }
+  // set the root domain value in state for validate fn
+  if (isEmail(q) || isFQDN(q)) ctx.state.rootDomain = parseRootDomain(q);
 
   // check that the value is in the denylist
   // (or the root value is in the denylist)

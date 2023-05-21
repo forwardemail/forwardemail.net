@@ -1,4 +1,5 @@
 const Router = require('@koa/router');
+const bodyParser = require('koa-bodyparser');
 
 const api = require('#controllers/api');
 const policies = require('#helpers/policies');
@@ -35,6 +36,9 @@ router
     //       (but we whitelist the IP addresses of our servers)
     //
     rateLimit(100, 'log'),
+    bodyParser({
+      jsonLimit: '2mb'
+    }),
     api.v1.log.parseLog
   )
   .post('/stripe', api.v1.stripe)
@@ -75,6 +79,46 @@ router
     api.v1.enforcePaidPlan,
     web.myAccount.ensurePaidToDate,
     api.v1.users.update
+  );
+
+// emails
+router
+  .use(
+    '/emails',
+    policies.ensureApiToken,
+    policies.checkVerifiedEmail,
+    web.myAccount.ensureNotBanned,
+    api.v1.enforcePaidPlan,
+    web.myAccount.ensurePaidToDate
+  )
+  .get(
+    '/emails',
+    rateLimit(100, 'list emails'),
+    web.myAccount.retrieveDomains,
+    web.myAccount.listEmails,
+    api.v1.emails.list
+  )
+  .get(
+    '/emails/:id',
+    rateLimit(100, 'retrieve emails'),
+    web.myAccount.retrieveEmail,
+    api.v1.emails.retrieve
+  )
+  .post(
+    '/emails',
+    // TODO: this needs to use credit system
+    rateLimit(100, 'create emails'),
+    bodyParser({
+      jsonLimit: '51mb'
+    }),
+    api.v1.emails.create
+  )
+  .delete(
+    '/emails/:id',
+    rateLimit(100, 'remove emails'),
+    web.myAccount.retrieveEmail,
+    web.myAccount.removeEmail,
+    api.v1.emails.retrieve
   );
 
 // domains

@@ -19,7 +19,7 @@ const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongooseHelper = require('#helpers/setup-mongoose');
 const webConfig = require('#config/web');
-const { Users } = require('#models');
+const { Users, Domains, Payments, Aliases } = require('#models');
 
 //
 // setup utilities
@@ -80,6 +80,18 @@ exports.setupApiServer = async (t) => {
   t.context.api = request.agent(api.app.listen(port));
 };
 
+exports.setupSMTPServer = async (t) => {
+  // must require here in order to load changes made during setup
+  const breeSharedConfig = sharedConfig('BREE');
+  const client = new Redis(
+    breeSharedConfig.redis,
+    logger,
+    breeSharedConfig.redisMonitor
+  );
+  await client.flushall();
+  t.context.client = client;
+};
+
 // make sure to load the web server first using setupWebServer
 exports.loginUser = async (t) => {
   const { web, user, password } = t.context;
@@ -119,5 +131,21 @@ exports.defineUserFactory = async () => {
     }
 
     return user;
+  });
+};
+
+exports.defineDomainFactory = () => {
+  factory.define('domain', Domains, {
+    name: factory.sequence('Domains.name', (n) => `example-${n}.com`)
+  });
+};
+
+exports.definePaymentFactory = () => {
+  factory.define('payment', Payments, {});
+};
+
+exports.defineAliasFactory = () => {
+  factory.define('alias', Aliases, {
+    name: factory.sequence('Aliases.name', (n) => `foo-${n}`)
   });
 };

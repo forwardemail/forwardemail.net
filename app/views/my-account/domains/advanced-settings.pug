@@ -1,5 +1,22 @@
 extends ../../layout
 
+mixin deleteDomain
+  if domain.group === 'admin'
+    .card.border-themed.mb-3
+      h2.h6.card-header= t("Delete Domain")
+      .card-body
+        .alert.alert-danger.small.mb-0= t("Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.")
+      .card-footer.text-right
+        form.ajax-form.confirm-prompt(
+          action=l(`/my-account/domains/${domain.name}`),
+          method="POST"
+        )
+          input(type="hidden", name="_method", value="DELETE")
+          button.btn.btn-sm.btn-danger(type="submit")
+            i.fa.fa-trash
+            = " "
+            = t("Delete Domain")
+
 block append scripts
   //- prettier-ignore
   script.
@@ -27,6 +44,8 @@ mixin planRequired(isTeam = false)
 block body
   - const isDisabled = domain.plan === "free";
   - const isTeamDisabled = domain.plan !== "team";
+
+  //- Invite Modal
   if domain.group === 'admin'
     #modal-invite.modal.fade(
       tabindex="-1",
@@ -125,23 +144,59 @@ block body
       .row
         .col
           include ../../_breadcrumbs
+      //- Outbound SMTP
+      if domain.group === 'admin'
+        .row
+          .col
+            .card.border-themed.mb-3
+              h2.h6.card-header= t("Outbound SMTP Configuration")
+              .card-body
+                +planRequired(false)
+                if _.isDate(domain.smtp_suspended_sent_at)
+                  .alert.alert-danger.text-center= t('Domain is suspended from outbound SMTP service, please <a href="alert-link" href="%s">contact us</a> to resolve.', l("/help"))
+                else if !domain.has_smtp && domain.plan !== 'free'
+                  .alert.alert-warning.text-center!= t('Please <a class="alert-link" href="%s">contact us</a> to unlock this feature.', l("/help"))
+                else if domain.has_smtp
+                  if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
+                    .alert.alert-success
+                      = emoji("tada")
+                      = " "
+                      != t("Congratulations &ndash; you completed setup!")
+                  else
+                    .alert.alert-danger!= t('You must <a href="%s" class="alert-link">complete setup</a> to send emails via SMTP and API.', l(`/my-account/domains/${domain.name}/verify-smtp`))
+              //- Render setup instructions relative to the provider
+              if domain.has_smtp && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
+                .card-footer.text-right
+                  ul.list-inline.mb-0
+                    li.list-inline-item.mb-3.mb-md-0: a.btn.btn-sm.btn-success(
+                      href=l(`/my-account/domains/${domain.name}/aliases`)
+                    )= t("Generate alias passwords")
+                    li.list-inline-item.mb-3.mb-md-0: a.btn.btn-sm.btn-dark(
+                      href=l("/faq#do-you-support-sending-email-with-smtp"),
+                      target="_blank"
+                    )= t("Send via SMTP")
+                    li.list-inline-item.mb-3.mb-md-0: a.btn.btn-sm.btn-dark(
+                      href=l("/email-forwarding-api#emails"),
+                      target="_blank"
+                    )= t("Send via API")
+                    li.list-inline-item
+                      a.btn.btn-sm(
+                        href=l(`/my-account/domains/${domain.name}/verify-smtp`),
+                        class=domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record ? "btn-secondary" : "btn-danger"
+                      )
+                        if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
+                          = t("Verify Setup")
+                        else
+                          = t("Complete Setup")
       .row
         .col
-          if domain.group === 'admin'
-            .card.border-themed.mb-3
-              h2.h6.card-header= t("Delete Domain")
-              .card-body
-                .alert.alert-danger.small.mb-0= t("Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.")
-              .card-footer.text-right
-                form.ajax-form.confirm-prompt(
-                  action=l(`/my-account/domains/${domain.name}`),
-                  method="POST"
-                )
-                  input(type="hidden", name="_method", value="DELETE")
-                  button.btn.btn-sm.btn-danger(type="submit")
-                    i.fa.fa-trash
-                    = " "
-                    = t("Delete Domain")
+          //-
+          //- if the domain was created within past 30d
+          //- then render the delete domain at the top of page
+          //- otherwise it gets rendered at the bottom
+          //-
+          if dayjs().isBefore(dayjs(domain.created_at).add(30, 'days'))
+            +deleteDomain
           if domain.group === 'admin'
             .card.border-themed.mb-3
               h2.h6.card-header= t("Current Plan")
@@ -202,52 +257,53 @@ block body
                         //- member.user (Object) and member.group (String)
                         //- member.user.id (String)
                         //- member.user.email (String)
-                        tr
-                          td.align-middle= member.user.email
-                          td.align-middle.text-center
-                            .h3.mb-0: span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal= member.alias_count
-                          if domain.members.length > 1
-                            td.align-middle
-                              ul.list-inline.mb-0
-                                li.list-inline-item
-                                  form.ajax-form.confirm-prompt.d-inline-block(
-                                    action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`),
-                                    method="POST",
-                                    disabled=isTeamDisabled
-                                  )
-                                    input(
-                                      type="hidden",
-                                      name="_method",
-                                      value="PUT"
-                                    )
-                                    input(
-                                      type="hidden",
-                                      name="group",
-                                      value=member.group === "admin" ? "user" : "admin"
-                                    )
-                                    button.btn.btn-dark(
-                                      type="submit",
-                                      disabled=isTeamDisabled
-                                    )= member.group === "admin" ? t("Make User") : t("Make Admin")
-                                //- if member.user.id !== user.id
-                                li.list-inline-item
-                                  form.ajax-form.confirm-prompt.d-inline-block(
-                                    action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`),
-                                    method="POST",
-                                    disabled=isTeamDisabled
-                                  )
-                                    input(
-                                      type="hidden",
-                                      name="_method",
-                                      value="DELETE"
-                                    )
-                                    button.btn.btn-danger(
-                                      type="submit",
+                        if member && member.user && member.user.email && member.user.id
+                          tr
+                            td.align-middle= member.user.email
+                            td.align-middle.text-center
+                              .h3.mb-0: span.badge.badge-pill.badge-dark.text-monospace.font-weight-normal= member.alias_count
+                            if domain.members.length > 1
+                              td.align-middle
+                                ul.list-inline.mb-0
+                                  li.list-inline-item
+                                    form.ajax-form.confirm-prompt.d-inline-block(
+                                      action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`),
+                                      method="POST",
                                       disabled=isTeamDisabled
                                     )
-                                      i.fa.fa-trash
-                                      = " "
-                                      = t("Delete Member")
+                                      input(
+                                        type="hidden",
+                                        name="_method",
+                                        value="PUT"
+                                      )
+                                      input(
+                                        type="hidden",
+                                        name="group",
+                                        value=member.group === "admin" ? "user" : "admin"
+                                      )
+                                      button.btn.btn-dark(
+                                        type="submit",
+                                        disabled=isTeamDisabled
+                                      )= member.group === "admin" ? t("Make User") : t("Make Admin")
+                                  //- if member.user.id !== user.id
+                                  li.list-inline-item
+                                    form.ajax-form.confirm-prompt.d-inline-block(
+                                      action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`),
+                                      method="POST",
+                                      disabled=isTeamDisabled
+                                    )
+                                      input(
+                                        type="hidden",
+                                        name="_method",
+                                        value="DELETE"
+                                      )
+                                      button.btn.btn-danger(
+                                        type="submit",
+                                        disabled=isTeamDisabled
+                                      )
+                                        i.fa.fa-trash
+                                        = " "
+                                        = t("Delete Member")
                 if hasInvites
                   .alert.alert-warning.small= t("Pending invitations are listed below.")
                   .table-responsive
@@ -352,7 +408,7 @@ block body
                     checked=domain.has_phishing_protection
                   )
                   label.form-check-label(for="input-has-phishing-protection")= t("Phishing protection")
-                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then links will <u>not be scanned</u> for malware, domain swapping, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor phishing in general.', "https://en.wikipedia.org/wiki/IDN_homograph_attack")
+                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then links will <u>not be scanned</u> for malware, domain swapping, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor phishing in general.', "https://wikipedia.org/wiki/IDN_homograph_attack")
                 .form-group.form-check
                   input#input-has-executable-protection.form-check-input(
                     type="checkbox",
@@ -362,7 +418,7 @@ block body
                     checked=domain.has_executable_protection
                   )
                   label.form-check-label(for="input-has-executable-protection")= t("Executable protection")
-                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then links and attachments will <u>not be scanned</u> for potentially-malicious <a target="_blank" rel="noopener noreferrer" href="%s">executable</a> file types, extensions, names, headers, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor <a target="_blank" rel="noopener noreferrer" href="%s">magic numbers</a>.', "https://github.com/spamscanner/spamscanner/blob/master/executables.json", "https://en.wikipedia.org/wiki/IDN_homograph_attack", "https://en.wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files")
+                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then links and attachments will <u>not be scanned</u> for potentially-malicious <a target="_blank" rel="noopener noreferrer" href="%s">executable</a> file types, extensions, names, headers, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor <a target="_blank" rel="noopener noreferrer" href="%s">magic numbers</a>.', "https://github.com/spamscanner/spamscanner/blob/master/executables.json", "https://wikipedia.org/wiki/IDN_homograph_attack", "https://wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files")
                 .form-group.form-check
                   input#input-has-virus-protection.form-check-input(
                     type="checkbox",
@@ -500,7 +556,7 @@ block body
               .card-body
                 +planRequired(false)
                 if !domain.has_custom_verification && domain.plan !== 'free'
-                  .alert.alert-warning!= t('Please <a class="alert-link" href="%s">contact us</a> to unlock this feature.', l("/help"))
+                  .alert.alert-warning.text-center!= t('Please <a class="alert-link" href="%s">contact us</a> to unlock this feature.', l("/help"))
                 //- custom_verification.name
                 .form-group.floating-label
                   input#input-custom-verification-name.form-control.form-control-lg(
@@ -593,6 +649,16 @@ block body
                       type="submit",
                       disabled=isCustomVerificationDisabled
                     )= t("Save")
+
+      .row
+        .col
+          //-
+          //- if the domain was created within past 30d
+          //- then render the delete domain at the top of page
+          //- otherwise it gets rendered at the bottom
+          //-
+          if !dayjs().isBefore(dayjs(domain.created_at).add(30, 'days'))
+            +deleteDomain
 
       .row.text-center.my-5
         .col

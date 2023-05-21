@@ -46,6 +46,12 @@ const verifyRecords = require('./verify-records');
 const setConversionAndRefundStateHelpers = require('./set-conversion-and-refund-state-helpers');
 const listLogs = require('./list-logs');
 const retrieveLog = require('./retrieve-log');
+const listEmails = require('./list-emails');
+const retrieveEmail = require('./retrieve-email');
+const removeEmail = require('./remove-email');
+const ensureSMTPAccess = require('./ensure-smtp-access');
+const verifySMTP = require('./verify-smtp');
+const generateAliasPassword = require('./generate-alias-password');
 
 module.exports = {
   cancelEmailChange,
@@ -95,5 +101,11 @@ module.exports = {
   verifyRecords,
   setConversionAndRefundStateHelpers,
   listLogs,
-  retrieveLog
+  retrieveLog,
+  listEmails,
+  retrieveEmail,
+  removeEmail,
+  ensureSMTPAccess,
+  verifySMTP,
+  generateAliasPassword
 };

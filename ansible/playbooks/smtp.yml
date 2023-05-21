@@ -1,0 +1,114 @@
+---
+- name: Import security playbook
+  ansible.builtin.import_playbook: security.yml
+- name: Import Node.js playbook
+  ansible.builtin.import_playbook: node.yml
+- name: Import SSH keys playbook
+  ansible.builtin.import_playbook: ssh-keys.yml
+- hosts: smtp
+  name: SMTP
+  become: true
+  become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ lookup('env', 'SMTP_HOST') }}"
+  roles:
+    # https://github.com/holms/ansible-fqdn
+    - role: fqdn
+      fqdn: "{{ lookup('env', 'SMTP_HOST') }}"
+- hosts: smtp
+  name: SMTP
+  become: true
+  become_user: root
+  # this was already defined in the ufw role
+  # https://github.com/Oefenweb/ansible-ufw/blob/master/handlers/main.yml
+  handlers:
+    - name: Reload UFW
+      ufw:
+        state: reloaded
+  tasks:
+    # ufw
+    - name: Enable ufw
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+    - name: Limit ufw ssh
+      ufw:
+        rule: limit
+        port: 22
+        proto: tcp
+    - name: Set UFW default forward policy to ACCEPT
+      lineinfile:
+        dest: /etc/default/ufw
+        line: DEFAULT_FORWARD_POLICY="ACCEPT"
+        regexp: ^DEFAULT_FORWARD_POLICY\=
+    - name: Allow ssh
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+    - name: Allow http
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
+    - name: Allow https
+      ufw:
+        rule: allow
+        port: 443
+        proto: tcp
+    - name: Allow http forwarder
+      ufw:
+        rule: allow
+        port: "{{ lookup('env', 'PROXY_PORT') }}"
+        proto: tcp
+    - name: Allow https forwarder
+      ufw:
+        rule: allow
+        port: "{{ lookup('env', 'HTTP_PORT') }}"
+        proto: tcp
+    # NOTE: we port forward 25, 587, and 2525 -> 2587 (and 2587 is itself available)
+    # NOTE: we port forward 465 -> 2465 (and 2465 is itself available)
+    - name: Allow port 25
+      ufw:
+        rule: allow
+        port: 25
+        proto: tcp
+    - name: Allow port 587
+      ufw:
+        rule: allow
+        port: 587
+        proto: tcp
+    - name: Allow port 2525
+      ufw:
+        rule: allow
+        port: 2525
+        proto: tcp
+    - name: Allow port 2587
+      ufw:
+        rule: allow
+        port: 2587
+        proto: tcp
+    - name: Allow port 465
+      ufw:
+        rule: allow
+        port: 465
+        proto: tcp
+    - name: Allow port 2465
+      ufw:
+        rule: allow
+        port: 25
+        proto: tcp
+    #
+    # modify ufw setup
+    # https://github.com/Oefenweb/ansible-ufw/issues/21
+    #
+    - name: "Update ufw before.rules until #21 is resolved"
+      template:
+        src: "{{ playbook_dir }}/templates/before.smtp.rules.j2"
+        dest: /etc/ufw/before.rules
+        owner: root
+        mode: "0644"
+      notify: Reload UFW

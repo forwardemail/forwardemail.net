@@ -1,5 +1,5 @@
 ---
-- hosts: http:bree
+- hosts: smtp:http:bree
   name: SSH Keys
   become: true
   become_user: root

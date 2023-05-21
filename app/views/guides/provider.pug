@@ -4,7 +4,7 @@ include ../_onboard
 
 block body
   if !isBot(ctx.get('User-Agent'))
-    .fixed-bottom.text-center
+    .fixed-bottom.text-center.d-print-none
       .bg-dark.p-2.border-top.border-themed
         ul.list-inline.mb-0
           li.list-inline-item
@@ -160,60 +160,90 @@ block body
                 = t("Scroll to the right to see entire table")
                 = ")"
             .table-responsive.mb-3
-              table.table.table-striped.table-bordered.table-hover.table-sm.mb-0
-                thead.thead-dark
+              table.table.table-hover.table-sm.mb-0
+                thead
                   tr
-                    th Name/Host/Alias
-                    th.text-center TTL
-                    th Type
-                    th Priority
-                    th.text-left Answer/Value
+                    th.border-0.align-middle Name/Host/Alias
+                    th.border-0.align-middle Type
+                    th.border-0.align-middle Priority
+                    th.border-0.align-middle.text-left Answer/Value
                 tbody
                   tr
-                    td.small
+                    td.align-middle.small
                       if !domain || !domain.root_name || !domain.name || domain.root_name === domain.name
                         if provider && typeof provider.host === 'string'
-                          = provider.host
+                          if provider.host === ''
+                            i.text-muted.user-select-none= t("None")
+                          else
+                            = provider.host
                         else
                           | "@", ".", or leave empty/blank if allowed.
                       else
                         code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                    td.text-center: code.text-themed 3600
-                    td MX
-                    td: code.text-themed 10
-                    td.text-left: code.text-themed.text-nowrap mx1.forwardemail.net
+                    td.align-middle: strong.px-2 MX
+                    td.align-middle: code.text-themed 10
+                    td.align-middle.text-left.py-3
+                      code#copy-mx1.d-block.text-themed.text-nowrap mx1.forwardemail.net
+                      button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                        type="button",
+                        data-toggle="clipboard",
+                        data-clipboard-target="#copy-mx1"
+                      )
+                        i.fa.fa-clipboard
+                        = " "
+                        = t("Copy")
                   tr
-                    td.small
+                    td.align-middle.small
                       if !domain || !domain.root_name || !domain.name || domain.root_name === domain.name
                         if provider && typeof provider.host === 'string'
-                          = provider.host
+                          if provider.host === ''
+                            i.text-muted.user-select-none= t("None")
+                          else
+                            = provider.host
                         else
                           | "@", ".", or leave empty/blank if allowed.
                       else
                         code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                    td.text-center: code.text-themed 3600
-                    td MX
-                    td: code.text-themed 10
-                    td.text-left: code.text-themed.text-nowrap mx2.forwardemail.net
+                    td.align-middle: strong.px-2 MX
+                    td.align-middle: code.text-themed 10
+                    td.align-middle.text-left.py-3
+                      code#copy-mx2.d-block.text-themed.text-nowrap mx2.forwardemail.net
+                      button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                        type="button",
+                        data-toggle="clipboard",
+                        data-clipboard-target="#copy-mx2"
+                      )
+                        i.fa.fa-clipboard
+                        = " "
+                        = t("Copy")
                   tr
-                    td.small
+                    td.align-middle.small
                       if !domain || !domain.root_name || domain.root_name === domain.name
                         if provider && typeof provider.host === 'string'
-                          = provider.host
+                          if provider.host === ''
+                            i.text-muted.user-select-none= t("None")
+                          else
+                            = provider.host
                         else
                           | "@", ".", or leave empty/blank if allowed.
                       else
                         code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                    td.text-center: code.text-themed 3600
-                    td TXT
-                    td
-                    td.text-left
+                    td.align-middle: strong.px-2 TXT
+                    td.align-middle
+                    td.align-middle.text-left.py-3
                       span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
-                      br
-                      code.text-themed.text-nowrap
+                      code#copy-user-txt.d-block.text-themed.text-nowrap
                         = `${config.recordPrefix}=${user ? user.email : "user@gmail.com"}`
-
-            .alert.alert-warning.small
+                      button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                        type="button",
+                        data-toggle="clipboard",
+                        data-clipboard-target="#copy-user-txt"
+                      )
+                        i.fa.fa-clipboard
+                        = " "
+                        = t("Copy")
+            .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (5 minutes) as possible.')
+            .alert.alert-primary.small
               = t("Need to configure more aliases on the free plan?")
               br.d-block.d-md-none
               = " "

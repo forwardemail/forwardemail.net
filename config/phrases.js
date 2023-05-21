@@ -15,6 +15,44 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  CANNOT_CREATE_TOKEN_FOR_CATCHALL: 'Cannot create token for catch-all alias.',
+  CANNOT_CREATE_TOKEN_FOR_REGEX: 'Cannot create token for regex alias.',
+  ALIAS_GENERATED_PASSWORD:
+    'You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class="text-decoration-underline"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong><span class="notranslate">SMTP</span> Username:</strong> <code class="notranslate">%s</code><br /><br /><strong><span class="notranslate">SMTP</span> Password:</strong> <code class="notranslate">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />',
+  PAST_DUE_OR_INVALID_ADMIN:
+    'Domain has past due balance or does not have at least one valid admin.',
+  ALIAS_ACCOUNT_BANNED: 'Alias user is banned.',
+  EMAIL_SMTP_IS_VERIFIED:
+    'You have successfully configured and verified DNS records for outbound SMTP.',
+  INVALID_RETURN_PATH: 'Invalid Return-Path.',
+  EMAIL_SMTP_CONFIGURATION_NEEDED:
+    'Outbound SMTP configuration has not yet been completed for <strong class="notranslate">%s</strong>. Please verify the <span class="notranslate">DKIM</span>, <span class="notranslate">Return-Path</span>, and <span class="notranslate">DMARC</span> records under <strong>Outbound SMTP Configuration</strong> below.',
+  EMAIL_SMTP_CONFIGURATION_REQUIRED:
+    'Outbound SMTP configuration has not yet been completed for <strong class="notranslate">%s</strong>. Please verify the <span class="notranslate">DKIM</span>, <span class="notranslate">Return-Path</span>, and <span class="notranslate">DMARC</span> records under <a href="%s">Outbound SMTP Configuration</a>.',
+  EMAIL_SMTP_GLOBAL_NOT_PERMITTED:
+    'Outbound SMTP email from global domain names is not permitted.',
+  EMAIL_SMTP_ACCESS_ENABLED_SUBJECT:
+    '<span class="notranslate">%s</span> approved for outbound SMTP access',
+  EMAIL_SMTP_ACCESS_ENABLED_MESSAGE:
+    '<p class="text-center">Your domain <span class="notranslate">%s</span> was approved for outbound SMTP access.</p><p class="text-center mb-0"><a class="btn btn-lg btn-danger" href="%s">Complete Setup</a></p>',
+  EMAIL_SMTP_ACCESS_DISABLED:
+    '<p class="text-center text-danger">Your domain <span class="notranslate">%s</span> had its outbound SMTP access removed.</p>',
+  EMAIL_SMTP_ACCESS_REQUIRED:
+    'Domain is not approved for outbound SMTP access, please <a class="font-weight-bold" href="/help">contact us</a>.',
+  ENVELOPE_FROM_MISSING:
+    'Envelope MAIL FROM header could not be parsed or was missing.',
+  EMAIL_PREVIEW_ERROR:
+    'An error occurred while rendering an email preview. We have been notified by email.',
+  EMAIL_DOES_NOT_EXIST: 'Email does not exist.',
+  EMAIL_REMOVED: 'Email was removed from the queue by an admin.',
+  INVALID_EMAIL_STATUS: 'Email status must be pending, queued, or deferred.',
+  NO_REPLY_USERNAME_DISALLOWED:
+    'You cannot use a "no-reply" username for an alias.',
+  INVALID_DMARC_RESULT:
+    'Invalid DMARC result (must be passing with "p=reject" and "pct=100" policy).',
+  INVALID_SPF_RESULT: 'Invalid SPF result.',
+  INVALID_DKIM_SIGNATURE: 'Invalid DKIM signature.',
+  ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',
   ALIAS_MUST_HAVE_ONE_RECIPIENT: 'Alias must have at least one recipient.',
   ENCRYPTED_VALUE: 'encrypted value',
   SEARCH_PAGE: 'Search page',
@@ -174,7 +212,7 @@ module.exports = {
   INVITE_ALREADY_SENT:
     'Invite was already sent to this email address.  Please manually copy the invite link and share it with this person if needed.',
   CANNOT_REMOVE_GLOBAL_DOMAIN:
-    'You cannot remove a global domain, please contact support.',
+    'You cannot remove a global domain, please <a class="font-weight-bold" href="/help">contact us</a>.',
   FREE: 'Free',
   ENHANCED_PROTECTION: 'Enhanced Protection',
   TEAM: 'Team',
@@ -187,6 +225,12 @@ module.exports = {
   AUTO_RENEW_ENABLED:
     'You have successfully subscribed and enabled auto-renew.',
   ACCOUNT_BANNED: 'Your account has been banned.',
+  DOMAIN_SUSPENDED:
+    'Your domain has been suspended from outbound SMTP access due to spam or bounce detection.',
+  DOMAIN_IS_ADMIN_SUSPENDED:
+    '<p class="text-center text-danger">Your domain <span class="notranslate">%s</span> has been suspended from outbound SMTP access by an admin.</p>',
+  DOMAIN_SUSPENSION_REMOVED:
+    '<p class="text-center">Your domain <span class="notranslate">%s</span> is no longer suspended from outbound SMTP access.</p>',
   ENOTFOUND:
     'Domain is not a registered domain name. <a class="font-weight-bold" href="/domain-registration">Click here to register it now</a>.',
   MISSING_DNS_TXT:
@@ -273,7 +317,7 @@ module.exports = {
   RECEIPT: 'Receipt',
   MAKE_PAYMENT: 'Make Payment',
   ALLOWLIST_DOMAIN_NOT_ALLOWED:
-    'The domain name you entered of <span class="font-weight-bold notranslate">%s</span> is not a valid custom domain name or it requires account approval for usage. Please use a custom domain name or <a href="%s">contact us for account approval</a>.',
+    'The domain name you entered of <span class="font-weight-bold notranslate">%s</span> is not a valid custom domain name or it requires account approval for usage. Please use a custom domain name or <a href="%s">contact us</a> for account approval.',
   DENYLIST_DOMAIN_NOT_ALLOWED:
     'The domain name you entered of <span class="font-weight-bold notranslate">%s</span> is listed in our denylist. Please submit a <a href="%s">Denylist Removal Request</a> to resolve this issue.',
   RESTRICTED_EMAILS_ONLY:
@@ -319,17 +363,17 @@ module.exports = {
   TURNSTILE_NOT_VERIFIED:
     '<span class="notranslate">Cloudflare Turnstile</span> not verified.',
   TURNSTILE_RENDER_ERROR:
-    '<span class="notranslate">Cloudflare Turnstile</span> had an error, please refresh and try again or contact us.',
+    '<span class="notranslate">Cloudflare Turnstile</span> had an error, please refresh and try again or <a class="font-weight-bold" href="/help">contact us</a>.',
   MISSING_VERIFICATION_LINK:
     'Missing "VERIFICATION_LINK" in HTML template string.  This variable must be included at least once either in text or link format.',
   PAID_PLAN_REQUIRED_FOR_RECIPIENT_VERIFICATION:
     'Paid plan is required for recipient verification',
   INVALID_RECIPIENT_VERIFICATION:
-    'Invalid recipient verification request.  Please ensure the link is correct and try again, or contact us for help.',
+    'Invalid recipient verification request.  Please ensure the link is correct and try again, or <a class="font-weight-bold" href="/help">contact us</a> for help.',
   RECIPIENT_VERIFICATION_PENDING_DOMAIN_VERIFICATION:
     'Verification link will not be sent until the domain has verified <span class="notranslate">TXT</span> and MX records.',
   DISPOSABLE_EMAIL_NOT_ALLOWED:
-    'Disposable email addresses are not allowed.  Try again or contact us for help.',
+    'Disposable email addresses are not allowed.  Try again or <a class="font-weight-bold" href="/help">contact us</a> for help.',
   ACTIVE_INCIDENT:
     '<strong>Active Incident:</strong> <a class="text-themed" href="%s" rel="noopener noreferrer" target="_blank" class="notranslate">%s</a>',
   WEBSITE_OUTAGE:

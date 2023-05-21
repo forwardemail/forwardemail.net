@@ -39,6 +39,12 @@ $input-disabled-bg:                     $dark;
     .octicon-link {
       fill: white;
     }
+    h1, h2, hr {
+      border-bottom: 1px solid $white !important;
+    }
+    table tr {
+      border-top: 1px solid $white !important;
+    }
   }
   mark, .mark {
     padding: 0;

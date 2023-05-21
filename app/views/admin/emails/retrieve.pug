@@ -1,0 +1,25 @@
+extends ../../layout
+
+block body
+  .container.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        h3.h5= t("Message Preview")
+        if html
+          iframe.bg-white.border-dark(
+            sandbox="allow-downloads allow-scripts",
+            referrerpolicy="no-referrer",
+            seamless="seamless",
+            srcdoc=`<base target='_top'>${html}`,
+            height="800",
+            width="100%"
+          )
+        else
+          p= t("No email preview is available.")
+        hr
+        h3.h5= t("Message Data")
+        .markdown-body
+          pre
+            code.hljs.language-json
+              != hljs.highlight(JSON.stringify(email, null, 2), { language: "json", ignoreIllegals: true }).value

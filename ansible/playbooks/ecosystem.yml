@@ -20,3 +20,8 @@
         src: "{{ playbook_dir }}/templates/ecosystem-bree.json.j2"
         dest: "{{ lookup('env', 'PWD') }}/ecosystem-bree.json"
       delegate_to: localhost
+    - name: Create ecosystem-smtp.json
+      template:
+        src: "{{ playbook_dir }}/templates/ecosystem-smtp.json.j2"
+        dest: "{{ lookup('env', 'PWD') }}/ecosystem-smtp.json"
+      delegate_to: localhost

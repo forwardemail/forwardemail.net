@@ -54,6 +54,11 @@ router
 
   // logs
   .get('/logs', paginate.middleware(10, 50), web.admin.logs.list)
-  .get('/logs/:id', web.admin.logs.retrieve);
+  .get('/logs/:id', web.admin.logs.retrieve)
+
+  // emails
+  .get('/emails', paginate.middleware(10, 50), web.admin.emails.list)
+  .get('/emails/:id', web.admin.emails.retrieve)
+  .delete('/emails/:id', web.admin.emails.remove);
 
 module.exports = router;

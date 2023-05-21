@@ -90,18 +90,25 @@ table.table.table-hover.table-bordered.table-sm
                       small.text-monospace!= log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
             td.align-middle.text-center
               ul.list-inline.mb-0
-                li
+                li.list-inline-item
                   a.btn.btn-dark.btn-sm(
                     href=l(`/my-account/logs/${log.id}`),
                     target="_blank"
                   )
                     = t("View Details")
+                if log.email
+                  li.list-inline-item
+                    a.btn.btn-primary.btn-sm(
+                      href=l(`/my-account/emails/${log.email.toString()}`),
+                      target="_blank"
+                    )
+                      = t("View Email")
                 if log.err && log.err.name === 'DenylistError'
                   - let href = log.err.message.split("you must visit ")[1];
                   if href
                     - href = href.split(".;")[0];
                   if href && href.startsWith('https://forwardemail.net/denylist?q=')
-                    li.mt-1
+                    li.list-inline-item
                       a.btn.btn-warning.btn-sm(href=href, target="_blank")
                         = t("Request Removal")
 +paginate('#table-logs')

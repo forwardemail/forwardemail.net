@@ -176,10 +176,10 @@ async function isBadDomain(name) {
       //   v: 'DMARC1',
       //   p: 'none',
       //   pct: 100,
-      //   rua: 'mailto:re+joqy8fpatm3@dmarc.postmarkapp.com',
+      //   rua: 'mailto:foo@bar.com',
       //   sp: 'none',
       //   aspf: 'r',
-      //   rr: 'v=DMARC1; p=none; pct=100; rua=mailto:re+joqy8fpatm3@dmarc.postmarkapp.com; sp=none; aspf=r;',
+      //   rr: 'v=DMARC1; p=none; pct=100; rua=mailto:foo@bar.com; sp=none; aspf=r;',
       //   isOrgRecord: false
       // }
     } catch {}

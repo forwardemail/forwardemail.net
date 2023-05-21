@@ -1,0 +1,109 @@
+extends ../../layout
+
+block body
+  .container-fluid.pt-3
+    .row
+      .col
+        include ../../_breadcrumbs
+  .container-fluid
+    //- TODO: render recent logs
+    .row
+      .col
+        ul.list-inline.text-center
+          li.list-inline-item
+            a.btn.btn-primary(
+              href=l(`/my-account/emails/${email.id}.eml`),
+              data-toggle="tooltip",
+              data-placement="bottom",
+              title=t("Download")
+            )
+              i.fa.fa-file-download
+              = " "
+              = t("Download")
+          //- Only allow remove if
+          //- - pending
+          //- - queued
+          //- - deferred
+          if ['pending','queued','deferred'].includes(email.status)
+            li.list-inline-item
+              form.ajax-form.confirm-prompt(
+                action=l(`/my-account/emails/${email.id}`),
+                method="POST",
+                autocomplete="off"
+              )
+                input(type="hidden", name="_method", value="DELETE")
+                button.btn.btn-danger(
+                  type="submit",
+                  data-toggle="tooltip",
+                  data-title=t("Remove"),
+                  data-placement="bottom"
+                )
+                  i.fa.fa-fw.fa-remove
+                  = " "
+                  = t("Remove")
+        h3.h5= t("Status")
+        p.lead= titleize(humanize(email.status))
+        h3.h5= t("SMTP Envelope")
+        table.table.table-hover.table-bordered.table-striped.table-sm
+          tr
+            th= "CREATED"
+            td: span.dayjs(data-time=email.created_at.getTime())= dayjs(email.created_at).format("M/D/YY h:mm A z")
+          tr
+            th= "DATE"
+            td: span.dayjs(data-time=email.date.getTime())= dayjs(email.date).format("M/D/YY h:mm A z")
+          tr
+            th= "MAIL FROM"
+            td= email.envelope.from
+          tr
+            th= "RCPT TO"
+            td
+              ul.list-inline.mb-0
+                each rcpt in email.envelope.to
+                  li.list-inline-item= rcpt
+          tr
+            th= "MESSAGE-ID"
+            td= email.messageId
+          tr
+            th= "SUBJECT"
+            td= email.subject
+        h3.h5= t("SMTP Response")
+        if email.accepted.length > 0 || email.rejectedErrors.length > 0
+          ul.list-unstyled.alert.alert-secondary
+            each accepted in email.accepted
+              li.list-inline-item.d-inline
+                span.badge.badge-pill.badge-success 250
+                span.small.text-monospace
+                = t("Accepted")
+                = ' '
+                = `(${accepted})`
+            each rejectedError in email.rejectedErrors
+              li
+                if email.envelope.to.length > 1
+                  strong= rejectedError.recipient
+                  = " "
+                - let badgeClass = "badge-success";
+                if rejectedError.responseCode >= 500
+                  - badgeClass = "badge-danger";
+                else if rejectedError.responseCode >= 400
+                  - badgeClass = "badge-warning";
+                else if rejectedError.responseCode >= 300
+                  - badgeClass = "badge-primary";
+                span.badge.badge-pill(class=badgeClass)= rejectedError.responseCode
+                = " "
+                span.small.text-monospace!= rejectedError.response ? ansiHTML(rejectedError.response) : ansiHTML(rejectedError.message)
+        else
+          .alert.alert-warning= t("No response available yet")
+        h3.h5= t("Message Preview")
+        if html
+          .alert.alert-info.small
+            = t("This is a copy of the raw email from initial SMTP submission.")
+          iframe.bg-white.border-dark(
+            sandbox="allow-downloads allow-scripts",
+            referrerpolicy="no-referrer",
+            seamless="seamless",
+            srcdoc=`<base target='_top'>${html}`,
+            height="800",
+            width="100%"
+          )
+        else
+          = t("No email preview is available.")
