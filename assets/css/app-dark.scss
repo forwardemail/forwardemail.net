@@ -40,10 +40,10 @@ $input-disabled-bg:                     $dark;
       fill: white;
     }
     h1, h2, hr {
-      border-bottom: 1px solid $white !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.7) !important;
     }
     table tr {
-      border-top: 1px solid $white !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.7) !important;
     }
   }
   mark, .mark {
