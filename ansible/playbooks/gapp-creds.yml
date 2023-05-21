@@ -1,8 +1,6 @@
 ---
 - hosts: smtp:http:bree
   name: Google Application Credentials
-  become: true
-  become_user: root
   vars_prompt:
     - name: input_profile
       prompt: Enter path to Google application credentials profile file (used for translation with `mandarin`) (e.g. /path/to/client-profile.json)

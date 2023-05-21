@@ -232,7 +232,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 12. Create a SSL certificate at [Namecheap][] (we recommend a 5 year wildcard certificate), set up the certificate, and download and extract the ZIP file with the certificate (emailed to you) to your computer. We do not recommend using tools like [LetsEncrypt][] and `certbot` due to complexity when you have (or scale to) a cluster of servers set up behind load balancers.  In other words, we've tried approaches like `lsyncd` in combination with `crontab` for `certbot` renewals and automatic checking.  Furthermore, using this exposes the server(s) to downtime as ports `80` and `443` may need to be shut down so that `certbot` can use them for certificate generation.  This is not a reliable approach, and simply renewing certificates once a year is vastly simpler and also makes using load balancers trivial.  Instead you can use a provider like [Namecheap][] to get a cheap SSL certificate, then run a few commands as we've documented below. This command will prompt you for an absolute file path to the certificates you downloaded. Renewed your certificate after 1 year? Simply follow this step again.  Do not set a password on the certificate files.  When using the `openssl` command (see Namecheap instructions), you need to use `*.example.com` with an asterisk followed by a period if you are registering a wildcard certificate.
 
     ```sh
-    ansible-playbook ansible/playbooks/certificates.yml
+    ansible-playbook ansible/playbooks/certificates.yml --user deploy
     ```
 
     > **Important:** If you renew or change certificates in the future, then after running the previous command, you will subsequently need to reload the processes as such:
@@ -250,13 +250,13 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 13. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
 
     ```sh
-    ansible-playbook ansible/playbooks/gapp-creds.yml -l 'smtp:http:bree'
+    ansible-playbook ansible/playbooks/gapp-creds.yml -l 'smtp:http:bree' --user deploy
     ```
 
 14. Copy the `.env.production` to the servers:
 
     ```sh
-    node ansible-playbook ansible/playbooks/env.yml -l 'smtp:http:bree'
+    node ansible-playbook ansible/playbooks/env.yml -l 'smtp:http:bree' --user deploy
     ```
 
 15. Run an initial deploy to all the servers:

@@ -1,8 +1,6 @@
 ---
 - hosts: smtp:http:bree
   name: Certificates
-  become: true
-  become_user: root
   vars_prompt:
     - name: input_key
       prompt: Enter path to certificate private key file (e.g. /path/to/example.key)
