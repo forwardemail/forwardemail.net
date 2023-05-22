@@ -17,6 +17,83 @@
     # https://github.com/holms/ansible-fqdn
     - role: fqdn
       fqdn: "{{ lookup('env', 'SMTP_HOST') }}"
+
+# 465 -> 2465
+- hosts: smtp
+  name: SMTP
+  become: true
+  become_user: root
+  tasks:
+    - name: "create socat-465-to-2465"
+      template:
+        src: "{{ playbook_dir }}/templates/socat-465-to-2465.j2"
+        dest: /etc/systemd/system/socat-465-to-2465.service
+        owner: root
+        mode: "0644"
+    - name: "enable socat-465-to-2465"
+      service:
+        daemon_reload: yes
+        name: socat-465-to-2465
+        enabled: true
+        state: started
+
+# 25 -> 2587
+- hosts: smtp
+  name: SMTP
+  become: true
+  become_user: root
+  tasks:
+    - name: "create socat-25-to-2587"
+      template:
+        src: "{{ playbook_dir }}/templates/socat-25-to-2587.j2"
+        dest: /etc/systemd/system/socat-25-to-2587.service
+        owner: root
+        mode: "0644"
+    - name: "enable socat-25-to-2587"
+      service:
+        daemon_reload: yes
+        name: socat-25-to-2587
+        enabled: true
+        state: started
+
+# 587 -> 2587
+- hosts: smtp
+  name: SMTP
+  become: true
+  become_user: root
+  tasks:
+    - name: "create socat-587-to-2587"
+      template:
+        src: "{{ playbook_dir }}/templates/socat-587-to-2587.j2"
+        dest: /etc/systemd/system/socat-587-to-2587.service
+        owner: root
+        mode: "0644"
+    - name: "enable socat-587-to-2587"
+      service:
+        daemon_reload: yes
+        name: socat-587-to-2587
+        enabled: true
+        state: started
+
+# 2525 -> 2587
+- hosts: smtp
+  name: SMTP
+  become: true
+  become_user: root
+  tasks:
+    - name: "create socat-2525-to-2587"
+      template:
+        src: "{{ playbook_dir }}/templates/socat-2525-to-2587.j2"
+        dest: /etc/systemd/system/socat-2525-to-2587.service
+        owner: root
+        mode: "0644"
+    - name: "enable socat-2525-to-2587"
+      service:
+        daemon_reload: yes
+        name: socat-2525-to-2587
+        enabled: true
+        state: started
+
 - hosts: smtp
   name: SMTP
   become: true

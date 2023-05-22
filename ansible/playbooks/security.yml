@@ -47,6 +47,7 @@
     - name: Install deps
       apt:
         name:
+          - socat
           - build-essential
           - curl
           - git

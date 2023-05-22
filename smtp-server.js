@@ -203,6 +203,8 @@ async function onData(stream, _session, fn) {
     // validate alias
     validateAlias(alias);
 
+    // TODO: document storage of outbound SMTP email in FAQ/Privacy
+    //       (it will be retained for 30d after + enable 30d expiry)
     // TODO: document suspension process in Terms of Use
     //       (e.g. after 30d unpaid access, API access restrictions, etc)
     // TODO: suspend domains with has_smtp that have past due balance
@@ -433,6 +435,10 @@ async function onAuth(auth, session, fn) {
     );
   } catch (err) {
     logger.err(err, { session });
+    //
+    // TODO: we should actually share error message if it was not a code bug
+    //       (otherwise it won't be intuitive to users if they're late on payment)
+    //
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L189-L222>
     setImmediate(() =>
       fn(
@@ -523,6 +529,9 @@ class SMTP {
   //
   // NOTE: we port forward 25, 587, and 2525 -> 2587 (and 2587 is itself available)
   // NOTE: we port forward 465 -> 2465 (and 2465 is itself available)
+  // NOTE: on IPv6 we cannot port forward 25, 587, 2525, and 465 since ufw not support REDIRECT for ipv6
+  //       therefore we use socat in a systemd service that's always running
+  //       (this is still a more lightweight approach than having multiple processes running to cover all the ports)
   //
   constructor(options = {}, secure = env.SMTP_PORT === 2465) {
     this.client = options.client;

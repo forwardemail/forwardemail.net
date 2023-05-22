@@ -29,6 +29,45 @@
     # https://github.com/holms/ansible-fqdn
     - role: fqdn
       fqdn: "{{ lookup('env', 'API_HOST') }}"
+
+# 80 -> 8080
+- hosts: 'web:api'
+  name: HTTP
+  become: true
+  become_user: root
+  tasks:
+    - name: "create socat-80-to-8080"
+      template:
+        src: "{{ playbook_dir }}/templates/socat-80-to-8080.j2"
+        dest: /etc/systemd/system/socat-80-to-8080.service
+        owner: root
+        mode: "0644"
+    - name: "enable socat-80-to-8080"
+      service:
+        daemon_reload: yes
+        name: socat-80-to-8080
+        enabled: true
+        state: started
+
+# 443 -> 8443
+- hosts: 'web:api'
+  name: HTTP
+  become: true
+  become_user: root
+  tasks:
+    - name: "create socat-443-to-8443"
+      template:
+        src: "{{ playbook_dir }}/templates/socat-443-to-8443.j2"
+        dest: /etc/systemd/system/socat-443-to-8443.service
+        owner: root
+        mode: "0644"
+    - name: "enable socat-443-to-8443"
+      service:
+        daemon_reload: yes
+        name: socat-443-to-8443
+        enabled: true
+        state: started
+
 - hosts: web:api
   name: HTTP
   become: true
