@@ -3,25 +3,40 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
+const { isEmail } = require('validator');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
-const { Domains } = require('#models');
+const { Users, Domains } = require('#models');
 
 async function list(ctx) {
   const query = {};
 
   // filter based on regex name
-  if (ctx.query.name) {
-    query.$or = [
-      {
-        name: { $regex: ctx.query.name, $options: 'i' }
-      },
-      {
-        name: { $regex: _.escapeRegExp(ctx.query.name), $options: 'i' }
-      }
-    ];
+  if (isSANB(ctx.query.name)) {
+    if (isEmail(ctx.query.name)) {
+      const ids = await Users.distinct('_id', {
+        email: ctx.query.name,
+        [config.userFields.hasVerifiedEmail]: true,
+        [config.userFields.isBanned]: false
+      });
+      query.members = {
+        $elemMatch: {
+          user: { $in: ids },
+          group: 'admin'
+        }
+      };
+    } else {
+      query.$or = [
+        {
+          name: { $regex: ctx.query.name, $options: 'i' }
+        },
+        {
+          name: { $regex: _.escapeRegExp(ctx.query.name), $options: 'i' }
+        }
+      ];
+    }
   }
 
   const [domains, itemCount] = await Promise.all([
