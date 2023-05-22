@@ -37,8 +37,9 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
 
     if (
       !_.isObject(response.body.purchase_units[0]) ||
-      !_.isArray(response.body.purchase_units[0].captures) ||
-      _.isEmpty(response.body.purchase_units[0].captures)
+      !_.isObject(response.body.purchase_units[0].payments) ||
+      !_.isArray(response.body.purchase_units[0].payments.captures) ||
+      _.isEmpty(response.body.purchase_units[0].payments.captures)
     )
       throw new Error('Capture does not exist');
 
