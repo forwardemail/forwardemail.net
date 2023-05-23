@@ -37,6 +37,7 @@ Further, Forward Email does not warrant or make any representations concerning t
 
 <u>**You specifically agree that by using the Service that Forward Email shall not be responsible for, shall not be liable for, and you will not create, read, modify, or transmit any of the following with the Service:**</u>
 
+* **If you are using our [Outbound SMTP](/faq#do-you-support-sending-email-with-smtp) service, then you will only use it for [transactional email](https://wikipedia.org/wiki/Email_marketing#Transactional_emails). You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.**
 * Anything that causes interference with the disruption of the Service, its operations, and/or its customers.
 * Materials that are abusive, defamatory, false, harassing, indecent, libelous, misleading, objectionable, obscene, offensive, profane, threatening, unlawful, and/or vulgar.
 * Unauthorized copyrighted or confidential materials and/or materials that infringe upon intellectual property rights, trade secrets, and/or privacy of others.

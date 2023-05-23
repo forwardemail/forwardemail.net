@@ -4164,5 +4164,12 @@
   "What is your domain name?": "Vad är ditt domännamn?",
   "Enter your custom domain name to continue.": "Ange ditt anpassade domännamn för att fortsätta.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Ett fel uppstod, kontakta oss direkt via e-post på <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-postmeddelanden levereras i genomsnitt på under 5 sekunder. Vi arbetar i realtid, till skillnad från andra leverantörer som förlitar sig på försenade köer."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-postmeddelanden levereras i genomsnitt på under 5 sekunder. Vi arbetar i realtid, till skillnad från andra leverantörer som förlitar sig på försenade köer.",
+  "If you are using our": "Om du använder vår",
+  "Outbound SMTP": "Utgående SMTP",
+  "service, then you will only use it for": "tjänsten kommer du bara att använda den för",
+  "transactional email": "transaktionsmail",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Du är förbjuden att skicka marknadsförings-e-post (t.ex. reklam-, mass- eller kommersiell e-post till en lista med kontakter med samma innehåll). Detta inkluderar exempel som ett nyhetsbrev eller ett massmeddelande via e-post.",
+  "You are only permitted to use our Outbound SMTP service for": "Du har endast tillåtelse att använda vår utgående SMTP-tjänst för",
+  "transactional emails": "transaktionella e-postmeddelanden"
 }

@@ -4164,5 +4164,12 @@
   "What is your domain name?": "Tên miền của bạn là gì?",
   "Enter your custom domain name to continue.": "Nhập tên miền tùy chỉnh của bạn để tiếp tục.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Đã xảy ra lỗi, vui lòng liên hệ trực tiếp với chúng tôi qua email tại <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Email được gửi trung bình dưới 5 giây. Chúng tôi hoạt động trong thời gian thực, không giống như các nhà cung cấp khác dựa vào hàng đợi bị trì hoãn."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Email được gửi trung bình dưới 5 giây. Chúng tôi hoạt động trong thời gian thực, không giống như các nhà cung cấp khác dựa vào hàng đợi bị trì hoãn.",
+  "If you are using our": "Nếu bạn đang sử dụng của chúng tôi",
+  "Outbound SMTP": "SMTP gửi đi",
+  "service, then you will only use it for": "dịch vụ, sau đó bạn sẽ chỉ sử dụng nó cho",
+  "transactional email": "email giao dịch",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Bạn bị cấm gửi email tiếp thị (ví dụ: email quảng cáo, hàng loạt hoặc thương mại đến danh sách liên hệ có cùng nội dung). Điều này bao gồm các ví dụ như bản tin hoặc email thông báo hàng loạt.",
+  "You are only permitted to use our Outbound SMTP service for": "Bạn chỉ được phép sử dụng dịch vụ SMTP gửi đi của chúng tôi cho",
+  "transactional emails": "email giao dịch"
 }

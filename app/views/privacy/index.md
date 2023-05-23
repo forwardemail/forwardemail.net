@@ -12,7 +12,7 @@
 
 ## Information Not Collected
 
-**With the [exception of errors](#do-you-store-error-logs), [outbound SMTP emails](#do-you-support-sending-email-with-smtp), and/or when spam or malicious activity is detected:**
+**With the [exception of errors](/faq#do-you-store-error-logs), [outbound SMTP emails](/faq#do-you-support-sending-email-with-smtp), and/or when spam or malicious activity is detected:**
 
 * We do not store any emails to disk storage nor databases.
 * We do not store any metadata about emails.
@@ -31,7 +31,7 @@ For transparency, at any time you can <a href="https://github.com/forwardemail" 
 * We store your domain names, aliases, and outbound SMTP emails that you provide us with.
 * We store logs for 30 days for website and API traffic.
 * We store `4xx` and `5xx` SMTP response code [error logs](/faq#do-you-store-error-logs) for 7 days.
-* We store [outbound SMTP emails](#do-you-support-sending-email-with-smtp) for \~30 days – this varies based off the "Date" header; since we allow emails to be sent in the future if a future "Date" header exists.
+* We store [outbound SMTP emails](/faq#do-you-support-sending-email-with-smtp) for \~30 days – this varies based off the "Date" header; since we allow emails to be sent in the future if a future "Date" header exists.
 * Any additional information you voluntarily provide us, such as comments or questions submitted to us by email or on our <a href="/help">help</a> page.
 
 

@@ -3853,5 +3853,12 @@
   "What is your domain name?": "你的域名是什么？",
   "Enter your custom domain name to continue.": "输入您的自定义域名以继续。",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "发生错误，请通过电子邮件直接与我们联系，地址为<a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "电子邮件平均在 5 秒内送达。与依赖延迟队列的其他供应商不同，我们实时运作。"
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "电子邮件平均在 5 秒内送达。与依赖延迟队列的其他供应商不同，我们实时运作。",
+  "If you are using our": "如果您使用我们的",
+  "Outbound SMTP": "出站 SMTP",
+  "service, then you will only use it for": "服务，那么您只会将其用于",
+  "transactional email": "交易电子邮件",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ".禁止您发送营销电子邮件（例如，向具有相同内容的联系人列表发送促销、批量或商业电子邮件）。这包括时事通讯或批量公告电子邮件等示例。",
+  "You are only permitted to use our Outbound SMTP service for": "您仅可将我们的出站 SMTP 服务用于",
+  "transactional emails": "交易邮件"
 }

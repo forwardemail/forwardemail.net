@@ -4164,5 +4164,12 @@
   "What is your domain name?": "ชื่อโดเมนของคุณคืออะไร?",
   "Enter your custom domain name to continue.": "ป้อนชื่อโดเมนที่คุณกำหนดเองเพื่อดำเนินการต่อ",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "เกิดข้อผิดพลาด โปรดติดต่อเราโดยตรงทางอีเมลที่ <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "อีเมลถูกส่งโดยเฉลี่ยภายในเวลาไม่ถึง 5 วินาที เราดำเนินการแบบเรียลไทม์ซึ่งแตกต่างจากผู้ให้บริการรายอื่นที่ต้องพึ่งพาคิวที่ล่าช้า"
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "อีเมลถูกส่งโดยเฉลี่ยภายในเวลาไม่ถึง 5 วินาที เราดำเนินการแบบเรียลไทม์ซึ่งแตกต่างจากผู้ให้บริการรายอื่นที่ต้องพึ่งพาคิวที่ล่าช้า",
+  "If you are using our": "หากคุณกำลังใช้ของเรา",
+  "Outbound SMTP": "SMTP ขาออก",
+  "service, then you will only use it for": "บริการแล้วคุณจะใช้สำหรับ",
+  "transactional email": "อีเมลธุรกรรม",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". ห้ามคุณส่งอีเมลการตลาด (เช่น อีเมลส่งเสริมการขาย อีเมลจำนวนมาก หรืออีเมลเชิงพาณิชย์ไปยังรายชื่อผู้ติดต่อที่มีเนื้อหาเดียวกัน) ซึ่งรวมถึงตัวอย่าง เช่น จดหมายข่าวหรืออีเมลประกาศจำนวนมาก",
+  "You are only permitted to use our Outbound SMTP service for": "คุณได้รับอนุญาตให้ใช้บริการ SMTP ขาออกของเราสำหรับ",
+  "transactional emails": "อีเมลธุรกรรม"
 }

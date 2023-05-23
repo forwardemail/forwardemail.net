@@ -4164,5 +4164,12 @@
   "What is your domain name?": "귀하의 도메인 이름은 무엇입니까?",
   "Enter your custom domain name to continue.": "계속하려면 사용자 정의 도메인 이름을 입력하십시오.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "오류가 발생했습니다. <a href=\"mailto:%s\" target=\"_blank\">%s</a> 로 이메일을 보내 직접 문의하십시오.",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "이메일은 평균 5초 이내에 전달됩니다. 우리는 지연된 대기열에 의존하는 다른 공급자와 달리 실시간으로 운영합니다."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "이메일은 평균 5초 이내에 전달됩니다. 우리는 지연된 대기열에 의존하는 다른 공급자와 달리 실시간으로 운영합니다.",
+  "If you are using our": "당신이 우리를 사용하는 경우",
+  "Outbound SMTP": "아웃바운드 SMTP",
+  "service, then you will only use it for": "다음에만 사용하게 됩니다.",
+  "transactional email": "트랜잭션 이메일",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". 귀하는 마케팅 이메일(예: 동일한 콘텐츠가 포함된 연락처 목록에 홍보, 대량 또는 상업 이메일)을 보내는 것이 금지됩니다. 여기에는 뉴스레터 또는 대량 공지 이메일과 같은 예가 포함됩니다.",
+  "You are only permitted to use our Outbound SMTP service for": "아웃바운드 SMTP 서비스는 다음에 대해서만 사용할 수 있습니다.",
+  "transactional emails": "트랜잭션 이메일"
 }

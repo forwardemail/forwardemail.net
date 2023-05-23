@@ -4164,5 +4164,12 @@
   "What is your domain name?": "Alan adınız nedir?",
   "Enter your custom domain name to continue.": "Devam etmek için özel alan adınızı girin.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Bir hata oluştu, lütfen bizimle <a href=\"mailto:%s\" target=\"_blank\">%s</a> adresinden doğrudan e-posta yoluyla iletişime geçin.",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-postalar ortalama 5 saniyenin altında teslim edilir. Gecikmeli kuyruklara dayanan diğer sağlayıcıların aksine, gerçek zamanlı olarak çalışıyoruz."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-postalar ortalama 5 saniyenin altında teslim edilir. Gecikmeli kuyruklara dayanan diğer sağlayıcıların aksine, gerçek zamanlı olarak çalışıyoruz.",
+  "If you are using our": "Eğer bizim",
+  "Outbound SMTP": "Giden SMTP",
+  "service, then you will only use it for": "hizmet, o zaman onu yalnızca",
+  "transactional email": "işlem e-postası",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Pazarlama e-postası (ör. aynı içeriğe sahip bir kişiler listesine promosyon, toplu veya ticari e-posta) göndermeniz yasaktır. Buna haber bülteni veya toplu duyuru e-postası gibi örnekler dahildir.",
+  "You are only permitted to use our Outbound SMTP service for": "Giden SMTP hizmetimizi yalnızca aşağıdakiler için kullanmanıza izin verilir:",
+  "transactional emails": "işlem e-postaları"
 }

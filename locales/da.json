@@ -3898,5 +3898,12 @@
   "What is your domain name?": "Hvad er dit domænenavn?",
   "Enter your custom domain name to continue.": "Indtast dit brugerdefinerede domænenavn for at fortsætte.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Der opstod en fejl. Kontakt os venligst direkte via e-mail på <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-mails leveres i gennemsnit på under 5 sekunder. Vi opererer i realtid, i modsætning til andre udbydere, der er afhængige af forsinkede køer."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-mails leveres i gennemsnit på under 5 sekunder. Vi opererer i realtid, i modsætning til andre udbydere, der er afhængige af forsinkede køer.",
+  "If you are using our": "Hvis du bruger vores",
+  "Outbound SMTP": "Udgående SMTP",
+  "service, then you will only use it for": "service, så skal du kun bruge den til",
+  "transactional email": "transaktions-e-mail",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Det er forbudt at sende marketing-e-mail (f.eks. reklame-, masse- eller kommercielle e-mails til en liste over kontakter med det samme indhold). Dette inkluderer eksempler såsom et nyhedsbrev eller en e-mail med massemeddelelser.",
+  "You are only permitted to use our Outbound SMTP service for": "Du har kun tilladelse til at bruge vores udgående SMTP-tjeneste til",
+  "transactional emails": "transaktionelle e-mails"
 }

@@ -4164,5 +4164,12 @@
   "What is your domain name?": "あなたのドメイン名は何ですか?",
   "Enter your custom domain name to continue.": "カスタム ドメイン名を入力して続行します。",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "エラーが発生しました。 <a href=\"mailto:%s\" target=\"_blank\">%s</a>まで電子メールで直接ご連絡ください。",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "電子メールは平均して 5 秒未満で配信されます。遅延キューに依存する他のプロバイダーとは異なり、当社はリアルタイムで動作します。"
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "電子メールは平均して 5 秒未満で配信されます。遅延キューに依存する他のプロバイダーとは異なり、当社はリアルタイムで動作します。",
+  "If you are using our": "弊社をご利用の場合",
+  "Outbound SMTP": "アウトバウンドSMTP",
+  "service, then you will only use it for": "サービスの場合、次の目的でのみ使用します。",
+  "transactional email": "トランザクションメール",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": "。マーケティング電子メール (同じ内容の連絡先リストに宣伝メール、一括メール、または商用メールなど) を送信することは禁止されています。これには、ニュースレターや一括お知らせメールなどの例が含まれます。",
+  "You are only permitted to use our Outbound SMTP service for": "当社のアウトバウンド SMTP サービスの使用は、次の場合にのみ許可されています。",
+  "transactional emails": "トランザクションメール"
 }

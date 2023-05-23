@@ -4164,5 +4164,12 @@
   "What is your domain name?": "Wat is uw domeinnaam?",
   "Enter your custom domain name to continue.": "Voer uw aangepaste domeinnaam in om door te gaan.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Er is een fout opgetreden. Neem rechtstreeks contact met ons op via e-mail op <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-mails worden gemiddeld binnen 5 seconden afgeleverd. We werken in realtime, in tegenstelling tot andere providers die afhankelijk zijn van vertraagde wachtrijen."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-mails worden gemiddeld binnen 5 seconden afgeleverd. We werken in realtime, in tegenstelling tot andere providers die afhankelijk zijn van vertraagde wachtrijen.",
+  "If you are using our": "Als u gebruik maakt van onze",
+  "Outbound SMTP": "Uitgaande SMTP",
+  "service, then you will only use it for": "dienst, dan gebruik je hem alleen voor",
+  "transactional email": "transactionele e-mail",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Het is verboden om marketing e-mail te sturen (bijv. promotie-, bulk- of commerciële e-mail naar een lijst met contactpersonen met dezelfde inhoud). Dit omvat voorbeelden zoals een nieuwsbrief of een e-mail met bulkaankondigingen.",
+  "You are only permitted to use our Outbound SMTP service for": "U mag onze Outbound SMTP-service alleen gebruiken voor",
+  "transactional emails": "transactionele e-mails"
 }

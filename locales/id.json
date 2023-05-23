@@ -4164,5 +4164,12 @@
   "What is your domain name?": "Apa nama domain Anda?",
   "Enter your custom domain name to continue.": "Masukkan nama domain kustom Anda untuk melanjutkan.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Terjadi kesalahan, harap hubungi kami langsung melalui email di <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Email dikirim rata-rata dalam waktu kurang dari 5 detik. Kami beroperasi secara real-time, tidak seperti penyedia lain yang mengandalkan antrean tertunda."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Email dikirim rata-rata dalam waktu kurang dari 5 detik. Kami beroperasi secara real-time, tidak seperti penyedia lain yang mengandalkan antrean tertunda.",
+  "If you are using our": "Jika Anda menggunakan kami",
+  "Outbound SMTP": "SMTP keluar",
+  "service, then you will only use it for": "service, maka Anda hanya akan menggunakannya untuk",
+  "transactional email": "email transaksional",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Anda dilarang mengirim email pemasaran (misalnya email promosi, massal, atau komersial ke daftar kontak dengan konten yang sama). Ini termasuk contoh seperti buletin atau email pengumuman massal.",
+  "You are only permitted to use our Outbound SMTP service for": "Anda hanya diizinkan untuk menggunakan layanan SMTP Keluar kami untuk",
+  "transactional emails": "email transaksional"
 }

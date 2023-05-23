@@ -4007,5 +4007,12 @@
   "What is your domain name?": "Mikä on verkkotunnuksesi?",
   "Enter your custom domain name to continue.": "Anna mukautettu verkkotunnuksesi nimi jatkaaksesi.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Tapahtui virhe, ota meihin yhteyttä suoraan sähköpostitse osoitteeseen <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Sähköpostit toimitetaan keskimäärin alle 5 sekunnissa. Toimimme reaaliajassa, toisin kuin muut palveluntarjoajat, jotka luottavat viivästyneisiin jonoihin."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Sähköpostit toimitetaan keskimäärin alle 5 sekunnissa. Toimimme reaaliajassa, toisin kuin muut palveluntarjoajat, jotka luottavat viivästyneisiin jonoihin.",
+  "If you are using our": "Jos käytät meidän",
+  "Outbound SMTP": "Lähtevä SMTP",
+  "service, then you will only use it for": "palveluun, käytät sitä vain",
+  "transactional email": "tapahtumasähköposti",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Sinua on kielletty lähettämästä markkinointisähköpostia (esim. mainos-, joukko- tai kaupallisia sähköpostiviestejä samansisältöisille yhteystietoluetteloille). Tämä sisältää esimerkkejä, kuten uutiskirjeen tai joukkoilmoitussähköpostin.",
+  "You are only permitted to use our Outbound SMTP service for": "Sinulla on oikeus käyttää vain lähtevää SMTP-palveluamme",
+  "transactional emails": "tapahtumasähköpostit"
 }

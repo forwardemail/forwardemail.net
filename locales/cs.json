@@ -4164,5 +4164,12 @@
   "What is your domain name?": "Jaký je název vaší domény?",
   "Enter your custom domain name to continue.": "Pokračujte zadáním vlastního názvu domény.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Došlo k chybě, kontaktujte nás prosím přímo e-mailem na <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-maily jsou doručeny v průměru za méně než 5 sekund. Fungujeme v reálném čase, na rozdíl od jiných poskytovatelů, kteří spoléhají na zpožděné fronty."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-maily jsou doručeny v průměru za méně než 5 sekund. Fungujeme v reálném čase, na rozdíl od jiných poskytovatelů, kteří spoléhají na zpožděné fronty.",
+  "If you are using our": "Pokud používáte náš",
+  "Outbound SMTP": "Odchozí SMTP",
+  "service, then you will only use it for": "službu, pak ji budete používat pouze pro",
+  "transactional email": "transakční e-mail",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Je zakázáno posílat marketingové e-maily (např. reklamní, hromadné nebo komerční e-maily na seznam kontaktů se stejným obsahem). To zahrnuje příklady, jako je zpravodaj nebo e-mail s hromadným oznámením.",
+  "You are only permitted to use our Outbound SMTP service for": "Naši službu Outbound SMTP smíte používat pouze pro",
+  "transactional emails": "transakční e-maily"
 }

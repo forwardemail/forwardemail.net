@@ -4164,5 +4164,12 @@
   "What is your domain name?": "מה שם הדומיין שלך?",
   "Enter your custom domain name to continue.": "הזן את שם הדומיין המותאם אישית שלך כדי להמשיך.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "אירעה שגיאה, אנא פנה אלינו ישירות באימייל בכתובת <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "אימיילים נמסרים בממוצע תוך פחות מ-5 שניות. אנו פועלים בזמן אמת, בניגוד לספקים אחרים המסתמכים על תורים מושהים."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "אימיילים נמסרים בממוצע תוך פחות מ-5 שניות. אנו פועלים בזמן אמת, בניגוד לספקים אחרים המסתמכים על תורים מושהים.",
+  "If you are using our": "אם אתה משתמש שלנו",
+  "Outbound SMTP": "SMTP יוצא",
+  "service, then you will only use it for": "השירות, אז תשתמש בו רק עבור",
+  "transactional email": "דוא\"ל עסקה",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". נאסר עליך לשלוח דוא\"ל שיווקי (למשל, דוא\"ל פרסומי, בכמות גדולה או מסחרית לרשימת אנשי קשר עם אותו תוכן). זה כולל דוגמאות כגון ניוזלטר או הודעת דוא\"ל בכמות גדולה.",
+  "You are only permitted to use our Outbound SMTP service for": "אתה רשאי להשתמש בשירות ה-SMTP היוצא שלנו רק עבור",
+  "transactional emails": "אימיילים עסקיים"
 }

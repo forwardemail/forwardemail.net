@@ -4164,5 +4164,12 @@
   "What is your domain name?": "Яке ваше доменне ім'я?",
   "Enter your custom domain name to continue.": "Щоб продовжити, введіть власне доменне ім’я.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Сталася помилка. Зв’яжіться з нами безпосередньо електронною поштою на <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Електронні листи доставляються в середньому менше ніж за 5 секунд. Ми працюємо в режимі реального часу, на відміну від інших провайдерів, які покладаються на відкладені черги."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Електронні листи доставляються в середньому менше ніж за 5 секунд. Ми працюємо в режимі реального часу, на відміну від інших провайдерів, які покладаються на відкладені черги.",
+  "If you are using our": "Якщо ви використовуєте наш",
+  "Outbound SMTP": "Вихідний SMTP",
+  "service, then you will only use it for": "послуги, то ви використовуватимете його лише для",
+  "transactional email": "транзакційна електронна пошта",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Вам заборонено надсилати маркетингові електронні листи (наприклад, рекламні, масові чи комерційні електронні листи до списку контактів з однаковим вмістом). Це включає такі приклади, як інформаційний бюлетень або масове повідомлення електронною поштою.",
+  "You are only permitted to use our Outbound SMTP service for": "Вам дозволено використовувати нашу службу вихідного SMTP лише для",
+  "transactional emails": "транзакційні електронні листи"
 }

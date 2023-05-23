@@ -4164,5 +4164,12 @@
   "What is your domain name?": "Mi a domain neved?",
   "Enter your custom domain name to continue.": "A folytatáshoz adja meg egyéni domain nevét.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Hiba történt. Kérjük, lépjen kapcsolatba velünk közvetlenül a <a href=\"mailto:%s\" target=\"_blank\">%s</a> e-mail címen",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Az e-mailek kézbesítése átlagosan 5 másodpercen belül megtörténik. Valós időben működünk, ellentétben más szolgáltatókkal, amelyek késleltetett sorokra támaszkodnak."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Az e-mailek kézbesítése átlagosan 5 másodpercen belül megtörténik. Valós időben működünk, ellentétben más szolgáltatókkal, amelyek késleltetett sorokra támaszkodnak.",
+  "If you are using our": "Ha használja a mi",
+  "Outbound SMTP": "Kimenő SMTP",
+  "service, then you will only use it for": "szolgáltatást, akkor csak arra fogja használni",
+  "transactional email": "tranzakciós e-mail",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Tilos marketing e-maileket (például promóciós, tömeges vagy kereskedelmi e-maileket) küldeni azonos tartalmú névjegyzéknek. Ide tartoznak például a hírlevél vagy a tömeges bejelentés e-mailjei.",
+  "You are only permitted to use our Outbound SMTP service for": "Kimenő SMTP szolgáltatásunkat csak az alábbi célokra használhatja",
+  "transactional emails": "tranzakciós e-mailek"
 }

@@ -4164,5 +4164,12 @@
   "What is your domain name?": "ما هو اسم النطاق الخاص بك؟",
   "Enter your custom domain name to continue.": "أدخل اسم المجال المخصص الخاص بك للمتابعة.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "حدث خطأ ، يرجى الاتصال بنا مباشرة عبر البريد الإلكتروني على <a href=\"mailto:%s\" target=\"_blank\">٪ s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "يتم تسليم رسائل البريد الإلكتروني في المتوسط في أقل من 5 ثوانٍ. نحن نعمل في الوقت الفعلي ، على عكس مزودي الخدمة الآخرين الذين يعتمدون على قوائم الانتظار المتأخرة."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "يتم تسليم رسائل البريد الإلكتروني في المتوسط في أقل من 5 ثوانٍ. نحن نعمل في الوقت الفعلي ، على عكس مزودي الخدمة الآخرين الذين يعتمدون على قوائم الانتظار المتأخرة.",
+  "If you are using our": "إذا كنت تستخدم",
+  "Outbound SMTP": "SMTP الصادر",
+  "service, then you will only use it for": "الخدمة ، فإنك ستستخدمها فقط من أجل",
+  "transactional email": "البريد الإلكتروني للمعاملات",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". يحظر عليك إرسال بريد إلكتروني تسويقي (مثل البريد الإلكتروني الترويجي أو الجماعي أو التجاري إلى قائمة جهات الاتصال التي لها نفس المحتوى). يتضمن هذا أمثلة مثل النشرة الإخبارية أو البريد الإلكتروني للإعلان الجماعي.",
+  "You are only permitted to use our Outbound SMTP service for": "يُسمح لك فقط باستخدام خدمة SMTP للخارج الخاصة بنا لـ",
+  "transactional emails": "رسائل البريد الإلكتروني للمعاملات"
 }

@@ -4164,5 +4164,12 @@
   "What is your domain name?": "Qual é o seu nome de domínio?",
   "Enter your custom domain name to continue.": "Digite seu nome de domínio personalizado para continuar.",
   "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Ocorreu um erro, entre em contato conosco diretamente por e-mail em <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
-  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Os e-mails são entregues em média em menos de 5 segundos. Operamos em tempo real, ao contrário de outros provedores que dependem de filas atrasadas."
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Os e-mails são entregues em média em menos de 5 segundos. Operamos em tempo real, ao contrário de outros provedores que dependem de filas atrasadas.",
+  "If you are using our": "Se você estiver usando nosso",
+  "Outbound SMTP": "SMTP de saída",
+  "service, then you will only use it for": "serviço, então você só vai usá-lo para",
+  "transactional email": "e-mail transacional",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Você está proibido de enviar e-mail de marketing (por exemplo, e-mail promocional, em massa ou comercial para uma lista de contatos com o mesmo conteúdo). Isso inclui exemplos como um boletim informativo ou um e-mail de anúncio em massa.",
+  "You are only permitted to use our Outbound SMTP service for": "Você só tem permissão para usar nosso serviço SMTP de saída para",
+  "transactional emails": "e-mails transacionais"
 }

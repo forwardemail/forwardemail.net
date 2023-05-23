@@ -685,6 +685,16 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
 
 <div id="smtp-instructions">
 
+<div class="alert alert-primary">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You are only permitted to use our Outbound SMTP service for <a href="https://wikipedia.org/wiki/Email_marketing#Transactional_emails" class="alert-link" rel="noopener noreferrer" target="_blank">transactional emails</a>. You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.
+  </span>
+</div>
+
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
@@ -758,6 +768,16 @@ Please refer to [Do you support sending email with SMTP](#do-you-support-sending
 
 Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
 
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You are only permitted to use our Outbound SMTP service for <a href="https://wikipedia.org/wiki/Email_marketing#Transactional_emails" class="alert-link" rel="noopener noreferrer" target="_blank">transactional emails</a>. You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.
+  </span>
+</div>
+
 Please view our section on [Emails](/email-forwarding-api#emails) in our API documentation for options, examples, and more insight.
 
 In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
@@ -776,7 +796,7 @@ We plan to offer this feature in the near future.
   <span>Less than 10 minutes</span>
 </div>
 
-<div class="alert my-3 alert-success">
+<div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
     Getting Started:
@@ -787,6 +807,16 @@ We plan to offer this feature in the near future.
 </div>
 
 <div id="send-mail-as-content">
+
+<div class="alert alert-primary">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You are only permitted to use our Outbound SMTP service for <a href="https://wikipedia.org/wiki/Email_marketing#Transactional_emails" class="alert-link" rel="noopener noreferrer" target="_blank">transactional emails</a>. You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.
+  </span>
+</div>
 
 1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
 
@@ -839,13 +869,13 @@ We plan to offer this feature in the near future.
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
 
-<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+<div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
   <strong class="font-weight-bold">Estimated Setup Time:</strong>
   <span>Less than 10 minutes</span>
 </div>
 
-<div class="alert my-3 alert-success">
+<div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
     Getting Started:
