@@ -712,7 +712,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
 
 5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
 
-6. When prompted for SMTP server port, enter `587` (TLS) – see [alternate SMTP ports](#what-are-your-smtp-server-configuration-settings) if necessary
+6. When prompted for SMTP server port, enter `587` (TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
 
 7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> in step 3 above
 
