@@ -66,17 +66,13 @@ async function listEmails(ctx) {
     if (_.isDate(domain.smtp_suspended_sent_at))
       throw Boom.badRequest(ctx.translateError('DOMAIN_SUSPENDED'));
 
-    // domain must be enabled
-    if (!domain.has_smtp)
-      throw Boom.badRequest(ctx.translateError('EMAIL_SMTP_ACCESS_REQUIRED'));
-
     // if domain has not yet been setup yet then alert user
     if (
       !ctx.api &&
       (!domain.has_dkim_record ||
         !domain.has_return_path_record ||
         !domain.has_dmarc_record)
-    )
+    ) {
       ctx.flash(
         'warning',
         ctx.translate(
@@ -85,6 +81,18 @@ async function listEmails(ctx) {
           ctx.state.l(`/my-account/domains/${domain.name}/verify-smtp`)
         )
       );
+
+      const redirectTo = ctx.state.l(
+        `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
+      );
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+      return;
+    }
+
+    // domain must be enabled
+    if (!domain.has_smtp)
+      throw Boom.badRequest(ctx.translateError('EMAIL_SMTP_ACCESS_REQUIRED'));
 
     query = {
       $and: [

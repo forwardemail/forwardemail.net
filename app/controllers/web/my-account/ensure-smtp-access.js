@@ -1,10 +1,28 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const isSANB = require('is-string-and-not-blank');
 
-function ensureSMTPAccess(ctx, next) {
+const Domains = require('#models/domains');
+
+async function ensureSMTPAccess(ctx, next) {
   // domain cannot be in suspended domains list
   if (_.isDate(ctx.state.domain.smtp_suspended_sent_at))
     throw Boom.badRequest(ctx.translateError('DOMAIN_SUSPENDED'));
+
+  // safeguard to ensure keys are generated
+  if (
+    !isSANB(ctx.state.domain.dkim_private_key) ||
+    !isSANB(ctx.state.domain.return_path)
+  ) {
+    const domain = await Domains.findById(ctx.state.domain._id);
+    domain.skip_payment_check = true;
+    domain.skip_verification = true;
+    await domain.save();
+    ctx.state.domain.dkim_key_selector = domain.dkim_key_selector;
+    ctx.state.domain.dkim_public_key = domain.dkim_public_key;
+    ctx.state.domain.dkim_private_key = domain.dkim_private_key;
+    ctx.state.domain.return_path = domain.return_path;
+  }
 
   // domain must be enabled
   // if (!ctx.state.domain.has_smtp)
