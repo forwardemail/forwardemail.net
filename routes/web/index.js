@@ -159,6 +159,11 @@ localeRouter
     ctx.redirect(ctx.state.l('/guides/send-mail-as-gmail-custom-domain'));
   })
   .get(
+    '/guides/send-email-with-custom-domain-smtp',
+    web.guides.sendEmailWithCustomDomainSMTP,
+    render('guides/send-email-with-custom-domain-smtp')
+  )
+  .get(
     '/guides/send-mail-as-gmail-custom-domain',
     web.guides.sendMailAs,
     render('guides/send-mail-as-using-gmail')

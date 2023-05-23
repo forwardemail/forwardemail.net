@@ -20,10 +20,10 @@ block body
               span(aria-hidden="true") &times;
           .modal-body
             .lazyframe(
-              title=t("Private Business Email"),
+              title=t("Forward Email's Paid Plans"),
               style="width: 100%; height: 450px",
               data-vendor="youtube_nocookie",
-              data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
+              data-src="https://www.youtube-nocookie.com/embed/c_oHRc5ZoNU?autoplay=0"
             )
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
     .min-vh-80.d-flex.flex-column
@@ -59,7 +59,11 @@ block body
               li
                 i.fa.fa-fw.fa-check-circle.text-success
                 = " "
-                != t('Works with <a class="font-weight-bold text-decoration-underline text-themed text-decoration-underline" target="_blank" href="%s">Gmail</a>, Outlook, and more', l("/guides/send-mail-as-gmail-custom-domain"))
+                = t("Send email with custom domain")
+                = " "
+                a.badge.badge-pill.badge-success.text-uppercase(
+                  href=l("/guides/send-email-with-custom-domain-smtp")
+                )= t("New")
               li
                 i.fa.fa-fw.fa-check-circle.text-success
                 = " "
@@ -81,7 +85,7 @@ block body
               li.list-inline-item
                 if isBot(ctx.get('User-Agent'))
                   a.btn.btn-outline-dark(
-                    href="https://www.youtube.com/watch?v=q7zfEpn2NdA",
+                    href="https://www.youtube.com/watch?v=c_oHRc5ZoNU",
                     target="_blank",
                     rel="noopener noreferrer"
                   )
@@ -93,7 +97,7 @@ block body
                     role="button",
                     data-toggle="modal",
                     data-target="#modal-pricing-video",
-                    href="https://www.youtube.com/watch?v=q7zfEpn2NdA",
+                    href="https://www.youtube.com/watch?v=c_oHRc5ZoNU",
                     target="_blank",
                     rel="noopener noreferrer"
                   )
@@ -104,9 +108,9 @@ block body
             .col-lg-6.d-none.d-lg-block
               .lazyframe.border.border-themed.d-inline-block(
                 data-vendor="youtube_nocookie",
-                title=t("Private Business Email"),
+                title=t("Forward Email's Paid Plans"),
                 style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
-                data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
+                data-src="https://www.youtube-nocookie.com/embed/c_oHRc5ZoNU?autoplay=0"
               )
       a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
         href="#features"
@@ -157,7 +161,7 @@ block body
               li.list-group-item.d-flex.align-items-center.border-top.border-themed.bg-dark.text-white.font-weight-bold
                 i.fa.fa-fw.fa-infinity.text-primary.mr-3
                 = " "
-                = t("Unlimited email aliases")
+                = t("Unlimited domains and aliases")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-shield-alt.text-themed.mr-3
                 = " "
@@ -180,7 +184,10 @@ block body
                 != t("50MB attachment limit")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
-                span!= t('Works with <a class="font-weight-bold text-decoration-underline text-themed" target="_blank" href="%s">Gmail</a>, Outlook, and more', l("/guides/send-mail-as-gmail-custom-domain"))
+                a.font-weight-bold.text-themed.text-decoration-underline(
+                  href=l("/guides/send-email-with-custom-domain-smtp")
+                )
+                  != t("Send email with your custom domain")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 = " "
@@ -509,7 +516,7 @@ block body
         p
           != t('<span class="font-weight-bold">No.</span> We have a <a href="%s" class="font-weight-bold">Privacy</a> policy of not storing SMTP logs, metadata, nor emails (with the exception of <a href="%s">errors</a>).', l("/privacy"), l("/faq#do-you-store-error-logs"))
           = " "
-          = t("You will find that every other email forwarder either stores SMTP logs and writes your emails to disk storage.")
+          = t("You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.")
           = " "
           = t("This common practice is a huge security risk for you, and is another reason why we built our service.")
           = " "

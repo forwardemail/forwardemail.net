@@ -274,6 +274,7 @@ router
     '/domains/:domain_id/aliases/:alias_id/generate-password',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureUpgradedPlan,
+    web.myAccount.ensureSMTPAccess,
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
     rateLimit(20, 'generate alias password'),

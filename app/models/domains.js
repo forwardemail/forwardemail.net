@@ -196,6 +196,7 @@ const Domains = new mongoose.Schema({
   // (e.g. automatic spam responses from Gmail/Apple)
   // (note that this only currently affects outbound SMTP)
   //
+  smtp_verified_at: Date,
   has_smtp: {
     type: Boolean,
     default: false,
@@ -720,6 +721,7 @@ Domains.plugin(mongooseCommonPlugin, {
     'is_api',
     'onboard_email_sent_at',
     'verified_email_sent_at',
+    'smtp_verified_at',
     'has_smtp',
     'smtp_suspended_sent_at',
     'last_checked_at',

@@ -20,16 +20,16 @@ block body
   .container.py-3.py-md-4.py-lg-5
     .row
       .col-12
-        h1.mb-0.text-center!= t("Send Mail As with Gmail")
+        h1.mb-0.text-center!= t("Send Email with Custom Domain")
         .alert.mt-3.mb-0.alert-primary.text-center
-          = t("Not using Gmail?")
+          = t("Are you using Gmail?")
           = " "
-          a.alert-link(href=l("/guides/send-email-with-custom-domain-smtp"))= t("Click here")
+          a.alert-link(href=l("/guides/send-mail-as-gmail-custom-domain"))= t("Click here")
         //-.
           #quick-video-guide.card.mt-3
             h2.h5.card-header.text-center
               if isBot(ctx.get('User-Agent'))
-                = t('How to use Gmail\'s "Send Mail As" with your Custom Domain video')
+                = t('How to send email with your custom domain video')
               else
                 = t("Quick Video Guide")
             .card-body.text-center
@@ -45,33 +45,12 @@ block body
               else
                 .lazyframe.border.border-themed.d-inline-block(
                   data-vendor="youtube_nocookie",
-                  title=t("How to Send Mail As using Gmail"),
+                  title=t("How to send email with your custom domain video"),
                   style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
-                  data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
+                  data-src="https://www.youtube-nocookie.com/embed/TODO?autoplay=0"
                 )
       #step-by-step-instructions.col-12.mt-3
         .card
           h2.h5.card-header.text-center= t("Step by Step Instructions")
           .card-body.markdown-body
-            != sendMailAsContent
-      #legacy-free-guide.col-12.mt-5
-        .card.position-relative
-          .position-absolute.w-100.text-right
-            span.badge.badge-pill.badge-danger.mt-3.mr-3
-              = " "
-              != t("Deprecated")
-          h2.h5.card-header.text-center!= t("Legacy Free Guide")
-          .card-body.markdown-body
-            .alert.alert-danger
-              i.fa.fa-stop-circle.font-weight-bold
-              = " "
-              strong= t("Important:")
-              = " "
-              != t('This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="%s">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="%s">this will cause your outbound email</a> to say <span class="notranslate>"via forwardemail dot net"</span> in Gmail.', l("/faq#do-you-support-sending-email-with-smtp"), l("/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail"))
-            .mx-auto.lazyframe.border.border-themed(
-              data-vendor="youtube_nocookie",
-              title=t("How to Send Mail As using Gmail"),
-              style="border-color: #1d1d1d !important; max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
-              data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
-            )
-            != legacyFreeGuide
+            != sendEmailWithCustomDomainSMTP

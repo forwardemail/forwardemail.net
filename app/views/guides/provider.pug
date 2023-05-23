@@ -1,6 +1,6 @@
 extends ../layout
 
-include ../_onboard
+//-include ../_onboard
 
 block body
   if !isBot(ctx.get('User-Agent'))
@@ -29,8 +29,17 @@ block body
                   i.fa.fa-refresh
                   = " "
                   = t("Verify")
+            else if user
+              a.btn.btn-success.btn-sm(
+                href=l('/my-account/domains')
+              )
+                i.fa.fa-refresh
+                = " "
+                = t("Verify")
             else
-              a.btn.btn-success.btn-sm(href=l("/my-account/domains"))
+              a.btn.btn-success.btn-sm(
+                href=l(`/register?redirect_to=${encodeURIComponent("/my-account/domains")}`)
+              )
                 i.fa.fa-refresh
                 = " "
                 = t("Verify")
@@ -55,11 +64,11 @@ block body
   - const key = ctx.pathWithoutLocale.split("/guides/")[1];
   - const provider = nsProviders.find((obj) => obj.slug === key);
   - const providerId = `how-to-setup-free-email-forwarding-with-${provider.slug}`;
-  +onboard(t(`Free <span class="notranslate">${provider.name}</span> Email Forwarding`), t(`Follow our guide to setup email forwarding with <span class="notranslate">${provider.name}</span> for your domain.`), l('/faq?redirect_to_domain=true'), `#${providerId}`, 'border-bottom')
+  //- +onboard(t(`Free <span class="notranslate">${provider.name}</span> Email Forwarding`), t(`Follow our guide to setup email forwarding with <span class="notranslate">${provider.name}</span> for your domain.`), l('/faq?redirect_to_domain=true'), `#${providerId}`, 'border-bottom')
   .container.pt-5.text-center(id=providerId)
     .row
       .col-12
-        h1.h2.mb-0!= t(`Setup Email with <span class="notranslate">${provider.name}</span>`)
+        h1.h2.mb-0!= t(`<span class="notranslate">${provider.name}</span> Email Setup Guide`)
         .small.text-black.text-themed-50.text-uppercase= t("Follow these two steps below")
         .card.position-relative.mt-3
           if provider && provider.name && provider.url
@@ -148,9 +157,16 @@ block body
                     i.fa.fa-refresh
                     = " "
                     = t("Verify")
+              else if user
+                a.btn.btn-success.btn-sm.d-none.d-md-inline(
+                  href=l('/my-account/domains')
+                )
+                  i.fa.fa-refresh
+                  = " "
+                  = t("Verify")
               else
                 a.btn.btn-success.btn-sm.d-none.d-md-inline(
-                  href=l("/my-account/domains")
+                  href=l(`/register?redirect_to=${encodeURIComponent("/my-account/domains")}`)
                 )
                   i.fa.fa-refresh
                   = " "
@@ -231,7 +247,8 @@ block body
                     td.align-middle: strong.px-2 TXT
                     td.align-middle
                     td.align-middle.text-left.py-3
-                      span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
+                      if !user
+                        span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
                       code#copy-user-txt.d-block.text-themed.text-nowrap
                         = `${config.recordPrefix}=${user ? user.email : "user@gmail.com"}`
                       button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
@@ -257,8 +274,17 @@ block body
                   i.fa.fa-refresh
                   = " "
                   = t("Verify")
+            else if user
+              a.btn.btn-success.btn-lg.btn-block(
+                href=l('/my-account/domains')
+              )
+                i.fa.fa-refresh
+                = " "
+                = t("Verify")
             else
-              a.btn.btn-success.btn-lg.btn-block(href=l("/my-account/domains"))
+              a.btn.btn-success.btn-lg.btn-block(
+                href=l(`/register?redirect_to=${encodeURIComponent("/my-account/domains")}`)
+              )
                 i.fa.fa-refresh
                 = " "
                 = t("Verify")
@@ -287,33 +313,20 @@ block body
   .container.py-3.py-md-4.py-lg-5
     .position-relative
       .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-        //-.
-          .col-12.d-flex
-            .p-3.p-md-5.m-2.mt-lg-0.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-              h2.display-5.font-weight-bold.mb-3= t("Set up your domain for email forwarding")
-              p.lead.mb-3= t("Do you need to configure (or re-configure) this domain name for email forwarding?")
-              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-                href=l(`/faq?domain=${domain.name}#how-do-i-get-started-and-set-up-email-forwarding`),
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                = t("Configure your domain")
-                = " "
-                i.fa.fa-angle-double-right.align-middle
         .col-12.d-flex
-          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
-            p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
+          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.mb-3.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain")
+            p.lead.mb-3!= t("Follow our simple guide for sending email with your custom domain.")
             a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-              href=l("/guides/send-mail-as-gmail-custom-domain"),
+              href=l("/guides/send-email-with-custom-domain-smtp"),
               target="_blank",
               rel="noopener noreferrer"
             )
-              = t("Setup your Gmail")
+              = t("Setup outbound SMTP")
               = " "
               i.fa.fa-angle-double-right.align-middle
         .col-12.d-flex
-          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.m-2.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
             p.lead.mb-3!= t("We are here to answer your questions, but please be sure to read our FAQ section first.")
             a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(

@@ -81,15 +81,19 @@ module.exports = function (config) {
       'Get disposable email forwarding addresses using your custom domain name.'
     ],
     '/guides': [
-      `Guides ${lad}`,
+      `How to Guides ${lad}`,
       'Follow our easy and simple guides and step by step instructions.'
     ],
+    '/guides/send-email-with-custom-domain-smtp': [
+      'How to Send Email Custom Domain Name with SMTP',
+      'Set up email with your custom domain and SMTP configuration.'
+    ],
     '/guides/send-mail-as-gmail-custom-domain': [
-      'Send email with custom domain - Gmail not working?',
+      'How to Send Mail As with Gmail',
       'Set up email with custom domain and Gmail to send mail as. Send mail as not working? Follow our video and instructions to fix the issue.'
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
-      `Port 25 blocked by ISP workaround ${lad}`,
+      `How to fix Port 25 blocked by ISP workaround ${lad}`,
       'Workaround port blocking set by your Internet Service Provider on port 25.'
     ],
     '/domain-registration': [

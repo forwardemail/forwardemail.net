@@ -1,6 +1,10 @@
 # Terms
 
-By accessing this web site, you are agreeing to be bound by these web site Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site. The materials contained in this web site are protected by applicable copyright and trade mark law.
+By accessing this web site, you are agreeing to be bound by these Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.
+
+You must be at least eighteen (18) years of age, or between thirteen (13) and seventeen (17) years of age and using the Service with parental or legal guardian consent and supervision.
+
+<u>**If you do not agree with any of these terms or any of the terms below, you are prohibited from using or accessing this site.**</u>
 
 
 ## Table of Contents
@@ -25,7 +29,22 @@ By accessing this web site, you are agreeing to be bound by these web site Terms
 
 ## Disclaimer
 
-The materials on Forward Email's web site are provided "as is". Forward Email makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties, including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights. Further, Forward Email does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its Internet web site or otherwise relating to such materials or on any sites linked to this site.
+The materials on Forward Email's web site and related services ("Service") are provided "as is".
+
+Forward Email makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties, including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+
+Further, Forward Email does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its Service or otherwise relating to such materials or on any sites linked to this site.
+
+<u>**You specifically agree that by using the Service that Forward Email shall not be responsible for, shall not be liable for, and you will not create, read, modify, or transmit any of the following with the Service:**</u>
+
+* Anything that causes interference with the disruption of the Service, its operations, and/or its customers.
+* Materials that are abusive, defamatory, false, harassing, indecent, libelous, misleading, objectionable, obscene, offensive, profane, threatening, unlawful, and/or vulgar.
+* Unauthorized copyrighted or confidential materials and/or materials that infringe upon intellectual property rights, trade secrets, and/or privacy of others.
+* Anything that encourages criminal conduct, has the potential to cause civil liability, and/or violate any jurisdictions' laws or regulations.
+* Materials that cause harm or has the potential to cause harm to minors, impersonate another individual or entity, and/or misrepresent an affiliation with an individual or entity.
+* Materials that contain spam, viruses, malware, NSFW materials (indecent, provocative, or profane content), corrupted files, and/or any other software or programs that may damage or has the potential to cause harm to an individual, entity, computer, network, government, service, and/or any other matter.
+
+The materials contained in this web site are protected by applicable copyright and trade mark law.
 
 
 ## Unlimited Usage
@@ -91,7 +110,7 @@ The materials appearing on Forward Email's web site could include technical, typ
 
 ## Links
 
-Forward Email has not reviewed all of the sites linked to its Internet web site and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Forward Email of the site. Use of any such linked web site is at the user's own risk.
+Forward Email has not reviewed all of the sites linked to its Service and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Forward Email of the site. Use of any such linked web site is at the user's own risk.
 
 
 ## Site Terms of Use Modifications

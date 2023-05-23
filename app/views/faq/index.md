@@ -6,9 +6,11 @@
 * [How fast is this service](#how-fast-is-this-service)
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
 * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
+* [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
 * [Do you support sending email with API](#do-you-support-sending-email-with-api)
 * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
+* [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
 * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
 * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
@@ -69,7 +71,11 @@
 
 ## How fast is this service
 
-Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues. At no point in time do we write to disk or store emails – everything is done in-memory.
+Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues.
+
+We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
 
 ## How do I get started and set up email forwarding
@@ -359,7 +365,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Option B:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. "hello@example.com" to "user@gmail.com"; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
   </span>
 </div>
 
@@ -677,11 +683,61 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 
 Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
 
-Please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Settings" next to your domain, and then follow the instructions for "Outbound SMTP Configuration".
+<div id="smtp-instructions">
 
-Our SMTP server is `smtp.forwardemail.net`, supports both IPv4 and IPv6, and available over ports `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) – and `465` and `2465` for SSL.
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are a developer, then refer to our <a class="alert-link" href="/email-forwarding-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
+  </span>
+</div>
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be either an alias-specific or a domain-wide (coming soon) generated password.
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+
+4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or an open-source and privacy-focused alternative.</span>
+   </div>
+
+5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
+
+6. When prompted for SMTP server port, enter `587` (TLS) – see [alternate SMTP ports](#what-are-your-smtp-server-configuration-settings) if necessary
+
+7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> in step 3 above
+
+8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
+</div>
+
+</div>
+
+
+## What are your SMTP server configuration settings
+
+Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over ports `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) – and `465` and `2465` for SSL.
 
 |                             Protocol                             | Hostname                |            Ports            |        IPv4        |        IPv6        |
 | :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
@@ -692,6 +748,10 @@ In order to send outbound email with SMTP, the **SMTP user** must be the email a
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Username | `user@example.com`         | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
 | Password | `************************` | Alias-specific or domain-wide (coming soon) generated password.                                                                                                                           |
+
+In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be either an alias-specific or a domain-wide (coming soon) generated password.
+
+Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
 
 
 ## Do you support sending email with API
@@ -710,7 +770,74 @@ We plan to offer this feature in the near future.
 
 ## How to Send Mail As using Gmail
 
-<div class="lazyframe border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" style="border-color: #1d1d1d !important; max-width:100%; border-width:0.5rem !important;width:640px;height:360px" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
+</div>
+
+<div class="alert my-3 alert-success">
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+  </span>
+</div>
+
+<div id="send-mail-as-content">
+
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+
+4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+
+5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+
+6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+7. Uncheck "Treat as an alias"
+
+8. Click "Next Step" to proceed
+
+9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and leave the port as <code>587</code>
+
+10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> in step 3 above
+
+12. Leave the radio button checked for "Secured connection using TLS"
+
+13. Click "Add Account" to proceed
+
+14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+
+15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+
+16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
+</div>
+
+</div>
+
+
+## What is the legacy free guide for Send Mail As using Gmail
+
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate">via forwardemail dot net</span>" in Gmail.</a></div>
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -724,11 +851,13 @@ We plan to offer this feature in the near future.
     Getting Started:
   </strong>
   <span>
-    After you've followed the steps above in <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a> you can follow the video above or the steps below &ndash; in order to "Send Mail As" using your custom domain.
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
   </span>
 </div>
 
-<div id="send-mail-as-content">
+<div class="mx-auto lazyframe border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" style="border-color: #1d1d1d !important; max-width:100%; border-width:0.5rem !important;width:640px;height:360px" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+
+<div id="legacy-free-guide">
 
 1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
 
@@ -737,7 +866,7 @@ We plan to offer this feature in the near future.
 3. When prompted for "Select the app and device you want to generate the app password for":
    * Select "Mail" under the drop-down for "Select app"
    * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. "<hello@example.com>" - this will help you keep track in case you use this service for multiple accounts)
+   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
 
 4. Copy the password to your clipboard that is automatically generated
    <div class="alert my-3 alert-warning">
@@ -754,18 +883,9 @@ We plan to offer this feature in the near future.
 
 6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. "<hello@example.com>")
+7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
 
 8. Uncheck "Treat as an alias"
-   <div class="alert my-3 alert-primary">
-     <i class="fa fa-info-circle font-weight-bold"></i>
-     <strong class="font-weight-bold">
-       Tip:
-     </strong>
-     <span>
-       If you prefer the recipient to reply directly to your Gmail address, then leave this checked. To learn more, <a class="alert-link" href="https://support.google.com/a/answer/1710338" rel="noopener noreferrer" target="_blank">follow these instructions by Gmail</a> on this topic.
-     </span>
-   </div>
 
 9. Click "Next Step" to proceed
 
@@ -784,7 +904,7 @@ We plan to offer this feature in the near future.
 
 12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
 
-13. Leave the radio button checked to "Secured connection using TLS"
+13. Leave the radio button checked for "Secured connection using TLS"
 
 14. Click "Add Account" to proceed
 
@@ -792,30 +912,20 @@ We plan to offer this feature in the near future.
 
 16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You need to do this step and the previous step for the email to be correctly configured.
+17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
 
-</div>
-
-<div class="text-center my-3 my-md-5">
-  <div class="alert my-3 alert-success d-inline-block">
-    <i class="fa fa-check-circle font-weight-bold"></i>
-    <strong class="font-weight-bold">
-      Congratulations!
-    </strong>
-    <span>
-      You've successfully completed all steps.
-    </span>
-  </div>
 </div>
 
 
 ## Why am I not receiving my test emails
 
-If you're sending a test email to yourself using the "Send Mail As" feature, then it will not show up in your inbox due to <a href="https://support.google.com/a/answer/1703601">this widely known official Gmail answer</a>.
+If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-Id" header.
+
+This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
 
 If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
 
-**Still having issues?**  Please file a <a href="/help">Help request</a> so we can help investigate the issue and find a quick resolution.
+**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
 
 
 ## How does your email forwarding system work
@@ -933,11 +1043,26 @@ We do not forward emails to "no-reply" addresses, and any sender attempting to w
 
 Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
 
-* `no-reply@`
-* `no_reply@`
-* `nobody@`
-* `noreplies@`
-* `noreply@`
+* `do-not-reply`
+* `do-not-respond`
+* `do.not.reply`
+* `donotreply`
+* `donotrespond`
+* `dont-reply`
+* `naoresponda`
+* `no-replies`
+* `no-reply`
+* `no-replys`
+* `no.replies`
+* `no.reply`
+* `no.replys`
+* `no_reply`
+* `nobody`
+* `noreplies`
+* `noreply`
+* `noreplys`
+
+This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
 
 ## Do you have an allowlist
@@ -1357,7 +1482,9 @@ However if they do see this message, it's because they were normally used to see
 
 ## Can I remove the via forwardemail dot net in Gmail
 
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+
+As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
 
 Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
 
@@ -2137,12 +2264,16 @@ An error with the proper response code is returned if the file size limit is exc
 
 ## Do you store emails and their contents
 
-No, we do not store logs – with the [exception of errors](#do-you-store-error-logs). See our [Privacy Policy](/privacy).
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
 
 ## Do you store logs of emails
 
-No, we do not store logs – with the [exception of errors](#do-you-store-error-logs).
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
 
 ## Do you store error logs

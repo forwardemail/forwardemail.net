@@ -53,6 +53,15 @@ function fixTableOfContents(content) {
 function fixTableOfContents(content, i18n, options) {
   const root = parse(content);
 
+  // go through all <code> blocks and remove nested <a> tags (convert them to <span>)
+  for (const code of root.querySelectorAll('code')) {
+    const anchor = code.querySelector('a');
+    if (!anchor) continue;
+    anchor.rawTagName = 'span';
+    anchor.removeAttribute('href');
+    content = root.toString();
+  }
+
   const h1 = root.querySelector('h1');
   if (!h1) return content;
 

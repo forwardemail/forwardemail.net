@@ -159,7 +159,7 @@ const Emails = new mongoose.Schema({
 Emails.plugin(mongooseCommonPlugin, {
   object: 'email',
   locale: false,
-  omitExtraFields: ['message', 'locked_by', 'locked_at']
+  omitExtraFields: ['_id', '__v', 'message', 'locked_by', 'locked_at']
 });
 
 // when we query against `locked_at` we also need to query for `$exists: true` for hint to work

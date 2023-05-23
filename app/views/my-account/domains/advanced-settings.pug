@@ -154,9 +154,7 @@ block body
                 +planRequired(false)
                 if _.isDate(domain.smtp_suspended_sent_at)
                   .alert.alert-danger.text-center= t('Domain is suspended from outbound SMTP service, please <a href="alert-link" href="%s">contact us</a> to resolve.', l("/help"))
-                else if !domain.has_smtp && domain.plan !== 'free'
-                  .alert.alert-warning.text-center!= t('Please <a class="alert-link" href="%s">contact us</a> to unlock this feature.', l("/help"))
-                else if domain.has_smtp
+                else
                   if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
                     .alert.alert-success
                       = emoji("tada")
@@ -165,7 +163,7 @@ block body
                   else
                     .alert.alert-danger!= t('You must <a href="%s" class="alert-link">complete setup</a> to send emails via SMTP and API.', l(`/my-account/domains/${domain.name}/verify-smtp`))
               //- Render setup instructions relative to the provider
-              if domain.has_smtp && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
+              if !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
                 .card-footer.text-right
                   ul.list-inline.mb-0
                     li.list-inline-item.mb-3.mb-md-0: a.btn.btn-sm.btn-success(

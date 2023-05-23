@@ -101,9 +101,14 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               = t("Private Business Email")
           li.list-inline-item
             a.btn.btn-link.text-themed.btn-sm(
+              href=l("/guides/send-email-with-custom-domain-smtp"),
+              class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "text-decoration-underline" : ""
+            )= t("Send Email with Custom Domain")
+          li.list-inline-item
+            a.btn.btn-link.text-themed.btn-sm(
               href=l("/guides/send-mail-as-gmail-custom-domain"),
               class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "text-decoration-underline" : ""
-            )= t("Send Email Custom Domain")
+            )= t("Send Mail As with Gmail")
         else
           noscript
             li.list-inline-item
@@ -190,15 +195,25 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
           noscript
             li.nav-item
               a.btn.d-block.text-left(
+                href=l("/guides/send-email-with-custom-domain-smtp"),
+                class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+              )= t("Send Email with Custom Domain")
+            li.nav-item
+              a.btn.d-block.text-left(
                 href=l("/guides/send-mail-as-gmail-custom-domain"),
                 class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-              )= t("Send Email Custom Domain")
+              )= t("Send Mail As with Gmail")
           if isBot(ctx.get('User-Agent'))
+            li.nav-item.no-js
+              a.btn.d-block.text-left(
+                href=l("/guides/send-email-with-custom-domain-smtp"),
+                class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+              )= t("Send Email with Custom Domain")
             li.nav-item.no-js
               a.btn.d-block.text-left(
                 href=l("/guides/send-mail-as-gmail-custom-domain"),
                 class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-              )= t("Send Email Custom Domain")
+              )= t("Send Mail As with Gmail")
           else
             //- TODO: add the /guides page
             li.nav-item.dropdown.no-js
@@ -213,6 +228,11 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               )
                 = t("Guides")
               .dropdown-menu(aria-labelledby="navbar-dropdown-guides")
+                a.dropdown-item(
+                  href=l("/guides/send-email-with-custom-domain-smtp"),
+                  class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
+                )
+                  = t("Send Email with Custom Domain")
                 a.dropdown-item(
                   href=l("/guides/send-mail-as-gmail-custom-domain"),
                   class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "active" : ""
@@ -230,9 +250,14 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
             if isBot(ctx.get('User-Agent'))
               li.nav-item
                 a.btn.btn-outline-dark.d-block.text-left(
+                  href=l("/guides/send-email-with-custom-domain-smtp"),
+                  class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
+                )= t("Send Email with Custom Domain")
+              li.nav-item
+                a.btn.btn-outline-dark.d-block.text-left(
                   href=l("/guides/send-mail-as-gmail-custom-domain"),
                   class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "active" : ""
-                )= t("Send Email Custom Domain")
+                )= t("Send Mail As with Gmail")
             else
               li.nav-item
                 a.btn.d-block.text-left(

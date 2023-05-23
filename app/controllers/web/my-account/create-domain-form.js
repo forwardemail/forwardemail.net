@@ -1,4 +1,5 @@
 function createDomainForm(ctx, next) {
+  const header = ctx.translate('ADD_DOMAIN');
   ctx.state.breadcrumbHeaderCentered = true;
   ctx.state.breadcrumbs = [
     'my-account',
@@ -8,7 +9,8 @@ function createDomainForm(ctx, next) {
       href: ctx.state.l('/my-account/domains')
     },
     {
-      name: ctx.state.t('Add Domain')
+      name: ctx.state.t('Add Domain'),
+      header
     }
   ];
   return next();

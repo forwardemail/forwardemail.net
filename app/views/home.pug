@@ -20,10 +20,10 @@ block body
               span(aria-hidden="true") &times;
           .modal-body
             .lazyframe(
-              title=t("How to create unlimited email addresses and aliases"),
+              title=t("Forward Email's Paid Plans"),
               style="width: 100%; height: 450px",
               data-vendor="youtube_nocookie",
-              data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
+              data-src="https://www.youtube-nocookie.com/embed/c_oHRc5ZoNU?autoplay=0"
             )
     #modal-for-creators.modal.fade(
       tabindex="-1",
@@ -121,7 +121,15 @@ block body
               li.font-weight-bold
                 i.fa.fa-fw.fa-check-circle.text-success
                 = " "
-                != t("No credit card required")
+                != t("No credit card or phone required")
+            li
+              i.fa.fa-fw.fa-check-circle.text-success
+              = " "
+              = t("Send email with custom domain")
+              = " "
+              a.badge.badge-pill.badge-success.text-uppercase(
+                href=l("/guides/send-email-with-custom-domain-smtp")
+              )= t("New")
             li
               i.fa.fa-fw.fa-check-circle.text-success
               = " "
@@ -129,7 +137,7 @@ block body
                 a(href=l("/private-business-email"))
                   = t("Free private business email")
               else
-                != t("Unlimited email aliases")
+                != t("Unlimited domains and aliases")
             li
               i.fa.fa-fw.fa-check-circle.text-success
               = " "
@@ -167,7 +175,7 @@ block body
             li.list-inline-item
               if isBot(ctx.get('User-Agent'))
                 a.btn.btn-outline-dark(
-                  href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
+                  href="https://www.youtube.com/watch?v=c_oHRc5ZoNU",
                   target="_blank",
                   rel="noopener noreferrer"
                 )
@@ -179,7 +187,7 @@ block body
                   role="button",
                   data-toggle="modal",
                   data-target="#modal-watch-video",
-                  href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
+                  href="https://www.youtube.com/watch?v=c_oHRc5ZoNU",
                   target="_blank",
                   rel="noopener noreferrer"
                 )
@@ -190,9 +198,9 @@ block body
           .col-lg-6.d-none.d-lg-block
             .lazyframe.border.d-inline-block(
               data-vendor="youtube_nocookie",
-              title=t("How to create unlimited email addresses and aliases"),
+              title=t("Forward Email's Paid Plans"),
               style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
-              data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
+              data-src="https://www.youtube-nocookie.com/embed/c_oHRc5ZoNU?autoplay=0"
             )
     a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
       href="#learn-more"
@@ -202,7 +210,28 @@ block body
       = t("Learn more")
       = " "
       i.fa.fa-angle-double-down
-  #learn-more.bg-fixed.border-md-top.border-themed.lazyload(
+  #learn-more.bg-dark.py-3.py-md-5.d-block.overflow-hidden
+    h2.display-4.font-weight-bold.text-white.my-3.text-center= t("Unlimited email aliases")
+    .container
+      .row
+        .col-12
+          if isBot(ctx.get('User-Agent'))
+            a.btn.btn-lg.btn-light(
+              href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              i.fab.fa-youtube.text-danger
+              = " "
+              = t("Watch Video")
+          if !isBot(ctx.get('User-Agent'))
+            .lazyframe.border.d-block.mx-auto.mb-3(
+              data-vendor="youtube_nocookie",
+              title=t("How to create unlimited email addresses and aliases"),
+              style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
+              data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
+            )
+  #testimonials.bg-fixed.border-md-top.border-themed.lazyload(
     data-src=manifest("img/art/postcard.svg")
   )
     .text-center.d-block.d-md-none.mt-3
@@ -509,7 +538,7 @@ block body
         .col-12.col-lg-6.d-flex
           .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-themed.bg-md-white.bg-themed.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Privacy-focused")
-            p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs (with the exception of errors), and do not write your emails to disk storage.", l("/faq#do-you-store-error-logs"))
+            p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs (with the exception of errors and outbound SMTP), and do not write your emails to disk storage.", l("/faq#do-you-store-error-logs"))
             a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/privacy")
             )
@@ -588,7 +617,7 @@ block body
       .row
         .col-12.col-md-9.col-lg-8
           p.lead.text-white.mb-3.mb-md-5
-            != t('Unlike other services, we <strong class="font-weight-bold">do not store logs</strong> (with the exception of <a href="%s" target="_blank">errors</a>) and are <strong class="font-weight-bold">100% open-source</strong>.', l("/faq#do-you-store-error-logs"))
+            != t('Unlike other services, we <strong class="font-weight-bold">do not store logs</strong> (with the exception of <a href="%s" target="_blank">errors</a> and <a href="%s" target="_blank">outbound SMTP</a>) and are <strong class="font-weight-bold">100% open-source</strong>.', l("/faq#do-you-store-error-logs"), l("/faq#do-you-support-sending-email-with-smtp"))
             = " "
             != t('We\'re the <strong class= border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
           ul.list-inline

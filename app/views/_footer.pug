@@ -85,12 +85,12 @@ footer.mt-auto
                 )= t('Free business email address')
             li
               a.d-block.text-light.py-2.py-md-0(
+                href=l("/guides/send-email-with-custom-domain-smtp")
+              )= t("Send Email with Custom Domain")
+            li
+              a.d-block.text-light.py-2.py-md-0(
                 href=l("/guides/send-mail-as-gmail-custom-domain")
-              )
-                if isBot(ctx.get('User-Agent'))
-                  = t("Send Email Custom Domain")
-                else
-                  = t("Send Mail As with Gmail")
+              )= t("Send Mail As with Gmail")
             each provider in nsProviders
               li
                 a.d-block.text-light.py-2.py-md-0(

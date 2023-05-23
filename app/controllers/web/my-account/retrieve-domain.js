@@ -85,7 +85,7 @@ async function retrieveDomain(ctx, next) {
     ctx.method === 'GET' &&
     ctx.pathWithoutLocale ===
       `/my-account/domains/${ctx.state.domain.name}/verify-smtp` &&
-    ctx.state.domain.has_smtp &&
+    // ctx.state.domain.has_smtp &&
     !_.isDate(ctx.state.domain.smtp_suspended_sent_at)
   ) {
     try {

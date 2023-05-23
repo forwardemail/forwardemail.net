@@ -117,19 +117,19 @@ block body
                 a.alert-link(
                   href=l(`/my-account/domains/${domain.name}/billing?plan=${user.plan}`)
                 )!= t("Click here to switch &ndash; it's free!")
-    if domain.has_mx_record && domain.has_txt_record && user.email.endsWith('@gmail.com') || user.email.endsWith('@google.com') || user.email.endsWith('@googlemail.com')
+    if domain.has_mx_record && domain.has_txt_record
       .container.mb-3
         .position-relative
           .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
             .col-12.d-flex
               .p-3.p-md-5.mb-3.rounded-lg.border.border-themed.bg-white.bg-themed.border-themed-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-                h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using Gmail (optional)")
-                p.lead.mb-3!= t("Follow our simple guide for sending and receiving emails with your domain, directly inside of Gmail.")
+                h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain using SMTP")
+                p.lead.mb-3!= t("Follow our simple guide for sending email with your custom domain.")
                 a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-                  href=l("/guides/send-mail-as-gmail-custom-domain"),
+                  href=l("/guides/send-email-with-custom-domain-smtp"),
                   target="_blank"
                 )
-                  = t("Setup your Gmail")
+                  = t("Setup outbound SMTP")
                   = " "
                   i.fa.fa-angle-double-right.align-middle
     .container.text-center.mb-3

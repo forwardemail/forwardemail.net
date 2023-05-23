@@ -7,8 +7,8 @@ function ensureSMTPAccess(ctx, next) {
     throw Boom.badRequest(ctx.translateError('DOMAIN_SUSPENDED'));
 
   // domain must be enabled
-  if (!ctx.state.domain.has_smtp)
-    throw Boom.badRequest(ctx.translateError('EMAIL_SMTP_ACCESS_REQUIRED'));
+  // if (!ctx.state.domain.has_smtp)
+  //   throw Boom.badRequest(ctx.translateError('EMAIL_SMTP_ACCESS_REQUIRED'));
 
   return next();
 }

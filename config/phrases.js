@@ -15,6 +15,11 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  SMTP_ACCESS_SUBJECT:
+    'Outbound SMTP for <span class="notranslate">%s</span> is now pending admin approval',
+  SMTP_ACCESS_PENDING:
+    'Your outbound SMTP configuration for <strong class="notranslate">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.',
+  ADD_DOMAIN: 'What is your domain name?',
   CANNOT_CREATE_TOKEN_FOR_CATCHALL: 'Cannot create token for catch-all alias.',
   CANNOT_CREATE_TOKEN_FOR_REGEX: 'Cannot create token for regex alias.',
   ALIAS_GENERATED_PASSWORD:
@@ -125,7 +130,7 @@ module.exports = {
     'We tried to create a new account with this email address, but it already exists.  Please log in with this email address if it belongs to you and then try again.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
-  NO_DOMAINS_EXIST: 'Add a domain name to your account to continue.',
+  NO_DOMAINS_EXIST: 'Enter your custom domain name to continue.',
   NO_ALIASES_EXIST: 'Add a new alias to continue.',
   INVALID_DOMAIN:
     'Domain name was invalid (must be a domain name without protocol, for example "domain.com" instead of "http://domain.com" or an IP address).',
@@ -183,6 +188,8 @@ module.exports = {
     'Your help request has been sent successfully.  You should hear from us soon.  Thank you!',
   UNKNOWN_ERROR:
     'An unknown error has occurred. We have been alerted of this issue. Please try again.',
+  ERROR_OCCURRED_PLEASE_CONTACT_US:
+    'An error occurred, please contact us directly by email at <a href="mailto:%s" target="_blank">%s</a>',
   PASSPORT_MISSING_PASSWORD_ERROR: 'Please enter a password.',
   PASSPORT_ATTEMPT_TOO_SOON_ERROR:
     'Account is currently locked due to rate limiting.  Please try again later.',

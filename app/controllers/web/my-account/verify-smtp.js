@@ -1,6 +1,9 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
+const config = require('#config');
+const env = require('#config/env');
+const emailHelper = require('#helpers/email');
 const { Domains } = require('#models');
 
 // <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
@@ -41,7 +44,7 @@ const DNS_RETRY_CODES = new Set([
 // eslint-disable-next-line complexity
 async function verifySMTP(ctx) {
   try {
-    const domain = await Domains.findById(ctx.state.domain._id);
+    let domain = await Domains.findById(ctx.state.domain._id);
     if (!domain)
       return ctx.throw(
         Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
@@ -141,7 +144,50 @@ async function verifySMTP(ctx) {
     // save the domain
     domain.locale = ctx.locale;
     domain.resolver = ctx.resolver;
-    await domain.save();
+    domain = await domain.save();
+
+    // if we haven't yet sent an email to admins then send it now
+    if (!_.isDate(domain.smtp_verified_at)) {
+      try {
+        // send an email to all admins of the domain
+        const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+        const subject = ctx.translate('SMTP_ACCESS_SUBJECT', domain.name);
+        const message = ctx.translate('SMTP_ACCESS_PENDING', domain.name);
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: obj.to,
+            bcc: config.email.message.from,
+            subject
+          },
+          locals: {
+            message,
+            locale: obj.locale
+          }
+        });
+        // save the date
+        Domains.findByIdAndUpdate(domain._id, {
+          $set: {
+            smtp_verified_at: new Date()
+          }
+        })
+          .then()
+          .catch((err) => ctx.logger.error(err));
+        // flash success message
+        if (!ctx.api) ctx.flash('success', message);
+      } catch (err) {
+        ctx.logger.fatal(err);
+        if (!ctx.api)
+          ctx.flash(
+            'error',
+            ctx.translate(
+              'ERROR_OCCURRED_PLEASE_CONTACT_US',
+              env.EMAIL_DEFAULT_FROM_EMAIL,
+              env.EMAIL_DEFAULT_FROM_EMAIL
+            )
+          );
+      }
+    }
 
     let extra;
 
