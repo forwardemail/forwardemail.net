@@ -28,6 +28,12 @@ async function retrieveAliases(ctx, next) {
                 }
         },
         {
+          description: {
+            $regex: _.escapeRegExp(ctx.query.q.trim()),
+            $options: 'i'
+          }
+        },
+        {
           labels: {
             $regex: _.escapeRegExp(ctx.query.q.trim()),
             $options: 'i'

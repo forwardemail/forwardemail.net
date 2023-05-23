@@ -63,7 +63,7 @@ const throttled = throttle(async (email) => {
   return processEmail({ email, resolver, client });
 });
 
-async function unlockEmails(query) {
+async function sendEmails(query) {
   // eslint-disable-next-line unicorn/no-array-callback-reference
   for await (const email of Emails.find(query)
     .sort({ created_at: -1 })
@@ -115,19 +115,19 @@ async function unlockEmails(query) {
         else logger.warn(new Error('Email does not exist'), { value });
       });
 
-    // every 10m attempt to unlock emails stuck in the queue
+    // every 5s attempt to send emails that are in the queue
     interval = setInterval(
       () =>
-        unlockEmails({
+        sendEmails({
           ...query,
           date: {
             $lte: new Date()
           }
         }),
-      ms('10m')
+      ms('5s')
     );
 
-    unlockEmails({
+    sendEmails({
       ...query,
       date: {
         $lte: new Date()
