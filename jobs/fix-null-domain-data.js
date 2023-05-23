@@ -8,6 +8,7 @@ const { parentPort } = require('worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const isSANB = require('is-string-and-not-blank');
 const Graceful = require('@ladjs/graceful');
 const pMap = require('p-map');
 
@@ -25,37 +26,37 @@ const graceful = new Graceful({
 graceful.listen();
 
 const $or = [];
-const props = [];
 async function mapper(id) {
   const domain = await Domains.findById(id);
   if (!domain) throw new Error('domain does not exist');
-  for (const prop of props) {
-    if (domain[prop] === null) {
-      logger.info(`domain ${domain.id} had null prop of ${prop}`);
-      domain[prop] = undefined;
-    }
+  // if domain does not have DKIM key/selector then create one
+  if (!isSANB(domain.dkim_private_key) || !isSANB(domain.return_path)) {
+    domain.skip_payment_check = true;
+    domain.skip_verification = true;
+    await domain.save();
   }
-
-  domain.skip_verification = true;
-  await domain.save();
 }
 
 (async () => {
   await setupMongoose(logger);
   try {
-    for (const prop of Object.keys(Domains.prototype.schema.paths)) {
-      if (Domains.prototype.schema.paths[prop].instance === 'String') {
-        $or.push({
-          [prop]: { $type: 10 }
-        });
-        props.push(prop);
-      }
-    }
-
     const count = await Domains.countDocuments({ $or });
     logger.info('count', count);
 
-    const ids = await Domains.distinct('_id', { $or });
+    const ids = await Domains.distinct('_id', {
+      $or: [
+        {
+          dkim_private_key: {
+            $exists: false
+          }
+        },
+        {
+          return_path: {
+            $exists: false
+          }
+        }
+      ]
+    });
 
     await pMap(ids, mapper, { concurrency });
   } catch (err) {
