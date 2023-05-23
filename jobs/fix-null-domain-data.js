@@ -25,12 +25,12 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-const $or = [];
 async function mapper(id) {
   const domain = await Domains.findById(id);
   if (!domain) throw new Error('domain does not exist');
   // if domain does not have DKIM key/selector then create one
   if (!isSANB(domain.dkim_private_key) || !isSANB(domain.return_path)) {
+    console.log('saving', domain.name);
     domain.skip_payment_check = true;
     domain.skip_verification = true;
     await domain.save();
@@ -40,23 +40,26 @@ async function mapper(id) {
 (async () => {
   await setupMongoose(logger);
   try {
-    const count = await Domains.countDocuments({ $or });
-    logger.info('count', count);
-
-    const ids = await Domains.distinct('_id', {
+    const query = {
       $or: [
         {
+          plan: { $ne: 'free' },
           dkim_private_key: {
             $exists: false
           }
         },
         {
+          plan: { $ne: 'free' },
           return_path: {
             $exists: false
           }
         }
       ]
-    });
+    };
+    const count = await Domains.countDocuments(query);
+    console.log('count', count);
+
+    const ids = await Domains.distinct('_id', query);
 
     await pMap(ids, mapper, { concurrency });
   } catch (err) {
