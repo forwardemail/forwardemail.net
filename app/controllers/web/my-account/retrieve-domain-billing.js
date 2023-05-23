@@ -429,7 +429,8 @@ async function retrieveDomainBilling(ctx) {
       // validate session exists
       if (!session) throw ctx.translateError('UNKNOWN_ERROR');
 
-      ctx.logger.info('stripe.checkout.sessions.retrieve', { session });
+      // TODO: <https://github.com/stripe/stripe-node/issues/1796>
+      // ctx.logger.info('stripe.checkout.sessions.retrieve', { session });
 
       // if the session was still in setup mode then it's an obvious error
       if (
@@ -560,7 +561,8 @@ async function retrieveDomainBilling(ctx) {
 
             // never would happen but just having it here
             if (invoices.has_more) {
-              ctx.logger.fatal(new Error('Invoices had more', { session }));
+              // TODO: <https://github.com/stripe/stripe-node/issues/1796>
+              // ctx.logger.fatal(new Error('Invoices had more', { session }));
             } else {
               invoices.data = _.sortBy(invoices.data, 'created');
 
