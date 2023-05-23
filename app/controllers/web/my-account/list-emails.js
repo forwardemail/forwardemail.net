@@ -83,7 +83,7 @@ async function listEmails(ctx) {
       );
 
       const redirectTo = ctx.state.l(
-        `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
+        `/my-account/domains/${domain.name}/advanced-settings`
       );
       if (ctx.accepts('html')) ctx.redirect(redirectTo);
       else ctx.body = { redirectTo };
