@@ -4006,5 +4006,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "Lähtevän SMTP-määrityksesi kohteelle <strong class=\"notranslate\">%s</strong> on vahvistettu ja odottaa nyt järjestelmänvalvojan hyväksyntää. Meille on ilmoitettu, ja saat seurantaviestin heti, kun järjestelmänvalvoja tarkistaa nämä tiedot.",
   "What is your domain name?": "Mikä on verkkotunnuksesi?",
   "Enter your custom domain name to continue.": "Anna mukautettu verkkotunnuksesi nimi jatkaaksesi.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Tapahtui virhe, ota meihin yhteyttä suoraan sähköpostitse osoitteeseen <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Tapahtui virhe, ota meihin yhteyttä suoraan sähköpostitse osoitteeseen <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Sähköpostit toimitetaan keskimäärin alle 5 sekunnissa. Toimimme reaaliajassa, toisin kuin muut palveluntarjoajat, jotka luottavat viivästyneisiin jonoihin."
 }

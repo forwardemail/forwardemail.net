@@ -71,7 +71,7 @@
 
 ## How fast is this service
 
-Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon on delayed queues.
+Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.
 
 We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 

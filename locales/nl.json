@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "Uw uitgaande SMTP-configuratie voor <strong class=\"notranslate\">%s</strong> is met succes geverifieerd en wacht nu op goedkeuring door de beheerder. We zijn op de hoogte gesteld en u ontvangt een vervolgmail zodra een beheerder deze informatie heeft beoordeeld.",
   "What is your domain name?": "Wat is uw domeinnaam?",
   "Enter your custom domain name to continue.": "Voer uw aangepaste domeinnaam in om door te gaan.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Er is een fout opgetreden. Neem rechtstreeks contact met ons op via e-mail op <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Er is een fout opgetreden. Neem rechtstreeks contact met ons op via e-mail op <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-mails worden gemiddeld binnen 5 seconden afgeleverd. We werken in realtime, in tegenstelling tot andere providers die afhankelijk zijn van vertraagde wachtrijen."
 }

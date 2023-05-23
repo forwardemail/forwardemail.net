@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "A <strong class=\"notranslate\">%s</strong> kimenő SMTP konfigurációját sikeresen ellenőriztük, és jelenleg adminisztrátori jóváhagyásra vár. Értesítést kaptunk, és e-mailt fogunk kapni, amint egy adminisztrátor áttekinti ezt az információt.",
   "What is your domain name?": "Mi a domain neved?",
   "Enter your custom domain name to continue.": "A folytatáshoz adja meg egyéni domain nevét.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Hiba történt. Kérjük, lépjen kapcsolatba velünk közvetlenül a <a href=\"mailto:%s\" target=\"_blank\">%s</a> e-mail címen"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Hiba történt. Kérjük, lépjen kapcsolatba velünk közvetlenül a <a href=\"mailto:%s\" target=\"_blank\">%s</a> e-mail címen",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Az e-mailek kézbesítése átlagosan 5 másodpercen belül megtörténik. Valós időben működünk, ellentétben más szolgáltatókkal, amelyek késleltetett sorokra támaszkodnak."
 }

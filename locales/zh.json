@@ -3852,5 +3852,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "<strong class=\"notranslate\">%s</strong>的出站 SMTP 配置已成功验证，现在正在等待管理员批准。我们已收到通知，一旦管理员审核此信息，您将收到一封跟进电子邮件。",
   "What is your domain name?": "你的域名是什么？",
   "Enter your custom domain name to continue.": "输入您的自定义域名以继续。",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "发生错误，请通过电子邮件直接与我们联系，地址为<a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "发生错误，请通过电子邮件直接与我们联系，地址为<a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "电子邮件平均在 5 秒内送达。与依赖延迟队列的其他供应商不同，我们实时运作。"
 }

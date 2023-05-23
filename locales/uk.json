@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "Вашу вихідну конфігурацію SMTP для <strong class=\"notranslate\">%s</strong> було успішно перевірено та зараз очікує на затвердження адміністратором. Ми отримали сповіщення, і ви отримаєте електронний лист, щойно адміністратор перевірить цю інформацію.",
   "What is your domain name?": "Яке ваше доменне ім'я?",
   "Enter your custom domain name to continue.": "Щоб продовжити, введіть власне доменне ім’я.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Сталася помилка. Зв’яжіться з нами безпосередньо електронною поштою на <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Сталася помилка. Зв’яжіться з нами безпосередньо електронною поштою на <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Електронні листи доставляються в середньому менше ніж за 5 секунд. Ми працюємо в режимі реального часу, на відміну від інших провайдерів, які покладаються на відкладені черги."
 }

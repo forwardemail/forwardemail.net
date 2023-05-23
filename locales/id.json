@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "Konfigurasi SMTP keluar Anda untuk <strong class=\"notranslate\">%s</strong> telah berhasil diverifikasi dan sekarang sedang menunggu persetujuan admin. Kami telah diberi tahu dan Anda akan menerima email tindak lanjut segera setelah admin meninjau informasi ini.",
   "What is your domain name?": "Apa nama domain Anda?",
   "Enter your custom domain name to continue.": "Masukkan nama domain kustom Anda untuk melanjutkan.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Terjadi kesalahan, harap hubungi kami langsung melalui email di <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Terjadi kesalahan, harap hubungi kami langsung melalui email di <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Email dikirim rata-rata dalam waktu kurang dari 5 detik. Kami beroperasi secara real-time, tidak seperti penyedia lain yang mengandalkan antrean tertunda."
 }

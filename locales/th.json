@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "การกำหนดค่า SMTP ขาออกของคุณสำหรับ <strong class=\"notranslate\">%s</strong> ได้รับการยืนยันเรียบร้อยแล้ว และกำลังรอการอนุมัติจากผู้ดูแลระบบ เราได้รับแจ้งแล้ว และคุณจะได้รับอีเมลติดตามทันทีที่ผู้ดูแลระบบตรวจทานข้อมูลนี้",
   "What is your domain name?": "ชื่อโดเมนของคุณคืออะไร?",
   "Enter your custom domain name to continue.": "ป้อนชื่อโดเมนที่คุณกำหนดเองเพื่อดำเนินการต่อ",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "เกิดข้อผิดพลาด โปรดติดต่อเราโดยตรงทางอีเมลที่ <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "เกิดข้อผิดพลาด โปรดติดต่อเราโดยตรงทางอีเมลที่ <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "อีเมลถูกส่งโดยเฉลี่ยภายในเวลาไม่ถึง 5 วินาที เราดำเนินการแบบเรียลไทม์ซึ่งแตกต่างจากผู้ให้บริการรายอื่นที่ต้องพึ่งพาคิวที่ล่าช้า"
 }

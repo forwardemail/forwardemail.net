@@ -4168,5 +4168,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "Din utgående SMTP-konfigurasjon for <strong class=\"notranslate\">%s</strong> ble bekreftet og venter nå på administratorgodkjenning. Vi har blitt varslet og du vil motta en oppfølgings-e-post så snart en administrator vurderer denne informasjonen.",
   "What is your domain name?": "Hva er ditt domenenavn?",
   "Enter your custom domain name to continue.": "Skriv inn ditt egendefinerte domenenavn for å fortsette.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Det oppsto en feil, vennligst kontakt oss direkte på e-post på <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Det oppsto en feil, vennligst kontakt oss direkte på e-post på <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-poster leveres i gjennomsnitt på under 5 sekunder. Vi opererer i sanntid, i motsetning til andre leverandører som er avhengige av forsinkede køer."
 }

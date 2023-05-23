@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "<strong class=\"notranslate\">%s</strong> için giden SMTP yapılandırmanız başarıyla doğrulandı ve şu anda yönetici onayı bekliyor. Biz bilgilendirildik ve bir yönetici bu bilgileri inceler incelemez bir takip e-postası alacaksınız.",
   "What is your domain name?": "Alan adınız nedir?",
   "Enter your custom domain name to continue.": "Devam etmek için özel alan adınızı girin.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Bir hata oluştu, lütfen bizimle <a href=\"mailto:%s\" target=\"_blank\">%s</a> adresinden doğrudan e-posta yoluyla iletişime geçin."
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Bir hata oluştu, lütfen bizimle <a href=\"mailto:%s\" target=\"_blank\">%s</a> adresinden doğrudan e-posta yoluyla iletişime geçin.",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-postalar ortalama 5 saniyenin altında teslim edilir. Gecikmeli kuyruklara dayanan diğer sağlayıcıların aksine, gerçek zamanlı olarak çalışıyoruz."
 }

@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "Vaše odchozí konfigurace SMTP pro <strong class=\"notranslate\">%s</strong> byla úspěšně ověřena a nyní čeká na schválení správcem. Byli jsme upozorněni a jakmile správce tyto informace zkontroluje, obdržíte následný e-mail.",
   "What is your domain name?": "Jaký je název vaší domény?",
   "Enter your custom domain name to continue.": "Pokračujte zadáním vlastního názvu domény.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Došlo k chybě, kontaktujte nás prosím přímo e-mailem na <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Došlo k chybě, kontaktujte nás prosím přímo e-mailem na <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-maily jsou doručeny v průměru za méně než 5 sekund. Fungujeme v reálném čase, na rozdíl od jiných poskytovatelů, kteří spoléhají na zpožděné fronty."
 }

@@ -3174,5 +3174,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "Ihre ausgehende SMTP-Konfiguration für <strong class=\"notranslate\">%s</strong> wurde erfolgreich überprüft und wartet nun auf die Genehmigung durch den Administrator. Wir wurden benachrichtigt und Sie erhalten eine Folge-E-Mail, sobald ein Administrator diese Informationen überprüft.",
   "What is your domain name?": "Wie lautet Ihr Domainname?",
   "Enter your custom domain name to continue.": "Geben Sie Ihren benutzerdefinierten Domänennamen ein, um fortzufahren.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Es ist ein Fehler aufgetreten. Bitte kontaktieren Sie uns direkt per E-Mail unter <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Es ist ein Fehler aufgetreten. Bitte kontaktieren Sie uns direkt per E-Mail unter <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "E-Mails werden im Durchschnitt in weniger als 5 Sekunden zugestellt. Wir arbeiten in Echtzeit, im Gegensatz zu anderen Anbietern, die auf verzögerte Warteschlangen angewiesen sind."
 }

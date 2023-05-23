@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "<strong class=\"notranslate\">%s</strong> 에 대한 아웃바운드 SMTP 구성이 성공적으로 확인되었으며 현재 관리자 승인을 대기 중입니다. 우리는 알림을 받았으며 관리자가 이 정보를 검토하는 즉시 후속 이메일을 받게 됩니다.",
   "What is your domain name?": "귀하의 도메인 이름은 무엇입니까?",
   "Enter your custom domain name to continue.": "계속하려면 사용자 정의 도메인 이름을 입력하십시오.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "오류가 발생했습니다. <a href=\"mailto:%s\" target=\"_blank\">%s</a> 로 이메일을 보내 직접 문의하십시오."
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "오류가 발생했습니다. <a href=\"mailto:%s\" target=\"_blank\">%s</a> 로 이메일을 보내 직접 문의하십시오.",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "이메일은 평균 5초 이내에 전달됩니다. 우리는 지연된 대기열에 의존하는 다른 공급자와 달리 실시간으로 운영합니다."
 }

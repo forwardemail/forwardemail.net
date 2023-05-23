@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "<strong class=\"notranslate\">%s</strong>の送信 SMTP 構成は正常に検証され、現在管理者の承認待ちです。通知を受けており、管理者がこの情報を確認次第、フォローアップ メールが届きます。",
   "What is your domain name?": "あなたのドメイン名は何ですか?",
   "Enter your custom domain name to continue.": "カスタム ドメイン名を入力して続行します。",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "エラーが発生しました。 <a href=\"mailto:%s\" target=\"_blank\">%s</a>まで電子メールで直接ご連絡ください。"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "エラーが発生しました。 <a href=\"mailto:%s\" target=\"_blank\">%s</a>まで電子メールで直接ご連絡ください。",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "電子メールは平均して 5 秒未満で配信されます。遅延キューに依存する他のプロバイダーとは異なり、当社はリアルタイムで動作します。"
 }

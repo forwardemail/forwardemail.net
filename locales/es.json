@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "Su configuración de SMTP saliente para <strong class=\"notranslate\">%s</strong> se verificó con éxito y ahora está pendiente de aprobación del administrador. Hemos sido notificados y recibirá un correo electrónico de seguimiento tan pronto como un administrador revise esta información.",
   "What is your domain name?": "¿Cuál es el nombre de tu dominio?",
   "Enter your custom domain name to continue.": "Ingrese su nombre de dominio personalizado para continuar.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Ocurrió un error, contáctenos directamente por correo electrónico a <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Ocurrió un error, contáctenos directamente por correo electrónico a <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Los correos electrónicos se entregan en promedio en menos de 5 segundos. Operamos en tiempo real, a diferencia de otros proveedores que dependen de colas retrasadas."
 }

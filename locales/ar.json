@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "تم التحقق بنجاح من تكوين SMTP الصادر لـ <strong class=\"notranslate\">%s</strong> وهو الآن في انتظار موافقة المسؤول. لقد تم إخطارنا وستتلقى رسالة متابعة عبر البريد الإلكتروني بمجرد أن يراجع المسؤول هذه المعلومات.",
   "What is your domain name?": "ما هو اسم النطاق الخاص بك؟",
   "Enter your custom domain name to continue.": "أدخل اسم المجال المخصص الخاص بك للمتابعة.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "حدث خطأ ، يرجى الاتصال بنا مباشرة عبر البريد الإلكتروني على <a href=\"mailto:%s\" target=\"_blank\">٪ s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "حدث خطأ ، يرجى الاتصال بنا مباشرة عبر البريد الإلكتروني على <a href=\"mailto:%s\" target=\"_blank\">٪ s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "يتم تسليم رسائل البريد الإلكتروني في المتوسط في أقل من 5 ثوانٍ. نحن نعمل في الوقت الفعلي ، على عكس مزودي الخدمة الآخرين الذين يعتمدون على قوائم الانتظار المتأخرة."
 }

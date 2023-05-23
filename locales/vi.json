@@ -4163,5 +4163,6 @@
   "Your outbound SMTP configuration for <strong class=\"notranslate\">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.": "Cấu hình SMTP gửi đi của bạn cho <strong class=\"notranslate\">%s</strong> đã được xác minh thành công và hiện đang chờ quản trị viên phê duyệt. Chúng tôi đã được thông báo và bạn sẽ nhận được email theo dõi ngay sau khi quản trị viên xem xét thông tin này.",
   "What is your domain name?": "Tên miền của bạn là gì?",
   "Enter your custom domain name to continue.": "Nhập tên miền tùy chỉnh của bạn để tiếp tục.",
-  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Đã xảy ra lỗi, vui lòng liên hệ trực tiếp với chúng tôi qua email tại <a href=\"mailto:%s\" target=\"_blank\">%s</a>"
+  "An error occurred, please contact us directly by email at <a href=\"mailto:%s\" target=\"_blank\">%s</a>": "Đã xảy ra lỗi, vui lòng liên hệ trực tiếp với chúng tôi qua email tại <a href=\"mailto:%s\" target=\"_blank\">%s</a>",
+  "Emails are delivered on average in under 5 seconds.  We operate in real-time, unlike other providers which rely upon delayed queues.": "Email được gửi trung bình dưới 5 giây. Chúng tôi hoạt động trong thời gian thực, không giống như các nhà cung cấp khác dựa vào hàng đợi bị trì hoãn."
 }
