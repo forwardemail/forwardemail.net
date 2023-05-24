@@ -67,26 +67,65 @@ async function lookup(ctx) {
       $or: [
         {
           domain: domain._id,
-          user: { $in: paidUsers },
-          ...(username ? { name: username } : {})
-        },
-        {
-          domain: domain._id,
-          user: { $in: adminUsers },
+          user: { $in: [...paidUsers, ...adminUsers] },
           ...(username ? { name: username } : {})
         }
       ]
     };
+
+    // for catch-all
+    // for regex-based
+    if (username) {
+      aliasQuery.$or.push(
+        {
+          domain: domain._id,
+          user: { $in: [...paidUsers, ...adminUsers] },
+          name: '*'
+        },
+        {
+          domain: domain._id,
+          user: { $in: [...paidUsers, ...adminUsers] },
+          name: {
+            $regex: /^\//,
+            $options: 'i'
+          }
+        }
+      );
+    }
   } else {
     const bannedUserIds = await Users.distinct('_id', {
       [config.userFields.isBanned]: true
     });
 
     aliasQuery = {
-      domain: domain._id,
-      user: { $nin: bannedUserIds },
-      ...(username ? { name: username } : {})
+      $or: [
+        {
+          domain: domain._id,
+          user: { $nin: bannedUserIds },
+          ...(username ? { name: username } : {})
+        }
+      ]
     };
+
+    // for catch-all
+    // for regex-based
+    if (username) {
+      aliasQuery.$or.push(
+        {
+          domain: domain._id,
+          user: { $nin: bannedUserIds },
+          name: '*'
+        },
+        {
+          domain: domain._id,
+          user: { $nin: bannedUserIds },
+          name: {
+            $regex: /^\//,
+            $options: 'i'
+          }
+        }
+      );
+    }
   }
 
   // safeguard to prevent returning all aliases
