@@ -4174,5 +4174,9 @@
   "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "In tegenstelling tot andere services <strong class=\"font-weight-bold\">slaan we geen logboeken op</strong> (met uitzondering van <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">fouten</a> en <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">uitgaande SMTP</a> ) en zijn we <strong class=\"font-weight-bold\">100% open-source</strong> .",
   "We do not share your information with any third parties.": "Wij delen uw gegevens niet met derden.",
   "Recipient is blocked from sending mail to.": "Ontvanger is geblokkeerd voor het verzenden van e-mail naar.",
-  "All recipients are blocked from sending mail to.": "Alle ontvangers zijn geblokkeerd voor het verzenden van e-mail naar."
+  "All recipients are blocked from sending mail to.": "Alle ontvangers zijn geblokkeerd voor het verzenden van e-mail naar.",
+  "Cannot create catch-all on global domain.": "Kan geen catch-all maken op globaal domein.",
+  "Cannot create regex on global domain.": "Kan regex niet maken op globaal domein.",
+  "Cannot create catch-all on domain due to large alias volume size.": "Kan geen catch-all maken op het domein vanwege de grote omvang van het aliasvolume.",
+  "Cannot create regex on domain due to large alias volume size.": "Kan regex niet maken op domein vanwege groot aliasvolume."
 }

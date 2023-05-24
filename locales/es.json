@@ -4174,5 +4174,9 @@
   "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "A diferencia de otros servicios, <strong class=\"font-weight-bold\">no almacenamos registros</strong> (con la excepción de <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errores</a> y <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">SMTP saliente</a> ) y somos <strong class=\"font-weight-bold\">100% de código abierto</strong> .",
   "We do not share your information with any third parties.": "No compartimos su información con terceros.",
   "Recipient is blocked from sending mail to.": "El destinatario no puede enviar correo a.",
-  "All recipients are blocked from sending mail to.": "Se bloquea el envío de correo a todos los destinatarios."
+  "All recipients are blocked from sending mail to.": "Se bloquea el envío de correo a todos los destinatarios.",
+  "Cannot create catch-all on global domain.": "No se puede crear catch-all en el dominio global.",
+  "Cannot create regex on global domain.": "No se pueden crear expresiones regulares en el dominio global.",
+  "Cannot create catch-all on domain due to large alias volume size.": "No se puede crear catch-all en el dominio debido al gran tamaño del volumen del alias.",
+  "Cannot create regex on domain due to large alias volume size.": "No se pueden crear expresiones regulares en el dominio debido al gran tamaño del volumen del alias."
 }

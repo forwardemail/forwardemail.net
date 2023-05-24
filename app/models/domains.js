@@ -190,6 +190,13 @@ const Domains = new mongoose.Schema({
     default: true
   },
 
+  // on larger domains with 10K+ aliases (or global domains)
+  // we prohibit catch-all aliases
+  is_catchall_regex_disabled: {
+    type: Boolean,
+    default: false
+  },
+
   //
   // domains can be individually suspended by admins
   // or automatically by SMTP outbound responses

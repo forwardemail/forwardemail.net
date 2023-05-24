@@ -15,6 +15,12 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  CANNOT_CREATE_CATCHALL_ON_GLOBAL: 'Cannot create catch-all on global domain.',
+  CANNOT_CREATE_REGEX_ON_GLOBAL: 'Cannot create regex on global domain.',
+  CANNOT_CREATE_CATCHALL_ON_DOMAIN:
+    'Cannot create catch-all on domain due to large alias volume size.',
+  CANNOT_CREATE_REGEX_ON_DOMAIN:
+    'Cannot create regex on domain due to large alias volume size.',
   ALL_RECIPIENTS_BLOCKED: 'All recipients are blocked from sending mail to.',
   RECIPIENT_BLOCKED: 'Recipient is blocked from sending mail to.',
   SMTP_ACCESS_SUBJECT:

@@ -4174,5 +4174,9 @@
   "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "שלא כמו שירותים אחרים, אנחנו <strong class=\"font-weight-bold\">לא מאחסנים יומנים</strong> (למעט <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">שגיאות</a> ו- <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">SMTP יוצא</a> ) והם <strong class=\"font-weight-bold\">100% קוד פתוח</strong> .",
   "We do not share your information with any third parties.": "איננו חולקים את המידע שלך עם צדדים שלישיים כלשהם.",
   "Recipient is blocked from sending mail to.": "הנמען חסום מלשלוח אליו דואר.",
-  "All recipients are blocked from sending mail to.": "כל הנמענים חסומים מלשלוח דואר אל."
+  "All recipients are blocked from sending mail to.": "כל הנמענים חסומים מלשלוח דואר אל.",
+  "Cannot create catch-all on global domain.": "לא ניתן ליצור תמצית בדומיין הגלובלי.",
+  "Cannot create regex on global domain.": "לא ניתן ליצור ביטוי רגולרי בדומיין הגלובלי.",
+  "Cannot create catch-all on domain due to large alias volume size.": "לא ניתן ליצור Catch-all בדומיין בגלל נפח כינוי גדול.",
+  "Cannot create regex on domain due to large alias volume size.": "לא ניתן ליצור ביטוי רגולרי בדומיין עקב גודל נפח כינוי גדול."
 }

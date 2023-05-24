@@ -4174,5 +4174,9 @@
   "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "На відміну від інших служб, ми <strong class=\"font-weight-bold\">не зберігаємо журнали</strong> (за винятком <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">помилок</a> і <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">вихідних SMTP</a> ) і є <strong class=\"font-weight-bold\">на 100% відкритим кодом</strong> .",
   "We do not share your information with any third parties.": "Ми не передаємо вашу інформацію третім особам.",
   "Recipient is blocked from sending mail to.": "Одержувачу заборонено надсилати пошту.",
-  "All recipients are blocked from sending mail to.": "Усім одержувачам заборонено надсилати пошту."
+  "All recipients are blocked from sending mail to.": "Усім одержувачам заборонено надсилати пошту.",
+  "Cannot create catch-all on global domain.": "Неможливо створити універсальний домен у глобальному домені.",
+  "Cannot create regex on global domain.": "Неможливо створити регулярний вираз у глобальному домені.",
+  "Cannot create catch-all on domain due to large alias volume size.": "Неможливо створити всеосяжний домен через великий розмір тому псевдоніма.",
+  "Cannot create regex on domain due to large alias volume size.": "Неможливо створити регулярний вираз у домені через великий розмір тому псевдоніма."
 }

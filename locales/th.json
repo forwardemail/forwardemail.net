@@ -4174,5 +4174,9 @@
   "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "ไม่เหมือนบริการอื่นๆ เรา <strong class=\"font-weight-bold\">ไม่เก็บบันทึก</strong> (ยกเว้น <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">ข้อผิดพลาด</a> และ <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">SMTP ขาออก</a> ) และเป็น <strong class=\"font-weight-bold\">โอเพ่นซอร์ส 100%</strong>",
   "We do not share your information with any third parties.": "เราไม่แบ่งปันข้อมูลของคุณกับบุคคลที่สาม",
   "Recipient is blocked from sending mail to.": "ผู้รับถูกบล็อกไม่ให้ส่งจดหมายถึง",
-  "All recipients are blocked from sending mail to.": "ผู้รับทั้งหมดถูกบล็อกไม่ให้ส่งจดหมายถึง"
+  "All recipients are blocked from sending mail to.": "ผู้รับทั้งหมดถูกบล็อกไม่ให้ส่งจดหมายถึง",
+  "Cannot create catch-all on global domain.": "ไม่สามารถสร้าง catch-all บนโดเมนร่วม",
+  "Cannot create regex on global domain.": "ไม่สามารถสร้าง regex บนโดเมนร่วม",
+  "Cannot create catch-all on domain due to large alias volume size.": "ไม่สามารถสร้าง catch-all บนโดเมนได้เนื่องจากขนาดของนามแฝงที่ใหญ่",
+  "Cannot create regex on domain due to large alias volume size.": "ไม่สามารถสร้าง regex บนโดเมนได้เนื่องจากขนาดของนามแฝงที่ใหญ่"
 }

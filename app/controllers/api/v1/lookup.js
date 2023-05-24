@@ -75,7 +75,7 @@ async function lookup(ctx) {
 
     // for catch-all
     // for regex-based
-    if (username) {
+    if (username && !domain.is_catchall_regex_disabled) {
       aliasQuery.$or.push(
         {
           domain: domain._id,
@@ -109,7 +109,7 @@ async function lookup(ctx) {
 
     // for catch-all
     // for regex-based
-    if (username) {
+    if (username && !domain.is_catchall_regex_disabled) {
       aliasQuery.$or.push(
         {
           domain: domain._id,

@@ -341,6 +341,29 @@ Aliases.pre('save', async function (next) {
         i18n.translateError('ALIAS_ALREADY_EXISTS', alias.locale)
       );
 
+    //
+    // if the domain is global or is too large then we prohibit regex and catchall
+    //
+    if (domain.is_global && alias.name === '*')
+      throw Boom.badRequest(
+        i18n.translateError('CANNOT_CREATE_CATCHALL_ON_GLOBAL', alias.locale)
+      );
+
+    if (domain.is_global && alias.name.startsWith('/'))
+      throw Boom.badRequest(
+        i18n.translateError('CANNOT_CREATE_REGEX_ON_GLOBAL', alias.locale)
+      );
+
+    if (domain.is_catchall_regex_disabled && alias.name === '*')
+      throw Boom.badRequest(
+        i18n.translateError('CANNOT_CREATE_CATCHALL_ON_DOMAIN', alias.locale)
+      );
+
+    if (domain.is_catchall_regex_disabled && alias.name.startsWith('/'))
+      throw Boom.badRequest(
+        i18n.translateError('CANNOT_CREATE_REGEX_ON_DOMAIN', alias.locale)
+      );
+
     // if it starts with a forward slash then it must be a regex
     if (!alias.name.startsWith('/') && !isEmail(`${alias.name}@${domain.name}`))
       throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
