@@ -1032,3 +1032,213 @@ test('removes email', async (t) => {
     t.is(res.body.status, 'rejected');
   }
 });
+
+test('smtp email blocklist', async (t) => {
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  const domain = await factory.create('domain', {
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    resolver,
+    has_smtp: true
+  });
+
+  domain.smtp_emails_blocked.push('foo@foo.com', 'beep@beep.com');
+  await domain.save();
+
+  const alias = await factory.create('alias', {
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email]
+  });
+
+  //
+  // create email
+  //
+  const res = await t.context.api
+    .post('/v1/emails')
+    .auth(user[config.userFields.apiToken])
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .send({
+      from: `${alias.name}@${domain.name}`,
+      to: 'foo@foo.com',
+      subject: 'test',
+      text: 'test'
+    });
+
+  t.is(res.status, 200);
+
+  // validate envelope
+  t.is(res.body.envelope.from, `${alias.name}@${domain.name}`);
+  t.deepEqual(res.body.envelope.to, ['foo@foo.com']);
+
+  // spoof dns records
+  const map = new Map();
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  //
+  // spoof envelope RCPT TO mx records
+  //
+  for (const to of res.body.envelope.to) {
+    const [, domain] = to.split('@');
+    map.set(
+      `mx:${domain}`,
+      resolver.spoofPacket(
+        `mx:${domain}`,
+        'MX',
+        [{ exchange: IP_ADDRESS, priority: 0 }],
+        true
+      )
+    );
+  }
+
+  // store spoofed dns cache
+  await resolver.options.cache.mset(map);
+
+  //
+  // process the email
+  //
+  {
+    const email = await Emails.findOne({ id: res.body.id });
+    t.is(email.id, res.body.id);
+    t.is(email.status, 'queued');
+
+    await processEmail({
+      email,
+      resolver,
+      client
+    });
+  }
+
+  //
+  // ensure email rejected
+  //
+  {
+    const email = await Emails.findOne({ id: res.body.id });
+    delete email.message; // suppress buffer output from console loug
+    t.is(email.id, res.body.id);
+    t.is(email.status, 'rejected');
+    t.deepEqual(email.accepted, []);
+    t.true(email.rejectedErrors.length === 1);
+    t.is(email.rejectedErrors[0].responseCode, 550);
+    t.is(email.rejectedErrors[0].recipient, res.body.envelope.to[0]);
+    t.is(
+      email.rejectedErrors[0].message,
+      'Recipient is blocked from sending mail to.'
+    );
+  }
+
+  //
+  // ensure email rejected
+  //
+  {
+    // add another recipient so we test the plural version
+    await Emails.findByIdAndUpdate(res.body.id, {
+      $set: {
+        status: 'queued',
+        'envelope.to': ['foo@foo.com', 'beep@beep.com']
+      },
+      $unset: { locked_at: 1, locked_by: 1 }
+    });
+    const email = await Emails.findOne({ id: res.body.id });
+    t.is(email.id, res.body.id);
+    t.is(email.status, 'queued');
+
+    await processEmail({
+      email,
+      resolver,
+      client
+    });
+  }
+
+  {
+    const email = await Emails.findOne({ id: res.body.id });
+    t.is(email.id, res.body.id);
+    t.is(email.status, 'rejected');
+    t.deepEqual(email.accepted, []);
+    t.true(email.rejectedErrors.length === 2);
+    t.is(email.rejectedErrors[0].responseCode, 550);
+    t.is(email.rejectedErrors[1].responseCode, 550);
+    t.is(
+      email.rejectedErrors[0].message,
+      'All recipients are blocked from sending mail to.'
+    );
+    t.is(
+      email.rejectedErrors[1].message,
+      'All recipients are blocked from sending mail to.'
+    );
+  }
+});

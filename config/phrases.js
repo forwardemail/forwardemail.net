@@ -15,6 +15,8 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  ALL_RECIPIENTS_BLOCKED: 'All recipients are blocked from sending mail to.',
+  RECIPIENT_BLOCKED: 'Recipient is blocked from sending mail to.',
   SMTP_ACCESS_SUBJECT:
     'Outbound SMTP for <span class="notranslate">%s</span> is now pending admin approval',
   SMTP_ACCESS_PENDING:

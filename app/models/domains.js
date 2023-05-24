@@ -196,6 +196,14 @@ const Domains = new mongoose.Schema({
   // (e.g. automatic spam responses from Gmail/Apple)
   // (note that this only currently affects outbound SMTP)
   //
+  smtp_emails_blocked: [
+    {
+      type: String,
+      trim: true,
+      lowercase: true,
+      validate: (value) => isEmail(value)
+    }
+  ],
   smtp_verified_at: Date,
   has_smtp: {
     type: Boolean,

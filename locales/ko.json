@@ -4172,5 +4172,7 @@
   "You are only permitted to use our Outbound SMTP service for": "아웃바운드 SMTP 서비스는 다음에 대해서만 사용할 수 있습니다.",
   "transactional emails": "트랜잭션 이메일",
   "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "다른 서비스와 달리 <strong class=\"font-weight-bold\">로그를 저장하지 않으며</strong> ( <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">오류</a> 및 <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">아웃바운드 SMTP</a> 제외) <strong class=\"font-weight-bold\">100% 오픈 소스</strong> 입니다.",
-  "We do not share your information with any third parties.": "당사는 귀하의 정보를 제3자와 공유하지 않습니다."
+  "We do not share your information with any third parties.": "당사는 귀하의 정보를 제3자와 공유하지 않습니다.",
+  "Recipient is blocked from sending mail to.": "받는 사람이 메일을 보낼 수 없도록 차단되었습니다.",
+  "All recipients are blocked from sending mail to.": "모든 수신자가 메일을 보낼 수 없도록 차단됩니다."
 }

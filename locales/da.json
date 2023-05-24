@@ -3906,5 +3906,7 @@
   "You are only permitted to use our Outbound SMTP service for": "Du har kun tilladelse til at bruge vores udgående SMTP-tjeneste til",
   "transactional emails": "transaktionelle e-mails",
   "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "I modsætning til andre tjenester <strong class=\"font-weight-bold\">gemmer vi ikke logfiler</strong> (med undtagelse af <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">fejl</a> og <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">udgående SMTP</a> ) og er <strong class=\"font-weight-bold\">100 % open source</strong> .",
-  "We do not share your information with any third parties.": "Vi deler ikke dine oplysninger med nogen tredjepart."
+  "We do not share your information with any third parties.": "Vi deler ikke dine oplysninger med nogen tredjepart.",
+  "Recipient is blocked from sending mail to.": "Modtager er blokeret fra at sende mail til.",
+  "All recipients are blocked from sending mail to.": "Alle modtagere er blokeret fra at sende mail til."
 }

@@ -4015,5 +4015,7 @@
   "You are only permitted to use our Outbound SMTP service for": "Sinulla on oikeus käyttää vain lähtevää SMTP-palveluamme",
   "transactional emails": "tapahtumasähköpostit",
   "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "Toisin kuin muut palvelut, <strong class=\"font-weight-bold\">emme tallenna lokeja</strong> (lukuun ottamatta <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">virheitä</a> ja <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">lähtevää SMTP:tä</a> ) ja ne ovat <strong class=\"font-weight-bold\">100 % avoimen lähdekoodin</strong> .",
-  "We do not share your information with any third parties.": "Emme jaa tietojasi kolmansille osapuolille."
+  "We do not share your information with any third parties.": "Emme jaa tietojasi kolmansille osapuolille.",
+  "Recipient is blocked from sending mail to.": "Vastaanottajaa on estetty lähettämästä sähköpostia osoitteeseen.",
+  "All recipients are blocked from sending mail to.": "Kaikkia vastaanottajia estetään lähettämästä sähköpostia osoitteeseen."
 }

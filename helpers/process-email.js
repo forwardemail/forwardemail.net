@@ -238,6 +238,43 @@ async function processEmail({ email, port = 25, resolver, client }) {
     }
 
     //
+    // check against list of emails suspended
+    //
+    if (
+      Array.isArray(domain.smtp_emails_blocked) &&
+      domain.smtp_emails_blocked.length > 0
+    ) {
+      const e = await Emails.findById(email._id);
+      if (!e) throw new Error('Email does not exist');
+      const matches = [];
+      for (const recipient of e.envelope.to) {
+        if (domain.smtp_emails_blocked.includes(recipient)) {
+          const error = Boom.forbidden(
+            i18n.translateError('RECIPIENT_BLOCKED')
+          );
+          error.responseCode = 550;
+          error.recipient = recipient;
+          e.rejectedErrors.push(error);
+          matches.push(recipient);
+        }
+      }
+
+      if (matches.length > 0) {
+        // if all recipients are blocked then throw early
+        if (_.isEqual(matches.sort(), e.envelope.to.sort()))
+          throw Boom.forbidden(
+            i18n.translateError(
+              matches.length === 1
+                ? 'RECIPIENT_BLOCKED'
+                : 'ALL_RECIPIENTS_BLOCKED'
+            )
+          );
+
+        email = await e.save();
+      }
+    }
+
+    //
     // prepare message for sending with mailsplit
     //
     // - [x] remove Bcc header
@@ -519,12 +556,24 @@ async function processEmail({ email, port = 25, resolver, client }) {
       async (target) => {
         const to = [...map.get(target)];
 
-        // check if exists for domain being blocked (ensures real-time blocking working)
+        //
+        // check if exists for domain being blocked
+        // (ensures real-time blocking working)
+        // or if the domain no longer has smtp access
+        //
         const isDomainBlocked = await Domains.exists({
-          domain: domain._id,
-          smtp_suspended_sent_at: {
-            $exists: true
-          }
+          $or: [
+            {
+              domain: domain._id,
+              has_smtp: false
+            },
+            {
+              domain: domain._id,
+              smtp_suspended_sent_at: {
+                $exists: true
+              }
+            }
+          ]
         });
 
         if (isDomainBlocked)
@@ -686,6 +735,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
     e.accepted = [...accepted];
 
     //
+    // store a list of bounced recipients we're going to block
+    //
+    let hasNewlyBlocked = false;
+
+    //
     // update or add to `rejectedErrors` if necessary
     // (we only store the most recent `rejectedError` per recipient)
     //
@@ -695,6 +749,27 @@ async function processEmail({ email, port = 25, resolver, client }) {
         if (!isEmail(err.recipient))
           throw new Error('Recipient not assigned to error');
         e.rejectedErrors.push(err instanceof Error ? parseErr(err) : err);
+        if (
+          typeof err.responseCode === 'number' &&
+          err.responseCode >= 500 &&
+          err.responseCode < 600
+        ) {
+          domain.smtp_emails_blocked.push(err.recipient);
+          hasNewlyBlocked = true;
+        }
+      }
+    }
+
+    //
+    // if the SMTP response indicated the email bounced
+    // then prevent the domain sender from sending to this recipient again
+    //
+    if (hasNewlyBlocked) {
+      // wrapped with a try/catch since we want the email still to save if the domain didn't
+      try {
+        await domain.save();
+      } catch (err) {
+        logger.fatal(err);
       }
     }
 
