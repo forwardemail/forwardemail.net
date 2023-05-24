@@ -31,8 +31,9 @@ const config = {
   freePrefix: `${env.TXT_RECORD_PREFIX}=`,
   metaTitleAffix: `&#124; <span class="notranslate">${env.APP_NAME}</span>`,
   webHost: env.WEB_HOST,
+  // TODO: clean this config up everywhere for `previewEmailOptions`
   previewEmailOptions: {
-    open: false,
+    open: env.PREVIEW_EMAIL,
     openSimulator: false,
     simpleParser: {
       Iconv,
@@ -123,16 +124,14 @@ const config = {
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
   abuseEmail: env.EMAIL_ABUSE,
   email: {
-    preview:
-      env.NODE_ENV === 'development' || env.PREVIEW_EMAIL
-        ? {
-            openSimulator: false,
-            simpleParser: {
-              Iconv,
-              maxHtmlLengthToParse: bytes('50MB')
-            }
-          }
-        : false,
+    preview: {
+      open: env.PREVIEW_EMAIL,
+      openSimulator: false,
+      simpleParser: {
+        Iconv,
+        maxHtmlLengthToParse: bytes('50MB')
+      }
+    },
     subjectPrefix: `${env.APP_NAME} – `,
     message: {
       from: env.EMAIL_DEFAULT_FROM
@@ -727,20 +726,21 @@ config.views.locals.config = _.pick(config, [
   'goodDomains'
 ]);
 
-// add `views` to `config.email`
+// <https://nodemailer.com/transports/>
+// <https://github.com/nodemailer/nodemailer/pull/1539>
 config.email.transport = nodemailer.createTransport({
-  // you can use any transport here
-  // but we use postmarkapp.com by default
-  // <https://nodemailer.com/transports/>
-  service: 'postmark',
+  host: env.SMTP_TRANSPORT_HOST,
+  port: env.SMTP_TRANSPORT_PORT,
+  secure: env.SMTP_TRANSPORT_SECURE,
   auth: {
-    user: env.POSTMARK_API_TOKEN,
-    pass: env.POSTMARK_API_TOKEN
+    user: env.SMTP_TRANSPORT_USER,
+    pass: env.SMTP_TRANSPORT_PASS
   },
   logger,
   debug: boolean(env.TRANSPORT_DEBUG)
 });
 
+// add `views` to `config.email`
 config.email.views = { ...config.views };
 config.email.views.root = path.join(__dirname, '..', 'emails');
 config.email.juiceResources.webResources = {

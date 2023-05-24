@@ -389,7 +389,7 @@ Emails.statics.queue = async function (
   // <https://github.com/nodemailer/nodemailer/blob/e3cc93a9c20939b209c804857c75aea0d3305913/lib/mime-node/index.js#LL882C1-L898C57>
   //
   if (
-    options.message.raw &&
+    options?.message?.raw &&
     info.envelope.from === false &&
     info.envelope.to.length === 0
   ) {
@@ -440,13 +440,15 @@ Emails.statics.queue = async function (
 
   const domain =
     options.domain ||
-    (await Domains.findOne({
-      name: domainName,
-      'members.user': options.user._id
-    }).populate(
-      'members.user',
-      `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt}`
-    ));
+    (options?.user?._id
+      ? await Domains.findOne({
+          name: domainName,
+          'members.user': options.user._id
+        }).populate(
+          'members.user',
+          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt}`
+        )
+      : null);
 
   if (!domain)
     throw Boom.notFound(i18n.translateError('DOMAIN_DOES_NOT_EXIST', locale));
@@ -488,7 +490,7 @@ Emails.statics.queue = async function (
     );
 
   const member = domain.members.find(
-    (member) => member.user.id === options.user.id
+    (member) => member.user.id === options?.user?.id
   );
 
   if (!member)
@@ -502,19 +504,21 @@ Emails.statics.queue = async function (
   //
   const alias =
     options.alias ||
-    (await Aliases.findOne(
-      member.group === 'admin'
-        ? {
-            domain: domain._id,
-            name: aliasName
-          }
-        : {
-            // users that are not admins must be an owner of the alias to send as it
-            user: options.user._id,
-            domain: domain._id,
-            name: aliasName
-          }
-    ).populate('user', `id ${config.userFields.isBanned}`));
+    (options?.user?._id
+      ? await Aliases.findOne(
+          member.group === 'admin'
+            ? {
+                domain: domain._id,
+                name: aliasName
+              }
+            : {
+                // users that are not admins must be an owner of the alias to send as it
+                user: options.user._id,
+                domain: domain._id,
+                name: aliasName
+              }
+        ).populate('user', `id ${config.userFields.isBanned}`)
+      : null);
 
   // alias must exist
   if (!alias)
@@ -637,7 +641,7 @@ Emails.statics.queue = async function (
   const email = await this.create({
     alias: alias._id,
     domain: domain._id,
-    user: options.user._id,
+    user: options?.user?._id,
     envelope: info.envelope,
     message: info.message,
     messageId,

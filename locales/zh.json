@@ -339,7 +339,6 @@
   "Any additional information you voluntarily provide us, such as comments or questions in a ": "您自愿提供给我们的任何其他信息，例如评论或问题",
   "Help request": "帮助请求",
   "We do not share your information with any third-party whatsoever (with the exception of ": "我们不会与任何第三方共享您的信息（除了",
-  "Postmark": "邮戳",
   ", which we use for transactional emails, e.g. for account verification or password reset emails).": "，我们用于交易电子邮件，例如用于帐户验证或密码重置电子邮件）。",
   "We may need to and will comply with court ordered legal requests (but keep in mind we do not collect information mentioned above, so we will not be able to provide it to begin with).": "我们可能需要并将遵守法院命令的法律要求（但请记住，我们不收集上述信息，因此我们将无法提供）。",
   "If at any time if you wish to remove information that you have provided us with, then go to ": "如果您希望随时删除您提供给我们的信息，请访问",
@@ -3861,5 +3860,6 @@
   ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ".禁止您发送营销电子邮件（例如，向具有相同内容的联系人列表发送促销、批量或商业电子邮件）。这包括时事通讯或批量公告电子邮件等示例。",
   "You are only permitted to use our Outbound SMTP service for": "您仅可将我们的出站 SMTP 服务用于",
   "transactional emails": "交易邮件",
-  "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "与其他服务不同，我们<strong class=\"font-weight-bold\">不存储日志</strong>（<a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">错误</a>和<a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">出站 SMTP</a>除外）并且是<strong class=\"font-weight-bold\">100% 开源的</strong>。"
+  "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "与其他服务不同，我们<strong class=\"font-weight-bold\">不存储日志</strong>（<a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">错误</a>和<a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">出站 SMTP</a>除外）并且是<strong class=\"font-weight-bold\">100% 开源的</strong>。",
+  "We do not share your information with any third parties.": "我们不会与任何第三方分享您的信息。"
 }
