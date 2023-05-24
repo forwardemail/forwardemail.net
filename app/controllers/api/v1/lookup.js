@@ -63,11 +63,13 @@ async function lookup(ctx) {
       $or: [
         {
           domain: domain._id,
-          user: { $in: paidUsers }
+          user: { $in: paidUsers },
+          ...(username ? { name: username } : {})
         },
         {
           domain: domain._id,
-          user: { $in: adminUsers }
+          user: { $in: adminUsers },
+          ...(username ? { name: username } : {})
         }
       ]
     };
@@ -78,7 +80,8 @@ async function lookup(ctx) {
 
     aliasQuery = {
       domain: domain._id,
-      user: { $nin: bannedUserIds }
+      user: { $nin: bannedUserIds },
+      ...(username ? { name: username } : {})
     };
   }
 
