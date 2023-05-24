@@ -43,31 +43,36 @@ async function lookup(ctx) {
     ? ctx.query.username.toLowerCase()
     : false;
 
+  // TODO: if domain.is_catchall_regex_disabled and !username then throw error
+
   let aliasQuery = {};
   // if the domain was is_global then filter for
   // user ids that are either not banned paid (and not 30d past due)
   // or not banned admin group users
   if (domain.is_global) {
-    const [paidUsers, adminUsers] = await Promise.all([
-      // get all not banned, paid users, and expiration is >= 30 days ago
-      Users.distinct('_id', {
-        [config.userFields.isBanned]: false,
-        plan: { $ne: 'free' },
-        [config.userFields.planExpiresAt]: {
-          $gte: dayjs().subtract(30, 'days').toDate()
+    const validUsers = await Users.distinct('_id', {
+      $or: [
+        // get all not banned, paid users, and expiration is >= 30 days ago
+        {
+          [config.userFields.isBanned]: false,
+          plan: { $ne: 'free' },
+          [config.userFields.planExpiresAt]: {
+            $gte: dayjs().subtract(30, 'days').toDate()
+          }
+        },
+        // get all not banned, admin users
+        {
+          [config.userFields.isBanned]: false,
+          group: 'admin'
         }
-      }),
-      // get all not banned, admin users
-      Users.distinct('_id', {
-        [config.userFields.isBanned]: false,
-        group: 'admin'
-      })
-    ]);
+      ]
+    });
+
     aliasQuery = {
       $or: [
         {
           domain: domain._id,
-          user: { $in: [...paidUsers, ...adminUsers] },
+          user: { $in: validUsers },
           ...(username ? { name: username } : {})
         }
       ]
@@ -79,12 +84,12 @@ async function lookup(ctx) {
       aliasQuery.$or.push(
         {
           domain: domain._id,
-          user: { $in: [...paidUsers, ...adminUsers] },
+          user: { $in: validUsers },
           name: '*'
         },
         {
           domain: domain._id,
-          user: { $in: [...paidUsers, ...adminUsers] },
+          user: { $in: validUsers },
           name: {
             $regex: /^\//,
             $options: 'i'
@@ -101,7 +106,9 @@ async function lookup(ctx) {
       $or: [
         {
           domain: domain._id,
-          user: { $nin: bannedUserIds },
+          ...(bannedUserIds.length > 0
+            ? { user: { $nin: bannedUserIds } }
+            : {}),
           ...(username ? { name: username } : {})
         }
       ]
@@ -113,12 +120,16 @@ async function lookup(ctx) {
       aliasQuery.$or.push(
         {
           domain: domain._id,
-          user: { $nin: bannedUserIds },
+          ...(bannedUserIds.length > 0
+            ? { user: { $nin: bannedUserIds } }
+            : {}),
           name: '*'
         },
         {
           domain: domain._id,
-          user: { $nin: bannedUserIds },
+          ...(bannedUserIds.length > 0
+            ? { user: { $nin: bannedUserIds } }
+            : {}),
           name: {
             $regex: /^\//,
             $options: 'i'
@@ -128,8 +139,12 @@ async function lookup(ctx) {
     }
   }
 
+  // if `aliasQuery.$or.length === 0`
+  if (aliasQuery.$or.length === 1) aliasQuery = aliasQuery.$or[0];
+
   // safeguard to prevent returning all aliases
-  if (_.isEmpty(aliasQuery)) throw new Error('Alias query was empty');
+  if (_.isEmpty(aliasQuery) || aliasQuery.$or.length === 0)
+    throw new Error('Alias query was empty');
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
   const aliases = await Aliases.find(aliasQuery).lean().exec();
@@ -304,7 +319,7 @@ async function lookup(ctx) {
       // (this is noted of in the FAQ section regarding regex)
       // (also the majority of this code is copied from the FE smtp server codebase)
       //
-      if (!domain.is_global) {
+      if (!domain.is_global && !domain.is_catchall_regex_disabled) {
         // must start with / and end with /: and not have the same index for the last index
         // forward-email=/^(support|info)$/:forwardemail+$1@gmail.com
         // -> this would forward to forwardemail+support@gmail.com if email sent to support@

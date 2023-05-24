@@ -158,7 +158,10 @@ object[config.userFields.planSetAt] = {
 };
 
 // When the user's plan expires
-object[config.userFields.planExpiresAt] = Date;
+object[config.userFields.planExpiresAt] = {
+  type: Date,
+  index: true
+};
 
 // User fields
 object[config.userFields.isRemoved] = {
@@ -789,6 +792,15 @@ Users.postCreate((user, next) => {
   });
   next();
 });
+
+Users.index(
+  { [config.userFields.paymentReminderFollowUpSentAt]: 1 },
+  {
+    partialFilterExpression: {
+      [config.userFields.paymentReminderFollowUpSentAt]: { $exists: true }
+    }
+  }
+);
 
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'

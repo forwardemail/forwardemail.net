@@ -152,6 +152,7 @@ async function sendEmails(query) {
     });
 
     //
+    // TODO: this needs checked
     // only exit if there was an error (the job will auto-restart)
     //
     if (parentPort) parentPort.postMessage('done');
