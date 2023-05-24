@@ -26,7 +26,9 @@ graceful.listen();
 
 (async () => {
   try {
-    await api.listen(api.config.port);
+    // TODO: hard-coded until we get authbind in ansible setup
+    // TODO: and also until we use `ctx.ip` with reverse lookup for hostname/root match in allowlist env file
+    await api.listen(api.config.port, '0.0.0.0');
     if (process.send) process.send('ready');
     const { port } = api.server.address();
     logger.info(
