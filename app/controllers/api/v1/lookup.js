@@ -39,6 +39,10 @@ async function lookup(ctx) {
     return;
   }
 
+  const username = isSANB(ctx.query.username)
+    ? ctx.query.username.toLowerCase()
+    : false;
+
   let aliasQuery = {};
   // if the domain was is_global then filter for
   // user ids that are either not banned paid (and not 30d past due)
@@ -237,10 +241,6 @@ async function lookup(ctx) {
         .then()
         .catch((err) => ctx.logger.error(err));
   }
-
-  const username = isSANB(ctx.query.username)
-    ? ctx.query.username.toLowerCase()
-    : false;
 
   for (const alias of aliases) {
     if (alias.has_recipient_verification) {
