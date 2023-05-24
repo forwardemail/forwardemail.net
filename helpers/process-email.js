@@ -657,12 +657,23 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 logger.fatal(err, meta);
               }
 
-              // store when we sent this email
-              await Domains.findByIdAndUpdate(domain._id, {
-                $set: {
-                  smtp_suspended_sent_at: new Date()
-                }
+              // if any of the domain admins are admins then don't ban
+              const adminExists = await Users.exists({
+                _id: {
+                  $in: domain.members
+                    .filter((m) => m.group === 'admin')
+                    .map((m) => m.user)
+                },
+                group: 'admin'
               });
+
+              // store when we sent this email
+              if (!adminExists)
+                await Domains.findByIdAndUpdate(domain._id, {
+                  $set: {
+                    smtp_suspended_sent_at: new Date()
+                  }
+                });
 
               //
               // NOTE: we do `forbidden` here instead of `badRequest`
