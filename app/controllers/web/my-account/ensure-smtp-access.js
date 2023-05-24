@@ -5,6 +5,12 @@ const isSANB = require('is-string-and-not-blank');
 const Domains = require('#models/domains');
 
 async function ensureSMTPAccess(ctx, next) {
+  // domain cannot be global
+  if (ctx.state.domain.is_global)
+    throw Boom.badRequest(
+      ctx.translateError('EMAIL_SMTP_GLOBAL_NOT_PERMITTED')
+    );
+
   // domain cannot be in suspended domains list
   if (_.isDate(ctx.state.domain.smtp_suspended_sent_at))
     throw Boom.badRequest(ctx.translateError('DOMAIN_SUSPENDED'));
@@ -15,6 +21,7 @@ async function ensureSMTPAccess(ctx, next) {
     !isSANB(ctx.state.domain.return_path)
   ) {
     const domain = await Domains.findById(ctx.state.domain._id);
+    domain.locale = ctx.locale;
     domain.skip_payment_check = true;
     domain.skip_verification = true;
     await domain.save();

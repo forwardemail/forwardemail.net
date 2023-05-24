@@ -253,10 +253,9 @@ async function sendEmail({
   //
   // if we're in development mode then use preview-email to render queue processing
   //
-  if (config.webHost === 'localhost' && config.env === 'development') {
+  if (config.env === 'development') {
     await previewEmail(raw, {
       ...config.previewEmailOptions,
-      open: true,
       returnHTML: false
     });
     // return early with consistent `info` object (mirrored from FE)
