@@ -1,37 +1,11 @@
 const Aliases = require('#models/aliases');
 
 async function generateAliasPassword(ctx) {
-  // if domain has not yet been setup yet then alert user
-  if (
-    !ctx.api &&
-    (!ctx.state.domain.has_dkim_record ||
-      !ctx.state.domain.has_return_path_record ||
-      !ctx.state.domain.has_dmarc_record)
-  ) {
-    ctx.flash(
-      'warning',
-      ctx.translate(
-        'EMAIL_SMTP_CONFIGURATION_REQUIRED',
-        ctx.state.domain.name,
-        ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/verify-smtp`)
-      )
-    );
-
-    const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
-    );
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
-    return;
-  }
-
   const redirectTo = ctx.state.l(
     `/my-account/domains/${ctx.state.domain.name}/aliases`
   );
   try {
     const alias = await Aliases.findById(ctx.state.alias._id);
-    // set locale for translation in `createToken`
-    alias.locale = ctx.locale;
     // TODO: support more than one generated password
     alias.tokens = [];
     const pass = await alias.createToken(ctx.state.user.email);

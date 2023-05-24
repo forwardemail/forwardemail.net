@@ -30,14 +30,9 @@ block body
     .row
       .col
         include ../../../_breadcrumbs
-        if domain.aliases.length === 0 && !ctx.query.q && (!ctx.query.page || ctx.query.page === 1)
+        if domain.aliases.length === 0 && !ctx.query.q && !ctx.query.page
           .alert.alert-info= t("No aliases exist yet")
         else
-          if !ctx.query.q && (!ctx.query.page || ctx.query.page === 1) && domain.aliases.every(a => a.name === '*' || a.name.startsWith('/')) && (domain.has_smtp || _.isDate(domain.smtp_verified_at))
-            .alert.alert-warning
-              strong= t("Important:")
-              = ' '
-              != t('You cannot use catch-all/regex aliases for outbound SMTP &ndash; <a href="%s" class="alert-link">create an alias</a> to generate passwords.', l(`/my-account/domains/${domain.name}/aliases/new`))
           form.ajax-form.table-ajax-form(
             action=ctx.path,
             method="GET",

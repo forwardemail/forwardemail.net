@@ -533,6 +533,7 @@
   "Any additional information you voluntarily provide us, such as comments or questions in a ": "의견이나 질문과 같이 귀하가 자발적으로 제공 한 추가 정보",
   "Help request": "도움 요청",
   "We do not share your information with any third-party whatsoever (with the exception of ": "당사는 귀하의 정보를 타사와 공유하지 않습니다 (",
+  "Postmark": "소인",
   ", which we use for transactional emails, e.g. for account verification or password reset emails).": "거래 이메일에 사용됩니다 (예 : 계정 확인 또는 비밀번호 재설정 이메일).",
   "We may need to and will comply with court ordered legal requests (but keep in mind we do not collect information mentioned above, so we will not be able to provide it to begin with).": "법정 명령에 따른 법적 요청이 필요할 수도 있고 준수해야 할 수도 있습니다 (그러나 위에서 언급 한 정보를 수집하지 않으므로 우선 정보를 제공 할 수 없습니다).",
   "If at any time if you wish to remove information that you have provided us with, then go to ": "언제든지 제공 한 정보를 제거하려면 다음으로 이동하십시오.",
@@ -4171,6 +4172,5 @@
   ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". 귀하는 마케팅 이메일(예: 동일한 콘텐츠가 포함된 연락처 목록에 홍보, 대량 또는 상업 이메일)을 보내는 것이 금지됩니다. 여기에는 뉴스레터 또는 대량 공지 이메일과 같은 예가 포함됩니다.",
   "You are only permitted to use our Outbound SMTP service for": "아웃바운드 SMTP 서비스는 다음에 대해서만 사용할 수 있습니다.",
   "transactional emails": "트랜잭션 이메일",
-  "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "다른 서비스와 달리 <strong class=\"font-weight-bold\">로그를 저장하지 않으며</strong> ( <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">오류</a> 및 <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">아웃바운드 SMTP</a> 제외) <strong class=\"font-weight-bold\">100% 오픈 소스</strong> 입니다.",
-  "We do not share your information with any third parties.": "당사는 귀하의 정보를 제3자와 공유하지 않습니다."
+  "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "다른 서비스와 달리 <strong class=\"font-weight-bold\">로그를 저장하지 않으며</strong> ( <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">오류</a> 및 <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">아웃바운드 SMTP</a> 제외) <strong class=\"font-weight-bold\">100% 오픈 소스</strong> 입니다."
 }
