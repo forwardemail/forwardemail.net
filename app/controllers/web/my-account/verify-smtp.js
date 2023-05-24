@@ -147,7 +147,7 @@ async function verifySMTP(ctx) {
     domain = await domain.save();
 
     // if we haven't yet sent an email to admins then send it now
-    if (!_.isDate(domain.smtp_verified_at)) {
+    if (!domain.has_smtp && !_.isDate(domain.smtp_verified_at)) {
       try {
         // send an email to all admins of the domain
         const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
