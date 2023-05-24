@@ -43,13 +43,13 @@ async function lookup(ctx) {
     ? ctx.query.username.toLowerCase()
     : false;
 
-  // TODO: if domain.is_catchall_regex_disabled and !username then throw error
-
   let aliasQuery = {};
   // if the domain was is_global then filter for
   // user ids that are either not banned paid (and not 30d past due)
   // or not banned admin group users
   if (domain.is_global) {
+    if (!username) throw new Error('Username required for global search');
+
     const validUsers = await Users.distinct('_id', {
       $or: [
         // get all not banned, paid users, and expiration is >= 30 days ago
@@ -69,82 +69,38 @@ async function lookup(ctx) {
     });
 
     aliasQuery = {
-      $or: [
-        {
-          domain: domain._id,
-          user: { $in: validUsers },
-          ...(username ? { name: username } : {})
-        }
-      ]
+      domain: domain._id,
+      user: { $in: validUsers },
+      name: username
     };
-
-    // for catch-all
-    // for regex-based
-    if (username && !domain.is_catchall_regex_disabled) {
-      aliasQuery.$or.push(
-        {
-          domain: domain._id,
-          user: { $in: validUsers },
-          name: '*'
-        },
-        {
-          domain: domain._id,
-          user: { $in: validUsers },
-          name: {
-            $regex: /^\//,
-            $options: 'i'
-          }
-        }
-      );
-    }
   } else {
+    // if domain.is_catchall_regex_disabled and !username then throw error
+    if (!username && domain.is_catchall_regex_disabled)
+      throw new Error(
+        'Username required for search due to catch-all/regex search disabled'
+      );
+
     const bannedUserIds = await Users.distinct('_id', {
       [config.userFields.isBanned]: true
     });
 
-    aliasQuery = {
-      $or: [
-        {
-          domain: domain._id,
-          ...(bannedUserIds.length > 0
-            ? { user: { $nin: bannedUserIds } }
-            : {}),
-          ...(username ? { name: username } : {})
-        }
-      ]
-    };
-
-    // for catch-all
-    // for regex-based
-    if (username && !domain.is_catchall_regex_disabled) {
-      aliasQuery.$or.push(
-        {
-          domain: domain._id,
-          ...(bannedUserIds.length > 0
-            ? { user: { $nin: bannedUserIds } }
-            : {}),
-          name: '*'
-        },
-        {
-          domain: domain._id,
-          ...(bannedUserIds.length > 0
-            ? { user: { $nin: bannedUserIds } }
-            : {}),
-          name: {
-            $regex: /^\//,
-            $options: 'i'
-          }
-        }
-      );
+    if (domain.is_catchall_regex_disabled) {
+      aliasQuery = {
+        domain: domain._id,
+        ...(bannedUserIds.length > 0 ? { user: { $nin: bannedUserIds } } : {}),
+        name: username
+      };
+    } else {
+      // it is faster to query without $regex
+      aliasQuery = {
+        domain: domain._id,
+        ...(bannedUserIds.length > 0 ? { user: { $nin: bannedUserIds } } : {})
+      };
     }
   }
 
-  // if `aliasQuery.$or.length === 0`
-  if (aliasQuery.$or.length === 1) aliasQuery = aliasQuery.$or[0];
-
   // safeguard to prevent returning all aliases
-  if (_.isEmpty(aliasQuery))
-    throw new Error('Alias query was empty');
+  if (_.isEmpty(aliasQuery)) throw new Error('Alias query was empty');
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
   const aliases = await Aliases.find(aliasQuery).lean().exec();
