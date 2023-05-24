@@ -4171,5 +4171,6 @@
   "transactional email": "транзакційна електронна пошта",
   ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Вам заборонено надсилати маркетингові електронні листи (наприклад, рекламні, масові чи комерційні електронні листи до списку контактів з однаковим вмістом). Це включає такі приклади, як інформаційний бюлетень або масове повідомлення електронною поштою.",
   "You are only permitted to use our Outbound SMTP service for": "Вам дозволено використовувати нашу службу вихідного SMTP лише для",
-  "transactional emails": "транзакційні електронні листи"
+  "transactional emails": "транзакційні електронні листи",
+  "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "На відміну від інших служб, ми <strong class=\"font-weight-bold\">не зберігаємо журнали</strong> (за винятком <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">помилок</a> і <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">вихідних SMTP</a> ) і є <strong class=\"font-weight-bold\">на 100% відкритим кодом</strong> ."
 }

@@ -4171,5 +4171,6 @@
   "transactional email": "email giao dịch",
   ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Bạn bị cấm gửi email tiếp thị (ví dụ: email quảng cáo, hàng loạt hoặc thương mại đến danh sách liên hệ có cùng nội dung). Điều này bao gồm các ví dụ như bản tin hoặc email thông báo hàng loạt.",
   "You are only permitted to use our Outbound SMTP service for": "Bạn chỉ được phép sử dụng dịch vụ SMTP gửi đi của chúng tôi cho",
-  "transactional emails": "email giao dịch"
+  "transactional emails": "email giao dịch",
+  "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "Không giống như các dịch vụ khác, chúng tôi <strong class=\"font-weight-bold\">không lưu trữ nhật ký</strong> (ngoại trừ <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">các lỗi</a> và <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">SMTP gửi đi</a> ) và là <strong class=\"font-weight-bold\">nguồn mở 100%</strong> ."
 }

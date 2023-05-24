@@ -4171,5 +4171,6 @@
   "transactional email": "דוא\"ל עסקה",
   ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". נאסר עליך לשלוח דוא\"ל שיווקי (למשל, דוא\"ל פרסומי, בכמות גדולה או מסחרית לרשימת אנשי קשר עם אותו תוכן). זה כולל דוגמאות כגון ניוזלטר או הודעת דוא\"ל בכמות גדולה.",
   "You are only permitted to use our Outbound SMTP service for": "אתה רשאי להשתמש בשירות ה-SMTP היוצא שלנו רק עבור",
-  "transactional emails": "אימיילים עסקיים"
+  "transactional emails": "אימיילים עסקיים",
+  "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "שלא כמו שירותים אחרים, אנחנו <strong class=\"font-weight-bold\">לא מאחסנים יומנים</strong> (למעט <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">שגיאות</a> ו- <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">SMTP יוצא</a> ) והם <strong class=\"font-weight-bold\">100% קוד פתוח</strong> ."
 }

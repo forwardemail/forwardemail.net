@@ -4171,5 +4171,6 @@
   "transactional email": "e-mail transakcyjny",
   ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.": ". Zabrania się wysyłania e-maili marketingowych (np. e-maili promocyjnych, masowych lub komercyjnych do listy kontaktów o tej samej treści). Obejmuje to przykłady, takie jak biuletyn lub e-mail z ogłoszeniami zbiorczymi.",
   "You are only permitted to use our Outbound SMTP service for": "Możesz korzystać z naszej usługi Outbound SMTP tylko dla",
-  "transactional emails": "e-maile transakcyjne"
+  "transactional emails": "e-maile transakcyjne",
+  "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "W przeciwieństwie do innych usług, <strong class=\"font-weight-bold\">nie przechowujemy logów</strong> (z wyjątkiem <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">błędów</a> i <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">wychodzącego SMTP</a> ) i jesteśmy <strong class=\"font-weight-bold\">w 100% open-source</strong> ."
 }

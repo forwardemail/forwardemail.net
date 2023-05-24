@@ -275,12 +275,11 @@ async function createDomainBilling(ctx) {
         }
       }
 
-      // TODO: <https://github.com/stripe/stripe-node/issues/1796>
-      // ctx.logger.info('stripe.checkout.sessions.create', { options });
+      ctx.logger.info('stripe.checkout.sessions.create', { options });
 
       const session = await stripe.checkout.sessions.create(options);
 
-      // TODO: <https://github.com/stripe/stripe-node/issues/1796>
+      // <https://github.com/stripe/stripe-node/issues/1796>
       // ctx.logger.info('stripe.checkout.sessions.create', { session });
 
       const redirectTo = session.url;
