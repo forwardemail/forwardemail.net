@@ -143,7 +143,7 @@ async function lookup(ctx) {
   if (aliasQuery.$or.length === 1) aliasQuery = aliasQuery.$or[0];
 
   // safeguard to prevent returning all aliases
-  if (_.isEmpty(aliasQuery) || aliasQuery.$or.length === 0)
+  if (_.isEmpty(aliasQuery))
     throw new Error('Alias query was empty');
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
