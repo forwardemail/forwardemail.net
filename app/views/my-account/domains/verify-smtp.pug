@@ -215,8 +215,6 @@ block body
                       th.border-0.align-middle Type
                       th.border-0.align-middle.text-left Answer/Value
                   tbody
-                    //- DKIM (required)
-                    - const str = `v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString("base64")};`;
                     tr
                       td(class=domain.has_dkim_record ? "bg-success" : "bg-danger")
                       th.align-middle.text-nowrap
@@ -244,6 +242,19 @@ block body
                             = t("Copy")
                       td.align-middle: strong.px-2 TXT
                       td.align-middle.text-left.py-3
+                        //- DKIM (required)
+                        - let str = `v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString("base64")};`;
+                        //-
+                        //- if the provider is AWS Route 53 then we need to split to max 255 each
+                        //- <https://serverfault.com/a/763871>
+                        //-
+                        if provider.slug === 'amazon-route-53'
+                          - const index = Math.floor(str.length / 2)
+                          - str = `"${str.slice(0, index)}" "${str.slice(index)}"`;
+                          .alert.alert-warning.user-select-none.small
+                            = t("Please use the exact value below; it is split into two strings surrounded by quotes and separated with a space.")
+                            = ' '
+                            != t('Refer to <a class="alert-link notranslate" target="_blank" href="https://repost.aws/knowledge-center/route53-resolve-dkim-text-record-error" rel="noopener noreferrer">re:Post</a> and <a target="_blank" rel="noopener noreferrer" class="notranslate alert-link" href="https://serverfault.com/a/875184">StackExchange</a> answers on this topic.')
                         code#copy-dkim.d-block.text-break.small= str
                         if !domain.has_dkim_record
                           button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
