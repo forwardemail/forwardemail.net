@@ -10,6 +10,8 @@ table.table.table-hover.table-bordered.table-sm
         +sortHeader('id', 'ID', '#table-emails')
       th(scope="col")
         +sortHeader('created_at', 'Created', '#table-emails')
+      th(scope="col")
+        +sortHeader('updated_at', 'Updated', '#table-emails')
       th.align-middle.text-center(scope="col")
         +sortHeader('status', 'Status', '#table-emails')
       th.align-middle.text-center(scope="col")= "MAIL FROM"
@@ -31,6 +33,10 @@ table.table.table-hover.table-bordered.table-sm
               data-time=new Date(email.created_at).getTime()
             )
               = dayjs(email.created_at).format("M/D/YY h:mm A z")
+            td.align-middle.text-center.dayjs(
+              data-time=new Date(email.updated_at).getTime()
+            )
+              = dayjs(email.updated_at).format("M/D/YY h:mm A z")
             td.align-middle.text-center
               //- pending (secondary)
               //- queued (dark)
