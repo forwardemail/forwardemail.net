@@ -81,7 +81,7 @@ table.table.table-hover.table-bordered.table-sm
                     title=t("Download")
                   ): i.fa.fa-fw.fa-file-download
                 //- Only allow queue if pending or deferred
-                if ['pending', 'deferred'].includes(email.status)
+                if ['pending', 'deferred'].includes(email.status) || _.isDate(email.locked_at) || email.locked_by
                   li.list-inline-item
                     form.ajax-form.confirm-prompt(
                       action=l(`/admin/emails/${email.id}`),
