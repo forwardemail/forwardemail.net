@@ -339,10 +339,10 @@ async function sendEmail({
       secure: false,
       secured: false,
       logger,
-      requireTLS: session.requireTLS,
       host: mx.host,
       port: mx.port,
       name: localHostname,
+      requireTLS: session.requireTLS,
       ...(mx.socket ? { connection: mx.socket } : {}),
       tls
     });
@@ -364,7 +364,7 @@ async function sendEmail({
     //       https://github.com/zone-eu/zone-mta/blob/5daa48eea4aa05e724eb2ab80fd3a957e6cc8c6c/lib/sender.js#L1140
     //
     if (err.code && MAIL_RETRY_ERROR_CODES.has(err.code)) {
-      ignoreMXHosts.push(mx.host);
+      if (!isNodemailerError(err)) ignoreMXHosts.push(mx.host);
       mxLastError = err;
       session.mxLastError = mxLastError;
     } else if (

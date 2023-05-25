@@ -723,6 +723,13 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
       if (Array.isArray(info.rejectedErrors) && info.rejectedErrors.length > 0)
         rejectedErrors.push(...info.rejectedErrors);
+
+      //
+      // TODO: some servers like Outlook can be configured to
+      //       not accept more than one RCPT TO at once
+      //       (e.g. EENVELOPE and err.message contains "Too many recipients")
+      //       therefore we should detect this an posssibly retry
+      //
     }
 
     //
