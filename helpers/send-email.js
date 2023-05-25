@@ -354,9 +354,14 @@ async function sendEmail({
 
     return info;
   } catch (err) {
+    mxLastError = err;
+    session.mxLastError = mxLastError;
+
     err.target = target;
     err.envelope = envelope;
     err.mx = _.omit(mx, ['socket']);
+    err.opportunisticTLS = Boolean(!session.requireTLS);
+    err.requireTLS = Boolean(session.requireTLS);
     await shouldThrowError(err, session);
 
     //
@@ -365,8 +370,6 @@ async function sendEmail({
     //
     if (err.code && MAIL_RETRY_ERROR_CODES.has(err.code)) {
       if (!isNodemailerError(err)) ignoreMXHosts.push(mx.host);
-      mxLastError = err;
-      session.mxLastError = mxLastError;
     } else if (
       session.requireTLS &&
       (!err.code || !MAIL_RETRY_ERROR_CODES.has(err.code)) &&
@@ -517,6 +520,11 @@ async function sendEmail({
         err.target = target;
         err.envelope = envelope;
         err.mx = _.omit(mx, ['socket']);
+        err.opportunisticTLS = Boolean(!session.requireTLS);
+        err.requireTLS = Boolean(session.requireTLS);
+        err.ignoreTLS = Boolean(session.ignoreTLS);
+        err.mxLastError = mxLastError;
+        err.ignoreMXHosts = ignoreMXHosts;
         await shouldThrowError(err, session);
 
         //
