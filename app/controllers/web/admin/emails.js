@@ -80,10 +80,14 @@ async function update(ctx) {
   if (!ctx.state.email)
     throw Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST'));
 
+  // we can only modify if either pending or deferred
+  // or queued with locked_at or locked_by
   if (
     !['pending', 'deferred'].includes(ctx.state.email.status) &&
-    !_.isDate(ctx.state.email.locked_at) &&
-    !ctx.state.email.locked_by
+    !(
+      ctx.state.email.status === 'queued' &&
+      (_.isDate(ctx.state.email.locked_at) || ctx.state.email.locked_by)
+    )
   )
     return ctx.throw(
       Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'))
