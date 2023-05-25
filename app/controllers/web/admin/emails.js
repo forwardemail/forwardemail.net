@@ -86,10 +86,15 @@ async function update(ctx) {
     );
 
   // set status to queued
-  ctx.state.email.status = 'queued';
-
-  // NOTE: we leave it up to the pre-save hook to determine the "status"
-  ctx.state.email = await ctx.state.email.save();
+  await Emails.findByIdAndUpdate(ctx.state.email._id, {
+    $set: {
+      status: 'queued'
+    },
+    $unset: {
+      locked_by: 1,
+      locked_at: 1
+    }
+  });
 
   ctx.logger.info('email queued', {
     session: createSession(ctx.state.email),
