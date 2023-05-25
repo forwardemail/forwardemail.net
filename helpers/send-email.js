@@ -270,6 +270,7 @@ async function sendEmail({
   let mxLastError = false;
   let transporter;
   let mx;
+  let tls = {};
 
   try {
     // <https://github.com/zone-eu/mx-connect#configuration-options>
@@ -306,7 +307,7 @@ async function sendEmail({
     //
     // attempt to send the email with TLS
     //
-    const tls = {
+    tls = {
       // TODO: add SSL keys below
       // ...(config.ssl
       //   ? {
@@ -357,6 +358,7 @@ async function sendEmail({
     mxLastError = err;
     session.mxLastError = mxLastError;
 
+    err.tls = tls;
     err.target = target;
     err.envelope = envelope;
     err.mx = _.omit(mx, ['socket']);
@@ -458,7 +460,7 @@ async function sendEmail({
       // (we still want to try opportunistic TLS if and only if there was not a TLS error)
       //
       // TODO: add SSL keys below
-      const tls = {
+      tls = {
         // ...(config.ssl
         //   ? {
         //       dhparam: config.ssl.dhparam,
@@ -496,7 +498,9 @@ async function sendEmail({
 
       transporter = nodemailer.createTransport({
         ...transporterConfig,
-        opportunisticTLS: !session.requireTLS,
+        // TODO: we may want this instead:
+        // `opportunisticTLS: !session.requireTLS,`
+        opportunisticTLS: !session.requireTLS && !session.ignoreTLS,
         secure: false,
         secured: false,
         logger,
@@ -517,6 +521,7 @@ async function sendEmail({
 
         return info;
       } catch (err) {
+        err.tls = tls;
         err.target = target;
         err.envelope = envelope;
         err.mx = _.omit(mx, ['socket']);
