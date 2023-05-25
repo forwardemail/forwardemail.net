@@ -248,7 +248,7 @@ block body
                         //- if the provider is AWS Route 53 then we need to split to max 255 each
                         //- <https://serverfault.com/a/763871>
                         //-
-                        if provider.slug === 'amazon-route-53'
+                        if provider && provider.slug && provider.slug === 'amazon-route-53'
                           - const index = Math.floor(str.length / 2);
                           - str = `"${str.slice(0, index)}" "${str.slice(index)}"`;
                           .alert.alert-warning.user-select-none.small
