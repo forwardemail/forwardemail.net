@@ -176,9 +176,7 @@ async function onData(stream, _session, fn) {
       typeof session.user.alias_id !== 'string' ||
       typeof session.user.domain_id !== 'string'
     )
-      // match smtp-server approach to authentication required
-      // <https://github.com/nodemailer/smtp-server/blob/96c0bee3d4802ccc5a1281f46fac707bcfa1eea6/lib/smtp-connection.js#L493>
-      throw new SMTPError('Error: authentication Required', {
+      throw new SMTPError(authRequiredMessage, {
         responseCode: 530
       });
 
@@ -525,6 +523,9 @@ function onRcptTo(address, session, fn) {
   setImmediate(fn);
 }
 
+// <https://github.com/nodemailer/smtp-server/pull/192>
+const authRequiredMessage = 'Authentication is required';
+
 class SMTP {
   //
   // NOTE: we port forward 25, 587, and 2525 -> 2587 (and 2587 is itself available)
@@ -552,6 +553,9 @@ class SMTP {
     // setup our smtp server which listens for incoming email
     // TODO: <https://github.com/nodemailer/smtp-server/issues/177>
     this.server = new SMTPServer({
+      // <https://github.com/nodemailer/smtp-server/pull/192>
+      authRequiredMessage,
+
       //
       // most of these options mirror the FE forwarding server options
       //

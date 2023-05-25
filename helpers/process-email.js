@@ -795,7 +795,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // now we have in-memory the most recent array of `accepted` and `rejectedErrors`
     // and can properly update the `status` of the email as such (by calling `save()`)
     //
-    await e.save();
+    await e.save(); // <--- TODO: version error happens here
     return;
   } catch (err) {
     // create log

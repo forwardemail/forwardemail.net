@@ -499,6 +499,8 @@ async function sendEmail({
           isTLSError(err) ||
           err.code === 'ECONNRESET');
 
+      // TODO: ensure this is released to npm and this project + FE source is version bumped
+      // <https://github.com/nodemailer/nodemailer/issues/1541>
       transporter = nodemailer.createTransport({
         ...transporterConfig,
         // TODO: we may want this instead:
