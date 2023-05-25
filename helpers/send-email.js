@@ -32,6 +32,8 @@ const transporterConfig = {
   dnsTimeout: ms('30s')
 };
 
+const maxConnectTime = ms('1m');
+
 const REGEX_TLS_ERR = new RE2(
   /disconnected\s+before\s+secure\s+tls\s+connection\s+was\s+established/im
 );
@@ -281,7 +283,7 @@ async function sendEmail({
       localHostname,
       // the default in mx-connect is 300s (5 min)
       // <https://github.com/zone-eu/mx-connect/blob/f9e20ceff5a4a7cfb85fba58ca2f040aaa7c2358/lib/get-connection.js#L6>
-      // maxConnectTime: ms('5m'),
+      maxConnectTime,
       dnsOptions: {
         // NOTE: if we merge code then this will need adjusted
         blockLocalAddresses: env.NODE_ENV !== 'test',
@@ -371,7 +373,8 @@ async function sendEmail({
     //       https://github.com/zone-eu/zone-mta/blob/5daa48eea4aa05e724eb2ab80fd3a957e6cc8c6c/lib/sender.js#L1140
     //
     if (err.code && MAIL_RETRY_ERROR_CODES.has(err.code)) {
-      if (!isNodemailerError(err)) ignoreMXHosts.push(mx.host);
+      // if (!isNodemailerError(err))
+      ignoreMXHosts.push(mx.host);
     } else if (
       session.requireTLS &&
       (!err.code || !MAIL_RETRY_ERROR_CODES.has(err.code)) &&
@@ -430,7 +433,7 @@ async function sendEmail({
         localHostname,
         // the default in mx-connect is 300s (5 min)
         // <https://github.com/zone-eu/mx-connect/blob/f9e20ceff5a4a7cfb85fba58ca2f040aaa7c2358/lib/get-connection.js#L6>
-        // maxConnectTime: ms('5m')
+        maxConnectTime,
         dnsOptions: {
           // NOTE: if we merge code then this will need adjusted
           blockLocalAddresses: env.NODE_ENV !== 'test',
