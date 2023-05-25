@@ -59,6 +59,7 @@ router
   // emails
   .get('/emails', paginate.middleware(10, 50), web.admin.emails.list)
   .get('/emails/:id', web.admin.emails.retrieve)
+  .put('/emails/:id', web.admin.emails.update)
   .delete('/emails/:id', web.admin.emails.remove);
 
 module.exports = router;

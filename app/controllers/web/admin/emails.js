@@ -74,6 +74,45 @@ async function retrieve(ctx) {
   return ctx.render('admin/emails/retrieve');
 }
 
+async function update(ctx) {
+  ctx.state.email = await Emails.findById(ctx.params.id);
+
+  if (!ctx.state.email)
+    throw Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST'));
+
+  if (!['pending', 'deferred'].includes(ctx.state.email.status))
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'))
+    );
+
+  // set status to queued
+  ctx.state.email.status = 'queued';
+
+  // NOTE: we leave it up to the pre-save hook to determine the "status"
+  ctx.state.email = await ctx.state.email.save();
+
+  ctx.logger.info('email queued', {
+    session: createSession(ctx.state.email),
+    user: ctx.state.email.user,
+    email: ctx.state.email._id,
+    domains: [ctx.state.email.domain],
+    ignore_hook: false
+  });
+
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: ctx.translate('REQUEST_OK'),
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
+
+  if (ctx.accepts('html')) ctx.redirect('back');
+  else ctx.body = { reloadPage: true };
+}
+
 async function remove(ctx) {
   ctx.state.email = await Emails.findById(ctx.params.id);
 
@@ -123,5 +162,6 @@ async function remove(ctx) {
 module.exports = {
   list,
   retrieve,
-  remove
+  remove,
+  update
 };

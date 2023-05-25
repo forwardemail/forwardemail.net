@@ -80,6 +80,21 @@ table.table.table-hover.table-bordered.table-sm
                     data-placement="bottom",
                     title=t("Download")
                   ): i.fa.fa-fw.fa-file-download
+                //- Only allow queue if pending or deferred
+                if ['pending', 'deferred'].includes(email.status)
+                  li.list-inline-item
+                    form.ajax-form.confirm-prompt(
+                      action=l(`/admin/emails/${email.id}`),
+                      method="POST",
+                      autocomplete="off"
+                    )
+                      input(type="hidden", name="_method", value="PUT")
+                      button.btn.btn-success.btn-sm(
+                        type="submit",
+                        data-toggle="tooltip",
+                        data-title=t("Queue"),
+                        data-placement="bottom"
+                      ): i.fa.fa-fw.fa-refresh
                 //- Only allow remove if
                 //- - pending
                 //- - queued
