@@ -10,6 +10,7 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const ip = require('ip');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
 
 const SMTP = require('./smtp-server');
@@ -18,6 +19,13 @@ const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
+
+const INSTANCE =
+  typeof process.env.NODE_APP_INSTANCE === 'string'
+    ? Number.parseInt(process.env.NODE_APP_INSTANCE, 10)
+    : 0;
+
+const timeout = ms(`${INSTANCE * 5}s`);
 
 const bree = new Bree({
   logger,
@@ -31,7 +39,7 @@ const bree = new Bree({
       //
       name: 'send-emails',
       interval: '30s',
-      timeout: 0
+      timeout
     }
   ]
 });
