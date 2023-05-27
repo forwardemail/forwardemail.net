@@ -754,7 +754,8 @@ Domains.plugin(mongooseCommonPlugin, {
     'missing_return_path_sent_at',
     'has_dmarc_record',
     'missing_dmarc_sent_at',
-    'smtp_checked_at'
+    'smtp_checked_at',
+    'smtp_emails_blocked'
   ],
   mongooseHidden: {
     virtuals: {
