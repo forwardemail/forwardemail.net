@@ -785,6 +785,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
     if (hasNewlyBlocked) {
       // wrapped with a try/catch since we want the email still to save if the domain didn't
       try {
+        domain.skip_payment_check = true;
+        domain.skip_verification = true;
         await domain.save();
       } catch (err) {
         logger.fatal(err);
