@@ -163,6 +163,33 @@ async function shouldThrowError(err, session) {
     err.bounceInfo.category = 'spam';
 
   if (
+    err.bounceInfo.action === 'reject' &&
+    err.bounceInfo.category === 'other'
+  ) {
+    //
+    // if it was spectrum/charter/rr then if blocked then retry
+    // <https://www.spectrum.net/support/internet/understanding-email-error-codes>
+    //
+    if (
+      err.response.includes('AUP#1000') ||
+      (err.response.includes('AUP#12') && !err.response.includes('AUP#1260'))
+    )
+      err.bounceInfo.category = 'blocklist';
+    else if (
+      err.response.includes(
+        'https://www.spectrum.net/support/internet/understanding-email-error-codes'
+      )
+    )
+      err.bounceInfo.category = 'spam';
+    // AT&T
+    else if (err.response.includes('abuse_rbl@abuse-att.net'))
+      err.bounceInfo.category = 'blocklist';
+    // Cloudmark/Proofpoint
+    else if (err.response.includes('cloudmark.com'))
+      err.bounceInfo.category = 'blocklist';
+  }
+
+  if (
     err.target === 'qq.com' &&
     err.response.includes('550 Mail content denied')
   )
