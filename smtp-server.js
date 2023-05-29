@@ -56,8 +56,11 @@ function validateDomain(domain) {
 
   if (domain.is_global) throw new Error('Cannot send email from global domain');
 
-  if (_.isDate(domain.smtp_suspended_sent_at))
-    throw new Error('Domain is suspended from outbound SMTP access');
+  //
+  // NOTE: if the domain is suspended then the state is "pending" not queued
+  //
+  // if (_.isDate(domain.smtp_suspended_sent_at))
+  //   throw new Error('Domain is suspended from outbound SMTP access');
 
   if (!domain.has_smtp)
     throw new Error('Domain does not have outbound SMTP access');

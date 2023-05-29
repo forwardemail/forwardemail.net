@@ -458,9 +458,12 @@ Emails.statics.queue = async function (
       i18n.translateError('EMAIL_SMTP_GLOBAL_NOT_PERMITTED', locale)
     );
 
+  //
+  // NOTE: if the domain is suspended then the state is "pending" not queued
+  //
   // domain cannot be in suspended domains list
-  if (_.isDate(domain.smtp_suspended_sent_at))
-    throw Boom.forbidden(i18n.translateError('DOMAIN_SUSPENDED', locale));
+  // if (_.isDate(domain.smtp_suspended_sent_at))
+  //   throw Boom.forbidden(i18n.translateError('DOMAIN_SUSPENDED', locale));
 
   // domain must be enabled
   if (!domain.has_smtp)
@@ -585,12 +588,27 @@ Emails.statics.queue = async function (
       logger.fatal(err);
     }
 
-    // store when we sent this email
-    await Domains.findByIdAndUpdate(domain._id, {
-      $set: {
-        smtp_suspended_sent_at: new Date()
-      }
+    // if any of the domain admins are admins then don't ban
+    const adminExists = await Users.exists({
+      _id: {
+        $in: domain.members
+          .filter((m) => m.group === 'admin')
+          .map((m) =>
+            typeof m.user === 'object' && typeof m.user._id === 'object'
+              ? m.user._id
+              : m.user
+          )
+      },
+      group: 'admin'
     });
+
+    // store when we sent this email
+    if (!adminExists)
+      await Domains.findByIdAndUpdate(domain._id, {
+        $set: {
+          smtp_suspended_sent_at: new Date()
+        }
+      });
 
     const error = Boom.badRequest(messages.join(' '));
     error.messages = messages;
@@ -638,6 +656,8 @@ Emails.statics.queue = async function (
     headers[key] = value;
   }
 
+  const status = _.isDate(domain.smtp_suspended_sent_at) ? 'pending' : 'queued';
+
   const email = await this.create({
     alias: alias._id,
     domain: domain._id,
@@ -647,7 +667,8 @@ Emails.statics.queue = async function (
     messageId,
     headers,
     date,
-    subject
+    subject,
+    status
   });
 
   return email;
