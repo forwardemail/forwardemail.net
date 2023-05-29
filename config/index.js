@@ -26,6 +26,7 @@ const utilities = require('./utilities');
 const payments = require('./payments');
 
 const config = {
+  supportEmail: env.EMAIL_DEFAULT_FROM_EMAIL,
   maxRecipients: env.MAX_RECIPIENTS,
   paidPrefix: `${env.TXT_RECORD_PREFIX}-site-verification=`,
   freePrefix: `${env.TXT_RECORD_PREFIX}=`,
@@ -700,6 +701,7 @@ config.views.locals.manifest = manifestRev({
 
 // add selective `config` object to be used by views
 config.views.locals.config = _.pick(config, [
+  'supportEmail',
   'webHost',
   'appColor',
   'appName',
