@@ -230,6 +230,28 @@ async function onData(stream, _session, fn) {
       if (to.length > 0) envelope.to = to;
     }
 
+    // rate limit to 100 emails per day by domain id then denylist
+    {
+      const limit = await this.rateLimiter.get({
+        id: domain.id
+      });
+
+      // return 550 error code
+      if (!limit.remaining)
+        throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+    }
+
+    // rate limit to 100 emails per day by alias user id then denylist
+    {
+      const limit = await this.rateLimiter.get({
+        id: alias.user.id
+      });
+
+      // return 550 error code
+      if (!limit.remaining)
+        throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+    }
+
     // queue the email
     const email = await Emails.queue({
       message: {
@@ -241,6 +263,8 @@ async function onData(stream, _session, fn) {
       user: alias.user,
       date: new Date(session.arrivalDate)
     });
+
+    // TODO: implement credit system
 
     logger.info('email created', {
       session: createSession(email),
@@ -307,43 +331,41 @@ async function onConnect(session, fn) {
     if (session.resolvedClientHostname)
       rootDomain = parseRootDomain(session.resolvedClientHostname);
 
-    //
-    // prevent connections from backscatter, silent ban, and denylist
-    //
-    const arr = [
-      `backscatter:${session.remoteAddress}`,
-      `denylist:${session.remoteAddress}`,
-      `silent:${session.remoteAddress}`
-    ];
+    // check if allowlisted
+    const result = await this.client.get(
+      `allowlist:${rootDomain || session.remoteAddress}`
+    );
 
-    if (rootDomain)
-      arr.push(
-        `backscatter:${rootDomain}`,
-        `denylist:${rootDomain}`,
-        `silent:${rootDomain}`
-      );
+    if (!boolean(result)) {
+      //
+      // prevent connections from backscatter, silent ban, and denylist
+      //
+      const arr = [
+        `backscatter:${session.remoteAddress}`,
+        `denylist:${session.remoteAddress}`,
+        `silent:${session.remoteAddress}`
+      ];
 
-    const results = await this.client.mget(arr);
-    if (results.some((result) => boolean(result)))
-      throw new SMTPError('Try again later', { ignoreHook: true });
+      if (rootDomain)
+        arr.push(
+          `backscatter:${rootDomain}`,
+          `denylist:${rootDomain}`,
+          `silent:${rootDomain}`
+        );
 
-    // rate limit to 100 connections per hour then denylist
-    const limit = await this.rateLimiter.get({
-      id: rootDomain || session.remoteAddress
-    });
-
-    if (!limit.remaining) {
-      // add to denylist if rate limit exceeded
-      const pipeline = this.client.pipeline();
-      if (rootDomain) pipeline.set(`denylist:${rootDomain}`, 'true');
-      pipeline.set(`denylist:${session.remoteAddress}`, 'true');
-      pipeline
-        .exec()
-        .then()
-        .catch((err) => logger.fatal(err));
-
-      // return 550 error code
-      throw new SMTPError('Try again later', { ignoreHook: true });
+      const results = await this.client.mget(arr);
+      if (results.some((result) => boolean(result))) {
+        throw new SMTPError(
+          `The ${rootDomain ? 'domain' : 'IP'} ${
+            rootDomain || session.remoteAddress
+          } is denylisted by ${
+            config.urls.web
+          }. To request removal, you must visit ${config.urls.web}/denylist?q=${
+            rootDomain || session.remoteAddress
+          }.`,
+          { ignoreHook: true }
+        );
+      }
     }
 
     setImmediate(fn);

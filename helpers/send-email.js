@@ -181,12 +181,15 @@ async function shouldThrowError(err, session) {
       )
     )
       err.bounceInfo.category = 'spam';
-    // AT&T
+    // AT&T (TODO: email them and cc us)
     else if (err.response.includes('abuse_rbl@abuse-att.net'))
       err.bounceInfo.category = 'blocklist';
-    // Cloudmark/Proofpoint
+    // Cloudmark/Proofpoint (TODO: email them and cc us + link to form submission)
     else if (err.response.includes('cloudmark.com'))
       err.bounceInfo.category = 'blocklist';
+    // COX - unblock.request@cox.net (TODO: email them and cc us)
+    // <https://www.cox.com/residential/support/email-error-codes.html#contactus>
+    // AUP#CXCNCT
   }
 
   if (
