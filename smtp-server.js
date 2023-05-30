@@ -230,6 +230,7 @@ async function onData(stream, _session, fn) {
       if (to.length > 0) envelope.to = to;
     }
 
+    /*
     // rate limit to 100 emails per day by domain id then denylist
     {
       const limit = await this.rateLimiter.get({
@@ -251,6 +252,7 @@ async function onData(stream, _session, fn) {
       if (!limit.remaining)
         throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
     }
+    */
 
     // queue the email
     const email = await Emails.queue({
