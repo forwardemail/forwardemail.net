@@ -16,6 +16,7 @@ const { SMTPServer } = require('smtp-server');
 const { isEmail } = require('validator');
 const { boolean } = require('boolean');
 
+const Users = require('#models/users');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
@@ -230,29 +231,43 @@ async function onData(stream, _session, fn) {
       if (to.length > 0) envelope.to = to;
     }
 
-    /*
-    // rate limit to 100 emails per day by domain id then denylist
-    {
-      const limit = await this.rateLimiter.get({
-        id: domain.id
-      });
+    // if any of the domain admins are admins then don't rate limit
+    const adminExists = await Users.exists({
+      _id: {
+        $in: domain.members
+          .filter((m) => m.group === 'admin')
+          .map((m) =>
+            typeof m.user === 'object' && typeof m.user._id === 'object'
+              ? m.user._id
+              : m.user
+          )
+      },
+      group: 'admin'
+    });
 
-      // return 550 error code
-      if (!limit.remaining)
-        throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+    if (!adminExists) {
+      // rate limit to 100 emails per day by domain id then denylist
+      {
+        const limit = await this.rateLimiter.get({
+          id: domain.id
+        });
+
+        // return 550 error code
+        if (!limit.remaining)
+          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+      }
+
+      // rate limit to 100 emails per day by alias user id then denylist
+      {
+        const limit = await this.rateLimiter.get({
+          id: alias.user.id
+        });
+
+        // return 550 error code
+        if (!limit.remaining)
+          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+      }
     }
-
-    // rate limit to 100 emails per day by alias user id then denylist
-    {
-      const limit = await this.rateLimiter.get({
-        id: alias.user.id
-      });
-
-      // return 550 error code
-      if (!limit.remaining)
-        throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
-    }
-    */
 
     // queue the email
     const email = await Emails.queue({
