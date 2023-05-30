@@ -571,7 +571,7 @@ class SMTP {
     this.rateLimiter = new RateLimiter({
       db: this.client,
       max: 100,
-      duration: ms('1h'),
+      duration: ms('1d'),
       namespace: `smtp_auth_limit_${config.env}`
     });
 
