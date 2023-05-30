@@ -385,8 +385,32 @@ async function sendEmail({
       raw
     });
 
+    // only needed for pooled connections (?)
+    if (
+      typeof transporter === 'object' &&
+      typeof transporter.close === 'function'
+    ) {
+      try {
+        transporter.close();
+      } catch (err) {
+        logger.error(err, { session });
+      }
+    }
+
     return info;
   } catch (err) {
+    // only needed for pooled connections (?)
+    if (
+      typeof transporter === 'object' &&
+      typeof transporter.close === 'function'
+    ) {
+      try {
+        transporter.close();
+      } catch (err) {
+        logger.error(err, { session });
+      }
+    }
+
     mxLastError = err;
     session.mxLastError = mxLastError;
 
@@ -554,8 +578,32 @@ async function sendEmail({
           raw
         });
 
+        // only needed for pooled connections (?)
+        if (
+          typeof transporter === 'object' &&
+          typeof transporter.close === 'function'
+        ) {
+          try {
+            transporter.close();
+          } catch (err) {
+            logger.error(err, { session });
+          }
+        }
+
         return info;
       } catch (err) {
+        // only needed for pooled connections (?)
+        if (
+          typeof transporter === 'object' &&
+          typeof transporter.close === 'function'
+        ) {
+          try {
+            transporter.close();
+          } catch (err) {
+            logger.error(err, { session });
+          }
+        }
+
         err.tls = tls;
         err.target = target;
         err.envelope = envelope;
