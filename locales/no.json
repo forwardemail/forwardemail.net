@@ -4190,5 +4190,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "og bruke den til DNS-oppslag. Standard DNS-servere som brukes er",
   ", and DNS queries are through": ", og DNS-spørringer er gjennom",
   "uses": "bruker",
-  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlares personvernførste DNS-tjeneste for forbrukere som standard"
+  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlares personvernførste DNS-tjeneste for forbrukere som standard",
+  "What are your outbound SMTP limits": "Hva er dine utgående SMTP-grenser",
+  "You are only permitted to use our outbound SMTP service for": "Du har kun tillatelse til å bruke vår utgående SMTP-tjeneste for",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". Du har forbud mot å sende markedsførings-e-post (f.eks. reklame-, bulk- eller kommersiell e-post til en liste over kontakter med samme innhold). Dette inkluderer eksempler som et nyhetsbrev eller en e-post med massekunngjøringer.\n    Sørg for at du har lest vår",
+  "Outbound SMTP Limits": "Utgående SMTP-grenser",
+  "– your use is considered acknowledgement and agreement.": "– din bruk anses som bekreftelse og avtale.",
+  "If you are using Gmail, then refer to our": "Hvis du bruker Gmail, se vår",
+  "Send Mail As with Gmail guide": "Send e-post som med Gmail-guide",
+  ". If you are a developer, then refer to our": ". Hvis du er en utvikler, se vår",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Vi vurderer begrense brukere og domener til 300 utgående SMTP-meldinger per 1 dag. Dette er i gjennomsnitt 9000+ e-poster i løpet av en kalendermåned. Hvis du trenger å overskride dette beløpet eller har konsekvent store e-poster, vennligst kontakt oss."
 }

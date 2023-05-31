@@ -246,7 +246,7 @@ async function onData(stream, _session, fn) {
     });
 
     if (!adminExists) {
-      // rate limit to 100 emails per day by domain id then denylist
+      // rate limit to X emails per day by domain id then denylist
       {
         const limit = await this.rateLimiter.get({
           id: domain.id
@@ -257,7 +257,7 @@ async function onData(stream, _session, fn) {
           throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
       }
 
-      // rate limit to 100 emails per day by alias user id then denylist
+      // rate limit to X emails per day by alias user id then denylist
       {
         const limit = await this.rateLimiter.get({
           id: alias.user.id
@@ -587,9 +587,9 @@ class SMTP {
     //
     this.rateLimiter = new RateLimiter({
       db: this.client,
-      max: 100,
-      duration: ms('1d'),
-      namespace: `smtp_auth_limit_${config.env}`
+      max: config.smtpLimitMessages,
+      duration: config.smtpLimitDuration,
+      namespace: config.smtpLimitNamespace
     });
 
     // setup our smtp server which listens for incoming email

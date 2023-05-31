@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "ולהשתמש בו עבור חיפושי DNS. שרתי ה-DNS המשמשים כברירת מחדל הם",
   ", and DNS queries are through": ", ושאילתות DNS עברו",
   "uses": "שימושים",
-  "CloudFlare's privacy-first consumer DNS service by default": "שירות DNS לצרכן הראשון של CloudFlare כברירת מחדל"
+  "CloudFlare's privacy-first consumer DNS service by default": "שירות DNS לצרכן הראשון של CloudFlare כברירת מחדל",
+  "What are your outbound SMTP limits": "מהן מגבלות ה-SMTP היוצאות שלך",
+  "You are only permitted to use our outbound SMTP service for": "אתה רשאי להשתמש רק בשירות ה-SMTP היוצא שלנו עבור",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". נאסר עליך לשלוח דוא\"ל שיווקי (למשל, דוא\"ל פרסומי, בכמות גדולה או מסחרית לרשימת אנשי קשר עם אותו תוכן). זה כולל דוגמאות כגון ניוזלטר או הודעת דוא\"ל בכמות גדולה.\n    אנא ודא שקראת את שלנו",
+  "Outbound SMTP Limits": "מגבלות SMTP יוצאות",
+  "– your use is considered acknowledgement and agreement.": "- השימוש שלך נחשב כהכרה והסכמה.",
+  "If you are using Gmail, then refer to our": "אם אתה משתמש ב-Gmail, עיין בכתובת שלנו",
+  "Send Mail As with Gmail guide": "שלח דואר כמו במדריך Gmail",
+  ". If you are a developer, then refer to our": ". אם אתה מפתח, עיין בכתובת שלנו",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "אנו מגבילים משתמשים ודומיינים ל-300 הודעות SMTP יוצאות ביום אחד. זה ממוצע של 9000+ אימיילים בחודש קלנדרי. אם אתה צריך לחרוג מהסכום הזה או שיש לך הודעות דוא\"ל גדולות באופן עקבי, אנא צור איתנו קשר."
 }

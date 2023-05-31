@@ -10,8 +10,10 @@ const humanize = require('humanize-string');
 const isBot = require('isbot');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const numeral = require('numeral');
 const pluralize = require('pluralize');
+const prettyMilliseconds = require('pretty-ms');
 const shortID = require('mongodb-short-id');
 const splitLines = require('split-lines');
 const striptags = require('striptags');
@@ -186,5 +188,7 @@ module.exports = {
   splitLines,
   striptags,
   titleize,
-  validator
+  validator,
+  ms,
+  prettyMilliseconds
 };

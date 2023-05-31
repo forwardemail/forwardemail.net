@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "ve DNS aramaları için kullanın. Kullanılan varsayılan DNS sunucuları şunlardır:",
   ", and DNS queries are through": ", ve DNS sorguları",
   "uses": "kullanır",
-  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlare'in varsayılan olarak gizliliğe öncelik veren tüketici DNS hizmeti"
+  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlare'in varsayılan olarak gizliliğe öncelik veren tüketici DNS hizmeti",
+  "What are your outbound SMTP limits": "Giden SMTP sınırlarınız nelerdir?",
+  "You are only permitted to use our outbound SMTP service for": "Giden SMTP hizmetimizi yalnızca aşağıdakiler için kullanmanıza izin verilir:",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". Pazarlama e-postası (ör. aynı içeriğe sahip bir kişiler listesine promosyon, toplu veya ticari e-posta) göndermeniz yasaktır. Buna haber bülteni veya toplu duyuru e-postası gibi örnekler dahildir.\n    Lütfen sayfamızı okuduğunuzdan emin olun.",
+  "Outbound SMTP Limits": "Giden SMTP Limitleri",
+  "– your use is considered acknowledgement and agreement.": "– kullanımınız onay ve anlaşma olarak kabul edilir.",
+  "If you are using Gmail, then refer to our": "Gmail kullanıyorsanız, şuraya bakın:",
+  "Send Mail As with Gmail guide": "Postaları Gmail kılavuzuyla Farklı Gönder",
+  ". If you are a developer, then refer to our": ". Bir geliştiriciyseniz, şuraya bakın:",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Kullanıcıları ve etki alanlarını 1 günde 300 giden SMTP mesajı olarak derecelendiriyoruz. Bu, bir takvim ayında ortalama 9000'den fazla e-posta anlamına gelir. Bu miktarı aşmanız gerekiyorsa veya sürekli olarak büyük e-postalarınız varsa, lütfen bizimle iletişime geçin."
 }

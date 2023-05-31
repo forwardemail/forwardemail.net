@@ -165,17 +165,14 @@ block body
                 = " "
                 = t("Spam protection")
                 = " "
-                a.btn.btn-link.text-themed.text-decoration-underline.font-weight-bold.py-0(
-                  href="https://spamscanner.net",
-                  target="_blank",
-                  rel="noopener noreferrer",
-                  role="button",
-                  data-toggle="tooltip",
-                  data-placement="bottom",
-                  aria-label=t("Spam Scanner"),
-                  title=t("We built our own anti-spam, phishing, and virus protection software called Spam Scanner. It abides by the same privacy-first and zero logging policies.")
+                button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
+                  type="button",
+                  data-confirm-type="info",
+                  data-confirm-show-cancel-button="false",
+                  data-confirm-prompt-title=t("Spam Scanner"),
+                  data-confirm-prompt-html=t('We built our own anti-spam, phishing, and virus protection software called <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.')
                 )
-                  i.fa.fa-question-circle
+                  i.fa.fa-info-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-paperclip.text-themed.mr-3
                 = " "
@@ -274,14 +271,31 @@ block body
                 = " "
                 = t("Secure inbox privacy")
                 = " "
-                button.btn.btn-link.text-white.py-0.no-js(
-                  role="button",
-                  data-toggle="tooltip",
-                  data-placement="bottom",
-                  aria-label=t("Encrypted Configuration"),
-                  title=t("No publicly searchable DNS records are used.  Instead we store your configuration in a secure and backed-up database.")
+                button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
+                  type="button",
+                  data-confirm-type="info",
+                  data-confirm-show-cancel-button="false",
+                  data-confirm-prompt-title=t("Encrypted Configuration"),
+                  data-confirm-prompt-html=t("No publicly searchable DNS records are used.  Instead we store your configuration in a secure and backed-up database.")
                 )
-                  i.fa.fa-question-circle
+                  i.fa.fa-info-circle
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-envelope.text-themed.mr-3
+                = " "
+                a.font-weight-bold.text-themed(
+                  href=l("/faq#do-you-support-sending-email-with-smtp"),
+                  target="_blank"
+                )
+                  = t("%d+ outbound / month", Math.round(config.smtpLimitMessages * Math.round(config.smtpLimitDuration / ms("1d")) * 30))
+                = " "
+                button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
+                  type="button",
+                  data-confirm-type="info",
+                  data-confirm-show-cancel-button="false",
+                  data-confirm-prompt-title=t("Outbound SMTP Limits"),
+                  data-confirm-prompt-html=t("We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.", config.smtpLimitMessages, prettyMilliseconds(config.smtpLimitDuration, { verbose: true, secondsDecimalDigits: 0 }), Math.round(config.smtpLimitMessages * Math.round(config.smtpLimitDuration / ms("1d")) * 30))
+                )
+                  i.fa.fa-info-circle
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 = " "

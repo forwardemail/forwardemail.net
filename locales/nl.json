@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "en gebruik het voor DNS-lookups. De standaard gebruikte DNS-servers zijn",
   ", and DNS queries are through": ", en DNS-query's zijn door",
   "uses": "toepassingen",
-  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlare's privacy-eerste DNS-service voor consumenten standaard"
+  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlare's privacy-eerste DNS-service voor consumenten standaard",
+  "What are your outbound SMTP limits": "Wat zijn uw uitgaande SMTP-limieten",
+  "You are only permitted to use our outbound SMTP service for": "U mag onze uitgaande SMTP-service alleen gebruiken voor",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". Het is verboden om marketing e-mail te sturen (bijv. promotie-, bulk- of commerciële e-mail naar een lijst met contactpersonen met dezelfde inhoud). Dit omvat voorbeelden zoals een nieuwsbrief of een e-mail met bulkaankondigingen.\n    Zorg ervoor dat u onze leest",
+  "Outbound SMTP Limits": "Uitgaande SMTP-limieten",
+  "– your use is considered acknowledgement and agreement.": "– uw gebruik wordt beschouwd als erkenning en akkoord.",
+  "If you are using Gmail, then refer to our": "Als u Gmail gebruikt, raadpleeg dan onze",
+  "Send Mail As with Gmail guide": "Stuur e-mail zoals met de Gmail-gids",
+  ". If you are a developer, then refer to our": ". Als u een ontwikkelaar bent, raadpleeg dan onze",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "We beperken gebruikers en domeinen tot 300 uitgaande SMTP-berichten per dag. Dit zijn gemiddeld 9000+ e-mails in een kalendermaand. Als u dit bedrag moet overschrijden of constant grote e-mails heeft, neem dan contact met ons op."
 }

@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "واستخدمه في عمليات بحث DNS. خوادم DNS الافتراضية المستخدمة هي",
   ", and DNS queries are through": "، واستفسارات DNS من خلال",
   "uses": "الاستخدامات",
-  "CloudFlare's privacy-first consumer DNS service by default": "خدمة DNS للمستهلك الأولى للخصوصية من CloudFlare افتراضيًا"
+  "CloudFlare's privacy-first consumer DNS service by default": "خدمة DNS للمستهلك الأولى للخصوصية من CloudFlare افتراضيًا",
+  "What are your outbound SMTP limits": "ما هي حدود SMTP الصادرة الخاصة بك",
+  "You are only permitted to use our outbound SMTP service for": "يُسمح لك فقط باستخدام خدمة SMTP الصادرة من أجل",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". يحظر عليك إرسال بريد إلكتروني تسويقي (مثل البريد الإلكتروني الترويجي أو الجماعي أو التجاري إلى قائمة جهات الاتصال التي لها نفس المحتوى). يتضمن هذا أمثلة مثل النشرة الإخبارية أو البريد الإلكتروني للإعلان الجماعي.\n    يرجى التأكد من أنك قد قرأت",
+  "Outbound SMTP Limits": "حدود SMTP الصادرة",
+  "– your use is considered acknowledgement and agreement.": "- يعتبر استخدامك إقرارًا واتفاقًا.",
+  "If you are using Gmail, then refer to our": "إذا كنت تستخدم Gmail ، فارجع إلى",
+  "Send Mail As with Gmail guide": "إرسال البريد باسم مع دليل Gmail",
+  ". If you are a developer, then refer to our": ". إذا كنت مطورًا ، فارجع إلى موقعنا",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "نحن نقيد المستخدمين والنطاقات بـ 300 رسالة SMTP صادرة في اليوم الواحد. هذا بمتوسط 9000+ بريد إلكتروني في شهر تقويمي. إذا كنت بحاجة إلى تجاوز هذا المبلغ أو كان لديك رسائل بريد إلكتروني كبيرة باستمرار ، فيرجى الاتصال بنا."
 }

@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "dan menggunakannya untuk pencarian DNS. Server DNS default yang digunakan adalah",
   ", and DNS queries are through": ", dan kueri DNS selesai",
   "uses": "menggunakan",
-  "CloudFlare's privacy-first consumer DNS service by default": "Layanan DNS konsumen yang mengutamakan privasi CloudFlare secara default"
+  "CloudFlare's privacy-first consumer DNS service by default": "Layanan DNS konsumen yang mengutamakan privasi CloudFlare secara default",
+  "What are your outbound SMTP limits": "Berapa batas SMTP keluar Anda",
+  "You are only permitted to use our outbound SMTP service for": "Anda hanya diizinkan menggunakan layanan SMTP keluar kami untuk",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". Anda dilarang mengirim email pemasaran (misalnya email promosi, massal, atau komersial ke daftar kontak dengan konten yang sama). Ini termasuk contoh seperti buletin atau email pengumuman massal.\n    Harap pastikan Anda telah membaca kami",
+  "Outbound SMTP Limits": "Batas SMTP keluar",
+  "– your use is considered acknowledgement and agreement.": "– penggunaan Anda dianggap sebagai pengakuan dan persetujuan.",
+  "If you are using Gmail, then refer to our": "Jika Anda menggunakan Gmail, lihat kami",
+  "Send Mail As with Gmail guide": "Kirim Surat Seperti dengan panduan Gmail",
+  ". If you are a developer, then refer to our": ". Jika Anda seorang pengembang, lihat kami",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Kami membatasi pengguna dan domain hingga 300 pesan SMTP keluar per 1 hari. Ini rata-rata 9000+ email dalam satu bulan kalender. Jika Anda perlu melebihi jumlah ini atau memiliki email yang besar secara konsisten, silakan hubungi kami."
 }

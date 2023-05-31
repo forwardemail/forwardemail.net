@@ -6,6 +6,7 @@
 * [How fast is this service](#how-fast-is-this-service)
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
 * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
+* [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
 * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
 * [Do you support sending email with API](#do-you-support-sending-email-with-api)
 * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
@@ -691,7 +692,8 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
     Important:
   </strong>
   <span>
-    You are only permitted to use our Outbound SMTP service for <a href="https://wikipedia.org/wiki/Email_marketing#Transactional_emails" class="alert-link" rel="noopener noreferrer" target="_blank">transactional emails</a>. You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.
+    You are only permitted to use our outbound SMTP service for <a href="https://wikipedia.org/wiki/Email_marketing#Transactional_emails" class="alert-link" rel="noopener noreferrer" target="_blank">transactional emails</a>. You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
   </span>
 </div>
 
@@ -701,7 +703,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
     Important:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-forwarding-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
+    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-forwarding-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
   </span>
 </div>
 
@@ -743,6 +745,11 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
 </div>
 
 
+## What are your outbound SMTP limits
+
+We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.
+
+
 ## What are your SMTP server configuration settings
 
 Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
@@ -774,7 +781,7 @@ Yes, as of May 2023 we support sending email with API as an add-on for all paid 
     Important:
   </strong>
   <span>
-    You are only permitted to use our Outbound SMTP service for <a href="https://wikipedia.org/wiki/Email_marketing#Transactional_emails" class="alert-link" rel="noopener noreferrer" target="_blank">transactional emails</a>. You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.
+    You are only permitted to use our outbound SMTP service for <a href="https://wikipedia.org/wiki/Email_marketing#Transactional_emails" class="alert-link" rel="noopener noreferrer" target="_blank">transactional emails</a>. You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.
   </span>
 </div>
 
@@ -814,7 +821,18 @@ We plan to offer this feature in the near future.
     Important:
   </strong>
   <span>
-    You are only permitted to use our Outbound SMTP service for <a href="https://wikipedia.org/wiki/Email_marketing#Transactional_emails" class="alert-link" rel="noopener noreferrer" target="_blank">transactional emails</a>. You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.
+    You are only permitted to use our outbound SMTP service for <a href="https://wikipedia.org/wiki/Email_marketing#Transactional_emails" class="alert-link" rel="noopener noreferrer" target="_blank">transactional emails</a>. You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are a developer, then refer to our <a class="alert-link" href="/email-forwarding-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
   </span>
 </div>
 

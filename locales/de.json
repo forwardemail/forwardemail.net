@@ -3196,5 +3196,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "und verwenden Sie es für DNS-Suchen. Die standardmäßig verwendeten DNS-Server sind",
   ", and DNS queries are through": ", und DNS-Anfragen sind durch",
   "uses": "Verwendet",
-  "CloudFlare's privacy-first consumer DNS service by default": "Standardmäßig der datenschutzorientierte DNS-Dienst für Verbraucher von CloudFlare"
+  "CloudFlare's privacy-first consumer DNS service by default": "Standardmäßig der datenschutzorientierte DNS-Dienst für Verbraucher von CloudFlare",
+  "What are your outbound SMTP limits": "Was sind Ihre ausgehenden SMTP-Grenzwerte?",
+  "You are only permitted to use our outbound SMTP service for": "Sie dürfen unseren ausgehenden SMTP-Dienst nur für verwenden",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". Es ist Ihnen untersagt, Marketing-E-Mails (z. B. Werbe-, Massen- oder kommerzielle E-Mails an eine Liste von Kontakten mit demselben Inhalt) zu senden. Dazu gehören Beispiele wie ein Newsletter oder eine Massenankündigungs-E-Mail.\n    Bitte stellen Sie sicher, dass Sie unsere gelesen haben",
+  "Outbound SMTP Limits": "Ausgehende SMTP-Grenzwerte",
+  "– your use is considered acknowledgement and agreement.": "– Ihre Nutzung gilt als Anerkennung und Einverständnis.",
+  "If you are using Gmail, then refer to our": "Wenn Sie Gmail verwenden, lesen Sie unsere",
+  "Send Mail As with Gmail guide": "Anleitung zum Senden von E-Mails wie mit Gmail",
+  ". If you are a developer, then refer to our": ". Wenn Sie Entwickler sind, schauen Sie sich unsere an",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Wir begrenzen die Anzahl der Benutzer und Domänen auf 300 ausgehende SMTP-Nachrichten pro Tag. Das entspricht im Durchschnitt mehr als 9.000 E-Mails pro Kalendermonat. Wenn Sie diesen Betrag überschreiten müssen oder dauerhaft große E-Mails haben, kontaktieren Sie uns bitte."
 }

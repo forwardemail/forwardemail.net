@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "a použít jej pro vyhledávání DNS. Výchozí používané servery DNS jsou",
   ", and DNS queries are through": "a dotazy DNS jsou přes",
   "uses": "používá",
-  "CloudFlare's privacy-first consumer DNS service by default": "Ve výchozím nastavení je služba DNS pro spotřebitele CloudFlare na prvním místě na ochranu soukromí"
+  "CloudFlare's privacy-first consumer DNS service by default": "Ve výchozím nastavení je služba DNS pro spotřebitele CloudFlare na prvním místě na ochranu soukromí",
+  "What are your outbound SMTP limits": "Jaké jsou vaše odchozí limity SMTP",
+  "You are only permitted to use our outbound SMTP service for": "Naši odchozí službu SMTP smíte používat pouze pro",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". Je zakázáno posílat marketingové e-maily (např. reklamní, hromadné nebo komerční e-maily na seznam kontaktů se stejným obsahem). To zahrnuje příklady, jako je zpravodaj nebo e-mail s hromadným oznámením.\n    Ujistěte se, že jste si přečetli naše",
+  "Outbound SMTP Limits": "Odchozí limity SMTP",
+  "– your use is considered acknowledgement and agreement.": "– vaše použití je považováno za potvrzení a souhlas.",
+  "If you are using Gmail, then refer to our": "Pokud používáte Gmail, podívejte se na naše",
+  "Send Mail As with Gmail guide": "Průvodce odesláním pošty jako s Gmailem",
+  ". If you are a developer, then refer to our": ". Pokud jste vývojář, podívejte se na naše",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Uživatele a domény omezujeme na 300 odchozích zpráv SMTP za 1 den. To je v průměru 9000+ e-mailů za kalendářní měsíc. Pokud potřebujete překročit tuto částku nebo máte trvale velké e-maily, kontaktujte nás."
 }

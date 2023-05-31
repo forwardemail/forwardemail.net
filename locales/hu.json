@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "és DNS-keresésekhez használja. Az alapértelmezett DNS-kiszolgálók a következők",
   ", and DNS queries are through": ", és a DNS-lekérdezések megtörténtek",
   "uses": "használ",
-  "CloudFlare's privacy-first consumer DNS service by default": "A CloudFlare alapértelmezés szerint az adatvédelem előtt álló fogyasztói DNS-szolgáltatás"
+  "CloudFlare's privacy-first consumer DNS service by default": "A CloudFlare alapértelmezés szerint az adatvédelem előtt álló fogyasztói DNS-szolgáltatás",
+  "What are your outbound SMTP limits": "Melyek a kimenő SMTP-korlátok?",
+  "You are only permitted to use our outbound SMTP service for": "Kimenő SMTP szolgáltatásunkat csak a következő célokra használhatja",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". Tilos marketing e-maileket (pl. promóciós, tömeges vagy kereskedelmi e-mailt küldeni) azonos tartalmú névjegyzéknek. Ide tartoznak például a hírlevél vagy a tömeges bejelentés e-mailjei.\n    Kérjük, feltétlenül olvassa el a mi írásunkat",
+  "Outbound SMTP Limits": "Kimenő SMTP-korlátok",
+  "– your use is considered acknowledgement and agreement.": "– az Ön használata elismerésnek és beleegyezésnek minősül.",
+  "If you are using Gmail, then refer to our": "Ha Gmailt használ, tekintse meg a mi oldalunkat",
+  "Send Mail As with Gmail guide": "Levelek küldése másként a Gmail útmutatóval",
+  ". If you are a developer, then refer to our": ". Ha Ön fejlesztő, akkor tekintse meg oldalunkat",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Naponta 300 kimenő SMTP-üzenetre korlátozzuk a felhasználókat és a domaineket. Ez átlagosan 9000+ e-mailt jelent egy naptári hónapban. Ha túl kell lépnie ezen az összegen, vagy folyamatosan nagy e-mailjei vannak, kérjük, lépjen kapcsolatba velünk."
 }

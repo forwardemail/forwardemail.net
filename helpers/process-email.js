@@ -530,13 +530,13 @@ async function processEmail({ email, port = 25, resolver, client }) {
             Number.isFinite(err.responseCode) &&
             err.responseCode >= 500 &&
             typeof err.recipient === 'string' &&
-            err.recipient.toLowerCase() === to.toLowerCase()
+            err.recipient.toLowerCase() === to
         )
       )
         continue;
 
       // group by same target
-      const target = to.split('@')[1].toLowerCase();
+      const target = to.split('@')[1];
       if (map.has(target)) {
         map.set(target, map.get(target).add(to));
       } else {

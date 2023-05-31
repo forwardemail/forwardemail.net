@@ -5,7 +5,16 @@ const logger = require('#helpers/logger');
 const env = require('#config/env');
 
 const connectionNameSymbol = Symbol.for('connection.name');
-const m = new Mongoose({ logger, hideMeta: true, bindEvents: false });
+const m = new Mongoose({
+  logger,
+  hideMeta: true,
+  bindEvents: false,
+  mongo: {
+    options: {
+      compressors: ['snappy']
+    }
+  }
+});
 
 // destroy initial connection
 // <https://github.com/Automattic/mongoose/issues/12965>

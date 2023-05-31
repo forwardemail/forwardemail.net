@@ -3954,5 +3954,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "and use it for DNS lookups.  The default DNS servers used are",
   ", and DNS queries are through": ", and DNS queries are through",
   "uses": "uses",
-  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlare's privacy-first consumer DNS service by default"
+  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlare's privacy-first consumer DNS service by default",
+  "What are your outbound SMTP limits": "What are your outbound SMTP limits",
+  "You are only permitted to use our outbound SMTP service for": "You are only permitted to use our outbound SMTP service for",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our",
+  "Outbound SMTP Limits": "Outbound SMTP Limits",
+  "– your use is considered acknowledgement and agreement.": "– your use is considered acknowledgement and agreement.",
+  "If you are using Gmail, then refer to our": "If you are using Gmail, then refer to our",
+  "Send Mail As with Gmail guide": "Send Mail As with Gmail guide",
+  ". If you are a developer, then refer to our": ". If you are a developer, then refer to our",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us."
 }

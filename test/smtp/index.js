@@ -596,3 +596,200 @@ Test`.trim()
   t.deepEqual(email.accepted.sort(), email.envelope.to.sort());
   t.deepEqual(email.rejectedErrors, []);
 });
+
+test('smtp rate limiting', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, false);
+  const { resolver } = smtp;
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  const domain = await factory.create('domain', {
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    resolver,
+    has_smtp: true
+  });
+
+  const alias = await factory.create('alias', {
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email]
+  });
+
+  const pass = await alias.createToken();
+  await alias.save();
+
+  {
+    // spoof dns records
+    const map = new Map();
+
+    // custom expiry since this test takes longer
+    const expires = dayjs().add(1, 'day').toDate();
+
+    map.set(
+      `txt:${domain.name}`,
+      resolver.spoofPacket(
+        domain.name,
+        'TXT',
+        [`${config.paidPrefix}${domain.verification_record}`],
+        true,
+        expires
+      )
+    );
+
+    // dkim
+    map.set(
+      `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      resolver.spoofPacket(
+        `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+        'TXT',
+        [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+        true,
+        expires
+      )
+    );
+
+    // spf
+    map.set(
+      `txt:${env.WEB_HOST}`,
+      resolver.spoofPacket(
+        `${env.WEB_HOST}`,
+        'TXT',
+        [`v=spf1 ip4:${IP_ADDRESS} -all`],
+        true,
+        expires
+      )
+    );
+
+    // cname
+    map.set(
+      `cname:${domain.return_path}.${domain.name}`,
+      resolver.spoofPacket(
+        `${domain.return_path}.${domain.name}`,
+        'CNAME',
+        [env.WEB_HOST],
+        true,
+        expires
+      )
+    );
+
+    // cname -> txt
+    map.set(
+      `txt:${domain.return_path}.${domain.name}`,
+      resolver.spoofPacket(
+        `${domain.return_path}.${domain.name}`,
+        'TXT',
+        [`v=spf1 ip4:${IP_ADDRESS} -all`],
+        true,
+        expires
+      )
+    );
+
+    // dmarc
+    map.set(
+      `txt:_dmarc.${domain.name}`,
+      resolver.spoofPacket(
+        `_dmarc.${domain.name}`,
+        'TXT',
+        [
+          // TODO: consume dmarc reports and parse dmarc-$domain
+          `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+        ],
+        true,
+        expires
+      )
+    );
+
+    // store spoofed dns cache
+    await resolver.options.cache.mset(map);
+  }
+
+  // from n to limit, it should not error
+  for (let i = 1; i <= config.smtpLimitMessages + 10; i++) {
+    // eslint-disable-next-line no-await-in-loop
+    const mx = await asyncMxConnect({
+      target: IP_ADDRESS,
+      port: smtp.server.address().port,
+      dnsOptions: {
+        // <https://github.com/zone-eu/mx-connect/pull/4>
+        resolve: util.callbackify(resolver.resolve.bind(resolver))
+      }
+    });
+
+    const transporter = nodemailer.createTransport({
+      logger,
+      debug: true,
+      host: mx.host,
+      port: mx.port,
+      connection: mx.socket,
+      // ignoreTLS: true,
+      // set `secure` to `true` for port 465 otherwise `false` for port 587, 2587, 25, and 2525
+      secure: false,
+      tls: {
+        rejectUnauthorized: false
+      },
+      auth: {
+        user: `${alias.name}@${domain.name}`,
+        pass
+      }
+    });
+
+    if (i > config.smtpLimitMessages) {
+      // eslint-disable-next-line no-await-in-loop
+      const err = await t.throwsAsync(
+        transporter.sendMail({
+          envelope: {
+            from: `${alias.name}@${domain.name}`,
+            to: ['test@foo.com']
+          },
+          raw: `
+To: test@foo.com
+From: Test <${alias.name}@${domain.name}>
+Subject: testing this
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+        })
+      );
+
+      t.is(err.responseCode, 550);
+      t.is(err.response, '550 Rate limit exceeded');
+    } else {
+      // eslint-disable-next-line no-await-in-loop
+      const info = await transporter.sendMail({
+        envelope: {
+          from: `${alias.name}@${domain.name}`,
+          to: ['test@foo.com']
+        },
+        raw: `
+To: test@foo.com
+From: Test <${alias.name}@${domain.name}>
+Subject: testing this
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+      });
+
+      t.deepEqual(info.accepted, ['test@foo.com']);
+    }
+  }
+});

@@ -6,6 +6,8 @@ const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
 
+const config = require('#config');
+
 const router = new Router({
   prefix: '/v1'
 });
@@ -106,8 +108,7 @@ router
   )
   .post(
     '/emails',
-    // TODO: this needs to use credit system
-    rateLimit(100, 'create emails'),
+    rateLimit(config.smtpLimitMessages, 'create emails'),
     bodyParser({
       jsonLimit: '51mb'
     }),

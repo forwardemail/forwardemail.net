@@ -3874,5 +3874,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "并将其用于 DNS 查找。使用的默认 DNS 服务器是",
   ", and DNS queries are through": ", 并且 DNS 查询是通过",
   "uses": "使用",
-  "CloudFlare's privacy-first consumer DNS service by default": "默认情况下，CloudFlare 的隐私优先消费者 DNS 服务"
+  "CloudFlare's privacy-first consumer DNS service by default": "默认情况下，CloudFlare 的隐私优先消费者 DNS 服务",
+  "What are your outbound SMTP limits": "您的出站 SMTP 限制是多少",
+  "You are only permitted to use our outbound SMTP service for": "您仅可将我们的出站 SMTP 服务用于",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ".禁止您发送营销电子邮件（例如，向具有相同内容的联系人列表发送促销、批量或商业电子邮件）。这包括时事通讯或批量公告电子邮件等示例。\n    请确保您已阅读我们的",
+  "Outbound SMTP Limits": "出站 SMTP 限制",
+  "– your use is considered acknowledgement and agreement.": "– 您的使用被视为承认和同意。",
+  "If you are using Gmail, then refer to our": "如果您使用的是 Gmail，请参阅我们的",
+  "Send Mail As with Gmail guide": "使用 Gmail 指南发送邮件",
+  ". If you are a developer, then refer to our": ".如果您是开发人员，请参阅我们的",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "我们将用户和域的速率限制为每 1 天 300 条出站 SMTP 消息。这平均每个日历月有 9000 多封电子邮件。如果您需要超过此数量或一直有大量电子邮件，请联系我们。"
 }

@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "і використовуйте його для пошуку DNS. За замовчуванням використовуються сервери DNS",
   ", and DNS queries are through": ", а DNS-запити пройшли",
   "uses": "використовує",
-  "CloudFlare's privacy-first consumer DNS service by default": "Споживча DNS-служба CloudFlare, яка за замовчуванням насамперед забезпечує конфіденційність"
+  "CloudFlare's privacy-first consumer DNS service by default": "Споживча DNS-служба CloudFlare, яка за замовчуванням насамперед забезпечує конфіденційність",
+  "What are your outbound SMTP limits": "Які у вас обмеження вихідного SMTP?",
+  "You are only permitted to use our outbound SMTP service for": "Вам дозволено використовувати нашу службу вихідного SMTP лише для",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". Вам заборонено надсилати маркетингові електронні листи (наприклад, рекламні, масові чи комерційні електронні листи до списку контактів з однаковим вмістом). Це включає такі приклади, як інформаційний бюлетень або масове повідомлення електронною поштою.\n    Переконайтеся, що ви прочитали наш",
+  "Outbound SMTP Limits": "Обмеження вихідних SMTP",
+  "– your use is considered acknowledgement and agreement.": "– використання вами вважається підтвердженням і згодою.",
+  "If you are using Gmail, then refer to our": "Якщо ви використовуєте Gmail, зверніться до нашої",
+  "Send Mail As with Gmail guide": "Посібник «Надсилати пошту як за допомогою Gmail».",
+  ". If you are a developer, then refer to our": ". Якщо ви розробник, то зверніться до нашого",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Ми обмежуємо користувачів і домени до 300 вихідних SMTP-повідомлень на 1 день. Це в середньому більше 9000 електронних листів за календарний місяць. Якщо вам потрібно перевищити цю суму або у вас постійно великі електронні листи, зв’яжіться з нами."
 }

@@ -26,6 +26,9 @@ const utilities = require('./utilities');
 const payments = require('./payments');
 
 const config = {
+  smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300, // 300 messages
+  smtpLimitDuration: ms('1d'), // 1d
+  smtpLimitNamespace: `smtp_auth_limit_${env.NODE_ENV.toLowerCase()}`,
   supportEmail: env.EMAIL_DEFAULT_FROM_EMAIL,
   maxRecipients: env.MAX_RECIPIENTS,
   paidPrefix: `${env.TXT_RECORD_PREFIX}-site-verification=`,
@@ -701,6 +704,8 @@ config.views.locals.manifest = manifestRev({
 
 // add selective `config` object to be used by views
 config.views.locals.config = _.pick(config, [
+  'smtpLimitMessages',
+  'smtpLimitDuration',
   'supportEmail',
   'webHost',
   'appColor',

@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "DNS 조회에 사용합니다. 사용되는 기본 DNS 서버는 다음과 같습니다.",
   ", and DNS queries are through": ", DNS 쿼리는",
   "uses": "용도",
-  "CloudFlare's privacy-first consumer DNS service by default": "기본적으로 CloudFlare의 프라이버시 우선 소비자 DNS 서비스"
+  "CloudFlare's privacy-first consumer DNS service by default": "기본적으로 CloudFlare의 프라이버시 우선 소비자 DNS 서비스",
+  "What are your outbound SMTP limits": "아웃바운드 SMTP 제한은 무엇입니까",
+  "You are only permitted to use our outbound SMTP service for": "아웃바운드 SMTP 서비스는 다음에 대해서만 사용할 수 있습니다.",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". 귀하는 마케팅 이메일(예: 동일한 콘텐츠가 포함된 연락처 목록에 홍보, 대량 또는 상업 이메일)을 보내는 것이 금지됩니다. 여기에는 뉴스레터 또는 대량 공지 이메일과 같은 예가 포함됩니다.\n    당신이 우리를 읽었는지 확인하십시오",
+  "Outbound SMTP Limits": "아웃바운드 SMTP 제한",
+  "– your use is considered acknowledgement and agreement.": "– 귀하의 사용은 승인 및 동의로 간주됩니다.",
+  "If you are using Gmail, then refer to our": "Gmail을 사용하는 경우 다음을 참조하세요.",
+  "Send Mail As with Gmail guide": "Gmail 가이드와 함께 메일 보내기",
+  ". If you are a developer, then refer to our": ". 개발자라면 다음을 참조하십시오.",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "우리는 사용자 및 도메인을 1일당 300개의 아웃바운드 SMTP 메시지로 제한합니다. 한 달에 평균 9000개 이상의 이메일이 발송됩니다. 이 금액을 초과해야 하거나 지속적으로 큰 이메일이 있는 경우 당사에 문의하십시오."
 }

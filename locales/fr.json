@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "et utilisez-le pour les recherches DNS. Les serveurs DNS par défaut utilisés sont",
   ", and DNS queries are through": ", et les requêtes DNS passent par",
   "uses": "les usages",
-  "CloudFlare's privacy-first consumer DNS service by default": "Le service DNS grand public de CloudFlare axé sur la confidentialité par défaut"
+  "CloudFlare's privacy-first consumer DNS service by default": "Le service DNS grand public de CloudFlare axé sur la confidentialité par défaut",
+  "What are your outbound SMTP limits": "Quelles sont vos limites SMTP sortantes",
+  "You are only permitted to use our outbound SMTP service for": "Vous n'êtes autorisé à utiliser notre service SMTP sortant que pour",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". Il vous est interdit d'envoyer des e-mails marketing (par exemple, des e-mails promotionnels, de masse ou commerciaux à une liste de contacts avec le même contenu). Cela inclut des exemples tels qu'un bulletin d'information ou un e-mail d'annonce groupée.\n    Veuillez vous assurer d'avoir lu notre",
+  "Outbound SMTP Limits": "Limites SMTP sortantes",
+  "– your use is considered acknowledgement and agreement.": "– votre utilisation est considérée comme une reconnaissance et un accord.",
+  "If you are using Gmail, then refer to our": "Si vous utilisez Gmail, consultez notre",
+  "Send Mail As with Gmail guide": "Envoyer un e-mail en tant que guide Gmail",
+  ". If you are a developer, then refer to our": ". Si vous êtes développeur, consultez notre",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Nous limitons les utilisateurs et les domaines à 300 messages SMTP sortants par jour. Cela représente en moyenne plus de 9 000 e-mails par mois civil. Si vous devez dépasser ce montant ou si vous avez constamment des e-mails volumineux, veuillez nous contacter."
 }

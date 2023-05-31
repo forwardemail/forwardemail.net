@@ -4185,5 +4185,14 @@
   "and use it for DNS lookups.  The default DNS servers used are": "และใช้สำหรับการค้นหา DNS เซิร์ฟเวอร์ DNS เริ่มต้นที่ใช้คือ",
   ", and DNS queries are through": ", และการสืบค้น DNS ผ่าน",
   "uses": "ใช้",
-  "CloudFlare's privacy-first consumer DNS service by default": "บริการ DNS สำหรับผู้บริโภคที่มีความเป็นส่วนตัวเป็นอันดับแรกของ CloudFlare เป็นค่าเริ่มต้น"
+  "CloudFlare's privacy-first consumer DNS service by default": "บริการ DNS สำหรับผู้บริโภคที่มีความเป็นส่วนตัวเป็นอันดับแรกของ CloudFlare เป็นค่าเริ่มต้น",
+  "What are your outbound SMTP limits": "ขีดจำกัด SMTP ขาออกของคุณคืออะไร",
+  "You are only permitted to use our outbound SMTP service for": "คุณได้รับอนุญาตให้ใช้บริการ SMTP ขาออกของเราสำหรับ",
+  ". You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.\n    Please ensure you have read our": ". ห้ามคุณส่งอีเมลการตลาด (เช่น อีเมลส่งเสริมการขาย อีเมลจำนวนมาก หรืออีเมลเชิงพาณิชย์ไปยังรายชื่อผู้ติดต่อที่มีเนื้อหาเดียวกัน) ซึ่งรวมถึงตัวอย่าง เช่น จดหมายข่าวหรืออีเมลประกาศจำนวนมาก\n    โปรดตรวจสอบว่าคุณได้อ่านของเราแล้ว",
+  "Outbound SMTP Limits": "ขีดจำกัด SMTP ขาออก",
+  "– your use is considered acknowledgement and agreement.": "– การใช้งานของคุณถือเป็นการรับทราบและตกลง",
+  "If you are using Gmail, then refer to our": "หากคุณใช้ Gmail ให้อ้างอิงถึง",
+  "Send Mail As with Gmail guide": "ส่ง Mail เช่นเดียวกับคู่มือ Gmail",
+  ". If you are a developer, then refer to our": ". หากคุณเป็นนักพัฒนา โปรดอ้างอิงถึงเรา",
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "เราให้คะแนนจำกัดผู้ใช้และโดเมนไว้ที่ 300 ข้อความ SMTP ขาออกต่อ 1 วัน โดยเฉลี่ยแล้วมีอีเมลมากกว่า 9,000 ฉบับในหนึ่งเดือนปฏิทิน หากคุณต้องการเกินจำนวนนี้หรือมีอีเมลจำนวนมากอย่างสม่ำเสมอ โปรดติดต่อเรา"
 }
