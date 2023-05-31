@@ -61,7 +61,7 @@ block body
                 = " "
                 = t("Send email with custom domain")
                 = " "
-                a.badge.badge-pill.badge-success.text-uppercase(
+                a.badge.badge-pill.badge-primary.text-uppercase(
                   href=l("/guides/send-email-with-custom-domain-smtp")
                 )= t("New")
               li
@@ -78,9 +78,7 @@ block body
             ul.list-inline
               if !isBot(ctx.get('User-Agent'))
                 li.list-inline-item
-                  a.btn.btn-outline-dark.font-weight-bold.text-uppercase(
-                    href="#features"
-                  )
+                  a.btn.btn-outline-dark.font-weight-bold(href="#features")
                     = t("See all features")
               li.list-inline-item
                 if isBot(ctx.get('User-Agent'))

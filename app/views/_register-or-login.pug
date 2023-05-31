@@ -6,6 +6,36 @@ mixin registerOrLogin(verb, isModal = false)
           = t(`${humanize(verb)} now`)
     div(class=isModal ? false : "row")
       div(class=isModal ? false : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
+        - let dataDismissModal = false;
+        - let dataToggle = false;
+        - let dataTarget = false;
+        - let anchorHref = "#";
+        - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
+        if verb === 'sign up'
+          - anchorHref = l(config.loginRoute);
+          - dataDismissModal = isRegisterOrLogin ? false : "true";
+          - dataToggle = isRegisterOrLogin ? false : "modal-anchor";
+          - dataTarget = isRegisterOrLogin ? false : "#modal-log-in";
+        else
+          - anchorHref = l("/register");
+          - dataDismissModal = isRegisterOrLogin ? false : "true";
+          - dataToggle = isRegisterOrLogin ? false : "modal-anchor";
+          - dataTarget = isRegisterOrLogin ? false : "#modal-sign-up";
+        a.alert.alert-warning.text-center.d-block(
+          href=anchorHref,
+          data-dismiss-modal=dataDismissModal,
+          data-toggle=dataToggle,
+          data-target=dataTarget
+        )
+          span.alert-link
+            = emoji("wave")
+            = " "
+            if verb === 'sign up'
+              = t("Have an account?")
+            else
+              = t("Don't have an account?")
+            = " "
+            = t("Click here")
         if passport && passport.google
           a.btn-auth.btn-auth-google.btn-auth-google-dark.border-themed.border.mb-3.text-decoration-none(
             href="/auth/google",
@@ -62,7 +92,7 @@ mixin registerOrLogin(verb, isModal = false)
             noscript
               .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
             .cf-explicit-turnstile
-          button.btn.btn-success.btn-lg.btn-block.font-weight-bold(
+          button.btn.btn-success.btn-lg.btn-block.font-weight-bold.text-uppercase(
             type="submit"
           )
             if verb === 'sign up'
@@ -74,24 +104,3 @@ mixin registerOrLogin(verb, isModal = false)
           else if verb === 'log in'
             p.mt-3.mb-1.text-center.small
               a.text-black.text-themed-50(href=l("/forgot-password"))= t("Forget your password?")
-        .alert.alert-warning.mt-3.text-center(class=isModal ? "mb-0" : "")
-          - const isRegisterOrLogin = ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
-          ul.list-inline.mb-0
-            if verb === 'sign up'
-              li.list-inline-item!= t("Have an account?")
-              li.list-inline-item
-                a.alert-link(
-                  href=l(config.loginRoute),
-                  data-dismiss-modal=isRegisterOrLogin ? false : "true",
-                  data-toggle=isRegisterOrLogin ? false : "modal-anchor",
-                  data-target=isRegisterOrLogin ? false : "#modal-log-in"
-                )= t("Log in")
-            else
-              li.list-inline-item!= t("Don't have an account?")
-              li.list-inline-item
-                a.alert-link(
-                  href=l("/register"),
-                  data-dismiss-modal=isRegisterOrLogin ? false : "true",
-                  data-toggle=isRegisterOrLogin ? false : "modal-anchor",
-                  data-target=isRegisterOrLogin ? false : "#modal-sign-up"
-                )= t("Try for free")

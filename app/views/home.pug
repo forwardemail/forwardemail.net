@@ -127,7 +127,7 @@ block body
               = " "
               = t("Send email with custom domain")
               = " "
-              a.badge.badge-pill.badge-success.text-uppercase(
+              a.badge.badge-pill.badge-primary.text-uppercase(
                 href=l("/guides/send-email-with-custom-domain-smtp")
               )= t("New")
             li
@@ -165,7 +165,7 @@ block body
                 != t("Secure email encryption")
           ul.list-inline
             li.list-inline-item
-              a.btn.btn-outline-dark.font-weight-bold.text-uppercase(
+              a.btn.btn-outline-dark.font-weight-bold(
                 href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true")
               )
                 if isBot(ctx.get('User-Agent'))
@@ -211,7 +211,7 @@ block body
       = " "
       i.fa.fa-angle-double-down
   #learn-more.bg-dark.py-3.py-md-5.d-block.overflow-hidden
-    h2.display-4.font-weight-bold.text-white.my-3.text-center= t("Unlimited email aliases")
+    h2.display-5.font-weight-bold.text-white.my-3.text-center.text-uppercase= t("Unlimited email aliases")
     .container
       .row
         .col-12
