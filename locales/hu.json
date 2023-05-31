@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "Nem lehet gyűjtőkört létrehozni a globális tartományban.",
   "Cannot create regex on global domain.": "Nem lehet reguláris kifejezést létrehozni a globális tartományban.",
   "Cannot create catch-all on domain due to large alias volume size.": "A nagy alias-kötet miatt nem lehet összesítőt létrehozni a domainben.",
-  "Cannot create regex on domain due to large alias volume size.": "Nem hozható létre regex a domainen a nagy alias kötet mérete miatt."
+  "Cannot create regex on domain due to large alias volume size.": "Nem hozható létre regex a domainen a nagy alias kötet mérete miatt.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Ez jelzi az e-mail címzettjét (címzettjeit). Ezeknek érvényes RFC 5322 e-mail címeknek kell lenniük. Üzenetenként legfeljebb 50 borítékcímzettet engedélyezünk (ez eltér az e-mail „Címzett” fejlécétől). Ellenőrizzük az érvényességet is",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Igen, azonban a \"viszonylag ismeretlen\" feladók sebessége óránként 100 kapcsolatra van korlátozva állomásnévenként vagy IP-címenként. Lásd a következő részt",
+  "We created an open-source software project called 🍊": "Létrehoztunk egy nyílt forráskódú szoftverprojektet 🍊 néven",
+  "and use it for DNS lookups.  The default DNS servers used are": "és DNS-keresésekhez használja. Az alapértelmezett DNS-kiszolgálók a következők",
+  ", and DNS queries are through": ", és a DNS-lekérdezések megtörténtek",
+  "uses": "használ",
+  "CloudFlare's privacy-first consumer DNS service by default": "A CloudFlare alapértelmezés szerint az adatvédelem előtt álló fogyasztói DNS-szolgáltatás"
 }

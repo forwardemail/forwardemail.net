@@ -3189,5 +3189,12 @@
   "Cannot create catch-all on global domain.": "Auf der globalen Domäne kann kein Catch-All erstellt werden.",
   "Cannot create regex on global domain.": "Regex kann nicht in der globalen Domäne erstellt werden.",
   "Cannot create catch-all on domain due to large alias volume size.": "Aufgrund der großen Größe des Alias-Volumes kann kein Catch-All für die Domäne erstellt werden.",
-  "Cannot create regex on domain due to large alias volume size.": "Aufgrund der großen Größe des Alias-Volumes kann in der Domäne kein regulärer Ausdruck erstellt werden."
+  "Cannot create regex on domain due to large alias volume size.": "Aufgrund der großen Größe des Alias-Volumes kann in der Domäne kein regulärer Ausdruck erstellt werden.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Dies gibt den/die Empfänger der E-Mail an. Dabei muss es sich um gültige RFC 5322-E-Mail-Adressen handeln. Wir erlauben nur bis zu 50 Umschlagempfänger pro Nachricht (dies unterscheidet sich vom „An“-Header einer E-Mail). Wir prüfen auch auf eine gültige",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Ja, allerdings ist die Rate für „relativ unbekannte“ Absender auf 100 Verbindungen pro Stunde und pro Hostname oder IP begrenzt. Siehe den Abschnitt über",
+  "We created an open-source software project called 🍊": "Wir haben ein Open-Source-Softwareprojekt namens 🍊 erstellt",
+  "and use it for DNS lookups.  The default DNS servers used are": "und verwenden Sie es für DNS-Suchen. Die standardmäßig verwendeten DNS-Server sind",
+  ", and DNS queries are through": ", und DNS-Anfragen sind durch",
+  "uses": "Verwendet",
+  "CloudFlare's privacy-first consumer DNS service by default": "Standardmäßig der datenschutzorientierte DNS-Dienst für Verbraucher von CloudFlare"
 }

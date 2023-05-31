@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "전역 도메인에서 포괄적인 항목을 만들 수 없습니다.",
   "Cannot create regex on global domain.": "전역 도메인에서 정규식을 만들 수 없습니다.",
   "Cannot create catch-all on domain due to large alias volume size.": "큰 별칭 볼륨 크기로 인해 도메인에서 포괄적인 항목을 생성할 수 없습니다.",
-  "Cannot create regex on domain due to large alias volume size.": "큰 별칭 볼륨 크기로 인해 도메인에서 정규식을 생성할 수 없습니다."
+  "Cannot create regex on domain due to large alias volume size.": "큰 별칭 볼륨 크기로 인해 도메인에서 정규식을 생성할 수 없습니다.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- 이메일 수신자를 나타냅니다. 유효한 RFC 5322 이메일 주소여야 합니다. 메시지당 최대 50명의 봉투 수신자만 허용합니다(이메일의 \"To\" 헤더와 다름). 또한 유효한지 확인합니다.",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "예, 그러나 \"상대적으로 알려지지 않은\" 발신자는 호스트 이름 또는 IP당 시간당 연결 100개로 속도가 제한됩니다. 섹션 참조",
+  "We created an open-source software project called 🍊": "우리는 🍊라는 오픈 소스 소프트웨어 프로젝트를 만들었습니다.",
+  "and use it for DNS lookups.  The default DNS servers used are": "DNS 조회에 사용합니다. 사용되는 기본 DNS 서버는 다음과 같습니다.",
+  ", and DNS queries are through": ", DNS 쿼리는",
+  "uses": "용도",
+  "CloudFlare's privacy-first consumer DNS service by default": "기본적으로 CloudFlare의 프라이버시 우선 소비자 DNS 서비스"
 }

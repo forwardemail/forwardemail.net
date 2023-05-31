@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "Impossibile creare catch-all nel dominio globale.",
   "Cannot create regex on global domain.": "Impossibile creare espressioni regolari nel dominio globale.",
   "Cannot create catch-all on domain due to large alias volume size.": "Impossibile creare un catch-all sul dominio a causa delle grandi dimensioni del volume dell'alias.",
-  "Cannot create regex on domain due to large alias volume size.": "Impossibile creare regex sul dominio a causa delle grandi dimensioni del volume dell'alias."
+  "Cannot create regex on domain due to large alias volume size.": "Impossibile creare regex sul dominio a causa delle grandi dimensioni del volume dell'alias.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Indica il/i destinatario/i dell'e-mail. Questi devono essere indirizzi e-mail RFC 5322 validi. Consentiamo solo fino a 50 destinatari della busta per messaggio (questo è diverso dall'intestazione \"A\" di un'e-mail). Controlliamo anche un file valido",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Sì, tuttavia i mittenti \"relativamente sconosciuti\" hanno una velocità limitata a 100 connessioni all'ora per nome host o IP. Vedere la sezione su",
+  "We created an open-source software project called 🍊": "Abbiamo creato un progetto software open source chiamato 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "e usalo per le ricerche DNS. I server DNS predefiniti utilizzati sono",
+  ", and DNS queries are through": "e le query DNS sono state completate",
+  "uses": "utilizza",
+  "CloudFlare's privacy-first consumer DNS service by default": "Per impostazione predefinita, il servizio DNS del consumatore che privilegia la privacy di CloudFlare"
 }

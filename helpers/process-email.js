@@ -28,7 +28,7 @@ const getErrorCode = require('#helpers/get-error-code');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
-const { Logs, Emails, Users, Domains, Aliases } = require('#models');
+const { Emails, Users, Domains, Aliases } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -102,6 +102,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
   try {
     // locked_at must not be set
     if (_.isDate(email.locked_at)) throw new Error('Email is locked already');
+
+    // lock job
+    await Emails.findByIdAndUpdate(email._id, {
+      $set: {
+        locked_by: IP_ADDRESS,
+        locked_at: new Date()
+      }
+    });
 
     // date must be in the past
     if (new Date(email.date).getTime() > Date.now())
@@ -177,28 +185,23 @@ async function processEmail({ email, port = 25, resolver, client }) {
     if (alias.user[config.userFields.isBanned])
       throw Boom.forbidden(i18n.translateError('ACCOUNT_BANNED'));
 
-    // lock job
-    await Emails.findByIdAndUpdate(email._id, {
-      $set: {
-        locked_by: IP_ADDRESS,
-        locked_at: new Date()
-      }
-    });
-
     // create log
     await logger.info('email queued', meta);
 
     // after 5+ days of attempted delivery, send bounce email
-    const shouldBounce = await Logs.exists({
-      created_at: {
-        $lte: new Date(Date.now() - config.maxRetryDuration)
-      },
-      message: 'email queued',
-      email: {
-        $eq: email._id,
-        $exists: true
-      }
-    });
+    const shouldBounce =
+      new Date(email.date).getTime() + config.maxRetryDuration < Date.now();
+    // TODO: revisit this in the future (this would be more accurate approach)
+    // const shouldBounce = await Logs.exists({
+    //   created_at: {
+    //     $lte: new Date(Date.now() - config.maxRetryDuration)
+    //   },
+    //   message: 'email queued',
+    //   email: {
+    //     $eq: email._id,
+    //     $exists: true
+    //   }
+    // });
 
     if (shouldBounce) {
       //
@@ -784,6 +787,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
     }
 
     //
+    // now we have in-memory the most recent array of `accepted` and `rejectedErrors`
+    // and can properly update the `status` of the email as such (by calling `save()`)
+    //
+    await e.save();
+
+    //
     // if the SMTP response indicated the email bounced
     // then prevent the domain sender from sending to this recipient again
     //
@@ -798,11 +807,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
       }
     }
 
-    //
-    // now we have in-memory the most recent array of `accepted` and `rejectedErrors`
-    // and can properly update the `status` of the email as such (by calling `save()`)
-    //
-    await e.save(); // <--- TODO: version error happens here
     return;
   } catch (err) {
     // create log

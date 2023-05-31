@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "Nie można utworzyć typu catch-all w domenie globalnej.",
   "Cannot create regex on global domain.": "Nie można utworzyć wyrażenia regularnego w domenie globalnej.",
   "Cannot create catch-all on domain due to large alias volume size.": "Nie można utworzyć funkcji typu catch-all w domenie ze względu na duży rozmiar wolumenu aliasów.",
-  "Cannot create regex on domain due to large alias volume size.": "Nie można utworzyć wyrażenia regularnego w domenie ze względu na duży rozmiar woluminu aliasu."
+  "Cannot create regex on domain due to large alias volume size.": "Nie można utworzyć wyrażenia regularnego w domenie ze względu na duży rozmiar woluminu aliasu.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Wskazuje odbiorców wiadomości e-mail. Muszą to być prawidłowe adresy e-mail zgodne ze standardem RFC 5322. Dopuszczamy maksymalnie 50 adresatów w danych koperty na wiadomość (jest to coś innego niż nagłówek „Do” w wiadomości e-mail). Sprawdzamy również poprawność",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Tak, jednak „stosunkowo nieznani” nadawcy mają ograniczoną prędkość do 100 połączeń na godzinę na nazwę hosta lub adres IP. Zobacz sekcję dot",
+  "We created an open-source software project called 🍊": "Stworzyliśmy projekt oprogramowania typu open source o nazwie 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "i użyj go do wyszukiwania DNS. Domyślne używane serwery DNS to",
+  ", and DNS queries are through": ", a zapytania DNS zostały zakończone",
+  "uses": "używa",
+  "CloudFlare's privacy-first consumer DNS service by default": "Domyślnie usługa CloudFlare dla konsumentów zapewniająca prywatność"
 }

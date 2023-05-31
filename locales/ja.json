@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "グローバル ドメインでキャッチオールを作成できません。",
   "Cannot create regex on global domain.": "グローバル ドメインに正規表現を作成できません。",
   "Cannot create catch-all on domain due to large alias volume size.": "エイリアスのボリューム サイズが大きいため、ドメインにキャッチオールを作成できません。",
-  "Cannot create regex on domain due to large alias volume size.": "エイリアスのボリューム サイズが大きいため、ドメインに正規表現を作成できません。"
+  "Cannot create regex on domain due to large alias volume size.": "エイリアスのボリューム サイズが大きいため、ドメインに正規表現を作成できません。",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- これは電子メールの受信者を示します。これらは有効な RFC 5322 電子メール アドレスである必要があります。メッセージごとに最大 50 人のエンベロープ受信者のみを許可します (これは電子メールの「To」ヘッダーとは異なります)。有効かどうかもチェックします",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "はい。ただし、「比較的不明な」送信者の接続速度は、ホスト名または IP ごとに 1 時間あたり 100 接続に制限されます。のセクションを参照してください。",
+  "We created an open-source software project called 🍊": "私たちは 🍊 というオープンソース ソフトウェア プロジェクトを作成しました",
+  "and use it for DNS lookups.  The default DNS servers used are": "DNS ルックアップに使用します。使用されるデフォルトの DNS サーバーは次のとおりです。",
+  ", and DNS queries are through": "、DNS クエリは通過します",
+  "uses": "用途",
+  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlare のプライバシー最優先のコンシューマ DNS サービスがデフォルトで提供される"
 }

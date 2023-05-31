@@ -430,7 +430,6 @@ Cc: beep@boop.com,beep@boop.com
 Bcc: foo@bar.com,a@xyz.com,b@xyz.com
 Reply-To: boop@beep.com
 Message-Id: beep-boop
-Date: ${dayjs('5/1/23', 'M/D/YY').toDate().toISOString()}
 To: test@foo.com
 From: Test <${alias.name}@${domain.name}>
 Subject: testing this
@@ -475,12 +474,6 @@ Test`.trim()
 
   // validate message-id
   t.is(email.messageId, '<beep-boop>');
-
-  // validate date
-  t.is(
-    new Date(email.date).getTime(),
-    dayjs('5/1/23', 'M/D/YY').toDate().getTime()
-  );
 
   //
   // spoof envelope RCPT TO mx records

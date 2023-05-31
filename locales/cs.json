@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "Nelze vytvořit doménový koš na globální doméně.",
   "Cannot create regex on global domain.": "Nelze vytvořit regulární výraz na globální doméně.",
   "Cannot create catch-all on domain due to large alias volume size.": "Nelze vytvořit doménový koš kvůli velkému objemu aliasů.",
-  "Cannot create regex on domain due to large alias volume size.": "Nelze vytvořit regulární výraz v doméně kvůli velkému objemu aliasů."
+  "Cannot create regex on domain due to large alias volume size.": "Nelze vytvořit regulární výraz v doméně kvůli velkému objemu aliasů.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Toto označuje příjemce e-mailu. Musí se jednat o platné e-mailové adresy RFC 5322. Povolujeme pouze 50 příjemců obálek na zprávu (to se liší od hlavičky „Komu“ z e-mailu). Kontrolujeme také platnost",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Ano, nicméně „relativně neznámí“ odesílatelé mají rychlost omezenou na 100 připojení za hodinu na jméno hostitele nebo IP. Viz část o",
+  "We created an open-source software project called 🍊": "Vytvořili jsme projekt open-source softwaru s názvem 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "a použít jej pro vyhledávání DNS. Výchozí používané servery DNS jsou",
+  ", and DNS queries are through": "a dotazy DNS jsou přes",
+  "uses": "používá",
+  "CloudFlare's privacy-first consumer DNS service by default": "Ve výchozím nastavení je služba DNS pro spotřebitele CloudFlare na prvním místě na ochranu soukromí"
 }

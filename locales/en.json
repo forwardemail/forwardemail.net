@@ -3947,5 +3947,12 @@
   "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.": "Unlike other services, we <strong class=\"font-weight-bold\">do not store logs</strong> (with the exception of <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">errors</a> and <a href=\"%s\" class=\"text-themed font-weight-bold\" target=\"_blank\">outbound SMTP</a>) and are <strong class=\"font-weight-bold\">100% open-source</strong>.",
   "We do not share your information with any third parties.": "We do not share your information with any third parties.",
   "Recipient is blocked from sending mail to.": "Recipient is blocked from sending mail to.",
-  "All recipients are blocked from sending mail to.": "All recipients are blocked from sending mail to."
+  "All recipients are blocked from sending mail to.": "All recipients are blocked from sending mail to.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on",
+  "We created an open-source software project called 🍊": "We created an open-source software project called 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "and use it for DNS lookups.  The default DNS servers used are",
+  ", and DNS queries are through": ", and DNS queries are through",
+  "uses": "uses",
+  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlare's privacy-first consumer DNS service by default"
 }

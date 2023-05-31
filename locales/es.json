@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "No se puede crear catch-all en el dominio global.",
   "Cannot create regex on global domain.": "No se pueden crear expresiones regulares en el dominio global.",
   "Cannot create catch-all on domain due to large alias volume size.": "No se puede crear catch-all en el dominio debido al gran tamaño del volumen del alias.",
-  "Cannot create regex on domain due to large alias volume size.": "No se pueden crear expresiones regulares en el dominio debido al gran tamaño del volumen del alias."
+  "Cannot create regex on domain due to large alias volume size.": "No se pueden crear expresiones regulares en el dominio debido al gran tamaño del volumen del alias.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Esto indica los destinatarios del correo electrónico. Deben ser direcciones de correo electrónico RFC 5322 válidas. Solo permitimos hasta 50 destinatarios de sobres por mensaje (esto es diferente al encabezado \"Para\" de un correo electrónico). También verificamos si es válido",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Sí, sin embargo, los remitentes \"relativamente desconocidos\" tienen una tasa limitada de 100 conexiones por hora por nombre de host o IP. Consulte la sección sobre",
+  "We created an open-source software project called 🍊": "Creamos un proyecto de software de código abierto llamado 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "y utilícelo para búsquedas de DNS. Los servidores DNS predeterminados utilizados son",
+  ", and DNS queries are through": "y las consultas de DNS están completas",
+  "uses": "usos",
+  "CloudFlare's privacy-first consumer DNS service by default": "El servicio de DNS del consumidor que prioriza la privacidad de CloudFlare de forma predeterminada"
 }

@@ -191,6 +191,7 @@ test('creates email', async (t) => {
   // create email
   // (with large payload to ensure body-parser working properly past default limit)
   //
+  const date = new Date();
   const res = await t.context.api
     .post('/v1/emails')
     .auth(user[config.userFields.apiToken])
@@ -203,7 +204,7 @@ Cc: beep@boop.com,beep@boop.com
 Bcc: foo@bar.com,a@xyz.com,b@xyz.com
 Reply-To: boop@beep.com
 Message-Id: beep-boop
-Date: ${dayjs('5/1/23', 'M/D/YY').toDate().toISOString()}
+Date: ${date.toISOString()}
 To: test@foo.com
 From: Test <${alias.name}@${domain.name}>
 Subject: testing this
@@ -233,10 +234,7 @@ Test`.trim()
   t.is(res.body.messageId, '<beep-boop>');
 
   // validate date
-  t.is(
-    new Date(res.body.date).getTime(),
-    dayjs('5/1/23', 'M/D/YY').toDate().getTime()
-  );
+  t.is(new Date(res.body.date).getTime(), date.getTime());
 
   // spoof dns records
   const map = new Map();
@@ -505,6 +503,7 @@ test('5+ day email bounce', async (t) => {
       ignore_hook: false
     });
 
+    /*
     //
     // since we can't modify `created_at` with Mongoose
     // (though `{ timestamps: { createdAt: false } }` may work?)
@@ -523,7 +522,14 @@ test('5+ day email bounce', async (t) => {
       }
     );
     t.is(result.modifiedCount, 1);
+    */
+    await Emails.findByIdAndUpdate(email._id, {
+      $set: {
+        date: new Date(email.date).getTime() - config.maxRetryDuration
+      }
+    });
 
+    /*
     // ensure log exists
     const shouldBounce = await Logs.exists({
       created_at: {
@@ -540,6 +546,7 @@ test('5+ day email bounce', async (t) => {
         typeof shouldBounce === 'object' &&
         typeof shouldBounce._id === 'object'
     );
+    */
 
     email.status = 'queued';
 

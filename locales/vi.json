@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "Không thể tạo tổng hợp trên miền toàn cầu.",
   "Cannot create regex on global domain.": "Không thể tạo regex trên miền toàn cầu.",
   "Cannot create catch-all on domain due to large alias volume size.": "Không thể tạo tổng hợp trên miền do kích thước âm lượng bí danh lớn.",
-  "Cannot create regex on domain due to large alias volume size.": "Không thể tạo biểu thức chính quy trên miền do kích thước âm lượng bí danh lớn."
+  "Cannot create regex on domain due to large alias volume size.": "Không thể tạo biểu thức chính quy trên miền do kích thước âm lượng bí danh lớn.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Điều này cho biết (những) người nhận email. Đây phải là những địa chỉ email RFC 5322 hợp lệ. Chúng tôi chỉ cho phép tối đa 50 người nhận trên phong bì cho mỗi thư (điều này khác với tiêu đề \"Tới\" trong email). Chúng tôi cũng kiểm tra một hợp lệ",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Có, tuy nhiên, người gửi \"tương đối không xác định\" có tốc độ giới hạn ở 100 kết nối mỗi giờ cho mỗi tên máy chủ hoặc IP. Xem phần trên",
+  "We created an open-source software project called 🍊": "Chúng tôi đã tạo một dự án phần mềm mã nguồn mở có tên là 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "và sử dụng nó để tra cứu DNS. Các máy chủ DNS mặc định được sử dụng là",
+  ", and DNS queries are through": "và các truy vấn DNS được thông qua",
+  "uses": "sử dụng",
+  "CloudFlare's privacy-first consumer DNS service by default": "Theo mặc định, dịch vụ DNS dành cho người tiêu dùng ưu tiên quyền riêng tư của CloudFlare"
 }

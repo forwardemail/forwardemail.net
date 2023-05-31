@@ -3867,5 +3867,12 @@
   "Cannot create catch-all on global domain.": "无法在全局域上创建包罗万象。",
   "Cannot create regex on global domain.": "无法在全局域上创建正则表达式。",
   "Cannot create catch-all on domain due to large alias volume size.": "由于别名卷大小过大，无法在域上创建包罗万象。",
-  "Cannot create regex on domain due to large alias volume size.": "由于别名卷大小，无法在域上创建正则表达式。"
+  "Cannot create regex on domain due to large alias volume size.": "由于别名卷大小，无法在域上创建正则表达式。",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- 这表示电子邮件的收件人。这些必须是有效的 RFC 5322 电子邮件地址。我们只允许每封邮件最多 50 个信封收件人（这与电子邮件中的“收件人”标题不同）。我们还检查一个有效的",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "是的，但是“相对未知”的发件人的速率限制为每个主机名或 IP 每小时 100 个连接。请参阅以下部分",
+  "We created an open-source software project called 🍊": "我们创建了一个名为 🍊 的开源软件项目",
+  "and use it for DNS lookups.  The default DNS servers used are": "并将其用于 DNS 查找。使用的默认 DNS 服务器是",
+  ", and DNS queries are through": ", 并且 DNS 查询是通过",
+  "uses": "使用",
+  "CloudFlare's privacy-first consumer DNS service by default": "默认情况下，CloudFlare 的隐私优先消费者 DNS 服务"
 }

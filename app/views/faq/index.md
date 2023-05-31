@@ -968,7 +968,7 @@ Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Tr
 
 * `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 100 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [denylist](#do-you-have-a-denylist).
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [denylist](#do-you-have-a-denylist).
 
 * `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
@@ -2420,7 +2420,7 @@ Unfortunately Apple does not allow this, regardless of which service you use.  H
 
 ## Can I forward unlimited emails with this
 
-Yes, however "relatively unknown" senders are rate limited to 1,000 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
 
 By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
 
@@ -2483,7 +2483,9 @@ No. Prices will never increase. Unlike other companies, we will never shutdown o
 
 ## How do you perform DNS lookups on domain names
 
-We use CloudFlare's privacy-first consumer DNS service (see [announcement here][cloudflare-dns]).  We set `1.1.1.3` and `1.0.0.3` as the DNS servers (see <https://developers.cloudflare.com/1.1.1.1/1.1.1.1-for-families/>) using `/etc/resolv.conf` on our servers and test environments.
+We created an open-source software project called :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+
+:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

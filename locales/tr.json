@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "Genel etki alanında tümünü yakalama oluşturulamıyor.",
   "Cannot create regex on global domain.": "Genel etki alanında normal ifade oluşturulamıyor.",
   "Cannot create catch-all on domain due to large alias volume size.": "Büyük takma ad birimi boyutu nedeniyle etki alanında tümünü yakalama oluşturulamıyor.",
-  "Cannot create regex on domain due to large alias volume size.": "Büyük takma ad birimi boyutu nedeniyle etki alanında normal ifade oluşturulamıyor."
+  "Cannot create regex on domain due to large alias volume size.": "Büyük takma ad birimi boyutu nedeniyle etki alanında normal ifade oluşturulamıyor.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Bu, e-postanın alıcılarını gösterir. Bunlar geçerli RFC 5322 e-posta adresleri olmalıdır. İleti başına en fazla 50 zarf alıcısına izin veriyoruz (bu, bir e-postadaki \"Kime\" başlığından farklıdır). Ayrıca geçerli olup olmadığını da kontrol ederiz.",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Evet, ancak \"nispeten bilinmeyen\" göndericilerin hızı, ana bilgisayar adı veya IP başına saatte 100 bağlantıyla sınırlıdır. bölümüne bakın",
+  "We created an open-source software project called 🍊": "🍊 adında açık kaynaklı bir yazılım projesi oluşturduk.",
+  "and use it for DNS lookups.  The default DNS servers used are": "ve DNS aramaları için kullanın. Kullanılan varsayılan DNS sunucuları şunlardır:",
+  ", and DNS queries are through": ", ve DNS sorguları",
+  "uses": "kullanır",
+  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlare'in varsayılan olarak gizliliğe öncelik veren tüketici DNS hizmeti"
 }

@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "Impossible de créer un fourre-tout sur le domaine global.",
   "Cannot create regex on global domain.": "Impossible de créer une expression régulière sur le domaine global.",
   "Cannot create catch-all on domain due to large alias volume size.": "Impossible de créer un fourre-tout sur le domaine en raison de la grande taille du volume d'alias.",
-  "Cannot create regex on domain due to large alias volume size.": "Impossible de créer une expression régulière sur le domaine en raison de la grande taille du volume d'alias."
+  "Cannot create regex on domain due to large alias volume size.": "Impossible de créer une expression régulière sur le domaine en raison de la grande taille du volume d'alias.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Ceci indique le(s) destinataire(s) de l'e-mail. Il doit s'agir d'adresses e-mail RFC 5322 valides. Nous n'autorisons qu'un maximum de 50 destinataires d'enveloppes par message (c'est différent de l'en-tête \"À\" d'un e-mail). Nous vérifions également la validité",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Oui, cependant les expéditeurs \"relativement inconnus\" sont limités à 100 connexions par heure par nom d'hôte ou IP. Voir la rubrique sur",
+  "We created an open-source software project called 🍊": "Nous avons créé un projet de logiciel open source appelé 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "et utilisez-le pour les recherches DNS. Les serveurs DNS par défaut utilisés sont",
+  ", and DNS queries are through": ", et les requêtes DNS passent par",
+  "uses": "les usages",
+  "CloudFlare's privacy-first consumer DNS service by default": "Le service DNS grand public de CloudFlare axé sur la confidentialité par défaut"
 }

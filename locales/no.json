@@ -4183,5 +4183,12 @@
   "Cannot create catch-all on global domain.": "Kan ikke opprette catch-all på globalt domene.",
   "Cannot create regex on global domain.": "Kan ikke opprette regulært uttrykk på globalt domene.",
   "Cannot create catch-all on domain due to large alias volume size.": "Kan ikke opprette catch-all på domenet på grunn av stor aliasvolumstørrelse.",
-  "Cannot create regex on domain due to large alias volume size.": "Kan ikke opprette regulært uttrykk på domenet på grunn av stor aliasvolumstørrelse."
+  "Cannot create regex on domain due to large alias volume size.": "Kan ikke opprette regulært uttrykk på domenet på grunn av stor aliasvolumstørrelse.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Dette indikerer mottakeren(e) av e-posten. Disse må være gyldige RFC 5322-e-postadresser. Vi tillater bare opptil 50 konvoluttmottakere per melding (dette er forskjellig fra \"Til\"-overskriften fra en e-post). Vi sjekker også for en gyldig",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Ja, men \"relativt ukjente\" avsendere er ratebegrenset til 100 tilkoblinger per time per vertsnavn eller IP. Se avsnittet om",
+  "We created an open-source software project called 🍊": "Vi opprettet et åpen kildekode-programvareprosjekt kalt 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "og bruke den til DNS-oppslag. Standard DNS-servere som brukes er",
+  ", and DNS queries are through": ", og DNS-spørringer er gjennom",
+  "uses": "bruker",
+  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlares personvernførste DNS-tjeneste for forbrukere som standard"
 }

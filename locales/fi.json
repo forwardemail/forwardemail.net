@@ -4021,5 +4021,12 @@
   "Cannot create catch-all on global domain.": "Ei voi luoda keräilyä maailmanlaajuiselle verkkotunnukselle.",
   "Cannot create regex on global domain.": "Ei voida luoda säännöllistä lauseketta maailmanlaajuisessa verkkotunnuksessa.",
   "Cannot create catch-all on domain due to large alias volume size.": "Ei voi luoda keräilyä verkkotunnukselle suuren aliaksen koon vuoksi.",
-  "Cannot create regex on domain due to large alias volume size.": "Regex-lauseketta ei voi luoda verkkotunnukselle suuren aliaksen koon vuoksi."
+  "Cannot create regex on domain due to large alias volume size.": "Regex-lauseketta ei voi luoda verkkotunnukselle suuren aliaksen koon vuoksi.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Tämä ilmaisee sähköpostin vastaanottajat. Näiden on oltava kelvollisia RFC 5322 -sähköpostiosoitteita. Sallimme vain 50 kirjekuoren vastaanottajaa viestiä kohden (tämä eroaa sähköpostin Vastaanottaja-otsikosta). Tarkistamme myös kelvollisuuden",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Kyllä, kuitenkin \"suhteellisen tuntemattomien\" lähettäjien nopeus on rajoitettu 100 yhteyteen tunnissa per isäntänimi tai IP. Katso osio aiheesta",
+  "We created an open-source software project called 🍊": "Teimme avoimen lähdekoodin ohjelmistoprojektin nimeltä 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "ja käytä sitä DNS-hakuihin. Käytetyt oletusarvoiset DNS-palvelimet ovat",
+  ", and DNS queries are through": ", ja DNS-kyselyt ovat läpi",
+  "uses": "käyttää",
+  "CloudFlare's privacy-first consumer DNS service by default": "CloudFlaren yksityisyyden ensimmäinen kuluttaja DNS-palvelu oletuksena"
 }

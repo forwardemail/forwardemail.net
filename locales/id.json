@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "Tidak dapat membuat catch-all di domain global.",
   "Cannot create regex on global domain.": "Tidak dapat membuat regex di domain global.",
   "Cannot create catch-all on domain due to large alias volume size.": "Tidak dapat membuat catch-all di domain karena ukuran volume alias besar.",
-  "Cannot create regex on domain due to large alias volume size.": "Tidak dapat membuat regex di domain karena ukuran volume alias besar."
+  "Cannot create regex on domain due to large alias volume size.": "Tidak dapat membuat regex di domain karena ukuran volume alias besar.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- Ini menunjukkan penerima email. Ini harus berupa alamat email RFC 5322 yang valid. Kami hanya mengizinkan hingga 50 penerima amplop per pesan (ini berbeda dengan tajuk \"Kepada\" dari email). Kami juga memeriksa valid",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "Ya, namun pengirim yang \"relatif tidak dikenal\" dibatasi tarifnya hingga 100 koneksi per jam per nama host atau IP. Lihat bagian di",
+  "We created an open-source software project called 🍊": "Kami membuat proyek perangkat lunak sumber terbuka bernama 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "dan menggunakannya untuk pencarian DNS. Server DNS default yang digunakan adalah",
+  ", and DNS queries are through": ", dan kueri DNS selesai",
+  "uses": "menggunakan",
+  "CloudFlare's privacy-first consumer DNS service by default": "Layanan DNS konsumen yang mengutamakan privasi CloudFlare secara default"
 }

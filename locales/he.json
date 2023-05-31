@@ -4178,5 +4178,12 @@
   "Cannot create catch-all on global domain.": "לא ניתן ליצור תמצית בדומיין הגלובלי.",
   "Cannot create regex on global domain.": "לא ניתן ליצור ביטוי רגולרי בדומיין הגלובלי.",
   "Cannot create catch-all on domain due to large alias volume size.": "לא ניתן ליצור Catch-all בדומיין בגלל נפח כינוי גדול.",
-  "Cannot create regex on domain due to large alias volume size.": "לא ניתן ליצור ביטוי רגולרי בדומיין עקב גודל נפח כינוי גדול."
+  "Cannot create regex on domain due to large alias volume size.": "לא ניתן ליצור ביטוי רגולרי בדומיין עקב גודל נפח כינוי גדול.",
+  "- This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the \"To\" header from an email).  We also check for a valid": "- זה מציין את נמעני האימייל. אלה חייבות להיות כתובות דוא\"ל חוקיות של RFC 5322. אנו מתירים רק עד 50 נמעני מעטפה לכל הודעה (זה שונה מהכותרת \"אל\" בדוא\"ל). אנחנו גם בודקים אם יש תקף",
+  "Yes, however \"relatively unknown\" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on": "כן, אולם שולחים \"לא ידועים יחסית\" מוגבלים ל-100 חיבורים לשעה לכל שם מארח או IP. עיין בסעיף בנושא",
+  "We created an open-source software project called 🍊": "יצרנו פרויקט תוכנה בקוד פתוח בשם 🍊",
+  "and use it for DNS lookups.  The default DNS servers used are": "ולהשתמש בו עבור חיפושי DNS. שרתי ה-DNS המשמשים כברירת מחדל הם",
+  ", and DNS queries are through": ", ושאילתות DNS עברו",
+  "uses": "שימושים",
+  "CloudFlare's privacy-first consumer DNS service by default": "שירות DNS לצרכן הראשון של CloudFlare כברירת מחדל"
 }
