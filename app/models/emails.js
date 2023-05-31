@@ -184,13 +184,13 @@ Emails.pre('validate', function (next) {
       throw new Error('Envelope to missing');
 
     // if the envelope is in address object format then convert it
-    this.envelope.to = this.envelope.to.map((to) =>
-      typeof to === 'object' && typeof to.address === 'string' ? to.address : to
-    );
-
     // make the envelope to unique
-    this.envelope.to = _.uniqBy(this.envelope.to, (to) =>
-      to.trim().toLowerCase()
+    this.envelope.to = _.uniq(
+      this.envelope.to.map((to) =>
+        typeof to === 'object' && typeof to.address === 'string'
+          ? to.address.trim().toLowerCase()
+          : to.trim().toLowerCase()
+      )
     );
 
     // ensure all valid emails
@@ -237,6 +237,9 @@ Emails.pre('validate', function (next) {
 
     if (!Array.isArray(this.accepted)) this.accepted = [];
     if (!Array.isArray(this.rejectedErrors)) this.rejectedErrors = [];
+
+    // ensure accepted is lowercased and unique
+    this.accepted = _.uniq(this.accepted.map((a) => a.toLowerCase()));
 
     // ensure that all `rejectedErrors` are Objects not Errors
     this.rejectedErrors = this.rejectedErrors.map((err) => {
