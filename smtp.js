@@ -5,12 +5,10 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
-const Bree = require('bree');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const ip = require('ip');
 const mongoose = require('mongoose');
-const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
 
 const SMTP = require('./smtp-server');
@@ -20,43 +18,19 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 
-const INSTANCE =
-  typeof process.env.NODE_APP_INSTANCE === 'string'
-    ? Number.parseInt(process.env.NODE_APP_INSTANCE, 10)
-    : 0;
-
-const timeout = ms(`${INSTANCE * 5}s`);
-
-const bree = new Bree({
-  logger,
-  jobs: [
-    {
-      //
-      // this is a long running job, but we attempt to restart it
-      // every 30s in case errors (e.g. uncaught exception edge case causes `process.exit()`)
-      // this job has built-in setInterval for every 10m to unlock emails in queue
-      // and we will also retry deferred emails and put them back into the queue
-      //
-      name: 'send-emails',
-      interval: '30s',
-      timeout
-    }
-  ]
-});
-const smtp = new SMTP({ client, bree });
+const smtp = new SMTP({ client });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [smtp.server],
   redisClients: [client],
-  brees: [bree],
   logger
 });
 graceful.listen();
 
 (async () => {
   try {
-    await Promise.all([smtp.listen(), bree.start()]);
+    await smtp.listen();
     if (process.send) process.send('ready');
     logger.info(
       `SMTP server listening on ${
@@ -71,4 +45,4 @@ graceful.listen();
   }
 })();
 
-logger.info('Lad bree started', { hide_meta: true });
+logger.info('SMTP server started', { hide_meta: true });
