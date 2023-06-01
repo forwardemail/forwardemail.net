@@ -613,7 +613,8 @@ Emails.statics.queue = async function (
         }
       });
 
-    const error = Boom.badRequest(messages.join(' '));
+    // needs to be forbidden so it gets mapped to 5xx error
+    const error = Boom.forbidden(messages.join(' '));
     error.messages = messages;
     error.phishing = phishing;
     error.executables = executables;
