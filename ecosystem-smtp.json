@@ -21,16 +21,6 @@
         "NODE_ENV": "production",
         "SMTP_PORT": 2465
       }
-    },
-    {
-      "name": "smtp-bree",
-      "script": "smtp-bree.js",
-      "exec_mode": "fork",
-      "wait_ready": true,
-      "instances": "1",
-      "env_production": {
-        "NODE_ENV": "production"
-      }
     }
   ],
   "deploy": {

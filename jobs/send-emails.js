@@ -115,7 +115,7 @@ async function sendEmails(query) {
         else logger.warn(new Error('Email does not exist'), { value });
       });
 
-    // every 3s attempt to send emails that are in the queue
+    // every 5s attempt to send emails that are in the queue
     interval = setInterval(
       () =>
         sendEmails({
@@ -124,7 +124,7 @@ async function sendEmails(query) {
             $lte: new Date()
           }
         }),
-      ms('3s')
+      ms('5s')
     );
 
     sendEmails({

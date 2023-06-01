@@ -291,6 +291,20 @@ async function onData(stream, _session, fn) {
       ignore_hook: false
     });
 
+    // send long running bree worker a signal to queue the email
+    // otherwise if it's not running then attempt to start it up
+    if (this?.bree?.workers?.get('send-emails')) {
+      try {
+        this.bree.workers.get('send-emails').postMessage({ id: email.id });
+      } catch (err) {
+        // TODO: email admins once every hour if this is the case
+        logger.error(err);
+      }
+    } else if (this?.bree) {
+      // TODO: email admins once every hour if this is the case
+      logger.error(new Error('send-emails is not running'));
+    }
+
     setImmediate(fn);
   } catch (err) {
     setImmediate(() => fn(refineAndLogError(err, session)));
@@ -565,6 +579,7 @@ class SMTP {
   constructor(options = {}, secure = env.SMTP_PORT === 2465) {
     this.client = options.client;
     this.resolver = createTangerine(this.client, logger);
+    this.bree = options.bree;
 
     //
     // NOTE: hard-coded values for now (switch to env later)
