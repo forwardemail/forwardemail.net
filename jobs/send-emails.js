@@ -49,12 +49,12 @@ graceful.listen();
 
 //
 // this will throttle sending emails to X limit per Y interval
-// (e.g. on a 4 cpu server, it will limit to sending 4 * 4 emails max over the course of 1s)
+// (e.g. on a 4 cpu server, it will limit to sending 4 emails max over the course of 10s)
 // (note this limit is super high right now since we're early stage)
 //
 const throttle = pThrottle({
-  limit: Math.round(config.concurrency * 4),
-  interval: ms('1s')
+  limit: config.concurrency,
+  interval: ms('10s')
 });
 
 const throttled = throttle(async (email) => {
