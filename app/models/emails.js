@@ -560,7 +560,12 @@ Emails.statics.queue = async function (
   ]);
 
   const messages = [
-    ...new Set([...phishing.messages, ...executables, ...arbitrary, ...viruses])
+    ...new Set([
+      ...(phishing.messages.length > 0 ? ['Phishing links detected.'] : []),
+      ...executables,
+      ...arbitrary,
+      ...viruses
+    ])
   ];
 
   if (messages.length > 0) {
