@@ -9,11 +9,11 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
+const delay = require('delay');
 const mongoose = require('mongoose');
-const ms = require('ms');
-const pThrottle = require('p-throttle');
-const sharedConfig = require('@ladjs/shared-config');
 const parseErr = require('parse-err');
+const sharedConfig = require('@ladjs/shared-config');
+const { default: PQueue } = require('p-queue');
 
 const config = require('#config');
 const Domains = require('#models/domains');
@@ -28,52 +28,76 @@ const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const resolver = createTangerine(client, logger);
 
-// global interval we use (for graceful)
-let interval;
-
 const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [client],
-  logger,
-  customHandlers: [
-    () => {
-      if (interval) {
-        clearInterval(interval);
-        interval = null;
-      }
-    }
-  ]
+  logger
 });
+
+const queue = new PQueue({
+  concurrency: config.concurrency,
+  timeout: config.smtpQueueTimeout
+});
+
+// store boolean if the job is cancelled
+let isCancelled = false;
+
+// handle cancellation (this is a very simple example)
+if (parentPort)
+  parentPort.once('message', (message) => {
+    //
+    // TODO: once we can manipulate concurrency option to p-map
+    // we could make it `Number.MAX_VALUE` here to speed cancellation up
+    // <https://github.com/sindresorhus/p-map/issues/28>
+    //
+    if (message === 'cancel') {
+      isCancelled = true;
+      // clear the queue
+      queue.clear();
+    }
+  });
 
 graceful.listen();
 
-//
-// this will throttle sending emails to X limit per Y interval
-// (e.g. on a 4 cpu server, it will limit to sending 4 * 4 emails max over the course of 1s)
-// (note this limit is super high right now since we're early stage)
-//
-const throttle = pThrottle({
-  limit: Math.round(config.concurrency * 4),
-  interval: ms('1s')
-});
-
-const throttled = throttle(async (email) => {
-  // wrapped with try/catch so it should never throw an error
-  // (however if there's an error with catch block in `sendEmail` then it will throw
-  return processEmail({ email, resolver, client });
-});
+// 60 items (50 MB * 60 = 3000 MB = 3 GB)
+const MAX_QUEUE = 60;
 
 async function sendEmails(query) {
-  // eslint-disable-next-line unicorn/no-array-callback-reference
-  for await (const email of Emails.find(query)
-    .sort({ created_at: -1 })
-    .cursor()) {
-    //
-    // even though this is in a for-loop we still throttle it
-    // because of the possibility from receiving messages from parent port
-    //
-    await throttled(email);
+  // return early if the job was already cancelled
+  if (isCancelled) return;
+
+  if (queue.size > MAX_QUEUE) {
+    logger.info(`queue has more than ${MAX_QUEUE} tasks`);
+    return;
   }
+
+  const limit = MAX_QUEUE - queue.size;
+  logger.info('queueing %d emails', limit);
+
+  for await (const email of Emails.find({
+    ...query,
+    date: {
+      $lte: new Date()
+    }
+  })
+    // <https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#sort-consistency>
+    .sort({ updated_at: 1, priority: -1, _id: 1 })
+    .limit(limit)
+    .cursor()) {
+    // return early if the job was already cancelled
+    if (isCancelled) break;
+    // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
+    await queue.add(() => processEmail({ email, resolver, client }), {
+      // if the email was admin owned domain then priority higher (see email pre-save hook)
+      priority: email.priority || 0
+    });
+  }
+
+  // wait 1 second
+  await delay(1000);
+
+  // queue more messages once finished processing
+  return sendEmails(query);
 }
 
 (async () => {
@@ -91,46 +115,13 @@ async function sendEmails(query) {
     // TODO: warm up IP addresses
     // <https://serverfault.com/a/1016122>
     //
-    const query = {
+    await sendEmails({
       locked_at: {
         $exists: false
       },
       status: 'queued',
       domain: {
         $nin: suspendedDomainIds
-      }
-    };
-
-    if (parentPort)
-      parentPort.on('message', async (value) => {
-        if (typeof value !== 'object' || typeof value.id !== 'string') return;
-        const email = await Emails.findOne({
-          ...query,
-          date: {
-            $lte: new Date()
-          },
-          id: value.id
-        });
-        if (email) await throttled(email);
-        else logger.warn(new Error('Email does not exist'), { value });
-      });
-
-    // every 3s attempt to send emails that are in the queue
-    interval = setInterval(
-      () =>
-        sendEmails({
-          ...query,
-          date: {
-            $lte: new Date()
-          }
-        }),
-      ms('3s')
-    );
-
-    sendEmails({
-      ...query,
-      date: {
-        $lte: new Date()
       }
     });
   } catch (err) {
@@ -151,10 +142,6 @@ async function sendEmails(query) {
       }
     });
 
-    //
-    // TODO: this needs checked
-    // only exit if there was an error (the job will auto-restart)
-    //
     if (parentPort) parentPort.postMessage('done');
     else process.exit(0);
   }

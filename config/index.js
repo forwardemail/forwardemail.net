@@ -26,8 +26,9 @@ const utilities = require('./utilities');
 const payments = require('./payments');
 
 const config = {
-  smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300, // 300 messages
-  smtpLimitDuration: ms('1d'), // 1d
+  smtpQueueTimeout: ms('10s'),
+  smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300,
+  smtpLimitDuration: ms('1d'),
   smtpLimitNamespace: `smtp_auth_limit_${env.NODE_ENV.toLowerCase()}`,
   supportEmail: env.EMAIL_DEFAULT_FROM_EMAIL,
   maxRecipients: env.MAX_RECIPIENTS,

@@ -3,6 +3,7 @@ const { isIP } = require('node:net');
 
 const RE2 = require('re2');
 const _ = require('lodash');
+const ip = require('ip');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -20,16 +21,18 @@ const isCodeBug = require('#helpers/is-code-bug');
 const isNodemailerError = require('#helpers/is-nodemailer-error');
 const logger = require('#helpers/logger');
 
+const IP_ADDRESS = ip.address();
 const asyncMxConnect = pify(mxConnect);
 
 const transporterConfig = {
   debug: config.env !== 'test',
   direct: true,
   transactionLog: config.env !== 'test',
-  connectionTimeout: ms('180s'),
-  greetingTimeout: ms('180s'),
-  socketTimeout: ms('180s'),
-  dnsTimeout: ms('30s')
+  // mirrors the queue configuration 10s timeout
+  connectionTimeout: config.smtpQueueTimeout,
+  greetingTimeout: config.smtpQueueTimeout,
+  socketTimeout: config.smtpQueueTimeout,
+  dnsTimeout: config.smtpQueueTimeout
 };
 
 const maxConnectTime = ms('1m');
@@ -149,6 +152,12 @@ async function shouldThrowError(err, session) {
     else if (REGEX_SPAM.test(err.response)) err.bounceInfo.category = 'spam';
   }
 
+  // TODO: <https://csi.cloudmark.com/en/reset/>
+  // TODO: <http://dnsbl.invaluement.com/lookup/>
+  // TODO: <http://sendersupport.senderscore.net/>
+  // TODO: <http://www.spamhaus.org/lookup.lasso>
+  // TODO: <http://www.surbl.org/>
+
   //
   // if it was apple (icloud.com, me.com, or mac.com)
   // then note that this error [CS01] Message rejected due to local policy
@@ -161,45 +170,58 @@ async function shouldThrowError(err, session) {
     )
   )
     err.bounceInfo.category = 'spam';
-
-  if (
-    err.bounceInfo.action === 'reject' &&
-    err.bounceInfo.category === 'other'
-  ) {
-    //
-    // if it was spectrum/charter/rr then if blocked then retry
-    // <https://www.spectrum.net/support/internet/understanding-email-error-codes>
-    //
-    if (
-      err.response.includes('AUP#1000') ||
-      (err.response.includes('AUP#12') && !err.response.includes('AUP#1260'))
+  //
+  // if it was spectrum/charter/rr then if blocked then retry
+  // <https://www.spectrum.net/support/internet/understanding-email-error-codes>
+  //
+  else if (err.response.includes('AUP#1260'))
+    // IPv6 not supported with Spectrum
+    err.responseCode = 421;
+  else if (
+    err.response.includes(
+      'spectrum.net/support/internet/understanding-email-error-codes'
     )
-      err.bounceInfo.category = 'blocklist';
-    else if (
-      err.response.includes(
-        'https://www.spectrum.net/support/internet/understanding-email-error-codes'
-      )
-    )
-      err.bounceInfo.category = 'spam';
-    // AT&T (TODO: email them and cc us)
-    else if (err.response.includes('abuse_rbl@abuse-att.net'))
-      err.bounceInfo.category = 'blocklist';
-    // Cloudmark/Proofpoint (TODO: email them and cc us + link to form submission)
-    else if (err.response.includes('cloudmark.com'))
-      err.bounceInfo.category = 'blocklist';
-    // COX - unblock.request@cox.net (TODO: email them and cc us)
-    // <https://www.cox.com/residential/support/email-error-codes.html#contactus>
-    // AUP#CXCNCT
-  }
-
-  if (
+  )
+    err.bounceInfo.category = 'blocklist';
+  // AT&T (TODO: email them and cc us)
+  else if (err.response.includes('abuse_rbl@abuse-att.net'))
+    err.bounceInfo.category = 'blocklist';
+  // Cloudmark/Proofpoint (TODO: email them and cc us + link to form submission)
+  else if (err.response.includes('cloudmark.com'))
+    err.bounceInfo.category = 'blocklist';
+  // COX - unblock.request@cox.net (TODO: email them and cc us)
+  // <https://www.cox.com/residential/support/email-error-codes.html#contactus>
+  else if (
+    err.response.includes('cox.com/residential/support/email-error-codes')
+  )
+    err.bounceInfo.category = 'blocklist';
+  // spamcop (TODO: email us to request removal, same with spamhaus too)
+  // <https://github.com/zone-eu/zone-mta/issues/331>
+  else if (err.response.includes('spamcop.net'))
+    err.bounceInfo.category = 'blocklist';
+  else if (
     err.target === 'qq.com' &&
     err.response.includes('550 Mail content denied')
   )
     err.bounceInfo.category = 'spam';
-
-  if (err.bounceInfo.category === 'policy' && REGEX_SPOOFING.test(err.response))
+  else if (
+    err.bounceInfo.category === 'policy' &&
+    REGEX_SPOOFING.test(err.response)
+  )
     err.bounceInfo.category = 'spam';
+  else if (
+    err.response.includes(`?q=${IP_ADDRESS}`) ||
+    err.response.includes(`?test=${IP_ADDRESS}`) ||
+    err.response.includes(`?query=${IP_ADDRESS}`) ||
+    err.response.includes(`?ip=${IP_ADDRESS}`)
+  ) {
+    // test against our IP and put into blacklist category if so
+    err.bounceInfo.category = 'blocklist';
+  } else if (
+    // <https://www.linuxmagic.com/power_of_ip_reputation.php>
+    err.response.includes('linuxmagic.com/power_of_ip_reputation')
+  )
+    err.bounceInfo.category = 'blocklist';
 
   // log fatal error if block, spam, or blacklist
   if (

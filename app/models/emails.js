@@ -46,6 +46,11 @@ const scanner = new SpamScanner({
 });
 
 const Emails = new mongoose.Schema({
+  priority: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
   alias: {
     type: mongoose.Schema.ObjectId,
     ref: Aliases,
@@ -159,7 +164,14 @@ const Emails = new mongoose.Schema({
 Emails.plugin(mongooseCommonPlugin, {
   object: 'email',
   locale: false,
-  omitExtraFields: ['_id', '__v', 'message', 'locked_by', 'locked_at']
+  omitExtraFields: [
+    '_id',
+    '__v',
+    'message',
+    'locked_by',
+    'locked_at',
+    'priority'
+  ]
 });
 
 // when we query against `locked_at` we also need to query for `$exists: true` for hint to work
@@ -350,6 +362,28 @@ Emails.pre('save', function (next) {
       this.status = 'deferred';
     }
 
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+// determine priority
+Emails.pre('save', async function (next) {
+  try {
+    const domain = await Domains.findById(this.domain);
+    if (!domain)
+      throw Boom.notFound(i18n.translateError('DOMAIN_DOES_NOT_EXIST'));
+    // if any of the domain admins are admins then set priority to 1
+    const adminExists = await Users.exists({
+      _id: {
+        $in: domain.members
+          .filter((m) => m.group === 'admin')
+          .map((m) => m.user)
+      },
+      group: 'admin'
+    });
+    this.priority = adminExists ? 1 : 0;
     next();
   } catch (err) {
     next(err);
