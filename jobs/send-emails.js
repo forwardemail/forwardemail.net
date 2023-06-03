@@ -38,8 +38,8 @@ const graceful = new Graceful({
 });
 
 const queue = new PQueue({
-  concurrency: config.concurrency * 4,
-  timeout: config.smtpQueueTimeout
+  concurrency: config.concurrency * 4
+  // timeout: config.smtpQueueTimeout
 });
 
 // store boolean if the job is cancelled
@@ -133,7 +133,7 @@ async function sendEmails() {
     // return early if the job was already cancelled
     if (isCancelled) break;
     // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
-    await queue.add(() => processEmail({ email, resolver, client }), {
+    queue.add(() => processEmail({ email, resolver, client }), {
       // if the email was admin owned domain then priority higher (see email pre-save hook)
       priority: email.priority || 0
     });
