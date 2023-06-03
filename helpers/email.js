@@ -18,11 +18,6 @@ module.exports = async (data) => {
     Object.assign(data.locals, emailLocals);
     if (data?.message?.subject)
       data.message.subject = striptags(data.message.subject);
-    if (
-      data?.message?.to &&
-      data.message.to.endsWith(`@${config.removedEmailDomain}`)
-    )
-      return;
     const res = await email.send(data);
     logger.info('sent email', { data });
     return res;
