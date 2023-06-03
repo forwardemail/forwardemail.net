@@ -220,7 +220,10 @@ async function shouldThrowError(err, session) {
   } else if (err.response.includes('linuxmagic.com/power_of_ip_reputation'))
     // <https://www.linuxmagic.com/power_of_ip_reputation.php>
     err.bounceInfo.category = 'blocklist';
-  else if (err.response.includes('postmaster.outlook.com'))
+  else if (
+    err.response.includes('rate limited') ||
+    err.response.includes('IP reputation')
+  )
     // <https://sendersupport.olc.protection.outlook.com/pm/>
     err.bounceInfo.category = 'blocklist';
 
