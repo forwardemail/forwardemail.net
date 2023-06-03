@@ -205,6 +205,11 @@ Emails.pre('validate', function (next) {
       )
     );
 
+    // filter out @removed.forwardemail.net
+    this.envelope.to = this.envelope.to.filter(
+      (to) => !to.endsWith(`@${config.removedEmailDomain}`)
+    );
+
     // ensure all valid emails
     if (!this.envelope.to.every((to) => isEmail(to)))
       throw new Error('Envelope to requires valid email addresses');
