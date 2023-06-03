@@ -217,11 +217,14 @@ async function shouldThrowError(err, session) {
   else if (
     err.bounceInfo.category !== 'spam' &&
     (err.response.includes('rate limited') ||
-      err.response.includes('reputation')) &&
+      err.response.includes('reputation') ||
+      // optimum-specific error message
+      err.response.includes('451 4.7.1 Resources restricted')) &&
     err.response.includes(IP_ADDRESS)
     // TODO: email us to send message to tobr@rx.t-online.de if detected string
   )
     // <https://sender.office.com/> <-- submit request here
+    // <https://olcsupport.office.com/> <-- fill form here
     // <https://sendersupport.olc.protection.outlook.com/pm/>
     err.bounceInfo.category = 'blocklist';
 
