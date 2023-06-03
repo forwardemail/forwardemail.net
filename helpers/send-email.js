@@ -222,8 +222,9 @@ async function shouldThrowError(err, session) {
     err.bounceInfo.category = 'blocklist';
   else if (
     (err.response.includes('rate limited') ||
-      err.response.includes('IP reputation')) &&
+      err.response.includes('reputation')) &&
     err.response.includes(IP_ADDRESS)
+    // TODO: email us to send message to tobr@rx.t-online.de if detected string
   )
     // <https://sendersupport.olc.protection.outlook.com/pm/>
     err.bounceInfo.category = 'blocklist';
