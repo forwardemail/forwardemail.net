@@ -4194,5 +4194,6 @@
   "If you are using Gmail, then refer to our": "Gmail을 사용하는 경우 다음을 참조하세요.",
   "Send Mail As with Gmail guide": "Gmail 가이드와 함께 메일 보내기",
   ". If you are a developer, then refer to our": ". 개발자라면 다음을 참조하십시오.",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "우리는 사용자 및 도메인을 1일당 300개의 아웃바운드 SMTP 메시지로 제한합니다. 한 달에 평균 9000개 이상의 이메일이 발송됩니다. 이 금액을 초과해야 하거나 지속적으로 큰 이메일이 있는 경우 당사에 문의하십시오."
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "우리는 사용자 및 도메인을 1일당 300개의 아웃바운드 SMTP 메시지로 제한합니다. 한 달에 평균 9000개 이상의 이메일이 발송됩니다. 이 금액을 초과해야 하거나 지속적으로 큰 이메일이 있는 경우 당사에 문의하십시오.",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "대상 <span class=\"notranslate\">%s</span> 이(가) 최근에 이 IP 주소를 차단했습니다. 1시간 후에 다시 시도하십시오."
 }

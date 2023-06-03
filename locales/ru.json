@@ -4194,5 +4194,6 @@
   "If you are using Gmail, then refer to our": "Если вы используете Gmail, обратитесь к нашему",
   "Send Mail As with Gmail guide": "Отправить почту как с помощью руководства Gmail",
   ". If you are a developer, then refer to our": ". Если вы разработчик, то обратитесь к нашему",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Мы ограничиваем пользователей и домены до 300 исходящих SMTP-сообщений в день. Это в среднем 9000+ электронных писем за календарный месяц. Если вам нужно превысить эту сумму или у вас постоянно большие электронные письма, свяжитесь с нами."
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Мы ограничиваем пользователей и домены до 300 исходящих SMTP-сообщений в день. Это в среднем 9000+ электронных писем за календарный месяц. Если вам нужно превысить эту сумму или у вас постоянно большие электронные письма, свяжитесь с нами.",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "Цель <span class=\"notranslate\">%s</span> недавно заблокировала этот IP-адрес, повторите попытку через 1 час."
 }

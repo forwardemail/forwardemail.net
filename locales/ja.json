@@ -4194,5 +4194,6 @@
   "If you are using Gmail, then refer to our": "Gmail を使用している場合は、こちらを参照してください。",
   "Send Mail As with Gmail guide": "Gmail でメールを送信するガイド",
   ". If you are a developer, then refer to our": "。開発者の方は、こちらを参照してください。",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "ユーザーとドメインの送信 SMTP メッセージ数は 1 日あたり 300 件に制限されています。これは、1 暦月に平均 9,000 件以上のメールが送信されることになります。この量を超える必要がある場合、または常に大量のメールが送信される場合は、お問い合わせください。"
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "ユーザーとドメインの送信 SMTP メッセージ数は 1 日あたり 300 件に制限されています。これは、1 暦月に平均 9,000 件以上のメールが送信されることになります。この量を超える必要がある場合、または常に大量のメールが送信される場合は、お問い合わせください。",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "ターゲット<span class=\"notranslate\">%s</span>最近この IP アドレスをブロックしました。1 時間後にもう一度試してください。"
 }

@@ -4194,5 +4194,6 @@
   "If you are using Gmail, then refer to our": "Nếu bạn đang sử dụng Gmail, hãy tham khảo",
   "Send Mail As with Gmail guide": "Gửi thư Như hướng dẫn Gmail",
   ". If you are a developer, then refer to our": ". Nếu bạn là nhà phát triển, thì hãy tham khảo",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Chúng tôi đánh giá giới hạn người dùng và miền ở mức 300 tin nhắn SMTP gửi đi mỗi 1 ngày. Điều này trung bình hơn 9000 email trong một tháng dương lịch. Nếu bạn cần vượt quá số lượng này hoặc có email lớn liên tục, vui lòng liên hệ với chúng tôi."
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Chúng tôi đánh giá giới hạn người dùng và miền ở mức 300 tin nhắn SMTP gửi đi mỗi 1 ngày. Điều này trung bình hơn 9000 email trong một tháng dương lịch. Nếu bạn cần vượt quá số lượng này hoặc có email lớn liên tục, vui lòng liên hệ với chúng tôi.",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "Mục tiêu <span class=\"notranslate\">%s</span> gần đây đã chặn địa chỉ IP này, vui lòng thử lại sau 1 giờ."
 }

@@ -4194,5 +4194,6 @@
   "If you are using Gmail, then refer to our": "หากคุณใช้ Gmail ให้อ้างอิงถึง",
   "Send Mail As with Gmail guide": "ส่ง Mail เช่นเดียวกับคู่มือ Gmail",
   ". If you are a developer, then refer to our": ". หากคุณเป็นนักพัฒนา โปรดอ้างอิงถึงเรา",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "เราให้คะแนนจำกัดผู้ใช้และโดเมนไว้ที่ 300 ข้อความ SMTP ขาออกต่อ 1 วัน โดยเฉลี่ยแล้วมีอีเมลมากกว่า 9,000 ฉบับในหนึ่งเดือนปฏิทิน หากคุณต้องการเกินจำนวนนี้หรือมีอีเมลจำนวนมากอย่างสม่ำเสมอ โปรดติดต่อเรา"
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "เราให้คะแนนจำกัดผู้ใช้และโดเมนไว้ที่ 300 ข้อความ SMTP ขาออกต่อ 1 วัน โดยเฉลี่ยแล้วมีอีเมลมากกว่า 9,000 ฉบับในหนึ่งเดือนปฏิทิน หากคุณต้องการเกินจำนวนนี้หรือมีอีเมลจำนวนมากอย่างสม่ำเสมอ โปรดติดต่อเรา",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "เป้าหมาย <span class=\"notranslate\">%s</span> ได้บล็อกที่อยู่ IP นี้เมื่อเร็วๆ นี้ โปรดลองอีกครั้งในอีก 1 ชั่วโมง"
 }

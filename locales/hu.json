@@ -4194,5 +4194,6 @@
   "If you are using Gmail, then refer to our": "Ha Gmailt használ, tekintse meg a mi oldalunkat",
   "Send Mail As with Gmail guide": "Levelek küldése másként a Gmail útmutatóval",
   ". If you are a developer, then refer to our": ". Ha Ön fejlesztő, akkor tekintse meg oldalunkat",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Naponta 300 kimenő SMTP-üzenetre korlátozzuk a felhasználókat és a domaineket. Ez átlagosan 9000+ e-mailt jelent egy naptári hónapban. Ha túl kell lépnie ezen az összegen, vagy folyamatosan nagy e-mailjei vannak, kérjük, lépjen kapcsolatba velünk."
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Naponta 300 kimenő SMTP-üzenetre korlátozzuk a felhasználókat és a domaineket. Ez átlagosan 9000+ e-mailt jelent egy naptári hónapban. Ha túl kell lépnie ezen az összegen, vagy folyamatosan nagy e-mailjei vannak, kérjük, lépjen kapcsolatba velünk.",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "A cél <span class=\"notranslate\">%s</span> nemrég blokkolta ezt az IP-címet. Kérjük, próbálja újra 1 óra múlva."
 }

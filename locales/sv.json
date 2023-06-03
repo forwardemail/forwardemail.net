@@ -4194,5 +4194,6 @@
   "If you are using Gmail, then refer to our": "Om du använder Gmail, se vår",
   "Send Mail As with Gmail guide": "Skicka e-post som med Gmail-guide",
   ". If you are a developer, then refer to our": ". Om du är en utvecklare, se vår",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Vi begränsar användare och domäner till 300 utgående SMTP-meddelanden per dag. Detta är i genomsnitt 9000+ e-postmeddelanden under en kalendermånad. Om du behöver överskrida detta belopp eller har konsekvent stora e-postmeddelanden, vänligen kontakta oss."
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Vi begränsar användare och domäner till 300 utgående SMTP-meddelanden per dag. Detta är i genomsnitt 9000+ e-postmeddelanden under en kalendermånad. Om du behöver överskrida detta belopp eller har konsekvent stora e-postmeddelanden, vänligen kontakta oss.",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "Målet <span class=\"notranslate\">%s</span> har nyligen blockerat denna IP-adress, försök igen om 1 timme."
 }

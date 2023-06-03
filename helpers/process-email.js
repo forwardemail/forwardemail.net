@@ -614,7 +614,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
           if (isRecentlyBlocked)
             throw Boom.badRequest(
-              i18n.translateError('RECENTLY_BLOCKED', target)
+              i18n.translateError(
+                'RECENTLY_BLOCKED',
+                i18n.defaultLocale,
+                target
+              )
             );
 
           const info = await sendEmail({

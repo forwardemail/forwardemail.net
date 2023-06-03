@@ -4194,5 +4194,6 @@
   "If you are using Gmail, then refer to our": "Jika Anda menggunakan Gmail, lihat kami",
   "Send Mail As with Gmail guide": "Kirim Surat Seperti dengan panduan Gmail",
   ". If you are a developer, then refer to our": ". Jika Anda seorang pengembang, lihat kami",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Kami membatasi pengguna dan domain hingga 300 pesan SMTP keluar per 1 hari. Ini rata-rata 9000+ email dalam satu bulan kalender. Jika Anda perlu melebihi jumlah ini atau memiliki email yang besar secara konsisten, silakan hubungi kami."
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Kami membatasi pengguna dan domain hingga 300 pesan SMTP keluar per 1 hari. Ini rata-rata 9000+ email dalam satu bulan kalender. Jika Anda perlu melebihi jumlah ini atau memiliki email yang besar secara konsisten, silakan hubungi kami.",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "Target <span class=\"notranslate\">%s</span> baru saja memblokir alamat IP ini, harap coba lagi dalam 1 jam."
 }

@@ -4194,5 +4194,6 @@
   "If you are using Gmail, then refer to our": "Gmail kullanıyorsanız, şuraya bakın:",
   "Send Mail As with Gmail guide": "Postaları Gmail kılavuzuyla Farklı Gönder",
   ". If you are a developer, then refer to our": ". Bir geliştiriciyseniz, şuraya bakın:",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Kullanıcıları ve etki alanlarını 1 günde 300 giden SMTP mesajı olarak derecelendiriyoruz. Bu, bir takvim ayında ortalama 9000'den fazla e-posta anlamına gelir. Bu miktarı aşmanız gerekiyorsa veya sürekli olarak büyük e-postalarınız varsa, lütfen bizimle iletişime geçin."
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Kullanıcıları ve etki alanlarını 1 günde 300 giden SMTP mesajı olarak derecelendiriyoruz. Bu, bir takvim ayında ortalama 9000'den fazla e-posta anlamına gelir. Bu miktarı aşmanız gerekiyorsa veya sürekli olarak büyük e-postalarınız varsa, lütfen bizimle iletişime geçin.",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "<span class=\"notranslate\">%s</span> hedefi yakın zamanda bu IP adresini engelledi, lütfen 1 saat sonra tekrar deneyin."
 }

@@ -3205,5 +3205,6 @@
   "If you are using Gmail, then refer to our": "Wenn Sie Gmail verwenden, lesen Sie unsere",
   "Send Mail As with Gmail guide": "Anleitung zum Senden von E-Mails wie mit Gmail",
   ". If you are a developer, then refer to our": ". Wenn Sie Entwickler sind, schauen Sie sich unsere an",
-  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Wir begrenzen die Anzahl der Benutzer und Domänen auf 300 ausgehende SMTP-Nachrichten pro Tag. Das entspricht im Durchschnitt mehr als 9.000 E-Mails pro Kalendermonat. Wenn Sie diesen Betrag überschreiten müssen oder dauerhaft große E-Mails haben, kontaktieren Sie uns bitte."
+  "We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Wir begrenzen die Anzahl der Benutzer und Domänen auf 300 ausgehende SMTP-Nachrichten pro Tag. Das entspricht im Durchschnitt mehr als 9.000 E-Mails pro Kalendermonat. Wenn Sie diesen Betrag überschreiten müssen oder dauerhaft große E-Mails haben, kontaktieren Sie uns bitte.",
+  "The target <span class=\"notranslate\">%s</span> has recently blocked this IP address, please try again in 1 hour.": "Das Ziel <span class=\"notranslate\">%s</span> hat diese IP-Adresse kürzlich blockiert. Bitte versuchen Sie es in einer Stunde erneut."
 }

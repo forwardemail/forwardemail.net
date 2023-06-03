@@ -16,7 +16,7 @@ for (const key of Object.keys(statuses.message)) {
 
 module.exports = {
   RECENTLY_BLOCKED:
-    'The target %s has recently blocked this IP address, please try again in 1 hour.',
+    'The target <span class="notranslate">%s</span> has recently blocked this IP address, please try again in 1 hour.',
   CANNOT_CREATE_CATCHALL_ON_GLOBAL: 'Cannot create catch-all on global domain.',
   CANNOT_CREATE_REGEX_ON_GLOBAL: 'Cannot create regex on global domain.',
   CANNOT_CREATE_CATCHALL_ON_DOMAIN:
