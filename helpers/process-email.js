@@ -548,7 +548,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
     }
 
     // safeguard
-    if (map.size === 0) throw new Error('Invalid envelope recipients');
+    if (map.size === 0) {
+      logger.error(new Error('Invalid envelope recipients'), meta);
+      return;
+    }
 
     const cache = createMtaStsCache(client);
 
