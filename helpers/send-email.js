@@ -265,6 +265,7 @@ async function shouldThrowError(err, session) {
         [
           'block',
           'blacklist',
+          'blocklist',
           'capacity',
           'network',
           'protocol',
