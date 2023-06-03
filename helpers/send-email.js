@@ -221,8 +221,9 @@ async function shouldThrowError(err, session) {
     // <https://www.linuxmagic.com/power_of_ip_reputation.php>
     err.bounceInfo.category = 'blocklist';
   else if (
-    err.response.includes('rate limited') ||
-    err.response.includes('IP reputation')
+    (err.response.includes('rate limited') ||
+      err.response.includes('IP reputation')) &&
+    err.response.includes(IP_ADDRESS)
   )
     // <https://sendersupport.olc.protection.outlook.com/pm/>
     err.bounceInfo.category = 'blocklist';
