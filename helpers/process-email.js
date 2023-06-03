@@ -814,6 +814,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
         if (!isEmail(err.recipient))
           throw new Error('Recipient not assigned to error');
         e.rejectedErrors.push(err instanceof Error ? parseErr(err) : err);
+        /*
+        // TODO: re-enable this after checking bounceInfo and more
         if (
           typeof err.responseCode === 'number' &&
           err.responseCode >= 500 &&
@@ -822,6 +824,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           domain.smtp_emails_blocked.push(err.recipient);
           hasNewlyBlocked = true;
         }
+        */
       }
     }
 
