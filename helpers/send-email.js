@@ -67,6 +67,10 @@ const REGEX_BLACKLIST = new RE2(
   /^blacklist$|^blacklist[.!;,]+|[.!;,]+blacklist[.!;,]+|\s+blacklist\s+|^blacklist\s+|\s+blacklist$|\s+blacklist[.!;,]+/im
 );
 
+const REGEX_BLOCKLIST = new RE2(
+  /^blocklist$|^blocklist[.!;,]+|[.!;,]+blocklist[.!;,]+|\s+blocklist\s+|^blocklist\s+|\s+blocklist$|\s+blocklist[.!;,]+/im
+);
+
 const APPLE_HOSTS = new Set(['apple.com', 'icloud.com', 'me.com', 'mac.com']);
 
 const MAIL_RETRY_ERROR_CODES = new Set([
@@ -136,10 +140,12 @@ async function shouldThrowError(err, session) {
 
   // set bounce info on the error object (useful for debugging)
   err.bounceInfo = zoneMTABounces.check(err.response);
+  if (err?.bounceInfo?.category === 'blacklist')
+    err.bounceInfo.category = 'blocklist';
 
   //
   // NOTE: if the bounce checked was Unknown and no category
-  //       then check if it was a virus, denylist, blacklist, or spam response message
+  //       then check if it was a virus, denylist, blocklist, or spam response message
   //       <https://github.com/zone-eu/zone-mta/blob/83c613fa3edbf35df5182b3c5a4b39bf3f50a97b/lib/bounces.js#L100-L106>
   //
   if (
@@ -215,7 +221,7 @@ async function shouldThrowError(err, session) {
     err.response.includes(`?query=${IP_ADDRESS}`) ||
     err.response.includes(`?ip=${IP_ADDRESS}`)
   ) {
-    // test against our IP and put into blacklist category if so
+    // test against our IP and put into blocklist category if so
     err.bounceInfo.category = 'blocklist';
   } else if (err.response.includes('linuxmagic.com/power_of_ip_reputation'))
     // <https://www.linuxmagic.com/power_of_ip_reputation.php>
@@ -229,10 +235,10 @@ async function shouldThrowError(err, session) {
     // <https://sendersupport.olc.protection.outlook.com/pm/>
     err.bounceInfo.category = 'blocklist';
 
-  // log fatal error if block, spam, or blacklist
+  // log fatal error if block, spam, or blocklist
   if (
     isSANB(err.bounceInfo.category) &&
-    ['virus', 'block', 'spam', 'blacklist'].includes(err.bounceInfo.category)
+    ['virus', 'block', 'spam', 'blocklist'].includes(err.bounceInfo.category)
   )
     logger.fatal(err, { session });
 
@@ -264,7 +270,6 @@ async function shouldThrowError(err, session) {
       (isSANB(err.bounceInfo.category) &&
         [
           'block',
-          'blacklist',
           'blocklist',
           'capacity',
           'network',
@@ -275,14 +280,15 @@ async function shouldThrowError(err, session) {
           !REGEX_SPOOFING.test(err.response))) ||
       REGEX_DENYLIST.test(err.response) ||
       REGEX_BLACKLIST.test(err.response) ||
+      REGEX_BLOCKLIST.test(err.response) ||
       (REGEX_LOCAL_POLICY.test(err.response) &&
         !REGEX_SPOOFING.test(err.response)))
   ) {
     //
     // we want to retry messages with 421
     // if the action was "defer" or "slowdown"
-    // or if the category was "block", "blacklist", "capacity", "network", "protocol", or "policy"
-    // or if it was detected to be denylist, blacklist, or local policy issue
+    // or if the category was "block", "blocklist", "capacity", "network", "protocol", or "policy"
+    // or if it was detected to be denylist, blocklist, or local policy issue
     //
     // (this is the magic that lets us fix our IP's being listed as false positive denylists in advance)
     // (and allows messages to retry and then would succeed once we get delisted)
