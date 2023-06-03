@@ -38,7 +38,7 @@ const graceful = new Graceful({
 });
 
 const queue = new PQueue({
-  concurrency: config.concurrency,
+  concurrency: config.concurrency * 4,
   timeout: config.smtpQueueTimeout
 });
 
@@ -76,6 +76,8 @@ async function sendEmails() {
 
   const limit = MAX_QUEUE - queue.size;
   logger.info('queueing %d emails', limit);
+
+  // TODO: filter out recently blocked targets by rejectedErrors[x].mx.target
 
   // get list of all suspended domains
   // and recently blocked emails to exclude
@@ -125,8 +127,7 @@ async function sendEmails() {
       $lte: new Date()
     }
   })
-    // <https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#sort-consistency>
-    .sort({ updated_at: 1, priority: -1, _id: 1 })
+    .sort({ created_at: 1 })
     .limit(limit)
     .cursor()) {
     // return early if the job was already cancelled
