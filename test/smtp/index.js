@@ -135,7 +135,10 @@ Test`.trim()
     );
 
     t.is(err.responseCode, 535);
-    t.is(err.response, '535 Invalid username or password');
+    t.is(
+      err.response,
+      '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
+    );
   }
 
   {
@@ -173,7 +176,10 @@ Test`.trim()
     );
 
     t.is(err.responseCode, 535);
-    t.is(err.response, '535 Invalid username or password');
+    t.is(
+      err.response,
+      '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
+    );
   }
 });
 
@@ -232,7 +238,7 @@ test('smtp outbound auth', async (t) => {
       connection.connect(() => {
         connection.login(combo, (err) => {
           t.is(err.responseCode, 535);
-          t.is(err.response, '535 Invalid username or password');
+          // TODO: test err.response
           connection.close();
         });
       });

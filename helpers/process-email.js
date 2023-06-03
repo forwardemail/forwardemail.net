@@ -4,6 +4,7 @@ const { Buffer } = require('node:buffer');
 const Boom = require('@hapi/boom');
 const DKIM = require('nodemailer/lib/dkim');
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
@@ -231,6 +232,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
         ...e.envelope.to.map((recipient) => {
           const error = parseErr(err);
           error.recipient = recipient;
+          error.date = new Date();
           return error;
         })
       );
@@ -257,6 +259,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           );
           error.responseCode = 550;
           error.recipient = recipient;
+          error.date = new Date();
           e.rejectedErrors.push(error);
           matches.push(recipient);
         }
@@ -583,6 +586,34 @@ async function processEmail({ email, port = 25, resolver, client }) {
           throw Boom.badRequest(i18n.translateError('DOMAIN_SUSPENDED'));
 
         try {
+          //
+          // NOTE: check `target` against recently blocked domains and if so then retry later
+          //       (this gives postmasters like Outlook and Gmail a back-off period)
+          //       (and gives opportunity for another server to try sending it)
+          //
+          const isRecentlyBlocked = await Emails.exists({
+            updated_at: {
+              $gte: dayjs().subtract(1, 'hour').toDate(),
+              $lte: new Date()
+            },
+            rejectedErrors: {
+              $elemMatch: {
+                date: {
+                  $gte: dayjs().subtract(1, 'hour').toDate(),
+                  $lte: new Date()
+                },
+                target,
+                'bounceInfo.category': 'blocklist',
+                'mx.localAddress': IP_ADDRESS
+              }
+            }
+          });
+
+          if (isRecentlyBlocked)
+            throw Boom.badRequest(
+              i18n.translateError('RECENTLY_BLOCKED', target)
+            );
+
           const info = await sendEmail({
             session: createSession(email),
             cache,
@@ -702,6 +733,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
             rejectedErrors: to.map((recipient) => {
               const error = parseErr(err);
               error.recipient = recipient;
+              error.date = new Date();
               return error;
             })
           };
@@ -835,6 +867,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           ...e.envelope.to.map((recipient) => {
             const error = parseErr(err);
             error.recipient = recipient;
+            error.date = new Date();
             return error;
           })
         );
@@ -853,6 +886,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           ...e.envelope.to.map((recipient) => {
             const error = parseErr(err);
             error.recipient = recipient;
+            error.date = new Date();
             return error;
           })
         );
@@ -875,6 +909,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       ...e.envelope.to.map((recipient) => {
         const error = parseErr(err);
         error.recipient = recipient;
+        error.date = new Date();
         return error;
       })
     );

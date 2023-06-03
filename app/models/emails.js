@@ -264,6 +264,9 @@ Emails.pre('validate', function (next) {
       e.responseCode = getErrorCode(err);
       if (typeof e.recipient !== 'string' || !isEmail(e.recipient))
         throw new Error('Recipient was missing from error');
+      // always set date if not set already
+      if (typeof e.date === 'undefined' || !(e.date instanceof Date))
+        e.date = new Date();
       return e;
     });
 

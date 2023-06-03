@@ -217,10 +217,11 @@ async function shouldThrowError(err, session) {
   ) {
     // test against our IP and put into blacklist category if so
     err.bounceInfo.category = 'blocklist';
-  } else if (
+  } else if (err.response.includes('linuxmagic.com/power_of_ip_reputation'))
     // <https://www.linuxmagic.com/power_of_ip_reputation.php>
-    err.response.includes('linuxmagic.com/power_of_ip_reputation')
-  )
+    err.bounceInfo.category = 'blocklist';
+  else if (err.response.includes('postmaster.outlook.com'))
+    // <https://sendersupport.olc.protection.outlook.com/pm/>
     err.bounceInfo.category = 'blocklist';
 
   // log fatal error if block, spam, or blacklist

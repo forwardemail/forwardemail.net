@@ -50,11 +50,6 @@ class SMTPError extends Error {
 }
 
 function validateDomain(domain) {
-  if (!domain)
-    throw new Error(
-      'Domain does not exist with current TXT verification record'
-    );
-
   if (domain.is_global) throw new Error('Cannot send email from global domain');
 
   //
@@ -63,8 +58,24 @@ function validateDomain(domain) {
   // if (_.isDate(domain.smtp_suspended_sent_at))
   //   throw new Error('Domain is suspended from outbound SMTP access');
 
-  if (!domain.has_smtp)
-    throw new Error('Domain does not have outbound SMTP access');
+  if (!domain.has_smtp) {
+    if (!_.isDate(domain.smtp_verified_at))
+      throw new SMTPError(
+        `Domain is not configured for outbound SMTP, go to ${config.urls.web}/my-account/domains/${domain.name}/verify-smtp and click "Verify"`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
+
+    throw new SMTPError(
+      `Domain is pending admin approval for outbound SMTP access, please check your inbox and provide us with requested information or contact us at ${config.supportEmail}`,
+      {
+        responseCode: 535,
+        ignoreHook: true
+      }
+    );
+  }
 
   //
   // validate that at least one paying, non-banned admin on >= same plan without expiration
@@ -89,9 +100,6 @@ function validateDomain(domain) {
 }
 
 function validateAlias(alias) {
-  // alias must exist
-  if (!alias) throw new Error('Alias does not exist');
-
   // alias must not have banned user
   if (alias.user[config.userFields.isBanned])
     throw new Error('Alias user is banned');
@@ -199,8 +207,16 @@ async function onData(stream, _session, fn) {
         .exec()
     ]);
 
+    if (!domain)
+      throw new Error(
+        'Domain does not exist with current TXT verification record'
+      );
+
     // validate domain
     validateDomain(domain);
+
+    // alias must exist
+    if (!alias) throw new Error('Alias does not exist');
 
     // validate alias
     validateAlias(alias);
@@ -395,17 +411,30 @@ async function onAuth(auth, session, fn) {
   //
   try {
     // username must be a valid email address
-    if (!isSANB(auth?.username) || !isEmail(auth?.username))
-      throw new Error('Invalid username');
+    if (!isSANB(auth?.username) || !isEmail(auth.username.trim()))
+      throw new SMTPError(
+        'Invalid username, please enter a valid email address (e.g. "alias@example.com")',
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
+
+    const [name, domainName] = auth.username.trim().toLowerCase().split('@');
 
     // password must be a string not longer than 128 characters
     if (
       !isSANB(auth?.password) ||
-      (typeof auth?.password === 'string' && auth.password.length > 128)
+      (typeof auth?.password === 'string' && auth.password.trim().length > 128)
     )
-      throw new Error('Invalid password');
+      throw new SMTPError(
+        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
 
-    const [name, domainName] = auth.username.trim().toLowerCase().split('@');
     const verifications = [];
     const records = await this.resolver.resolveTxt(domainName);
     for (const record_ of records) {
@@ -415,10 +444,22 @@ async function onAuth(auth, session, fn) {
     }
 
     if (verifications.length === 0)
-      throw new Error('Domain is missing TXT verification record');
+      throw new SMTPError(
+        `Domain is missing TXT verification record, go to ${config.urls.web}/my-account/domains/${domainName} and click "Verify"`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
 
     if (verifications.length > 1)
-      throw new Error('Domain has more than one TXT verification record');
+      throw new SMTPError(
+        `Domain has more than one TXT verification record, go to ${config.urls.web}/my-account/domains/${domainName} and click "Verify"`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
 
     const domain = await Domains.findOne({
       name: domainName,
@@ -432,6 +473,12 @@ async function onAuth(auth, session, fn) {
       .lean()
       .exec();
 
+    if (!domain)
+      throw new SMTPError(
+        `Domain does not exist with current TXT verification record, go to ${config.urls.web}/my-account/domains/${domainName} and click "Verify"`,
+        { responseCode: 535, ignore: true }
+      );
+
     // validate domain
     validateDomain(domain);
 
@@ -443,16 +490,34 @@ async function onAuth(auth, session, fn) {
       .lean()
       .exec();
 
+    if (!alias)
+      throw new SMTPError(
+        `Alias does not exist, go to ${config.urls.web}/my-account/domains/${domain.name} and add the alias of "${name}"`,
+        { responseCode: 535, ignore: true }
+      );
+
     // validate alias
     validateAlias(alias);
 
     // validate the `auth.password` provided
     if (!Array.isArray(alias.tokens) || alias.tokens.length === 0)
-      throw new Error('Alias does not have any SMTP generated passwords yet');
+      throw new SMTPError(
+        `Alias does not have any SMTP generated passwords yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
 
     // ensure that the token is valid
-    if (!Aliases.isValidPassword(alias.tokens, auth.password))
-      throw new Error('Invalid password');
+    if (!Aliases.isValidPassword(alias.tokens, auth.password.trim()))
+      throw new SMTPError(
+        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
 
     // this response object sets `session.user` to have `domain` and `alias`
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L235>
@@ -461,22 +526,13 @@ async function onAuth(auth, session, fn) {
     );
   } catch (err) {
     logger.err(err, { session });
+
     //
-    // TODO: we should actually share error message if it was not a code bug
+    // NOTE: we should actually share error message if it was not a code bug
     //       (otherwise it won't be intuitive to users if they're late on payment)
     //
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L189-L222>
-    setImmediate(() =>
-      fn(
-        refineAndLogError(
-          new SMTPError('Invalid username or password', {
-            responseCode: 535,
-            ignoreHook: true
-          }),
-          session
-        )
-      )
-    );
+    setImmediate(() => fn(refineAndLogError(err, session)));
   }
 }
 

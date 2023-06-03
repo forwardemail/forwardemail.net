@@ -9,7 +9,9 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
+const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
+const ip = require('ip');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
@@ -27,6 +29,7 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const resolver = createTangerine(client, logger);
+const IP_ADDRESS = ip.address();
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -62,7 +65,7 @@ graceful.listen();
 // 60 items (50 MB * 60 = 3000 MB = 3 GB)
 const MAX_QUEUE = 60;
 
-async function sendEmails(query) {
+async function sendEmails() {
   // return early if the job was already cancelled
   if (isCancelled) return;
 
@@ -74,8 +77,50 @@ async function sendEmails(query) {
   const limit = MAX_QUEUE - queue.size;
   logger.info('queueing %d emails', limit);
 
+  // get list of all suspended domains
+  // and recently blocked emails to exclude
+  const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
+    Domains.distinct('_id', {
+      smtp_suspended_sent_at: {
+        $exists: true
+      }
+    }),
+    Emails.distinct('_id', {
+      updated_at: {
+        $gte: dayjs().subtract(1, 'hour').toDate(),
+        $lte: new Date()
+      },
+      rejectedErrors: {
+        $elemMatch: {
+          date: {
+            $gte: dayjs().subtract(1, 'hour').toDate(),
+            $lte: new Date()
+          },
+          'bounceInfo.category': 'blocklist',
+          'mx.localAddress': IP_ADDRESS
+        }
+      }
+    })
+  ]);
+
+  logger.info('%d suspended domain ids', suspendedDomainIds.length);
+
+  logger.info('%d recently blocked ids', recentlyBlockedIds.length);
+
+  //
+  // TODO: warm up IP addresses
+  // <https://serverfault.com/a/1016122>
+  //
+
   for await (const email of Emails.find({
-    ...query,
+    _id: { $nin: recentlyBlockedIds },
+    locked_at: {
+      $exists: false
+    },
+    status: 'queued',
+    domain: {
+      $nin: suspendedDomainIds
+    },
     date: {
       $lte: new Date()
     }
@@ -97,33 +142,14 @@ async function sendEmails(query) {
   await delay(1000);
 
   // queue more messages once finished processing
-  return sendEmails(query);
+  return sendEmails();
 }
 
 (async () => {
   await setupMongoose(logger);
 
   try {
-    // get list of all suspended domains to exclude
-    const suspendedDomainIds = await Domains.distinct('_id', {
-      smtp_suspended_sent_at: {
-        $exists: true
-      }
-    });
-
-    //
-    // TODO: warm up IP addresses
-    // <https://serverfault.com/a/1016122>
-    //
-    await sendEmails({
-      locked_at: {
-        $exists: false
-      },
-      status: 'queued',
-      domain: {
-        $nin: suspendedDomainIds
-      }
-    });
+    await sendEmails();
   } catch (err) {
     await logger.error(err);
 
