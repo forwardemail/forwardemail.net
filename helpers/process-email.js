@@ -802,7 +802,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
     //
     // store a list of bounced recipients we're going to block
     //
-    let hasNewlyBlocked = false;
+    // TODO: copy over isTLSRequired stuff from SMTP
+    const hasNewlyBlocked = false;
 
     //
     // update or add to `rejectedErrors` if necessary

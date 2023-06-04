@@ -55,14 +55,16 @@ async function getDeliverabilityChart(ctx) {
         'mail_error',
         'bounce_prevented_empty',
         'bounce_prevented_restricted',
-        'bounce_sent'
+        'bounce_sent',
+        'backscatter_prevented',
+        'denylist_prevented'
       ].map(async (name) => {
         const results = await ctx.client.mget(
           dates.map((date) => `${name}:${date}`)
         );
         const data = [];
         for (const [i, date] of dates.entries()) {
-          data.push([date, Number.parseInt(results[i], 10)]);
+          data.push([date, results[i] ? Number.parseInt(results[i], 10) : 0]);
         }
 
         series.push({
