@@ -4219,5 +4219,18 @@
   "Manage your Forward Email security.": "전달 이메일 보안을 관리합니다.",
   "Authenticate yourself to log in.": "로그인을 위해 본인 인증을 합니다.",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Squarespace</span> 용 무료 이메일 전달 &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "<span class=\"notranslate\">Squarespace</span> 용 무료 및 맞춤형 도메인 이메일 전달 DNS 서비스 ."
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "<span class=\"notranslate\">Squarespace</span> 용 무료 및 맞춤형 도메인 이메일 전달 DNS 서비스 .",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "우리는 <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> 라는 자체 스팸 방지, 피싱 및 바이러스 보호 소프트웨어를 구축했습니다. 동일한 개인 정보 우선 및 제로 로깅 정책을 준수합니다.",
+  "Send email with your custom domain": "사용자 지정 도메인으로 이메일 보내기",
+  "%d+ outbound / month": "%d+ 아웃바운드/월",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "%s당 %d개의 아웃바운드 SMTP 메시지로 사용자 및 도메인을 평가 제한합니다. 한 달 동안 평균 %d개 이상의 이메일입니다. 이 금액을 초과해야 하거나 지속적으로 큰 이메일이 있는 경우 당사에 문의하십시오.",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "다른 모든 이메일 전달자는 SMTP 로그를 저장하고 이메일을 디스크 스토리지에 기록합니다. 일반적으로 암호화되지 않은 데이터베이스에 SOC 2 유형 2 규정을 준수하지 않습니다.",
+  "Deprecated": "더 이상 사용되지 않음",
+  "Legacy Free Guide": "레거시 무료 가이드",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "이 레거시 무료 가이드는 <a class=\"alert-link\" href=\"%s\">이제 아웃바운드 SMTP를 지원</a> 하므로 2023년 5월부터 사용되지 않습니다. 아래 가이드를 사용하면 <a class=\"alert-link\" href=\"%s\">아웃바운드 이메일이</a> Gmail에서 <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> 으로 표시됩니다.",
+  "Email Setup Guide": "이메일 설정 가이드",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong><span class=\"notranslate\">TTL</span> 값이 필요하십니까?</strong> 가능한 한 <span class=\"notranslate text-monospace\">3600</span> (5분)에 가깝게 합니다.",
+  "Send emails with your domain": "도메인으로 이메일 보내기",
+  "Follow our simple guide for sending email with your custom domain.": "사용자 지정 도메인으로 이메일을 보내기 위한 간단한 가이드를 따르십시오.",
+  "Setup outbound SMTP": "아웃바운드 SMTP 설정"
 }

@@ -42,7 +42,8 @@ localeRouter
     return next();
   })
   // svg dynamically generated og images
-  .get('(.*).(png|svg)', web.generateOpenGraphImage)
+  // .get('(.*).(png|svg)', web.generateOpenGraphImage)
+  .get('(.*).(png)', web.generateOpenGraphImage)
   .get('/', web.auth.homeOrDomains)
   .post(
     '/',

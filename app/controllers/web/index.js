@@ -35,9 +35,6 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const meta = new Meta(config.meta, logger);
 
-// in-memory caching
-const map = new Map();
-
 const SVG_STR = fs.readFileSync(
   config.env === 'development'
     ? path.join(__dirname, '..', '..', '..', 'assets', 'img', 'template.svg')
@@ -178,15 +175,27 @@ async function generateOpenGraphImage(ctx) {
     const svg = Buffer.from(svgReplaced, 'utf8');
     const hash = revHash(ctx.type + ':' + svgReplaced);
 
-    if (map.has(hash)) {
-      ctx.body = map.get(hash);
-    } else if (ctx.type === 'image/svg+xml') {
+    const key = `og:${hash}`;
+    const result = await ctx.client.get(key);
+
+    if (result) {
+      ctx.body = Buffer.from(result, 'hex');
+      return;
+    }
+
+    if (ctx.type === 'image/svg+xml') {
       ctx.body = svg;
-      map.set(hash, svg);
+      ctx.client
+        .set(key, svg.toString('hex'))
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
     } else {
       const buffer = await sharp(svg).png({ quality: 100 }).toBuffer();
       ctx.body = buffer;
-      map.set(hash, buffer);
+      ctx.client
+        .set(key, buffer.toString('hex'))
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
     }
   } catch (err) {
     ctx.logger.error(err);

@@ -4219,5 +4219,18 @@
   "Manage your Forward Email security.": "Gestisci la tua sicurezza di inoltro e-mail.",
   "Authenticate yourself to log in.": "Autenticati per accedere.",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "Inoltro e-mail gratuito per <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Servizio DNS di inoltro e-mail di dominio gratuito e personalizzato per <span class=\"notranslate\">Squarespace</span> ."
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Servizio DNS di inoltro e-mail di dominio gratuito e personalizzato per <span class=\"notranslate\">Squarespace</span> .",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "Abbiamo creato il nostro software anti-spam, phishing e antivirus chiamato <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> . Rispetta le stesse politiche di privacy e zero logging.",
+  "Send email with your custom domain": "Invia email con il tuo dominio personalizzato",
+  "%d+ outbound / month": "%d+ in uscita/mese",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Valutiamo il limite di utenti e domini a %d messaggi SMTP in uscita per %s. Questa è una media di %d+ email in un mese di calendario. Se hai bisogno di superare questo importo o hai email di grandi dimensioni, contattaci.",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "Scoprirai che ogni altro mittente di posta elettronica archivia i registri SMTP e scrive le tue e-mail nell'archiviazione su disco ... di solito su database non crittografati e senza conformità SOC 2 Tipo 2.",
+  "Deprecated": "Deprecato",
+  "Legacy Free Guide": "Guida gratuita precedente",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Questa guida gratuita legacy è obsoleta a partire da maggio 2023 poiché <a class=\"alert-link\" href=\"%s\">ora supportiamo SMTP in uscita</a> . Se utilizzi la guida di seguito, <a class=\"alert-link\" href=\"%s\">questo farà sì che la tua email in uscita</a> indichi <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> in Gmail.",
+  "Email Setup Guide": "Guida alla configurazione della posta elettronica",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Hai bisogno di un valore <span class=\"notranslate\">TTL</span> ?</strong> Rendilo il più vicino possibile a <span class=\"notranslate text-monospace\">3600</span> (5 minuti).",
+  "Send emails with your domain": "Invia email con il tuo dominio",
+  "Follow our simple guide for sending email with your custom domain.": "Segui la nostra semplice guida per l'invio di email con il tuo dominio personalizzato.",
+  "Setup outbound SMTP": "Imposta SMTP in uscita"
 }

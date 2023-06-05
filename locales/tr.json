@@ -4219,5 +4219,18 @@
   "Manage your Forward Email security.": "E-posta Yönlendirme güvenliğinizi yönetin.",
   "Authenticate yourself to log in.": "Oturum açmak için kimliğinizi doğrulayın.",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Squarespace</span> için Ücretsiz E-posta Yönlendirme &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "<span class=\"notranslate\">Squarespace</span> için ücretsiz ve özel alan e-posta yönlendirme DNS hizmeti."
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "<span class=\"notranslate\">Squarespace</span> için ücretsiz ve özel alan e-posta yönlendirme DNS hizmeti.",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "<a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> adlı kendi anti-spam, kimlik avı ve virüs koruma yazılımımızı oluşturduk. Aynı gizliliğe öncelik veren ve sıfır günlüğe kaydetme politikalarına uyar.",
+  "Send email with your custom domain": "Özel etki alanınızla e-posta gönderin",
+  "%d+ outbound / month": "%d+ giden / ay",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Kullanıcıları ve etki alanlarını, %s başına %d giden SMTP iletisi olarak sınırlıyoruz. Bu, bir takvim ayında ortalama %d+ e-posta anlamına gelir. Bu miktarı aşmanız gerekiyorsa veya sürekli olarak büyük e-postalarınız varsa, lütfen bizimle iletişime geçin.",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "Diğer tüm e-posta ileticilerinin SMTP günlüklerini sakladığını ve e-postalarınızı disk deposuna yazdığını göreceksiniz... genellikle şifrelenmemiş veritabanlarında ve SOC 2 Tip 2 uyumluluğu olmadan.",
+  "Deprecated": "Kullanımdan kaldırıldı",
+  "Legacy Free Guide": "Eski Ücretsiz Kılavuz",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Bu eski ücretsiz kılavuz, <a class=\"alert-link\" href=\"%s\">artık giden SMTP&#39;yi desteklediğimiz</a> için Mayıs 2023 itibarıyla kullanımdan kaldırılmıştır. Aşağıdaki kılavuzu kullanırsanız, bu, giden e-postanızın Gmail&#39;de <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> yazmasına <a class=\"alert-link\" href=\"%s\">neden olur</a> .",
+  "Email Setup Guide": "E-posta Kurulum Kılavuzu",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Bir <span class=\"notranslate\">TTL</span> değerine mi ihtiyacınız var?</strong> Mümkün olduğunca <span class=\"notranslate text-monospace\">3600</span> (5 dakika) yakın yapın.",
+  "Send emails with your domain": "Etki alanınızla e-posta gönderin",
+  "Follow our simple guide for sending email with your custom domain.": "Özel etki alanınızla e-posta göndermek için basit kılavuzumuzu izleyin.",
+  "Setup outbound SMTP": "Giden SMTP'yi kur"
 }

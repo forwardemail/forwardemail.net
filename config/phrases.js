@@ -15,6 +15,7 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  EMAIL_SETUP_GUIDE: 'Email Setup Guide',
   NO_CREDIT_CARD: 'NO CREDIT CARD REQUIRED. 100% OPEN-SOURCE.',
   PRIVATE_BUSINESS: 'Private Business Email Service',
   FREE_EMAIL: 'FREE EMAIL',

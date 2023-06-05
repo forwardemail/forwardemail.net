@@ -4219,5 +4219,18 @@
   "Manage your Forward Email security.": "Beheer uw doorstuurbeveiliging voor e-mail.",
   "Authenticate yourself to log in.": "Authenticeer jezelf om in te loggen.",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis e-mail doorsturen voor <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Gratis en aangepaste DNS-service voor het doorsturen van domeinnamen voor <span class=\"notranslate\">Squarespace</span> ."
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Gratis en aangepaste DNS-service voor het doorsturen van domeinnamen voor <span class=\"notranslate\">Squarespace</span> .",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "We hebben onze eigen antispam-, phishing- en virusbeschermingssoftware gebouwd, genaamd <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> . Het houdt zich aan hetzelfde privacy-first en zero logging-beleid.",
+  "Send email with your custom domain": "E-mail verzenden met uw aangepaste domein",
+  "%d+ outbound / month": "%d+ uitgaand / maand",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "We beperken gebruikers en domeinen tot %d uitgaande SMTP-berichten per %s. Dit is gemiddeld %d+ e-mails in een kalendermaand. Als u dit bedrag moet overschrijden of constant grote e-mails heeft, neem dan contact met ons op.",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "U zult merken dat elke andere e-mailforwarder SMTP-logboeken opslaat en uw e-mails naar schijfopslag schrijft ... meestal op niet-versleutelde databases en zonder SOC 2 Type 2-compliance.",
+  "Deprecated": "Verouderd",
+  "Legacy Free Guide": "Verouderde gratis gids",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Deze verouderde gratis gids is verouderd vanaf mei 2023 omdat <a class=\"alert-link\" href=\"%s\">we nu uitgaande SMTP ondersteunen</a> . Als u de onderstaande gids gebruikt, <a class=\"alert-link\" href=\"%s\">zorgt dit ervoor dat uw uitgaande e-mail</a> zegt <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> in Gmail.",
+  "Email Setup Guide": "Handleiding voor het instellen van e-mail",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong><span class=\"notranslate\">TTL</span> waarde nodig?</strong> Maak het zo dicht mogelijk bij <span class=\"notranslate text-monospace\">3600</span> (5 minuten).",
+  "Send emails with your domain": "Stuur e-mails met uw domein",
+  "Follow our simple guide for sending email with your custom domain.": "Volg onze eenvoudige handleiding voor het verzenden van e-mail met uw aangepaste domein.",
+  "Setup outbound SMTP": "Stel uitgaande SMTP in"
 }

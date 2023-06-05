@@ -3910,5 +3910,18 @@
   "Auth &#124; <span class=\"notranslate\">Forward Email</span>": "授权 &#124; <span class=\"notranslate\">Forward Email</span>",
   "Authenticate yourself to log in.": "验证自己以登录。",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Squarespace</span>的免费电子邮件转发 &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "<span class=\"notranslate\">Squarespace</span>的免费和自定义域电子邮件转发 DNS 服务。"
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "<span class=\"notranslate\">Squarespace</span>的免费和自定义域电子邮件转发 DNS 服务。",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "我们构建了自己的反垃圾邮件、网络钓鱼和病毒防护软件，称为<a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> 。它遵守相同的隐私优先和零日志记录政策。",
+  "Send email with your custom domain": "使用您的自定义域发送电子邮件",
+  "%d+ outbound / month": "%d+ 出站/月",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "我们对每 %s %d 条出站 SMTP 邮件的用户和域进行评级限制。这平均每个日历月有 %d+ 封电子邮件。如果您需要超过此数量或拥有大量电子邮件，请联系我们。",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "您会发现所有其他电子邮件转发器都存储 SMTP 日志并将您的电子邮件写入磁盘存储……通常在未加密的数据库中并且不符合 SOC 2 类型 2 标准。",
+  "Deprecated": "弃用",
+  "Legacy Free Guide": "遗留免费指南",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "由于<a class=\"alert-link\" href=\"%s\">我们现在支持出站 SMTP，</a>因此自 2023 年 5 月起已弃用此遗留免费指南。如果您使用下面的指南，那么<a class=\"alert-link\" href=\"%s\">这将导致您的出站电子邮件</a>在 Gmail 中显示为<span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> 。",
+  "Email Setup Guide": "电子邮件设置指南",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>需要<span class=\"notranslate\">TTL</span>值？</strong>使其尽可能接近<span class=\"notranslate text-monospace\">3600</span> （5 分钟）。",
+  "Send emails with your domain": "使用您的域发送电子邮件",
+  "Follow our simple guide for sending email with your custom domain.": "按照我们的简单指南使用您的自定义域发送电子邮件。",
+  "Setup outbound SMTP": "设置出站 SMTP"
 }

@@ -4219,5 +4219,18 @@
   "Manage your Forward Email security.": "転送メールのセキュリティを管理します。",
   "Authenticate yourself to log in.": "自分自身を認証してログインします。",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Squarespace</span>の無料メール転送 &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "<span class=\"notranslate\">Squarespace</span>用の無料のカスタム ドメイン電子メール転送 DNS サービス。"
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "<span class=\"notranslate\">Squarespace</span>用の無料のカスタム ドメイン電子メール転送 DNS サービス。",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "私たちは<a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">、Spam Scanner</a>と呼ばれる独自のスパム、フィッシング、ウイルス対策ソフトウェアを構築しました。これは、同じプライバシー優先ポリシーとゼロログポリシーに従っています。",
+  "Send email with your custom domain": "カスタム ドメインでメールを送信する",
+  "%d+ outbound / month": "%d+ アウトバウンド / 月",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "ユーザーとドメインの送信 SMTP メッセージ数は %s あたり %d に制限されています。これは、1 暦月に平均 %d+ 件のメールを送信することになります。この量を超える必要がある場合、または常に大量のメールが送信される場合は、お問い合わせください。",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "他の電子メール フォワーダーはすべて、SMTP ログを保存し、電子メールをディスク ストレージに書き込むことがわかります。通常は、暗号化されていないデータベース上にあり、SOC 2 Type 2 に準拠していません。",
+  "Deprecated": "廃止されました",
+  "Legacy Free Guide": "レガシー無料ガイド",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "<a class=\"alert-link\" href=\"%s\">アウトバウンド SMTP がサポートされるようになった</a>ため、この従来の無料ガイドは 2023 年 5 月をもって廃止されます。以下のガイドを使用すると、Gmail では<a class=\"alert-link\" href=\"%s\">送信メールに</a><span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span>と表示されます。",
+  "Email Setup Guide": "電子メール設定ガイド",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong><span class=\"notranslate\">TTL</span>値が必要ですか?</strong>できるだけ<span class=\"notranslate text-monospace\">3600</span> (5 分) に近づけます。",
+  "Send emails with your domain": "ドメインを使用してメールを送信する",
+  "Follow our simple guide for sending email with your custom domain.": "カスタム ドメインで電子メールを送信するための簡単なガイドに従ってください。",
+  "Setup outbound SMTP": "アウトバウンド SMTP をセットアップする"
 }

@@ -4219,5 +4219,18 @@
   "Manage your Forward Email security.": "إدارة أمان إعادة توجيه البريد الإلكتروني الخاص بك.",
   "Authenticate yourself to log in.": "المصادقة على نفسك لتسجيل الدخول.",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "إعادة توجيه البريد الإلكتروني المجاني لـ <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "خدمة DNS مجانية ومخصصة لإعادة توجيه البريد الإلكتروني للمجال لـ <span class=\"notranslate\">Squarespace</span> ."
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "خدمة DNS مجانية ومخصصة لإعادة توجيه البريد الإلكتروني للمجال لـ <span class=\"notranslate\">Squarespace</span> .",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "قمنا ببناء برنامج مكافحة البريد العشوائي والتصيد الاحتيالي والحماية من الفيروسات الخاص بنا والذي يسمى <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> . وهي تلتزم بنفس سياسات الخصوصية أولاً وعدم تسجيل الدخول.",
+  "Send email with your custom domain": "أرسل بريدًا إلكترونيًا باستخدام المجال المخصص الخاص بك",
+  "%d+ outbound / month": "٪ d + صادر / شهر",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "نحن نقيد المستخدمين والمجالات بـ٪ d رسائل SMTP صادرة لكل٪ s. يبلغ متوسط هذا٪ d + من رسائل البريد الإلكتروني في شهر تقويمي. إذا كنت بحاجة إلى تجاوز هذا المبلغ أو كان لديك رسائل بريد إلكتروني كبيرة باستمرار ، فيرجى الاتصال بنا.",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "ستجد أن كل معيد توجيه بريد إلكتروني آخر يخزن سجلات SMTP ويكتب رسائل البريد الإلكتروني الخاصة بك على وحدة تخزين القرص ... عادةً على قواعد بيانات غير مشفرة وبدون الامتثال لـ SOC 2 Type 2.",
+  "Deprecated": "إهمال",
+  "Legacy Free Guide": "دليل مجاني قديم",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "تم إيقاف هذا الدليل المجاني القديم اعتبارًا من مايو 2023 نظرًا لأننا <a class=\"alert-link\" href=\"%s\">ندعم الآن SMTP للبريد الصادر</a> . إذا كنت تستخدم الدليل أدناه ، <a class=\"alert-link\" href=\"%s\">فسيؤدي ذلك إلى أن يقول بريدك الإلكتروني الصادر</a> <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> في Gmail.",
+  "Email Setup Guide": "دليل إعداد البريد الإلكتروني",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>هل تحتاج إلى قيمة <span class=\"notranslate\">TTL</span> ؟</strong> اجعلها قريبة من <span class=\"notranslate text-monospace\">3600</span> (5 دقائق) قدر الإمكان.",
+  "Send emails with your domain": "إرسال رسائل البريد الإلكتروني مع المجال الخاص بك",
+  "Follow our simple guide for sending email with your custom domain.": "اتبع دليلنا البسيط لإرسال بريد إلكتروني باستخدام مجالك المخصص.",
+  "Setup outbound SMTP": "إعداد SMTP الصادر"
 }

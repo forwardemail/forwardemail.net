@@ -4224,5 +4224,18 @@
   "Manage your Forward Email security.": "Administrer sikkerheten din for videresending av e-post.",
   "Authenticate yourself to log in.": "Autentiser deg selv for å logge på.",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis videresending av e-post for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Gratis og tilpasset domene-e-postvideresending DNS-tjeneste for <span class=\"notranslate\">Squarespace</span> ."
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Gratis og tilpasset domene-e-postvideresending DNS-tjeneste for <span class=\"notranslate\">Squarespace</span> .",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "Vi bygde vår egen anti-spam-, phishing- og virusbeskyttelsesprogramvare kalt <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> . Den følger de samme retningslinjene for personvern først og null logging.",
+  "Send email with your custom domain": "Send e-post med ditt egendefinerte domene",
+  "%d+ outbound / month": "%d+ utgående / måned",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Vi begrenser brukere og domener til %d utgående SMTP-meldinger per %s. Dette er i gjennomsnitt %d+ e-poster i løpet av en kalendermåned. Hvis du trenger å overskride dette beløpet eller har konsekvent store e-poster, vennligst kontakt oss.",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "Du vil oppdage at annenhver e-postvidere lagrer SMTP-logger og skriver e-postene dine til disklagring... vanligvis på ukrypterte databaser og uten SOC 2 Type 2-kompatibilitet.",
+  "Deprecated": "Avviklet",
+  "Legacy Free Guide": "Legacy gratis guide",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Denne eldre gratisveiledningen er avviklet fra mai 2023 siden <a class=\"alert-link\" href=\"%s\">vi nå støtter utgående SMTP</a> . Hvis du bruker veiledningen nedenfor, <a class=\"alert-link\" href=\"%s\">vil dette føre til at den utgående e-posten din</a> sier <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> i Gmail.",
+  "Email Setup Guide": "E-postoppsettveiledning",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Trenger du en <span class=\"notranslate\">TTL</span> verdi?</strong> Gjør det så nærme <span class=\"notranslate text-monospace\">3600</span> (5 minutter) som mulig.",
+  "Send emails with your domain": "Send e-post med domenet ditt",
+  "Follow our simple guide for sending email with your custom domain.": "Følg vår enkle veiledning for å sende e-post med ditt egendefinerte domene.",
+  "Setup outbound SMTP": "Konfigurer utgående SMTP"
 }

@@ -66,7 +66,10 @@ block body
   .container.pt-5.text-center(id=providerId)
     .row
       .col-12
-        h1.h2.mb-0!= t(`<span class="notranslate">${provider.name}</span> Email Setup Guide`)
+        h1.h2.mb-0
+          = provider.name
+          = ' '
+          = t("Email Setup Guide")
         .small.text-black.text-themed-50.text-uppercase= t("Follow these two steps below")
         .card.position-relative.mt-3
           if provider && provider.name && provider.url

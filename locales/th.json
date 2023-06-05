@@ -4219,5 +4219,18 @@
   "Manage your Forward Email security.": "จัดการการรักษาความปลอดภัย Forward Email ของคุณ",
   "Authenticate yourself to log in.": "ยืนยันตัวตนเพื่อเข้าสู่ระบบ",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "การส่งต่ออีเมลฟรีสำหรับ <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "บริการ DNS ส่งต่อโดเมนฟรีและกำหนดเองสำหรับ <span class=\"notranslate\">Squarespace</span>"
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "บริการ DNS ส่งต่อโดเมนฟรีและกำหนดเองสำหรับ <span class=\"notranslate\">Squarespace</span>",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "เราสร้างซอฟต์แวร์ป้องกันสแปม ฟิชชิ่ง และไวรัสที่เรียกว่า <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> เป็นไปตามนโยบายความเป็นส่วนตัวแรกและศูนย์การบันทึกเดียวกัน",
+  "Send email with your custom domain": "ส่งอีเมลด้วยโดเมนที่คุณกำหนดเอง",
+  "%d+ outbound / month": "%d+ ขาออก / เดือน",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "เราให้คะแนนการจำกัดผู้ใช้และโดเมนไว้ที่ %d ข้อความ SMTP ขาออกต่อ %s ซึ่งเฉลี่ย %d+ อีเมลในหนึ่งเดือนปฏิทิน หากคุณต้องการเกินจำนวนนี้หรือมีอีเมลจำนวนมากอย่างสม่ำเสมอ โปรดติดต่อเรา",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "คุณจะพบว่าผู้ส่งต่ออีเมลทุกรายจัดเก็บบันทึก SMTP และเขียนอีเมลของคุณไปยังที่เก็บข้อมูลดิสก์... โดยปกติจะอยู่ในฐานข้อมูลที่ไม่ได้เข้ารหัสและไม่เป็นไปตามข้อกำหนด SOC 2 Type 2",
+  "Deprecated": "คัดค้าน",
+  "Legacy Free Guide": "คู่มือมรดกฟรี",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "คู่มือฟรีรุ่นเก่านี้เลิกใช้งานตั้งแต่เดือนพฤษภาคม 2023 เนื่องจาก <a class=\"alert-link\" href=\"%s\">ตอนนี้เรารองรับ SMTP ขาออกแล้ว</a> หากคุณใช้คำแนะนำด้านล่าง การดำเนิน <a class=\"alert-link\" href=\"%s\">การนี้จะทำให้อีเมลขาออกของคุณ</a> ระบุว่า <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> ใน Gmail",
+  "Email Setup Guide": "คู่มือการตั้งค่าอีเมล",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>ต้องการค่า <span class=\"notranslate\">TTL</span> ?</strong> ทำให้ใกล้ <span class=\"notranslate text-monospace\">3600</span> (5 นาที) มากที่สุด",
+  "Send emails with your domain": "ส่งอีเมลด้วยโดเมนของคุณ",
+  "Follow our simple guide for sending email with your custom domain.": "ทำตามคำแนะนำง่ายๆ ของเราในการส่งอีเมลด้วยโดเมนที่คุณกำหนดเอง",
+  "Setup outbound SMTP": "ตั้งค่า SMTP ขาออก"
 }

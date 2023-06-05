@@ -2,6 +2,8 @@ const test = require('ava');
 
 const utils = require('../utils');
 
+const config = require('#config');
+
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupWebServer);
@@ -71,3 +73,36 @@ test('GET /:locale/help', async (t) => {
   t.is(res.status, 302);
   t.is(res.header.location, '/en/login');
 });
+
+// fetches all pages from sitemap
+// TODO: if you change this then also change sitemap controller
+const keys = Object.keys(config.meta).filter((key) => {
+  // exclude certain pages from sitemap
+  // (e.g. 401 not authorized)
+  if (
+    [
+      '/admin',
+      '/my-account',
+      '/help',
+      '/auth',
+      '/logout',
+      '/guides',
+      '/denylist',
+      '/reset-password',
+      config.verifyRoute,
+      config.otpRoutePrefix
+    ].includes(key)
+  )
+    return false;
+  if (key.startsWith('/my-account')) return false;
+  return key;
+});
+
+for (const key of keys) {
+  const route = `/en${key === '/' ? '' : key}`;
+  test(`GET ${route}`, async (t) => {
+    const { web } = t.context;
+    const res = await web.get(route);
+    t.is(res.status, 200);
+  });
+}

@@ -4219,5 +4219,18 @@
   "Manage your Forward Email security.": "Quản lý bảo mật Email Chuyển tiếp của bạn.",
   "Authenticate yourself to log in.": "Xác thực chính mình để đăng nhập.",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "Chuyển tiếp email miễn phí cho <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Dịch vụ DNS chuyển tiếp email miền tùy chỉnh và miễn phí cho <span class=\"notranslate\">Squarespace</span> ."
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Dịch vụ DNS chuyển tiếp email miền tùy chỉnh và miễn phí cho <span class=\"notranslate\">Squarespace</span> .",
+  "We built our own anti-spam, phishing, and virus protection software called <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.": "Chúng tôi đã xây dựng phần mềm chống thư rác, lừa đảo và vi-rút của riêng mình có tên là <a href=\"https://spamscanner.net\" target=\"_blank\" rel=\"noopener noreferrer\">Trình quét thư rác</a> . Nó tuân thủ cùng một chính sách ghi nhật ký ưu tiên quyền riêng tư và không ghi nhật ký.",
+  "Send email with your custom domain": "Gửi email với tên miền tùy chỉnh của bạn",
+  "%d+ outbound / month": "%d+ outbound / tháng",
+  "We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.": "Chúng tôi xếp hạng giới hạn người dùng và miền đối với %d tin nhắn SMTP gửi đi trên mỗi %s. Con số này tính trung bình %d+ email trong một tháng theo lịch. Nếu bạn cần vượt quá số lượng này hoặc có email lớn liên tục, vui lòng liên hệ với chúng tôi.",
+  "You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.": "Bạn sẽ thấy rằng mọi trình chuyển tiếp email khác đều lưu trữ nhật ký SMTP và ghi email của bạn vào bộ lưu trữ trên đĩa... thường là trên cơ sở dữ liệu không được mã hóa và không tuân thủ SOC 2 Loại 2.",
+  "Deprecated": "không dùng nữa",
+  "Legacy Free Guide": "Hướng dẫn miễn phí kế thừa",
+  "This legacy free guide is deprecated as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a>. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Hướng dẫn miễn phí kế thừa này không còn được dùng nữa kể từ tháng 5 năm 2023 vì <a class=\"alert-link\" href=\"%s\">chúng tôi hiện hỗ trợ SMTP gửi đi</a> . Nếu bạn sử dụng hướng dẫn bên dưới, <a class=\"alert-link\" href=\"%s\">điều này sẽ khiến email gửi đi của bạn</a> thông báo <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> trong Gmail.",
+  "Email Setup Guide": "Hướng dẫn cài đặt email",
+  "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Cần một giá trị <span class=\"notranslate\">TTL</span> ?</strong> Làm cho nó càng gần <span class=\"notranslate text-monospace\">3600</span> (5 phút) càng tốt.",
+  "Send emails with your domain": "Gửi email với tên miền của bạn",
+  "Follow our simple guide for sending email with your custom domain.": "Làm theo hướng dẫn đơn giản của chúng tôi để gửi email với miền tùy chỉnh của bạn.",
+  "Setup outbound SMTP": "Thiết lập SMTP gửi đi"
 }

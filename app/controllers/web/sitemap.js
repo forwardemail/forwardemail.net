@@ -18,6 +18,7 @@ async function sitemap(ctx) {
     hostname: config.urls.web
   });
 
+  // TODO: if you change this then also change test/web/index.js sitemap stuff
   const keys = Object.keys(config.meta).filter((key) => {
     // exclude certain pages from sitemap
     // (e.g. 401 not authorized)
