@@ -37,6 +37,7 @@ async function sitemap(ctx) {
       ].includes(key)
     )
       return false;
+    if (key.startsWith('/admin') || key.startsWith('/my-account')) return false;
     return key;
   });
 

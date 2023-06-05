@@ -133,6 +133,12 @@ const jobs = [
     name: 'unlock-emails',
     interval: '1m',
     timeout: 0
+  },
+  // crawl the sitemap and open graph images
+  {
+    name: 'crawl-sitemap',
+    interval: '1d',
+    timeout: 0
   }
 ];
 

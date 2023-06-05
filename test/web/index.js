@@ -94,7 +94,7 @@ const keys = Object.keys(config.meta).filter((key) => {
     ].includes(key)
   )
     return false;
-  if (key.startsWith('/my-account')) return false;
+  if (key.startsWith('/admin') || key.startsWith('/my-account')) return false;
   return key;
 });
 

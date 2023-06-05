@@ -71,6 +71,7 @@
     "email-addresses": "5.0.0",
     "email-templates": "11.0.5",
     "fast-safe-stringify": "2.1.1",
+    "fast-xml-parser": "4.2.3",
     "gemoji": "6",
     "get-stream": "6",
     "github-markdown-css": "5.2.0",
