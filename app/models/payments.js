@@ -44,7 +44,8 @@ const Payments = new mongoose.Schema({
   },
   amount_refunded: {
     type: Number,
-    min: 0 // cents (not dollars)
+    min: 0, // cents (not dollars)
+    index: true
   },
   // when the payment was created by the payment provider(paypal/stripe)
   // which can vary significantly from the payment.created_at date
@@ -55,7 +56,10 @@ const Payments = new mongoose.Schema({
     index: true
   },
   receipt_sent_at: Date,
-  refund_receipt_sent_at: Date,
+  refund_receipt_sent_at: {
+    type: Date,
+    index: true
+  },
   amount_formatted: {
     type: String,
     required: true,
