@@ -47,6 +47,8 @@
           - xfonts-base
           - ttf-mscorefonts-installer
           - libfontconfig
+          - fonts-noto-cjk
+          - fonts-noto-cjk-extra
         update_cache: true
     # install wkhtmltopdf
     - name: Install wkhtmltopdf
