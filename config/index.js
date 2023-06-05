@@ -24,8 +24,10 @@ const meta = require('./meta');
 const phrases = require('./phrases');
 const utilities = require('./utilities');
 const payments = require('./payments');
+const metaConfig = require('./meta-config');
 
 const config = {
+  ...metaConfig,
   smtpQueueTimeout: ms('10s'),
   smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300,
   smtpLimitDuration: ms('1d'),
@@ -34,7 +36,6 @@ const config = {
   maxRecipients: env.MAX_RECIPIENTS,
   paidPrefix: `${env.TXT_RECORD_PREFIX}-site-verification=`,
   freePrefix: `${env.TXT_RECORD_PREFIX}=`,
-  metaTitleAffix: `&#124; <span class="notranslate">${env.APP_NAME}</span>`,
   webHost: env.WEB_HOST,
   // TODO: clean this config up everywhere for `previewEmailOptions`
   previewEmailOptions: {
@@ -152,7 +153,6 @@ const config = {
     }
   },
   logger: loggerConfig,
-  appName: env.APP_NAME,
   appColor: env.APP_COLOR,
   i18n,
 
@@ -273,14 +273,8 @@ const config = {
   },
 
   // dynamic otp routes
-  otpRoutePrefix: '/otp',
   otpRouteLoginPath: '/login',
 
-  // login route
-  loginRoute: '/login',
-
-  // verification
-  verifyRoute: '/verify',
   verificationPinTimeoutMs: ms(env.VERIFICATION_PIN_TIMEOUT_MS),
   verificationPinEmailIntervalMs: ms(env.VERIFICATION_PIN_EMAIL_INTERVAL_MS),
   verificationPin: { length: 6, type: 'numeric' },

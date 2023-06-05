@@ -85,15 +85,15 @@ module.exports = function (config) {
       'Follow our easy and simple guides and step by step instructions.'
     ],
     '/guides/send-email-with-custom-domain-smtp': [
-      'How to Send Email Custom Domain Name with SMTP',
+      `Send Email with Custom Domain ${lad}`,
       'Set up email with your custom domain and SMTP configuration.'
     ],
     '/guides/send-mail-as-gmail-custom-domain': [
-      'How to Send Mail As with Gmail',
+      `How to Send Mail As with Gmail ${lad}`,
       'Set up email with custom domain and Gmail to send mail as. Send mail as not working? Follow our video and instructions to fix the issue.'
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
-      `How to fix Port 25 blocked by ISP workaround ${lad}`,
+      `Port 25 blocked by ISP ${lad}`,
       'Workaround port blocking set by your Internet Service Provider on port 25.'
     ],
     '/domain-registration': [

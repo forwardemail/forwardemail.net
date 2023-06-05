@@ -2,6 +2,16 @@ const path = require('path');
 
 const locales = require('./locales');
 const phrases = require('./phrases');
+const meta = require('./meta');
+const metaConfig = require('./meta-config');
+
+// concat phrases with meta
+const m = meta(metaConfig);
+for (const arr of Object.values(m)) {
+  for (const key of arr) {
+    phrases[key] = key;
+  }
+}
 
 module.exports = {
   // see @ladjs/i18n for a list of defaults

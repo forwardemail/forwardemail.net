@@ -15,6 +15,9 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  NO_CREDIT_CARD: 'NO CREDIT CARD REQUIRED. 100% OPEN-SOURCE.',
+  PRIVATE_BUSINESS: 'Private Business Email Service',
+  FREE_EMAIL: 'FREE EMAIL',
   RECENTLY_BLOCKED:
     'The target <span class="notranslate">%s</span> has recently blocked this IP address, please try again in 1 hour.',
   CANNOT_CREATE_CATCHALL_ON_GLOBAL: 'Cannot create catch-all on global domain.',

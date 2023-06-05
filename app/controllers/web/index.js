@@ -1,8 +1,15 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const { Buffer } = require('node:buffer');
+
 const Boom = require('@hapi/boom');
+const Meta = require('koa-meta');
 const _ = require('lodash');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
+const revHash = require('rev-hash');
+const sharp = require('sharp');
 const shortID = require('mongodb-short-id');
 const titleize = require('titleize');
 const { isEmail } = require('validator');
@@ -21,9 +28,22 @@ const guides = require('./guides');
 const sitemap = require('./sitemap');
 
 const config = require('#config');
+const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const { Domains, Aliases } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+
+const meta = new Meta(config.meta, logger);
+
+// in-memory caching
+const map = new Map();
+
+const SVG_STR = fs.readFileSync(
+  config.env === 'development'
+    ? path.join(__dirname, '..', '..', '..', 'assets', 'img', 'template.svg')
+    : path.join(config.buildDir, 'img', 'template.svg'),
+  'utf8'
+);
 
 function breadcrumbs(ctx, next) {
   const breadcrumbs = _.compact(ctx.path.split('/')).slice(1);
@@ -115,6 +135,65 @@ async function recipientVerification(ctx) {
   }
 }
 
+async function generateOpenGraphImage(ctx) {
+  try {
+    let url = (ctx.pathWithoutLocale || ctx.path)
+      .replace('.png', '')
+      .replace('.svg', '');
+    if (url === '/index') url = '/';
+
+    // load seo metadata
+    let data = {};
+    let match = `/${ctx.locale}`;
+    try {
+      data = meta.getByPath(url, ctx.request.t);
+      match = `/${ctx.locale}${url}`;
+      if (match.length > 40) match = match.slice(0, 40) + '...';
+    } catch (err) {
+      logger.error(err);
+      data = meta.getByPath('/', ctx.request.t);
+    }
+
+    if (match === '/') match = `/${ctx.locale}`;
+
+    ctx.type = ctx.path.endsWith('.svg') ? 'image/svg+xml' : 'image/png';
+
+    let [str] = data.title.replace(' | Forward Email', '').split(' - ');
+    str = str.trim();
+    if (str.length > 60) str = str.slice(0, 60) + '...';
+    let freeEmail = ctx.translate('FREE_EMAIL');
+    if (freeEmail.length > 20) freeEmail = i18n.translate('FREE_EMAIL', 'en');
+    const svgReplaced = SVG_STR.replace(
+      'NO_CREDIT_CARD',
+      ctx.translate('NO_CREDIT_CARD')
+    )
+      .replace('PRIVATE_BUSINESS', str.trim())
+      .replace('FREE_EMAIL', freeEmail)
+      .replace(
+        'font-size="85"',
+        `font-size="${freeEmail.length >= 14 ? 65 : 85}"`
+      )
+      .replace('forwardemail.net', 'forwardemail.net' + match)
+      .replace('font-size="56"', `font-size="${str.length >= 40 ? 40 : 56}"`);
+    const svg = Buffer.from(svgReplaced, 'utf8');
+    const hash = revHash(ctx.type + ':' + svgReplaced);
+
+    if (map.has(hash)) {
+      ctx.body = map.get(hash);
+    } else if (ctx.type === 'image/svg+xml') {
+      ctx.body = svg;
+      map.set(hash, svg);
+    } else {
+      const buffer = await sharp(svg).png({ quality: 100 }).toBuffer();
+      ctx.body = buffer;
+      map.set(hash, buffer);
+    }
+  } catch (err) {
+    ctx.logger.error(err);
+    ctx.throw(Boom.clientTimeout(ctx.translateError('UNKNOWN_ERROR')));
+  }
+}
+
 module.exports = {
   admin,
   api,
@@ -130,5 +209,6 @@ module.exports = {
   recipientVerification,
   denylist,
   guides,
-  sitemap
+  sitemap,
+  generateOpenGraphImage
 };
