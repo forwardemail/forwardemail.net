@@ -69,16 +69,24 @@ async function sendEmails() {
   // return early if the job was already cancelled
   if (isCancelled) return;
 
-  if (queue.size > MAX_QUEUE) {
+  if (queue.size >= MAX_QUEUE) {
     logger.info(`queue has more than ${MAX_QUEUE} tasks`);
-    return;
+    // wait 1 second
+    await delay(1000);
+    // queue more messages once finished processing
+    return sendEmails();
   }
 
+  const now = new Date();
   const limit = MAX_QUEUE - queue.size;
+
   logger.info('queueing %d emails', limit);
 
   // TODO: filter out recently blocked targets by rejectedErrors[x].mx.target
 
+  //
+  // NOTE: if you change this then also update `jobs/check-smtp-frozen-queue` if necessary
+  //
   // get list of all suspended domains
   // and recently blocked emails to exclude
   const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
@@ -90,13 +98,13 @@ async function sendEmails() {
     Emails.distinct('_id', {
       updated_at: {
         $gte: dayjs().subtract(1, 'hour').toDate(),
-        $lte: new Date()
+        $lte: now
       },
       rejectedErrors: {
         $elemMatch: {
           date: {
             $gte: dayjs().subtract(1, 'hour').toDate(),
-            $lte: new Date()
+            $lte: now
           },
           'bounceInfo.category': 'blocklist',
           'mx.localAddress': IP_ADDRESS
@@ -114,7 +122,12 @@ async function sendEmails() {
   // <https://serverfault.com/a/1016122>
   //
 
-  for await (const email of Emails.find({
+  //
+  // TODO: SMTP pooling by target
+  //
+
+  // NOTE: if you change this then also update `jobs/check-smtp-frozen-queue` if necessary
+  const query = {
     _id: { $nin: recentlyBlockedIds },
     locked_at: {
       $exists: false
@@ -124,10 +137,69 @@ async function sendEmails() {
       $nin: suspendedDomainIds
     },
     date: {
-      $lte: new Date()
+      $lte: now
     }
-  })
-    .sort({ created_at: 1 })
+  };
+
+  const count = await Emails.countDocuments(query);
+
+  logger.info('%d emails pending in queue', count);
+
+  // if count is > limit then we need to aggregate
+  // and group for equal queue flow
+  if (count > limit) {
+    // TODO: get all those with priority > 0 first
+    //       then subtract from limit and find more
+    // TODO: monetize priority queue feature (paid add-on)
+
+    const domainIds = await Emails.distinct('domain', query);
+    // limit could be 60, domains 40 = 2 (1.5 -> 2)
+    // limit could be 30, domains = 50 = (0.6 -> 1)
+    // limit could be 2, domains = 1 = (2)
+    // limit could be 1, domains = 1000 = (0.001 -> 1)
+    const maxPerDomain = Math.ceil(limit / domainIds.length);
+
+    const emailIds = [];
+
+    // for each domain, subtract the count that it already has with "queued" + locked state
+    for (const domainId of domainIds) {
+      // eslint-disable-next-line no-await-in-loop
+      const ids = await Emails.distinct('_id', {
+        ...query,
+        domain: { $in: [domainId] },
+        locked_at: {
+          $exists: true
+        }
+      });
+      if (ids.length >= maxPerDomain) {
+        // cannot queue any more
+        logger.error(
+          'Queue size exceeded for domain %s (%d/%d)',
+          domainId.toString(),
+          ids.length,
+          maxPerDomain
+        );
+      } else {
+        logger.error(
+          'Adding %d to queue for domain %s (%d/%d)',
+          maxPerDomain - ids.length,
+          domainId.toString(),
+          ids.length,
+          maxPerDomain
+        );
+        emailIds.push(...ids.slice(0, maxPerDomain - ids.length));
+      }
+    }
+
+    // modify `queue` such that it uses `_id: { $in: ids }`
+    // whereas `_id` is an email ID to send out
+    queue._id = { $in: emailIds };
+  }
+
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+  for await (const email of Emails.find(query)
+    .sort({ created_at: -1 })
+    .lean()
     .limit(limit)
     .cursor()) {
     // return early if the job was already cancelled

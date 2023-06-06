@@ -139,6 +139,12 @@ const jobs = [
     name: 'crawl-sitemap',
     interval: '1d',
     timeout: 0
+  },
+  // check for frozen outbound smtp queue
+  {
+    name: 'check-smtp-frozen-queue',
+    interval: '15s',
+    timeout: 0
   }
 ];
 

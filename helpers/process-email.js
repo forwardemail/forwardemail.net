@@ -101,16 +101,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
   };
 
   try {
+    // lookup the email by id to get most recent data and version key (`__v`)
+    email = await Emails.findById(email._id);
+    if (!email) throw new Error('Email does not exist');
+
     // locked_at must not be set
     if (_.isDate(email.locked_at)) throw new Error('Email is locked already');
-
-    // lock job
-    await Emails.findByIdAndUpdate(email._id, {
-      $set: {
-        locked_by: IP_ADDRESS,
-        locked_at: new Date()
-      }
-    });
 
     // date must be in the past
     if (new Date(email.date).getTime() > Date.now())
@@ -119,9 +115,22 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // status must be "queued" in order to be processed
     if (email.status !== 'queued')
       throw new Error('Email status must be queued');
+  } catch (err) {
+    // create log
+    await logger.error(err, meta);
+    return;
+  }
+
+  try {
+    // lock job
+    email.locked_by = IP_ADDRESS;
+    email.locked_at = new Date();
+    email.is_being_locked = true;
+    email = await email.save();
+    email.is_being_locked = false;
 
     // ensure user, domain, and alias still exist and are all enabled
-    const [user, domain, alias] = await Promise.all([
+    let [user, domain, alias] = await Promise.all([
       Users.findById(email.user).lean().exec(),
       Domains.findById(email.domain),
       Aliases.findById(email.alias)
@@ -209,8 +218,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
       // TODO: send bounce email (which is in itself belongs in the queue and will consume a user's credit)
       //       (but only send the bounce email to the recipients that it failed to send to)
       //
-      const e = await Emails.findById(email._id);
-      if (!e) throw new Error('Email does not exist');
 
       //
       // NOTE: this mirrors the same error and `config.maxRetryDuration` from email forwarding codebase
@@ -228,8 +235,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
       err.maxRetryDuration = true;
 
       // NOTE: save() will automatically remove from `rejectedErrors` any already `accepted`
-      e.rejectedErrors.push(
-        ...e.envelope.to.map((recipient) => {
+      email.rejectedErrors.push(
+        ...email.envelope.to.map((recipient) => {
           const error = parseErr(err);
           error.recipient = recipient;
           error.date = new Date();
@@ -238,7 +245,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       );
 
       // NOTE: we leave it up to the pre-save hook to determine the "status"
-      await e.save();
+      email = await email.save();
       return;
     }
 
@@ -249,10 +256,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
       Array.isArray(domain.smtp_emails_blocked) &&
       domain.smtp_emails_blocked.length > 0
     ) {
-      const e = await Emails.findById(email._id);
-      if (!e) throw new Error('Email does not exist');
       const matches = [];
-      for (const recipient of e.envelope.to) {
+      for (const recipient of email.envelope.to) {
         if (domain.smtp_emails_blocked.includes(recipient)) {
           const error = Boom.forbidden(
             i18n.translateError('RECIPIENT_BLOCKED')
@@ -260,14 +265,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
           error.responseCode = 550;
           error.recipient = recipient;
           error.date = new Date();
-          e.rejectedErrors.push(error);
+          email.rejectedErrors.push(error);
           matches.push(recipient);
         }
       }
 
       if (matches.length > 0) {
         // if all recipients are blocked then throw early
-        if (_.isEqual(matches.sort(), e.envelope.to.sort()))
+        if (_.isEqual(matches.sort(), email.envelope.to.sort()))
           throw Boom.forbidden(
             i18n.translateError(
               matches.length === 1
@@ -276,7 +281,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
             )
           );
 
-        email = await e.save();
+        email = await email.save();
       }
     }
 
@@ -384,7 +389,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     if (!isSANB(domain.dkim_private_key) || !isSANB(domain.return_path)) {
       domain.skip_payment_check = true;
       domain.skip_verification = true;
-      await domain.save();
+      domain = await domain.save();
     }
 
     // DKIM sign message
@@ -780,24 +785,15 @@ async function processEmail({ email, port = 25, resolver, client }) {
     }
 
     //
-    // this is a safeguard (and slight perf hit) but we do this
-    // in the odd edge case that two jobs get locked simultaneously
-    // or for some other connection/delay/outlier issue we're not yet aware of
-    // (otherwise if we didn't do this we could just re-use the same `email` object)
-    //
-    const e = await Emails.findById(email._id);
-    if (!e) throw new Error('Email does not exist');
-
-    //
     // update `accepted` array
     //
-    if (Array.isArray(e.accepted)) {
-      for (const a of e.accepted) {
+    if (Array.isArray(email.accepted)) {
+      for (const a of email.accepted) {
         accepted.add(a);
       }
     }
 
-    e.accepted = [...accepted];
+    email.accepted = [...accepted];
 
     //
     // store a list of bounced recipients we're going to block
@@ -809,12 +805,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // update or add to `rejectedErrors` if necessary
     // (we only store the most recent `rejectedError` per recipient)
     //
-    if (!Array.isArray(e.rejectedErrors)) e.rejectedErrors = [];
+    if (!Array.isArray(email.rejectedErrors)) email.rejectedErrors = [];
     if (rejectedErrors.length > 0) {
       for (const err of rejectedErrors) {
         if (!isEmail(err.recipient))
           throw new Error('Recipient not assigned to error');
-        e.rejectedErrors.push(err instanceof Error ? parseErr(err) : err);
+        email.rejectedErrors.push(err instanceof Error ? parseErr(err) : err);
         /*
         // TODO: re-enable this after checking bounceInfo and more
         if (
@@ -833,7 +829,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // now we have in-memory the most recent array of `accepted` and `rejectedErrors`
     // and can properly update the `status` of the email as such (by calling `save()`)
     //
-    await e.save();
+    email = await email.save();
 
     //
     // if the SMTP response indicated the email bounced
@@ -844,7 +840,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       try {
         domain.skip_payment_check = true;
         domain.skip_verification = true;
-        await domain.save();
+        domain = await domain.save();
       } catch (err) {
         logger.fatal(err);
       }
@@ -871,11 +867,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
       // if badRequest (400) then set status to "deferred" and don't throw
       // if paymentRequired (402) then set status to "deferred" and don't throw
       if ([400, 402].includes(err.output.statusCode)) {
-        const e = await Emails.findById(email._id);
-        if (!e) throw new Error('Email does not exist');
         // NOTE: save() will automatically remove from `rejectedErrors` any already `accepted`
-        e.rejectedErrors.push(
-          ...e.envelope.to.map((recipient) => {
+        email.rejectedErrors.push(
+          ...email.envelope.to.map((recipient) => {
             const error = parseErr(err);
             error.recipient = recipient;
             error.date = new Date();
@@ -883,18 +877,16 @@ async function processEmail({ email, port = 25, resolver, client }) {
           })
         );
         // NOTE: we leave it up to the pre-save hook to determine the "status"
-        await e.save();
+        email = await email.save();
         return;
       }
 
       // if forbidden (403) then set status to "rejected" and don't throw
       // if notFound (404) then set status to "rejected" and don't throw
       if ([403, 404].includes(err.output.statusCode)) {
-        const e = await Emails.findById(email._id);
-        if (!e) throw new Error('Email does not exist');
         // NOTE: save() will automatically remove from `rejectedErrors` any already `accepted`
-        e.rejectedErrors.push(
-          ...e.envelope.to.map((recipient) => {
+        email.rejectedErrors.push(
+          ...email.envelope.to.map((recipient) => {
             const error = parseErr(err);
             error.recipient = recipient;
             error.date = new Date();
@@ -902,7 +894,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           })
         );
         // NOTE: we leave it up to the pre-save hook to determine the "status"
-        await e.save();
+        email = await email.save();
         return;
       }
     }
@@ -913,11 +905,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // (this gives transparency to users with internal errors and gives us time to discover and resolve)
     //
     err.responseCode = 421;
-    const e = await Emails.findById(email._id);
-    if (!e) throw new Error('Email does not exist');
     // NOTE: save() will automatically remove from `rejectedErrors` any already `accepted`
-    e.rejectedErrors.push(
-      ...e.envelope.to.map((recipient) => {
+    email.rejectedErrors.push(
+      ...email.envelope.to.map((recipient) => {
         const error = parseErr(err);
         error.recipient = recipient;
         error.date = new Date();
@@ -925,7 +915,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       })
     );
     // NOTE: we leave it up to the pre-save hook to determine the "status"
-    await e.save();
+    email = await email.save();
 
     throw err;
   }

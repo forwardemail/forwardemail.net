@@ -99,19 +99,19 @@ html.h-100.no-js(lang=locale)
       link(
         rel="image_src",
         type="image/png",
-        href=`${config.urls.web}${ctx.path}${ctx.pathWithoutLocale === '/' ? '/index' : ''}.png?v=${Date.now()}`,
+        href=`${config.urls.web}${ctx.path}${ctx.pathWithoutLocale === '/' ? '/index' : ''}.png?v=${config.env === 'test' ? 0 : Date.now()}`,
         crossorigin="anonymous"
       )
       meta(property="og:title", content=meta.title)
       meta(property="og:url", content=`${config.urls.web}${ctx.path}`)
       meta(property="og:description", content=meta.description)
-      meta(property="og:image", content=`${config.urls.web}${ctx.path}${ctx.pathWithoutLocale === '/' ? '/index' : ''}.png?v=${Date.now()}`)
+      meta(property="og:image", content=`${config.urls.web}${ctx.path}${ctx.pathWithoutLocale === '/' ? '/index' : ''}.png?v=${config.env === 'test' ? 0 : Date.now()}`)
       meta(name="twitter:card", content="summary_large_image")
       meta(name="twitter:title", content=meta.title)
       meta(name="twitter:description", content=meta.description)
       meta(
         name="twitter:image:src",
-        content=`${config.urls.web}${ctx.path}${ctx.pathWithoutLocale === '/' ? '/index' : ''}.png?v=${Date.now()}`
+        content=`${config.urls.web}${ctx.path}${ctx.pathWithoutLocale === '/' ? '/index' : ''}.png?v=${config.env === 'test' ? 0 : Date.now()}`
       )
 
     //- prefetch fonts

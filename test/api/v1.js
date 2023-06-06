@@ -372,7 +372,7 @@ Test`.trim()
   // process the email
   //
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     t.is(email.id, res.body.id);
     t.is(email.status, 'queued');
 
@@ -388,7 +388,7 @@ Test`.trim()
   // ensure email delivered except 1 address which will be retried next send
   //
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     delete email.message; // suppress buffer output from console log
     t.is(email.id, res.body.id);
     t.is(email.status, 'deferred');
@@ -406,19 +406,13 @@ Test`.trim()
 
   // process the email again and let the deferred go through this time
   {
-    let email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     t.is(email.id, res.body.id);
     t.is(email.status, 'deferred');
-    email.status = 'queued';
     await Emails.findByIdAndUpdate(email._id, {
       $set: { status: 'queued' },
       $unset: { locked_at: 1, locked_by: 1 }
     });
-
-    email = await Emails.findById(email._id);
-    t.is(email.status, 'queued');
-    t.is(email.locked_at, undefined);
-    t.is(email.locked_by, undefined);
 
     await processEmail({
       email,
@@ -430,7 +424,7 @@ Test`.trim()
 
   // ensure sent
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     delete email.message; // suppress buffer output from console log
     t.is(email.id, res.body.id);
     t.is(email.status, 'sent');
@@ -491,7 +485,7 @@ test('5+ day email bounce', async (t) => {
   // process the email
   //
   {
-    let email = await Emails.findOne({ id: res.body.id });
+    let email = await Emails.findOne({ id: res.body.id }).lean().exec();
     t.is(email.id, res.body.id);
     t.is(email.status, 'queued');
 
@@ -548,8 +542,6 @@ test('5+ day email bounce', async (t) => {
     );
     */
 
-    email.status = 'queued';
-
     await Emails.findByIdAndUpdate(email._id, {
       $set: {
         status: 'queued'
@@ -557,7 +549,7 @@ test('5+ day email bounce', async (t) => {
       $unset: { locked_at: 1, locked_by: 1 }
     });
 
-    email = await Emails.findById(email._id);
+    email = await Emails.findById(email._id).lean().exec();
     t.is(email.status, 'queued');
     t.is(email.locked_at, undefined);
     t.is(email.locked_by, undefined);
@@ -571,7 +563,7 @@ test('5+ day email bounce', async (t) => {
 
   // ensure bounced
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     delete email.message;
     t.is(email.id, res.body.id);
     t.is(email.status, 'bounced');
@@ -757,7 +749,7 @@ test('smtp outbound spam block detection', async (t) => {
   // process the email
   //
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     t.is(email.id, res.body.id);
     t.is(email.status, 'queued');
 
@@ -773,7 +765,7 @@ test('smtp outbound spam block detection', async (t) => {
   // ensure email rejected
   //
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     delete email.message; // suppress buffer output from console loug
     t.is(email.id, res.body.id);
     t.is(email.status, 'rejected');
@@ -808,17 +800,16 @@ test('smtp outbound spam block detection', async (t) => {
 
   // ensure future attempts to deliver emails throw suspension error
   {
-    let email = await Emails.findOne({ id: res.body.id });
+    let email = await Emails.findOne({ id: res.body.id }).lean().exec();
     delete email.message; // suppress buffer output from console log
     t.is(email.id, res.body.id);
     t.is(email.status, 'rejected');
-    email.status = 'queued';
     await Emails.findByIdAndUpdate(email._id, {
       $set: { status: 'queued' },
       $unset: { locked_at: 1, locked_by: 1 }
     });
 
-    email = await Emails.findById(email._id);
+    email = await Emails.findById(email._id).lean().exec();
     t.is(email.status, 'queued');
     t.is(email.locked_at, undefined);
     t.is(email.locked_by, undefined);
@@ -833,7 +824,7 @@ test('smtp outbound spam block detection', async (t) => {
 
   // latest error should not have been attempted (should have returned early)
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     delete email.message; // suppress buffer output from console log
     t.is(email.id, res.body.id);
     t.is(email.status, 'deferred');
@@ -1179,7 +1170,7 @@ test('smtp email blocklist', async (t) => {
   // process the email
   //
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     t.is(email.id, res.body.id);
     t.is(email.status, 'queued');
 
@@ -1194,7 +1185,7 @@ test('smtp email blocklist', async (t) => {
   // ensure email rejected
   //
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     delete email.message; // suppress buffer output from console loug
     t.is(email.id, res.body.id);
     t.is(email.status, 'rejected');
@@ -1220,7 +1211,7 @@ test('smtp email blocklist', async (t) => {
       },
       $unset: { locked_at: 1, locked_by: 1 }
     });
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     t.is(email.id, res.body.id);
     t.is(email.status, 'queued');
 
@@ -1232,7 +1223,7 @@ test('smtp email blocklist', async (t) => {
   }
 
   {
-    const email = await Emails.findOne({ id: res.body.id });
+    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     t.is(email.id, res.body.id);
     t.is(email.status, 'rejected');
     t.deepEqual(email.accepted, []);

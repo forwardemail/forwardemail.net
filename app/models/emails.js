@@ -1,9 +1,11 @@
-const { Buffer } = require('buffer');
+const { Buffer } = require('node:buffer');
+const { isIP } = require('node:net');
 
 const Boom = require('@hapi/boom');
 const SpamScanner = require('spamscanner');
 const _ = require('lodash');
 const bytes = require('bytes');
+const ip = require('ip');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
@@ -12,6 +14,7 @@ const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const nodemailer = require('nodemailer');
 const parseErr = require('parse-err');
 const { Iconv } = require('iconv');
+const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 const { simpleParser } = require('mailparser');
 
@@ -26,12 +29,11 @@ const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
 
+const IP_ADDRESS = ip.address();
 const NO_REPLY_USERNAMES = new Set(noReplyList);
 const ONE_SECOND_AFTER_UNIX_EPOCH = new Date(1000);
-
 const HUMAN_MAX_DAYS_IN_ADVANCE = '30d';
 const MAX_DAYS_IN_ADVANCE_TO_MS = ms(HUMAN_MAX_DAYS_IN_ADVANCE);
-
 const HUMAN_MAX_BYTES = '50MB';
 const MAX_BYTES = bytes(HUMAN_MAX_BYTES);
 
@@ -161,6 +163,14 @@ const Emails = new mongoose.Schema({
   rejectedErrors: [mongoose.Schema.Types.Mixed]
 });
 
+Emails.virtual('is_being_locked')
+  .get(function () {
+    return this.__is_being_locked;
+  })
+  .set(function (isBeingLocked) {
+    this.__is_being_locked = boolean(isBeingLocked);
+  });
+
 Emails.plugin(mongooseCommonPlugin, {
   object: 'email',
   locale: false,
@@ -171,7 +181,12 @@ Emails.plugin(mongooseCommonPlugin, {
     'locked_by',
     'locked_at',
     'priority'
-  ]
+  ],
+  mongooseHidden: {
+    virtuals: {
+      is_being_locked: 'hide'
+    }
+  }
 });
 
 // when we query against `locked_at` we also need to query for `$exists: true` for hint to work
@@ -256,7 +271,7 @@ Emails.pre('validate', function (next) {
     if (!Array.isArray(this.rejectedErrors)) this.rejectedErrors = [];
 
     // ensure accepted is lowercased and unique
-    this.accepted = _.uniq(this.accepted.map((a) => a.toLowerCase()));
+    this.accepted = _.uniq(this.accepted.map((a) => a.toLowerCase())).sort();
 
     // ensure that all `rejectedErrors` are Objects not Errors
     this.rejectedErrors = this.rejectedErrors.map((err) => {
@@ -319,6 +334,7 @@ Emails.pre('save', function (next) {
 // update `status` based off `accepted` and `rejectedErrors` array
 //
 Emails.pre('save', function (next) {
+  if (this.is_being_locked) return next();
   try {
     // if email is still in "pending" state then do not modify it
     if (this.status === 'pending' && this.rejectedErrors.length === 0)
@@ -328,8 +344,17 @@ Emails.pre('save', function (next) {
     if (['sent', 'partially_sent', 'bounced', 'rejected'].includes(this.status))
       return next();
 
-    // we only want to modify the status when it is in a "queued" state
-    if (this.status !== 'queued' && this.rejectedErrors.length === 0)
+    //
+    // NOTE: we only want to modify the status when it is in a "queued" state
+    //       or when it is in a queued state and locked by current server
+    //
+    if (
+      (this.status !== 'queued' && this.rejectedErrors.length === 0) ||
+      (this.status === 'queued' &&
+        typeof this.locked_by === 'string' &&
+        isIP(this.locked_by) &&
+        this.locked_by !== IP_ADDRESS)
+    )
       return next();
 
     //

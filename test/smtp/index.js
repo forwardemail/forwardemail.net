@@ -459,7 +459,7 @@ Test`.trim()
     ].sort()
   );
 
-  let email = await Emails.findOne();
+  let email = await Emails.findOne().lean().exec();
   t.true(typeof email === 'object');
   // TODO: validate by message-id too to ensure it's the right email
   delete email.message; // suppress buffer output from console log
@@ -564,7 +564,7 @@ Test`.trim()
   //
   // ensure email delivered except 1 address which will be retried next send
   //
-  email = await Emails.findById(email._id);
+  email = await Emails.findById(email._id).lean().exec();
   delete email.message; // suppress buffer output from console log
   t.is(email.status, 'deferred');
   t.deepEqual(email.accepted.sort(), email.envelope.to.slice(0, -1).sort());
@@ -576,14 +576,14 @@ Test`.trim()
   t.is(email.rejectedErrors[0].recipient, email.envelope.to.slice(-1)[0]);
 
   // process the email again and let the deferred go through this time
-  email = await Emails.findById(email._id);
+  email = await Emails.findById(email._id).lean().exec();
   t.is(email.status, 'deferred');
   email.status = 'queued';
   await Emails.findByIdAndUpdate(email._id, {
     $set: { status: 'queued' },
     $unset: { locked_at: 1, locked_by: 1 }
   });
-  email = await Emails.findById(email._id);
+  email = await Emails.findById(email._id).lean().exec();
   t.is(email.status, 'queued');
   t.is(email.locked_at, undefined);
   t.is(email.locked_by, undefined);
@@ -596,7 +596,7 @@ Test`.trim()
   });
 
   // ensure sent
-  email = await Emails.findById(email._id);
+  email = await Emails.findById(email._id).lean().exec();
   delete email.message; // suppress buffer output from console log
   t.is(email.status, 'sent');
   t.deepEqual(email.accepted.sort(), email.envelope.to.sort());

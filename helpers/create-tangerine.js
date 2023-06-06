@@ -40,7 +40,7 @@ function refix(client, prefix) {
   return proxy;
 }
 
-function createTangerine(client, logger = require('./logger')) {
+function createTangerine(client, logger = require('./logger'), options = {}) {
   if (!client) throw new Error('Client required');
 
   // <https://github.com/forwardemail/tangerine#cache>
@@ -65,7 +65,8 @@ function createTangerine(client, logger = require('./logger')) {
 
   const tangerine = new Tangerine({
     logger,
-    cache
+    cache,
+    ...options
   });
 
   return tangerine;
