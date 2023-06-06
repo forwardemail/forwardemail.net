@@ -516,6 +516,7 @@ const config = {
     'gob.mx',
     'gob.pe',
     'gob.ve',
+    'gob.sv',
     'gouv.fr',
     'gouv.nc',
     'gouv.qc.ca',
