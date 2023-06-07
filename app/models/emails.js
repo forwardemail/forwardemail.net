@@ -697,9 +697,10 @@ Emails.statics.queue = async function (
       : t.trim().toLowerCase()
   );
   if (
-    config.supportEmail === info?.envelope?.from?.toLowerCase() &&
-    to.length === 1 &&
-    info.envelope.from.toLowerCase() === to[0]
+    !info?.envelope?.from ||
+    config.supportEmail !== info?.envelope?.from?.toLowerCase() ||
+    to.length !== 1 ||
+    config.supportEmail !== to[0]
   ) {
     const [phishing, executables, arbitrary, viruses] = await Promise.all([
       scanner.getPhishingResults(parsed),
@@ -718,12 +719,15 @@ Emails.statics.queue = async function (
     ];
 
     if (messages.length > 0) {
-      // send an email to all admins of the domain
+      // TODO: send email to admins of the domain too (will require changes above and below)
+      // TODO: probably could do a lookup by messageId to filter it
+      // send an email to all admins
       const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
       try {
         await emailHelper({
           template: 'smtp-suspended',
-          message: { to: obj.to, bcc: config.email.message.from },
+          message: { to: config.email.message.from },
+          // message: { to: obj.to, bcc: config.email.message.from },
           locals: {
             domain:
               typeof domain.toObject === 'function'
