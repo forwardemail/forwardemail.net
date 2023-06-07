@@ -46,49 +46,58 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    const bannedUserIds = await Users.distinct('_id', {
-      $or: [
-        {
-          [config.userFields.isBanned]: true
-        },
-        {
-          [config.userFields.hasVerifiedEmail]: false
-        },
-        {
-          [config.userFields.paymentReminderTerminationNoticeSentAt]: {
-            $exists: false
+    const [bannedUserIds, domainIds] = await Promise.all([
+      Users.distinct('_id', {
+        $or: [
+          {
+            [config.userFields.isBanned]: true
+          },
+          {
+            [config.userFields.hasVerifiedEmail]: false
+          },
+          {
+            [config.userFields.paymentReminderTerminationNoticeSentAt]: {
+              $exists: true
+            }
           }
-        }
-      ]
-    });
+        ]
+      }),
+      Domains.distinct('_id', {
+        plan: { $ne: 'free' },
+        has_mx_record: true,
+        has_txt_record: true
+      })
+    ]);
 
-    for await (const domain of Domains.find({
-      plan: { $ne: 'free' },
-      has_mx_record: true,
-      has_txt_record: true
-    })
+    for await (const domain of Domains.find({ _id: { $in: domainIds } })
       .sort({ created_at: -1 })
       .lean()
       .cursor()) {
       logger.info('processing %s', domain.name);
       const set = new Set();
       set.add(`${domain.name}`);
-      for await (const alias of Aliases.find({
+      {
+        // parse root domain
+        const rootDomain = parseRootDomain(domain.name);
+        if (domain.name !== rootDomain) set.add(rootDomain);
+      }
+
+      const aliasIds = await Aliases.distinct('_id', {
         domain: domain._id,
         is_enabled: true,
         user: {
           $nin: bannedUserIds
         }
-      })
+      });
+      for await (const alias of Aliases.find({ _id: { $in: aliasIds } })
         .lean()
         .cursor()) {
-        set.add(domain.name);
-        {
-          // parse root domain
-          const rootDomain = parseRootDomain(domain.name);
-          if (domain.name !== rootDomain) set.add(rootDomain);
-        }
-
+        logger.info(
+          'alias %s@%s (%d recipients)',
+          alias.name,
+          domain.name,
+          alias.recipients.length
+        );
         for (const recipient of alias.recipients) {
           if (isFQDN(recipient)) {
             const domain = recipient.toLowerCase();
