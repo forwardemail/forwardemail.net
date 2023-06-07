@@ -180,7 +180,7 @@ async function sendEmails() {
           maxPerDomain
         );
       } else {
-        logger.error(
+        logger.info(
           'Adding %d to queue for domain %s (%d/%d)',
           maxPerDomain - ids.length,
           domainId.toString(),
