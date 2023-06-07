@@ -174,6 +174,31 @@ graceful.listen();
 
       if (set.size === 0) continue;
 
+      // filter out any values that are hardcoded and allowlisted
+      if (Array.isArray(config?.rateLimit?.allowlist)) {
+        for (const v of config.rateLimit.allowlist) {
+          set.delete(v);
+        }
+      }
+
+      // filter out any values that are allowlisted
+      {
+        const arr = [...set];
+        const results = await client.mget(arr.map((v) => `allowlist:${v}`));
+        const list = [];
+        for (const [i, result] of results.entries()) {
+          if (boolean(result)) list.push(arr[i]);
+        }
+
+        if (list.length > 0) {
+          for (const v of list) {
+            set.delete(v);
+          }
+        }
+      }
+
+      if (set.size === 0) continue;
+
       // check backscatter (filtered for ip's only)
       {
         const filteredIPs = [...set].filter((v) => isIP(v));
