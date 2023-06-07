@@ -4077,5 +4077,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Tarvitsetko <span class=\"notranslate\">TTL</span> arvon?</strong> Tee siitä mahdollisimman lähelle <span class=\"notranslate text-monospace\">3600</span> (5 minuuttia).",
   "Send emails with your domain": "Lähetä sähköpostia verkkotunnuksellasi",
   "Follow our simple guide for sending email with your custom domain.": "Noudata yksinkertaista opastamme sähköpostin lähettämiseen mukautetulla verkkotunnuksellasi.",
-  "Setup outbound SMTP": "Asenna lähtevä SMTP"
+  "Setup outbound SMTP": "Asenna lähtevä SMTP",
+  "Basic": "Perus",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/kk rajattomille verkkotunnuksille</span>",
+  "Popular": "Suosittu",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 dollaria</span> <span class=\"d-inline-block h6 text-black text-themed-50\">kuukaudessa rajoittamattomille verkkotunnuksille</span>",
+  "Business": "Business",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/kk rajoittamattomille verkkotunnuksille</span>"
 }

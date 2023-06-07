@@ -3983,5 +3983,11 @@
   "Setup outbound SMTP": "Setup outbound SMTP",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.",
-  "Envelope MAIL FROM header could not be parsed or was missing.": "Envelope MAIL FROM header could not be parsed or was missing."
+  "Envelope MAIL FROM header could not be parsed or was missing.": "Envelope MAIL FROM header could not be parsed or was missing.",
+  "Basic": "Basic",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>",
+  "Popular": "Popular",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>",
+  "Business": "Business",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>"
 }

@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Потрібне значення <span class=\"notranslate\">TTL</span> ?</strong> Зробіть це якомога ближче до <span class=\"notranslate text-monospace\">3600</span> (5 хвилин).",
   "Send emails with your domain": "Надсилайте електронні листи за допомогою свого домену",
   "Follow our simple guide for sending email with your custom domain.": "Дотримуйтесь нашого простого посібника з надсилання електронної пошти за допомогою власного домену.",
-  "Setup outbound SMTP": "Налаштувати вихідний SMTP"
+  "Setup outbound SMTP": "Налаштувати вихідний SMTP",
+  "Basic": "Базовий",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 доларів США</span> <span class=\"d-inline-block h6 text-black text-themed-50\">на місяць для необмежених доменів</span>",
+  "Popular": "Популярний",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 долари США</span> <span class=\"d-inline-block h6 text-black text-themed-50\">на місяць для необмежених доменів</span>",
+  "Business": "Бізнес",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 доларів США</span> <span class=\"d-inline-block h6 text-black text-themed-50\">на місяць для необмежених доменів</span>"
 }

@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong><span class=\"notranslate\">TTL</span>値が必要ですか?</strong>できるだけ<span class=\"notranslate text-monospace\">3600</span> (5 分) に近づけます。",
   "Send emails with your domain": "ドメインを使用してメールを送信する",
   "Follow our simple guide for sending email with your custom domain.": "カスタム ドメインで電子メールを送信するための簡単なガイドに従ってください。",
-  "Setup outbound SMTP": "アウトバウンド SMTP をセットアップする"
+  "Setup outbound SMTP": "アウトバウンド SMTP をセットアップする",
+  "Basic": "基本",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">無制限のドメインで月額</span><span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span>",
+  "Popular": "人気",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">無制限のドメインで月額</span><span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 ドル</span>",
+  "Business": "仕事",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">無制限のドメインの場合は月額</span><span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 ドル</span>"
 }

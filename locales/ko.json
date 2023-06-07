@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong><span class=\"notranslate\">TTL</span> 값이 필요하십니까?</strong> 가능한 한 <span class=\"notranslate text-monospace\">3600</span> (5분)에 가깝게 합니다.",
   "Send emails with your domain": "도메인으로 이메일 보내기",
   "Follow our simple guide for sending email with your custom domain.": "사용자 지정 도메인으로 이메일을 보내기 위한 간단한 가이드를 따르십시오.",
-  "Setup outbound SMTP": "아웃바운드 SMTP 설정"
+  "Setup outbound SMTP": "아웃바운드 SMTP 설정",
+  "Basic": "기초적인",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">무제한 도메인의 경우 월</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span>",
+  "Popular": "인기 있는",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">무제한 도메인의 경우 월</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span>",
+  "Business": "사업",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">무제한 도메인의 경우 월</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span>"
 }

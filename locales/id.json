@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Perlu nilai <span class=\"notranslate\">TTL</span> ?</strong> Buat sedekat mungkin dengan <span class=\"notranslate text-monospace\">3600</span> (5 menit).",
   "Send emails with your domain": "Kirim email dengan domain Anda",
   "Follow our simple guide for sending email with your custom domain.": "Ikuti panduan sederhana kami untuk mengirim email dengan domain kustom Anda.",
-  "Setup outbound SMTP": "Siapkan SMTP keluar"
+  "Setup outbound SMTP": "Siapkan SMTP keluar",
+  "Basic": "Dasar",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/bulan untuk domain tak terbatas</span>",
+  "Popular": "Populer",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/bulan untuk domain tak terbatas</span>",
+  "Business": "Bisnis",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/bulan untuk domain tak terbatas</span>"
 }

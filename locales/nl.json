@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong><span class=\"notranslate\">TTL</span> waarde nodig?</strong> Maak het zo dicht mogelijk bij <span class=\"notranslate text-monospace\">3600</span> (5 minuten).",
   "Send emails with your domain": "Stuur e-mails met uw domein",
   "Follow our simple guide for sending email with your custom domain.": "Volg onze eenvoudige handleiding voor het verzenden van e-mail met uw aangepaste domein.",
-  "Setup outbound SMTP": "Stel uitgaande SMTP in"
+  "Setup outbound SMTP": "Stel uitgaande SMTP in",
+  "Basic": "Eenvoudig",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$ 0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/maand voor onbeperkte domeinen</span>",
+  "Popular": "Populair",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$ 3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/maand voor onbeperkte domeinen</span>",
+  "Business": "Bedrijf",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$ 9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/maand voor onbeperkte domeinen</span>"
 }

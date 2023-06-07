@@ -3968,5 +3968,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Har du brug for en <span class=\"notranslate\">TTL</span> værdi?</strong> Gør det så tæt på <span class=\"notranslate text-monospace\">3600</span> (5 minutter) som muligt.",
   "Send emails with your domain": "Send e-mails med dit domæne",
   "Follow our simple guide for sending email with your custom domain.": "Følg vores enkle guide til at sende e-mail med dit brugerdefinerede domæne.",
-  "Setup outbound SMTP": "Konfigurer udgående SMTP"
+  "Setup outbound SMTP": "Konfigurer udgående SMTP",
+  "Basic": "Grundlæggende",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/måned for ubegrænsede domæner</span>",
+  "Popular": "Populær",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/måned for ubegrænsede domæner</span>",
+  "Business": "Forretning",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/måned for ubegrænsede domæner</span>"
 }

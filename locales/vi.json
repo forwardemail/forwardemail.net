@@ -2009,7 +2009,7 @@
   "Virgin Islands, U.S.": "Quần đảo Virgin, Hoa Kỳ",
   "Wallis and Futuna": "Wallis và Futuna",
   "Western Sahara": "Phía tây Sahara",
-  "Yemen": "Yemen",
+  "Yemen": "Y-ê-men",
   "Zambia": "Zambia",
   "Zimbabwe": "Zimbabuê",
   "Åland Islands": "Quần đảo Aland",
@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Cần một giá trị <span class=\"notranslate\">TTL</span> ?</strong> Làm cho nó càng gần <span class=\"notranslate text-monospace\">3600</span> (5 phút) càng tốt.",
   "Send emails with your domain": "Gửi email với tên miền của bạn",
   "Follow our simple guide for sending email with your custom domain.": "Làm theo hướng dẫn đơn giản của chúng tôi để gửi email với miền tùy chỉnh của bạn.",
-  "Setup outbound SMTP": "Thiết lập SMTP gửi đi"
+  "Setup outbound SMTP": "Thiết lập SMTP gửi đi",
+  "Basic": "Nền tảng",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/tháng cho các tên miền không giới hạn</span>",
+  "Popular": "Phổ biến",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/tháng không giới hạn tên miền</span>",
+  "Business": "Việc kinh doanh",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/tháng không giới hạn tên miền</span>"
 }

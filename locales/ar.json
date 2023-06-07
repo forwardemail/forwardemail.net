@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>هل تحتاج إلى قيمة <span class=\"notranslate\">TTL</span> ؟</strong> اجعلها قريبة من <span class=\"notranslate text-monospace\">3600</span> (5 دقائق) قدر الإمكان.",
   "Send emails with your domain": "إرسال رسائل البريد الإلكتروني مع المجال الخاص بك",
   "Follow our simple guide for sending email with your custom domain.": "اتبع دليلنا البسيط لإرسال بريد إلكتروني باستخدام مجالك المخصص.",
-  "Setup outbound SMTP": "إعداد SMTP الصادر"
+  "Setup outbound SMTP": "إعداد SMTP الصادر",
+  "Basic": "أساسي",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 دولار</span> <span class=\"d-inline-block h6 text-black text-themed-50\">شهريًا للنطاقات غير المحدودة</span>",
+  "Popular": "شائع",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 دولارات</span> <span class=\"d-inline-block h6 text-black text-themed-50\">شهريًا للنطاقات غير المحدودة</span>",
+  "Business": "عمل",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 دولارات</span> <span class=\"d-inline-block h6 text-black text-themed-50\">شهريًا للنطاقات غير المحدودة</span>"
 }

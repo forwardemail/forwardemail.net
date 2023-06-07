@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>ต้องการค่า <span class=\"notranslate\">TTL</span> ?</strong> ทำให้ใกล้ <span class=\"notranslate text-monospace\">3600</span> (5 นาที) มากที่สุด",
   "Send emails with your domain": "ส่งอีเมลด้วยโดเมนของคุณ",
   "Follow our simple guide for sending email with your custom domain.": "ทำตามคำแนะนำง่ายๆ ของเราในการส่งอีเมลด้วยโดเมนที่คุณกำหนดเอง",
-  "Setup outbound SMTP": "ตั้งค่า SMTP ขาออก"
+  "Setup outbound SMTP": "ตั้งค่า SMTP ขาออก",
+  "Basic": "ขั้นพื้นฐาน",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/เดือน สำหรับโดเมนไม่จำกัด</span>",
+  "Popular": "เป็นที่นิยม",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">ต่อเดือนสำหรับโดเมนไม่จำกัด</span>",
+  "Business": "ธุรกิจ",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/เดือน สำหรับโดเมนไม่จำกัด</span>"
 }

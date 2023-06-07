@@ -46,30 +46,27 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    const [bannedUserIds, domainIds] = await Promise.all([
-      Users.distinct('_id', {
-        $or: [
-          {
-            [config.userFields.isBanned]: true
-          },
-          {
-            [config.userFields.hasVerifiedEmail]: false
-          },
-          {
-            [config.userFields.paymentReminderTerminationNoticeSentAt]: {
-              $exists: true
-            }
+    const bannedUserIds = await Users.distinct('_id', {
+      $or: [
+        {
+          [config.userFields.isBanned]: true
+        },
+        {
+          [config.userFields.hasVerifiedEmail]: false
+        },
+        {
+          [config.userFields.paymentReminderTerminationNoticeSentAt]: {
+            $exists: true
           }
-        ]
-      }),
-      Domains.distinct('_id', {
-        plan: { $ne: 'free' },
-        has_mx_record: true,
-        has_txt_record: true
-      })
-    ]);
+        }
+      ]
+    });
 
-    for await (const domain of Domains.find({ _id: { $in: domainIds } })
+    for await (const domain of Domains.find({
+      plan: { $ne: 'free' },
+      has_mx_record: true,
+      has_txt_record: true
+    })
       .sort({ created_at: -1 })
       .lean()
       .cursor()) {

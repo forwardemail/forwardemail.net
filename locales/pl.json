@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Potrzebujesz wartości <span class=\"notranslate\">TTL</span> ?</strong> Zrób to jak najbliżej <span class=\"notranslate text-monospace\">3600</span> (5 minut).",
   "Send emails with your domain": "Wysyłaj e-maile ze swoją domeną",
   "Follow our simple guide for sending email with your custom domain.": "Postępuj zgodnie z naszym prostym przewodnikiem dotyczącym wysyłania wiadomości e-mail z domeną niestandardową.",
-  "Setup outbound SMTP": "Skonfiguruj wychodzące SMTP"
+  "Setup outbound SMTP": "Skonfiguruj wychodzące SMTP",
+  "Basic": "Podstawowy",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 USD</span> <span class=\"d-inline-block h6 text-black text-themed-50\">miesięcznie za nieograniczoną liczbę domen</span>",
+  "Popular": "Popularny",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 USD</span> <span class=\"d-inline-block h6 text-black text-themed-50\">miesięcznie za nieograniczoną liczbę domen</span>",
+  "Business": "Biznes",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 USD</span> <span class=\"d-inline-block h6 text-black text-themed-50\">miesięcznie za nieograniczoną liczbę domen</span>"
 }

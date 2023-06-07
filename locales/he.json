@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>צריך ערך <span class=\"notranslate\">TTL</span> ?</strong> הפוך אותו קרוב ל <span class=\"notranslate text-monospace\">3600</span> (5 דקות) ככל האפשר.",
   "Send emails with your domain": "שלח אימיילים עם הדומיין שלך",
   "Follow our simple guide for sending email with your custom domain.": "עקוב אחר המדריך הפשוט שלנו לשליחת דואר אלקטרוני עם הדומיין המותאם אישית שלך.",
-  "Setup outbound SMTP": "הגדר SMTP יוצא"
+  "Setup outbound SMTP": "הגדר SMTP יוצא",
+  "Basic": "בסיסי",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">לחודש עבור דומיינים ללא הגבלה</span>",
+  "Popular": "פופולרי",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">לחודש עבור דומיינים ללא הגבלה</span>",
+  "Business": "עֵסֶק",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">לחודש עבור דומיינים ללא הגבלה</span>"
 }

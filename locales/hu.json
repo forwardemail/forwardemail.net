@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong><span class=\"notranslate\">TTL</span> értékre van szüksége?</strong> Legyen a lehető legközelebb <span class=\"notranslate text-monospace\">3600</span> hoz (5 perc).",
   "Send emails with your domain": "Küldjön e-maileket a domainjével",
   "Follow our simple guide for sending email with your custom domain.": "Kövesse egyszerű útmutatónkat az egyéni domainnel való e-mailek küldéséhez.",
-  "Setup outbound SMTP": "Kimenő SMTP beállítása"
+  "Setup outbound SMTP": "Kimenő SMTP beállítása",
+  "Basic": "Alapvető",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 USD</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/hó korlátlan domainek esetén</span>",
+  "Popular": "Népszerű",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 USD</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/ hó korlátlan domainek esetén</span>",
+  "Business": "Üzleti",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 USD</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/ hó korlátlan domainek esetén</span>"
 }

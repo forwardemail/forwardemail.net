@@ -4232,5 +4232,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>Bir <span class=\"notranslate\">TTL</span> değerine mi ihtiyacınız var?</strong> Mümkün olduğunca <span class=\"notranslate text-monospace\">3600</span> (5 dakika) yakın yapın.",
   "Send emails with your domain": "Etki alanınızla e-posta gönderin",
   "Follow our simple guide for sending email with your custom domain.": "Özel etki alanınızla e-posta göndermek için basit kılavuzumuzu izleyin.",
-  "Setup outbound SMTP": "Giden SMTP'yi kur"
+  "Setup outbound SMTP": "Giden SMTP'yi kur",
+  "Basic": "Temel",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">Sınırsız alan adı için aylık</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 ABD doları</span>",
+  "Popular": "Popüler",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">Sınırsız alan adı için ayda</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 ABD doları</span>",
+  "Business": "İşletme",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">Sınırsız alan adı için ayda</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 ABD doları</span>"
 }

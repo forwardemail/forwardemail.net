@@ -3923,5 +3923,11 @@
   "<strong>Need a <span class=\"notranslate\">TTL</span> value?</strong> Make it as close to <span class=\"notranslate text-monospace\">3600</span> (5 minutes) as possible.": "<strong>需要<span class=\"notranslate\">TTL</span>值？</strong>使其尽可能接近<span class=\"notranslate text-monospace\">3600</span> （5 分钟）。",
   "Send emails with your domain": "使用您的域发送电子邮件",
   "Follow our simple guide for sending email with your custom domain.": "按照我们的简单指南使用您的自定义域发送电子邮件。",
-  "Setup outbound SMTP": "设置出站 SMTP"
+  "Setup outbound SMTP": "设置出站 SMTP",
+  "Basic": "基本的",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">无限域名</span><span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> /月",
+  "Popular": "受欢迎的",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h6 text-black text-themed-50\">无限域</span><span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> /月",
+  "Business": "商业",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for unlimited domains</span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 美元</span><span class=\"d-inline-block h6 text-black text-themed-50\">/月无限域</span>"
 }

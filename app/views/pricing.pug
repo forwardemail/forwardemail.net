@@ -128,7 +128,10 @@ block body
     .container
       .row.row-cols-1.row-cols-lg-3
         .col
-          .d-flex.flex-column.rounded-lg.bg-white.bg-themed
+          .d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
+            .position-absolute.w-100.text-right
+              span.badge.badge-pill.badge-warning.mt-3.mr-3.text-uppercase
+                != t("Basic")
             .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Free")
@@ -136,14 +139,9 @@ block body
               .lead.text-center.mb-3
                 if user && user.plan !== 'free'
                   span.h5.font-weight-bold.d-block= t("Already upgraded")
-                  s.d-block.h6.text-muted
-                    = "$0"
-                    = " "
-                    = t("for unlimited domains")
+                  s.d-block.h6.text-muted= t("$0/month for unlimited domains")
                 else
-                  span.h4.mb-0.font-weight-bold.d-inline-block $0
-                  span.d-inline-block.h6.text-black.text-themed-50.ml-1
-                    = t("for unlimited domains")
+                  != t('<span class="d-inline-block h4 mb-0 font-weight-bold">$0</span><span class="d-inline-block h6 text-black text-themed-50">/month for unlimited domains</span>')
               a.btn.btn-block.btn-success.font-weight-bold(
                 href=l("/my-account/domains/new")
               )
@@ -208,7 +206,10 @@ block body
                 )
                   = t("Regular expression filtering")
         .col.mt-3.mt-lg-0
-          .d-flex.flex-column.rounded-lg.bg-white.bg-themed
+          .d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
+            .position-absolute.w-100.text-right
+              span.badge.badge-pill.badge-success.mt-3.mr-3.text-uppercase
+                != t("Popular")
             .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Enhanced")
@@ -216,14 +217,9 @@ block body
               .lead.text-center.mb-3
                 if user && user.plan !== 'free'
                   span.h5.font-weight-bold.d-block= t("Already upgraded")
-                  s.d-block.h6.text-muted
-                    = "$3"
-                    = " "
-                    = t("for unlimited domains")
+                  s.d-block.h6.text-muted= t("$3/month for unlimited domains")
                 else
-                  span.h4.mb-0.font-weight-bold.d-inline-block $3
-                  span.d-inline-block.h6.text-black.text-themed-50.ml-1
-                    = t("for unlimited domains")
+                  != t('<span class="d-inline-block h4 mb-0 font-weight-bold">$3</span><span class="d-inline-block h6 text-black text-themed-50">/month for unlimited domains</span>')
               if sortedDomains.length === 0
                 a.btn.btn-block.btn-success.font-weight-bold(
                   href=l("/my-account/domains/new?plan=enhanced_protection")
@@ -337,7 +333,10 @@ block body
                 = " "
                 = t("99.99% service uptime")
         .col.mt-3.mt-lg-0
-          .d-flex.flex-column.rounded-lg.bg-white.bg-themed
+          .d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
+            .position-absolute.w-100.text-right
+              span.badge.badge-pill.badge-primary.mt-3.mr-3.text-uppercase
+                != t("Business")
             .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Team")
@@ -345,14 +344,9 @@ block body
               .lead.text-center.mb-3
                 if user && user.plan === 'team'
                   span.h5.font-weight-bold.d-block= t("Already upgraded")
-                  s.d-block.h6.text-muted
-                    = "$3"
-                    = " "
-                    = t("for unlimited domains")
+                  s.d-block.h6.text-muted= t("$9/month for unlimited domains")
                 else
-                  span.h4.mb-0.font-weight-bold.d-inline-block $9
-                  span.d-inline-block.h6.text-black.text-themed-50.ml-1
-                    = t("for unlimited domains")
+                  != t('<span class="d-inline-block h4 mb-0 font-weight-bold">$9</span><span class="d-inline-block h6 text-black text-themed-50">/month for unlimited domains</span>')
               if sortedDomains.length === 0
                 a.btn.btn-block.btn-success.font-weight-bold(
                   href=l("/my-account/domains/new?plan=team")
