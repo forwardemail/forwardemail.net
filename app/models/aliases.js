@@ -460,7 +460,6 @@ Aliases.pre('save', async function (next) {
             }
           });
 
-          // eslint-disable-next-line max-depth
           if (aliasCount > config.maxAliasPerGlobalDomain) {
             const err = Boom.badRequest(
               i18n.translateError(

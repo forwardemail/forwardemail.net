@@ -170,7 +170,6 @@ async function retrieveDomain(ctx, next) {
           for (const record of records) {
             if (_.isArray(record)) {
               for (const str of record) {
-                // eslint-disable-next-line max-depth
                 if (
                   str.includes('forward-email=') ||
                   str.includes('forward-email-port=')

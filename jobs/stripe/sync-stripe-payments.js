@@ -112,7 +112,7 @@ async function syncStripePayments() {
           // remove it from the user's account
           if (subscription.status !== 'trialing') {
             const existingUser = await Users.findById(user._id);
-            // eslint-disable-next-line max-depth
+
             if (!existingUser) throw new Error('User does not exist');
             existingUser[config.userFields.stripeSubscriptionID] = undefined;
             await existingUser.save();

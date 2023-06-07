@@ -116,7 +116,7 @@ async function setConversionAndRefundStateHelpers(ctx, next) {
           const count = Math.floor(months / durationToMonths[duration]);
           if (count > 0) {
             months -= count * durationToMonths[duration];
-            // eslint-disable-next-line max-depth
+
             for (let i = 0; i < count; i++) {
               ctx.state.conversion[plan].push({
                 user: ctx.state.user._id,

@@ -76,7 +76,6 @@ graceful.listen();
         await log.save();
       } catch (err) {
         if (err.is_denylist_without_domains) {
-          // eslint-disable-next-line max-depth
           try {
             await Logs.deleteOne({ _id: log._id });
           } catch (err) {

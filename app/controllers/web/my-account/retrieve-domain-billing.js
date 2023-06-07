@@ -122,7 +122,7 @@ async function retrieveDomainBilling(ctx) {
             )
           );
           const redirectTo = ctx.state.l('/my-account/billing');
-          // eslint-disable-next-line max-depth
+
           if (ctx.accepts('html')) ctx.redirect(redirectTo);
           else ctx.body = { redirectTo };
           return;
@@ -163,7 +163,6 @@ async function retrieveDomainBilling(ctx) {
             'months'
           );
 
-          // eslint-disable-next-line max-depth
           if (months > 0)
             str += ` ${ctx.translate('AND')} ${dayjs()
               .add(months, 'months')

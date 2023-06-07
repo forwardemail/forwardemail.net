@@ -171,10 +171,9 @@ function fixTableOfContents(content, i18n, options) {
           // this is the same code as above
           const anchor = header.querySelector('a');
 
-          // eslint-disable-next-line max-depth
           if (!anchor) continue;
           const id = header.getAttribute('id');
-          // eslint-disable-next-line max-depth
+
           if (!id) continue;
           anchor.setAttribute('class', 'anchor');
           anchor.removeAttribute('aria-hidden');

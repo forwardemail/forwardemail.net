@@ -166,9 +166,7 @@ async function retrieveAliases(ctx, next) {
       const existingTXT = [];
       for (const record of records) {
         if (_.isArray(record)) {
-          // eslint-disable-next-line max-depth
           for (const str of record) {
-            // eslint-disable-next-line max-depth
             if (str.includes('forward-email=')) existingTXT.push(str);
           }
         }

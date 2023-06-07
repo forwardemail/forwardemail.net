@@ -188,7 +188,7 @@ async function onboard(ctx, next) {
         if (err.has_email_failed) {
           ctx.logger.fatal(err);
           ctx.state.user[config.userFields.hasVerifiedEmail] = true;
-          // eslint-disable-next-line max-depth
+
           try {
             ctx.state.user = await ctx.state.user.save();
           } catch (err) {

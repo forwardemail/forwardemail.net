@@ -220,7 +220,6 @@ async function processEvent(ctx, event) {
           );
 
           if (errorEmails.length > 0) {
-            // eslint-disable-next-line max-depth
             try {
               await Promise.all(errorEmails.map((email) => emailHelper(email)));
             } catch (err) {

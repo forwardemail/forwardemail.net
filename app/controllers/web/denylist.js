@@ -97,7 +97,7 @@ async function validate(ctx, next) {
 
         if (!result || !boolean(result)) {
           // if the value was not === "true" then we have to clean it up
-          // eslint-disable-next-line max-depth
+
           if (result) {
             ctx.client
               .del(`denylist:${ctx.state.rootDomain}`)
@@ -107,12 +107,12 @@ async function validate(ctx, next) {
           }
 
           // if it was an email then check `denylist:root:email` combo
-          // eslint-disable-next-line max-depth
+
           if (isEmail(q)) {
             result = await ctx.client.get(
               `denylist:${ctx.state.rootDomain}:${q}`
             );
-            // eslint-disable-next-line max-depth
+
             if (
               (!result || !boolean(result)) && // if the value was not === "true" then we have to clean it up
               result

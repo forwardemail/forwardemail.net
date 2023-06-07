@@ -101,7 +101,6 @@ async function hook(err, message, meta) {
         if (Array.isArray(log.meta.domains)) {
           const domains = [];
           for (const d of log.meta.domains) {
-            // eslint-disable-next-line max-depth
             if (typeof d === 'object' && mongoose.Types.ObjectId.isValid(d))
               domains.push(d);
           }

@@ -24,7 +24,8 @@ block content
                     td: code= email.envelope.from
                   tr
                     th: span.badge.badge-pill.badge-dark RCPT TO
-                    td: code= email.envelope.to.join(", ")
+                    td
+                      code= email.envelope.to.map((t) => (typeof t === "object" && typeof t.address === "string" ? t.address.trim().toLowerCase() : t.trim().toLowerCase())).join(", ")
                   tr
                     th: span.badge.badge-pill.badge-primary Message-Id
                     td: code= email.messageId

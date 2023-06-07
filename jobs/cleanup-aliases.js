@@ -142,11 +142,11 @@ async function mapper(alias) {
               name: alias.name,
               domain: domain._id
             });
-            // eslint-disable-next-line max-depth
+
             if (others.length === 0)
               throw new Error('Other alias did not exist');
             // merge the recipients together
-            // eslint-disable-next-line max-depth
+
             for (const other of others) {
               alias.recipients.push(...other.recipients);
               alias.verified_recipients.push(...other.verified_recipients);

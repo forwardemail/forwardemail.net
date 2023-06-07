@@ -690,80 +690,94 @@ Emails.statics.queue = async function (
   //
   // `parsed.attachments`
   //
-  const [phishing, executables, arbitrary, viruses] = await Promise.all([
-    scanner.getPhishingResults(parsed),
-    scanner.getExecutableResults(parsed),
-    scanner.getArbitraryResults(parsed),
-    scanner.getVirusResults(parsed)
-  ]);
+  // only sanitize if from and to are not equal and not config support
+  const to = info.envelope.to.map((t) =>
+    typeof t === 'object' && typeof t.address === 'string'
+      ? t.address.trim().toLowerCase()
+      : t.trim().toLowerCase()
+  );
+  if (
+    config.supportEmail === info?.envelope?.from?.toLowerCase() &&
+    to.length === 1 &&
+    info.envelope.from.toLowerCase() === to[0]
+  ) {
+    const [phishing, executables, arbitrary, viruses] = await Promise.all([
+      scanner.getPhishingResults(parsed),
+      scanner.getExecutableResults(parsed),
+      scanner.getArbitraryResults(parsed),
+      scanner.getVirusResults(parsed)
+    ]);
 
-  const messages = [
-    ...new Set([
-      ...(phishing.messages.length > 0 ? ['Phishing links detected.'] : []),
-      ...executables,
-      ...arbitrary,
-      ...viruses
-    ])
-  ];
+    const messages = [
+      ...new Set([
+        ...phishing.messages,
+        ...executables,
+        ...arbitrary,
+        ...viruses
+      ])
+    ];
 
-  if (messages.length > 0) {
-    // send an email to all admins of the domain
-    const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
-    try {
-      await emailHelper({
-        template: 'smtp-suspended',
-        message: { to: obj.to, bcc: config.email.message.from },
-        locals: {
-          domain:
-            typeof domain.toObject === 'function' ? domain.toObject() : domain,
-          locale: obj.locale,
-          category: 'virus',
-          responseCode: 554,
-          response: messages.join(' '),
-          truthSource: config.webHost,
-          email: {
-            envelope: info.envelope,
-            messageId,
-            subject,
-            date
+    if (messages.length > 0) {
+      // send an email to all admins of the domain
+      const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+      try {
+        await emailHelper({
+          template: 'smtp-suspended',
+          message: { to: obj.to, bcc: config.email.message.from },
+          locals: {
+            domain:
+              typeof domain.toObject === 'function'
+                ? domain.toObject()
+                : domain,
+            locale: obj.locale,
+            category: 'virus',
+            responseCode: 554,
+            response: messages.join(' '),
+            truthSource: config.webHost,
+            email: {
+              envelope: info.envelope,
+              messageId,
+              subject,
+              date
+            }
           }
-        }
+        });
+      } catch (err) {
+        // NOTE: it would be better to use `ctx.logger` probably here
+        logger.fatal(err);
+      }
+
+      // if any of the domain admins are admins then don't ban
+      const adminExists = await Users.exists({
+        _id: {
+          $in: domain.members
+            .filter((m) => m.group === 'admin')
+            .map((m) =>
+              typeof m.user === 'object' && typeof m.user._id === 'object'
+                ? m.user._id
+                : m.user
+            )
+        },
+        group: 'admin'
       });
-    } catch (err) {
-      // NOTE: it would be better to use `ctx.logger` probably here
-      logger.fatal(err);
+
+      // store when we sent this email
+      if (!adminExists)
+        await Domains.findByIdAndUpdate(domain._id, {
+          $set: {
+            smtp_suspended_sent_at: new Date()
+          }
+        });
+
+      // needs to be forbidden so it gets mapped to 5xx error
+      const error = Boom.forbidden(messages.join(' '));
+      error.messages = messages;
+      error.phishing = phishing;
+      error.executables = executables;
+      error.arbitrary = arbitrary;
+      error.viruses = viruses;
+      throw error;
     }
-
-    // if any of the domain admins are admins then don't ban
-    const adminExists = await Users.exists({
-      _id: {
-        $in: domain.members
-          .filter((m) => m.group === 'admin')
-          .map((m) =>
-            typeof m.user === 'object' && typeof m.user._id === 'object'
-              ? m.user._id
-              : m.user
-          )
-      },
-      group: 'admin'
-    });
-
-    // store when we sent this email
-    if (!adminExists)
-      await Domains.findByIdAndUpdate(domain._id, {
-        $set: {
-          smtp_suspended_sent_at: new Date()
-        }
-      });
-
-    // needs to be forbidden so it gets mapped to 5xx error
-    const error = Boom.forbidden(messages.join(' '));
-    error.messages = messages;
-    error.phishing = phishing;
-    error.executables = executables;
-    error.arbitrary = arbitrary;
-    error.viruses = viruses;
-    throw error;
   }
 
   const headers = {};
