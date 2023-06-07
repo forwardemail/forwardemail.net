@@ -2,12 +2,6 @@
 ## Configure the section below replacing "TODO" values ##
 #########################################################
 
-#
-# sign up and set up Postmark and add your API token here
-# https://postmarkapp.com
-#
-POSTMARK_API_TOKEN="TODO"
-
 # set web server hostname
 # (e.g. example.com)
 WEB_HOST=TODO

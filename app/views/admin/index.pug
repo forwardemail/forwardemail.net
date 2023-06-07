@@ -39,6 +39,12 @@ block body
       .col
         .card
           .card-body
+            h2.h6.text-muted.text-uppercase.mb-0= t("Growth for past year")
+            #growth-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner.text-muted
+    .row.mb-3
+      .col
+        .card
+          .card-body
             h2.h6.text-muted.text-uppercase.mb-0= t("Deliverability for past 7 days")
             #deliverability-chart: .text-center.mt-3.text-muted: i.fa.fa-2x.fa-spin.fa-spinner.text-muted
     .row.mb-3

@@ -3982,5 +3982,6 @@
   "Follow our simple guide for sending email with your custom domain.": "Follow our simple guide for sending email with your custom domain.",
   "Setup outbound SMTP": "Setup outbound SMTP",
   "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>": "Free Email Forwarding for <span class=\"notranslate\">Squarespace</span> &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>."
+  "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.": "Free and custom domain email forwarding DNS service for <span class=\"notranslate\">Squarespace</span>.",
+  "Envelope MAIL FROM header could not be parsed or was missing.": "Envelope MAIL FROM header could not be parsed or was missing."
 }

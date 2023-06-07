@@ -36,6 +36,66 @@ const DAYS_OF_WEEK = [
 ];
 */
 
+async function getGrowthChart() {
+  const docs = await Users.aggregate([
+    {
+      $match: {
+        plan: { $ne: 'free' },
+        created_at: {
+          $gte: dayjs()
+            .subtract(1, 'day')
+            .startOf('day')
+            .subtract(1, 'year')
+            .toDate(),
+          $lte: dayjs().subtract(1, 'day').endOf('day').toDate()
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: '%Y-%m',
+            date: '$created_at',
+            timezone
+          }
+        },
+        total: { $sum: 1 }
+      }
+    },
+    {
+      $sort: {
+        _id: 1
+      }
+    }
+  ]);
+
+  const series = [
+    {
+      name: 'New Paying Customers',
+      data: docs.map((doc) => [doc._id, doc.total])
+    }
+  ];
+
+  return {
+    series,
+    chart: {
+      type: 'area'
+    },
+    dataLabels: {
+      enabled: true
+    },
+    xaxis: {
+      type: 'datetime'
+    },
+    tooltip: {
+      x: {
+        format: 'yyyy-MM'
+      }
+    }
+  };
+}
+
 async function getDeliverabilityChart(ctx) {
   const series = [];
   // iterate over past 7 days (starting from oldest)
@@ -45,7 +105,9 @@ async function getDeliverabilityChart(ctx) {
   if (ctx.client) {
     const dates = [];
     for (let i = 0; i < 7; i++) {
-      dates.unshift(dayjs().subtract(i, 'days').format('YYYY-MM-DD'));
+      dates.unshift(
+        dayjs().subtract(1, 'day').subtract(i, 'days').format('YYYY-MM-DD')
+      );
     }
 
     await Promise.all(
@@ -106,6 +168,7 @@ async function getBody(ctx) {
     oneTimeRevenueChart,
     subscriptionRevenueChart,
     revenueChart,
+    growthChart,
     deliverabilityChart,
     lineChart,
     // heatmap,
@@ -349,6 +412,8 @@ async function getBody(ctx) {
         colors: ['#20C1ED', '#269C32', '#ffc107']
       };
     })(),
+    // growth chart
+    getGrowthChart(),
     // deliverability chart
     getDeliverabilityChart(ctx),
     // line chart
@@ -632,6 +697,10 @@ async function getBody(ctx) {
       {
         selector: '#subscription-revenue-chart',
         options: _.merge({}, options, subscriptionRevenueChart || {})
+      },
+      {
+        selector: '#growth-chart',
+        options: _.merge({}, options, growthChart || {})
       },
       {
         selector: '#deliverability-chart',

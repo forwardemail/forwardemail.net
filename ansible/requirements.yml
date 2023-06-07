@@ -11,9 +11,9 @@
 - name: fail2ban
   src: oefenweb.fail2ban
   version: v4.0.2
-- name: timezone
-  src: oefenweb.timezone
-  version: v1.0.50
+#- name: timezone
+#  src: oefenweb.timezone
+#  version: v1.0.50
 - name: unattended-upgrades
   src: hifis.unattended_upgrades
   version: v2.0.1

@@ -4,9 +4,13 @@ const { isIP } = require('node:net');
 const Boom = require('@hapi/boom');
 const SpamScanner = require('spamscanner');
 const _ = require('lodash');
+const addressParser = require('nodemailer/lib/addressparser');
 const bytes = require('bytes');
+const getStream = require('get-stream');
+const intoStream = require('into-stream');
 const ip = require('ip');
 const isSANB = require('is-string-and-not-blank');
+const libmime = require('libmime');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
@@ -14,6 +18,7 @@ const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const nodemailer = require('nodemailer');
 const parseErr = require('parse-err');
 const { Iconv } = require('iconv');
+const { Headers, Splitter, Joiner } = require('mailsplit');
 const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 const { simpleParser } = require('mailparser');
@@ -445,51 +450,108 @@ Emails.statics.queue = async function (
   if (bytes > MAX_BYTES)
     throw new Error(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
 
-  const parsed = await simpleParser(info.message, {
-    Iconv,
-    skipImageLinks: true,
-    skipHtmlToText: false,
-    skipTextToHtml: false,
-    skipTextLinks: true
-  });
+  const splitter = new Splitter();
+  const joiner = new Joiner();
 
-  //
-  // in case the email was `raw`, the envelope won't be parsed right away
-  // so we rely on the parsed headers from `mailparser` to re-create envelope
-  // <https://github.com/nodemailer/nodemailer/blob/e3cc93a9c20939b209c804857c75aea0d3305913/lib/mime-node/index.js#LL882C1-L898C57>
-  //
-  if (
-    options?.message?.raw &&
-    info.envelope.from === false &&
-    info.envelope.to.length === 0
-  ) {
-    // envelope from
-    for (const key of ['from', 'sender', 'reply-to']) {
-      const obj = parsed.headers.get(key);
-      if (
-        _.isObject(obj) &&
-        _.isArray(obj.value) &&
-        _.isObject(obj.value[0]) &&
-        isEmail(obj.value[0].address)
-      ) {
-        info.envelope.from = obj.value[0].address;
-        break;
+  splitter.on('data', (data) => {
+    if (data.type !== 'node' || data.root !== true) return;
+
+    //
+    // NOTE: there is no current way in mailsplit to not parse headers with libmime
+    //       so this was a quick workaround we implemented (note `headers.parsed` is false)
+    //
+    const headerLines = Buffer.concat(data._headersLines, data._headerlen);
+    const headers = new Headers(headerLines, { Iconv });
+    const lines = headers.getList();
+
+    // convert address name values to ascii or mime encoded
+    // <https://github.com/zone-eu/zone-mta/blob/0c2451dcf516707babf1aef46de128238b41ea85/lib/address-tools.js#L37>
+    // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L360C1-L376>
+    for (const lineKey of [
+      'from',
+      'to',
+      'cc',
+      'bcc',
+      'sender',
+      'reply-to',
+      'delivered-to',
+      'return-path'
+    ]) {
+      const header = lines.find((line) => line.key === lineKey);
+      if (!header) continue;
+      const { key, value } = libmime.decodeHeader(header.line);
+
+      if (!isSANB(value)) {
+        data.headers.remove(key);
+        continue;
       }
-    }
 
-    // envelope to
-    for (const key of ['to', 'cc', 'bcc']) {
-      const obj = parsed.headers.get(key);
-      if (_.isObject(obj) && _.isArray(obj.value)) {
-        for (const val of obj.value) {
-          // eslint-disable-next-line max-depth
-          if (_.isObject(val) && isEmail(val.address)) {
-            info.envelope.to.push(val);
+      const addresses = addressParser(value);
+
+      if (!_.isArray(addresses) || _.isEmpty(addresses)) {
+        data.headers.remove(key);
+        continue;
+      }
+
+      const values = [];
+      for (const obj of addresses) {
+        if (_.isObject(obj) && isSANB(obj.address)) {
+          if (isSANB(obj.name) && !/^[\w ']*$/.test(obj.name)) {
+            // ascii or mime encoding
+            obj.name = /^[\u0020-\u007E]*$/.test(obj.name)
+              ? '"' + obj.name.replace(/([\\"])/g, '\\$1') + '"'
+              : libmime.encodeWord(obj.name, 'Q', 52);
+          } else {
+            obj.name = '';
           }
+
+          values.push({
+            name: obj.name,
+            address: obj.address
+          });
+        }
+      }
+
+      if (values.length === 0) {
+        data.headers.remove(key);
+      } else {
+        data.headers.update(
+          header.line.split(': ')[0],
+          values
+            .map((v) => (v.name ? `${v.name} <${v.address}>` : v.address))
+            .join(', ')
+        );
+
+        //
+        // in case the email was `raw`, the envelope won't be parsed right away
+        // so we rely on the parsed headers from `mailparser` to re-create envelope
+        // <https://github.com/nodemailer/nodemailer/blob/e3cc93a9c20939b209c804857c75aea0d3305913/lib/mime-node/index.js#LL882C1-L898C57>
+        //
+        if (options?.message?.raw) {
+          // envelope from
+          if (
+            info.envelope.from === false &&
+            ['from', 'sender', 'reply-to'].includes(key)
+          )
+            info.envelope.from = values[0].address;
+          // envelope to
+          // TODO: this should only be set if original envelope was empty
+          else if (['to', 'cc', 'bcc'].includes(key))
+            info.envelope.to.push(...values.map((v) => v.address));
         }
       }
     }
-  }
+  });
+
+  const message = await getStream.buffer(
+    intoStream(info.message).pipe(splitter).pipe(joiner)
+  );
+
+  // TODO: if it contains any list/auto headers then block
+  //       (maybe best to put this in pre-save hook?)
+  // - header starts with "list-"
+
+  // TODO: if smtp side has non encoded then throw error
 
   //
   // based off the logged in user we need to lookup the associated domain
@@ -604,6 +666,15 @@ Emails.statics.queue = async function (
   // alias must be enabled
   if (!alias.is_enabled)
     throw Boom.notFound(i18n.translateError('ALIAS_IS_NOT_ENABLED', locale));
+
+  // TODO: switch to use `spamscanner.scan` instead
+  const parsed = await simpleParser(message, {
+    Iconv,
+    skipImageLinks: true,
+    skipHtmlToText: false,
+    skipTextToHtml: false,
+    skipTextLinks: true
+  });
 
   const date =
     parsed.headers.get('date') && _.isDate(parsed.headers.get('date'))
@@ -739,7 +810,7 @@ Emails.statics.queue = async function (
     domain: domain._id,
     user: options?.user?._id,
     envelope: info.envelope,
-    message: info.message,
+    message,
     messageId,
     headers,
     date,

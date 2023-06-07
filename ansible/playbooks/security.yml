@@ -418,8 +418,8 @@
         - time.cloudflare.com
 
     # https://github.com/Oefenweb/ansible-timezone
-    - role: timezone
-    #  timezone_zone: 'America/Chicago'
+    #- role: timezone
+    #  timezone_zone: 'XYZ'
 
     # https://github.com/Oefenweb/ansible-fail2ban
     - role: fail2ban

@@ -68,13 +68,19 @@ See [Requirements](#requirements) below.
    npm i -g pm2
    ```
 
-5. Install [npm][] dependencies:
+5. Install [pnpm][] v7 for faster dependency installation:
 
    ```sh
-   npm install
+   npm i -g pnpm@7
    ```
 
-6. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html#stable).
+6. Install [npm][] dependencies:
+
+   ```sh
+   pnpm install
+   ```
+
+7. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html#stable).
 
 ### Ubuntu
 
@@ -90,7 +96,13 @@ See [Requirements](#requirements) below.
    npm i -g pm2
    ```
 
-3. Install fonts:
+3. Install [pnpm][] v7 for faster dependency installation:
+
+   ```sh
+   npm i -g pnpm@7
+   ```
+
+4. Install fonts:
 
    ```sh
    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
@@ -100,16 +112,16 @@ See [Requirements](#requirements) below.
    sudo apt-get install xfonts-75dpi fontconfig libxrender1 xfonts-base ttf-mscorefonts-installer libfontconfig
    ```
 
-4. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html#stable):
+5. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html#stable):
 
    ```sh
    wget "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.$(lsb_release -c -s)_$(dpkg --print-architecture).deb"
    sudo dpkg -i "wkhtmltox_0.12.6.1-2.$(lsb_release -c -s)_$(dpkg --print-architecture).deb"
    ```
 
-5. Install MongoDB by following the guide at <https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04>.
+6. Install MongoDB by following the guide at <https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04>.
 
-6. Install Redis by following the guide at <https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04>.
+7. Install Redis by following the guide at <https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04>.
 
 
 ## Server Infrastructure
@@ -358,3 +370,5 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 [ansible-guide]: https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html
 
 [mandarin]: https://github.com/ladjs/mandarin
+
+[pnpm]: https://github.com/pnpm/pnpm

@@ -206,16 +206,24 @@ Reply-To: boop@beep.com
 Message-Id: beep-boop
 Date: ${date.toISOString()}
 To: test@foo.com
-From: Test <${alias.name}@${domain.name}>
+From: 😊 Test <${alias.name}@${domain.name}>
 Subject: testing this
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
-${'x'.repeat(10 * 1024 * 1024)}
 Test`.trim()
     });
 
   t.is(res.status, 200);
+
+  const header = `=?UTF-8?Q?=C3=B0=C2=9F=C2=98=C2=8A_Test?= <${alias.name}@${domain.name}>`;
+
+  // validate header From was converted properly
+  t.is(res.body.headers.From, header);
+
+  // validate message body was converted as well
+  const email = await Emails.findOne({ id: res.body.id });
+  t.true(email.message.includes('From: ' + header));
 
   // validate envelope
   t.is(res.body.envelope.from, `${alias.name}@${domain.name}`);

@@ -304,85 +304,84 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     // <https://github.com/andris9/mailsplit#events>
     splitter.on('data', (data) => {
-      if (data.type === 'node' && data.root === true) {
-        // - data.headers.get
-        // - data.headers.getFirst
-        // - data.headers.hasHeader
-        // - data.headers.add(key, value)
-        // - data.headers.update(key, value)
-        // - data.headers.remove(key)
-        // - data.disposition = 'attachment' or 'inline'
-        // - data.value
+      if (data.type !== 'node' || data.root !== true) return;
+      // - data.headers.get
+      // - data.headers.getFirst
+      // - data.headers.hasHeader
+      // - data.headers.add(key, value)
+      // - data.headers.update(key, value)
+      // - data.headers.remove(key)
+      // - data.disposition = 'attachment' or 'inline'
+      // - data.value
 
-        // remove Bcc header
-        data.headers.remove('bcc');
+      // remove Bcc header
+      data.headers.remove('bcc');
 
-        // set Message-Id header
-        const messageId = data.headers.getFirst('message-id');
-        if (!messageId || messageId !== email.messageId) {
-          data.headers.remove('message-id');
-          data.headers.add('Message-Id', email.messageId);
-        }
+      // set Message-Id header
+      const messageId = data.headers.getFirst('message-id');
+      if (!messageId || messageId !== email.messageId) {
+        data.headers.remove('message-id');
+        data.headers.add('Message-Id', email.messageId);
+      }
 
-        // set Date header
-        const date = data.headers.getFirst('date');
-        const dateValue = new Date(date);
-        if (
-          !date ||
-          dateValue.toString() === 'Invalid Date' ||
-          dateValue < ONE_SECOND_AFTER_UNIX_EPOCH ||
-          dateValue.getTime() !== new Date(email.date).getTime()
-        ) {
-          data.headers.remove('date');
-          data.headers.add(
-            'Date',
-            new Date(email.date).toUTCString().replace(/GMT/, '+0000')
-          );
-        }
-
-        // add X-* headers (e.g. version + report-to)
-        for (const key of [
-          'x-report-abuse-to',
-          'x-report-abuse',
-          'x-complaints-to',
-          'x-forwardemail-version',
-          'x-forwardemail-sender',
-          'x-forwardemail-id'
-        ]) {
-          data.headers.remove(key);
-        }
-
+      // set Date header
+      const date = data.headers.getFirst('date');
+      const dateValue = new Date(date);
+      if (
+        !date ||
+        dateValue.toString() === 'Invalid Date' ||
+        dateValue < ONE_SECOND_AFTER_UNIX_EPOCH ||
+        dateValue.getTime() !== new Date(email.date).getTime()
+      ) {
+        data.headers.remove('date');
         data.headers.add(
-          'X-Report-Abuse-To',
-          config.abuseEmail,
-          data.headers.lines.length
-        );
-        data.headers.add(
-          'X-Report-Abuse',
-          config.abuseEmail,
-          data.headers.lines.length
-        );
-        data.headers.add(
-          'X-Complaints-To',
-          config.abuseEmail,
-          data.headers.lines.length
-        );
-        data.headers.add(
-          'X-ForwardEmail-Version',
-          config.pkg.version,
-          data.headers.lines.length
-        );
-        data.headers.add(
-          'X-ForwardEmail-Sender',
-          `rfc822; ${[email.envelope.from, HOSTNAME, IP_ADDRESS].join(', ')}`,
-          data.headers.lines.length
-        );
-        data.headers.add(
-          'X-ForwardEmail-Id',
-          email.id,
-          data.headers.lines.length
+          'Date',
+          new Date(email.date).toUTCString().replace(/GMT/, '+0000')
         );
       }
+
+      // add X-* headers (e.g. version + report-to)
+      for (const key of [
+        'x-report-abuse-to',
+        'x-report-abuse',
+        'x-complaints-to',
+        'x-forwardemail-version',
+        'x-forwardemail-sender',
+        'x-forwardemail-id'
+      ]) {
+        data.headers.remove(key);
+      }
+
+      data.headers.add(
+        'X-Report-Abuse-To',
+        config.abuseEmail,
+        data.headers.lines.length
+      );
+      data.headers.add(
+        'X-Report-Abuse',
+        config.abuseEmail,
+        data.headers.lines.length
+      );
+      data.headers.add(
+        'X-Complaints-To',
+        config.abuseEmail,
+        data.headers.lines.length
+      );
+      data.headers.add(
+        'X-ForwardEmail-Version',
+        config.pkg.version,
+        data.headers.lines.length
+      );
+      data.headers.add(
+        'X-ForwardEmail-Sender',
+        `rfc822; ${[email.envelope.from, HOSTNAME, IP_ADDRESS].join(', ')}`,
+        data.headers.lines.length
+      );
+      data.headers.add(
+        'X-ForwardEmail-Id',
+        email.id,
+        data.headers.lines.length
+      );
     });
 
     // if domain does not have DKIM key/selector then create one
