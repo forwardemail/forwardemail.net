@@ -7,7 +7,6 @@ const { boolean } = require('boolean');
 const { isEmail, isIP } = require('validator');
 
 const parseRootDomain = require('#helpers/parse-root-domain');
-const config = require('#config');
 
 // eslint-disable-next-line complexity
 async function validateDomain(ctx, next) {
@@ -49,14 +48,9 @@ async function validateDomain(ctx, next) {
   //
   const rootDomain = parseRootDomain(ctx.request.body.domain);
 
-  let isAllowlist = false;
   let isDenylist = false;
   try {
-    [isAllowlist, isDenylist] = await Promise.all([
-      ctx.client.get(`allowlist:${rootDomain}`),
-      ctx.client.get(`denylist:${rootDomain}`)
-    ]);
-    isAllowlist = boolean(isAllowlist);
+    isDenylist = await ctx.client.get(`denylist:${rootDomain}`);
     isDenylist = boolean(isDenylist);
   } catch (err) {
     ctx.logger.fatal(err);
@@ -64,6 +58,7 @@ async function validateDomain(ctx, next) {
 
   // if it was allowlisted then notify them to contact help
   // (we would manually create)
+  /*
   if (
     isAllowlist &&
     !ctx.state.user[config.userFields.approvedDomains].includes(rootDomain)
@@ -83,6 +78,7 @@ async function validateDomain(ctx, next) {
       )
     );
   }
+  */
 
   if (isDenylist)
     return ctx.throw(
