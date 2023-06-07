@@ -173,6 +173,10 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  last_allowlist_sync_at: {
+    type: Date,
+    index: true
+  },
   has_adult_content_protection: {
     type: Boolean,
     default: true

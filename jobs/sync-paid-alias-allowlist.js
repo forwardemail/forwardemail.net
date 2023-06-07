@@ -67,9 +67,10 @@ graceful.listen();
       has_mx_record: true,
       has_txt_record: true
     })
-      .sort({ created_at: -1 })
+      .sort({ last_allowlist_sync_at: 1 })
       .lean()
-      .cursor()) {
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
       logger.info('processing %s', domain.name);
       const set = new Set();
       set.add(`${domain.name}`);
@@ -88,7 +89,8 @@ graceful.listen();
       });
       for await (const alias of Aliases.find({ _id: { $in: aliasIds } })
         .lean()
-        .cursor()) {
+        .cursor()
+        .addCursorFlag('noCursorTimeout', true)) {
         logger.info(
           'alias %s@%s (%d recipients)',
           alias.name,
@@ -117,6 +119,13 @@ graceful.listen();
           // TODO: we don't ban webhooks currently
         }
       }
+
+      // update the date for `last_allowlist_sync_at`
+      await Domains.findByIdAndUpdate(domain._id, {
+        $set: {
+          last_allowlist_sync_at: new Date()
+        }
+      });
 
       // continue early if no results found
       if (set.size === 0) continue;
