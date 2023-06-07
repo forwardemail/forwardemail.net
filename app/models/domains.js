@@ -1364,7 +1364,9 @@ async function getToAndMajorityLocaleByDomain(domain) {
     _id: {
       $in: domain.members
         .filter((member) => member.group === 'admin')
-        .map((member) => member.user)
+        .map((member) =>
+          typeof member?.user?._id === 'object' ? member.user._id : member.user
+        )
     },
     [config.userFields.hasVerifiedEmail]: true,
     [config.userFields.isBanned]: false
