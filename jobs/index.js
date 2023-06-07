@@ -145,6 +145,16 @@ const jobs = [
     name: 'check-smtp-frozen-queue',
     interval: '15s',
     timeout: 0
+  },
+  //
+  // for paid accounts we allowlist every 15m
+  // but if any were on denylist we alert
+  // admins too as well so they can intervene
+  //
+  {
+    name: 'sync-paid-alias-allowlist',
+    interval: '15m',
+    timeout: 0
   }
 ];
 

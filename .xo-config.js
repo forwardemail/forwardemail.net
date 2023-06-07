@@ -6,7 +6,8 @@ module.exports = {
     'no-warning-comments': 'off',
     'unicorn/prefer-top-level-await': 'off',
     'unicorn/no-process-exit': 'off',
-    'unicorn/prefer-node-protocol': 'off'
+    'unicorn/prefer-node-protocol': 'off',
+    'max-depth': 'off'
   },
   overrides: [
     {
