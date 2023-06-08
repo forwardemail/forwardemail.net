@@ -14,6 +14,7 @@ const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
+const regexParser = require('regex-parser');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
@@ -29,6 +30,7 @@ const Users = require('./users');
 const Domains = require('./domains');
 const Emails = require('./emails');
 
+const parseRootDomain = require('#helpers/parse-root-domain');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const createTangerine = require('#helpers/create-tangerine');
@@ -472,13 +474,20 @@ function getQueryHash(log) {
   if (
     isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
     isEmail(log.meta.session.envelope.mailFrom.address)
-  )
+  ) {
     $and.push({
       'meta.session.envelope.mailFrom.address': {
         $exists: true,
-        $eq: log.meta.session.envelope.mailFrom.address
+        // @.*example-1\.com$
+        $regex: regexParser(
+          `/@.*${parseRootDomain(
+            log.meta.session.envelope.mailFrom.address.split('@')[1]
+          )}$/`
+        ),
+        $options: 'i'
       }
     });
+  }
 
   // make it unique by rcpt to
   if (
@@ -491,13 +500,23 @@ function getQueryHash(log) {
         set.add(rcpt.address);
     }
 
-    if (set.size > 0)
-      $and.push({
-        'meta.session.envelope.rcptTo.address': {
-          $exists: true,
-          $in: [...set]
-        }
-      });
+    if (set.size > 0) {
+      const $or = [];
+      for (const address of set) {
+        $or.push({
+          'meta.session.envelope.rcptTo.address': {
+            $exists: true,
+            // @.*example-1\.com$
+            $regex: regexParser(
+              `/@.*${parseRootDomain(address.split('@')[1])}$/`
+            ),
+            $options: 'i'
+          }
+        });
+      }
+
+      $and.push({ $or });
+    }
   }
 
   // TODO: if err.responseCode and !err.bounces && !meta.session.resolvedClientHostname && meta.session.remoteAddress
