@@ -468,6 +468,38 @@ function getQueryHash(log) {
     );
   }
 
+  // make it unique by mail from
+  if (
+    isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
+    isEmail(log.meta.session.envelope.mailFrom.address)
+  )
+    $and.push({
+      'meta.session.envelope.mailFrom.address': {
+        $exists: true,
+        $eq: log.meta.session.envelope.mailFrom.address
+      }
+    });
+
+  // make it unique by rcpt to
+  if (
+    Array.isArray(log?.meta?.session?.envelope?.rcptTo) &&
+    log.meta.session.envelope.rcptTo.length > 0
+  ) {
+    const set = new Set();
+    for (const rcpt of log.meta.session.envelope.rcptTo) {
+      if (_.isObject(rcpt) && isSANB(rcpt.address) && isEmail(rcpt.address))
+        set.add(rcpt.address);
+    }
+
+    if (set.size > 0)
+      $and.push({
+        'meta.session.envelope.rcptTo.address': {
+          $exists: true,
+          $in: [...set]
+        }
+      });
+  }
+
   // TODO: if err.responseCode and !err.bounces && !meta.session.resolvedClientHostname && meta.session.remoteAddress
   // TODO: else if err.responseCode and !err.bounces && meta.session.allowlistValue
   // TODO: else if err.responseCode and !err.bounces && meta.session.resolvedClientHostname

@@ -9,8 +9,10 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const ms = require('ms');
+const parseErr = require('parse-err');
 
 const mongoose = require('mongoose');
+const emailHelper = require('#helpers/email');
 const Logs = require('#models/logs');
 const logger = require('#helpers/logger');
 const config = require('#config');
@@ -27,26 +29,29 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    //
-    // NOTE: we use async iterator (cursor) for performance
-    // <https://mongoosejs.com/docs/api/querycursor.html#querycursor_QueryCursor-Symbol.asyncIterator>
-    // <https://thecodebarbarian.com/whats-new-in-mongoose-53-async-iterators.html
-    //
-    for await (const log of Logs.find({
-      created_at: { $lt: Date.now() - ms(config.logRetention) }
-    })
-      .sort({ created_at: 1 })
-      .select('created_at')
-      .lean()
-      .cursor()) {
-      try {
-        await Logs.deleteOne({ _id: log._id });
-      } catch (err) {
-        logger.error(err);
-      }
-    }
+    await Logs.deleteMany(
+      {
+        created_at: { $lt: Date.now() - ms(config.logRetention) }
+      },
+      { writeConcern: { w: 0, j: false } }
+    );
   } catch (err) {
     await logger.error(err);
+    // send an email to admins of the error
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: 'Delete Logs Issue'
+      },
+      locals: {
+        message: `<pre><code>${JSON.stringify(
+          parseErr(err),
+          null,
+          2
+        )}</code></pre>`
+      }
+    });
   }
 
   if (parentPort) parentPort.postMessage('done');

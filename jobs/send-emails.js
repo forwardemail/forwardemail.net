@@ -201,7 +201,8 @@ async function sendEmails() {
     .sort({ created_at: -1 })
     .lean()
     .limit(limit)
-    .cursor()) {
+    .cursor()
+    .addCursorFlag('noCursorTimeout', true)) {
     // return early if the job was already cancelled
     if (isCancelled) break;
     // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)

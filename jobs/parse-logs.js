@@ -8,9 +8,12 @@ const { parentPort } = require('worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-
+const parseErr = require('parse-err');
 const mongoose = require('mongoose');
+
+const config = require('#config');
 const Logs = require('#models/logs');
+const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -68,7 +71,8 @@ graceful.listen();
     // eslint-disable-next-line unicorn/no-array-callback-reference
     for await (const log of Logs.find(query)
       .sort({ created_at: -1 })
-      .cursor()) {
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
       // this calls the internal static method `parseLog`
       try {
         // helper property to skip duplicate check
@@ -77,7 +81,12 @@ graceful.listen();
       } catch (err) {
         if (err.is_denylist_without_domains) {
           try {
-            await Logs.deleteOne({ _id: log._id });
+            await Logs.deleteOne(
+              { _id: log._id },
+              {
+                writeConcern: { w: 0, j: false }
+              }
+            );
           } catch (err) {
             logger.error(err);
           }
@@ -88,6 +97,21 @@ graceful.listen();
     }
   } catch (err) {
     await logger.error(err);
+    // send an email to admins of the error
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: 'Parse Logs Issue'
+      },
+      locals: {
+        message: `<pre><code>${JSON.stringify(
+          parseErr(err),
+          null,
+          2
+        )}</code></pre>`
+      }
+    });
   }
 
   if (parentPort) parentPort.postMessage('done');
