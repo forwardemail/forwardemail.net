@@ -349,7 +349,7 @@ block body
                             i.fa.fa-clipboard
                             = " "
                             = t("Copy")
-              .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (5 minutes) as possible.')
+              .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (60 minutes) as possible.')
               form.ajax-form(action=ctx.path, method="POST")
                 button.btn.btn-success.btn-lg.btn-block(type="submit")
                   i.fa.fa-refresh

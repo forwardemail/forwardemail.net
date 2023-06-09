@@ -96,6 +96,7 @@ async function sendEmails() {
       }
     }),
     Emails.distinct('_id', {
+      status: 'deferred',
       updated_at: {
         $gte: dayjs().subtract(1, 'hour').toDate(),
         $lte: now

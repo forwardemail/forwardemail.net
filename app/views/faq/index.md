@@ -1445,26 +1445,54 @@ We take two steps to protect against backscatter, which is detailed in the follo
 
 We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
 
-If the MAIL FROM is blank OR contains (case-insensitive) one of the following usernames (the portion before the @ in an email), then we check to see if the sender IP matches one on this list:
+If the MAIL FROM is blank OR is equal to (case-insensitive) any of the following usernames (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
 
-* `abuse@`
-* `ftp@`
-* `hostmaster@`
-* `mailer-daemon@`
-* `mailer_daemon@`
-* `mailerdaemon@`
-* `news@`
-* `no-reply@`
-* `no_reply@`
-* `nobody@`
-* `noreplies@`
-* `noreply@`
-* `postmaster@`
-* `root@`
-* `security@`
-* `usenet@`
-* `webmaster@`
-* `www@`
+* `abuse`
+* `admin`
+* `admini`
+* `automailer`
+* `autoresponder`
+* `bounce`
+* `bounce-notification`
+* `bounce-notifications`
+* `bounces`
+* `do-not-reply`
+* `do-not-respond`
+* `do.not.reply`
+* `donotreply`
+* `donotrespond`
+* `dont-reply`
+* `e-bounce`
+* `ebounce`
+* `host-master`
+* `host.master`
+* `hostmaster`
+* `localhost`
+* `mail-daemon`
+* `mail.daemon`
+* `maildaemon`
+* `mailer`
+* `mailer-daemon`
+* `mailer.daemon`
+* `mailerdaemon`
+* `naoresponda`
+* `no-replies`
+* `no-reply`
+* `no-replys`
+* `no.replies`
+* `no.reply`
+* `no.replys`
+* `no_reply`
+* `nobody`
+* `noreplies`
+* `noreply`
+* `noreplys`
+* `post-master`
+* `post.master`
+* `postmaster`
+* `root`
+* `www`
+* `www-data`
 
 If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
 
