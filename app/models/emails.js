@@ -464,6 +464,8 @@ Emails.statics.queue = async function (
     const headers = new Headers(headerLines, { Iconv });
     const lines = headers.getList();
 
+    const isEnvelopeToEmpty = info.envelope.to.length === 0;
+
     // convert address name values to ascii or mime encoded
     // <https://github.com/zone-eu/zone-mta/blob/0c2451dcf516707babf1aef46de128238b41ea85/lib/address-tools.js#L37>
     // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L360C1-L376>
@@ -535,8 +537,7 @@ Emails.statics.queue = async function (
           )
             info.envelope.from = values[0].address;
           // envelope to
-          // TODO: this should only be set if original envelope was empty
-          else if (['to', 'cc', 'bcc'].includes(key))
+          else if (isEnvelopeToEmpty && ['to', 'cc', 'bcc'].includes(key))
             info.envelope.to.push(...values.map((v) => v.address));
         }
       }
