@@ -67,7 +67,7 @@ async function hook(err, message, meta) {
   if (err && err.is_duplicate_log) return;
 
   // add `isCodeBug` parsing here to `err` (safeguard)
-  err.isCodeBug = isCodeBug(err);
+  if (typeof err === 'object') err.isCodeBug = isCodeBug(err);
 
   if (mongoose) {
     try {
