@@ -7,6 +7,7 @@ const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const ansiHTML = require('ansi-html-community');
 const bytes = require('bytes');
+const captainHook = require('captain-hook');
 const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -157,6 +158,8 @@ Logs.virtual('skip_duplicate_check')
   .set(function (skipDuplicateCheck) {
     this.__skip_duplicate_check = boolean(skipDuplicateCheck);
   });
+
+Logs.plugin(captainHook);
 
 Logs.plugin(mongooseCommonPlugin, {
   object: 'log',
@@ -694,10 +697,9 @@ Logs.pre('save', function (next) {
 // NOTE: we want instant notifications of code bugs
 // (typically this would belong in a job but we're putting in here for speed)
 //
-Logs.post('save', async function (doc) {
-  if (!doc.isNew) return;
+Logs.postCreate(async (doc, next) => {
   const isRateLimiting = doc?.err?.output?.statusCode === 429;
-  if (doc?.err?.isCodeBug !== true && !isRateLimiting) return;
+  if (doc?.err?.isCodeBug !== true && !isRateLimiting) return next();
   try {
     // send an email to admins of the error
     await emailHelper({
@@ -709,15 +711,13 @@ Logs.post('save', async function (doc) {
         } Detected (Log ID ${doc.id})`
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(
-          parseErr(doc.err),
-          null,
-          2
-        )}</code></pre>`
+        message: `<pre><code>${JSON.stringify(doc.err, null, 2)}</code></pre>`
       }
     });
+    next();
   } catch (err) {
     await logger.fatal(err);
+    next();
   }
 });
 
