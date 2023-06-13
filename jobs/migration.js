@@ -111,9 +111,7 @@ graceful.listen();
         {
           members: {
             $exists: true,
-            $size: {
-              $not: 0
-            }
+            $ne: []
           },
           'members.0._id': {
             $exists: true
@@ -125,9 +123,7 @@ graceful.listen();
         {
           invites: {
             $exists: true,
-            $size: {
-              $not: 0
-            }
+            $ne: []
           },
           'invites.0._id': {
             $exists: true

@@ -30,6 +30,7 @@ const Users = require('./users');
 const Domains = require('./domains');
 const Emails = require('./emails');
 
+const emailHelper = require('#helpers/email');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -114,6 +115,12 @@ const Logs = new mongoose.Schema({
       index: true
     }
   ],
+  // <https://www.mongodb.com/community/forums/t/what-is-the-most-performant-way-to-check-an-array-field-is-not-empty/217392/3>
+  is_empty_domains: {
+    type: Boolean,
+    index: true,
+    default: true
+  },
   email: {
     type: mongoose.Schema.ObjectId,
     ref: Emails
@@ -166,6 +173,7 @@ Logs.index({ text_message: 'text' }, { default_language: 'english' });
 //
 const PARTIAL_INDICES = [
   'email', // conditionally exists if related to a given outbound email
+  'err.isCodeBug',
   'err.responseCode',
   'meta.is_http', // used for search
   'meta.level',
@@ -273,8 +281,7 @@ Logs.pre('validate', function (next) {
 });
 
 //
-// we don't want to pollute our db with 404's and 429's
-// in addition to API endpoint rate limiting we check for duplicates
+// we don't want to pollute our db (in addition to API endpoint rate limiting we check for duplicates)
 //
 // eslint-disable-next-line complexity
 function getQueryHash(log) {
@@ -315,26 +322,21 @@ function getQueryHash(log) {
     )
       throw new Error('Ignored source map file');
 
-    // don't store logs for banned users or rate limiting
+    // don't store logs for banned users
     if (
       !log?.meta?.response?.status_code &&
-      Number.isFinite(log?.err?.output?.statusCode) &&
-      (log.err.output.statusCode === 403 || log.err.output.statusCode === 429)
+      log?.err?.output?.statusCode === 403
     )
       throw new Error('Ignored banned user or rate limiting');
 
     // if no user but if had a metadata IP address
     if (!log?.user && log?.meta?.user?.ip_address) {
-      $and.push(
-        {
-          'meta.user.ip_address': log.meta.user.ip_address
-        },
-        {
-          'meta.user.ip_address': {
-            $exists: true
-          }
+      $and.push({
+        'meta.user.ip_address': {
+          $eq: log.meta.user.ip_address,
+          $exists: true
         }
-      );
+      });
     }
 
     // check
@@ -342,24 +344,20 @@ function getQueryHash(log) {
     // + meta.request.method
     // + meta.request.pathname OR meta.request.url (otherwise unique querystrings won't be detected as duplicates)
     if (log?.meta?.response?.status_code)
-      $and.push(
-        {
-          'meta.response.status_code': log.meta.response.status_code
-        },
-        {
-          'meta.response.status_code': { $exists: true }
+      $and.push({
+        'meta.response.status_code': {
+          $eq: log.meta.response.status_code,
+          $exists: true
         }
-      );
+      });
 
     if (log?.meta?.request?.method)
-      $and.push(
-        {
-          'meta.request.method': log.meta.request.method
-        },
-        {
-          'meta.request.method': { $exists: true }
+      $and.push({
+        'meta.request.method': {
+          $eq: log.meta.request.method,
+          $exists: true
         }
-      );
+      });
 
     //
     // NOTE: pathname was added in `parse-request` v6.0.1
@@ -376,37 +374,27 @@ function getQueryHash(log) {
         arr[3] &&
         arr[4] === 'aliases'
       ) {
-        $and.push(
-          {
-            'meta.request.pathname': {
-              $regex: new RegExp(
-                '^' + _.escapeRegExp(arr.slice(0, 5).join('/'))
-              )
-            }
-          },
-          {
-            'meta.request.pathname': { $exists: true }
+        $and.push({
+          'meta.request.pathname': {
+            $exists: true,
+            $regex: new RegExp('^' + _.escapeRegExp(arr.slice(0, 5).join('/')))
           }
-        );
+        });
       } else {
-        $and.push(
-          {
-            'meta.request.pathname': log.meta.request.pathname
-          },
-          {
-            'meta.request.pathname': { $exists: true }
+        $and.push({
+          'meta.request.pathname': {
+            $eq: log.meta.request.pathname,
+            $exists: true
           }
-        );
+        });
       }
     } else if (log?.meta?.request?.url) {
-      $and.push(
-        {
-          'meta.request.url': log.meta.request.url
-        },
-        {
-          'meta.request.url': { $exists: true }
+      $and.push({
+        'meta.request.url': {
+          $eq: log.meta.request.url,
+          $exists: true
         }
-      );
+      });
     }
   }
 
@@ -419,14 +407,12 @@ function getQueryHash(log) {
       : dayjs(new Date(log.created_at)).startOf('day').toDate();
 
   if (log?.meta?.level) {
-    $and.push(
-      {
-        'meta.level': log.meta.level
-      },
-      {
-        'meta.level': { $exists: true }
+    $and.push({
+      'meta.level': {
+        $eq: log.meta.level,
+        $exists: true
       }
-    );
+    });
   }
 
   if (!log?.meta?.is_http) {
@@ -449,25 +435,21 @@ function getQueryHash(log) {
 
   // if it was restricted or not
   if (typeof log.is_restricted === 'boolean')
-    $and.push(
-      {
-        is_restricted: log.is_restricted
-      },
-      {
-        is_restricted: { $exists: true }
+    $and.push({
+      is_restricted: {
+        $eq: log.is_restricted,
+        $exists: true
       }
-    );
+    });
 
   // if had a user
   if (log?.user) {
-    $and.push(
-      {
-        user: log.user
-      },
-      {
-        user: { $exists: true }
+    $and.push({
+      user: {
+        $eq: log.user,
+        $exists: true
       }
-    );
+    });
   }
 
   // make it unique by mail from
@@ -519,6 +501,7 @@ function getQueryHash(log) {
     }
   }
 
+  // TODO: filter if it was a code bug or not
   // TODO: if err.responseCode and !err.bounces && !meta.session.resolvedClientHostname && meta.session.remoteAddress
   // TODO: else if err.responseCode and !err.bounces && meta.session.allowlistValue
   // TODO: else if err.responseCode and !err.bounces && meta.session.resolvedClientHostname
@@ -698,6 +681,43 @@ Logs.pre('save', async function (next) {
     throw err;
   } catch (err) {
     next(err);
+  }
+});
+
+Logs.pre('save', function (next) {
+  this.is_empty_domains =
+    !Array.isArray(this.domains) || this.domains.length === 0;
+  next();
+});
+
+//
+// NOTE: we want instant notifications of code bugs
+// (typically this would belong in a job but we're putting in here for speed)
+//
+Logs.post('save', async function (doc) {
+  if (!doc.isNew) return;
+  const isRateLimiting = doc?.err?.output?.statusCode === 429;
+  if (doc?.err?.isCodeBug !== true && !isRateLimiting) return;
+  try {
+    // send an email to admins of the error
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: `${
+          isRateLimiting ? 'Rate Limiting' : 'Code Bug'
+        } Detected (Log ID ${doc.id})`
+      },
+      locals: {
+        message: `<pre><code>${JSON.stringify(
+          parseErr(doc.err),
+          null,
+          2
+        )}</code></pre>`
+      }
+    });
+  } catch (err) {
+    await logger.fatal(err);
   }
 });
 

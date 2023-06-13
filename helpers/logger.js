@@ -11,6 +11,7 @@ const superagent = require('superagent');
 const mongoose = require('mongoose');
 
 const loggerConfig = require('../config/logger');
+const isCodeBug = require('./is-code-bug');
 
 const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
@@ -64,6 +65,9 @@ async function hook(err, message, meta) {
   // if it was a duplicate error then ignore it
   //
   if (err && err.is_duplicate_log) return;
+
+  // add `isCodeBug` parsing here to `err` (safeguard)
+  err.isCodeBug = isCodeBug(err);
 
   if (mongoose) {
     try {

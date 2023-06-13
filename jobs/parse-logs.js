@@ -64,6 +64,11 @@ graceful.listen();
           hash: {
             $exists: false
           }
+        },
+        {
+          is_empty_domains: {
+            $exists: false
+          }
         }
       ]
     };

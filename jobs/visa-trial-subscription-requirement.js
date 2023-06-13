@@ -88,46 +88,65 @@ async function mapper(id) {
         .exec();
 
       // send them an email in compliance with payment processing requirements
-      await emailHelper({
-        template: 'visa-trial-subscription-requirement',
-        message: {
-          to:
-            user[config.userFields.receiptEmail] ||
-            user[config.userFields.fullEmail],
-          ...(user[config.userFields.receiptEmail]
-            ? { cc: user[config.userFields.fullEmail] }
-            : {})
-        },
-        locals: {
-          user,
-          firstChargeDate: dayjs
-            .unix(subscription.billing_cycle_anchor)
-            .toDate(),
-          frequency,
-          formattedAmount: numeral(subscription.plan.amount / 100).format(
-            '$0,0,0.00'
-          ),
-          domains
-        }
-      });
+      try {
+        await emailHelper({
+          template: 'visa-trial-subscription-requirement',
+          message: {
+            to:
+              user[config.userFields.receiptEmail] ||
+              user[config.userFields.fullEmail],
+            ...(user[config.userFields.receiptEmail]
+              ? { cc: user[config.userFields.fullEmail] }
+              : {})
+          },
+          locals: {
+            user,
+            firstChargeDate: dayjs
+              .unix(subscription.billing_cycle_anchor)
+              .toDate(),
+            frequency,
+            formattedAmount: numeral(subscription.plan.amount / 100).format(
+              '$0,0,0.00'
+            ),
+            domains
+          }
+        });
 
-      const now = new Date();
+        const now = new Date();
 
-      // store that we sent this email
-      await Users.findByIdAndUpdate(user._id, {
-        $set: {
-          [config.userFields.stripeTrialSentAt]: now
-        }
-      });
+        // store that we sent this email
+        await Users.findByIdAndUpdate(user._id, {
+          $set: {
+            [config.userFields.stripeTrialSentAt]: now
+          }
+        });
 
-      // after the email was successfully sent then we need to update the subscription metadata
-      // (just so we have this on the Stripe side saved)
-      const metadata = subscription.metadata || {};
-      metadata.visa_trial_email_sent_at = now.toISOString();
-      await stripe.subscriptions.update(
-        user[config.userFields.stripeSubscriptionID],
-        { metadata }
-      );
+        // after the email was successfully sent then we need to update the subscription metadata
+        // (just so we have this on the Stripe side saved)
+        const metadata = subscription.metadata || {};
+        metadata.visa_trial_email_sent_at = now.toISOString();
+        await stripe.subscriptions.update(
+          user[config.userFields.stripeSubscriptionID],
+          { metadata }
+        );
+      } catch (err) {
+        await logger.error(err);
+        // send an email to admins of the error
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: 'VISA Trial Subscription Requirement Error'
+          },
+          locals: {
+            message: `<pre><code>${JSON.stringify(
+              parseErr(err),
+              null,
+              2
+            )}</code></pre>`
+          }
+        });
+      }
     }
   }
 

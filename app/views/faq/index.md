@@ -1125,6 +1125,8 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
   <li class="list-inline-item"><code class="notranslate">gov</code></li>
   <li class="list-inline-item"><code class="notranslate">mil</code></li>
+  <li class="list-inline-item"><code class="notranslate">int</code></li>
+  <li class="list-inline-item"><code class="notranslate">arpa</code></li>
   <li class="list-inline-item"><code class="notranslate">dni.us</code></li>
   <li class="list-inline-item"><code class="notranslate">fed.us</code></li>
   <li class="list-inline-item"><code class="notranslate">isa.us</code></li>
@@ -1235,6 +1237,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
   <li class="list-inline-item"><code class="notranslate">gob.pe</code></li>
   <li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
   <li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
   <li class="list-inline-item"><code class="notranslate">gouv.nc</code></li>
   <li class="list-inline-item"><code class="notranslate">gouv.qc.ca</code></li>
@@ -1357,43 +1360,117 @@ As of March 31, 2023 we enforced a new blanket spam rule to protect our users an
 This new rule allows only the following domain name extensions to be used on our free plan:
 
 <ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">ac</code></li>
+  <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
+  <li class="list-inline-item"><code class="notranslate">al</code></li>
+  <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">as</code></li>
+  <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ba</code></li>
+  <li class="list-inline-item"><code class="notranslate">be</code></li>
+  <li class="list-inline-item"><code class="notranslate">br</code></li>
+  <li class="list-inline-item"><code class="notranslate">by</code></li>
   <li class="list-inline-item"><code class="notranslate">ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">cc</code></li>
+  <li class="list-inline-item"><code class="notranslate">cd</code></li>
   <li class="list-inline-item"><code class="notranslate">ch</code></li>
+  <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
+  <li class="list-inline-item"><code class="notranslate">dj</code></li>
   <li class="list-inline-item"><code class="notranslate">dk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ee</code></li>
   <li class="list-inline-item"><code class="notranslate">es</code></li>
+  <li class="list-inline-item"><code class="notranslate">eu</code></li>
   <li class="list-inline-item"><code class="notranslate">family</code></li>
   <li class="list-inline-item"><code class="notranslate">fi</code></li>
   <li class="list-inline-item"><code class="notranslate">fm</code></li>
   <li class="list-inline-item"><code class="notranslate">fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gl</code></li>
+  <li class="list-inline-item"><code class="notranslate">id</code></li>
   <li class="list-inline-item"><code class="notranslate">ie</code></li>
   <li class="list-inline-item"><code class="notranslate">im</code></li>
+  <li class="list-inline-item"><code class="notranslate">in</code></li>
   <li class="list-inline-item"><code class="notranslate">io</code></li>
+  <li class="list-inline-item"><code class="notranslate">ir</code></li>
   <li class="list-inline-item"><code class="notranslate">is</code></li>
   <li class="list-inline-item"><code class="notranslate">it</code></li>
+  <li class="list-inline-item"><code class="notranslate">je</code></li>
   <li class="list-inline-item"><code class="notranslate">jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">la</code></li>
   <li class="list-inline-item"><code class="notranslate">li</code></li>
+  <li class="list-inline-item"><code class="notranslate">lv</code></li>
+  <li class="list-inline-item"><code class="notranslate">ly</code></li>
+  <li class="list-inline-item"><code class="notranslate">md</code></li>
   <li class="list-inline-item"><code class="notranslate">me</code></li>
+  <li class="list-inline-item"><code class="notranslate">mn</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms</code></li>
+  <li class="list-inline-item"><code class="notranslate">mu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mx</code></li>
   <li class="list-inline-item"><code class="notranslate">net</code></li>
+  <li class="list-inline-item"><code class="notranslate">ni</code></li>
   <li class="list-inline-item"><code class="notranslate">nl</code></li>
   <li class="list-inline-item"><code class="notranslate">no</code></li>
+  <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
+  <li class="list-inline-item"><code class="notranslate">pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">pr</code></li>
+  <li class="list-inline-item"><code class="notranslate">pw</code></li>
+  <li class="list-inline-item"><code class="notranslate">rs</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc</code></li>
+  <li class="list-inline-item"><code class="notranslate">se</code></li>
   <li class="list-inline-item"><code class="notranslate">sh</code></li>
+  <li class="list-inline-item"><code class="notranslate">si</code></li>
   <li class="list-inline-item"><code class="notranslate">sm</code></li>
+  <li class="list-inline-item"><code class="notranslate">sr</code></li>
   <li class="list-inline-item"><code class="notranslate">st</code></li>
+  <li class="list-inline-item"><code class="notranslate">tc</code></li>
+  <li class="list-inline-item"><code class="notranslate">tm</code></li>
+  <li class="list-inline-item"><code class="notranslate">to</code></li>
   <li class="list-inline-item"><code class="notranslate">tv</code></li>
   <li class="list-inline-item"><code class="notranslate">uk</code></li>
   <li class="list-inline-item"><code class="notranslate">us</code></li>
+  <li class="list-inline-item"><code class="notranslate">uz</code></li>
   <li class="list-inline-item"><code class="notranslate">vc</code></li>
+  <li class="list-inline-item"><code class="notranslate">vg</code></li>
+  <li class="list-inline-item"><code class="notranslate">vu</code></li>
+  <li class="list-inline-item"><code class="notranslate">ws</code></li>
   <li class="list-inline-item"><code class="notranslate">xyz</code></li>
 </ul>
+
+<!--
+## What domain name extensions require approval
+
+boston
+gq
+cf
+ru
+cyou
+dance
+degree
+fit
+live
+ml
+name
+online
+rest
+shop
+tk
+top
+vn
+website
+wiki
+wtf
+-->
 
 
 ## Do you have a greylist

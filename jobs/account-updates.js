@@ -90,7 +90,7 @@ async function mapper(id) {
     const ids = await Users.distinct('_id', {
       account_updates: {
         $exists: true,
-        $not: { $size: 0 }
+        $ne: []
       },
       [config.userFields.hasVerifiedEmail]: true,
       [config.userFields.isBanned]: false

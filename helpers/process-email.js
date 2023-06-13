@@ -117,7 +117,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       throw new Error('Email status must be queued');
   } catch (err) {
     // create log
-    await logger.error(err, meta);
+    logger.error(err, meta);
     return;
   }
 
@@ -196,7 +196,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       throw Boom.forbidden(i18n.translateError('ACCOUNT_BANNED'));
 
     // create log
-    await logger.info('email queued', meta);
+    logger.info('email queued', meta);
 
     // after 5+ days of attempted delivery, send bounce email
     const shouldBounce =
@@ -760,7 +760,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // TODO: check against silent ban and denylist (to wherever we're sending)
 
     meta.results = results;
-    await logger.info('sent email', meta);
+    logger.info('sent email', meta);
 
     // go through the results and determine which were accepted, rejected, or deferred
     const accepted = new Set();
@@ -848,7 +848,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     return;
   } catch (err) {
     // create log
-    await logger.error(err, meta);
+    logger.error(err, meta);
 
     //
     // these two properties are set to ensure consistency of `rejectedErrors`
