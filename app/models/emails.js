@@ -410,8 +410,13 @@ Emails.pre('save', function (next) {
 Emails.pre('save', async function (next) {
   try {
     const domain = await Domains.findById(this.domain);
-    if (!domain)
-      throw Boom.notFound(i18n.translateError('DOMAIN_DOES_NOT_EXIST'));
+    // we return here instead of erroring
+    if (!domain) {
+      this.status = 'pending';
+      this.priority = 0;
+      return next();
+    }
+
     // if any of the domain admins are admins then set priority to 1
     const adminExists = await Users.exists({
       _id: {
