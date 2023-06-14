@@ -288,6 +288,13 @@ Logs.pre('validate', function (next) {
 //
 // eslint-disable-next-line complexity
 function getQueryHash(log) {
+  //
+  // if log.meta.ignore_hook is explicity false
+  // then that means we want to definitely log the error
+  // (in future we could use a different field to denote unique hash)
+  //
+  if (log?.meta?.ignore_hook === false) return revHash(safeStringify(log));
+
   const $and = [];
   //
   // prepare db query for uniqueness

@@ -18,9 +18,9 @@ module.exports = async (data) => {
     Object.assign(data.locals, emailLocals);
     if (data?.message?.subject)
       data.message.subject = striptags(data.message.subject);
-    const res = await email.send(data);
-    logger.info('sent email', { data });
-    return res;
+    const info = await email.send(data);
+    logger.info('email created', { info, data, ignore_hook: false });
+    return info;
   } catch (err) {
     logger.error(err, { data });
     throw err;
