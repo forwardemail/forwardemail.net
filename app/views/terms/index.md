@@ -35,7 +35,7 @@ Forward Email makes no warranties, expressed or implied, and hereby disclaims an
 
 Further, Forward Email does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its Service or otherwise relating to such materials or on any sites linked to this site.
 
-**You specifically agree that you will not use the Service for any business or related materials to both [Stripe's Prohibited Businesses](https://stripe.com/legal/restricted-businesses) and [PayPal's Prohibited Activities](https://www.paypal.com/us/legalhub/acceptableuse-full).**
+<u>**You specifically agree that you will not use the Service for any business or related materials to both [Stripe's Prohibited Businesses](https://stripe.com/legal/restricted-businesses) and [PayPal's Prohibited Activities](https://www.paypal.com/us/legalhub/acceptableuse-full).**</u>
 
 <u>**You specifically agree that by using the Service that Forward Email shall not be responsible for, shall not be liable for, and you will not create, read, modify, or transmit any of the following with the Service:**</u>
 

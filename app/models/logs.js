@@ -684,6 +684,13 @@ Logs.pre('save', async function (next) {
 
     if (Array.isArray(this.domains) && this.domains.length > 0) return next();
 
+    // if it had ignore_hook or no session object
+    if (
+      this?.meta?.ignore_hook === false ||
+      typeof this?.meta?.session === 'undefined'
+    )
+      return next();
+
     if (!_.isDate(this.domains_checked_at)) return next();
 
     const err = new Error('Unnecessary log to store without domains');

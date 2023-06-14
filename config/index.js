@@ -703,7 +703,8 @@ const config = {
     'vg',
     'vu',
     'ws',
-    'xyz'
+    'xyz',
+    'za'
   ],
 
   validDurations: [

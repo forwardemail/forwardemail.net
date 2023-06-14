@@ -1445,6 +1445,7 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">vu</code></li>
   <li class="list-inline-item"><code class="notranslate">ws</code></li>
   <li class="list-inline-item"><code class="notranslate">xyz</code></li>
+  <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
 
 <!--
