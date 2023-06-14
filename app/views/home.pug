@@ -77,9 +77,9 @@ block body
         .col-12.col-lg-6
           h1.mb-3
             if isBot(ctx.get('User-Agent'))
-              != t("Free email forwarding, private business email, and send email with custom domain.")
+              = t("Free, private, and secure email for custom domains.")
             else
-              != t("<mark>Free email forwarding</mark> for custom domains")
+              != t("<mark>Free, private, and secure</mark> email for custom domains.")
           p
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
             = " "
@@ -93,53 +93,7 @@ block body
                   data-target="#modal-sign-up"
                 )
                   = t("Try for free")
-          ul.list-unstyled.text-left.mb-3
-            if !isBot(ctx.get('User-Agent'))
-              li.font-weight-bold
-                i.fa.fa-fw.fa-check-circle.text-success
-                = " "
-                != t("No credit card or phone required")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              = t("Send email with custom domain")
-              = " "
-              a.badge.badge-pill.badge-primary.text-uppercase(
-                href=l("/guides/send-email-with-custom-domain-smtp")
-              )= t("New")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              if isBot(ctx.get('User-Agent'))
-                a(href=l("/private-business-email"))
-                  = t("Free private business email")
-              else
-                != t("Unlimited domains and aliases")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              if isBot(ctx.get('User-Agent'))
-                a(href=l("/guides/send-mail-as-gmail-custom-domain"))
-                  = t("Send email with custom domain")
-              else
-                != t("Privacy-focused and open-source")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              if isBot(ctx.get('User-Agent'))
-                a(
-                  href="https://github.com/forwardemail",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                )
-                  = t("Open-source email forwarding")
-              else
-                != t("Lightning fast technology")
-            if !isBot(ctx.get('User-Agent'))
-              li
-                i.fa.fa-fw.fa-check-circle.text-success
-                = " "
-                != t("Secure email encryption")
+            include _feature-list
           ul.list-inline
             li.list-inline-item
               a.btn.btn-outline-dark.font-weight-bold(
@@ -441,11 +395,7 @@ block body
     .container
       .row
         .col-12
-          h2.display-3.font-weight-bold.text-white.my-3.my-md-5
-            if isBot(ctx.get('User-Agent'))
-              = t("Free email forwarding")
-            else
-              = t("Enterprise-grade")
+          h2.display-3.font-weight-bold.text-white.my-3.my-md-5= t("Enterprise-grade")
       .row
         .col-12.col-lg-8
           p.lead.text-white

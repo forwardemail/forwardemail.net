@@ -169,11 +169,11 @@ footer.mt-auto
                   = t("Status Page")
               li
                 a.d-block.text-light.py-2.py-md-0(
-                  title=t("GitHub"),
+                  title="GitHub",
                   href="https://github.com/forwardemail",
                   target="_blank",
                   rel="noopener noreferrer"
-                )= t("GitHub")
+                )= "GitHub"
               if !isBot(ctx.get('User-Agent'))
                 li.small: a.d-block.text-light.font-weight-bold.py-2.py-md-0.text-monospace.small.mt-2(
                   href=`mailto:${config.supportEmail}`
@@ -183,7 +183,7 @@ footer.mt-auto
             .mt-lg-auto.mt-3.text-center.text-md-right
               a.d-inline-block.text-light(
                 data-toggle="tooltip",
-                title=t("GitHub"),
+                title="GitHub",
                 href="https://github.com/forwardemail",
                 target="_blank",
                 rel="noopener noreferrer"
@@ -191,7 +191,7 @@ footer.mt-auto
                 i.fa.fa-2x.fa-github
                 span.sr-only.sr-only-focusable
                   = " "
-                  = t("GitHub")
+                  = "GitHub"
         if isBot(ctx.get('User-Agent'))
           hr.d-lg-none.w-100
           .flex-wrap.flex-fill.d-flex.flex-column

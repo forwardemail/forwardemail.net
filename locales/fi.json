@@ -4116,5 +4116,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Jos sinulla on kysyttävää tai tarvitset apua asennuksessa, ota <a href=\"%s\" class=\"alert-link\" target=\"_blank\">meihin yhteyttä</a> .",
   "Purpose": "Tarkoitus",
   "Learn more on Wikipedia": "Lue lisää Wikipediasta",
-  "Go to Advanced Settings": "Siirry Lisäasetuksiin"
+  "Go to Advanced Settings": "Siirry Lisäasetuksiin",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Ilmainen yksityinen suojattu sähköposti mukautetuille verkkotunnuksille &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Kuinka ottaa käyttöön ilmainen sähköpostin edelleenlähetys, yksityinen yrityssähköposti ja lähettää lähtevä SMTP-sähköposti mukautetuille verkkotunnuksille.",
+  "Outbound SMTP is now available!": "Lähtevä SMTP on nyt saatavilla!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Ilmainen, yksityinen ja turvallinen</mark> sähköpostit mukautetuille verkkotunnuksille.",
+  "Send outbound SMTP email": "Lähetä lähtevä SMTP-sähköposti",
+  "Email delivery in under 5 seconds": "Sähköpostitoimitus alle 5 sekunnissa",
+  "Error logs and developer API access": "Virhelokit ja kehittäjän API-käyttö",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise ilmainen yksityinen suojattu sähköposti &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Luo ilmainen, yksityinen ja suojattu sähköpostisi ammattimaista liiketoimintaa ja yritystoimintaa varten.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Ilmainen, yksityinen ja turvallinen</mark> sähköposti yrityksille ja yrityksille.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Sähköpostin määrittäminen mukautetuille verkkotunnuksille, lähteville SMTP-palveluille ja muille."
 }

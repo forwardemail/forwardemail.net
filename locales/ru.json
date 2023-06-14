@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Если у вас есть вопросы или вам нужна помощь в настройке, то <a href=\"%s\" class=\"alert-link\" target=\"_blank\">свяжитесь с нами</a> .",
   "Purpose": "Цель",
   "Learn more on Wikipedia": "Узнайте больше в Википедии",
-  "Go to Advanced Settings": "Перейти к дополнительным настройкам"
+  "Go to Advanced Settings": "Перейти к дополнительным настройкам",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Бесплатная частная безопасная электронная почта для пользовательских доменов &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Как настроить бесплатную переадресацию электронной почты, частную деловую электронную почту и отправку исходящей электронной почты SMTP для пользовательских доменов.",
+  "Outbound SMTP is now available!": "Исходящий SMTP теперь доступен!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Бесплатно, конфиденциально и безопасно</mark> электронная почта для пользовательских доменов.",
+  "Send outbound SMTP email": "Отправить исходящую электронную почту SMTP",
+  "Email delivery in under 5 seconds": "Доставка электронной почты менее чем за 5 секунд",
+  "Error logs and developer API access": "Журналы ошибок и доступ к API разработчика",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Бесплатная частная безопасная электронная почта &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Создайте свою бесплатную, частную, безопасную электронную почту для профессионального бизнеса и предприятия.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Бесплатно, конфиденциально и безопасно</mark> электронная почта для бизнеса и предприятий.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Как настроить электронную почту для собственных доменных имен, исходящей службы SMTP и т. д."
 }

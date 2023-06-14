@@ -3284,5 +3284,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Wenn Sie Fragen haben oder Hilfe bei der Einrichtung benötigen, dann <a href=\"%s\" class=\"alert-link\" target=\"_blank\">kontaktieren Sie uns</a> bitte.",
   "Purpose": "Zweck",
   "Learn more on Wikipedia": "Erfahren Sie mehr auf Wikipedia",
-  "Go to Advanced Settings": "Gehen Sie zu Erweiterte Einstellungen"
+  "Go to Advanced Settings": "Gehen Sie zu Erweiterte Einstellungen",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Kostenlose private sichere E-Mail für benutzerdefinierte Domains &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "So richten Sie eine kostenlose E-Mail-Weiterleitung und private geschäftliche E-Mails ein und senden ausgehende SMTP-E-Mails für benutzerdefinierte Domänen.",
+  "Outbound SMTP is now available!": "Ausgehendes SMTP ist jetzt verfügbar!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Kostenlos, privat und sicher</mark> E-Mail für benutzerdefinierte Domänen.",
+  "Send outbound SMTP email": "Senden Sie ausgehende SMTP-E-Mails",
+  "Email delivery in under 5 seconds": "E-Mail-Zustellung in weniger als 5 Sekunden",
+  "Error logs and developer API access": "Fehlerprotokolle und Entwickler-API-Zugriff",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Kostenlose private sichere E-Mail &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Erstellen Sie Ihre kostenlose, private und sichere E-Mail für professionelle Unternehmen und Unternehmen.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Kostenlos, privat und sicher</mark> E-Mail für Unternehmen und Unternehmen.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "So konfigurieren Sie E-Mails für benutzerdefinierte Domänennamen, ausgehenden SMTP-Dienst und mehr."
 }

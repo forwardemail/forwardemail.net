@@ -1,0 +1,57 @@
+ul.list-unstyled.text-left.mb-3
+  li.font-weight-bold
+    i.fa.fa-fw.fa-check-circle.text-success
+    = " "
+    != t("No credit card or phone required")
+  li
+    i.fa.fa-fw.fa-check-circle.text-success
+    = " "
+    = t("Unlimited domains and aliases")
+  li
+    span.align-middle
+      i.fa.fa-fw.fa-check-circle.text-success
+      = " "
+      = t("Send outbound SMTP email")
+      = " "
+    a.badge.badge-pill.badge-primary.text-uppercase.d-inline(
+      href=l("/guides/send-email-with-custom-domain-smtp")
+    )= t("New")
+  li
+    i.fa.fa-fw.fa-check-circle.text-success
+    = " "
+    = t("Email delivery in under 5 seconds")
+  li
+    i.fa.fa-fw.fa-check-circle.text-success
+    = " "
+    = t("Error logs and developer API access")
+  //-.
+    li
+      i.fa.fa-fw.fa-lock.text-dark
+      = " "
+      = t("Secure email encryption standards")
+    li
+      i.fa.fa-fw.fa-github.text-dark
+      = " "
+      = t("100% open-source software")
+      = " "
+      a.badge.badge-pill.badge-dark.text-uppercase.d-inline(
+        href="https://github.com/forwardemail",
+        target="_blank",
+        rel="noopener noreferrer"
+      )
+        = "GitHub"
+        = " "
+        i.fa.fa-external-link
+    li
+      i.fa.fa-fw.fa-server.text-dark
+      = " "
+      = t("Powered by bare metal servers")
+      = " "
+      a.badge.badge-pill.badge-dark.text-uppercase.d-inline(
+        href="https://status.forwardemail.net"
+        target="_blank",
+        rel="noopener noreferrer"
+      )
+        = "Status Page"
+        = " "
+        i.fa.fa-external-link

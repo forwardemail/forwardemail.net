@@ -4276,5 +4276,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Hvis du har spørsmål eller trenger hjelp med oppsett, vennligst <a href=\"%s\" class=\"alert-link\" target=\"_blank\">kontakt oss</a> .",
   "Purpose": "Hensikt",
   "Learn more on Wikipedia": "Lær mer på Wikipedia",
-  "Go to Advanced Settings": "Gå til Avanserte innstillinger"
+  "Go to Advanced Settings": "Gå til Avanserte innstillinger",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis privat sikker e-post for tilpassede domener &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Hvordan sette opp gratis videresending av e-post, privat bedrifts-e-post og sende utgående SMTP-e-post for egendefinerte domener.",
+  "Outbound SMTP is now available!": "Utgående SMTP er nå tilgjengelig!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Gratis, privat og sikkert</mark> e-post for egendefinerte domener.",
+  "Send outbound SMTP email": "Send utgående SMTP-e-post",
+  "Email delivery in under 5 seconds": "E-postlevering på under 5 sekunder",
+  "Error logs and developer API access": "Feillogger og API-tilgang for utvikler",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Gratis privat sikker e-post &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Lag din gratis, private, sikre e-post for profesjonell virksomhet og bedrift.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Gratis, privat og sikkert</mark> e-post for bedrifter og bedrifter.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Hvordan konfigurere e-post for egendefinerte domenenavn, utgående SMTP-tjeneste og mer."
 }

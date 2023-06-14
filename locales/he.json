@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "אם יש לך שאלות או זקוק לעזרה בהגדרה, אנא <a href=\"%s\" class=\"alert-link\" target=\"_blank\">צור איתנו קשר</a> .",
   "Purpose": "מַטָרָה",
   "Learn more on Wikipedia": "למידע נוסף בויקיפדיה",
-  "Go to Advanced Settings": "עבור אל הגדרות מתקדמות"
+  "Go to Advanced Settings": "עבור אל הגדרות מתקדמות",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "דוא&quot;ל מאובטח פרטי בחינם לדומיינים מותאמים אישית &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "כיצד להגדיר העברת אימייל בחינם, דוא\"ל עסקי פרטי ושליחת דוא\"ל SMTP יוצא לדומיינים מותאמים אישית.",
+  "Outbound SMTP is now available!": "SMTP יוצא זמין כעת!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>חינם, פרטי ומאובטח</mark> דוא&quot;ל עבור דומיינים מותאמים אישית.",
+  "Send outbound SMTP email": "שלח דוא\"ל SMTP יוצא",
+  "Email delivery in under 5 seconds": "משלוח דוא\"ל תוך פחות מ-5 שניות",
+  "Error logs and developer API access": "יומני שגיאות וגישה למפתחים לממשק API",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "עסקי ארגוני חינם פרטי מאובטח דואר אלקטרוני &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "צור את הדוא\"ל שלך בחינם, פרטי ומאובטח עבור עסקים וארגונים מקצועיים.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>חינם, פרטי ומאובטח</mark> דואר אלקטרוני לעסקים ולארגונים.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "כיצד להגדיר דואר אלקטרוני עבור שמות דומיין מותאמים אישית, שירות SMTP יוצא ועוד."
 }

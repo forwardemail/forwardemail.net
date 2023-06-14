@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Nếu bạn có thắc mắc hoặc cần trợ giúp về thiết lập, vui lòng <a href=\"%s\" class=\"alert-link\" target=\"_blank\">liên hệ với chúng tôi</a> .",
   "Purpose": "Mục đích",
   "Learn more on Wikipedia": "Tìm hiểu thêm trên Wikipedia",
-  "Go to Advanced Settings": "Chuyển đến Cài đặt nâng cao"
+  "Go to Advanced Settings": "Chuyển đến Cài đặt nâng cao",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Email bảo mật riêng miễn phí cho miền tùy chỉnh &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Cách thiết lập chuyển tiếp email miễn phí, email doanh nghiệp riêng và gửi email SMTP ra nước ngoài cho các miền tùy chỉnh.",
+  "Outbound SMTP is now available!": "SMTP gửi đi hiện đã có sẵn!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Miễn phí, riêng tư và an toàn</mark> email cho các miền tùy chỉnh.",
+  "Send outbound SMTP email": "Gửi email SMTP ra nước ngoài",
+  "Email delivery in under 5 seconds": "Gửi email dưới 5 giây",
+  "Error logs and developer API access": "Nhật ký lỗi và quyền truy cập API của nhà phát triển",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Doanh nghiệp Doanh nghiệp Email Bảo mật Riêng tư Miễn phí &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Tạo email miễn phí, riêng tư, an toàn cho doanh nghiệp và doanh nghiệp chuyên nghiệp.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Miễn phí, riêng tư và an toàn</mark> email cho doanh nghiệp và doanh nghiệp.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Cách định cấu hình email cho tên miền tùy chỉnh, dịch vụ SMTP gửi đi, v.v."
 }

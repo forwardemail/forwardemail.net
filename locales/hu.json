@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Ha kérdése van, vagy segítségre van szüksége a beállítással kapcsolatban, <a href=\"%s\" class=\"alert-link\" target=\"_blank\">forduljon hozzánk</a> .",
   "Purpose": "Célja",
   "Learn more on Wikipedia": "Tudjon meg többet a Wikipédián",
-  "Go to Advanced Settings": "Nyissa meg a Speciális beállításokat"
+  "Go to Advanced Settings": "Nyissa meg a Speciális beállításokat",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Ingyenes privát biztonságos e-mail egyéni domainekhez &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Hogyan állíthat be ingyenes e-mail-átirányítást, privát üzleti e-maileket és kimenő SMTP-e-maileket küldhet egyéni domainekhez.",
+  "Outbound SMTP is now available!": "A kimenő SMTP már elérhető!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Ingyenes, privát és biztonságos</mark> e-mail az egyéni domainekhez.",
+  "Send outbound SMTP email": "Kimenő SMTP e-mail küldése",
+  "Email delivery in under 5 seconds": "E-mail kézbesítés kevesebb mint 5 másodpercen belül",
+  "Error logs and developer API access": "Hibanaplók és fejlesztői API-hozzáférés",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Ingyenes privát biztonságos e-mail &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Készítse el ingyenes, privát, biztonságos e-mailjét professzionális üzleti és vállalkozási célokra.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Ingyenes, privát és biztonságos</mark> e-mail üzleti és vállalati.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Az e-mail konfigurálása egyéni tartománynevekhez, kimenő SMTP-szolgáltatáshoz stb."
 }

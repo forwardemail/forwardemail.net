@@ -28,20 +28,20 @@ module.exports = function (config) {
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
     '/': [
-      `Free Email Forwarding - Send email custom domain ${lad}`,
-      'How to set up free email forwarding, private business email, and send mail with custom domain.'
+      `Free Private Secure Email for Custom Domains ${lad}`,
+      'How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.'
     ],
     '/about': [
       `About ${lad}`,
       `Learn more about ${config.appName} and the history of our service.`
     ],
     '/private-business-email': [
-      `Private Business Email - Free Professional Email ${lad}`,
-      'Create your private, free, and professional business email for free.'
+      `Business Enterprise Free Private Secure Email ${lad}`,
+      'Create your free, private, secure email for professional business and enterprise.'
     ],
     '/faq': [
       `Frequently Asked Questions ${lad}`,
-      'Free DNS email forwarding configuration, questions, guides, and answers.'
+      'How to configure email for custom domain names, outbound SMTP service, and more.'
     ],
     '/email-forwarding-api': [
       `Email Forwarding API ${lad}`,

@@ -3962,5 +3962,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "如果您有任何疑问或需要设置方面的帮助，请<a href=\"%s\" class=\"alert-link\" target=\"_blank\">联系我们</a>。",
   "Purpose": "目的",
   "Learn more on Wikipedia": "在维基百科上了解更多",
-  "Go to Advanced Settings": "进入高级设置"
+  "Go to Advanced Settings": "进入高级设置",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "自定义域的免费私人安全电子邮件 &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "如何设置免费电子邮件转发、私人企业电子邮件以及为自定义域发送出站 SMTP 电子邮件。",
+  "Outbound SMTP is now available!": "出站 SMTP 现已可用！",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>免费、私密且安全</mark>自定义域的电子邮件。",
+  "Send outbound SMTP email": "发送出站 SMTP 电子邮件",
+  "Email delivery in under 5 seconds": "5 秒内发送电子邮件",
+  "Error logs and developer API access": "错误日志和开发人员 API 访问",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "企业免费私人安全电子邮件 &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "为专业企业和企业创建免费、私人、安全的电子邮件。",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>免费、私密且安全</mark>用于商业和企业的电子邮件。",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "如何为自定义域名、出站 SMTP 服务等配置电子邮件。"
 }

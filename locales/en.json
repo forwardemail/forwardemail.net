@@ -4035,5 +4035,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.",
   "Purpose": "Purpose",
   "Learn more on Wikipedia": "Learn more on Wikipedia",
-  "Go to Advanced Settings": "Go to Advanced Settings"
+  "Go to Advanced Settings": "Go to Advanced Settings",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.",
+  "Outbound SMTP is now available!": "Outbound SMTP is now available!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Free, private, and secure</mark> email for custom domains.",
+  "Send outbound SMTP email": "Send outbound SMTP email",
+  "Email delivery in under 5 seconds": "Email delivery in under 5 seconds",
+  "Error logs and developer API access": "Error logs and developer API access",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Create your free, private, secure email for professional business and enterprise.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Free, private, and secure</mark> email for business and enterprise.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "How to configure email for custom domain names, outbound SMTP service, and more."
 }

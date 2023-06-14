@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Als je vragen hebt of hulp nodig hebt bij het instellen, neem dan <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact met ons op</a> .",
   "Purpose": "Doel",
   "Learn more on Wikipedia": "Lees meer op Wikipedia",
-  "Go to Advanced Settings": "Ga naar Geavanceerde instellingen"
+  "Go to Advanced Settings": "Ga naar Geavanceerde instellingen",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis privé beveiligde e-mail voor aangepaste domeinen &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Hoe u gratis e-mail doorsturen, zakelijke privé-e-mail kunt instellen en uitgaande SMTP-e-mail kunt verzenden voor aangepaste domeinen.",
+  "Outbound SMTP is now available!": "Uitgaande SMTP is nu beschikbaar!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Gratis, privé en veilig</mark> e-mail voor aangepaste domeinen.",
+  "Send outbound SMTP email": "Verzend uitgaande SMTP-e-mail",
+  "Email delivery in under 5 seconds": "E-mailbezorging in minder dan 5 seconden",
+  "Error logs and developer API access": "Foutlogboeken en API-toegang voor ontwikkelaars",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Zakelijk Enterprise Gratis Privé Beveiligde e-mail &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Creëer uw gratis, privé, veilige e-mail voor professionele bedrijven en ondernemingen.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Gratis, privé en veilig</mark> e-mail voor bedrijven en ondernemingen.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "E-mail configureren voor aangepaste domeinnamen, uitgaande SMTP-service en meer."
 }

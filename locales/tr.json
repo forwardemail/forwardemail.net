@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Sorularınız varsa veya kurulumla ilgili yardıma ihtiyacınız varsa, lütfen <a href=\"%s\" class=\"alert-link\" target=\"_blank\">bizimle iletişime geçin</a> .",
   "Purpose": "Amaç",
   "Learn more on Wikipedia": "Wikipedia'da daha fazla bilgi edinin",
-  "Go to Advanced Settings": "Gelişmiş Ayarlar'a gidin"
+  "Go to Advanced Settings": "Gelişmiş Ayarlar'a gidin",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Özel Etki Alanları için Ücretsiz Özel Güvenli E-posta &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Ücretsiz e-posta yönlendirme, özel iş e-postası nasıl kurulur ve özel alanlar için giden SMTP e-postası nasıl gönderilir?",
+  "Outbound SMTP is now available!": "Giden SMTP artık kullanılabilir!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Ücretsiz, özel ve güvenli</mark> özel etki alanları için e-posta.",
+  "Send outbound SMTP email": "Giden SMTP e-postası gönder",
+  "Email delivery in under 5 seconds": "5 saniyenin altında e-posta teslimi",
+  "Error logs and developer API access": "Hata günlükleri ve geliştirici API erişimi",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Ticari Kurumsal Ücretsiz Özel Güvenli E-posta &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Profesyonel iş ve kuruluşlar için ücretsiz, özel, güvenli e-postanızı oluşturun.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Ücretsiz, özel ve güvenli</mark> işletme ve kuruluş için e-posta.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Özel alan adları, giden SMTP hizmeti ve daha fazlası için e-posta nasıl yapılandırılır."
 }

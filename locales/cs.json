@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Pokud máte dotazy nebo potřebujete pomoc s nastavením, <a href=\"%s\" class=\"alert-link\" target=\"_blank\">kontaktujte nás</a> .",
   "Purpose": "Účel",
   "Learn more on Wikipedia": "Více se dozvíte na Wikipedii",
-  "Go to Advanced Settings": "Přejděte na Pokročilá nastavení"
+  "Go to Advanced Settings": "Přejděte na Pokročilá nastavení",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Bezplatný soukromý zabezpečený e-mail pro vlastní domény &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Jak nastavit bezplatné přeposílání e-mailů, soukromý firemní e-mail a odesílat odchozí e-maily SMTP pro vlastní domény.",
+  "Outbound SMTP is now available!": "Odchozí SMTP je nyní k dispozici!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Zdarma, soukromé a bezpečné</mark> e-mail pro vlastní domény.",
+  "Send outbound SMTP email": "Odeslat odchozí e-mail SMTP",
+  "Email delivery in under 5 seconds": "Doručení e-mailu do 5 sekund",
+  "Error logs and developer API access": "Protokoly chyb a přístup k rozhraní API pro vývojáře",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Zdarma soukromý zabezpečený e-mail &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Vytvořte si svůj bezplatný, soukromý a bezpečný e-mail pro profesionální podnikání a podnikání.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Zdarma, soukromé a bezpečné</mark> e-mail pro firmy a podniky.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Jak nakonfigurovat e-mail pro vlastní názvy domén, odchozí službu SMTP a další."
 }

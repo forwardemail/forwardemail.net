@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Si tiene preguntas o necesita ayuda con la configuración, <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contáctenos</a> .",
   "Purpose": "Objetivo",
   "Learn more on Wikipedia": "Más información en Wikipedia",
-  "Go to Advanced Settings": "Ir a Configuración avanzada"
+  "Go to Advanced Settings": "Ir a Configuración avanzada",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Correo electrónico seguro privado gratuito para dominios personalizados &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Cómo configurar el reenvío de correo electrónico gratuito, el correo electrónico empresarial privado y el envío de correo electrónico SMTP saliente para dominios personalizados.",
+  "Outbound SMTP is now available!": "¡SMTP saliente ya está disponible!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Gratis, privado y seguro</mark> correo electrónico para dominios personalizados.",
+  "Send outbound SMTP email": "Enviar correo electrónico SMTP saliente",
+  "Email delivery in under 5 seconds": "Entrega de correo electrónico en menos de 5 segundos",
+  "Error logs and developer API access": "Registros de errores y acceso a la API del desarrollador",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Correo electrónico seguro, privado y gratuito &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Cree su correo electrónico gratuito, privado y seguro para empresas y negocios profesionales.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Gratis, privado y seguro</mark> correo electrónico para negocios y empresas.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Cómo configurar el correo electrónico para nombres de dominio personalizados, servicio SMTP saliente y más."
 }

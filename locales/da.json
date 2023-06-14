@@ -4007,5 +4007,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Hvis du har spørgsmål eller brug for hjælp til opsætning, så <a href=\"%s\" class=\"alert-link\" target=\"_blank\">kontakt os</a> venligst.",
   "Purpose": "Formål",
   "Learn more on Wikipedia": "Lær mere på Wikipedia",
-  "Go to Advanced Settings": "Gå til Avancerede indstillinger"
+  "Go to Advanced Settings": "Gå til Avancerede indstillinger",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis privat sikker e-mail til brugerdefinerede domæner &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Sådan opsætter du gratis videresendelse af e-mail, privat virksomheds-e-mail og sender udgående SMTP-e-mail til tilpassede domæner.",
+  "Outbound SMTP is now available!": "Udgående SMTP er nu tilgængelig!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Gratis, privat og sikkert</mark> e-mail for brugerdefinerede domæner.",
+  "Send outbound SMTP email": "Send udgående SMTP-e-mail",
+  "Email delivery in under 5 seconds": "E-mail levering på under 5 sekunder",
+  "Error logs and developer API access": "Fejllogfiler og udvikler-API-adgang",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Gratis privat sikker e-mail &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Opret din gratis, private, sikre e-mail til professionelle virksomheder og virksomheder.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Gratis, privat og sikkert</mark> e-mail til virksomheder og virksomheder.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Sådan konfigureres e-mail til tilpassede domænenavne, udgående SMTP-tjeneste og mere."
 }

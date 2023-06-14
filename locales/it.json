@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Se hai domande o hai bisogno di aiuto con la configurazione, <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contattaci</a> .",
   "Purpose": "Scopo",
   "Learn more on Wikipedia": "Scopri di più su Wikipedia",
-  "Go to Advanced Settings": "Vai su Impostazioni avanzate"
+  "Go to Advanced Settings": "Vai su Impostazioni avanzate",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Email privata sicura gratuita per domini personalizzati &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Come configurare l'inoltro e-mail gratuito, l'e-mail aziendale privata e l'invio di e-mail SMTP in uscita per domini personalizzati.",
+  "Outbound SMTP is now available!": "L'SMTP in uscita è ora disponibile!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Gratuito, privato e sicuro</mark> email per domini personalizzati.",
+  "Send outbound SMTP email": "Invia email SMTP in uscita",
+  "Email delivery in under 5 seconds": "Consegna e-mail in meno di 5 secondi",
+  "Error logs and developer API access": "Log degli errori e accesso all'API dello sviluppatore",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Gratuito Privato Email Sicura &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Crea la tua e-mail gratuita, privata e sicura per aziende e aziende professionali.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Gratuito, privato e sicuro</mark> e-mail per aziende e imprese.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Come configurare la posta elettronica per nomi di dominio personalizzati, servizio SMTP in uscita e altro."
 }

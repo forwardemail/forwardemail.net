@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "หากคุณมีคำถามหรือต้องการความช่วยเหลือในการตั้งค่า โปรด <a href=\"%s\" class=\"alert-link\" target=\"_blank\">ติดต่อเรา</a>",
   "Purpose": "วัตถุประสงค์",
   "Learn more on Wikipedia": "เรียนรู้เพิ่มเติมเกี่ยวกับวิกิพีเดีย",
-  "Go to Advanced Settings": "ไปที่การตั้งค่าขั้นสูง"
+  "Go to Advanced Settings": "ไปที่การตั้งค่าขั้นสูง",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "ฟรีอีเมลส่วนตัวที่ปลอดภัยสำหรับโดเมนที่กำหนดเอง &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "วิธีตั้งค่าการส่งต่ออีเมลฟรี อีเมลธุรกิจส่วนตัว และส่งอีเมล SMTP ขาออกสำหรับโดเมนที่กำหนดเอง",
+  "Outbound SMTP is now available!": "SMTP ขาออกพร้อมใช้งานแล้ว!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>ฟรี เป็นส่วนตัว และปลอดภัย</mark> อีเมลสำหรับโดเมนที่กำหนดเอง",
+  "Send outbound SMTP email": "ส่งอีเมล SMTP ขาออก",
+  "Email delivery in under 5 seconds": "ส่งอีเมลภายใน 5 วินาที",
+  "Error logs and developer API access": "บันทึกข้อผิดพลาดและการเข้าถึง API ของนักพัฒนาซอฟต์แวร์",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "อีเมลส่วนตัวที่ปลอดภัยสำหรับองค์กรธุรกิจฟรี &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "สร้างอีเมลส่วนตัวที่ปลอดภัยฟรีสำหรับธุรกิจและองค์กรระดับมืออาชีพ",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>ฟรี เป็นส่วนตัว และปลอดภัย</mark> อีเมลสำหรับธุรกิจและองค์กร",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "วิธีกำหนดค่าอีเมลสำหรับชื่อโดเมนที่กำหนดเอง บริการ SMTP ขาออก และอื่นๆ"
 }

@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "إذا كانت لديك أسئلة أو تحتاج إلى مساعدة في الإعداد ، فيرجى <a href=\"%s\" class=\"alert-link\" target=\"_blank\">الاتصال بنا</a> .",
   "Purpose": "غاية",
   "Learn more on Wikipedia": "تعرف على المزيد على ويكيبيديا",
-  "Go to Advanced Settings": "انتقل إلى الإعدادات المتقدمة"
+  "Go to Advanced Settings": "انتقل إلى الإعدادات المتقدمة",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "بريد إلكتروني آمن خاص مجاني للمجالات المخصصة &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "كيفية إعداد إعادة توجيه البريد الإلكتروني المجاني ، والبريد الإلكتروني الخاص بالعمل ، وإرسال بريد SMTP الإلكتروني الصادر للنطاقات المخصصة.",
+  "Outbound SMTP is now available!": "SMTP الصادر متاح الآن!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>مجاني وخاص وآمن</mark> البريد الإلكتروني للمجالات المخصصة.",
+  "Send outbound SMTP email": "إرسال بريد SMTP الإلكتروني الصادر",
+  "Email delivery in under 5 seconds": "تسليم البريد الإلكتروني في أقل من 5 ثوان",
+  "Error logs and developer API access": "سجلات الأخطاء والوصول إلى واجهة برمجة التطبيقات للمطورين",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "بريد إلكتروني آمن خاص ومجاني للشركات التجارية &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "قم بإنشاء بريدك الإلكتروني المجاني والخاص والآمن للأعمال التجارية والمؤسسات المهنية.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>مجاني وخاص وآمن</mark> البريد الإلكتروني للأعمال والمشاريع.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "كيفية تكوين البريد الإلكتروني لأسماء النطاقات المخصصة وخدمة SMTP الصادرة والمزيد."
 }

@@ -21,7 +21,7 @@ mixin registerOrLogin(verb, isModal = false)
           - dataDismissModal = isRegisterOrLogin ? false : "true";
           - dataToggle = isRegisterOrLogin ? false : "modal-anchor";
           - dataTarget = isRegisterOrLogin ? false : "#modal-sign-up";
-        a.alert.alert-warning.text-center.d-block(
+        a.alert.alert-warning.text-center.d-block.text-decoration-none(
           href=anchorHref,
           data-dismiss-modal=dataDismissModal,
           data-toggle=dataToggle,

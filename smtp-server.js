@@ -300,7 +300,10 @@ async function onData(stream, _session, fn) {
     // TODO: implement credit system
 
     logger.info('email created', {
-      session: createSession(email),
+      session: {
+        ...session,
+        ...createSession(email)
+      },
       user: email.user,
       email: email._id,
       domains: [email.domain],

@@ -31,9 +31,10 @@ block body
         .row
           .col-12.col-lg-6
             h1.mb-3
-              = t("Set up your private business email for free")
               if isBot(ctx.get('User-Agent'))
-                = "."
+                = t("Free, private, and secure email for business and enterprise.")
+              else
+                != t("<mark>Free, private, and secure</mark> email for business and enterprise.")
             p
               = t("Create your free, private, and professional business email.")
               = " "
@@ -47,34 +48,7 @@ block body
                     data-target="#modal-sign-up"
                   )
                     = t("Try for free")
-            ul.list-unstyled.mb-3.text-left
-              li
-                i.fa.fa-fw.fa-check-circle.text-success
-                = " "
-                != t("Completely free to get started")
-              li
-                i.fa.fa-fw.fa-check-circle.text-success
-                = " "
-                != t("Professional email with custom domain")
-              li
-                i.fa.fa-fw.fa-check-circle.text-success
-                = " "
-                = t("Send email with custom domain")
-                = " "
-                a.badge.badge-pill.badge-primary.text-uppercase(
-                  href=l("/guides/send-email-with-custom-domain-smtp")
-                )= t("New")
-              li
-                i.fa.fa-fw.fa-check-circle.text-success
-                = " "
-                != t("Manage your aliases from any device")
-              li
-                i.fa.fa-fw.fa-check-circle.text-success
-                = " "
-                a.font-weight-bold.text-decoration-underline.text-themed.text-decoration-underline(
-                  href="#features"
-                )
-                  = t("Premium features for only $3")
+            include _feature-list
             ul.list-inline
               if !isBot(ctx.get('User-Agent'))
                 li.list-inline-item
@@ -180,7 +154,7 @@ block body
                 a.font-weight-bold.text-themed.text-decoration-underline(
                   href=l("/guides/send-mail-as-gmail-custom-domain")
                 )
-                  != t("Send email with your custom domain")
+                  = t("Send outbound SMTP email")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 = " "

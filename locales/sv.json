@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Om du har frågor eller behöver hjälp med installationen, vänligen <a href=\"%s\" class=\"alert-link\" target=\"_blank\">kontakta oss</a> .",
   "Purpose": "Syfte",
   "Learn more on Wikipedia": "Läs mer på Wikipedia",
-  "Go to Advanced Settings": "Gå till Avancerade inställningar"
+  "Go to Advanced Settings": "Gå till Avancerade inställningar",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis privat säker e-post för anpassade domäner &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Hur man ställer in gratis vidarebefordran av e-post, privat företags-e-post och skickar utgående SMTP-e-post för anpassade domäner.",
+  "Outbound SMTP is now available!": "Utgående SMTP är nu tillgängligt!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Gratis, privat och säkert</mark> e-post för anpassade domäner.",
+  "Send outbound SMTP email": "Skicka utgående SMTP-e-post",
+  "Email delivery in under 5 seconds": "E-postleverans på under 5 sekunder",
+  "Error logs and developer API access": "Felloggar och API-åtkomst för utvecklare",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Gratis privat säker e-post &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Skapa din gratis, privata, säkra e-post för professionella företag och företag.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Gratis, privat och säkert</mark> e-post för företag och företag.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Hur man konfigurerar e-post för anpassade domännamn, utgående SMTP-tjänst och mer."
 }

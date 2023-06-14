@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Якщо у вас є запитання або потрібна допомога з налаштуванням, <a href=\"%s\" class=\"alert-link\" target=\"_blank\">зв’яжіться з нами</a> .",
   "Purpose": "призначення",
   "Learn more on Wikipedia": "Дізнайтесь більше у Вікіпедії",
-  "Go to Advanced Settings": "Перейдіть до додаткових налаштувань"
+  "Go to Advanced Settings": "Перейдіть до додаткових налаштувань",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Безкоштовна приватна безпечна електронна пошта для користувацьких доменів &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Як налаштувати безкоштовне пересилання електронної пошти, приватну корпоративну електронну пошту та надсилання вихідної електронної пошти SMTP для користувацьких доменів.",
+  "Outbound SMTP is now available!": "Вихідний SMTP тепер доступний!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Безкоштовно, приватно та безпечно</mark> електронна пошта для користувацьких доменів.",
+  "Send outbound SMTP email": "Надсилати вихідну електронну пошту SMTP",
+  "Email delivery in under 5 seconds": "Доставка електронної пошти менш ніж за 5 секунд",
+  "Error logs and developer API access": "Журнали помилок і доступ розробника до API",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Безкоштовна приватна захищена електронна пошта &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Створіть свою безкоштовну, приватну, безпечну електронну пошту для професійного бізнесу та підприємства.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Безкоштовно, приватно та безпечно</mark> електронна пошта для бізнесу та підприємства.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Як налаштувати електронну пошту для власних доменних імен, вихідної служби SMTP тощо."
 }

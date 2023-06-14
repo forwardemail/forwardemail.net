@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Si vous avez des questions ou avez besoin d&#39;aide pour la configuration, veuillez <a href=\"%s\" class=\"alert-link\" target=\"_blank\">nous contacter</a> .",
   "Purpose": "But",
   "Learn more on Wikipedia": "En savoir plus sur Wikipédia",
-  "Go to Advanced Settings": "Allez dans Paramètres avancés"
+  "Go to Advanced Settings": "Allez dans Paramètres avancés",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "E-mail sécurisé privé gratuit pour les domaines personnalisés &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Comment configurer le transfert d'e-mails gratuit, l'e-mail professionnel privé et l'envoi d'e-mails SMTP sortants pour des domaines personnalisés.",
+  "Outbound SMTP is now available!": "Le SMTP sortant est maintenant disponible !",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Gratuit, privé et sécurisé</mark> e-mail pour les domaines personnalisés.",
+  "Send outbound SMTP email": "Envoyer un e-mail SMTP sortant",
+  "Email delivery in under 5 seconds": "Livraison des e-mails en moins de 5 secondes",
+  "Error logs and developer API access": "Journaux d'erreurs et accès à l'API développeur",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Courriel sécurisé privé gratuit pour les entreprises &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Créez votre e-mail gratuit, privé et sécurisé pour les entreprises et les professionnels.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Gratuit, privé et sécurisé</mark> e-mail pour les entreprises et les entreprises.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Comment configurer la messagerie pour les noms de domaine personnalisés, le service SMTP sortant, etc."
 }

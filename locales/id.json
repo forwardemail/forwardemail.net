@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Jika Anda memiliki pertanyaan atau memerlukan bantuan dengan penyiapan, silakan <a href=\"%s\" class=\"alert-link\" target=\"_blank\">hubungi kami</a> .",
   "Purpose": "Tujuan",
   "Learn more on Wikipedia": "Pelajari lebih lanjut di Wikipedia",
-  "Go to Advanced Settings": "Buka Pengaturan Lanjutan"
+  "Go to Advanced Settings": "Buka Pengaturan Lanjutan",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Email Aman Pribadi Gratis untuk Domain Kustom &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Cara menyiapkan penerusan email gratis, email bisnis pribadi, dan mengirim email SMTP keluar untuk domain kustom.",
+  "Outbound SMTP is now available!": "SMTP keluar sekarang tersedia!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Gratis, pribadi, dan aman</mark> email untuk domain khusus.",
+  "Send outbound SMTP email": "Kirim email SMTP keluar",
+  "Email delivery in under 5 seconds": "Pengiriman email dalam waktu kurang dari 5 detik",
+  "Error logs and developer API access": "Log kesalahan dan akses API pengembang",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Email Aman Pribadi Perusahaan Bisnis Gratis &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Buat email Anda yang gratis, pribadi, dan aman untuk bisnis dan perusahaan profesional.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Gratis, pribadi, dan aman</mark> email untuk bisnis dan perusahaan.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Cara mengonfigurasi email untuk nama domain khusus, layanan SMTP keluar, dan lainnya."
 }

@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "ご質問がある場合、またはセットアップに関してサポートが必要な場合は、<a href=\"%s\" class=\"alert-link\" target=\"_blank\">お問い合わせください</a>。",
   "Purpose": "目的",
   "Learn more on Wikipedia": "ウィキペディアでさらに詳しく",
-  "Go to Advanced Settings": "詳細設定に移動します"
+  "Go to Advanced Settings": "詳細設定に移動します",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "カスタム ドメイン向けの無料のプライベート セキュア メール &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "無料の電子メール転送、プライベート ビジネス電子メールを設定し、カスタム ドメインに対して送信 SMTP 電子メールを送信する方法。",
+  "Outbound SMTP is now available!": "アウトバウンド SMTP が利用可能になりました。",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>無料、プライベート、そして安全</mark>カスタム ドメインの電子メール。",
+  "Send outbound SMTP email": "アウトバウンド SMTP 電子メールを送信する",
+  "Email delivery in under 5 seconds": "5秒以内にメール配信",
+  "Error logs and developer API access": "エラーログと開発者APIアクセス",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "ビジネス エンタープライズ 無料のプライベート セキュア メール &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "プロフェッショナルなビジネスや企業向けに、無料でプライベートで安全なメールを作成します。",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>無料、プライベート、そして安全</mark>ビジネスやエンタープライズ向けの電子メール。",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "カスタム ドメイン名、送信 SMTP サービスなどの電子メールを構成する方法。"
 }

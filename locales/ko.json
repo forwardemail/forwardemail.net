@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "질문이 있거나 설정에 대한 도움이 필요한 경우 <a href=\"%s\" class=\"alert-link\" target=\"_blank\">당사에 문의하십시오</a> .",
   "Purpose": "목적",
   "Learn more on Wikipedia": "Wikipedia에서 자세히 알아보기",
-  "Go to Advanced Settings": "고급 설정으로 이동"
+  "Go to Advanced Settings": "고급 설정으로 이동",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "맞춤형 도메인을 위한 무료 개인 보안 이메일 &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "무료 이메일 전달, 개인 비즈니스 이메일을 설정하고 사용자 지정 도메인에 대한 아웃바운드 SMTP 이메일을 보내는 방법.",
+  "Outbound SMTP is now available!": "이제 아웃바운드 SMTP를 사용할 수 있습니다!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>무료, 비공개 및 보안</mark> 사용자 정의 도메인에 대한 이메일.",
+  "Send outbound SMTP email": "아웃바운드 SMTP 이메일 보내기",
+  "Email delivery in under 5 seconds": "5초 이내에 이메일 전송",
+  "Error logs and developer API access": "오류 로그 및 개발자 API 액세스",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "비즈니스 엔터프라이즈 무료 개인 보안 이메일 &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "전문 비즈니스 및 엔터프라이즈를 위한 무료 개인 보안 이메일을 만드십시오.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>무료, 비공개 및 보안</mark> 비즈니스 및 기업용 이메일.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "사용자 정의 도메인 이름, 아웃바운드 SMTP 서비스 등에 대해 이메일을 구성하는 방법."
 }

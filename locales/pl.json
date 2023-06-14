@@ -4271,5 +4271,16 @@
   "If you have questions or need help with setup, then please <a href=\"%s\" class=\"alert-link\" target=\"_blank\">contact us</a>.": "Jeśli masz pytania lub potrzebujesz pomocy przy konfiguracji, <a href=\"%s\" class=\"alert-link\" target=\"_blank\">skontaktuj się z nami</a> .",
   "Purpose": "Zamiar",
   "Learn more on Wikipedia": "Dowiedz się więcej na Wikipedii",
-  "Go to Advanced Settings": "Przejdź do Ustawień zaawansowanych"
+  "Go to Advanced Settings": "Przejdź do Ustawień zaawansowanych",
+  "Free Private Secure Email for Custom Domains &#124; <span class=\"notranslate\">Forward Email</span>": "Bezpłatna prywatna bezpieczna poczta e-mail dla domen niestandardowych &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.": "Jak skonfigurować bezpłatne przekazywanie poczty e-mail, prywatną firmową pocztę e-mail i wysyłać wychodzące wiadomości e-mail SMTP dla domen niestandardowych.",
+  "Outbound SMTP is now available!": "Wychodzący SMTP jest już dostępny!",
+  "<mark>Free, private, and secure</mark> email for custom domains.": "<mark>Darmowe, prywatne i bezpieczne</mark> e-mail dla domen niestandardowych.",
+  "Send outbound SMTP email": "Wysyłaj wychodzące wiadomości e-mail SMTP",
+  "Email delivery in under 5 seconds": "Dostarczenie wiadomości e-mail w mniej niż 5 sekund",
+  "Error logs and developer API access": "Dzienniki błędów i dostęp do API dla programistów",
+  "Business Enterprise Free Private Secure Email &#124; <span class=\"notranslate\">Forward Email</span>": "Business Enterprise Bezpłatna prywatna bezpieczna poczta e-mail &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Create your free, private, secure email for professional business and enterprise.": "Stwórz bezpłatną, prywatną i bezpieczną pocztę e-mail dla profesjonalnej firmy i przedsiębiorstwa.",
+  "<mark>Free, private, and secure</mark> email for business and enterprise.": "<mark>Darmowe, prywatne i bezpieczne</mark> e-mail dla firm i przedsiębiorstw.",
+  "How to configure email for custom domain names, outbound SMTP service, and more.": "Jak skonfigurować pocztę e-mail dla niestandardowych nazw domen, wychodzącej usługi SMTP i nie tylko."
 }
