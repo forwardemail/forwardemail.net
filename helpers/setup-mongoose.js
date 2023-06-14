@@ -1,6 +1,10 @@
 const pRetry = require('p-retry');
 const mongoose = require('mongoose');
 
+// initialize all models
+// eslint-disable-next-line import/no-unassigned-import
+require('#models');
+
 function setupMongoose(logger = console) {
   //
   // this will attempt to reconnect with exponential backoff up to 10x

@@ -1,7 +1,6 @@
 const Axe = require('axe');
 const Cabin = require('cabin');
 const cuid = require('cuid');
-const pWaitFor = require('p-wait-for');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const superagent = require('superagent');
@@ -75,15 +74,8 @@ async function hook(err, message, meta) {
         (conn) => conn[connectionNameSymbol] === 'LOGS_MONGO_URI'
       );
       if (!conn) throw new Error('Mongoose connection does not exist');
-      if (
-        pWaitFor &&
-        (!conn.models || !conn.models.Logs || !conn.models.Logs.create)
-      )
-        await pWaitFor(
-          () =>
-            Boolean(conn.models && conn.models.Logs && conn.models.Logs.create),
-          { timeout: 3000 }
-        );
+      if (!conn.models || !conn.models.Logs || !conn.models.Logs.create)
+        throw new Error('Mongoose logs model not yet initialized');
 
       const log = { err, message, meta };
 

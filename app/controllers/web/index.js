@@ -132,12 +132,41 @@ async function recipientVerification(ctx) {
   }
 }
 
-async function generateOpenGraphImage(ctx) {
+// fetches all pages from sitemap
+// TODO: if you change this then also change sitemap controller
+const keys = new Set(
+  Object.keys(config.meta).filter((key) => {
+    // exclude certain pages from sitemap
+    // (e.g. 401 not authorized)
+    if (
+      [
+        '/admin',
+        '/my-account',
+        '/help',
+        '/auth',
+        '/logout',
+        '/guides',
+        '/denylist',
+        '/reset-password',
+        config.verifyRoute,
+        config.otpRoutePrefix
+      ].includes(key)
+    )
+      return false;
+    if (key.startsWith('/admin') || key.startsWith('/my-account')) return false;
+    return key;
+  })
+);
+
+async function generateOpenGraphImage(ctx, next) {
   try {
     let url = (ctx.pathWithoutLocale || ctx.path)
       .replace('.png', '')
       .replace('.svg', '');
     if (url === '/index') url = '/';
+
+    // ensure that the URL is in our sitemap otherwise return 404
+    if (!keys.has(url)) return next();
 
     // load seo metadata
     let data = {};
@@ -152,12 +181,14 @@ async function generateOpenGraphImage(ctx) {
     }
 
     if (match === '/') match = `/${ctx.locale}`;
+    else if (match.endsWith('/')) match = match.slice(0, -1);
+    if (match === `/${i18n.config.defaultLocale}`) match = '';
 
     ctx.type = ctx.path.endsWith('.svg') ? 'image/svg+xml' : 'image/png';
 
     let [str] = data.title.replace(' | Forward Email', '').split(' - ');
     str = str.trim();
-    if (str.length > 60) str = str.slice(0, 60) + '...';
+    if (str.length > 50) str = str.slice(0, 50) + '...';
     let freeEmail = ctx.translate('FREE_EMAIL');
     if (freeEmail.length > 20) freeEmail = i18n.translate('FREE_EMAIL', 'en');
     const svgReplaced = SVG_STR.replace(

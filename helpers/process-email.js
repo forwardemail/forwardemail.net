@@ -620,7 +620,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
             throw Boom.badRequest(
               i18n.translateError(
                 'RECENTLY_BLOCKED',
-                i18n.defaultLocale,
+                i18n.config.defaultLocale,
                 target
               )
             );

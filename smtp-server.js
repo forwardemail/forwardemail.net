@@ -299,7 +299,7 @@ async function onData(stream, _session, fn) {
 
     // TODO: implement credit system
 
-    const obj = {
+    logger.info('email created', {
       session: {
         ...session,
         ...createSession(email)
@@ -308,10 +308,7 @@ async function onData(stream, _session, fn) {
       email: email._id,
       domains: [email.domain],
       ignore_hook: false
-    };
-
-    logger.info('email created', obj);
-    console.log('email created', obj);
+    });
 
     setImmediate(fn);
   } catch (err) {

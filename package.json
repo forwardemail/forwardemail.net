@@ -6,7 +6,7 @@
   "browser": {
     "signale": false,
     "mongoose": false,
-    "p-wait-for": false,
+    "#models": false,
     "#models/logs": false,
     "#config/mongoose": false,
     "#config/env": false
@@ -135,7 +135,6 @@
     "p-retry": "4",
     "p-series": "2",
     "p-timeout": "4",
-    "p-wait-for": "3",
     "p-whilst": "2",
     "parse-domain": "5",
     "parse-err": "1.0.0",

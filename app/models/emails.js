@@ -441,7 +441,7 @@ Emails.pre('save', async function (next) {
 // eslint-disable-next-line complexity
 Emails.statics.queue = async function (
   options = {},
-  locale = i18n.defaultLocale
+  locale = i18n.config.defaultLocale
 ) {
   //
   // NOTE: memory-leak warning from nodemailer message docs:

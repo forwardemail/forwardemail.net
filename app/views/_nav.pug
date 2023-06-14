@@ -372,10 +372,9 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
 if user
   noscript
     .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
-else if dayjs().isBefore(dayjs('1/1/24', 'M/D/YY')) && ctx.pathWithoutLocale === '/' || (ctx.pathWithoutLocale === '/private-business-email' && ctx.query.pricing !== 'true')
-  a.alert.alert-primary.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small.d-block.text-decoration-none.mb-0(
-    href=l("/faq#do-you-support-sending-email-with-smtp")
-  )
-    span.alert-link.align-middle= t("Outbound SMTP is now available!")
-    = " "
-    span.font-weight-bold.badge.badge-pill.badge-primary.text-uppercase.d-inline= t("Learn more")
+//-.
+  else if !isBot(ctx.get('User-Agent')) && dayjs().isBefore(dayjs('1/1/24', 'M/D/YY')) && ctx.pathWithoutLocale === '/' || (ctx.pathWithoutLocale === '/private-business-email' && ctx.query.pricing !== 'true')
+    div.text-center.my-3.text-uppercase.lead
+      a.badge.badge-pill.badge-primary(
+        href=l("/faq#do-you-support-sending-email-with-smtp")
+      )= t("Outbound SMTP is now available!")
