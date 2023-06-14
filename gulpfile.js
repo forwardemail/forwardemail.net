@@ -43,6 +43,7 @@ const pump = require('pump');
 const purgeFromPug = require('purgecss-from-pug');
 const purgecss = require('gulp-purgecss');
 const rename = require('gulp-rename');
+const replace = require('gulp-replace');
 const reporter = require('postcss-reporter');
 const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
@@ -273,6 +274,9 @@ function css() {
         cssnano({ autoprefixer: false }),
         reporter()
       ]),
+      // manual hack to override styling dark mode
+      // replace('#191d21', '#000'),
+      replace('#191d21', '#121212'),
       purgecss({
         ...purgeCssOptions,
         content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']

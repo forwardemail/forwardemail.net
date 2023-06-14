@@ -19,6 +19,9 @@ $input-disabled-bg:                     $dark;
   .btn-outline-dark {
     @extend .text-light;
   }
+  .card {
+    background-color: #191d21 !important;
+  }
   .bg-dark, .bg-themed, .navbar-themed {
     background-color: #191d21 !important;
     .btn-outline-dark {
