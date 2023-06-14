@@ -718,7 +718,7 @@ Logs.postCreate(async (doc, next) => {
         } Detected (Log ID ${doc.id})`
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(doc.err, null, 2)}</code></pre>`
+        message: `<pre><code>${JSON.stringify(doc, null, 2)}</code></pre>`
       }
     });
     next();
