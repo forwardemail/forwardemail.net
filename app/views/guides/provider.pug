@@ -71,6 +71,8 @@ block body
           = " "
           = t("Email Setup Guide")
         .small.text-black.text-themed-50.text-uppercase= t("Follow these two steps below")
+        //- Disclaimer
+        .alert.mt-3.mb-0.alert-secondary.small.text-center: span.small!= t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates.', provider.name)
         .card.position-relative.mt-3
           if provider && provider.name && provider.url
             .position-absolute.w-100.text-right

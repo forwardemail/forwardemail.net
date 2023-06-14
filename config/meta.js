@@ -14,6 +14,8 @@
 // before returning them to be rendered in tags such as
 // `<title>` and `<meta name="description">`
 //
+const dayjs = require('dayjs-with-plugins');
+
 const { nsProviders } = require('#config/utilities');
 
 module.exports = function (config) {
@@ -144,7 +146,11 @@ module.exports = function (config) {
   // guides for each provider
   for (const provider of nsProviders) {
     meta[`/guides/${provider.slug}`] = [
-      `Free Email Forwarding for <span class="notranslate">${provider.name}</span> ${lad}`,
+      `<span class="notranslate">${
+        provider.name
+      }</span> Email Setup Guide <span class="notranslate">${dayjs().format(
+        'YYYY'
+      )}</span> ${lad}`,
       `Free and custom domain email forwarding DNS service for <span class="notranslate">${provider.name}</span>.`
     ];
   }

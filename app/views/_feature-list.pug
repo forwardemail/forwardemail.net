@@ -13,45 +13,58 @@ ul.list-unstyled.text-left.mb-3
       = " "
       = t("Send outbound SMTP email")
       = " "
-    a.badge.badge-pill.badge-primary.text-uppercase.d-inline(
+    a.badge.badge-pill.badge-primary.text-uppercase.d-inline.align-middle(
       href=l("/guides/send-email-with-custom-domain-smtp")
     )= t("New")
-  li
-    i.fa.fa-fw.fa-check-circle.text-success
-    = " "
-    = t("Email delivery in under 5 seconds")
-  li
-    i.fa.fa-fw.fa-check-circle.text-success
-    = " "
-    = t("Error logs and developer API access")
   //-.
+    li
+      i.fa.fa-fw.fa-check-circle.text-success
+      = " "
+      = t("Email delivery in under 5 seconds")
+  li
+    i.fa.fa-fw.fa-check-circle.text-success
+    = " "
+    = t("Error logs and real-time alerts")
+  if !user
     li
       i.fa.fa-fw.fa-lock.text-dark
       = " "
-      = t("Secure email encryption standards")
-    li
-      i.fa.fa-fw.fa-github.text-dark
-      = " "
+      a.text-decoration-underline.font-weight-bold.text-dark(
+        href=ctx.pathWithoutLocale === "/private-business-email" ? l("#enterprise-grade") : "#enterprise-grade",
+        data-toggle="tooltip",
+        data-title=t("Learn more"),
+        data-placement="bottom"
+      )= t("Enterprise-grade security")
+  li
+    i.fa.fa-fw.fa-server.text-dark
+    = " "
+    a.text-decoration-underline.font-weight-bold.text-dark(
+      href="https://status.forwardemail.net",
+      target="_blank",
+      rel="noopener noreferrer",
+      data-toggle="tooltip",
+      data-title=t("Visit our status page"),
+      data-placement="bottom"
+    )= t("Powered by bare metal servers")
+  li
+    i.fa.fa-fw.fa-github.text-dark
+    = " "
+    a.text-decoration-underline.font-weight-bold.text-dark(
+      href="https://github.com/forwardemail",
+      target="_blank",
+      rel="noopener noreferrer",
+      data-toggle="tooltip",
+      data-title=t("Visit our GitHub page"),
+      data-placement="bottom"
+    )
       = t("100% open-source software")
-      = " "
-      a.badge.badge-pill.badge-dark.text-uppercase.d-inline(
-        href="https://github.com/forwardemail",
-        target="_blank",
-        rel="noopener noreferrer"
-      )
-        = "GitHub"
-        = " "
-        i.fa.fa-external-link
-    li
-      i.fa.fa-fw.fa-server.text-dark
-      = " "
-      = t("Powered by bare metal servers")
-      = " "
-      a.badge.badge-pill.badge-dark.text-uppercase.d-inline(
-        href="https://status.forwardemail.net"
-        target="_blank",
-        rel="noopener noreferrer"
-      )
-        = "Status Page"
-        = " "
-        i.fa.fa-external-link
+  li
+    i.fa.fa-fw.fa-code.text-dark
+    = " "
+    a.text-decoration-underline.font-weight-bold.text-dark(
+      href=l("/email-forwarding-api"),
+      data-toggle="tooltip",
+      data-title=t("Read our API documentation"),
+      data-placement="bottom"
+    )
+      = t("Email API designed for developers")

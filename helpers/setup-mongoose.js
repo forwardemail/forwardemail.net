@@ -1,6 +1,9 @@
 const pRetry = require('p-retry');
 const mongoose = require('mongoose');
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
 // initialize all models
 // eslint-disable-next-line import/no-unassigned-import
 require('#models');

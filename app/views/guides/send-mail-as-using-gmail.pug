@@ -21,10 +21,12 @@ block body
     .row
       .col-12
         h1.mb-0.text-center!= t("Send Mail As with Gmail")
-        .alert.mt-3.mb-0.alert-primary.text-center
+        .alert.mt-3.alert-primary.text-center
           = t("Not using Gmail?")
           = " "
           a.alert-link(href=l("/guides/send-email-with-custom-domain-smtp"))= t("Click here")
+        //- Disclaimer
+        .alert.mt-3.mb-0.alert-secondary.small.text-center: span.small!= t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates.', 'Gmail')
         //-.
           #quick-video-guide.card.mt-3
             h2.h5.card-header.text-center
