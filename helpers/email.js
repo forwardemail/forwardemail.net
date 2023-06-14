@@ -19,7 +19,6 @@ module.exports = async (data) => {
     if (data?.message?.subject)
       data.message.subject = striptags(data.message.subject);
     const info = await email.send(data);
-    logger.info('email created', { info, data, ignore_hook: false });
     return info;
   } catch (err) {
     logger.error(err, { data });
