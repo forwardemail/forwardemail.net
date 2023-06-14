@@ -27,18 +27,18 @@ ul.list-unstyled.text-left.mb-3
     = t("Error logs and real-time alerts")
   if !user
     li
-      i.fa.fa-fw.fa-lock.text-dark
+      i.fa.fa-fw.fa-lock.text-themed
       = " "
-      a.text-decoration-underline.font-weight-bold.text-dark(
+      a.text-decoration-underline.font-weight-bold.text-themed(
         href=ctx.pathWithoutLocale === "/private-business-email" ? l("#enterprise-grade") : "#enterprise-grade",
         data-toggle="tooltip",
         data-title=t("Learn more"),
         data-placement="bottom"
       )= t("Enterprise-grade security")
   li
-    i.fa.fa-fw.fa-server.text-dark
+    i.fa.fa-fw.fa-server.text-themed
     = " "
-    a.text-decoration-underline.font-weight-bold.text-dark(
+    a.text-decoration-underline.font-weight-bold.text-themed(
       href="https://status.forwardemail.net",
       target="_blank",
       rel="noopener noreferrer",
@@ -47,9 +47,9 @@ ul.list-unstyled.text-left.mb-3
       data-placement="bottom"
     )= t("Powered by bare metal servers")
   li
-    i.fa.fa-fw.fa-github.text-dark
+    i.fa.fa-fw.fa-github.text-themed
     = " "
-    a.text-decoration-underline.font-weight-bold.text-dark(
+    a.text-decoration-underline.font-weight-bold.text-themed(
       href="https://github.com/forwardemail",
       target="_blank",
       rel="noopener noreferrer",
@@ -59,9 +59,9 @@ ul.list-unstyled.text-left.mb-3
     )
       = t("100% open-source software")
   li
-    i.fa.fa-fw.fa-code.text-dark
+    i.fa.fa-fw.fa-code.text-themed
     = " "
-    a.text-decoration-underline.font-weight-bold.text-dark(
+    a.text-decoration-underline.font-weight-bold.text-themed(
       href=l("/email-forwarding-api"),
       data-toggle="tooltip",
       data-title=t("Read our API documentation"),
