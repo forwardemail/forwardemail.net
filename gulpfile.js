@@ -275,8 +275,10 @@ function css() {
         reporter()
       ]),
       // manual hack to override styling dark mode
-      // replace('#191d21', '#000'),
-      replace('#191d21', '#121212'),
+      // <https://m2.material.io/design/color/dark-theme.html>
+      // replace('#191d21', '#121212'),
+      replace('#191d21', '#07191E'), // result of #121212 with 8% overlay with primary $cyan
+      replace('#d3d3d3', 'rgba(253,255,255,.95)'),
       purgecss({
         ...purgeCssOptions,
         content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']
