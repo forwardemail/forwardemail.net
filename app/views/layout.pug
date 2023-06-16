@@ -109,9 +109,7 @@ html.h-100.no-js(
       meta(property="og:locale", content=locale)
       meta(property="og:type", content="article")
       meta(property="og:title", content=striptags(meta.title))
-      meta(property="twitter:title", content=striptags(meta.title))
       meta(property="og:description", content=striptags(meta.description))
-      meta(property="twitter:description", content=striptags(meta.description))
       meta(property="og:url", content=`${config.urls.web}${ctx.path}`)
       meta(property="og:site_name", config.appName)
       if ctx.pathWithoutLocale.startsWith('/faq')
@@ -169,6 +167,9 @@ html.h-100.no-js(
       if video
         meta(property="og:video", content=video)
 
+      meta(property="twitter:title", content=striptags(meta.title))
+      meta(property="twitter:description", content=striptags(meta.description))
+      meta(property="twitter:image", content=ogImage)
       if (ctx.pathWithoutLocale !== '/' && ctx.pathWithoutLocale !== '/private-business-email' && ['/admin','/my-account', '/help', '/auth', '/denylist', '/reset-password'].every(key => !ctx.pathWithoutLocale.startsWith(key)))
         meta(name="twitter:label1", content=t("Written by"))
         meta(name="twitter:data1", content=config.appName + " " + t("Team"))
