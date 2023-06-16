@@ -266,7 +266,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 = t("Send Mail As with Gmail")
               hr.dropdown-divider
               h6.dropdown-header.text-uppercase= t("Email Setup Guides")
-              .card-columns
+              .card-columns.small
                 each provider in nsProviders
                   - const classes = []
                   if ctx.pathWithoutLocale === `/guides/${provider.slug}`
