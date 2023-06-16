@@ -29,7 +29,7 @@ ul.list-unstyled.text-left.mb-3
     li
       i.fa.fa-fw.fa-lock.text-themed
       = " "
-      a.text-decoration-underline.font-weight-bold.text-themed(
+      a.text-themed(
         href=ctx.pathWithoutLocale === "/private-business-email" ? l("#enterprise-grade") : "#enterprise-grade",
         data-toggle="tooltip",
         data-title=t("Learn more"),
@@ -38,7 +38,7 @@ ul.list-unstyled.text-left.mb-3
   li
     i.fa.fa-fw.fa-server.text-themed
     = " "
-    a.text-decoration-underline.font-weight-bold.text-themed(
+    a.text-themed(
       href="https://status.forwardemail.net",
       target="_blank",
       rel="noopener noreferrer",
@@ -49,7 +49,7 @@ ul.list-unstyled.text-left.mb-3
   li
     i.fa.fa-fw.fa-github.text-themed
     = " "
-    a.text-decoration-underline.font-weight-bold.text-themed(
+    a.text-themed(
       href="https://github.com/forwardemail",
       target="_blank",
       rel="noopener noreferrer",
@@ -61,8 +61,8 @@ ul.list-unstyled.text-left.mb-3
   li
     i.fa.fa-fw.fa-code.text-themed
     = " "
-    a.text-decoration-underline.font-weight-bold.text-themed(
-      href=l("/email-forwarding-api"),
+    a.text-themed(
+      href=l("/email-api"),
       data-toggle="tooltip",
       data-title=t("Read our API documentation"),
       data-placement="bottom"

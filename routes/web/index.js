@@ -1,5 +1,9 @@
+const path = require('node:path');
+
 const Router = require('@koa/router');
 const render = require('koa-views-render');
+const pug = require('pug');
+const { parse } = require('node-html-parser');
 
 const admin = require('./admin');
 const auth = require('./auth');
@@ -10,7 +14,7 @@ const config = require('#config');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const { web } = require('#controllers');
-const { nsProviders } = require('#config/utilities');
+const { developerDocs, nsProviders } = require('#config/utilities');
 
 const router = new Router();
 
@@ -102,9 +106,13 @@ localeRouter
   )
   .get('/api', (ctx) => {
     ctx.status = 301;
-    ctx.redirect(ctx.state.l('/email-forwarding-api'));
+    ctx.redirect(ctx.state.l('/email-api'));
   })
-  .get('/email-forwarding-api', web.myAccount.retrieveDomains, web.api)
+  .get('/email-forwarding-api', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/email-api'));
+  })
+  .get('/email-api', web.myAccount.retrieveDomains, web.api)
   .get(
     '/help',
     policies.ensureLoggedIn,
@@ -157,6 +165,9 @@ localeRouter
     web.onboard,
     render('email-forwarding-regex-pattern-filter')
   )
+  .get('/resources', render('resources'))
+  .get('/guides', render('guides'))
+  .get('/docs', render('docs'))
   .get('/guides/send-mail-as-using-gmail', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/guides/send-mail-as-gmail-custom-domain'));
@@ -245,8 +256,44 @@ localeRouter
     web.auth.register
   );
 
+for (const doc of developerDocs) {
+  localeRouter.get(doc.slug, render(doc.slug.slice(1)));
+}
+
 for (const provider of nsProviders) {
-  localeRouter.get(`/guides/${provider.slug}`, render('guides/provider'));
+  localeRouter.get(
+    `/guides/${provider.slug}`,
+    (ctx, next) => {
+      // set open graph data
+      if (provider.video) ctx.state.video = provider.video;
+      if (provider.gif) ctx.state.gif = provider.gif;
+
+      // dynamically load the DNS Management by Registrar table from FAQ
+      try {
+        const html = pug.renderFile(
+          path.join(config.views.root, 'faq', 'index.pug'),
+          // make flash a noop so we don't interfere with messages/session
+          {
+            ...ctx.state,
+            flash() {
+              return {};
+            }
+          }
+        );
+
+        // expose it to the view
+        const root = parse(html);
+        ctx.state.modalFAQTable = root.querySelector(
+          '#table-dns-management-by-registrar'
+        ).outerHTML;
+      } catch (err) {
+        ctx.logger.error(err);
+      }
+
+      return next();
+    },
+    render('guides/provider')
+  );
 }
 
 localeRouter.use(myAccount.routes()).use(admin.routes()).use(otp.routes());

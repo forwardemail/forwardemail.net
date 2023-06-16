@@ -24,7 +24,7 @@ block body
                 else
                   i.fa.fa-external-link
               = t("Step 1")
-          li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
           li.list-inline-item
             a.btn.btn-sm.btn-light(href="#setup-step-2")
               span.badge.badge-pill.mr-1(
@@ -35,7 +35,7 @@ block body
                 else
                   i.fa.fa-times
               = t("Step 2")
-          li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
           li.list-inline-item
             form.ajax-form(
               action=l(`/my-account/domains/${domain.name}/verify-records`),

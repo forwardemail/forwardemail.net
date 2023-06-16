@@ -62,6 +62,11 @@ $('.navbar-collapse').on('hidden.bs.collapse shown.bs.collapse', () => {
   resizeNavbarPadding($);
 });
 
+// Some pages have a navbar fixed to bottom (e.g. Step 1, Step 2)
+const $navbarFixedBottom = $('.fixed-bottom');
+if ($navbarFixedBottom.length === 1)
+  $('body').css('padding-bottom', $navbarFixedBottom.outerHeight());
+
 //
 // Handle explicit Cloudflare Turnstile (Advanced Example with Bootstrap/Modals/Responsive Support)
 // <https://github.com/forwardemail/forwardemail.net>
@@ -136,11 +141,20 @@ function renderDayjs() {
       return;
     }
 
+    // eslint-disable-next-line prefer-object-spread
+    const options = Object.assign(
+      { dateStyle: 'short', timeStyle: 'short' },
+      data
+    );
+
+    if (data.dateStyle === false) delete options.dateStyle;
+
+    if (data.timeStyle === false) delete options.timeStyle;
+
     $(this).text(
-      new Intl.DateTimeFormat(window.LOCALE, {
-        dateStyle: 'short',
-        timeStyle: 'short'
-      }).format(new Date(data.time))
+      new Intl.DateTimeFormat(window.LOCALE, options).format(
+        new Date(data.time)
+      )
     );
   });
 }

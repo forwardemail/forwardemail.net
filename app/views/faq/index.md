@@ -703,7 +703,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
     Important:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-forwarding-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
+    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
   </span>
 </div>
 
@@ -785,7 +785,7 @@ Yes, as of May 2023 we support sending email with API as an add-on for all paid 
   </span>
 </div>
 
-Please view our section on [Emails](/email-forwarding-api#emails) in our API documentation for options, examples, and more insight.
+Please view our section on [Emails](/email-api#emails) in our API documentation for options, examples, and more insight.
 
 In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
 
@@ -832,7 +832,7 @@ We plan to offer this feature in the near future.
     Important:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-forwarding-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
+    If you are a developer, then refer to our <a class="alert-link" href="/email-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
   </span>
 </div>
 

@@ -1,0 +1,63 @@
+.d-inline-block.mx-auto.text-left.small.align-middle
+  .d-flex.align-items-center
+    noscript
+      img(
+        width=92,
+        height=50,
+        src=manifest("img/art/group.svg"),
+        alt=config.appName + " " + t("Team")
+      )
+    img.lazyload(
+      width=92,
+      height=50,
+      data-src=manifest("img/art/group.svg"),
+      alt=config.appName + " " + t("Team")
+    )
+    .d-flex.flex-column.ml-2.font-weight-bold
+      div
+        .small.text-muted= t("Written by")
+        div
+          = config.appName
+          span.d-none.d-md-inline
+            = " "
+            = t("Team")
+          noscript
+            img.ml-1(
+              src=manifest("img/testimonials/twitter-verified.svg"),
+              width=20,
+              height=20,
+              alt="Verified"
+            )
+          img.lazyload.ml-1.mb-1(
+            data-src=manifest("img/testimonials/twitter-verified.svg"),
+            width=20,
+            height=20,
+            alt="Verified"
+          )
+    .d-none.d-md-flex.flex-column.ml-3.ml-md-5.font-weight-bold.text-themed
+      div
+        .small.text-muted
+          span.d-none.d-md-inline
+            i.fa.fa-calendar-day
+            = " "
+          = t("Published")
+        .dayjs(
+          data-time=dayjs().startOf("month").toDate().getTime(),
+          data-time-style="false"
+        )
+          = dayjs().startOf("month").format("M/D/YY")
+    .d-none.d-md-flex.flex-column.ml-3.ml-md-5.font-weight-bold.text-themed
+      div
+        .small.text-muted
+          span.d-none.d-md-inline
+            i.fa.fa-clock
+            = " "
+          = t("Time to read")
+        div
+          if isBot(ctx.get('User-Agent'))
+            = t("Less than 5 minutes")
+          else
+            span.d-none.d-md-inline
+              = t("Less than 5 minutes")
+            span.d-inline.d-md-none
+              = t("< 5 minutes")

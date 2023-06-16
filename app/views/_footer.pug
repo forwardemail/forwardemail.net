@@ -14,7 +14,7 @@ footer.mt-auto
                 )
                   = t("Get started")
                   = " "
-                  i.fa.fa-angle-double-right.align-middle
+                  i.fa.fa-fw.fa-angle-double-right.align-middle
             div(class=user ? "col-12" : "col-6")
               a.btn.btn-dark(
                 href=l("/help"),
@@ -29,7 +29,7 @@ footer.mt-auto
             .no-js
               hr.d-lg-none.w-100
               .dropdown.dropup
-                a#navbar-dropdown-language-btn.btn.btn-outline-light.dropdown-toggle(
+                a#navbar-dropdown-language-btn.btn.btn-sm.btn-outline-light.dropdown-toggle(
                   href=ctx.url,
                   role="button",
                   data-toggle="dropdown",
@@ -63,65 +63,70 @@ footer.mt-auto
                 height=50,
                 alt="Go to top"
               )
-        .flex-wrap.flex-fill
-          h3.h5.mb-2= t("Guides")
-          ul.list-unstyled.mb-0
-            //-.
+        //-.
+          .flex-wrap.flex-fill
+            h3.h5.mb-2= t("Guides")
+            ul.list-unstyled.mb-0
+              //-.
+                li
+                  a.d-block.text-light.py-2.py-md-0(
+                    href=l('/guides/professional-business-email')
+                  )= t('Professional business email')
+                li
+                  a.d-block.text-light.py-2.py-md-0(
+                    href=l('/guides/how-to-setup-business-email')
+                  )= t('How to setup business email')
+                li
+                  a.d-block.text-light.py-2.py-md-0(
+                    href=l('/guides/custom-domain-email-service')
+                  )= t('Custom domain email service')
+                li
+                  a.d-block.text-light.py-2.py-md-0(
+                    href=l('/guides/free-business-email-address')
+                  )= t('Free business email address')
               li
                 a.d-block.text-light.py-2.py-md-0(
-                  href=l('/guides/professional-business-email')
-                )= t('Professional business email')
+                  href=l("/guides/send-email-with-custom-domain-smtp")
+                )= t("Send Email with Custom Domain")
               li
                 a.d-block.text-light.py-2.py-md-0(
-                  href=l('/guides/how-to-setup-business-email')
-                )= t('How to setup business email')
-              li
-                a.d-block.text-light.py-2.py-md-0(
-                  href=l('/guides/custom-domain-email-service')
-                )= t('Custom domain email service')
-              li
-                a.d-block.text-light.py-2.py-md-0(
-                  href=l('/guides/free-business-email-address')
-                )= t('Free business email address')
-            li
-              a.d-block.text-light.py-2.py-md-0(
-                href=l("/guides/send-email-with-custom-domain-smtp")
-              )= t("Send Email with Custom Domain")
-            li
-              a.d-block.text-light.py-2.py-md-0(
-                href=l("/guides/send-mail-as-gmail-custom-domain")
-              )= t("Send Mail As with Gmail")
-            each provider in nsProviders
-              li
-                a.d-block.text-light.py-2.py-md-0(
-                  href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`)
-                )= provider.name
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/faq#table-dns-management-by-registrar")
-            )= t("Other providers")
-        hr.d-lg-none.w-100
-        .flex-wrap.flex-fill
-          h3.h5.mb-2= t("Developers")
-          ul.list-unstyled.mb-0.mb-lg-3
-            li: a.d-block.text-light.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/email-forwarding-regex-pattern-filter")
-            )= t("Email Forwarding Regex Pattern Filter")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/email-forwarding-api")
-            )= t("Email Forwarding API")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href="https://github.com/forwardemail/free-email-forwarding/releases",
-              target="_blank",
-              rel="noopener noreferrer"
-            )= t("Releases")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href="https://github.com/forwardemail",
-              target="_blank",
-              rel="noopener noreferrer"
-            )= t("Source Code")
+                  href=l("/guides/send-mail-as-gmail-custom-domain")
+                )= t("Send Mail As with Gmail")
+              each provider in nsProviders
+                li
+                  a.d-block.text-light.py-2.py-md-0(
+                    href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`)
+                  )
+                    = provider.name
+              li: a.d-block.text-light.py-2.py-md-0(
+                href=l("/faq#table-dns-management-by-registrar")
+              )= t("Other providers")
           hr.d-lg-none.w-100
-          h3.h5.mb-2= t("Resources")
+
+        .flex-wrap.flex-fill
+          h3.h5.mb-2: a.text-light(href=l("/guides"))= t("Guides")
+          ul.list-unstyled.mb-0.mb-lg-3
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/guides/send-email-with-custom-domain-smtp")
+            )
+              = t("Send Email with Custom Domain")
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/guides/send-mail-as-gmail-custom-domain")
+            )
+              = t("Send Mail As with Gmail")
+            if isBot(ctx.get('User-Agent'))
+              each provider in nsProviders
+                li: a.d-block.text-light.py-2.py-md-0(
+                  title=striptags(t('<span class="notranslate">%s</span> Email Server Setup', provider.name)),
+                  href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`)
+                )!= t('<span class="notranslate">%s</span> Email Server Setup', provider.name)
+            else
+              li: a.d-block.text-light.py-2.py-md-0(href=l("/guides"))= t("Email Setup Guides")
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
+            )= t("Port 25 blocked by ISP")
+          hr.d-lg-none.w-100
+          h3.h5.mb-2: a.text-light(href=l("/resources"))= t("Resources")
           ul.list-unstyled.mb-0
             - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
             if !isBot(ctx.get('User-Agent'))
@@ -133,7 +138,13 @@ footer.mt-auto
                 = t("Features")
             li: a.d-block.text-light.py-2.py-md-0(
               href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
-            )= t("FAQ")
+            )= t("Frequently Asked Questions")
+            if !isBot(ctx.get('User-Agent'))
+              li: a.d-block.text-light.py-2.py-md-0(
+                href=l("/help"),
+                role=isHelp ? "link" : "button",
+                data-target=isHelp ? false : "#modal-help"
+              )= t("Help")
             li: a.d-block.text-light.py-2.py-md-0(
               href=l("/disposable-addresses")
             )= t("Disposable Addresses")
@@ -141,57 +152,116 @@ footer.mt-auto
             li: a.d-block.text-light.py-2.py-md-0(
               href=l("/reserved-email-addresses")
             )= t("Reserved Email Addresses")
-            li: a.d-block.text-light.py-2.py-md-0(
-              href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
-            )= t("Port 25 blocked by ISP")
             if !isBot(ctx.get('User-Agent'))
               li: a.d-block.text-light.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
         hr.d-lg-none.w-100
+        .flex-wrap.flex-fill
+          h3.h5.mb-2: a.text-light(href=l("/docs"))= t("Developers")
+          ul.list-unstyled.mb-0.mb-lg-3
+            li: a.d-block.text-light.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
+            li: a.d-block.text-light.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/email-forwarding-regex-pattern-filter")
+            )= t("Regex Email Forwarding")
+            if developerDocs.length > 0
+              hr.w-100
+              each doc in developerDocs
+                li
+                  a.d-block.text-light.py-2.py-md-0(href=l(doc.slug))
+                    if !isBot(ctx.get('User-Agent')) && doc.icon
+                      i(class=doc.icon)
+                      = " "
+                    = t(doc.title)
+        hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
+            h3.h5.mb-2= t("Community")
+            ul.list-unstyled.mb-0.mb-lg-3
+              li
+                a.d-block.text-light.py-2.py-md-0(
+                  href="https://github.com/forwardemail",
+                  target="_blank",
+                  rel="noopener noreferrer",
+                  data-toggle="tooltip",
+                  data-title=t("100% open-source software"),
+                  data-placement="bottom"
+                )
+                  = "GitHub"
+                  = " "
+                  i.fa.fa-fw.fa-github
+              li
+                a.d-block.text-light.py-2.py-md-0(
+                  href="https://youtube.com/forwardemail",
+                  target="_blank",
+                  rel="noopener noreferrer",
+                  data-toggle="tooltip",
+                  data-title=t("Watch our YouTube channel"),
+                  data-placement="bottom"
+                )
+                  = "YouTube"
+                  = " "
+                  i.fab.fa-fw.fa-youtube.text-danger
+            hr.w-100
             h3.h5.mb-2= t("Company")
-            ul.list-unstyled.mb-0
-              if !isBot(ctx.get('User-Agent'))
-                li: a.d-block.text-light.py-2.py-md-0(
-                  href=l("/help"),
-                  role=isHelp ? "link" : "button",
-                  data-target=isHelp ? false : "#modal-help"
-                )= t("Help")
+            ul.list-unstyled.mb-0.mb-lg-3
               li: a.d-block.text-light.py-2.py-md-0(href=l("/about"))= t("About")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/terms"))= t("Terms")
+              li: a.d-block.text-light.py-2.py-md-0(
+                href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
+                target="_blank",
+                rel="noopener noreferrer",
+                data-toggle="tooltip",
+                data-title=t("Send us an email"),
+                data-placement="bottom"
+              )= t("Careers")
+              li: a.d-block.text-light.py-2.py-md-0(
+                href="https://github.com/forwardemail/forwardemail.net/security/policy",
+                target="_blank",
+                rel="noopener noreferrer",
+                data-toggle="tooltip",
+                data-title=t("Read our policy"),
+                data-placement="bottom"
+              )= t("Security Policy")
               if !isBot(ctx.get('User-Agent'))
+                li: a.d-block.text-light.py-2.py-md-0(
+                  href=`mailto:abuse@${config.supportEmail.split('@')[1]}`,
+                  target="_blank",
+                  rel="noopener noreferrer",
+                  data-toggle="tooltip",
+                  data-title=t("Send us an email"),
+                  data-placement="bottom"
+                )= t("Report Abuse")
                 li: a.d-block.text-light.py-2.py-md-0(
                   href="https://status.forwardemail.net/",
                   target="_blank",
-                  rel="noopener noreferrer"
+                  rel="noopener noreferrer",
+                  data-toggle="tooltip",
+                  data-title=statusOutage ? t("Issue Detected") : t("100% Systems Online"),
+                  data-placement="bottom"
                 )
                   = t("Status Page")
-              li
-                a.d-block.text-light.py-2.py-md-0(
-                  title="GitHub",
-                  href="https://github.com/forwardemail",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                )= "GitHub"
+                  = " "
+                  if statusOutage
+                    span.badge.badge-pill.badge-warning.text-monospace= t("Issue")
+                  else
+                    span.badge.badge-pill.badge-success.text-monospace= t("100%")
               if !isBot(ctx.get('User-Agent'))
                 li.small: a.d-block.text-light.font-weight-bold.py-2.py-md-0.text-monospace.small.mt-2(
-                  href=`mailto:${config.supportEmail}`
+                  href=`mailto:${config.supportEmail}`,
+                  target="_blank",
+                  rel="noopener noreferrer",
+                  data-toggle="tooltip",
+                  data-title=t("Send us an email"),
+                  data-placement="bottom"
                 )= config.supportEmail
-
-          if !isBot(ctx.get('User-Agent'))
-            .mt-lg-auto.mt-3.text-center.text-md-right
-              a.d-inline-block.text-light(
-                data-toggle="tooltip",
-                title="GitHub",
-                href="https://github.com/forwardemail",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                i.fa.fa-2x.fa-github
-                span.sr-only.sr-only-focusable
-                  = " "
-                  = "GitHub"
+          .mt-lg-auto.mt-3.text-center.text-lg-left.small.text-muted
+            = " "
+            != "&copy;"
+            = " "
+            = dayjs().format("YYYY")
+            = " "
+            = "Forward Email LLC"
         if isBot(ctx.get('User-Agent'))
           hr.d-lg-none.w-100
           .flex-wrap.flex-fill.d-flex.flex-column

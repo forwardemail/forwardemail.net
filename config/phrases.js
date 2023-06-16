@@ -16,9 +16,10 @@ for (const key of Object.keys(statuses.message)) {
 
 module.exports = {
   EMAIL_SETUP_GUIDE: 'Email Setup Guide',
-  NO_CREDIT_CARD: 'NO CREDIT CARD REQUIRED. 100% OPEN-SOURCE.',
+  NO_CREDIT_CARD: '100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.',
   PRIVATE_BUSINESS: 'Private Business Email Service',
-  FREE_EMAIL: 'FREE EMAIL',
+  TUTORIAL: 'TUTORIAL',
+  FREE_EMAIL: 'LEARN MORE',
   RECENTLY_BLOCKED:
     'The target <span class="notranslate">%s</span> has recently blocked this IP address, please try again in 1 hour.',
   CANNOT_CREATE_CATCHALL_ON_GLOBAL: 'Cannot create catch-all on global domain.',

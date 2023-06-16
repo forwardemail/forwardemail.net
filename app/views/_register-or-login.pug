@@ -4,6 +4,9 @@ mixin registerOrLogin(verb, isModal = false)
       .text-center
         h1.my-3.py-3
           = t(`${humanize(verb)} now`)
+          if verb === 'sign up'
+            != " &ndash; "
+            = t("it's free!")
     div(class=isModal ? false : "row")
       div(class=isModal ? false : "col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3")
         - let dataDismissModal = false;

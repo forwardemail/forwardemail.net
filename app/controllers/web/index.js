@@ -142,11 +142,8 @@ const keys = new Set(
       [
         '/admin',
         '/my-account',
-        '/help',
         '/auth',
         '/logout',
-        '/guides',
-        '/denylist',
         '/reset-password',
         config.verifyRoute,
         config.otpRoutePrefix
@@ -158,15 +155,19 @@ const keys = new Set(
   })
 );
 
-async function generateOpenGraphImage(ctx, next) {
+// eslint-disable-next-line complexity
+async function generateOpenGraphImage(ctx) {
   try {
     let url = (ctx.pathWithoutLocale || ctx.path)
       .replace('.png', '')
       .replace('.svg', '');
     if (url === '/index') url = '/';
 
-    // ensure that the URL is in our sitemap otherwise return 404
-    if (!keys.has(url)) return next();
+    // ensure that the URL is in our sitemap otherwise redirect to generic
+    if (!keys.has(url)) {
+      ctx.redirect(`/${ctx.locale}/index.png?v=${Date.now()}`);
+      return;
+    }
 
     // load seo metadata
     let data = {};
@@ -188,9 +189,20 @@ async function generateOpenGraphImage(ctx, next) {
 
     let [str] = data.title.replace(' | Forward Email', '').split(' - ');
     str = str.trim();
+    if (url.startsWith('/guides') && str.includes(' for '))
+      str = str.split(' for ')[1].trim();
     if (str.length > 50) str = str.slice(0, 50) + '...';
     let freeEmail = ctx.translate('FREE_EMAIL');
+    if (url.startsWith('/guides') || url.startsWith('/how-to'))
+      freeEmail = ctx.translate('TUTORIAL');
+
+    // if it was a developer doc then parse the title
+    const doc = config.views.locals.developerDocs.find((d) => d.slug === url);
+    if (doc && isSANB(doc.ogBtnText)) freeEmail = doc.ogBtnText;
+
+    // fallback safeguard
     if (freeEmail.length > 20) freeEmail = i18n.translate('FREE_EMAIL', 'en');
+
     const svgReplaced = SVG_STR.replace(
       'NO_CREDIT_CARD',
       ctx.translate('NO_CREDIT_CARD')

@@ -11,7 +11,7 @@ block body
                 i.fab.fa-youtube.text-danger
                 = " "
                 = t("Video")
-            li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+            li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
             li.list-inline-item
               a.btn.btn-lg.btn-light(href="#step-by-step-instructions")
                 span.badge.badge-pill.mr-1.badge-success
@@ -19,8 +19,10 @@ block body
                 = t("Steps")
   .container.py-3.py-md-4.py-lg-5
     .row
-      .col-12
-        h1.mb-0.text-center!= t("Send Email with Custom Domain")
+      .col-12.text-center
+        h1= t("Send Email with Custom Domain Setup Guide")
+        p= t("Follow the instructions below to send email with your custom domain and alias using outbound SMTP.")
+        include ../_author
         //-.
           #quick-video-guide.card.mt-3
             h2.h5.card-header.text-center
@@ -47,6 +49,13 @@ block body
                 )
       #step-by-step-instructions.col-12.mt-3
         .card
-          h2.h5.card-header.text-center= t("Step by Step Instructions")
+          h2.h5.card-header.text-center
+            if isBot(ctx.get("User-Agent"))
+              = t("Step by Step Instructions")
+            else
+              span.d-none.d-md-inline
+                = t("Step by Step Instructions")
+              span.d-inline.d-md-none
+                = t("Steps")
           .card-body.markdown-body
             != sendEmailWithCustomDomainSMTP

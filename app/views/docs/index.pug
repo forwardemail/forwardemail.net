@@ -1,0 +1,52 @@
+extends ../layout
+
+block body
+  .py-5.position-relative.bg-dark.bg-fixed.lazyload(
+    data-src=manifest("img/art/stars.svg")
+  )
+    .container
+      .row
+        .col-12
+          .text-center.text-white
+            h1= t("Free Email Developer Tools and Resources")
+            p!= t("Developer-focused email API, tools, and resources to send email, trigger webhooks, forward messages, and more.")
+            include ../_author
+      .row.mt-3
+        - const tools = [];
+        - const list = ["/email-api", "/free-email-webhooks", "/email-forwarding-regex-pattern-filter"];
+        each item in list
+          - const match = config.meta[item];
+          if match
+            - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
+        each developerDoc in developerDocs
+          - tools.push(developerDoc);
+        each doc in tools
+          .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
+            .card.rounded-lg
+              noscript
+                img.card-img-top.img-fluid(
+                  src=l(`${doc.slug}.png`),
+                  alt=striptags(t(doc.title))
+                )
+              img.lazyload.card-img-top.img-fluid(
+                src=l(`${doc.slug}.png`),
+                alt=striptags(t(doc.title))
+              )
+              .card-body
+                h2.h5.card-title!= t(doc.title)
+                // h3.h6.card-subtitle.text-muted!= doc.subtitle
+                p.card-text!= t(doc.description)
+              .card-footer
+                a.stretched-link.btn.btn-md.btn-dark.btn-block(
+                  href=l(doc.slug),
+                  title=striptags(t(doc.title))
+                )
+                  if isBot(ctx.get("User-Agent"))
+                    != t(doc.title)
+                  else
+                    if doc.icon
+                      i(class=doc.icon)
+                      = " "
+                    span.text-uppercase.font-weight-bold.align-middle= doc.ogBtnText || t("Learn more")
+                    = " "
+                    i.fa.fa-angle-double-right.align-middle

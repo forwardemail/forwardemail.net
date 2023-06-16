@@ -92,24 +92,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
     else if !user
       ul.list-inline.ml-auto.d-inline-block.d-lg-none.mb-0
         //- do same for noscript
-        if isBot(ctx.get('User-Agent'))
-          li.list-inline-item
-            a.btn.btn-link.text-themed.btn-sm(
-              href=l("/private-business-email"),
-              class=ctx.pathWithoutLocale.startsWith("/private-business-email") ? "text-decoration-underline" : ""
-            )
-              = t("Private Business Email")
-          li.list-inline-item
-            a.btn.btn-link.text-themed.btn-sm(
-              href=l("/guides/send-email-with-custom-domain-smtp"),
-              class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "text-decoration-underline" : ""
-            )= t("Send Email with Custom Domain")
-          li.list-inline-item
-            a.btn.btn-link.text-themed.btn-sm(
-              href=l("/guides/send-mail-as-gmail-custom-domain"),
-              class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "text-decoration-underline" : ""
-            )= t("Send Mail As with Gmail")
-        else
+        if !isBot(ctx.get('User-Agent'))
           noscript
             li.list-inline-item
               a.btn.btn-link.text-themed.btn-sm(
@@ -157,194 +140,280 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
     //- <https://github.com/twbs/bootstrap/issues/25030>
     #navbar-header.collapse.navbar-collapse
       ul.navbar-nav.ml-auto.mt-2.mt-md-0
-        if user
-          if user.plan === 'free' && ctx.pathWithoutLocale !== config.verifyRoute && ctx.pathWithoutLocale !== '/my-account/domains/new' && !ctx.pathWithoutLocale.startsWith('/my-account/billing') && !isDomainSpecificUpgrade && ctx.pathWithoutLocale !== '/denylist'
-            li.nav-item.mr-md-3.d-none.d-md-inline-block
-              a.btn.btn-danger.d-block.text-left(
-                href=domain && domain.name ? l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`) : l("/my-account/billing/upgrade?plan=enhanced_protection")
-              )
-                = t("Upgrade")
-          li.nav-item.mr-md-3
-            a.btn.d-block.text-left(
-              href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
-              class=ctx.pathWithoutLocale.startsWith("/faq") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-            )= t("FAQ")
-          //- don't index 401 not authorized pages
-          if !isBot(ctx.get('User-Agent'))
-            li.nav-item.mr-md-3
-              a.btn.d-block.text-left(
-                href=l("/help"),
-                role=isHelp ? "link" : "button",
-                data-target=isHelp ? false : "#modal-help",
-                data-toggle=isHelp ? false : "modal-anchor",
-                class=ctx.pathWithoutLocale.startsWith("/help") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-              )= t("Help")
-        else
-          li.nav-item
-            - let pricingHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
-            if !isBot(ctx.get('User-Agent'))
-              - pricingHref += "?pricing=true";
-            a.btn.d-block.text-left(
-              href=pricingHref,
-              class=ctx.pathWithoutLocale.startsWith("/private-business-email") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+        if user && user.plan === 'free' && ctx.pathWithoutLocale !== config.verifyRoute && ctx.pathWithoutLocale !== '/my-account/domains/new' && !ctx.pathWithoutLocale.startsWith('/my-account/billing') && !isDomainSpecificUpgrade && ctx.pathWithoutLocale !== '/denylist'
+          li.nav-item.mr-md-3.d-none.d-md-inline-block
+            a.btn.btn-danger.d-block.text-left(
+              href=domain && domain.name ? l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`) : l("/my-account/billing/upgrade?plan=enhanced_protection")
             )
-              if isBot(ctx.get('User-Agent'))
-                = t("Private Business Email")
-              else
-                = t("Features")
-          noscript
-            li.nav-item
-              a.btn.d-block.text-left(
-                href=l("/guides/send-email-with-custom-domain-smtp"),
-                class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-              )= t("Send Email with Custom Domain")
-            li.nav-item
-              a.btn.d-block.text-left(
-                href=l("/guides/send-mail-as-gmail-custom-domain"),
-                class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-              )= t("Send Mail As with Gmail")
-          if isBot(ctx.get('User-Agent'))
-            li.nav-item.no-js
-              a.btn.d-block.text-left(
-                href=l("/guides/send-email-with-custom-domain-smtp"),
-                class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-              )= t("Send Email with Custom Domain")
-            li.nav-item.no-js
-              a.btn.d-block.text-left(
-                href=l("/guides/send-mail-as-gmail-custom-domain"),
-                class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-              )= t("Send Mail As with Gmail")
-          else
-            //- TODO: add the /guides page
-            li.nav-item.dropdown.no-js
-              a#navbar-dropdown-guides.btn.dropdown-toggle.d-block.text-left.no-js(
-                role="button",
-                href="#",
-                data-toggle="dropdown",
-                data-boundary="window",
-                aria-haspopup="true",
-                aria-expanded="false",
-                class=ctx.pathWithoutLocale.startsWith("/guides") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+              = t("Upgrade")
+
+        //- Resources
+        - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses"];
+        - const companyPages = ["/about", "/privacy", "/terms"];
+        - const isResourcesPage = ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale);
+        li.nav-item.dropdown.no-js
+          form.mb-0
+            a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(
+              href=l("/resources"),
+              data-toggle="dropdown",
+              data-boundary="window",
+              aria-haspopup="true",
+              aria-expanded="false",
+              class=isResourcesPage ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+            )
+              = t("Resources")
+            .dropdown-menu(aria-labelledby="navbar-dropdown-resources")
+              each resourcePage in resourcePages
+                if resourcePage === '/private-business-email'
+                  - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
+                  if !isBot(ctx.get('User-Agent'))
+                    - pricingPageHref += "?pricing=true";
+                  a.dropdown-item(
+                    href=pricingPageHref,
+                    class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
+                  )= t("Features")
+                else
+                  a.dropdown-item(
+                    href=l(resourcePage),
+                    class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
+                  )
+                    if resourcePage === '/faq'
+                      = t("Frequently Asked Questions")
+                    else
+                      = t(titleize(humanize(resourcePage.replace("/", ""))))
+              hr.dropdown-divider
+              h6.dropdown-header= t("Community")
+              a.dropdown-item(
+                href="https://github.com/forwardemail",
+                target="_blank",
+                rel="noopener noreferrer",
+                data-toggle="tooltip",
+                data-title=t("100% open-source software"),
+                data-placement="bottom"
               )
-                = t("Guides")
-              .dropdown-menu(aria-labelledby="navbar-dropdown-guides")
+                = "GitHub"
+                = " "
+                i.fa.fa-fw.fa-github
+              a.dropdown-item(
+                href="https://youtube.com/forwardemail",
+                target="_blank",
+                rel="noopener noreferrer",
+                data-toggle="tooltip",
+                data-title=t("Watch our YouTube channel"),
+                data-placement="bottom"
+              )
+                = "YouTube"
+                = " "
+                i.fab.fa-fw.fa-youtube.text-danger
+              hr.dropdown-divider
+              h6.dropdown-header= t("Company")
+              each companyPage in companyPages
                 a.dropdown-item(
-                  href=l("/guides/send-email-with-custom-domain-smtp"),
-                  class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
+                  href=l(companyPage),
+                  class=ctx.pathWithoutLocale === companyPage ? "active" : ""
                 )
-                  = t("Send Email with Custom Domain")
+                  = t(titleize(humanize(companyPage.replace("/", ""))))
+              a.dropdown-item(
+                href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
+                target="_blank",
+                rel="noopener noreferrer",
+                data-toggle="tooltip",
+                data-title=t("Send us an email"),
+                data-placement="bottom"
+              )= t("Careers")
+              if !isBot(ctx.get('User-Agent'))
                 a.dropdown-item(
-                  href=l("/guides/send-mail-as-gmail-custom-domain"),
-                  class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "active" : ""
+                  href="https://status.forwardemail.net/",
+                  target="_blank",
+                  rel="noopener noreferrer",
+                  data-toggle="tooltip",
+                  data-title=statusOutage ? t("Issue Detected") : t("100% Systems Online"),
+                  data-placement="bottom"
                 )
-                  = t("Send Mail As with Gmail")
+                  = t("Status Page")
+                  = " "
+                  if statusOutage
+                    span.badge.badge-pill.badge-warning.text-monospace= t("Issue")
+                  else
+                    span.badge.badge-pill.badge-success.text-monospace= t("100%")
+
+        //- Guides
+        li.nav-item.dropdown.no-js
+          form.mb-0
+            a#navbar-dropdown-guides.btn.dropdown-toggle.d-block.text-left.no-js(
+              href=l("/guides"),
+              data-toggle="dropdown",
+              data-boundary="window",
+              aria-haspopup="true",
+              aria-expanded="false",
+              data-display="static",
+              class=ctx.pathWithoutLocale.startsWith("/guides") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+            )
+              = t("Guides")
+            .dropdown-menu.dropdown-menu-md-right.dropdown-menu-lg-right.dropdown-menu-xl-left(
+              aria-labelledby="navbar-dropdown-guides"
+            )
+              h6.dropdown-header= t("Outbound SMTP")
+              a.dropdown-item(
+                href=l("/guides/send-email-with-custom-domain-smtp"),
+                class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
+              )
+                = t("Send Email with Custom Domain")
+              a.dropdown-item(
+                href=l("/guides/send-mail-as-gmail-custom-domain"),
+                class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "active" : ""
+              )
+                = t("Send Mail As with Gmail")
+                = " "
+                span.badge.badge-danger.text-monospace.text-uppercase
+                  = t("Video")
+              hr.dropdown-divider
+              h6.dropdown-header= t("Email Setup Guides")
+              .card-columns
                 each provider in nsProviders
                   a.dropdown-item(
+                    title=striptags(t('<span class="notranslate">%s</span> Email Server Setup', provider.name)),
                     href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
                     class=ctx.pathWithoutLocale === `/guides/${provider.slug}` ? "active" : ""
-                  )= provider.name
-                a.dropdown-item(
-                  href=l("/faq#table-dns-management-by-registrar")
-                )= t("Other providers")
-            //- don't index 401 not authorized pages
-            if isBot(ctx.get('User-Agent'))
-              li.nav-item
-                a.btn.btn-outline-dark.d-block.text-left(
-                  href=l("/guides/send-email-with-custom-domain-smtp"),
-                  class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
-                )= t("Send Email with Custom Domain")
-              li.nav-item
-                a.btn.btn-outline-dark.d-block.text-left(
-                  href=l("/guides/send-mail-as-gmail-custom-domain"),
-                  class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "active" : ""
-                )= t("Send Mail As with Gmail")
-            else
-              li.nav-item
-                a.btn.d-block.text-left(
-                  href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq"),
-                  class=ctx.pathWithoutLocale.startsWith("/faq") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-                )= t("FAQ")
+                  )
+                    if isBot(ctx.get('User-Agent'))
+                      != t('<span class="notranslate">%s</span> Email Server Setup', provider.name)
+                    else
+                      = provider.name
+                      if provider.video
+                        = " "
+                        span.badge.badge-danger.text-monospace.text-uppercase.mr-1.mt-1
+                          = t("Video")
+                      if provider.gif
+                        = " "
+                        span.badge.badge-success.text-monospace.text-uppercase.mr-1.mt-1
+                          = "GIF"
+
+              hr.dropdown-divider
+              a.dropdown-item(href=l("/faq#table-dns-management-by-registrar"))= t("Other providers")
+
+        //- Developers
+        li.nav-item.dropdown.no-js
+          form.mb-0
+            a#navbar-dropdown-docs.btn.dropdown-toggle.d-block.text-left.no-js(
+              href=l("/docs"),
+              data-toggle="dropdown",
+              data-boundary="window",
+              aria-haspopup="true",
+              aria-expanded="false",
+              class=ctx.pathWithoutLocale.startsWith("/docs") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+            )
+              = t("Developers")
+            .dropdown-menu.dropdown-menu-right(
+              aria-labelledby="navbar-dropdown-docs"
+            )
+              a.dropdown-item(
+                href=l("/email-api"),
+                class=ctx.pathWithoutLocale === "/email-api" ? "active" : ""
+              )= t("Email API Reference")
+              a.dropdown-item(
+                href=l("/free-email-webhooks"),
+                class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active" : ""
+              )= t("Free Email Webhooks")
+              a.dropdown-item(
+                href=l("/email-forwarding-regex-pattern-filter"),
+                class=ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" ? "active" : ""
+              )= t("Regex Email Forwarding")
+              if developerDocs.length > 0
+                hr.dropdown-divider
+                h6.dropdown-header= t("Code Examples")
+                each doc in developerDocs
+                  a.dropdown-item(
+                    href=l(doc.slug),
+                    class=ctx.pathWithoutLocale === doc.slug ? "active" : ""
+                  )
+                    if !isBot(ctx.get('User-Agent')) && doc.icon
+                      i(class=doc.icon)
+                      = " "
+                    = t(doc.title)
 
         //- links that show only if you're logged in
         if user
           //- links that show if you're an admin
           if user.group === 'admin'
             li.nav-item.dropdown.ml-lg-1.mt-1.mt-lg-0
-              a#navbar-dropdown-admin.btn.dropdown-toggle.d-block.text-left(
-                href=l("/admin"),
+              form.mb-0
+                a#navbar-dropdown-admin.btn.dropdown-toggle.d-block.text-left(
+                  href=l("/admin"),
+                  data-toggle="dropdown",
+                  data-boundary="window",
+                  aria-haspopup="true",
+                  aria-expanded="false",
+                  class=ctx.pathWithoutLocale.startsWith("/admin") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                )
+                  = t("Admin")
+                .dropdown-menu(aria-labelledby="navbar-dropdown-admin")
+                  a.dropdown-item(
+                    class=ctx.pathWithoutLocale === "/admin" ? "active" : "",
+                    href=l("/admin")
+                  )= t("Dashboard")
+                  a.dropdown-item(
+                    class=ctx.pathWithoutLocale.startsWith("/admin/users") ? "active" : "",
+                    href=l("/admin/users")
+                  )= t("Users")
+                  a.dropdown-item(
+                    class=ctx.pathWithoutLocale.startsWith("/admin/domains") ? "active" : "",
+                    href=l("/admin/domains")
+                  )= t("Domains")
+                  a.dropdown-item(
+                    class=ctx.pathWithoutLocale.startsWith("/admin/emails") ? "active" : "",
+                    href=l("/admin/emails")
+                  )= t("Emails")
+                  a.dropdown-item(
+                    class=ctx.pathWithoutLocale.startsWith("/admin/logs") ? "active" : "",
+                    href=l("/admin/logs")
+                  )= t("Logs")
+                  a.dropdown-item(
+                    class=ctx.pathWithoutLocale.startsWith("/admin/allowlist") ? "active" : "",
+                    href=l("/admin/allowlist")
+                  )= t("Allowlist")
+                  a.dropdown-item(
+                    class=ctx.pathWithoutLocale.startsWith("/admin/denylist") ? "active" : "",
+                    href=l("/admin/denylist")
+                  )= t("Denylist")
+          li.nav-item.dropdown.ml-lg-1.mt-1.mt-lg-0
+            form.mb-0
+              a#navbar-dropdown-my-account.btn.dropdown-toggle.d-block.text-left(
+                href=l("/my-account"),
                 data-toggle="dropdown",
                 data-boundary="window",
                 aria-haspopup="true",
                 aria-expanded="false",
-                class=ctx.pathWithoutLocale.startsWith("/admin") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                class=ctx.pathWithoutLocale.startsWith("/my-account") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
               )
-                = t("Admin")
-              .dropdown-menu(aria-labelledby="navbar-dropdown-admin")
+                = t("My Account")
+              .dropdown-menu(aria-labelledby="navbar-dropdown-my-account")
+                //- a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Dashboard')
                 a.dropdown-item(
-                  class=ctx.pathWithoutLocale === "/admin" ? "active" : "",
-                  href=l("/admin")
-                )= t("Dashboard")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/admin/users") ? "active" : "",
-                  href=l("/admin/users")
-                )= t("Users")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/admin/domains") ? "active" : "",
-                  href=l("/admin/domains")
+                  class=ctx.pathWithoutLocale.startsWith("/my-account/domains") ? "active" : "",
+                  href=l("/my-account/domains")
                 )= t("Domains")
                 a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/admin/emails") ? "active" : "",
-                  href=l("/admin/emails")
+                  class=ctx.pathWithoutLocale.startsWith("/my-account/emails") ? "active" : "",
+                  href=l("/my-account/emails")
                 )= t("Emails")
                 a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/admin/logs") ? "active" : "",
-                  href=l("/admin/logs")
+                  class=ctx.pathWithoutLocale.startsWith("/my-account/logs") ? "active" : "",
+                  href=l("/my-account/logs")
                 )= t("Logs")
                 a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/admin/allowlist") ? "active" : "",
-                  href=l("/admin/allowlist")
-                )= t("Allowlist")
+                  class=ctx.pathWithoutLocale === "/my-account/profile" ? "active" : "",
+                  href=l("/my-account/profile")
+                )= t("Profile")
                 a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/admin/denylist") ? "active" : "",
-                  href=l("/admin/denylist")
-                )= t("Denylist")
-          li.nav-item.dropdown.ml-lg-1.mt-1.mt-lg-0
-            a#navbar-dropdown-my-account.btn.dropdown-toggle.d-block.text-left(
-              href=l("/my-account"),
-              data-toggle="dropdown",
-              data-boundary="window",
-              aria-haspopup="true",
-              aria-expanded="false",
-              class=ctx.pathWithoutLocale.startsWith("/my-account") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-            )
-              = t("My Account")
-            .dropdown-menu(aria-labelledby="navbar-dropdown-my-account")
-              //- a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Dashboard')
-              a.dropdown-item(
-                class=ctx.pathWithoutLocale.startsWith("/my-account/domains") ? "active" : "",
-                href=l("/my-account/domains")
-              )= t("Domains")
-              a.dropdown-item(
-                class=ctx.pathWithoutLocale.startsWith("/my-account/emails") ? "active" : "",
-                href=l("/my-account/emails")
-              )= t("Emails")
-              a.dropdown-item(
-                class=ctx.pathWithoutLocale.startsWith("/my-account/logs") ? "active" : "",
-                href=l("/my-account/logs")
-              )= t("Logs")
-              a.dropdown-item(
-                class=ctx.pathWithoutLocale === "/my-account/profile" ? "active" : "",
-                href=l("/my-account/profile")
-              )= t("Profile")
-              a.dropdown-item(
-                class=ctx.pathWithoutLocale === "/my-account/billing" ? "active" : "",
-                href=l("/my-account/billing")
-              )= t("Billing")
-              a.dropdown-item(
-                class=ctx.pathWithoutLocale === "/my-account/security" ? "active" : "",
-                href=l("/my-account/security")
-              )= t("Security")
-              a.dropdown-item(href=l("/logout"))= t("Sign out")
+                  class=ctx.pathWithoutLocale === "/my-account/billing" ? "active" : "",
+                  href=l("/my-account/billing")
+                )= t("Billing")
+                a.dropdown-item(
+                  class=ctx.pathWithoutLocale === "/my-account/security" ? "active" : "",
+                  href=l("/my-account/security")
+                )= t("Security")
+                a.dropdown-item(href=l("/logout"))= t("Sign out")
         //- links that show only if you're logged out
         else
           if ctx.pathWithoutLocale !== config.loginRoute

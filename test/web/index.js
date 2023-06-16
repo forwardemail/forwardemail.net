@@ -86,7 +86,6 @@ const keys = Object.keys(config.meta).filter((key) => {
       '/help',
       '/auth',
       '/logout',
-      '/guides',
       '/denylist',
       '/reset-password',
       config.verifyRoute,

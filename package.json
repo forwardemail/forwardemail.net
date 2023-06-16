@@ -2,7 +2,7 @@
   "name": "forwardemail-net",
   "description": "The best open-source and free email forwarding service for custom domains. We do not keep logs nor store emails. We don't track you. Unlimited aliases, catch-alls, wildcards, API access, and disposable addresses. Built-in support for DKIM, SRS, SPF, ARC, DMARC, and more. No credit card required.",
   "version": "0.4.40",
-  "author": "Niftylettuce, LLC. <niftylettuce@gmail.com> (https://niftylettuce.com/)",
+  "author": "Forward Email (https://forwardemail.net)",
   "browser": {
     "signale": false,
     "mongoose": false,
@@ -12,11 +12,10 @@
     "#config/env": false
   },
   "bugs": {
-    "url": "https://github.com/forwardemail/forwardemail.net/issues",
-    "email": "niftylettuce@gmail.com"
+    "url": "https://github.com/forwardemail/forwardemail.net/issues"
   },
   "contributors": [
-    "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
+    "Forward Email (https://forwardemail.net)"
   ],
   "dependencies": {
     "@forevolve/bootstrap-dark": "4.0.0",

@@ -19,11 +19,6 @@ body.app {
   text-decoration: underline !important;
 }
 
-.dropdown-menu {
-  max-height: 50vh !important;
-  overflow-y: auto !important;
-}
-
 .navbar-toggler {
   outline: transparent !important;
   border-color: transparent !important;
@@ -128,8 +123,17 @@ html {
   &.no-js {
     .no-js {
       display: none !important;
+
     }
     img.lazyload, span.lazyload {
+      display: none !important;
+    }
+  }
+
+  &.no-js, &.bot-detected {
+    // hide css for js that bots don't use
+    // (since we only support lazyload for bots)
+    .dropdown-toggle:after {
       display: none !important;
     }
   }
@@ -142,4 +146,31 @@ pre {
 
 .btn.focus, .btn:focus {
   box-shadow: none !important;
+}
+
+.card-columns {
+  column-count: 1;
+  @include media-breakpoint-up(sm) {
+    column-count: 2;
+  }
+  @include media-breakpoint-up(md) {
+    column-count: 3;
+  }
+  @include media-breakpoint-up(lg) {
+    column-count: 4;
+  }
+}
+
+.dropdown-menu {
+  overflow-y: auto !important;
+  max-height: 50vh !important;
+  @include media-breakpoint-up(md) {
+    max-height: 80vh !important;
+  }
+  .card-columns {
+    column-count: 1;
+    @include media-breakpoint-up(md) {
+      column-count: 2;
+    }
+  }
 }

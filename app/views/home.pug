@@ -142,10 +142,10 @@ block body
       = " "
       i.fa.fa-angle-double-down
   #learn-more.bg-dark.py-3.py-md-5.d-block.overflow-hidden
-    h2.display-5.font-weight-bold.text-white.my-3.text-center.text-uppercase= t("Unlimited email aliases")
     .container
       .row
         .col-12
+          h2.display-5.font-weight-bold.text-white.my-3.text-center.text-uppercase= t("Unlimited email aliases")
           if isBot(ctx.get('User-Agent'))
             a.btn.btn-lg.btn-light(
               href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
@@ -155,7 +155,7 @@ block body
               i.fab.fa-youtube.text-danger
               = " "
               = t("Watch Video")
-          if !isBot(ctx.get('User-Agent'))
+          else
             .lazyframe.border.d-block.mx-auto.mb-3(
               data-vendor="youtube_nocookie",
               title=t("How to create unlimited email addresses and aliases"),
@@ -425,22 +425,6 @@ block body
               i.fa.fa-fw.fa-check-circle.text-success
               = " "
               != t('Global load balancers, application-level DNS over HTTPS ("DoH"), and much more.')
-          ul.list-inline
-            li.list-inline-item
-              a.btn.btn-outline-light.btn-lg.mb-md-5(
-                href=l("/email-forwarding-api")
-              )
-                = t("API Docs")
-            li.list-inline-item.mt-3.mt-md-0
-              a.btn.btn-outline-light.btn-lg.mb-md-5(
-                href="https://spamscanner.net",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                = t("Spam Scanner")
-            li.list-inline-item.mt-3.mt-md-0
-              a.btn.btn-outline-light.btn-lg.mb-md-5(href=l("/help"))
-                = t("Contact")
         .d-flex.col-12.col-lg-4.pt-3.text-center
           noscript
             img.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
@@ -472,7 +456,7 @@ block body
               = t("Regain your privacy")
               = " "
               i.fa.fa-angle-double-right.align-middle
-            a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
+            a.d-md-none.mt-auto.stretched-link.btn.btn-md.btn-dark(
               href=l("/privacy")
             )
               = t("Regain your privacy")
@@ -488,7 +472,7 @@ block body
               = t("Disposable addresses")
               = " "
               i.fa.fa-angle-double-right.align-middle
-            a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
+            a.d-md-none.mt-auto.stretched-link.btn.btn-md.btn-dark(
               href=l("/disposable-addresses")
             )
               = t("Disposable addresses")
@@ -507,7 +491,7 @@ block body
               = t("Start forwarding now")
               = " "
               i.fa.fa-angle-double-right.align-middle
-            a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
+            a.d-md-none.mt-auto.stretched-link.btn.btn-md.btn-dark(
               href=l("/register"),
               role="button",
               data-toggle="modal-anchor",
@@ -526,7 +510,7 @@ block body
               = t("Configure your inbox")
               = " "
               i.fa.fa-angle-double-right.align-middle
-            a.d-md-none.mt-auto.stretched-link.btn.btn-sm.btn-dark(
+            a.d-md-none.mt-auto.stretched-link.btn.btn-md.btn-dark(
               href=l("/guides/send-mail-as-gmail-custom-domain")
             )
               = t("Configure your inbox")

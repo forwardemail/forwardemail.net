@@ -43,7 +43,7 @@ block body
                 else
                   i.fa.fa-external-link
               = t("Step 1")
-          li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
           li.list-inline-item
             a.btn.btn-sm.btn-light(href="#setup-step-2")
               span.badge.badge-pill.mr-1(
@@ -54,7 +54,7 @@ block body
                 else
                   i.fa.fa-times
               = t("Step 2")
-          li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
           li.list-inline-item
             form.ajax-form(action=ctx.path, method="POST")
               button.btn.btn-success.btn-sm(type="submit")
@@ -83,7 +83,7 @@ block body
                 target="_blank"
               )= t("Send via SMTP")
               li.list-inline-item.d-block.d-md-inline-block: a.btn.btn-lg.btn-dark.btn-block(
-                href=l("/email-forwarding-api#emails"),
+                href=l("/email-api#emails"),
                 target="_blank"
               )= t("Send via API")
     .container.text-center.mb-3

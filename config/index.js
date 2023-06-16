@@ -776,13 +776,14 @@ config.views.locals.config = _.pick(config, [
   'recordPrefix',
   'storeIPAddress',
   'supportRequestMaxLength',
-  'twitter',
   'urls',
   'userFields',
   'vanityDomains',
   'verificationPin',
   'verifyRoute',
-  'goodDomains'
+  'goodDomains',
+  'meta',
+  'metaTitleAffix'
 ]);
 
 // <https://nodemailer.com/transports/>

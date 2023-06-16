@@ -4,14 +4,8 @@ include ../_onboard
 
 block body
   if !user
-    +onboard(t('Need docs with real data and keys?'), t('Simply sign up or log in to have your API keys and real account data populated below.'), l(`/faq?redirect_to=${l('/email-forwarding-api')}`), '#top', 'border-bottom')
-  .py-3.py-md-4.py-lg-5
-    .text-center
-      .h2.display-3.mb-1.text-primary
-        i.fa.fa-robot
-      .h2.mb-0= t("API Documentation")
-      .small.text-black.text-themed-50.text-uppercase= t("Programmatic access to your data")
-  .container.pb-5
+    +onboard(t('Need docs with real data and keys?'), t('Simply sign up or log in to have your API keys and real account data populated below.'), l(`/faq?redirect_to=${l('/email-api')}`), '#top', 'border-bottom')
+  .container.py-5
     .row
       .col
         case locale

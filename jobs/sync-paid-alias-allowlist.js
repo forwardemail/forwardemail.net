@@ -1,3 +1,5 @@
+// TODO: remove user.email for all users from denylist
+
 const { isIP } = require('node:net');
 
 // eslint-disable-next-line import/no-unassigned-import

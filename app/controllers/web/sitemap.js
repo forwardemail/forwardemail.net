@@ -29,7 +29,6 @@ async function sitemap(ctx) {
         '/help',
         '/auth',
         '/logout',
-        '/guides',
         '/denylist',
         '/reset-password',
         config.verifyRoute,

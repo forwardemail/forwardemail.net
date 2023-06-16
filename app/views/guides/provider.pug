@@ -12,13 +12,13 @@ block body
               span.badge.badge-pill.mr-1.badge-primary
                 i.fa.fa-external-link
               = t("Step 1")
-          li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
           li.list-inline-item
             a.btn.btn-sm.btn-light(href="#setup-step-2")
               span.badge.badge-pill.mr-1.badge-danger
                 i.fa.fa-times
               = t("Step 2")
-          li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
           li.list-inline-item
             if domain && domain.name
               form.ajax-form(
@@ -66,13 +66,33 @@ block body
   .container.pt-5.text-center(id=providerId)
     .row
       .col-12
-        h1.h2.mb-0
+        h1
           = provider.name
           = " "
           = t("Email Setup Guide")
-        .small.text-black.text-themed-50.text-uppercase= t("Follow these two steps below")
-        //- Disclaimer
-        .mt-3.mb-0.small.text-center: span.small!= t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates.', provider.name)
+        p!= t("Follow the steps below to setup free email forwarding and send/receive email with <span class='notranslate'>%s</span>.", provider.name)
+        include ../_author
+    if provider && provider.video
+      .row
+        .col-12.mt-3
+          if isBot(ctx.get('User-Agent'))
+            a.btn.btn-lg.btn-light(
+              href=provider.video,
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              i.fab.fa-youtube.text-danger
+              = " "
+              = t("Watch Video")
+          else
+            .lazyframe.border.d-block.mx-auto(
+              data-vendor="youtube_nocookie",
+              title=meta.title ? striptags(meta.title) : false,
+              style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
+              data-src=`https://www.youtube-nocookie.com/embed/${provider.video.split('?v=')[1]}?autoplay=0`
+            )
+    .row
+      .col-12
         .card.position-relative.mt-3
           if provider && provider.name && provider.url
             .position-absolute.w-100.text-right
@@ -96,10 +116,9 @@ block body
                 = t("Go to DNS settings")
           h2#setup-step-1.h5.card-header.text-left.text-md-center= t("Step 1")
           .card-body
-            //-
+            //- TODO: render columns as the editors have on each
             //- TODO: highlight in FAQ if provider exists
             //- TODO: we should also suggest SPF and DMARC
-            //- TODO: link to video
             p.small.mb-0
               if provider && provider.name && provider.url
                 != t('Go to <a href="%s" target="_blank" rel="noopener noreferrer" class="font-weight-bold notranslate">%s</a>', provider.url, provider.name)
@@ -311,23 +330,31 @@ block body
           )
             i.fa.fa-4x(class=domain.has_txt_record ? "fa-check" : "fa-times")
           .text-monospace.text-uppercase= "TXT"
-  .container.py-3.py-md-4.py-lg-5
+    //- Disclaimer
+    if !isBot(ctx.get('User-Agent'))
+      .row
+        .col-12
+          .alert.alert-secondary.small.text-center.mt-3.mb-0
+            strong= t("Notice of Non-Affiliation and Disclaimer:")
+            = " "
+            != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', provider.name, provider.name)
+  .container.py-3
     .position-relative
       .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
         .col-12.d-flex
-          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.mb-3.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("Send emails with your domain")
-            p.lead.mb-3!= t("Follow our simple guide for sending email with your custom domain.")
+          .p-3.p-md-5.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3!= t('Send emails with your <span class="notranslate">%s</span> domain', provider.name)
+            p.lead.mb-3!= t("Read our <span class='notranslate'>%s</span> email setup guide to send email with your custom domain name and alias.", provider.name)
             a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/guides/send-email-with-custom-domain-smtp"),
               target="_blank",
               rel="noopener noreferrer"
             )
-              = t("Setup outbound SMTP")
+              != t("Send email with <span class='notranslate'>%s</span> domain", provider.name)
               = " "
               i.fa.fa-angle-double-right.align-middle
         .col-12.d-flex
-          .p-3.p-md-5.mt-5.mt-lg-0.mt-md-2.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+          .p-3.p-md-5.mt-3.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
             h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
             p.lead.mb-3!= t("We are here to answer your questions, but please be sure to read our FAQ section first.")
             a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(

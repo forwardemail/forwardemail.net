@@ -204,6 +204,7 @@ module.exports = (redis) => ({
         Array.isArray(ACTIVE_GITHUB_ISSUES.data) &&
         ACTIVE_GITHUB_ISSUES.data.length > 0
       ) {
+        ctx.state.statusOutage = true;
         if (!ctx.session._gh_issue) {
           ctx.session._gh_issue = true;
           ctx.flash('custom', {
@@ -261,6 +262,7 @@ module.exports = (redis) => ({
         ctx.accepts('html') &&
         (isMongooseDown || isRedisDown)
       ) {
+        ctx.state.statusOutage = true;
         ctx.flash('custom', {
           title: ctx.request.t('Warning'),
           html: `<small>${ctx.translate('WEBSITE_OUTAGE')}</small>`,

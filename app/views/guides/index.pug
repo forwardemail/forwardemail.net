@@ -1,0 +1,70 @@
+extends ../layout
+
+block body
+  .py-5.position-relative.bg-light.bg-fixed.lazyload(
+    data-src=manifest("img/art/stars.svg")
+  )
+    .container
+      .row
+        .col-12
+          .text-center
+            h1= t("Free Email Forwarding and Hosting Setup Guides")
+            p!= t("Listed below are setup guides for email forwarding and hosting.")
+            include ../_author
+      .row.mt-3
+        - const providers = [...nsProviders];
+        - providers.unshift({ name: "Send Mail As with Gmail", slug: "send-mail-as-gmail-custom-domain", video: "https://youtu.be/MEheS8gM4Xs" });
+        - providers.unshift({ name: "Send Email with Custom Domain", slug: "send-email-with-custom-domain-smtp" });
+        each provider in providers
+          .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
+            .card.rounded-lg.position-relative
+              if provider.video || provider.gif
+                .position-absolute.w-100.text-right
+                  if provider.video
+                    span.badge.badge-danger.text-monospace.text-uppercase.mr-1.mt-1
+                      i.fa.fa-play-circle
+                      = " "
+                      = t("Video")
+                  if provider.video && provider.gif
+                    = " "
+                  if provider.gif
+                    span.badge.badge-success.text-monospace.text-uppercase.mr-1.mt-1
+                      = "GIF"
+              - const str = t('<span class="notranslate">%s</span> Email Server Setup', provider.name);
+              - const str2 = t('<span class="notranslate">%s</span> Email Tutorial', provider.name);
+              noscript
+                img.card-img-top.img-fluid(
+                  src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
+                  alt=striptags(str)
+                )
+              img.lazyload.card-img-top.img-fluid(
+                src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
+                alt=striptags(str)
+              )
+              .card-body
+                h2.h5.card-title= provider.name
+                h3.h6.card-subtitle.text-muted!= str2
+                p.card-text
+                  if provider.video
+                    != t('Send and receive emails with <span class="notranslate">%s</span> and setup free email forwarding for <span class="notranslate">%s</span> with video and step by step instructions.', provider.name, provider.name)
+                  else
+                    != t('Send and receive emails with <span class="notranslate">%s</span> and setup free email forwarding for <span class="notranslate">%s</span> with step by step instructions.', provider.name, provider.name)
+              .card-footer
+                a.stretched-link.btn.btn-md.btn-dark.btn-block(
+                  href=l(`/guides/${provider.slug}`),
+                  title=striptags(str)
+                )
+                  if isBot(ctx.get("User-Agent"))
+                    != str
+                  else
+                    span.text-uppercase.font-weight-bold.align-middle= t("Read tutorial")
+                    = " "
+                    i.fa.fa-angle-double-right.align-middle
+      //- Disclaimer
+      if !isBot(ctx.get('User-Agent'))
+        .row
+          .col-12
+            .alert.alert-secondary.small.mt-3.mb-0
+              strong= t("Notice of Non-Affiliation and Disclaimer:")
+              = " "
+              != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', nsProviders.map((p) => p.name).join(", "), nsProviders.map((p) => p.name).join(", "))

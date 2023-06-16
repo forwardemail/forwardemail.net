@@ -326,7 +326,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
 ## License
 
-[Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © [Niftylettuce, LLC.](https://niftylettuce.com/)
+[Business Source License 1.1](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE) © [Forward Email](https://forwardemail.net)
 
 
 ##

@@ -1,4 +1,4 @@
-# Email Forwarding API
+# Email API
 
 
 ## Table of Contents

@@ -11,7 +11,7 @@ block body
                 i.fab.fa-youtube.text-danger
                 = " "
                 = t("Video")
-            li.list-inline-item: i.fa.fa-angle-right.align-middle.text-white
+            li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
             li.list-inline-item
               a.btn.btn-lg.btn-light(href="#step-by-step-instructions")
                 span.badge.badge-pill.mr-1.badge-success
@@ -19,14 +19,15 @@ block body
                 = t("Steps")
   .container.py-3.py-md-4.py-lg-5
     .row
-      .col-12
-        h1.mb-0.text-center!= t("Send Mail As with Gmail")
-        .alert.mt-3.alert-primary.text-center
-          = t("Not using Gmail?")
-          = " "
-          a.alert-link(href=l("/guides/send-email-with-custom-domain-smtp"))= t("Click here")
-        //- Disclaimer
-        .mt-3.mb-0.small.text-center: span.small!= t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates.', "Gmail")
+      .col-12.text-center
+        h1= t("Send Mail As with Gmail Custom Domain")
+        p= t("Follow the instructions below to send email with Gmail Send Mail As with your custom domain using outbound SMTP.")
+        include ../_author
+        //-.
+          .alert.mt-3.alert-primary.text-center
+            = t("Not using Gmail?")
+            = " "
+            a.alert-link(href=l("/guides/send-email-with-custom-domain-smtp"))= t("Click here")
         //-.
           #quick-video-guide.card.mt-3
             h2.h5.card-header.text-center
@@ -51,17 +52,35 @@ block body
                   style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
                   data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
                 )
-      #step-by-step-instructions.col-12.mt-3
-        .card
-          h2.h5.card-header.text-center= t("Step by Step Instructions")
+    .row.mt-3
+      #step-by-step-instructions.col-sm-12.col-md-12.col-lg-6
+        .card.position-relative
+          .position-absolute.w-100.text-right
+            span.badge.badge-pill.badge-success.mt-3.mr-3.text-uppercase
+              != t("New")
+          h2.h5.card-header.text-center
+            if isBot(ctx.get("User-Agent"))
+              = t("Step by Step Instructions")
+            else
+              span.d-none.d-md-inline
+                = t("Step by Step Instructions")
+              span.d-inline.d-md-none
+                = t("Steps")
           .card-body.markdown-body
             != sendMailAsContent
-      #legacy-free-guide.col-12.mt-5
+      #legacy-free-guide.col-sm-12.col-md-12.col-lg-6.mt-5.mt-lg-0
         .card.position-relative
           .position-absolute.w-100.text-right
             span.badge.badge-pill.badge-danger.mt-3.mr-3.text-uppercase
               != t("Deprecated")
-          h2.h5.card-header.text-center!= t("Legacy Free Guide")
+          h2.h5.card-header.text-center
+            if isBot(ctx.get("User-Agent"))
+              != t("Legacy Free Guide")
+            else
+              span.d-none.d-md-inline
+                != t("Legacy Free Guide")
+              span.d-inline.d-md-none
+                != t("Free")
           .card-body.markdown-body
             .alert.alert-danger
               i.fa.fa-stop-circle.font-weight-bold
@@ -69,6 +88,10 @@ block body
               strong= t("Important:")
               = " "
               != t('This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="%s">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="%s">this will cause your outbound email</a> to say <span class="notranslate text-danger font-weight-bold">"via forwardemail dot net"</span> in Gmail.', l("/faq#do-you-support-sending-email-with-smtp"), l("/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail"))
+              = " "
+              strong.text-decoration-underline!= t("You should instead use the step by step instructions labelled:")
+              = " "
+              span.badge.badge-pill.badge-success.text-uppercase= "New"
             .mx-auto.lazyframe.border.border-themed(
               data-vendor="youtube_nocookie",
               title=t("How to Send Mail As using Gmail"),
@@ -76,3 +99,11 @@ block body
               data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
             )
             != legacyFreeGuide
+    //- Disclaimer
+    if !isBot(ctx.get('User-Agent'))
+      .row
+        .col-12
+          .alert.alert-secondary.small.text-center.mt-3.mb-0
+            strong= t("Notice of Non-Affiliation and Disclaimer:")
+            = " "
+            != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', "Gmail", "Gmail")

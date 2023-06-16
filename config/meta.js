@@ -16,7 +16,7 @@
 //
 const dayjs = require('dayjs-with-plugins');
 
-const { nsProviders } = require('#config/utilities');
+const { developerDocs, nsProviders } = require('#config/utilities');
 
 module.exports = function (config) {
   // currently we cannot use the `|` pipe character due to this issue
@@ -45,8 +45,8 @@ module.exports = function (config) {
       `Frequently Asked Questions ${lad}`,
       'How to configure email for custom domain names, outbound SMTP service, and more.'
     ],
-    '/email-forwarding-api': [
-      `Email Forwarding API ${lad}`,
+    '/email-api': [
+      `Email API ${lad}`,
       'Developers love our RESTful email forwarding API for custom domains.'
     ],
     '/free-email-webhooks': [
@@ -54,7 +54,7 @@ module.exports = function (config) {
       'Send email with HTTP using our developer webhooks and DNS email forwarding service.'
     ],
     '/email-forwarding-regex-pattern-filter': [
-      `Email Forwarding Regex Pattern Filter ${lad}`,
+      `Regex Email Forwarding ${lad}`,
       'Send email with regular expression matching and DNS email forwarding service.'
     ],
     '/terms': [
@@ -82,17 +82,35 @@ module.exports = function (config) {
       `Disposable Addresses ${lad}`,
       'Get disposable email forwarding addresses using your custom domain name.'
     ],
+    '/resources': [
+      `Free Startup and Developer Email Tools List (<span class="notranslate">${dayjs().format(
+        'YYYY'
+      )}</span>) ${lad}`,
+      'Get free startup and developer email tools, bundles, resources, guides, tutorials, code samples, and more.'
+    ],
+    '/docs': [
+      `Free Email Developer Tools and Resources (<span class="notranslate">${dayjs().format(
+        'YYYY'
+      )}</span>) ${lad}`,
+      'Free email developer tools and resources for startups and businesses. See our complete RESTful email API reference and manage your custom domains and aliases.'
+    ],
     '/guides': [
-      `How to Guides ${lad}`,
-      'Follow our easy and simple guides and step by step instructions.'
+      `Free Email Hosting Setup Guides (<span class="notranslate">${dayjs().format(
+        'YYYY'
+      )}</span>) ${lad}`,
+      'Follow our free email forwarding and hosting guides to send and receive mail with your custom domain. We publish an email hosting guide list of the most popular website and DNS providers.'
     ],
     '/guides/send-email-with-custom-domain-smtp': [
-      `Send Email with Custom Domain ${lad}`,
-      'Set up email with your custom domain and SMTP configuration.'
+      `Free Email Forwarding and Hosting for Custom Domain Setup Guide (<span class="notranslate">${dayjs().format(
+        'YYYY'
+      )}</span>) ${lad}`,
+      'Set up free email forwarding and hosting with your custom domain, DNS, and SMTP configuration step by step guide.'
     ],
     '/guides/send-mail-as-gmail-custom-domain': [
-      `How to Send Mail As with Gmail ${lad}`,
-      'Set up email with custom domain and Gmail to send mail as. Send mail as not working? Follow our video and instructions to fix the issue.'
+      `How to Send Mail As for Gmail Custom Domain Setup Guide (<span class="notranslate">${dayjs().format(
+        'YYYY'
+      )}</span>) ${lad}`,
+      'Set up email forwarding for free with custom domain and Gmail to forward, send, and receive email. Send mail as not working? Follow our video and instructions.'
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
       `Port 25 blocked by ISP ${lad}`,
@@ -146,12 +164,22 @@ module.exports = function (config) {
   // guides for each provider
   for (const provider of nsProviders) {
     meta[`/guides/${provider.slug}`] = [
-      `<span class="notranslate">${
+      `Free Email Forwarding and Hosting for <span class="notranslate">${
         provider.name
-      }</span> Email Setup Guide <span class="notranslate">${dayjs().format(
+      }</span> Setup Guide (<span class="notranslate">${dayjs().format(
         'YYYY'
-      )}</span> ${lad}`,
-      `Free and custom domain email forwarding DNS service for <span class="notranslate">${provider.name}</span>.`
+      )}</span>) ${lad}`,
+      `How to send and receive emails with <span class="notranslate">${provider.name}</span> DNS and setup free email forwarding for <span class="notranslate">${provider.name}</span> with video and step by step instructions.`
+    ];
+  }
+
+  // developer docs
+  for (const doc of developerDocs) {
+    meta[doc.slug] = [
+      `${doc.title} Code Example (<span class="notranslate">${dayjs().format(
+        'YYYY'
+      )}</span>) ${lad}`,
+      doc.description
     ];
   }
 
