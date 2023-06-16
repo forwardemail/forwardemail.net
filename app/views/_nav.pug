@@ -264,9 +264,6 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "active" : ""
               )
                 = t("Send Mail As with Gmail")
-                = " "
-                span.badge.badge-danger.text-monospace.text-uppercase
-                  = t("Video")
               hr.dropdown-divider
               h6.dropdown-header= t("Email Setup Guides")
               .card-columns
@@ -280,15 +277,6 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                       != t('<span class="notranslate">%s</span> Email Server Setup', provider.name)
                     else
                       = provider.name
-                      if provider.video
-                        = " "
-                        span.badge.badge-danger.text-monospace.text-uppercase.mr-1.mt-1
-                          = t("Video")
-                      if provider.gif
-                        = " "
-                        span.badge.badge-success.text-monospace.text-uppercase.mr-1.mt-1
-                          = "GIF"
-
               hr.dropdown-divider
               a.dropdown-item(href=l("/faq#table-dns-management-by-registrar"))= t("Other providers")
 
