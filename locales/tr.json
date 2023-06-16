@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "%100 AÇIK KAYNAKLI VE GİZLİLİK ODAKLI E-POSTA HİZMETİ.",
   "TUTORIAL": "ÖĞRETİCİ",
   "LEARN MORE": "DAHA FAZLA BİLGİ EDİN",
-  "Free, private, and secure email for custom domains.": "Özel alanlar için ücretsiz, özel ve güvenli e-posta."
+  "Free, private, and secure email for custom domains.": "Özel alanlar için ücretsiz, özel ve güvenli e-posta.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Vultr ve Digital Ocean'dan SOC 2 Type 2 uyumlu çıplak metal sunucular.",
+  "Unlike other services, we use 100% open-source software.": "Diğer hizmetlerden farklı olarak %100 açık kaynaklı yazılım kullanıyoruz.",
+  "Backscatter prevention, denylists, and rate limiting.": "Geri saçılma önleme, reddetme listeleri ve oran sınırlama.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Küresel yük dengeleyiciler ve HTTPS üzerinden uygulama düzeyinde DNS (\"DoH\")."
 }

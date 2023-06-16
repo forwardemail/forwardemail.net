@@ -182,7 +182,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                     else
                       = t(titleize(humanize(resourcePage.replace("/", ""))))
               hr.dropdown-divider
-              h6.dropdown-header= t("Community")
+              h6.dropdown-header.text-uppercase= t("Community")
               a.dropdown-item(
                 href="https://github.com/forwardemail",
                 target="_blank",
@@ -206,7 +206,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 = " "
                 i.fab.fa-fw.fa-youtube.text-danger
               hr.dropdown-divider
-              h6.dropdown-header= t("Company")
+              h6.dropdown-header.text-uppercase= t("Company")
               each companyPage in companyPages
                 a.dropdown-item(
                   href=l(companyPage),
@@ -253,7 +253,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
             .dropdown-menu.dropdown-menu-md-right.dropdown-menu-lg-right.dropdown-menu-xl-left(
               aria-labelledby="navbar-dropdown-guides"
             )
-              h6.dropdown-header= t("Outbound SMTP")
+              h6.dropdown-header.text-uppercase= t("Outbound SMTP")
               a.dropdown-item(
                 href=l("/guides/send-email-with-custom-domain-smtp"),
                 class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
@@ -265,13 +265,18 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               )
                 = t("Send Mail As with Gmail")
               hr.dropdown-divider
-              h6.dropdown-header= t("Email Setup Guides")
+              h6.dropdown-header.text-uppercase= t("Email Setup Guides")
               .card-columns
                 each provider in nsProviders
+                  - const classes = []
+                  if ctx.pathWithoutLocale === `/guides/${provider.slug}`
+                    - classes.push('active')
+                  if provider.gif || provider.video
+                    - classes.push('font-weight-bold')
                   a.dropdown-item(
                     title=striptags(t('<span class="notranslate">%s</span> Email Server Setup', provider.name)),
                     href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
-                    class=ctx.pathWithoutLocale === `/guides/${provider.slug}` ? "active" : ""
+                    class=classes.join(' ')
                   )
                     if isBot(ctx.get('User-Agent'))
                       != t('<span class="notranslate">%s</span> Email Server Setup', provider.name)
@@ -309,7 +314,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               )= t("Regex Email Forwarding")
               if developerDocs.length > 0
                 hr.dropdown-divider
-                h6.dropdown-header= t("Code Examples")
+                h6.dropdown-header.text-uppercase= t("Code Examples")
                 each doc in developerDocs
                   a.dropdown-item(
                     href=l(doc.slug),

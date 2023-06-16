@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "СЕРВІС ПОШТИ НА 100% З ВІДКРИТИМ КОРИСНИМ КОРИСТОМ, ОРІЄНТУВАНИЙ НА КОНФІДЕНЦІЙНІСТЬ.",
   "TUTORIAL": "ПІДРУЧНИК",
   "LEARN MORE": "ВИВЧАЙТЕ БІЛЬШЕ",
-  "Free, private, and secure email for custom domains.": "Безкоштовна, приватна та безпечна електронна пошта для користувацьких доменів."
+  "Free, private, and secure email for custom domains.": "Безкоштовна, приватна та безпечна електронна пошта для користувацьких доменів.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Сумісні з SOC 2 тип 2 голі сервери від Vultr і Digital Ocean.",
+  "Unlike other services, we use 100% open-source software.": "На відміну від інших сервісів, ми використовуємо 100% відкрите програмне забезпечення.",
+  "Backscatter prevention, denylists, and rate limiting.": "Запобігання зворотному розсіюванню, списки заборони та обмеження швидкості.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Глобальні балансувальники навантаження та DNS на рівні програми через HTTPS («DoH»)."
 }

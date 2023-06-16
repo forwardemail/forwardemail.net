@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100%-ban NYÍLT FORRÁSÚ ÉS AZ ADATVÉDELEM-KÖZPONTÚ E-MAIL-SZOLGÁLTATÁS.",
   "TUTORIAL": "ÚTMUTATÓ",
   "LEARN MORE": "TUDJ MEG TÖBBET",
-  "Free, private, and secure email for custom domains.": "Ingyenes, privát és biztonságos levelezés egyéni domainekhez."
+  "Free, private, and secure email for custom domains.": "Ingyenes, privát és biztonságos levelezés egyéni domainekhez.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "SOC 2 Type 2 kompatibilis csupasz fém szerverek a Vultr és a Digital Ocean cégtől.",
+  "Unlike other services, we use 100% open-source software.": "Más szolgáltatásokkal ellentétben mi 100%-ban nyílt forráskódú szoftvereket használunk.",
+  "Backscatter prevention, denylists, and rate limiting.": "Visszaszórás megelőzése, elutasító listák és sebességkorlátozás.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Globális terheléselosztók és alkalmazásszintű DNS HTTPS-en keresztül (\"DoH\")."
 }

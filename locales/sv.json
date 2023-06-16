@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100 % ÖPPEN KÄLLA OCH SEKRETESSFOKUSERAD E-POSTJÄNST.",
   "TUTORIAL": "HANDLEDNING",
   "LEARN MORE": "LÄS MER",
-  "Free, private, and secure email for custom domains.": "Gratis, privat och säker e-post för anpassade domäner."
+  "Free, private, and secure email for custom domains.": "Gratis, privat och säker e-post för anpassade domäner.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "SOC 2 Typ 2-kompatibla barmetallservrar från Vultr och Digital Ocean.",
+  "Unlike other services, we use 100% open-source software.": "Till skillnad från andra tjänster använder vi 100 % mjukvara med öppen källkod.",
+  "Backscatter prevention, denylists, and rate limiting.": "Förebyggande av backscatter, denylists och hastighetsbegränsning.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Globala belastningsutjämnare och DNS på applikationsnivå över HTTPS (\"DoH\")."
 }

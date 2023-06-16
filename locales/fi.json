@@ -4289,5 +4289,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100 % AVOIMEN LÄHDEEN JA YKSITYISYYDEN KESKITTYVÄ SÄHKÖPALVELU.",
   "TUTORIAL": "OPETUSOHJE",
   "LEARN MORE": "LUE LISÄÄ",
-  "Free, private, and secure email for custom domains.": "Ilmainen, yksityinen ja suojattu sähköposti mukautetuille verkkotunnuksille."
+  "Free, private, and secure email for custom domains.": "Ilmainen, yksityinen ja suojattu sähköposti mukautetuille verkkotunnuksille.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "SOC 2 Type 2 -yhteensopivat paljasmetallipalvelimet Vultrilta ja Digital Oceanilta.",
+  "Unlike other services, we use 100% open-source software.": "Toisin kuin muut palvelut, käytämme 100 % avoimen lähdekoodin ohjelmistoja.",
+  "Backscatter prevention, denylists, and rate limiting.": "Takaisinsironta esto, kieltäjät ja nopeuden rajoittaminen.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Globaalit kuormantasaajat ja sovellustason DNS HTTPS:n (\"DoH\") kautta."
 }

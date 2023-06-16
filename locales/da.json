@@ -4180,5 +4180,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100 % OPEN-SOURCE OG PRIVACY-FOKUSERT EMAIL-SERVICE.",
   "TUTORIAL": "TUTORIAL",
   "LEARN MORE": "LÆR MERE",
-  "Free, private, and secure email for custom domains.": "Gratis, privat og sikker e-mail til brugerdefinerede domæner."
+  "Free, private, and secure email for custom domains.": "Gratis, privat og sikker e-mail til brugerdefinerede domæner.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "SOC 2 Type 2-kompatible bare metal-servere fra Vultr og Digital Ocean.",
+  "Unlike other services, we use 100% open-source software.": "I modsætning til andre tjenester bruger vi 100 % open source-software.",
+  "Backscatter prevention, denylists, and rate limiting.": "Tilbagespredningsforebyggelse, afvisningslister og hastighedsbegrænsning.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Globale belastningsbalancere og DNS på applikationsniveau over HTTPS (\"DoH\")."
 }

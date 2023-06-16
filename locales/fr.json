@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "SERVICE DE COURRIEL 100 % OPEN SOURCE ET FOCALISÉ SUR LA VIE PRIVÉE.",
   "TUTORIAL": "DIDACTICIEL",
   "LEARN MORE": "APPRENDRE ENCORE PLUS",
-  "Free, private, and secure email for custom domains.": "E-mail gratuit, privé et sécurisé pour les domaines personnalisés."
+  "Free, private, and secure email for custom domains.": "E-mail gratuit, privé et sécurisé pour les domaines personnalisés.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Serveurs bare metal conformes SOC 2 Type 2 de Vultr et Digital Ocean.",
+  "Unlike other services, we use 100% open-source software.": "Contrairement à d'autres services, nous utilisons des logiciels 100% open-source.",
+  "Backscatter prevention, denylists, and rate limiting.": "Prévention de la rétrodiffusion, listes de refus et limitation du débit.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Équilibreurs de charge globaux et DNS au niveau de l'application sur HTTPS (\"DoH\")."
 }

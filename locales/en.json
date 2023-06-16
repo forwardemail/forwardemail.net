@@ -4211,5 +4211,9 @@
   "Free, private, and secure email for custom domains.": "Free, private, and secure email for custom domains.",
   "LEARN MORE": "LEARN MORE",
   "TUTORIAL": "TUTORIAL",
-  "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE."
+  "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.",
+  "Unlike other services, we use 100% open-source software.": "Unlike other services, we use 100% open-source software.",
+  "Backscatter prevention, denylists, and rate limiting.": "Backscatter prevention, denylists, and rate limiting.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Global load balancers and application-level DNS over HTTPS (\"DoH\")."
 }

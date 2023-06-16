@@ -4135,5 +4135,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100% 开源和注重隐私的电子邮件服务。",
   "TUTORIAL": "教程",
   "LEARN MORE": "了解更多",
-  "Free, private, and secure email for custom domains.": "适用于自定义域的免费、私密且安全的电子邮件。"
+  "Free, private, and secure email for custom domains.": "适用于自定义域的免费、私密且安全的电子邮件。",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "来自 Vultr 和 Digital Ocean 的 SOC 2 Type 2 兼容裸机服务器。",
+  "Unlike other services, we use 100% open-source software.": "与其他服务不同，我们使用 100% 开源软件。",
+  "Backscatter prevention, denylists, and rate limiting.": "反向散射预防、拒绝名单和速率限制。",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "全球负载均衡器和基于 HTTPS 的应用程序级 DNS（“DoH”）。"
 }

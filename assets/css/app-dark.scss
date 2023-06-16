@@ -72,6 +72,10 @@ $input-disabled-bg:                     $dark;
     }
   }
 
+  .dropdown-item.active, .dropdown-item:active {
+    color: white;
+  }
+
   @import 'node_modules/github-markdown-css/github-markdown-dark';
   @import 'node_modules/@tkrotoff/bootstrap-floating-label/src/bootstrap-floating-label';
   @import 'node_modules/highlight.js/scss/github-dark';

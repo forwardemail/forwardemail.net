@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100% オープンソースのプライバシー重視の電子メール サービス。",
   "TUTORIAL": "チュートリアル",
   "LEARN MORE": "もっと詳しく知る",
-  "Free, private, and secure email for custom domains.": "カスタム ドメイン向けの無料、プライベート、安全なメール。"
+  "Free, private, and secure email for custom domains.": "カスタム ドメイン向けの無料、プライベート、安全なメール。",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Vultr および Digital Ocean の SOC 2 Type 2 準拠のベアメタル サーバー。",
+  "Unlike other services, we use 100% open-source software.": "他のサービスとは異なり、当社は 100% オープンソース ソフトウェアを使用しています。",
+  "Backscatter prevention, denylists, and rate limiting.": "後方散乱防止、拒否リスト、レート制限。",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "グローバル ロード バランサーとアプリケーション レベルの DNS over HTTPS (「DoH」)。"
 }

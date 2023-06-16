@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "USŁUGA E-MAIL W 100% OTWARTA I OCHRONA PRYWATNOŚCI.",
   "TUTORIAL": "INSTRUKTAŻ",
   "LEARN MORE": "UCZ SIĘ WIĘCEJ",
-  "Free, private, and secure email for custom domains.": "Bezpłatna, prywatna i bezpieczna poczta e-mail dla domen niestandardowych."
+  "Free, private, and secure email for custom domains.": "Bezpłatna, prywatna i bezpieczna poczta e-mail dla domen niestandardowych.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Serwery Bare Metal zgodne z SOC 2 Type 2 od Vultr i Digital Ocean.",
+  "Unlike other services, we use 100% open-source software.": "W przeciwieństwie do innych usług, używamy oprogramowania w 100% open-source.",
+  "Backscatter prevention, denylists, and rate limiting.": "Zapobieganie rozpraszaniu wstecznemu, listy odrzuconych i ograniczanie szybkości.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Globalne systemy równoważenia obciążenia i DNS na poziomie aplikacji przez HTTPS („DoH”)."
 }

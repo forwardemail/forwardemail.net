@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100٪ مفتوحة المصدر وخدمة البريد الإلكتروني المركزة على الخصوصية.",
   "TUTORIAL": "درس تعليمي",
   "LEARN MORE": "يتعلم أكثر",
-  "Free, private, and secure email for custom domains.": "بريد إلكتروني مجاني وخاص وآمن للمجالات المخصصة."
+  "Free, private, and secure email for custom domains.": "بريد إلكتروني مجاني وخاص وآمن للمجالات المخصصة.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "خوادم معدنية عارية متوافقة مع SOC 2 Type 2 من Vultr و Digital Ocean.",
+  "Unlike other services, we use 100% open-source software.": "على عكس الخدمات الأخرى ، نستخدم برامج مفتوحة المصدر بنسبة 100٪.",
+  "Backscatter prevention, denylists, and rate limiting.": "منع التبعثر المرتد ، و denylists ، والحد من المعدل.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "موازنات التحميل العام و DNS على مستوى التطبيق عبر HTTPS (\"DoH\")."
 }

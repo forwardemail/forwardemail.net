@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "DỊCH VỤ EMAIL NGUỒN MỞ VÀ TẬP TRUNG VÀO QUYỀN RIÊNG TƯ 100%.",
   "TUTORIAL": "HƯỚNG DẪN",
   "LEARN MORE": "TÌM HIỂU THÊM",
-  "Free, private, and secure email for custom domains.": "Email miễn phí, riêng tư và an toàn cho các miền tùy chỉnh."
+  "Free, private, and secure email for custom domains.": "Email miễn phí, riêng tư và an toàn cho các miền tùy chỉnh.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Các máy chủ bare metal tuân thủ SOC 2 Type 2 từ Vultr và Digital Ocean.",
+  "Unlike other services, we use 100% open-source software.": "Không giống như các dịch vụ khác, chúng tôi sử dụng phần mềm mã nguồn mở 100%.",
+  "Backscatter prevention, denylists, and rate limiting.": "Ngăn chặn tán xạ ngược, danh sách từ chối và giới hạn tỷ lệ.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "Bộ cân bằng tải toàn cầu và DNS cấp ứng dụng qua HTTPS (\"DoH\")."
 }

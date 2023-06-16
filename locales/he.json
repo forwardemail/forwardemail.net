@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100% שירות דוא\"ל ממוקד קוד פתוח ופרטיות.",
   "TUTORIAL": "הדרכה",
   "LEARN MORE": "למד עוד",
-  "Free, private, and secure email for custom domains.": "דוא\"ל חינם, פרטי ומאובטח עבור דומיינים מותאמים אישית."
+  "Free, private, and secure email for custom domains.": "דוא\"ל חינם, פרטי ומאובטח עבור דומיינים מותאמים אישית.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "שרתי מתכת חשופה תואמי SOC 2 Type 2 מבית Vultr ו-Digital Ocean.",
+  "Unlike other services, we use 100% open-source software.": "בניגוד לשירותים אחרים, אנו משתמשים בתוכנת 100% קוד פתוח.",
+  "Backscatter prevention, denylists, and rate limiting.": "מניעת פיזור לאחור, הכחשות והגבלת שיעור.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "מאזני עומסים גלובליים ו-DNS ברמת האפליקציה באמצעות HTTPS (\"DoH\")."
 }

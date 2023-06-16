@@ -45,7 +45,7 @@ block body
                     != t(doc.title)
                   else
                     if doc.icon
-                      i(class=doc.icon)
+                      i(class=doc.icon).align-middle
                       = " "
                     span.text-uppercase.font-weight-bold.align-middle= doc.ogBtnText || t("Learn more")
                     = " "

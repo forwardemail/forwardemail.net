@@ -4444,5 +4444,9 @@
   "100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.": "100% 오픈 소스 및 개인 정보 보호에 중점을 둔 이메일 서비스.",
   "TUTORIAL": "지도 시간",
   "LEARN MORE": "더 알아보기",
-  "Free, private, and secure email for custom domains.": "맞춤형 도메인을 위한 무료, 비공개 및 보안 이메일."
+  "Free, private, and secure email for custom domains.": "맞춤형 도메인을 위한 무료, 비공개 및 보안 이메일.",
+  "SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.": "Vultr 및 Digital Ocean의 SOC 2 Type 2 호환 베어메탈 서버.",
+  "Unlike other services, we use 100% open-source software.": "다른 서비스와 달리 100% 오픈 소스 소프트웨어를 사용합니다.",
+  "Backscatter prevention, denylists, and rate limiting.": "후방 산란 방지, 거부 목록 및 속도 제한.",
+  "Global load balancers and application-level DNS over HTTPS (\"DoH\").": "HTTPS를 통한 글로벌 로드 밸런서 및 애플리케이션 수준 DNS(\"DoH\")."
 }

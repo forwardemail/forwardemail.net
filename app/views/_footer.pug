@@ -1,4 +1,4 @@
-footer.mt-auto
+footer.mt-auto.small
   //-.
     if !isHelp
       .bg-primary.text-center.py-3.border-top.border-themed
@@ -65,7 +65,7 @@ footer.mt-auto
               )
         //-.
           .flex-wrap.flex-fill
-            h3.h5.mb-2= t("Guides")
+            h3.h6.text-uppercase.mb-2= t("Guides")
             ul.list-unstyled.mb-0
               //-.
                 li
@@ -104,7 +104,7 @@ footer.mt-auto
           hr.d-lg-none.w-100
 
         .flex-wrap.flex-fill
-          h3.h5.mb-2: a.text-light(href=l("/guides"))= t("Guides")
+          h3.h6.text-uppercase.mb-2: a.text-light(href=l("/guides"))= t("Guides")
           ul.list-unstyled.mb-0.mb-lg-3
             li: a.d-block.text-light.py-2.py-md-0(
               href=l("/guides/send-email-with-custom-domain-smtp")
@@ -126,7 +126,7 @@ footer.mt-auto
               href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
             )= t("Port 25 blocked by ISP")
           hr.d-lg-none.w-100
-          h3.h5.mb-2: a.text-light(href=l("/resources"))= t("Resources")
+          h3.h6.text-uppercase.mb-2: a.text-light(href=l("/resources"))= t("Resources")
           ul.list-unstyled.mb-0
             - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
             if !isBot(ctx.get('User-Agent'))
@@ -156,15 +156,17 @@ footer.mt-auto
               li: a.d-block.text-light.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill
-          h3.h5.mb-2: a.text-light(href=l("/docs"))= t("Developers")
+          h3.h6.text-uppercase.mb-2: a.text-light(href=l("/docs"))= t("Developers")
           ul.list-unstyled.mb-0.mb-lg-3
             li: a.d-block.text-light.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
             li: a.d-block.text-light.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
             li: a.d-block.text-light.py-2.py-md-0(
               href=l("/email-forwarding-regex-pattern-filter")
             )= t("Regex Email Forwarding")
-            if developerDocs.length > 0
-              hr.w-100
+          if developerDocs.length > 0
+            h3.h6.text-uppercase.mb-2= t("Code Examples")
+            hr.d-lg-none.w-100
+            ul.list-unstyled.mb-0.mb-lg-3
               each doc in developerDocs
                 li
                   a.d-block.text-light.py-2.py-md-0(href=l(doc.slug))
@@ -175,7 +177,7 @@ footer.mt-auto
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
-            h3.h5.mb-2= t("Community")
+            h3.h6.text-uppercase.mb-2= t("Community")
             ul.list-unstyled.mb-0.mb-lg-3
               li
                 a.d-block.text-light.py-2.py-md-0(
@@ -201,8 +203,8 @@ footer.mt-auto
                   = "YouTube"
                   = " "
                   i.fab.fa-fw.fa-youtube.text-danger
-            hr.w-100
-            h3.h5.mb-2= t("Company")
+            hr.d-lg-none.w-100
+            h3.h6.text-uppercase.mb-2= t("Company")
             ul.list-unstyled.mb-0.mb-lg-3
               li: a.d-block.text-light.py-2.py-md-0(href=l("/about"))= t("About")
               li: a.d-block.text-light.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
@@ -266,7 +268,7 @@ footer.mt-auto
           hr.d-lg-none.w-100
           .flex-wrap.flex-fill.d-flex.flex-column
             div
-              h3.h5.mb-2= t("Languages")
+              h3.h6.text-uppercase.mb-2= t("Languages")
               ul.list-unstyled.mb-0.small
                 each language in availableLanguages
                   li: a.d-block.text-light.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
@@ -275,7 +277,7 @@ footer.mt-auto
             hr.d-lg-none.w-100
             .flex-wrap.flex-fill.d-flex.flex-column
               div
-                h3.h5.mb-2= t("Languages")
+                h3.h6.text-uppercase.mb-2= t("Languages")
                 ul.list-unstyled.mb-0.small
                   each language in availableLanguages
                     li: a.d-block.text-light.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
