@@ -33,9 +33,9 @@ block body
                 alt=striptags(t(doc.title))
               )
               .card-body
-                h2.h5.card-title!= t(doc.title)
+                h2.h5.card-title.text-monospace!= t(doc.title)
                 // h3.h6.card-subtitle.text-muted!= doc.subtitle
-                p.card-text!= t(doc.description)
+                p.card-text.text-monospace!= t(doc.description)
               .card-footer
                 a.stretched-link.btn.btn-md.btn-dark.btn-block(
                   href=l(doc.slug),
