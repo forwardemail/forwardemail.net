@@ -120,18 +120,18 @@ html.h-100.no-js(
       else if ctx.pathWithoutLocale.startsWith('/guides')
         meta(property="article:section", content=t("Guides"))
       meta(property="og:image:alt", content=striptags(meta.title))
-      if gif
-        meta(property="og:image:type", content="image/gif")
-        meta(property="og:image", content=manifest(`img/guides/${gif}.gif`))
-        meta(property="og:image:secure_url", content=manifest(`img/guides/${gif}.gif`))
-        meta(property="og:image:width", content="960")
-        meta(property="og:image:height", content="540")
-      else
-        meta(property="og:image:type", content="image/png")
-        meta(property="og:image", content=ogImage)
-        meta(property="og:image:secure_url", content=ogImage)
-        meta(property="og:image:width", content="1200")
-        meta(property="og:image:height", content="630")
+      //-.
+        if gif
+          meta(property="og:image:type", content="image/gif")
+          meta(property="og:image", content=manifest(`img/guides/${gif}.gif`))
+          meta(property="og:image:secure_url", content=manifest(`img/guides/${gif}.gif`))
+          meta(property="og:image:width", content="960")
+          meta(property="og:image:height", content="540")
+      meta(property="og:image:type", content="image/png")
+      meta(property="og:image", content=ogImage)
+      meta(property="og:image:secure_url", content=ogImage)
+      meta(property="og:image:width", content="1200")
+      meta(property="og:image:height", content="630")
 
       if ['/', '/resources', '/about', '/terms', '/about', '/faq', '/private-business-email'].includes(ctx.pathWithoutLocale) || ctx.pathWithoutLocale.startsWith('/docs') || ctx.pathWithoutLocale.startsWith('/guides')
         meta(
