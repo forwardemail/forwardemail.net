@@ -250,7 +250,8 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               class=ctx.pathWithoutLocale.startsWith("/guides") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
             )
               = t("Guides")
-            .dropdown-menu.dropdown-menu-md-right.dropdown-menu-lg-right.dropdown-menu-xl-left(
+            .dropdown-menu.dropdown-menu-xl-left(
+              class=user ? "dropdown-menu-md-left dropdown-menu-lg-left" : "dropdown-menu-md-right dropdown-menu-lg-right",
               aria-labelledby="navbar-dropdown-guides"
             )
               h6.dropdown-header.text-uppercase= t("Outbound SMTP")
