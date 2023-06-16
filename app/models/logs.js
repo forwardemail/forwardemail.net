@@ -431,10 +431,26 @@ function getQueryHash(log) {
     //       (e.g. the response time might slightly vary in the message string)
     //
     // if (log?.message) $and.push({ $text: { $search: log.message } });
-    if (log?.message)
+    if (log?.message && log?.err?.name !== 'DenylistError')
       $and.push({
         message: log.message
       });
+
+    if (isSANB(log?.err?.name))
+      $and.push({
+        'err.name': log.err.name
+      });
+
+    if (isSANB(log?.err?.address))
+      $and.push({
+        'err.address': log.err.address
+      });
+
+    if (typeof log?.err?.responseCode === 'number')
+      $and.push({
+        'err.responseCode': log.err.responseCode
+      });
+
     //
     // if it was not an HTTP request then include date query
     // (we don't want the server itself to pollute the db on its own)
