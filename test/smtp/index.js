@@ -434,7 +434,7 @@ test('smtp outbound queue', async (t) => {
 Sender: baz@beep.com
 Cc: beep@boop.com,beep@boop.com
 Bcc: foo@bar.com,a@xyz.com,b@xyz.com
-Reply-To: boop@beep.com
+Reply-To: Beep boop@beep.com
 Message-Id: beep-boop
 To: test@foo.com
 From: Test <${alias.name}@${domain.name}>
@@ -463,6 +463,8 @@ Test`.trim()
   t.true(typeof email === 'object');
   // TODO: validate by message-id too to ensure it's the right email
   delete email.message; // suppress buffer output from console log
+  t.is(email.headers.From, `Test <${alias.name}@${domain.name}>`);
+  t.is(email.headers['Reply-To'], 'Beep <boop@beep.com>');
   t.is(email.status, 'queued');
 
   // validate envelope
@@ -543,7 +545,6 @@ Test`.trim()
         fn();
       });
     },
-    logInfo: true,
     logger,
     secure: false
   });

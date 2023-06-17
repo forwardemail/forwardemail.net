@@ -508,8 +508,6 @@ Emails.statics.queue = async function (
             obj.name = /^[\u0020-\u007E]*$/.test(obj.name)
               ? '"' + obj.name.replace(/([\\"])/g, '\\$1') + '"'
               : libmime.encodeWord(obj.name, 'Q', 52);
-          } else {
-            obj.name = '';
           }
 
           values.push({

@@ -658,10 +658,9 @@ class SMTP {
       socketTimeout: ms('180s'),
       // default closeTimeout is 30s
       closeTimeout: ms('30s'),
-      logInfo: true,
       // <https://github.com/nodemailer/smtp-server/issues/177>
       disableReverseLookup: true,
-      logger,
+      logger: false,
 
       disabledCommands: secure ? ['STARTTLS'] : [],
       secure,

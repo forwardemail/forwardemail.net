@@ -368,7 +368,6 @@ Test`.trim()
         fn();
       });
     },
-    logInfo: true,
     logger,
     secure: false
   });
@@ -745,7 +744,6 @@ test('smtp outbound spam block detection', async (t) => {
         fn();
       });
     },
-    logInfo: true,
     logger,
     secure: false
   });
