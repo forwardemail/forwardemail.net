@@ -154,21 +154,26 @@ async function shouldThrowError(err, session) {
 
   //
   // if it was apple (icloud.com, me.com, or mac.com)
-  // then note that this error [CS01] Message rejected due to local policy
-  // indicates that spam was detected and so treat it as spam not policy
+  // then note that this error [CS01] or [HM08] Message rejected due to local policy
+  // indicates that blocklist or spam was detected and so treat it appropriately
   //
   if (
     APPLE_HOSTS.has(err.target) &&
-    err.response.includes(
-      '554 5.7.1 [CS01] Message rejected due to local policy.'
+    err.response.includes('Message rejected due to local policy')
+  ) {
+    if (
+      err.response.includes(
+        '554 5.7.1 [HM08] Message rejected due to local policy'
+      )
     )
-  )
-    err.bounceInfo.category = 'spam';
-  //
-  // if it was spectrum/charter/rr then if blocked then retry
-  // <https://www.spectrum.net/support/internet/understanding-email-error-codes>
-  //
-  else if (err.response.includes('AUP#1260'))
+      err.bounceInfo.category = 'blocklist';
+    // '554 5.7.1 [CS01] Message rejected due to local policy.'
+    else err.bounceInfo.category = 'spam';
+    //
+    // if it was spectrum/charter/rr then if blocked then retry
+    // <https://www.spectrum.net/support/internet/understanding-email-error-codes>
+    //
+  } else if (err.response.includes('AUP#1260'))
     // IPv6 not supported with Spectrum
     err.responseCode = 421;
   else if (
