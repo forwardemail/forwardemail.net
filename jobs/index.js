@@ -149,7 +149,7 @@ const jobs = [
   // check for smtp queue count (50% threshold)
   {
     name: 'check-smtp-queue-count',
-    interval: '15s',
+    interval: '5m',
     timeout: 0
   },
   //

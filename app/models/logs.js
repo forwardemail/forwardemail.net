@@ -52,9 +52,15 @@ let twilioClient;
 if (
   config?.twilio?.accountSid &&
   config?.twilio?.authToken &&
-  config?.twilio?.number
+  config?.twilio?.from &&
+  config?.twilio?.to
 )
-  twilioClient = twilio(config.twilio.accountSid, config.twilio.authToken);
+  twilioClient = new twilio.Twilio(
+    config.twilio.accountSid,
+    config.twilio.authToken,
+    // <https://github.com/twilio/twilio-node/issues/938>
+    { env: {} }
+  );
 
 const resolver = createTangerine(redis, logger);
 
@@ -755,10 +761,10 @@ Logs.postCreate(async (doc, next) => {
         )} ${config.views.locals.striptags(
           doc?.err?.message || doc.message
         )} (Log ID ${doc.id})`,
-        from: config.twilio.number,
+        from: config.twilio.from,
         // assumes that sms forwarding rules are setup on twilio
         // (e.g. it forwards to a set of developer/engineer's phone numbers)
-        to: config.twilio.number
+        to: config.twilio.to
       });
     } catch (err) {
       await logger.fatal(err);
