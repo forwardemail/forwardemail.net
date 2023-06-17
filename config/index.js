@@ -28,6 +28,13 @@ const metaConfig = require('./meta-config');
 
 const config = {
   ...metaConfig,
+  twilio: {
+    accountSid: env.TWILIO_ACCOUNT_SID,
+    authToken: env.TWILIO_AUTH_TOKEN,
+    number: env.TWILIO_NUMBER
+  },
+  // 60 items (50 MB * 60 = 3000 MB = 3 GB)
+  smtpMaxQueue: 60,
   smtpQueueTimeout: ms('10s'),
   smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300,
   smtpLimitDuration: ms('1d'),

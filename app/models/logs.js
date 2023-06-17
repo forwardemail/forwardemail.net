@@ -20,6 +20,7 @@ const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
+const twilio = require('twilio');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isEmail } = require('validator');
@@ -46,6 +47,14 @@ const redis = new Redis(
   logger,
   webSharedConfig.redisMonitor
 );
+
+let twilioClient;
+if (
+  config?.twilio?.accountSid &&
+  config?.twilio?.authToken &&
+  config?.twilio?.number
+)
+  twilioClient = twilio(config.twilio.accountSid, config.twilio.authToken);
 
 const resolver = createTangerine(redis, logger);
 
@@ -293,7 +302,8 @@ function getQueryHash(log) {
   // then that means we want to definitely log the error
   // (in future we could use a different field to denote unique hash)
   //
-  if (log?.meta?.ignore_hook === false) return revHash(safeStringify(log));
+  if (log?.meta?.ignore_hook === false || log?.err?.isCodeBug === true)
+    return revHash(safeStringify(log));
 
   const $and = [];
   //
@@ -730,6 +740,26 @@ Logs.pre('save', function (next) {
 Logs.postCreate(async (doc, next) => {
   const isRateLimiting = doc?.err?.output?.statusCode === 429;
   if (doc?.err?.isCodeBug !== true && !isRateLimiting) return next();
+
+  // send an SMS to admins of the error
+  if (twilioClient) {
+    try {
+      await twilioClient.messages.create({
+        body: `${config.views.locals.emoji(
+          doc.level === 'fatal' ? 'rotating_light' : 'warning'
+        )} ${config.views.locals.striptags(
+          doc?.err?.message || doc.message
+        )} (Log ID ${doc.id})`,
+        from: config.twilio.number,
+        // assumes that sms forwarding rules are setup on twilio
+        // (e.g. it forwards to a set of developer/engineer's phone numbers)
+        to: config.twilio.number
+      });
+    } catch (err) {
+      await logger.fatal(err);
+    }
+  }
+
   try {
     // send an email to admins of the error
     await emailHelper({

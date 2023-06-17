@@ -62,15 +62,12 @@ if (parentPort)
 
 graceful.listen();
 
-// 60 items (50 MB * 60 = 3000 MB = 3 GB)
-const MAX_QUEUE = 60;
-
 async function sendEmails() {
   // return early if the job was already cancelled
   if (isCancelled) return;
 
-  if (queue.size >= MAX_QUEUE) {
-    logger.info(`queue has more than ${MAX_QUEUE} tasks`);
+  if (queue.size >= config.smtpMaxQueue) {
+    logger.info(`queue has more than ${config.smtpMaxQueue} tasks`);
     // wait 1 second
     await delay(1000);
     // queue more messages once finished processing
@@ -78,7 +75,7 @@ async function sendEmails() {
   }
 
   const now = new Date();
-  const limit = MAX_QUEUE - queue.size;
+  const limit = config.smtpMaxQueue - queue.size;
 
   logger.info('queueing %d emails', limit);
 

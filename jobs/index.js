@@ -146,6 +146,12 @@ const jobs = [
     interval: '15s',
     timeout: 0
   },
+  // check for smtp queue count (50% threshold)
+  {
+    name: 'check-smtp-queue-count',
+    interval: '15s',
+    timeout: 0
+  },
   //
   // for paid accounts we allowlist every 15m
   // but if any were on denylist we alert

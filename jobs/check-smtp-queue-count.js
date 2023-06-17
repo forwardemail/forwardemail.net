@@ -14,6 +14,7 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 
 const env = require('#config/env');
+const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const Emails = require('#models/emails');
@@ -72,55 +73,29 @@ graceful.listen();
     // NOTE: if you change this then also update `jobs/send-emails` if necessary
     const query = {
       _id: { $nin: recentlyBlockedIds },
-      locked_at: {
-        $exists: false
-      },
       status: 'queued',
       domain: {
         $nin: suspendedDomainIds
-      },
-      date: {
-        $lte: now
       }
     };
 
-    const ids = await Emails.distinct('id', query);
+    const count = await Emails.countDocuments(query);
 
-    // if no ids then return early
-    if (ids.length === 0) {
-      logger.info('No ids found');
-      process.exit(0);
-      return;
-    }
-
-    // wait 1 minute
-    await delay(ms('1m'));
-
-    // check if ids is the same
-    const newIds = await Emails.distinct('id', {
-      ...query,
-      date: {
-        $lte: new Date()
-      }
-    });
-
-    // if no ids then return early
-    if (newIds.length === 0) {
-      logger.info('No new ids found');
-      process.exit(0);
-      return;
-    }
-
-    if (ids.sort().join(',') === newIds.sort().join(',')) {
-      const err = new Error('Queue is frozen');
+    // if the count is >= half of the queue threshold
+    // then we can assume there's something wrong
+    // (we can fine tune this in the future)
+    if (count >= Math.round(config.smtpMaxQueue / 2)) {
+      const err = new Error(
+        `SMTP queue count is ${count} (exceeds 50% threshold)`
+      );
       err.isCodeBug = true; // triggers sms
       throw err;
     }
   } catch (err) {
     await logger.error(err);
-    // only send one of these emails every 1 hour
+    // only send one of these emails every 15m
     // (this prevents the job from exiting)
-    await delay(ms('1h'));
+    await delay(ms('15m'));
   }
 
   if (parentPort) parentPort.postMessage('done');
