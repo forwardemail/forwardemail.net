@@ -330,13 +330,15 @@ html.h-100.no-js(
           integrity=manifest("js/build.js", "integrity"),
           crossorigin="anonymous"
         )
+
         //- TODO: remove plausible and migrate to our own
         //- analytics via plausible.io
-        script(
-          defer,
-          data-domain="forwardemail.net",
-          src="https://plausible.io/js/plausible.js"
-        )
+        if ['/my-account', '/admin', '/verify', '/denylist', '/help', '/auth'].every(s => !ctx.pathWithoutLocale.startsWith(s))
+          script(
+            defer,
+            data-domain="forwardemail.net",
+            src="https://plausible.io/js/plausible.js"
+          )
 
         //- cloudflare turnstile (hidden from bots and admins)
         if config.turnstileEnabled && (!user || user.group !== 'admin')

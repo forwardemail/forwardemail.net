@@ -182,6 +182,14 @@ const NS_PROVIDERS = {
     false,
     ''
   ],
+  '123-reg.co.uk': [
+    '123-reg',
+    '123 Reg',
+    // <https://support.rocketspark.com/hc/en-us/articles/115010277427-How-to-change-your-DNS-settings-in-123-Reg>
+    'https://www.123-reg.co.uk/',
+    false,
+    '@'
+  ],
   ovh: [
     'ovhcloud',
     'OVHcloud',
