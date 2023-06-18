@@ -111,7 +111,7 @@ html.h-100.no-js(
       meta(property="og:title", content=striptags(meta.title))
       meta(property="og:description", content=striptags(meta.description))
       meta(property="og:url", content=`${config.urls.web}${ctx.path}`)
-      meta(property="og:site_name", config.appName)
+      meta(property="og:site_name", content=config.appName)
       if ctx.pathWithoutLocale.startsWith('/faq')
         meta(
           property="article:section",
