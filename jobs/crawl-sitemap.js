@@ -29,7 +29,7 @@ const graceful = new Graceful({
 
 // <https://github.com/nodejs/undici/issues/583>
 const client = new Client(config.urls.web, {
-  autoSelectFamily: true
+  autoSelectFamily: config.env !== 'production'
 });
 
 graceful.listen();
