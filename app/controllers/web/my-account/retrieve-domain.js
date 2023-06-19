@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 
 const Boom = require('@hapi/boom');
 const Meta = require('koa-meta');
@@ -22,10 +22,11 @@ const EXCHANGES = config.exchanges;
 
 // eslint-disable-next-line complexity
 async function retrieveDomain(ctx, next) {
-  if (!isSANB(ctx.params.domain_id) && !isSANB(ctx.request.body.domain))
+  if (!isSANB(ctx.params.domain_id) && !isSANB(ctx.request.body.domain)) {
     return ctx.throw(
       Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
+  }
 
   const id = isSANB(ctx.params.domain_id)
     ? ctx.params.domain_id
@@ -37,10 +38,11 @@ async function retrieveDomain(ctx, next) {
 
   // check if domain exists, and if it doesn't then check
   // if we have a pending invite
-  if (!ctx.state.domain)
+  if (!ctx.state.domain) {
     return ctx.throw(
       Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
+  }
 
   const member = ctx.state.domain.members.find((m) =>
     m?.user?.id
@@ -48,13 +50,17 @@ async function retrieveDomain(ctx, next) {
       : m.user.toString() === ctx.state.user.id
   );
 
-  if (!member) throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
+  if (!member) {
+    throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
+  }
 
   // set a `group` virtual helper alias to the member's group
   ctx.state.domain.group = member.group;
 
   // if it's an API request then return early
-  if (ctx.api) return next();
+  if (ctx.api) {
+    return next();
+  }
 
   //
   // if we're on the advanced settings page, then calculate alias_count for each member
@@ -109,10 +115,12 @@ async function retrieveDomain(ctx, next) {
       if (
         dmarcRecord &&
         (dmarcRecord?.v !== 'DMARC1' ||
-          dmarcRecord?.p !== 'reject' ||
+          !isSANB(dmarcRecord?.p) ||
+          !['none', 'reject', 'quarantine'].includes(dmarcRecord.p) ||
           dmarcRecord?.pct !== 100)
-      )
+      ) {
         ctx.state.isDMARCInvalid = true;
+      }
     } catch (err) {
       ctx.logger.warn(err);
     }
@@ -132,7 +140,7 @@ async function retrieveDomain(ctx, next) {
   if (
     ctx.method === 'GET' &&
     ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}`
-  )
+  ) {
     await Promise.all([
       (async () => {
         try {
@@ -169,12 +177,13 @@ async function retrieveDomain(ctx, next) {
           const existingTXT = [];
           for (const record of records) {
             if (_.isArray(record)) {
-              for (const str of record) {
+              for (const string_ of record) {
                 if (
-                  str.includes('forward-email=') ||
-                  str.includes('forward-email-port=')
-                )
-                  existingTXT.push(str);
+                  string_.includes('forward-email=') ||
+                  string_.includes('forward-email-port=')
+                ) {
+                  existingTXT.push(string_);
+                }
               }
             }
           }
@@ -188,6 +197,7 @@ async function retrieveDomain(ctx, next) {
         }
       })()
     ]);
+  }
 
   //
   // we need to import existing aliases
@@ -254,7 +264,7 @@ async function retrieveDomain(ctx, next) {
     ) &&
     ctx.pathWithoutLocale !==
       `/my-account/domains/${ctx.state.domain.name}/verify-smtp`
-  )
+  ) {
     ctx.flash('custom', {
       title: ctx.request.t('Important'),
       html: ctx.translate(
@@ -266,6 +276,7 @@ async function retrieveDomain(ctx, next) {
       toast: true,
       position: 'top'
     });
+  }
 
   if (
     ctx.method === 'GET' &&
@@ -321,7 +332,9 @@ async function retrieveDomain(ctx, next) {
         (m) => m.user.toString() === ctx.state.user.id
       );
 
-      if (!member) throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
+      if (!member) {
+        throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
+      }
 
       // set a `group` virtual helper alias to the member's group
       ctx.state.domain.group = member.group;
@@ -363,22 +376,25 @@ async function retrieveDomain(ctx, next) {
   if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/aliases`
-  ) {
+  )
     // user must be on a paid plan to use a global domain
     if (
       ctx.state.domain.is_global &&
       ctx.state.user.group !== 'admin' &&
       ctx.state.user.plan === 'free'
-    )
+    ) {
       ctx.flash(
         'warning',
         ctx.translate(
           'PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS',
-          ctx.state.l(`/my-account/billing/upgrade?plan=enhanced_protection`)
+          ctx.state.l('/my-account/billing/upgrade?plan=enhanced_protection')
         )
       );
-    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
+    }
+
+    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record) {
       ctx.flash('warning', message);
+    }
 
     ctx.state.meta.title = ctx.state.t(`Aliases ${META_TITLE_AFFIX}`);
     ctx.state.breadcrumbs.push('aliases');
@@ -406,8 +422,10 @@ async function retrieveDomain(ctx, next) {
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/aliases/new`
   ) {
-    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
+    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record) {
       ctx.flash('warning', message);
+    }
+
     ctx.state.breadcrumbHeaderCentered = true;
     ctx.state.meta.title = ctx.state.t(`Add Alias ${META_TITLE_AFFIX}`);
     ctx.state.breadcrumbs.push(
@@ -431,8 +449,9 @@ async function retrieveDomain(ctx, next) {
     ctx.pathWithoutLocale ===
       `/my-account/domains/${ctx.state.domain.name}/logs` &&
     (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
-  )
+  ) {
     ctx.flash('warning', message);
+  }
 
   // dynamically load the DNS Management by Registrar table from FAQ
   try {

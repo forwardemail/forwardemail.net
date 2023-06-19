@@ -967,7 +967,8 @@ async function verifySMTP(domain, resolver) {
         if (
           dmarcRecord &&
           dmarcRecord.v === 'DMARC1' &&
-          dmarcRecord.p === 'reject' &&
+          isSANB(dmarcRecord.p) &&
+          ['none', 'reject', 'quarantine'].includes(dmarcRecord.p) &&
           dmarcRecord.pct === 100
         )
           dmarc = true;
