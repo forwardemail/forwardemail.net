@@ -188,9 +188,15 @@ async function generateOpenGraphImage(ctx) {
 
     ctx.type = ctx.path.endsWith('.svg') ? 'image/svg+xml' : 'image/png';
 
-    let [str] = _.encode(
-      _.decode(data.title).replace(' | Forward Email', '').split(' - ')
-    );
+    let [str] = data.title
+      .replace(config.views.locals.striptags(config.metaTitleAffix), '')
+      .replace(
+        config.views.locals
+          .striptags(config.metaTitleAffix)
+          .replace('&#124;', '|'),
+        ''
+      )
+      .split(' - ');
     str = str.trim();
     if (url.startsWith('/guides') && str.includes(' for '))
       str = str.split(' for ')[1].trim();
