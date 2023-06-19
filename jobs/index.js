@@ -137,7 +137,7 @@ const jobs = [
   // crawl the sitemap and open graph images
   {
     name: 'crawl-sitemap',
-    interval: '1d',
+    interval: '1m',
     timeout: 0
   },
   // check for frozen outbound smtp queue

@@ -9,10 +9,12 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const _ = require('lodash');
+const delay = require('delay');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const parseErr = require('parse-err');
-const { request, Client, errors } = require('undici');
 const { XMLParser } = require('fast-xml-parser');
+const { request, Client, errors } = require('undici');
 
 const env = require('#config/env');
 const emailHelper = require('#helpers/email');
@@ -211,6 +213,9 @@ graceful.listen();
 
       logger.info('submitted sitemap to bing');
     }
+
+    // after successful run wait 24 hours then exit
+    await delay(ms('1d'));
   } catch (err) {
     await logger.error(err);
     // send an email to admins of the error
