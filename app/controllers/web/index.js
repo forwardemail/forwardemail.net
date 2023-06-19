@@ -175,7 +175,8 @@ async function generateOpenGraphImage(ctx) {
     try {
       data = meta.getByPath(url, ctx.request.t);
       match = `/${ctx.locale}${url}`;
-      if (match.length > 40) match = match.slice(0, 40) + '...';
+      if (match.length > 40)
+        match = _.escape(_.unescape(match).slice(0, 40) + '...');
     } catch (err) {
       logger.error(err);
       data = meta.getByPath('/', ctx.request.t);
@@ -191,7 +192,7 @@ async function generateOpenGraphImage(ctx) {
     str = str.trim();
     if (url.startsWith('/guides') && str.includes(' for '))
       str = str.split(' for ')[1].trim();
-    if (str.length > 50) str = str.slice(0, 50) + '...';
+    if (str.length > 50) str = _.escape(_.unescape(str).slice(0, 50) + '...');
     let freeEmail = ctx.translate('FREE_EMAIL');
     if (url.startsWith('/guides') || url.startsWith('/how-to'))
       freeEmail = ctx.translate('TUTORIAL');
@@ -203,10 +204,11 @@ async function generateOpenGraphImage(ctx) {
     // fallback safeguard
     if (freeEmail.length > 20) freeEmail = i18n.translate('FREE_EMAIL', 'en');
 
-    const svgReplaced = SVG_STR.replace(
-      'NO_CREDIT_CARD',
-      ctx.translate('NO_CREDIT_CARD')
-    )
+    let noCreditCard = ctx.translate('NO_CREDIT_CARD');
+    if (noCreditCard.length > 60)
+      noCreditCard = i18n.translate('NO_CREDIT_CARD', 'en');
+
+    const svgReplaced = SVG_STR.replace('NO_CREDIT_CARD', noCreditCard)
       .replace('PRIVATE_BUSINESS', str.trim())
       .replace('FREE_EMAIL', freeEmail)
       .replace(
