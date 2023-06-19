@@ -467,7 +467,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
             result.signingDomain === domain.name &&
             result.selector === domain.dkim_key_selector &&
             result?.status?.result === 'pass' &&
-            result?.status?.aligned === domain.name &&
+            (result?.status?.aligned === domain.name ||
+              result?.status?.aligned === parseRootDomain(domain.name)) &&
             result?.publicKey?.split('\n')?.slice(1, -1)?.join('') ===
               domain.dkim_public_key.toString('base64')
         )

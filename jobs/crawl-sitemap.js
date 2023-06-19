@@ -8,11 +8,13 @@ const { parentPort } = require('worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const _ = require('lodash');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
+const { request, Client, errors } = require('undici');
 const { XMLParser } = require('fast-xml-parser');
-const { Client, errors } = require('undici');
 
+const env = require('#config/env');
 const emailHelper = require('#helpers/email');
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -24,9 +26,7 @@ const graceful = new Graceful({
 });
 
 // <https://github.com/nodejs/undici/issues/583>
-const client = new Client(config.urls.web, {
-  // pipelining: 0
-});
+const client = new Client(config.urls.web);
 
 graceful.listen();
 
@@ -41,7 +41,8 @@ graceful.listen();
       method: 'GET',
       path: '/sitemap.xml',
       signal: AbortSignal.timeout(5000),
-      throwOnError: true
+      throwOnError: true,
+      autoSelectFamily: false
     });
 
     // the error code is between 200-400 (e.g. 302 redirect)
@@ -105,6 +106,110 @@ graceful.listen();
         await body.text();
         // body.destroy();
       }
+    }
+
+    const sitemap = `${config.urls.web}/sitemap.xml`;
+
+    // google
+    try {
+      const { statusCode, body, headers } = await request(
+        `https://www.google.com/ping?sitemap=${sitemap}`,
+        {
+          method: 'POST',
+          signal: AbortSignal.timeout(10000),
+          throwOnError: true
+        }
+      );
+      if (statusCode !== 200)
+        throw new errors.ResponseStatusCodeError(
+          `Response status code ${statusCode}`,
+          statusCode,
+          headers
+        );
+      await body.text();
+      logger.info('submitted sitemap to google');
+    } catch (err) {
+      await logger.error(err);
+    }
+
+    // yandex
+    try {
+      const { statusCode, body, headers } = await request(
+        `https://webmaster.yandex.ru/ping?sitemap=${sitemap}`,
+        {
+          method: 'POST',
+          signal: AbortSignal.timeout(10000),
+          throwOnError: true
+        }
+      );
+      if (statusCode !== 200)
+        throw new errors.ResponseStatusCodeError(
+          `Response status code ${statusCode}`,
+          statusCode,
+          headers
+        );
+      await body.text();
+      logger.info('submitted sitemap to yandex');
+    } catch (err) {
+      await logger.error(err);
+    }
+
+    //
+    // bing, yahoo
+    // <https://www.bing.com/indexnow>
+    // <https://blogs.bing.com/webmaster/may-2019/Easy-set-up-guide-for-Bing%E2%80%99s-Adaptive-URL-submission-API>
+    // <https://blogs.bing.com/webmaster/november-2019/Accessing-Bing-webmaster-tools-api-using-cURL>
+    // (can submit 500 at a time using bulk API endpoint)
+    //
+    // curl -X POST "https://ssl.bing.com/webmaster/api.svc/json/SubmitUrlBatch?apikey=API_KEY"
+    // -H "Content-Type: application/json"
+    // -H "charset: utf-8"
+    // -d '{"siteUrl":"https://www.example.com", "urlList":["https://www.example.com/about", "https://www.example.com/projects"]}'
+    //
+    // Response:
+    // {"d":null}
+    //
+    if (env.MICROSOFT_BING_API_KEY) {
+      const urlLists = _.chunk(
+        result.urlset.url.map((o) => o.loc),
+        500
+      );
+      for (const urlList of urlLists) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const { statusCode, body, headers } = await request(
+            `https://ssl.bing.com/webmaster/api.svc/json/SubmitUrlBatch?apikey=${env.MICROSOFT_BING_API_KEY}`,
+            {
+              method: 'POST',
+              signal: AbortSignal.timeout(10000),
+              throwOnError: true,
+              headers: {
+                'Content-Type': 'application/json',
+                // eslint-disable-next-line unicorn/text-encoding-identifier-case
+                charset: 'utf-8'
+              },
+              body: JSON.stringify({
+                siteUrl: config.urls.web,
+                urlList
+              })
+            }
+          );
+          if (statusCode !== 200)
+            throw new errors.ResponseStatusCodeError(
+              `Response status code ${statusCode}`,
+              statusCode,
+              headers
+            );
+          // eslint-disable-next-line no-await-in-loop
+          await body.text();
+          logger.info('submitted %s urls to bing', urlList.length);
+        } catch (err) {
+          // eslint-disable-next-line no-await-in-loop
+          await logger.error(err);
+        }
+      }
+
+      logger.info('submitted sitemap to bing');
     }
   } catch (err) {
     await logger.error(err);

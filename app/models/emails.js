@@ -149,7 +149,6 @@ const Emails = new mongoose.Schema({
   // subject header (same value as `headers.Subject`)
   subject: {
     type: String,
-    required: true,
     index: true
   },
   // accepted (Array of emails already accepted so we don't resend)
