@@ -500,7 +500,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // verify DMARC
     if (
       !dmarc ||
-      dmarc?.domain !== domain.name ||
+      (dmarc?.domain !== domain.name &&
+        dmarc?.domain !== parseRootDomain(domain.name)) ||
       dmarc?.policy !== 'reject' ||
       dmarc?.status?.result !== 'pass' ||
       dmarc?.pct !== 100
