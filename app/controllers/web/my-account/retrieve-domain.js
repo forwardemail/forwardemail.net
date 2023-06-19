@@ -376,7 +376,7 @@ async function retrieveDomain(ctx, next) {
   if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/aliases`
-  )
+  ) {
     // user must be on a paid plan to use a global domain
     if (
       ctx.state.domain.is_global &&

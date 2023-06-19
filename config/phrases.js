@@ -69,7 +69,7 @@ module.exports = {
   NO_REPLY_USERNAME_DISALLOWED:
     'You cannot use a "no-reply" username for an alias.',
   INVALID_DMARC_RESULT:
-    'Invalid DMARC result (must be passing with "p=reject" and "pct=100" policy).',
+    'Invalid DMARC result (policy must be <span class="notranslate">"p=none"</span>, <span class="notranslate">"p=reject"</span>, or <span class="notranslate">"p=quarantine"</span>, and <span class="notranslate">"pct=100"</span> must be set).',
   INVALID_SPF_RESULT: 'Invalid SPF result.',
   INVALID_DKIM_SIGNATURE: 'Invalid DKIM signature.',
   ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',
@@ -86,7 +86,7 @@ module.exports = {
     '<span class="notranslate">%s</span> was successfully removed from our denylist.',
   HELLO: 'Hello',
   WWW_WARNING:
-    'It looks like you accidentally included "www." in your domain name.  Did you mean example.com instead of www.example.com?',
+    'It looks like you accidentally included <span class="notranslate">"www."</span> in your domain name.  Did you mean example.com instead of www.example.com?',
   INVALID_PROFILE_RESPONSE:
     'Invalid profile response, please delete this site from your third-party sign-in preferences and try again.',
   INVALID_PROFILE_ID:

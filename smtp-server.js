@@ -13,8 +13,9 @@ const pify = require('pify');
 const safeStringify = require('fast-safe-stringify');
 const splitLines = require('split-lines');
 const { SMTPServer } = require('smtp-server');
-const { isEmail } = require('validator');
 const { boolean } = require('boolean');
+const { convert } = require('html-to-text');
+const { isEmail } = require('validator');
 
 const Users = require('#models/users');
 const Aliases = require('#models/aliases');
@@ -140,6 +141,27 @@ function refineAndLogError(err, session) {
   } else {
     logger.error(err, { session });
   }
+
+  //
+  // TODO: we should also mirror this to FE MX source
+  //
+  // NOTE: this was inspired from `koa-better-error-handler` response for API endpoints
+  // (and it is used because some errors are translated with HTML tags, e.g. notranslate)
+  //
+  err.message = convert(err.message, {
+    wordwrap: false,
+    selectors: [
+      {
+        selector: 'a',
+        options: {
+          hideLinkHrefIfSameAsText: true,
+          baseUrl: env.ERROR_HANDLER_BASE_URL || ''
+        }
+      },
+      { selector: 'img', format: 'skip' }
+    ],
+    linkBrackets: false
+  });
 
   //
   // replace linebreaks
