@@ -14,13 +14,14 @@ module.exports = (client) => ({
     try {
       let [buffer, data] = await pTimeout(
         Promise.all([client.getBuffer(`buffer:${key}`), client.get(key)]),
-        500
+        1000
       );
       if (!data) return;
       data = JSON.parse(data);
       if (buffer) data.body = buffer;
       return data;
     } catch (err) {
+      err.key = key;
       logger.error(err);
     }
   },
@@ -40,14 +41,15 @@ module.exports = (client) => ({
               [key, safeStringify(data), ...(maxAge > 0 ? ['EX', maxAge] : [])]
             ])
           ),
-          500
+          1000
         );
       } else {
         if (maxAge <= 0)
-          await pTimeout(client.set(key, safeStringify(value)), 500);
+          await pTimeout(client.set(key, safeStringify(value)), 1000);
         await client.set(key, safeStringify(value), 'EX', maxAge);
       }
     } catch (err) {
+      err.key = key;
       logger.error(err);
     }
   }
