@@ -28,7 +28,9 @@ const graceful = new Graceful({
 });
 
 // <https://github.com/nodejs/undici/issues/583>
-const client = new Client(config.urls.web);
+const client = new Client(config.urls.web, {
+  autoSelectFamily: true
+});
 
 graceful.listen();
 
@@ -43,8 +45,7 @@ graceful.listen();
       method: 'GET',
       path: '/sitemap.xml',
       signal: AbortSignal.timeout(5000),
-      throwOnError: true,
-      autoSelectFamily: false
+      throwOnError: true
     });
 
     // the error code is between 200-400 (e.g. 302 redirect)

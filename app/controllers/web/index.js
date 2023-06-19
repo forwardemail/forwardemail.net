@@ -164,7 +164,7 @@ async function generateOpenGraphImage(ctx) {
     if (url === '/index') url = '/';
 
     // ensure that the URL is in our sitemap otherwise redirect to generic
-    if (!keys.has(url)) {
+    if (!keys.has(url) && !i18n.config.locales.includes(url.slice(1))) {
       ctx.redirect(`/${ctx.locale}/index.png?v=${Date.now()}`);
       return;
     }
