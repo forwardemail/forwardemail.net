@@ -180,9 +180,10 @@ module.exports = function (config) {
       `The Best Free and Open Source Email Servers <span class="notranslate">(${dayjs().format(
         'YYYY'
       )})</span> ${lad}`,
-      `Open-source email server tutorials for ${arrayJoinConjunction(
-        platforms
-      )}.`
+      `Open-source email server tutorials for ${arrayJoinConjunction([
+        'Linux',
+        ...platforms.filter((p) => !p.toLowerCase().includes('linux'))
+      ])}.`
     ];
   }
 
