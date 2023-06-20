@@ -261,6 +261,11 @@ for (const doc of developerDocs) {
   localeRouter.get(doc.slug, render(doc.slug.slice(1)));
 }
 
+localeRouter.get('/docs/nodejs-spam-filter-contact-form', (ctx) => {
+  ctx.status = 301;
+  ctx.redirect(ctx.state.l('/docs/best-email-spam-protection-filter'));
+});
+
 if (platforms.length > 0)
   localeRouter.get('/open-source', render('open-source'));
 for (const platform of platforms) {

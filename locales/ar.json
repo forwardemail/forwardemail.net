@@ -4657,5 +4657,42 @@
   "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "مثال على كود JavaScript و Node.js URL Regex ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Open Source <span class=\"notranslate\">%s</span> Email Server": "فتح خادم البريد الإلكتروني المصدر <span class=\"notranslate\">%s</span>",
   "<span class=\"notranslate\">%s</span> Email Server": "خادم البريد الإلكتروني <span class=\"notranslate\">%s</span>",
-  "Open-source email server tutorials for Linux, Android, Apple, CentOS, Debian, Fedora, FreeBSD, Kubuntu, Lineage OS, Ubuntu, Unix, elementary OS, iOS, macOS, openSUSE Leap, and postmarket OS.": "برامج تعليمية لخادم البريد الإلكتروني مفتوح المصدر لأنظمة Linux و Android و Apple و CentOS و Debian و Fedora و FreeBSD و Kubuntu و Lineage OS و Ubuntu و Unix و elementary OS و iOS و macOS و openSUSE Leap و postmarket OS."
+  "Open-source email server tutorials for Linux, Android, Apple, CentOS, Debian, Fedora, FreeBSD, Kubuntu, Lineage OS, Ubuntu, Unix, elementary OS, iOS, macOS, openSUSE Leap, and postmarket OS.": "برامج تعليمية لخادم البريد الإلكتروني مفتوح المصدر لأنظمة Linux و Android و Apple و CentOS و Debian و Fedora و FreeBSD و Kubuntu و Lineage OS و Ubuntu و Unix و elementary OS و iOS و macOS و openSUSE Leap و postmarket OS.",
+  "Send Emails with React.js Node Web App Example": "إرسال رسائل بريد إلكتروني باستخدام مثال على تطبيق ويب عقدة React.js",
+  "Install and Requirements": "التثبيت والمتطلبات",
+  "Source Code and Example": "كود المصدر والمثال",
+  "You will need to install": "سوف تحتاج إلى التثبيت",
+  "npm dependencies:": "تبعيات npm:",
+  "Create your email template with a": "قم بإنشاء قالب البريد الإلكتروني الخاص بك باستخدام ملف",
+  "or a": "أو أ",
+  "file:": "ملف:",
+  "In this example, we use the": "في هذا المثال ، نستخدم الامتداد",
+  "Nodemailer": "ملاحظة الارسال",
+  "library and its official sponsor": "المكتبة وراعيها الرسمي",
+  "to send and preview outbound mail.": "لإرسال ومعاينة البريد الصادر.",
+  "You will need to": "سوف تحتاج إلى",
+  "to send outbound mail – please follow our": "لإرسال بريد صادر - يرجى اتباع",
+  "Send Email with Custom Domain SMTP Guide": "إرسال بريد إلكتروني باستخدام دليل SMTP للمجال المخصص",
+  "Run the app to send the email:": "قم بتشغيل التطبيق لإرسال البريد الإلكتروني:",
+  "Now you can go to": "الآن يمكنك الذهاب إلى",
+  "My Account → Emails": "حسابي → رسائل البريد الإلكتروني",
+  "to see your real-time email delivery status, email deliverability logs, and HTML/plaintext/attachment previews.": "للاطلاع على حالة تسليم البريد الإلكتروني في الوقت الفعلي ، وسجلات تسليم البريد الإلكتروني ، ومعاينات HTML / النص العادي / المرفقات.",
+  "P.S. 🎉 You can also": "ملاحظة. 🎉 يمكنك أيضًا",
+  "preview emails in browsers and the iOS Simulator": "معاينة رسائل البريد الإلكتروني في المتصفحات و iOS Simulator",
+  "create email templates with Node.js": "إنشاء قوالب بريد إلكتروني باستخدام Node.js",
+  "JavaScript Contact Forms Node.js Code Example": "نماذج جهات اتصال JavaScript مثال رمز Node.js",
+  "npm dependency:": "تبعية npm:",
+  "This example uses the": "يستخدم هذا المثال الامتداد",
+  "Best Email Spam Protection Filter": "أفضل مرشح للحماية من البريد الإلكتروني العشوائي",
+  "JavaScript Contact Forms Node.js": "نماذج جهات اتصال JavaScript Node.js",
+  "Node.js Email Templates": "قوالب البريد الإلكتروني Node.js",
+  "Send React Emails": "إرسال رسائل بريد إلكتروني من React",
+  "Prevent spam, phishing. malware, ad-blocking, pixel trackers, and more for contact forms and mail servers.": "منع البريد العشوائي والتصيد الاحتيالي. البرامج الضارة وحظر الإعلانات ومتتبعات البكسل والمزيد لنماذج الاتصال وخوادم البريد.",
+  "Create and send JavaScript contact forms with Node, React, React Native, Koa, Express, Fastify, and Nodemailer SMTP.": "قم بإنشاء وإرسال نماذج اتصال JavaScript باستخدام Node و React و React Native و Koa و Express و Fastify و Nodemailer SMTP.",
+  "Send emails and HTML/CSS templates with Node.js, React, Express, Koa, Nodemailer, and JavaScript with SMTP and developer source code samples, examples, and instructions.": "أرسل رسائل البريد الإلكتروني وقوالب HTML / CSS باستخدام Node.js و React و Express و Koa و Nodemailer و JavaScript باستخدام عينات من التعليمات البرمجية المصدر وأمثلة وتعليمات SMTP والمطور.",
+  "Send React web app emails with HTML, CSS, and JSX templates, examples, and SMTP production-ready integration.": "إرسال رسائل بريد إلكتروني لتطبيق ويب React باستخدام قوالب وأمثلة HTML و CSS و JSX وتكامل جاهز لإنتاج SMTP.",
+  "Best Email Spam Protection Filter Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "أفضل مثال لرمز عامل تصفية الحماية من البريد الإلكتروني العشوائي ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
+  "JavaScript Contact Forms Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "نماذج جهات اتصال JavaScript مثال رمز Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Node.js Email Templates Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "مثال رمز قوالب البريد الإلكتروني Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Send React Emails Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "مثال على رمز إرسال رسائل البريد الإلكتروني من React ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>"
 }

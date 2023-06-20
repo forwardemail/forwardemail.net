@@ -1,0 +1,62 @@
+extends ../../layout
+
+block body
+  .container.py-3.py-md-4.py-lg-5
+    .row
+      .col.text-center
+        h1!= meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
+        p!= meta.description
+        include ../../_author
+    .row.mt-3
+      .col
+        case locale
+          when 'ar'
+            include:md(isDocs="true") index-ar.md
+          when 'cs'
+            include:md(isDocs="true") index-cs.md
+          when 'da'
+            include:md(isDocs="true") index-da.md
+          when 'de'
+            include:md(isDocs="true") index-de.md
+          when 'es'
+            include:md(isDocs="true") index-es.md
+          when 'fi'
+            include:md(isDocs="true") index-fi.md
+          when 'fr'
+            include:md(isDocs="true") index-fr.md
+          when 'he'
+            include:md(isDocs="true") index-he.md
+          when 'hu'
+            include:md(isDocs="true") index-hu.md
+          when 'id'
+            include:md(isDocs="true") index-id.md
+          when 'it'
+            include:md(isDocs="true") index-it.md
+          when 'ja'
+            include:md(isDocs="true") index-ja.md
+          when 'ko'
+            include:md(isDocs="true") index-ko.md
+          when 'nl'
+            include:md(isDocs="true") index-nl.md
+          when 'no'
+            include:md(isDocs="true") index-no.md
+          when 'pl'
+            include:md(isDocs="true") index-pl.md
+          when 'pt'
+            include:md(isDocs="true") index-pt.md
+          when 'ru'
+            include:md(isDocs="true") index-ru.md
+          when 'sv'
+            include:md(isDocs="true") index-sv.md
+          when 'th'
+            include:md(isDocs="true") index-th.md
+          when 'tr'
+            include:md(isDocs="true") index-tr.md
+          when 'uk'
+            include:md(isDocs="true") index-uk.md
+          when 'vi'
+            include:md(isDocs="true") index-vi.md
+          when 'zh'
+            include:md(isDocs="true") index-zh.md
+          default
+            include:md(isDocs="true") index.md
