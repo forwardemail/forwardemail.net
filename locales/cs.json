@@ -4654,5 +4654,7 @@
   "Node.js Spam Filter Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Příklad kódu filtru spamu Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Reserved Email Addresses Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Příklad kódu vyhrazených e-mailových adres ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Send Emails with Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Odesílání e-mailů pomocí příkladu kódu Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
-  "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "URL Regex JavaScript a příklad kódu Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>"
+  "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "URL Regex JavaScript a příklad kódu Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Open Source <span class=\"notranslate\">%s</span> Email Server": "Open Source <span class=\"notranslate\">%s</span> Email Server",
+  "<span class=\"notranslate\">%s</span> Email Server": "<span class=\"notranslate\">%s</span> e-mailový server"
 }

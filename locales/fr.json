@@ -4654,5 +4654,7 @@
   "Node.js Spam Filter Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Exemple de code de filtre anti-spam Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Reserved Email Addresses Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Exemple de code d&#39;adresses e-mail réservées ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Send Emails with Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Envoyer des e-mails avec l&#39;exemple de code Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
-  "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Exemple de code URL Regex JavaScript et Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>"
+  "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Exemple de code URL Regex JavaScript et Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Open Source <span class=\"notranslate\">%s</span> Email Server": "Serveur de messagerie open source <span class=\"notranslate\">%s</span>",
+  "<span class=\"notranslate\">%s</span> Email Server": "Serveur de messagerie <span class=\"notranslate\">%s</span>"
 }

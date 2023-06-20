@@ -4654,5 +4654,7 @@
   "Node.js Spam Filter Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Ví dụ về mã bộ lọc thư rác Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Reserved Email Addresses Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Ví dụ về mã địa chỉ email dành riêng ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Send Emails with Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Gửi email bằng ví dụ mã Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
-  "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "URL Regex Ví dụ mã JavaScript và Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>"
+  "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "URL Regex Ví dụ mã JavaScript và Node.js ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Open Source <span class=\"notranslate\">%s</span> Email Server": "Mã nguồn Mở Máy chủ Email <span class=\"notranslate\">%s</span>",
+  "<span class=\"notranslate\">%s</span> Email Server": "Máy chủ Email <span class=\"notranslate\">%s</span>"
 }

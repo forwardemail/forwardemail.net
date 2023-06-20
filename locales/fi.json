@@ -4499,5 +4499,7 @@
   "Node.js Spam Filter Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Node.js roskapostisuodattimen koodiesimerkki ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Reserved Email Addresses Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Varattujen sähköpostiosoitteiden koodiesimerkki ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Send Emails with Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Lähetä sähköpostit Node.js-koodilla esimerkki ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
-  "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "URL Regex JavaScript- ja Node.js-koodiesimerkki ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>"
+  "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "URL Regex JavaScript- ja Node.js-koodiesimerkki ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Open Source <span class=\"notranslate\">%s</span> Email Server": "Avoimen lähdekoodin <span class=\"notranslate\">%s</span> sähköpostipalvelin",
+  "<span class=\"notranslate\">%s</span> Email Server": "<span class=\"notranslate\">%s</span> sähköpostipalvelin"
 }
