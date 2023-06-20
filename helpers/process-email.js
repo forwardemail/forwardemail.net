@@ -502,9 +502,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
       !dmarc ||
       (dmarc?.domain !== domain.name &&
         dmarc?.domain !== parseRootDomain(domain.name)) ||
-      !isSANB(dmarc?.policy) ||
-      !['none', 'reject', 'quarantine'].includes(dmarc.policy) ||
-      dmarc?.policy !== 'reject' ||
+      // !isSANB(dmarc?.policy) ||
+      // !['none', 'reject', 'quarantine'].includes(dmarc.policy) ||
+      // dmarc?.policy !== 'reject' ||
       dmarc?.status?.result !== 'pass' ||
       dmarc?.pct !== 100
     ) {

@@ -1,8 +1,8 @@
 module.exports = {
-  title: 'Test and Preview Email Rendering in Browsers/iOS Simulator',
+  title: 'Email Testing for Browsers and iOS Simulator',
   description:
-    'Automatically test, render, and preview emails with cross-browser and cross-platform mail client testing. Use any browser and the iOS simulator to programmatically test emails with examples and how-to guides.',
+    'Test, render, and preview emails automatically with cross-browser mail clients, tools, browsers, and the iOS Simulator.',
   icon: 'fa fa-fw fa-chrome',
-  published: false,
+  published: true,
   ogBtnText: 'Email Testing'
 };

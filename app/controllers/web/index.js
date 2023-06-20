@@ -209,6 +209,13 @@ async function generateOpenGraphImage(ctx) {
     const doc = config.views.locals.developerDocs.find((d) => d.slug === url);
     if (doc && isSANB(doc.ogBtnText)) freeEmail = doc.ogBtnText;
 
+    // if it was a open source guide then parse the title
+    const platform = config.views.locals.platforms.find(
+      (p) =>
+        `/open-source/${config.views.locals.dashify(p)}-email-server` === url
+    );
+    if (platform) freeEmail = platform;
+
     // fallback safeguard
     if (freeEmail.length > 20) freeEmail = i18n.translate('FREE_EMAIL', 'en');
 

@@ -1,0 +1,118 @@
+extends layout
+
+block body
+  .py-5.position-relative.bg-fixed.lazyload(
+    data-src=manifest("img/art/stars.svg")
+  )
+    .container
+      .row
+        .col-12
+          .text-center
+            if platform
+              h1!= t('Free and Open Source <span class="notranslate">%s</span> Email Server (<span class="notranslate">%s</span>)', platform, dayjs().format("YYYY"))
+              p!= t("Here is our list of the best guides for setting up an open-source <span class='notranslate'>%s</span> email forwarding server.", platform)
+            else
+              h1!= t('The Best Free and Open Source Email Servers (<span class="notranslate">%s</span>)', dayjs().format("YYYY"))
+              p!= t("Our list below highlights the best free and open source email forwarding server setup tutorials.")
+            include _author
+      .row.mt-3
+        if platform
+          - const providers = [...nsProviders];
+          each provider in providers
+            .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
+              .card.rounded-lg.position-relative
+                if provider.video || provider.gif
+                  .position-absolute.w-100.text-right
+                    if provider.video
+                      span.badge.badge-danger.text-monospace.text-uppercase.mr-1.mt-1
+                        i.fa.fa-play-circle
+                        = " "
+                        = t("Video")
+                    if provider.video && provider.gif
+                      = " "
+                    if provider.gif
+                      span.badge.badge-success.text-monospace.text-uppercase.mr-1.mt-1
+                        = "GIF"
+                - const str = t('<span class="notranslate">%s</span> Email Server Setup for <span class="notranslate">%s</span>', provider.name, platform);
+                - const str2 = t('<span class="notranslate">%s</span> Email Tutorial for <span class="notranslate">%s</span>', provider.name, platform);
+                noscript
+                  img.card-img-top.img-fluid(
+                    src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
+                    alt=striptags(str)
+                  )
+                img.lazyload.card-img-top.img-fluid(
+                  src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
+                  alt=striptags(str)
+                )
+                .card-body
+                  h2.h5.card-title= provider.name
+                  h3.h6.card-subtitle.text-muted.mb-1!= str2
+                  p.card-text
+                    if provider.video
+                      != t('Video tutorial for <span class="notranslate">%s</span> to setup email server with <span class="notranslate">%s</span>.', provider.name, platform)
+                    else
+                      != t('Step by step guide and tutorial for <span class="notranslate">%s</span> to setup open-source mail server with <span class="notranslate">%s</span>.', provider.name, platform)
+                .card-footer
+                  a.stretched-link.btn.btn-md.btn-dark.btn-block(
+                    href=l(`/guides/${provider.slug}?platform=${dashify(platform)}`),
+                    title=striptags(t('<span class="notranslate">%s</span> <span class="notranslate">%s</span> Email Setup Tutorial', provider.name, platform))
+                  )
+                    span.text-uppercase.font-weight-bold.align-middle!= t("<span class='notranslate'>%s</span> tutorial", platform)
+                    = " "
+                    i.fa.fa-angle-double-right.align-middle
+          //- Disclaimer
+          if !isBot(ctx.get('User-Agent'))
+            .row
+              .col-12
+                .alert.alert-secondary.small.mt-3.mb-0
+                  strong= t("Notice of Non-Affiliation and Disclaimer:")
+                  = " "
+                  != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', platform, platform)
+            .row
+              .col-12
+                .alert.alert-secondary.small.mt-3.mb-0
+                  strong= t("Notice of Non-Affiliation and Disclaimer:")
+                  = " "
+                  != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(nsProviders.map((p) => p.name)), arrayJoinConjunction(nsProviders.map((p) => p.name)))
+        else
+          - const tools = [];
+          - const list = Object.keys(config.meta).filter((key) => key !== "/open-source" && key.startsWith("/open-source"));
+          each item in list
+            - const match = config.meta[item];
+            if match
+              - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
+          each tool in tools
+            .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
+              .card.rounded-lg.position-relative
+                noscript
+                  img.card-img-top.img-fluid(
+                    src=l(`${tool.slug}.png`),
+                    alt=striptags(t(tool.title))
+                  )
+                img.lazyload.card-img-top.img-fluid(
+                  src=l(`${tool.slug}.png`),
+                  alt=striptags(t(tool.title))
+                )
+                .card-body
+                  h2.h5.card-title!= t(tool.title)
+                  // h3.h6.card-subtitle.text-muted.mb-1!= tool.subtitle
+                  p.card-text!= t(tool.description)
+                .card-footer
+                  a.stretched-link.btn.btn-md.btn-dark.btn-block(
+                    href=l(tool.slug),
+                    title=striptags(t(tool.title))
+                  )
+                    if isBot(ctx.get("User-Agent"))
+                      != t(tool.title)
+                    else
+                      span.text-uppercase.font-weight-bold.align-middle= t("Learn more")
+                      = " "
+                      i.fa.fa-angle-double-right.align-middle
+          //- Disclaimer
+          if !isBot(ctx.get('User-Agent'))
+            .row
+              .col-12
+                .alert.alert-secondary.small.mt-3.mb-0
+                  strong= t("Notice of Non-Affiliation and Disclaimer:")
+                  = " "
+                  != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(platforms), arrayJoinConjunction(platforms))

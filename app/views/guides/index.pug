@@ -43,7 +43,7 @@ block body
               )
               .card-body
                 h2.h5.card-title= provider.name
-                h3.h6.card-subtitle.text-muted!= str2
+                h3.h6.card-subtitle.mb-1.text-muted!= str2
                 p.card-text
                   if provider.video
                     != t('Send and receive emails with <span class="notranslate">%s</span> and setup free email forwarding for <span class="notranslate">%s</span> with video and step by step instructions.', provider.name, provider.name)
@@ -67,4 +67,4 @@ block body
             .alert.alert-secondary.small.mt-3.mb-0
               strong= t("Notice of Non-Affiliation and Disclaimer:")
               = " "
-              != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', nsProviders.map((p) => p.name).join(", "), nsProviders.map((p) => p.name).join(", "))
+              != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(nsProviders.map((p) => p.name)), arrayJoinConjunction(nsProviders.map((p) => p.name)))

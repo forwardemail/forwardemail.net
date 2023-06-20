@@ -14,9 +14,11 @@
 // before returning them to be rendered in tags such as
 // `<title>` and `<meta name="description">`
 //
+const arrayJoinConjunction = require('array-join-conjunction');
+const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
 
-const { developerDocs, nsProviders } = require('#config/utilities');
+const { developerDocs, nsProviders, platforms } = require('#config/utilities');
 
 module.exports = function (config) {
   // currently we cannot use the `|` pipe character due to this issue
@@ -170,6 +172,26 @@ module.exports = function (config) {
         'YYYY'
       )}</span>) ${lad}`,
       `How to send and receive emails with <span class="notranslate">${provider.name}</span> DNS and setup free email forwarding for <span class="notranslate">${provider.name}</span> with video and step by step instructions.`
+    ];
+  }
+
+  if (platforms.length > 0) {
+    meta['/open-source'] = [
+      `The Best Free and Open Source Email Servers <span class="notranslate">(${dayjs().format(
+        'YYYY'
+      )})</span> ${lad}`,
+      `Open-source email server tutorials for ${arrayJoinConjunction(
+        platforms
+      )}.`
+    ];
+  }
+
+  for (const platform of platforms) {
+    meta[`/open-source/${dashify(platform)}-email-server`] = [
+      `Open Source <span class="notranslate">${platform}</span> Email Server (<span class="notranslate">${dayjs().format(
+        'YYYY'
+      )}</span>) ${lad}`,
+      `The best free and open-source email server for <span class="notranslate">${platform}</span> with step guides, tutorials, videos, and instructions.`
     ];
   }
 

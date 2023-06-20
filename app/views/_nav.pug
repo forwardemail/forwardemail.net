@@ -269,15 +269,15 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               h6.dropdown-header.text-uppercase= t("Email Setup Guides")
               .card-columns.small
                 each provider in nsProviders
-                  - const classes = []
+                  - const classes = [];
                   if ctx.pathWithoutLocale === `/guides/${provider.slug}`
-                    - classes.push('active')
+                    - classes.push("active");
                   if provider.gif || provider.video
-                    - classes.push('font-weight-bold')
+                    - classes.push("font-weight-bold");
                   a.dropdown-item(
                     title=striptags(t('<span class="notranslate">%s</span> Email Server Setup', provider.name)),
                     href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
-                    class=classes.join(' ')
+                    class=classes.join(" ")
                   )
                     if isBot(ctx.get('User-Agent'))
                       != t('<span class="notranslate">%s</span> Email Server Setup', provider.name)
@@ -295,7 +295,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               data-boundary="window",
               aria-haspopup="true",
               aria-expanded="false",
-              class=ctx.pathWithoutLocale.startsWith("/docs") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+              class=ctx.pathWithoutLocale.startsWith("/docs") || ctx.pathWithoutLocale.startsWith("/open-source") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
             )
               = t("Developers")
             .dropdown-menu.dropdown-menu-right(
@@ -316,15 +316,27 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               if developerDocs.length > 0
                 hr.dropdown-divider
                 h6.dropdown-header.text-uppercase= t("Code Examples")
-                each doc in developerDocs
-                  a.dropdown-item(
-                    href=l(doc.slug),
-                    class=ctx.pathWithoutLocale === doc.slug ? "active" : ""
-                  )
-                    if !isBot(ctx.get('User-Agent')) && doc.icon
-                      i(class=doc.icon)
-                      = " "
-                    = t(doc.title)
+                .small
+                  each doc in developerDocs
+                    a.dropdown-item(
+                      href=l(doc.slug),
+                      class=ctx.pathWithoutLocale === doc.slug ? "active" : ""
+                    )
+                      if !isBot(ctx.get('User-Agent')) && doc.icon
+                        i(class=doc.icon)
+                        = " "
+                      = t(doc.title)
+              if platforms.length > 0 && isBot(ctx.get('User-Agent'))
+                hr.dropdown-divider
+                h6.dropdown-header.text-uppercase= t("Open Source Server Setup")
+                .card-columns.small
+                  each platform in platforms
+                    a.dropdown-item(
+                      href=l(`/open-source/${dashify(platform)}-email-server`),
+                      title=striptags(t('Open Source <span class="notranslate">%s</span> Email Server', platform)),
+                      class=ctx.pathWithoutLocale === `/open-source/${dashify(platform)}-email-server` ? "active" : ""
+                    )
+                      != t('<span class="notranslate">%s</span> Email Server', platform)
 
         //- links that show only if you're logged in
         if user

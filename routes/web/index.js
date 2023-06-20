@@ -1,8 +1,9 @@
 const path = require('node:path');
 
 const Router = require('@koa/router');
-const render = require('koa-views-render');
+const dashify = require('dashify');
 const pug = require('pug');
+const render = require('koa-views-render');
 const { parse } = require('node-html-parser');
 
 const admin = require('./admin');
@@ -14,7 +15,7 @@ const config = require('#config');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const { web } = require('#controllers');
-const { developerDocs, nsProviders } = require('#config/utilities');
+const { developerDocs, nsProviders, platforms } = require('#config/utilities');
 
 const router = new Router();
 
@@ -258,6 +259,19 @@ localeRouter
 
 for (const doc of developerDocs) {
   localeRouter.get(doc.slug, render(doc.slug.slice(1)));
+}
+
+if (platforms.length > 0)
+  localeRouter.get('/open-source', render('open-source'));
+for (const platform of platforms) {
+  localeRouter.get(
+    `/open-source/${dashify(platform)}-email-server`,
+    (ctx, next) => {
+      ctx.state.platform = platform;
+      return next();
+    },
+    render('open-source')
+  );
 }
 
 for (const provider of nsProviders) {

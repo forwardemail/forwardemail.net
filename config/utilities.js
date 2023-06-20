@@ -5,6 +5,7 @@ const RE2 = require('re2');
 const _ = require('lodash');
 const ajc = require('array-join-conjunction');
 const ansiHTML = require('ansi-html-community');
+const arrayJoinConjunction = require('array-join-conjunction');
 const capitalize = require('capitalize');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
@@ -345,7 +346,7 @@ nsProviders = _.sortBy(
 // for each directory, ensure that `index.pug` and `config.js` exist
 // for each config.js, parse it, and if published: true then add to array
 //
-const developerDocs = [];
+let developerDocs = [];
 const pathToDocs = path.join(__dirname, '..', 'app', 'views', 'docs');
 
 for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
@@ -399,6 +400,37 @@ for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
   }
 }
 
+developerDocs = _.sortBy(developerDocs, 'title');
+
+const platforms = _.uniq([
+  'Android',
+  'Apple',
+  'Arch Linux',
+  'CentOS',
+  'Debian',
+  'Fedora',
+  'FreeBSD',
+  'Gentoo Linux',
+  'Kali Linux',
+  'Kubuntu',
+  'Lineage OS',
+  'Linux Mint',
+  'Linux',
+  'Manjaro Linux',
+  'Nix Linux',
+  'Oracle Linux',
+  'Red Hat Enterprise Linux',
+  'SUSE Linux',
+  'Slackware Linux',
+  'Ubuntu',
+  'Unix',
+  'elementary OS',
+  'iOS',
+  'macOS',
+  'openSUSE Leap',
+  'postmarket OS'
+]).sort();
+
 module.exports = {
   _,
   ajc,
@@ -426,5 +458,7 @@ module.exports = {
   validator,
   ms,
   prettyMilliseconds,
-  developerDocs
+  developerDocs,
+  platforms,
+  arrayJoinConjunction
 };

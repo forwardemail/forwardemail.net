@@ -1,8 +1,8 @@
 module.exports = {
-  title: 'Send Emails with Node.js and JavaScript',
+  title: 'Send Emails with Node.js',
   description:
-    'How to guides and source code API examples to send emails programatically for Express, Koa, React, Node.js, Nodemailer, and JavaScript with SMTP and email developer API.',
+    'Send emails with Node.js, React, Express, Koa, Nodemailer, and JavaScript with SMTP and developer source code samples, examples, and instructions.',
   icon: 'fab fa-fw fa-node-js',
-  published: false,
+  published: true,
   ogBtnText: 'Node.js Email'
 };

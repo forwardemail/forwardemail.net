@@ -49,6 +49,9 @@ function fixTableOfContents(content) {
 }
 */
 
+// TODO: docs: ensure all licenses updated + author updated
+// TODO: docs: render the banner images
+
 // eslint-disable-next-line complexity
 function fixTableOfContents(content, i18n, options) {
   const root = parse(content);
@@ -83,6 +86,18 @@ function fixTableOfContents(content, i18n, options) {
   a.setAttribute('id', 'top');
   a.setAttribute('href', '#top');
 
+  // remove first <h1> if on docs page
+  if (options.isDocs) h1.remove();
+
+  // center first <p> if on docs page and had no previous element
+  if (options.isDocs) {
+    const p = root.querySelector('p');
+    if (p) {
+      const img = p.querySelector('img');
+      if (img) p.setAttribute('class', 'text-center');
+    }
+  }
+
   //
   // NOTE: we need to keep this because `mandarin` does not normalize in the
   //       same way that #helpers/markdown normalizes with github-like headings
@@ -100,6 +115,22 @@ function fixTableOfContents(content, i18n, options) {
       id = anchor.getAttribute('href').slice(1);
 
     if (!id) continue;
+
+    const lastChildRawText = header.lastChild.rawText;
+
+    if (
+      options.isDocs &&
+      (lastChildRawText === 'License' ||
+        lastChildRawText === 'Contributors' ||
+        lastChildRawText === 'Credits' ||
+        id === 'license' ||
+        id === 'contributors' ||
+        id === 'credits')
+    ) {
+      header.nextElementSibling.remove();
+      header.remove();
+      continue;
+    }
 
     anchor.setAttribute('class', 'anchor');
 
@@ -125,6 +156,7 @@ function fixTableOfContents(content, i18n, options) {
     // (similar to this example: <https://stackoverflow.com/a/7968463>)
     //
     if (
+      !options.isDocs &&
       lis.length > 5 &&
       header.rawTagName === 'h2' &&
       (!header.nextElementSibling ||
@@ -139,6 +171,7 @@ function fixTableOfContents(content, i18n, options) {
 
       // replace the text node
       const lastChildRawText = header.lastChild.rawText;
+
       // eslint-disable-next-line unicorn/prefer-dom-node-remove
       header.removeChild(header.lastChild);
 
@@ -204,11 +237,30 @@ function fixTableOfContents(content, i18n, options) {
 
   const h2s = root.querySelectorAll('h2');
 
+  // if last h2 is empty then remove it (e.g. <hr /> from README's)
+  if (
+    h2s.length > 0 &&
+    h2s[h2s.length - 1] &&
+    h2s[h2s.length - 1].childNodes.length === 0
+  )
+    h2s[h2s.length - 1].remove();
+
   for (const li of lis) {
     const a = li.querySelector('a');
+    if (!a) continue;
     const { text } = a;
     const href = a.getAttribute('href');
     const id = href.slice(1);
+
+    if (
+      (options.isDocs && id === 'license') ||
+      id === 'contributors' ||
+      id === 'credits'
+    ) {
+      li.remove();
+      continue;
+    }
+
     // eslint-disable-next-line unicorn/prefer-dom-node-dataset
     a.setAttribute('data-dismiss', 'modal');
     a.setAttribute('aria-controls', `collapse-${id}`);
@@ -251,7 +303,7 @@ function fixTableOfContents(content, i18n, options) {
     locale: (options && options.locale) || i18n.getLocale()
   });
 
-  if (lis.length <= 5)
+  if (!options.isDocs || lis.length <= 5)
     return `<div class="markdown-body">${root.toString()}</div>`;
 
   return `

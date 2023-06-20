@@ -24,7 +24,7 @@ $question: theme-color('light');
 }
 
 // highlight.js
-@import 'node_modules/highlight.js/scss/default';
+// @import 'node_modules/highlight.js/scss/default';
 @media (prefers-color-scheme: light) {
   @import 'node_modules/highlight.js/scss/github';
 }

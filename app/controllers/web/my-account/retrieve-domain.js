@@ -115,8 +115,8 @@ async function retrieveDomain(ctx, next) {
       if (
         dmarcRecord &&
         (dmarcRecord?.v !== 'DMARC1' ||
-          !isSANB(dmarcRecord?.p) ||
-          !['none', 'reject', 'quarantine'].includes(dmarcRecord.p) ||
+          // !isSANB(dmarcRecord?.p) ||
+          // !['none', 'reject', 'quarantine'].includes(dmarcRecord.p) ||
           dmarcRecord?.pct !== 100)
       ) {
         ctx.state.isDMARCInvalid = true;

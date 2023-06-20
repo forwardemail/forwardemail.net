@@ -1,0 +1,12 @@
+extends ../../layout
+
+block body
+  .container.py-3.py-md-4.py-lg-5
+    .row
+      .col.text-center
+        h1!= meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
+        p!= meta.description
+        include ../../_author
+    .row.mt-3
+      .col
+        include:md(isDocs="true") ../../../../node_modules/url-regex-safe/README.md

@@ -39,6 +39,10 @@ $input-disabled-bg:                     $dark;
       background-color: $gray-800 !important;
       color: $white;
     }
+    pre code {
+      background-color: transparent !important;
+      padding: 0 !important;
+    }
     .octicon-link {
       fill: white;
     }

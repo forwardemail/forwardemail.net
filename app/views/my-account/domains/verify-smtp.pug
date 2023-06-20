@@ -175,20 +175,7 @@ block body
             h1#setup-step-2.h5.card-header.text-left.text-md-center= t("Step 2")
             .card-body
               if isDMARCInvalid
-                .alert.alert-danger.text-left.text-md-center.small!= t('Your existing <span class="notranslate">DMARC</span> record must have <span class="badge badge-dark text-monospace notranslate">p=reject</span> and <span class="badge badge-dark text-monospace notranslate">pct=100</span> values &ndash; or you can delete it and add the one below.')
-              .alert.alert-warning.text-left.small
-                strong.d-block.mb-3= t("Already sending outbound email with your domain?")
-                .d-block.mb-3
-                  != t('If you are sending email outside of this service, then <strong class="text-decoration-underline">before you continue</strong> at least one of these must be true:')
-                  ul.mb-0
-                    li!= t('A <a href="%s" target="_blank" rel="noopener noreferrer" class="alert-link notranslate">DKIM</a> signature is aligned and passing on all existing outbound email.', "https://wikipedia.org/wiki/DomainKeys_Identified_Mail")
-                    li!= t('An <a href="%s" target="_blank" rel="noopener noreferrer" class="alert-link notranslate">SPF</a> record includes all sending domains and/or IP addresses.', "https://wikipedia.org/wiki/Sender_Policy_Framework#Implementation")
-                .d-block
-                  != t("Failure to do so will cause your domain's existing outbound email to be rejected.")
-                  = " "
-                  != t('We enforce a strict DMARC policy in order to protect your domain reputation and prevent <a href="%s" target="_blank" class="alert-link" rel="noopener noreferrer">email spoofing</a>.', "https://wikipedia.org/wiki/Email_spoofing")
-                  = " "
-                  != t('If you have questions or need help with setup, then please <a href="%s" class="alert-link" target="_blank">contact us</a>.', l("/help"))
+                .alert.alert-danger.text-left.text-md-center.small!= t('Your existing <span class="notranslate">DMARC</span> record must have <span class="badge badge-dark text-monospace notranslate">v=DMARC1</span> and <span class="badge badge-dark text-monospace notranslate">pct=100</span> values &ndash; or you can delete it and add the one below.')
               .small.text-center.mb-3
                 != t('Add these records to <strong class="notranslate">%s</strong>', domain.root_name || domain.name)
                 span.d-inline.d-md-none= ":"

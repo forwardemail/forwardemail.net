@@ -163,6 +163,8 @@ footer.mt-auto.small.text-monospace
             li: a.d-block.text-light.py-2.py-md-0(
               href=l("/email-forwarding-regex-pattern-filter")
             )= t("Regex Email Forwarding")
+            if platforms.length > 0
+              li: a.d-block.text-light.py-2.py-md-0(href=l("/open-source"))= t("Open Source Server Setup")
           if developerDocs.length > 0
             h3.h6.text-uppercase.mb-2= t("Code Examples")
             hr.d-lg-none.w-100
@@ -174,6 +176,17 @@ footer.mt-auto.small.text-monospace
                       i(class=doc.icon)
                       = " "
                     = t(doc.title)
+          if platforms.length > 0 && isBot(ctx.get('User-Agent'))
+            h3.h6.text-uppercase.mb-2: a.text-light(href=l("/open-source"))= t("Open Source Server Setup")
+            hr.d-lg-none.w-100
+            ul.list-unstyled.mb-0.mb-lg-3
+              each platform in platforms
+                li
+                  a.d-block.text-light.py-2.py-md-0(
+                    href=l(`/open-source/${dashify(platform)}-email-server`),
+                    title=striptags(t('Open Source <span class="notranslate">%s</span> Email Server', platform))
+                  )
+                    != t('<span class="notranslate">%s</span> Email Server', platform)
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div

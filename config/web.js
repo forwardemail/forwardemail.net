@@ -121,6 +121,12 @@ module.exports = (redis) => ({
               ...defaultSrc,
               'tracking.qa.paypal.com',
               'www.paypalobjects.com',
+              'github.com',
+              '*.github.com',
+              'githubusercontent.com',
+              '*.githubusercontent.com',
+              'shields.io',
+              '*.shields.io',
               'ytimg.com',
               '*.ytimg.com'
             ],
