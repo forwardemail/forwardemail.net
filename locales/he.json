@@ -4656,5 +4656,6 @@
   "Send Emails with Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "שלח אימיילים עם קוד Node.js דוגמה ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "כתובת URL Regex JavaScript וקוד Node.js דוגמה ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "Open Source <span class=\"notranslate\">%s</span> Email Server": "קוד פתוח <span class=\"notranslate\">%s</span> שרת דוא&quot;ל",
-  "<span class=\"notranslate\">%s</span> Email Server": "שרת דוא&quot;ל <span class=\"notranslate\">%s</span>"
+  "<span class=\"notranslate\">%s</span> Email Server": "שרת דוא&quot;ל <span class=\"notranslate\">%s</span>",
+  "Open-source email server tutorials for Linux, Android, Apple, CentOS, Debian, Fedora, FreeBSD, Kubuntu, Lineage OS, Ubuntu, Unix, elementary OS, iOS, macOS, openSUSE Leap, and postmarket OS.": "מדריכים לשרת דוא\"ל בקוד פתוח עבור Linux, Android, Apple, CentOS, Debian, Fedora, FreeBSD, Kubuntu, Lineage OS, Ubuntu, Unix, OS Elementary, iOS, macOS, openSUSE Leap ו-postmarket OS."
 }

@@ -10,9 +10,9 @@ html.h-100.no-js(
       meta(charset="utf-8")
       meta(http-equiv="x-ua-compatible", content="ie=edge")
       if meta && meta.title
-        title= striptags(meta.title)
+        title= striptags(convert(meta.title))
       if meta && meta.description
-        meta(name="description", content=striptags(meta.description))
+        meta(name="description", content=striptags(convert(meta.description)))
       meta(name="viewport", content="width=device-width, initial-scale=1")
 
       //- canonical
@@ -108,8 +108,8 @@ html.h-100.no-js(
       )
       meta(property="og:locale", content=locale)
       meta(property="og:type", content="article")
-      meta(property="og:title", content=striptags(meta.title))
-      meta(property="og:description", content=striptags(meta.description))
+      meta(property="og:title", content=striptags(convert(meta.title)))
+      meta(property="og:description", content=striptags(convert(meta.description)))
       meta(property="og:url", content=`${config.urls.web}${ctx.path}`)
       meta(property="og:site_name", content=config.appName)
       if ctx.pathWithoutLocale.startsWith('/faq')
@@ -119,7 +119,7 @@ html.h-100.no-js(
         )
       else if ctx.pathWithoutLocale.startsWith('/guides')
         meta(property="article:section", content=t("Guides"))
-      meta(property="og:image:alt", content=striptags(meta.title))
+      meta(property="og:image:alt", content=striptags(convert(meta.title)))
       //-.
         if gif
           meta(property="og:image:type", content="image/gif")
@@ -167,8 +167,8 @@ html.h-100.no-js(
       if video
         meta(property="og:video", content=video)
 
-      meta(property="twitter:title", content=striptags(meta.title))
-      meta(property="twitter:description", content=striptags(meta.description))
+      meta(property="twitter:title", content=striptags(convert(meta.title)))
+      meta(property="twitter:description", content=striptags(convert(meta.description)))
       meta(property="twitter:image", content=ogImage)
       if (ctx.pathWithoutLocale !== '/' && ctx.pathWithoutLocale !== '/private-business-email' && ['/admin','/my-account', '/help', '/auth', '/denylist', '/reset-password'].every(key => !ctx.pathWithoutLocale.startsWith(key)))
         meta(name="twitter:label1", content=t("Written by"))

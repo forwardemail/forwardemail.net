@@ -25,6 +25,7 @@ const titleize = require('titleize');
 const toEmoji = require('gemoji/name-to-emoji');
 const validator = require('validator');
 const { boolean } = require('boolean');
+const { convert } = require('html-to-text');
 const { parse } = require('node-html-parser');
 
 const json = (string, replacer = null, space = 2) =>
@@ -431,6 +432,13 @@ const platforms = _.uniq([
   'postmarket OS'
 ]).sort();
 
+function convertFn(str) {
+  return convert(str, {
+    wordwrap: false,
+    linkBrackets: false
+  });
+}
+
 module.exports = {
   _,
   ajc,
@@ -460,5 +468,6 @@ module.exports = {
   prettyMilliseconds,
   developerDocs,
   platforms,
-  arrayJoinConjunction
+  arrayJoinConjunction,
+  convert: convertFn
 };
