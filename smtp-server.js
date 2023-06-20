@@ -424,6 +424,20 @@ async function onAuth(auth, session, fn) {
   if (this.server._closeTimeout)
     return setImmediate(() => fn(new ServerShutdownError()));
 
+  // rate limit to X failed attempts per day by IP address
+  const limit = await this.rateLimiter.get({
+    id: session.remoteAddress,
+    max: config.smtpLimitAuth,
+    duration: config.smtpLimitAuthDuration
+  });
+
+  // return 550 error code
+  if (!limit.remaining)
+    throw new SMTPError(
+      `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
+      { ignoreHook: true }
+    );
+
   // TODO: credit system + domain billing rules (assigned billing manager -> person who gets credits deducted)
   // TODO: salt/hash/deprecate legacy API token + remove from API docs page
   // TODO: replace usage of config.recordPrefix with config.paidPrefix and config.freePrefix
@@ -543,6 +557,12 @@ async function onAuth(auth, session, fn) {
           ignoreHook: true
         }
       );
+
+    // Clear authentication limit for this IP address (in the background)
+    this.client
+      .del(`${this.rateLimiter.namespace}:${session.remoteAddress}`)
+      .then()
+      .catch((err) => this.config.logger.fatal(err));
 
     // this response object sets `session.user` to have `domain` and `alias`
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L235>

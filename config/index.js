@@ -38,6 +38,8 @@ const config = {
   smtpMaxQueue: 60,
   smtpQueueTimeout: ms('10s'),
   smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300,
+  smtpLimitAuth: 3,
+  smtpLimitAuthDuration: ms('1d'),
   smtpLimitDuration: ms('1d'),
   smtpLimitNamespace: `smtp_auth_limit_${env.NODE_ENV.toLowerCase()}`,
   supportEmail: env.EMAIL_DEFAULT_FROM_EMAIL,
