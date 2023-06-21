@@ -193,6 +193,7 @@ localeRouter
     ctx.redirect(ctx.state.l('/'));
   })
   .get('/terms', render('terms'))
+  .get('/report-abuse', render('report-abuse'))
   .get('/privacy', render('privacy'))
   .get('/open-startup', (ctx) => {
     ctx.status = 301;
@@ -278,6 +279,17 @@ for (const platform of platforms) {
     render('open-source')
   );
 }
+
+// YouTube warns "site may be harmful" if it has a dot extension
+// (e.g. "domains.com" -> "domains-com")
+localeRouter.get('/guides/domains.com', (ctx) => {
+  ctx.status = 301;
+  ctx.redirect(ctx.state.l('/guides/domains-com'));
+});
+localeRouter.get('/guides/name.com', (ctx) => {
+  ctx.status = 301;
+  ctx.redirect(ctx.state.l('/guides/name-com'));
+});
 
 for (const provider of nsProviders) {
   localeRouter.get(

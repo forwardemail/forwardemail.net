@@ -105,7 +105,7 @@ const NS_PROVIDERS = {
     'https://www.youtube.com/watch?v=G7g8FiZL5D8'
   ],
   'dns-for-domains.com': [
-    'domains.com',
+    'domains-com',
     'Domains.com',
     'https://domains.com/',
     'domains.com',
@@ -161,7 +161,7 @@ const NS_PROVIDERS = {
     ''
   ],
   'name.com': [
-    'name.com',
+    'name-com',
     'Name.com',
     'https://www.name.com/account/login',
     'name.com',

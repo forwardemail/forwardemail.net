@@ -238,15 +238,8 @@ footer.mt-auto.small.text-monospace
                 data-title=t("Read our policy"),
                 data-placement="bottom"
               )= t("Security Policy")
+              li: a.d-block.text-light.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
               if !isBot(ctx.get('User-Agent'))
-                li: a.d-block.text-light.py-2.py-md-0(
-                  href=`mailto:abuse@${config.supportEmail.split('@')[1]}`,
-                  target="_blank",
-                  rel="noopener noreferrer",
-                  data-toggle="tooltip",
-                  data-title=t("Send us an email"),
-                  data-placement="bottom"
-                )= t("Report Abuse")
                 li: a.d-block.text-light.py-2.py-md-0(
                   href="https://status.forwardemail.net/",
                   target="_blank",

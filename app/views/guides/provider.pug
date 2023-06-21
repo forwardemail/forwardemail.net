@@ -208,7 +208,9 @@ block body
                         = "Name/Host/Alias"
                     th.border-0.align-middle Type
                     th.border-0.align-middle Priority
-                    th.border-0.align-middle(class=isBot(ctx.get("User-Agent")) ? "" : "text-left")
+                    th.border-0.align-middle(
+                      class=isBot(ctx.get("User-Agent")) ? "" : "text-left"
+                    )
                       if isBot(ctx.get("User-Agent"))
                         = "Value"
                       else

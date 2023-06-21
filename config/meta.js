@@ -63,6 +63,10 @@ module.exports = function (config) {
       `Terms ${lad}`,
       'Read our terms and conditions of use for our email forwarding service.'
     ],
+    '/report-abuse': [
+      `Report Abuse ${lad}`,
+      'Information on how to report abuse for the general public and law enforcement.'
+    ],
     '/privacy': [
       `Privacy Policy ${lad}`,
       'Read our privacy policy for our email forwarding service.'

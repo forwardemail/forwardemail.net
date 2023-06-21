@@ -3,11 +3,17 @@
 
 ## Table of Contents
 
+* [Disclaimer](#disclaimer)
 * [Information Not Collected](#information-not-collected)
 * [Information Collected](#information-collected)
 * [Information Shared](#information-shared)
 * [Information Removal](#information-removal)
 * [Additional Disclosures](#additional-disclosures)
+
+
+## Disclaimer
+
+Please defer to our [Terms](/terms) as it applies sitewide.
 
 
 ## Information Not Collected

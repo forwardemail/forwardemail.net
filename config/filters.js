@@ -52,6 +52,8 @@ function fixTableOfContents(content) {
 // TODO: docs: ensure all licenses updated + author updated
 // TODO: docs: render the banner images
 
+const MAX_SECTIONS = 5;
+
 // eslint-disable-next-line complexity
 function fixTableOfContents(content, i18n, options) {
   const root = parse(content);
@@ -81,6 +83,8 @@ function fixTableOfContents(content, i18n, options) {
   if (!ul) return content;
 
   const lis = ul.querySelectorAll('li');
+  // const sections = ul.querySelectorAll(':scope > li');
+
   if (lis.length === 0) return content;
 
   a.setAttribute('id', 'top');
@@ -134,7 +138,7 @@ function fixTableOfContents(content, i18n, options) {
 
     anchor.setAttribute('class', 'anchor');
 
-    if (lis.length > 5 && header.rawTagName === 'h2') {
+    if (lis.length > MAX_SECTIONS && header.rawTagName === 'h2') {
       // eslint-disable-next-line unicorn/prefer-dom-node-dataset
       anchor.setAttribute('data-toggle', 'collapse');
       anchor.setAttribute('role', 'button');
@@ -157,7 +161,7 @@ function fixTableOfContents(content, i18n, options) {
     //
     if (
       !options.isDocs &&
-      lis.length > 5 &&
+      lis.length > MAX_SECTIONS &&
       header.rawTagName === 'h2' &&
       (!header.nextElementSibling ||
         (header.nextElementSibling && header.nextElementSibling !== ul)) &&
@@ -253,9 +257,8 @@ function fixTableOfContents(content, i18n, options) {
     const id = href.slice(1);
 
     if (
-      (options.isDocs && id === 'license') ||
-      id === 'contributors' ||
-      id === 'credits'
+      options.isDocs &&
+      (id === 'license' || id === 'contributors' || id === 'credits')
     ) {
       li.remove();
       continue;
@@ -303,7 +306,7 @@ function fixTableOfContents(content, i18n, options) {
     locale: (options && options.locale) || i18n.getLocale()
   });
 
-  if (!options.isDocs || lis.length <= 5)
+  if (!options.isDocs && lis.length <= MAX_SECTIONS)
     return `<div class="markdown-body">${root.toString()}</div>`;
 
   return `

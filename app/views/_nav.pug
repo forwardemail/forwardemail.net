@@ -148,7 +148,7 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
               = t("Upgrade")
 
         //- Resources
-        - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses"];
+        - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses", "/report-abuse"];
         - const companyPages = ["/about", "/privacy", "/terms"];
         - const isResourcesPage = ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale);
         li.nav-item.dropdown.no-js
