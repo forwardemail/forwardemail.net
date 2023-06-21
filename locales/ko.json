@@ -4776,5 +4776,7 @@
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "귀하의 요청을 검토하고 응답하는 데 최소 2주가 소요될 수 있습니다.",
   "Please defer to our": "우리에게 연기하십시오",
   ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", 그런 다음 남용 처리를 위한 내부 전용 모범 사례에 따라 처리합니다. 경우에 따라 계정이 일시 중지 및/또는 차단될 수 있습니다.",
-  "Since we are not a domain name registrar": "우리는 도메인 이름 등록 기관이 아니기 때문에"
+  "Since we are not a domain name registrar": "우리는 도메인 이름 등록 기관이 아니기 때문에",
+  "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "무료 이메일 포워딩 &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "무료 이메일 전달자 &#124; <span class=\"notranslate\">Forward Email</span>"
 }

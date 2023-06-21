@@ -4776,5 +4776,7 @@
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "リクエストを確認し、回答するまでに少なくとも 2 週間かかる場合がありますので、ご了承ください。",
   "Please defer to our": "ご了承ください。",
   ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": "、その後、不正行為に対処するための社内専用のベスト プラクティスに従って処理します。場合によっては、アカウントの一時停止や禁止が行われる可能性があることに注意してください。",
-  "Since we are not a domain name registrar": "当社はドメイン名登録業者ではないため、"
+  "Since we are not a domain name registrar": "当社はドメイン名登録業者ではないため、",
+  "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "無料メール転送 &#124; <span class=\"notranslate\">Forward Email</span>",
+  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "無料のメールフォワーダー &#124; <span class=\"notranslate\">Forward Email</span>"
 }
