@@ -424,20 +424,6 @@ async function onAuth(auth, session, fn) {
   if (this.server._closeTimeout)
     return setImmediate(() => fn(new ServerShutdownError()));
 
-  // rate limit to X failed attempts per day by IP address
-  const limit = await this.rateLimiter.get({
-    id: session.remoteAddress,
-    max: config.smtpLimitAuth,
-    duration: config.smtpLimitAuthDuration
-  });
-
-  // return 550 error code
-  if (!limit.remaining)
-    throw new SMTPError(
-      `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
-      { ignoreHook: true }
-    );
-
   // TODO: credit system + domain billing rules (assigned billing manager -> person who gets credits deducted)
   // TODO: salt/hash/deprecate legacy API token + remove from API docs page
   // TODO: replace usage of config.recordPrefix with config.paidPrefix and config.freePrefix
@@ -449,6 +435,20 @@ async function onAuth(auth, session, fn) {
   // (password visible only once to user upon creation)
   //
   try {
+    // rate limit to X failed attempts per day by IP address
+    const limit = await this.rateLimiter.get({
+      id: session.remoteAddress,
+      max: config.smtpLimitAuth,
+      duration: config.smtpLimitAuthDuration
+    });
+
+    // return 550 error code
+    if (!limit.remaining)
+      throw new SMTPError(
+        `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
+        { ignoreHook: true }
+      );
+
     // username must be a valid email address
     if (!isSANB(auth?.username) || !isEmail(auth.username.trim()))
       throw new SMTPError(

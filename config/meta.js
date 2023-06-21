@@ -32,11 +32,11 @@ module.exports = function (config) {
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
     '/': [
-      `Free Private Secure Email for Custom Domains ${lad}`,
+      `Free Email Forwarding ${lad}`,
       'How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.'
     ],
     '/about': [
-      `About ${lad}`,
+      `Free Email Forwarder ${lad}`,
       `Learn more about ${config.appName} and the history of our service.`
     ],
     '/private-business-email': [
