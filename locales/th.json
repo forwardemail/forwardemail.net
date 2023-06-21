@@ -4774,5 +4774,7 @@
   "emergency request": "คำขอฉุกเฉิน",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": "จากนั้นโปรดเขียน \"คำขอบังคับใช้กฎหมายฉุกเฉิน\" ในหัวเรื่องของอีเมล",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "โปรดทราบว่าเราอาจใช้เวลาอย่างน้อยสองสัปดาห์ในการตรวจสอบและตอบกลับคำขอของคุณ",
-  "Please defer to our": "กรุณาเลื่อนไปยังของเรา"
+  "Please defer to our": "กรุณาเลื่อนไปยังของเรา",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": "จากนั้นเราจะดำเนินการตามแนวทางปฏิบัติที่ดีที่สุดสำหรับการจัดการการละเมิดภายในของเราเท่านั้น โปรดทราบว่าในบางกรณีอาจส่งผลให้มีการระงับและ/หรือแบนบัญชี",
+  "Since we are not a domain name registrar": "เนื่องจากเราไม่ใช่ผู้รับจดทะเบียนชื่อโดเมน"
 }

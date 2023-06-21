@@ -4774,5 +4774,7 @@
   "emergency request": "nood verzoek",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": ", schrijf dan \"Noodverzoek rechtshandhaving\" in de onderwerpkop van de e-mail.",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "Houd er rekening mee dat het minimaal twee weken kan duren voordat we uw verzoek kunnen beoordelen en beantwoorden.",
-  "Please defer to our": "Gelieve uit te stellen naar onze"
+  "Please defer to our": "Gelieve uit te stellen naar onze",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", dan zullen we het verwerken volgens onze interne best practices voor het omgaan met misbruik - houd er rekening mee dat dit in sommige gevallen kan leiden tot schorsing en/of verbanning van het account.",
+  "Since we are not a domain name registrar": "Omdat we geen domeinnaamregistrar zijn"
 }

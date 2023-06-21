@@ -4779,5 +4779,7 @@
   "emergency request": "nødforespørsel",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": ", skriv deretter «Forespørsel om nødrettshåndhevelse» i emneoverskriften i e-posten.",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "Vær oppmerksom på at det kan ta oss minst to uker før vi kan gjennomgå og svare på forespørselen din.",
-  "Please defer to our": "Vennligst utsett til vår"
+  "Please defer to our": "Vennligst utsett til vår",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", så vil vi behandle den i henhold til våre interne beste praksiser for håndtering av misbruk – merk at i noen tilfeller kan dette føre til suspendering og/eller utestengelse av kontoen.",
+  "Since we are not a domain name registrar": "Siden vi ikke er en domenenavnregistrator"
 }

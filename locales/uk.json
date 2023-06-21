@@ -4774,5 +4774,7 @@
   "emergency request": "екстрений запит",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": ", тоді напишіть «Надзвичайний запит правоохоронних органів» у заголовку «Тема» електронного листа.",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "Будь ласка, зверніть увагу, що нам може знадобитися принаймні два тижні, щоб розглянути ваш запит і відповісти на нього.",
-  "Please defer to our": "Будь ласка, відкладіть наше"
+  "Please defer to our": "Будь ласка, відкладіть наше",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", тоді ми обробимо його відповідно до наших лише внутрішніх найкращих методів боротьби зі зловживаннями – зауважте, що в деяких випадках це може призвести до призупинення та/або блокування облікового запису.",
+  "Since we are not a domain name registrar": "Оскільки ми не є реєстратором доменних імен"
 }

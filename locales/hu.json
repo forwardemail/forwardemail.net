@@ -4774,5 +4774,7 @@
   "emergency request": "sürgősségi kérés",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": ", majd az e-mail Tárgy fejlécébe írja be a „Sürgősségi jogérvényesítési kérelmet”.",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "Kérjük, vegye figyelembe, hogy legalább két hétbe telhet, amíg meg tudjuk vizsgálni kérését, és válaszolni tudunk rá.",
-  "Please defer to our": "Kérjük, haladéktalanul a mi"
+  "Please defer to our": "Kérjük, haladéktalanul a mi",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", akkor a visszaélések kezelésére vonatkozó, csak belsőleg bevált gyakorlataink szerint dolgozzuk fel – vegye figyelembe, hogy ez bizonyos esetekben a Fiók felfüggesztését és/vagy kitiltását vonhatja maga után.",
+  "Since we are not a domain name registrar": "Mivel nem vagyunk domain név regisztrátor"
 }

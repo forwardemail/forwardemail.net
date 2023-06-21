@@ -4774,5 +4774,7 @@
   "emergency request": "طلب طارئ",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": "، ثم يرجى كتابة \"طلب إنفاذ قانون طارئ\" في عنوان \"الموضوع\" في البريد الإلكتروني.",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "الرجاء ملاحظة أن الأمر قد يستغرق منا أسبوعين على الأقل حتى نتمكن من مراجعة طلبك والرد عليه.",
-  "Please defer to our": "يرجى الرجوع إلى"
+  "Please defer to our": "يرجى الرجوع إلى",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": "، سنقوم بمعالجته وفقًا لأفضل ممارساتنا الداخلية فقط للتعامل مع إساءة الاستخدام - لاحظ أنه في بعض الحالات قد يؤدي ذلك إلى تعليق الحساب و / أو حظره.",
+  "Since we are not a domain name registrar": "بما أننا لسنا مسجل اسم المجال"
 }

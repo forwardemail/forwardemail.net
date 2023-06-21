@@ -4774,5 +4774,7 @@
   "emergency request": "demande d'urgence",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": ", veuillez écrire \"Demande urgente d'application de la loi\" dans l'en-tête Objet de l'e-mail.",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "Veuillez noter que cela peut nous prendre au moins deux semaines pour être en mesure d'examiner et de répondre à votre demande.",
-  "Please defer to our": "Veuillez vous reporter à notre"
+  "Please defer to our": "Veuillez vous reporter à notre",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", nous le traiterons conformément à nos meilleures pratiques internes en matière de gestion des abus. Notez que dans certains cas, cela peut entraîner la suspension et/ou l'interdiction du compte.",
+  "Since we are not a domain name registrar": "Puisque nous ne sommes pas un registraire de nom de domaine"
 }

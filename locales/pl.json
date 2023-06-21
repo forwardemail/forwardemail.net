@@ -4774,5 +4774,7 @@
   "emergency request": "pilna prośba",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": ", a następnie w nagłówku tematu wiadomości e-mail wpisz „Awaryjny wniosek organów ścigania”.",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "Pamiętaj, że rozpatrzenie Twojej prośby i udzielenie odpowiedzi może zająć nam co najmniej dwa tygodnie.",
-  "Please defer to our": "Proszę zdać się na nasze"
+  "Please defer to our": "Proszę zdać się na nasze",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", wtedy będziemy je przetwarzać zgodnie z naszymi wewnętrznymi najlepszymi praktykami postępowania w przypadku nadużyć – pamiętaj, że w niektórych przypadkach może to skutkować zawieszeniem i/lub zablokowaniem Konta.",
+  "Since we are not a domain name registrar": "Ponieważ nie jesteśmy rejestratorem nazw domen"
 }

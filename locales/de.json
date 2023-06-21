@@ -3792,5 +3792,7 @@
   "emergency request": "Notfallanfrage",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": ", dann schreiben Sie bitte „Notfallanfrage der Strafverfolgungsbehörden“ in die Betreffzeile der E-Mail.",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "Bitte beachten Sie, dass es mindestens zwei Wochen dauern kann, bis wir Ihre Anfrage prüfen und beantworten können.",
-  "Please defer to our": "Bitte verweisen Sie auf unsere"
+  "Please defer to our": "Bitte verweisen Sie auf unsere",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", dann werden wir es gemäß unseren rein internen Best Practices für den Umgang mit Missbrauch verarbeiten – beachten Sie, dass dies in einigen Fällen zur Sperrung und/oder Sperrung des Kontos führen kann.",
+  "Since we are not a domain name registrar": "Da wir kein Domainnamen-Registrar sind"
 }

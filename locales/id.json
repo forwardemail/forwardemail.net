@@ -4774,5 +4774,7 @@
   "emergency request": "permintaan darurat",
   ", then please write \"Emergency law enforcement request\" in the Subject header of the email.": ", lalu tulis \"Permintaan penegakan hukum darurat\" di header Subjek email.",
   "Please note that it may take us at least two weeks to be able to review and respond to your request.": "Harap perhatikan bahwa mungkin kami membutuhkan setidaknya dua minggu untuk dapat meninjau dan menanggapi permintaan Anda.",
-  "Please defer to our": "Silakan tunduk pada kami"
+  "Please defer to our": "Silakan tunduk pada kami",
+  ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", maka kami akan memprosesnya sesuai dengan praktik terbaik khusus internal kami untuk menangani penyalahgunaan – perhatikan bahwa dalam beberapa kasus hal ini dapat mengakibatkan penangguhan dan/atau pelarangan Akun.",
+  "Since we are not a domain name registrar": "Karena kami bukan pendaftar nama domain"
 }
