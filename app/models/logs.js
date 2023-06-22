@@ -629,7 +629,11 @@ function getQueryHash(log) {
     //       (e.g. the response time might slightly vary in the message string)
     //
     // if (log?.message) $and.push({ $text: { $search: log.message } });
-    if (log?.message && log?.err?.name !== 'DenylistError')
+    if (log?.message && log.message.includes('No matching document found'))
+      $and.push({
+        message: /No matching document found/
+      });
+    else if (log?.message && log?.err?.name !== 'DenylistError')
       $and.push({
         message: log.message
       });
