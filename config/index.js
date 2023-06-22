@@ -28,6 +28,11 @@ const metaConfig = require('./meta-config');
 
 const config = {
   ...metaConfig,
+  srs: {
+    separator: '=',
+    secret: env.SRS_SECRET,
+    maxAge: 30
+  },
   twilio: {
     accountSid: env.TWILIO_ACCOUNT_SID,
     authToken: env.TWILIO_AUTH_TOKEN,

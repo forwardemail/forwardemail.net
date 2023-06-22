@@ -42,6 +42,8 @@ const RETURN_PATH =
     ? 'forwardemail.net'
     : config.webHost;
 
+const srs = new SRS(config.srs);
+
 // <https://github.com/zone-eu/zone-mta/blob/5daa48eea4aa05e724eb2ab80fd3a957e6cc8c6c/lib/sender.js#L64-L110>
 function createMtaStsCache(client) {
   return {
@@ -408,12 +410,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
     const raw = await getStream.buffer(
       d.sign(intoStream(email.message).pipe(splitter).pipe(joiner))
     );
-
-    const srs = new SRS({
-      separator: '=',
-      secret: env.SRS_SECRET,
-      maxAge: 30
-    });
 
     //
     // if domain has CNAME pointing to forwardemail.net with the domain.return_path

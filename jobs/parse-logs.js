@@ -69,6 +69,31 @@ graceful.listen();
           is_empty_domains: {
             $exists: false
           }
+        },
+        {
+          is_restricted: {
+            $exists: false
+          }
+        },
+        {
+          keywords: {
+            $exists: false
+          }
+        },
+        {
+          domains: {
+            $exists: false
+          }
+        },
+        {
+          date: {
+            $exists: false
+          }
+        },
+        {
+          subject: {
+            $exists: false
+          }
         }
       ]
     };

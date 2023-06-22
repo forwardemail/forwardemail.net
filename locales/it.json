@@ -4778,5 +4778,7 @@
   ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", quindi lo elaboreremo secondo le nostre migliori pratiche interne per la gestione degli abusi - tieni presente che in alcuni casi ciò potrebbe comportare la sospensione e/o il divieto dell'Account.",
   "Since we are not a domain name registrar": "Dal momento che non siamo un registrar di nomi di dominio",
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Inoltro e-mail gratuito &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Inoltro e-mail gratuito &#124; <span class=\"notranslate\">Forward Email</span>"
+  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Inoltro e-mail gratuito &#124; <span class=\"notranslate\">Forward Email</span>",
+  "No logs exist for that search.": "Non esistono log per quella ricerca.",
+  "Request Removal": "Richiedi la rimozione"
 }

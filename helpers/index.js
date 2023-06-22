@@ -30,6 +30,7 @@ const createSession = require('./create-session');
 const splitSpaces = require('./split-spaces');
 const getMongoQuery = require('./get-mongo-query');
 const parseRootDomain = require('./parse-root-domain');
+const checkSRS = require('./check-srs');
 
 module.exports = {
   decrypt,
@@ -64,5 +65,6 @@ module.exports = {
   createSession,
   splitSpaces,
   getMongoQuery,
-  parseRootDomain
+  parseRootDomain,
+  checkSRS
 };

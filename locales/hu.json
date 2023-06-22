@@ -4778,5 +4778,7 @@
   ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", akkor a visszaélések kezelésére vonatkozó, csak belsőleg bevált gyakorlataink szerint dolgozzuk fel – vegye figyelembe, hogy ez bizonyos esetekben a Fiók felfüggesztését és/vagy kitiltását vonhatja maga után.",
   "Since we are not a domain name registrar": "Mivel nem vagyunk domain név regisztrátor",
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Ingyenes e-mail továbbítás &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Ingyenes e-mail továbbító &#124; <span class=\"notranslate\">Forward Email</span>"
+  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Ingyenes e-mail továbbító &#124; <span class=\"notranslate\">Forward Email</span>",
+  "No logs exist for that search.": "Nincsenek naplók ehhez a kereséshez.",
+  "Request Removal": "Eltávolítás kérése"
 }

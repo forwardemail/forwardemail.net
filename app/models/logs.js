@@ -1,10 +1,12 @@
-const dns = require('dns');
-const os = require('os');
-const { Buffer } = require('buffer');
+const dns = require('node:dns');
+const os = require('node:os');
+const { Buffer } = require('node:buffer');
+const { isIP } = require('node:net');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
+const addressParser = require('nodemailer/lib/addressparser');
 const ansiHTML = require('ansi-html-community');
 const bytes = require('bytes');
 const captainHook = require('captain-hook');
@@ -25,6 +27,10 @@ const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isEmail } = require('validator');
 
+//
+// TODO: we need to replace and remove $eq and $exists everywhere
+//
+
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
@@ -34,9 +40,25 @@ const Emails = require('./emails');
 
 const emailHelper = require('#helpers/email');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const createTangerine = require('#helpers/create-tangerine');
+
+// headers that we store values for
+const KEYWORD_HEADERS = new Set([
+  'bcc',
+  'cc',
+  'date',
+  'delivered-to',
+  'from',
+  'message-id',
+  'reply-to',
+  'return-path',
+  'sender',
+  'subject',
+  'to'
+]);
 
 const PREFIX = `${config.recordPrefix}-site-verification=`;
 const concurrency = os.cpus().length;
@@ -114,6 +136,7 @@ const DNS_ERROR_CODES = new Set([
 
 const MAX_BYTES = bytes('1MB');
 
+// <https://www.mongodb.com/community/forums/t/is-in-operator-able-to-use-index/150459>
 const Logs = new mongoose.Schema({
   hash: {
     type: String,
@@ -122,13 +145,13 @@ const Logs = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.ObjectId,
-    ref: Users
+    ref: Users,
+    index: true
   },
   domains: [
     {
       type: mongoose.Schema.ObjectId,
-      ref: Domains,
-      index: true
+      ref: Domains
     }
   ],
   // <https://www.mongodb.com/community/forums/t/what-is-the-most-performant-way-to-check-an-array-field-is-not-empty/217392/3>
@@ -143,8 +166,25 @@ const Logs = new mongoose.Schema({
   },
   domains_checked_at: Date,
   err: mongoose.Schema.Types.Mixed,
+  // parsed "Date" header
+  date: {
+    type: Date,
+    index: true
+  },
+  // parsed "Subject" header
+  subject: {
+    type: String,
+    index: true
+  },
+  keywords: [
+    {
+      type: String,
+      trim: true
+    }
+  ],
   text_message: {
-    type: String
+    type: String,
+    index: true
   },
   message: {
     type: String,
@@ -158,11 +198,13 @@ const Logs = new mongoose.Schema({
   //
   created_at: {
     type: Date,
-    expires: config.logRetention
+    expires: config.logRetention,
+    index: true
   },
   is_restricted: {
     type: Boolean,
-    default: true
+    default: true,
+    index: true
   }
 });
 
@@ -181,9 +223,19 @@ Logs.plugin(mongooseCommonPlugin, {
   locale: false
 });
 
-// TODO: can we remove this?
-// create full text search index on message
-Logs.index({ text_message: 'text' }, { default_language: 'english' });
+// index the domains array
+Logs.index({ domains: 1 });
+
+// index the keywords array
+Logs.index({ keywords: 1 });
+
+//
+// TODO: use spamscanner v6 for parsing language specific tokens for text index for subject
+//       (note that we'd have to feed the search query the search parsed tokens from ctx.query)
+//       (but at that point we might want to simply do another hash query lookup by tokens parsed)
+//
+// subject is a text index combined with regex query for accuracy in my account > logs
+Logs.index({ subject: 'text' }, { default_language: 'english' });
 
 //
 // create sparse (now known as "partial" indices) on common log queries
@@ -205,9 +257,7 @@ const PARTIAL_INDICES = [
   'meta.user.ip_address',
   'meta.app.hostname',
   'user',
-  'domains',
   'domains_checked_at',
-  'is_restricted',
   // TODO: most likely need to optimize this in another way besides $exists
   'meta.session.envelope.rcptTo.address',
   'meta.err.responseCode',
@@ -270,6 +320,139 @@ Logs.pre('save', function (next) {
   } catch (err) {
     next(err);
   }
+});
+
+//
+// prepare `keywords` array
+// which is all session headers
+// session resoved hostname
+// remote address
+// mail from, rcpt to, etc
+//
+// eslint-disable-next-line complexity
+Logs.pre('save', function (next) {
+  if (!this.is_restricted) return next();
+
+  const keywords = new Set();
+  const { meta } = this;
+
+  if (typeof meta !== 'object') return next();
+
+  if (typeof meta?.session?.headers === 'object') {
+    for (const key of Object.keys(meta.session.headers)) {
+      const header = key.toLowerCase();
+      if (!KEYWORD_HEADERS.has(header) || !isSANB(meta.session.headers[key]))
+        continue;
+
+      // parse date accurately
+      if (header === 'date') {
+        this.date = new Date(meta.session.headers[key]);
+        if (Number.isNaN(this.date)) this.date = this.created_at || new Date();
+        continue;
+      }
+
+      if (header === 'subject') {
+        this.subject = meta.session.headers[key];
+        continue;
+      }
+
+      if (
+        meta.session.headers[key].startsWith('<') &&
+        meta.session.headers[key].endsWith('>')
+      )
+        keywords.add(meta.session.headers[key].slice(1, -1));
+      else keywords.add(meta.session.headers[key]);
+
+      // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L511>
+      const addresses = addressParser(meta.session.headers[key]);
+      if (Array.isArray(addresses) && addresses.length > 0) {
+        for (const obj of addresses) {
+          // if (isSANB(obj.name)) {
+          //   keywords.add(obj.name);
+          // }
+
+          if (isSANB(obj.address) && isEmail(checkSRS(obj.address)))
+            keywords.add(checkSRS(obj.address));
+        }
+      }
+    }
+  }
+
+  if (Array.isArray(meta?.session?.envelope?.rcptTo)) {
+    for (const rcpt of meta.session.envelope.rcptTo) {
+      if (isSANB(rcpt?.address) && isEmail(checkSRS(rcpt?.address)))
+        keywords.add(checkSRS(rcpt.address));
+    }
+  }
+
+  if (
+    isSANB(meta?.session?.envelope?.mailFrom?.address) &&
+    isEmail(checkSRS(meta.session.envelope.mailFrom.address))
+  ) {
+    keywords.add(checkSRS(meta.session.envelope.mailFrom.address));
+  }
+
+  if (isFQDN(meta?.session?.resolvedClientHostname))
+    keywords.add(meta.session.resolvedClientHostname);
+
+  if (
+    isSANB(meta?.session?.originalFromAddress) &&
+    isEmail(checkSRS(meta.session.originalFromAddress))
+  )
+    keywords.add(checkSRS(meta.session.originalFromAddress));
+
+  if (isSANB(meta?.session?.remoteAddress) && isIP(meta.session.remoteAddress))
+    keywords.add(meta.session.remoteAddress);
+
+  //
+  // go through all keywords
+  // if it was a domain then add the root domain as a keyword
+  // if it was an email then add the username, +, domain, and root domain as a keyword
+  //
+  // eslint-disable-next-line unicorn/no-useless-spread
+  for (const keyword of [...keywords]) {
+    if (isFQDN(keyword)) {
+      keywords.add(parseRootDomain(keyword));
+    } else if (isEmail(checkSRS(keyword))) {
+      const email = checkSRS(keyword);
+      keywords.add(email);
+      const [, domain] = email.split('@');
+      keywords.add(domain);
+      keywords.add(parseRootDomain(domain));
+    }
+  }
+
+  // go through all keywords and if it was
+  // a fqdn or if it was an email then
+  // add the rev hashed lowercase versions
+  // and for emails add username, domain, and + parts
+  //
+  // eslint-disable-next-line unicorn/no-useless-spread
+  for (const keyword of [...keywords]) {
+    if (isFQDN(keyword)) {
+      keywords.add(revHash(keyword.toLowerCase()));
+      keywords.delete(keyword);
+    } else if (isEmail(keyword)) {
+      const [username, domain] = keyword.toLowerCase().split('@');
+      if (username.includes('+')) {
+        const [str] = username.split('+');
+        keywords.add(revHash(`${str}@${domain}`));
+      } else {
+        keywords.add(revHash(keyword.toLowerCase()));
+      }
+
+      keywords.delete(keyword);
+    } else if (isIP(keyword)) {
+      keywords.add(revHash(keyword));
+      keywords.delete(keyword);
+    } else {
+      keywords.delete(keyword);
+    }
+  }
+
+  this.keywords = _.compact([...keywords]);
+
+  next();
 });
 
 Logs.pre('validate', function (next) {
@@ -483,19 +666,13 @@ function getQueryHash(log) {
   // if it was restricted or not
   if (typeof log.is_restricted === 'boolean')
     $and.push({
-      is_restricted: {
-        $eq: log.is_restricted,
-        $exists: true
-      }
+      is_restricted: log.is_restricted
     });
 
   // if had a user
   if (log?.user) {
     $and.push({
-      user: {
-        $eq: log.user,
-        $exists: true
-      }
+      user: log.user
     });
   }
 
@@ -767,7 +944,13 @@ Logs.postCreate(async (doc, next) => {
         to: config.twilio.to
       });
     } catch (err) {
-      await logger.fatal(err);
+      // <https://github.com/iamkun/dayjs/pull/2342>
+      // <https://github.com/twilio/twilio-node/issues/934>
+      if (
+        !err.message.includes('Cannot read properties of null') ||
+        !err.message.includes('node_modules/dayjs/plugin/objectSupport.js')
+      )
+        await logger.fatal(err);
     }
   }
 

@@ -4469,5 +4469,7 @@
   ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": "，那么我们将根据我们处理滥用行为的内部最佳实践来处理它——请注意，在某些情况下，这可能会导致帐户被暂停和/或禁止。",
   "Since we are not a domain name registrar": "由于我们不是域名注册商",
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "免费电子邮件转发 &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "免费电子邮件转发器 &#124; <span class=\"notranslate\">Forward Email</span>"
+  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "免费电子邮件转发器 &#124; <span class=\"notranslate\">Forward Email</span>",
+  "No logs exist for that search.": "该搜索不存在任何日志。",
+  "Request Removal": "请求删除"
 }

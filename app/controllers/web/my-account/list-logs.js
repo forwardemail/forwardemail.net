@@ -1,10 +1,21 @@
+const { isIP } = require('node:net');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const regexParser = require('regex-parser');
+const revHash = require('rev-hash');
+const { isEmail } = require('validator');
+const ms = require('ms');
 
+const config = require('#config');
+const parseRootDomain = require('#helpers/parse-root-domain');
 const { Aliases, Logs } = require('#models');
+
+const THIRTY_SECONDS = ms('30s');
 
 // eslint-disable-next-line complexity
 async function listLogs(ctx) {
@@ -43,21 +54,10 @@ async function listLogs(ctx) {
   // the query is an $or query with either filtered domains that the user is an admin of
   // or filtered domains along with RCPT TO matches
   //
-  const query = {
-    $or: [
-      {
-        is_restricted: {
-          $eq: true,
-          $exists: true
-        },
-        domains: {
-          $exists: true,
-          $in: filteredDomains
-            .filter((d) => d.group === 'admin')
-            .map((d) => d._id)
-        }
-      }
-    ]
+  let query = {
+    domains: {
+      $in: filteredDomains.filter((d) => d.group === 'admin').map((d) => d._id)
+    }
   };
 
   //
@@ -67,6 +67,8 @@ async function listLogs(ctx) {
   //
   const nonAdminDomains = filteredDomains.filter((d) => d.group !== 'admin');
   const nonAdminDomainsToAliases = {};
+
+  const keywords = new Set();
 
   if (nonAdminDomains.length > 0) {
     const aliases = await Aliases.find({
@@ -79,207 +81,164 @@ async function listLogs(ctx) {
       .lean()
       .exec();
 
-    for (const alias of aliases) {
-      if (!alias.domain) continue;
+    if (aliases.length > 0) {
+      for (const alias of aliases) {
+        if (!alias.domain) continue;
 
-      const domain = nonAdminDomains.find(
-        (d) => d.id === alias.domain.toString()
-      );
-
-      if (!domain) continue;
-
-      if (!nonAdminDomainsToAliases[domain.id])
-        nonAdminDomainsToAliases[domain.id] = [];
-
-      nonAdminDomainsToAliases[domain.id].push(`${alias.name}@${domain.name}`);
-
-      if (alias.name !== '*') {
-        query.$or.push(
-          {
-            is_restricted: {
-              $eq: true,
-              $exists: true
-            },
-            domains: {
-              $exists: true,
-              $in: [domain._id]
-            },
-            'meta.session.envelope.rcptTo.address': {
-              $exists: true,
-              $in: [`${alias.name}@${domain.name}`]
-            }
-          },
-          {
-            is_restricted: {
-              $eq: true,
-              $exists: true
-            },
-            domains: {
-              $exists: true,
-              $in: [domain._id]
-            },
-            email: {
-              $exists: true
-            },
-            'meta.session.envelope.mailFrom.address': {
-              $exists: true,
-              $eq: `${alias.name}@${domain.name}`
-            }
-          }
+        const domain = nonAdminDomains.find(
+          (d) => d.id === alias.domain.toString()
         );
-      }
 
-      const $regex =
-        alias.name === '*'
-          ? `^.*@${_.escapeRegExp(domain.name)}$`
-          : `^${_.escapeRegExp(alias.name)}+.*@${_.escapeRegExp(domain.name)}$`;
+        if (!domain) continue;
 
-      // add regexp support for "+" symbol alias filtering
-      query.$or.push({
-        is_restricted: {
-          $eq: true,
-          $exists: true
-        },
-        domains: {
-          $exists: true,
-          $in: [domain._id]
-        },
-        'meta.session.envelope.rcptTo.address': {
-          $exists: true,
-          $regex,
-          $options: 'i'
+        if (!nonAdminDomainsToAliases[domain.id])
+          nonAdminDomainsToAliases[domain.id] = [];
+
+        nonAdminDomainsToAliases[domain.id].push(
+          `${alias.name}@${domain.name}`
+        );
+
+        query.domains.$in.push(domain._id);
+
+        // if it is a global domain then don't add it
+        if (!domain.is_global) {
+          keywords.add(revHash(domain.name));
+          keywords.add(revHash(parseRootDomain(domain.name)));
         }
-      });
+
+        if (alias.name !== '*') {
+          keywords.add(revHash(`${alias.name}@${domain.name}`));
+          if (!domain.is_global) keywords.add(revHash(alias.name));
+        }
+      }
     }
   }
+
+  let subject;
+  let date;
 
   if (isSANB(ctx.query.q)) {
-    const $regex = _.escapeRegExp(ctx.query.q.trim());
-
-    // <https://stackoverflow.com/a/71999502>
-    const arr = [
-      {
-        $addFields: {
-          'meta.session.headers': {
-            $objectToArray: '$meta.session.headers'
-          }
-        }
-      },
-      {
-        $match: {
-          $and: [
-            { ...query },
-            {
-              $or: [
-                {
-                  'meta.session.headers.k': {
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'meta.session.headers.v': {
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  message: {
-                    $exists: true,
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'meta.session.resolvedClientHostname': {
-                    $exists: true,
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'meta.session.remoteAddress': {
-                    $exists: true,
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'meta.session.envelope.mailFrom.address': {
-                    $exists: true,
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'meta.session.envelope.rcptTo.address': {
-                    $exists: true,
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'meta.session.originalFromAddress': {
-                    $exists: true,
-                    $regex,
-                    $options: 'i'
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      },
-      {
-        $addFields: {
-          'meta.session.headers': {
-            $arrayToObject: '$meta.session.headers'
-          }
-        }
+    const q = ctx.query.q.trim();
+    if (isEmail(q)) {
+      const email = q.toLowerCase();
+      const [username, domain] = email.toLowerCase().split('@');
+      if (username.includes('+')) {
+        const [str] = username.split('+');
+        keywords.add(revHash(`${str}@${domain}`));
+      } else {
+        keywords.add(revHash(email));
       }
-    ];
-
-    let $sort = { created_at: -1 };
-    if (ctx.query.sort) {
-      const order = ctx.query.sort.startsWith('-') ? -1 : 1;
-      $sort = {
-        [order === -1 ? ctx.query.sort.slice(1) : ctx.query.sort]: order
-      };
+    } else if (isFQDN(q)) {
+      const domain = q.toLowerCase();
+      keywords.add(revHash(domain));
+      keywords.add(revHash(parseRootDomain(domain)));
+    } else if (isIP(q)) {
+      keywords.add(revHash(q));
+    } else if (
+      // M/Y or M/D/YY
+      ([2, 3].includes(q.split('/').filter((s) => /^\d+$/.test(s)).length) ||
+        // M-D or M-D-YY
+        [2, 3].includes(q.split('-').filter((s) => /^\d+$/.test(s)).length) ||
+        // M.D.YY
+        [2, 3].includes(q.split('.').filter((s) => /^\d+$/.test(s)).length)) &&
+      dayjs(q).isValid()
+    ) {
+      //
+      // NOTE: the default year if only 2 length is going to be 2001 due to this issue
+      //       <https://github.com/iamkun/dayjs/issues/1251>
+      //       <https://github.com/iamkun/dayjs/issues/1251#issuecomment-1136995011>
+      //
+      // string must have either two "/", "-", or "."
+      // and at least split into 3 digit-only keys
+      // if user is searching for a date
+      date = dayjs(q).startOf('day');
+      if (date.year() === 2001) date = date.set('year', dayjs().year());
+      else if (date.year() > dayjs().year())
+        date = date.set('year', dayjs().year());
+      // if the date is more than log retention days ago and year is different
+      // then set the year to the current year
+      // (this is mainly useful for when a new year passes and users still typing in the same year from before)
+      // (e.g. it's 1/1/24 and they search 1/1/23)
+      if (dayjs().diff(date, 'ms') > ms(config.logRetention))
+        date = date.set('year', dayjs().year());
+      date = date.toDate();
+    } else {
+      // NOTE: user's cannot search for dates by themselves in subject line
+      subject = q;
     }
-
-    const [logs, results] = await Promise.all([
-      Logs.aggregate([
-        ...arr,
-        {
-          $sort
-        },
-        {
-          $skip: ctx.paginate.skip
-        },
-        {
-          $limit: ctx.query.limit
-        }
-      ]),
-      Logs.aggregate([...arr, { $count: 'count' }])
-    ]);
-
-    ctx.state.logs = logs;
-    ctx.state.itemCount = results[0]?.count;
-  } else {
-    const [logs, itemCount] = await Promise.all([
-      // eslint-disable-next-line unicorn/no-array-callback-reference
-      Logs.find(query)
-        .limit(ctx.query.limit)
-        .skip(ctx.paginate.skip)
-        .sort(ctx.query.sort || '-created_at')
-        .lean()
-        .exec(),
-      Logs.countDocuments(query)
-    ]);
-    ctx.state.logs = logs;
-    ctx.state.itemCount = itemCount;
   }
 
+  if (isSANB(subject)) {
+    // <https://medium.com/statuscode/how-to-speed-up-mongodb-regex-queries-by-a-factor-of-up-to-10-73995435c606>
+    query = {
+      $and: [
+        query,
+        {
+          $text: {
+            $search: subject
+          }
+        },
+        {
+          subject: {
+            $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
+          }
+        }
+      ]
+    };
+  } else if (keywords.size > 0) {
+    query.keywords = {
+      $in: [...keywords]
+    };
+  }
+
+  //
+  // if we have to query by date then query against
+  // both `created_at` and the `date` header if one exists
+  //
+  if (date) {
+    query.created_at = {
+      $gte: date,
+      $lte: dayjs(new Date(date)).endOf('day').toDate()
+    };
+    //
+    // NOTE: if we allow users to query by date header
+    //       then the interface will be misleading
+    //
+    /*
+    query = {
+      $or: [
+        {
+          ...query,
+          created_at: {
+            $gte: date,
+            $lte: dayjs(new Date(date)).endOf('day').toDate()
+          }
+        },
+        {
+          ...query,
+          date: {
+            $gte: date,
+            $lte: dayjs(new Date(date)).endOf('day').toDate()
+          }
+        }
+      ]
+    };
+    */
+  }
+
+  const [logs, itemCount] = await Promise.all([
+    // eslint-disable-next-line unicorn/no-array-callback-reference
+    Logs.find(query)
+      .limit(ctx.query.limit)
+      .skip(ctx.paginate.skip)
+      .sort(ctx.query.sort || '-created_at')
+      .lean()
+      .maxTimeMS(THIRTY_SECONDS)
+      .exec(),
+    Logs.countDocuments(query).maxTimeMS(THIRTY_SECONDS)
+  ]);
+  ctx.state.logs = logs;
+  ctx.state.itemCount = itemCount;
   ctx.state.pageCount = Math.ceil(ctx.state.itemCount / ctx.query.limit);
   ctx.state.pages = paginate.getArrayPages(ctx)(
     6,
@@ -292,52 +251,69 @@ async function listLogs(ctx) {
     // go through each log and filter out RCPT TO values
     // that do not belong to this user
     //
-    ctx.state.logs = ctx.state.logs.map((log) => {
-      if (Array.isArray(log?.meta?.session?.envelope?.rcptTo)) {
-        log.meta.session.envelope.rcptTo =
-          log.meta.session.envelope.rcptTo.filter((rcpt) => {
-            // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
-            const username = rcpt.address.includes('+')
-              ? rcpt.address.slice(0, rcpt.address.indexOf('+'))
-              : rcpt.address.split('@')[0];
-            const domain = rcpt.address.split('@')[1];
+    ctx.state.logs = _.compact(
+      ctx.state.logs.map((log) => {
+        if (Array.isArray(log?.meta?.session?.envelope?.rcptTo)) {
+          log.meta.session.envelope.rcptTo =
+            log.meta.session.envelope.rcptTo.filter((rcpt) => {
+              // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
+              const username = rcpt.address.includes('+')
+                ? rcpt.address.slice(0, rcpt.address.indexOf('+'))
+                : rcpt.address.split('@')[0];
+              const domain = rcpt.address.split('@')[1];
 
-            // get a match where the domain name matches and id existed
-            let isAdmin = false;
-            const match = log.domains.find((logDomain) => {
-              const find = ctx.state.domains.find(
-                (d) =>
-                  d.id === logDomain.toString() &&
-                  d.name === domain.toLowerCase()
-              );
-              if (!find) return false;
-              if (find.group === 'admin') isAdmin = true;
-              return true;
+              // get a match where the domain name matches and id existed
+              let isAdmin = false;
+              const match = log.domains.find((logDomain) => {
+                const find = ctx.state.domains.find(
+                  (d) =>
+                    d.id === logDomain.toString() &&
+                    d.name === domain.toLowerCase()
+                );
+                if (!find) return false;
+                if (find.group === 'admin') isAdmin = true;
+                return true;
+              });
+
+              if (!match) return false;
+
+              // if the user is not an admin of the domain then filter for individual rcpts
+              if (isAdmin) return true;
+
+              const email = `${username}@${domain}`.toLowerCase();
+
+              const domainToAliases =
+                nonAdminDomainsToAliases[match.toString()];
+
+              if (!domainToAliases) return false;
+
+              if (
+                domainToAliases.includes(`*@${domain}`) ||
+                domainToAliases.includes(email)
+              )
+                return true;
+
+              return false;
             });
+        }
 
-            if (!match) return false;
+        // safeguard in case query returns results we don't want to render
+        if (
+          !Array.isArray(log?.meta?.session?.envelope?.rcptTo) ||
+          log.meta.session.envelope.rcptTo.length === 0
+        )
+          return null;
 
-            // if the user is not an admin of the domain then filter for individual rcpts
-            if (isAdmin) return true;
+        return log;
+      })
+    );
 
-            const email = `${username}@${domain}`.toLowerCase();
-
-            const domainToAliases = nonAdminDomainsToAliases[match.toString()];
-
-            if (!domainToAliases) return false;
-
-            if (
-              domainToAliases.includes(`*@${domain}`) ||
-              domainToAliases.includes(email)
-            )
-              return true;
-
-            return false;
-          });
-      }
-
-      return log;
-    });
+    // safeguard
+    if (ctx.state.logs.length === 0) {
+      ctx.state.itemCount = 0;
+      ctx.state.pageCount = 0;
+      ctx.state.pages = [];
+    }
   }
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');

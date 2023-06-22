@@ -4783,5 +4783,7 @@
   ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", så vil vi behandle den i henhold til våre interne beste praksiser for håndtering av misbruk – merk at i noen tilfeller kan dette føre til suspendering og/eller utestengelse av kontoen.",
   "Since we are not a domain name registrar": "Siden vi ikke er en domenenavnregistrator",
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis videresending av e-post &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis videresending av e-post &#124; <span class=\"notranslate\">Forward Email</span>"
+  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis videresending av e-post &#124; <span class=\"notranslate\">Forward Email</span>",
+  "No logs exist for that search.": "Det finnes ingen logger for det søket.",
+  "Request Removal": "Be om fjerning"
 }

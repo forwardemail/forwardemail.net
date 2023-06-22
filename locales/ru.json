@@ -4778,5 +4778,7 @@
   ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": ", то мы обработаем его в соответствии с нашими внутренними рекомендациями по борьбе со злоупотреблениями — обратите внимание, что в некоторых случаях это может привести к приостановке действия и/или блокировке учетной записи.",
   "Since we are not a domain name registrar": "Поскольку мы не являемся регистратором доменных имен",
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Бесплатная пересылка электронной почты &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Бесплатная переадресация электронной почты &#124; <span class=\"notranslate\">Forward Email</span>"
+  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Бесплатная переадресация электронной почты &#124; <span class=\"notranslate\">Forward Email</span>",
+  "No logs exist for that search.": "Журналов для этого поиска не существует.",
+  "Request Removal": "Запросить удаление"
 }

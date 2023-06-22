@@ -4778,5 +4778,7 @@
   ", then we will process it according to our internal-only best practices for handling abuse – note that in some cases this may result in suspending and/or banning the Account.": "、その後、不正行為に対処するための社内専用のベスト プラクティスに従って処理します。場合によっては、アカウントの一時停止や禁止が行われる可能性があることに注意してください。",
   "Since we are not a domain name registrar": "当社はドメイン名登録業者ではないため、",
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "無料メール転送 &#124; <span class=\"notranslate\">Forward Email</span>",
-  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "無料のメールフォワーダー &#124; <span class=\"notranslate\">Forward Email</span>"
+  "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "無料のメールフォワーダー &#124; <span class=\"notranslate\">Forward Email</span>",
+  "No logs exist for that search.": "その検索のログは存在しません。",
+  "Request Removal": "削除のリクエスト"
 }
