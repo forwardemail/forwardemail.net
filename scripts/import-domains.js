@@ -11,11 +11,13 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const isSANB = require('is-string-and-not-blank');
+const pMap = require('p-map');
 
 const mongoose = require('mongoose');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
+const config = require('#config');
 const Users = require('#models/users');
 const Domains = require('#models/domains');
 const Aliases = require('#models/aliases');
@@ -49,29 +51,33 @@ graceful.listen();
 
   const lines = file.split('\n');
 
-  for (const name of lines) {
-    if (!name) continue;
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      const domain = await Domains.create({
-        is_api: true,
-        members: [{ user: user._id, group: 'admin' }],
-        name,
-        is_global: false,
-        plan: user.plan
-      });
-      // eslint-disable-next-line no-await-in-loop
-      await Aliases.create({
-        is_api: true,
-        user: user._id,
-        domain: domain._id,
-        name: '*',
-        recipients: [user.email]
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  await pMap(
+    lines,
+    async (name) => {
+      if (!name) return;
+      try {
+        const domain = await Domains.create({
+          is_api: true,
+          members: [{ user: user._id, group: 'admin' }],
+          name,
+          is_global: false,
+          plan: user.plan
+        });
+
+        await Aliases.create({
+          is_api: true,
+          user: user._id,
+          domain: domain._id,
+          name: '*',
+          recipients: [user.email]
+        });
+        console.log(`created ${domain.name}`);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    { concurrency: config.concurrency }
+  );
 
   process.exit(0);
 })();
