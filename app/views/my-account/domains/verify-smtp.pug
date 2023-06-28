@@ -217,7 +217,11 @@ block body
                           = " "
                           i.fa.fa-external-link
                       td.align-middle.small.text-left
-                        code#copy-host-dkim.d-block.text-nowrap= `${domain.dkim_key_selector}._domainkey`
+                        code#copy-host-dkim.d-block.text-nowrap
+                          = `${domain.dkim_key_selector}._domainkey`
+                          if domain.root_name !== domain.name
+                            = "."
+                            = domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
                         if !domain.has_dkim_record
                           button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                             type="button",
@@ -270,7 +274,11 @@ block body
                           = " "
                           i.fa.fa-external-link
                       td.align-middle.text-left
-                        code#copy-host-return-path.d-block= domain.return_path
+                        code#copy-host-return-path.d-block
+                          = domain.return_path
+                          if domain.root_name !== domain.name
+                            = "."
+                            = domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
                         if !domain.has_return_path_record
                           button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                             type="button",
@@ -312,7 +320,11 @@ block body
                           = " "
                           i.fa.fa-external-link
                       td.align-middle.text-left
-                        code#copy-host-dmarc.d-block= "_dmarc"
+                        code#copy-host-dmarc.d-block
+                          = "_dmarc"
+                          if domain.root_name !== domain.name
+                            = "."
+                            = domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
                         if !domain.has_dmarc_record
                           button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                             type="button",

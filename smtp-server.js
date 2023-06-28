@@ -174,7 +174,10 @@ function refineAndLogError(err, session) {
   // NOTE: we join lines together by ";", then split, then make unique, then join again
   //
   // set the new message
-  err.message = _.uniq(lines.join('; ').split('; ')).join('; ');
+  err.message = _.uniq(lines.join('; ').split('; '))
+    .join('; ')
+    .split(';;')
+    .join(';');
 
   return err;
 }

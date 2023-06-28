@@ -219,12 +219,16 @@ async function shouldThrowError(err, session) {
   } else if (err.response.includes('linuxmagic.com/power_of_ip_reputation'))
     // <https://www.linuxmagic.com/power_of_ip_reputation.php>
     err.bounceInfo.category = 'blocklist';
+  else if (err.response.includes("We don't accept mail from DO spammers"))
+    err.bounceInfo.category = 'blocklist';
   else if (
     err.bounceInfo.category !== 'spam' &&
     (err.response.includes('rate limited') ||
       err.response.includes('reputation') ||
       // optimum-specific error message
-      err.response.includes('451 4.7.1 Resources restricted')) &&
+      err.response.includes('451 4.7.1 Resources restricted') ||
+      // 550 5.7.1 Service unavailable; client [138.197.213.185] blocked using antispam.fasthosts.co.uk
+      err.response.includes('blocked')) &&
     err.response.includes(IP_ADDRESS)
     // TODO: email us to send message to tobr@rx.t-online.de if detected string
   )

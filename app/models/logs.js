@@ -17,7 +17,6 @@ const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
-const regexParser = require('regex-parser');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
@@ -493,7 +492,7 @@ function getQueryHash(log) {
   //
   if (log?.meta?.ignore_hook === false) return revHash(safeStringify(log));
 
-  const $and = [];
+  const set = new Set();
   //
   // prepare db query for uniqueness
   //
@@ -538,34 +537,17 @@ function getQueryHash(log) {
       throw new Error('Ignored banned user or rate limiting');
 
     // if no user but if had a metadata IP address
-    if (!log?.user && log?.meta?.user?.ip_address) {
-      $and.push({
-        'meta.user.ip_address': {
-          $eq: log.meta.user.ip_address,
-          $exists: true
-        }
-      });
-    }
+    if (!log?.user && log?.meta?.user?.ip_address)
+      set.add(log.meta.user.ip_address);
 
     // check
     // + meta.response.status_code
     // + meta.request.method
     // + meta.request.pathname OR meta.request.url (otherwise unique querystrings won't be detected as duplicates)
     if (log?.meta?.response?.status_code)
-      $and.push({
-        'meta.response.status_code': {
-          $eq: log.meta.response.status_code,
-          $exists: true
-        }
-      });
+      set.add(log.meta.response.status_code);
 
-    if (log?.meta?.request?.method)
-      $and.push({
-        'meta.request.method': {
-          $eq: log.meta.request.method,
-          $exists: true
-        }
-      });
+    if (log?.meta?.request?.method) set.add(log.meta.request.method);
 
     //
     // NOTE: pathname was added in `parse-request` v6.0.1
@@ -582,27 +564,12 @@ function getQueryHash(log) {
         arr[3] &&
         arr[4] === 'aliases'
       ) {
-        $and.push({
-          'meta.request.pathname': {
-            $exists: true,
-            $regex: new RegExp('^' + _.escapeRegExp(arr.slice(0, 5).join('/')))
-          }
-        });
+        set.add('^' + _.escapeRegExp(arr.slice(0, 5).join('/')));
       } else {
-        $and.push({
-          'meta.request.pathname': {
-            $eq: log.meta.request.pathname,
-            $exists: true
-          }
-        });
+        set.add(log.meta.request.pathname);
       }
     } else if (log?.meta?.request?.url) {
-      $and.push({
-        'meta.request.url': {
-          $eq: log.meta.request.url,
-          $exists: true
-        }
-      });
+      set.add(log.meta.request.url);
     }
   }
 
@@ -614,14 +581,7 @@ function getQueryHash(log) {
       ? dayjs(new Date(log.created_at)).startOf('hour').toDate()
       : dayjs(new Date(log.created_at)).startOf('day').toDate();
 
-  if (log?.meta?.level) {
-    $and.push({
-      'meta.level': {
-        $eq: log.meta.level,
-        $exists: true
-      }
-    });
-  }
+  if (log?.meta?.level) set.add(log.meta.level);
 
   if (!log?.meta?.is_http) {
     //
@@ -629,103 +589,73 @@ function getQueryHash(log) {
     //       (e.g. the response time might slightly vary in the message string)
     //
     // if (log?.message) $and.push({ $text: { $search: log.message } });
-    if (log?.message && log.message.includes('No matching document found'))
-      $and.push({
-        message: /No matching document found/
-      });
-    else if (log?.message && log?.err?.name !== 'DenylistError')
-      $and.push({
-        message: log.message
-      });
 
-    if (isSANB(log?.err?.name))
-      $and.push({
-        'err.name': log.err.name
-      });
+    let hasErrorWithUniqueMessage = false;
+    for (const errorName of [
+      'BSONObjectTooLarge',
+      'VersionError',
+      'RangeError',
+      'DenylistError'
+    ]) {
+      if (
+        log?.err?.name === errorName ||
+        log?.meta?.err?.name === errorName ||
+        log?.err?.codeName === errorName ||
+        log?.meta?.err?.codeName === errorName
+      ) {
+        set.add(errorName);
+        hasErrorWithUniqueMessage = true;
+      }
+    }
 
-    if (isSANB(log?.err?.address))
-      $and.push({
-        'err.address': log.err.address
-      });
+    if (isSANB(log?.err?.name)) set.add(log.err.name);
+    else if (isSANB(log?.meta?.err?.name)) set.add(log.meta.err.name);
+
+    // if it is not a non-unique error
+    if (!hasErrorWithUniqueMessage && isSANB(log?.message))
+      set.add(log.message);
+
+    if (isSANB(log?.err?.address)) set.add(log.err.address);
 
     if (typeof log?.err?.responseCode === 'number')
-      $and.push({
-        'err.responseCode': log.err.responseCode
-      });
+      set.add(log.err.responseCode);
 
-    //
     // if it was not an HTTP request then include date query
     // (we don't want the server itself to pollute the db on its own)
-    $and.push({
-      created_at: { $gte }
-    });
+    set.add($gte);
   }
 
   // if it was a code bug
-  if (log?.err?.isCodeBug === true)
-    $and.push({
-      'err.isCodeBug': true
-    });
+  if (log?.err?.isCodeBug === true || log?.meta?.err?.isCodeBug === true)
+    set.add('isCodeBug');
 
   // if it was restricted or not
   if (typeof log.is_restricted === 'boolean')
-    $and.push({
-      is_restricted: log.is_restricted
-    });
+    set.add({ is_restricted: log.is_restricted });
 
   // if had a user
-  if (log?.user) {
-    $and.push({
-      user: log.user
-    });
-  }
+  if (log?.user) set.add(log.user);
 
   // make it unique by mail from
   if (
     isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
     isEmail(log.meta.session.envelope.mailFrom.address)
-  ) {
-    $and.push({
-      'meta.session.envelope.mailFrom.address': {
-        $exists: true,
-        // @.*example-1\.com$
-        $regex: regexParser(
-          `/@.*${parseRootDomain(
-            log.meta.session.envelope.mailFrom.address.split('@')[1]
-          )}$/`
-        ),
-        $options: 'i'
-      }
-    });
-  }
+  )
+    set.add(
+      `/@.*${parseRootDomain(
+        log.meta.session.envelope.mailFrom.address.split('@')[1]
+      )}$/`
+    );
 
   // make it unique by rcpt to
   if (
     Array.isArray(log?.meta?.session?.envelope?.rcptTo) &&
     log.meta.session.envelope.rcptTo.length > 0
   ) {
-    const set = new Set();
     for (const rcpt of log.meta.session.envelope.rcptTo) {
-      if (_.isObject(rcpt) && isSANB(rcpt.address) && isEmail(rcpt.address))
-        set.add(rcpt.address);
-    }
-
-    if (set.size > 0) {
-      const $or = [];
-      for (const address of set) {
-        $or.push({
-          'meta.session.envelope.rcptTo.address': {
-            $exists: true,
-            // @.*example-1\.com$
-            $regex: regexParser(
-              `/@.*${parseRootDomain(address.split('@')[1])}$/`
-            ),
-            $options: 'i'
-          }
-        });
+      if (_.isObject(rcpt) && isSANB(rcpt.address) && isEmail(rcpt.address)) {
+        set.add(`/@.*${parseRootDomain(rcpt.address.split('@')[1])}$/`);
       }
-
-      $and.push({ $or });
     }
   }
 
@@ -738,9 +668,9 @@ function getQueryHash(log) {
   // TODO: daily digest email + dashboard + visual charts + real-time metric counters
 
   // safeguard to prevent empty query
-  if ($and.length === 0) throw new Error('Empty query');
+  if (set.size === 0) throw new Error('Empty query');
 
-  return revHash(safeStringify({ $and }));
+  return revHash(safeStringify([...set]));
 }
 
 Logs.pre('validate', function (next) {
