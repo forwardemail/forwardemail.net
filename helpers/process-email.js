@@ -1,5 +1,4 @@
 const os = require('node:os');
-const { Buffer } = require('node:buffer');
 
 const Boom = require('@hapi/boom');
 const DKIM = require('nodemailer/lib/dkim');
@@ -404,11 +403,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
     });
 
     // NOTE: use pure streams in the future
-    if (!Buffer.isBuffer(email.message))
-      throw new Error('Email message is not a buffer');
+    const message = await Emails.getMessage(email.message);
 
     const raw = await getStream.buffer(
-      d.sign(intoStream(email.message).pipe(splitter).pipe(joiner))
+      d.sign(intoStream(message).pipe(splitter).pipe(joiner))
     );
 
     //

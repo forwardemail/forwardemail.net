@@ -1401,6 +1401,9 @@ async function getTxtAddresses(
   if (!isFQDN(domainName))
     throw Boom.badRequest(i18n.translateError('INVALID_FQDN', locale));
 
+  if (typeof resolver !== 'object' || typeof resolver.resolveTxt !== 'function')
+    throw new Error('Resolver missing');
+
   const records = await resolver.resolveTxt(domainName, { purgeCache: true });
 
   // verification records that contain `forward-email-site-verification=` prefix

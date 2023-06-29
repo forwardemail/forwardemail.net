@@ -37,12 +37,13 @@ const Users = require('./users');
 const Domains = require('./domains');
 const Emails = require('./emails');
 
-const emailHelper = require('#helpers/email');
-const parseRootDomain = require('#helpers/parse-root-domain');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
-const logger = require('#helpers/logger');
 const createTangerine = require('#helpers/create-tangerine');
+const emailHelper = require('#helpers/email');
+const isErrorConstructorName = require('#helpers/is-error-constructor-name');
+const logger = require('#helpers/logger');
+const parseRootDomain = require('#helpers/parse-root-domain');
 
 // headers that we store values for
 const KEYWORD_HEADERS = new Set([
@@ -880,11 +881,7 @@ Logs.postCreate(async (doc, next) => {
     } catch (err) {
       // <https://github.com/iamkun/dayjs/pull/2342>
       // <https://github.com/twilio/twilio-node/issues/934>
-      if (
-        !err.message.includes('Cannot read properties of null') ||
-        !err.message.includes('node_modules/dayjs/plugin/objectSupport.js')
-      )
-        await logger.fatal(err);
+      if (!isErrorConstructorName(err, 'TypeError')) await logger.fatal(err);
     }
   }
 

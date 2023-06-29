@@ -223,7 +223,8 @@ Test`.trim()
 
   // validate message body was converted as well
   const email = await Emails.findOne({ id: res.body.id });
-  t.true(email.message.includes('From: ' + header));
+  const message = await Emails.getMessage(email.message);
+  t.true(message.toString().includes('From: ' + header));
 
   // validate envelope
   t.is(res.body.envelope.from, `${alias.name}@${domain.name}`);

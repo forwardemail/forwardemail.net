@@ -154,7 +154,7 @@ block body
                 +planRequired(false)
                 if domain.plan !== 'free'
                   if _.isDate(domain.smtp_suspended_sent_at)
-                    .alert.alert-danger.text-center= t('Domain is suspended from outbound SMTP service, please <a href="alert-link" href="%s">contact us</a> to resolve.', l("/help"))
+                    .alert.alert-danger.text-center!= t('Domain is suspended from outbound SMTP service, please <a href="alert-link" href="%s">contact us</a> to resolve.', l("/help"))
                   else
                     if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
                       .alert.alert-success

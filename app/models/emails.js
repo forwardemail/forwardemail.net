@@ -16,9 +16,10 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
 const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const nodemailer = require('nodemailer');
+const pEvent = require('p-event');
 const parseErr = require('parse-err');
-const { Iconv } = require('iconv');
 const { Headers, Splitter, Joiner } = require('mailsplit');
+const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 const { simpleParser } = require('mailparser');
@@ -41,6 +42,9 @@ const HUMAN_MAX_DAYS_IN_ADVANCE = '30d';
 const MAX_DAYS_IN_ADVANCE_TO_MS = ms(HUMAN_MAX_DAYS_IN_ADVANCE);
 const HUMAN_MAX_BYTES = '50MB';
 const MAX_BYTES = bytes(HUMAN_MAX_BYTES);
+const BYTES_15MB = bytes('15MB');
+
+// TODO: bucket.delete(email.message); when we delete 30d+ older messages
 
 const transporter = nodemailer.createTransport({
   streamTransport: true,
@@ -126,7 +130,7 @@ const Emails = new mongoose.Schema({
   },
   // email to be sent (with date, message-id, etc headers already set)
   message: {
-    type: mongoose.Schema.Types.Buffer,
+    type: mongoose.Schema.Types.Mixed,
     required: true
   },
   // message-id header
@@ -257,15 +261,6 @@ Emails.pre('validate', function (next) {
 //
 Emails.pre('validate', function (next) {
   try {
-    // ensure message exists and is a buffer
-    if (!Buffer.isBuffer(this.message))
-      throw new Error('Buffer must be a message');
-
-    // ensure the message is not more than 50 MB
-    const bytes = Buffer.byteLength(this.message);
-    if (bytes > MAX_BYTES)
-      throw new Error(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
-
     // TODO: validate Message-Id header to RFC spec (even though we set it if not exists)
     // <https://stackoverflow.com/a/4031705>
 
@@ -432,6 +427,90 @@ Emails.pre('save', async function (next) {
   }
 });
 
+//
+// if message was more than 15 MB then store it with grid fs
+// (the mongodb document max size limit is 16 mb)
+//
+Emails.pre('save', async function (next) {
+  try {
+    // immutable message (to edit a message you need to create a new email)
+    if (!this.isNew) return next();
+
+    // ensure message exists and is a buffer
+    if (!Buffer.isBuffer(this.message))
+      throw new Error('Buffer must be a message');
+
+    // ensure the message is not more than 50 MB
+    const messageBytes = Buffer.byteLength(this.message);
+    if (messageBytes > MAX_BYTES)
+      throw new Error(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
+
+    // if the doc was was <= 15 MB then return early
+    if (messageBytes <= BYTES_15MB) return next();
+
+    // TODO: move bucket to root
+    const bucket = new mongoose.mongo.GridFSBucket(this.db);
+
+    const stream = bucket.openUploadStream(`${this.id}.eml`, {
+      contentType: 'message/rfc822'
+    });
+
+    intoStream(this.message).pipe(stream);
+
+    // `p-event` listens for rejectionEvents default of `['error']`
+    this.message = await pEvent(stream, 'finish');
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+Emails.statics.getMessage = async function (obj) {
+  if (Buffer.isBuffer(obj)) return obj;
+  if (obj instanceof mongoose.mongo.Binary) return obj.buffer;
+
+  // obj = {
+  //   _id: new ObjectId("..."),
+  //   length: 22958877,
+  //   chunkSize: 261120,
+  //   uploadDate: new Date(...),
+  //   filename: '$id.eml',
+  //   contentType: 'message/rfc822'
+  // }
+
+  if (typeof obj !== 'object') throw new Error('Invalid GridFS object');
+
+  if (!obj?._id || !mongoose.Types.ObjectId.isValid(obj._id))
+    throw new Error('Invalid GridFS ObjectId');
+
+  if (typeof obj.length !== 'number') throw new Error('Invalid GridFS length');
+
+  if (typeof obj.chunkSize !== 'number')
+    throw new Error('Invalid GridFS chunkSize');
+
+  if (!obj?.uploadDate || !(obj.uploadDate instanceof Date))
+    throw new Error('Invalid GridFS uploadDate');
+
+  if (typeof obj.filename !== 'string' || !obj.filename.endsWith('.eml'))
+    throw new Error('Invalid GridFS filename');
+
+  if (
+    typeof obj.contentType !== 'string' ||
+    obj.contentType !== 'message/rfc822'
+  )
+    throw new Error('Invalid GridFS contentType');
+
+  // TODO: move bucket to root
+  const bucket = new mongoose.mongo.GridFSBucket(this.db);
+
+  const raw = await getStream.buffer(bucket.openDownloadStream(obj._id), {
+    maxBuffer: MAX_BYTES
+  });
+
+  return raw;
+};
+
 // options.message (Buffer or nodemailer Object)
 // options.alias
 // options.domain
@@ -450,8 +529,8 @@ Emails.statics.queue = async function (
   const info = await transporter.sendMail(options.message);
 
   // ensure the message is not more than 50 MB
-  const bytes = Buffer.byteLength(info.message);
-  if (bytes > MAX_BYTES)
+  const messageBytes = Buffer.byteLength(info.message);
+  if (messageBytes > MAX_BYTES)
     throw new Error(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
 
   const splitter = new Splitter();
@@ -573,12 +652,19 @@ Emails.statics.queue = async function (
   if (aliasName === '*')
     throw Boom.badRequest(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
 
+  let userId;
+
+  if (isSANB(options?.user?.id)) userId = options.user.id;
+  else if (typeof options?.user?._id === 'object')
+    userId = options.user._id.toString();
+  else if (typeof options?.user === 'object') userId = options.user.toString();
+
   const domain =
     options.domain ||
-    (options?.user?._id
+    (userId
       ? await Domains.findOne({
           name: domainName,
-          'members.user': options.user._id
+          'members.user': new mongoose.Types.ObjectId(userId)
         }).populate(
           'members.user',
           `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt}`
@@ -627,9 +713,10 @@ Emails.statics.queue = async function (
       i18n.translateError('PAST_DUE_OR_INVALID_ADMIN', locale)
     );
 
-  const member = domain.members.find(
-    (member) => member.user.id === options?.user?.id
-  );
+  let member;
+
+  if (userId)
+    member = domain.members.find((member) => member.user.id === userId);
 
   if (!member)
     throw Boom.notFound(i18n.translateError('INVALID_MEMBER', locale));
@@ -642,7 +729,7 @@ Emails.statics.queue = async function (
   //
   const alias =
     options.alias ||
-    (options?.user?._id
+    (userId
       ? await Aliases.findOne(
           member.group === 'admin'
             ? {
@@ -651,7 +738,7 @@ Emails.statics.queue = async function (
               }
             : {
                 // users that are not admins must be an owner of the alias to send as it
-                user: options.user._id,
+                user: new mongoose.Types.ObjectId(userId),
                 domain: domain._id,
                 name: aliasName
               }
@@ -818,7 +905,7 @@ Emails.statics.queue = async function (
   const email = await this.create({
     alias: alias._id,
     domain: domain._id,
-    user: options?.user?._id,
+    user: userId ? new mongoose.Types.ObjectId(userId) : undefined,
     envelope: info.envelope,
     message,
     messageId,

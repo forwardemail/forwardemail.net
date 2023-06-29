@@ -438,6 +438,31 @@ async function onAuth(auth, session, fn) {
   // (password visible only once to user upon creation)
   //
   try {
+    // username must be a valid email address
+    if (!isSANB(auth?.username) || !isEmail(auth.username.trim()))
+      throw new SMTPError(
+        `Invalid username, please enter a valid email address (e.g. "alias@example.com"); use one of your domain's aliases at ${config.urls.web}/my-account/domains`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
+
+    const [name, domainName] = auth.username.trim().toLowerCase().split('@');
+
+    // password must be a 24 character long generated string
+    if (
+      !isSANB(auth?.password) ||
+      (typeof auth?.password === 'string' && auth.password.length !== 24)
+    )
+      throw new SMTPError(
+        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
+
     // rate limit to X failed attempts per day by IP address
     const limit = await this.rateLimiter.get({
       id: session.remoteAddress,
@@ -450,31 +475,6 @@ async function onAuth(auth, session, fn) {
       throw new SMTPError(
         `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
         { ignoreHook: true }
-      );
-
-    // username must be a valid email address
-    if (!isSANB(auth?.username) || !isEmail(auth.username.trim()))
-      throw new SMTPError(
-        'Invalid username, please enter a valid email address (e.g. "alias@example.com")',
-        {
-          responseCode: 535,
-          ignoreHook: true
-        }
-      );
-
-    const [name, domainName] = auth.username.trim().toLowerCase().split('@');
-
-    // password must be a string not longer than 128 characters
-    if (
-      !isSANB(auth?.password) ||
-      (typeof auth?.password === 'string' && auth.password.trim().length > 128)
-    )
-      throw new SMTPError(
-        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
-        {
-          responseCode: 535,
-          ignoreHook: true
-        }
       );
 
     const verifications = [];

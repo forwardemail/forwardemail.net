@@ -1,10 +1,10 @@
-const util = require('util');
+const util = require('node:util');
+const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
-
-// TODO: message body starts with "\" does not hash verify
 
 const Client = require('nodemailer/lib/smtp-connection');
 const Redis = require('ioredis-mock');
+const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const getPort = require('get-port');
 const ip = require('ip');
@@ -15,11 +15,13 @@ const pify = require('pify');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
 const { factory } = require('factory-girl');
+const { randomstring } = require('@sidoshi/random-string');
 
 const utils = require('../utils');
 const SMTP = require('../../smtp-server');
 
 const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
@@ -68,7 +70,7 @@ test('starttls required for non-secure auth', async (t) => {
     },
     auth: {
       user: 'test@test.com',
-      pass: 'test'
+      pass: Array.from({ length: 24 }).fill('0')
     }
   });
 
@@ -113,7 +115,7 @@ test('starttls disabled for secure auth', async (t) => {
       },
       auth: {
         user: 'test@test.com',
-        pass: 'test'
+        pass: Array.from({ length: 24 }).fill('0')
       }
     });
 
@@ -137,7 +139,7 @@ Test`.trim()
     t.is(err.responseCode, 535);
     t.is(
       err.response,
-      '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
+      '535 Invalid password, please try again or go to http://example.com:3000/my-account/domains/test.com/aliases and click "Generate Password"'
     );
   }
 
@@ -154,7 +156,7 @@ Test`.trim()
       },
       auth: {
         user: 'test@test.com',
-        pass: 'test'
+        pass: Array.from({ length: 24 }).fill('0')
       }
     });
 
@@ -178,7 +180,7 @@ Test`.trim()
     t.is(err.responseCode, 535);
     t.is(
       err.response,
-      '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
+      '535 Invalid password, please try again or go to http://example.com:3000/my-account/domains/test.com/aliases and click "Generate Password"'
     );
   }
 });
@@ -275,6 +277,411 @@ test('smtp outbound auth', async (t) => {
     });
     connection.once('end', () => resolve());
   });
+});
+
+test(`10MB message size`, async (t) => {
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  const resolver = createTangerine(t.context.client, logger);
+
+  const domain = await factory.create('domain', {
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    has_smtp: true,
+    resolver
+  });
+
+  const alias = await factory.create('alias', {
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email]
+  });
+
+  const map = new Map();
+
+  // spoof test@test.com mx records
+  map.set(
+    'mx:test.com',
+    resolver.spoofPacket(
+      'test.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  const email = await Emails.queue({
+    message: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'test@test.com',
+      subject: 'test',
+      text: 'test',
+      attachments: [
+        {
+          filename: 'test.txt',
+          content: Buffer.alloc(bytes('10MB'))
+        }
+      ]
+    },
+    user: user._id
+  });
+
+  const testPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        // const buffer = Buffer.concat(chunks);
+        // t.log(buffer.toString());
+        fn();
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(testPort);
+
+  //
+  // process the email
+  //
+  await t.notThrowsAsync(
+    processEmail({
+      email,
+      port: testPort,
+      resolver,
+      client
+    })
+  );
+});
+
+test(`16MB message size`, async (t) => {
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  const resolver = createTangerine(t.context.client, logger);
+
+  const domain = await factory.create('domain', {
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    has_smtp: true,
+    resolver
+  });
+
+  const alias = await factory.create('alias', {
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email]
+  });
+
+  const map = new Map();
+
+  // spoof test@test.com mx records
+  map.set(
+    'mx:test.com',
+    resolver.spoofPacket(
+      'test.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  const email = await Emails.queue({
+    message: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'test@test.com',
+      subject: 'test',
+      text: 'test',
+      attachments: [
+        {
+          filename: 'test.txt',
+          content: Buffer.alloc(bytes('16MB'))
+        }
+      ]
+    },
+    user: user._id
+  });
+
+  const testPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        // const buffer = Buffer.concat(chunks);
+        // t.log(buffer.toString());
+        fn();
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(testPort);
+
+  //
+  // process the email
+  //
+  await t.notThrowsAsync(
+    processEmail({
+      email,
+      port: testPort,
+      resolver,
+      client
+    })
+  );
+});
+
+test(`50MB message size`, async (t) => {
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  const resolver = createTangerine(t.context.client, logger);
+
+  const domain = await factory.create('domain', {
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    has_smtp: true,
+    resolver
+  });
+
+  const alias = await factory.create('alias', {
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email]
+  });
+
+  const err = await t.throwsAsync(
+    Emails.queue({
+      message: {
+        from: `${alias.name}@${domain.name}`,
+        to: 'test@test.com',
+        subject: 'test',
+        text: 'test',
+        attachments: [
+          {
+            filename: 'test.txt',
+            content: Buffer.alloc(bytes('50MB'))
+          }
+        ]
+      },
+      user: user._id
+    })
+  );
+  t.is(err.message, 'Email size of 50MB exceeded.');
 });
 
 test('smtp outbound queue', async (t) => {
@@ -419,6 +826,11 @@ test('smtp outbound queue', async (t) => {
     }
   });
 
+  const messageId = `<${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}>`;
+
   const info = await transporter.sendMail({
     envelope: {
       from: `${alias.name}@${domain.name}`,
@@ -435,7 +847,7 @@ Sender: baz@beep.com
 Cc: beep@boop.com,beep@boop.com
 Bcc: foo@bar.com,a@xyz.com,b@xyz.com
 Reply-To: Beep boop@beep.com
-Message-Id: beep-boop
+Message-Id: ${messageId}
 To: test@foo.com
 From: Test <${alias.name}@${domain.name}>
 Subject: testing this
@@ -459,10 +871,13 @@ Test`.trim()
     ].sort()
   );
 
-  let email = await Emails.findOne().lean().exec();
+  let email = await Emails.findOne({
+    messageId
+  })
+    .lean()
+    .exec();
   t.true(typeof email === 'object');
   // TODO: validate by message-id too to ensure it's the right email
-  delete email.message; // suppress buffer output from console log
   t.is(email.headers.From, `Test <${alias.name}@${domain.name}>`);
   t.is(email.headers['Reply-To'], 'Beep <boop@beep.com>');
   t.is(email.status, 'queued');
@@ -481,7 +896,7 @@ Test`.trim()
   );
 
   // validate message-id
-  t.is(email.messageId, '<beep-boop>');
+  t.is(email.messageId, messageId);
 
   //
   // spoof envelope RCPT TO mx records

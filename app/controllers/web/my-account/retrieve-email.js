@@ -55,15 +55,13 @@ async function retrieveEmail(ctx, next) {
     // eml download
     if (ctx.params.id.endsWith('.eml')) {
       ctx.type = 'message/rfc822';
-      ctx.body = ctx.state.email.message;
+      ctx.body = await Emails.getMessage(ctx.state.email.message);
       return;
     }
 
     try {
-      ctx.state.html = await previewEmail(
-        ctx.state.email.message,
-        config.previewEmailOptions
-      );
+      const message = await Emails.getMessage(ctx.state.email.message);
+      ctx.state.html = await previewEmail(message, config.previewEmailOptions);
     } catch (err) {
       ctx.flash('error', ctx.translate('EMAIL_PREVIEW_ERROR'));
       ctx.logger.fatal(err);

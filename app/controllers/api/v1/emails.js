@@ -31,7 +31,7 @@ async function list(ctx) {
 async function retrieve(ctx) {
   const body = json(ctx.state.email);
   // we want to return the `message` property
-  body.message = ctx.state.email.message;
+  body.message = await Emails.getMessage(ctx.state.email.message);
   ctx.body = body;
 }
 
