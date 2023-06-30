@@ -421,6 +421,7 @@ async function onConnect(session, fn) {
   }
 }
 
+// eslint-disable-next-line complexity
 async function onAuth(auth, session, fn) {
   logger.debug('AUTH', { auth, session });
 
@@ -439,7 +440,15 @@ async function onAuth(auth, session, fn) {
   //
   try {
     // username must be a valid email address
-    if (!isSANB(auth?.username) || !isEmail(auth.username.trim()))
+    if (
+      typeof auth.username !== 'string' ||
+      !isSANB(auth.username) ||
+      !isEmail(auth.username.trim()) ||
+      // <https://react.email/docs/integrations/nodemailer>
+      auth.username === 'my_user' ||
+      // <https://nodemailer.com/about/#example>
+      auth.username === 'REPLACE-WITH-YOUR-ALIAS@YOURDOMAIN.COM'
+    )
       throw new SMTPError(
         `Invalid username, please enter a valid email address (e.g. "alias@example.com"); use one of your domain's aliases at ${config.urls.web}/my-account/domains`,
         {
@@ -452,8 +461,13 @@ async function onAuth(auth, session, fn) {
 
     // password must be a 24 character long generated string
     if (
-      !isSANB(auth?.password) ||
-      (typeof auth?.password === 'string' && auth.password.length !== 24)
+      typeof auth.password !== 'string' ||
+      !isSANB(auth.password) ||
+      auth.password.length > 128 ||
+      // <https://react.email/docs/integrations/nodemailer>
+      auth.password === 'my_password' ||
+      // <https://nodemailer.com/about/#example>
+      auth.password === 'REPLACE-WITH-YOUR-GENERATED-PASSWORD'
     )
       throw new SMTPError(
         `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
