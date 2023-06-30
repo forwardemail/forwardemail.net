@@ -4780,5 +4780,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Přeposílání e-mailů zdarma &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Zdarma Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Pro toto hledání neexistují žádné protokoly.",
-  "Request Removal": "Žádost o odstranění"
+  "Request Removal": "Žádost o odstranění",
+  "Denylist Removal ": "Odstranění Denylistu"
 }

@@ -4516,5 +4516,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis videresendelse af e-mail &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis e-mail-videresendelse &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Der findes ingen logfiler for den søgning.",
-  "Request Removal": "Anmod om fjernelse"
+  "Request Removal": "Anmod om fjernelse",
+  "Denylist Removal ": "Denylist fjernelse"
 }

@@ -1,6 +1,7 @@
 //- Pug makes it DOCTYPE if we do this:
 //- `doctype html`
 != "<!doctype html>"
+- const isNotPrivateRoute = ["/my-account", "/admin", "/verify", "/denylist", "/forgot-password", "/reset-password", "/help", "/auth", "/register", config.loginOtpRoute, config.loginRoute, config.verifyRoute].every((s) => !ctx.pathWithoutLocale.startsWith(s));
 html.h-100.no-js(
   lang=locale,
   class=isBot(ctx.get("User-Agent")) ? "bot-detected" : ""
@@ -163,7 +164,7 @@ html.h-100.no-js(
         else if ctx.pathWithoutLocale.startsWith('/docs')
           //- developers
           - video = "https://www.youtube.com/watch?v=1e9UyIoFu4Y";
-        else if !ctx.pathWithoutLocale.startsWith('/guides') && (['/resources', '/about', '/terms', '/privacy', '/admin','/my-account', '/help', '/auth', '/denylist', '/reset-password'].every(key => !ctx.pathWithoutLocale.startsWith(key)))
+        else if !ctx.pathWithoutLocale.startsWith('/guides') && isNotPrivateRoute
           //- fallback with what is an alias video
           - video = "https://www.youtube.com/watch?v=oWEVGMPXMbA";
 
@@ -176,7 +177,7 @@ html.h-100.no-js(
         content=striptags(convert(meta.description))
       )
       meta(property="twitter:image", content=ogImage)
-      if (ctx.pathWithoutLocale !== '/' && ctx.pathWithoutLocale !== '/private-business-email' && ['/admin','/my-account', '/help', '/auth', '/denylist', '/reset-password'].every(key => !ctx.pathWithoutLocale.startsWith(key)))
+      if ctx.pathWithoutLocale !== '/' && ctx.pathWithoutLocale !== '/private-business-email' && isNotPrivateRoute
         meta(name="twitter:label1", content=t("Written by"))
         meta(name="twitter:data1", content=config.appName + " " + t("Team"))
         meta(name="twitter:label2", content=t("Time to read"))
@@ -339,7 +340,7 @@ html.h-100.no-js(
 
         //- TODO: remove plausible and migrate to our own
         //- analytics via plausible.io
-        if (!user || user.group !== 'admin') && ['/my-account', '/admin', '/verify', '/denylist', '/help', '/auth'].every(s => !ctx.pathWithoutLocale.startsWith(s))
+        if (!user || user.group !== 'admin') && isNotPrivateRoute
           script(
             defer,
             data-domain="forwardemail.net",

@@ -8,15 +8,20 @@ const { parentPort } = require('worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const Stripe = require('stripe');
 const dayjs = require('dayjs-with-plugins');
-
 const mongoose = require('mongoose');
+
+const env = require('#config/env');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
+const { paypalAgent } = require('#helpers/paypal');
+
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -170,6 +175,64 @@ graceful.listen();
           results
         });
       }
+    }
+
+    // cancel subscriptions for banned users
+    const bannedUsersWithSubscriptions = await Users.find({
+      $or: [
+        {
+          [config.userFields.isBanned]: {
+            $ne: true
+          },
+          [config.userFields.paypalSubscriptionID]: {
+            $exists: true
+          }
+        },
+        {
+          [config.userFields.isBanned]: {
+            $ne: true
+          },
+          [config.userFields.stripeSubscriptionID]: {
+            $exists: true
+          }
+        }
+      ]
+    });
+
+    for (const user of bannedUsersWithSubscriptions) {
+      // paypal
+      if (user[config.userFields.paypalSubscriptionID]) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const agent = await paypalAgent();
+          // eslint-disable-next-line no-await-in-loop
+          await agent.post(
+            `/v1/billing/subscriptions/${
+              user[config.userFields.paypalSubscriptionID]
+            }/cancel`
+          );
+        } catch (err) {
+          logger.error(err);
+        }
+      }
+
+      // stripe
+      if (user[config.userFields.stripeSubscriptionID]) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          await stripe.subscriptions.del(
+            user[config.userFields.stripeSubscriptionID]
+          );
+        } catch (err) {
+          logger.error(err);
+        }
+      }
+
+      // save user
+      user[config.userFields.paypalSubscriptionID] = undefined;
+      user[config.userFields.stripeSubscriptionID] = undefined;
+      // eslint-disable-next-line no-await-in-loop
+      await user.save();
     }
   } catch (err) {
     await logger.error(err);

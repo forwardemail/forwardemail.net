@@ -4780,5 +4780,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Transfert d&#39;e-mails gratuit &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Transfert d&#39;e-mails gratuit &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Aucun journal n'existe pour cette recherche.",
-  "Request Removal": "Demander la suppression"
+  "Request Removal": "Demander la suppression",
+  "Denylist Removal ": "Suppression de la liste de refus"
 }

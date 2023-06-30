@@ -4471,5 +4471,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "免费电子邮件转发 &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "免费电子邮件转发器 &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "该搜索不存在任何日志。",
-  "Request Removal": "请求删除"
+  "Request Removal": "请求删除",
+  "Denylist Removal ": "拒绝名单删除"
 }

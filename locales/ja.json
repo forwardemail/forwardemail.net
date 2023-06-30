@@ -4780,5 +4780,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "無料メール転送 &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "無料のメールフォワーダー &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "その検索のログは存在しません。",
-  "Request Removal": "削除のリクエスト"
+  "Request Removal": "削除のリクエスト",
+  "Denylist Removal ": "拒否リストの削除"
 }

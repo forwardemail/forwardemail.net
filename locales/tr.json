@@ -4780,5 +4780,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Ücretsiz E-posta Yönlendirme &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Ücretsiz E-posta İletici &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Bu arama için günlük yok.",
-  "Request Removal": "Kaldırma İsteğinde Bulunun"
+  "Request Removal": "Kaldırma İsteğinde Bulunun",
+  "Denylist Removal ": "Reddedilenlerin Kaldırılması"
 }

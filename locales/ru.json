@@ -4780,5 +4780,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Бесплатная пересылка электронной почты &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Бесплатная переадресация электронной почты &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Журналов для этого поиска не существует.",
-  "Request Removal": "Запросить удаление"
+  "Request Removal": "Запросить удаление",
+  "Denylist Removal ": "Удаление запрещенного списка"
 }

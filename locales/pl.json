@@ -4780,5 +4780,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Bezpłatne przekazywanie wiadomości e-mail &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Darmowy program do przesyłania wiadomości e-mail &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Brak dzienników dla tego wyszukiwania.",
-  "Request Removal": "Poproś o usunięcie"
+  "Request Removal": "Poproś o usunięcie",
+  "Denylist Removal ": "Usuwanie listy odrzuconych"
 }

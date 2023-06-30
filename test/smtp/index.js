@@ -139,7 +139,7 @@ Test`.trim()
     t.is(err.responseCode, 535);
     t.is(
       err.response,
-      '535 Invalid password, please try again or go to http://example.com:3000/my-account/domains/test.com/aliases and click "Generate Password"'
+      '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
     );
   }
 
@@ -180,7 +180,7 @@ Test`.trim()
     t.is(err.responseCode, 535);
     t.is(
       err.response,
-      '535 Invalid password, please try again or go to http://example.com:3000/my-account/domains/test.com/aliases and click "Generate Password"'
+      '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
     );
   }
 });

@@ -716,12 +716,21 @@ async function processEmail({ email, port = 25, resolver, client }) {
               });
 
               // store when we sent this email
-              if (!adminExists)
+              if (!adminExists) {
                 await Domains.findByIdAndUpdate(domain._id, {
                   $set: {
                     smtp_suspended_sent_at: new Date()
                   }
                 });
+
+                // delete all existing tokens for the alias
+                // (this way further retries will fail with incorrect password)
+                await Aliases.findByIdAndUpdate(alias._id, {
+                  $set: {
+                    tokens: []
+                  }
+                });
+              }
 
               //
               // NOTE: we do `forbidden` here instead of `badRequest`

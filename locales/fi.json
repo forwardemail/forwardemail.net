@@ -4625,5 +4625,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Ilmainen sähköpostin edelleenlähetys &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Ilmainen sähköpostin edelleenlähettäjä &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Tälle haulle ei ole olemassa lokeja.",
-  "Request Removal": "Pyydä poistoa"
+  "Request Removal": "Pyydä poistoa",
+  "Denylist Removal ": "Kieltoluettelon poistaminen"
 }

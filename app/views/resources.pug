@@ -13,7 +13,7 @@ block body
             include _author
       .row.mt-3
         - const tools = [];
-        - const list = ["/guides", "/docs", "/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist-removal"];
+        - const list = ["/guides", "/docs", "/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
         each item in list
           - const match = config.meta[item];
           if match

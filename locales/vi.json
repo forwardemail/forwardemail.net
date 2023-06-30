@@ -4780,5 +4780,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "Chuyển tiếp Email miễn phí &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Chuyển tiếp email miễn phí &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Không có nhật ký nào tồn tại cho tìm kiếm đó.",
-  "Request Removal": "Yêu cầu xóa"
+  "Request Removal": "Yêu cầu xóa",
+  "Denylist Removal ": "Loại bỏ danh sách từ chối"
 }

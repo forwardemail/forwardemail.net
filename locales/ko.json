@@ -4780,5 +4780,6 @@
   "Free Email Forwarding &#124; <span class=\"notranslate\">Forward Email</span>": "무료 이메일 포워딩 &#124; <span class=\"notranslate\">Forward Email</span>",
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "무료 이메일 전달자 &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "해당 검색에 대한 로그가 없습니다.",
-  "Request Removal": "제거 요청"
+  "Request Removal": "제거 요청",
+  "Denylist Removal ": "거부 목록 제거"
 }
