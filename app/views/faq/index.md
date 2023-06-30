@@ -1235,7 +1235,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
   <li class="list-inline-item"><code class="notranslate">gob.es</code></li>
   <li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
-  <li class="list-inline-item"><code class="notranslate">gob.pe</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
   <li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
   <li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
   <li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
