@@ -304,7 +304,15 @@ const NS_PROVIDERS = {
     '@',
     'https://www.youtube.com/watch?v=Iwa2Uc0btCQ'
   ],
-  'wixdns.net': ['wix', 'Wix', 'https://users.wix.com/signin?forceRender=true']
+  'wixdns.net': ['wix', 'Wix', 'https://users.wix.com/signin?forceRender=true'],
+  'hover.com': [
+    'hover',
+    'Hover',
+    // <https://help.hover.com/hc/en-us/articles/217282457-Managing-DNS-records->
+    'https://hover.com/signin',
+    false,
+    '@'
+  ]
 };
 
 const NS_PROVIDER_KEYS = Object.keys(NS_PROVIDERS);

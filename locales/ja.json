@@ -4781,5 +4781,7 @@
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "無料のメールフォワーダー &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "その検索のログは存在しません。",
   "Request Removal": "削除のリクエスト",
-  "Denylist Removal ": "拒否リストの削除"
+  "Denylist Removal ": "拒否リストの削除",
+  "Free Forwarding and Hosting for <span class=\"notranslate\">Hover</span> Email Setup Guide (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Hover</span>電子メールの無料転送とホスティング セットアップ ガイド ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to send and receive emails with <span class=\"notranslate\">Hover</span> DNS and setup free email forwarding for <span class=\"notranslate\">Hover</span> with video and step by step instructions.": "<span class=\"notranslate\">Hover</span> DNS を使用して電子メールを送受信し、 <span class=\"notranslate\">Hover</span>用の無料電子メール転送をセットアップする方法をビデオとステップバイステップで説明します。"
 }

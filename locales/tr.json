@@ -4781,5 +4781,7 @@
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Ücretsiz E-posta İletici &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Bu arama için günlük yok.",
   "Request Removal": "Kaldırma İsteğinde Bulunun",
-  "Denylist Removal ": "Reddedilenlerin Kaldırılması"
+  "Denylist Removal ": "Reddedilenlerin Kaldırılması",
+  "Free Forwarding and Hosting for <span class=\"notranslate\">Hover</span> Email Setup Guide (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "<span class=\"notranslate\">Hover</span> Email Kurulum Kılavuzu ( <span class=\"notranslate\">2023</span> ) için Ücretsiz Yönlendirme ve Barındırma &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to send and receive emails with <span class=\"notranslate\">Hover</span> DNS and setup free email forwarding for <span class=\"notranslate\">Hover</span> with video and step by step instructions.": "<span class=\"notranslate\">Hover</span> DNS ile e-posta gönderme ve alma ve video ve adım adım talimatlarla <span class=\"notranslate\">Hover</span> için ücretsiz e-posta yönlendirmeyi ayarlama."
 }

@@ -4781,5 +4781,7 @@
   "Free Email Forwarder &#124; <span class=\"notranslate\">Forward Email</span>": "Бесплатная переадресация электронной почты &#124; <span class=\"notranslate\">Forward Email</span>",
   "No logs exist for that search.": "Журналов для этого поиска не существует.",
   "Request Removal": "Запросить удаление",
-  "Denylist Removal ": "Удаление запрещенного списка"
+  "Denylist Removal ": "Удаление запрещенного списка",
+  "Free Forwarding and Hosting for <span class=\"notranslate\">Hover</span> Email Setup Guide (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Бесплатное руководство по настройке переадресации и хостинга электронной почты <span class=\"notranslate\">Hover</span> ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
+  "How to send and receive emails with <span class=\"notranslate\">Hover</span> DNS and setup free email forwarding for <span class=\"notranslate\">Hover</span> with video and step by step instructions.": "Как отправлять и получать электронные письма с помощью <span class=\"notranslate\">Hover</span> DNS и настраивать бесплатную переадресацию электронной почты для <span class=\"notranslate\">Hover</span> с видео и пошаговыми инструкциями."
 }

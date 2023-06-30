@@ -236,16 +236,20 @@ block body
                         //- DKIM (required)
                         - let str = `v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString("base64")};`;
                         //-
-                        //- if the provider is AWS Route 53 then we need to split to max 255 each
+                        //- if the provider is AWS Route 53 or Hover then we need to split to max 255 each
                         //- <https://serverfault.com/a/763871>
                         //-
-                        if provider && provider.slug && provider.slug === 'amazon-route-53'
+                        if provider && provider.slug && (provider.slug === 'amazon-route-53' || provider.slug === 'hover')
                           - const index = Math.floor(str.length / 2);
                           - str = `"${str.slice(0, index)}" "${str.slice(index)}"`;
                           .alert.alert-warning.user-select-none.small
                             = t("Please use the exact value below; it is split into two strings surrounded by quotes and separated with a space.")
-                            = " "
-                            != t('Refer to <a class="alert-link notranslate" target="_blank" href="https://repost.aws/knowledge-center/route53-resolve-dkim-text-record-error" rel="noopener noreferrer">re:Post</a> and <a target="_blank" rel="noopener noreferrer" class="notranslate alert-link" href="https://serverfault.com/a/875184">StackExchange</a> answers on this topic.')
+                            if provider.slug === 'amazon-route-53'
+                              = " "
+                              != t('Refer to <a class="alert-link notranslate" target="_blank" href="https://repost.aws/knowledge-center/route53-resolve-dkim-text-record-error" rel="noopener noreferrer">re:Post</a> and <a target="_blank" rel="noopener noreferrer" class="notranslate alert-link" href="https://serverfault.com/a/875184">StackExchange</a> answers on this topic.')
+                            else if provider.slug === 'hover'
+                              = " "
+                              != t('If you have issues, we recommend that you contact Hover support or switch to a different provider such as <a href="https://cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare</a>.')
                         code#copy-dkim.d-block.text-break.small= str
                         if !domain.has_dkim_record
                           button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
