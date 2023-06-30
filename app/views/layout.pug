@@ -210,12 +210,19 @@ html.h-100.no-js(
           crossorigin="anonymous"
         )
       else
-        link(
-          rel="stylesheet",
-          href=manifest("css/app.css"),
-          integrity=manifest("css/app.css", "integrity"),
-          crossorigin="anonymous"
-        )
+        if isPDF || ctx.path.endsWith(".pdf")
+          link(
+            rel="stylesheet",
+            href=`${config.urls.web}/css/app.css`,
+            crossorigin="anonymous"
+          )
+        else
+          link(
+            rel="stylesheet",
+            href=manifest("css/app.css"),
+            integrity=manifest("css/app.css", "integrity"),
+            crossorigin="anonymous"
+          )
 
   body.d-flex.flex-column.min-h-100.app(
     role="document",
