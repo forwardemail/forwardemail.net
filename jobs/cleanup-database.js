@@ -181,17 +181,13 @@ graceful.listen();
     const bannedUsersWithSubscriptions = await Users.find({
       $or: [
         {
-          [config.userFields.isBanned]: {
-            $ne: true
-          },
+          [config.userFields.isBanned]: true,
           [config.userFields.paypalSubscriptionID]: {
             $exists: true
           }
         },
         {
-          [config.userFields.isBanned]: {
-            $ne: true
-          },
+          [config.userFields.isBanned]: true,
           [config.userFields.stripeSubscriptionID]: {
             $exists: true
           }
