@@ -535,7 +535,7 @@ const config = {
     'gob.cl',
     'gob.es',
     'gob.mx',
-    'gob.pe',
+    // 'gob.pe',
     'gob.ve',
     'gob.sv',
     'gouv.fr',
