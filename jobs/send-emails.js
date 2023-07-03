@@ -9,9 +9,9 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const dayjs = require('dayjs-with-plugins');
+// const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
-const ip = require('ip');
+// const ip = require('ip');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
@@ -29,7 +29,7 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const resolver = createTangerine(client, logger);
-const IP_ADDRESS = ip.address();
+// const IP_ADDRESS = ip.address();
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -92,6 +92,9 @@ async function sendEmails() {
         $exists: true
       }
     }),
+    Promise.resolve([])
+    // TODO: optimize this later
+    /*
     Emails.distinct('_id', {
       status: 'deferred',
       updated_at: {
@@ -109,6 +112,7 @@ async function sendEmails() {
         }
       }
     })
+    */
   ]);
 
   logger.info('%d suspended domain ids', suspendedDomainIds.length);

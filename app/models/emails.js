@@ -114,7 +114,10 @@ const Emails = new mongoose.Schema({
   // `locked_by` is the IP address of which smtp server locked it for sending
   locked_by: String,
   // every 1m the job "unlock-emails" will unlock emails frozen for more than 5m
-  locked_at: Date,
+  locked_at: {
+    type: Date,
+    index: true
+  },
   // envelope
   envelope: {
     from: {
