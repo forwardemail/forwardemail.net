@@ -18,7 +18,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const { default: PQueue } = require('p-queue');
 
 const config = require('#config');
-const Domains = require('#models/domains');
+// const Domains = require('#models/domains');
 const Emails = require('#models/emails');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
@@ -87,14 +87,14 @@ async function sendEmails() {
   // get list of all suspended domains
   // and recently blocked emails to exclude
   const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
+    Promise.resolve([]),
+    Promise.resolve([])
+    /*
     Domains.distinct('_id', {
       smtp_suspended_sent_at: {
         $exists: true
       }
     }),
-    Promise.resolve([])
-    // TODO: optimize this later
-    /*
     Emails.distinct('_id', {
       status: 'deferred',
       updated_at: {
@@ -104,11 +104,18 @@ async function sendEmails() {
       rejectedErrors: {
         $elemMatch: {
           date: {
+            $exists: true,
             $gte: dayjs().subtract(1, 'hour').toDate(),
             $lte: now
           },
-          'bounceInfo.category': 'blocklist',
-          'mx.localAddress': IP_ADDRESS
+          'bounceInfo.category': {
+            $exists: true,
+            $eq: 'blocklist'
+          },
+          'mx.localAddress': {
+            $exists: true,
+            $eq: IP_ADDRESS
+          }
         }
       }
     })
@@ -143,6 +150,7 @@ async function sendEmails() {
     }
   };
 
+  /*
   const count = await Emails.countDocuments(query);
 
   logger.info('%d emails pending in queue', count);
@@ -197,6 +205,7 @@ async function sendEmails() {
     // whereas `_id` is an email ID to send out
     queue._id = { $in: emailIds };
   }
+  */
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
   for await (const email of Emails.find(query)

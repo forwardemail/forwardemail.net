@@ -3,7 +3,7 @@ const os = require('node:os');
 const Boom = require('@hapi/boom');
 const DKIM = require('nodemailer/lib/dkim');
 const _ = require('lodash');
-const dayjs = require('dayjs-with-plugins');
+// const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
@@ -596,7 +596,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
           //       (this gives postmasters like Outlook and Gmail a back-off period)
           //       (and gives opportunity for another server to try sending it)
           //
-          const isRecentlyBlocked = await Emails.exists({
+          const isRecentlyBlocked = false;
+          /*
+          await Emails.exists({
             updated_at: {
               $gte: dayjs().subtract(1, 'hour').toDate(),
               $lte: new Date()
@@ -613,6 +615,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
               }
             }
           });
+          */
 
           if (isRecentlyBlocked)
             throw Boom.badRequest(
