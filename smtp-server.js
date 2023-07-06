@@ -477,20 +477,6 @@ async function onAuth(auth, session, fn) {
         }
       );
 
-    // rate limit to X failed attempts per day by IP address
-    const limit = await this.rateLimiter.get({
-      id: session.remoteAddress,
-      max: config.smtpLimitAuth,
-      duration: config.smtpLimitAuthDuration
-    });
-
-    // return 550 error code
-    if (!limit.remaining)
-      throw new SMTPError(
-        `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
-        { ignoreHook: true }
-      );
-
     const verifications = [];
     const records = await this.resolver.resolveTxt(domainName);
     for (const record_ of records) {
@@ -537,6 +523,25 @@ async function onAuth(auth, session, fn) {
 
     // validate domain
     validateDomain(domain);
+
+    //
+    // only rate limit if the domain has_smtp
+    //
+    if (domain.has_smtp) {
+      // rate limit to X failed attempts per day by IP address
+      const limit = await this.rateLimiter.get({
+        id: session.remoteAddress,
+        max: config.smtpLimitAuth,
+        duration: config.smtpLimitAuthDuration
+      });
+
+      // return 550 error code
+      if (!limit.remaining)
+        throw new SMTPError(
+          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
+          { ignoreHook: true }
+        );
+    }
 
     const alias = await Aliases.findOne({
       name,
