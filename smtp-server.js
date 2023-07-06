@@ -220,7 +220,10 @@ async function onData(stream, _session, fn) {
     // shorthand variables for alias and domain
     const [alias, domain] = await Promise.all([
       Aliases.findOne({ id: session.user.alias_id })
-        .populate('user', `id ${config.userFields.isBanned}`)
+        .populate(
+          'user',
+          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
+        )
         .lean()
         .exec(),
       Domains.findOne({ id: session.user.domain_id, plan: { $ne: 'free' } })
@@ -290,7 +293,9 @@ async function onData(stream, _session, fn) {
       // rate limit to X emails per day by domain id then denylist
       {
         const limit = await this.rateLimiter.get({
-          id: domain.id
+          id: domain.id,
+          max:
+            alias.user[config.userFields.smtpLimit] || config.smtpLimitMessages
         });
 
         // return 550 error code
@@ -301,7 +306,9 @@ async function onData(stream, _session, fn) {
       // rate limit to X emails per day by alias user id then denylist
       {
         const limit = await this.rateLimiter.get({
-          id: alias.user.id
+          id: alias.user.id,
+          max:
+            alias.user[config.userFields.smtpLimit] || config.smtpLimitMessages
         });
 
         // return 550 error code
@@ -524,30 +531,14 @@ async function onAuth(auth, session, fn) {
     // validate domain
     validateDomain(domain);
 
-    //
-    // only rate limit if the domain has_smtp
-    //
-    if (domain.has_smtp) {
-      // rate limit to X failed attempts per day by IP address
-      const limit = await this.rateLimiter.get({
-        id: session.remoteAddress,
-        max: config.smtpLimitAuth,
-        duration: config.smtpLimitAuthDuration
-      });
-
-      // return 550 error code
-      if (!limit.remaining)
-        throw new SMTPError(
-          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
-          { ignoreHook: true }
-        );
-    }
-
     const alias = await Aliases.findOne({
       name,
       domain: domain._id
     })
-      .populate('user', `id ${config.userFields.isBanned}`)
+      .populate(
+        'user',
+        `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
+      )
       .lean()
       .exec();
 
@@ -569,6 +560,25 @@ async function onAuth(auth, session, fn) {
           ignoreHook: true
         }
       );
+
+    //
+    // only rate limit if the domain has_smtp
+    //
+    if (domain.has_smtp) {
+      // rate limit to X failed attempts per day by IP address
+      const limit = await this.rateLimiter.get({
+        id: session.remoteAddress,
+        max: config.smtpLimitAuth,
+        duration: config.smtpLimitAuthDuration
+      });
+
+      // return 550 error code
+      if (!limit.remaining)
+        throw new SMTPError(
+          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
+          { ignoreHook: true }
+        );
+    }
 
     // ensure that the token is valid
     if (!Aliases.isValidPassword(alias.tokens, auth.password.trim()))

@@ -284,7 +284,8 @@ const config = {
     addressHTML: 'address_html',
     companyVAT: 'company_vat',
     hasDenylistRequests: 'has_denylist_requests',
-    approvedDomains: 'approved_domains'
+    approvedDomains: 'approved_domains',
+    smtpLimit: 'smtp_limit'
   },
 
   // dynamic otp routes

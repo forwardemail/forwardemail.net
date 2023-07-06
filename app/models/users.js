@@ -69,7 +69,8 @@ const omitExtraFields = [
   config.userFields.addressHTML,
   config.userFields.hasDenylistRequests,
   config.userFields.approvedDomains,
-  config.userFields.isRemoved
+  config.userFields.isRemoved,
+  config.userFields.smtpLimit
 ];
 
 const Users = new mongoose.Schema({
@@ -102,6 +103,13 @@ const Users = new mongoose.Schema({
 
 // Additional variable based properties to add to the schema
 const object = {};
+
+object[config.userFields.smtpLimit] = {
+  type: Number,
+  default: config.smtpLimitMessages,
+  min: 10,
+  max: 10000
+};
 
 // Custom receipt email
 object[config.userFields.receiptEmail] = {
