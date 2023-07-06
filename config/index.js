@@ -616,7 +616,8 @@ const config = {
     'gov.za',
     'government.pn',
     'govt.nz',
-    'gub.uy',
+    // NOTE: gub.uy removed due to spam from subdomains)
+    // 'gub.uy',
     'gv.at',
 
     // <https://en.wikipedia.org/wiki/.uk#Second-level_domains>

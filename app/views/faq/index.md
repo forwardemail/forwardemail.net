@@ -1316,7 +1316,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">gov.za</code></li>
   <li class="list-inline-item"><code class="notranslate">government.pn</code></li>
   <li class="list-inline-item"><code class="notranslate">govt.nz</code></li>
-  <li class="list-inline-item"><code class="notranslate">gub.uy</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>-->
   <li class="list-inline-item"><code class="notranslate">gv.at</code></li>
   <li class="list-inline-item"><code class="notranslate">ac.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">bl.uk</code></li>
