@@ -1,6 +1,8 @@
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
+const punycode = require('punycode/');
+
 const Boom = require('@hapi/boom');
 const SpamScanner = require('spamscanner');
 const _ = require('lodash');
@@ -650,7 +652,9 @@ Emails.statics.queue = async function (
   )
     throw Boom.badRequest(i18n.translateError('ENVELOPE_FROM_MISSING', locale));
 
-  const [aliasName, domainName] = info.envelope.from.split('@');
+  let [aliasName, domainName] = info.envelope.from.split('@');
+
+  domainName = punycode.toUnicode(domainName);
 
   if (aliasName === '*')
     throw Boom.badRequest(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));

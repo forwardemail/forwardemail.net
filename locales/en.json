@@ -4554,5 +4554,6 @@
   "Denylist Removal ": "Denylist Removal ",
   "Free Forwarding and Hosting for <span class=\"notranslate\">Hover</span> Email Setup Guide (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Free Forwarding and Hosting for <span class=\"notranslate\">Hover</span> Email Setup Guide (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>",
   "How to send and receive emails with <span class=\"notranslate\">Hover</span> DNS and setup free email forwarding for <span class=\"notranslate\">Hover</span> with video and step by step instructions.": "How to send and receive emails with <span class=\"notranslate\">Hover</span> DNS and setup free email forwarding for <span class=\"notranslate\">Hover</span> with video and step by step instructions.",
-  "Free Credit": "Free Credit"
+  "Free Credit": "Free Credit",
+  "Invalid DKIM signature.": "Invalid DKIM signature."
 }

@@ -464,7 +464,9 @@ async function onAuth(auth, session, fn) {
         }
       );
 
-    const [name, domainName] = auth.username.trim().toLowerCase().split('@');
+    let [name, domainName] = auth.username.trim().toLowerCase().split('@');
+
+    domainName = punycode.toUnicode(domainName);
 
     // password must be a 24 character long generated string
     if (

@@ -2,6 +2,8 @@ const os = require('node:os');
 const crypto = require('node:crypto');
 const { promisify } = require('node:util');
 
+const punycode = require('punycode/');
+
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
@@ -458,6 +460,9 @@ Domains.pre('validate', async function (next) {
       throw Boom.badRequest(
         i18n.translateError('INVALID_DOMAIN', domain.locale)
       );
+
+    // if it is a FQDN then convert to unicode
+    if (isFQDN(domain.name)) domain.name = punycode.toUnicode(domain.name);
 
     if (!isSANB(this.verification_record))
       this.verification_record = await cryptoRandomString.async(
