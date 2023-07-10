@@ -25,6 +25,14 @@
       become_user: deploy
       shell: bash -ilc 'npm install -g pm2'
       when: not pm2_result.stat.exists
+    - name: Reload pm2 every 4 hours
+      become: true
+      become_user: deploy
+      cron:
+        name: "reload"
+        hour: "*/4"
+        minute: "0"
+        job: "pm2 reload all"
     - name: Check if pnpm exists
       stat:
         path: /home/deploy/n/bin/pnpm

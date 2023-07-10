@@ -188,6 +188,9 @@ async function shouldThrowError(err, session) {
   // Cloudmark/Proofpoint (TODO: email them and cc us + link to form submission)
   else if (err.response.includes('cloudmark.com'))
     err.bounceInfo.category = 'blocklist';
+  else if (err.response.includes('[IPTS04]'))
+    // shared among Verizon/Yahoo and indicates blocklist
+    err.bounceInfo.category = 'blocklist';
   // COX - unblock.request@cox.net (TODO: email them and cc us)
   // <https://www.cox.com/residential/support/email-error-codes.html#contactus>
   else if (
