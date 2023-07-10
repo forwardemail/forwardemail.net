@@ -637,25 +637,31 @@ function getQueryHash(log) {
   // if had a user
   if (log?.user) set.add(log.user);
 
-  // make it unique by mail from
-  if (
-    isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
-    isEmail(log.meta.session.envelope.mailFrom.address)
-  )
-    set.add(
-      `/@.*${parseRootDomain(
-        log.meta.session.envelope.mailFrom.address.split('@')[1]
-      )}$/`
-    );
+  //
+  // if it is not connection closed message
+  // then don't add uniqueness from the SMTP envelope
+  //
+  if (log.message !== 'Connection is closed.') {
+    // make it unique by mail from
+    if (
+      isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
+      isEmail(log.meta.session.envelope.mailFrom.address)
+    )
+      set.add(
+        `/@.*${parseRootDomain(
+          log.meta.session.envelope.mailFrom.address.split('@')[1]
+        )}$/`
+      );
 
-  // make it unique by rcpt to
-  if (
-    Array.isArray(log?.meta?.session?.envelope?.rcptTo) &&
-    log.meta.session.envelope.rcptTo.length > 0
-  ) {
-    for (const rcpt of log.meta.session.envelope.rcptTo) {
-      if (_.isObject(rcpt) && isSANB(rcpt.address) && isEmail(rcpt.address)) {
-        set.add(`/@.*${parseRootDomain(rcpt.address.split('@')[1])}$/`);
+    // make it unique by rcpt to
+    if (
+      Array.isArray(log?.meta?.session?.envelope?.rcptTo) &&
+      log.meta.session.envelope.rcptTo.length > 0
+    ) {
+      for (const rcpt of log.meta.session.envelope.rcptTo) {
+        if (_.isObject(rcpt) && isSANB(rcpt.address) && isEmail(rcpt.address)) {
+          set.add(`/@.*${parseRootDomain(rcpt.address.split('@')[1])}$/`);
+        }
       }
     }
   }
