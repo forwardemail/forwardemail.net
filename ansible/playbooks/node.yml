@@ -32,7 +32,7 @@
         name: "reload"
         hour: "*/4"
         minute: "0"
-        job: "pm2 reload all"
+        job: "/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1"
     - name: Check if pnpm exists
       stat:
         path: /home/deploy/n/bin/pnpm
