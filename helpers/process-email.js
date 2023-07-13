@@ -1,9 +1,9 @@
 const os = require('node:os');
+const { Buffer } = require('node:buffer');
 
-const Boom = require('@hapi/boom');
-const DKIM = require('nodemailer/lib/dkim');
-const _ = require('lodash');
 // const dayjs = require('dayjs-with-plugins');
+const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
@@ -16,10 +16,12 @@ const safeStringify = require('fast-safe-stringify');
 const { SRS } = require('sender-rewriting-scheme');
 const { Splitter, Joiner } = require('mailsplit');
 const { authenticate } = require('mailauth');
+const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { isEmail } = require('validator');
 
 const sendEmail = require('./send-email');
 
+const combineErrors = require('#helpers/combine-errors');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
 const emailHelper = require('#helpers/email');
@@ -28,9 +30,9 @@ const getErrorCode = require('#helpers/get-error-code');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
+const parseRootDomain = require('#helpers/parse-root-domain');
 const { Emails, Users, Domains, Aliases } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
-const parseRootDomain = require('#helpers/parse-root-domain');
 
 const HOSTNAME = os.hostname();
 const IP_ADDRESS = ip.address();
@@ -392,21 +394,50 @@ async function processEmail({ email, port = 25, resolver, client }) {
       domain = await domain.save();
     }
 
-    // DKIM sign message
-    const privateKey = decrypt(domain.dkim_private_key);
-    const d = new DKIM({
-      domainName: domain.name,
-      keySelector: domain.dkim_key_selector,
-      privateKey,
-      // default as of nodemailer v6.9.1
-      hashAlgo: 'sha256'
-    });
-
-    // NOTE: use pure streams in the future
     const message = await Emails.getMessage(email.message);
 
-    const raw = await getStream.buffer(
-      d.sign(intoStream(message).pipe(splitter).pipe(joiner))
+    const unsigned = await getStream.buffer(
+      intoStream(message).pipe(splitter).pipe(joiner)
+    );
+
+    //
+    // NOTE: we switched to use mailauth vs nodemailer for DKIM signing since body hash calculations were different
+    //       <https://github.com/postalsys/mailauth/issues/39>
+    //       <https://github.com/postalsys/mailauth/issues/17>
+    //
+    // <https://github.com/postalsys/mailauth#signing>
+    //
+    const signResult = await dkimSign(unsigned, {
+      canonicalization: 'relaxed/relaxed',
+      algorithm: 'rsa-sha256',
+      signTime: new Date(),
+      signatureData: [
+        {
+          signingDomain: domain.name,
+          selector: domain.dkim_key_selector,
+          privateKey: decrypt(domain.dkim_private_key),
+          algorithm: 'rsa-sha256',
+          canonicalization: 'relaxed/relaxed'
+        }
+      ]
+    });
+
+    if (signResult.errors.length > 0) {
+      const err = combineErrors(signResult.errors.map((error) => error.err));
+      // we may want to remove cyclical reference
+      // for (const error of signResult.errors) {
+      //   delete error.err;
+      // }
+      err.signResult = signResult;
+      throw err;
+    }
+
+    const signatures = Buffer.from(signResult.signatures, 'utf8');
+
+    // create new raw message
+    const raw = Buffer.concat(
+      [signatures, unsigned],
+      signatures.length + unsigned.length
     );
 
     //
