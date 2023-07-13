@@ -487,11 +487,15 @@ async function onAuth(auth, session, fn) {
       );
 
     const verifications = [];
-    const records = await this.resolver.resolveTxt(domainName);
-    for (const record_ of records) {
-      const record = record_.join('').trim(); // join chunks together
-      if (record.startsWith(config.paidPrefix))
-        verifications.push(record.replace(config.paidPrefix, '').trim());
+    try {
+      const records = await this.resolver.resolveTxt(domainName);
+      for (const record_ of records) {
+        const record = record_.join('').trim(); // join chunks together
+        if (record.startsWith(config.paidPrefix))
+          verifications.push(record.replace(config.paidPrefix, '').trim());
+      }
+    } catch (err) {
+      logger.error(err, { session });
     }
 
     if (verifications.length === 0)
@@ -541,6 +545,7 @@ async function onAuth(auth, session, fn) {
         'user',
         `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
       )
+      .select('+tokens.hash +tokens.salt')
       .lean()
       .exec();
 
@@ -583,7 +588,12 @@ async function onAuth(auth, session, fn) {
     }
 
     // ensure that the token is valid
-    if (!Aliases.isValidPassword(alias.tokens, auth.password.trim()))
+    const isValid = await Aliases.isValidPassword(
+      alias.tokens,
+      auth.password.trim()
+    );
+
+    if (!isValid)
       throw new SMTPError(
         `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
         {
