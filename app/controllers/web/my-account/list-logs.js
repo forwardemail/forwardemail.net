@@ -54,11 +54,9 @@ async function listLogs(ctx) {
   // the query is an $or query with either filtered domains that the user is an admin of
   // or filtered domains along with RCPT TO matches
   //
-  let query = {
-    domains: {
-      $in: filteredDomains.filter((d) => d.group === 'admin').map((d) => d._id)
-    }
-  };
+  let query = {};
+
+  const adminDomains = filteredDomains.filter((d) => d.group === 'admin');
 
   //
   // go through all domains that the user is not an admin of
@@ -66,9 +64,7 @@ async function listLogs(ctx) {
   // (e.g. this allows global vanity domain logs for the user)
   //
   const nonAdminDomains = filteredDomains.filter((d) => d.group !== 'admin');
-  const nonAdminDomainsToAliases = {};
-
-  const keywords = new Set();
+  // const nonAdminDomainsToAliases = {};
 
   if (nonAdminDomains.length > 0) {
     const aliases = await Aliases.find({
@@ -82,8 +78,19 @@ async function listLogs(ctx) {
       .exec();
 
     if (aliases.length > 0) {
+      const $or = [];
+      if (adminDomains.length > 0)
+        $or.push({
+          domains: { $in: adminDomains.map((d) => d._id) }
+        });
       for (const alias of aliases) {
         if (!alias.domain) continue;
+
+        // safeguard since non-admins should never be able to create a catch-all
+        if (alias.name === '*') continue;
+
+        // safeguard since non-admins should never be able to create a regex
+        if (alias.name.startsWith('/')) continue;
 
         const domain = nonAdminDomains.find(
           (d) => d.id === alias.domain.toString()
@@ -91,31 +98,39 @@ async function listLogs(ctx) {
 
         if (!domain) continue;
 
-        if (!nonAdminDomainsToAliases[domain.id])
-          nonAdminDomainsToAliases[domain.id] = [];
+        // if (!nonAdminDomainsToAliases[domain.id])
+        //   nonAdminDomainsToAliases[domain.id] = [];
 
-        nonAdminDomainsToAliases[domain.id].push(
-          `${alias.name}@${domain.name}`
-        );
+        // nonAdminDomainsToAliases[domain.id].push(
+        //   `${alias.name}@${domain.name}`
+        // );
 
-        query.domains.$in.push(domain._id);
-
-        // if it is a global domain then don't add it
-        if (!domain.is_global) {
-          keywords.add(revHash(domain.name));
-          keywords.add(revHash(parseRootDomain(domain.name)));
-        }
-
-        if (alias.name !== '*') {
-          keywords.add(revHash(`${alias.name}@${domain.name}`));
-          if (!domain.is_global) keywords.add(revHash(alias.name));
-        }
+        $or.push({
+          domains: { $in: [domain._id] },
+          keywords: { $in: [revHash(`${alias.name}@${domain.name}`)] }
+        });
       }
+
+      if ($or.length > 0) query = { $or };
+    } else if (adminDomains.length > 0) {
+      query.domains = {
+        $in: adminDomains.map((d) => d._id)
+      };
     }
+  } else if (adminDomains.length > 0) {
+    query.domains = {
+      $in: adminDomains.map((d) => d._id)
+    };
   }
+
+  // safeguard
+  if (_.isEmpty(query))
+    return ctx.throw(Boom.badRequest(ctx.translateError('NO_RESULTS_FOUND')));
 
   let subject;
   let date;
+
+  const searchKeywords = new Set();
 
   if (isSANB(ctx.query.q)) {
     const q = ctx.query.q.trim();
@@ -124,16 +139,16 @@ async function listLogs(ctx) {
       const [username, domain] = email.toLowerCase().split('@');
       if (username.includes('+')) {
         const [str] = username.split('+');
-        keywords.add(revHash(`${str}@${domain}`));
+        searchKeywords.add(revHash(`${str}@${domain}`));
       } else {
-        keywords.add(revHash(email));
+        searchKeywords.add(revHash(email));
       }
     } else if (isFQDN(q)) {
       const domain = q.toLowerCase();
-      keywords.add(revHash(domain));
-      keywords.add(revHash(parseRootDomain(domain)));
+      searchKeywords.add(revHash(domain));
+      searchKeywords.add(revHash(parseRootDomain(domain)));
     } else if (isIP(q)) {
-      keywords.add(revHash(q));
+      searchKeywords.add(revHash(q));
     } else if (
       // M/Y or M/D/YY
       ([2, 3].includes(q.split('/').filter((s) => /^\d+$/.test(s)).length) ||
@@ -168,11 +183,83 @@ async function listLogs(ctx) {
     }
   }
 
+  if (searchKeywords.size > 0) {
+    if (query.$or) {
+      query = {
+        $and: [
+          {
+            $or: query.$or
+          },
+          {
+            keywords: {
+              $in: [...searchKeywords]
+            }
+          }
+        ]
+      };
+    } else {
+      query.keywords = {
+        $in: [...searchKeywords]
+      };
+    }
+  }
+
+  //
+  // if we have to query by date then query against
+  // both `created_at` and the `date` header if one exists
+  //
+  if (date) {
+    if (query.$or) {
+      query = {
+        $and: [
+          {
+            $or: query.$or
+          },
+          {
+            created_at: {
+              $gte: date,
+              $lte: dayjs(new Date(date)).endOf('day').toDate()
+            }
+          }
+        ]
+      };
+    } else if (query.$and) {
+      query.$and.push({
+        created_at: {
+          $gte: date,
+          $lte: dayjs(new Date(date)).endOf('day').toDate()
+        }
+      });
+    } else {
+      query.created_at = {
+        $gte: date,
+        $lte: dayjs(new Date(date)).endOf('day').toDate()
+      };
+    }
+  }
+
+  // <https://medium.com/statuscode/how-to-speed-up-mongodb-regex-queries-by-a-factor-of-up-to-10-73995435c606>
   if (isSANB(subject)) {
-    // <https://medium.com/statuscode/how-to-speed-up-mongodb-regex-queries-by-a-factor-of-up-to-10-73995435c606>
-    query = {
-      $and: [
-        query,
+    if (query.$or) {
+      query = {
+        $and: [
+          {
+            $or: query.$or
+          },
+          {
+            $text: {
+              $search: subject
+            }
+          },
+          {
+            subject: {
+              $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
+            }
+          }
+        ]
+      };
+    } else if (query.$and) {
+      query.$and.push(
         {
           $text: {
             $search: subject
@@ -183,47 +270,24 @@ async function listLogs(ctx) {
             $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
           }
         }
-      ]
-    };
-  } else if (keywords.size > 0) {
-    query.keywords = {
-      $in: [...keywords]
-    };
-  }
-
-  //
-  // if we have to query by date then query against
-  // both `created_at` and the `date` header if one exists
-  //
-  if (date) {
-    query.created_at = {
-      $gte: date,
-      $lte: dayjs(new Date(date)).endOf('day').toDate()
-    };
-    //
-    // NOTE: if we allow users to query by date header
-    //       then the interface will be misleading
-    //
-    /*
-    query = {
-      $or: [
-        {
-          ...query,
-          created_at: {
-            $gte: date,
-            $lte: dayjs(new Date(date)).endOf('day').toDate()
+      );
+    } else {
+      query = {
+        $and: [
+          query,
+          {
+            $text: {
+              $search: subject
+            }
+          },
+          {
+            subject: {
+              $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
+            }
           }
-        },
-        {
-          ...query,
-          date: {
-            $gte: date,
-            $lte: dayjs(new Date(date)).endOf('day').toDate()
-          }
-        }
-      ]
-    };
-    */
+        ]
+      };
+    }
   }
 
   const [logs, itemCount] = await Promise.all([
@@ -246,6 +310,13 @@ async function listLogs(ctx) {
     ctx.query.page
   );
 
+  //
+  // NOTE: the only benefit of the below would be to suppress the BCC recipients
+  //       (and for the purposes of shippings this quickly; we're leaving it out)
+  //       (if we revisit this in the future, to hide RCPT TO not applicable/relevant to user)
+  //       (then the below would need rewritten)
+  //
+  /*
   if (ctx.state.user.group !== 'admin') {
     //
     // go through each log and filter out RCPT TO values
@@ -253,6 +324,10 @@ async function listLogs(ctx) {
     //
     ctx.state.logs = _.compact(
       ctx.state.logs.map((log) => {
+        // TODO: if user is an admin of the domain then return early with no modifications
+
+        // TODO: otherwise only render the logs relevant to the user
+
         if (Array.isArray(log?.meta?.session?.envelope?.rcptTo)) {
           log.meta.session.envelope.rcptTo =
             log.meta.session.envelope.rcptTo.filter((rcpt) => {
@@ -307,14 +382,8 @@ async function listLogs(ctx) {
         return log;
       })
     );
-
-    // safeguard
-    if (ctx.state.logs.length === 0) {
-      ctx.state.itemCount = 0;
-      ctx.state.pageCount = 0;
-      ctx.state.pages = [];
-    }
   }
+  */
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');
 

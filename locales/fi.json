@@ -4629,5 +4629,7 @@
   "Denylist Removal ": "Kieltoluettelon poistaminen",
   "Free Forwarding and Hosting for <span class=\"notranslate\">Hover</span> Email Setup Guide (<span class=\"notranslate\">2023</span>) &#124; <span class=\"notranslate\">Forward Email</span>": "Ilmainen edelleenlähetys ja isännöinti <span class=\"notranslate\">Hover</span> -sähköpostin asennusoppaalle ( <span class=\"notranslate\">2023</span> ) &#124; <span class=\"notranslate\">Forward Email</span>",
   "How to send and receive emails with <span class=\"notranslate\">Hover</span> DNS and setup free email forwarding for <span class=\"notranslate\">Hover</span> with video and step by step instructions.": "Sähköpostien lähettäminen ja vastaanottaminen <span class=\"notranslate\">Hover</span> DNS:n avulla ja ilmaisen sähköpostin edelleenlähetyksen määrittäminen <span class=\"notranslate\">Hover</span> videon ja vaiheittaisten ohjeiden avulla.",
-  "Free Credit": "Ilmainen luotto"
+  "Free Credit": "Ilmainen luotto",
+  "No users exist for that search.": "Tälle haulle ei ole käyttäjiä.",
+  "No results were found.": "Tuloksia ei löytynyt."
 }

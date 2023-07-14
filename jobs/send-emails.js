@@ -38,7 +38,7 @@ const graceful = new Graceful({
 });
 
 const queue = new PQueue({
-  concurrency: config.concurrency * 4
+  concurrency: config.concurrency * 8
   // timeout: config.smtpQueueTimeout
 });
 
@@ -90,6 +90,7 @@ async function sendEmails() {
     Promise.resolve([]),
     Promise.resolve([])
     /*
+    // TODO: Fix this up and elsewhere
     Domains.distinct('_id', {
       smtp_suspended_sent_at: {
         $exists: true

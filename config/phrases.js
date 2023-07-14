@@ -15,6 +15,7 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  NO_RESULTS_FOUND: 'No results were found.',
   EMAIL_SETUP_GUIDE: 'Email Setup Guide',
   NO_CREDIT_CARD: '100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.',
   PRIVATE_BUSINESS: 'Private Business Email Service',
