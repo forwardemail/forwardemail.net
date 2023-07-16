@@ -108,7 +108,7 @@ table.table.table-hover.table-bordered.table-sm
                 if log.err && log.err.name === 'DenylistError'
                   - let href = log.err.message.split("you must visit ")[1];
                   if href
-                    - href = href.split(".;")[0];
+                    - href = href.split(";")[0].trim();
                   if href && href.startsWith('https://forwardemail.net/denylist?q=')
                     li.list-inline-item
                       a.btn.btn-warning.btn-sm(href=href, target="_blank")
