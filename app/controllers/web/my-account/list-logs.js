@@ -252,9 +252,18 @@ async function listLogs(ctx) {
             }
           },
           {
-            subject: {
-              $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
-            }
+            $or: [
+              {
+                subject: {
+                  $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
+                }
+              },
+              {
+                text_message: {
+                  $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
+                }
+              }
+            ]
           }
         ]
       };
@@ -266,9 +275,18 @@ async function listLogs(ctx) {
           }
         },
         {
-          subject: {
-            $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
-          }
+          $or: [
+            {
+              subject: {
+                $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
+              }
+            },
+            {
+              text_message: {
+                $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
+              }
+            }
+          ]
         }
       );
     } else {
@@ -281,9 +299,18 @@ async function listLogs(ctx) {
             }
           },
           {
-            subject: {
-              $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
-            }
+            $or: [
+              {
+                subject: {
+                  $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
+                }
+              },
+              {
+                text_message: {
+                  $regex: new RegExp(regexParser(_.escapeRegExp(subject)), 'i')
+                }
+              }
+            ]
           }
         ]
       };

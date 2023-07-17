@@ -234,8 +234,11 @@ Logs.index({ keywords: 1 });
 //       (note that we'd have to feed the search query the search parsed tokens from ctx.query)
 //       (but at that point we might want to simply do another hash query lookup by tokens parsed)
 //
-// subject is a text index combined with regex query for accuracy in my account > logs
-Logs.index({ subject: 'text' }, { default_language: 'english' });
+// multiple text index combined with regex query for accuracy in my account > logs
+Logs.index(
+  { subject: 'text', text_message: 'text' },
+  { default_language: 'english' }
+);
 
 //
 // create sparse (now known as "partial" indices) on common log queries
