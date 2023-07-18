@@ -138,14 +138,14 @@ async function sendEmails() {
 
   // NOTE: if you change this then also update `jobs/check-smtp-frozen-queue` if necessary
   const query = {
-    _id: { $nin: recentlyBlockedIds },
+    // _id: { $nin: recentlyBlockedIds },
     locked_at: {
       $exists: false
     },
     status: 'queued',
-    domain: {
-      $nin: suspendedDomainIds
-    },
+    // domain: {
+    //   $nin: suspendedDomainIds
+    // },
     date: {
       $lte: now
     }
