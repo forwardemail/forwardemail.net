@@ -23,6 +23,7 @@ const sendEmail = require('./send-email');
 
 const combineErrors = require('#helpers/combine-errors');
 const config = require('#config');
+const createBounce = require('#helpers/create-bounce');
 const createSession = require('#helpers/create-session');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
@@ -135,9 +136,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // ensure user, domain, and alias still exist and are all enabled
     let [user, domain, alias] = await Promise.all([
       Users.findById(email.user).lean().exec(),
-      Domains.findById(email.domain),
+      Domains.findById(email.domain)
+        .populate(
+          'members.user',
+          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt}`
+        )
+        .exec(),
       Aliases.findById(email.alias)
-        .populate('user', config.userFields.isBanned)
+        .populate('user', `id ${config.userFields.isBanned}`)
         .lean()
         .exec()
     ]);
@@ -201,20 +207,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // create log
     logger.info('email queued', meta);
 
+    const message = await Emails.getMessage(email.message);
+
     // after 5+ days of attempted delivery, send bounce email
     const shouldBounce =
       new Date(email.date).getTime() + config.maxRetryDuration < Date.now();
-    // TODO: revisit this in the future (this would be more accurate approach)
-    // const shouldBounce = await Logs.exists({
-    //   created_at: {
-    //     $lte: new Date(Date.now() - config.maxRetryDuration)
-    //   },
-    //   message: 'email queued',
-    //   email: {
-    //     $eq: email._id,
-    //     $exists: true
-    //   }
-    // });
 
     if (shouldBounce) {
       //
@@ -249,6 +246,71 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
       // NOTE: we leave it up to the pre-save hook to determine the "status"
       email = await email.save();
+
+      const filteredErrors = email.rejectedErrors.filter(
+        (error) =>
+          isSANB(error.recipient) &&
+          isEmail(error.recipient, { ignore_max_length: true }) &&
+          !email.hard_bounces.includes(error.recipient) &&
+          // code must be 550 (safeguard)
+          getErrorCode(error) === 550
+      );
+
+      // if (!email.is_bounce && filteredErrors.length > 0) {
+      // TODO: in our test phase this is only applicable to us
+      if (
+        domain.name === 'forwardemail.net' &&
+        !email.is_bounce &&
+        filteredErrors.length > 0
+      ) {
+        const hardBounces = [];
+        await pMap(
+          filteredErrors,
+          async (error) => {
+            try {
+              const stream = createBounce(email, error, message);
+              const raw = await getStream.buffer(stream);
+              const bounceEmail = await Emails.queue({
+                message: {
+                  envelope: {
+                    from: email.envelope.from,
+                    to: email.envelope.from
+                  },
+                  raw
+                },
+                alias,
+                domain,
+                user,
+                date: new Date(),
+                is_bounce: true
+              });
+
+              hardBounces.push(error.recipient);
+
+              logger.info('email created', {
+                session: createSession(bounceEmail),
+                user: bounceEmail.user,
+                email: bounceEmail._id,
+                domains: [bounceEmail.domain],
+                ignore_hook: false
+              });
+            } catch (err) {
+              logger.fatal(err, meta);
+            }
+          },
+          { concurrency: config.concurrency }
+        );
+
+        if (hardBounces.length > 0)
+          await Emails.findByIdAndUpdate(email._id, {
+            $addToSet: {
+              hard_bounces: {
+                $each: hardBounces
+              }
+            }
+          });
+      }
+
       return;
     }
 
@@ -393,8 +455,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
       domain.skip_verification = true;
       domain = await domain.save();
     }
-
-    const message = await Emails.getMessage(email.message);
 
     const unsigned = await getStream.buffer(
       intoStream(message).pipe(splitter).pipe(joiner)
@@ -839,7 +899,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // store a list of bounced recipients we're going to block
     //
     // TODO: copy over isTLSRequired stuff from SMTP
-    const hasNewlyBlocked = false;
+    // const hasNewlyBlocked = false;
 
     //
     // update or add to `rejectedErrors` if necessary
@@ -848,7 +908,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     if (!Array.isArray(email.rejectedErrors)) email.rejectedErrors = [];
     if (rejectedErrors.length > 0) {
       for (const err of rejectedErrors) {
-        if (!isEmail(err.recipient))
+        if (!isEmail(err.recipient, { ignore_max_length: true }))
           throw new Error('Recipient not assigned to error');
         email.rejectedErrors.push(err instanceof Error ? parseErr(err) : err);
         /*
@@ -872,19 +932,93 @@ async function processEmail({ email, port = 25, resolver, client }) {
     email = await email.save();
 
     //
+    // send bounces if any
+    //
+    const filteredErrors = email.rejectedErrors.filter(
+      (error) =>
+        isSANB(error.recipient) &&
+        isEmail(error.recipient, { ignore_max_length: true }) &&
+        !email.soft_bounces.includes(error.recipient) &&
+        !email.hard_bounces.includes(error.recipient)
+    );
+
+    // if (!email.is_bounce && filteredErrors.length > 0) {
+    // TODO: in our test phase this is only applicable to us
+    if (
+      domain.name === 'forwardemail.net' &&
+      !email.is_bounce &&
+      filteredErrors.length > 0
+    ) {
+      const softBounces = [];
+      const hardBounces = [];
+      await pMap(
+        filteredErrors,
+        async (error) => {
+          try {
+            const stream = createBounce(email, error, message);
+            const raw = await getStream.buffer(stream);
+            const bounceEmail = await Emails.queue({
+              message: {
+                envelope: {
+                  from: email.envelope.from,
+                  to: email.envelope.from
+                },
+                raw
+              },
+              alias,
+              domain,
+              user,
+              date: new Date(),
+              is_bounce: true
+            });
+
+            if (getErrorCode(error) < 500) softBounces.push(error.recipient);
+            else hardBounces.push(error.recipient);
+
+            logger.info('email created', {
+              session: createSession(bounceEmail),
+              user: bounceEmail.user,
+              email: bounceEmail._id,
+              domains: [bounceEmail.domain],
+              ignore_hook: false
+            });
+          } catch (err) {
+            logger.fatal(err, meta);
+          }
+        },
+        { concurrency: config.concurrency }
+      );
+
+      if (softBounces.length > 0 || hardBounces.length > 0) {
+        const $addToSet = {};
+        if (softBounces.length > 0)
+          $addToSet.soft_bounces = {
+            $each: softBounces
+          };
+        if (hardBounces.length > 0)
+          $addToSet.hard_bounces = {
+            $each: hardBounces
+          };
+        await Emails.findByIdAndUpdate(email._id, {
+          $addToSet
+        });
+      }
+    }
+
+    //
     // if the SMTP response indicated the email bounced
     // then prevent the domain sender from sending to this recipient again
     //
-    if (hasNewlyBlocked) {
-      // wrapped with a try/catch since we want the email still to save if the domain didn't
-      try {
-        domain.skip_payment_check = true;
-        domain.skip_verification = true;
-        domain = await domain.save();
-      } catch (err) {
-        logger.fatal(err);
-      }
-    }
+    // if (hasNewlyBlocked) {
+    //   // wrapped with a try/catch since we want the email still to save if the domain didn't
+    //   try {
+    //     domain.skip_payment_check = true;
+    //     domain.skip_verification = true;
+    //     domain = await domain.save();
+    //   } catch (err) {
+    //     logger.fatal(err);
+    //   }
+    // }
 
     return;
   } catch (err) {

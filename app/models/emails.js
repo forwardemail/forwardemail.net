@@ -59,6 +59,13 @@ const scanner = new SpamScanner({
 });
 
 const Emails = new mongoose.Schema({
+  hard_bounces: [String], // 5xx bounces (an array for storage to prevent duplicates)
+  soft_bounces: [String], // 4xx bounces (an array for storage to prevent duplicates)
+  is_bounce: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
   priority: {
     type: Number,
     default: 0,
@@ -218,6 +225,12 @@ Emails.pre('validate', function (next) {
     if (!isSANB(this.envelope.from) || !isEmail(this.envelope.from))
       throw new Error('Envelope from missing');
 
+    if (
+      isSANB(this.envelope.to) &&
+      isEmail(this.envelope.to, { ignore_max_length: true })
+    )
+      this.envelope.to = [this.envelope.to];
+
     // list of email addresses to sent to
     // (combined To, Cc, Bcc - and then Bcc is removed from headers)
     if (!_.isArray(this.envelope.to) || _.isEmpty(this.envelope.to))
@@ -239,7 +252,9 @@ Emails.pre('validate', function (next) {
     );
 
     // ensure all valid emails
-    if (!this.envelope.to.every((to) => isEmail(to)))
+    if (
+      !this.envelope.to.every((to) => isEmail(to, { ignore_max_length: true }))
+    )
       throw new Error('Envelope to requires valid email addresses');
 
     // prevent sending to no-reply address
@@ -251,6 +266,8 @@ Emails.pre('validate', function (next) {
       throw new Error('Envelope to cannot contain a "no-reply" email address');
 
     this.envelope = _.pick(this.envelope, ['from', 'to']);
+
+    if (this.envelope.to.length === 0) throw new Error('Envelope to missing');
 
     if (this.envelope.to.length > 50)
       throw new Error('Exceeded max recipient size');
@@ -286,7 +303,10 @@ Emails.pre('validate', function (next) {
       //
       e.isCodeBug = isCodeBug(err);
       e.responseCode = getErrorCode(err);
-      if (typeof e.recipient !== 'string' || !isEmail(e.recipient))
+      if (
+        typeof e.recipient !== 'string' ||
+        !isEmail(e.recipient, { ignore_max_length: true })
+      )
         throw new Error('Recipient was missing from error');
       // always set date if not set already
       if (typeof e.date === 'undefined' || !(e.date instanceof Date))
@@ -788,8 +808,23 @@ Emails.statics.queue = async function (
   // `parsed.attachments`
   //
   if (
-    !info?.envelope?.from ||
-    config.supportEmail !== info?.envelope?.from?.toLowerCase()
+    isSANB(info?.envelope?.from) &&
+    isEmail(info.envelope.from) &&
+    config.supportEmail !== info.envelope.from.toLowerCase() &&
+    //
+    // we don't want to scan messages sent with our own SMTP service
+    // by our users/customers to our support@ or abuse@ email addresses
+    // (otherwise it'll get banned just for users reporting spam/phishing)
+    // (also handles edge case where a user sends to both support@ and abuse@)
+    //
+    _.isArray(info?.envelope?.to) &&
+    !_.isEmpty(info.envelope.to) &&
+    info.envelope.to.every(
+      (to) =>
+        isSANB(to) &&
+        isEmail(to, { ignore_max_length: true }) &&
+        ![config.supportEmail, config.abuseEmail].includes(to.toLowerCase())
+    )
   ) {
     const [phishing, executables, arbitrary, viruses] = await Promise.all([
       scanner.getPhishingResults(parsed),
@@ -919,7 +954,8 @@ Emails.statics.queue = async function (
     headers,
     date,
     subject,
-    status
+    status,
+    is_bounce: boolean(options?.is_bounce)
   });
 
   return email;

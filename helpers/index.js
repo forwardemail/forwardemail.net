@@ -31,6 +31,8 @@ const splitSpaces = require('./split-spaces');
 const getMongoQuery = require('./get-mongo-query');
 const parseRootDomain = require('./parse-root-domain');
 const checkSRS = require('./check-srs');
+const createBounce = require('./create-bounce');
+const getDiagnosticCode = require('./get-diagnostic-code');
 
 module.exports = {
   decrypt,
@@ -66,5 +68,7 @@ module.exports = {
   splitSpaces,
   getMongoQuery,
   parseRootDomain,
-  checkSRS
+  checkSRS,
+  createBounce,
+  getDiagnosticCode
 };

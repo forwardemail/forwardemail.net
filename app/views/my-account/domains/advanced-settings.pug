@@ -5,7 +5,7 @@ mixin deleteDomain
     .card.border-themed.mb-3
       h2.h6.card-header= t("Delete Domain")
       .card-body
-        .alert.alert-danger.small.mb-0= t("Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.")
+        .alert.alert-danger.small.mb-0= t("Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.")
       .card-footer.text-right
         form.ajax-form.confirm-prompt(
           action=l(`/my-account/domains/${domain.name}`),

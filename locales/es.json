@@ -424,7 +424,6 @@
   "Current Value:": "Valor actual:",
   "Contact us to increase": "Contáctenos para aumentar",
   "Delete Domain": "Eliminar dominio",
-  "Deleting your domain is irreversable.  Please take extreme caution when deleting your domain.": "Eliminar tu dominio es irreversible. Tenga mucho cuidado al eliminar su dominio.",
   "Back to Domain": "Volver al dominio",
   "Auth &#124; <span class=\"notranslate\">Forward Email</span>": "Autorización &#124; <span class=\"notranslate\">Forward Email</span>",
   "Authenticate yourself to log in": "Autentícate para iniciar sesión",
@@ -486,7 +485,6 @@
   "Create a Forward Email account": "Crear una cuenta de reenvío de correo electrónico",
   "Terms &#124; <span class=\"notranslate\">Forward Email</span>": "Términos &#124; <span class=\"notranslate\">Forward Email</span>",
   "Read our terms and conditions of use": "Lea nuestros términos y condiciones de uso",
-  "Deleting your account is irreversable.  Please take extreme caution when deleting your account.": "Eliminar tu cuenta es irreversible. Tenga mucho cuidado al eliminar su cuenta.",
   "Back to Aliases": "Regresar a Alias",
   "Sign out of &#124; <span class=\"notranslate\">Forward Email</span>": "Salir de &#124; <span class=\"notranslate\">Forward Email</span>",
   "Sign out of your account": "Salir de tu cuenta",
@@ -4786,5 +4784,6 @@
   "How to send and receive emails with <span class=\"notranslate\">Hover</span> DNS and setup free email forwarding for <span class=\"notranslate\">Hover</span> with video and step by step instructions.": "Cómo enviar y recibir correos electrónicos con <span class=\"notranslate\">Hover</span> DNS y configurar el reenvío de correo electrónico gratuito para <span class=\"notranslate\">Hover</span> con video e instrucciones paso a paso.",
   "Free Credit": "Crédito gratis",
   "No users exist for that search.": "No existen usuarios para esa búsqueda.",
-  "No results were found.": "No se encontraron resultados."
+  "No results were found.": "No se encontraron resultados.",
+  "For <span class=\"notranslate\">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.": "Durante <span class=\"notranslate\">%d</span> años y contando, somos el servicio de correo electrónico de referencia para cientos de miles de creadores, desarrolladores y empresas."
 }
