@@ -146,7 +146,7 @@ block body
             .form-group
               label(for="otp-step-two")
                 != t("<strong>Step 2:</strong> Scan this QR code and enter its generated token:")
-              img.d-block.my-3(src=qrcode, width=250, height=250, alt="")
+              img.d-block.my-3.p-3.bg-white.border.border-dark(src=qrcode, width=250, height=250, alt="")
             .form-group.floating-label
               input#input-token.form-control.form-control-lg.verification-form(
                 type="text",
