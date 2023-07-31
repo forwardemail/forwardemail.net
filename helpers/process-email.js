@@ -256,13 +256,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           getErrorCode(error) === 550
       );
 
-      // if (!email.is_bounce && filteredErrors.length > 0) {
-      // TODO: in our test phase this is only applicable to us
-      if (
-        domain.name === 'forwardemail.net' &&
-        !email.is_bounce &&
-        filteredErrors.length > 0
-      ) {
+      if (!email.is_bounce && filteredErrors.length > 0) {
         const hardBounces = [];
         await pMap(
           filteredErrors,
@@ -354,7 +348,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // prepare message for sending with mailsplit
     //
     // - [x] remove Bcc header
-    // - [x] set Message-Id header
+    // - [x] set Message-ID header
     // - [x] set Date header
     // - [x] add X-* headers (e.g. version + report-to)
     // - [x] DKIM sign message
@@ -382,11 +376,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
       // remove Bcc header
       data.headers.remove('bcc');
 
-      // set Message-Id header
+      // set Message-ID header
       const messageId = data.headers.getFirst('message-id');
       if (!messageId || messageId !== email.messageId) {
         data.headers.remove('message-id');
-        data.headers.add('Message-Id', email.messageId);
+        data.headers.add('Message-ID', email.messageId);
       }
 
       // set Date header
@@ -443,7 +437,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
         data.headers.lines.length
       );
       data.headers.add(
-        'X-ForwardEmail-Id',
+        'X-ForwardEmail-ID',
         email.id,
         data.headers.lines.length
       );
@@ -942,13 +936,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
         !email.hard_bounces.includes(error.recipient)
     );
 
-    // if (!email.is_bounce && filteredErrors.length > 0) {
-    // TODO: in our test phase this is only applicable to us
-    if (
-      domain.name === 'forwardemail.net' &&
-      !email.is_bounce &&
-      filteredErrors.length > 0
-    ) {
+    if (!email.is_bounce && filteredErrors.length > 0) {
       const softBounces = [];
       const hardBounces = [];
       await pMap(

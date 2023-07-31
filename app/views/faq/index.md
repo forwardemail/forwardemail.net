@@ -967,7 +967,7 @@ We plan to offer this feature in the near future.
 
 ## Why am I not receiving my test emails
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-Id" header.
+If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
 
 This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
 

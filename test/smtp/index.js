@@ -1173,7 +1173,7 @@ Sender: baz@beep.com
 Cc: beep@boop.com,beep@boop.com
 Bcc: foo@bar.com,a@xyz.com,b@xyz.com
 Reply-To: Beep boop@beep.com
-Message-Id: ${messageId}
+Message-ID: ${messageId}
 To: test@foo.com
 From: Test <${alias.name}@${domain.name}>
 Subject: testing this

@@ -283,7 +283,7 @@ Emails.pre('validate', function (next) {
 //
 Emails.pre('validate', function (next) {
   try {
-    // TODO: validate Message-Id header to RFC spec (even though we set it if not exists)
+    // TODO: validate Message-ID header to RFC spec (even though we set it if not exists)
     // <https://stackoverflow.com/a/4031705>
 
     // TODO: ensure that From header exists with at least one valid address (RFC 5322)

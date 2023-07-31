@@ -203,7 +203,7 @@ Sender: baz@beep.com
 Cc: beep@boop.com,beep@boop.com
 Bcc: foo@bar.com,a@xyz.com,b@xyz.com
 Reply-To: boop@beep.com
-Message-Id: beep-boop
+Message-ID: beep-boop
 Date: ${date.toISOString()}
 To: test@foo.com
 From: 😊 Test <${alias.name}@${domain.name}>

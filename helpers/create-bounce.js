@@ -48,7 +48,7 @@ function createBounce(email, error, message) {
   );
   rootNode.setHeader('In-Reply-To', email.messageId);
   rootNode.setHeader('References', email.messageId);
-  rootNode.setHeader('X-Original-Message-Id', email.messageId);
+  rootNode.setHeader('X-Original-Message-ID', email.messageId);
 
   rootNode
     .createChild('text/plain; charset=utf-8')
@@ -102,7 +102,7 @@ function createBounce(email, error, message) {
       HOSTNAME,
       IP_ADDRESS
     ].join(', ')}`,
-    `X-ForwardEmail-Id: ${email.id}`
+    `X-ForwardEmail-ID: ${email.id}`
   );
 
   rootNode

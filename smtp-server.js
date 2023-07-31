@@ -32,6 +32,8 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
+// TODO: envelope.from and From header must be the same as alias
+
 class ServerShutdownError extends Error {
   // NOTE: smtp-server does not have an affixed "." in the server shutdown message
   constructor(message = 'Server shutting down', ...args) {

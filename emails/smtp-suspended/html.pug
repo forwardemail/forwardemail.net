@@ -27,7 +27,7 @@ block content
                     td
                       code= email.envelope.to.map((t) => (typeof t === "object" && typeof t.address === "string" ? t.address.trim().toLowerCase() : t.trim().toLowerCase())).join(", ")
                   tr
-                    th: span.badge.badge-pill.badge-primary Message-Id
+                    th: span.badge.badge-pill.badge-primary Message-ID
                     td: code= email.messageId
                   tr
                     th: span.badge.badge-pill.badge-primary Subject

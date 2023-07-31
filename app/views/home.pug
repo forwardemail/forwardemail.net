@@ -114,7 +114,7 @@ block body
                   = " "
                   = t("Watch Video")
               else
-                a.btn.btn-outline-dark.d-inline-block.d-lg-none(
+                a.btn.btn-outline-dark.d-inline-block(
                   role="button",
                   data-toggle="modal",
                   data-target="#modal-watch-video",
@@ -125,43 +125,14 @@ block body
                   i.fab.fa-youtube.text-danger
                   = " "
                   = t("Watch Video")
-        if !isBot(ctx.get('User-Agent'))
-          .col-lg-6.d-none.d-lg-block
-            .lazyframe.border.d-inline-block(
-              data-vendor="youtube_nocookie",
-              title=t("Forward Email's Paid Plans"),
-              style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
-              data-src="https://www.youtube-nocookie.com/embed/N6zjv40zuIY?autoplay=0"
-            )
-    a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
-      href="#learn-more"
+    a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto.d-none.d-md-block(
+      href="#testimonials"
     )
       i.fa.fa-angle-double-down
       = " "
       = t("Learn more")
       = " "
       i.fa.fa-angle-double-down
-  #learn-more.bg-dark.py-3.py-md-5.d-block.overflow-hidden
-    .container
-      .row
-        .col-12
-          h2.display-5.font-weight-bold.text-white.my-3.text-center.text-uppercase= t("Unlimited email aliases")
-          if isBot(ctx.get('User-Agent'))
-            a.btn.btn-lg.btn-light(
-              href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
-              target="_blank",
-              rel="noopener noreferrer"
-            )
-              i.fab.fa-youtube.text-danger
-              = " "
-              = t("Watch Video")
-          else
-            .lazyframe.border.d-block.mx-auto.mb-3(
-              data-vendor="youtube_nocookie",
-              title=t("How to create unlimited email addresses and aliases"),
-              style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
-              data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
-            )
   #testimonials.bg-fixed.border-md-top.border-themed.lazyload(
     data-src=manifest("img/art/postcard.svg")
   )
@@ -391,51 +362,117 @@ block body
               | forwardemail.net
               | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
             .mt-2.small.text-muted hypersheet, db.team
-  #enterprise-grade.bg-dark.py-3.py-md-5.d-block.overflow-hidden
+  #learn-more.bg-dark.py-3.py-md-5.d-block.overflow-hidden
     .container
       .row
         .col-12
-          h2.display-3.font-weight-bold.text-white.my-3.my-md-5= t("Enterprise-grade")
+          h2.display-5.font-weight-bold.text-white.mb-3.text-center.text-uppercase= t("Unlimited email aliases")
+          if isBot(ctx.get('User-Agent'))
+            a.btn.btn-lg.btn-light(
+              href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              i.fab.fa-youtube.text-danger
+              = " "
+              = t("Watch Video")
+          else
+            .lazyframe.border.d-block.mx-auto(
+              data-vendor="youtube_nocookie",
+              title=t("How to create unlimited email addresses and aliases"),
+              style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
+              data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
+            )
+  .border-top.border-bottom.py-3.py-md-4.py-lg-5.d-block.bg-light.bg-themed
+    .container
+      .row.text-center.d-block.mb-5
+        .h2.display-3.mb-1.text-danger
+          i.fab.fa-youtube
+        .h1!= t("Made for you")
       .row
-        .col-12.col-lg-8
-          p.lead.text-white
-            != t("We are <strong>email security</strong> and <strong>deliverability experts</strong>.")
-          ul.list-unstyled.text-white.text-left.d-inline-block.mb-3.mb-md-5
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t("Protection against phishing, malware, viruses, and spam.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t("Industry standard checks for DMARC, SPF, DKIM, SRS, ARC, and MTA-STS.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t("SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t("Unlike other services, we use 100% open-source software.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t("Backscatter prevention, denylists, and rate limiting.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t('Global load balancers and application-level DNS over HTTPS ("DoH").')
-        .d-flex.col-12.col-lg-4.pt-3.text-center
-          noscript
+        .col-md.text-center.mb-3.mb-lg-0
+          a.btn.btn-outline-dark.btn-lg(
+            role=isBot(ctx.get("User-Agent")) ? false : "button",
+            href="https://www.youtube.com/watch?v=ql9rtNpTid4",
+            target="_blank",
+            rel="noopener noreferrer",
+            data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
+            data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-creators"
+          )
+            i.fa.fa-play-circle
+            = " "
+            if isBot(ctx.get('User-Agent'))
+              = t("Website Email Forwarding")
+            else
+              = t("Creators")
+        .col-md.text-center.mb-3.mb-md-0
+          a.btn.btn-outline-dark.btn-lg(
+            role=isBot(ctx.get("User-Agent")) ? false : "button",
+            data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
+            data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-developers",
+            href="https://www.youtube.com/watch?v=1e9UyIoFu4Y",
+            target="_blank",
+            rel="noopener noreferrer"
+          )
+            i.fa.fa-play-circle
+            = " "
+            if isBot(ctx.get('User-Agent'))
+              = t("Startup Email Forwarding")
+            else
+              = t("Developers")
+        .col-md.text-center
+          a.btn.btn-outline-dark.btn-lg(
+            role=isBot(ctx.get("User-Agent")) ? false : "button",
+            data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
+            data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-businesses",
+            href="https://www.youtube.com/watch?v=--p9LdmVSAw",
+            target="_blank",
+            rel="noopener noreferrer"
+          )
+            i.fa.fa-play-circle
+            = " "
+            if isBot(ctx.get('User-Agent'))
+              = t("Shopify Email Forwarding")
+            else
+              = t("Businesses")
+
+  .bg-dark.py-3.py-md-5.d-block
+    .container
+      .row
+        .col-12
+          h2.display-3.font-weight-bold.text-white.my-3.my-md-3
+            if isBot(ctx.get('User-Agent'))
+              = t("Open-source email forwarding")
+            else
+              = t("Open-source")
+      .row
+        .col-12.col-md-9.col-lg-8
+          p.lead.text-white.mb-3.mb-md-5
+            != t('Unlike other services, we <strong class="font-weight-bold">do not store logs</strong> (with the exception of <a href="%s" class="text-themed font-weight-bold" target="_blank">errors</a> and <a href="%s" class="text-themed font-weight-bold" target="_blank">outbound SMTP</a>) and are <strong class="font-weight-bold">100% open-source</strong>.', l("/faq#do-you-store-error-logs"), l("/faq#do-you-support-sending-email-with-smtp"))
+            = " "
+            != t('We\'re the <strong class= border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
+          ul.list-inline
+            li.list-inline-item
+              a.btn.btn-outline-light.btn-lg.mb-md-5(href=l("/privacy"))
+                = t("Privacy Policy")
+            li.list-inline-item
+              a.btn.btn-outline-light.btn-lg.mb-md-5(
+                href="https://github.com/forwardemail",
+                target="_blank",
+                rel="noopener noreferrer"
+              )
+                = t("Source Code")
+        .d-flex.col-md-3.col-lg-4.pt-3.text-center
+          noscript.ml-auto.mr-auto.mr-md-none
             img.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
-              src=manifest("img/art/group.svg"),
-              width=369,
+              src=manifest("img/github-logo-white.svg"),
+              width=200,
               height=200,
               alt=""
             )
           img.lazyload.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
-            data-src=manifest("img/art/group.svg"),
-            width=369,
+            data-src=manifest("img/github-logo-white.svg"),
+            width=200,
             height=200,
             alt=""
           )
@@ -516,95 +553,51 @@ block body
               = t("Configure your inbox")
               = " "
               i.fa.fa-angle-double-right.align-middle
-  .bg-dark.py-3.py-md-5.d-block
+  #enterprise-grade.bg-dark.py-3.py-md-5.d-block.overflow-hidden
     .container
       .row
         .col-12
-          h2.display-3.font-weight-bold.text-white.my-3.my-md-3
-            if isBot(ctx.get('User-Agent'))
-              = t("Open-source email forwarding")
-            else
-              = t("Open-source")
+          h2.display-3.font-weight-bold.text-white.my-3.my-md-5= t("Enterprise-grade")
       .row
-        .col-12.col-md-9.col-lg-8
-          p.lead.text-white.mb-3.mb-md-5
-            != t('Unlike other services, we <strong class="font-weight-bold">do not store logs</strong> (with the exception of <a href="%s" class="text-themed font-weight-bold" target="_blank">errors</a> and <a href="%s" class="text-themed font-weight-bold" target="_blank">outbound SMTP</a>) and are <strong class="font-weight-bold">100% open-source</strong>.', l("/faq#do-you-store-error-logs"), l("/faq#do-you-support-sending-email-with-smtp"))
-            = " "
-            != t('We\'re the <strong class= border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
-          ul.list-inline
-            li.list-inline-item
-              a.btn.btn-outline-light.btn-lg.mb-md-5(href=l("/privacy"))
-                = t("Privacy Policy")
-            li.list-inline-item
-              a.btn.btn-outline-light.btn-lg.mb-md-5(
-                href="https://github.com/forwardemail",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                = t("Source Code")
-        .d-flex.col-md-3.col-lg-4.pt-3.text-center
-          noscript.ml-auto.mr-auto.mr-md-none
+        .col-12.col-lg-8
+          p.lead.text-white
+            != t("We are <strong>email security</strong> and <strong>deliverability experts</strong>.")
+          ul.list-unstyled.text-white.text-left.d-inline-block.mb-3.mb-md-5
+            li
+              i.fa.fa-fw.fa-check-circle.text-success
+              = " "
+              != t("Protection against phishing, malware, viruses, and spam.")
+            li
+              i.fa.fa-fw.fa-check-circle.text-success
+              = " "
+              != t("Industry standard checks for DMARC, SPF, DKIM, SRS, ARC, and MTA-STS.")
+            li
+              i.fa.fa-fw.fa-check-circle.text-success
+              = " "
+              != t("SOC 2 Type 2 compliant bare metal servers from Vultr and Digital Ocean.")
+            li
+              i.fa.fa-fw.fa-check-circle.text-success
+              = " "
+              != t("Unlike other services, we use 100% open-source software.")
+            li
+              i.fa.fa-fw.fa-check-circle.text-success
+              = " "
+              != t("Backscatter prevention, denylists, and rate limiting.")
+            li
+              i.fa.fa-fw.fa-check-circle.text-success
+              = " "
+              != t('Global load balancers and application-level DNS over HTTPS ("DoH").')
+        .d-flex.col-12.col-lg-4.pt-3.text-center
+          noscript
             img.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
-              src=manifest("img/github-logo-white.svg"),
-              width=200,
+              src=manifest("img/art/group.svg"),
+              width=369,
               height=200,
               alt=""
             )
           img.lazyload.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
-            data-src=manifest("img/github-logo-white.svg"),
-            width=200,
+            data-src=manifest("img/art/group.svg"),
+            width=369,
             height=200,
             alt=""
           )
-  .border-top.border-bottom.py-3.py-md-4.py-lg-5.d-block.bg-light.bg-themed
-    .container
-      .row.text-center.d-block.mb-5
-        .h2.display-3.mb-1.text-danger
-          i.fab.fa-youtube
-        .h1!= t("Made for you")
-      .row
-        .col-md.text-center.mb-3.mb-lg-0
-          a.btn.btn-outline-dark.btn-lg(
-            role=isBot(ctx.get("User-Agent")) ? false : "button",
-            href="https://www.youtube.com/watch?v=ql9rtNpTid4",
-            target="_blank",
-            rel="noopener noreferrer",
-            data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
-            data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-creators"
-          )
-            i.fa.fa-play-circle
-            = " "
-            if isBot(ctx.get('User-Agent'))
-              = t("Website Email Forwarding")
-            else
-              = t("Creators")
-        .col-md.text-center.mb-3.mb-md-0
-          a.btn.btn-outline-dark.btn-lg(
-            role=isBot(ctx.get("User-Agent")) ? false : "button",
-            data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
-            data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-developers",
-            href="https://www.youtube.com/watch?v=1e9UyIoFu4Y",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            i.fa.fa-play-circle
-            = " "
-            if isBot(ctx.get('User-Agent'))
-              = t("Startup Email Forwarding")
-            else
-              = t("Developers")
-        .col-md.text-center
-          a.btn.btn-outline-dark.btn-lg(
-            role=isBot(ctx.get("User-Agent")) ? false : "button",
-            data-toggle=isBot(ctx.get("User-Agent")) ? false : "modal",
-            data-target=isBot(ctx.get("User-Agent")) ? false : "#modal-for-businesses",
-            href="https://www.youtube.com/watch?v=--p9LdmVSAw",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            i.fa.fa-play-circle
-            = " "
-            if isBot(ctx.get('User-Agent'))
-              = t("Shopify Email Forwarding")
-            else
-              = t("Businesses")
