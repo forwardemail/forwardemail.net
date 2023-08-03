@@ -8,9 +8,11 @@
   background-repeat: no-repeat, repeat, no-repeat;
   background-attachment: fixed;
   background-position: 115% 115%, 50% 50%, 100% 100%;
-  background-color: #333366;
+  // background-color: #333366; // purple
+  background-color: #191d21;
   background-image: url('../img/art/planet.svg'),
     url('../img/art/purple-stars.svg'), url('../img/art/glow.svg');
+  // TODO: at small screen size it needs to be contain !important
   background-size: 40vmin, 25%, cover;
   &:before {
     // <https://css-tricks.com/pseudo-elements-in-the-web-animations-api/>
@@ -18,7 +20,7 @@
     content: '';
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-position: -10% -10%;
+    background-position: -50% -50%;
     background-image: url('../img/art/rocket.gif');
     background-size: 83.5px 65.5px;
     position: fixed;
@@ -99,18 +101,18 @@
 
 @keyframes rocket-sm {
   from {
-    background-position: -10% -10%;
+    background-position: -50% -50%;
   }
   to {
-    background-position: 120% 35%;
+    background-position: 150% 50%;
   }
 }
 
 @keyframes rocket-lg {
   from {
-    background-position: -10% -10%;
+    background-position: -50% -50%;
   }
   to {
-    background-position: 120% 120%;
+    background-position: 150% 150%;
   }
 }
