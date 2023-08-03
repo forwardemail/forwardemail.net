@@ -4791,5 +4791,6 @@
   "For Free Plan": "Za bezplatný plán",
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Tato příručka funguje, ale od května 2023 jsme ji ukončili, protože <a class=\"alert-link\" href=\"%s\">nyní podporujeme odchozí SMTP</a> na našich placených plánech. Pokud použijete průvodce níže, <a class=\"alert-link\" href=\"%s\">způsobí to, že váš odchozí e-mail bude</a> v Gmailu říkat <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> .",
   "For Paid Plans": "Pro placené plány",
-  "Paid Plan": "Placený plán"
+  "Paid Plan": "Placený plán",
+  "Free, private, and secure email for business and enterprise.": "Bezplatný, soukromý a bezpečný e-mail pro firmy a podniky."
 }

@@ -4791,5 +4791,6 @@
   "For Free Plan": "Ingyenes tervért",
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Ez az útmutató működik, de 2023 májusától megszüntettük, mivel <a class=\"alert-link\" href=\"%s\">mostantól támogatjuk a kimenő SMTP-t</a> fizetős csomagjainkon. Ha az alábbi útmutatót használja, akkor <a class=\"alert-link\" href=\"%s\">a kimenő e-mailben</a> <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> felirat jelenik meg a Gmailben.",
   "For Paid Plans": "Fizetett csomagokhoz",
-  "Paid Plan": "Fizetett terv"
+  "Paid Plan": "Fizetett terv",
+  "Free, private, and secure email for business and enterprise.": "Ingyenes, privát és biztonságos e-mail üzleti és vállalkozási célokra."
 }

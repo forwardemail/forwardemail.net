@@ -40,7 +40,7 @@ const {
 resizeNavbarPadding($);
 
 // import waypoints (see below example for how to use + `pnpm install waypoints`)
-// require('waypoints/lib/jquery.waypoints.js');
+require('waypoints/lib/jquery.waypoints.js');
 
 // highlight.js
 // const hljs = require('highlight.js');
@@ -422,3 +422,141 @@ if ($btnPrint.length > 0)
 
     return true;
   });
+
+// <https://stackoverflow.com/a/19424832>
+let animation;
+let pseudoAnimation;
+let previousX;
+let previousY;
+
+const el = document.querySelector('#freddy');
+const styleTag = document.createElement('style');
+document.head.insertAdjacentElement('beforeend', styleTag);
+
+async function freddy(e) {
+  // return early if the element we're hovering over is a button or link
+  if (
+    e.target instanceof HTMLAnchorElement ||
+    e.target instanceof HTMLButtonElement ||
+    e.target instanceof HTMLFormElement ||
+    e.target instanceof HTMLInputElement
+  )
+    return;
+
+  // <https://developer.mozilla.org/en-US/docs/Web/API/Animation/commitStyles>
+  if (animation) {
+    animation.pause();
+    animation.commitStyles();
+    animation.cancel();
+  }
+
+  if (pseudoAnimation) {
+    pseudoAnimation.pause();
+    pseudoAnimation.commitStyles();
+    pseudoAnimation.cancel();
+  }
+
+  const x = e.clientX / 10;
+  const y = e.clientY / 10;
+
+  const backgroundPosition = `${115 - Math.round(x / 5)}% ${
+    115 - Math.round(y / 5)
+  }%, ${50 - Math.round(x / 7)}% ${50 - Math.round(y / 7)}%, ${
+    100 - Math.round(x / 6)
+  }% ${100 - Math.round(y / 6)}%`;
+
+  // if the difference between either x or y is more than 25% viewport
+  // then slow the animation down a bit
+  let duration = 1000;
+  if (
+    previousX &&
+    previousY &&
+    (Math.abs(e.clientX - previousX) >
+      document.documentElement.clientHeight / 2 ||
+      Math.abs(e.clientY - previousY) >
+        document.documentElement.clientWidth / 2)
+  )
+    duration = 2000;
+
+  // <https://stackoverflow.com/a/29016808>
+  // <https://css-tricks.com/pseudo-elements-in-the-web-animations-api/>
+  // <https://stackoverflow.com/a/50571368>
+  // const { right, bottom } = getComputedStyle(el, ':after');
+  const cssTemplateString = `#freddy::after {
+    right: calc(15% + ${x / 5}%);
+    bottom: calc(30% + ${y / 5}%);
+  }`;
+  // right: ${Math.round(Number.parseInt(right, 10) + e.clientX / 5)}px;
+  // bottom: ${Math.round(Number.parseInt(bottom, 10) + e.clientY / 5)}px;
+  styleTag.innerHTML = cssTemplateString;
+
+  previousX = e.clientX;
+  previousY = e.clientY;
+
+  animation = el.animate(
+    [
+      { backgroundPosition: getComputedStyle(el).backgroundPosition },
+      { backgroundPosition }
+    ],
+    { duration, easing: 'linear', fill: 'forwards' }
+  );
+}
+
+if (el) {
+  const $nav = $('.navbar.fixed-top');
+  let direction;
+  if ($nav.length > 0) {
+    const waypoint = new window.Waypoint({
+      element: $('main').get(0),
+      handler(_direction) {
+        direction = _direction;
+        if (direction === 'up') {
+          $nav
+            .addClass('text-white')
+            .removeClass('bg-white navbar-themed bg-themed border-bottom');
+          $nav.find('.navbar-toggler').addClass('text-white');
+        } else if (direction === 'down') {
+          $nav
+            .addClass('bg-white navbar-themed bg-themed border-bottom')
+            .removeClass('text-white');
+          $nav.find('.navbar-toggler').removeClass('text-white');
+        }
+      }
+      // offset: $nav.outerHeight()
+    });
+
+    waypoint.context.refresh();
+
+    $('#navbar-header')
+      .on('shown.bs.collapse', function () {
+        if (!direction || direction === 'up') {
+          $nav
+            .addClass('bg-white navbar-themed bg-themed border-bottom')
+            .removeClass('text-white');
+          $nav.find('.navbar-toggler').removeClass('text-white');
+        }
+      })
+      .on('hidden.bs.collapse', function () {
+        if (!direction || direction === 'up') {
+          $nav
+            .addClass('text-white')
+            .removeClass('bg-white navbar-themed bg-themed border-bottom');
+          $nav.find('.navbar-toggler').removeClass('text-white');
+        }
+      });
+  }
+
+  // <https://developer.chrome.com/en/docs/lighthouse/best-practices/uses-passive-event-listeners/>
+  // <https://github.com/jquery/jquery/issues/2871#issuecomment-175175180>
+  window.jQuery.event.special.mousemove = {
+    setup(_, ns, handle) {
+      if (ns.includes('noPreventDefault')) {
+        this.addEventListener('mousemove', handle, { passive: true });
+      } else {
+        return false;
+      }
+    }
+  };
+
+  $(document).on('mousemove.noPreventDefault', debounce(freddy, 10));
+}

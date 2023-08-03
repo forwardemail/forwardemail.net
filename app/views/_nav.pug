@@ -64,8 +64,8 @@ if !user && !registerOrLogin
                 span(aria-hidden="true") &times;
             .modal-body
               +registerOrLogin(verb, true)
-nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
-  class=user ? "navbar-dark bg-dark" : "bg-white navbar-themed bg-themed"
+nav.navbar.navbar-expand-lg.fixed-top(
+  class=user ? "navbar-dark bg-dark border-bottom" : ctx.pathWithoutLocale === "/" ? "text-white" : "bg-white navbar-themed bg-themed border-bottom"
 )
   div(
     class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
@@ -75,8 +75,8 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
     )
       span.sr-only.sr-only-focusable Forward Email
       include ../../assets/img/logo-square-30-30.svg
-      span.h4.m-0.align-middle.no-js.font-weight-bold.text-themed.ml-2(
-        class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block"
+      span.h4.m-0.align-middle.no-js.font-weight-bold.ml-2(
+        class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block text-themed"
       )= "Forward Email"
     - const isDomainSpecificUpgrade = domain && domain.name ? ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/billing` : false;
     if user && user.plan === 'free' && !domain && Array.isArray(domains)
@@ -125,13 +125,14 @@ nav.navbar.navbar-expand-lg.fixed-top.border-bottom(
                 = t("Try for free")
       .no-js.is-bot.d-inline-block.mr-3
     if !isBot(ctx.get('User-Agent'))
-      button.navbar-toggler.text-themed.d-lg-none.no-js(
+      button.navbar-toggler.d-lg-none.no-js.text-themed(
         type="button",
         data-toggle="collapse",
         data-target="#navbar-header",
         aria-controls="navbar-header",
         aria-expanded="false",
-        aria-label=t("Toggle navigation")
+        aria-label=t("Toggle navigation"),
+        class=ctx.pathWithoutLocale === "/" ? "text-white" : ""
       )
         i.fas.fa-bars
     //- once we have responsive border utilities added to bootstrap

@@ -4791,5 +4791,6 @@
   "For Free Plan": "무료 플랜",
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "이 가이드는 작동하지만 <a class=\"alert-link\" href=\"%s\">이제 유료 요금제에서 아웃바운드 SMTP를 지원하므로</a> 2023년 5월부터 더 이상 사용되지 않습니다. 아래 가이드를 사용하면 <a class=\"alert-link\" href=\"%s\">아웃바운드 이메일이</a> Gmail에서 <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> 으로 표시됩니다.",
   "For Paid Plans": "유료 플랜의 경우",
-  "Paid Plan": "유료 플랜"
+  "Paid Plan": "유료 플랜",
+  "Free, private, and secure email for business and enterprise.": "비즈니스 및 엔터프라이즈를 위한 무료, 개인 및 보안 이메일."
 }

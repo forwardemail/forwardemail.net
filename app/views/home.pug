@@ -71,15 +71,14 @@ block body
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
             )
-  .min-vh-80.d-flex.flex-column
+  .min-vh-80.d-flex.flex-column(
+    class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
+  )
     .container.my-auto.pt-5
       .row
         .col-12.col-lg-6
           h1.mb-3
-            if isBot(ctx.get('User-Agent'))
-              = t("Free, private, and secure email for custom domains.")
-            else
-              != t("<mark>Free, private, and secure</mark> email for custom domains.")
+            = t("Free, private, and secure email for custom domains.")
           p
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
             = " "
@@ -96,7 +95,8 @@ block body
             include _feature-list
           ul.list-inline
             li.list-inline-item
-              a.btn.btn-outline-dark.font-weight-bold(
+              a.btn(
+                class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-outline-light",
                 href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true")
               )
                 if isBot(ctx.get('User-Agent'))
@@ -105,7 +105,7 @@ block body
                   = t("See all features")
             li.list-inline-item
               if isBot(ctx.get('User-Agent'))
-                a.btn.btn-outline-dark(
+                a.btn.btn-dark(
                   href="https://www.youtube.com/watch?v=N6zjv40zuIY",
                   target="_blank",
                   rel="noopener noreferrer"
@@ -114,7 +114,7 @@ block body
                   = " "
                   = t("Watch Video")
               else
-                a.btn.btn-outline-dark.d-inline-block(
+                a.btn.btn-outline-light.d-inline-block(
                   role="button",
                   data-toggle="modal",
                   data-target="#modal-watch-video",
@@ -125,7 +125,7 @@ block body
                   i.fab.fa-youtube.text-danger
                   = " "
                   = t("Watch Video")
-    a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto.d-none.d-md-block(
+    a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
       href="#testimonials"
     )
       i.fa.fa-angle-double-down
@@ -139,7 +139,7 @@ block body
     .text-center.d-block.d-md-none.mt-3
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
-      .h1!= t("Happy users")
+      .h1.text-white!= t("Happy users")
     .container.py-3.py-md-4.py-lg-5.d-block
       .row.row-cols-1.row-cols-md-2
         //- DHH

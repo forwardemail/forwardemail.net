@@ -4482,5 +4482,6 @@
   "For Free Plan": "免费计划",
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "本指南有效，但我们从 2023 年 5 月起已弃用它，因为<a class=\"alert-link\" href=\"%s\">我们现在在付费计划中支持出站 SMTP</a> 。如果您使用下面的指南，那么<a class=\"alert-link\" href=\"%s\">这将导致您的出站电子邮件</a>在 Gmail 中显示<span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> 。",
   "For Paid Plans": "对于付费计划",
-  "Paid Plan": "付费计划"
+  "Paid Plan": "付费计划",
+  "Free, private, and secure email for business and enterprise.": "适合商业和企业的免费、私密且安全的电子邮件。"
 }

@@ -1,0 +1,116 @@
+@import 'node_modules/bootstrap/scss/functions';
+@import 'node_modules/bootstrap/scss/variables';
+@import 'node_modules/bootstrap/scss/mixins';
+@import 'variables';
+
+#freddy {
+  position: relative;
+  background-repeat: no-repeat, repeat, no-repeat;
+  background-attachment: fixed;
+  background-position: 115% 115%, 50% 50%, 100% 100%;
+  background-color: #333366;
+  background-image: url('../img/art/planet.svg'),
+    url('../img/art/purple-stars.svg'), url('../img/art/glow.svg');
+  background-size: 40vmin, 25%, cover;
+  &:before {
+    // <https://css-tricks.com/pseudo-elements-in-the-web-animations-api/>
+    display: inline-block;
+    content: '';
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: -10% -10%;
+    background-image: url('../img/art/rocket.gif');
+    background-size: 83.5px 65.5px;
+    position: fixed;
+    transition: all 1.5s linear;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    animation-name: rocket-sm;
+    animation-delay: 5s;
+    animation-duration: 20s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+  &:after {
+    // <https://css-tricks.com/pseudo-elements-in-the-web-animations-api/>
+    display: inline-block;
+    content: '';
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: url('../img/art/freddy.gif');
+    background-size: cover;
+    position: fixed;
+    transition: all 1.5s linear;
+    right: 15%;
+    bottom: 30%;
+    width: 83px;
+    height: 97.25px;
+    z-index: -1;
+    animation-name: floating;
+    animation-duration: 5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+  }
+  @include media-breakpoint-up(sm) {
+    background-size: 45vmin, 25%, cover;
+  }
+  @include media-breakpoint-up(md) {
+    background-size: 50vmin, 25%, cover;
+    &:before {
+      animation-name: rocket-lg;
+    }
+    &:after {
+      width: 166px;
+      height: 194.5px;
+    }
+  }
+  @include media-breakpoint-up(lg) {
+    background-size: 70vmin, 25%, cover;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #freddy {
+    background: #333366 !important;
+    &:before {
+      content: none !important;
+    }
+    &:after {
+      content: none !important;
+    }
+  }
+}
+
+@keyframes floating {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, 10%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes rocket-sm {
+  from {
+    background-position: -10% -10%;
+  }
+  to {
+    background-position: 120% 35%;
+  }
+}
+
+@keyframes rocket-lg {
+  from {
+    background-position: -10% -10%;
+  }
+  to {
+    background-position: 120% 120%;
+  }
+}

@@ -184,6 +184,7 @@
     "url-parse": "1.5.10",
     "url-regex-safe": "3.0.0",
     "validator": "13.9.0",
+    "waypoints": "github:forwardemail/waypoints",
     "web-resource-inliner": "6.0.1",
     "wkhtmltopdf": "0.4.0",
     "zone-mta": "3.6.6",

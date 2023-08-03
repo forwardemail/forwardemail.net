@@ -3809,5 +3809,6 @@
   "For Free Plan": "Für den kostenlosen Plan",
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Dieser Leitfaden funktioniert, wir haben ihn jedoch seit Mai 2023 nicht mehr unterstützt, da <a class=\"alert-link\" href=\"%s\">wir jetzt ausgehendes SMTP in unseren kostenpflichtigen Plänen unterstützen</a> . Wenn Sie die unten stehende Anleitung verwenden, <a class=\"alert-link\" href=\"%s\">wird in Ihrer ausgehenden E-Mail</a> in Gmail <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> angezeigt.",
   "For Paid Plans": "Für kostenpflichtige Pläne",
-  "Paid Plan": "Bezahlter Plan"
+  "Paid Plan": "Bezahlter Plan",
+  "Free, private, and secure email for business and enterprise.": "Kostenlose, private und sichere E-Mail für Unternehmen und Unternehmen."
 }

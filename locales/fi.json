@@ -4636,5 +4636,6 @@
   "For Free Plan": "Ilmainen suunnitelma",
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Tämä opas toimii, mutta poistimme sen käytöstä toukokuussa 2023, koska <a class=\"alert-link\" href=\"%s\">tuemme nyt lähtevää SMTP:tä</a> maksullisissa sopimuksissamme. Jos käytät alla olevaa ohjetta, <a class=\"alert-link\" href=\"%s\">lähtevässä sähköpostissasi lukee</a> Gmailissa <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> .",
   "For Paid Plans": "Maksullisille suunnitelmille",
-  "Paid Plan": "Maksullinen suunnitelma"
+  "Paid Plan": "Maksullinen suunnitelma",
+  "Free, private, and secure email for business and enterprise.": "Ilmainen, yksityinen ja suojattu sähköposti yrityksille ja yrityksille."
 }

@@ -103,6 +103,14 @@ body.app {
   }
 }
 
+@media (prefers-color-scheme: dark) {
+  @include media-breakpoint-up(md) {
+    .bg-fixed {
+      background-color: #191d21;
+    }
+  }
+}
+
 @include media-breakpoint-up(md) {
   .bg-fixed {
     min-height: 100%;
@@ -183,3 +191,5 @@ pre {
     height: 0;
   }
 }
+
+

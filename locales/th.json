@@ -4791,5 +4791,6 @@
   "For Free Plan": "สำหรับแผนฟรี",
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "คู่มือนี้ใช้งานได้ แต่เราเลิกใช้งานตั้งแต่เดือนพฤษภาคม 2023 เนื่องจาก <a class=\"alert-link\" href=\"%s\">ตอนนี้เรารองรับ SMTP ขาออก</a> ในแผนการชำระเงินของเรา หากคุณใช้คำแนะนำด้านล่าง การดำเนิน <a class=\"alert-link\" href=\"%s\">การนี้จะทำให้อีเมลขาออกของคุณ</a> ระบุว่า <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> ใน Gmail",
   "For Paid Plans": "สำหรับแผนการชำระเงิน",
-  "Paid Plan": "แผนการชำระเงิน"
+  "Paid Plan": "แผนการชำระเงิน",
+  "Free, private, and secure email for business and enterprise.": "อีเมลฟรี เป็นส่วนตัวและปลอดภัยสำหรับธุรกิจและองค์กร"
 }

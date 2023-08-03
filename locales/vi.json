@@ -4791,5 +4791,6 @@
   "For Free Plan": "Gói miễn phí",
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Hướng dẫn này hoạt động, tuy nhiên, chúng tôi đã ngừng sử dụng nó kể từ tháng 5 năm 2023 vì <a class=\"alert-link\" href=\"%s\">chúng tôi hiện hỗ trợ SMTP gửi đi</a> trên các gói trả phí của mình. Nếu bạn sử dụng hướng dẫn bên dưới, <a class=\"alert-link\" href=\"%s\">điều này sẽ khiến email gửi đi của bạn</a> thông báo <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> trong Gmail.",
   "For Paid Plans": "Đối với gói trả phí",
-  "Paid Plan": "Gói trả phí"
+  "Paid Plan": "Gói trả phí",
+  "Free, private, and secure email for business and enterprise.": "Email miễn phí, riêng tư và an toàn dành cho doanh nghiệp và doanh nghiệp."
 }

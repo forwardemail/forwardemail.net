@@ -4791,5 +4791,6 @@
   "For Free Plan": "للحصول على خطة مجانية",
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "يعمل هذا الدليل ، ولكننا تم إيقافه اعتبارًا من مايو 2023 نظرًا لأننا <a class=\"alert-link\" href=\"%s\">ندعم الآن SMTP الصادر</a> في خططنا المدفوعة. إذا كنت تستخدم الدليل أدناه ، <a class=\"alert-link\" href=\"%s\">فسيؤدي ذلك إلى أن يقول بريدك الإلكتروني الصادر</a> <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> في Gmail.",
   "For Paid Plans": "للخطط المدفوعة",
-  "Paid Plan": "خطة مدفوعة"
+  "Paid Plan": "خطة مدفوعة",
+  "Free, private, and secure email for business and enterprise.": "بريد إلكتروني مجاني وخاص وآمن للشركات والمؤسسات."
 }
