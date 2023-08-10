@@ -55,7 +55,11 @@ function createBounce(email, error, message) {
     .setHeader('Content-Description', 'Notification')
     .setContent(
       [
-        `Your message wasn't delivered to ${error.recipient} due to an error.`,
+        `Your message ${
+          isDelayed
+            ? 'is delayed and will be retried later'
+            : "wasn't delivered"
+        } to ${error.recipient} due to an error.`,
         '',
         'The response was:',
         '',
