@@ -17,15 +17,16 @@ const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isEmail } = require('validator');
 
-const Users = require('#models/users');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
+const Users = require('#models/users');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
+const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
@@ -53,7 +54,8 @@ class SMTPError extends Error {
 }
 
 function validateDomain(domain) {
-  if (domain.is_global) throw new Error('Cannot send email from global domain');
+  if (domain.is_global)
+    throw new Error(i18n.translate('EMAIL_SMTP_GLOBAL_NOT_PERMITTED', 'en'));
 
   //
   // NOTE: if the domain is suspended then the state is "pending" not queued
@@ -97,9 +99,7 @@ function validateDomain(domain) {
         m.group === 'admin'
     )
   )
-    throw new Error(
-      'Domain has past due balance or does not have at least one valid admin'
-    );
+    throw new Error(i18n.translate('PAST_DUE_OR_INVALID_ADMIN', 'en'));
 }
 
 function validateAlias(alias) {

@@ -139,9 +139,7 @@ async function sendEmails() {
   // NOTE: if you change this then also update `jobs/check-smtp-frozen-queue` if necessary
   const query = {
     // _id: { $nin: recentlyBlockedIds },
-    locked_at: {
-      $exists: false
-    },
+    is_locked: false,
     status: 'queued',
     // domain: {
     //   $nin: suspendedDomainIds
@@ -178,9 +176,7 @@ async function sendEmails() {
       const ids = await Emails.distinct('_id', {
         ...query,
         domain: { $in: [domainId] },
-        locked_at: {
-          $exists: true
-        }
+        is_locked: true
       });
       if (ids.length >= maxPerDomain) {
         // cannot queue any more

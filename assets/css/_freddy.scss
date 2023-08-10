@@ -7,13 +7,12 @@
   position: relative;
   background-repeat: no-repeat, repeat, no-repeat;
   background-attachment: fixed;
-  background-position: 115% 115%, 50% 50%, 100% 100%;
+  background-position: 110% 110%, 50% 50%, 100% 100%;
   // background-color: #333366; // purple
   background-color: #191d21;
-  background-image: url('../img/art/planet.svg'),
-    url('../img/art/purple-stars.svg'), url('../img/art/glow.svg');
-  // TODO: at small screen size it needs to be contain !important
-  background-size: 40vmin, 25%, cover;
+  background-image: url('b64---../img/art/planet.svg---'),
+    url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
+  background-size: 40vmin, 25%, contain;
   &:before {
     // <https://css-tricks.com/pseudo-elements-in-the-web-animations-api/>
     display: inline-block;
@@ -21,7 +20,7 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: -50% -50%;
-    background-image: url('../img/art/rocket.gif');
+    background-image: url('b64---../img/art/rocket.gif---');
     background-size: 83.5px 65.5px;
     position: fixed;
     transition: all 1.5s linear;
@@ -42,36 +41,40 @@
     content: '';
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-image: url('../img/art/freddy.gif');
+    background-image: url('b64---../img/art/freddy.gif---');
     background-size: cover;
     position: fixed;
-    transition: all 1.5s linear;
+    transition: all 1s ease-out;
     right: 15%;
-    bottom: 30%;
-    width: 83px;
-    height: 97.25px;
+    bottom: 40%;
     z-index: -1;
     animation-name: floating;
     animation-duration: 5s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
     animation-fill-mode: both;
-  }
-  @include media-breakpoint-up(sm) {
-    background-size: 45vmin, 25%, cover;
+    width: 75.6px;
+    height: 106.2px;
   }
   @include media-breakpoint-up(md) {
+    background-size: 45vmin, 25%, cover;
+    &:after {
+      width: 94.5px;
+      height: 132.75px;
+    }
+  }
+  @include media-breakpoint-up(lg) {
     background-size: 50vmin, 25%, cover;
     &:before {
       animation-name: rocket-lg;
     }
     &:after {
-      width: 166px;
-      height: 194.5px;
+      width: 126px;
+      height: 177px;
     }
   }
-  @include media-breakpoint-up(lg) {
-    background-size: 70vmin, 25%, cover;
+  @include media-breakpoint-up(xl) {
+    background-size: 60vmin, 25%, cover;
   }
 }
 
@@ -101,10 +104,10 @@
 
 @keyframes rocket-sm {
   from {
-    background-position: -50% -50%;
+    background-position: -100px -100px;
   }
   to {
-    background-position: 150% 50%;
+    background-position: bottom right;
   }
 }
 

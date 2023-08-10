@@ -38,7 +38,14 @@ async function updateDomain(ctx, next) {
     // require paid plan
     if (ctx.state.domain.plan === 'free')
       return ctx.throw(
-        Boom.badRequest(ctx.translateError('PLAN_UPGRADE_REQUIRED'))
+        Boom.paymentRequired(
+          ctx.translateError(
+            'PLAN_UPGRADE_REQUIRED',
+            ctx.state.l(
+              `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+            )
+          )
+        )
       );
     for (const bool of [
       'has_adult_content_protection',
@@ -52,7 +59,14 @@ async function updateDomain(ctx, next) {
     // require paid plan
     if (ctx.state.domain.plan === 'free')
       return ctx.throw(
-        Boom.badRequest(ctx.translateError('PLAN_UPGRADE_REQUIRED'))
+        Boom.paymentRequired(
+          ctx.translateError(
+            'PLAN_UPGRADE_REQUIRED',
+            ctx.state.l(
+              `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+            )
+          )
+        )
       );
     ctx.state.domain.has_recipient_verification = boolean(
       ctx.request.body.has_recipient_verification
@@ -70,7 +84,14 @@ async function updateDomain(ctx, next) {
       !ctx.state.domain.has_custom_verification
     )
       return ctx.throw(
-        Boom.badRequest(ctx.translateError('PLAN_UPGRADE_REQUIRED'))
+        Boom.paymentRequired(
+          ctx.translateError(
+            'PLAN_UPGRADE_REQUIRED',
+            ctx.state.l(
+              `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+            )
+          )
+        )
       );
     for (const prop of ['name', 'email', 'subject', 'redirect', 'html']) {
       if (_.isString(ctx.request.body[`custom_verification_${prop}`])) {

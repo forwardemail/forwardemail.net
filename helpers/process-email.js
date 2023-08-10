@@ -127,6 +127,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
   try {
     // lock job
+    email.is_locked = true;
     email.locked_by = IP_ADDRESS;
     email.locked_at = new Date();
     email.is_being_locked = true;
@@ -154,16 +155,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // user must not be banned
     if (user[config.userFields.isBanned])
       throw Boom.forbidden(i18n.translateError('ACCOUNT_BANNED'));
-
-    // user must be on paid plan
-    if (user.plan === 'free')
-      throw Boom.paymentRequired(i18n.translateError('PLAN_UPGRADE_REQUIRED'));
-
-    // user must be paid to date
-    if (new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now())
-      throw Boom.paymentRequired(
-        i18n.translateError('PAYMENT_PAST_DUE_MESSAGE')
-      );
 
     // domain must exist
     if (!domain) throw Boom.notFound(i18n.translateError('INVALID_DOMAIN'));
@@ -203,6 +194,27 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // alias owner must not be banned
     if (alias.user[config.userFields.isBanned])
       throw Boom.forbidden(i18n.translateError('ACCOUNT_BANNED'));
+
+    //
+    // validate that at least one paying, non-banned admin on >= same plan without expiration
+    //
+    const validPlans =
+      domain.plan === 'team' ? ['team'] : ['team', 'enhanced_protection'];
+
+    if (
+      !domain.members.some(
+        (m) =>
+          !m.user[config.userFields.isBanned] &&
+          m.user[config.userFields.hasVerifiedEmail] &&
+          validPlans.includes(m.user.plan) &&
+          new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
+            Date.now() &&
+          m.group === 'admin'
+      )
+    )
+      throw Boom.paymentRequired(
+        i18n.translateError('PAST_DUE_OR_INVALID_ADMIN')
+      );
 
     // create log
     logger.info('email queued', meta);

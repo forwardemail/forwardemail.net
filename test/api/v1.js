@@ -418,7 +418,7 @@ Test`.trim()
     t.is(email.id, res.body.id);
     t.is(email.status, 'deferred');
     await Emails.findByIdAndUpdate(email._id, {
-      $set: { status: 'queued' },
+      $set: { is_locked: false, status: 'queued' },
       $unset: { locked_at: 1, locked_by: 1 }
     });
 
@@ -552,6 +552,7 @@ test('5+ day email bounce', async (t) => {
 
     await Emails.findByIdAndUpdate(email._id, {
       $set: {
+        is_locked: false,
         status: 'queued'
       },
       $unset: { locked_at: 1, locked_by: 1 }
@@ -559,6 +560,7 @@ test('5+ day email bounce', async (t) => {
 
     email = await Emails.findById(email._id).lean().exec();
     t.is(email.status, 'queued');
+    t.is(email.is_locked, false);
     t.is(email.locked_at, undefined);
     t.is(email.locked_by, undefined);
 
@@ -812,12 +814,13 @@ test('smtp outbound spam block detection', async (t) => {
     t.is(email.id, res.body.id);
     t.is(email.status, 'rejected');
     await Emails.findByIdAndUpdate(email._id, {
-      $set: { status: 'queued' },
+      $set: { is_locked: false, status: 'queued' },
       $unset: { locked_at: 1, locked_by: 1 }
     });
 
     email = await Emails.findById(email._id).lean().exec();
     t.is(email.status, 'queued');
+    t.is(email.is_locked, false);
     t.is(email.locked_at, undefined);
     t.is(email.locked_by, undefined);
 
@@ -1213,6 +1216,7 @@ test('smtp email blocklist', async (t) => {
     // add another recipient so we test the plural version
     await Emails.findByIdAndUpdate(res.body.id, {
       $set: {
+        is_locked: false,
         status: 'queued',
         'envelope.to': ['foo@foo.com', 'beep@beep.com']
       },

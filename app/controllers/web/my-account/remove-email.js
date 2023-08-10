@@ -21,6 +21,7 @@ async function removeEmail(ctx, next) {
   );
 
   // NOTE: we leave it up to the pre-save hook to determine the "status"
+  ctx.state.email.is_locked = false;
   ctx.state.email.locked_by = undefined;
   ctx.state.email.locked_at = undefined;
   ctx.state.email = await ctx.state.email.save();

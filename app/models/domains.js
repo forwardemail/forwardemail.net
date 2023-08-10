@@ -1464,7 +1464,7 @@ async function getTxtAddresses(
       // 'foo'
       // > str.slice(str.indexOf(':') + 1)
       // 'https://foo.com'
-      const index = element.indexOf(':');
+      const index = element.lastIndexOf(':'); // last index because of regex usage
       const addr =
         index === -1
           ? [element]

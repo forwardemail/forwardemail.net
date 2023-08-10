@@ -37,6 +37,7 @@ const order = require('gulp-order');
 const pngquant = require('imagemin-pngquant');
 const postcss = require('gulp-postcss');
 const postcssPresetEnv = require('postcss-preset-env');
+const postcssInlineBase64 = require('postcss-inline-base64');
 const prettier = require('gulp-prettier');
 const pugLinter = require('gulp-pug-linter');
 const pump = require('pump');
@@ -282,6 +283,7 @@ function css() {
       // sourcemaps.init()
       sass().on('error', sass.logError),
       postcss([
+        postcssInlineBase64(),
         postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
         cssnano({ autoprefixer: false }),
         reporter()
@@ -302,6 +304,7 @@ function css() {
       order(CONCAT_CSS_ORDER, { base: './' }),
       concat('css/app.css'),
       postcss([
+        postcssInlineBase64(),
         postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
         cssnano({ autoprefixer: false }),
         reporter()
@@ -316,6 +319,7 @@ function css() {
       // purge css for email specifically
       rename('css/app-email.css'),
       postcss([
+        postcssInlineBase64(),
         // TODO: once a majority of clients support this then add back
         // <https://www.caniemail.com/features/css-at-font-face/>
         discardFonts(() => false),

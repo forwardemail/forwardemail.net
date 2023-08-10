@@ -1322,11 +1322,12 @@ Test`.trim()
   t.is(email.status, 'deferred');
   email.status = 'queued';
   await Emails.findByIdAndUpdate(email._id, {
-    $set: { status: 'queued' },
+    $set: { is_locked: false, status: 'queued' },
     $unset: { locked_at: 1, locked_by: 1 }
   });
   email = await Emails.findById(email._id).lean().exec();
   t.is(email.status, 'queued');
+  t.is(email.is_locked, false);
   t.is(email.locked_at, undefined);
   t.is(email.locked_by, undefined);
 

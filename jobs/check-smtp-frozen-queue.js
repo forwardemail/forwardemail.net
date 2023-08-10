@@ -72,9 +72,7 @@ graceful.listen();
     // NOTE: if you change this then also update `jobs/send-emails` if necessary
     const query = {
       _id: { $nin: recentlyBlockedIds },
-      locked_at: {
-        $exists: false
-      },
+      is_locked: false,
       status: 'queued',
       domain: {
         $nin: suspendedDomainIds

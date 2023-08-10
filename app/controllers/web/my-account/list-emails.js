@@ -60,7 +60,14 @@ async function listEmails(ctx) {
 
     // domain must be on paid plan
     if (domain.plan === 'free')
-      throw Boom.paymentRequired(ctx.translateError('PLAN_UPGRADE_REQUIRED'));
+      throw Boom.paymentRequired(
+        ctx.translateError(
+          'PLAN_UPGRADE_REQUIRED',
+          ctx.state.l(
+            `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+          )
+        )
+      );
 
     // domain cannot be in suspended domains list
     if (_.isDate(domain.smtp_suspended_sent_at))

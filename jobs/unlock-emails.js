@@ -32,6 +32,7 @@ graceful.listen();
     //
     await Emails.updateMany(
       {
+        is_locked: true,
         locked_at: {
           $exists: true,
           $lte: dayjs().subtract(10, 'minutes').toDate()
@@ -42,6 +43,7 @@ graceful.listen();
       },
       {
         $set: {
+          is_locked: false,
           status: 'queued'
         },
         $unset: {

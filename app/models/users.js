@@ -229,11 +229,20 @@ object[config.userFields.otpRecoveryKeys] = Array;
 
 // Password reset
 object[config.userFields.resetTokenExpiresAt] = Date;
-object[config.userFields.resetToken] = String;
+object[config.userFields.resetToken] = {
+  type: String,
+  index: true
+};
 
 // Email change
-object[config.userFields.changeEmailTokenExpiresAt] = Date;
-object[config.userFields.changeEmailToken] = String;
+object[config.userFields.changeEmailTokenExpiresAt] = {
+  type: Date,
+  index: true
+};
+object[config.userFields.changeEmailToken] = {
+  type: String,
+  index: true
+};
 object[config.userFields.changeEmailNewAddress] = {
   type: String,
   trim: true,

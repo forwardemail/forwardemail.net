@@ -321,12 +321,17 @@ async function register(ctx, next) {
     throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
   // register the user
-  const count = await Users.countDocuments({ group: 'admin' });
   const query = {
     email: body.email,
-    group: count === 0 ? 'admin' : 'user',
+    group: 'user',
     locale: ctx.locale
   };
+
+  if (config.env === 'development') {
+    const count = await Users.countDocuments({ group: 'admin' });
+    if (count === 0) query.group = 'admin';
+  }
+
   query[config.userFields.hasVerifiedEmail] = false;
   query[config.userFields.hasSetPassword] = true;
   query[config.lastLocaleField] = ctx.locale;
