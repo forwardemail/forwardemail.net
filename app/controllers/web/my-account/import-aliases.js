@@ -83,7 +83,7 @@ async function importAliases(ctx) {
 
   for (const element of forwardingAddresses) {
     const match = aliases.find((alias) => alias.name === element.name);
-    const existing = ctx.state.domain.aliases.find(
+    const existing = existingAliases.find(
       (alias) => alias.name === element.name
     );
     if (existing)
