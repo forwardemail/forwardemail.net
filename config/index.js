@@ -353,7 +353,7 @@ const config = {
     iterations: 25000,
     keylen: 512,
     passwordValidator(password, fn) {
-      if (typeof password !== 'string' || password.length > 64) {
+      if (typeof password !== 'string') {
         const err = Boom.badRequest(phrases.INVALID_PASSWORD_STRENGTH);
         err.no_translate = true;
         return fn(err);
