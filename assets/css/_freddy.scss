@@ -6,7 +6,7 @@
 #freddy {
   position: relative;
   background-repeat: no-repeat, repeat, no-repeat;
-  background-attachment: fixed;
+  // background-attachment: fixed;
   background-position: 110% 110%, 50% 50%, 100% 100%;
   // background-color: #333366; // purple
   background-color: #191d21;
@@ -18,7 +18,7 @@
     display: inline-block;
     content: '';
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    // background-attachment: fixed;
     background-position: -50% -50%;
     background-image: url('b64---../img/art/rocket.gif---');
     background-size: 83.5px 65.5px;
@@ -40,7 +40,7 @@
     display: inline-block;
     content: '';
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    // background-attachment: fixed;
     background-image: url('b64---../img/art/freddy.gif---');
     background-size: cover;
     position: fixed;

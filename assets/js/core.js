@@ -164,7 +164,7 @@ $('a[data-toggle="modal-anchor"]').on('click.modalAnchor', modalAnchor);
 // Adjust the hash of the page as you scroll down
 // (e.g. if you scroll past a section "Section A" to "Section B"
 // then the URL bar will update to #section-b
-$(window).on('scroll.changeHashOnScroll', debounce(changeHashOnScroll, 100));
+$(window).on('scroll.changeHashOnScroll', debounce(changeHashOnScroll, 250));
 
 // Handle hash change when user clicks on links
 $body.on('click.handleHashChange', "a[href^='#']", handleHashChange);
@@ -426,7 +426,7 @@ function navbarScroll() {
 
 if (el && $nav.length > 0) {
   navbarScroll();
-  $(window).scroll(debounce(navbarScroll, 10));
+  $(window).scroll(debounce(navbarScroll, 250));
   $('#navbar-header')
     .on('show.bs.collapse', navbarScroll)
     .on('hide.bs.collapse', navbarScroll);
