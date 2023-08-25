@@ -4792,5 +4792,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Цей посібник працює, однак ми припинили його підтримку в травні 2023 року, оскільки <a class=\"alert-link\" href=\"%s\">тепер ми підтримуємо вихідний SMTP</a> у наших платних планах. Якщо ви скористаєтеся наведеним нижче посібником, <a class=\"alert-link\" href=\"%s\">це призведе до того, що ваша вихідна електронна пошта</a> в Gmail матиме напис <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> .",
   "For Paid Plans": "Для платних планів",
   "Paid Plan": "Платний план",
-  "Free, private, and secure email for business and enterprise.": "Безкоштовна, приватна та безпечна електронна пошта для бізнесу та підприємств."
+  "Free, private, and secure email for business and enterprise.": "Безкоштовна, приватна та безпечна електронна пошта для бізнесу та підприємств.",
+  "This endpoint will return at most": "Ця кінцева точка повернеться максимум",
+  "results at a time.  If you want to query for multiple pages, then append": "результати за один раз. Якщо ви хочете зробити запит для кількох сторінок, тоді додайте",
+  "where": "де",
+  "is an integer, e.g.": "є цілим числом, напр.",
+  "Number": "Номер",
+  "Page to return of results (default is": "Сторінка для повернення результатів (за замовчуванням",
+  "`limit": "`ліміт",
+  "Number of results per page to return (default is": "Кількість результатів на сторінку для повернення (за замовчуванням:",
+  "– the max is": "– максимум є",
+  "and minimum is": "а мінімум є"
 }

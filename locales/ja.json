@@ -4792,5 +4792,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "このガイドは機能しますが、有料プランで<a class=\"alert-link\" href=\"%s\">アウトバウンド SMTP がサポートされる</a>ようになったため、2023 年 5 月時点で非推奨になりました。以下のガイドを使用すると、Gmail では<a class=\"alert-link\" href=\"%s\">送信メールに</a><span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span>と表示されます。",
   "For Paid Plans": "有料プランの場合",
   "Paid Plan": "有料プラン",
-  "Free, private, and secure email for business and enterprise.": "ビジネスやエンタープライズ向けの無料、プライベート、安全な電子メール。"
+  "Free, private, and secure email for business and enterprise.": "ビジネスやエンタープライズ向けの無料、プライベート、安全な電子メール。",
+  "This endpoint will return at most": "このエンドポイントは最大でも戻ります",
+  "results at a time.  If you want to query for multiple pages, then append": "一度に結果が得られます。複数のページをクエリする場合は、",
+  "where": "どこ",
+  "is an integer, e.g.": "は整数です。例:",
+  "Number": "番号",
+  "Page to return of results (default is": "結果を返すページ (デフォルトは",
+  "`limit": "`限界",
+  "Number of results per page to return (default is": "返されるページごとの結果の数 (デフォルトは",
+  "– the max is": "– 最大値は",
+  "and minimum is": "そして最小値は"
 }

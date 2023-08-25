@@ -4792,5 +4792,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Deze gids werkt, maar we hebben hem vanaf mei 2023 afgeschaft, omdat <a class=\"alert-link\" href=\"%s\">we nu uitgaande SMTP ondersteunen</a> op onze betaalde abonnementen. Als u de onderstaande gids gebruikt, <a class=\"alert-link\" href=\"%s\">zorgt dit ervoor dat uw uitgaande e-mail</a> <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> zegt in Gmail.",
   "For Paid Plans": "Voor betaalde abonnementen",
   "Paid Plan": "Betaald abonnement",
-  "Free, private, and secure email for business and enterprise.": "Gratis, privé en veilige e-mail voor bedrijven en ondernemingen."
+  "Free, private, and secure email for business and enterprise.": "Gratis, privé en veilige e-mail voor bedrijven en ondernemingen.",
+  "This endpoint will return at most": "Dit eindpunt keert hoogstens terug",
+  "results at a time.  If you want to query for multiple pages, then append": "resultaten tegelijk. Als u meerdere pagina's wilt opvragen, voegt u deze toe",
+  "where": "waar",
+  "is an integer, e.g.": "is een geheel getal, b.v.",
+  "Number": "Nummer",
+  "Page to return of results (default is": "Pagina waarnaar de resultaten moeten worden geretourneerd (standaard is",
+  "`limit": "'limiet",
+  "Number of results per page to return (default is": "Aantal resultaten per pagina dat moet worden geretourneerd (standaard is",
+  "– the max is": "– het maximum is",
+  "and minimum is": "en minimaal is"
 }

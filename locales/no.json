@@ -4797,5 +4797,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Denne veiledningen fungerer, men vi avviklet den fra mai 2023 siden <a class=\"alert-link\" href=\"%s\">vi nå støtter utgående SMTP</a> på våre betalte planer. Hvis du bruker veiledningen nedenfor, <a class=\"alert-link\" href=\"%s\">vil dette føre til at den utgående e-posten din</a> sier <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> i Gmail.",
   "For Paid Plans": "For betalte planer",
   "Paid Plan": "Betalt plan",
-  "Free, private, and secure email for business and enterprise.": "Gratis, privat og sikker e-post for bedrifter og bedrifter."
+  "Free, private, and secure email for business and enterprise.": "Gratis, privat og sikker e-post for bedrifter og bedrifter.",
+  "This endpoint will return at most": "Dette endepunktet vil komme tilbake på det meste",
+  "results at a time.  If you want to query for multiple pages, then append": "resultater om gangen. Hvis du vil spørre etter flere sider, legg til",
+  "where": "hvor",
+  "is an integer, e.g.": "er et heltall, f.eks.",
+  "Number": "Antall",
+  "Page to return of results (default is": "Side for å returnere resultater (standard er",
+  "`limit": "`grense",
+  "Number of results per page to return (default is": "Antall resultater per side som skal returneres (standard er",
+  "– the max is": "– maks er",
+  "and minimum is": "og minimum er"
 }

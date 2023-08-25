@@ -4792,5 +4792,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Tato příručka funguje, ale od května 2023 jsme ji ukončili, protože <a class=\"alert-link\" href=\"%s\">nyní podporujeme odchozí SMTP</a> na našich placených plánech. Pokud použijete průvodce níže, <a class=\"alert-link\" href=\"%s\">způsobí to, že váš odchozí e-mail bude</a> v Gmailu říkat <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> .",
   "For Paid Plans": "Pro placené plány",
   "Paid Plan": "Placený plán",
-  "Free, private, and secure email for business and enterprise.": "Bezplatný, soukromý a bezpečný e-mail pro firmy a podniky."
+  "Free, private, and secure email for business and enterprise.": "Bezplatný, soukromý a bezpečný e-mail pro firmy a podniky.",
+  "This endpoint will return at most": "Tento koncový bod se vrátí maximálně",
+  "results at a time.  If you want to query for multiple pages, then append": "výsledky najednou. Pokud se chcete dotazovat na více stránek, přidejte",
+  "where": "kde",
+  "is an integer, e.g.": "je celé číslo, např.",
+  "Number": "Číslo",
+  "Page to return of results (default is": "Stránka pro návrat výsledků (výchozí je",
+  "`limit": "'limit",
+  "Number of results per page to return (default is": "Počet výsledků na stránku, které se mají vrátit (výchozí je",
+  "– the max is": "– maximum je",
+  "and minimum is": "a minimum je"
 }

@@ -4566,5 +4566,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.",
   "For Paid Plans": "For Paid Plans",
   "Paid Plan": "Paid Plan",
-  "Free, private, and secure email for business and enterprise.": "Free, private, and secure email for business and enterprise."
+  "Free, private, and secure email for business and enterprise.": "Free, private, and secure email for business and enterprise.",
+  "This endpoint will return at most": "This endpoint will return at most",
+  "results at a time.  If you want to query for multiple pages, then append": "results at a time.  If you want to query for multiple pages, then append",
+  "where": "where",
+  "is an integer, e.g.": "is an integer, e.g.",
+  "Number": "Number",
+  "Page to return of results (default is": "Page to return of results (default is",
+  "`limit": "`limit",
+  "Number of results per page to return (default is": "Number of results per page to return (default is",
+  "– the max is": "– the max is",
+  "and minimum is": "and minimum is"
 }

@@ -4792,5 +4792,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "이 가이드는 작동하지만 <a class=\"alert-link\" href=\"%s\">이제 유료 요금제에서 아웃바운드 SMTP를 지원하므로</a> 2023년 5월부터 더 이상 사용되지 않습니다. 아래 가이드를 사용하면 <a class=\"alert-link\" href=\"%s\">아웃바운드 이메일이</a> Gmail에서 <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> 으로 표시됩니다.",
   "For Paid Plans": "유료 플랜의 경우",
   "Paid Plan": "유료 플랜",
-  "Free, private, and secure email for business and enterprise.": "비즈니스 및 엔터프라이즈를 위한 무료, 개인 및 보안 이메일."
+  "Free, private, and secure email for business and enterprise.": "비즈니스 및 엔터프라이즈를 위한 무료, 개인 및 보안 이메일.",
+  "This endpoint will return at most": "이 끝점은 최대 반환합니다.",
+  "results at a time.  If you want to query for multiple pages, then append": "결과를 한번에. 여러 페이지를 쿼리하려면 다음을 추가하세요.",
+  "where": "어디",
+  "is an integer, e.g.": "정수입니다.",
+  "Number": "숫자",
+  "Page to return of results (default is": "결과를 반환할 페이지(기본값은",
+  "`limit": "`한계",
+  "Number of results per page to return (default is": "반환할 페이지당 결과 수(기본값은",
+  "– the max is": "– 최대값은",
+  "and minimum is": "그리고 최소값은"
 }

@@ -4792,5 +4792,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Panduan ini berfungsi, namun kami menghentikannya mulai Mei 2023 karena <a class=\"alert-link\" href=\"%s\">kami sekarang mendukung SMTP keluar</a> pada paket berbayar kami. Jika Anda menggunakan panduan di bawah ini, maka <a class=\"alert-link\" href=\"%s\">ini akan menyebabkan email keluar Anda</a> mengatakan <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> di Gmail.",
   "For Paid Plans": "Untuk Paket Berbayar",
   "Paid Plan": "Paket Berbayar",
-  "Free, private, and secure email for business and enterprise.": "Email gratis, pribadi, dan aman untuk bisnis dan perusahaan."
+  "Free, private, and secure email for business and enterprise.": "Email gratis, pribadi, dan aman untuk bisnis dan perusahaan.",
+  "This endpoint will return at most": "Titik akhir ini paling banyak akan kembali",
+  "results at a time.  If you want to query for multiple pages, then append": "hasil pada suatu waktu. Jika Anda ingin menanyakan beberapa halaman, tambahkan",
+  "where": "Di mana",
+  "is an integer, e.g.": "adalah bilangan bulat, mis.",
+  "Number": "Nomor",
+  "Page to return of results (default is": "Halaman untuk mengembalikan hasil (standarnya adalah",
+  "`limit": "`batas",
+  "Number of results per page to return (default is": "Jumlah hasil per halaman yang akan dikembalikan (standarnya adalah",
+  "– the max is": "– maksimalnya adalah",
+  "and minimum is": "dan minimum adalah"
 }

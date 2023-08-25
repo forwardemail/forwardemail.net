@@ -4792,5 +4792,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Questa guida funziona, tuttavia l&#39;abbiamo deprecata a partire da maggio 2023 poiché <a class=\"alert-link\" href=\"%s\">ora supportiamo l&#39;SMTP in uscita</a> sui nostri piani a pagamento. Se utilizzi la guida di seguito, <a class=\"alert-link\" href=\"%s\">questo farà sì che la tua email in uscita</a> indichi <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> in Gmail.",
   "For Paid Plans": "Per piani a pagamento",
   "Paid Plan": "Piano a pagamento",
-  "Free, private, and secure email for business and enterprise.": "Email gratuita, privata e sicura per aziende e aziende."
+  "Free, private, and secure email for business and enterprise.": "Email gratuita, privata e sicura per aziende e aziende.",
+  "This endpoint will return at most": "Questo endpoint restituirà al massimo",
+  "results at a time.  If you want to query for multiple pages, then append": "risultati alla volta. Se desideri eseguire una query per più pagine, aggiungi",
+  "where": "Dove",
+  "is an integer, e.g.": "è un numero intero, ad es.",
+  "Number": "Numero",
+  "Page to return of results (default is": "Pagina in cui restituire i risultati (l'impostazione predefinita è",
+  "`limit": "\"limite\".",
+  "Number of results per page to return (default is": "Numero di risultati per pagina da restituire (l'impostazione predefinita è",
+  "– the max is": "– il massimo è",
+  "and minimum is": "e il minimo è"
 }

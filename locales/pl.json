@@ -4792,5 +4792,15 @@
   "This guide works, however we deprecated it as of May 2023 since <a class=\"alert-link\" href=\"%s\">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class=\"alert-link\" href=\"%s\">this will cause your outbound email</a> to say <span class=\"notranslate text-danger font-weight-bold\">\"via forwardemail dot net\"</span> in Gmail.": "Ten przewodnik działa, ale wycofaliśmy go z maja 2023 r., ponieważ <a class=\"alert-link\" href=\"%s\">teraz obsługujemy wychodzący protokół SMTP</a> w naszych płatnych planach. Jeśli skorzystasz z poniższego przewodnika, <a class=\"alert-link\" href=\"%s\">spowoduje to, że Twój wychodzący e-mail będzie</a> zawierał komunikat <span class=\"notranslate text-danger font-weight-bold\">&quot;via forwardemail dot net&quot;</span> w Gmailu.",
   "For Paid Plans": "Dla płatnych planów",
   "Paid Plan": "Płatny abonament",
-  "Free, private, and secure email for business and enterprise.": "Bezpłatna, prywatna i bezpieczna poczta e-mail dla firm i przedsiębiorstw."
+  "Free, private, and secure email for business and enterprise.": "Bezpłatna, prywatna i bezpieczna poczta e-mail dla firm i przedsiębiorstw.",
+  "This endpoint will return at most": "Ten punkt końcowy powróci co najwyżej",
+  "results at a time.  If you want to query for multiple pages, then append": "wyniki na raz. Jeśli chcesz zapytać o wiele stron, dołącz",
+  "where": "Gdzie",
+  "is an integer, e.g.": "jest liczbą całkowitą, np.",
+  "Number": "Numer",
+  "Page to return of results (default is": "Strona do zwrotu wyników (domyślnie jest to",
+  "`limit": "limit",
+  "Number of results per page to return (default is": "Liczba wyników na stronę do zwrócenia (domyślnie to",
+  "– the max is": "– jest maks",
+  "and minimum is": "i minimalne jest"
 }
