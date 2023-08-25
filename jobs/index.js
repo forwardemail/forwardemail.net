@@ -113,6 +113,11 @@ const jobs = [
     timeout: 0
   },
   {
+    name: 'delete-emails',
+    interval: '1h',
+    timeout: 0
+  },
+  {
     name: 'parse-logs',
     interval: '5m',
     timeout: 0

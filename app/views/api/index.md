@@ -165,12 +165,16 @@ Note that this endpoint does not return an already created email's `message`, `h
 
 To return those properties and their values, please use the [Retrieve email](#retrieve-email) endpoint with an email ID.
 
+This endpoint will return at most `50` results at a time.  If you want to query for multiple pages, then append `?page=NUMBER` where `NUMBER` is an integer, e.g. `?page=1`.
+
 > `GET /v1/emails`
 
-| Querystring Parameter | Required | Type                      | Description                      |
-| --------------------- | -------- | ------------------------- | -------------------------------- |
-| `q`                   | No       | String (RegExp supported) | Search for emails by metadata    |
-| `domain`              | No       | String (RegExp supported) | Search for emails by domain name |
+| Querystring Parameter | Required | Type                      | Description                                                                                  |
+| --------------------- | -------- | ------------------------- | -------------------------------------------------------------------------------------------- |
+| `q`                   | No       | String (RegExp supported) | Search for emails by metadata                                                                |
+| `domain`              | No       | String (RegExp supported) | Search for emails by domain name                                                             |
+| `page`                | No       | Number                    | Page to return of results (default is `1`)                                                   |
+| `limit                | No       | Number                    | Number of results per page to return (default is `50` – the max is `50` and minimum is `10`) |
 
 > Example Request:
 

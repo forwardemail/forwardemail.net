@@ -1,5 +1,6 @@
 const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
+const paginate = require('koa-ctx-paginate');
 
 const api = require('#controllers/api');
 const policies = require('#helpers/policies');
@@ -96,6 +97,7 @@ router
   .get(
     '/emails',
     rateLimit(100, 'list emails'),
+    paginate.middleware(10, 50),
     web.myAccount.retrieveDomains,
     web.myAccount.listEmails,
     api.v1.emails.list

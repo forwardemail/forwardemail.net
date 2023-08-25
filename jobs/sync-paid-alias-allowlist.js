@@ -267,10 +267,14 @@ graceful.listen();
             }
           });
 
-          // filter out specific emails that were marked spam
+          // remove all domains and emails that were denylisted
+          // (paying customers shouldn't get denylisted but we monitor this via email alerts)
+          const p = client.pipeline();
           for (const v of list) {
-            if (isEmail(v)) set.delete(v);
+            p.del(`denylist:${v}`);
           }
+
+          await p.exec();
         }
       }
 
@@ -297,7 +301,7 @@ graceful.listen();
             locals: {
               message: `<p class="text-center">The domain ${domain.name} (${
                 domain.id
-              }) had the following denylist results:</p><ul class="mb-0 text-left"><li>${list.join(
+              }) had the following silent ban results:</p><ul class="mb-0 text-left"><li>${list.join(
                 '</li><li>'
               )}</li></ul>`
             }

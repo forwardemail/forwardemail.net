@@ -59,6 +59,15 @@ const scanner = new SpamScanner({
 });
 
 const Emails = new mongoose.Schema({
+  //
+  // NOTE: `mongoose-common-plugin` will automatically set `timestamps` for us
+  // <https://github.com/Automattic/mongoose/blob/b2af0fe4a74aa39eaf3088447b4bb8feeab49342/test/timestamps.test.js#L123-L137>
+  //
+  created_at: {
+    type: Date,
+    expires: config.emailRetention,
+    index: true
+  },
   hard_bounces: [String], // 5xx bounces (an array for storage to prevent duplicates)
   soft_bounces: [String], // 4xx bounces (an array for storage to prevent duplicates)
   is_bounce: {
@@ -189,14 +198,6 @@ const Emails = new mongoose.Schema({
   rejectedErrors: [mongoose.Schema.Types.Mixed]
 });
 
-Emails.virtual('is_being_locked')
-  .get(function () {
-    return this.__is_being_locked;
-  })
-  .set(function (isBeingLocked) {
-    this.__is_being_locked = boolean(isBeingLocked);
-  });
-
 Emails.plugin(mongooseCommonPlugin, {
   object: 'email',
   locale: false,
@@ -207,12 +208,7 @@ Emails.plugin(mongooseCommonPlugin, {
     'locked_by',
     'locked_at',
     'priority'
-  ],
-  mongooseHidden: {
-    virtuals: {
-      is_being_locked: 'hide'
-    }
-  }
+  ]
 });
 
 // when we query against `locked_at` we also need to query for `$exists: true` for hint to work
@@ -364,7 +360,6 @@ Emails.pre('save', function (next) {
 // update `status` based off `accepted` and `rejectedErrors` array
 //
 Emails.pre('save', function (next) {
-  if (this.is_being_locked) return next();
   try {
     // if email is still in "pending" state then do not modify it
     if (this.status === 'pending' && this.rejectedErrors.length === 0)

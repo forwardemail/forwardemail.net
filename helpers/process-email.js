@@ -127,12 +127,13 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
   try {
     // lock job
-    email.is_locked = true;
-    email.locked_by = IP_ADDRESS;
-    email.locked_at = new Date();
-    email.is_being_locked = true;
-    email = await email.save();
-    email.is_being_locked = false;
+    await Emails.findByIdAndUpdate(email._id, {
+      $set: {
+        is_locked: true,
+        locked_by: IP_ADDRESS,
+        locked_at: new Date()
+      }
+    });
 
     // ensure user, domain, and alias still exist and are all enabled
     let [user, domain, alias] = await Promise.all([
@@ -246,6 +247,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
       // helper boolean for setting "bounced" status (see email pre-save hook)
       err.maxRetryDuration = true;
 
+      // lookup the email by id to get most recent data and version key (`__v`)
+      email = await Emails.findById(email._id);
+      if (!email) throw new Error('Email does not exist');
+
       // NOTE: save() will automatically remove from `rejectedErrors` any already `accepted`
       email.rejectedErrors.push(
         ...email.envelope.to.map((recipient) => {
@@ -328,6 +333,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
       domain.smtp_emails_blocked.length > 0
     ) {
       const matches = [];
+
+      // lookup the email by id to get most recent data and version key (`__v`)
+      email = await Emails.findById(email._id);
+      if (!email) throw new Error('Email does not exist');
+
       for (const recipient of email.envelope.to) {
         if (domain.smtp_emails_blocked.includes(recipient)) {
           const error = Boom.forbidden(
@@ -890,6 +900,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
       //
     }
 
+    // lookup the email by id to get most recent data and version key (`__v`)
+    email = await Emails.findById(email._id);
+    if (!email) throw new Error('Email does not exist');
+
     //
     // update `accepted` array
     //
@@ -1031,6 +1045,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
     //
     err.isCodeBug = isCodeBug(err);
     err.responseCode = getErrorCode(err);
+
+    // lookup the email by id to get most recent data and version key (`__v`)
+    email = await Emails.findById(email._id);
+    if (!email) throw new Error('Email does not exist');
 
     // if we threw an error with Boom, then based off the type we need to update email status
     if (

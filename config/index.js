@@ -80,6 +80,7 @@ const config = {
       : []
   ),
 
+  emailRetention: env.EMAIL_RETENTION,
   logRetention: env.LOG_RETENTION,
 
   // custom rate limiting lookup for allowing whitelisted customers

@@ -176,6 +176,8 @@ async function shouldThrowError(err, session) {
   } else if (err.response.includes('AUP#1260'))
     // IPv6 not supported with Spectrum
     err.responseCode = 421;
+  else if (err.response.includes('JunkMail rejected'))
+    err.bounceInfo.category = 'blocklist';
   else if (
     err.response.includes(
       'spectrum.net/support/internet/understanding-email-error-codes'
@@ -201,6 +203,8 @@ async function shouldThrowError(err, session) {
   // <https://github.com/zone-eu/zone-mta/issues/331>
   else if (err.response.includes('spamcop.net'))
     err.bounceInfo.category = 'blocklist';
+  // generic detection of RBL blocklist
+  else if (err.response.includes('RBL')) err.bounceInfo.category = 'blocklist';
   else if (
     err.target === 'qq.com' &&
     err.response.includes('550 Mail content denied')
