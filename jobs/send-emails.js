@@ -11,6 +11,7 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
+const ip = require('ip');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
@@ -24,7 +25,9 @@ const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 const setupMongoose = require('#helpers/setup-mongoose');
+const getBlockedHashes = require('#helpers/get-blocked-hashes');
 
+const IP_ADDRESS = ip.address();
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const resolver = createTangerine(client, logger);
@@ -93,7 +96,10 @@ async function sendEmails() {
         $gte: dayjs().subtract(1, 'hour').toDate(),
         $lte: now
       },
-      has_blocked_hashes: true
+      has_blocked_hashes: true,
+      blocked_hashes: {
+        $in: getBlockedHashes(IP_ADDRESS)
+      }
     })
   ]);
 
