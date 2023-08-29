@@ -16,6 +16,7 @@ const ms = require('ms');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
+const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const Emails = require('#models/emails');
 const Domains = require('#models/emails');
 
@@ -38,24 +39,16 @@ graceful.listen();
     const now = new Date();
     const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
       Domains.distinct('_id', {
-        smtp_suspended_sent_at: {
-          $exists: true
-        }
+        is_smtp_suspended: true
       }),
       Emails.distinct('_id', {
         updated_at: {
           $gte: dayjs().subtract(1, 'hour').toDate(),
           $lte: now
         },
-        rejectedErrors: {
-          $elemMatch: {
-            date: {
-              $gte: dayjs().subtract(1, 'hour').toDate(),
-              $lte: now
-            },
-            'bounceInfo.category': 'blocklist',
-            'mx.localHostname': env.SMTP_HOST
-          }
+        has_blocked_hashes: true,
+        blocked_hashes: {
+          $in: getBlockedHashes(env.SMTP_HOST)
         }
       })
     ]);
@@ -63,6 +56,7 @@ graceful.listen();
     logger.info('%d suspended domain ids', suspendedDomainIds.length);
 
     logger.info('%d recently blocked ids', recentlyBlockedIds.length);
+
     //
     // check the unique ids for emails in the queue
     // if the list is still the same after 1 minute

@@ -18,6 +18,9 @@ $input-disabled-bg:                     $dark;
 
 // stylelint-disable scss/at-extend-no-missing-placeholder
 @media (prefers-color-scheme: dark) {
+  .navbar-dark .navbar-toggler {
+    color: white !important;
+  }
   .btn-outline-dark {
     @extend .text-light;
   }

@@ -797,9 +797,7 @@ test('smtp outbound spam block detection', async (t) => {
   // ensure domain is suspended
   const isSuspended = await Domains.exists({
     _id: domain._id,
-    smtp_suspended_sent_at: {
-      $exists: true
-    }
+    is_smtp_suspended: true
   });
   t.true(
     isSuspended &&

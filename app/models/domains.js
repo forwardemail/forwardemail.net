@@ -227,6 +227,11 @@ const Domains = new mongoose.Schema({
     type: Date,
     index: true
   },
+  is_smtp_suspended: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
 
   // when the txt/mx was last checked at
   last_checked_at: Date,
@@ -376,6 +381,15 @@ const Domains = new mongoose.Schema({
     }
   ]
 });
+
+Domains.index(
+  { smtp_suspended_sent_at: 1 },
+  {
+    partialFilterExpression: {
+      smtp_suspended_sent_at: { $exists: true }
+    }
+  }
+);
 
 Domains.plugin(captainHook);
 
@@ -626,6 +640,9 @@ Domains.pre('validate', function (next) {
 Domains.pre('validate', function (next) {
   const domain = this;
 
+  // boolean helper for fast querying against an indexed boolean
+  domain.is_smtp_suspended = _.isDate(domain.smtp_suspended_sent_at);
+
   // we return early here in case the boolean was set to false
   // and we want to preserve what the user had already set for templates
   // (e.g. as a backup in case they ever restore it or we turn it back on)
@@ -748,6 +765,7 @@ Domains.plugin(mongooseCommonPlugin, {
     'smtp_verified_at',
     'has_smtp',
     'smtp_suspended_sent_at',
+    'is_smtp_suspended',
     'last_checked_at',
     'email_suspended_sent_at',
     'missing_txt_sent_at',

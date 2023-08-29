@@ -93,6 +93,7 @@ async function update(ctx) {
     domain.smtp_suspended_sent_at = boolean(body.smtp_suspended_sent_at)
       ? new Date()
       : undefined;
+    domain.is_smtp_suspended = boolean(domain.smtp_suspended_sent_at);
   }
 
   domain.locale = ctx.locale;

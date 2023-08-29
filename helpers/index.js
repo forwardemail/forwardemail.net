@@ -33,6 +33,7 @@ const parseRootDomain = require('./parse-root-domain');
 const checkSRS = require('./check-srs');
 const createBounce = require('./create-bounce');
 const getDiagnosticCode = require('./get-diagnostic-code');
+const getBlockedHashes = require('./get-blocked-hashes');
 
 module.exports = {
   decrypt,
@@ -70,5 +71,6 @@ module.exports = {
   parseRootDomain,
   checkSRS,
   createBounce,
-  getDiagnosticCode
+  getDiagnosticCode,
+  getBlockedHashes
 };

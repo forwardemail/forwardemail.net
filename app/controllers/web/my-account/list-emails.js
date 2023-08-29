@@ -11,9 +11,7 @@ async function listEmails(ctx) {
   const [domains, aliases, goodDomains] = await Promise.all([
     Domains.distinct('_id', {
       has_smtp: true,
-      smtp_suspended_sent_at: {
-        $exists: false
-      },
+      is_smtp_suspended: false,
       members: {
         $elemMatch: {
           user: ctx.state.user._id,
@@ -26,9 +24,7 @@ async function listEmails(ctx) {
     }),
     Domains.distinct('_id', {
       has_smtp: true,
-      smtp_suspended_sent_at: {
-        $exists: false
-      }
+      is_smtp_suspended: false
     })
   ]);
 

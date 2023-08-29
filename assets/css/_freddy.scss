@@ -4,88 +4,81 @@
 @import 'variables';
 
 #freddy {
-  position: relative;
-  background-repeat: no-repeat, repeat, no-repeat;
-  // background-attachment: fixed;
-  background-position: 110% 110%, 50% 50%, 100% 100%;
-  // background-color: #333366; // purple
   background-color: #191d21;
-  background-image: url('b64---../img/art/planet.svg---'),
-    url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
-  background-size: 40vmin, 25%, contain;
-  &:before {
-    // <https://css-tricks.com/pseudo-elements-in-the-web-animations-api/>
-    display: inline-block;
-    content: '';
-    background-repeat: no-repeat;
-    // background-attachment: fixed;
-    background-position: -50% -50%;
-    background-image: url('b64---../img/art/rocket.gif---');
-    background-size: 83.5px 65.5px;
+  #stars {
     position: fixed;
-    transition: all 1.5s linear;
-    top: 0;
-    left: 0;
+    z-index: -3;
     width: 100%;
     height: 100%;
-    z-index: -2;
-    animation-name: rocket-sm;
+    background-size: 40vmin, 25%, 110%;
+    background-image: url('b64---../img/art/planet.svg---'), url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
+    background-repeat: no-repeat, repeat, no-repeat;
+    background-position: 110% 110%, 50% 50%, 100% 100%;
+  }
+  #rocket {
+    transition: all 1.5s linear;
+    animation-name: rocket;
     animation-delay: 5s;
     animation-duration: 20s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
-  }
-  &:after {
-    // <https://css-tricks.com/pseudo-elements-in-the-web-animations-api/>
-    display: inline-block;
-    content: '';
-    background-repeat: no-repeat;
-    // background-attachment: fixed;
-    background-image: url('b64---../img/art/freddy.gif---');
-    background-size: cover;
+    z-index: -2;
     position: fixed;
+    background-size: 99.9%;
+    background-repeat: no-repeat;
+    background-image: url('b64---../img/art/rocket.gif---');
+    width: 83.5px;
+    height: 65.5px;
+    left: -50%;
+    top: -50%;
+  }
+  #waving {
     transition: all 1s ease-out;
-    right: 15%;
-    bottom: 40%;
-    z-index: -1;
     animation-name: floating;
     animation-duration: 5s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
     animation-fill-mode: both;
+    z-index: -1;
+    position: fixed;
+    background-size: 99.9%;
+    background-repeat: no-repeat;
+    background-image: url('b64---../img/art/freddy.gif---');
     width: 75.6px;
     height: 106.2px;
+    right: 15%;
+    bottom: 40%;
   }
   @include media-breakpoint-up(md) {
-    background-size: 45vmin, 25%, cover;
-    &:after {
+    #stars {
+      background-size: 45vmin, 25%, 110%;
+    }
+    #waving {
       width: 94.5px;
       height: 132.75px;
     }
   }
   @include media-breakpoint-up(lg) {
-    background-size: 50vmin, 25%, cover;
-    &:before {
-      animation-name: rocket-lg;
+    #stars {
+      background-size: 50vmin, 25%, 110%;
     }
-    &:after {
+    #waving {
       width: 126px;
       height: 177px;
     }
   }
   @include media-breakpoint-up(xl) {
-    background-size: 60vmin, 25%, cover;
+    #stars {
+      background-size: 60vmin, 25%, 110%;
+    }
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   #freddy {
     background: #333366 !important;
-    &:before {
-      content: none !important;
-    }
-    &:after {
-      content: none !important;
+    #rocket, #waving {
+      display: none !important;
     }
   }
 }
@@ -102,20 +95,13 @@
   }
 }
 
-@keyframes rocket-sm {
+@keyframes rocket {
   from {
-    background-position: -100px -100px;
+    left: -50%;
+    top: -50%;
   }
   to {
-    background-position: bottom right;
-  }
-}
-
-@keyframes rocket-lg {
-  from {
-    background-position: -50% -50%;
-  }
-  to {
-    background-position: 150% 150%;
+    left: 150%;
+    top: 150%;
   }
 }

@@ -227,9 +227,13 @@ html.h-100.no-js(
   body.d-flex.flex-column.min-h-100.app(
     role="document",
     onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false,
-    id=ctx.pathWithoutLocale === "/" ? "freddy" : "",
+    id=ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
     data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false
   )
+    if (ctx.pathWithoutLocale === '/' && !isBot(ctx.get('User-Agent')))
+      #stars.user-select-none
+      #rocket.user-select-none
+      #waving.user-select-none
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
 

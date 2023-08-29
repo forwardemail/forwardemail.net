@@ -33,6 +33,7 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
+const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
@@ -67,6 +68,17 @@ const Emails = new mongoose.Schema({
     type: Date,
     expires: config.emailRetention,
     index: true
+  },
+  blocked_hashes: [
+    {
+      type: String,
+      index: true
+    }
+  ],
+  has_blocked_hashes: {
+    type: Boolean,
+    index: true,
+    default: false
   },
   hard_bounces: [String], // 5xx bounces (an array for storage to prevent duplicates)
   soft_bounces: [String], // 4xx bounces (an array for storage to prevent duplicates)
@@ -323,6 +335,34 @@ Emails.pre('validate', function (next) {
 
     // ensure that `rejectedErrors` are unique (by most recent/last added)
     this.rejectedErrors = _.uniqBy(this.rejectedErrors.reverse(), 'recipient');
+
+    //
+    // note that we need an array instead of a single hash because
+    // when we have multiple servers, more than one of them could
+    // be blocked at any given time (this is a query optimized approach to ensuring retry every 1+ hour)
+    //
+    this.blocked_hashes = [];
+
+    for (const err of this.rejectedErrors) {
+      if (
+        err?.bounceInfo?.category === 'blocklist' &&
+        err?.date &&
+        _.isDate(err.date) &&
+        err?.mx?.localAddress &&
+        isIP(err.mx.localAddress)
+      ) {
+        this.blocked_hashes.push(
+          ...getBlockedHashes(err.mx.localAddress, new Date(err.date)),
+          ...getBlockedHashes(env.SMTP_HOST, new Date(err.date))
+        );
+      }
+    }
+
+    // make blocked hashes unique
+    this.blocked_hashes = _.uniq(this.blocked_hashes);
+
+    // boolean for quick search indexing
+    this.has_blocked_hashes = this.blocked_hashes.length > 0;
 
     next();
   } catch (err) {
@@ -891,7 +931,8 @@ Emails.statics.queue = async function (
       if (!adminExists)
         await Domains.findByIdAndUpdate(domain._id, {
           $set: {
-            smtp_suspended_sent_at: new Date()
+            smtp_suspended_sent_at: new Date(),
+            is_smtp_suspended: true
           }
         });
 

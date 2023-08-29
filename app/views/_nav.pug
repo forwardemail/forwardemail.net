@@ -65,7 +65,7 @@ if !user && !registerOrLogin
             .modal-body
               +registerOrLogin(verb, true)
 nav.navbar.navbar-expand-lg.fixed-top(
-  class=user ? "navbar-dark bg-dark border-bottom" : ctx.pathWithoutLocale === "/" ? "text-white" : "bg-white navbar-themed bg-themed border-bottom"
+  class=user ? "navbar-dark bg-dark border-bottom" : ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent")) ? "text-white" : "bg-white navbar-themed bg-themed border-bottom"
 )
   div(
     class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
@@ -131,8 +131,7 @@ nav.navbar.navbar-expand-lg.fixed-top(
         data-target="#navbar-header",
         aria-controls="navbar-header",
         aria-expanded="false",
-        aria-label=t("Toggle navigation"),
-        class=ctx.pathWithoutLocale === "/" ? "text-white" : ""
+        aria-label=t("Toggle navigation")
       )
         i.fas.fa-bars
     //- once we have responsive border utilities added to bootstrap

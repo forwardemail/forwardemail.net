@@ -1,9 +1,9 @@
 const os = require('node:os');
 const { Buffer } = require('node:buffer');
 
-// const dayjs = require('dayjs-with-plugins');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
@@ -28,6 +28,7 @@ const createSession = require('#helpers/create-session');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
+const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
@@ -687,9 +688,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
             },
             {
               domain: domain._id,
-              smtp_suspended_sent_at: {
-                $exists: true
-              }
+              is_smtp_suspended: true
             }
           ]
         });
@@ -703,26 +702,16 @@ async function processEmail({ email, port = 25, resolver, client }) {
           //       (this gives postmasters like Outlook and Gmail a back-off period)
           //       (and gives opportunity for another server to try sending it)
           //
-          const isRecentlyBlocked = false;
-          /*
-          await Emails.exists({
+          const isRecentlyBlocked = await Emails.exists({
             updated_at: {
               $gte: dayjs().subtract(1, 'hour').toDate(),
               $lte: new Date()
             },
-            rejectedErrors: {
-              $elemMatch: {
-                date: {
-                  $gte: dayjs().subtract(1, 'hour').toDate(),
-                  $lte: new Date()
-                },
-                target,
-                'bounceInfo.category': 'blocklist',
-                'mx.localAddress': IP_ADDRESS
-              }
+            has_blocked_hashes: true,
+            blocked_hashes: {
+              $in: getBlockedHashes(IP_ADDRESS)
             }
           });
-          */
 
           if (isRecentlyBlocked)
             throw Boom.badRequest(
@@ -829,7 +818,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
               if (!adminExists) {
                 await Domains.findByIdAndUpdate(domain._id, {
                   $set: {
-                    smtp_suspended_sent_at: new Date()
+                    smtp_suspended_sent_at: new Date(),
+                    is_smtp_suspended: true
                   }
                 });
 

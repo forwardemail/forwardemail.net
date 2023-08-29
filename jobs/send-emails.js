@@ -9,17 +9,16 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-// const dayjs = require('dayjs-with-plugins');
+const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
-// const ip = require('ip');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
 const { default: PQueue } = require('p-queue');
 
-const config = require('#config');
-// const Domains = require('#models/domains');
+const Domains = require('#models/domains');
 const Emails = require('#models/emails');
+const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
@@ -29,7 +28,6 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const resolver = createTangerine(client, logger);
-// const IP_ADDRESS = ip.address();
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -87,40 +85,16 @@ async function sendEmails() {
   // get list of all suspended domains
   // and recently blocked emails to exclude
   const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
-    Promise.resolve([]),
-    Promise.resolve([])
-    /*
-    // TODO: Fix this up and elsewhere
     Domains.distinct('_id', {
-      smtp_suspended_sent_at: {
-        $exists: true
-      }
+      is_smtp_suspended: true
     }),
     Emails.distinct('_id', {
-      status: 'deferred',
       updated_at: {
         $gte: dayjs().subtract(1, 'hour').toDate(),
         $lte: now
       },
-      rejectedErrors: {
-        $elemMatch: {
-          date: {
-            $exists: true,
-            $gte: dayjs().subtract(1, 'hour').toDate(),
-            $lte: now
-          },
-          'bounceInfo.category': {
-            $exists: true,
-            $eq: 'blocklist'
-          },
-          'mx.localAddress': {
-            $exists: true,
-            $eq: IP_ADDRESS
-          }
-        }
-      }
+      has_blocked_hashes: true
     })
-    */
   ]);
 
   logger.info('%d suspended domain ids', suspendedDomainIds.length);
@@ -138,12 +112,12 @@ async function sendEmails() {
 
   // NOTE: if you change this then also update `jobs/check-smtp-frozen-queue` if necessary
   const query = {
-    // _id: { $nin: recentlyBlockedIds },
+    _id: { $nin: recentlyBlockedIds },
     is_locked: false,
     status: 'queued',
-    // domain: {
-    //   $nin: suspendedDomainIds
-    // },
+    domain: {
+      $nin: suspendedDomainIds
+    },
     date: {
       $lte: now
     }
