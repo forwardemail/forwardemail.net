@@ -5,6 +5,7 @@ const MimeNode = require('nodemailer/lib/mime-node');
 const _ = require('lodash');
 const ip = require('ip');
 const isFQDN = require('is-fqdn');
+const { convert } = require('html-to-text');
 
 const getErrorCode = require('#helpers/get-error-code');
 const getDiagnosticCode = require('#helpers/get-diagnostic-code');
@@ -50,6 +51,18 @@ function createBounce(email, error, message) {
   rootNode.setHeader('References', email.messageId);
   rootNode.setHeader('X-Original-Message-ID', email.messageId);
 
+  const response = convert(error.response || error.message, {
+    wordwrap: false,
+    selectors: [
+      { selector: 'img', format: 'skip' },
+      { selector: 'ul', options: { itemPrefix: ' ' } },
+      {
+        selector: 'a',
+        options: { baseUrl: config.urls.web, linkBrackets: false }
+      }
+    ]
+  });
+
   rootNode
     .createChild('text/plain; charset=utf-8')
     .setHeader('Content-Description', 'Notification')
@@ -63,7 +76,7 @@ function createBounce(email, error, message) {
         '',
         'The response was:',
         '',
-        error.response || error.message
+        response
       ].join('\n')
     );
 
