@@ -713,14 +713,17 @@ async function processEmail({ email, port = 25, resolver, client }) {
             }
           });
 
-          if (isRecentlyBlocked)
-            throw Boom.badRequest(
+          if (isRecentlyBlocked) {
+            const err = Boom.badRequest(
               i18n.translateError(
                 'RECENTLY_BLOCKED',
                 i18n.config.defaultLocale,
                 target
               )
             );
+            err.is_recently_blocked = true;
+            throw err;
+          }
 
           const info = await sendEmail({
             session: createSession(email),
@@ -948,6 +951,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       (error) =>
         isSANB(error.recipient) &&
         isEmail(error.recipient, { ignore_max_length: true }) &&
+        !error.is_recently_blocked &&
         !email.soft_bounces.includes(error.recipient) &&
         !email.hard_bounces.includes(error.recipient)
     );
