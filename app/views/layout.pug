@@ -233,11 +233,10 @@ html.h-100.no-js(
     //- Safari has performance issues
     //- <https://stackoverflow.com/a/40463096>
     - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
-    if (ctx.pathWithoutLocale === '/' && !isBot(ctx.get('User-Agent')))
+    if (!isSafari && ctx.pathWithoutLocale === '/' && !isBot(ctx.get('User-Agent')))
       #stars.user-select-none
-      if !isSafari
-        #rocket.user-select-none
-        #waving.user-select-none
+      #rocket.user-select-none
+      #waving.user-select-none
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
 
