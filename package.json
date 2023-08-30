@@ -117,7 +117,7 @@
     "mongodb-memory-server": "8.13.0",
     "mongodb-query-parser": "2.5.0",
     "mongodb-short-id": "0.3.3",
-    "mongoose": "6.11.1",
+    "mongoose": "6.12.0",
     "mongoose-common-plugin": "4.0.0",
     "mongoose-omit-common-fields": "0.0.6",
     "mongoose-unique-validator": "3.1.0",
