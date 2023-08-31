@@ -702,7 +702,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
           //       (this gives postmasters like Outlook and Gmail a back-off period)
           //       (and gives opportunity for another server to try sending it)
           //
-          console.time('is recently blocked');
           const isRecentlyBlocked = await Emails.exists({
             updated_at: {
               $gte: dayjs().subtract(1, 'hour').toDate(),
@@ -724,7 +723,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
               }
             }
           });
-          console.timeEnd('is recently blocked');
 
           if (isRecentlyBlocked) {
             const err = Boom.badRequest(

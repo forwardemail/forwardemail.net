@@ -176,6 +176,8 @@ async function shouldThrowError(err, session) {
   } else if (err.response.includes('AUP#1260'))
     // IPv6 not supported with Spectrum
     err.responseCode = 421;
+  else if (err.response.includes('temporarily deferred'))
+    err.bounceInfo.category = 'blocklist';
   else if (err.response.includes('JunkMail rejected'))
     err.bounceInfo.category = 'blocklist';
   else if (
