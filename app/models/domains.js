@@ -1,8 +1,7 @@
-const os = require('node:os');
 const crypto = require('node:crypto');
+const os = require('node:os');
+const punycode = require('node:punycode');
 const { promisify } = require('node:util');
-
-const punycode = require('punycode/');
 
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');

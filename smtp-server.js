@@ -1,6 +1,5 @@
 const fs = require('node:fs');
-
-const punycode = require('punycode/');
+const punycode = require('node:punycode');
 
 const RateLimiter = require('async-ratelimiter');
 const _ = require('lodash');

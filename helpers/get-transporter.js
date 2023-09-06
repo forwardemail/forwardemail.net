@@ -1,5 +1,6 @@
 const { callbackify } = require('node:util');
 const { isIP } = require('node:net');
+const punycode = require('node:punycode');
 
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
@@ -56,6 +57,38 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
     return pool;
   }
 
+  // otherwise lookup the MX records to determine if target != end resulting MX host
+  //
+  // NOTE: this is very rudimentary and will only attempt to re-use the pool for
+  //       the first FQDN and lowest priority exchange found (which is acceptable and covers majority of use cases)
+  //
+  if (!isIP(target) && isFQDN(target)) {
+    try {
+      const list = await resolver.resolve(punycode.toASCII(target), 'MX');
+      if (list && list.length > 0) {
+        const sorted = list
+          .filter(
+            (o) =>
+              _.isObject(o) && isFQDN(o.exchange) && Number.isFinite(o.priority)
+          )
+          .sort((a, b) => a.priority - b.priority);
+        if (sorted.length > 0) {
+          const rootDomain = parseRootDomain(sorted[0].exchange);
+          if (
+            config.truthSources.has(parseRootDomain(rootDomain)) &&
+            connectionMap.has(`${rootDomain}:${port}`)
+          ) {
+            const pool = connectionMap.get(`${rootDomain}:${port}`);
+            logger.info(`pool discovered: ${key} (${rootDomain}:${port})`);
+            return pool;
+          }
+        }
+      }
+    } catch (err) {
+      logger.warn(err);
+    }
+  }
+
   // <https://github.com/zone-eu/mx-connect#configuration-options>
   const mx = await asyncMxConnect({
     ignoreMXHosts,
@@ -84,14 +117,6 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
     }
   });
 
-  if (!err) {
-    mx.socket.once('close', () => {
-      logger.info(`pool closed: ${key}`);
-      // remove the socket from the available pool
-      connectionMap.delete(key);
-    });
-  }
-
   //
   // if the SMTP response was from trusted root host and it was rejected for spam
   // then denylist the sender (probably a low-reputation domain name spammer)
@@ -106,6 +131,17 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
     config.truthSources.has(parseRootDomain(mx.hostname))
   )
     truthSource = parseRootDomain(mx.hostname);
+
+  const isPooling = typeof err === 'undefined' && truthSource;
+
+  if (isPooling) {
+    mx.socket.once('close', () => {
+      logger.info(`pool closed: ${truthSource}:${port}`);
+      // remove the socket from the available pool
+      if (connectionMap.has(`${truthSource}:${port}`))
+        connectionMap.delete(`${truthSource}:${port}`);
+    });
+  }
 
   const requireTLS = Boolean(
     mx.policyMatch && mx.policyMatch.mode === 'enforce'
@@ -146,8 +182,6 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
 
   const opportunisticTLS = Boolean(!requireTLS && !ignoreTLS);
 
-  const isPooling = typeof err === 'undefined' && truthSource;
-
   // TODO: may need to pass custom `getSocket` option if `isPooling`
 
   const transporter = nodemailer.createTransport({
@@ -177,8 +211,8 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
   };
 
   if (!err && isPooling) {
-    connectionMap.set(key, pool);
-    logger.info(`pool created: ${key}`);
+    connectionMap.set(`${truthSource}:${port}`, pool);
+    logger.info(`pool created: ${truthSource}:${port}`);
   }
 
   return pool;

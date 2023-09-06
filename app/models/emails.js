@@ -1,7 +1,6 @@
+const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
-
-const punycode = require('punycode/');
 
 const Boom = require('@hapi/boom');
 const SpamScanner = require('spamscanner');
