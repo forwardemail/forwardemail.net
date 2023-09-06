@@ -30,6 +30,17 @@ const transporterConfig = {
   dnsTimeout: config.smtpQueueTimeout
 };
 
+// <https://github.com/MicrosoftDocs/OfficeDocs-Support/blob/public/Exchange/ExchangeOnline/email-delivery/send-receive-emails-socketerror.md#cant-send-or-receive-email-when-using-tls-11-or-tls-10>
+const OUTLOOK_HOSTS = new Set([
+  'outlook.com',
+  'outlook.co.uk',
+  'microsoft.com',
+  'hotmail.co.uk',
+  'hotmail.com',
+  'live.com',
+  'msn.com'
+]);
+
 // eslint-disable-next-line complexity
 async function getTransporter(connectionMap = new Map(), options = {}, err) {
   const {
@@ -144,7 +155,8 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
   }
 
   const requireTLS = Boolean(
-    mx.policyMatch && mx.policyMatch.mode === 'enforce'
+    Boolean(mx.policyMatch && mx.policyMatch.mode === 'enforce') ||
+      (truthSource && OUTLOOK_HOSTS.has(truthSource))
   );
 
   //
