@@ -423,7 +423,10 @@ async function sendEmail({
             target,
             port,
             localAddress,
-            localHostname
+            localHostname,
+            resolver,
+            logger,
+            cache
           },
           err
         );
