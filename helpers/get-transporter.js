@@ -148,6 +148,8 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
 
   const isPooling = typeof err === 'undefined' && truthSource;
 
+  // TODO: may need to pass custom `getSocket` option if `isPooling`
+
   const transporter = nodemailer.createTransport({
     ...transporterConfig,
     pool: isPooling,
