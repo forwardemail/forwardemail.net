@@ -62,6 +62,7 @@ function makeDelimitedString(arr) {
         'From',
         'From Allowlisted',
         'To',
+        'Subject',
         'Message-ID',
         'MAIL FROM',
         'RCPT TO',
@@ -125,6 +126,10 @@ function makeDelimitedString(arr) {
             : 'false',
           // To
           log?.err?.envelope?.to || log?.meta?.session?.headers?.To || '',
+          // Subject
+          log?.meta?.session?.headers && log.meta.session.headers.Subject
+            ? log.meta.session.headers.Subject
+            : '',
           // Message-ID
           log?.meta?.session?.headers && log.meta.session.headers['Message-ID']
             ? log.meta.session.headers['Message-ID']
