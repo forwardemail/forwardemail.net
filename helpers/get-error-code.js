@@ -104,6 +104,8 @@ function getErrorCode(err) {
     return err.responseCode;
 
   if (
+    // p-timeout has err.name = "TimeoutError"
+    err.name === 'TimeoutError' ||
     (isSANB(err.code) &&
       (DNS_RETRY_CODES.has(err.code) ||
         HTTP_RETRY_ERROR_CODES.has(err.code))) ||

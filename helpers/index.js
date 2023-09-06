@@ -34,6 +34,9 @@ const checkSRS = require('./check-srs');
 const createBounce = require('./create-bounce');
 const getDiagnosticCode = require('./get-diagnostic-code');
 const getBlockedHashes = require('./get-blocked-hashes');
+const getTransporter = require('./get-transporter');
+const isTLSError = require('./is-tls-error');
+const isSSLError = require('./is-ssl-error');
 
 module.exports = {
   decrypt,
@@ -72,5 +75,8 @@ module.exports = {
   checkSRS,
   createBounce,
   getDiagnosticCode,
-  getBlockedHashes
+  getBlockedHashes,
+  getTransporter,
+  isSSLError,
+  isTLSError
 };

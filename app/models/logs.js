@@ -138,6 +138,13 @@ const MAX_BYTES = bytes('1MB');
 
 // <https://www.mongodb.com/community/forums/t/is-in-operator-able-to-use-index/150459>
 const Logs = new mongoose.Schema({
+  bounce_category: {
+    type: String,
+    index: true,
+    trim: true,
+    lowercase: true,
+    default: 'none'
+  },
   hash: {
     type: String,
     index: true,
@@ -685,12 +692,20 @@ function getQueryHash(log) {
 
 Logs.pre('validate', function (next) {
   try {
+    // get query hash
     this.hash = getQueryHash(this);
     next();
   } catch (err) {
     err.is_duplicate_log = true;
     next(err);
   }
+});
+
+Logs.pre('validate', function (next) {
+  // store bounce info category
+  if (typeof this?.err?.bounceInfo?.category === 'string')
+    this.bounce_category = this.err.bounceInfo.category;
+  next();
 });
 
 Logs.pre('save', async function (next) {

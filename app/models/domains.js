@@ -443,7 +443,7 @@ Domains.pre('validate', async function (next) {
     const { privateKey, publicKey } = await promisify(crypto.generateKeyPair)(
       'rsa',
       {
-        modulusLength: 2048,
+        modulusLength: 2048, // TODO: support 1024 bit as an option
         // default as of nodemailer v6.9.1
         hashAlgorithm: 'RSA-SHA256',
         publicKeyEncoding: {

@@ -96,7 +96,13 @@ function createMtaStsCache(client) {
 // `email` is an Email object from mongoose
 // `resolver` is a Tangerine instance
 // eslint-disable-next-line complexity
-async function processEmail({ email, port = 25, resolver, client }) {
+async function processEmail({
+  connectionMap = new Map(),
+  email,
+  port = 25,
+  resolver,
+  client
+}) {
   const meta = {
     session: createSession(email),
     user: email.user,
@@ -737,6 +743,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           }
 
           const info = await sendEmail({
+            connectionMap,
             session: createSession(email),
             cache,
             target,

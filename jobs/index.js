@@ -166,6 +166,16 @@ const jobs = [
     name: 'sync-paid-alias-allowlist',
     interval: '15m',
     timeout: 0
+  },
+  //
+  // parses logs and emails for bounce detection
+  // (so admins can manually curate which lists to request remove from)
+  // (and this opens up the door for automated blocklist removal emails)
+  //
+  {
+    name: 'bounce-report',
+    interval: '4h',
+    timeout: 0
   }
 ];
 

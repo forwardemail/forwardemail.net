@@ -32,6 +32,9 @@ const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const resolver = createTangerine(client, logger);
 
+const connectionMap = new Map();
+
+// TODO: graceful should iterate through connectionMap and close sockets
 const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [client],
@@ -194,7 +197,7 @@ async function sendEmails() {
     // return early if the job was already cancelled
     if (isCancelled) break;
     // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
-    queue.add(() => processEmail({ email, resolver, client }), {
+    queue.add(() => processEmail({ connectionMap, email, resolver, client }), {
       // if the email was admin owned domain then priority higher (see email pre-save hook)
       priority: email.priority || 0
     });

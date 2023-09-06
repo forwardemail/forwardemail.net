@@ -1,64 +1,28 @@
-const { callbackify } = require('node:util');
-const { isIP } = require('node:net');
-
 const RE2 = require('re2');
 const _ = require('lodash');
 const ip = require('ip');
-const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
-const mxConnect = require('mx-connect');
-const nodemailer = require('nodemailer');
-const pify = require('pify');
 const previewEmail = require('preview-email');
 const zoneMTABounces = require('zone-mta/lib/bounces');
-const { boolean } = require('boolean');
 
 const config = require('#config');
-const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
+const getTransporter = require('#helpers/get-transporter');
 const isCodeBug = require('#helpers/is-code-bug');
 const isNodemailerError = require('#helpers/is-nodemailer-error');
+const isTLSError = require('#helpers/is-tls-error');
+const isSSLError = require('#helpers/is-ssl-error');
 const logger = require('#helpers/logger');
 
 const IP_ADDRESS = ip.address();
-const asyncMxConnect = pify(mxConnect);
-
-const transporterConfig = {
-  debug: config.env !== 'test',
-  direct: true,
-  transactionLog: config.env !== 'test',
-  // mirrors the queue configuration 10s timeout
-  connectionTimeout: config.smtpQueueTimeout,
-  greetingTimeout: config.smtpQueueTimeout,
-  socketTimeout: config.smtpQueueTimeout,
-  dnsTimeout: config.smtpQueueTimeout
-};
-
-const maxConnectTime = ms('1m');
-
-const REGEX_TLS_ERR = new RE2(
-  /disconnected\s+before\s+secure\s+tls\s+connection\s+was\s+established/im
-);
-
-const REGEX_SSL_ERR = new RE2(
-  /ssl routines|ssl23_get_server_hello|\/deps\/openssl|ssl3_check/im
-);
 
 const REGEX_SPOOFING = new RE2(/spoof|impersonation|impersonate/im);
-
 const REGEX_LOCAL_POLICY = new RE2(/local\s+policy/im);
-
 const REGEX_SPAM = new RE2(/spam/im);
-
 const REGEX_VIRUS = new RE2(/virus/im);
-
 const REGEX_DENYLIST = new RE2(/denylist|deny\s+list/im);
-
 const REGEX_BLACKLIST = new RE2(/blacklist|black\s+list/im);
-
 const REGEX_BLOCKLIST = new RE2(/blocklist|block\s+list/im);
-
 const APPLE_HOSTS = new Set(['apple.com', 'icloud.com', 'me.com', 'mac.com']);
 
 const MAIL_RETRY_ERROR_CODES = new Set([
@@ -69,23 +33,6 @@ const MAIL_RETRY_ERROR_CODES = new Set([
   'EDNS',
   'EPROTOCOL'
 ]);
-
-function isTLSError(err) {
-  return boolean(
-    (typeof err.code === 'string' && err.code === 'ETLS') ||
-      (typeof err.message === 'string' && REGEX_TLS_ERR.test(err.message)) ||
-      err.cert ||
-      (typeof err.code === 'string' && err.code.startsWith('ERR_TLS_'))
-  );
-}
-
-function isSSLError(err) {
-  return boolean(
-    (typeof err.code === 'string' && err.code.startsWith('ERR_SSL_')) ||
-      (typeof err.message === 'string' && REGEX_SSL_ERR.test(err.message)) ||
-      (typeof err.library === 'string' && err.library === 'SSL routines')
-  );
-}
 
 // eslint-disable-next-line complexity
 async function shouldThrowError(err, session) {
@@ -176,6 +123,18 @@ async function shouldThrowError(err, session) {
   } else if (err.response.includes('AUP#1260'))
     // IPv6 not supported with Spectrum
     err.responseCode = 421;
+  else if (
+    err.response.includes('#CNCT') ||
+    err.response.includes('#CXCNCT') ||
+    err.response.includes('#CXMXRT') ||
+    err.response.includes('#MXRT')
+  )
+    // Cloudfilter rejection (421 mwd-ibgw-6004a.ext.cloudfilter.net cmsmtp 138.197.213.185 blocked AUP#CNCT:)
+    err.bounceInfo.category = 'blocklist';
+  else if (
+    err.response.includes('contains a unicode character in a disallowed header')
+  )
+    err.bounceInfo.category = 'spam';
   else if (err.response.includes('temporarily deferred'))
     err.bounceInfo.category = 'blocklist';
   else if (err.response.includes('JunkMail rejected'))
@@ -237,7 +196,10 @@ async function shouldThrowError(err, session) {
       // optimum-specific error message
       err.response.includes('451 4.7.1 Resources restricted') ||
       // 550 5.7.1 Service unavailable; client [138.197.213.185] blocked using antispam.fasthosts.co.uk
-      err.response.includes('blocked')) &&
+      err.response.includes('blocked') ||
+      // Connection refused - IB115. 104.248.224.170 is blacklisted (bigpond.com)
+      err.response.includes('blacklisted') ||
+      err.response.includes('blocklisted')) &&
     err.response.includes(IP_ADDRESS)
     // TODO: email us to send message to tobr@rx.t-online.de if detected string
   )
@@ -318,6 +280,7 @@ async function shouldThrowError(err, session) {
 
 // eslint-disable-next-line complexity
 async function sendEmail({
+  connectionMap = new Map(),
   session,
   cache,
   target,
@@ -345,127 +308,55 @@ async function sendEmail({
   }
 
   const ignoreMXHosts = [];
-  let mxLastError = false;
-  let transporter;
-  let mx;
-  let tls = {};
+  let mxLastError;
 
   try {
-    // <https://github.com/zone-eu/mx-connect#configuration-options>
-    mx = await asyncMxConnect({
+    const {
+      truthSource,
+      mx,
+      requireTLS,
+      ignoreTLS,
+      opportunisticTLS,
+      tls,
+      transporter
+    } = await getTransporter(connectionMap, {
       target,
       port,
       localAddress,
       localHostname,
-      // the default in mx-connect is 300s (5 min)
-      // <https://github.com/zone-eu/mx-connect/blob/f9e20ceff5a4a7cfb85fba58ca2f040aaa7c2358/lib/get-connection.js#L6>
-      maxConnectTime,
-      dnsOptions: {
-        // NOTE: if we merge code then this will need adjusted
-        blockLocalAddresses: env.NODE_ENV !== 'test',
-        // <https://github.com/zone-eu/mx-connect/pull/4>
-        resolve: callbackify(resolver.resolve.bind(resolver))
-      },
-      mtaSts: {
-        enabled: true,
-        logger(results) {
-          logger[results.success ? 'info' : 'error']('MTA-STS', {
-            session,
-            results
-          });
-        },
-        cache
-      }
-    });
-
-    session.requireTLS = Boolean(
-      mx.policyMatch && mx.policyMatch.mode === 'enforce'
-    );
-
-    //
-    // attempt to send the email with TLS
-    //
-    tls = {
-      // TODO: add SSL keys below
-      // ...(config.ssl
-      //   ? {
-      //       dhparam: config.ssl.dhparam,
-      //       key: config.ssl.key,
-      //       cert: config.ssl.cert,
-      //       ca: config.ssl.ca
-      //     }
-      //   : {}),
-      minVersion: session.requireTLS ? 'TLSv1.2' : 'TLSv1',
-      rejectUnauthorized: session.requireTLS
-    };
-
-    if (isFQDN(mx.hostname)) tls.servername = mx.hostname;
-
-    // <https://github.com/nodemailer/nodemailer/issues/1517>
-    // <https://gist.github.com/andris9/a13d9b327ea81d620ea89926d2097921>
-    if (!mx.socket && !isIP(mx.host)) {
-      try {
-        const [host] = await resolver.resolve(mx.host);
-        if (isIP(host)) mx.host = host;
-      } catch (err) {
-        logger.error(err, { session });
-      }
-    }
-
-    transporter = nodemailer.createTransport({
-      ...transporterConfig,
-      opportunisticTLS: !session.requireTLS,
-      secure: false,
-      secured: false,
+      resolver,
       logger,
-      host: mx.host,
-      port: mx.port,
-      name: localHostname,
-      requireTLS: session.requireTLS,
-      ...(mx.socket ? { connection: mx.socket } : {}),
-      tls
+      cache
     });
+
+    session.truthSource = truthSource;
+    session.mx = _.omit(mx, ['socket']);
+    session.requireTLS = requireTLS;
+    session.ignoreTLS = ignoreTLS;
+    session.opportunisticTLS = opportunisticTLS;
+    session.tls = tls;
 
     const info = await transporter.sendMail({
       envelope,
       raw
     });
 
-    // only needed for pooled connections (?)
-    if (
-      typeof transporter === 'object' &&
-      typeof transporter.close === 'function'
-    ) {
-      try {
-        transporter.close();
-      } catch (err) {
-        logger.error(err, { session });
-      }
-    }
-
     return info;
   } catch (err) {
-    // only needed for pooled connections (?)
-    if (
-      typeof transporter === 'object' &&
-      typeof transporter.close === 'function'
-    ) {
-      try {
-        transporter.close();
-      } catch (err) {
-        logger.error(err, { session });
-      }
-    }
-
+    // NOTE: this is important to keep here
     mxLastError = err;
-    session.mxLastError = mxLastError;
 
-    err.tls = tls;
     err.target = target;
     err.envelope = envelope;
-    err.mx = _.omit(mx, ['socket']);
-    err.opportunisticTLS = Boolean(!session.requireTLS);
-    err.requireTLS = Boolean(session.requireTLS);
+
+    // TODO: clean this up (shouldn't be mirrored to `err` probably?)
+    err.truthSource = session.truthSource;
+    err.mx = session.mx;
+    err.requireTLS = session.requireTLS;
+    err.ignoreTLS = session.ignoreTLS;
+    err.opportunisticTLS = session.opportunisticTLS;
+    err.tls = session.tls;
+
     await shouldThrowError(err, session);
 
     //
@@ -474,7 +365,7 @@ async function sendEmail({
     //
     if (err.code && MAIL_RETRY_ERROR_CODES.has(err.code)) {
       // if (!isNodemailerError(err))
-      ignoreMXHosts.push(mx.host);
+      ignoreMXHosts.push(session.mx.host);
     } else if (
       session.requireTLS &&
       (!err.code || !MAIL_RETRY_ERROR_CODES.has(err.code)) &&
@@ -523,100 +414,26 @@ async function sendEmail({
       isNodemailerError(err) ||
       (err.code && MAIL_RETRY_ERROR_CODES.has(err.code))
     ) {
-      // this is required since custom port forwarding would be recursive otherwise
-      mx = await asyncMxConnect({
-        ignoreMXHosts,
-        mxLastError,
-        target,
-        port,
-        localAddress,
-        localHostname,
-        // the default in mx-connect is 300s (5 min)
-        // <https://github.com/zone-eu/mx-connect/blob/f9e20ceff5a4a7cfb85fba58ca2f040aaa7c2358/lib/get-connection.js#L6>
-        maxConnectTime,
-        dnsOptions: {
-          // NOTE: if we merge code then this will need adjusted
-          blockLocalAddresses: env.NODE_ENV !== 'test',
-          // <https://github.com/zone-eu/mx-connect/pull/4>
-          resolve: callbackify(resolver.resolve.bind(resolver))
-        },
-        mtaSts: {
-          enabled: true,
-          logger(results) {
-            logger[results.success ? 'info' : 'error']('MTA-STS', {
-              session,
-              results
-            });
+      const { truthSource, mx, requireTLS, ignoreTLS, tls, transporter } =
+        await getTransporter(
+          connectionMap,
+          {
+            ignoreMXHosts,
+            mxLastError,
+            target,
+            port,
+            localAddress,
+            localHostname
           },
-          cache
-        }
-      });
+          err
+        );
 
-      // in case cache changes
-      session.requireTLS = Boolean(
-        mx.policyMatch && mx.policyMatch.mode === 'enforce'
-      );
-
-      //
-      // the email failed likely due to SSL/TLS issue
-      // so we're going to retry but with SSL/TLS disabled
-      // (we still want to try opportunistic TLS if and only if there was not a TLS error)
-      //
-      // TODO: add SSL keys below
-      tls = {
-        // ...(config.ssl
-        //   ? {
-        //       dhparam: config.ssl.dhparam,
-        //       key: config.ssl.key,
-        //       cert: config.ssl.cert,
-        //       ca: config.ssl.ca
-        //     }
-        //   : {}),
-        minVersion: session.requireTLS ? 'TLSv1.2' : 'TLSv1',
-        // ignore self-signed cert warnings if we are forwarding to a custom port
-        // (since a lot of sysadmins generate self-signed certs or forget to renew)
-        rejectUnauthorized: session.requireTLS && mx.port === 25
-      };
-
-      if (isFQDN(mx.hostname)) tls.servername = mx.hostname;
-
-      // <https://github.com/nodemailer/nodemailer/issues/1517>
-      // <https://gist.github.com/andris9/a13d9b327ea81d620ea89926d2097921>
-      if (!mx.socket && !isIP(mx.host)) {
-        try {
-          const [host] = await resolver.resolve(mx.host);
-          if (isIP(host)) mx.host = host;
-        } catch (err) {
-          logger.error(err, { session });
-        }
-      }
-
-      // if there was a TLS, SSL, or ECONNRESET then attempt to ignore STARTTLS
-      session.ignoreTLS =
-        !session.requireTLS &&
-        (isNodemailerError(err) ||
-          isSSLError(err) ||
-          isTLSError(err) ||
-          err.code === 'ECONNRESET');
-
-      // TODO: ensure this is released to npm and this project + FE source is version bumped
-      // <https://github.com/nodemailer/nodemailer/issues/1541>
-      transporter = nodemailer.createTransport({
-        ...transporterConfig,
-        // TODO: we may want this instead:
-        // `opportunisticTLS: !session.requireTLS,`
-        opportunisticTLS: !session.requireTLS && !session.ignoreTLS,
-        secure: false,
-        secured: false,
-        logger,
-        host: mx.host,
-        port: mx.port,
-        name: localHostname,
-        requireTLS: session.requireTLS,
-        ignoreTLS: session.ignoreTLS,
-        ...(mx.socket ? { connection: mx.socket } : {}),
-        tls
-      });
+      session.truthSource = truthSource;
+      session.mx = _.omit(mx, ['socket']);
+      session.requireTLS = requireTLS;
+      session.ignoreTLS = ignoreTLS;
+      session.opportunisticTLS = requireTLS;
+      session.tls = tls;
 
       try {
         const info = await transporter.sendMail({
@@ -624,41 +441,22 @@ async function sendEmail({
           raw
         });
 
-        // only needed for pooled connections (?)
-        if (
-          typeof transporter === 'object' &&
-          typeof transporter.close === 'function'
-        ) {
-          try {
-            transporter.close();
-          } catch (err) {
-            logger.error(err, { session });
-          }
-        }
-
         return info;
       } catch (err) {
-        // only needed for pooled connections (?)
-        if (
-          typeof transporter === 'object' &&
-          typeof transporter.close === 'function'
-        ) {
-          try {
-            transporter.close();
-          } catch (err) {
-            logger.error(err, { session });
-          }
-        }
-
-        err.tls = tls;
         err.target = target;
         err.envelope = envelope;
-        err.mx = _.omit(mx, ['socket']);
-        err.opportunisticTLS = Boolean(!session.requireTLS);
-        err.requireTLS = Boolean(session.requireTLS);
-        err.ignoreTLS = Boolean(session.ignoreTLS);
+
+        // TODO: clean this up (shouldn't be mirrored to `err` probably?)
+        err.truthSource = session.truthSource;
+        err.mx = session.mx;
+        err.requireTLS = session.requireTLS;
+        err.ignoreTLS = session.ignoreTLS;
+        err.opportunisticTLS = session.opportunisticTLS;
+        err.tls = session.tls;
+
         err.mxLastError = mxLastError;
         err.ignoreMXHosts = ignoreMXHosts;
+
         await shouldThrowError(err, session);
 
         //

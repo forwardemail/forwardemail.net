@@ -24,6 +24,7 @@ const phrases = require('#config/phrases');
 const processEmail = require('#helpers/process-email');
 const { Logs, Domains, Emails } = require('#models');
 
+const connectionMap = new Map();
 const IP_ADDRESS = ip.address();
 const client = new Redis();
 const resolver = createTangerine(client);
@@ -385,6 +386,7 @@ Test`.trim()
     t.is(email.status, 'queued');
 
     await processEmail({
+      connectionMap,
       email,
       port,
       resolver,
@@ -423,6 +425,7 @@ Test`.trim()
     });
 
     await processEmail({
+      connectionMap,
       email,
       port,
       resolver,
@@ -565,6 +568,7 @@ test('5+ day email bounce', async (t) => {
     t.is(email.locked_by, undefined);
 
     await processEmail({
+      connectionMap,
       email,
       resolver,
       client
@@ -763,6 +767,7 @@ test('smtp outbound spam block detection', async (t) => {
     t.is(email.status, 'queued');
 
     await processEmail({
+      connectionMap,
       email,
       port,
       resolver,
@@ -823,6 +828,7 @@ test('smtp outbound spam block detection', async (t) => {
     t.is(email.locked_by, undefined);
 
     await processEmail({
+      connectionMap,
       email,
       port,
       resolver,
@@ -1183,6 +1189,7 @@ test('smtp email blocklist', async (t) => {
     t.is(email.status, 'queued');
 
     await processEmail({
+      connectionMap,
       email,
       resolver,
       client
@@ -1225,6 +1232,7 @@ test('smtp email blocklist', async (t) => {
     t.is(email.status, 'queued');
 
     await processEmail({
+      connectionMap,
       email,
       resolver,
       client

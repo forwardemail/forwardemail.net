@@ -27,6 +27,7 @@ const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 const { Emails, Aliases } = require('#models');
 
+const connectionMap = new Map();
 const asyncMxConnect = pify(mxConnect);
 const IP_ADDRESS = ip.address();
 const client = new Redis();
@@ -597,6 +598,7 @@ test(`IDN domain`, async (t) => {
   //
   await t.notThrowsAsync(
     processEmail({
+      connectionMap,
       email,
       port: testPort,
       resolver,
@@ -773,6 +775,7 @@ test(`10MB message size`, async (t) => {
   //
   await t.notThrowsAsync(
     processEmail({
+      connectionMap,
       email,
       port: testPort,
       resolver,
@@ -949,6 +952,7 @@ test(`16MB message size`, async (t) => {
   //
   await t.notThrowsAsync(
     processEmail({
+      connectionMap,
       email,
       port: testPort,
       resolver,
@@ -1297,6 +1301,7 @@ Test`.trim()
   // process the email
   //
   await processEmail({
+    connectionMap,
     email,
     port: testPort,
     resolver,
@@ -1332,6 +1337,7 @@ Test`.trim()
   t.is(email.locked_by, undefined);
 
   await processEmail({
+    connectionMap,
     email,
     port: testPort,
     resolver,
