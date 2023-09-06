@@ -97,7 +97,7 @@ function makeDelimitedString(arr) {
       },
       bounce_category: { $ne: 'none' }
     })
-      .sort({ bounce_category: 1 })
+      .sort({ created_at: 1, bounce_category: 1 })
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       if (typeof log?.err?.bounceInfo?.category !== 'string') continue;
@@ -194,7 +194,7 @@ function makeDelimitedString(arr) {
 
     // super rudimentary and simple string concatenation
     const list = [];
-    for (const key of Object.keys(categories)) {
+    for (const key of Object.keys(categories).sort()) {
       list.push(
         `<li><strong>${titleize(humanize(key))}:</strong> ${
           categories[key]
@@ -213,6 +213,7 @@ function makeDelimitedString(arr) {
       `</ul>`,
       `<p>Trusted hosts that were blocked:</p>`,
       `<ul><li>${[...set]
+        .sort()
         .map((h) => `<code>${h}</code>`)
         .join('</li><li>')}</li></ul>`
     ].join('\n');
