@@ -56,6 +56,7 @@ function makeDelimitedString(arr) {
         'ID',
         'Date',
         'Bounce Category',
+        'Bounce Action',
         'Truth Source',
         'SMTP Response',
         'SMTP Code',
@@ -110,6 +111,8 @@ function makeDelimitedString(arr) {
           dayjs(log.created_at).toISOString(),
           // Bounce Category
           log.err.bounceInfo.category,
+          // Bounce Action
+          log.err.bounceInfo.action,
           // Truth Source
           log?.err?.truthSource && log?.err?.truthSource
             ? log.err.truthSource
