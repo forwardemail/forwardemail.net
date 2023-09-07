@@ -87,10 +87,12 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
           const rootDomain = parseRootDomain(sorted[0].exchange);
           if (
             config.truthSources.has(parseRootDomain(rootDomain)) &&
-            connectionMap.has(`${rootDomain}:${port}`)
+            connectionMap.has(`${sorted[0].exchange}:${port}`)
           ) {
-            const pool = connectionMap.get(`${rootDomain}:${port}`);
-            logger.info(`pool discovered: ${key} (${rootDomain}:${port})`);
+            const pool = connectionMap.get(`${sorted[0].exchange}:${port}`);
+            logger.info(
+              `pool discovered: ${key} (${sorted[0].exchange}:${port})`
+            );
             return pool;
           }
         }
@@ -133,9 +135,9 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
   // then denylist the sender (probably a low-reputation domain name spammer)
   //
   let truthSource = false;
-  if (config.truthSources.has(parseRootDomain(target)))
-    truthSource = parseRootDomain(target);
-  else if (
+  // if (config.truthSources.has(parseRootDomain(target)))
+  //   truthSource = parseRootDomain(target);
+  if (
     _.isObject(mx) &&
     isSANB(mx.hostname) &&
     isFQDN(mx.hostname) &&
@@ -147,10 +149,10 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
 
   if (isPooling) {
     mx.socket.once('close', () => {
-      logger.info(`pool closed: ${truthSource}:${port}`);
+      logger.info(`pool closed: ${mx.hostname}:${port}`);
       // remove the socket from the available pool
-      if (connectionMap.has(`${truthSource}:${port}`))
-        connectionMap.delete(`${truthSource}:${port}`);
+      if (connectionMap.has(`${mx.hostname}:${port}`))
+        connectionMap.delete(`${mx.hostname}:${port}`);
     });
   }
 
@@ -169,6 +171,7 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
     rejectUnauthorized: requireTLS && mx.port === 25
   };
 
+  // TODO: can we remove this (?)
   if (isFQDN(mx.hostname)) tls.servername = mx.hostname;
 
   // <https://github.com/nodemailer/nodemailer/issues/1517>
@@ -225,9 +228,9 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
     transporter
   };
 
-  if (!err && isPooling) {
-    connectionMap.set(`${truthSource}:${port}`, pool);
-    logger.info(`pool created: ${truthSource}:${port}`);
+  if (!err && isPooling && isFQDN(mx.hostname)) {
+    connectionMap.set(`${mx.hostname}:${port}`, pool);
+    logger.info(`pool created: ${mx.hostname}:${port}`);
   }
 
   return pool;
