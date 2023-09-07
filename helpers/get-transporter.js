@@ -199,6 +199,9 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
   const transporter = nodemailer.createTransport({
     ...transporterConfig,
     pool: isPooling,
+    ...(isPooling
+      ? { maxConnections: 1, rateDelta: ms('1s'), rateLimit: 5 }
+      : {}),
     secure: false,
     secured: false,
     logger,
