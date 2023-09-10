@@ -119,7 +119,7 @@ const Aliases = new mongoose.Schema({
     {
       type: String,
       trim: true,
-      maxlength: 20
+      maxlength: 150
     }
   ],
   is_enabled: {
