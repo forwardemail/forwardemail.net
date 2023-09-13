@@ -207,7 +207,7 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
       : {}),
     secure: false,
     secured: false,
-    logger,
+    logger: true, // NOTE: we remap this to our own logger below
     host: mx.host,
     port: mx.port,
     connection: mx.socket,
@@ -217,6 +217,9 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
     opportunisticTLS,
     tls
   });
+
+  // remap because shared logger does not use logger properly
+  transporter.logger = logger;
 
   const pool = {
     truthSource,

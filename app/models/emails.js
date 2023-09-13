@@ -50,8 +50,11 @@ const BYTES_15MB = bytes('15MB');
 
 const transporter = nodemailer.createTransport({
   streamTransport: true,
-  buffer: true
+  buffer: true,
+  logger: true
 });
+
+transporter.logger = logger;
 
 const scanner = new SpamScanner({
   logger,
