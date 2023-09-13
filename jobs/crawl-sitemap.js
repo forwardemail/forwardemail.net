@@ -66,7 +66,7 @@ graceful.listen();
       // crawl the page for caching support and localization
       {
         const path = url.loc.replace(config.urls.web, '');
-        logger.info(`crawling ${path}`);
+        logger.debug(`crawling ${path}`);
         // eslint-disable-next-line no-await-in-loop
         const { statusCode, headers, body } = await client.request({
           method: 'GET',
@@ -90,7 +90,7 @@ graceful.listen();
       // crawl the page + .png for social open graph image caching
       {
         const path = url.loc.replace(config.urls.web, '') + '.png';
-        logger.info(`crawling ${path}`);
+        logger.debug(`crawling ${path}`);
         // eslint-disable-next-line no-await-in-loop
         const { statusCode, headers, body } = await client.request({
           method: 'GET',
@@ -130,7 +130,7 @@ graceful.listen();
           headers
         );
       await body.text();
-      logger.info('submitted sitemap to google');
+      logger.debug('submitted sitemap to google');
     } catch (err) {
       await logger.error(err);
     }
@@ -152,7 +152,7 @@ graceful.listen();
           headers
         );
       await body.text();
-      logger.info('submitted sitemap to yandex');
+      logger.debug('submitted sitemap to yandex');
     } catch (err) {
       await logger.error(err);
     }
@@ -205,14 +205,14 @@ graceful.listen();
             );
           // eslint-disable-next-line no-await-in-loop
           await body.text();
-          logger.info('submitted %s urls to bing', urlList.length);
+          logger.debug('submitted %s urls to bing', urlList.length);
         } catch (err) {
           // eslint-disable-next-line no-await-in-loop
           await logger.error(err);
         }
       }
 
-      logger.info('submitted sitemap to bing');
+      logger.debug('submitted sitemap to bing');
     }
 
     // after successful run wait 24 hours then exit
