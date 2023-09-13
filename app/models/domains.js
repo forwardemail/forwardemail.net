@@ -810,7 +810,7 @@ async function getNSRecords(domain, resolver) {
     try {
       const rootDomain = parseRootDomain(domain.name);
       if (rootDomain === domain.name) {
-        logger.warn(err);
+        logger.debug(err);
         if (err.code === 'ENOTFOUND') {
           const error = Boom.badRequest(
             i18n.translateError('ENOTFOUND', domain.locale)
@@ -851,7 +851,7 @@ async function getNSRecords(domain, resolver) {
         }
       }
     } catch (err) {
-      logger.warn(err);
+      logger.debug(err);
       if (err.code === 'ENOTFOUND') {
         const error = Boom.badRequest(
           i18n.translateError('ENOTFOUND', domain.locale)
@@ -920,7 +920,7 @@ async function verifySMTP(domain, resolver) {
           }
         }
       } catch (err) {
-        logger.warn(err);
+        logger.debug(err);
         // TODO: isCodeBug needs integrated anywhere resolver is used
         if (err.code && DNS_RETRY_CODES.has(err.code)) {
           const error = Boom.badRequest(
@@ -953,7 +953,7 @@ async function verifySMTP(domain, resolver) {
         )
           returnPath = true;
       } catch (err) {
-        logger.warn(err);
+        logger.debug(err);
         // TODO: isCodeBug needs integrated anywhere resolver is used
         if (err.code && DNS_RETRY_CODES.has(err.code)) {
           const error = Boom.badRequest(
@@ -993,7 +993,7 @@ async function verifySMTP(domain, resolver) {
         )
           dmarc = true;
       } catch (err) {
-        logger.warn(err);
+        logger.debug(err);
         // TODO: isCodeBug needs integrated anywhere resolver is used
         if (err.code && DNS_RETRY_CODES.has(err.code)) {
           const error = Boom.badRequest(
@@ -1073,7 +1073,7 @@ async function getVerificationResults(domain, resolver) {
       },
       { concurrency }
     );
-    logger.info('cleared DNS cache for cloudflare', {
+    logger.debug('cleared DNS cache for cloudflare', {
       domain,
       types: CACHE_TYPES
     });
@@ -1232,7 +1232,7 @@ async function getVerificationResults(domain, resolver) {
           errors.push(...result.errors);
         }
       } catch (err) {
-        logger.warn(err);
+        logger.debug(err);
         if (err.code === 'ENOTFOUND') {
           const error = Boom.badRequest(
             i18n.translateError('ENOTFOUND', domain.locale)
@@ -1307,7 +1307,7 @@ async function getVerificationResults(domain, resolver) {
             )
           );
       } catch (err) {
-        logger.warn(err);
+        logger.debug(err);
         if (err.code === 'ENOTFOUND') {
           const error = Boom.badRequest(
             i18n.translateError('ENOTFOUND', domain.locale)

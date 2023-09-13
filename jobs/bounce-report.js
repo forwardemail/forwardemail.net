@@ -54,7 +54,8 @@ function makeDelimitedString(arr) {
 
     csv.push(
       makeDelimitedString([
-        'ID',
+        'Log ID',
+        'Session ID',
         'Date',
         'Level',
         'Bounce Category',
@@ -102,11 +103,14 @@ function makeDelimitedString(arr) {
       .sort({ created_at: 1 })
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
+      if (!log?.meta?.session?.id) continue;
       // add new row to spreadsheet
       csv.push(
         makeDelimitedString([
           // ID
           log.id,
+          // Session ID
+          log.meta.session.id,
           // Date
           dayjs(log.created_at).toISOString(),
           // Level

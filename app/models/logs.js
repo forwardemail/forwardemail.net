@@ -814,7 +814,7 @@ async function parseLog(log) {
           return domain._id;
         } catch (err) {
           if (DNS_ERROR_CODES.has(err.code)) throw err;
-          logger.warn(err);
+          logger.debug(err);
         }
       },
       { concurrency }
