@@ -4804,5 +4804,6 @@
   "– the max is": "– le maximum est",
   "and minimum is": "et le minimum est",
   "Issue Detected": "Problème détecté",
-  "Issue": "Problème"
+  "Issue": "Problème",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "L&#39;en-tête From doit être égal à <span class=\"notranslate\">%s</span>"
 }

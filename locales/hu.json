@@ -4804,5 +4804,6 @@
   "– the max is": "– a max",
   "and minimum is": "és minimum az",
   "Issue Detected": "Probléma észlelve",
-  "Issue": "Probléma"
+  "Issue": "Probléma",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "A fejléctől egyenlőnek kell lennie: <span class=\"notranslate\">%s</span>"
 }

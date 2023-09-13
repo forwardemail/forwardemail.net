@@ -4804,5 +4804,6 @@
   "– the max is": "– max är",
   "and minimum is": "och minimum är",
   "Issue Detected": "Problem upptäckt",
-  "Issue": "Problem"
+  "Issue": "Problem",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Från-huvudet måste vara lika med <span class=\"notranslate\">%s</span>"
 }

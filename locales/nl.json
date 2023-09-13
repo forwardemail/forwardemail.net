@@ -4804,5 +4804,6 @@
   "– the max is": "– het maximum is",
   "and minimum is": "en minimaal is",
   "Issue Detected": "Probleem gedetecteerd",
-  "Issue": "Probleem"
+  "Issue": "Probleem",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Van header moet gelijk zijn aan <span class=\"notranslate\">%s</span>"
 }

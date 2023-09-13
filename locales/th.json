@@ -4804,5 +4804,6 @@
   "– the max is": "– สูงสุดคือ",
   "and minimum is": "และขั้นต่ำคือ",
   "Issue Detected": "ตรวจพบปัญหา",
-  "Issue": "ปัญหา"
+  "Issue": "ปัญหา",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "จากส่วนหัวจะต้องเท่ากับ <span class=\"notranslate\">%s</span>"
 }

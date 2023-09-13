@@ -4649,5 +4649,6 @@
   "– the max is": "– maksimi on",
   "and minimum is": "ja minimi on",
   "Issue Detected": "Ongelma havaittu",
-  "Issue": "Ongelma"
+  "Issue": "Ongelma",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Otsikon on oltava yhtä suuri kuin <span class=\"notranslate\">%s</span>"
 }

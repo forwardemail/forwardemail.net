@@ -4804,5 +4804,6 @@
   "– the max is": "– 최대값은",
   "and minimum is": "그리고 최소값은",
   "Issue Detected": "문제가 감지되었습니다.",
-  "Issue": "문제"
+  "Issue": "문제",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "보낸 사람 헤더는 <span class=\"notranslate\">%s</span> 과(와) 같아야 합니다."
 }

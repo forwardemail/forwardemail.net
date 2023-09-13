@@ -4804,5 +4804,6 @@
   "– the max is": "– максимум є",
   "and minimum is": "а мінімум є",
   "Issue Detected": "Проблему виявлено",
-  "Issue": "Проблема"
+  "Issue": "Проблема",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Заголовок From має дорівнювати <span class=\"notranslate\">%s</span>"
 }

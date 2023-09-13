@@ -4804,5 +4804,6 @@
   "– the max is": "– maksimalnya adalah",
   "and minimum is": "dan minimum adalah",
   "Issue Detected": "Masalah Terdeteksi",
-  "Issue": "Masalah"
+  "Issue": "Masalah",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Dari header harus sama dengan <span class=\"notranslate\">%s</span>"
 }

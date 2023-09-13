@@ -4804,5 +4804,6 @@
   "– the max is": "– maximum je",
   "and minimum is": "a minimum je",
   "Issue Detected": "Zjištěn problém",
-  "Issue": "Problém"
+  "Issue": "Problém",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Od záhlaví se musí rovnat <span class=\"notranslate\">%s</span>"
 }

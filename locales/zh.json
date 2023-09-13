@@ -4495,5 +4495,6 @@
   "– the max is": "– 最大值是",
   "and minimum is": "最小值是",
   "Issue Detected": "Issue Detected",
-  "Issue": "Issue"
+  "Issue": "Issue",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "From 标头必须等于<span class=\"notranslate\">%s</span>"
 }

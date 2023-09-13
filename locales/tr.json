@@ -4804,5 +4804,6 @@
   "– the max is": "– maksimum",
   "and minimum is": "ve minimum",
   "Issue Detected": "Sorun Algılandı",
-  "Issue": "Sorun"
+  "Issue": "Sorun",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Başlıktan <span class=\"notranslate\">%s</span> eşit olmalıdır"
 }

@@ -4804,5 +4804,6 @@
   "– the max is": "– jest maks",
   "and minimum is": "i minimalne jest",
   "Issue Detected": "Wykryto problem",
-  "Issue": "Wydanie"
+  "Issue": "Wydanie",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Z nagłówka musi być równe <span class=\"notranslate\">%s</span>"
 }

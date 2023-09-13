@@ -4540,5 +4540,6 @@
   "– the max is": "– max er",
   "and minimum is": "og minimum er",
   "Issue Detected": "Problem opdaget",
-  "Issue": "Problem"
+  "Issue": "Problem",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Fra-header skal være lig med <span class=\"notranslate\">%s</span>"
 }

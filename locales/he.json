@@ -4804,5 +4804,6 @@
   "– the max is": "- המקסימום הוא",
   "and minimum is": "והמינימום הוא",
   "Issue Detected": "זוהתה בעיה",
-  "Issue": "נושא"
+  "Issue": "נושא",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "From header חייב להיות שווה ל- <span class=\"notranslate\">%s</span>"
 }

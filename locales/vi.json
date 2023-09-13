@@ -4804,5 +4804,6 @@
   "– the max is": "– mức tối đa là",
   "and minimum is": "và tối thiểu là",
   "Issue Detected": "Đã phát hiện sự cố",
-  "Issue": "Vấn đề"
+  "Issue": "Vấn đề",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Tiêu đề từ phải bằng <span class=\"notranslate\">%s</span>"
 }

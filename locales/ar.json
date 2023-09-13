@@ -4804,5 +4804,6 @@
   "– the max is": "- الحد الأقصى هو",
   "and minimum is": "والحد الأدنى هو",
   "Issue Detected": "تم اكتشاف المشكلة",
-  "Issue": "مشكلة"
+  "Issue": "مشكلة",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "من الرأس يجب أن يكون مساوياً لـ <span class=\"notranslate\">%s</span>"
 }

@@ -4804,5 +4804,6 @@
   "– the max is": "– 最大値は",
   "and minimum is": "そして最小値は",
   "Issue Detected": "問題が検出されました",
-  "Issue": "問題"
+  "Issue": "問題",
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "From ヘッダーは<span class=\"notranslate\">%s</span>と等しくなければなりません"
 }
