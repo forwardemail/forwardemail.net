@@ -665,7 +665,27 @@ async function processEmail({
 
     // safeguard
     if (map.size === 0) {
-      logger.error(new Error('Invalid envelope recipients'), meta);
+      //
+      // NOTE: this is a safeguard so that if every envelope recipient
+      //       is already accepted it will mark the email as being sent
+      //
+      if (
+        email.accepted.sort().join(',') === email.envelope.to.sort().join(',')
+      ) {
+        await Emails.findByIdAndUpdate(email._id, {
+          $set: {
+            status: 'sent',
+            is_locked: false
+          },
+          $unset: {
+            locked_by: 1,
+            locked_at: 1
+          }
+        });
+      } else {
+        logger.error(new Error('Invalid envelope recipients'), meta);
+      }
+
       return;
     }
 

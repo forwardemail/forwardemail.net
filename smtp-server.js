@@ -583,8 +583,8 @@ async function onAuth(auth, session, fn) {
       // return 550 error code
       if (!limit.remaining)
         throw new SMTPError(
-          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
-          { ignoreHook: true }
+          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`
+          // { ignoreHook: true }
         );
     }
 
@@ -598,8 +598,8 @@ async function onAuth(auth, session, fn) {
       throw new SMTPError(
         `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
         {
-          responseCode: 535,
-          ignoreHook: true
+          responseCode: 535
+          // ignoreHook: true
         }
       );
 

@@ -408,6 +408,15 @@ Emails.pre('save', function (next) {
     if (['sent', 'partially_sent', 'bounced', 'rejected'].includes(this.status))
       return next();
 
+    // if all recipients were accepted, then status is "sent"
+    if (this.accepted.sort().join(',') === this.envelope.to.sort().join(',')) {
+      this.status = 'sent';
+      this.is_locked = false;
+      this.locked_by = undefined;
+      this.locked_at = undefined;
+      return next();
+    }
+
     //
     // NOTE: we only want to modify the status when it is in a "queued" state
     //       or when it is in a queued state and locked by current server
@@ -427,12 +436,6 @@ Emails.pre('save', function (next) {
     //
     // this.locked_by = undefined;
     // this.locked_at = undefined;
-
-    // if all recipients were accepted, then status is "sent"
-    if (this.accepted.sort().join(',') === this.envelope.to.sort().join(',')) {
-      this.status = 'sent';
-      return next();
-    }
 
     // if all recipients were rejected (5xx), then status is "bounced"
     // if some recipients accepted and others were rejected (5xx) then status is "partially_sent"
