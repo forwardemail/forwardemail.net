@@ -73,7 +73,7 @@ graceful.listen();
       .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
-      logger.info('processing %s', domain.name);
+      logger.debug('processing %s', domain.name);
       const set = new Set();
       set.add(`${domain.name}`);
       {
@@ -93,7 +93,7 @@ graceful.listen();
         .lean()
         .cursor()
         .addCursorFlag('noCursorTimeout', true)) {
-        logger.info(
+        logger.debug(
           'alias %s@%s (%d recipients)',
           alias.name,
           domain.name,
@@ -150,7 +150,7 @@ graceful.listen();
             if (isIP(ip)) set.add(ip);
           }
         } catch (err) {
-          logger.warn(err, { domain, host });
+          logger.debug(err, { domain, host });
         }
 
         // TODO: we should also check hostnames of the exchanges for denylist (?)
@@ -176,13 +176,13 @@ graceful.listen();
                     if (isIP(ip)) set.add(ip);
                   }
                 } catch (err) {
-                  logger.error(err, { domain, host });
+                  logger.debug(err, { domain, host });
                 }
               }
             }
           }
         } catch (err) {
-          logger.warn(err, { domain, host });
+          logger.debug(err, { domain, host });
         }
       }
 
@@ -320,7 +320,7 @@ graceful.listen();
 
       if (set.size === 0) continue;
 
-      logger.info('adding', { set: [...set], domain });
+      logger.debug('adding', { set: [...set], domain });
 
       const p = client.pipeline();
       for (const v of set) {
