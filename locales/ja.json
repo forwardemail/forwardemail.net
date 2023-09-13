@@ -26,7 +26,7 @@
   "Info": "情報",
   "Warning": "警告",
   "Question": "質問",
-  "OK": "OK",
+  "OK": "わかりました",
   "Cancel": "キャンセル",
   "Close this dialog": "このダイアログを閉じる",
   "Are you sure?": "本気ですか？",
@@ -4802,5 +4802,7 @@
   "`limit": "`限界",
   "Number of results per page to return (default is": "返されるページごとの結果の数 (デフォルトは",
   "– the max is": "– 最大値は",
-  "and minimum is": "そして最小値は"
+  "and minimum is": "そして最小値は",
+  "Issue Detected": "問題が検出されました",
+  "Issue": "問題"
 }

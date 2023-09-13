@@ -578,7 +578,7 @@
   "Python": "파이썬",
   "requests": "요청",
   "Java": "자바",
-  "OkHttp": "OkHttp",
+  "OkHttp": "알았어Http",
   "PHP": "PHP",
   "guzzle": "목구멍",
   "JavaScript": "자바 스크립트",
@@ -4802,5 +4802,7 @@
   "`limit": "`한계",
   "Number of results per page to return (default is": "반환할 페이지당 결과 수(기본값은",
   "– the max is": "– 최대값은",
-  "and minimum is": "그리고 최소값은"
+  "and minimum is": "그리고 최소값은",
+  "Issue Detected": "문제가 감지되었습니다.",
+  "Issue": "문제"
 }

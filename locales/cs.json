@@ -4802,5 +4802,7 @@
   "`limit": "'limit",
   "Number of results per page to return (default is": "Počet výsledků na stránku, které se mají vrátit (výchozí je",
   "– the max is": "– maximum je",
-  "and minimum is": "a minimum je"
+  "and minimum is": "a minimum je",
+  "Issue Detected": "Zjištěn problém",
+  "Issue": "Problém"
 }

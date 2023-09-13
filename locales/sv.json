@@ -4802,5 +4802,7 @@
   "`limit": "`gräns",
   "Number of results per page to return (default is": "Antal resultat per sida att returnera (standard är",
   "– the max is": "– max är",
-  "and minimum is": "och minimum är"
+  "and minimum is": "och minimum är",
+  "Issue Detected": "Problem upptäckt",
+  "Issue": "Problem"
 }

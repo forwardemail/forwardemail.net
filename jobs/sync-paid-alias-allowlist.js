@@ -99,6 +99,12 @@ graceful.listen();
           domain.name,
           alias.recipients.length
         );
+        // add alias.name @ domain.name
+        if (
+          !alias.name.startsWith('/') &&
+          isEmail(`${alias.name}@${domain.name}`)
+        )
+          set.add(`${alias.name}@${domain.name}`);
         for (const recipient of alias.recipients) {
           if (isFQDN(recipient)) {
             const domain = recipient.toLowerCase();

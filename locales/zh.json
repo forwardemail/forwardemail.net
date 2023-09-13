@@ -10,13 +10,13 @@
   "401": "401",
   "403": "403",
   "404": "404",
-  "429": "429",
+  "429": "第429章",
   "500": "500",
   "501": "501",
   "502": "502",
   "503": "503",
   "504": "504",
-  "587": "587",
+  "587": "第587章",
   "Hello": "你好",
   "It looks like you accidentally included \"www.\" in your domain name.  Did you mean example.com instead of www.example.com?": "看起来您不小心包含了“www”。在您的域名中。您指的是 example.com 而不是 www.example.com？",
   "Invalid API credentials.": "API 凭据无效。",
@@ -4493,5 +4493,7 @@
   "`limit": "`限制",
   "Number of results per page to return (default is": "每页返回的结果数（默认为",
   "– the max is": "– 最大值是",
-  "and minimum is": "最小值是"
+  "and minimum is": "最小值是",
+  "Issue Detected": "Issue Detected",
+  "Issue": "Issue"
 }

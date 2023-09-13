@@ -4807,5 +4807,7 @@
   "`limit": "`grense",
   "Number of results per page to return (default is": "Antall resultater per side som skal returneres (standard er",
   "– the max is": "– maks er",
-  "and minimum is": "og minimum er"
+  "and minimum is": "og minimum er",
+  "Issue Detected": "Problem oppdaget",
+  "Issue": "Utgave"
 }

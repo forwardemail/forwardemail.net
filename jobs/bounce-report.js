@@ -55,6 +55,7 @@ function makeDelimitedString(arr) {
       makeDelimitedString([
         'ID',
         'Date',
+        'Level',
         'Bounce Category',
         'Bounce Action',
         'Truth Source',
@@ -95,13 +96,11 @@ function makeDelimitedString(arr) {
       created_at: {
         $gte: dayjs(now).subtract(4, 'hour').toDate(),
         $lte: now
-      },
-      bounce_category: { $ne: 'none' }
+      }
     })
-      .sort({ created_at: 1, bounce_category: 1 })
+      .sort({ created_at: 1 })
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
-      if (typeof log?.err?.bounceInfo?.category !== 'string') continue;
       // add new row to spreadsheet
       csv.push(
         makeDelimitedString([
@@ -109,10 +108,12 @@ function makeDelimitedString(arr) {
           log.id,
           // Date
           dayjs(log.created_at).toISOString(),
+          // Level
+          log?.meta?.level,
           // Bounce Category
-          log.err.bounceInfo.category,
+          log.bounce_category || 'none',
           // Bounce Action
-          log.err.bounceInfo.action,
+          log?.err?.bounceInfo?.action || 'none',
           // Truth Source
           log?.err?.truthSource && log?.err?.truthSource
             ? log.err.truthSource
@@ -184,14 +185,14 @@ function makeDelimitedString(arr) {
         ])
       );
 
-      if (!Number.isFinite(categories[log.err.bounceInfo.category]))
-        categories[log.err.bounceInfo.category] = 0;
+      if (!Number.isFinite(categories[log.bounce_category]))
+        categories[log.bounce_category] = 0;
 
       // generic category counter
-      categories[log.err.bounceInfo.category]++;
+      categories[log.bounce_category]++;
 
       // truth source blocklist category counter
-      if (log.err.bounceInfo.category === 'blocklist' && log?.err?.truthSource)
+      if (log.bounce_category === 'blocklist' && log?.err?.truthSource)
         set.add(log.err.truthSource);
     }
 
@@ -206,7 +207,7 @@ function makeDelimitedString(arr) {
     }
 
     const message = [
-      `<p>Bounces from ${dayjs(now)
+      `<p>Logs from ${dayjs(now)
         .subtract(4, 'hour')
         .format('M/D/YY h:mm A')} to ${dayjs(now).format(
         'M/D/YY h:mm A z'
@@ -226,12 +227,12 @@ function makeDelimitedString(arr) {
       template: 'alert',
       message: {
         to: config.email.message.from,
-        subject: `(${csv.length - 1}) Bounces for ${dayjs(now).format(
-          'M/D/YY h:mm A z'
-        )} (${set.size} trusted hosts blocked)`,
+        subject: `(${csv.length - 1}) Email Deliverability Logs for ${dayjs(
+          now
+        ).format('M/D/YY h:mm A z')} (${set.size} trusted hosts blocked)`,
         attachments: [
           {
-            filename: `bounce-report-${dayjs(now).format(
+            filename: `email-deliverability-logs-${dayjs(now).format(
               'YYYY-MM-DD-h-mm-A-z'
             )}.csv`.toLowerCase(),
             content: csv.join('\n')
@@ -249,7 +250,7 @@ function makeDelimitedString(arr) {
       template: 'alert',
       message: {
         to: config.email.message.from,
-        subject: 'Bounce Report Issue'
+        subject: 'Email Deliverability Report Issue'
       },
       locals: {
         message: `<pre><code>${JSON.stringify(

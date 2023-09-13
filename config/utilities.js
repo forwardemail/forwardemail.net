@@ -61,6 +61,14 @@ function prefixHTMLPathBasedAnchors(html, baseURI) {
 // NOTE: we might want to sort FAQ or pre-select or highlight/bump
 // NOTE: anyone not using these providers we can flag for review
 //
+// 0 - slug
+// 1 - name
+// 2 - url
+// 3 - gif
+// 4 - host
+// 5 - video
+// 6 - trailing period (e.g. Gandi) <https://github.com/forwardemail/forwardemail.net/issues/197>
+//
 const NS_PROVIDERS = {
   awsdns: [
     'amazon-route-53',
@@ -117,7 +125,9 @@ const NS_PROVIDERS = {
     'Gandi.net',
     'https://id.gandi.net/login',
     'gandi',
-    ''
+    '',
+    '',
+    true
   ],
   'googledomains.com': [
     'google-domains',
@@ -326,9 +336,9 @@ function nsProviderLookup(domain) {
 
   for (const [i, NS_PROVIDER_REGEX] of NS_PROVIDER_REGEXES.entries()) {
     if (domain.ns.some((r) => NS_PROVIDER_REGEX.test(r))) {
-      const [slug, name, url, gif, host, video] =
+      const [slug, name, url, gif, host, video, trailingPeriod] =
         NS_PROVIDERS[NS_PROVIDER_KEYS[i]];
-      provider = { slug, name, url, gif, host, video };
+      provider = { slug, name, url, gif, host, video, trailingPeriod };
       break;
     }
   }
@@ -338,8 +348,8 @@ function nsProviderLookup(domain) {
 
 let nsProviders = [];
 for (const key of _.sortBy(NS_PROVIDER_KEYS, (key) => NS_PROVIDERS[key].name)) {
-  const [slug, name, url, gif, host, video] = NS_PROVIDERS[key];
-  nsProviders.push({ slug, name, url, gif, host, video });
+  const [slug, name, url, gif, host, video, trailingPeriod] = NS_PROVIDERS[key];
+  nsProviders.push({ slug, name, url, gif, host, video, trailingPeriod });
 }
 
 nsProviders = _.sortBy(

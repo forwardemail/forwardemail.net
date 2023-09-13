@@ -4802,5 +4802,7 @@
   "`limit": "`korlát",
   "Number of results per page to return (default is": "A visszaküldendő találatok száma oldalanként (alapértelmezett",
   "– the max is": "– a max",
-  "and minimum is": "és minimum az"
+  "and minimum is": "és minimum az",
+  "Issue Detected": "Probléma észlelve",
+  "Issue": "Probléma"
 }

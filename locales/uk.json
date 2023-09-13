@@ -4802,5 +4802,7 @@
   "`limit": "`ліміт",
   "Number of results per page to return (default is": "Кількість результатів на сторінку для повернення (за замовчуванням:",
   "– the max is": "– максимум є",
-  "and minimum is": "а мінімум є"
+  "and minimum is": "а мінімум є",
+  "Issue Detected": "Проблему виявлено",
+  "Issue": "Проблема"
 }

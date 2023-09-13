@@ -4802,5 +4802,7 @@
   "`limit": "`גבול",
   "Number of results per page to return (default is": "מספר התוצאות בכל דף להחזר (ברירת המחדל היא",
   "– the max is": "- המקסימום הוא",
-  "and minimum is": "והמינימום הוא"
+  "and minimum is": "והמינימום הוא",
+  "Issue Detected": "זוהתה בעיה",
+  "Issue": "נושא"
 }

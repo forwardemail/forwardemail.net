@@ -299,6 +299,8 @@ block body
                             = "forwardemail.net"
                           else
                             = config.webHost
+                          if provider && provider.trailingPeriod
+                            = '.'
                         if !domain.has_return_path_record
                           button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                             type="button",

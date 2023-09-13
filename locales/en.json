@@ -4576,5 +4576,7 @@
   "`limit": "`limit",
   "Number of results per page to return (default is": "Number of results per page to return (default is",
   "– the max is": "– the max is",
-  "and minimum is": "and minimum is"
+  "and minimum is": "and minimum is",
+  "Issue Detected": "Issue Detected",
+  "Issue": "Issue"
 }

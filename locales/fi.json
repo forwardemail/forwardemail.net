@@ -4647,5 +4647,7 @@
   "`limit": "`raja",
   "Number of results per page to return (default is": "Palautettavien tulosten määrä sivua kohden (oletus on",
   "– the max is": "– maksimi on",
-  "and minimum is": "ja minimi on"
+  "and minimum is": "ja minimi on",
+  "Issue Detected": "Ongelma havaittu",
+  "Issue": "Ongelma"
 }

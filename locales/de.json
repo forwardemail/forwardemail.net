@@ -654,7 +654,7 @@
   "Netlify": "Netlify",
   "Setup Netlify DNS": "Netlify-DNS einrichten",
   "Network Solutions": "Netzwerklösungen",
-  "Account Manager": "Account Manager",
+  "Account Manager": "Account-Manager",
   "My Domain Names": "Meine Domainnamen",
   "Change Where Domain Points": "Ändern Sie die Where-Domain-Punkte",
   "Shopify": "Shopify",
@@ -3820,5 +3820,7 @@
   "`limit": "`Grenze",
   "Number of results per page to return (default is": "Anzahl der Ergebnisse pro Seite, die zurückgegeben werden sollen (Standard ist",
   "– the max is": "– das Maximum ist",
-  "and minimum is": "und Minimum ist"
+  "and minimum is": "und Minimum ist",
+  "Issue Detected": "Problem erkannt",
+  "Issue": "Ausgabe"
 }
