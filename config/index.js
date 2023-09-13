@@ -41,7 +41,7 @@ const config = {
   },
   // 60 items (50 MB * 60 = 3000 MB = 3 GB)
   smtpMaxQueue: 60,
-  smtpQueueTimeout: ms('60s'),
+  smtpQueueTimeout: ms('180s'),
   smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300,
   smtpLimitAuth: env.NODE_ENV === 'test' ? Number.MAX_VALUE : 3,
   smtpLimitAuthDuration: ms('1d'),
