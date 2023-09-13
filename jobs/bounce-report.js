@@ -2,6 +2,7 @@
 require('#config/env');
 
 const process = require('node:process');
+const zlib = require('node:zlib');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -234,8 +235,8 @@ function makeDelimitedString(arr) {
           {
             filename: `email-deliverability-logs-${dayjs(now).format(
               'YYYY-MM-DD-h-mm-A-z'
-            )}.csv`.toLowerCase(),
-            content: csv.join('\n')
+            )}.csv.gz`.toLowerCase(),
+            content: zlib.gzipSync(csv.join('\n'), { level: 9 })
           }
         ]
       },
