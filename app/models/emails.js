@@ -7,7 +7,6 @@ const Boom = require('@hapi/boom');
 const SpamScanner = require('spamscanner');
 const _ = require('lodash');
 const addressParser = require('nodemailer/lib/addressparser');
-const addrs = require('email-addresses');
 const bytes = require('bytes');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
@@ -849,50 +848,6 @@ Emails.statics.queue = async function (
       : new Date();
   const messageId = parsed.headers.get('message-id') || info.messageId;
   const subject = parsed.headers.get('subject');
-
-  //
-  // ensure from header is equal to the alias sending from
-  // (avoids confusing "Invalid DKIM signature" error message)
-  //
-  const from = parsed.headers.get('from');
-
-  if (!isSANB(from))
-    throw Boom.badRequest(
-      i18n.translateError(
-        'INVALID_FROM_HEADER',
-        locale,
-        `${alias.name}@${domain.name}`
-      )
-    );
-
-  // safeguard
-  let fromAddresses =
-    addrs.parseAddressList({ input: from, partial: true }) || [];
-
-  // safeguard
-  if (fromAddresses.length === 0)
-    fromAddresses = addrs.parseAddressList({ input: from }) || [];
-
-  // safeguard
-  if (fromAddresses.length === 0) fromAddresses = addressParser(from);
-
-  // safeguard
-  fromAddresses = fromAddresses.filter(
-    (addr) => _.isObject(addr) && isSANB(addr.address) && isEmail(addr.address)
-  );
-
-  // safeguard
-  if (
-    fromAddresses.length !== 1 ||
-    fromAddresses[0].address.toLowerCase() !== `${alias.name}@${domain.name}`
-  )
-    throw Boom.badRequest(
-      i18n.translateError(
-        'INVALID_FROM_HEADER',
-        locale,
-        `${alias.name}@${domain.name}`
-      )
-    );
 
   //
   // sanitize message and attachments
