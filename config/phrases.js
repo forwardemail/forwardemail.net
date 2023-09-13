@@ -73,6 +73,8 @@ module.exports = {
     'Invalid DMARC result (policy must be <span class="notranslate">"p=none"</span>, <span class="notranslate">"p=reject"</span>, or <span class="notranslate">"p=quarantine"</span>, and <span class="notranslate">"pct=100"</span> must be set).',
   INVALID_SPF_RESULT: 'Invalid SPF result.',
   INVALID_DKIM_SIGNATURE: 'Invalid DKIM signature.',
+  INVALID_FROM_HEADER:
+    'From header must be equal to <span class="notranslate">%s</span>',
   ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',
   ALIAS_MUST_HAVE_ONE_RECIPIENT: 'Alias must have at least one recipient.',
   ENCRYPTED_VALUE: 'encrypted value',
