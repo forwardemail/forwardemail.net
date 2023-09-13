@@ -2,6 +2,7 @@ const { callbackify } = require('node:util');
 const { isIP } = require('node:net');
 const punycode = require('node:punycode');
 
+const Axe = require('axe');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -207,7 +208,7 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
       : {}),
     secure: false,
     secured: false,
-    logger: true, // NOTE: we remap this to our own logger below
+    logger: new Axe({ silent: true }),
     host: mx.host,
     port: mx.port,
     connection: mx.socket,
@@ -217,9 +218,6 @@ async function getTransporter(connectionMap = new Map(), options = {}, err) {
     opportunisticTLS,
     tls
   });
-
-  // remap because shared logger does not use logger properly
-  transporter.logger = logger;
 
   const pool = {
     truthSource,

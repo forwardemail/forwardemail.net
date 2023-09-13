@@ -2,6 +2,7 @@ const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
+const Axe = require('axe');
 const Boom = require('@hapi/boom');
 const SpamScanner = require('spamscanner');
 const _ = require('lodash');
@@ -51,10 +52,10 @@ const BYTES_15MB = bytes('15MB');
 const transporter = nodemailer.createTransport({
   streamTransport: true,
   buffer: true,
-  logger: true
+  logger: new Axe({
+    silent: true
+  })
 });
-
-transporter.logger = logger;
 
 const scanner = new SpamScanner({
   logger,
