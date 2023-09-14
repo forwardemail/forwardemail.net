@@ -107,9 +107,13 @@ async function sendEmail({
     // NOTE: this is handled because `MAIL_RETRY_ERROR_CODES` has `ECONNRESET`
     //       https://github.com/zone-eu/zone-mta/blob/5daa48eea4aa05e724eb2ab80fd3a957e6cc8c6c/lib/sender.js#L1140
     //
-    if (isRetryableError(err)) {
+    if (isRetryableError(err) && isSANB(session?.mx?.host)) {
       ignoreMXHosts.push(session.mx.host);
-    } else if (session.requireTLS && isTLSError(err)) {
+    } else if (
+      !isRetryableError(err) &&
+      session.requireTLS &&
+      isTLSError(err)
+    ) {
       //
       // NOTE: if MTA-STS was enforced and it was TLS error then throw if not a retry code
       // (safeguard is here for keeping retry codes in conditional in case this moves around)
