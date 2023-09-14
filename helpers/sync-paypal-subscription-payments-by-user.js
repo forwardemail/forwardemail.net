@@ -4,14 +4,14 @@ const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 
-const Payments = require('#models/payments');
-const Users = require('#models/users');
+const emailHelper = require('./email');
+const logger = require('./logger');
+const { paypalAgent } = require('./paypal');
+const ThresholdError = require('./threshold-error');
+const getAllPayPalSubscriptionTransactions = require('./get-all-paypal-subscription-transactions');
 const config = require('#config');
-const emailHelper = require('#helpers/email');
-const logger = require('#helpers/logger');
-const { paypalAgent } = require('#helpers/paypal');
-const ThresholdError = require('#helpers/threshold-error');
-const getAllPayPalSubscriptionTransactions = require('#helpers/get-all-paypal-subscription-transactions');
+const Users = require('#models/users');
+const Payments = require('#models/payments');
 
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 const PAYPAL_PLANS = {

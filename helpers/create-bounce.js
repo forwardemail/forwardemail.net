@@ -7,8 +7,8 @@ const ip = require('ip');
 const isFQDN = require('is-fqdn');
 const { convert } = require('html-to-text');
 
-const getErrorCode = require('#helpers/get-error-code');
-const getDiagnosticCode = require('#helpers/get-diagnostic-code');
+const getErrorCode = require('./get-error-code');
+const getDiagnosticCode = require('./get-diagnostic-code');
 const config = require('#config');
 
 const HOSTNAME = os.hostname();

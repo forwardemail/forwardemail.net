@@ -6,12 +6,12 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const parseErr = require('parse-err');
 
-const logger = require('#helpers/logger');
+const logger = require('./logger');
+const ThresholdError = require('./threshold-error');
 const config = require('#config');
 const env = require('#config/env');
 const Users = require('#models/users');
 const Payments = require('#models/payments');
-const ThresholdError = require('#helpers/threshold-error');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS } = config.payments;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);

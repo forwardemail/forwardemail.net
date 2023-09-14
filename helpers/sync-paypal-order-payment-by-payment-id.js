@@ -2,9 +2,9 @@ const delay = require('delay');
 const ms = require('ms');
 const _ = require('lodash');
 
+const logger = require('./logger');
+const { paypalAgent } = require('./paypal');
 const Payments = require('#models/payments');
-const logger = require('#helpers/logger');
-const { paypalAgent } = require('#helpers/paypal');
 
 const FIVE_SECONDS = ms('5s');
 

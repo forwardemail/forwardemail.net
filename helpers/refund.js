@@ -1,8 +1,8 @@
 const Stripe = require('stripe');
 
+const { paypalAgent } = require('./paypal');
 const env = require('#config/env');
 const { Payments } = require('#models');
-const { paypalAgent } = require('#helpers/paypal');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 

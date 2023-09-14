@@ -119,7 +119,7 @@ async function hook(err, message, meta) {
       }
 
       return conn.models.Logs.create(log)
-        .then((log) => logger.info('log created', { log, ignore_hook: true }))
+        .then()
         .catch((err) => {
           //
           // NOTE: this allows us to log mongodb timeout issues (e.g. due to slow queries)
@@ -141,7 +141,6 @@ async function hook(err, message, meta) {
     if (typeof window !== 'object' || typeof window.API_URL !== 'string')
       throw new Error('API URL was not in the window global');
 
-    // TODO: replace this with undici on server side
     const request = superagent
       // eslint-disable-next-line no-undef
       .post(`${window.API_URL}/v1/log`)

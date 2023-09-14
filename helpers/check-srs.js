@@ -34,7 +34,6 @@ function checkSRS(address, shouldThrow = false, ignoreHook = false) {
       err = error;
     }
 
-    // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code
     if (!err.responseCode) err.responseCode = 553;
     if (ignoreHook) err.ignoreHook = true;
 

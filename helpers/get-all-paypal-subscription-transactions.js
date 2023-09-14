@@ -1,6 +1,6 @@
 const pWhilst = require('p-whilst');
-const { paypalAgent } = require('#helpers/paypal');
-const logger = require('#helpers/logger');
+const { paypalAgent } = require('./paypal');
+const logger = require('./logger');
 
 // subscription is PayPal subscription object
 async function getAllPayPalSubscriptionTransactions(subscription, agent) {

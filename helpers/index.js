@@ -23,7 +23,6 @@ const getAllPayPalSubscriptionTransactions = require('./get-all-paypal-subscript
 const createTangerine = require('./create-tangerine');
 const processEmail = require('./process-email');
 const sendEmail = require('./send-email');
-const isNodemailerError = require('./is-nodemailer-error');
 const getErrorCode = require('./get-error-code');
 const isCodeBug = require('./is-code-bug');
 const createSession = require('./create-session');
@@ -37,6 +36,14 @@ const getBlockedHashes = require('./get-blocked-hashes');
 const getTransporter = require('./get-transporter');
 const isTLSError = require('./is-tls-error');
 const isSSLError = require('./is-ssl-error');
+const shouldThrow = require('./should-throw');
+const isRetryableError = require('./is-retryable-error');
+const isTimeoutError = require('./is-timeout-error');
+const isSocketError = require('./is-socket-error');
+const SMTPError = require('./smtp-error');
+const RetryClient = require('./retry-client');
+const retryRequest = require('./retry-request');
+const getBounceInfo = require('./get-bounce-info');
 
 module.exports = {
   decrypt,
@@ -65,7 +72,6 @@ module.exports = {
   createTangerine,
   processEmail,
   sendEmail,
-  isNodemailerError,
   getErrorCode,
   isCodeBug,
   createSession,
@@ -78,5 +84,13 @@ module.exports = {
   getBlockedHashes,
   getTransporter,
   isSSLError,
-  isTLSError
+  isTLSError,
+  shouldThrow,
+  isRetryableError,
+  isTimeoutError,
+  isSocketError,
+  SMTPError,
+  RetryClient,
+  retryRequest,
+  getBounceInfo
 };

@@ -4,7 +4,7 @@ const { boolean } = require('boolean');
 const isErrorConstructorName = require('./is-error-constructor-name');
 
 function isCodeBug(err) {
-  return boolean(
+  const bool = boolean(
     err.isCodeBug === true ||
       err.message === CONNECTION_CLOSED_ERROR_MSG ||
       isErrorConstructorName(err, 'TypeError') ||
@@ -17,6 +17,9 @@ function isCodeBug(err) {
       isErrorConstructorName(err, 'MongoError') ||
       isErrorConstructorName(err, 'RedisError')
   );
+  // safeguard
+  err.isCodeBug = bool;
+  return bool;
 }
 
 module.exports = isCodeBug;

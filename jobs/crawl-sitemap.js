@@ -14,12 +14,13 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
 const { XMLParser } = require('fast-xml-parser');
-const { request, Client, errors } = require('undici');
 
-const env = require('#config/env');
-const emailHelper = require('#helpers/email');
+const RetryClient = require('#helpers/retry-client');
 const config = require('#config');
+const emailHelper = require('#helpers/email');
+const env = require('#config/env');
 const logger = require('#helpers/logger');
+const retryRequest = require('#helpers/retry-request');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const graceful = new Graceful({
@@ -28,7 +29,7 @@ const graceful = new Graceful({
 });
 
 // <https://github.com/nodejs/undici/issues/583>
-const client = new Client(config.urls.web, {
+const client = new RetryClient(config.urls.web, {
   autoSelectFamily: config.env !== 'production'
 });
 
@@ -43,20 +44,8 @@ graceful.listen();
     //
     const response = await client.request({
       method: 'GET',
-      path: '/sitemap.xml',
-      signal: AbortSignal.timeout(5000),
-      throwOnError: true
+      path: '/sitemap.xml'
     });
-
-    // the error code is between 200-400 (e.g. 302 redirect)
-    // in order to mirror the behavior of `throwOnError` we will re-use the undici errors
-    // <https://github.com/nodejs/undici/issues/2093>
-    if (response.statusCode !== 200)
-      throw new errors.ResponseStatusCodeError(
-        `Response status code ${response.statusCode}`,
-        response.statusCode,
-        response.headers
-      );
 
     const xml = await response.body.text();
     const parser = new XMLParser({});
@@ -68,19 +57,10 @@ graceful.listen();
         const path = url.loc.replace(config.urls.web, '');
         logger.debug(`crawling ${path}`);
         // eslint-disable-next-line no-await-in-loop
-        const { statusCode, headers, body } = await client.request({
+        const { body } = await client.request({
           method: 'GET',
-          path,
-          signal: AbortSignal.timeout(10000),
-          throwOnError: true
+          path
         });
-
-        if (statusCode !== 200)
-          throw new errors.ResponseStatusCodeError(
-            `Response status code ${statusCode}`,
-            statusCode,
-            headers
-          );
 
         // eslint-disable-next-line no-await-in-loop
         await body.text();
@@ -92,18 +72,10 @@ graceful.listen();
         const path = url.loc.replace(config.urls.web, '') + '.png';
         logger.debug(`crawling ${path}`);
         // eslint-disable-next-line no-await-in-loop
-        const { statusCode, headers, body } = await client.request({
+        const { body } = await client.request({
           method: 'GET',
-          path,
-          signal: AbortSignal.timeout(10000),
-          throwOnError: true
+          path
         });
-        if (statusCode !== 200)
-          throw new errors.ResponseStatusCodeError(
-            `Response status code ${statusCode}`,
-            statusCode,
-            headers
-          );
 
         // eslint-disable-next-line no-await-in-loop
         await body.text();
@@ -115,20 +87,12 @@ graceful.listen();
 
     // google
     try {
-      const { statusCode, body, headers } = await request(
+      const { body } = await retryRequest(
         `https://www.google.com/ping?sitemap=${sitemap}`,
         {
-          method: 'POST',
-          signal: AbortSignal.timeout(10000),
-          throwOnError: true
+          method: 'POST'
         }
       );
-      if (statusCode !== 200)
-        throw new errors.ResponseStatusCodeError(
-          `Response status code ${statusCode}`,
-          statusCode,
-          headers
-        );
       await body.text();
       logger.debug('submitted sitemap to google');
     } catch (err) {
@@ -137,20 +101,12 @@ graceful.listen();
 
     // yandex
     try {
-      const { statusCode, body, headers } = await request(
+      const { body } = await retryRequest(
         `https://webmaster.yandex.ru/ping?sitemap=${sitemap}`,
         {
-          method: 'POST',
-          signal: AbortSignal.timeout(10000),
-          throwOnError: true
+          method: 'POST'
         }
       );
-      if (statusCode !== 200)
-        throw new errors.ResponseStatusCodeError(
-          `Response status code ${statusCode}`,
-          statusCode,
-          headers
-        );
       await body.text();
       logger.debug('submitted sitemap to yandex');
     } catch (err) {
@@ -180,12 +136,10 @@ graceful.listen();
       for (const urlList of urlLists) {
         try {
           // eslint-disable-next-line no-await-in-loop
-          const { statusCode, body, headers } = await request(
+          const { body } = await retryRequest(
             `https://ssl.bing.com/webmaster/api.svc/json/SubmitUrlBatch?apikey=${env.MICROSOFT_BING_API_KEY}`,
             {
               method: 'POST',
-              signal: AbortSignal.timeout(10000),
-              throwOnError: true,
               headers: {
                 'Content-Type': 'application/json',
                 // eslint-disable-next-line unicorn/text-encoding-identifier-case
@@ -197,12 +151,6 @@ graceful.listen();
               })
             }
           );
-          if (statusCode !== 200)
-            throw new errors.ResponseStatusCodeError(
-              `Response status code ${statusCode}`,
-              statusCode,
-              headers
-            );
           // eslint-disable-next-line no-await-in-loop
           await body.text();
           logger.debug('submitted %s urls to bing', urlList.length);

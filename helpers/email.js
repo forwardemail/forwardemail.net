@@ -9,7 +9,6 @@ const config = require('#config');
 const email = new Email(config.email);
 
 // TODO: email-templates should strip tags from HTML in subject
-// TODO: rewrite to create a new email, queue it, and send
 module.exports = async (data) => {
   try {
     logger.info('sending email', { data });

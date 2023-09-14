@@ -3,7 +3,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const ratelimit = require('@ladjs/koa-simple-ratelimit');
 
-const logger = require('#helpers/logger');
+const logger = require('./logger');
 const config = require('#config');
 
 // defaults to 10 requests per day

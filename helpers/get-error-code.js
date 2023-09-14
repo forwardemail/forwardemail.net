@@ -1,94 +1,40 @@
 const RE2 = require('re2');
-const isSANB = require('is-string-and-not-blank');
 
-const logger = require('./logger');
-const isNodemailerError = require('./is-nodemailer-error');
+const getBounceInfo = require('./get-bounce-info');
 const isCodeBug = require('./is-code-bug');
-
-const HTTP_RETRY_STATUS_CODES = new Set([408, 413, 429, 550]);
-
-const HTTP_RETRY_ERROR_CODES = new Set([
-  'ETIMEDOUT',
-  //
-  // NOTE: ECONNABORTED occurs when the request times out
-  //       <https://github.com/visionmedia/superagent/blob/29fd1f917a6cc78c9a2a9984269c06f8b4e63dcb/src/request-base.js#L773>
-  //       (and we should indicate SMTP response to retry later in case the webhook server resolves itself)
-  //
-  'ECONNABORTED',
-  'ECONNRESET',
-  'EADDRINUSE',
-  'ECONNREFUSED',
-  'EPIPE',
-  'ENOTFOUND',
-  'ENETUNREACH',
-  'EAI_AGAIN',
-  'EADDRNOTAVAIL',
-
-  // undici related errors
-  // <https://github.com/nodejs/undici/blob/main/docs/api/Errors.md>
-  'UND_ERR',
-  'UND_ERR_CONNECT_TIMEOUT',
-  'UND_ERR_HEADERS_TIMEOUT',
-  'UND_ERR_HEADERS_OVERFLOW',
-  'UND_ERR_BODY_TIMEOUT',
-  // 'UND_ERR_RESPONSE_STATUS_CODE',
-  'UND_ERR_INVALID_ARG',
-  'UND_ERR_INVALID_RETURN_VALUE',
-  'UND_ERR_ABORTED',
-  'UND_ERR_DESTROYED',
-  'UND_ERR_CLOSED',
-  'UND_ERR_SOCKET',
-  'UND_ERR_NOT_SUPPORTED',
-  'UND_ERR_REQ_CONTENT_LENGTH_MISMATCH',
-  'UND_ERR_RES_CONTENT_LENGTH_MISMATCH',
-  'UND_ERR_INFO',
-  'UND_ERR_RES_EXCEEDED_MAX_SIZE'
-]);
-
-// <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
-// <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
-const DNS_RETRY_CODES = new Set([
-  'EADDRGETNETWORKPARAMS',
-  'EBADFAMILY',
-  'EBADFLAGS',
-  'EBADHINTS',
-  'EBADNAME',
-  'EBADQUERY',
-  'EBADRESP',
-  'EBADSTR',
-  'ECANCELLED',
-  'ECONNREFUSED',
-  'EDESTRUCTION',
-  'EFILE',
-  'EFORMERR',
-  'ELOADIPHLPAPI',
-  'ENODATA',
-  'ENOMEM',
-  'ENONAME',
-  'ENOTFOUND',
-  'ENOTIMP',
-  'ENOTINITIALIZED',
-  'EOF',
-  'EREFUSED',
-  'ESERVFAIL',
-  'ETIMEOUT'
-]);
+const isRetryableError = require('./is-retryable-error');
+const logger = require('./logger');
 
 const REGEX_DIAGNOSTIC_CODE = new RE2(/^\d{3} /);
 
 // eslint-disable-next-line complexity
 function getErrorCode(err) {
   if (typeof err !== 'object') {
-    logger.fatal(new Error('Error passed was not an Object'), {
-      err
-    });
+    const err = new Error('Error passed was not an Object');
+    err.isCodeBug = true;
+    logger.fatal(err);
     return 550;
   }
 
+  // get bounce info
+  err.bounceInfo = getBounceInfo(err);
+
   // if it was a code bug
+  if (isCodeBug(err)) return 421;
+
+  if (err.bounceInfo.category === 'virus') return 554;
+  if (err.bounceInfo.category === 'spam') return 550;
   if (
-    err.isCodeBug === true ||
-    (typeof err.isCodeBug !== 'boolean' && isCodeBug(err))
+    (typeof err.responseCode !== 'number' || err.responseCode > 500) &&
+    (['defer', 'slowdown'].includes(err.bounceInfo.action) ||
+      [
+        'block',
+        'blocklist',
+        'capacity',
+        'network',
+        'protocol',
+        'policy'
+      ].includes(err.bounceInfo.category))
   )
     return 421;
 
@@ -103,21 +49,14 @@ function getErrorCode(err) {
   )
     return err.responseCode;
 
-  if (
-    // p-timeout has err.name = "TimeoutError"
-    err.name === 'TimeoutError' ||
-    (isSANB(err.code) &&
-      (DNS_RETRY_CODES.has(err.code) ||
-        HTTP_RETRY_ERROR_CODES.has(err.code))) ||
-    (typeof err.status === 'number' && HTTP_RETRY_STATUS_CODES.has(err.status))
-  )
-    return 421;
-
-  if (isNodemailerError(err)) return 421;
+  if (isRetryableError(err)) return 421;
 
   // parse diagnostic code if `err.response` was specified
   // (must be between 4xx and 5xx in order to be an error)
-  if (isSANB(err.response) && REGEX_DIAGNOSTIC_CODE.test(err.response)) {
+  if (
+    typeof err.response === 'string' &&
+    REGEX_DIAGNOSTIC_CODE.test(err.response)
+  ) {
     const code = Number.parseInt(err.response.slice(0, 3), 10);
     if (typeof code === 'number' && code >= 400 && code < 600) return code;
   }

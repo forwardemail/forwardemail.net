@@ -6,7 +6,6 @@ const { promisify } = require('node:util');
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
-const captainHook = require('captain-hook');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
@@ -22,7 +21,6 @@ const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isIP, isEmail, isPort, isURL } = require('validator');
-const { request, errors } = require('undici');
 
 const pkg = require('../../package.json');
 const Users = require('./users');
@@ -30,9 +28,10 @@ const Users = require('./users');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
+const parseRootDomain = require('#helpers/parse-root-domain');
+const retryRequest = require('#helpers/retry-request');
 const verificationRecordOptions = require('#config/verification-record');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-const parseRootDomain = require('#helpers/parse-root-domain');
 
 const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
@@ -88,23 +87,9 @@ const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(
 const disposableDomains = new Set();
 async function crawlDisposable() {
   try {
-    const response = await request(
-      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
-      {
-        signal: AbortSignal.timeout(10000),
-        throwOnError: true
-      }
+    const response = await retryRequest(
+      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
     );
-
-    // the error code is between 200-400 (e.g. 302 redirect)
-    // in order to mirror the behavior of `throwOnError` we will re-use the undici errors
-    // <https://github.com/nodejs/undici/issues/2093>
-    if (response.statusCode !== 200)
-      throw new errors.ResponseStatusCodeError(
-        `Response status code ${response.statusCode}`,
-        response.statusCode,
-        response.headers
-      );
 
     const json = await response.body.json();
     if (!Array.isArray(json) || json.length === 0) {
@@ -389,8 +374,6 @@ Domains.index(
     }
   }
 );
-
-Domains.plugin(captainHook);
 
 // shared tangerine resolver
 Domains.virtual('resolver')
@@ -1058,17 +1041,16 @@ async function getVerificationResults(domain, resolver) {
       CACHE_TYPES,
       (type) => {
         const url = new URL(CLOUDFLARE_PURGE_CACHE_URL);
-        url.searchParams = new URLSearchParams({
-          domain: domain.name,
-          type
-        });
-        return request(url, {
+        url.searchParams.append('domain', domain.name);
+        url.searchParams.append('type', type);
+        return retryRequest(url, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
             'User-Agent': USER_AGENT
           },
-          signal: AbortSignal.timeout(10000)
+          timeout: ms('5s'),
+          retries: 2
         });
       },
       { concurrency }
@@ -1613,15 +1595,6 @@ async function ensureUserHasValidPlan(user, locale) {
 }
 
 Domains.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
-
-Domains.postCreate((domain, next) => {
-  // log that the domain was created
-  logger.info('domain created', {
-    domain: domain.toObject()
-  });
-
-  next();
-});
 
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'

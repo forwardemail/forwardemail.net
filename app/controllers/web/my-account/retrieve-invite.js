@@ -27,6 +27,13 @@ async function retrieveInvite(ctx) {
       Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
+  // if the user already is an admin or member of domain with same name
+  const match = ctx.state.domains.find((d) => d.name === domain.name);
+  if (match)
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'))
+    );
+
   // convert invitee to a member with the same group as invite had
   const invite = domain.invites.find(
     (invite) => invite.email === ctx.state.user.email

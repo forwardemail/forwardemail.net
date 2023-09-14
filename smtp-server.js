@@ -29,6 +29,7 @@ const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const SMTPError = require('#helpers/smtp-error');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
@@ -40,15 +41,6 @@ class ServerShutdownError extends Error {
     super(message, ...args);
     Error.captureStackTrace(this, ServerShutdownError);
     this.responseCode = 421;
-  }
-}
-
-class SMTPError extends Error {
-  constructor(message, options = {}, ...args) {
-    super(message, options, ...args);
-    Error.captureStackTrace(this, SMTPError);
-    this.responseCode = options?.responseCode || 550;
-    if (options.ignoreHook === true) this.ignoreHook = true;
   }
 }
 
@@ -124,14 +116,12 @@ function refineAndLogError(err, session) {
     err.isCodeBug = isCodeBug(err);
     if (err.isCodeBug) {
       logger.fatal(err, { session });
-      // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code
       err.responseCode = 421;
     }
   }
 
   // if it was HTTP error and no `responseCode` set then try to parse it
   // into a SMTP-friendly format for error handling
-  // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code
   err.responseCode = getErrorCode(err);
 
   // rewrite message to keep the underlying code issue private to end users
@@ -779,10 +769,6 @@ class SMTP {
     this.listen = this.listen.bind(this);
     this.close = this.close.bind(this);
   }
-
-  //
-  // TODO: rewrite below to remove `pify` usage
-  //
 
   async listen(port = env.SMTP_PORT, host = '::', ...args) {
     await pify(this.server.listen).bind(this.server)(port, host, ...args);

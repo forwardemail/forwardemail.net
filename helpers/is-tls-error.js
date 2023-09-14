@@ -7,7 +7,8 @@ const REGEX_TLS_ERR = new RE2(
 
 function isTLSError(err) {
   return boolean(
-    (typeof err.code === 'string' && err.code === 'ETLS') ||
+    err.isTLSError === true ||
+      (typeof err.code === 'string' && err.code === 'ETLS') ||
       (typeof err.message === 'string' && REGEX_TLS_ERR.test(err.message)) ||
       err.cert ||
       (typeof err.code === 'string' && err.code.startsWith('ERR_TLS_'))

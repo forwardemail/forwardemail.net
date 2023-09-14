@@ -7,7 +7,6 @@ const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
-const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
@@ -21,20 +20,21 @@ const { isEmail } = require('validator');
 
 const sendEmail = require('./send-email');
 
-const combineErrors = require('#helpers/combine-errors');
+const combineErrors = require('./combine-errors');
+const createBounce = require('./create-bounce');
+const createSession = require('./create-session');
+const emailHelper = require('./email');
+const getBlockedHashes = require('./get-blocked-hashes');
+const getErrorCode = require('./get-error-code');
+const i18n = require('./i18n');
+const isCodeBug = require('./is-code-bug');
+const logger = require('./logger');
+const parseRootDomain = require('./parse-root-domain');
+const { decrypt } = require('./encrypt-decrypt');
+
 const config = require('#config');
-const createBounce = require('#helpers/create-bounce');
-const createSession = require('#helpers/create-session');
-const emailHelper = require('#helpers/email');
 const env = require('#config/env');
-const getErrorCode = require('#helpers/get-error-code');
-const getBlockedHashes = require('#helpers/get-blocked-hashes');
-const i18n = require('#helpers/i18n');
-const isCodeBug = require('#helpers/is-code-bug');
-const logger = require('#helpers/logger');
-const parseRootDomain = require('#helpers/parse-root-domain');
 const { Emails, Users, Domains, Aliases } = require('#models');
-const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const HOSTNAME = os.hostname();
 const IP_ADDRESS = ip.address();
@@ -583,13 +583,8 @@ async function processEmail({
       : false;
 
     // verify DKIM
-    if (!dkim || !dkimAlignedMatch) {
-      const err = Boom.badRequest(
-        i18n.translateError('INVALID_DKIM_SIGNATURE')
-      );
-      if (dkim) err.dkim = dkim;
-      throw err;
-    }
+    if (!dkim || !dkimAlignedMatch)
+      throw Boom.badRequest(i18n.translateError('INVALID_DKIM_SIGNATURE'));
 
     // verify SPF
     if (
@@ -775,13 +770,11 @@ async function processEmail({
             raw,
             localAddress: IP_ADDRESS,
             localHostname: HOSTNAME,
-            resolver
+            resolver,
+            client
           });
           return info;
         } catch (err) {
-          err.isCodeBug = isCodeBug(err);
-          err.responseCode = getErrorCode(err);
-
           //
           // if the SMTP response was from trusted root host and it was rejected for spam/virus
           // then denylist the sender (probably a low-reputation domain name spammer)
@@ -789,101 +782,79 @@ async function processEmail({
           if (
             user.group !== 'admin' &&
             domain.name !== env.WEB_HOST &&
+            err.truthSource &&
             typeof err.bounceInfo === 'object' &&
             typeof err.bounceInfo.category === 'string' &&
             ['virus', 'spam'].includes(err.bounceInfo.category)
           ) {
-            let truthSource = config.truthSources.has(parseRootDomain(target))
-              ? parseRootDomain(target)
-              : false;
+            // send an email to all admins of the domain
+            const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+            try {
+              await emailHelper({
+                template: 'smtp-suspended',
+                message: { to: obj.to, bcc: config.email.message.from },
+                locals: {
+                  domain:
+                    typeof domain.toObject === 'function'
+                      ? domain.toObject()
+                      : domain,
+                  locale: obj.locale,
+                  category: err.bounceInfo.category,
+                  responseCode: err.responseCode,
+                  response: err.response,
+                  truthSource: err.truthSource,
+                  email:
+                    typeof email.toObject === 'function'
+                      ? email.toObject()
+                      : email
+                }
+              });
+            } catch (err) {
+              logger.fatal(err, meta);
+            }
 
-            //
-            // if host was not allowlisted then check against MX connection hostname
-            // (e.g. users with business domains pointing at a hosted provider like Google Business)
-            //
-            if (
-              !truthSource &&
-              typeof err.mx === 'object' &&
-              isSANB(err.mx.hostname) &&
-              isFQDN(err.mx.hostname)
-            )
-              truthSource = config.truthSources.has(
-                parseRootDomain(err.mx.hostname)
-              )
-                ? parseRootDomain(err.mx.hostname)
-                : false;
+            // if any of the domain admins are admins then don't ban
+            const adminExists = await Users.exists({
+              _id: {
+                $in: domain.members
+                  .filter((m) => m.group === 'admin')
+                  .map((m) =>
+                    typeof m.user === 'object' && typeof m.user._id === 'object'
+                      ? m.user._id
+                      : m.user
+                  )
+              },
+              group: 'admin'
+            });
 
-            if (truthSource) {
-              // send an email to all admins of the domain
-              const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
-              try {
-                await emailHelper({
-                  template: 'smtp-suspended',
-                  message: { to: obj.to, bcc: config.email.message.from },
-                  locals: {
-                    domain:
-                      typeof domain.toObject === 'function'
-                        ? domain.toObject()
-                        : domain,
-                    locale: obj.locale,
-                    category: err.bounceInfo.category,
-                    responseCode: err.responseCode,
-                    response: err.response,
-                    truthSource,
-                    email:
-                      typeof email.toObject === 'function'
-                        ? email.toObject()
-                        : email
-                  }
-                });
-              } catch (err) {
-                logger.fatal(err, meta);
-              }
-
-              // if any of the domain admins are admins then don't ban
-              const adminExists = await Users.exists({
-                _id: {
-                  $in: domain.members
-                    .filter((m) => m.group === 'admin')
-                    .map((m) =>
-                      typeof m.user === 'object' &&
-                      typeof m.user._id === 'object'
-                        ? m.user._id
-                        : m.user
-                    )
-                },
-                group: 'admin'
+            // store when we sent this email
+            if (!adminExists) {
+              await Domains.findByIdAndUpdate(domain._id, {
+                $set: {
+                  smtp_suspended_sent_at: new Date(),
+                  is_smtp_suspended: true
+                }
               });
 
-              // store when we sent this email
-              if (!adminExists) {
-                await Domains.findByIdAndUpdate(domain._id, {
-                  $set: {
-                    smtp_suspended_sent_at: new Date(),
-                    is_smtp_suspended: true
-                  }
-                });
-
-                // delete all existing tokens for the alias
-                // (this way further retries will fail with incorrect password)
-                await Aliases.findByIdAndUpdate(alias._id, {
-                  $set: {
-                    tokens: []
-                  }
-                });
-              }
-
-              //
-              // NOTE: we do `forbidden` here instead of `badRequest`
-              //       so that the email will permanently fail instead of retrying
-              //
-              const error = Boom.forbidden(
-                i18n.translateError('DOMAIN_SUSPENDED')
-              );
-              // preserve original err
-              error.error = err;
-              throw error;
+              // delete all existing tokens for the alias
+              // (this way further retries will fail with incorrect password)
+              await Aliases.findByIdAndUpdate(alias._id, {
+                $set: {
+                  tokens: []
+                }
+              });
             }
+
+            //
+            // NOTE: we do `forbidden` here instead of `badRequest`
+            //       so that the email will permanently fail instead of retrying
+            //
+            const error = Boom.forbidden(
+              i18n.translateError('DOMAIN_SUSPENDED')
+            );
+            // preserve original err
+            error.error = err;
+            throw error;
           }
 
           return {

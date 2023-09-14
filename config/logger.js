@@ -4,15 +4,14 @@ const signale = require('signale');
 
 const env = require('./env');
 
-const isProduction = env.NODE_ENV === 'production';
-
 module.exports = {
   // eslint-disable-next-line no-undef
   logger: typeof window === 'object' ? console : signale,
-  level: isProduction ? 'info' : 'debug',
-  levels: isProduction
-    ? ['info', 'warn', 'error', 'fatal']
-    : ['trace', 'info', 'debug', 'warn', 'error', 'fatal'],
+  level: env.NODE_ENV === 'test' ? 'debug' : 'info',
+  levels:
+    env.NODE_ENV === 'test'
+      ? ['trace', 'info', 'debug', 'warn', 'error', 'fatal']
+      : ['info', 'warn', 'error', 'fatal'],
   showStack: env.AXE_SHOW_STACK,
   meta: {
     show: env.AXE_SHOW_META

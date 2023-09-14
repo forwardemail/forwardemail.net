@@ -712,12 +712,18 @@ test('smtp outbound spam block detection', async (t) => {
   //
   for (const to of res.body.envelope.to) {
     const [, domain] = to.split('@');
+    // A
+    map.set(
+      `a:${domain}`,
+      resolver.spoofPacket(domain, 'A', [IP_ADDRESS], true)
+    );
+    // MX
     map.set(
       `mx:${domain}`,
       resolver.spoofPacket(
         `mx:${domain}`,
         'MX',
-        [{ exchange: IP_ADDRESS, priority: 0 }],
+        [{ exchange: domain, priority: 0 }],
         true
       )
     );
@@ -841,10 +847,10 @@ test('smtp outbound spam block detection', async (t) => {
     const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     delete email.message; // suppress buffer output from console log
     t.is(email.id, res.body.id);
-    t.is(email.status, 'deferred');
+    t.is(email.status, 'rejected');
     t.deepEqual(email.accepted, []);
     t.true(email.rejectedErrors.length === 1);
-    t.is(email.rejectedErrors[0].responseCode, 421);
+    t.is(email.rejectedErrors[0].responseCode, 550);
     t.is(email.rejectedErrors[0].recipient, res.body.envelope.to[0]);
     t.true(email.rejectedErrors[0].error === undefined);
   }
