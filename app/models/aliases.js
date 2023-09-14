@@ -385,16 +385,19 @@ Aliases.pre('save', async function (next) {
 
     const string = alias.name.replace(/[^\da-z]/g, '');
 
-    // prevent users from registering no-reply usernames
-    if (NO_REPLY_USERNAMES.has(string)) {
-      const err = Boom.badRequest(
-        i18n.translateError('NO_REPLY_USERNAME_DISALLOWED', alias.locale)
-      );
-      err.is_reserved_word = true;
-      throw err;
-    }
+    if (member.group === 'admin') {
+      // always disable no-reply usernames
+      if (NO_REPLY_USERNAMES.has(string)) alias.is_enabled = false;
+    } else {
+      // prevent users from registering no-reply usernames
+      if (NO_REPLY_USERNAMES.has(string)) {
+        const err = Boom.badRequest(
+          i18n.translateError('NO_REPLY_USERNAME_DISALLOWED', alias.locale)
+        );
+        err.is_reserved_word = true;
+        throw err;
+      }
 
-    if (member.group !== 'admin') {
       // alias name cannot be a wildcard "*" if the user is not an admin
       if (alias.name === '*')
         throw Boom.badRequest(
