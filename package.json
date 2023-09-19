@@ -185,7 +185,7 @@
     "validator": "13.11.0",
     "web-resource-inliner": "6.0.1",
     "wkhtmltopdf": "0.4.0",
-    "zone-mta": "3.6.6",
+    "zone-mta": "3.6.9",
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {
