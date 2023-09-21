@@ -1448,31 +1448,6 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
 
-<!--
-## What domain name extensions require approval
-
-boston
-gq
-cf
-ru
-cyou
-dance
-degree
-fit
-live
-ml
-name
-online
-rest
-shop
-tk
-top
-vn
-website
-wiki
-wtf
--->
-
 
 ## Do you have a greylist
 
