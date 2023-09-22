@@ -31,6 +31,9 @@ const isCodeBug = require('./is-code-bug');
 const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
 const { decrypt } = require('./encrypt-decrypt');
+const isRetryableError = require('./is-retryable-error');
+const isSSLError = require('./is-ssl-error');
+const isTLSError = require('./is-tls-error');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -962,7 +965,11 @@ async function processEmail({
         isEmail(error.recipient, { ignore_max_length: true }) &&
         !error.is_recently_blocked &&
         !email.soft_bounces.includes(error.recipient) &&
-        !email.hard_bounces.includes(error.recipient)
+        !email.hard_bounces.includes(error.recipient) &&
+        !isRetryableError(error) &&
+        !isSSLError(error) &&
+        !isTLSError(error) &&
+        !isCodeBug(error)
     );
 
     if (!email.is_bounce && filteredErrors.length > 0) {

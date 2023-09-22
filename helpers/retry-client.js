@@ -8,17 +8,21 @@ class RetryClient extends undici.Client {
   constructor(opts) {
     super(opts);
 
-    opts.timeout = opts.timeout || ms('30s');
-    opts.retries = opts.retries || 3;
+    const timeout =
+      typeof opts?.timeout === 'number' ? opts.timeout : ms('30s');
+    const retries = typeof opts?.retries === 'number' ? opts.retries : 3;
 
     // exponential retry backoff (2, 4, 8)
-    opts.calculateDelay = (count) => Math.round(1000 * 2 ** count);
+    const calculateDelay =
+      typeof opts?.calculateDelay === 'function'
+        ? opts.calculateDelay
+        : (count) => Math.round(1000 * 2 ** count);
 
     this._request = this.request;
 
     this.request = async (options, count = 1) => {
       try {
-        options.signal = AbortSignal.timeout(opts.timeout);
+        options.signal = AbortSignal.timeout(timeout);
         options.throwOnError = true;
         const response = await this._request(options);
         // the error code is between 200-400 (e.g. 302 redirect)
@@ -37,8 +41,8 @@ class RetryClient extends undici.Client {
 
         return response;
       } catch (err) {
-        if (count >= opts.retries || !isRetryableError(err)) throw err;
-        const ms = opts.calculateDelay(count);
+        if (count >= retries || !isRetryableError(err)) throw err;
+        const ms = calculateDelay(count);
         if (ms) await delay(ms);
         return this.request(options, count + 1);
       }
