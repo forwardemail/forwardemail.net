@@ -70,6 +70,8 @@ function getBounceInfo(err) {
     bounceInfo.category = 'network';
   } else if (response.includes('unsolicited mail')) {
     bounceInfo.category = 'spam';
+  } else if (response.toLowerCase().includes('access denied')) {
+    bounceInfo.category = 'blocklist';
   } else if (
     //
     // if it was apple (icloud.com, me.com, or mac.com)
