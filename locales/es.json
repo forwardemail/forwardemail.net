@@ -4803,5 +4803,7 @@
   "and minimum is": "y el mínimo es",
   "Issue Detected": "Problema detectado",
   "Issue": "Asunto",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Desde el encabezado debe ser igual a <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Desde el encabezado debe ser igual a <span class=\"notranslate\">%s</span>",
+  "This header's value has": "El valor de este encabezado tiene",
+  "header parsed addresses removed from it.": "direcciones analizadas del encabezado eliminadas del mismo."
 }

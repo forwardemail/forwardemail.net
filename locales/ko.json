@@ -4805,5 +4805,7 @@
   "and minimum is": "그리고 최소값은",
   "Issue Detected": "문제가 감지되었습니다.",
   "Issue": "문제",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "보낸 사람 헤더는 <span class=\"notranslate\">%s</span> 과(와) 같아야 합니다."
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "보낸 사람 헤더는 <span class=\"notranslate\">%s</span> 과(와) 같아야 합니다.",
+  "This header's value has": "이 헤더의 값은",
+  "header parsed addresses removed from it.": "헤더 구문 분석 주소가 제거되었습니다."
 }

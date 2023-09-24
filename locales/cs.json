@@ -4805,5 +4805,7 @@
   "and minimum is": "a minimum je",
   "Issue Detected": "Zjištěn problém",
   "Issue": "Problém",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Od záhlaví se musí rovnat <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Od záhlaví se musí rovnat <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Hodnota této hlavičky má",
+  "header parsed addresses removed from it.": "z něj byly odstraněny analyzované adresy hlavičky."
 }

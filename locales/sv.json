@@ -4805,5 +4805,7 @@
   "and minimum is": "och minimum är",
   "Issue Detected": "Problem upptäckt",
   "Issue": "Problem",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Från-huvudet måste vara lika med <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Från-huvudet måste vara lika med <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Denna rubriks värde har",
+  "header parsed addresses removed from it.": "header tolkade adresser borttagna från den."
 }

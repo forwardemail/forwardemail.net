@@ -4805,5 +4805,7 @@
   "and minimum is": "والحد الأدنى هو",
   "Issue Detected": "تم اكتشاف المشكلة",
   "Issue": "مشكلة",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "من الرأس يجب أن يكون مساوياً لـ <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "من الرأس يجب أن يكون مساوياً لـ <span class=\"notranslate\">%s</span>",
+  "This header's value has": "قيمة هذا الرأس لها",
+  "header parsed addresses removed from it.": "تمت إزالة العناوين التي تم تحليلها منه."
 }

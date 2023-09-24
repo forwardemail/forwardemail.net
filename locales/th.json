@@ -4805,5 +4805,7 @@
   "and minimum is": "และขั้นต่ำคือ",
   "Issue Detected": "ตรวจพบปัญหา",
   "Issue": "ปัญหา",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "จากส่วนหัวจะต้องเท่ากับ <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "จากส่วนหัวจะต้องเท่ากับ <span class=\"notranslate\">%s</span>",
+  "This header's value has": "ค่าของส่วนหัวนี้มี",
+  "header parsed addresses removed from it.": "ที่อยู่แยกวิเคราะห์ส่วนหัวถูกลบออกจากมัน"
 }

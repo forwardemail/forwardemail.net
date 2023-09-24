@@ -4579,5 +4579,7 @@
   "and minimum is": "and minimum is",
   "Issue Detected": "Issue Detected",
   "Issue": "Issue",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "From header must be equal to <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "From header must be equal to <span class=\"notranslate\">%s</span>",
+  "This header's value has": "This header's value has",
+  "header parsed addresses removed from it.": "header parsed addresses removed from it."
 }

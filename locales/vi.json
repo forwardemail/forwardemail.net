@@ -4805,5 +4805,7 @@
   "and minimum is": "và tối thiểu là",
   "Issue Detected": "Đã phát hiện sự cố",
   "Issue": "Vấn đề",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Tiêu đề từ phải bằng <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Tiêu đề từ phải bằng <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Giá trị của tiêu đề này có",
+  "header parsed addresses removed from it.": "các địa chỉ được phân tích cú pháp tiêu đề đã bị xóa khỏi nó."
 }

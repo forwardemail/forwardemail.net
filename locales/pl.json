@@ -4805,5 +4805,7 @@
   "and minimum is": "i minimalne jest",
   "Issue Detected": "Wykryto problem",
   "Issue": "Wydanie",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Z nagłówka musi być równe <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Z nagłówka musi być równe <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Wartość tego nagłówka ma",
+  "header parsed addresses removed from it.": "usunięto z niego adresy po przeanalizowaniu nagłówka."
 }

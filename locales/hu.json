@@ -4805,5 +4805,7 @@
   "and minimum is": "és minimum az",
   "Issue Detected": "Probléma észlelve",
   "Issue": "Probléma",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "A fejléctől egyenlőnek kell lennie: <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "A fejléctől egyenlőnek kell lennie: <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Ennek a fejlécnek az értéke",
+  "header parsed addresses removed from it.": "fejléc elemzett címek eltávolítása belőle."
 }

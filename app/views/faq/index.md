@@ -1014,8 +1014,8 @@ This section describes our process related to the SMTP protocol command `DATA` i
 9. We will add the following headers to the message for debugging and abuse prevention purposes:
 
    * `X-Original-To` - the original `RCPT TO` email address for the message.
+     * This header's value has `Bcc` header parsed addresses removed from it.
      * This is useful for determining where an email was originally delivered to.
-     * Will be released in v10+ of Forward Email.
      * Existing value if any is preserved as `X-Original-Preserved-To`.
    * `X-ForwardEmail-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
    * `X-ForwardEmail-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).

@@ -4805,5 +4805,7 @@
   "and minimum is": "dan minimum adalah",
   "Issue Detected": "Masalah Terdeteksi",
   "Issue": "Masalah",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Dari header harus sama dengan <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Dari header harus sama dengan <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Nilai tajuk ini miliki",
+  "header parsed addresses removed from it.": "alamat header yang diurai dihapus darinya."
 }

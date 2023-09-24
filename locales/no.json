@@ -4810,5 +4810,7 @@
   "and minimum is": "og minimum er",
   "Issue Detected": "Problem oppdaget",
   "Issue": "Utgave",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Fra topptekst må være lik <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Fra topptekst må være lik <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Denne overskriftens verdi har",
+  "header parsed addresses removed from it.": "header-parsede adresser fjernet fra den."
 }

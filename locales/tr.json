@@ -4805,5 +4805,7 @@
   "and minimum is": "ve minimum",
   "Issue Detected": "Sorun Algılandı",
   "Issue": "Sorun",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Başlıktan <span class=\"notranslate\">%s</span> eşit olmalıdır"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Başlıktan <span class=\"notranslate\">%s</span> eşit olmalıdır",
+  "This header's value has": "Bu başlığın değeri",
+  "header parsed addresses removed from it.": "başlık ayrıştırılmış adresler buradan kaldırıldı."
 }

@@ -4805,5 +4805,7 @@
   "and minimum is": "e il minimo è",
   "Issue Detected": "Problema rilevato",
   "Issue": "Problema",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "L&#39;intestazione From deve essere uguale a <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "L&#39;intestazione From deve essere uguale a <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Il valore di questa intestazione ha",
+  "header parsed addresses removed from it.": "indirizzi analizzati dall'intestazione rimossi da esso."
 }

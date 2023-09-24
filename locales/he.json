@@ -4805,5 +4805,7 @@
   "and minimum is": "והמינימום הוא",
   "Issue Detected": "זוהתה בעיה",
   "Issue": "נושא",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "From header חייב להיות שווה ל- <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "From header חייב להיות שווה ל- <span class=\"notranslate\">%s</span>",
+  "This header's value has": "יש לערך של כותרת זו",
+  "header parsed addresses removed from it.": "כתובות מנותחות בכותרת הוסרו ממנה."
 }

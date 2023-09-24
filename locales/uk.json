@@ -4805,5 +4805,7 @@
   "and minimum is": "а мінімум є",
   "Issue Detected": "Проблему виявлено",
   "Issue": "Проблема",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Заголовок From має дорівнювати <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Заголовок From має дорівнювати <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Значення цього заголовка має",
+  "header parsed addresses removed from it.": "заголовок проаналізував адреси, видалені з нього."
 }

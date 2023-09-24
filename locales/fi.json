@@ -4650,5 +4650,7 @@
   "and minimum is": "ja minimi on",
   "Issue Detected": "Ongelma havaittu",
   "Issue": "Ongelma",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Otsikon on oltava yhtä suuri kuin <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Otsikon on oltava yhtä suuri kuin <span class=\"notranslate\">%s</span>",
+  "This header's value has": "Tämän otsikon arvo on",
+  "header parsed addresses removed from it.": "header jäsennetyt osoitteet poistettu siitä."
 }

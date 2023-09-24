@@ -4805,5 +4805,7 @@
   "and minimum is": "そして最小値は",
   "Issue Detected": "問題が検出されました",
   "Issue": "問題",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "From ヘッダーは<span class=\"notranslate\">%s</span>と等しくなければなりません"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "From ヘッダーは<span class=\"notranslate\">%s</span>と等しくなければなりません",
+  "This header's value has": "このヘッダーの値は",
+  "header parsed addresses removed from it.": "ヘッダー解析されたアドレスがそこから削除されました。"
 }

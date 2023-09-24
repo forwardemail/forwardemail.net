@@ -4102,7 +4102,7 @@
   ". If you use the guide below, then": ". Als u de onderstaande gids gebruikt, dan",
   "this will cause your outbound email": "dit veroorzaakt uw uitgaande e-mail",
   "to say \"": "zeggen \"",
-  "via forwardemail dot net": "via forwardemail dot net",
+  "via forwardemail dot net": "via forwardemail dotnet",
   "\" in Gmail.": "\" in Gmail.",
   "When prompted for text input, enter your custom domain's email address you're forwarding from (e.g.": "Wanneer u wordt gevraagd om tekstinvoer, voert u het e-mailadres van uw aangepaste domein in van waaruit u doorstuurt (bijv.",
   "- this will help you keep track in case you use this service for multiple accounts)": "- dit helpt u bij te houden voor het geval u deze service voor meerdere accounts gebruikt)",
@@ -4805,5 +4805,7 @@
   "and minimum is": "en minimaal is",
   "Issue Detected": "Probleem gedetecteerd",
   "Issue": "Probleem",
-  "From header must be equal to <span class=\"notranslate\">%s</span>": "Van header moet gelijk zijn aan <span class=\"notranslate\">%s</span>"
+  "From header must be equal to <span class=\"notranslate\">%s</span>": "Van header moet gelijk zijn aan <span class=\"notranslate\">%s</span>",
+  "This header's value has": "De waarde van deze header heeft",
+  "header parsed addresses removed from it.": "header geparseerde adressen eruit verwijderd."
 }
