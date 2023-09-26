@@ -6,6 +6,7 @@
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
+      "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2587
@@ -17,6 +18,7 @@
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
+      "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2465
@@ -28,6 +30,7 @@
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
+      "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
       }

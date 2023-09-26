@@ -6,6 +6,7 @@
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
+      "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
       }
@@ -16,6 +17,7 @@
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
+      "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
       }
