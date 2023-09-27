@@ -10,7 +10,6 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const mongoose = require('mongoose');
@@ -22,8 +21,6 @@ const Logs = require('#models/logs');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-
-const BYTES_8MB = bytes('8MB');
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -231,20 +228,6 @@ function makeDelimitedString(arr) {
         .join('</li><li>')}</li></ul>`
     ].join('\n');
 
-    let filename = `email-deliverability-logs-${dayjs(now).format(
-      'YYYY-MM-DD-h-mm-A-z'
-    )}.csv`.toLowerCase();
-
-    const buffer = Buffer.from(csv.join('\n', 'utf8'));
-
-    let content;
-    if (Buffer.byteLength(buffer) > BYTES_8MB) {
-      content = zlib.gzipSync(buffer, { level: 9 });
-      filename += '.gz';
-    } else {
-      content = buffer;
-    }
-
     // email the spreadsheet to admins
     await emailHelper({
       template: 'alert',
@@ -255,8 +238,12 @@ function makeDelimitedString(arr) {
         ).format('M/D/YY h:mm A z')} (${set.size} trusted hosts blocked)`,
         attachments: [
           {
-            filename,
-            content
+            filename: `email-deliverability-logs-${dayjs(now).format(
+              'YYYY-MM-DD-h-mm-A-z'
+            )}.csv.gz`.toLowerCase(),
+            content: zlib.gzipSync(Buffer.from(csv.join('\n', 'utf8')), {
+              level: 9
+            })
           }
         ]
       },
