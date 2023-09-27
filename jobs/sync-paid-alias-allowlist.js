@@ -64,6 +64,10 @@ graceful.listen();
       ]
     });
 
+    const bannedUserIdStrings = new Set(
+      bannedUserIds.map((_id) => _id.toString())
+    );
+
     for await (const domain of Domains.find({
       plan: { $ne: 'free' },
       has_mx_record: true,
@@ -74,6 +78,17 @@ graceful.listen();
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       logger.debug('processing %s', domain.name);
+
+      // filter out domains where all users are banned
+      if (
+        !domain.members ||
+        !Array.isArray(domain.members) ||
+        domain.members.every((m) => bannedUserIdStrings.has(m.user.toString()))
+      ) {
+        logger.info('all domain users were banned %s', domain.name);
+        continue;
+      }
+
       const set = new Set();
       set.add(`${domain.name}`);
       {
