@@ -1,14 +1,20 @@
 function isSocketError(err) {
-  return Boolean(
-    err.message === 'Connection closed' ||
-      err.message === 'Connection pool was closed' ||
-      err.message === 'Connection closed unexpectedly' ||
-      err.message === 'Socket closed unexpectedly' ||
-      err.message === 'Unexpected socket close' ||
-      err.message === 'Timeout - closing connection' ||
-      err.message.includes('socket is already destroyed') ||
-      err.message.includes('socket is already half-closed')
-  );
+  if (typeof err !== 'object') return false;
+  for (const key of ['message', 'response']) {
+    if (typeof err[key] !== 'string') continue;
+    if (
+      err[key].includes('Connection closed') ||
+      err[key].includes('Connection pool was closed') ||
+      err[key].includes('Connection closed unexpectedly') ||
+      err[key].includes('Socket closed unexpectedly') ||
+      err[key].includes('Unexpected socket close') ||
+      err[key].includes('socket is already destroyed') ||
+      err[key].includes('socket is already half-closed')
+    )
+      return true;
+  }
+
+  return false;
 }
 
 module.exports = isSocketError;
