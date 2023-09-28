@@ -3506,7 +3506,7 @@
   "Follow the instructions below to complete setup and verify your domain.": "Kövesse az alábbi utasításokat a beállítás befejezéséhez és a domain ellenőrzéséhez.",
   "Verify your Forward Email email address.": "Erősítse meg e-mail továbbítási e-mail címét.",
   "By": "Által",
-  "Refund": "Refund",
+  "Refund": "Visszatérítés",
   "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
   "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.",
   "Free Email Forwarding - Send email custom domain &#124; <span class=\"notranslate\">Forward Email</span>": "Ingyenes e-mail továbbítás - E-mail küldése egyéni domain &#124; <span class=\"notranslate\">Forward Email</span>",
@@ -4807,5 +4807,6 @@
   "Issue": "Probléma",
   "From header must be equal to <span class=\"notranslate\">%s</span>": "A fejléctől egyenlőnek kell lennie: <span class=\"notranslate\">%s</span>",
   "This header's value has": "Ennek a fejlécnek az értéke",
-  "header parsed addresses removed from it.": "fejléc elemzett címek eltávolítása belőle."
+  "header parsed addresses removed from it.": "fejléc elemzett címek eltávolítása belőle.",
+  "We gave you free credit! Thank you for being a customer!": "Ingyenes hitelt adtunk! Köszönjük, hogy ügyfelünk vagy!"
 }

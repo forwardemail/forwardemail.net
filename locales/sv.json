@@ -3506,7 +3506,7 @@
   "Follow the instructions below to complete setup and verify your domain.": "Följ instruktionerna nedan för att slutföra installationen och verifiera din domän.",
   "Verify your Forward Email email address.": "Verifiera din e-postadress för vidarebefordran.",
   "By": "Förbi",
-  "Refund": "Refund",
+  "Refund": "Återbetalning",
   "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
   "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.",
   "Free Email Forwarding - Send email custom domain &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis vidarebefordran av e-post - Skicka e-post anpassad domän &#124; <span class=\"notranslate\">Forward Email</span>",
@@ -4807,5 +4807,6 @@
   "Issue": "Problem",
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Från-huvudet måste vara lika med <span class=\"notranslate\">%s</span>",
   "This header's value has": "Denna rubriks värde har",
-  "header parsed addresses removed from it.": "header tolkade adresser borttagna från den."
+  "header parsed addresses removed from it.": "header tolkade adresser borttagna från den.",
+  "We gave you free credit! Thank you for being a customer!": "Vi gav dig gratis kredit! Tack för att du är kund!"
 }

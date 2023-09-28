@@ -3825,5 +3825,16 @@
   "Issue": "Ausgabe",
   "From header must be equal to <span class=\"notranslate\">%s</span>": "From-Header muss gleich <span class=\"notranslate\">%s</span> sein",
   "This header's value has": "Der Wert dieses Headers hat",
-  "header parsed addresses removed from it.": "Die im Header analysierten Adressen wurden daraus entfernt."
+  "header parsed addresses removed from it.": "Die im Header analysierten Adressen wurden daraus entfernt.",
+  "Refund": "Erstattung",
+  "Your first auto-renewal charge will be on <span class=\"notranslate\">%s</span>": "Ihre erste Gebühr für die automatische Verlängerung wird am <span class=\"notranslate\">%s</span> erhoben",
+  "Your first auto-renewal charge": "Ihre erste Gebühr für die automatische Verlängerung",
+  "Thank you for enabling auto-renew.": "Vielen Dank, dass Sie die automatische Verlängerung aktiviert haben.",
+  "In order to be compliant with payment processing requirements, we are informing you of an upcoming charge.": "Um den Zahlungsabwicklungsanforderungen gerecht zu werden, informieren wir Sie über eine bevorstehende Belastung.",
+  "PayPal account": "Paypal-Konto",
+  "Your <span class=\"notranslate\">%s</span> will be charged <span class=\"notranslate\">%s</span> every <span class=\"notranslate\">%s</span> starting on <span class=\"notranslate\">%s</span>.": "Ihr <span class=\"notranslate\">%s</span> wird ab dem <span class=\"notranslate\">%s</span> alle <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> belastet.",
+  "We will automatically send you receipts by email.": "Wir senden Ihnen automatisch Quittungen per E-Mail zu.",
+  "Discount": "Rabatt",
+  "We gave you free credit! Thank you for being a customer!": "Wir haben Ihnen kostenloses Guthaben geschenkt! Vielen Dank, dass Sie Kunde sind!",
+  "You earned free credit!": "Sie haben kostenloses Guthaben erhalten!"
 }

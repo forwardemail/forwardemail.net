@@ -4581,5 +4581,8 @@
   "Issue": "Issue",
   "From header must be equal to <span class=\"notranslate\">%s</span>": "From header must be equal to <span class=\"notranslate\">%s</span>",
   "This header's value has": "This header's value has",
-  "header parsed addresses removed from it.": "header parsed addresses removed from it."
+  "header parsed addresses removed from it.": "header parsed addresses removed from it.",
+  "Refund": "Refund",
+  "Domain name <span class=\"notranslate\">%s</span> has a domain name that includes reserved keywords such as \"mail\", \"disposable\", and \"inbox\". Please <a class=\"font-weight-bold\" href=\"%s\">upgrade your domain</a> to this plan to continue.": "Domain name <span class=\"notranslate\">%s</span> has a domain name that includes reserved keywords such as \"mail\", \"disposable\", and \"inbox\". Please <a class=\"font-weight-bold\" href=\"%s\">upgrade your domain</a> to this plan to continue.",
+  "We gave you free credit! Thank you for being a customer!": "We gave you free credit! Thank you for being a customer!"
 }

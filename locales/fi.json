@@ -3353,7 +3353,7 @@
   "Verify your Forward Email email address.": "Vahvista edelleenlähetyssähköpostiosoitteesi.",
   "By": "Tekijä:",
   "Queued Verification Email": "Queued Verification Email",
-  "Refund": "Refund",
+  "Refund": "Maksun palautus",
   "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
   "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.",
   "Free Email Forwarding - Send email custom domain &#124; <span class=\"notranslate\">Forward Email</span>": "Ilmainen sähköpostin edelleenlähetys - Lähetä sähköpostin mukautettu verkkotunnus &#124; <span class=\"notranslate\">Forward Email</span>",
@@ -4652,5 +4652,6 @@
   "Issue": "Ongelma",
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Otsikon on oltava yhtä suuri kuin <span class=\"notranslate\">%s</span>",
   "This header's value has": "Tämän otsikon arvo on",
-  "header parsed addresses removed from it.": "header jäsennetyt osoitteet poistettu siitä."
+  "header parsed addresses removed from it.": "header jäsennetyt osoitteet poistettu siitä.",
+  "We gave you free credit! Thank you for being a customer!": "Annoimme sinulle ilmaista luottoa! Kiitos, että olet asiakas!"
 }

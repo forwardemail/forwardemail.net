@@ -17,7 +17,6 @@ const config = require('#config');
 //
 
 async function sendEmail({
-  connectionMap = new Map(),
   session,
   cache,
   target,
@@ -57,7 +56,7 @@ async function sendEmail({
       opportunisticTLS,
       tls,
       transporter
-    } = await getTransporter(connectionMap, {
+    } = await getTransporter({
       target,
       port,
       localAddress,
@@ -145,7 +144,6 @@ async function sendEmail({
     if (isSSLError(err) || isTLSError(err) || isRetryableError(err)) {
       const { truthSource, mx, requireTLS, ignoreTLS, tls, transporter } =
         await getTransporter(
-          connectionMap,
           {
             ignoreMXHosts,
             mxLastError,

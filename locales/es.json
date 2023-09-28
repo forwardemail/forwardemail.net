@@ -3504,7 +3504,7 @@
   "Follow the instructions below to complete setup and verify your domain.": "Siga las instrucciones a continuación para completar la configuración y verificar su dominio.",
   "Verify your Forward Email email address.": "Verifique su dirección de correo electrónico de reenvío de correo electrónico.",
   "By": "Por",
-  "Refund": "Refund",
+  "Refund": "Reembolso",
   "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
   "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.",
   "Free Email Forwarding - Send email custom domain &#124; <span class=\"notranslate\">Forward Email</span>": "Reenvío de correo electrónico gratuito: envíe un dominio personalizado de correo electrónico &#124; <span class=\"notranslate\">Forward Email</span>",
@@ -4805,5 +4805,6 @@
   "Issue": "Asunto",
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Desde el encabezado debe ser igual a <span class=\"notranslate\">%s</span>",
   "This header's value has": "El valor de este encabezado tiene",
-  "header parsed addresses removed from it.": "direcciones analizadas del encabezado eliminadas del mismo."
+  "header parsed addresses removed from it.": "direcciones analizadas del encabezado eliminadas del mismo.",
+  "We gave you free credit! Thank you for being a customer!": "¡Te dimos crédito gratis! ¡Gracias por ser cliente!"
 }

@@ -3512,7 +3512,7 @@
   "Follow the instructions below to complete setup and verify your domain.": "Følg instruksjonene nedenfor for å fullføre oppsettet og bekrefte domenet ditt.",
   "Verify your Forward Email email address.": "Bekreft e-postadressen din for videresending.",
   "By": "Av",
-  "Refund": "Refund",
+  "Refund": "Refusjon",
   "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
   "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.",
   "Free Email Forwarding - Send email custom domain &#124; <span class=\"notranslate\">Forward Email</span>": "Gratis videresending av e-post - Send e-post tilpasset domene &#124; <span class=\"notranslate\">Forward Email</span>",
@@ -4812,5 +4812,6 @@
   "Issue": "Utgave",
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Fra topptekst må være lik <span class=\"notranslate\">%s</span>",
   "This header's value has": "Denne overskriftens verdi har",
-  "header parsed addresses removed from it.": "header-parsede adresser fjernet fra den."
+  "header parsed addresses removed from it.": "header-parsede adresser fjernet fra den.",
+  "We gave you free credit! Thank you for being a customer!": "Vi ga deg gratis kreditt! Takk for at du er kunde!"
 }

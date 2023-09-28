@@ -91,6 +91,24 @@ function isRetryableError(err) {
   )
     return true;
 
+  //
+  // mx-connect has "err.category" property set that is either:
+  //
+  // - dns (e.g. 550 error, will start with "550 " string in err.response)
+  // - compliancy (not properly formatted IP address)
+  // - connect
+  // - network
+  // - policy (MTA-STS issue)
+  //
+  // and we want to retry for up to 5 days for all permanent DNS errors
+  //
+  if (
+    err.category === 'dns' &&
+    typeof err.response === 'string' &&
+    err.response.startsWith('550 ')
+  )
+    return true;
+
   if (typeof err.status === 'number' && HTTP_RETRY_STATUS_CODES.has(err.status))
     return true;
 
