@@ -24,7 +24,8 @@ block body
               include aliases/_form
               button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
 
-  include _modal-upgrade
+  if user.plan === 'free'
+    include _modal-upgrade
   include _modal-domain
 
   .min-vh-80.d-flex.flex-column
