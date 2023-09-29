@@ -562,7 +562,12 @@ async function onAuth(auth, session, fn) {
     //
     // only rate limit if the domain has_smtp
     //
-    if (domain.has_smtp) {
+    if (
+      domain.has_smtp &&
+      // do not rate limit IP addresses corresponding to our servers
+      (!session.resolvedClientHostname ||
+        parseRootDomain(session.resolvedClientHostname) !== env.WEB_HOST)
+    ) {
       // rate limit to X failed attempts per day by IP address
       const limit = await this.rateLimiter.get({
         id: session.remoteAddress,
