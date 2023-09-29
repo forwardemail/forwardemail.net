@@ -23,6 +23,12 @@ const i18n = require('#helpers/i18n');
 const inline = pify(webResourceInliner.html);
 
 const Payments = new mongoose.Schema({
+  //
+  // stack trace similar to `console.trace();`
+  // generated via `new Error().stack` which is useful for determining culprit if duplicate payments occur
+  // (or payments that were created that should not have been created)
+  //
+  stack: String,
   user: {
     type: mongoose.Schema.ObjectId,
     ref: 'Users',

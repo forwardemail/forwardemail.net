@@ -187,15 +187,10 @@ async function syncStripePayments() {
 
   await pMapSeries(stripeCustomers, mapper);
 
-  if (errorEmails.length > 0) {
-    try {
-      await Promise.all(errorEmails.map((email) => emailHelper(email)));
-    } catch (err) {
-      logger.error(err);
-    }
-  }
+  if (errorEmails.length > 0)
+    await Promise.all(errorEmails.map((email) => emailHelper(email)));
 
-  logger.info('Stripe payments synced successfully');
+  await logger.info('Stripe payments synced successfully');
 }
 
 module.exports = syncStripePayments;

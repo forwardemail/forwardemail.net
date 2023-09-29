@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "L&#39;en-tête From doit être égal à <span class=\"notranslate\">%s</span>",
   "This header's value has": "La valeur de cet en-tête a",
   "header parsed addresses removed from it.": "l'en-tête a analysé les adresses qui en ont été supprimées.",
-  "We gave you free credit! Thank you for being a customer!": "Nous vous avons offert un crédit gratuit ! Merci d'être client !"
+  "We gave you free credit! Thank you for being a customer!": "Nous vous avons offert un crédit gratuit ! Merci d'être client !",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "Le paiement n'a pas abouti et les frais n'ont pas été traités. Veuillez réessayer ou contactez-nous pour obtenir de l'aide."
 }

@@ -43,6 +43,7 @@ async function mapper(id) {
     if (!_.isDate(payment.created_at) || !_.isDate(payment.updated_at)) {
       const clone = payment.toObject();
       await payment.remove();
+      clone.stack = clone.stack || new Error('stack').stack;
       payment = await Payments.create(clone);
     }
 

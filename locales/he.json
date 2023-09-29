@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "From header חייב להיות שווה ל- <span class=\"notranslate\">%s</span>",
   "This header's value has": "יש לערך של כותרת זו",
   "header parsed addresses removed from it.": "כתובות מנותחות בכותרת הוסרו ממנה.",
-  "We gave you free credit! Thank you for being a customer!": "נתנו לך אשראי חינם! תודה שהיית לקוח!"
+  "We gave you free credit! Thank you for being a customer!": "נתנו לך אשראי חינם! תודה שהיית לקוח!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "התשלום לא הצליח והחיוב לא עובד. אנא נסה שוב או פנה אלינו לקבלת עזרה."
 }

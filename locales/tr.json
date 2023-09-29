@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Başlıktan <span class=\"notranslate\">%s</span> eşit olmalıdır",
   "This header's value has": "Bu başlığın değeri",
   "header parsed addresses removed from it.": "başlık ayrıştırılmış adresler buradan kaldırıldı.",
-  "We gave you free credit! Thank you for being a customer!": "Size bedava kredi verdik! Müşterimiz olduğunuz için teşekkür ederiz!"
+  "We gave you free credit! Thank you for being a customer!": "Size bedava kredi verdik! Müşterimiz olduğunuz için teşekkür ederiz!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "Ödeme başarılı olmadı ve ücret işleme koyulmadı. Lütfen tekrar deneyin veya yardım için bizimle iletişime geçin."
 }

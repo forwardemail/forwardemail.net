@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "L&#39;intestazione From deve essere uguale a <span class=\"notranslate\">%s</span>",
   "This header's value has": "Il valore di questa intestazione ha",
   "header parsed addresses removed from it.": "indirizzi analizzati dall'intestazione rimossi da esso.",
-  "We gave you free credit! Thank you for being a customer!": "Ti abbiamo dato credito gratis! Grazie per essere un cliente!"
+  "We gave you free credit! Thank you for being a customer!": "Ti abbiamo dato credito gratis! Grazie per essere un cliente!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "Il pagamento non è andato a buon fine e l'addebito non è stato elaborato. Riprova o contattaci per ricevere assistenza."
 }

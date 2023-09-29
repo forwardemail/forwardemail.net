@@ -4813,5 +4813,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Fra topptekst må være lik <span class=\"notranslate\">%s</span>",
   "This header's value has": "Denne overskriftens verdi har",
   "header parsed addresses removed from it.": "header-parsede adresser fjernet fra den.",
-  "We gave you free credit! Thank you for being a customer!": "Vi ga deg gratis kreditt! Takk for at du er kunde!"
+  "We gave you free credit! Thank you for being a customer!": "Vi ga deg gratis kreditt! Takk for at du er kunde!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "Betalingen var ikke vellykket, og belastningen ble ikke behandlet. Vennligst prøv igjen eller kontakt oss for hjelp."
 }

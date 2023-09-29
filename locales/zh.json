@@ -4499,5 +4499,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "From 标头必须等于<span class=\"notranslate\">%s</span>",
   "This header's value has": "该标头的值有",
   "header parsed addresses removed from it.": "标头已解析的地址从中删除。",
-  "We gave you free credit! Thank you for being a customer!": "我们为您提供免费信用！感谢您成为客户！"
+  "We gave you free credit! Thank you for being a customer!": "我们为您提供免费信用！感谢您成为客户！",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "付款未成功，收费未处理。请重试或联系我们寻求帮助。"
 }

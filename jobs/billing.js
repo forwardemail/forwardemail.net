@@ -64,7 +64,7 @@ async function mapper(id) {
   )
     return;
 
-  // if every user domain was good, not disposable, and not restricted then return early
+  // ensure that user is the admin of at least one domain on a paid plan
   const domains = await Domains.find({
     'members.user': user._id
   })
@@ -77,13 +77,19 @@ async function mapper(id) {
       (member) => member.user.toString() === user.id
     );
     if (!member || member.group !== 'admin') continue;
-    const { isDisposable, isRestricted } = Domains.getNameRestrictions(
-      domain.name
-    );
-    if (isDisposable || isRestricted) {
+    if (domain.plan !== 'free') {
       requiresPaidPlan = true;
       break;
     }
+
+    // NOTE: jobs/check-bad-domains takes care of this notification
+    // const { isDisposable, isRestricted } = Domains.getNameRestrictions(
+    //   domain.name
+    // );
+    // if (isDisposable || isRestricted) {
+    //   requiresPaidPlan = true;
+    //   break;
+    // }
   }
 
   if (!requiresPaidPlan) return;

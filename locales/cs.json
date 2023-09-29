@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Od záhlaví se musí rovnat <span class=\"notranslate\">%s</span>",
   "This header's value has": "Hodnota této hlavičky má",
   "header parsed addresses removed from it.": "z něj byly odstraněny analyzované adresy hlavičky.",
-  "We gave you free credit! Thank you for being a customer!": "Dali jsme vám kredit zdarma! Děkujeme, že jste zákazníkem!"
+  "We gave you free credit! Thank you for being a customer!": "Dali jsme vám kredit zdarma! Děkujeme, že jste zákazníkem!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "Platba nebyla úspěšná a platba nebyla zpracována. Zkuste to znovu nebo nás kontaktujte s žádostí o pomoc."
 }

@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Z nagłówka musi być równe <span class=\"notranslate\">%s</span>",
   "This header's value has": "Wartość tego nagłówka ma",
   "header parsed addresses removed from it.": "usunięto z niego adresy po przeanalizowaniu nagłówka.",
-  "We gave you free credit! Thank you for being a customer!": "Daliśmy Ci darmowy kredyt! Dziękujemy, że jesteś klientem!"
+  "We gave you free credit! Thank you for being a customer!": "Daliśmy Ci darmowy kredyt! Dziękujemy, że jesteś klientem!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "Płatność nie powiodła się i obciążenie nie zostało przetworzone. Spróbuj ponownie lub skontaktuj się z nami, aby uzyskać pomoc."
 }

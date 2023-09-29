@@ -215,7 +215,8 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
                 amount_refunded: amountRefunded,
                 [config.userFields.paypalSubscriptionID]: subscription.id,
                 paypal_transaction_id: transaction.id,
-                invoice_at: new Date(transaction.time)
+                invoice_at: new Date(transaction.time),
+                stack: new Error('stack').stack
               };
               logger.info('creating new payment');
               await Payments.create(payment);

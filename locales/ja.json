@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "From ヘッダーは<span class=\"notranslate\">%s</span>と等しくなければなりません",
   "This header's value has": "このヘッダーの値は",
   "header parsed addresses removed from it.": "ヘッダー解析されたアドレスがそこから削除されました。",
-  "We gave you free credit! Thank you for being a customer!": "無料のクレジットを提供しました。ご利用いただきありがとうございます。"
+  "We gave you free credit! Thank you for being a customer!": "無料のクレジットを提供しました。ご利用いただきありがとうございます。",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "支払いが失敗し、請求が処理されませんでした。もう一度お試しいただくか、お問い合わせください。"
 }

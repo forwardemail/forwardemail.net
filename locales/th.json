@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "จากส่วนหัวจะต้องเท่ากับ <span class=\"notranslate\">%s</span>",
   "This header's value has": "ค่าของส่วนหัวนี้มี",
   "header parsed addresses removed from it.": "ที่อยู่แยกวิเคราะห์ส่วนหัวถูกลบออกจากมัน",
-  "We gave you free credit! Thank you for being a customer!": "เราให้เครดิตฟรีแก่คุณ! ขอบคุณที่เป็นลูกค้า!"
+  "We gave you free credit! Thank you for being a customer!": "เราให้เครดิตฟรีแก่คุณ! ขอบคุณที่เป็นลูกค้า!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "การชำระเงินไม่สำเร็จและไม่มีการประมวลผลการเรียกเก็บเงิน โปรดลองอีกครั้งหรือติดต่อเราเพื่อขอความช่วยเหลือ"
 }

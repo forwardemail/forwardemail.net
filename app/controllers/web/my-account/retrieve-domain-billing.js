@@ -341,6 +341,7 @@ async function retrieveDomainBilling(ctx) {
         await Payments.create(
           ctx.state.conversion[ctx.query.plan].map((payment) => ({
             ...payment,
+            stack: new Error('stack').stack,
             invoice_at: now
           }))
         );
@@ -511,6 +512,24 @@ async function retrieveDomainBilling(ctx) {
 
           if (!paymentIntent) throw ctx.translateError('UNKNOWN_ERROR');
 
+          // check payment intent status (must be successful)
+          if (paymentIntent.status !== 'succeeded') {
+            // remove the Payment on our side if any that corresponds to this intent
+            const payment = await Payments.findOne({
+              user: ctx.state.user._id,
+              stripe_payment_intent_id: paymentIntent.id
+            });
+            if (payment) {
+              // remove the payment from our side
+              await payment.remove();
+              // find and save the associated user
+              // so that their plan_expires_at gets updated
+              await ctx.state.user.save();
+            }
+
+            throw ctx.translateError('INVALID_PAYMENT_INTENT');
+          }
+
           if (paymentIntent.invoice) invoiceId = paymentIntent.invoice;
 
           const paymentMethod = await stripe.paymentMethods.retrieve(
@@ -582,6 +601,24 @@ async function retrieveDomainBilling(ctx) {
               );
 
               if (!paymentIntent) throw ctx.translateError('UNKNOWN_ERROR');
+
+              // check payment intent status (must be successful)
+              if (paymentIntent.status !== 'succeeded') {
+                // remove the Payment on our side if any that corresponds to this intent
+                const payment = await Payments.findOne({
+                  user: ctx.state.user._id,
+                  stripe_payment_intent_id: paymentIntent.id
+                });
+                if (payment) {
+                  // remove the payment from our side
+                  await payment.remove();
+                  // find and save the associated user
+                  // so that their plan_expires_at gets updated
+                  await ctx.state.user.save();
+                }
+
+                throw ctx.translateError('INVALID_PAYMENT_INTENT');
+              }
 
               const paymentMethod = await stripe.paymentMethods.retrieve(
                 paymentIntent.payment_method
@@ -740,7 +777,8 @@ async function retrieveDomainBilling(ctx) {
               stripe_invoice_id: invoiceId,
               stripe_subscription_id: subscription?.id,
               is_apple_pay: isApplePay,
-              is_google_pay: isGooglePay
+              is_google_pay: isGooglePay,
+              stack: new Error('stack').stack
             });
             // log the payment just for sanity
             ctx.logger.info('stripe payment created', { payment });
@@ -1002,7 +1040,8 @@ async function retrieveDomainBilling(ctx) {
             kind: 'one-time',
             paypal_order_id: body.id,
             paypal_transaction_id: transactionId,
-            invoice_at: now
+            invoice_at: now,
+            stack: new Error('stack').stack
           });
           // log the payment just for sanity
           ctx.logger.info('paypal payment created', { payment });
@@ -1230,7 +1269,8 @@ async function retrieveDomainBilling(ctx) {
               kind: 'subscription',
               paypal_subscription_id: body.id,
               paypal_transaction_id: transactionId,
-              invoice_at: now
+              invoice_at: now,
+              stack: new Error('stack').stack
             });
             // log the payment just for sanity
             ctx.logger.info('paypal payment created', { payment });
@@ -1581,6 +1621,7 @@ async function retrieveDomainBilling(ctx) {
         await Payments.create(
           ctx.state.conversion[ctx.query.plan].map((payment) => ({
             ...payment,
+            stack: new Error('stack').stack,
             invoice_at: now
           }))
         );

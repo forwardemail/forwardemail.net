@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Tiêu đề từ phải bằng <span class=\"notranslate\">%s</span>",
   "This header's value has": "Giá trị của tiêu đề này có",
   "header parsed addresses removed from it.": "các địa chỉ được phân tích cú pháp tiêu đề đã bị xóa khỏi nó.",
-  "We gave you free credit! Thank you for being a customer!": "Chúng tôi đã cung cấp cho bạn tín dụng miễn phí! Cảm ơn bạn đã là khách hàng!"
+  "We gave you free credit! Thank you for being a customer!": "Chúng tôi đã cung cấp cho bạn tín dụng miễn phí! Cảm ơn bạn đã là khách hàng!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "Thanh toán không thành công và khoản phí không được xử lý. Vui lòng thử lại hoặc liên hệ với chúng tôi để được trợ giúp."
 }

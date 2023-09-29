@@ -45,13 +45,8 @@ async function syncPayPalSubscriptionPayments() {
     []
   );
 
-  if (errorEmails.length > 0) {
-    try {
-      await Promise.all(errorEmails.map((email) => emailHelper(email)));
-    } catch (err) {
-      await logger.error(err);
-    }
-  }
+  if (errorEmails.length > 0)
+    await Promise.all(errorEmails.map((email) => emailHelper(email)));
 
   await logger.info('Paypal subscriptions synced to payments');
 }

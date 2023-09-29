@@ -460,7 +460,8 @@ async function processEvent(ctx) {
           kind: 'one-time',
           paypal_order_id: res.body.id,
           paypal_transaction_id: transactionId,
-          invoice_at: now
+          invoice_at: now,
+          stack: new Error('stack').stack
         });
 
         // log the payment just for sanity

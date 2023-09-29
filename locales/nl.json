@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "Van header moet gelijk zijn aan <span class=\"notranslate\">%s</span>",
   "This header's value has": "De waarde van deze header heeft",
   "header parsed addresses removed from it.": "header geparseerde adressen eruit verwijderd.",
-  "We gave you free credit! Thank you for being a customer!": "We hebben je gratis tegoed gegeven! Bedankt dat u klant bent!"
+  "We gave you free credit! Thank you for being a customer!": "We hebben je gratis tegoed gegeven! Bedankt dat u klant bent!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "De betaling is niet gelukt en de betaling is niet verwerkt. Probeer het opnieuw of neem contact met ons op voor hulp."
 }

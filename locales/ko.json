@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "보낸 사람 헤더는 <span class=\"notranslate\">%s</span> 과(와) 같아야 합니다.",
   "This header's value has": "이 헤더의 값은",
   "header parsed addresses removed from it.": "헤더 구문 분석 주소가 제거되었습니다.",
-  "We gave you free credit! Thank you for being a customer!": "우리는 당신에게 무료 크레딧을 주었습니다! 고객이 되어주셔서 감사합니다!"
+  "We gave you free credit! Thank you for being a customer!": "우리는 당신에게 무료 크레딧을 주었습니다! 고객이 되어주셔서 감사합니다!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "결제가 실패하여 청구가 처리되지 않았습니다. 다시 시도하거나 도움이 필요하면 문의해 주세요."
 }

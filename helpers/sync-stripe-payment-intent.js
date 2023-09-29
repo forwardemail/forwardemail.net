@@ -23,8 +23,35 @@ function syncStripePaymentIntent(user) {
   // eslint-disable-next-line complexity
   return async function (errorEmails, paymentIntent) {
     logger.info(`paymentIntent ${paymentIntent.id}`);
+
+    const q = {
+      user: user._id
+    };
+
     try {
-      if (paymentIntent.status !== 'succeeded') return errorEmails;
+      //
+      // payment intent status could be "failed", "canceled", "processing"
+      // or other non-complete status and so we don't want to store this if wasn't successful
+      // (otherwise the user might get credit for something that wasn't successful)
+      //
+      if (paymentIntent.status !== 'succeeded') {
+        // remove the Payment on our side if any that corresponds to this intent
+        const payment = await Payments.findOne({
+          ...q,
+          stripe_payment_intent_id: paymentIntent.id
+        });
+        if (payment) {
+          // remove the payment from our side
+          await payment.remove();
+          // find and save the associated user
+          // so that their plan_expires_at gets updated
+          const existingUser = await Users.findById(user._id);
+          if (!existingUser) throw new Error('User does not exist');
+          await existingUser.save();
+        }
+
+        return errorEmails;
+      }
 
       //
       // charges includes a `data` Array with only one charge (the latest/successful)
@@ -119,11 +146,6 @@ function syncStripePaymentIntent(user) {
       // we attempt to look up the payment in our system, if it already exists
       // we validate it and modify any missing params, if it doesnt, we create it
       // depending on how it was created it will have some of the following fields
-
-      const q = {
-        user: user._id
-      };
-
       let [payment, ...tooManyPayments] = await Payments.find({
         ...q,
         stripe_payment_intent_id: paymentIntent.id
@@ -281,7 +303,8 @@ function syncStripePaymentIntent(user) {
           stripe_payment_intent_id: paymentIntent?.id,
           stripe_invoice_id: invoice?.id,
           stripe_subscription_id: invoice?.subscription,
-          invoice_at: dayjs.unix(paymentIntent.created).toDate()
+          invoice_at: dayjs.unix(paymentIntent.created).toDate(),
+          stack: new Error('stack').stack
         };
 
         if (stripeCharge.payment_method_details.type === 'card') {

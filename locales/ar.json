@@ -4808,5 +4808,6 @@
   "From header must be equal to <span class=\"notranslate\">%s</span>": "من الرأس يجب أن يكون مساوياً لـ <span class=\"notranslate\">%s</span>",
   "This header's value has": "قيمة هذا الرأس لها",
   "header parsed addresses removed from it.": "تمت إزالة العناوين التي تم تحليلها منه.",
-  "We gave you free credit! Thank you for being a customer!": "لقد قدمنا لك رصيدا مجانيا! شكرا لكونك عميلا!"
+  "We gave you free credit! Thank you for being a customer!": "لقد قدمنا لك رصيدا مجانيا! شكرا لكونك عميلا!",
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "لم يكن الدفع ناجحًا ولم تتم معالجة الرسوم. يرجى المحاولة مرة أخرى أو الاتصال بنا للحصول على المساعدة."
 }

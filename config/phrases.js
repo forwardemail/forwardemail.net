@@ -377,6 +377,8 @@ module.exports = {
     'You do not currently have an active subscription, or it was recently cancelled.',
   SUBSCRIPTION_CANCELLED: 'You have successfully cancelled your subscription.',
   ONE_TIME_PAYMENT_SUCCESSFUL: 'You have successfully made a one-time payment.',
+  INVALID_PAYMENT_INTENT:
+    'Payment was not successful and charge was not processed.  Please try again or contact us for help.',
   REFUND_ERROR_OCCURRED:
     'An error occurred while processing refunds. We have been notified by email.',
   REFUND_SUCCESSFUL:
