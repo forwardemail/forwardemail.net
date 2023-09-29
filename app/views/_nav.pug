@@ -116,7 +116,7 @@ nav.navbar.navbar-expand-lg.fixed-top(
                 data-target=isRegisterOrLogin ? false : "#modal-log-in"
               )= t("Log in")
           if ctx.pathWithoutLocale !== '/register'
-            li.list-inline-item.d-none.d-sm-inline-block.d-lg-none
+            li.list-inline-item.d-inline-block.d-lg-none
               a.btn.btn-sm.btn-success.text-uppercase.font-weight-bold(
                 href=l("/register"),
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",

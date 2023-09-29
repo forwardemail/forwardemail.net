@@ -297,7 +297,7 @@ async function getPDFReceipt(
   const options = {
     debug: config.env !== 'production',
     pageSize: 'letter',
-    background: true,
+    background: false,
     imageDpi: 600,
     // NOTE: there is a bug with min-width and max-width
     // <https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4375>

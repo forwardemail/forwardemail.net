@@ -426,7 +426,7 @@ function navbarScroll() {
 
 if (el && $nav.length > 0) {
   navbarScroll();
-  $(window).scroll(debounce(navbarScroll, 250));
+  $(window).scroll(debounce(navbarScroll, 125));
   $('#navbar-header')
     .on('show.bs.collapse', navbarScroll)
     .on('hide.bs.collapse', navbarScroll);

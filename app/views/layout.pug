@@ -227,13 +227,13 @@ html.h-100.no-js(
   body.d-flex.flex-column.min-h-100.app(
     role="document",
     onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false,
-    id=ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
+    id=!isPDF && ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
     data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false
   )
     //- Safari has performance issues
     //- <https://stackoverflow.com/a/40463096>
     - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
-    if (!isSafari && ctx.pathWithoutLocale === '/' && !isBot(ctx.get('User-Agent')))
+    if (!isPDF && !isSafari && ctx.pathWithoutLocale === '/' && !isBot(ctx.get('User-Agent')))
       #stars.user-select-none
       #rocket.user-select-none
       #waving.user-select-none

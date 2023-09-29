@@ -104,22 +104,20 @@ block body
         .col-12.col-lg-6
           h1.mb-3
             = t("Free, private, and secure email for custom domains.")
-          p
+          p.d-none.d-md-block
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
             = " "
             != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
-          .d-block
-            ul.list-inline.mb-3
-              li.list-inline-item
-                a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase(
-                  href=l("/register"),
-                  data-toggle="modal-anchor",
-                  data-target="#modal-sign-up"
-                )
-                  = t("Try for free")
+          a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mb-3(
+            href=l("/register"),
+            data-toggle="modal-anchor",
+            data-target="#modal-sign-up"
+          )
+            = t("Try for free")
+          .d-none.d-md-block
             include _feature-list
           ul.list-inline
-            li.list-inline-item
+            li.list-inline-item.d-block.d-md-inline.mb-3.mb-md-0
               a.btn(
                 class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-outline-light",
                 href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true")
@@ -128,7 +126,7 @@ block body
                   = t("Features and Pricing")
                 else
                   = t("See all features")
-            li.list-inline-item
+            li.list-inline-item.d-block.d-md-inline
               if isBot(ctx.get('User-Agent'))
                 a.btn.btn-dark(
                   href="https://www.youtube.com/watch?v=N6zjv40zuIY",
@@ -139,7 +137,7 @@ block body
                   = " "
                   = t("Watch Video")
               else
-                a.btn.btn-outline-light.d-inline-block(
+                a.btn.btn-outline-light(
                   role="button",
                   data-toggle="modal",
                   data-target="#modal-watch-video",
