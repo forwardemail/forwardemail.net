@@ -122,7 +122,10 @@ nav.navbar.navbar-expand-lg.fixed-top(
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                 data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
-                = t("Try for free")
+                span.d-inline-block.d-sm-none
+                  = t("Signup")
+                span.d-none.d-sm-inline-block
+                  = t("Try for free")
       .no-js.is-bot.d-inline-block.mr-3
     if !isBot(ctx.get('User-Agent'))
       button.navbar-toggler.d-lg-none.no-js.text-themed(

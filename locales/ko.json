@@ -4809,5 +4809,9 @@
   "This header's value has": "이 헤더의 값은",
   "header parsed addresses removed from it.": "헤더 구문 분석 주소가 제거되었습니다.",
   "We gave you free credit! Thank you for being a customer!": "우리는 당신에게 무료 크레딧을 주었습니다! 고객이 되어주셔서 감사합니다!",
-  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "결제가 실패하여 청구가 처리되지 않았습니다. 다시 시도하거나 도움이 필요하면 문의해 주세요."
+  "Payment was not successful and charge was not processed.  Please try again or contact us for help.": "결제가 실패하여 청구가 처리되지 않았습니다. 다시 시도하거나 도움이 필요하면 문의해 주세요.",
+  "Signup": "가입하기",
+  "See Features": "기능 보기",
+  "Read more questions and answers": "더 많은 질문과 답변을 읽어보세요",
+  "Product Tour": "제품 투어"
 }

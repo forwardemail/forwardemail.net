@@ -11,7 +11,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            #modal-pricing-video-title.h4.d-inline-block.ml-4= t("Private Business Email")
+            #modal-pricing-video-title.h4.d-inline-block.ml-4= t("Product Tour")
             button.close(
               type="button",
               data-dismiss="modal",
@@ -26,46 +26,45 @@ block body
               data-src="https://www.youtube-nocookie.com/embed/N6zjv40zuIY?autoplay=0"
             )
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
-    .min-vh-80.d-flex.flex-column
+    .min-vh-80.d-flex.flex-column(
+      class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
+    )
       .container.my-auto.pt-5
         .row
           .col-12.col-lg-6
             h1.mb-3
-              if isBot(ctx.get('User-Agent'))
-                = t("Free, private, and secure email for business and enterprise.")
-              else
-                != t("<mark>Free, private, and secure</mark> email for business and enterprise.")
-            p
+              = t("Free, private, and secure email for business and enterprise.")
+            p.d-none.d-md-block
               = t("Create your free, private, and professional business email.")
               = " "
               != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
-            .d-block
-              ul.list-inline.mb-3
-                li.list-inline-item
-                  a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase(
-                    href=l("/register"),
-                    data-toggle="modal-anchor",
-                    data-target="#modal-sign-up"
-                  )
-                    = t("Try for free")
-            include _feature-list
+            a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mb-3(
+              href=l("/register"),
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Try for free")
+            .d-none.d-md-block
+              include _feature-list
             ul.list-inline
               if !isBot(ctx.get('User-Agent'))
-                li.list-inline-item
-                  a.btn.btn-outline-dark.font-weight-bold(href="#features")
-                    = t("See all features")
-              li.list-inline-item
+                li.list-inline-item.d-block.d-md-inline.mb-3.mb-md-0
+                  a.btn.btn-outline-light(href="#features")
+                    i.fa.fa-fw.fa-layer-group
+                    = " "
+                    = t("Features")
+              li.list-inline-item.d-block.d-md-inline
                 if isBot(ctx.get('User-Agent'))
-                  a.btn.btn-outline-dark(
+                  a.btn.btn-dark(
                     href="https://www.youtube.com/watch?v=N6zjv40zuIY",
                     target="_blank",
                     rel="noopener noreferrer"
                   )
-                    i.fab.fa-youtube.text-danger
+                    i.fab.fa-fw.fa-youtube.text-danger
                     = " "
-                    = t("Watch Video")
+                    = t("Product Tour")
                 else
-                  a.btn.btn-outline-dark.d-inline-block.d-lg-none(
+                  a.btn.btn-outline-light(
                     role="button",
                     data-toggle="modal",
                     data-target="#modal-pricing-video",
@@ -73,17 +72,9 @@ block body
                     target="_blank",
                     rel="noopener noreferrer"
                   )
-                    i.fab.fa-youtube.text-danger
+                    i.fab.fa-fw.fa-youtube.text-danger
                     = " "
-                    = t("Watch Video")
-          if !isBot(ctx.get('User-Agent'))
-            .col-lg-6.d-none.d-lg-block
-              .lazyframe.border.border-themed.d-inline-block(
-                data-vendor="youtube_nocookie",
-                title=t("Forward Email's Paid Plans"),
-                style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
-                data-src="https://www.youtube-nocookie.com/embed/N6zjv40zuIY?autoplay=0"
-              )
+                    = t("Product Tour")
       a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
         href="#features"
       )
@@ -98,7 +89,7 @@ block body
     data-src=manifest("img/art/stars.svg")
   )
     .text-center.d-block.d-md-none.my-3
-      .h1.mb-0= t("Pricing")
+      .h1.mb-0.text-white= t("Pricing")
     .container
       .row.row-cols-1.row-cols-lg-3
         .col
@@ -396,17 +387,6 @@ block body
                 i.fa.fa-fw.fa-drafting-compass.text-themed.mr-3
                 = " "
                 = t("Early access to new features")
-
-    .text-center.d-block.mt-3.mt-md-5
-      a.text-decoration-none.text-uppercase.text-themed.mx-auto(
-        href="#frequently-asked-questions"
-      )
-        i.fa.fa-angle-double-down
-        = " "
-        = t("Frequently Asked Questions")
-        = " "
-        i.fa.fa-angle-double-down
-
   .bg-dark.py-3.py-md-5.d-block
     .container
       .row
@@ -443,92 +423,92 @@ block body
             alt=t("Professional Private Business Email")
           )
 
-  #frequently-asked-questions.container.py-5
-    .row
-      .col
-        h2= t("Frequently Asked Questions")
-        p.lead
-          = t("Browse commonly asked questions and answers about pricing below.")
-    .row.my-3
-      .col-12
-        h3.h5.border-bottom.border-dark-50= t("What is the difference between Free and Enhanced?")
-        p
-          = t("The Free plan requires you to use public DNS records to store your forwarding configuration.")
-          = " "
-          = t("Anyone with a computer can lookup your forwarding configuration in a terminal if you are on the Free plan.")
-          = " "
-          = t("Unlike the Free plan, the Enhanced plan uses a cryptographically generated random string to store your forwarding configuration privately.")
-    .row.my-3
-      .col-12.col-sm-6.text-center
-        h4.border-dark-50.mb-4= t("Free")
-        strong.bg-danger.rounded.p-3.text-white
-          i.fa.fa-lock-open
-          = " "
-          = user ? user.email : "user@gmail.com"
-      .col-12.col-sm-6.text-center.mt-5.mt-sm-0
-        h4.border-dark-50.mb-4= t("Enhanced")
-        strong.bg-success.rounded.p-3.text-white
-          i.fa.fa-lock
-          = " "
-          != new Array(16).fill("&bull;").join("")
-    .row.my-3.mt-5
-      .col
-        h3.h5.border-bottom.border-dark-50= t("Do you offer unlimited domains for one price?")
-        p!= t('<span class="font-weight-bold">Yes.</span> Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.')
-    .row.my-3
-      .col
-        h3.h5.border-bottom.border-dark-50= t("Which payment methods do you accept?")
-        p!= t('We accept cards, wallets, and bank transfers using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noopener noreferrer">Stripe</a> and <a class="alert-link" href="https://www.paypal.com" target="_blank" rel="noopener noreferrer">PayPal</a>.')
-    .row.my-3
-      .col
-        h3.h5.border-bottom.border-dark-50= t("Do you accept one-time payments and subscriptions?")
-        p!= t('<span class="font-weight-bold">Yes.</span> We accept both one-time payments or monthly, quarterly, and yearly subscriptions.')
-    .row.my-3
-      .col
-        h3.h5.border-bottom.border-dark-50= t("Do you offer a money-back guarantee?")
-        p!= t('<span class="font-weight-bold">Yes.</span> We offer a 30 day money-back guarantee &ndash; with no questions asked.')
-    .row.my-3
-      .col
-        h3.h5.border-bottom.border-dark-50= t("Will you ever increase prices?")
-        p!= t('<span class="font-weight-bold">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.')
-    .row.my-3
-      .col
-        h3.h5.border-bottom.border-dark-50!= t('Can I configure <a href="%s" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', "https://spamscanner.net")
-        p
-          != t('<span class="font-weight-bold">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href="%s" class="font-weight-bold">Settings</a>.', sortedDomains && sortedDomains[0] && sortedDomains[0].name ? l(`/my-account/domains/${sortedDomains[0].name}/advanced-settings`) : l("/my-account/domains"))
-    .row.my-3
-      .col
-        h3.h5.border-bottom.border-dark-50= t("Do you store SMTP logs or write to disk?")
-        p
-          != t('<span class="font-weight-bold">No.</span> We have a <a href="%s" class="font-weight-bold">Privacy</a> policy of not storing SMTP logs, metadata, nor emails (with the exception of <a href="%s">errors</a>).', l("/privacy"), l("/faq#do-you-store-error-logs"))
-          = " "
-          = t("You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.")
-          = " "
-          = t("This common practice is a huge security risk for you, and is another reason why we built our service.")
-          = " "
-          = t("Our expertise allowed us to build our own custom solution that uses memory-based streams, and is lightning fast and privacy-focused.")
-        p.font-weight-bold: u= t("We don't track you like other services do.")
-    .row
-      .col
-        h3.h5.border-bottom.border-dark-50= t("Do you have a question?")
-        p= t("Read our dedicated page for frequently asked questions or submit a help request.")
-        ul.list-inline
-          li.list-inline-item
-            a.btn.btn-lg.btn-primary(href=l("/faq"))= t("Read FAQ")
-          li.list-inline-item
-            a.btn.btn-lg.btn-dark(
-              href=l("/help"),
-              role="button",
-              data-target="#modal-help"
-            )= t("Contact Help")
-    .row
-      .col
-        a.btn.btn-lg.btn-success(href=l("/my-account/domains/new"))
-          if user
-            i.fa.fa-plus
+  .bg-dark.py-3.py-md-5.d-block.text-white#frequently-asked-questions
+    .container
+      .row
+        .col
+          h2= t("Frequently Asked Questions")
+          p.lead
+            = t("Browse commonly asked questions and answers about pricing below.")
+      .row.my-3
+        .col-12
+          h3.h5.border-bottom.border-dark-50= t("What is the difference between Free and Enhanced?")
+          p
+            = t("The Free plan requires you to use public DNS records to store your forwarding configuration.")
             = " "
-            = t("Add New Domain")
-          else
-            = t("Get started")
+            = t("Anyone with a computer can lookup your forwarding configuration in a terminal if you are on the Free plan.")
             = " "
-            i.fa.fa-angle-double-right.align-middle
+            = t("Unlike the Free plan, the Enhanced plan uses a cryptographically generated random string to store your forwarding configuration privately.")
+      .row.my-3
+        .col-12.col-sm-6.text-center
+          h4.border-dark-50.mb-4= t("Free")
+          strong.bg-danger.rounded.p-3.text-white
+            i.fa.fa-lock-open
+            = " "
+            = user ? user.email : "user@gmail.com"
+        .col-12.col-sm-6.text-center.mt-5.mt-sm-0
+          h4.border-dark-50.mb-4= t("Enhanced")
+          strong.bg-success.rounded.p-3.text-white
+            i.fa.fa-lock
+            = " "
+            != new Array(16).fill("&bull;").join("")
+      .row.my-3.mt-5
+        .col
+          h3.h5.border-bottom.border-dark-50= t("Do you offer unlimited domains for one price?")
+          p!= t('<span class="font-weight-bold">Yes.</span> Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.')
+      .row.my-3
+        .col
+          h3.h5.border-bottom.border-dark-50= t("Which payment methods do you accept?")
+          p!= t('We accept cards, wallets, and bank transfers using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noopener noreferrer">Stripe</a> and <a class="alert-link" href="https://www.paypal.com" target="_blank" rel="noopener noreferrer">PayPal</a>.')
+      .row.my-3
+        .col
+          h3.h5.border-bottom.border-dark-50= t("Do you accept one-time payments and subscriptions?")
+          p!= t('<span class="font-weight-bold">Yes.</span> We accept both one-time payments or monthly, quarterly, and yearly subscriptions.')
+      .row.my-3
+        .col
+          h3.h5.border-bottom.border-dark-50= t("Do you offer a money-back guarantee?")
+          p!= t('<span class="font-weight-bold">Yes.</span> We offer a 30 day money-back guarantee &ndash; with no questions asked.')
+      .row.my-3
+        .col
+          h3.h5.border-bottom.border-dark-50= t("Will you ever increase prices?")
+          p!= t('<span class="font-weight-bold">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.')
+      .row.my-3
+        .col
+          h3.h5.border-bottom.border-dark-50!= t('Can I configure <a href="%s" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', "https://spamscanner.net")
+          p
+            != t('<span class="font-weight-bold">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href="%s" class="font-weight-bold">Settings</a>.', sortedDomains && sortedDomains[0] && sortedDomains[0].name ? l(`/my-account/domains/${sortedDomains[0].name}/advanced-settings`) : l("/my-account/domains"))
+      .row.my-3
+        .col
+          h3.h5.border-bottom.border-dark-50= t("Do you store SMTP logs or write to disk?")
+          p
+            != t('<span class="font-weight-bold">No.</span> We have a <a href="%s" class="font-weight-bold">Privacy</a> policy of not storing SMTP logs, metadata, nor emails (with the exception of <a href="%s">errors</a>).', l("/privacy"), l("/faq#do-you-store-error-logs"))
+            = " "
+            = t("You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.")
+            = " "
+            = t("This common practice is a huge security risk for you, and is another reason why we built our service.")
+            = " "
+            = t("Our expertise allowed us to build our own custom solution that uses memory-based streams, and is lightning fast and privacy-focused.")
+          p.font-weight-bold: u= t("We don't track you like other services do.")
+      .row
+        .col
+          h3.h5.border-bottom.border-dark-50= t("Do you have a question?")
+          p= t("Read our dedicated page for frequently asked questions or submit a help request.")
+          ul.list-inline
+            li.list-inline-item.mb-3
+              a.btn.btn-lg.btn-primary(href=l("/faq"))= t("Read more questions and answers")
+            li.list-inline-item.mb-3
+              a.btn.btn-lg.btn-success(href=l("/my-account/domains/new"))
+                if user
+                  i.fa.fa-plus
+                  = " "
+                  = t("Add New Domain")
+                else
+                  = t("Get started")
+                  = " "
+                  i.fa.fa-angle-double-right.align-middle
+            li.list-inline-item
+              a.btn.btn-lg.btn-warning(
+                href=l("/help"),
+                role="button",
+                data-target="#modal-help"
+              )= t("Help")
