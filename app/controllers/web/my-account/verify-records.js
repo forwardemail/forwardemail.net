@@ -88,7 +88,8 @@ async function verifyRecords(ctx) {
 
     const { ns, txt, mx, errors } = await Domains.getVerificationResults(
       domain,
-      ctx.resolver
+      ctx.resolver,
+      true
     );
 
     //

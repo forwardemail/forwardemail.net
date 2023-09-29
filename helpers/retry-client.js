@@ -31,12 +31,15 @@ class RetryClient extends undici.Client {
         if (response.statusCode !== 200) {
           // still need to consume body even if an error occurs
           const body = await response.body.text();
-          throw new undici.errors.ResponseStatusCodeError(
+          const err = new undici.errors.ResponseStatusCodeError(
             `Response status code ${response.statusCode}`,
             response.statusCode,
             response.headers,
             body
           );
+          err.options = options;
+          err.count = count;
+          throw err;
         }
 
         return response;

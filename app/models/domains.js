@@ -1028,7 +1028,7 @@ async function verifySMTP(domain, resolver) {
 
 Domains.statics.verifySMTP = verifySMTP;
 
-async function getVerificationResults(domain, resolver) {
+async function getVerificationResults(domain, resolver, purgeCache = false) {
   const verificationRecord = `${config.recordPrefix}-site-verification=${domain.verification_record}`;
   const verificationMarkdown = `<span class="markdown-body ml-0 mr-0"><code>${verificationRecord}</code></span>`;
   const isPaidPlan = _.isString(domain.plan) && domain.plan !== 'free';
@@ -1036,33 +1036,36 @@ async function getVerificationResults(domain, resolver) {
   //
   // attempt to purge Cloudflare cache programmatically
   //
-  try {
-    await pMap(
-      CACHE_TYPES,
-      (type) => {
-        const url = new URL(CLOUDFLARE_PURGE_CACHE_URL);
-        url.searchParams.append('domain', domain.name);
-        url.searchParams.append('type', type);
-        return retryRequest(url, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'User-Agent': USER_AGENT
-          },
-          timeout: ms('5s'),
-          retries: 2
-        });
-      },
-      { concurrency }
-    );
-    logger.debug('cleared DNS cache for cloudflare', {
-      domain,
-      types: CACHE_TYPES
-    });
-    // wait one second for DNS changes to propagate
-    await delay(ms('1s'));
-  } catch (err) {
-    logger.error(err);
+  if (purgeCache) {
+    try {
+      await pMap(
+        CACHE_TYPES,
+        (type) => {
+          const url = new URL(CLOUDFLARE_PURGE_CACHE_URL);
+          url.searchParams.append('domain', domain.name);
+          url.searchParams.append('type', type);
+          return retryRequest(url, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'User-Agent': USER_AGENT
+            },
+            timeout: ms('3s'),
+            retries: 1
+          });
+        },
+        { concurrency }
+      );
+      logger.debug('cleared DNS cache for cloudflare', {
+        domain,
+        types: CACHE_TYPES
+      });
+      // wait one second for DNS changes to propagate
+      await delay(ms('1s'));
+    } catch (err) {
+      err.domain = domain;
+      logger.error(err);
+    }
   }
 
   const errors = [];
