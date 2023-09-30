@@ -717,14 +717,14 @@ Emails.statics.queue = async function (
     typeof info.envelope.from !== 'string' ||
     !isEmail(info.envelope.from)
   )
-    throw Boom.badRequest(i18n.translateError('ENVELOPE_FROM_MISSING', locale));
+    throw Boom.forbidden(i18n.translateError('ENVELOPE_FROM_MISSING', locale));
 
   let [aliasName, domainName] = info.envelope.from.split('@');
 
   domainName = punycode.toUnicode(domainName);
 
   if (aliasName === '*')
-    throw Boom.badRequest(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
+    throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
 
   let userId;
 
@@ -821,7 +821,7 @@ Emails.statics.queue = async function (
 
   // alias must exist
   if (!alias)
-    throw Boom.badRequest(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
+    throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
 
   // alias must not have banned user
   if (alias.user[config.userFields.isBanned])
@@ -866,7 +866,7 @@ Emails.statics.queue = async function (
   }
 
   if (!from || from !== `${alias.name}@${domain.name}`)
-    throw Boom.badRequest(
+    throw Boom.forbidden(
       i18n.translateError(
         'INVALID_FROM_HEADER',
         locale,

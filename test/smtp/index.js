@@ -299,29 +299,30 @@ test('auth with pass as alias', async (t) => {
   // store spoofed dns cache
   await resolver.options.cache.mset(map);
 
-  const transporter = nodemailer.createTransport({
-    logger,
-    debug: true,
-    host: IP_ADDRESS,
-    port,
-    ignoreTLS: true,
-    secure: true,
-    tls: {
-      rejectUnauthorized: false
-    },
-    auth: {
-      user: `${alias.name}@${domain.name}`,
-      pass: 'test'
-    }
-  });
-
-  const err = await t.throwsAsync(
-    transporter.sendMail({
-      envelope: {
-        from: `${alias.name}@${domain.name}`,
-        to: 'test@test.com'
+  {
+    const transporter = nodemailer.createTransport({
+      logger,
+      debug: true,
+      host: IP_ADDRESS,
+      port,
+      ignoreTLS: true,
+      secure: true,
+      tls: {
+        rejectUnauthorized: false
       },
-      raw: `
+      auth: {
+        user: `${alias.name}@${domain.name}`,
+        pass: 'test'
+      }
+    });
+
+    const err = await t.throwsAsync(
+      transporter.sendMail({
+        envelope: {
+          from: `${alias.name}@${domain.name}`,
+          to: 'test@test.com'
+        },
+        raw: `
 To: test@test.com
 From: test@test.com
 Subject: test
@@ -329,11 +330,61 @@ Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
 Test`.trim()
-    })
-  );
+      })
+    );
 
-  t.is(err.responseCode, 535);
-  t.regex(err.message, /Invalid password/);
+    t.is(err.responseCode, 535);
+    t.regex(err.message, /Invalid password/);
+  }
+
+  const noReplyAlias = await factory.create('alias', {
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email],
+    name: 'no-reply'
+  });
+  const pass = await noReplyAlias.createToken();
+  await noReplyAlias.save();
+
+  {
+    const transporter = nodemailer.createTransport({
+      logger,
+      debug: true,
+      host: IP_ADDRESS,
+      port,
+      ignoreTLS: true,
+      secure: true,
+      tls: {
+        rejectUnauthorized: false
+      },
+      auth: {
+        user: `${noReplyAlias.name}@${domain.name}`,
+        pass
+      }
+    });
+
+    const err = await t.throwsAsync(
+      transporter.sendMail({
+        envelope: {
+          from: `${noReplyAlias.name}@${domain.name}`,
+          to: 'test@test.com'
+        },
+        raw: `
+To: test@test.com
+From: test@test.com
+Subject: test
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+      })
+    );
+    t.is(err.responseCode, 550);
+    t.regex(
+      err.message,
+      /You cannot use a "no-reply" username to send outbound mail/
+    );
+  }
 });
 
 test('smtp outbound auth', async (t) => {
