@@ -4813,5 +4813,6 @@
   "Signup": "サインアップ",
   "See Features": "機能を見る",
   "Read more questions and answers": "質問と回答をもっと読む",
-  "Product Tour": "製品ツアー"
+  "Product Tour": "製品ツアー",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "送信 SMTP に「応答なし」ユーザー名を使用することはできません。"
 }

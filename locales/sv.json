@@ -4813,5 +4813,6 @@
   "Signup": "Bli Medlem",
   "See Features": "Se Funktioner",
   "Read more questions and answers": "Läs fler frågor och svar",
-  "Product Tour": "Produktrundtur"
+  "Product Tour": "Produktrundtur",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Du kan inte använda ett \"no-reply\"-användarnamn för utgående SMTP."
 }

@@ -137,7 +137,7 @@ include ../../../_pagination
                         = t("Delete Alias")
                   //- generate password for alias
                   //- TODO: support more than one generated password
-                  if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
+                  if !domain.is_global && alias.name !== '*' && alias.is_enabled && !alias.name.startsWith('/') && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
                     form.ajax-form.confirm-prompt.d-inline-block(
                       action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/generate-password`),
                       data-confirm-prompt-title=t("Generate new password?"),

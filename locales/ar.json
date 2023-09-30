@@ -4813,5 +4813,6 @@
   "Signup": "اشتراك",
   "See Features": "انظر الميزات",
   "Read more questions and answers": "اقرأ المزيد من الأسئلة والأجوبة",
-  "Product Tour": "جولة المنتج"
+  "Product Tour": "جولة المنتج",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "لا يمكنك استخدام اسم مستخدم \"عدم الرد\" لـ SMTP الصادر."
 }

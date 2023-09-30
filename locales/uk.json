@@ -4813,5 +4813,6 @@
   "Signup": "Реєстрація",
   "See Features": "Дивіться функції",
   "Read more questions and answers": "Читайте більше питань і відповідей",
-  "Product Tour": "Екскурсія продуктом"
+  "Product Tour": "Екскурсія продуктом",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Ви не можете використовувати ім’я користувача без відповіді для вихідного SMTP."
 }

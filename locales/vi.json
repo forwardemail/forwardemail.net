@@ -4813,5 +4813,6 @@
   "Signup": "Đăng ký",
   "See Features": "Xem tính năng",
   "Read more questions and answers": "Đọc thêm câu hỏi và câu trả lời",
-  "Product Tour": "Tham quan sản phẩm"
+  "Product Tour": "Tham quan sản phẩm",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Bạn không thể sử dụng tên người dùng \"không trả lời\" cho SMTP gửi đi."
 }

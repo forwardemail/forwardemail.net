@@ -4813,5 +4813,6 @@
   "Signup": "Regisztrálj",
   "See Features": "Lásd: Jellemzők",
   "Read more questions and answers": "Olvassa el a további kérdéseket és válaszokat",
-  "Product Tour": "Terméktúra"
+  "Product Tour": "Terméktúra",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Nem használhat „válasz nélküli” felhasználónevet a kimenő SMTP-hez."
 }

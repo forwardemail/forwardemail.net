@@ -4658,5 +4658,6 @@
   "Signup": "Kirjaudu",
   "See Features": "Katso Ominaisuudet",
   "Read more questions and answers": "Lue lisää kysymyksiä ja vastauksia",
-  "Product Tour": "Tuotekierros"
+  "Product Tour": "Tuotekierros",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Et voi käyttää \"ei vastausta\" -käyttäjänimeä lähtevälle SMTP:lle."
 }

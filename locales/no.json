@@ -4818,5 +4818,6 @@
   "Signup": "Melde deg på",
   "See Features": "Se funksjoner",
   "Read more questions and answers": "Les flere spørsmål og svar",
-  "Product Tour": "Produktomvisning"
+  "Product Tour": "Produktomvisning",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Du kan ikke bruke et \"ikke-svar\"-brukernavn for utgående SMTP."
 }

@@ -67,6 +67,8 @@ module.exports = {
   EMAIL_DOES_NOT_EXIST: 'Email does not exist.',
   EMAIL_REMOVED: 'Email was removed from the queue by an admin.',
   INVALID_EMAIL_STATUS: 'Email status must be pending, queued, or deferred.',
+  NO_REPLY_USERNAME_NO_SMTP:
+    'You cannot use a "no-reply" username for outbound SMTP.',
   NO_REPLY_USERNAME_DISALLOWED:
     'You cannot use a "no-reply" username for an alias.',
   INVALID_DMARC_RESULT:

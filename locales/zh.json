@@ -4504,5 +4504,6 @@
   "Signup": "报名",
   "See Features": "查看功能",
   "Read more questions and answers": "阅读更多问题和答案",
-  "Product Tour": "产品展示"
+  "Product Tour": "产品展示",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "您不能对出站 SMTP 使用“无回复”用户名。"
 }

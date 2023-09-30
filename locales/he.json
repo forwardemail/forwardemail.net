@@ -4813,5 +4813,6 @@
   "Signup": "הירשם",
   "See Features": "ראה תכונות",
   "Read more questions and answers": "קרא עוד שאלות ותשובות",
-  "Product Tour": "סיור מוצרים"
+  "Product Tour": "סיור מוצרים",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "אינך יכול להשתמש בשם משתמש \"ללא תגובה\" עבור SMTP יוצא."
 }

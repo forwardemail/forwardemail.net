@@ -4813,5 +4813,6 @@
   "Signup": "가입하기",
   "See Features": "기능 보기",
   "Read more questions and answers": "더 많은 질문과 답변을 읽어보세요",
-  "Product Tour": "제품 투어"
+  "Product Tour": "제품 투어",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "아웃바운드 SMTP에는 \"응답 없음\" 사용자 이름을 사용할 수 없습니다."
 }

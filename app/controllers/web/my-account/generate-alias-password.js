@@ -1,4 +1,9 @@
+const Boom = require('@hapi/boom');
+const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
+
 const Aliases = require('#models/aliases');
+
+const NO_REPLY_USERNAMES = new Set(noReplyList);
 
 async function generateAliasPassword(ctx) {
   // if domain has not yet been setup yet then alert user
@@ -30,6 +35,15 @@ async function generateAliasPassword(ctx) {
   );
   try {
     const alias = await Aliases.findById(ctx.state.alias._id);
+    // prevent for disabled usernames
+    if (!alias.is_enabled)
+      throw Boom.badRequest(ctx.translateError('ALIAS_IS_NOT_ENABLED'));
+
+    // prevent for no-reply usernames
+    const string = alias.name.replace(/[^\da-z]/g, '');
+    if (NO_REPLY_USERNAMES.has(string))
+      throw Boom.badRequest(ctx.translateError('NO_REPLY_USERNAME_NO_SMTP'));
+
     // set locale for translation in `createToken`
     alias.locale = ctx.locale;
     // TODO: support more than one generated password

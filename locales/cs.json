@@ -4813,5 +4813,6 @@
   "Signup": "Přihlásit se",
   "See Features": "Viz Funkce",
   "Read more questions and answers": "Přečtěte si další otázky a odpovědi",
-  "Product Tour": "Prohlídka produktu"
+  "Product Tour": "Prohlídka produktu",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Pro odchozí SMTP nemůžete použít uživatelské jméno \"bez odpovědi\"."
 }

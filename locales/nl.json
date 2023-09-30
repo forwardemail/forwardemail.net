@@ -4813,5 +4813,6 @@
   "Signup": "Aanmelden",
   "See Features": "Zie Kenmerken",
   "Read more questions and answers": "Lees meer vragen en antwoorden",
-  "Product Tour": "Productrondleiding"
+  "Product Tour": "Productrondleiding",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "U kunt geen \"no-reply\"-gebruikersnaam gebruiken voor uitgaande SMTP."
 }

@@ -4549,5 +4549,6 @@
   "Signup": "Tilmelde",
   "See Features": "Se Funktioner",
   "Read more questions and answers": "Læs flere spørgsmål og svar",
-  "Product Tour": "Produktrundvisning"
+  "Product Tour": "Produktrundvisning",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Du kan ikke bruge et \"no-reply\"-brugernavn til udgående SMTP."
 }

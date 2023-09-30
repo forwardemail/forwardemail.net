@@ -3841,5 +3841,6 @@
   "Signup": "Melden Sie sich an",
   "See Features": "Siehe Funktionen",
   "Read more questions and answers": "Lesen Sie weitere Fragen und Antworten",
-  "Product Tour": "Produkttour"
+  "Product Tour": "Produkttour",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Sie können für ausgehendes SMTP keinen „No-Reply“-Benutzernamen verwenden."
 }

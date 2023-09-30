@@ -4813,5 +4813,6 @@
   "Signup": "Mendaftar",
   "See Features": "Lihat Fitur",
   "Read more questions and answers": "Baca lebih lanjut pertanyaan dan jawaban",
-  "Product Tour": "Jelajahi Produk"
+  "Product Tour": "Jelajahi Produk",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Anda tidak dapat menggunakan nama pengguna \"tidak ada balasan\" untuk SMTP keluar."
 }

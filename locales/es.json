@@ -4811,5 +4811,6 @@
   "Signup": "Inscribirse",
   "See Features": "Ver características",
   "Read more questions and answers": "Leer más preguntas y respuestas",
-  "Product Tour": "Tour del producto"
+  "Product Tour": "Tour del producto",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "No puede utilizar un nombre de usuario \"sin respuesta\" para SMTP saliente."
 }

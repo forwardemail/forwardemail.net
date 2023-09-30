@@ -4813,5 +4813,6 @@
   "Signup": "Üye olmak",
   "See Features": "Özellikleri Gör",
   "Read more questions and answers": "Daha fazla soru ve cevap okuyun",
-  "Product Tour": "Ürün Turu"
+  "Product Tour": "Ürün Turu",
+  "You cannot use a \"no-reply\" username for outbound SMTP.": "Giden SMTP için \"yanıt yok\" kullanıcı adını kullanamazsınız."
 }
