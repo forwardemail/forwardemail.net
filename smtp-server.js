@@ -8,6 +8,7 @@ const getStream = require('get-stream');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
+const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const pify = require('pify');
 const safeStringify = require('fast-safe-stringify');
 const splitLines = require('split-lines');
@@ -31,9 +32,8 @@ const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const SMTPError = require('#helpers/smtp-error');
 
+const NO_REPLY_USERNAMES = new Set(noReplyList);
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
-
-// TODO: envelope.from and From header must be the same as alias
 
 class ServerShutdownError extends Error {
   // NOTE: smtp-server does not have an affixed "." in the server shutdown message
@@ -97,6 +97,16 @@ function validateAlias(alias) {
   // alias must not have banned user
   if (alias.user[config.userFields.isBanned])
     throw new Error('Alias user is banned');
+
+  //
+  // it is bad practice to send outbound email from a no-reply or unmonitored mailbox
+  // (consider using "Reply-To" header with a "no-reply" address)
+  //
+  const string = alias.name.replace(/[^\da-z]/g, '');
+  if (NO_REPLY_USERNAMES.has(string))
+    throw new Error(
+      'You cannot use a "no-reply" username to send outbound mail (it is bad practice to send from an unmonitored mailbox).'
+    );
 
   // alias must be enabled
   if (!alias.is_enabled) throw new Error('Alias is disabled');
