@@ -4589,5 +4589,18 @@
   "Contact Support": "Kontakt support",
   "Need to manage your domains?": "Har du brug for at administrere dine domæner?",
   "Go to My Account": "Gå til Min konto",
-  "100% Free": "100 % gratis"
+  "100% Free": "100 % gratis",
+  "Need real-time alerts and logs?": "Har du brug for advarsler og logfiler i realtid?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Opgradering låser op <a href=\"%s\" target=\"_blank\">for alarmer og logfiler i realtid</a> og <a href=\"%s\" target=\"_blank\">udgående SMTP-understøttelse</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Udgående SMTP-support betyder, at du kan sende e-mail ved hjælp af et hvilket som helst alias med dit tilpassede domænenavn.",
+  "100% Money back guarantee": "100 % pengene tilbage garanti",
+  "Upgrading keeps your email private:": "Opgradering holder din e-mail privat:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Disse funktioner vil hjælpe dig med at sikre høj leveringsevne og hjælpe med at holde din e-mail sikker.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Prisen er kun $3 pr. måned og understøtter vores køreplan, serverinfrastruktur og open source-fællesskabet.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Opgradering omfatter ubegrænsede domæner og aliaser, realtidsadvarsler og logfiler, udgående SMTP-adgang og mere.",
+  "Your Account": "Din konto",
+  "Manage your aliases, domains, settings, and security.": "Administrer dine aliasser, domæner, indstillinger og sikkerhed.",
+  "Customer Support": "Kunde support",
+  "Read our FAQ, submit a help request, or reply to this email.": "Læs vores ofte stillede spørgsmål, indsend en anmodning om hjælp, eller besvar denne e-mail.",
+  "Help Request": "Anmodning om hjælp"
 }

@@ -4544,5 +4544,18 @@
   "Contact Support": "联系支持人员",
   "Need to manage your domains?": "需要管理您的域名吗？",
   "Go to My Account": "转至“我的账户",
-  "100% Free": "100% 免费"
+  "100% Free": "100% 免费",
+  "Need real-time alerts and logs?": "需要实时警报和日志？",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>升级将解锁<a href=\"%s\" target=\"_blank\">实时警报和日志</a>以及<a href=\"%s\" target=\"_blank\">出站 SMTP 支持</a></strong>。",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "出站 SMTP 支持意味着您可以使用带有自定义域名的任何别名来发送电子邮件。",
+  "100% Money back guarantee": "100% 退款保证",
+  "Upgrading keeps your email private:": "升级可保护您的电子邮件的私密性：",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "这些功能将帮助您确保高送达率并有助于确保您的电子邮件安全。",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "每月费用仅为 3 美元，并支持我们的路线图、服务器基础设施和开源社区。",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "升级包括无限的域和别名、实时警报和日志、出站 SMTP 访问等等。",
+  "Your Account": "你的帐户",
+  "Manage your aliases, domains, settings, and security.": "管理您的别名、域、设置和安全性。",
+  "Customer Support": "客户支持",
+  "Read our FAQ, submit a help request, or reply to this email.": "请阅读我们的常见问题解答、提交帮助请求或回复此电子邮件。",
+  "Help Request": "帮助请求"
 }

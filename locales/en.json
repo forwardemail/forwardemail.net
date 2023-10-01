@@ -4627,5 +4627,18 @@
   "Contact Support": "Contact Support",
   "Need to manage your domains?": "Need to manage your domains?",
   "Go to My Account": "Go to My Account",
-  "100% Free": "100% Free"
+  "100% Free": "100% Free",
+  "Need real-time alerts and logs?": "Need real-time alerts and logs?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Outbound SMTP support means you can send email using any alias with your custom domain name.",
+  "100% Money back guarantee": "100% Money back guarantee",
+  "Upgrading keeps your email private:": "Upgrading keeps your email private:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "These features will help you to ensure high deliverability and help to keep your email safe.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.",
+  "Your Account": "Your Account",
+  "Manage your aliases, domains, settings, and security.": "Manage your aliases, domains, settings, and security.",
+  "Customer Support": "Customer Support",
+  "Read our FAQ, submit a help request, or reply to this email.": "Read our FAQ, submit a help request, or reply to this email.",
+  "Help Request": "Help Request"
 }

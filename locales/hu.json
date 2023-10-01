@@ -4853,5 +4853,18 @@
   "Contact Support": "Lépjen kapcsolatba az ügyfélszolgálattal",
   "Need to manage your domains?": "Kezelnie kell domainjeit?",
   "Go to My Account": "Lépjen a Saját fiók oldalra",
-  "100% Free": "100% ingyenes"
+  "100% Free": "100% ingyenes",
+  "Need real-time alerts and logs?": "Valós idejű riasztásokra és naplókra van szüksége?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>A frissítés feloldja <a href=\"%s\" target=\"_blank\">a valós idejű figyelmeztetéseket és naplókat</a> , valamint <a href=\"%s\" target=\"_blank\">a kimenő SMTP-támogatást</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "A kimenő SMTP-támogatás azt jelenti, hogy bármilyen aliassal küldhet e-mailt egyéni domainnévvel.",
+  "100% Money back guarantee": "100% pénzvisszafizetési garancia",
+  "Upgrading keeps your email private:": "A frissítés megőrzi e-mailjeit:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Ezek a funkciók segítik a magas kézbesítést, és segítenek megőrizni e-mailjei biztonságát.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "A költség mindössze 3 dollár havonta, és támogatja az ütemtervenket, a szerver-infrastruktúrát és a nyílt forráskódú közösséget.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "A frissítés korlátlan számú tartományt és álneveket, valós idejű riasztásokat és naplókat, kimenő SMTP-hozzáférést és egyebeket foglal magában.",
+  "Your Account": "Fiókja",
+  "Manage your aliases, domains, settings, and security.": "Kezelje álneveit, domainjeit, beállításait és biztonságát.",
+  "Customer Support": "Vevőszolgálat",
+  "Read our FAQ, submit a help request, or reply to this email.": "Olvassa el a GYIK-et, küldjön be segítségkérést, vagy válaszoljon erre az e-mailre.",
+  "Help Request": "Segítségkérés"
 }

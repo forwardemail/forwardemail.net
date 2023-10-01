@@ -4698,5 +4698,18 @@
   "Contact Support": "Ota yhteyttä tukeen",
   "Need to manage your domains?": "Haluatko hallita verkkotunnuksiasi?",
   "Go to My Account": "Siirry kohtaan Oma tili",
-  "100% Free": "100% ilmainen"
+  "100% Free": "100% ilmainen",
+  "Need real-time alerts and logs?": "Tarvitsetko reaaliaikaisia hälytyksiä ja lokeja?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Päivitys avaa <a href=\"%s\" target=\"_blank\">reaaliaikaiset hälytykset ja lokit</a> sekä <a href=\"%s\" target=\"_blank\">lähtevän SMTP-tuen</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Lähtevän SMTP-tuki tarkoittaa, että voit lähettää sähköpostia millä tahansa aliaksella mukautetulla verkkotunnuksellasi.",
+  "100% Money back guarantee": "100% rahat takaisin -takuu",
+  "Upgrading keeps your email private:": "Päivitys pitää sähköpostisi yksityisenä:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Nämä ominaisuudet auttavat sinua varmistamaan korkean toimittavuuden ja pitämään sähköpostisi turvassa.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Hinta on vain 3 dollaria kuukaudessa ja tukee tiekarttamme, palvelininfrastruktuuriamme ja avoimen lähdekoodin yhteisöä.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Päivitys sisältää rajoittamattoman määrän verkkotunnuksia ja aliaksia, reaaliaikaisia hälytyksiä ja lokeja, lähtevän SMTP-käytön ja paljon muuta.",
+  "Your Account": "Tilisi",
+  "Manage your aliases, domains, settings, and security.": "Hallinnoi aliaksia, verkkotunnuksia, asetuksia ja suojausta.",
+  "Customer Support": "Asiakaspalvelu",
+  "Read our FAQ, submit a help request, or reply to this email.": "Lue UKK, lähetä avunpyyntö tai vastaa tähän sähköpostiin.",
+  "Help Request": "Apupyyntö"
 }

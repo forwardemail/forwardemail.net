@@ -4853,5 +4853,18 @@
   "Contact Support": "İletişim desteği",
   "Need to manage your domains?": "Alan adlarınızı yönetmeniz mi gerekiyor?",
   "Go to My Account": "hesabıma git",
-  "100% Free": "%100 Ücretsiz"
+  "100% Free": "%100 Ücretsiz",
+  "Need real-time alerts and logs?": "Gerçek zamanlı uyarılara ve günlüklere mi ihtiyacınız var?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Yükseltme <a href=\"%s\" target=\"_blank\">, gerçek zamanlı uyarıların, günlüklerin</a> ve <a href=\"%s\" target=\"_blank\">giden SMTP desteğinin</a> kilidini açacaktır</strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Giden SMTP desteği, özel alan adınızla herhangi bir takma adı kullanarak e-posta gönderebileceğiniz anlamına gelir.",
+  "100% Money back guarantee": "%100 Para iade garantisi",
+  "Upgrading keeps your email private:": "Yükseltme e-postanızı gizli tutar:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Bu özellikler, yüksek teslim edilebilirlik sağlamanıza ve e-postanızı güvende tutmanıza yardımcı olacaktır.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Maliyet ayda yalnızca 3 ABD dolarıdır ve yol haritamızı, sunucu altyapımızı ve açık kaynak topluluğumuzu destekler.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Yükseltme, sınırsız alan adlarını ve takma adları, gerçek zamanlı uyarıları ve günlükleri, giden SMTP erişimini ve daha fazlasını içerir.",
+  "Your Account": "Hesabınız",
+  "Manage your aliases, domains, settings, and security.": "Takma adlarınızı, alan adlarınızı, ayarlarınızı ve güvenliğinizi yönetin.",
+  "Customer Support": "Müşteri desteği",
+  "Read our FAQ, submit a help request, or reply to this email.": "SSS bölümümüzü okuyun, yardım isteği gönderin veya bu e-postayı yanıtlayın.",
+  "Help Request": "Yardım talebi"
 }

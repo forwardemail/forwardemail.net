@@ -4853,5 +4853,18 @@
   "Contact Support": "צור קשר עם תמיכה",
   "Need to manage your domains?": "צריך לנהל את הדומיינים שלך?",
   "Go to My Account": "כנס לחשבון שלי",
-  "100% Free": "100% חינם"
+  "100% Free": "100% חינם",
+  "Need real-time alerts and logs?": "צריך התראות ויומנים בזמן אמת?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>השדרוג יבטל נעילה <a href=\"%s\" target=\"_blank\">של התראות ויומנים בזמן אמת</a> <a href=\"%s\" target=\"_blank\">ותמיכה ב-SMTP יוצא</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "תמיכת SMTP יוצאת פירושה שאתה יכול לשלוח דואר אלקטרוני באמצעות כל כינוי עם שם הדומיין המותאם אישית שלך.",
+  "100% Money back guarantee": "100% אחריות להחזר כספי",
+  "Upgrading keeps your email private:": "השדרוג שומר על פרטיות האימייל שלך:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "תכונות אלו יעזרו לך להבטיח יכולת מסירה גבוהה ויסייעו לשמור על בטיחות הדוא\"ל שלך.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "העלות היא רק $3 לחודש ותומכת במפת הדרכים שלנו, בתשתית השרתים ובקהילת הקוד הפתוח.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "השדרוג כולל דומיינים וכינויים ללא הגבלה, התראות ויומנים בזמן אמת, גישת SMTP יוצאת ועוד.",
+  "Your Account": "החשבון שלך",
+  "Manage your aliases, domains, settings, and security.": "נהל את הכינויים, הדומיינים, ההגדרות והאבטחה שלך.",
+  "Customer Support": "שירות לקוחות",
+  "Read our FAQ, submit a help request, or reply to this email.": "קרא את השאלות הנפוצות שלנו, שלח בקשת עזרה או השב לדוא\"ל זה.",
+  "Help Request": "בקשת עזרה"
 }

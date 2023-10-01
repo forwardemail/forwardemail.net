@@ -4853,5 +4853,18 @@
   "Contact Support": "연락처 지원",
   "Need to manage your domains?": "도메인을 관리해야 합니까?",
   "Go to My Account": "내 계정으로 이동",
-  "100% Free": "100% 무료"
+  "100% Free": "100% 무료",
+  "Need real-time alerts and logs?": "실시간 경고 및 로그가 필요합니까?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>업그레이드하면 <a href=\"%s\" target=\"_blank\">실시간 경고 및 로그</a> 와 <a href=\"%s\" target=\"_blank\">아웃바운드 SMTP 지원이</a> 잠금 해제됩니다</strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "아웃바운드 SMTP 지원은 사용자 정의 도메인 이름과 함께 별칭을 사용하여 이메일을 보낼 수 있음을 의미합니다.",
+  "100% Money back guarantee": "100% 환불 보장",
+  "Upgrading keeps your email private:": "업그레이드하면 이메일이 비공개로 유지됩니다.",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "이러한 기능은 높은 전달성을 보장하고 이메일을 안전하게 유지하는 데 도움이 됩니다.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "비용은 월 3달러에 불과하며 로드맵, 서버 인프라 및 오픈 소스 커뮤니티를 지원합니다.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "업그레이드에는 무제한 도메인 및 별칭, 실시간 경고 및 로그, 아웃바운드 SMTP 액세스 등이 포함됩니다.",
+  "Your Account": "귀하의 계정",
+  "Manage your aliases, domains, settings, and security.": "별칭, 도메인, 설정 및 보안을 관리하세요.",
+  "Customer Support": "고객 지원",
+  "Read our FAQ, submit a help request, or reply to this email.": "FAQ를 읽어보시거나, 도움 요청을 제출하시거나, 이 이메일에 회신해 주세요.",
+  "Help Request": "도움 요청"
 }

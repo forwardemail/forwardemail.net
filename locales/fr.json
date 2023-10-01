@@ -4853,5 +4853,18 @@
   "Contact Support": "Contactez le support",
   "Need to manage your domains?": "Besoin de gérer vos domaines ?",
   "Go to My Account": "Accéder à mon Compte",
-  "100% Free": "100% Gratuit"
+  "100% Free": "100% Gratuit",
+  "Need real-time alerts and logs?": "Besoin d'alertes et de journaux en temps réel ?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>La mise à niveau débloquera <a href=\"%s\" target=\"_blank\">des alertes et des journaux en temps réel</a> ainsi que <a href=\"%s\" target=\"_blank\">la prise en charge SMTP sortante</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "La prise en charge SMTP sortante signifie que vous pouvez envoyer des e-mails en utilisant n'importe quel alias avec votre nom de domaine personnalisé.",
+  "100% Money back guarantee": "Garantie de remboursement à 100 %",
+  "Upgrading keeps your email private:": "La mise à niveau maintient votre courrier électronique privé :",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Ces fonctionnalités vous aideront à garantir une délivrabilité élevée et à protéger votre courrier électronique.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Le coût n'est que de 3 $ par mois et prend en charge notre feuille de route, notre infrastructure de serveur et la communauté open source.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "La mise à niveau inclut des domaines et alias illimités, des alertes et des journaux en temps réel, un accès SMTP sortant, et bien plus encore.",
+  "Your Account": "Votre compte",
+  "Manage your aliases, domains, settings, and security.": "Gérez vos alias, domaines, paramètres et sécurité.",
+  "Customer Support": "Service client",
+  "Read our FAQ, submit a help request, or reply to this email.": "Lisez notre FAQ, soumettez une demande d'aide ou répondez à cet e-mail.",
+  "Help Request": "Demande d'aide"
 }

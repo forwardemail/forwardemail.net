@@ -4853,5 +4853,18 @@
   "Contact Support": "Contate o suporte",
   "Need to manage your domains?": "Precisa gerenciar seus domínios?",
   "Go to My Account": "Vá para Minha Conta",
-  "100% Free": "100% grátis"
+  "100% Free": "100% grátis",
+  "Need real-time alerts and logs?": "Precisa de alertas e registros em tempo real?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>A atualização desbloqueará <a href=\"%s\" target=\"_blank\">alertas e registros em tempo real</a> e <a href=\"%s\" target=\"_blank\">suporte SMTP de saída</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "O suporte SMTP de saída significa que você pode enviar e-mails usando qualquer alias com seu nome de domínio personalizado.",
+  "100% Money back guarantee": "100% de garantia de devolução do dinheiro",
+  "Upgrading keeps your email private:": "A atualização mantém seu e-mail privado:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Esses recursos o ajudarão a garantir alta capacidade de entrega e a manter seu e-mail seguro.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "O custo é de apenas US$ 3 por mês e oferece suporte ao nosso roteiro, infraestrutura de servidores e comunidade de código aberto.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "A atualização inclui domínios e aliases ilimitados, alertas e logs em tempo real, acesso SMTP de saída e muito mais.",
+  "Your Account": "Sua conta",
+  "Manage your aliases, domains, settings, and security.": "Gerencie seus aliases, domínios, configurações e segurança.",
+  "Customer Support": "Suporte ao cliente",
+  "Read our FAQ, submit a help request, or reply to this email.": "Leia nossas perguntas frequentes, envie uma solicitação de ajuda ou responda a este e-mail.",
+  "Help Request": "Pedido de ajuda"
 }

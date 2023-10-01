@@ -4853,5 +4853,18 @@
   "Contact Support": "Контактная поддержка",
   "Need to manage your domains?": "Вам нужно управлять своими доменами?",
   "Go to My Account": "Перейти в мой аккаунт",
-  "100% Free": "100% бесплатно"
+  "100% Free": "100% бесплатно",
+  "Need real-time alerts and logs?": "Нужны оповещения и журналы в реальном времени?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Обновление разблокирует <a href=\"%s\" target=\"_blank\">оповещения и журналы в реальном времени,</a> а также <a href=\"%s\" target=\"_blank\">поддержку исходящего SMTP</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Поддержка исходящего SMTP означает, что вы можете отправлять электронную почту, используя любой псевдоним с вашим личным доменным именем.",
+  "100% Money back guarantee": "100% гарантия возврата денег",
+  "Upgrading keeps your email private:": "Обновление сохраняет конфиденциальность вашей электронной почты:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Эти функции помогут вам обеспечить высокую доставляемость и защитить вашу электронную почту.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Стоимость составляет всего 3 доллара в месяц и поддерживает нашу дорожную карту, серверную инфраструктуру и сообщество разработчиков открытого исходного кода.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Обновление включает в себя неограниченное количество доменов и псевдонимов, оповещения и журналы в реальном времени, исходящий доступ SMTP и многое другое.",
+  "Your Account": "Ваш счет",
+  "Manage your aliases, domains, settings, and security.": "Управляйте своими псевдонимами, доменами, настройками и безопасностью.",
+  "Customer Support": "Служба поддержки",
+  "Read our FAQ, submit a help request, or reply to this email.": "Прочтите наши часто задаваемые вопросы, отправьте запрос на помощь или ответьте на это письмо.",
+  "Help Request": "Запрос на помощь"
 }

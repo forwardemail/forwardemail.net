@@ -4853,5 +4853,18 @@
   "Contact Support": "Зверніться до служби підтримки",
   "Need to manage your domains?": "Потрібно керувати своїми доменами?",
   "Go to My Account": "Перейдіть до облікового запису",
-  "100% Free": "100% безкоштовно"
+  "100% Free": "100% безкоштовно",
+  "Need real-time alerts and logs?": "Потрібні сповіщення та журнали в реальному часі?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Оновлення розблокує <a href=\"%s\" target=\"_blank\">сповіщення та журнали в реальному часі</a> та <a href=\"%s\" target=\"_blank\">підтримку вихідного SMTP</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Підтримка вихідного SMTP означає, що ви можете надсилати електронну пошту, використовуючи будь-який псевдонім із вашим власним доменним іменем.",
+  "100% Money back guarantee": "100% гарантія повернення грошей",
+  "Upgrading keeps your email private:": "Оновлення зберігає конфіденційність вашої електронної пошти:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Ці функції допоможуть вам забезпечити високу доставку та захистити вашу електронну пошту.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Вартість становить лише 3 долари на місяць і підтримує нашу дорожню карту, серверну інфраструктуру та спільноту з відкритим кодом.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Оновлення включає необмежену кількість доменів і псевдонімів, сповіщення та журнали в реальному часі, вихідний доступ SMTP тощо.",
+  "Your Account": "Ваш рахунок",
+  "Manage your aliases, domains, settings, and security.": "Керуйте своїми псевдонімами, доменами, налаштуваннями та безпекою.",
+  "Customer Support": "Підтримка клієнтів",
+  "Read our FAQ, submit a help request, or reply to this email.": "Прочитайте наші поширені запитання, надішліть запит на допомогу або дайте відповідь на цей електронний лист.",
+  "Help Request": "Запит на допомогу"
 }

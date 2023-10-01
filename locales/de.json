@@ -3881,5 +3881,18 @@
   "Contact Support": "Kontaktieren Sie Support",
   "Need to manage your domains?": "Müssen Sie Ihre Domains verwalten?",
   "Go to My Account": "Gehen Sie zu Mein Konto",
-  "100% Free": "100% kostenlos"
+  "100% Free": "100% kostenlos",
+  "Need real-time alerts and logs?": "Benötigen Sie Echtzeitwarnungen und Protokolle?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Durch das Upgrade werden <a href=\"%s\" target=\"_blank\">Echtzeitwarnungen und -protokolle</a> sowie <a href=\"%s\" target=\"_blank\">ausgehende SMTP-Unterstützung</a> freigeschaltet</strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Durch die ausgehende SMTP-Unterstützung können Sie E-Mails unter Verwendung eines beliebigen Alias mit Ihrem benutzerdefinierten Domänennamen senden.",
+  "100% Money back guarantee": "100 % Geld-zurück-Garantie",
+  "Upgrading keeps your email private:": "Durch das Upgrade bleiben Ihre E-Mails privat:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Diese Funktionen helfen Ihnen dabei, eine hohe Zustellbarkeit sicherzustellen und Ihre E-Mails sicher zu halten.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Die Kosten betragen nur 3 US-Dollar pro Monat und unterstützen unsere Roadmap, Serverinfrastruktur und die Open-Source-Community.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Das Upgrade umfasst unbegrenzte Domänen und Aliase, Echtzeitwarnungen und -protokolle, ausgehenden SMTP-Zugriff und mehr.",
+  "Your Account": "Ihr Konto",
+  "Manage your aliases, domains, settings, and security.": "Verwalten Sie Ihre Aliase, Domänen, Einstellungen und Sicherheit.",
+  "Customer Support": "Kundendienst",
+  "Read our FAQ, submit a help request, or reply to this email.": "Lesen Sie unsere FAQ, senden Sie eine Hilfeanfrage oder antworten Sie auf diese E-Mail.",
+  "Help Request": "Hilfeanforderung"
 }

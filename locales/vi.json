@@ -4853,5 +4853,18 @@
   "Contact Support": "Liên hệ hỗ trợ",
   "Need to manage your domains?": "Cần quản lý tên miền của bạn?",
   "Go to My Account": "Đi tới Tài khoản của tôi",
-  "100% Free": "100% miễn phí"
+  "100% Free": "100% miễn phí",
+  "Need real-time alerts and logs?": "Cần cảnh báo và nhật ký theo thời gian thực?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Việc nâng cấp sẽ mở khóa <a href=\"%s\" target=\"_blank\">các cảnh báo và nhật ký theo thời gian thực</a> cũng như <a href=\"%s\" target=\"_blank\">hỗ trợ SMTP gửi đi</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Hỗ trợ SMTP gửi đi có nghĩa là bạn có thể gửi email bằng bất kỳ bí danh nào có tên miền tùy chỉnh của mình.",
+  "100% Money back guarantee": "Đảm bảo hoàn tiền 100%",
+  "Upgrading keeps your email private:": "Việc nâng cấp sẽ giữ email của bạn ở chế độ riêng tư:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Những tính năng này sẽ giúp bạn đảm bảo khả năng gửi cao và giúp giữ an toàn cho email của bạn.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Chi phí chỉ 3 USD mỗi tháng và hỗ trợ lộ trình, cơ sở hạ tầng máy chủ và cộng đồng nguồn mở của chúng tôi.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Việc nâng cấp bao gồm số miền và bí danh không giới hạn, cảnh báo và nhật ký theo thời gian thực, quyền truy cập SMTP gửi đi, v.v.",
+  "Your Account": "Tài khoản của bạn",
+  "Manage your aliases, domains, settings, and security.": "Quản lý bí danh, tên miền, cài đặt và bảo mật của bạn.",
+  "Customer Support": "Hỗ trợ khách hàng",
+  "Read our FAQ, submit a help request, or reply to this email.": "Đọc Câu hỏi thường gặp của chúng tôi, gửi yêu cầu trợ giúp hoặc trả lời email này.",
+  "Help Request": "Yêu cầu trợ giúp"
 }

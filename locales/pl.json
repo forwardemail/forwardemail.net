@@ -4853,5 +4853,18 @@
   "Contact Support": "Skontaktuj się z pomocą techniczną",
   "Need to manage your domains?": "Chcesz zarządzać swoimi domenami?",
   "Go to My Account": "Przejdź do Mojego konta",
-  "100% Free": "100% za darmo"
+  "100% Free": "100% za darmo",
+  "Need real-time alerts and logs?": "Potrzebujesz alertów i dzienników w czasie rzeczywistym?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Aktualizacja odblokuje <a href=\"%s\" target=\"_blank\">alerty i dzienniki w czasie rzeczywistym</a> oraz <a href=\"%s\" target=\"_blank\">obsługę wychodzącego protokołu SMTP</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Obsługa wychodzącego protokołu SMTP oznacza, że możesz wysyłać wiadomości e-mail przy użyciu dowolnego aliasu z niestandardową nazwą domeny.",
+  "100% Money back guarantee": "100% gwarancja zwrotu pieniędzy",
+  "Upgrading keeps your email private:": "Dzięki uaktualnieniu Twój e-mail pozostaje prywatny:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Te funkcje pomogą Ci zapewnić wysoką dostarczalność i pomogą chronić Twoją pocztę e-mail.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Koszt wynosi tylko 3 USD miesięcznie i obejmuje wsparcie naszego planu działania, infrastruktury serwerowej i społeczności open source.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Aktualizacja obejmuje nieograniczoną liczbę domen i aliasów, alerty i dzienniki w czasie rzeczywistym, wychodzący dostęp SMTP i wiele więcej.",
+  "Your Account": "Twoje konto",
+  "Manage your aliases, domains, settings, and security.": "Zarządzaj swoimi aliasami, domenami, ustawieniami i bezpieczeństwem.",
+  "Customer Support": "Obsługa klienta",
+  "Read our FAQ, submit a help request, or reply to this email.": "Przeczytaj nasze często zadawane pytania, prześlij prośbę o pomoc lub odpowiedz na tego e-maila.",
+  "Help Request": "Prośba o pomoc"
 }

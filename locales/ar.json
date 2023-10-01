@@ -4853,5 +4853,18 @@
   "Contact Support": "اتصل بالدعم",
   "Need to manage your domains?": "هل تحتاج إلى إدارة نطاقاتك؟",
   "Go to My Account": "اذهب إلى حسابي",
-  "100% Free": "100٪ مجانا"
+  "100% Free": "100٪ مجانا",
+  "Need real-time alerts and logs?": "هل تحتاج إلى تنبيهات وسجلات في الوقت الفعلي؟",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>ستؤدي الترقية إلى فتح <a href=\"%s\" target=\"_blank\">التنبيهات والسجلات في الوقت الفعلي</a> <a href=\"%s\" target=\"_blank\">ودعم SMTP الصادر</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "دعم SMTP الصادر يعني أنه يمكنك إرسال بريد إلكتروني باستخدام أي اسم مستعار باستخدام اسم المجال المخصص الخاص بك.",
+  "100% Money back guarantee": "ضمان استرداد الأموال بنسبة 100%",
+  "Upgrading keeps your email private:": "الترقية تحافظ على خصوصية بريدك الإلكتروني:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "ستساعدك هذه الميزات على ضمان إمكانية التسليم العالية وتساعد في الحفاظ على بريدك الإلكتروني آمنًا.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "تبلغ التكلفة 3 دولارات فقط شهريًا وتدعم خريطة الطريق والبنية التحتية للخادم والمجتمع مفتوح المصدر.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "تتضمن الترقية نطاقات وأسماء مستعارة غير محدودة، وتنبيهات وسجلات في الوقت الفعلي، والوصول إلى SMTP الصادر، والمزيد.",
+  "Your Account": "الحساب الخاص بك",
+  "Manage your aliases, domains, settings, and security.": "إدارة الأسماء المستعارة والمجالات والإعدادات والأمان.",
+  "Customer Support": "دعم العملاء",
+  "Read our FAQ, submit a help request, or reply to this email.": "اقرأ الأسئلة الشائعة، أو أرسل طلب مساعدة، أو قم بالرد على هذا البريد الإلكتروني.",
+  "Help Request": "طلب مساعدة"
 }

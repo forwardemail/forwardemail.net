@@ -4858,5 +4858,18 @@
   "Contact Support": "Kontakt kundestøtte",
   "Need to manage your domains?": "Trenger du å administrere domenene dine?",
   "Go to My Account": "gå til Min Konto",
-  "100% Free": "100 % gratis"
+  "100% Free": "100 % gratis",
+  "Need real-time alerts and logs?": "Trenger du varsler og logger i sanntid?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Oppgradering vil låse opp <a href=\"%s\" target=\"_blank\">sanntidsvarsler og logger</a> og <a href=\"%s\" target=\"_blank\">utgående SMTP-støtte</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Utgående SMTP-støtte betyr at du kan sende e-post ved å bruke et hvilket som helst alias med ditt egendefinerte domenenavn.",
+  "100% Money back guarantee": "100 % pengene tilbake-garanti",
+  "Upgrading keeps your email private:": "Oppgradering holder e-posten din privat:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Disse funksjonene vil hjelpe deg med å sikre høy leveringsdyktighet og bidra til å holde e-posten din trygg.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Kostnaden er bare $3 per måned og støtter veikartet vårt, serverinfrastrukturen og åpen kildekode-fellesskapet.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Oppgradering inkluderer ubegrensede domener og aliaser, sanntidsvarsler og logger, utgående SMTP-tilgang og mer.",
+  "Your Account": "Kontoen din",
+  "Manage your aliases, domains, settings, and security.": "Administrer aliaser, domener, innstillinger og sikkerhet.",
+  "Customer Support": "Kundeservice",
+  "Read our FAQ, submit a help request, or reply to this email.": "Les våre vanlige spørsmål, send inn en hjelpeforespørsel eller svar på denne e-posten.",
+  "Help Request": "Hjelpeforespørsel"
 }

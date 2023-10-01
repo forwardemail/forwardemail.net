@@ -4853,5 +4853,18 @@
   "Contact Support": "Contact opnemen met ondersteuning",
   "Need to manage your domains?": "Wilt u uw domeinen beheren?",
   "Go to My Account": "Ga naar Mijn Account",
-  "100% Free": "100% gratis"
+  "100% Free": "100% gratis",
+  "Need real-time alerts and logs?": "Realtime waarschuwingen en logboeken nodig?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Door te upgraden worden <a href=\"%s\" target=\"_blank\">realtime waarschuwingen en logboeken</a> en <a href=\"%s\" target=\"_blank\">uitgaande SMTP-ondersteuning</a> ontgrendeld</strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Uitgaande SMTP-ondersteuning betekent dat u e-mail kunt verzenden met elke alias met uw aangepaste domeinnaam.",
+  "100% Money back guarantee": "100% geld-terug-garantie",
+  "Upgrading keeps your email private:": "Door te upgraden blijft uw e-mail privé:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Deze functies helpen u een hoge afleverbaarheid te garanderen en uw e-mail veilig te houden.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "De kosten bedragen slechts $ 3 per maand en ondersteunen onze roadmap, serverinfrastructuur en de open-sourcegemeenschap.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Upgraden omvat een onbeperkt aantal domeinen en aliassen, realtime waarschuwingen en logboeken, uitgaande SMTP-toegang en meer.",
+  "Your Account": "Jouw rekening",
+  "Manage your aliases, domains, settings, and security.": "Beheer uw aliassen, domeinen, instellingen en beveiliging.",
+  "Customer Support": "Klantenservice",
+  "Read our FAQ, submit a help request, or reply to this email.": "Lees onze veelgestelde vragen, dien een hulpverzoek in of beantwoord deze e-mail.",
+  "Help Request": "Verzoek om hulp"
 }

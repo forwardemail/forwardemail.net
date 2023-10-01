@@ -4853,5 +4853,18 @@
   "Contact Support": "Kontaktujte podporu",
   "Need to manage your domains?": "Potřebujete spravovat své domény?",
   "Go to My Account": "Jdi na můj účet",
-  "100% Free": "100% zdarma"
+  "100% Free": "100% zdarma",
+  "Need real-time alerts and logs?": "Potřebujete upozornění a protokoly v reálném čase?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Upgrade odemkne <a href=\"%s\" target=\"_blank\">výstrahy a protokoly v reálném čase</a> a <a href=\"%s\" target=\"_blank\">odchozí podporu SMTP</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Odchozí podpora SMTP znamená, že můžete odesílat e-maily pomocí libovolného aliasu s vlastním názvem domény.",
+  "100% Money back guarantee": "100% záruka vrácení peněz",
+  "Upgrading keeps your email private:": "Upgrade zachová váš e-mail v soukromí:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Tyto funkce vám pomohou zajistit vysokou doručitelnost a pomohou udržet váš e-mail v bezpečí.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Cena je pouze 3 dolary měsíčně a podporuje naši cestovní mapu, serverovou infrastrukturu a komunitu open source.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Upgrade zahrnuje neomezený počet domén a aliasů, upozornění a protokoly v reálném čase, odchozí přístup SMTP a další.",
+  "Your Account": "Váš účet",
+  "Manage your aliases, domains, settings, and security.": "Spravujte své aliasy, domény, nastavení a zabezpečení.",
+  "Customer Support": "Zákaznická podpora",
+  "Read our FAQ, submit a help request, or reply to this email.": "Přečtěte si naše časté dotazy, odešlete žádost o pomoc nebo odpovězte na tento e-mail.",
+  "Help Request": "Žádost o pomoc"
 }

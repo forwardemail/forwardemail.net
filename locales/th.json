@@ -4853,5 +4853,18 @@
   "Contact Support": "ติดต่อฝ่ายสนับสนุน",
   "Need to manage your domains?": "ต้องการจัดการโดเมนของคุณหรือไม่?",
   "Go to My Account": "ไปที่บัญชีของฉัน",
-  "100% Free": "ฟรี 100%"
+  "100% Free": "ฟรี 100%",
+  "Need real-time alerts and logs?": "ต้องการการแจ้งเตือนและบันทึกแบบเรียลไทม์หรือไม่?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>การอัปเกรดจะปลดล็อก <a href=\"%s\" target=\"_blank\">การแจ้งเตือนและบันทึกแบบเรียลไทม์</a> และ <a href=\"%s\" target=\"_blank\">การสนับสนุน SMTP ขาออก</a></strong>",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "การสนับสนุน SMTP ขาออกหมายความว่าคุณสามารถส่งอีเมลโดยใช้นามแฝงใดก็ได้ด้วยชื่อโดเมนที่คุณกำหนดเอง",
+  "100% Money back guarantee": "รับประกันคืนเงิน 100%",
+  "Upgrading keeps your email private:": "การอัปเกรดจะทำให้อีเมลของคุณเป็นส่วนตัว:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "คุณสมบัติเหล่านี้จะช่วยให้คุณมั่นใจได้ถึงความสามารถในการจัดส่งที่สูงและช่วยรักษาอีเมลของคุณให้ปลอดภัย",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "ค่าใช้จ่ายเพียง $3 ต่อเดือน และสนับสนุนแผนงาน โครงสร้างพื้นฐานเซิร์ฟเวอร์ และชุมชนโอเพ่นซอร์สของเรา",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "การอัปเกรดประกอบด้วยโดเมนและนามแฝงไม่จำกัด การแจ้งเตือนและบันทึกแบบเรียลไทม์ การเข้าถึง SMTP ขาออก และอื่นๆ อีกมากมาย",
+  "Your Account": "บัญชีของคุณ",
+  "Manage your aliases, domains, settings, and security.": "จัดการนามแฝง โดเมน การตั้งค่า และความปลอดภัยของคุณ",
+  "Customer Support": "สนับสนุนลูกค้า",
+  "Read our FAQ, submit a help request, or reply to this email.": "อ่านคำถามที่พบบ่อยของเรา ส่งคำขอความช่วยเหลือ หรือตอบกลับอีเมลนี้",
+  "Help Request": "ขอความช่วยเหลือ"
 }

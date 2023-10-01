@@ -4853,5 +4853,18 @@
   "Contact Support": "Kontakta supporten",
   "Need to manage your domains?": "Behöver du hantera dina domäner?",
   "Go to My Account": "Gå till Mitt konto",
-  "100% Free": "100 % gratis"
+  "100% Free": "100 % gratis",
+  "Need real-time alerts and logs?": "Behöver du varningar och loggar i realtid?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Uppgradering låser upp <a href=\"%s\" target=\"_blank\">varningar och loggar i realtid</a> och <a href=\"%s\" target=\"_blank\">stöd för utgående SMTP</a> .</strong>",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Utgående SMTP-stöd innebär att du kan skicka e-post med vilket alias som helst med ditt anpassade domännamn.",
+  "100% Money back guarantee": "100 % pengarna tillbaka-garanti",
+  "Upgrading keeps your email private:": "Uppgradering håller din e-post privat:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Dessa funktioner hjälper dig att säkerställa hög leveransbarhet och hjälper dig att hålla din e-post säker.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Kostnaden är bara $3 per månad och stöder vår färdplan, serverinfrastruktur och öppen källkodsgemenskap.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Uppgradering inkluderar obegränsade domäner och alias, realtidsvarningar och loggar, utgående SMTP-åtkomst och mer.",
+  "Your Account": "Ditt konto",
+  "Manage your aliases, domains, settings, and security.": "Hantera dina alias, domäner, inställningar och säkerhet.",
+  "Customer Support": "Kundsupport",
+  "Read our FAQ, submit a help request, or reply to this email.": "Läs våra vanliga frågor, skicka in en hjälpförfrågan eller svara på det här e-postmeddelandet.",
+  "Help Request": "Hjälpbegäran"
 }

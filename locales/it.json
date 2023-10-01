@@ -4853,5 +4853,18 @@
   "Contact Support": "Contatta il supporto",
   "Need to manage your domains?": "Hai bisogno di gestire i tuoi domini?",
   "Go to My Account": "vai al mio account",
-  "100% Free": "100% gratuito"
+  "100% Free": "100% gratuito",
+  "Need real-time alerts and logs?": "Hai bisogno di avvisi e registri in tempo reale?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>L&#39;aggiornamento sbloccherà <a href=\"%s\" target=\"_blank\">avvisi e registri in tempo reale</a> e <a href=\"%s\" target=\"_blank\">il supporto SMTP in uscita</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Il supporto SMTP in uscita significa che puoi inviare e-mail utilizzando qualsiasi alias con il tuo nome di dominio personalizzato.",
+  "100% Money back guarantee": "Garanzia di rimborso al 100%.",
+  "Upgrading keeps your email private:": "L'aggiornamento mantiene la tua email privata:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Queste funzionalità ti aiuteranno a garantire un'elevata consegna e ti aiuteranno a mantenere la tua posta elettronica al sicuro.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Il costo è di soli $ 3 al mese e supporta la nostra roadmap, l'infrastruttura server e la comunità open source.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "L'aggiornamento include domini e alias illimitati, avvisi e registri in tempo reale, accesso SMTP in uscita e altro ancora.",
+  "Your Account": "Il tuo account",
+  "Manage your aliases, domains, settings, and security.": "Gestisci i tuoi alias, domini, impostazioni e sicurezza.",
+  "Customer Support": "Servizio Clienti",
+  "Read our FAQ, submit a help request, or reply to this email.": "Leggi le nostre domande frequenti, invia una richiesta di aiuto o rispondi a questa email.",
+  "Help Request": "Richiesta di aiuto"
 }

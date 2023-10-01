@@ -4853,5 +4853,18 @@
   "Contact Support": "Hubungi Dukungan",
   "Need to manage your domains?": "Perlu mengelola domain Anda?",
   "Go to My Account": "masuk ke akun saya",
-  "100% Free": "100% Gratis"
+  "100% Free": "100% Gratis",
+  "Need real-time alerts and logs?": "Butuh peringatan dan log waktu nyata?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>Peningkatan versi akan membuka <a href=\"%s\" target=\"_blank\">peringatan dan log waktu nyata</a> serta <a href=\"%s\" target=\"_blank\">dukungan SMTP keluar</a></strong> .",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "Dukungan SMTP keluar berarti Anda dapat mengirim email menggunakan alias apa pun dengan nama domain khusus Anda.",
+  "100% Money back guarantee": "Jaminan uang kembali 100%.",
+  "Upgrading keeps your email private:": "Peningkatan versi menjaga privasi email Anda:",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "Fitur-fitur ini akan membantu Anda memastikan kemampuan pengiriman yang tinggi dan membantu menjaga keamanan email Anda.",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "Biayanya hanya $3 per bulan dan mendukung peta jalan kami, infrastruktur server, dan komunitas sumber terbuka.",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "Peningkatan mencakup domain dan alias tanpa batas, peringatan dan log waktu nyata, akses SMTP keluar, dan banyak lagi.",
+  "Your Account": "Akun Anda",
+  "Manage your aliases, domains, settings, and security.": "Kelola alias, domain, pengaturan, dan keamanan Anda.",
+  "Customer Support": "Dukungan Pelanggan",
+  "Read our FAQ, submit a help request, or reply to this email.": "Baca FAQ kami, kirimkan permintaan bantuan, atau balas email ini.",
+  "Help Request": "Permintaan Bantuan"
 }

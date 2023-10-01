@@ -4853,5 +4853,18 @@
   "Contact Support": "サポート問い合わせ先",
   "Need to manage your domains?": "ドメインを管理する必要がありますか?",
   "Go to My Account": "マイアカウントへ移動します",
-  "100% Free": "完全無料"
+  "100% Free": "完全無料",
+  "Need real-time alerts and logs?": "リアルタイムのアラートとログが必要ですか?",
+  "<strong>Upgrading will unlock <a href=\"%s\" target=\"_blank\">real-time alerts and logs</a> and <a href=\"%s\" target=\"_blank\">outbound SMTP support</a></strong>.": "<strong>アップグレードすると、<a href=\"%s\" target=\"_blank\">リアルタイム アラートとログ、</a>および<a href=\"%s\" target=\"_blank\">アウトバウンド SMTP サポートの</a>ロックが解除されます</strong>。",
+  "Outbound SMTP support means you can send email using any alias with your custom domain name.": "アウトバウンド SMTP サポートは、カスタム ドメイン名のエイリアスを使用して電子メールを送信できることを意味します。",
+  "100% Money back guarantee": "100%返金保証",
+  "Upgrading keeps your email private:": "アップグレードするとメールのプライバシーが保たれます。",
+  "These features will help you to ensure high deliverability and help to keep your email safe.": "これらの機能は、高い到達性を確保し、電子メールを安全に保つのに役立ちます。",
+  "The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.": "料金は月額わずか 3 ドルで、ロードマップ、サーバー インフラストラクチャ、オープンソース コミュニティをサポートします。",
+  "Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.": "アップグレードには、無制限のドメインとエイリアス、リアルタイムのアラートとログ、送信 SMTP アクセスなどが含まれます。",
+  "Your Account": "あなたのアカウント",
+  "Manage your aliases, domains, settings, and security.": "エイリアス、ドメイン、設定、セキュリティを管理します。",
+  "Customer Support": "顧客サポート",
+  "Read our FAQ, submit a help request, or reply to this email.": "よくある質問を読んで、ヘルプ リクエストを送信するか、このメールに返信してください。",
+  "Help Request": "ヘルプリクエスト"
 }
