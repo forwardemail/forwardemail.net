@@ -5,7 +5,7 @@ block content
     .row
       .col-12
         .card.border-dark.d-block.text-center
-          h1.h5.card-header= t("You're ready to go!")
+          h1.h5.card-header= t("Thank you for joining us")
           .card-body.text-center.p-0
             a(href=`${config.urls.web}/${locale}/my-account`)
               img.img-fluid.d-block.align-top(
@@ -13,10 +13,103 @@ block content
                 alt=""
               )
             .p-3
-              h1.h3!= t("Woo-hoo!")
-              p.card-text= t("Now you can add your domains and set up free email forwarding!")
-              a.btn.btn-lg.btn-block.btn-primary(
+              h1.h3= t("Features")
+              ul.list-unstyled.text-left.mb-0.text-monospace.d-inline-block.mx-auto
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Unlimited domains and aliases")
+                  = " "
+                  span.badge.text-uppercase.font-weight-normal.badge-success
+                    = t("100% Free")
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Privacy-focused email")
+                  = " "
+                  a.badge.text-uppercase.font-weight-normal.badge-primary.align-middle(href=`${config.urls.web}/${locale}/privacy`)
+                    = t("Privacy Policy")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Send outbound SMTP email")
+                  = " "
+                  a.badge.text-uppercase.font-weight-normal.badge-primary(
+                    href=`${config.urls.web}/${locale}/guides/send-email-with-custom-domain-smtp`
+                  )
+                    = t("SMTP Guide")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Error logs and real-time alerts")
+                  = " "
+                  a.badge.text-uppercase.font-weight-normal.badge-primary(
+                    href=`${config.urls.web}/${locale}/faq#do-you-store-error-logs`
+                  )
+                    = t("View FAQ")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Powered by bare metal servers")
+                  = " "
+                  a.badge.text-uppercase.font-weight-normal.badge-primary(
+                    href="https://status.forwardemail.net",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = t("Status Page")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("100% open-source software")
+                  = " "
+                  a.badge.text-uppercase.font-weight-normal.badge-primary(
+                    href="https://github.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = t("View")
+                    = " "
+                    = t("GitHub")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Email API designed for developers")
+                  = " "
+                  a.badge.text-uppercase.font-weight-normal.badge-primary(href=`${config.urls.web}/${locale}/email-api`)
+                    = t("Email API")
+                    = " "
+                    != "&rarr;"
+            if user.plan === 'free'
+              include ../_upgrade
+            .p-3
+              h1.h3!= t("Did you need help?")
+              p.card-text!= t("Feel free to reply, contact support, or read our FAQ.")
+              ul.list-inline.mb-0
+                li.list-inline-item
+                  a.btn.btn-lg.btn-warning(
+                    href=`${config.urls.web}/${locale}/help`
+                  )
+                    = t("Contact Support")
+                li.list-inline-item
+                  a.btn.btn-lg.btn-primary(
+                    href=`${config.urls.web}/${locale}/faq`
+                  )
+                    = t("FAQ")
+            .p-3
+              h1.h3!= t("Need to manage your domains?")
+              a.btn.btn-lg.btn-dark(
                 href=`${config.urls.web}/${locale}/my-account`
               )
-                = t("Get started now")
+                = t("Go to My Account")
           .card-footer.small.text-muted= t("If you have any questions or comments, then please let us know")

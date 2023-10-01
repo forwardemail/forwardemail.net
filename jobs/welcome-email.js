@@ -16,6 +16,7 @@ const email = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const Users = require('#models/users');
+const Domains = require('#models/domains');
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -48,13 +49,25 @@ graceful.listen();
           // in case email was sent for whatever reason
           if (user[config.userFields.welcomeEmailSentAt]) return;
 
+          // find a domain that the user created
+          const domain = await Domains.findOne({
+            members: {
+              $elemMatch: {
+                user: user._id,
+                group: 'admin'
+              }
+            }
+          })
+            .lean()
+            .exec();
+
           // send email
           await email({
             template: 'welcome',
             message: {
               to: user[config.userFields.fullEmail]
             },
-            locals: { user }
+            locals: { user, domain }
           });
 
           // store that we sent this email

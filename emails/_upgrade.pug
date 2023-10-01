@@ -1,0 +1,42 @@
+.p-3.text-center
+  h2.h2= t("Need Enhanced Protection?")
+  h3.h5.text-danger.text-decoration-underline= t("Your email is publicly searchable!")
+  span.badge.badge-dark!= ("Anyone can run this command:")
+  .d-block.mb-1
+    pre.d-inline-block.mx-auto.bg-dark.p-3.rounded.text-white.mb-0
+      code.d-block
+        = "dig"
+        = " "
+        = domain && domain.name ? domain.name : "yourdomain.com"
+        = " "
+        = "txt"
+  span.badge.badge-danger!= ("It exposes your email:")
+  .d-block.mb-1
+    pre.d-inline-block.mx-auto.bg-dark.p-3.rounded.text-white.mb-0
+      code.d-block
+        = "forward-email="
+        span.font-weight-bold(style="color: red")= to ? to : user && user.email ? user.email : "user@gmail.com"
+  a.btn.btn-lg.btn-danger.mb-3(
+    href=domain && domain.name ? `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
+    role="button"
+  )
+    = emoji("point_right")
+    = " "
+    = t("Hide your email")
+    = " "
+    = emoji("point_left")
+  p.card-text.small
+    = t("If you upgrade to the Enhanced Protection plan, then your forwarding addresses will be kept private and encrypted.")
+    = " "
+    != t('<strong>Upgrading will also unlock access to <a href="%s" target="_blank">real-time error log alerts</a> and <a href="%s" target="_blank">outbound SMTP</a></strong>.', `${config.urls.web}/faq#do-you-store-error-logs`, `${config.urls.web}/guides/send-email-with-custom-domain-smtp`)
+    = " "
+    = t("These features will help you to ensure high deliverability and prevent email spoofing attacks.")
+    = " "
+    = t("The cost is only $3 per month and gives you unlimited domains, aliases, and more.")
+    = " "
+    = t("We also offer a 30-day automatic refund guarantee.")
+  a.btn.btn-lg.btn-success(
+    href=domain && domain.name ? `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
+    role="button"
+  )
+    = t("Upgrade for $3")

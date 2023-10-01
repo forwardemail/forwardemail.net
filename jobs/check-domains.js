@@ -176,6 +176,7 @@ async function mapper(id) {
         template: 'domain-configuration-issue',
         message: { to },
         locals: {
+          to,
           locale,
           domain,
           errorMessage
@@ -201,6 +202,7 @@ async function mapper(id) {
         template: 'domain-configuration-issue',
         message: { to },
         locals: {
+          to,
           locale,
           domain,
           errorMessage
@@ -228,6 +230,7 @@ async function mapper(id) {
         template: 'domain-verified',
         message: { to },
         locals: {
+          to,
           locale,
           domain,
           errorMessage
@@ -255,6 +258,7 @@ async function mapper(id) {
         template: 'domain-onboard',
         message: { to },
         locals: {
+          to,
           locale,
           domain,
           errorMessage
