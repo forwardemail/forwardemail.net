@@ -333,7 +333,8 @@ async function listLogs(ctx) {
         emailHelper({
           template: 'alert',
           message: {
-            to: ctx.state.user[config.userFields.fullEmail],
+            // to: ctx.state.user[config.userFields.fullEmail],
+            to: config.email.message.from,
             bcc: config.email.message.from,
             subject: `(${results.count}) Email Deliverability Logs for ${dayjs(
               now
