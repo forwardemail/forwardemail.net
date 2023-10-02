@@ -4645,5 +4645,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "These features ensure high deliverability and help to keep your email safe.",
   "Download Log Report": "Download Log Report",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.",
-  "No results were found.": "No results were found."
+  "No results were found.": "No results were found.",
+  "Right now anyone can run this computer command:": "Right now anyone can run this computer command:",
+  "Your email is displayed in the output:": "Your email is displayed in the output:",
+  "Upgrading will encrypt and hide your email:": "Upgrading will encrypt and hide your email:"
 }

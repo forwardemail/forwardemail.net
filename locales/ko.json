@@ -4871,5 +4871,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "이러한 기능은 높은 전달성을 보장하고 이메일을 안전하게 유지하는 데 도움이 됩니다.",
   "Download Log Report": "로그 보고서 다운로드",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "CSV 스프레드시트에 <span class=\"font-weight-bold notranslate\">%d</span> 개의 로그 행이 준비되면 <span class=\"font-weight-bold text-monospace notranslate\">%s</span> 에게 이메일을 보내드리겠습니다.",
-  "Your report will be emailed to you shortly.": "귀하의 보고서가 곧 이메일로 전송될 것입니다."
+  "Your report will be emailed to you shortly.": "귀하의 보고서가 곧 이메일로 전송될 것입니다.",
+  "Right now anyone can run this computer command:": "현재 누구나 다음 컴퓨터 명령을 실행할 수 있습니다.",
+  "Your email is displayed in the output:": "귀하의 이메일이 출력에 표시됩니다.",
+  "Upgrading will encrypt and hide your email:": "업그레이드하면 이메일이 암호화되어 숨겨집니다."
 }

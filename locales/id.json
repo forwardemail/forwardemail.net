@@ -4871,5 +4871,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "Fitur-fitur ini memastikan kemampuan pengiriman yang tinggi dan membantu menjaga keamanan email Anda.",
   "Download Log Report": "Unduh Laporan Log",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Kami akan mengirimkan email ke <span class=\"font-weight-bold text-monospace notranslate\">%s</span> ketika spreadsheet CSV Anda sudah siap dengan <span class=\"font-weight-bold notranslate\">%d</span> baris log.",
-  "Your report will be emailed to you shortly.": "Laporan Anda akan segera dikirimkan ke email Anda."
+  "Your report will be emailed to you shortly.": "Laporan Anda akan segera dikirimkan ke email Anda.",
+  "Right now anyone can run this computer command:": "Saat ini siapa pun dapat menjalankan perintah komputer ini:",
+  "Your email is displayed in the output:": "Email Anda ditampilkan di output:",
+  "Upgrading will encrypt and hide your email:": "Peningkatan versi akan mengenkripsi dan menyembunyikan email Anda:"
 }

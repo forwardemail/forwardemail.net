@@ -4876,5 +4876,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "Disse funksjonene sikrer høy leveringsdyktighet og bidrar til å holde e-posten din trygg.",
   "Download Log Report": "Last ned loggrapport",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Vi sender en e-post til <span class=\"font-weight-bold text-monospace notranslate\">%s</span> når CSV-regnearket er klart med <span class=\"font-weight-bold notranslate\">%d</span> loggrader.",
-  "Your report will be emailed to you shortly.": "Rapporten din vil bli sendt til deg i løpet av kort tid."
+  "Your report will be emailed to you shortly.": "Rapporten din vil bli sendt til deg i løpet av kort tid.",
+  "Right now anyone can run this computer command:": "Akkurat nå kan hvem som helst kjøre denne datamaskinkommandoen:",
+  "Your email is displayed in the output:": "E-posten din vises i utdataene:",
+  "Upgrading will encrypt and hide your email:": "Oppgradering vil kryptere og skjule e-posten din:"
 }

@@ -4871,5 +4871,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "تضمن هذه الميزات إمكانية تسليم عالية وتساعد في الحفاظ على بريدك الإلكتروني آمنًا.",
   "Download Log Report": "تنزيل تقرير السجل",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "سنرسل بريدًا إلكترونيًا إلى <span class=\"font-weight-bold text-monospace notranslate\">%s</span> عندما يكون جدول بيانات CSV الخاص بك جاهزًا ويحتوي على <span class=\"font-weight-bold notranslate\">%d</span> من صفوف السجل.",
-  "Your report will be emailed to you shortly.": "سيتم إرسال تقريرك إليك عبر البريد الإلكتروني قريبًا."
+  "Your report will be emailed to you shortly.": "سيتم إرسال تقريرك إليك عبر البريد الإلكتروني قريبًا.",
+  "Right now anyone can run this computer command:": "الآن يمكن لأي شخص تشغيل أمر الكمبيوتر هذا:",
+  "Your email is displayed in the output:": "يتم عرض بريدك الإلكتروني في الإخراج:",
+  "Upgrading will encrypt and hide your email:": "ستؤدي الترقية إلى تشفير بريدك الإلكتروني وإخفائه:"
 }

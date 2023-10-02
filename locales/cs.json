@@ -4871,5 +4871,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "Tyto funkce zajišťují vysokou doručitelnost a pomáhají udržet váš e-mail v bezpečí.",
   "Download Log Report": "Stáhnout protokol protokolu",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Jakmile bude vaše tabulka CSV připravena s <span class=\"font-weight-bold notranslate\">%d</span> řádky protokolu, zašleme e-mail na <span class=\"font-weight-bold text-monospace notranslate\">%s</span> .",
-  "Your report will be emailed to you shortly.": "Vaše zpráva vám bude brzy zaslána e-mailem."
+  "Your report will be emailed to you shortly.": "Vaše zpráva vám bude brzy zaslána e-mailem.",
+  "Right now anyone can run this computer command:": "Právě teď může kdokoli spustit tento počítačový příkaz:",
+  "Your email is displayed in the output:": "Váš email se zobrazí ve výstupu:",
+  "Upgrading will encrypt and hide your email:": "Upgrade zašifruje a skryje váš e-mail:"
 }

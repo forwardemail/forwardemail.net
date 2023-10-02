@@ -4871,5 +4871,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "Ezek a funkciók magas kézbesítést biztosítanak, és segítenek megőrizni e-mailjeit.",
   "Download Log Report": "Naplójelentés letöltése",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "E-mailt küldünk <span class=\"font-weight-bold text-monospace notranslate\">%s</span> címre, amikor a CSV-táblázat készen lesz <span class=\"font-weight-bold notranslate\">%d</span> naplósorral.",
-  "Your report will be emailed to you shortly.": "Jelentését hamarosan e-mailben küldjük el."
+  "Your report will be emailed to you shortly.": "Jelentését hamarosan e-mailben küldjük el.",
+  "Right now anyone can run this computer command:": "Jelenleg bárki futtathatja ezt a számítógépes parancsot:",
+  "Your email is displayed in the output:": "Az Ön e-mailje megjelenik a kimenetben:",
+  "Upgrading will encrypt and hide your email:": "A frissítés titkosítja és elrejti e-mailjeit:"
 }

@@ -4716,5 +4716,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "Nämä ominaisuudet varmistavat korkean toimittavuuden ja auttavat pitämään sähköpostisi turvassa.",
   "Download Log Report": "Lataa lokiraportti",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Lähetämme sähköpostin osoitteeseen <span class=\"font-weight-bold text-monospace notranslate\">%s</span> , kun CSV-laskentataulukkosi on valmis ja sisältää <span class=\"font-weight-bold notranslate\">%d</span> lokiriviä.",
-  "Your report will be emailed to you shortly.": "Raporttisi lähetetään sinulle sähköpostitse pian."
+  "Your report will be emailed to you shortly.": "Raporttisi lähetetään sinulle sähköpostitse pian.",
+  "Right now anyone can run this computer command:": "Tällä hetkellä kuka tahansa voi suorittaa tämän tietokonekomennon:",
+  "Your email is displayed in the output:": "Sähköpostisi näkyy tulosteessa:",
+  "Upgrading will encrypt and hide your email:": "Päivitys salaa ja piilottaa sähköpostisi:"
 }

@@ -4871,5 +4871,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "Bu özellikler yüksek teslim edilebilirlik sağlar ve e-postanızı güvende tutmanıza yardımcı olur.",
   "Download Log Report": "Günlük Raporunu İndir",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "<span class=\"font-weight-bold notranslate\">%d</span> <span class=\"font-weight-bold text-monospace notranslate\">%s</span> adresine bir e-posta göndereceğiz.",
-  "Your report will be emailed to you shortly.": "Raporunuz kısa sürede e-posta adresinize gönderilecektir."
+  "Your report will be emailed to you shortly.": "Raporunuz kısa sürede e-posta adresinize gönderilecektir.",
+  "Right now anyone can run this computer command:": "Şu anda herkes bu bilgisayar komutunu çalıştırabilir:",
+  "Your email is displayed in the output:": "E-postanız çıktıda görüntülenir:",
+  "Upgrading will encrypt and hide your email:": "Yükseltme e-postanızı şifreleyecek ve gizleyecektir:"
 }

@@ -4562,5 +4562,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "这些功能可确保高送达率并有助于确保您的电子邮件安全。",
   "Download Log Report": "下载日志报告",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "当您的 CSV 电子表格准备好包含<span class=\"font-weight-bold notranslate\">%d</span>行日志后，我们将向<span class=\"font-weight-bold text-monospace notranslate\">%s</span>发送一封电子邮件。",
-  "Your report will be emailed to you shortly.": "您的报告将很快通过电子邮件发送给您。"
+  "Your report will be emailed to you shortly.": "您的报告将很快通过电子邮件发送给您。",
+  "Right now anyone can run this computer command:": "现在任何人都可以运行这个计算机命令：",
+  "Your email is displayed in the output:": "您的电子邮件显示在输出中：",
+  "Upgrading will encrypt and hide your email:": "升级将加密并隐藏您的电子邮件："
 }

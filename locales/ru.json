@@ -4871,5 +4871,8 @@
   "These features ensure high deliverability and help to keep your email safe.": "Эти функции обеспечивают высокую доставляемость и помогают обеспечить безопасность вашей электронной почты.",
   "Download Log Report": "Загрузить отчет журнала",
   "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Мы отправим электронное письмо на адрес <span class=\"font-weight-bold text-monospace notranslate\">%s</span> , когда ваша таблица CSV будет готова с <span class=\"font-weight-bold notranslate\">%d</span> строк журнала.",
-  "Your report will be emailed to you shortly.": "Ваш отчет будет отправлен вам по электронной почте в ближайшее время."
+  "Your report will be emailed to you shortly.": "Ваш отчет будет отправлен вам по электронной почте в ближайшее время.",
+  "Right now anyone can run this computer command:": "Прямо сейчас любой может запустить эту компьютерную команду:",
+  "Your email is displayed in the output:": "Ваш адрес электронной почты отображается в выводе:",
+  "Upgrading will encrypt and hide your email:": "При обновлении ваша электронная почта будет зашифрована и скрыта:"
 }
