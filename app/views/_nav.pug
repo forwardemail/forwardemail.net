@@ -99,7 +99,7 @@ nav.navbar.navbar-expand-lg.fixed-top(
                 href=l("/private-business-email?pricing=true"),
                 class=ctx.pathWithoutLocale.startsWith("/private-business-email") ? "text-decoration-underline" : ""
               )
-                = t("Features")
+                != t("Features &amp; Pricing")
             li.list-inline-item
               a.btn.btn-link.text-themed.btn-sm(
                 href=l("/faq"),
@@ -174,7 +174,7 @@ nav.navbar.navbar-expand-lg.fixed-top(
                   a.dropdown-item(
                     href=pricingPageHref,
                     class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
-                  )= t("Features")
+                  )!= t("Features &amp; Pricing")
                 else
                   a.dropdown-item(
                     href=l(resourcePage),

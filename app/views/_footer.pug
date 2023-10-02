@@ -104,6 +104,7 @@ footer.mt-auto.small.text-monospace
           hr.d-lg-none.w-100
 
         .flex-wrap.flex-fill
+          hr.d-lg-none.w-100
           h3.h6.text-uppercase.mb-2: a.text-light(href=l("/guides"))= t("Guides")
           ul.list-unstyled.mb-0.mb-lg-3
             li: a.d-block.text-light.py-2.py-md-0(
@@ -166,8 +167,9 @@ footer.mt-auto.small.text-monospace
             if platforms.length > 0
               li: a.d-block.text-light.py-2.py-md-0(href=l("/open-source"))= t("Open Source Server Setup")
           if developerDocs.length > 0
-            h3.h6.text-uppercase.mb-2= t("Code Examples")
             hr.d-lg-none.w-100
+            h3.h6.text-uppercase.mb-2= t("Code Examples")
+            hr.d-none.d-md-none.d-lg-none.w-100
             ul.list-unstyled.mb-0.mb-lg-3
               each doc in developerDocs
                 li

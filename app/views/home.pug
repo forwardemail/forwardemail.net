@@ -97,8 +97,15 @@ block body
               data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
             )
   .min-vh-80.d-flex.flex-column(
+    id=!isPDF && (ctx.pathWithoutLocale === "/" || ctx.pathWithoutLocale === "/private-business-email") && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
     class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
   )
+    - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
+    if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email') && !isBot(ctx.get('User-Agent')))
+      #stars.user-select-none
+      if !isSafari
+        #rocket.user-select-none
+      #waving(class=isSafari ? '' : 'floating-animation').user-select-none
     .container.my-auto.pt-5
       .row
         .col-12.col-lg-6

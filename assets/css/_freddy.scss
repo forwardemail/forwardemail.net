@@ -4,13 +4,13 @@
 @import 'variables';
 
 #freddy {
-  background-color: #191d21;
+  position: relative;
   #stars {
-    position: fixed;
-    top: 0;
+    position: absolute;
+    top: -60px;
     z-index: -3;
     width: 100%;
-    height: 100%;
+    bottom: 0;
     background-size: 40vmin, 25%, 110%;
     background-image: url('b64---../img/art/planet.svg---'), url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
     background-repeat: no-repeat, repeat, no-repeat;
@@ -24,7 +24,7 @@
     animation-iteration-count: infinite;
     animation-timing-function: linear;
     z-index: -2;
-    position: fixed;
+    position: absolute;
     background-size: 99.9%;
     background-repeat: no-repeat;
     background-image: url('b64---../img/art/rocket.gif---');
@@ -34,14 +34,8 @@
     top: -50%;
   }
   #waving {
-    transition: all 1s ease-out;
-    animation-name: floating;
-    animation-duration: 5s;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-    animation-fill-mode: both;
     z-index: -1;
-    position: fixed;
+    position: absolute;
     background-size: 99.9%;
     background-repeat: no-repeat;
     background-image: url('b64---../img/art/freddy.gif---');
@@ -73,6 +67,15 @@
       background-size: 60vmin, 25%, 110%;
     }
   }
+}
+
+.floating-animation {
+  transition: all 1s ease-out;
+  animation-name: floating;
+  animation-duration: 5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
 }
 
 @media (prefers-reduced-motion: reduce) {

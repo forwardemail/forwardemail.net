@@ -209,7 +209,8 @@ const purgeCssOptions = {
       /-themed$/,
       /-themed-/,
       /^hljs/,
-      /^language-/
+      /^language-/,
+      'floating-animation'
     ])
   ]
 };
