@@ -45,6 +45,8 @@ graceful.listen();
       }
     });
 
+    if (count === 0) throw new Error('No deliverability logs');
+
     // email the spreadsheet to admins
     await emailHelper({
       template: 'alert',

@@ -327,6 +327,8 @@ async function listLogs(ctx) {
     const now = new Date();
     getLogsCsv(now, query)
       .then((results) => {
+        // if no results return early
+        if (results.count === 0) return;
         // email the spreadsheet to admins
         emailHelper({
           template: 'alert',
