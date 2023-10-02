@@ -12,7 +12,6 @@ const regexParser = require('regex-parser');
 const revHash = require('rev-hash');
 const { isEmail } = require('validator');
 const ms = require('ms');
-const parseErr = require('parse-err');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -324,67 +323,58 @@ async function listLogs(ctx) {
 
   // in the future we can move this to a background job
   if (ctx.pathWithoutLocale === '/my-account/logs/download') {
-    try {
-      {
-        const message = ctx.translate('LOG_DOWNLOAD_IN_PROGRESS');
-        const redirectTo = ctx.state.l('/my-account/logs');
-        if (ctx.accepts('html')) {
-          ctx.flash('success', message);
-          ctx.redirect(redirectTo);
-        } else {
-          ctx.body = {
-            message,
-            redirectTo
-          };
-        }
-      }
-
-      // download in background and email to users
-      const now = new Date();
-      const { count, csv, set, message } = await getLogsCsv(now, query);
-
-      // email the spreadsheet to admins
-      await emailHelper({
-        template: 'alert',
-        message: {
-          to: ctx.state.user[config.userFields.fullEmail],
-          subject: `(${count}) Email Deliverability Logs for ${dayjs(
-            now
-          ).format('M/D/YY h:mm A z')} (${set.size} trusted hosts blocked)`,
-          attachments: [
-            {
-              filename: `email-deliverability-logs-${dayjs(now).format(
-                'YYYY-MM-DD-h-mm-A-z'
-              )}.csv.gz`.toLowerCase(),
-              content: zlib.gzipSync(Buffer.from(csv, 'utf8'), {
-                level: 9
-              })
-            }
-          ]
-        },
-        locals: {
-          message
-        }
-      });
-    } catch (err) {
-      ctx.logger.error(err);
-      // send an email to admins of the error
-      emailHelper({
-        template: 'alert',
-        message: {
-          to: config.email.message.from,
-          subject: `Email Deliverability Report Issue for ${ctx.state.user.email}`
-        },
-        locals: {
-          message: `<pre><code>${JSON.stringify(
-            parseErr(err),
-            null,
-            2
-          )}</code></pre>`
-        }
+    // download in background and email to users
+    const now = new Date();
+    getLogsCsv(now, query)
+      .then((results) => {
+        // email the spreadsheet to admins
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: ctx.state.user[config.userFields.fullEmail],
+            bcc: config.email.message.from,
+            subject: `(${results.count}) Email Deliverability Logs for ${dayjs(
+              now
+            ).format('M/D/YY h:mm A z')} (${
+              results.set.size
+            } trusted hosts blocked)`,
+            attachments: [
+              {
+                filename: `email-deliverability-logs-${dayjs(now).format(
+                  'YYYY-MM-DD-h-mm-A-z'
+                )}.csv.gz`.toLowerCase(),
+                content: zlib.gzipSync(Buffer.from(results.csv, 'utf8'), {
+                  level: 9
+                })
+              }
+            ]
+          },
+          locals: {
+            message
+          }
+        })
+          .then()
+          .catch((err) => {
+            err.isCodeBug = true;
+            ctx.logger.fatal(err);
+          });
       })
-        .then()
-        .catch((err) => ctx.logger.fatal(err));
+      .catch((err) => {
+        err.isCodeBug = true;
+        ctx.logger.fatal(err);
+      });
+
+    const message = ctx.translate('LOG_DOWNLOAD_IN_PROGRESS');
+    const redirectTo = ctx.state.l('/my-account/logs');
+
+    if (ctx.accepts('html')) {
+      ctx.flash('success', message);
+      ctx.redirect(redirectTo);
+    } else {
+      ctx.body = {
+        message,
+        redirectTo
+      };
     }
 
     return;

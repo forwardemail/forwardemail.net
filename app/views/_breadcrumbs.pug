@@ -126,7 +126,8 @@ if breadcrumbs.length > 1
                     )
                       if ctx.query && Object.keys(ctx.query).length > 0
                         each key in Object.keys(ctx.query)
-                          input(type="hidden", name=key, value=ctx.query[key])
+                          if key !== 'limit' && key !== 'page'
+                            input(type="hidden", name=key, value=ctx.query[key])
                       button(type="submit").btn.btn-primary
                         i.fa.fa-file-csv
                         = " "
