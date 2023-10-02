@@ -71,7 +71,7 @@ block body
           li.list-inline-item.small.d-inline
             small.text-monospace
               if log.err && log.err.isCodeBug === true
-                = 'An unexpected internal server error has occurred'
+                = "An unexpected internal server error has occurred"
               else
                 != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
         if _.isObject(log.meta) && _.isObject(log.meta.session) && _.isObject(log.meta.session.headers) && !_.isEmpty(log.meta.session.headers)

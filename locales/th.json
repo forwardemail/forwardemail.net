@@ -4912,5 +4912,8 @@
   "to validate your cron job expression syntax.": "เพื่อตรวจสอบไวยากรณ์นิพจน์งาน cron ของคุณ",
   "Example Cron job (at midnight every day": "ตัวอย่างงาน Cron (เที่ยงคืนทุกวัน)",
   "and with logs for previous day": "และมีบันทึกของวันก่อนหน้า",
-  "Gzip": "จีซิป"
+  "Gzip": "จีซิป",
+  "Retrieve via API": "ดึงข้อมูลผ่าน API",
+  "For MacOS:": "สำหรับ MacOS:",
+  "For Linux and Ubuntu:": "สำหรับ Linux และ Ubuntu:"
 }

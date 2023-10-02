@@ -4912,5 +4912,8 @@
   "to validate your cron job expression syntax.": "כדי לאמת את תחביר ביטוי ה-cron job שלך.",
   "Example Cron job (at midnight every day": "דוגמה לעבודת Cron (בחצות כל יום",
   "and with logs for previous day": "ועם יומנים ליום הקודם",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "אחזור דרך API",
+  "For MacOS:": "עבור MacOS:",
+  "For Linux and Ubuntu:": "עבור לינוקס ואובונטו:"
 }

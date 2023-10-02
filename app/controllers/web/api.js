@@ -90,6 +90,7 @@ async function api(ctx) {
     [...$codeTags].map(async ($codeTag) => {
       const cmd = $codeTag.textContent.trim();
       if (cmd.startsWith('curl -X')) return;
+      if (cmd.includes('/v1/logs/download')) return;
       if (REGEX_DOMAIN_PARAM.test(cmd)) return;
       if (REGEX_ALIAS_PARAM.test(cmd)) return;
       if (REGEX_MEMBER_PARAM.test(cmd)) return;

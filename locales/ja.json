@@ -4912,5 +4912,8 @@
   "to validate your cron job expression syntax.": "cron ジョブ式の構文を検証します。",
   "Example Cron job (at midnight every day": "Cron ジョブの例 (毎日午前 0 時)",
   "and with logs for previous day": "前日のログ付き",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "API経由で取得",
+  "For MacOS:": "MacOSの場合：",
+  "For Linux and Ubuntu:": "Linux および Ubuntu の場合:"
 }

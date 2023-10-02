@@ -4912,5 +4912,8 @@
   "to validate your cron job expression syntax.": "để xác thực cú pháp biểu thức công việc định kỳ của bạn.",
   "Example Cron job (at midnight every day": "Ví dụ Cron job (vào lúc nửa đêm hàng ngày",
   "and with logs for previous day": "và với nhật ký của ngày hôm trước",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "Truy xuất qua API",
+  "For MacOS:": "Đối với MacOS:",
+  "For Linux and Ubuntu:": "Đối với Linux và Ubuntu:"
 }

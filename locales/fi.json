@@ -4757,5 +4757,8 @@
   "to validate your cron job expression syntax.": "vahvistaaksesi cron-työlausekkeen syntaksin.",
   "Example Cron job (at midnight every day": "Esimerkki Cron-työstä (joka päivä keskiyöllä",
   "and with logs for previous day": "ja edellisen päivän lokeilla",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "Hae API:n kautta",
+  "For MacOS:": "MacOS:",
+  "For Linux and Ubuntu:": "Linux ja Ubuntu:"
 }

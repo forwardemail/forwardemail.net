@@ -91,7 +91,7 @@ table.table.table-hover.table-bordered.table-sm
                     li.list-inline-item.small.d-inline
                       small.text-monospace
                         if log.err && log.err.isCodeBug === true
-                          = 'An unexpected internal server error has occurred'
+                          = "An unexpected internal server error has occurred"
                         else
                           != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
             td.align-middle.text-center

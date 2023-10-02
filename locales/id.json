@@ -4912,5 +4912,8 @@
   "to validate your cron job expression syntax.": "untuk memvalidasi sintaks ekspresi tugas cron Anda.",
   "Example Cron job (at midnight every day": "Contoh pekerjaan Cron (pada tengah malam setiap hari",
   "and with logs for previous day": "dan dengan log untuk hari sebelumnya",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "Ambil melalui API",
+  "For MacOS:": "Untuk MacOS:",
+  "For Linux and Ubuntu:": "Untuk Linux dan Ubuntu:"
 }

@@ -4917,5 +4917,8 @@
   "to validate your cron job expression syntax.": "for å validere syntaksen for cron jobbuttrykk.",
   "Example Cron job (at midnight every day": "Eksempel Cron-jobb (ved midnatt hver dag",
   "and with logs for previous day": "og med logger for forrige dag",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "Hent via API",
+  "For MacOS:": "For MacOS:",
+  "For Linux and Ubuntu:": "For Linux og Ubuntu:"
 }

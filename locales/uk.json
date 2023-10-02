@@ -4912,5 +4912,8 @@
   "to validate your cron job expression syntax.": "щоб перевірити синтаксис виразу завдання cron.",
   "Example Cron job (at midnight every day": "Приклад завдання Cron (кожного дня опівночі",
   "and with logs for previous day": "і з журналами за попередній день",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "Отримати через API",
+  "For MacOS:": "Для MacOS:",
+  "For Linux and Ubuntu:": "Для Linux і Ubuntu:"
 }

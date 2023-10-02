@@ -4603,5 +4603,8 @@
   "to validate your cron job expression syntax.": "验证您的 cron 作业表达式语法。",
   "Example Cron job (at midnight every day": "Cron 作业示例（每天午夜",
   "and with logs for previous day": "以及前一天的日志",
-  "Gzip": "压缩包"
+  "Gzip": "压缩包",
+  "Retrieve via API": "通过API检索",
+  "For MacOS:": "对于 MacOS：",
+  "For Linux and Ubuntu:": "对于 Linux 和 Ubuntu："
 }

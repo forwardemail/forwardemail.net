@@ -141,8 +141,16 @@ Note that you can use services such as [Crontab.guru](https://crontab.guru/) to 
 
 > Example Cron job (at midnight every day **and with logs for previous day**):
 
+For MacOS:
+
 ```sh
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date -v-1d -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
+```
+
+For Linux and Ubuntu:
+
+```sh
+0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date --date "-1 days" -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
 ```
 
 

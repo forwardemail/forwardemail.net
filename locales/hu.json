@@ -4912,5 +4912,8 @@
   "to validate your cron job expression syntax.": "a cron job kifejezés szintaxisának érvényesítéséhez.",
   "Example Cron job (at midnight every day": "Példa Cron munkára (minden nap éjfélkor",
   "and with logs for previous day": "és az előző napi naplókkal",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "Letöltés API-n keresztül",
+  "For MacOS:": "MacOS esetén:",
+  "For Linux and Ubuntu:": "Linux és Ubuntu esetén:"
 }

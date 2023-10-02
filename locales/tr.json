@@ -4912,5 +4912,8 @@
   "to validate your cron job expression syntax.": "cron işi ifadesi sözdiziminizi doğrulamak için.",
   "Example Cron job (at midnight every day": "Örnek Cron işi (her gün gece yarısı)",
   "and with logs for previous day": "ve önceki güne ait günlüklerle",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "API aracılığıyla al",
+  "For MacOS:": "MacOS için:",
+  "For Linux and Ubuntu:": "Linux ve Ubuntu için:"
 }

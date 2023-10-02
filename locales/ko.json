@@ -4912,5 +4912,8 @@
   "to validate your cron job expression syntax.": "cron 작업 표현식 구문을 검증합니다.",
   "Example Cron job (at midnight every day": "예시 Cron 작업(매일 자정)",
   "and with logs for previous day": "그리고 전날의 로그와 함께",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "API를 통해 검색",
+  "For MacOS:": "MacOS의 경우:",
+  "For Linux and Ubuntu:": "Linux 및 Ubuntu의 경우:"
 }

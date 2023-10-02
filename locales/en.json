@@ -4688,5 +4688,8 @@
   "to validate your cron job expression syntax.": "to validate your cron job expression syntax.",
   "Example Cron job (at midnight every day": "Example Cron job (at midnight every day",
   "and with logs for previous day": "and with logs for previous day",
-  "Gzip": "Gzip"
+  "Gzip": "Gzip",
+  "Retrieve via API": "Retrieve via API",
+  "For MacOS:": "For MacOS:",
+  "For Linux and Ubuntu:": "For Linux and Ubuntu:"
 }
