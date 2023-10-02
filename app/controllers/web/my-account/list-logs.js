@@ -350,7 +350,7 @@ async function listLogs(ctx) {
             ]
           },
           locals: {
-            message
+            message: results.message
           }
         })
           .then()
