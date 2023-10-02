@@ -115,14 +115,14 @@ if breadcrumbs.length > 1
         else
           case ctx.pathWithoutLocale
             when '/my-account/logs'
-              if logs && logs.length > 0
+              if logs && logs.length > 0 && itemCount && itemCount > 0
                 ul.list-inline.mb-0
                   li.list-inline-item.mb-1
                     form.ajax-form.confirm-prompt(
                       action=l('/my-account/logs/download'),
                       method="GET",
                       data-confirm-prompt-title=t("Download Log Report"),
-                      data-confirm-prompt-html=t('We will send an email to <span class="font-weight-bold text-monospace notranslate">%s</span> when your CSV spreadsheet is ready with <span class="font-weight-bold notranslate">%d</span> log rows.', user.email, logs.length)
+                      data-confirm-prompt-html=t('We will send an email to <span class="font-weight-bold text-monospace notranslate">%s</span> when your CSV spreadsheet is ready with <span class="font-weight-bold notranslate">%d</span> log rows.', user.email, itemCount)
                     )
                       if ctx.query && Object.keys(ctx.query).length > 0
                         each key in Object.keys(ctx.query)
