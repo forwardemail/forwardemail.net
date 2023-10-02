@@ -13,7 +13,7 @@ function makeDelimitedString(arr) {
 }
 
 // eslint-disable-next-line complexity
-async function getLogsCsv(now = new Date(), query = {}) {
+async function getLogsCsv(now = new Date(), query = {}, isAdmin = false) {
   if (!_.isObject(query) || _.isEmpty(query)) throw new Error('Invalid query');
 
   //
@@ -69,6 +69,9 @@ async function getLogsCsv(now = new Date(), query = {}) {
     .cursor()
     .addCursorFlag('noCursorTimeout', true)) {
     if (!log?.meta?.session?.id) continue;
+    let response = log?.err?.response || log?.err?.message || log.message;
+    if (!isAdmin && log?.err?.isCodeBug === true)
+      response = 'An unexpected internal server error has occurred';
     // add new row to spreadsheet
     csv.push(
       makeDelimitedString([
@@ -89,7 +92,7 @@ async function getLogsCsv(now = new Date(), query = {}) {
           ? log.err.truthSource
           : '',
         // SMTP Response
-        log?.err?.response || log?.err?.message || log.message,
+        response,
         // SMTP Code
         log?.err?.responseCode,
         // From
@@ -172,9 +175,19 @@ async function getLogsCsv(now = new Date(), query = {}) {
     );
   }
 
-  const message = [
-    `<p>Log download from ${dayjs(now).format('M/D/YY h:mm A z')}:</p>`
-  ];
+  const message = [];
+  const count = csv.length - 1;
+
+  if (count === 0)
+    message.push(
+      `<p>No logs were available to download from ${dayjs(now).format(
+        'M/D/YY h:mm A z'
+      )}.</p>`
+    );
+  else
+    message.push(
+      `<p>Log download from ${dayjs(now).format('M/D/YY h:mm A z')}:</p>`
+    );
 
   if (list.length > 0) {
     message.push(`<ul>`, ...list, `</ul>`);
@@ -190,8 +203,18 @@ async function getLogsCsv(now = new Date(), query = {}) {
     );
   }
 
+  const subject = `(${count}) Email Deliverability Logs for ${dayjs(now).format(
+    'M/D/YY h:mm A z'
+  )} (${set.size} trusted hosts blocked)`;
+
+  const filename = `email-deliverability-logs-${dayjs(now).format(
+    'YYYY-MM-DD-h-mm-A-z'
+  )}.csv`.toLowerCase();
+
   return {
-    count: csv.length - 1,
+    subject,
+    filename,
+    count,
     csv: csv.join('\n'),
     set,
     message: message.join('\n')

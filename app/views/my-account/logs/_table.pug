@@ -89,7 +89,11 @@ table.table.table-hover.table-bordered.table-sm
                         li.list-inline-item.d-inline
                           span.badge.badge-pill(class=badgeClass)= statusCode
                     li.list-inline-item.small.d-inline
-                      small.text-monospace!= log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
+                      small.text-monospace
+                        if log.err && log.err.isCodeBug === true
+                          = 'An unexpected internal server error has occurred'
+                        else
+                          != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
             td.align-middle.text-center
               ul.list-inline.mb-0
                 li.list-inline-item

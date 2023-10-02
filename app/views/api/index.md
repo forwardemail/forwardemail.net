@@ -9,6 +9,8 @@
 * [Errors](#errors)
 * [Localization](#localization)
 * [Pagination](#pagination)
+* [Logs](#logs)
+  * [Retrieve logs](#retrieve-logs)
 * [Account](#account)
   * [Create account](#create-account)
   * [Retrieve account](#retrieve-account)
@@ -103,6 +105,45 @@ Our service is translated to over 25 different languages. All API response messa
 ## Pagination
 
 If you would like to be notified when pagination is available, then please email <api@forwardemail.net>.
+
+
+## Logs
+
+### Retrieve logs
+
+Our API programmatically allows you to download logs for your account.  Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment ([Gzip](https://en.wikipedia.org/wiki/Gzip) compressed [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) spreadsheet file) once complete.
+
+This allows you to create background jobs with a [Cron job](https://en.wikipedia.org/wiki/Cron) or using our [Node.js job scheduling software Bree](https://github.com/breejs/bree) to receive logs whenever you desire.  Note that this endpoint is limited to `10` requests per day.
+
+The attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.  You can also download logs at any time from [My Account → Logs](/my-account/logs)
+
+> `GET /v1/logs/download`
+
+| Querystring Parameter | Required | Type          | Description                                                                                                                     |
+| --------------------- | -------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`              | No       | String (FQDN) | Filter logs by fully qualified domain ("FQDN").  If you do not provide this then all logs across all domains will be retrieved. |
+| `q`                   | No       | String        | Search for logs by email, domain, alias name, IP address, or date (`M/Y`, `M/D/YY`, `M-D`, `M-D-YY`, or `M.D.YY` format).       |
+
+> Example Request:
+
+```sh
+curl -X POST BASE_URI/v1/logs/download \
+  -u API_TOKEN:
+```
+
+> Example Cron job (at midnight every day):
+
+```sh
+0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
+```
+
+Note that you can use services such as [Crontab.guru](https://crontab.guru/) to validate your cron job expression syntax.
+
+> Example Cron job (at midnight every day **and with logs for previous day**):
+
+```sh
+0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date -v-1d -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
+```
 
 
 ## Account

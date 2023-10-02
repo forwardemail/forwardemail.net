@@ -21,7 +21,7 @@ block content
                 = t("No, we only send it the first time as a courtesy.")
             .p-3
               h2.h5= t("Why are you sending this email?")
-              p.card-text
+              p.card-text.small
                 != t("It is a widely known issue that <u>only</u> happens when you send an email to yourself <i>as</i> yourself.")
                 = " "
                 = t('The emails do not show up twice in your inbox because they have the same "Message-ID" value in the email headers.')
@@ -29,24 +29,102 @@ block content
                 = t("If you're using a service such as Gmail, then the email will only be shown in your Sent folder.")
                 = " "
                 = t("We are simply letting you know in advance of this issue!")
-              a.btn.btn-lg.btn-danger(
+              a.btn.btn-sm.btn-danger(
                 href="https://support.google.com/a/answer/1703601",
                 target="_blank",
                 rel="noopener noreferrer"
               )
                 = t("Read the official Gmail answer")
-            .p-3
-              h2.h5= t("Is there a workaround?")
-              p.card-text
-                = t("We spent a lot of time researching, testing, and implementing alternatives since 2017.")
                 = " "
-                = t("Unfortunately we did not discover any reasonable alternatives that respect privacy and security.")
+                != "&rarr;"
             .p-3
-              h2.h5= t("What is the technical reason?")
+              h2= t("What is Forward Email?")
               p.card-text
-                = t('The core reason why this happens is because emails with duplicate "Message-ID" headers only show up once in the inbox.')
-              p.card-text
-                != t('In the past we had a workaround where we rewrote the "Message-ID" and removed the "DKIM-Signature" header.')
+                != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
                 = " "
-                = t('This workaround led to a confusing "Be careful with this message" alert and sometimes marked it as spam in Gmail.')
+                != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
+              ul.list-unstyled.text-left.mb-3.d-inline-block.mx-auto
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Unlimited domains and aliases")
+                  = " "
+                  span.badge.badge-success
+                    = t("100% Free")
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Privacy-focused email")
+                  = " "
+                  a.badge.badge-dark.align-middle(
+                    href=`${config.urls.web}/privacy`
+                  )
+                    = t("Privacy Policy")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Send outbound SMTP email")
+                  = " "
+                  a.badge.badge-dark(
+                    href=`${config.urls.web}/guides/send-email-with-custom-domain-smtp`
+                  )
+                    = t("SMTP Guide")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Error logs and real-time alerts")
+                  = " "
+                  a.badge.badge-dark(
+                    href=`${config.urls.web}/faq#do-you-store-error-logs`
+                  )
+                    = t("View FAQ")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Powered by bare metal servers")
+                  = " "
+                  a.badge.badge-dark(
+                    href="https://status.forwardemail.net",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = t("Status Page")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("100% open-source software")
+                  = " "
+                  a.badge.badge-dark(
+                    href="https://github.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = t("View")
+                    = " "
+                    = t("GitHub")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Email API designed for developers")
+                  = " "
+                  a.badge.badge-dark(
+                    href=`${config.urls.web}/email-api`
+                  )
+                    = t("Email API")
+                    = " "
+                    != "&rarr;"
+              a.btn.btn-lg.btn-success.text-uppercase.font-weight-bold(
+                href=config.urls.web
+              )
+                = t("Try for free")
           .card-footer.small.text-muted= t("If you have any questions or comments, then please let us know.")

@@ -322,34 +322,36 @@ async function listLogs(ctx) {
   }
 
   // in the future we can move this to a background job
-  if (ctx.pathWithoutLocale === '/my-account/logs/download') {
+  if (
+    ctx.pathWithoutLocale === '/my-account/logs/download' ||
+    (ctx.api &&
+      ctx.pathWithoutLocale === '/v1/logs/download' &&
+      ctx.method === 'POST')
+  ) {
     // download in background and email to users
     const now = new Date();
     getLogsCsv(now, query)
       .then((results) => {
         // if no results return early
-        if (results.count === 0) return;
+        if (!ctx.api && results.count === 0) return;
         // email the spreadsheet to admins
         emailHelper({
           template: 'alert',
           message: {
             to: ctx.state.user[config.userFields.fullEmail],
             bcc: config.email.message.from,
-            subject: `(${results.count}) Email Deliverability Logs for ${dayjs(
-              now
-            ).format('M/D/YY h:mm A z')} (${
-              results.set.size
-            } trusted hosts blocked)`,
-            attachments: [
-              {
-                filename: `email-deliverability-logs-${dayjs(now).format(
-                  'YYYY-MM-DD-h-mm-A-z'
-                )}.csv.gz`.toLowerCase(),
-                content: zlib.gzipSync(Buffer.from(results.csv, 'utf8'), {
-                  level: 9
-                })
-              }
-            ]
+            subject: results.subject,
+            attachments:
+              results.count > 0
+                ? [
+                    {
+                      filename: results.filename + '.gz',
+                      content: zlib.gzipSync(Buffer.from(results.csv, 'utf8'), {
+                        level: 9
+                      })
+                    }
+                  ]
+                : []
           },
           locals: {
             message: results.message
@@ -369,7 +371,9 @@ async function listLogs(ctx) {
     const message = ctx.translate('LOG_DOWNLOAD_IN_PROGRESS');
     const redirectTo = ctx.state.l('/my-account/logs');
 
-    if (ctx.accepts('html')) {
+    if (ctx.api) {
+      ctx.body = message;
+    } else if (ctx.accepts('html')) {
       ctx.flash('success', message);
       ctx.redirect(redirectTo);
     } else {

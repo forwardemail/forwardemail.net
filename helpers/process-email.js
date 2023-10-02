@@ -771,6 +771,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
           });
           return info;
         } catch (err) {
+          // log the error (dups will be removed)
+          logger.error(err, {
+            user: email.user,
+            email: email._id,
+            domains: [email.domain],
+            session: createSession(email)
+          });
+
           //
           // if the SMTP response was from trusted root host and it was rejected for spam/virus
           // then denylist the sender (probably a low-reputation domain name spammer)
@@ -972,6 +980,17 @@ async function processEmail({ email, port = 25, resolver, client }) {
         filteredErrors,
         async (error) => {
           try {
+            //
+            // if it was a soft bounce and within 1 hour of email's date then return early
+            // (we don't want to send bounces until we try 5-6x within first hour of queue)
+            //
+            const code = getErrorCode(error);
+            if (
+              code < 500 &&
+              Date.now() < dayjs(email.date).add(1, 'hour').toDate().getTime()
+            )
+              return;
+
             const stream = createBounce(email, error, message);
             const raw = await getStream.buffer(stream);
             const bounceEmail = await Emails.queue({
@@ -989,7 +1008,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
               is_bounce: true
             });
 
-            if (getErrorCode(error) < 500) softBounces.push(error.recipient);
+            if (code < 500) softBounces.push(error.recipient);
             else hardBounces.push(error.recipient);
 
             logger.info('email created', {
@@ -1039,15 +1058,15 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     return;
   } catch (err) {
-    // create log
-    logger.error(err, meta);
-
     //
     // these two properties are set to ensure consistency of `rejectedErrors`
     // (each err has `err.recipient` and `err.responseCode` per nodemailer)
     //
     err.isCodeBug = isCodeBug(err);
     err.responseCode = getErrorCode(err);
+
+    // create log
+    logger.error(err, meta);
 
     // lookup the email by id to get most recent data and version key (`__v`)
     email = await Emails.findById(email._id);

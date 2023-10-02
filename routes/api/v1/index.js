@@ -84,6 +84,19 @@ router
     api.v1.users.update
   );
 
+// logs
+router.post(
+  '/logs/download',
+  policies.ensureApiToken,
+  policies.checkVerifiedEmail,
+  web.myAccount.ensureNotBanned,
+  api.v1.enforcePaidPlan,
+  web.myAccount.ensurePaidToDate,
+  rateLimit(10, 'download logs'),
+  web.myAccount.retrieveDomains,
+  web.myAccount.listLogs
+);
+
 // emails
 router
   .use(

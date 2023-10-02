@@ -38,12 +38,16 @@ graceful.listen();
     //
     const now = new Date();
 
-    const { count, csv, set, message } = await getLogsCsv(now, {
-      created_at: {
-        $gte: dayjs(now).subtract(4, 'hour').toDate(),
-        $lte: now
-      }
-    });
+    const { count, csv, message, subject, filename } = await getLogsCsv(
+      now,
+      {
+        created_at: {
+          $gte: dayjs(now).subtract(4, 'hour').toDate(),
+          $lte: now
+        }
+      },
+      true
+    );
 
     if (count === 0) throw new Error('No deliverability logs');
 
@@ -52,14 +56,10 @@ graceful.listen();
       template: 'alert',
       message: {
         to: config.email.message.from,
-        subject: `(${count}) Email Deliverability Logs for ${dayjs(now).format(
-          'M/D/YY h:mm A z'
-        )} (${set.size} trusted hosts blocked)`,
+        subject,
         attachments: [
           {
-            filename: `email-deliverability-logs-${dayjs(now).format(
-              'YYYY-MM-DD-h-mm-A-z'
-            )}.csv.gz`.toLowerCase(),
+            filename: filename + '.gz',
             content: zlib.gzipSync(Buffer.from(csv, 'utf8'), {
               level: 9
             })

@@ -69,7 +69,11 @@ block body
             li.list-inline-item.d-inline
               span.badge.badge-pill(class=badgeClass)= statusCode
           li.list-inline-item.small.d-inline
-            small.text-monospace!= log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
+            small.text-monospace
+              if log.err && log.err.isCodeBug === true
+                = 'An unexpected internal server error has occurred'
+              else
+                != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
         if _.isObject(log.meta) && _.isObject(log.meta.session) && _.isObject(log.meta.session.headers) && !_.isEmpty(log.meta.session.headers)
           h3.h5= t("Message Headers")
           table.table.table-hover.table-bordered.table-striped
