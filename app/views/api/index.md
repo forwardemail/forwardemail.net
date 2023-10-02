@@ -127,7 +127,7 @@ The attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-
 > Example Request:
 
 ```sh
-curl -X POST BASE_URI/v1/logs/download \
+curl BASE_URI/v1/logs/download \
   -u API_TOKEN:
 ```
 
