@@ -110,6 +110,17 @@ async function updateDomain(ctx, next) {
   ctx.state.domain.skip_verification = true;
   ctx.state.domain = await ctx.state.domain.save();
 
+  // clear cache for settings (used by SMTP)
+  if (
+    ctx.state.domain.plan !== 'free' &&
+    ctx.state.domain.has_mx_record &&
+    ctx.state.domain.has_txt_record
+  )
+    ctx.client
+      .del(`v1_settings:${ctx.state.domain.name}`)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
   if (ctx.api) return next();
 
   ctx.flash('custom', {

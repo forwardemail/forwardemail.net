@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "SSS bölümümüzü okuyun, yardım isteği gönderin veya bu e-postayı yanıtlayın.",
   "Help Request": "Yardım talebi",
   "Features &amp; Pricing": "Özellikler ve özellikler Fiyatlandırma",
-  "These features ensure high deliverability and help to keep your email safe.": "Bu özellikler yüksek teslim edilebilirlik sağlar ve e-postanızı güvende tutmanıza yardımcı olur."
+  "These features ensure high deliverability and help to keep your email safe.": "Bu özellikler yüksek teslim edilebilirlik sağlar ve e-postanızı güvende tutmanıza yardımcı olur.",
+  "Download Log Report": "Günlük Raporunu İndir",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "<span class=\"font-weight-bold notranslate\">%d</span> <span class=\"font-weight-bold text-monospace notranslate\">%s</span> adresine bir e-posta göndereceğiz.",
+  "Your report will be emailed to you shortly.": "Raporunuz kısa sürede e-posta adresinize gönderilecektir."
 }

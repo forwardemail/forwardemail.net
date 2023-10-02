@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Lees onze veelgestelde vragen, dien een hulpverzoek in of beantwoord deze e-mail.",
   "Help Request": "Verzoek om hulp",
   "Features &amp; Pricing": "Kenmerken &amp; Prijzen",
-  "These features ensure high deliverability and help to keep your email safe.": "Deze functies zorgen voor een hoge afleverbaarheid en helpen uw e-mail veilig te houden."
+  "These features ensure high deliverability and help to keep your email safe.": "Deze functies zorgen voor een hoge afleverbaarheid en helpen uw e-mail veilig te houden.",
+  "Download Log Report": "Lograpport downloaden",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "We sturen een e-mail naar <span class=\"font-weight-bold text-monospace notranslate\">%s</span> wanneer uw CSV-spreadsheet klaar is met <span class=\"font-weight-bold notranslate\">%d</span> logrijen.",
+  "Your report will be emailed to you shortly.": "Uw rapport wordt binnenkort naar u gemaild."
 }

@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Đọc Câu hỏi thường gặp của chúng tôi, gửi yêu cầu trợ giúp hoặc trả lời email này.",
   "Help Request": "Yêu cầu trợ giúp",
   "Features &amp; Pricing": "Tính năng &amp; Định giá",
-  "These features ensure high deliverability and help to keep your email safe.": "Những tính năng này đảm bảo khả năng gửi cao và giúp giữ an toàn cho email của bạn."
+  "These features ensure high deliverability and help to keep your email safe.": "Những tính năng này đảm bảo khả năng gửi cao và giúp giữ an toàn cho email của bạn.",
+  "Download Log Report": "Tải xuống báo cáo nhật ký",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Chúng tôi sẽ gửi email đến <span class=\"font-weight-bold text-monospace notranslate\">%s</span> khi bảng tính CSV của bạn đã sẵn sàng với các hàng nhật ký <span class=\"font-weight-bold notranslate\">%d</span> .",
+  "Your report will be emailed to you shortly.": "Báo cáo của bạn sẽ sớm được gửi qua email cho bạn."
 }

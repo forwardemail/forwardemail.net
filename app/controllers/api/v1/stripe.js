@@ -253,8 +253,11 @@ async function processEvent(ctx, event) {
           plan: {
             $ne: productToPlan
           },
-          'members.user': {
-            $in: [user._id]
+          members: {
+            $elemMatch: {
+              user: user._id,
+              group: 'admin'
+            }
           }
         });
 

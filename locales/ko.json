@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "FAQ를 읽어보시거나, 도움 요청을 제출하시거나, 이 이메일에 회신해 주세요.",
   "Help Request": "도움 요청",
   "Features &amp; Pricing": "특징 &amp; 가격",
-  "These features ensure high deliverability and help to keep your email safe.": "이러한 기능은 높은 전달성을 보장하고 이메일을 안전하게 유지하는 데 도움이 됩니다."
+  "These features ensure high deliverability and help to keep your email safe.": "이러한 기능은 높은 전달성을 보장하고 이메일을 안전하게 유지하는 데 도움이 됩니다.",
+  "Download Log Report": "로그 보고서 다운로드",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "CSV 스프레드시트에 <span class=\"font-weight-bold notranslate\">%d</span> 개의 로그 행이 준비되면 <span class=\"font-weight-bold text-monospace notranslate\">%s</span> 에게 이메일을 보내드리겠습니다.",
+  "Your report will be emailed to you shortly.": "귀하의 보고서가 곧 이메일로 전송될 것입니다."
 }

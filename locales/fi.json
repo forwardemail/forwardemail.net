@@ -4713,5 +4713,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Lue UKK, lähetä avunpyyntö tai vastaa tähän sähköpostiin.",
   "Help Request": "Apupyyntö",
   "Features &amp; Pricing": "Ominaisuudet &amp; Hinnoittelu",
-  "These features ensure high deliverability and help to keep your email safe.": "Nämä ominaisuudet varmistavat korkean toimittavuuden ja auttavat pitämään sähköpostisi turvassa."
+  "These features ensure high deliverability and help to keep your email safe.": "Nämä ominaisuudet varmistavat korkean toimittavuuden ja auttavat pitämään sähköpostisi turvassa.",
+  "Download Log Report": "Lataa lokiraportti",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Lähetämme sähköpostin osoitteeseen <span class=\"font-weight-bold text-monospace notranslate\">%s</span> , kun CSV-laskentataulukkosi on valmis ja sisältää <span class=\"font-weight-bold notranslate\">%d</span> lokiriviä.",
+  "Your report will be emailed to you shortly.": "Raporttisi lähetetään sinulle sähköpostitse pian."
 }

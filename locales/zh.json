@@ -4559,5 +4559,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "请阅读我们的常见问题解答、提交帮助请求或回复此电子邮件。",
   "Help Request": "帮助请求",
   "Features &amp; Pricing": "特点与价钱",
-  "These features ensure high deliverability and help to keep your email safe.": "这些功能可确保高送达率并有助于确保您的电子邮件安全。"
+  "These features ensure high deliverability and help to keep your email safe.": "这些功能可确保高送达率并有助于确保您的电子邮件安全。",
+  "Download Log Report": "下载日志报告",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "当您的 CSV 电子表格准备好包含<span class=\"font-weight-bold notranslate\">%d</span>行日志后，我们将向<span class=\"font-weight-bold text-monospace notranslate\">%s</span>发送一封电子邮件。",
+  "Your report will be emailed to you shortly.": "您的报告将很快通过电子邮件发送给您。"
 }

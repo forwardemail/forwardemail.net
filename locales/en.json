@@ -4642,5 +4642,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Read our FAQ, submit a help request, or reply to this email.",
   "Help Request": "Help Request",
   "Features &amp; Pricing": "Features &amp; Pricing",
-  "These features ensure high deliverability and help to keep your email safe.": "These features ensure high deliverability and help to keep your email safe."
+  "These features ensure high deliverability and help to keep your email safe.": "These features ensure high deliverability and help to keep your email safe.",
+  "Download Log Report": "Download Log Report",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.",
+  "No results were found.": "No results were found."
 }

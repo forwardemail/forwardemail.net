@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "よくある質問を読んで、ヘルプ リクエストを送信するか、このメールに返信してください。",
   "Help Request": "ヘルプリクエスト",
   "Features &amp; Pricing": "特徴と特徴価格設定",
-  "These features ensure high deliverability and help to keep your email safe.": "これらの機能により、高い配信性が保証され、電子メールの安全性が確保されます。"
+  "These features ensure high deliverability and help to keep your email safe.": "これらの機能により、高い配信性が保証され、電子メールの安全性が確保されます。",
+  "Download Log Report": "ログレポートのダウンロード",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "CSV スプレッドシートの<span class=\"font-weight-bold notranslate\">%d</span>ログ行の準備ができたら、 <span class=\"font-weight-bold text-monospace notranslate\">%s</span>に電子メールを送信します。",
+  "Your report will be emailed to you shortly.": "レポートは間もなく電子メールで送信されます。"
 }

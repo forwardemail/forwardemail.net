@@ -65,6 +65,7 @@ module.exports = {
   EMAIL_PREVIEW_ERROR:
     'An error occurred while rendering an email preview. We have been notified by email.',
   EMAIL_DOES_NOT_EXIST: 'Email does not exist.',
+  LOG_DOWNLOAD_IN_PROGRESS: 'Your report will be emailed to you shortly.',
   EMAIL_REMOVED: 'Email was removed from the queue by an admin.',
   INVALID_EMAIL_STATUS: 'Email status must be pending, queued, or deferred.',
   NO_REPLY_USERNAME_NO_SMTP:

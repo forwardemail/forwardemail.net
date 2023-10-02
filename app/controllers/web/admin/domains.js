@@ -100,6 +100,13 @@ async function update(ctx) {
   domain.resolver = ctx.resolver;
   await domain.save();
 
+  // clear cache for max forwarding addresses (used by SMTP)
+  if (domain.plan !== 'free' && domain.has_mx_record && domain.has_txt_record)
+    ctx.client
+      .del(`v1_max_forwarded:${domain.name}`)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
   // send an email to all admins of the domain
   const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
 

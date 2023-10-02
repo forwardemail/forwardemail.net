@@ -4873,5 +4873,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Les våre vanlige spørsmål, send inn en hjelpeforespørsel eller svar på denne e-posten.",
   "Help Request": "Hjelpeforespørsel",
   "Features &amp; Pricing": "Funksjoner &amp; Prissetting",
-  "These features ensure high deliverability and help to keep your email safe.": "Disse funksjonene sikrer høy leveringsdyktighet og bidrar til å holde e-posten din trygg."
+  "These features ensure high deliverability and help to keep your email safe.": "Disse funksjonene sikrer høy leveringsdyktighet og bidrar til å holde e-posten din trygg.",
+  "Download Log Report": "Last ned loggrapport",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Vi sender en e-post til <span class=\"font-weight-bold text-monospace notranslate\">%s</span> når CSV-regnearket er klart med <span class=\"font-weight-bold notranslate\">%d</span> loggrader.",
+  "Your report will be emailed to you shortly.": "Rapporten din vil bli sendt til deg i løpet av kort tid."
 }

@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "קרא את השאלות הנפוצות שלנו, שלח בקשת עזרה או השב לדוא\"ל זה.",
   "Help Request": "בקשת עזרה",
   "Features &amp; Pricing": "תכונות &amp; תמחור",
-  "These features ensure high deliverability and help to keep your email safe.": "תכונות אלו מבטיחות יכולת מסירה גבוהה ועוזרות לשמור על בטיחות הדוא\"ל שלך."
+  "These features ensure high deliverability and help to keep your email safe.": "תכונות אלו מבטיחות יכולת מסירה גבוהה ועוזרות לשמור על בטיחות הדוא\"ל שלך.",
+  "Download Log Report": "הורד דוח יומן",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "אנו נשלח אימייל אל <span class=\"font-weight-bold text-monospace notranslate\">%s</span> כאשר גיליון ה-CSV שלך מוכן עם <span class=\"font-weight-bold notranslate\">%d</span> שורות יומן.",
+  "Your report will be emailed to you shortly.": "הדו\"ח שלך יישלח אליך בקרוב בדוא\"ל."
 }

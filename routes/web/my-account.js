@@ -325,6 +325,7 @@ router
     rateLimit(100, 'list logs'),
     web.myAccount.listLogs
   )
+  .get('/logs/download', rateLimit(10, 'download logs'), web.myAccount.listLogs)
   .get(
     '/logs/:id',
     rateLimit(100, 'retrieve logs'),

@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Leggi le nostre domande frequenti, invia una richiesta di aiuto o rispondi a questa email.",
   "Help Request": "Richiesta di aiuto",
   "Features &amp; Pricing": "Funzionalità e funzionalità Prezzi",
-  "These features ensure high deliverability and help to keep your email safe.": "Queste funzionalità garantiscono un'elevata consegna e aiutano a mantenere la tua posta elettronica al sicuro."
+  "These features ensure high deliverability and help to keep your email safe.": "Queste funzionalità garantiscono un'elevata consegna e aiutano a mantenere la tua posta elettronica al sicuro.",
+  "Download Log Report": "Scarica il rapporto di registro",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Invieremo un&#39;email a <span class=\"font-weight-bold text-monospace notranslate\">%s</span> quando il tuo foglio di calcolo CSV sarà pronto con <span class=\"font-weight-bold notranslate\">%d</span> righe di registro.",
+  "Your report will be emailed to you shortly.": "Il tuo rapporto ti verrà inviato via email a breve."
 }

@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Baca FAQ kami, kirimkan permintaan bantuan, atau balas email ini.",
   "Help Request": "Permintaan Bantuan",
   "Features &amp; Pricing": "Fitur &amp; Harga",
-  "These features ensure high deliverability and help to keep your email safe.": "Fitur-fitur ini memastikan kemampuan pengiriman yang tinggi dan membantu menjaga keamanan email Anda."
+  "These features ensure high deliverability and help to keep your email safe.": "Fitur-fitur ini memastikan kemampuan pengiriman yang tinggi dan membantu menjaga keamanan email Anda.",
+  "Download Log Report": "Unduh Laporan Log",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Kami akan mengirimkan email ke <span class=\"font-weight-bold text-monospace notranslate\">%s</span> ketika spreadsheet CSV Anda sudah siap dengan <span class=\"font-weight-bold notranslate\">%d</span> baris log.",
+  "Your report will be emailed to you shortly.": "Laporan Anda akan segera dikirimkan ke email Anda."
 }

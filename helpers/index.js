@@ -44,6 +44,7 @@ const SMTPError = require('./smtp-error');
 const RetryClient = require('./retry-client');
 const retryRequest = require('./retry-request');
 const getBounceInfo = require('./get-bounce-info');
+const getLogsCsv = require('./get-logs-csv');
 
 module.exports = {
   decrypt,
@@ -92,5 +93,6 @@ module.exports = {
   SMTPError,
   RetryClient,
   retryRequest,
-  getBounceInfo
+  getBounceInfo,
+  getLogsCsv
 };

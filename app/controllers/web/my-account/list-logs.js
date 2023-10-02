@@ -1,3 +1,5 @@
+const zlib = require('node:zlib');
+const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
 const Boom = require('@hapi/boom');
@@ -10,8 +12,11 @@ const regexParser = require('regex-parser');
 const revHash = require('rev-hash');
 const { isEmail } = require('validator');
 const ms = require('ms');
+const parseErr = require('parse-err');
 
 const config = require('#config');
+const emailHelper = require('#helpers/email');
+const getLogsCsv = require('#helpers/get-logs-csv');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const { Aliases, Logs } = require('#models');
 
@@ -315,6 +320,79 @@ async function listLogs(ctx) {
         ]
       };
     }
+  }
+
+  // in the future we can move this to a background job
+  if (ctx.pathWithoutLocale === '/my-account/logs/download') {
+    // attempt to get a count in case there were no logs to download
+    const results = await Logs.countDocuments(query);
+    if (results === 0)
+      return ctx.throw(Boom.badRequest(ctx.translateError('NO_RESULTS_FOUND')));
+
+    try {
+      {
+        const message = ctx.translate('LOG_DOWNLOAD_IN_PROGRESS');
+        const redirectTo = ctx.state.l('/my-account/logs');
+        if (ctx.accepts('html')) {
+          ctx.flash('success', message);
+          ctx.redirect(redirectTo);
+        } else {
+          ctx.body = {
+            message,
+            redirectTo
+          };
+        }
+      }
+
+      // download in background and email to users
+      const now = new Date();
+      const { count, csv, set, message } = await getLogsCsv(now, query);
+
+      // email the spreadsheet to admins
+      await emailHelper({
+        template: 'alert',
+        message: {
+          to: ctx.state.user[config.userFields.fullEmail],
+          subject: `(${count}) Email Deliverability Logs for ${dayjs(
+            now
+          ).format('M/D/YY h:mm A z')} (${set.size} trusted hosts blocked)`,
+          attachments: [
+            {
+              filename: `email-deliverability-logs-${dayjs(now).format(
+                'YYYY-MM-DD-h-mm-A-z'
+              )}.csv.gz`.toLowerCase(),
+              content: zlib.gzipSync(Buffer.from(csv, 'utf8'), {
+                level: 9
+              })
+            }
+          ]
+        },
+        locals: {
+          message
+        }
+      });
+    } catch (err) {
+      ctx.logger.error(err);
+      // send an email to admins of the error
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: `Email Deliverability Report Issue for ${ctx.state.user.email}`
+        },
+        locals: {
+          message: `<pre><code>${JSON.stringify(
+            parseErr(err),
+            null,
+            2
+          )}</code></pre>`
+        }
+      })
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+    }
+
+    return;
   }
 
   const [logs, itemCount] = await Promise.all([

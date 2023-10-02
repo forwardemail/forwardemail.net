@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "อ่านคำถามที่พบบ่อยของเรา ส่งคำขอความช่วยเหลือ หรือตอบกลับอีเมลนี้",
   "Help Request": "ขอความช่วยเหลือ",
   "Features &amp; Pricing": "คุณสมบัติ &amp; ราคา",
-  "These features ensure high deliverability and help to keep your email safe.": "คุณสมบัติเหล่านี้ช่วยให้มั่นใจได้ถึงความสามารถในการจัดส่งสูงและช่วยรักษาอีเมลของคุณให้ปลอดภัย"
+  "These features ensure high deliverability and help to keep your email safe.": "คุณสมบัติเหล่านี้ช่วยให้มั่นใจได้ถึงความสามารถในการจัดส่งสูงและช่วยรักษาอีเมลของคุณให้ปลอดภัย",
+  "Download Log Report": "ดาวน์โหลดรายงานบันทึก",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "เราจะส่งอีเมลไปที่ <span class=\"font-weight-bold text-monospace notranslate\">%s</span> เมื่อสเปรดชีต CSV ของคุณพร้อมมี <span class=\"font-weight-bold notranslate\">%d</span> แถวบันทึก",
+  "Your report will be emailed to you shortly.": "รายงานของคุณจะถูกส่งถึงคุณทางอีเมลในไม่ช้า"
 }

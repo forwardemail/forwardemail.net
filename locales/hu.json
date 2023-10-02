@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Olvassa el a GYIK-et, küldjön be segítségkérést, vagy válaszoljon erre az e-mailre.",
   "Help Request": "Segítségkérés",
   "Features &amp; Pricing": "Jellemzők &amp; Árazás",
-  "These features ensure high deliverability and help to keep your email safe.": "Ezek a funkciók magas kézbesítést biztosítanak, és segítenek megőrizni e-mailjeit."
+  "These features ensure high deliverability and help to keep your email safe.": "Ezek a funkciók magas kézbesítést biztosítanak, és segítenek megőrizni e-mailjeit.",
+  "Download Log Report": "Naplójelentés letöltése",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "E-mailt küldünk <span class=\"font-weight-bold text-monospace notranslate\">%s</span> címre, amikor a CSV-táblázat készen lesz <span class=\"font-weight-bold notranslate\">%d</span> naplósorral.",
+  "Your report will be emailed to you shortly.": "Jelentését hamarosan e-mailben küldjük el."
 }

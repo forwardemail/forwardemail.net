@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Přečtěte si naše časté dotazy, odešlete žádost o pomoc nebo odpovězte na tento e-mail.",
   "Help Request": "Žádost o pomoc",
   "Features &amp; Pricing": "Funkce &amp; Ceny",
-  "These features ensure high deliverability and help to keep your email safe.": "Tyto funkce zajišťují vysokou doručitelnost a pomáhají udržet váš e-mail v bezpečí."
+  "These features ensure high deliverability and help to keep your email safe.": "Tyto funkce zajišťují vysokou doručitelnost a pomáhají udržet váš e-mail v bezpečí.",
+  "Download Log Report": "Stáhnout protokol protokolu",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Jakmile bude vaše tabulka CSV připravena s <span class=\"font-weight-bold notranslate\">%d</span> řádky protokolu, zašleme e-mail na <span class=\"font-weight-bold text-monospace notranslate\">%s</span> .",
+  "Your report will be emailed to you shortly.": "Vaše zpráva vám bude brzy zaslána e-mailem."
 }

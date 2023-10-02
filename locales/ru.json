@@ -4868,5 +4868,8 @@
   "Read our FAQ, submit a help request, or reply to this email.": "Прочтите наши часто задаваемые вопросы, отправьте запрос на помощь или ответьте на это письмо.",
   "Help Request": "Запрос на помощь",
   "Features &amp; Pricing": "Особенности и усиление; Цены",
-  "These features ensure high deliverability and help to keep your email safe.": "Эти функции обеспечивают высокую доставляемость и помогают обеспечить безопасность вашей электронной почты."
+  "These features ensure high deliverability and help to keep your email safe.": "Эти функции обеспечивают высокую доставляемость и помогают обеспечить безопасность вашей электронной почты.",
+  "Download Log Report": "Загрузить отчет журнала",
+  "We will send an email to <span class=\"font-weight-bold text-monospace notranslate\">%s</span> when your CSV spreadsheet is ready with <span class=\"font-weight-bold notranslate\">%d</span> log rows.": "Мы отправим электронное письмо на адрес <span class=\"font-weight-bold text-monospace notranslate\">%s</span> , когда ваша таблица CSV будет готова с <span class=\"font-weight-bold notranslate\">%d</span> строк журнала.",
+  "Your report will be emailed to you shortly.": "Ваш отчет будет отправлен вам по электронной почте в ближайшее время."
 }
