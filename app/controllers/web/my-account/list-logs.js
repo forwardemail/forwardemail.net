@@ -324,11 +324,6 @@ async function listLogs(ctx) {
 
   // in the future we can move this to a background job
   if (ctx.pathWithoutLocale === '/my-account/logs/download') {
-    // attempt to get a count in case there were no logs to download
-    const results = await Logs.countDocuments(query);
-    if (results === 0)
-      return ctx.throw(Boom.badRequest(ctx.translateError('NO_RESULTS_FOUND')));
-
     try {
       {
         const message = ctx.translate('LOG_DOWNLOAD_IN_PROGRESS');
