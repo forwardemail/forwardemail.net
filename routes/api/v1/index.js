@@ -85,7 +85,7 @@ router
   );
 
 // logs
-router.post(
+router.get(
   '/logs/download',
   policies.ensureApiToken,
   policies.checkVerifiedEmail,

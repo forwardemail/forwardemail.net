@@ -326,7 +326,7 @@ async function listLogs(ctx) {
     ctx.pathWithoutLocale === '/my-account/logs/download' ||
     (ctx.api &&
       ctx.pathWithoutLocale === '/v1/logs/download' &&
-      ctx.method === 'POST')
+      ctx.method === 'GET')
   ) {
     // download in background and email to users
     const now = new Date();
