@@ -5,7 +5,7 @@
 
 #freddy {
   position: relative;
-  overflow: hidden;
+  overflow-x: clip;
   #stars {
     position: absolute;
     background-color: #191d21;
