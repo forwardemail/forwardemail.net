@@ -894,9 +894,16 @@ async function verifySMTP(domain, resolver) {
         );
         const str = `v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString(
           'base64'
-        )};`;
+        )};`.trim();
         for (const record of records) {
-          const line = record.join('').trim(); // join chunks together
+          // <https://github.com/forwardemail/forwardemail.net/issues/201>
+          const line = record
+            .join('')
+            .split(';')
+            .join('; ')
+            // remove double whitespace
+            .replace(/\s\s+/g, ' ')
+            .trim(); // join chunks together
           if (line === str) {
             dkim = true;
             break;
