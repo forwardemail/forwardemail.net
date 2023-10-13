@@ -179,7 +179,7 @@
     "titleize": "2",
     "twilio": "4.18.1",
     "uncaught": "0.0.5",
-    "undici": "5.25.4",
+    "undici": "5.26.2",
     "url-parse": "1.5.10",
     "url-regex-safe": "4.0.0",
     "validator": "13.11.0",
