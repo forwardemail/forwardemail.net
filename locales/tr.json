@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "API aracılığıyla al",
   "For MacOS:": "MacOS için:",
-  "For Linux and Ubuntu:": "Linux ve Ubuntu için:"
+  "For Linux and Ubuntu:": "Linux ve Ubuntu için:",
+  "Mailbox does not exist": "Posta kutusu mevcut değil",
+  "Mailbox is over quota": "Posta kutusu kotayı aştı",
+  "Mailbox already exists": "Posta kutusu zaten mevcut",
+  "Invalid search query": "Geçersiz arama sorgusu",
+  "Add Alias | Forward Email": "Takma Ad Ekle &#124; E-postayı Yönlendir",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Alan adınızın silinmesi geri alınamaz. Alan adınızı silerken lütfen çok dikkatli olun.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Hizmetimizi, üçüncü tarafların (kendi çalışanlarınız ve yüklenicileriniz dışında) hizmetimize erişmesine, kullanmasına veya hizmetten faydalanmasına izin veren bir hizmeti işletmek için kullanmayacaksınız. Bu konuda sizin için bir istisna yapmamızı isterseniz, bir kurumsal anlaşmayı görüşmek üzere lütfen bizimle iletişime geçin.",
+  "Inbox cannot store draft messages": "Gelen kutusu taslak iletileri depolayamıyor",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Aşağıdaki takma ad şifresini başarıyla oluşturdunuz; bu pencereyi kapatmadan önce onu kopyalayıp güvenli bir şekilde saklamanız gerekir. <strong class=\"text-decoration-underline\"><br /><br />Tamam&#39;a tıkladığınızda aşağıdaki şifre tekrar gösterilmeyecektir.</strong><br /><br /> <strong>Kullanıcı adı:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Şifre:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Bu pencere 30 saniye içinde otomatik olarak kapanacaktır.<br />",
+  "Maximum number of mailboxes exceeded": "Maksimum posta kutusu sayısı aşıldı",
+  "Mailbox is reserved and cannot be removed": "Posta kutusu ayrılmıştır ve kaldırılamaz",
+  "Failed to acquire write lock": "Yazma kilidi alınamadı",
+  "Mailbox quota would be exceeded by message size": "Posta kutusu kotası ileti boyutuna göre aşılacak"
 }

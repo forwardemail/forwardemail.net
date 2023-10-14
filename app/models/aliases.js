@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
 const { promisify } = require('node:util');
@@ -29,6 +34,7 @@ const Users = require('./users');
 
 const config = require('#config');
 const i18n = require('#helpers/i18n');
+const logger = require('#helpers/logger');
 
 const NO_REPLY_USERNAMES = new Set(noReplyList);
 
@@ -84,6 +90,15 @@ Token.plugin(mongooseCommonPlugin, {
 });
 
 const Aliases = new mongoose.Schema({
+  storageUsed: {
+    type: Number,
+    default: 0
+  },
+  retention: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
   is_api: {
     type: Boolean,
     default: false
@@ -170,7 +185,11 @@ const Aliases = new mongoose.Schema({
 
 Aliases.plugin(captainHook);
 
+// eslint-disable-next-line complexity
 Aliases.pre('validate', function (next) {
+  // if storage used was below zero then set to zero
+  if (this.storageUsed < 0) this.storageUsed = 0;
+
   // if name was not a string then generate a random one
   if (!isSANB(this.name)) {
     this.name = randomstring({
@@ -310,12 +329,6 @@ Aliases.pre('save', async function (next) {
         .exec()
     ]);
 
-    // filter out a domain's members without actual users
-    domain.members = domain.members.filter(
-      (member) =>
-        _.isObject(member.user) && !member.user[config.userFields.isBanned]
-    );
-
     if (!domain)
       throw Boom.notFound(
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
@@ -323,6 +336,12 @@ Aliases.pre('save', async function (next) {
 
     if (!user)
       throw Boom.notFound(i18n.translateError('INVALID_USER', alias.locale));
+
+    // filter out a domain's members without actual users
+    domain.members = domain.members.filter(
+      (member) =>
+        _.isObject(member.user) && !member.user[config.userFields.isBanned]
+    );
 
     // find an existing alias match
     const match = await alias.constructor
@@ -518,6 +537,116 @@ Aliases.pre('save', async function (next) {
     next(err);
   }
 });
+
+async function getStorageUsed(alias) {
+  let storageUsed = 0;
+
+  //
+  // calculate storage used across entire domain and its admin users domains
+  // (this is rudimentary storage system and has edge cases)
+  // (e.g. multi-accounts when users on team plan edge case)
+  //
+  const domain = await Domains.findById(alias.domain)
+    .populate('members.user', `id ${config.userFields.isBanned}`)
+    .lean()
+    .exec();
+  if (!domain)
+    throw Boom.notFound(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+    );
+
+  // filter out a domain's members without actual users
+  const adminMembers = domain.members.filter(
+    (member) =>
+      _.isObject(member.user) &&
+      !member.user[config.userFields.isBanned] &&
+      member.group === 'admin'
+  );
+
+  if (adminMembers.length === 0)
+    throw Boom.notFound(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+    );
+
+  const ids = domain.members.map((m) => m.user);
+
+  // safeguard
+  if (ids.length === 0)
+    throw Boom.notFound(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+    );
+
+  // now get all domains where $elemMatch is the user id and group is admin
+  const domainIds = await Domains.distinct('_id', {
+    members: {
+      $elemMatch: {
+        user: { $in: ids },
+        group: 'admin'
+      }
+    }
+  });
+
+  // safeguard
+  if (domainIds.length === 0)
+    throw Boom.notFound(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+    );
+
+  if (domainIds.length > 0) {
+    const results = await this.aggregate([
+      {
+        $match: {
+          domain: {
+            $in: domainIds
+          }
+        }
+      },
+      {
+        $group: {
+          _id: '',
+          storageUsed: {
+            $sum: '$storageUsed'
+          }
+        }
+      }
+    ]);
+    // results [ { _id: '', storageUsed: 91360 } ]
+    if (
+      results.length !== 1 ||
+      typeof results[0] !== 'object' ||
+      typeof results[0].storageUsed !== 'number'
+    )
+      throw Boom.notFound(
+        i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+      );
+
+    storageUsed += results[0].storageUsed;
+  }
+
+  // now get all aliases that belong to any of these domains and sum the storageQuota
+  return storageUsed;
+}
+
+Aliases.statics.getStorageUsed = getStorageUsed;
+
+Aliases.statics.isOverQuota = async function (alias, size = 0) {
+  const storageUsed = await getStorageUsed.call(this, alias);
+
+  const isOverQuota = storageUsed + size > config.maxQuotaPerAlias;
+
+  // log fatal error to admins (so they will get notified by email/text)
+  if (isOverQuota) {
+    const err = new Error(
+      `Alias ID ${alias.id} is over quota (${storageUsed + size}/${
+        config.maxQuotaPerAlias
+      })`
+    );
+    err.isCodeBug = true; // causes admin alerts
+    logger.fatal(err, { alias });
+  }
+
+  return isOverQuota;
+};
 
 Aliases.statics.isValidPassword = async function (tokens = [], password) {
   if (

@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const I18N = require('@ladjs/i18n');
 
 const logger = require('./logger');

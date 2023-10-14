@@ -4915,5 +4915,18 @@
   "Gzip": "غزيب",
   "Retrieve via API": "استرداد عبر API",
   "For MacOS:": "لنظام التشغيل MacOS:",
-  "For Linux and Ubuntu:": "بالنسبة لنظام التشغيل Linux وUbuntu:"
+  "For Linux and Ubuntu:": "بالنسبة لنظام التشغيل Linux وUbuntu:",
+  "Mailbox does not exist": "صندوق البريد غير موجود",
+  "Mailbox is over quota": "لقد تجاوز صندوق البريد الحصة النسبية",
+  "Mailbox already exists": "صندوق البريد موجود بالفعل",
+  "Invalid search query": "استعلام بحث غير صالح",
+  "Add Alias | Forward Email": "إضافة اسم مستعار &#124; إعادة توجيه البريد الإلكتروني",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "لا يمكن التراجع عن حذف النطاق الخاص بك. يرجى توخي الحذر الشديد عند حذف النطاق الخاص بك.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "لن تستخدم خدمتنا لتشغيل خدمة تسمح لأطراف ثالثة (بخلاف الموظفين والمقاولين لديك) بالوصول إلى خدمتنا أو استخدامها أو الاستفادة منها. إذا كنت تريد منا تقديم استثناء لك بخصوص هذا، فيرجى الاتصال بنا لمناقشة اتفاقية المؤسسة.",
+  "Inbox cannot store draft messages": "لا يمكن لصندوق الوارد تخزين مسودات الرسائل",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "لقد نجحت في إنشاء كلمة المرور المستعارة أدناه - يجب عليك نسخها وتخزينها بشكل آمن قبل إغلاق هذه النافذة. <strong class=\"text-decoration-underline\"><br /><br />لن يتم عرض كلمة المرور أدناه مرة أخرى بمجرد النقر فوق &quot;موافق&quot;.</strong><br /><br /> <strong>اسم المستخدم:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>كلمة المرور:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> سيتم إغلاق هذه النافذة تلقائيًا خلال 30 ثانية.<br />",
+  "Maximum number of mailboxes exceeded": "تم تجاوز الحد الأقصى لعدد صناديق البريد",
+  "Mailbox is reserved and cannot be removed": "صندوق البريد محجوز ولا يمكن إزالته",
+  "Failed to acquire write lock": "فشل الحصول على قفل الكتابة",
+  "Mailbox quota would be exceeded by message size": "سيتم تجاوز الحصة النسبية لصندوق البريد حسب حجم الرسالة"
 }

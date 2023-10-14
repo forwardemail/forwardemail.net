@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const pReduce = require('p-reduce');
 
 const Users = require('#models/users');

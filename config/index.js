@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const path = require('path');
 const os = require('os');
 
@@ -96,6 +101,18 @@ const config = {
     },
     allowlist: env.RATELIMIT_ALLOWLIST
   },
+
+  // NOTE: during beta the limit is 1 GB per alias/domain/account (allows user to store Drafts/Sent Mail)
+  maxQuotaPerAlias: bytes('1GB'),
+
+  // <https://github.com/nodemailer/wildduck/issues/512>
+  maxMailboxes: 10000,
+
+  // up to 1024 characters indexed from plaintext
+  maxPlaintextIndexed: 1024,
+
+  // <https://github.com/nodemailer/smtp-server/pull/192>
+  authRequiredMessage: 'Authentication is required',
 
   // package.json
   pkg,

@@ -4606,5 +4606,18 @@
   "Gzip": "压缩包",
   "Retrieve via API": "通过API检索",
   "For MacOS:": "对于 MacOS：",
-  "For Linux and Ubuntu:": "对于 Linux 和 Ubuntu："
+  "For Linux and Ubuntu:": "对于 Linux 和 Ubuntu：",
+  "Mailbox does not exist": "邮箱不存在",
+  "Mailbox is over quota": "邮箱超出配额",
+  "Mailbox already exists": "邮箱已存在",
+  "Invalid search query": "搜索查询无效",
+  "Add Alias | Forward Email": "添加别名 &#124;转发邮件",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "删除您的域名是不可逆的。删除您的域名时请格外小心。",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "您不得使用我们的服务来运营允许第三方（您自己的员工和承包商除外）访问、使用我们的服务或从我们的服务中受益的服务。如果您需要我们在这方面为您破例，请联系我们讨论企业协议。",
+  "Inbox cannot store draft messages": "收件箱无法存储草稿邮件",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "您已成功生成下面的别名密码 - 您必须在关闭此窗口之前复制并安全存储它。<strong class=\"text-decoration-underline\"><br /><br />单击“确定”后，下面的密码将不会再次显示。</strong><br /><br /><strong>用户名：</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>密码：</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />该窗口将在 30 秒后自动关闭。<br />",
+  "Maximum number of mailboxes exceeded": "超出邮箱最大数量",
+  "Mailbox is reserved and cannot be removed": "邮箱已被保留，无法删除",
+  "Failed to acquire write lock": "获取写锁失败",
+  "Mailbox quota would be exceeded by message size": "邮件大小超出邮箱配额"
 }

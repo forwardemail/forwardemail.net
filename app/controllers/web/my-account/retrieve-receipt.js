@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const Boom = require('@hapi/boom');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');

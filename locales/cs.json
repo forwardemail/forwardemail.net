@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Načíst přes API",
   "For MacOS:": "Pro MacOS:",
-  "For Linux and Ubuntu:": "Pro Linux a Ubuntu:"
+  "For Linux and Ubuntu:": "Pro Linux a Ubuntu:",
+  "Mailbox does not exist": "Poštovní schránka neexistuje",
+  "Mailbox is over quota": "Poštovní schránka překročila kvótu",
+  "Mailbox already exists": "Poštovní schránka již existuje",
+  "Invalid search query": "Neplatný vyhledávací dotaz",
+  "Add Alias | Forward Email": "Přidat alias &#124; Přeposlat e-mail",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Smazání domény je nevratné. Při mazání domény buďte velmi opatrní.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Nebudete používat naši službu k provozování služby, která třetím stranám (jiným než vašim vlastním zaměstnancům a dodavatelům) umožňuje přístup, používání nebo užitek z naší služby. Pokud potřebujete, abychom vám v této věci udělali výjimku, kontaktujte nás, abychom projednali podnikovou smlouvu.",
+  "Inbox cannot store draft messages": "Inbox nemůže ukládat koncepty zpráv",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Úspěšně jste vygenerovali níže uvedené aliasové heslo – před zavřením tohoto okna jej musíte zkopírovat a bezpečně uložit. <strong class=\"text-decoration-underline\"><br /><br />Po kliknutí na OK se níže uvedené heslo znovu nezobrazí.</strong><br /><br /> <strong>Uživatelské jméno:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Heslo:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Toto okno se automaticky zavře za 30 sekund.<br />",
+  "Maximum number of mailboxes exceeded": "Byl překročen maximální počet poštovních schránek",
+  "Mailbox is reserved and cannot be removed": "Schránka je rezervovaná a nelze ji odebrat",
+  "Failed to acquire write lock": "Nepodařilo se získat zámek zápisu",
+  "Mailbox quota would be exceeded by message size": "Kvóta poštovní schránky by byla překročena velikostí zprávy"
 }

@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "API経由で取得",
   "For MacOS:": "MacOSの場合：",
-  "For Linux and Ubuntu:": "Linux および Ubuntu の場合:"
+  "For Linux and Ubuntu:": "Linux および Ubuntu の場合:",
+  "Mailbox does not exist": "メールボックスが存在しません",
+  "Mailbox is over quota": "メールボックスがクォータを超えています",
+  "Mailbox already exists": "メールボックスはすでに存在します",
+  "Invalid search query": "無効な検索クエリ",
+  "Add Alias | Forward Email": "エイリアスの追加 &#124;前方のメール",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "ドメインを削除すると元に戻せません。ドメインを削除する場合は細心の注意を払ってください。",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "お客様は、第三者 (お客様自身の従業員および請負業者を除く) が当社のサービスにアクセス、使用、またはその恩恵を受けることを可能にするサービスを運営するために当社のサービスを使用してはなりません。これに関して例外を設ける必要がある場合は、エンタープライズ契約についてご相談ください。",
+  "Inbox cannot store draft messages": "受信トレイに下書きメッセージを保存できません",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "以下のエイリアス パスワードが正常に生成されました。このウィンドウを閉じる前に、パスワードをコピーして安全に保存する必要があります。<strong class=\"text-decoration-underline\"><br /><br />以下のパスワードは、「OK」をクリックすると再度表示されません。</strong><br /><br /><strong>ユーザー名:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>パスワード:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />このウィンドウは 30 秒後に自動的に閉じます。<br />",
+  "Maximum number of mailboxes exceeded": "メールボックスの最大数を超えました",
+  "Mailbox is reserved and cannot be removed": "メールボックスは予約されているため削除できません",
+  "Failed to acquire write lock": "書き込みロックの取得に失敗しました",
+  "Mailbox quota would be exceeded by message size": "メールボックスのクォータがメッセージ サイズによって超過される可能性がある"
 }

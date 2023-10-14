@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const statuses = require('statuses');
 
 const env = require('./env');
@@ -39,7 +44,7 @@ module.exports = {
   CANNOT_CREATE_TOKEN_FOR_CATCHALL: 'Cannot create token for catch-all alias.',
   CANNOT_CREATE_TOKEN_FOR_REGEX: 'Cannot create token for regex alias.',
   ALIAS_GENERATED_PASSWORD:
-    'You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class="text-decoration-underline"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong><span class="notranslate">SMTP</span> Username:</strong> <code class="notranslate">%s</code><br /><br /><strong><span class="notranslate">SMTP</span> Password:</strong> <code class="notranslate">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />',
+    'You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class="text-decoration-underline"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />',
   PAST_DUE_OR_INVALID_ADMIN:
     'Domain has past due balance or does not have at least one valid admin.',
   ALIAS_ACCOUNT_BANNED: 'Alias user is banned.',
@@ -151,6 +156,16 @@ module.exports = {
     'We tried to create a new account with this email address, but it already exists.  Please log in with this email address if it belongs to you and then try again.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
+  IMAP_MAILBOX_MAX_EXCEEDED: 'Maximum number of mailboxes exceeded',
+  IMAP_MAILBOX_INBOX_CANNOT_STORE_DRAFTS: 'Inbox cannot store draft messages',
+  IMAP_MAILBOX_ALREADY_EXISTS: 'Mailbox already exists',
+  IMAP_MAILBOX_DOES_NOT_EXIST: 'Mailbox does not exist',
+  IMAP_MAILBOX_OVER_QUOTA: 'Mailbox is over quota',
+  IMAP_MAILBOX_RESERVED: 'Mailbox is reserved and cannot be removed',
+  IMAP_INVALID_SEARCH: 'Invalid search query',
+  IMAP_WRITE_LOCK_FAILED: 'Failed to acquire write lock',
+  IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA:
+    'Mailbox quota would be exceeded by message size',
   NO_DOMAINS_EXIST: 'Enter your custom domain name to continue.',
   NO_ALIASES_EXIST: 'Add a new alias to continue.',
   INVALID_DOMAIN:

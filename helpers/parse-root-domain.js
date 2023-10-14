@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 
 function parseRootDomain(name) {

@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 function createDomainForm(ctx, next) {
   const header = ctx.translate('ADD_DOMAIN');
   ctx.state.breadcrumbHeaderCentered = true;

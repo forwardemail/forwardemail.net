@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const { series, concurrent } = require('nps-utils');
 
 module.exports = {
@@ -12,6 +17,7 @@ module.exports = {
     api: 'nodemon api.js',
     web: 'nodemon web.js',
     smtp: 'nodemon smtp.js',
+    imap: 'nodemon imap.js',
 
     watch: 'gulp watch',
     clean: 'gulp clean',

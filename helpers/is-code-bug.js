@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const { CONNECTION_CLOSED_ERROR_MSG } = require('ioredis/built/utils');
 const { boolean } = require('boolean');
 
@@ -13,7 +18,8 @@ function isCodeBug(err) {
       isErrorConstructorName(err, 'RangeError') ||
       isErrorConstructorName(err, 'URIError') ||
       isErrorConstructorName(err, 'EvalError') ||
-      isErrorConstructorName(err, 'MongooseError') ||
+      (isErrorConstructorName(err, 'MongooseError') &&
+        !isErrorConstructorName(err, 'ValidationError')) ||
       isErrorConstructorName(err, 'MongoError') ||
       isErrorConstructorName(err, 'RedisError')
   );

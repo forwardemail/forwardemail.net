@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const mongooseCommonPlugin = require('mongoose-common-plugin');

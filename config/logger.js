@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 // this package is ignored in `browser` config in `package.json`
 // in order to make the client-side payload less kb
 const signale = require('signale');

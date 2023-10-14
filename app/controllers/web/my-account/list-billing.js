@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const RE2 = require('re2');
 const _ = require('lodash');
 // const dayjs = require('dayjs-with-plugins');

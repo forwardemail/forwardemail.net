@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "אחזור דרך API",
   "For MacOS:": "עבור MacOS:",
-  "For Linux and Ubuntu:": "עבור לינוקס ואובונטו:"
+  "For Linux and Ubuntu:": "עבור לינוקס ואובונטו:",
+  "Mailbox does not exist": "תיבת דואר לא קיימת",
+  "Mailbox is over quota": "תיבת הדואר חורגת מהמכסה",
+  "Mailbox already exists": "תיבת דואר כבר קיימת",
+  "Invalid search query": "שאילתת חיפוש לא חוקית",
+  "Add Alias | Forward Email": "הוסף כינוי &#124; העברת דוא\"ל",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "מחיקת הדומיין שלך היא בלתי הפיכה. נא לנקוט משנה זהירות בעת מחיקת הדומיין שלך.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "לא תשתמש בשירות שלנו כדי להפעיל שירות המאפשר לצדדים שלישיים (מלבד העובדים והקבלנים שלך) לגשת, להשתמש או ליהנות מהשירות שלנו. אם אתה צריך שנעשה לך חריגה לגבי זה, אנא צור איתנו קשר כדי לדון בהסכם ארגוני.",
+  "Inbox cannot store draft messages": "Inbox לא יכול לאחסן הודעות טיוטה",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "יצרת בהצלחה את סיסמת הכינוי למטה - עליך להעתיק ולאחסן אותה בצורה מאובטחת לפני סגירת חלון זה. <strong class=\"text-decoration-underline\"><br /><br />הסיסמה למטה לא תוצג שוב לאחר שתלחץ על אישור.</strong><br /><br /> <strong>שם משתמש:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>סיסמה:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> חלון זה ייסגר אוטומטית תוך 30 שניות.<br />",
+  "Maximum number of mailboxes exceeded": "חרג מהמספר המרבי של תיבות דואר",
+  "Mailbox is reserved and cannot be removed": "תיבת הדואר שמורה ולא ניתן להסירה",
+  "Failed to acquire write lock": "השגת נעילת כתיבה נכשלה",
+  "Mailbox quota would be exceeded by message size": "גודל ההודעה תחרוג ממכסת תיבת הדואר"
 }

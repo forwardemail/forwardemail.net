@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const Mongoose = require('@ladjs/mongoose');
 const mongoose = require('mongoose');
 
@@ -22,7 +27,12 @@ const initialConnection = mongoose.connections.find((conn) => conn.id === 0);
 if (initialConnection) initialConnection.destroy();
 
 // <https://github.com/Automattic/mongoose/issues/12970>
-for (const name of ['MONGO_URI', 'LOGS_MONGO_URI', 'EMAILS_MONGO_URI']) {
+for (const name of [
+  'MONGO_URI',
+  'LOGS_MONGO_URI',
+  'EMAILS_MONGO_URI',
+  'IMAP_MONGO_URI'
+]) {
   const uri = env[name];
   if (mongoose.connections.some((conn) => conn._connectionString === uri))
     continue;

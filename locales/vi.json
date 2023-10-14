@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Truy xuất qua API",
   "For MacOS:": "Đối với MacOS:",
-  "For Linux and Ubuntu:": "Đối với Linux và Ubuntu:"
+  "For Linux and Ubuntu:": "Đối với Linux và Ubuntu:",
+  "Mailbox does not exist": "Hộp thư không tồn tại",
+  "Mailbox is over quota": "Hộp thư vượt quá hạn mức",
+  "Mailbox already exists": "Hộp thư đã tồn tại",
+  "Invalid search query": "Truy vấn tìm kiếm không hợp lệ",
+  "Add Alias | Forward Email": "Thêm bí danh &#124; Chuyển tiếp email",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Việc xóa miền của bạn là không thể thay đổi được. Hãy hết sức thận trọng khi xóa tên miền của bạn.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Bạn sẽ không sử dụng dịch vụ của chúng tôi để vận hành một dịch vụ cho phép các bên thứ ba (không phải là nhân viên và nhà thầu của bạn) truy cập, sử dụng hoặc hưởng lợi từ dịch vụ của chúng tôi. Nếu bạn cần chúng tôi đưa ra một ngoại lệ cho bạn về vấn đề này, vui lòng liên hệ với chúng tôi để thảo luận về thỏa thuận doanh nghiệp.",
+  "Inbox cannot store draft messages": "Hộp thư đến không thể lưu trữ thư nháp",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Bạn đã tạo thành công mật khẩu bí danh bên dưới – bạn phải sao chép và lưu trữ nó một cách an toàn trước khi đóng cửa sổ này. <strong class=\"text-decoration-underline\"><br /><br />Mật khẩu bên dưới sẽ không được hiển thị lại sau khi bạn nhấp vào OK.</strong><br /><br /> <strong>Tên người dùng:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Mật khẩu:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Cửa sổ này sẽ tự động đóng sau 30 giây.<br />",
+  "Maximum number of mailboxes exceeded": "Đã vượt quá số lượng hộp thư tối đa",
+  "Mailbox is reserved and cannot be removed": "Hộp thư được bảo lưu và không thể xóa được",
+  "Failed to acquire write lock": "Không lấy được khóa ghi",
+  "Mailbox quota would be exceeded by message size": "Dung lượng hộp thư sẽ bị vượt quá kích thước thư"
 }

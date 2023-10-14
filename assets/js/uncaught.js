@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const StackTrace = require('stacktrace-js');
 const prepareStackTrace = require('prepare-stack-trace');
 const uncaught = require('uncaught');

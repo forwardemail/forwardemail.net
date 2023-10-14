@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const cryptoRandomString = require('crypto-random-string');
 const slug = require('speakingurl');
 const isSANB = require('is-string-and-not-blank');

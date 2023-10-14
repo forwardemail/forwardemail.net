@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 // TODO: remove user.email for all users from denylist
 
 const { isIP } = require('node:net');

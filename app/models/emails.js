@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
@@ -62,156 +67,163 @@ const scanner = new SpamScanner({
   clamscan: env.NODE_ENV === 'test'
 });
 
-const Emails = new mongoose.Schema({
-  //
-  // NOTE: `mongoose-common-plugin` will automatically set `timestamps` for us
-  // <https://github.com/Automattic/mongoose/blob/b2af0fe4a74aa39eaf3088447b4bb8feeab49342/test/timestamps.test.js#L123-L137>
-  //
-  created_at: {
-    type: Date,
-    expires: config.emailRetention,
-    index: true
-  },
-  blocked_hashes: [
-    {
-      type: String,
+const Emails = new mongoose.Schema(
+  {
+    //
+    // NOTE: `mongoose-common-plugin` will automatically set `timestamps` for us
+    // <https://github.com/Automattic/mongoose/blob/b2af0fe4a74aa39eaf3088447b4bb8feeab49342/test/timestamps.test.js#L123-L137>
+    //
+    created_at: {
+      type: Date,
+      expires: config.emailRetention,
       index: true
-    }
-  ],
-  has_blocked_hashes: {
-    type: Boolean,
-    index: true,
-    default: false
-  },
-  hard_bounces: [String], // 5xx bounces (an array for storage to prevent duplicates)
-  soft_bounces: [String], // 4xx bounces (an array for storage to prevent duplicates)
-  is_bounce: {
-    type: Boolean,
-    default: false,
-    index: true
-  },
-  priority: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
-  alias: {
-    type: mongoose.Schema.ObjectId,
-    ref: Aliases,
-    required: true,
-    index: true
-  },
-  domain: {
-    type: mongoose.Schema.ObjectId,
-    ref: Domains,
-    required: true,
-    index: true
-  },
-  user: {
-    type: mongoose.Schema.ObjectId,
-    ref: Users,
-    required: true,
-    index: true
-  },
-  // postfix inspired
-  status: {
-    type: String,
-    required: true,
-    index: true,
-    default: 'queued',
-    enum: [
-      // pending means that it was stored successfully to be processed
-      // (we can also leverage this for future edge cases and safeguards)
-      'pending',
-
-      // manually put into "queued" state by admins
-      // (until bree job checks for spam) and then `locked_at` is set
-      'queued',
-
-      // 2xx
-      'sent',
-
-      // mix of 2xx and 5xx
-      'partially_sent',
-
-      // 4xx
-      'deferred',
-
-      // 5xx (if and only if all were bounced)
-      'bounced',
-
-      // rejected means it was denied by an admin or bree detected spam/limitations
-      'rejected'
-    ]
-  },
-  // boolean used for querying
-  is_locked: {
-    type: Boolean,
-    default: false,
-    index: true
-  },
-  // `locked_by` is the IP address of which smtp server locked it for sending
-  locked_by: String,
-  // every 1m the job "unlock-emails" will unlock emails frozen for more than 5m
-  locked_at: {
-    type: Date,
-    index: true
-  },
-  // envelope
-  envelope: {
-    from: {
+    },
+    blocked_hashes: [
+      {
+        type: String,
+        index: true
+      }
+    ],
+    has_blocked_hashes: {
+      type: Boolean,
+      index: true,
+      default: false
+    },
+    hard_bounces: [String], // 5xx bounces (an array for storage to prevent duplicates)
+    soft_bounces: [String], // 4xx bounces (an array for storage to prevent duplicates)
+    is_bounce: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+    priority: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    alias: {
+      type: mongoose.Schema.ObjectId,
+      ref: Aliases,
+      required: true,
+      index: true
+    },
+    domain: {
+      type: mongoose.Schema.ObjectId,
+      ref: Domains,
+      required: true,
+      index: true
+    },
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: Users,
+      required: true,
+      index: true
+    },
+    // postfix inspired
+    status: {
       type: String,
       required: true,
-      lowercase: true,
-      trim: true,
-      validate: isEmail
+      index: true,
+      default: 'queued',
+      enum: [
+        // pending means that it was stored successfully to be processed
+        // (we can also leverage this for future edge cases and safeguards)
+        'pending',
+
+        // manually put into "queued" state by admins
+        // (until bree job checks for spam) and then `locked_at` is set
+        'queued',
+
+        // 2xx
+        'sent',
+
+        // mix of 2xx and 5xx
+        'partially_sent',
+
+        // 4xx
+        'deferred',
+
+        // 5xx (if and only if all were bounced)
+        'bounced',
+
+        // rejected means it was denied by an admin or bree detected spam/limitations
+        'rejected'
+      ]
     },
-    // list of email addresses to sent to
-    // (combined To, Cc, Bcc - and then Bcc is removed from headers)
-    to: mongoose.Schema.Types.Mixed
-  },
-  // email to be sent (with date, message-id, etc headers already set)
-  message: {
-    type: mongoose.Schema.Types.Mixed,
-    required: true
-  },
-  // message-id header
-  messageId: {
-    type: String,
-    required: true,
-    index: true
-  },
-  // headers parsed from "message" when initially saved
-  headers: {
-    type: mongoose.Schema.Types.Mixed,
-    required: true
-  },
-  // date header (same value as `headers.Date`)
-  date: {
-    type: Date,
-    required: true,
-    index: true
-  },
-  // subject header (same value as `headers.Subject`)
-  subject: {
-    type: String,
-    index: true
-  },
-  // accepted (Array of emails already accepted so we don't resend)
-  accepted: [
-    {
+    // boolean used for querying
+    is_locked: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+    // `locked_by` is the IP address of which smtp server locked it for sending
+    locked_by: String,
+    // every 1m the job "unlock-emails" will unlock emails frozen for more than 5m
+    locked_at: {
+      type: Date,
+      index: true
+    },
+    // envelope
+    envelope: {
+      from: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+        validate: isEmail
+      },
+      // list of email addresses to sent to
+      // (combined To, Cc, Bcc - and then Bcc is removed from headers)
+      to: mongoose.Schema.Types.Mixed
+    },
+    // email to be sent (with date, message-id, etc headers already set)
+    message: {
+      type: mongoose.Schema.Types.Mixed,
+      required: true
+    },
+    // message-id header
+    messageId: {
       type: String,
-      lowercase: true,
-      trim: true,
-      validate: isEmail
+      required: true,
+      index: true
+    },
+    // headers parsed from "message" when initially saved
+    headers: {
+      type: mongoose.Schema.Types.Mixed,
+      required: true
+    },
+    // date header (same value as `headers.Date`)
+    date: {
+      type: Date,
+      required: true,
+      index: true
+    },
+    // subject header (same value as `headers.Subject`)
+    subject: {
+      type: String,
+      index: true
+    },
+    // accepted (Array of emails already accepted so we don't resend)
+    accepted: [
+      {
+        type: String,
+        lowercase: true,
+        trim: true,
+        validate: isEmail
+      }
+    ],
+    //
+    // an array of errors with `err.recipient` as the email address rejected
+    // (we only store the most recent `rejectedError` per recipient)
+    //
+    rejectedErrors: [mongoose.Schema.Types.Mixed]
+  },
+  {
+    writeConcern: {
+      w: 'majority'
     }
-  ],
-  //
-  // an array of errors with `err.recipient` as the email address rejected
-  // (we only store the most recent `rejectedError` per recipient)
-  //
-  rejectedErrors: [mongoose.Schema.Types.Mixed]
-});
+  }
+);
 
 Emails.plugin(mongooseCommonPlugin, {
   object: 'email',
@@ -1017,6 +1029,7 @@ Emails.statics.queue = async function (
 
   const status = _.isDate(domain.smtp_suspended_sent_at) ? 'pending' : 'queued';
 
+  // TODO: encrypt and compress message
   const email = await this.create({
     alias: alias._id,
     domain: domain._id,

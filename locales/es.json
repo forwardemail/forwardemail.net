@@ -4913,5 +4913,18 @@
   "Gzip": "zip",
   "Retrieve via API": "Recuperar a través de API",
   "For MacOS:": "Para Mac OS:",
-  "For Linux and Ubuntu:": "Para Linux y Ubuntu:"
+  "For Linux and Ubuntu:": "Para Linux y Ubuntu:",
+  "Mailbox does not exist": "El buzón no existe",
+  "Mailbox is over quota": "El buzón ha superado la cuota",
+  "Mailbox already exists": "El buzón ya existe",
+  "Invalid search query": "Consulta de búsqueda no válida",
+  "Add Alias | Forward Email": "Agregar alias &#124; Redirigir correo",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Eliminar su dominio es irreversible. Tenga mucho cuidado al eliminar su dominio.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "No utilizará nuestro servicio para operar un servicio que permita a terceros (que no sean sus propios empleados y contratistas) acceder, utilizar o beneficiarse de nuestro servicio. Si necesita que hagamos una excepción con respecto a esto, contáctenos para discutir un acuerdo empresarial.",
+  "Inbox cannot store draft messages": "La bandeja de entrada no puede almacenar borradores de mensajes",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Ha generado con éxito la contraseña de alias a continuación; debe copiarla y almacenarla de forma segura antes de cerrar esta ventana. <strong class=\"text-decoration-underline\"><br /><br />La contraseña a continuación no se mostrará nuevamente una vez que haga clic en Aceptar.</strong><br /><br /> <strong>Nombre de usuario:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Contraseña:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Esta ventana se cerrará automáticamente en 30 segundos.<br />",
+  "Maximum number of mailboxes exceeded": "Se superó el número máximo de buzones",
+  "Mailbox is reserved and cannot be removed": "El buzón está reservado y no se puede eliminar.",
+  "Failed to acquire write lock": "No se pudo adquirir el bloqueo de escritura",
+  "Mailbox quota would be exceeded by message size": "La cuota del buzón se excedería por el tamaño del mensaje"
 }

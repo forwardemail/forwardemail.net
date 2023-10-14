@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const RE2 = require('re2');
 const isSANB = require('is-string-and-not-blank');
 const { convert } = require('html-to-text');

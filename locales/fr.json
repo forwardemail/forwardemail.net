@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Récupérer via API",
   "For MacOS:": "Pour Mac OS :",
-  "For Linux and Ubuntu:": "Pour Linux et Ubuntu :"
+  "For Linux and Ubuntu:": "Pour Linux et Ubuntu :",
+  "Mailbox does not exist": "La boîte aux lettres n'existe pas",
+  "Mailbox is over quota": "La boîte aux lettres dépasse le quota",
+  "Mailbox already exists": "La boîte aux lettres existe déjà",
+  "Invalid search query": "Requête de recherche invalide",
+  "Add Alias | Forward Email": "Ajouter un alias &#124; Un courriel transféré",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "La suppression de votre domaine est irréversible. Veuillez être extrêmement prudent lorsque vous supprimez votre domaine.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Vous n'utiliserez pas notre service pour exploiter un service permettant à des tiers (autres que vos propres employés et sous-traitants) d'accéder, d'utiliser ou de bénéficier de notre service. Si vous souhaitez que nous fassions une exception à ce sujet, veuillez nous contacter pour discuter d'un accord d'entreprise.",
+  "Inbox cannot store draft messages": "La boîte de réception ne peut pas stocker les brouillons de messages",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Vous avez généré avec succès le mot de passe alias ci-dessous – vous devez le copier et le stocker en toute sécurité avant de fermer cette fenêtre. <strong class=\"text-decoration-underline\"><br /><br />Le mot de passe ci-dessous ne s&#39;affichera plus une fois que vous aurez cliqué sur OK.</strong><br /><br /> <strong>Nom d&#39;utilisateur :</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Mot de passe :</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Cette fenêtre se fermera automatiquement dans 30 secondes.<br />",
+  "Maximum number of mailboxes exceeded": "Nombre maximum de boîtes aux lettres dépassé",
+  "Mailbox is reserved and cannot be removed": "La boîte aux lettres est réservée et ne peut pas être supprimée",
+  "Failed to acquire write lock": "Échec de l'acquisition du verrou en écriture",
+  "Mailbox quota would be exceeded by message size": "Le quota de boîte aux lettres serait dépassé par la taille du message"
 }

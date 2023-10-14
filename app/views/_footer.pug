@@ -136,7 +136,7 @@ footer.mt-auto.small.text-monospace
               if isBot(ctx.get('User-Agent'))
                 = t("Private Business Email")
               else
-                = t("Features")
+                != t("Features &amp; Pricing")
             li: a.d-block.text-light.py-2.py-md-0(
               href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
             )= t("Frequently Asked Questions")

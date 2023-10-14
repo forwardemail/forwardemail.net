@@ -4915,5 +4915,18 @@
   "Gzip": "จีซิป",
   "Retrieve via API": "ดึงข้อมูลผ่าน API",
   "For MacOS:": "สำหรับ MacOS:",
-  "For Linux and Ubuntu:": "สำหรับ Linux และ Ubuntu:"
+  "For Linux and Ubuntu:": "สำหรับ Linux และ Ubuntu:",
+  "Mailbox does not exist": "ไม่มีกล่องจดหมาย",
+  "Mailbox is over quota": "กล่องจดหมายเกินโควต้า",
+  "Mailbox already exists": "มีกล่องจดหมายอยู่แล้ว",
+  "Invalid search query": "คำค้นหาไม่ถูกต้อง",
+  "Add Alias | Forward Email": "เพิ่มนามแฝง &#124; ส่งต่ออีเมล",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "การลบโดเมนของคุณไม่สามารถย้อนกลับได้ โปรดใช้ความระมัดระวังอย่างยิ่งในการลบโดเมนของคุณ",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "คุณจะไม่ใช้บริการของเราเพื่อดำเนินการบริการที่อนุญาตให้บุคคลที่สาม (นอกเหนือจากพนักงานและผู้รับเหมาของคุณเอง) เข้าถึง ใช้งาน หรือได้รับประโยชน์จากบริการของเรา หากคุณต้องการให้เรายกเว้นสำหรับคุณเกี่ยวกับเรื่องนี้ โปรดติดต่อเราเพื่อหารือเกี่ยวกับข้อตกลงระดับองค์กร",
+  "Inbox cannot store draft messages": "Inbox ไม่สามารถจัดเก็บข้อความร่างได้",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "คุณสร้างรหัสผ่านนามแฝงด้านล่างนี้สำเร็จแล้ว คุณต้องคัดลอกและเก็บไว้อย่างปลอดภัยก่อนที่จะปิดหน้าต่างนี้ <strong class=\"text-decoration-underline\"><br /><br />รหัสผ่านด้านล่างจะไม่แสดงอีกเมื่อคุณคลิกตกลง</strong><br /><br /> <strong>ชื่อผู้ใช้:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>รหัสผ่าน:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> หน้าต่างนี้จะปิดโดยอัตโนมัติใน 30 วินาที<br />",
+  "Maximum number of mailboxes exceeded": "เกินจำนวนกล่องจดหมายสูงสุด",
+  "Mailbox is reserved and cannot be removed": "กล่องจดหมายถูกสงวนไว้และไม่สามารถลบออกได้",
+  "Failed to acquire write lock": "ไม่สามารถรับการล็อกการเขียนได้",
+  "Mailbox quota would be exceeded by message size": "โควต้ากล่องจดหมายจะเกินขนาดข้อความ"
 }

@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Pobierz przez API",
   "For MacOS:": "Dla systemu MacOS:",
-  "For Linux and Ubuntu:": "Dla Linuksa i Ubuntu:"
+  "For Linux and Ubuntu:": "Dla Linuksa i Ubuntu:",
+  "Mailbox does not exist": "Skrzynka pocztowa nie istnieje",
+  "Mailbox is over quota": "Skrzynka pocztowa przekroczyła limit",
+  "Mailbox already exists": "Skrzynka pocztowa już istnieje",
+  "Invalid search query": "Nieprawidłowe zapytanie",
+  "Add Alias | Forward Email": "Dodaj alias &#124; Przekaż wiadomość e-mail",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Usunięcie domeny jest nieodwracalne. Podczas usuwania domeny zachowaj szczególną ostrożność.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Nie będziesz korzystać z naszych usług w celu świadczenia usług, które umożliwiają stronom trzecim (innym niż Twoi pracownicy i kontrahenci) dostęp, korzystanie lub korzystanie z naszych usług. Jeśli chcesz, abyśmy zrobili dla Ciebie wyjątek w tej kwestii, skontaktuj się z nami, aby omówić umowę korporacyjną.",
+  "Inbox cannot store draft messages": "Skrzynka odbiorcza nie może przechowywać wersji roboczych wiadomości",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Pomyślnie wygenerowałeś poniższy alias hasła – musisz go skopiować i bezpiecznie zapisać przed zamknięciem tego okna. <strong class=\"text-decoration-underline\"><br /><br />Poniższe hasło nie zostanie wyświetlone ponownie po kliknięciu OK.</strong><br /><br /> <strong>Nazwa użytkownika:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Hasło:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> To okno zamknie się automatycznie po 30 sekundach.<br />",
+  "Maximum number of mailboxes exceeded": "Przekroczono maksymalną liczbę skrzynek pocztowych",
+  "Mailbox is reserved and cannot be removed": "Skrzynka pocztowa jest zarezerwowana i nie można jej usunąć",
+  "Failed to acquire write lock": "Nie udało się uzyskać blokady zapisu",
+  "Mailbox quota would be exceeded by message size": "Rozmiar skrzynki pocztowej zostałby przekroczony ze względu na rozmiar wiadomości"
 }

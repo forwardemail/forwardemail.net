@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Ophalen via API",
   "For MacOS:": "Voor MacOS:",
-  "For Linux and Ubuntu:": "Voor Linux en Ubuntu:"
+  "For Linux and Ubuntu:": "Voor Linux en Ubuntu:",
+  "Mailbox does not exist": "Postbus bestaat niet",
+  "Mailbox is over quota": "Het postvak heeft het quotum overschreden",
+  "Mailbox already exists": "Postbus bestaat al",
+  "Invalid search query": "Ongeldige zoekopdracht",
+  "Add Alias | Forward Email": "Alias toevoegen &#124; E-mail doorsturen",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Het verwijderen van uw domein is onomkeerbaar. Wees uiterst voorzichtig bij het verwijderen van uw domein.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "U zult onze service niet gebruiken om een service te exploiteren waarmee derden (anders dan uw eigen werknemers en contractanten) toegang krijgen tot onze service, deze kunnen gebruiken of ervan kunnen profiteren. Wilt u dat wij hiervoor een uitzondering voor u maken, neem dan contact met ons op om een ondernemingsovereenkomst te bespreken.",
+  "Inbox cannot store draft messages": "Inbox kan geen conceptberichten opslaan",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "U heeft met succes het onderstaande aliaswachtwoord gegenereerd. U moet het kopiëren en veilig opslaan voordat u dit venster sluit. <strong class=\"text-decoration-underline\"><br /><br />Het onderstaande wachtwoord wordt niet meer weergegeven zodra u op OK klikt.</strong><br /><br /> <strong>Gebruikersnaam:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Wachtwoord:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Dit venster wordt automatisch na 30 seconden gesloten.<br />",
+  "Maximum number of mailboxes exceeded": "Maximaal aantal mailboxen overschreden",
+  "Mailbox is reserved and cannot be removed": "Mailbox is gereserveerd en kan niet worden verwijderd",
+  "Failed to acquire write lock": "Kan schrijfvergrendeling niet verkrijgen",
+  "Mailbox quota would be exceeded by message size": "Het postbusquotum zou worden overschreden door de berichtgrootte"
 }

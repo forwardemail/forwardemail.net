@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const email = require('./email');
 const getEmailLocals = require('./get-email-locals');
 const i18n = require('./i18n');
@@ -45,6 +50,15 @@ const RetryClient = require('./retry-client');
 const retryRequest = require('./retry-request');
 const getBounceInfo = require('./get-bounce-info');
 const getLogsCsv = require('./get-logs-csv');
+const smtp = require('./smtp');
+const imap = require('./imap');
+const ServerShutdownError = require('./server-shutdown-error');
+const refineAndLogError = require('./refine-and-log-error');
+const validateAlias = require('./validate-alias');
+const validateDomain = require('./validate-domain');
+const IMAPError = require('./imap-error');
+const SocketError = require('./socket-error');
+const IMAPNotifier = require('./imap-notifier');
 
 module.exports = {
   decrypt,
@@ -94,5 +108,14 @@ module.exports = {
   RetryClient,
   retryRequest,
   getBounceInfo,
-  getLogsCsv
+  getLogsCsv,
+  smtp,
+  imap,
+  ServerShutdownError,
+  refineAndLogError,
+  validateAlias,
+  validateDomain,
+  IMAPError,
+  SocketError,
+  IMAPNotifier
 };

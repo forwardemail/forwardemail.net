@@ -59,7 +59,7 @@ block body
                   a.btn.btn-outline-light(href="#features")
                     i.fa.fa-fw.fa-layer-group
                     = " "
-                    = t("Features")
+                    != t("Features &amp; Pricing")
               li.list-inline-item.d-block.d-md-inline
                 if isBot(ctx.get('User-Agent'))
                   a.btn.btn-dark(

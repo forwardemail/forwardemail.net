@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
 
@@ -34,6 +39,7 @@ async function setConversionAndRefundStateHelpers(ctx, next) {
                 // NOTE: must be greater than 30 days ago or after their plan was set
                 //       (whichever is sooner/greater)
                 $gte:
+                  // TODO: there is a bug here where if the plan was changed within an hour or something it bugged out
                   new Date(
                     ctx.state.user[config.userFields.planSetAt]
                   ).getTime() > THIRTY_DAYS_AGO

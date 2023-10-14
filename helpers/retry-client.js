@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const undici = require('undici');
 const delay = require('delay');
 const ms = require('ms');

@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 //
 // NOTE: this is copied from `koa-better-error-handler` but it belongs in its own package
 //       and then used here and in that package as well

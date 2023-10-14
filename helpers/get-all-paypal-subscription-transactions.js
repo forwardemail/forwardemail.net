@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const pWhilst = require('p-whilst');
 const { paypalAgent } = require('./paypal');
 const logger = require('./logger');

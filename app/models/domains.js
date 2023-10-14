@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const crypto = require('node:crypto');
 const os = require('node:os');
 const punycode = require('node:punycode');

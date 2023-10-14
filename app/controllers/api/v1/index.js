@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const aliases = require('./aliases');
 const domains = require('./domains');
 const enforcePaidPlan = require('./enforce-paid-plan');

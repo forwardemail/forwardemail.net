@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 function isSocketError(err) {
   if (typeof err !== 'object') return false;
   for (const key of ['message', 'response']) {

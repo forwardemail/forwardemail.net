@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const $ = require('jquery');
 const Swal = require('sweetalert2');
 const URLParse = require('url-parse');

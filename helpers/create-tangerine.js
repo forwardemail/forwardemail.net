@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const commands = require('@ioredis/commands');
 const Tangerine = require('tangerine');
 

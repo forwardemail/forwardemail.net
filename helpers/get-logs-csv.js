@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const titleize = require('titleize');

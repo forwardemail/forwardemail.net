@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "API를 통해 검색",
   "For MacOS:": "MacOS의 경우:",
-  "For Linux and Ubuntu:": "Linux 및 Ubuntu의 경우:"
+  "For Linux and Ubuntu:": "Linux 및 Ubuntu의 경우:",
+  "Mailbox does not exist": "사서함이 존재하지 않습니다",
+  "Mailbox is over quota": "사서함이 할당량을 초과했습니다.",
+  "Mailbox already exists": "사서함이 이미 존재합니다.",
+  "Invalid search query": "잘못된 검색어",
+  "Add Alias | Forward Email": "별칭 추가 &#124; 이메일 전달",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "도메인을 삭제하면 되돌릴 수 없습니다. 도메인을 삭제할 때는 각별히 주의하시기 바랍니다.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "귀하는 제3자(귀하의 직원 및 계약자 제외)가 당사 서비스에 액세스하거나 당사 서비스로부터 혜택을 받을 수 있도록 허용하는 서비스를 운영하기 위해 당사 서비스를 사용해서는 안 됩니다. 이와 관련하여 예외를 적용해야 하는 경우 당사에 연락하여 기업 계약에 대해 논의하시기 바랍니다.",
+  "Inbox cannot store draft messages": "받은편지함에는 임시 메시지를 저장할 수 없습니다.",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "아래 별칭 비밀번호를 성공적으로 생성했습니다. 이 창을 닫기 전에 비밀번호를 복사하여 안전하게 저장해야 합니다. <strong class=\"text-decoration-underline\"><br /><br />확인을 클릭하면 아래 비밀번호가 다시 표시되지 않습니다.</strong><br /><br /> <strong>사용자 이름:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>비밀번호:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> 이 창은 30초 후에 자동으로 닫힙니다.<br />",
+  "Maximum number of mailboxes exceeded": "최대 사서함 수를 초과했습니다.",
+  "Mailbox is reserved and cannot be removed": "사서함은 예약되어 있으므로 제거할 수 없습니다.",
+  "Failed to acquire write lock": "쓰기 잠금을 획득하지 못했습니다.",
+  "Mailbox quota would be exceeded by message size": "메시지 크기에 따라 사서함 할당량이 초과됩니다."
 }

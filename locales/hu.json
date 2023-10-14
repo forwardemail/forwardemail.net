@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Letöltés API-n keresztül",
   "For MacOS:": "MacOS esetén:",
-  "For Linux and Ubuntu:": "Linux és Ubuntu esetén:"
+  "For Linux and Ubuntu:": "Linux és Ubuntu esetén:",
+  "Mailbox does not exist": "Postafiók nem létezik",
+  "Mailbox is over quota": "A postafiók túllépte a kvótát",
+  "Mailbox already exists": "A postafiók már létezik",
+  "Invalid search query": "Érvénytelen keresési lekérdezés",
+  "Add Alias | Forward Email": "Alias hozzáadása &#124; E-mail továbbítása",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "A domain törlése visszafordíthatatlan. Kérjük, legyen rendkívül óvatos a domain törlésekor.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Ön nem használja szolgáltatásunkat olyan szolgáltatás működtetésére, amely lehetővé teszi harmadik felek számára (kivéve a saját alkalmazottait és vállalkozóit), hogy hozzáférjenek szolgáltatásunkhoz, használják vagy részesüljenek abból. Ha arra van szüksége, hogy ezzel kapcsolatban kivételt tegyünk, kérjük, vegye fel velünk a kapcsolatot a vállalkozási szerződés megbeszélése érdekében.",
+  "Inbox cannot store draft messages": "Az Inbox nem tud piszkozatokat tárolni",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Sikeresen létrehozta az alábbi alias jelszót – az ablak bezárása előtt másolja ki és biztonságosan tárolja. <strong class=\"text-decoration-underline\"><br /><br />Az OK gombra kattintva az alábbi jelszó nem jelenik meg újra.</strong><br /><br /> <strong>Felhasználónév:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Jelszó:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Ez az ablak 30 másodpercen belül automatikusan bezárul.<br />",
+  "Maximum number of mailboxes exceeded": "Túllépte a postafiókok maximális számát",
+  "Mailbox is reserved and cannot be removed": "A postafiók le van foglalva és nem távolítható el",
+  "Failed to acquire write lock": "Nem sikerült megszerezni az írási zárat",
+  "Mailbox quota would be exceeded by message size": "Az üzenet mérete túllépné a postafiókkvótát"
 }

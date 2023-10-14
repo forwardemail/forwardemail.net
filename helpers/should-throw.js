@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const getErrorCode = require('./get-error-code');
 const isCodeBug = require('./is-code-bug');
 const isRetryableError = require('./is-retryable-error');

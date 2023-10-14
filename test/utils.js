@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const API = require('@ladjs/api');
 const Redis = require('ioredis-mock');
 const Web = require('@ladjs/web');

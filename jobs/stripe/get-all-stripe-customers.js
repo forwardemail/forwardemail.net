@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 /* eslint-disable no-await-in-loop */
 const Stripe = require('stripe');
 const _ = require('lodash');

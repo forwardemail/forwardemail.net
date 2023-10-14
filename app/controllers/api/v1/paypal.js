@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const { promisify } = require('util');
 
 const Boom = require('@hapi/boom');
@@ -330,7 +335,7 @@ async function processEvent(ctx) {
       if (
         !_.isObject(res.body) ||
         res.body.intent !== 'CAPTURE' ||
-        !['APPROVED', 'COMPLETED'].includes(res.body.status) ||
+        !['APPROVED', 'COMPLETED', 'CREATED'].includes(res.body.status) ||
         !_.isArray(res.body.purchase_units) ||
         _.isEmpty(res.body.purchase_units) ||
         !_.isObject(res.body.payer) ||

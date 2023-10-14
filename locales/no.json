@@ -4920,5 +4920,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Hent via API",
   "For MacOS:": "For MacOS:",
-  "For Linux and Ubuntu:": "For Linux og Ubuntu:"
+  "For Linux and Ubuntu:": "For Linux og Ubuntu:",
+  "Mailbox does not exist": "Postkasse finnes ikke",
+  "Mailbox is over quota": "Postkassen er over kvoten",
+  "Mailbox already exists": "Postkasse eksisterer allerede",
+  "Invalid search query": "Ugyldig søk",
+  "Add Alias | Forward Email": "Legg til alias &#124; Videresend E-post",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Å slette domenet ditt er irreversibelt. Vær ekstremt forsiktig når du sletter domenet ditt.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Du vil ikke bruke tjenesten vår til å drive en tjeneste som lar tredjeparter (annet enn dine egne ansatte og kontraktører) få tilgang til, bruke eller dra nytte av tjenesten vår. Hvis du trenger at vi gjør et unntak for deg angående dette, vennligst kontakt oss for å diskutere en bedriftsavtale.",
+  "Inbox cannot store draft messages": "Inbox kan ikke lagre utkast til meldinger",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Du har generert aliaspassordet nedenfor – du må kopiere og lagre det sikkert før du lukker dette vinduet. <strong class=\"text-decoration-underline\"><br /><br />Passordet nedenfor vil ikke vises igjen når du klikker OK.</strong><br /><br /> <strong>Brukernavn:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Passord:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Dette vinduet lukkes automatisk om 30 sekunder.<br />",
+  "Maximum number of mailboxes exceeded": "Maksimalt antall postbokser er overskredet",
+  "Mailbox is reserved and cannot be removed": "Postkasse er reservert og kan ikke fjernes",
+  "Failed to acquire write lock": "Kunne ikke hente skrivelås",
+  "Mailbox quota would be exceeded by message size": "Postbokskvoten vil bli overskredet av meldingsstørrelse"
 }

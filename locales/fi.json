@@ -4760,5 +4760,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Hae API:n kautta",
   "For MacOS:": "MacOS:",
-  "For Linux and Ubuntu:": "Linux ja Ubuntu:"
+  "For Linux and Ubuntu:": "Linux ja Ubuntu:",
+  "Mailbox does not exist": "Postilaatikkoa ei ole olemassa",
+  "Mailbox is over quota": "Postilaatikko on ylittänyt kiintiön",
+  "Mailbox already exists": "Postilaatikko on jo olemassa",
+  "Invalid search query": "Virheellinen hakukysely",
+  "Add Alias | Forward Email": "Lisää Alias &#124; Lähetä sähköposti eteenpäin",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Verkkotunnuksen poistaminen on peruuttamaton. Ole erittäin varovainen poistaessasi verkkotunnustasi.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Et käytä palveluamme sellaisen palvelun käyttämiseen, joka sallii kolmansien osapuolien (muiden kuin omien työntekijöiden ja urakoitsijoiden) pääsyn palveluumme, käyttää palveluamme tai hyötyä siitä. Jos haluat meidän tekevän sinulle poikkeuksen tässä asiassa, ota meihin yhteyttä keskustellaksemme yrityssopimuksesta.",
+  "Inbox cannot store draft messages": "Inbox ei voi tallentaa luonnosviestejä",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Olet luonut alla olevan alias-salasanan onnistuneesti – sinun on kopioitava ja tallennettava se turvallisesti ennen tämän ikkunan sulkemista. <strong class=\"text-decoration-underline\"><br /><br />Alla olevaa salasanaa ei näytetä uudelleen, kun napsautat OK.</strong><br /><br /> <strong>Käyttäjätunnus:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Salasana:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Tämä ikkuna sulkeutuu automaattisesti 30 sekunnin kuluttua.<br />",
+  "Maximum number of mailboxes exceeded": "Postilaatikoiden enimmäismäärä ylitetty",
+  "Mailbox is reserved and cannot be removed": "Postilaatikko on varattu, eikä sitä voi poistaa",
+  "Failed to acquire write lock": "Kirjoituslukon hankkiminen epäonnistui",
+  "Mailbox quota would be exceeded by message size": "Postilaatikon kiintiö ylittyisi viestin koon vuoksi"
 }

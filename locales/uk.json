@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Отримати через API",
   "For MacOS:": "Для MacOS:",
-  "For Linux and Ubuntu:": "Для Linux і Ubuntu:"
+  "For Linux and Ubuntu:": "Для Linux і Ubuntu:",
+  "Mailbox does not exist": "Поштова скринька не існує",
+  "Mailbox is over quota": "Поштова скринька перевищила квоту",
+  "Mailbox already exists": "Поштова скринька вже існує",
+  "Invalid search query": "Недійсний пошуковий запит",
+  "Add Alias | Forward Email": "Додати псевдонім &#124; Переслати електронну пошту",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Видалення вашого домену неможливо відновити. Будьте вкрай обережні, видаляючи свій домен.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Ви не використовуватимете наш сервіс для керування сервісом, який дозволяє третім сторонам (окрім ваших власних співробітників і підрядників) отримувати доступ до нашого сервісу, використовувати його або отримувати користь від нього. Якщо вам потрібно, щоб ми зробили для вас виняток щодо цього, зв’яжіться з нами, щоб обговорити корпоративну угоду.",
+  "Inbox cannot store draft messages": "Вхідні не можуть зберігати чернетки повідомлень",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Ви успішно згенерували наведений нижче псевдонім пароля – ви повинні скопіювати та надійно зберегти його, перш ніж закривати це вікно. <strong class=\"text-decoration-underline\"><br /><br />Наведений нижче пароль більше не відображатиметься, коли ви натиснете OK.</strong><br /><br /> <strong>Ім&#39;я користувача:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Пароль:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Це вікно автоматично закриється через 30 секунд.<br />",
+  "Maximum number of mailboxes exceeded": "Перевищено максимальну кількість поштових скриньок",
+  "Mailbox is reserved and cannot be removed": "Поштова скринька зарезервована і не може бути видалена",
+  "Failed to acquire write lock": "Не вдалося отримати блокування запису",
+  "Mailbox quota would be exceeded by message size": "Розмір повідомлення перевищить квоту поштової скриньки"
 }

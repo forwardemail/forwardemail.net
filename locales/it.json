@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Recupera tramite API",
   "For MacOS:": "Per MacOS:",
-  "For Linux and Ubuntu:": "Per Linux e Ubuntu:"
+  "For Linux and Ubuntu:": "Per Linux e Ubuntu:",
+  "Mailbox does not exist": "La casella di posta non esiste",
+  "Mailbox is over quota": "La casella di posta ha superato la quota",
+  "Mailbox already exists": "La casella di posta esiste già",
+  "Invalid search query": "Query di ricerca non valida",
+  "Add Alias | Forward Email": "Aggiungi Alias &#124; Inoltra e-mail",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "L'eliminazione del tuo dominio è irreversibile. Ti preghiamo di prestare la massima attenzione quando elimini il tuo dominio.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Non utilizzerai il nostro servizio per gestire un servizio che consenta a terzi (diversi dai tuoi dipendenti e appaltatori) di accedere, utilizzare o beneficiare del nostro servizio. Se hai bisogno che facciamo un'eccezione a questo riguardo, contattaci per discutere un accordo aziendale.",
+  "Inbox cannot store draft messages": "La Posta in arrivo non può archiviare bozze di messaggi",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Hai generato con successo la password alias di seguito: devi copiarla e archiviarla in modo sicuro prima di chiudere questa finestra. <strong class=\"text-decoration-underline\"><br /><br />La password riportata di seguito non verrà più visualizzata dopo aver fatto clic su OK.</strong><br /><br /> <strong>Nome utente:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Parola d&#39;ordine:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Questa finestra si chiuderà automaticamente tra 30 secondi.<br />",
+  "Maximum number of mailboxes exceeded": "È stato superato il numero massimo di caselle di posta",
+  "Mailbox is reserved and cannot be removed": "La casella di posta è riservata e non può essere rimossa",
+  "Failed to acquire write lock": "Impossibile acquisire il blocco di scrittura",
+  "Mailbox quota would be exceeded by message size": "La quota della casella di posta verrebbe superata dalla dimensione del messaggio"
 }

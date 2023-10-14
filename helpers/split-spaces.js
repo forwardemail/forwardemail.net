@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 // <https://stackoverflow.com/a/46946490>
 function splitSpaces(str) {
   // eslint-disable-next-line unicorn/no-array-reduce

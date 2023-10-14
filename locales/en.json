@@ -4691,5 +4691,16 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Retrieve via API",
   "For MacOS:": "For MacOS:",
-  "For Linux and Ubuntu:": "For Linux and Ubuntu:"
+  "For Linux and Ubuntu:": "For Linux and Ubuntu:",
+  "Mailbox does not exist": "Mailbox does not exist",
+  "Mailbox is over quota": "Mailbox is over quota",
+  "Mailbox already exists": "Mailbox already exists",
+  "Invalid search query": "Invalid search query",
+  "Add Alias | Forward Email": "Add Alias | Forward Email",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong><span class=\"notranslate\">SMTP</span> Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong><span class=\"notranslate\">SMTP</span> Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong><span class=\"notranslate\">SMTP</span> Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong><span class=\"notranslate\">SMTP</span> Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />",
+  "<span class=\"notranslate\">%s</span> approved for outbound SMTP access": "<span class=\"notranslate\">%s</span> approved for outbound SMTP access",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.",
+  "Inbox cannot store draft messages": "Inbox cannot store draft messages"
 }

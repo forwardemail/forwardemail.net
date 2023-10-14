@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const sanitize = require('sanitize-html');
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');

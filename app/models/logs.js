@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const dns = require('node:dns');
 const os = require('node:os');
 const { Buffer } = require('node:buffer');

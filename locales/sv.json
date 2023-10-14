@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Hämta via API",
   "For MacOS:": "För MacOS:",
-  "For Linux and Ubuntu:": "För Linux och Ubuntu:"
+  "For Linux and Ubuntu:": "För Linux och Ubuntu:",
+  "Mailbox does not exist": "Brevlåda finns inte",
+  "Mailbox is over quota": "Brevlådan är över kvoten",
+  "Mailbox already exists": "Brevlådan finns redan",
+  "Invalid search query": "Ogiltig sökfråga",
+  "Add Alias | Forward Email": "Lägg till alias &#124; Vidarebefordra e-post",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Att ta bort din domän är oåterkallelig. Var extremt försiktig när du tar bort din domän.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Du kommer inte att använda vår tjänst för att driva en tjänst som tillåter tredje part (andra än dina egna anställda och entreprenörer) att få tillgång till, använda eller dra nytta av vår tjänst. Om du behöver att vi gör ett undantag för dig angående detta, vänligen kontakta oss för att diskutera ett företagsavtal.",
+  "Inbox cannot store draft messages": "Inbox kan inte lagra utkast till meddelanden",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Du har framgångsrikt skapat aliaslösenordet nedan – du måste kopiera och lagra det säkert innan du stänger det här fönstret. <strong class=\"text-decoration-underline\"><br /><br />Lösenordet nedan kommer inte att visas igen när du klickar på OK.</strong><br /><br /> <strong>Användarnamn:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Lösenord:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Detta fönster stängs automatiskt efter 30 sekunder.<br />",
+  "Maximum number of mailboxes exceeded": "Maximalt antal postlådor har överskridits",
+  "Mailbox is reserved and cannot be removed": "Mailbox är reserverad och kan inte tas bort",
+  "Failed to acquire write lock": "Det gick inte att hämta skrivlås",
+  "Mailbox quota would be exceeded by message size": "Brevlådans kvot skulle överskridas av meddelandestorlek"
 }

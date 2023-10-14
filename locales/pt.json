@@ -4915,5 +4915,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Recuperar via API",
   "For MacOS:": "Para MacOS:",
-  "For Linux and Ubuntu:": "Para Linux e Ubuntu:"
+  "For Linux and Ubuntu:": "Para Linux e Ubuntu:",
+  "Mailbox does not exist": "Caixa de correio não existe",
+  "Mailbox is over quota": "A caixa de correio ultrapassou a cota",
+  "Mailbox already exists": "A caixa de correio já existe",
+  "Invalid search query": "Consulta de pesquisa inválida",
+  "Add Alias | Forward Email": "Adicionar alias &#124; Encaminhar e-mail",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "A exclusão do seu domínio é irreversível. Tenha muito cuidado ao excluir seu domínio.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Você não usará nosso serviço para operar um serviço que permita que terceiros (além de seus próprios funcionários e contratados) acessem, usem ou se beneficiem de nosso serviço. Se precisar que abramos uma exceção em relação a isso, entre em contato conosco para discutir um acordo empresarial.",
+  "Inbox cannot store draft messages": "A Caixa de entrada não pode armazenar rascunhos de mensagens",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Você gerou com sucesso a senha do alias abaixo – você deve copiá-la e armazená-la com segurança antes de fechar esta janela. <strong class=\"text-decoration-underline\"><br /><br />A senha abaixo não será mostrada novamente depois que você clicar em OK.</strong><br /><br /> <strong>Nome de usuário:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Senha:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Esta janela fechará automaticamente em 30 segundos.<br />",
+  "Maximum number of mailboxes exceeded": "Número máximo de caixas de correio excedido",
+  "Mailbox is reserved and cannot be removed": "A caixa de correio está reservada e não pode ser removida",
+  "Failed to acquire write lock": "Falha ao adquirir bloqueio de gravação",
+  "Mailbox quota would be exceeded by message size": "A cota da caixa de correio seria excedida pelo tamanho da mensagem"
 }

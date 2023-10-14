@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 module.exports = {
   title: 'URL Regex JavaScript and Node.js',
   description:

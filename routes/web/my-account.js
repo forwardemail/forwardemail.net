@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const Router = require('@koa/router');
 const paginate = require('koa-ctx-paginate');
 const render = require('koa-views-render');

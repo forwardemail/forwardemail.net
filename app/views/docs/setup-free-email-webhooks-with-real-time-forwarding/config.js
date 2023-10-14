@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 module.exports = {
   title: 'Setup Free Email Webhooks with Real-Time Forwarding',
   description:

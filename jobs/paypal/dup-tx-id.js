@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const process = require('process');
 const { parentPort } = require('worker_threads');
 const os = require('os');

@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const Email = require('email-templates');
 const _ = require('lodash');
 const striptags = require('striptags');

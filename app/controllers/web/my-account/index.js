@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const cancelEmailChange = require('./cancel-email-change');
 const cancelSubscription = require('./cancel-subscription');
 const createAlias = require('./create-alias');

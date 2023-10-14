@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const ObjectID = require('bson-objectid');
 const _ = require('lodash');
 const pickOriginal = require('@ladjs/pick-original');

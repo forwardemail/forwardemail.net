@@ -3943,5 +3943,18 @@
   "Gzip": "Gzip",
   "Retrieve via API": "Über API abrufen",
   "For MacOS:": "Für MacOS:",
-  "For Linux and Ubuntu:": "Für Linux und Ubuntu:"
+  "For Linux and Ubuntu:": "Für Linux und Ubuntu:",
+  "Mailbox does not exist": "Postfach existiert nicht",
+  "Mailbox is over quota": "Das Postfach hat sein Kontingent überschritten",
+  "Mailbox already exists": "Postfach existiert bereits",
+  "Invalid search query": "Ungültige Suchanfrage",
+  "Add Alias | Forward Email": "Alias hinzufügen &#124; Email weiterleiten",
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "Die Löschung Ihrer Domain ist unwiderruflich. Bitte seien Sie beim Löschen Ihrer Domain äußerst vorsichtig.",
+  "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.": "Sie werden unseren Dienst nicht dazu nutzen, einen Dienst zu betreiben, der es Dritten (außer Ihren eigenen Mitarbeitern und Auftragnehmern) ermöglicht, auf unseren Dienst zuzugreifen, ihn zu nutzen oder von ihm zu profitieren. Wenn wir diesbezüglich eine Ausnahme für Sie machen müssen, kontaktieren Sie uns bitte, um eine Unternehmensvereinbarung zu besprechen.",
+  "Inbox cannot store draft messages": "Im Posteingang können keine Nachrichtenentwürfe gespeichert werden",
+  "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "Sie haben das Alias-Passwort unten erfolgreich generiert – Sie müssen es kopieren und sicher aufbewahren, bevor Sie dieses Fenster schließen. <strong class=\"text-decoration-underline\"><br /><br />Das untenstehende Passwort wird nicht mehr angezeigt, sobald Sie auf OK klicken.</strong><br /><br /> <strong>Benutzername:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>Passwort:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> Dieses Fenster wird nach 30 Sekunden automatisch geschlossen.<br />",
+  "Maximum number of mailboxes exceeded": "Maximale Anzahl an Postfächern überschritten",
+  "Mailbox is reserved and cannot be removed": "Das Postfach ist reserviert und kann nicht entfernt werden",
+  "Failed to acquire write lock": "Die Schreibsperre konnte nicht erworben werden",
+  "Mailbox quota would be exceeded by message size": "Das Postfachkontingent würde durch die Nachrichtengröße überschritten"
 }

@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 const zlib = require('node:zlib');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
