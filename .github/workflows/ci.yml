@@ -41,10 +41,14 @@ jobs:
       PREVIEW_EMAIL: "false"
     steps:
       - uses: actions/checkout@v3
-      - name: Setup node
+      - name: setup node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
+      - name: start redis
+        uses: supercharge/redis-github-action@1.4.0
+        with:
+          redis-version: latest
       - name: Install pnpm v7
         run: npm i -g pnpm@7
       - name: Install dependencies
