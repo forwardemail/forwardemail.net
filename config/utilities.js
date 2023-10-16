@@ -374,29 +374,24 @@ let developerDocs = [];
 const pathToDocs = path.join(__dirname, '..', 'app', 'views', 'docs');
 
 for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
-  console.log('UTILITY DIRECTORY', dir);
   if (!dir.isDirectory()) continue;
 
-  // `dir.path` is not available until Node v20.1.0
-  // if (!dir.path) dir.path = path.join(pathToDocs, dir.name);
-  dir.path = path.join(pathToDocs, dir.name);
+  const dirPath = path.join(pathToDocs, dir.name);
 
-  console.log('dir.path', dir.path);
-
-  if (!fs.existsSync(path.join(dir.path, 'index.pug'))) {
-    console.error('%s missing index.pug', dir.path);
+  if (!fs.existsSync(path.join(dirPath, 'index.pug'))) {
+    console.error('%s missing index.pug', dirPath);
     continue;
   }
 
-  if (!fs.existsSync(path.join(dir.path, 'config.js'))) {
-    console.error('%s missing config.js', dir.path);
+  if (!fs.existsSync(path.join(dirPath, 'config.js'))) {
+    console.error('%s missing config.js', dirPath);
     continue;
   }
 
   // safeguard
   if (dashify(dir.name) !== dir.name) {
     console.error(
-      `${dir.path} is not in slug format ("${dir.name}" should be "${dashify(
+      `${dirPath} is not in slug format ("${dir.name}" should be "${dashify(
         dir.name
       )}")`
     );
@@ -404,27 +399,27 @@ for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
   }
 
   try {
-    const c = require(path.join(dir.path, 'config.js'));
+    const c = require(path.join(dirPath, 'config.js'));
     c.slug = `/docs/${dir.name}`;
 
     if (!isSANB(c.title)) {
-      console.error('%s missing config.js title', dir.path);
+      console.error('%s missing config.js title', dirPath);
       continue;
     }
 
     if (!isSANB(c.description)) {
-      console.error('%s missing config.js description', dir.path);
+      console.error('%s missing config.js description', dirPath);
       continue;
     }
 
     if (c.published !== true) {
-      console.error('%s is not yet published', dir.path);
+      console.error('%s is not yet published', dirPath);
       continue;
     }
 
     developerDocs.push(c);
   } catch {
-    console.error('%s is missing config.js', dir.path);
+    console.error('%s is missing config.js', dirPath);
   }
 }
 
