@@ -139,18 +139,17 @@ html.h-100.no-js(
 
       if ['/', '/resources', '/about', '/terms', '/about', '/faq', '/private-business-email'].includes(ctx.pathWithoutLocale) || ctx.pathWithoutLocale.startsWith('/docs') || ctx.pathWithoutLocale.startsWith('/guides')
         //- in order for snapshots to be consistent we need the same date to be used
-        - const now = config.env === "test" ? dayjs.tz("2023-01-01", "America/Los_Angeles").toDate() : new Date();
         meta(
           property="og:updated_time",
-          content=dayjs(now).startOf("day").toDate().toISOString()
+          content=config.env === "test" ? "2023-01-01T00:00:00.000Z" : dayjs().startOf("day").toDate().toISOString()
         )
         meta(
           property="article:published_time",
-          content=dayjs(now).startOf("month").toDate().toISOString()
+          content=config.env === "test" ? "2023-01-01T00:00:00.000Z" : dayjs().startOf("month").toDate().toISOString()
         )
         meta(
           property="article:modified_time",
-          content=dayjs(now).startOf("day").toDate().toISOString()
+          content=config.env === "test" ? "2023-01-01T00:00:00.000Z" : dayjs().startOf("day").toDate().toISOString()
         )
 
       if !video
