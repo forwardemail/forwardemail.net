@@ -215,11 +215,10 @@ const Messages = new mongoose.Schema(
       required: true
     },
 
-    // raw message (Buffer or GridFS reference)
-    raw: {
-      type: mongoose.Schema.Types.Mixed,
-      required: true
-    },
+    // raw: {
+    //   type: mongoose.Schema.Types.Mixed,
+    //   required: true
+    // },
 
     // text string (used for text index)
     text: {
@@ -289,12 +288,6 @@ Messages.pre('validate', async function (next) {
 Messages.pre('validate', function (next) {
   // make flags unique
   this.flags = _.uniq(this.flags);
-
-  // set boolean flags
-  this.unseen = !this.flags.includes('\\Seen');
-  this.flagged = this.flags.includes('\\Flagged');
-  this.undeleted = !this.flags.includes('\\Deleted');
-  this.draft = this.flags.includes('\\Draft');
 
   // replace "@wildduck.email" in msgid
   if (this.isNew)

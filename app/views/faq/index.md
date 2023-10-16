@@ -8,6 +8,7 @@
 * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
 * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
 * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
+* [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
 * [Do you support sending email with API](#do-you-support-sending-email-with-api)
 * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
@@ -703,7 +704,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
     Important:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
+    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#emails" target="_blank">email API docs</a>.
   </span>
 </div>
 
@@ -771,6 +772,26 @@ In order to send outbound email with SMTP, the **SMTP user** must be the email a
 Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
 
 
+## What are your IMAP server configuration settings
+
+Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for TLS (STARTTLS).
+
+|                             Protocol                             | Hostname                |     Ports     |        IPv4        |        IPv6        |
+| :--------------------------------------------------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+
+| Login    | Example                    | Description                                                                                                                                                                               |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com`         | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific or domain-wide (coming soon) generated password.                                                                                                                           |
+
+In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be either an alias-specific or a domain-wide (coming soon) generated password.
+
+Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+
+
 ## Do you support sending email with API
 
 Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
@@ -792,7 +813,56 @@ In order to send outbound email with our API, you must use your API token availa
 
 ## Do you support receiving email with IMAP
 
-We plan to offer this feature in the near future.
+Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.
+
+**Our Beta IMAP support is useful at the moment for storing Draft messages in your "Drafts" folder, copies of [Outbound SMTP](#do-you-support-sending-email-with-smtp) messages sent your "Sent Mail" folder, and for initial mailbox setup across mail clients such as Thunderbird, K-9 Mail, and Apple Mail.**  There is a <span class="notranslate">1 GB</span> storage limitation with 30 day retention – note that permanent storage tiers and more features will be available soon.
+
+<div id="imap-instructions">
+
+<div class="alert alert-primary">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
+</div>
+
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or an open-source and privacy-focused alternative.</span>
+   </div>
+
+4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+
+5. When prompted for IMAP server port, enter `993` (TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+
+6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> in step 3 above
+
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
+</div>
+
+</div>
 
 
 ## How to Send Mail As using Gmail
@@ -832,7 +902,7 @@ We plan to offer this feature in the near future.
     Important:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#emails" target="_blank">email API docs</a> &ndash; note that <a class="alert-link" href="/faq#do-you-support-receiving-email-with-imap" target="_blank">we do not support IMAP yet</a>.
+    If you are a developer, then refer to our <a class="alert-link" href="/email-api#emails" target="_blank">email API docs</a>.
   </span>
 </div>
 

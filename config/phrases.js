@@ -157,6 +157,7 @@ module.exports = {
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
   IMAP_MAILBOX_MAX_EXCEEDED: 'Maximum number of mailboxes exceeded',
+  IMAP_MESSAGE_SIZE_EXCEEDED: 'Maximum message size exceeded',
   IMAP_MAILBOX_INBOX_CANNOT_STORE_DRAFTS: 'Inbox cannot store draft messages',
   IMAP_MAILBOX_ALREADY_EXISTS: 'Mailbox already exists',
   IMAP_MAILBOX_DOES_NOT_EXIST: 'Mailbox does not exist',

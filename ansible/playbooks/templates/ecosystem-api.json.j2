@@ -1,32 +1,32 @@
 {
   "apps": [
     {
-      "name": "smtp-tls",
-      "script": "smtp.js",
+      "name": "api",
+      "script": "api.js",
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
+      "pmx": false,
       "env_production": {
-        "NODE_ENV": "production",
-        "SMTP_PORT": 2587
+        "NODE_ENV": "production"
       }
     },
     {
-      "name": "smtp-ssl",
-      "script": "smtp.js",
+      "name": "proxy",
+      "script": "proxy.js",
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
+      "pmx": false,
       "env_production": {
-        "NODE_ENV": "production",
-        "SMTP_PORT": 2465
+        "NODE_ENV": "production"
       }
     }
   ],
   "deploy": {
     "production": {
       "user": "deploy",
-      "host": [{% for host in groups['smtp'] %}"{{ hostvars[host].ansible_host }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+      "host": [{% for host in groups['api'] %}"{{ hostvars[host].ansible_host }}"{% if not loop.last %}, {% endif %}{% endfor %}],
       "ref": "origin/master",
       "repo": "{{ lookup('env', 'GITHUB_REPO') }}",
       "path": "/var/www/production",

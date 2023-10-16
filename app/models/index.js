@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const AttachmentsChunks = require('./attachments-chunks');
+const AttachmentsFiles = require('./attachments-files');
 const Aliases = require('./aliases');
 const Domains = require('./domains');
 const Inquiries = require('./inquiries');
@@ -18,6 +20,8 @@ const Threads = require('./threads');
 const Journals = require('./journals');
 
 module.exports = {
+  AttachmentsChunks,
+  AttachmentsFiles,
   Aliases,
   Domains,
   Inquiries,

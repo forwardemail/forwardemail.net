@@ -27,6 +27,7 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
+  let lock;
   try {
     const { alias } = await this.refreshSession(session, 'EXPUNGE');
 
@@ -43,13 +44,13 @@ async function onExpunge(mailboxId, update, session, fn) {
         imapResponse: 'NONEXISTENT'
       });
 
-    const lock = await this.server.lock.waitAcquireLock(
+    lock = await this.server.lock.waitAcquireLock(
       `mbwr:${mailbox.id}`,
       ms('5m'),
       ms('1m')
     );
 
-    if (!lock.success)
+    if (!lock?.success)
       throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
 
     let storageUsed = 0;
@@ -229,6 +230,15 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     fn(null, true);
   } catch (err) {
+    // release lock
+    if (lock?.success) {
+      try {
+        await this.server.lock.releaseLock(lock);
+      } catch (err) {
+        this.logger.fatal(err, { mailboxId, update, session });
+      }
+    }
+
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
       this.logger.error(err, { mailboxId, update, session });

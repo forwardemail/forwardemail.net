@@ -11,33 +11,18 @@
 #
 # NOTE: for IPv6 we use `socat` for now to port forward
 #
-# [x] SMTP (TLS) 25, 587, and 2525 -> 2587
-# [x] SMTP (SSL) 465 -> 2465
+# [x] IMAP (TLS) 993 -> 2993
 
 *nat
 :PREROUTING ACCEPT [0:0]
-# HTTP 80 -> 8080 and HTTPS 443 -> 8443
-# -A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-port {{ lookup('env', 'PROXY_PORT') }}
-# -A PREROUTING -p tcp -m tcp --dport 443 -j REDIRECT --to-port {{ lookup('env', 'HTTP_PORT') }}
-# SMTP (TLS) 25, 587, and 2525 -> 2587
--A PREROUTING -p tcp -m tcp --dport 25 -j REDIRECT --to-port 2587
--A PREROUTING -p tcp -m tcp --dport 587 -j REDIRECT --to-port 2587
--A PREROUTING -p tcp -m tcp --dport 2525 -j REDIRECT --to-port 2587
-# SMTP (SSL) 465 -> 2465
--A PREROUTING -p tcp -m tcp --dport 465 -j REDIRECT --to-port 2465
+# IMAP (TLS) 993 -> 2993
+-A PREROUTING -p tcp -m tcp --dport 993 -j REDIRECT --to-port 2993
 COMMIT
 
 # https://serverfault.com/a/211544
 *nat
-# HTTP 80 -> 8080 and HTTPS 443 -> 8443
-#-I OUTPUT -p tcp -o lo --dport 80 -j REDIRECT --to-port {{ lookup('env', 'PROXY_PORT') }}
-#-I OUTPUT -p tcp -o lo --dport 443 -j REDIRECT --to-port {{ lookup('env', 'HTTP_PORT') }}
-# SMTP (TLS) 25, 587, and 2525 -> 2587
--I OUTPUT -p tcp -o lo --dport 25 -j REDIRECT --to-port 2587
--I OUTPUT -p tcp -o lo --dport 587 -j REDIRECT --to-port 2587
--I OUTPUT -p tcp -o lo --dport 2525 -j REDIRECT --to-port 2587
-# SMTP (SSL) 465 -> 2465
--I OUTPUT -p tcp -o lo --dport 465 -j REDIRECT --to-port 2465
+# IMAP (TLS) 993 -> 2993
+-I OUTPUT -p tcp -o lo --dport 993 -j REDIRECT --to-port 2993
 COMMIT
 
 # Don't delete these required lines, otherwise there will be errors

@@ -13,6 +13,7 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const bytes = require('bytes');
 const splitLines = require('split-lines');
 const { convert } = require('html-to-text');
 
@@ -24,9 +25,11 @@ const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
-// eslint-disable-next-line max-params
+const SIXTY_FOUR_MB_IN_BYTES = bytes('64MB');
+
+// eslint-disable-next-line max-params, complexity
 async function onAppend(path, flags, date, raw, session, fn) {
-  this.logger.debug('APPEND', { path, flags, date, raw, session });
+  this.logger.debug('APPEND', { path, flags, date, session });
 
   let thread;
   let storageUsed = 0;
@@ -35,6 +38,10 @@ async function onAppend(path, flags, date, raw, session, fn) {
   let mimeTreeData;
 
   try {
+    // do not allow messages larger than 64 MB
+    if (raw && raw.length > SIXTY_FOUR_MB_IN_BYTES)
+      throw new IMAPError(i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', 'en'));
+
     const { alias } = await this.refreshSession(session, 'APPEND');
 
     // check if over quota
@@ -155,12 +162,16 @@ async function onAppend(path, flags, date, raw, session, fn) {
       envelope,
       bodystructure,
       msgid,
+      unseen: !flags.includes('\\Seen'),
+      flagged: flags.includes('\\Flagged'),
+      undeleted: !flags.includes('\\Deleted'),
+      draft: flags.includes('\\Draft'),
       magic: maildata.magic,
       subject,
       copied: false,
       remoteAddress: session.remoteAddress,
       transaction: 'APPEND',
-      raw,
+      // raw,
       text
     };
 
@@ -236,13 +247,13 @@ async function onAppend(path, flags, date, raw, session, fn) {
       path,
       flags,
       date,
-      raw,
       session
     });
 
     try {
       await this.server.notifier.addEntries(mailbox, {
         // TODO: the wildduck code has this which means messages don't show in Sent folder
+        // <https://github.com/nodemailer/wildduck/issues/537>
         // ignore: session.id,
         command: 'EXISTS',
         uid: message.uid,
@@ -256,7 +267,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       });
       this.server.notifier.fire(alias.id);
     } catch (err) {
-      this.logger.fatal(err, { path, flags, date, raw, session });
+      this.logger.fatal(err, { path, flags, date, session });
     }
 
     const response = {
@@ -308,7 +319,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      this.logger.error(err, { path, flags, date, raw, session });
+      this.logger.error(err, { path, flags, date, session });
       return fn(null, err.imapResponse);
     }
 

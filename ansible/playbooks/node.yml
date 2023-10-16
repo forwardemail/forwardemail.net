@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: smtp:http:bree
+- hosts: imap:smtp:http:bree
   name: Node.js
   become: true
   become_user: root

@@ -1,0 +1,11 @@
+[Unit]
+Description=socat-993-to-2993
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/bin/socat tcp6-listen:993,fork tcp6:[::]:2993
+
+[Install]
+WantedBy=multi-user.target

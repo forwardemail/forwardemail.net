@@ -4,6 +4,8 @@ project {
   license = "BUSL-1.1"
   copyright_holder = "Forward Email LLC"
   header_ignore = [
+    "app/models/attachments-chunks.js",
+    "app/models/attachments-files.js",
     "app/models/journals.js",
     "app/models/mailboxes.js",
     "app/models/messages.js",

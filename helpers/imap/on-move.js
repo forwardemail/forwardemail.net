@@ -29,6 +29,8 @@ const BULK_BATCH_SIZE = 150;
 async function onMove(mailboxId, update, session, fn) {
   this.logger.debug('MOVE', { mailboxId, update, session });
 
+  let lock;
+
   try {
     const { alias } = await this.refreshSession(session, 'MOVE');
 
@@ -54,13 +56,13 @@ async function onMove(mailboxId, update, session, fn) {
         imapResponse: 'TRYCREATE'
       });
 
-    const lock = await this.server.lock.waitAcquireLock(
+    lock = await this.server.lock.waitAcquireLock(
       `mbwr:${mailbox.id}`,
       ms('5m'),
       ms('1m')
     );
 
-    if (!lock.success)
+    if (!lock?.success)
       throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
 
     let err;
@@ -200,6 +202,7 @@ async function onMove(mailboxId, update, session, fn) {
         message = await Messages.create(message);
 
         existEntries.push({
+          // NOTE: we don't want to ignore this
           // ignore: session.id,
           command: 'EXISTS',
           uid: message.uid,
@@ -335,6 +338,15 @@ async function onMove(mailboxId, update, session, fn) {
     };
     fn(null, true, response);
   } catch (err) {
+    // release lock
+    if (lock?.success) {
+      try {
+        await this.server.lock.releaseLock(lock);
+      } catch (err) {
+        this.logger.fatal(err, { mailboxId, update, session });
+      }
+    }
+
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
       this.logger.error(err, { mailboxId, update, session });

@@ -44,8 +44,9 @@ const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
 
 // TODO: future items
+// - [ ] contacts
+// - [ ] calendar
 // - [ ] rewrite onOpen to use cursor instead of distinct
-// - [ ] add rate limitations (e.g. wildduck ttl and counters everywhere including notifier)
 // - [ ] remove setImmediate from SMTP server
 // - [ ] remove or enforce maxTimeMS for all imap handlers
 // - [ ] projection on all handlers (instead of returning entire document)
@@ -53,21 +54,14 @@ const validateDomain = require('#helpers/validate-domain');
 // - [ ] delete old threads over time
 //       <https://github.com/nodemailer/wildduck/issues/515>
 
-// TODO: documentation
-// - [ ] reference IMAP in docs
-// - [ ] document/reference IMAP Protocol Differences and other readme notes
-// - [ ] 1GB limit per alias/domain/account
-// - [ ] increase limit to 30gb with paid-addon
-
 // TODO: urgent items
-// - [ ] attachment model and indexes
+// - [ ] fix rate limiting in helpers/on-auth (should only rate limit if user failed to auth)
+// - [ ] IMAP server needs onConnect to block spammers from denylist <https://github.com/nodemailer/wildduck/issues/540>
 // - [ ] enforce billing for IMAP support
-// - [ ] when users delete their account then delete all Emails, Messages, and Mailboxes in the system
+// - [ ] when users delete their account then delete all Emails, Messages, Attachments, Threads, and Mailboxes in the system (make this both a job and hook on delete)
 // - [ ] auto expunge in bree job when message gets a Deleted flag
 // - [ ] message.exp needs to be deleted after time (message.rtime) via background job
-// - [ ] investigate `ignore` usage
 // - [ ] cleanup journal items (e.g. expire after 30d or something)
-// - [ ] `rg "attachmentStorage"` cleanup and `messageData.magic` usage
 
 // TODO: other items
 // - [ ] axe should parse out streams
@@ -265,6 +259,7 @@ class IMAP {
       Aliases.findById(session.user.alias_id)
         .populate(
           'user',
+          // TODO: we can remove `smtpLimit` (?)
           `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
         )
         .lean()

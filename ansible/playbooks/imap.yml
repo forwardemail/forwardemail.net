@@ -1,0 +1,96 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+- name: Import security playbook
+  ansible.builtin.import_playbook: security.yml
+- name: Import Node.js playbook
+  ansible.builtin.import_playbook: node.yml
+- name: Import SSH keys playbook
+  ansible.builtin.import_playbook: ssh-keys.yml
+- hosts: imap
+  name: IMAP
+  become: true
+  become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ lookup('env', 'IMAP_HOST') }}"
+  roles:
+    # https://github.com/holms/ansible-fqdn
+    - role: fqdn
+      fqdn: "{{ lookup('env', 'IMAP_HOST') }}"
+
+# 993 -> 2993
+- hosts: imap
+  name: IMAP
+  become: true
+  become_user: root
+  tasks:
+    - name: "create socat-993-to-2993"
+      template:
+        src: "{{ playbook_dir }}/templates/socat-993-to-2993.j2"
+        dest: /etc/systemd/system/socat-993-to-2993.service
+        owner: root
+        mode: "0644"
+    - name: "enable socat-993-to-2993"
+      service:
+        daemon_reload: yes
+        name: socat-993-to-2993
+        enabled: true
+        state: started
+
+- hosts: imap
+  name: IMAP
+  become: true
+  become_user: root
+  # this was already defined in the ufw role
+  # https://github.com/Oefenweb/ansible-ufw/blob/master/handlers/main.yml
+  handlers:
+    - name: Reload UFW
+      ufw:
+        state: reloaded
+  tasks:
+    # ufw
+    - name: Enable ufw
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+    - name: Limit ufw ssh
+      ufw:
+        rule: limit
+        port: 22
+        proto: tcp
+    - name: Set UFW default forward policy to ACCEPT
+      lineinfile:
+        dest: /etc/default/ufw
+        line: DEFAULT_FORWARD_POLICY="ACCEPT"
+        regexp: ^DEFAULT_FORWARD_POLICY\=
+    - name: Allow ssh
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+    # NOTE: we port forward 993 -> 2993
+    - name: Allow port 993
+      ufw:
+        rule: allow
+        port: 993
+        proto: tcp
+    - name: Allow port 2993
+      ufw:
+        rule: allow
+        port: 2993
+        proto: tcp
+    #
+    # modify ufw setup
+    # https://github.com/Oefenweb/ansible-ufw/issues/21
+    #
+    - name: "Update ufw before.rules until #21 is resolved"
+      template:
+        src: "{{ playbook_dir }}/templates/before.imap.rules.j2"
+        dest: /etc/ufw/before.rules
+        owner: root
+        mode: "0644"
+      notify: Reload UFW

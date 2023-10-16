@@ -9,16 +9,16 @@
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
-        "IMAP_PORT": 2993
+        "SMTP_PORT": 2993
       }
     }
   ],
   "deploy": {
     "production": {
       "user": "deploy",
-      "host": [],
+      "host": [{% for host in groups['smtp'] %}"{{ hostvars[host].ansible_host }}"{% if not loop.last %}, {% endif %}{% endfor %}],
       "ref": "origin/master",
-      "repo": "git@github.com:forwardemail/forwardemail.net.git",
+      "repo": "{{ lookup('env', 'GITHUB_REPO') }}",
       "path": "/var/www/production",
       "pre-deploy": "git reset --hard",
       "post-deploy": "pnpm install && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-imap.json --env production --update-env"

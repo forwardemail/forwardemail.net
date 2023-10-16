@@ -340,6 +340,7 @@ async function onStore(mailboxId, update, session, fn) {
         });
 
         entries.push({
+          // TODO: do we want to ignore this (?)
           // ignore: session.id,
           command: 'FETCH',
           uid: message.uid,

@@ -23,7 +23,6 @@ const getPort = require('get-port');
 const ip = require('ip');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
-const splitLines = require('split-lines');
 const test = require('ava');
 const { ImapFlow } = require('imapflow');
 const { factory } = require('factory-girl');
@@ -285,10 +284,12 @@ ZXhhbXBsZQo=
   try {
     // fetchOne
     // `exists` is the largest seq number available in mailbox
+
+    // NOTE: we don't store `raw` anymore so this test won't work
+    /*
     const message = await client.fetchOne(client.mailbox.exists, {
       source: true
     });
-
     const msg = await Messages.findOne({
       mailbox: mailbox._id,
       alias: t.context.alias._id,
@@ -300,6 +301,7 @@ ZXhhbXBsZQo=
       message.source.toString(),
       splitLines(msg.raw.toString()).join('\r\n')
     );
+    */
 
     // fetch
     // uid is always included, envelope strings are in unicode

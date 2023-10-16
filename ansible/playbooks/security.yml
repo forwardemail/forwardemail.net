@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: smtp:http:bree
+- hosts: imap:smtp:http:bree
   name: Security
   become: true
   become_user: root
@@ -162,7 +162,7 @@
       become_user: deploy
       shell: git config --global --add safe.directory '*'
 
-- hosts: smtp:http:bree
+- hosts: imap:smtp:http:bree
   name: Mongo Shell
   become: true
   become_user: root
@@ -177,7 +177,7 @@
           - mongodb-mongosh
         update_cache: true
 
-- hosts: smtp:http:bree
+- hosts: imap:smtp:http:bree
   name: Sysctl
   become: true
   become_user: root

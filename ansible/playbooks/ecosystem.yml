@@ -28,3 +28,8 @@
         src: "{{ playbook_dir }}/templates/ecosystem-smtp.json.j2"
         dest: "{{ lookup('env', 'PWD') }}/ecosystem-smtp.json"
       delegate_to: localhost
+    - name: Create ecosystem-imap.json
+      template:
+        src: "{{ playbook_dir }}/templates/ecosystem-imap.json.j2"
+        dest: "{{ lookup('env', 'PWD') }}/ecosystem-imap.json"
+      delegate_to: localhost
