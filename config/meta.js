@@ -26,6 +26,10 @@ const dayjs = require('dayjs-with-plugins');
 const { developerDocs, nsProviders, platforms } = require('#config/utilities');
 
 module.exports = function (config) {
+  // in order for snapshots to be consistent we need the same date to be used
+  const now =
+    config.env === 'test' ? dayjs('1/1/23', 'M/D/YY').toDate() : new Date();
+
   // currently we cannot use the `|` pipe character due to this issue
   // <https://github.com/mashpie/i18n-node/issues/274>
   // otherwise we'd have `| Lad` below, which is SEO standard
@@ -94,33 +98,33 @@ module.exports = function (config) {
       'Get disposable email forwarding addresses using your custom domain name.'
     ],
     '/resources': [
-      `Free Startup and Developer Email Tools List (<span class="notranslate">${dayjs().format(
-        'YYYY'
-      )}</span>) ${lad}`,
+      `Free Startup and Developer Email Tools List (<span class="notranslate">${dayjs(
+        now
+      ).format('YYYY')}</span>) ${lad}`,
       'Get free startup and developer email tools, bundles, resources, guides, tutorials, code samples, and more.'
     ],
     '/docs': [
-      `Free Email Developer Tools and Resources (<span class="notranslate">${dayjs().format(
-        'YYYY'
-      )}</span>) ${lad}`,
+      `Free Email Developer Tools and Resources (<span class="notranslate">${dayjs(
+        now
+      ).format('YYYY')}</span>) ${lad}`,
       'Free email developer tools and resources for startups and businesses. See our complete RESTful email API reference and manage your custom domains and aliases.'
     ],
     '/guides': [
-      `Free Email Hosting Setup Guides (<span class="notranslate">${dayjs().format(
-        'YYYY'
-      )}</span>) ${lad}`,
+      `Free Email Hosting Setup Guides (<span class="notranslate">${dayjs(
+        now
+      ).format('YYYY')}</span>) ${lad}`,
       'Follow our free email forwarding and hosting guides to send and receive mail with your custom domain. We publish an email hosting guide list of the most popular website and DNS providers.'
     ],
     '/guides/send-email-with-custom-domain-smtp': [
-      `Free Email Forwarding and Hosting for Custom Domain Setup Guide (<span class="notranslate">${dayjs().format(
-        'YYYY'
-      )}</span>) ${lad}`,
+      `Free Email Forwarding and Hosting for Custom Domain Setup Guide (<span class="notranslate">${dayjs(
+        now
+      ).format('YYYY')}</span>) ${lad}`,
       'Set up free email forwarding and hosting with your custom domain, DNS, and SMTP configuration step by step guide.'
     ],
     '/guides/send-mail-as-gmail-custom-domain': [
-      `How to Send Mail As for Gmail Custom Domain Setup Guide (<span class="notranslate">${dayjs().format(
-        'YYYY'
-      )}</span>) ${lad}`,
+      `How to Send Mail As for Gmail Custom Domain Setup Guide (<span class="notranslate">${dayjs(
+        now
+      ).format('YYYY')}</span>) ${lad}`,
       'Set up email forwarding for free with custom domain and Gmail to forward, send, and receive email. Send mail as not working? Follow our video and instructions.'
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
@@ -177,7 +181,7 @@ module.exports = function (config) {
     meta[`/guides/${provider.slug}`] = [
       `Free Forwarding and Hosting for <span class="notranslate">${
         provider.name
-      }</span> Email Setup Guide (<span class="notranslate">${dayjs().format(
+      }</span> Email Setup Guide (<span class="notranslate">${dayjs(now).format(
         'YYYY'
       )}</span>) ${lad}`,
       `How to send and receive emails with <span class="notranslate">${provider.name}</span> DNS and setup free email forwarding for <span class="notranslate">${provider.name}</span> with video and step by step instructions.`
@@ -186,9 +190,9 @@ module.exports = function (config) {
 
   if (platforms.length > 0) {
     meta['/open-source'] = [
-      `The Best Free and Open Source Email Servers <span class="notranslate">(${dayjs().format(
-        'YYYY'
-      )})</span> ${lad}`,
+      `The Best Free and Open Source Email Servers <span class="notranslate">(${dayjs(
+        now
+      ).format('YYYY')})</span> ${lad}`,
       `Open-source email server tutorials for ${arrayJoinConjunction([
         'Linux',
         ...platforms.filter((p) => !p.toLowerCase().includes('linux'))
@@ -198,9 +202,9 @@ module.exports = function (config) {
 
   for (const platform of platforms) {
     meta[`/open-source/${dashify(platform)}-email-server`] = [
-      `Open Source <span class="notranslate">${platform}</span> Email Server (<span class="notranslate">${dayjs().format(
-        'YYYY'
-      )}</span>) ${lad}`,
+      `Open Source <span class="notranslate">${platform}</span> Email Server (<span class="notranslate">${dayjs(
+        now
+      ).format('YYYY')}</span>) ${lad}`,
       `The best free and open-source email server for <span class="notranslate">${platform}</span> with step guides, tutorials, videos, and instructions.`
     ];
   }
@@ -208,7 +212,7 @@ module.exports = function (config) {
   // developer docs
   for (const doc of developerDocs) {
     meta[doc.slug] = [
-      `${doc.title} Code Example (<span class="notranslate">${dayjs().format(
+      `${doc.title} Code Example (<span class="notranslate">${dayjs(now).format(
         'YYYY'
       )}</span>) ${lad}`,
       doc.description
