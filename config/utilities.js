@@ -374,10 +374,14 @@ let developerDocs = [];
 const pathToDocs = path.join(__dirname, '..', 'app', 'views', 'docs');
 
 for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
+  console.log('UTILITY DIRECTORY', dir);
   if (!dir.isDirectory()) continue;
 
   // `dir.path` is not available until Node v20.1.0
-  if (!dir.path) dir.path = path.join(pathToDocs, dir.name);
+  // if (!dir.path) dir.path = path.join(pathToDocs, dir.name);
+  dir.path = path.join(pathToDocs, dir.name);
+
+  console.log('dir.path', dir.path);
 
   if (!fs.existsSync(path.join(dir.path, 'index.pug'))) {
     console.error('%s missing index.pug', dir.path);

@@ -211,7 +211,7 @@ html.h-100.no-js(
           crossorigin="anonymous"
         )
       else
-        if isPDF || ctx.path.endsWith(".pdf")
+        if isPDF || ctx.path.endsWith(".pdf") || config.env === 'test'
           link(
             rel="stylesheet",
             href=`${config.urls.web}/css/app.css`,
