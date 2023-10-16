@@ -18,11 +18,10 @@ const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onCreate(path, session, fn) {
-  logger.debug('CREATE', { path, session });
+  this.logger.debug('CREATE', { path, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'CREATE');
@@ -73,7 +72,7 @@ async function onCreate(path, session, fn) {
       });
       this.server.notifier.fire(alias.id);
     } catch (err) {
-      logger.fatal(err, { path, session });
+      this.logger.fatal(err, { path, session });
     }
 
     fn(null, true, mailbox._id);
@@ -81,7 +80,7 @@ async function onCreate(path, session, fn) {
     if (err.code === 11000) err.imapResponse = 'ALREADYEXISTS';
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { path, session });
+      this.logger.error(err, { path, session });
       return fn(null, err.imapResponse);
     }
 

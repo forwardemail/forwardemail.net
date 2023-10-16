@@ -15,6 +15,7 @@
 
 const { EventEmitter } = require('node:events');
 
+const Axe = require('axe');
 const _ = require('lodash');
 const safeStringify = require('fast-safe-stringify');
 
@@ -22,8 +23,12 @@ const IMAPError = require('#helpers/imap-error');
 const Journals = require('#models/journals');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
+const config = require('#config');
+const helperLogger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
+
+const logger =
+  config.env === 'development' ? helperLogger : new Axe({ silent: true });
 
 const IMAP_REDIS_CHANNEL_NAME = 'imap_events';
 

@@ -12,7 +12,6 @@ const { isEmail } = require('validator');
 const SMTPError = require('./smtp-error');
 const ServerShutdownError = require('./server-shutdown-error');
 const SocketError = require('./socket-error');
-const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
 const refineAndLogError = require('./refine-and-log-error');
 const validateAlias = require('./validate-alias');
@@ -41,7 +40,7 @@ const REQUIRED_PATHS = [
 
 // eslint-disable-next-line complexity
 async function onAuth(auth, session, fn) {
-  logger.debug('AUTH', { auth, session });
+  this.logger.debug('AUTH', { auth, session });
 
   // TODO: credit system + domain billing rules (assigned billing manager -> person who gets credits deducted)
   // TODO: salt/hash/deprecate legacy API token + remove from API docs page
@@ -114,7 +113,7 @@ async function onAuth(auth, session, fn) {
           verifications.push(record.replace(config.paidPrefix, '').trim());
       }
     } catch (err) {
-      logger.error(err, { session });
+      this.logger.error(err, { session });
     }
 
     if (verifications.length === 0)
@@ -217,7 +216,7 @@ async function onAuth(auth, session, fn) {
     this.client
       .del(`${this.rateLimiter.namespace}:${session.remoteAddress}`)
       .then()
-      .catch((err) => this.config.logger.fatal(err));
+      .catch((err) => this.logger.fatal(err));
 
     //
     // If this was IMAP server then ensure the user has all essential folders
@@ -233,7 +232,7 @@ async function onAuth(auth, session, fn) {
         }
 
         if (required.length > 0) {
-          logger.debug('creating required', { required });
+          this.logger.debug('creating required', { required });
           await Mailboxes.create(
             required.map((path) => ({
               alias: alias._id,
@@ -242,7 +241,7 @@ async function onAuth(auth, session, fn) {
           );
         }
       } catch (err) {
-        logger.fatal(err, { session });
+        this.logger.fatal(err, { session });
       }
     }
 

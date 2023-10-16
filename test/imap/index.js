@@ -16,6 +16,7 @@ const { createHash } = require('node:crypto');
 // NOTE: wait command not supported by `ioredis-mock`
 // const Redis = require('ioredis-mock');
 //
+const Axe = require('axe');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const getPort = require('get-port');
@@ -34,8 +35,8 @@ const Aliases = require('#models/aliases');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const config = require('#config');
-const logger = require('#helpers/logger');
 
+const logger = new Axe({ silent: true });
 const IP_ADDRESS = ip.address();
 const client = new Redis();
 const subscriber = new Redis();

@@ -16,11 +16,10 @@
 const ms = require('ms');
 
 const Mailboxes = require('#models/mailboxes');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onLsub(query, session, fn) {
-  logger.debug('LSUB', { query, session });
+  this.logger.debug('LSUB', { query, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'LSUB');
@@ -37,7 +36,7 @@ async function onLsub(query, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { query, session });
+      this.logger.error(err, { query, session });
       return fn(null, err.imapResponse);
     }
 

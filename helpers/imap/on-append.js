@@ -22,12 +22,11 @@ const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 // eslint-disable-next-line max-params
 async function onAppend(path, flags, date, raw, session, fn) {
-  logger.debug('APPEND', { path, flags, date, raw, session });
+  this.logger.debug('APPEND', { path, flags, date, raw, session });
 
   let thread;
   let storageUsed = 0;
@@ -232,7 +231,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // store the message
     const message = await Messages.create(data);
-    logger.debug('message created', {
+    this.logger.debug('message created', {
       message,
       path,
       flags,
@@ -257,7 +256,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       });
       this.server.notifier.fire(alias.id);
     } catch (err) {
-      logger.fatal(err, { path, flags, date, raw, session });
+      this.logger.fatal(err, { path, flags, date, raw, session });
     }
 
     const response = {
@@ -270,7 +269,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       status: 'new'
     };
 
-    logger.debug('command response', { response });
+    this.logger.debug('command response', { response });
 
     fn(null, true, response);
   } catch (err) {
@@ -285,7 +284,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       this.attachmentStorage
         .deleteManyPromise(attachmentIds, maildata.magic)
         .then()
-        .catch((err) => logger.fatal(err, { storageUsed, session }));
+        .catch((err) => this.logger.fatal(err, { storageUsed, session }));
 
     // rollback storage if there was an error and storage was consumed
     if (storageUsed > 0) {
@@ -301,7 +300,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
         }
       )
         .then()
-        .catch((err) => logger.fatal(err, { storageUsed, session }));
+        .catch((err) => this.logger.fatal(err, { storageUsed, session }));
     }
 
     // handle mongodb error
@@ -309,7 +308,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { path, flags, date, raw, session });
+      this.logger.error(err, { path, flags, date, raw, session });
       return fn(null, err.imapResponse);
     }
 

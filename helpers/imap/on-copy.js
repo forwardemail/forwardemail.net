@@ -24,12 +24,11 @@ const Messages = require('#models/messages');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 // eslint-disable-next-line max-params
 async function onCopy(connection, mailboxId, update, session, fn) {
-  logger.debug('COPY', { connection, mailboxId, update, session });
+  this.logger.debug('COPY', { connection, mailboxId, update, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'COPY');
@@ -90,7 +89,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       .maxTimeMS(ms('2m'))
       .lean()
       .cursor()) {
-      logger.debug('copying message', { message });
+      this.logger.debug('copying message', { message });
 
       // check if server is in the process of shutting down
       if (this.server._closeTimeout) throw new ServerShutdownError();
@@ -172,7 +171,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
             newMessage.magic
           );
         } catch (err) {
-          logger.fatal(err, { mailboxId, update, session });
+          this.logger.fatal(err, { mailboxId, update, session });
         }
       }
 
@@ -193,7 +192,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
           junk: newMessage.junk
         });
       } catch (err) {
-        logger.fatal(err, { mailboxId, update, session });
+        this.logger.fatal(err, { mailboxId, update, session });
       }
     }
 
@@ -216,11 +215,11 @@ async function onCopy(connection, mailboxId, update, session, fn) {
                 isCodeBug: true // admins will get an email/sms alert
               }
             );
-            logger.fatal(err, { mailboxId, update, session });
+            this.logger.fatal(err, { mailboxId, update, session });
           }
         })
         .catch((err) =>
-          logger.fatal(err, {
+          this.logger.fatal(err, {
             copiedStorage,
             connection,
             mailboxId,
@@ -237,7 +236,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       })
         .then()
         .catch((err) =>
-          logger.fatal(err, {
+          this.logger.fatal(err, {
             copiedStorage,
             connection,
             mailboxId,
@@ -255,7 +254,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { connection, mailboxId, update, session });
+      this.logger.error(err, { connection, mailboxId, update, session });
       return fn(null, err.imapResponse);
     }
 

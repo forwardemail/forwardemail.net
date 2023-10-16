@@ -21,14 +21,13 @@ const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 const BULK_BATCH_SIZE = 150;
 
 // eslint-disable-next-line complexity
 async function onMove(mailboxId, update, session, fn) {
-  logger.debug('MOVE', { mailboxId, update, session });
+  this.logger.debug('MOVE', { mailboxId, update, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'MOVE');
@@ -115,7 +114,7 @@ async function onMove(mailboxId, update, session, fn) {
       const newModseq = updatedMailbox.modifyIndex || 1;
 
       for await (let message of cursor.cursor()) {
-        logger.debug('fetched message', {
+        this.logger.debug('fetched message', {
           message,
           mailboxId,
           update,
@@ -125,7 +124,7 @@ async function onMove(mailboxId, update, session, fn) {
         // return early if no message
         // TODO: does this actually occur as an edge case (?)
         if (!message) {
-          logger.fatal('message not fetched', {
+          this.logger.fatal('message not fetched', {
             mailboxId,
             update,
             session
@@ -240,7 +239,7 @@ async function onMove(mailboxId, update, session, fn) {
             thread: message.thread
           });
         } else {
-          logger.fatal(new Error('failed to delete old message'), {
+          this.logger.fatal(new Error('failed to delete old message'), {
             mailboxId,
             update,
             session
@@ -257,7 +256,7 @@ async function onMove(mailboxId, update, session, fn) {
             expungeEntries = [];
             this.server.notifier.fire(alias.id);
           } catch (err) {
-            logger.fatal(err, { mailboxId, update, session });
+            this.logger.fatal(err, { mailboxId, update, session });
           }
         }
 
@@ -271,7 +270,7 @@ async function onMove(mailboxId, update, session, fn) {
             existEntries = [];
             this.server.notifier.fire(alias.id);
           } catch (err) {
-            logger.fatal(err, { mailboxId, update, session });
+            this.logger.fatal(err, { mailboxId, update, session });
           }
         }
       }
@@ -283,7 +282,7 @@ async function onMove(mailboxId, update, session, fn) {
     try {
       await this.server.lock.releaseLock(lock);
     } catch (err) {
-      logger.fatal(err, { mailboxId, update, session });
+      this.logger.fatal(err, { mailboxId, update, session });
     }
 
     // write any if needed
@@ -308,7 +307,7 @@ async function onMove(mailboxId, update, session, fn) {
         await this.server.notifier.addEntries(mailbox, expungeEntries);
         this.server.notifier.fire(alias.id);
       } catch (err) {
-        logger.fatal(err, { mailboxId, update, session });
+        this.logger.fatal(err, { mailboxId, update, session });
       }
     }
 
@@ -318,7 +317,7 @@ async function onMove(mailboxId, update, session, fn) {
         await this.server.notifier.addEntries(targetMailbox, existEntries);
         this.server.notifier.fire(alias.id);
       } catch (err) {
-        logger.fatal(err, { mailboxId, update, session });
+        this.logger.fatal(err, { mailboxId, update, session });
       }
     }
 
@@ -338,7 +337,7 @@ async function onMove(mailboxId, update, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { mailboxId, update, session });
+      this.logger.error(err, { mailboxId, update, session });
       return fn(null, err.imapResponse);
     }
 

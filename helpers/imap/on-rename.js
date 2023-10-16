@@ -17,12 +17,11 @@ const ms = require('ms');
 
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const IMAPError = require('#helpers/imap-error');
 
 async function onRename(path, newPath, session, fn) {
-  logger.debug('RENAME', { path, newPath, session });
+  this.logger.debug('RENAME', { path, newPath, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'RENAME');
@@ -85,7 +84,7 @@ async function onRename(path, newPath, session, fn) {
       });
       this.server.notifier.fire(alias.id);
     } catch (err) {
-      logger.fatal(err, { path, session });
+      this.logger.fatal(err, { path, session });
     }
 
     // send response
@@ -93,7 +92,7 @@ async function onRename(path, newPath, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { path, newPath, session });
+      this.logger.error(err, { path, newPath, session });
       return fn(null, err.imapResponse);
     }
 

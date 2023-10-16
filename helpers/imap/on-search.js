@@ -23,11 +23,10 @@ const IMAPError = require('#helpers/imap-error');
 const Messages = require('#models/messages');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onSearch(mailboxId, options, session, fn) {
-  logger.debug('SEARCH', { mailboxId, options, session, fn });
+  this.logger.debug('SEARCH', { mailboxId, options, session, fn });
 
   try {
     const { alias } = await this.refreshSession(session, 'SEARCH');
@@ -454,7 +453,7 @@ async function onSearch(mailboxId, options, session, fn) {
 
     try {
       for await (const message of cursor) {
-        logger.debug('fetched message', {
+        this.logger.debug('fetched message', {
           message,
           mailboxId,
           options,
@@ -468,7 +467,7 @@ async function onSearch(mailboxId, options, session, fn) {
         uidList.push(message.uid);
       }
     } catch (err) {
-      logger.fatal(err, { mailboxId, options, session });
+      this.logger.fatal(err, { mailboxId, options, session });
       throw new IMAPError(i18n.translateError('IMAP_INVALID_SEARCH'));
     }
 
@@ -476,7 +475,7 @@ async function onSearch(mailboxId, options, session, fn) {
     try {
       await cursor.close();
     } catch (err) {
-      logger.fatal(err, { mailboxId, options, session });
+      this.logger.fatal(err, { mailboxId, options, session });
     }
 
     // send response
@@ -487,7 +486,7 @@ async function onSearch(mailboxId, options, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { mailboxId, options, session });
+      this.logger.error(err, { mailboxId, options, session });
       return fn(null, err.imapResponse);
     }
 

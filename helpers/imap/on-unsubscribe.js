@@ -16,11 +16,10 @@
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onUnsubscribe(path, session, fn) {
-  logger.debug('UNSUBSCRIBE', { path, session });
+  this.logger.debug('UNSUBSCRIBE', { path, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'UNSUBSCRIBE');
@@ -48,7 +47,7 @@ async function onUnsubscribe(path, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { path, session });
+      this.logger.error(err, { path, session });
       return fn(null, err.imapResponse);
     }
 

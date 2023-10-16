@@ -17,11 +17,10 @@
 
 const Aliases = require('#models/aliases');
 const config = require('#config');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onGetQuota(path, session, fn) {
-  logger.debug('GETQUOTA', { path, session });
+  this.logger.debug('GETQUOTA', { path, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'GETQUOTA');
@@ -38,7 +37,7 @@ async function onGetQuota(path, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { path, session });
+      this.logger.error(err, { path, session });
       return fn(null, err.imapResponse);
     }
 

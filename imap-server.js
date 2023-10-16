@@ -17,6 +17,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 
 const AttachmentStorage = require('wildduck/lib/attachment-storage');
+const Axe = require('axe');
 const Indexer = require('wildduck/imap-core/lib/indexer/indexer');
 const Lock = require('ioredfour');
 const MessageHandler = require('wildduck/lib/message-handler');
@@ -59,6 +60,7 @@ const validateDomain = require('#helpers/validate-domain');
 // - [ ] increase limit to 30gb with paid-addon
 
 // TODO: urgent items
+// - [ ] attachment model and indexes
 // - [ ] enforce billing for IMAP support
 // - [ ] when users delete their account then delete all Emails, Messages, and Mailboxes in the system
 // - [ ] auto expunge in bree job when message gets a Deleted flag
@@ -108,6 +110,9 @@ class IMAP {
       namespace: config.smtpLimitNamespace
     });
 
+    this.logger =
+      config.env === 'development' ? logger : new Axe({ silent: true });
+
     const server = new IMAPServer({
       secure,
       secured: false,
@@ -120,7 +125,7 @@ class IMAP {
         version: config.pkg.version,
         vendor: config.pkg.author
       },
-      logger: config.env === 'development' ? logger : false,
+      logger: this.logger,
       maxMessage: bytes('50MB'),
 
       // NOTE: we don't need this since we have custom logic
@@ -144,8 +149,10 @@ class IMAP {
         : {})
     });
 
-    // server.loggelf =
-    //   config.env === 'development' ? (...args) => logger.info(...args) : false;
+    // override logger
+    server.logger = this.logger;
+
+    server.loggelf = (...args) => this.logger.debug(...args);
 
     server.lock = new Lock({
       redis: this.client,
@@ -177,7 +184,7 @@ class IMAP {
     server.address = server.server.address.bind(server.server);
 
     server.on('error', (err) => {
-      logger.warn(err);
+      logger.error(err);
     });
 
     //

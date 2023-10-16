@@ -26,7 +26,6 @@ const Messages = require('#models/messages');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 const LIMITED_PROJECTION_KEYS = new Set(['_id', 'flags', 'modseq', 'uid']);
@@ -35,8 +34,6 @@ const MAX_BULK_WRITE_SIZE = 150;
 
 // eslint-disable-next-line complexity
 async function getMessages(opts = {}) {
-  logger.debug('getting messages', opts);
-
   const {
     server,
     session,
@@ -47,6 +44,8 @@ async function getMessages(opts = {}) {
     alias,
     attachmentStorage
   } = opts;
+
+  server.logger.debug('getting messages', opts);
 
   // safeguard
   if (!_.isObject(query) || _.isEmpty(query))
@@ -134,7 +133,7 @@ async function getMessages(opts = {}) {
     });
 
   for await (const message of cursor) {
-    logger.debug('fetched message', {
+    server.logger.debug('fetched message', {
       message,
       session,
       options,
@@ -153,7 +152,7 @@ async function getMessages(opts = {}) {
     // break out of cursor if no message retrieved
     // TODO: does this actually occur as an edge case (?)
     if (!message) {
-      logger.fatal('message not fetched', {
+      server.logger.fatal('message not fetched', {
         session,
         options,
         query,
@@ -163,7 +162,7 @@ async function getMessages(opts = {}) {
       try {
         await cursor.close();
       } catch (err) {
-        logger.fatal(err, { session, options, query, pageQuery });
+        server.logger.fatal(err, { session, options, query, pageQuery });
       }
 
       // may have more pages, try to fetch more
@@ -220,7 +219,7 @@ async function getMessages(opts = {}) {
       const values = await Promise.all(
         session
           .getQueryResponse(options.query, message, {
-            logger,
+            logger: server.logger,
             fetchOptions: {},
             // database
             attachmentStorage,
@@ -263,7 +262,7 @@ async function getMessages(opts = {}) {
     const values = await Promise.all(
       session
         .getQueryResponse(options.query, message, {
-          logger,
+          logger: server.logger,
           fetchOptions: {},
           // database
           attachmentStorage,
@@ -324,19 +323,19 @@ async function getMessages(opts = {}) {
             entries = [];
             server.notifier.fire(alias.id);
           } catch (err) {
-            logger.fatal(err, { message, session, options, query });
+            server.logger.fatal(err, { message, session, options, query });
           }
         }
       } catch (err) {
         bulkWrite = [];
         entries = [];
-        logger.fatal(err, { message, session, options, query });
+        server.logger.fatal(err, { message, session, options, query });
 
         // close cursor for cleanup
         try {
           await cursor.close();
         } catch (err) {
-          logger.fatal(err, { message, session, options, query });
+          server.logger.fatal(err, { message, session, options, query });
         }
 
         successful = false;
@@ -356,7 +355,7 @@ async function getMessages(opts = {}) {
 }
 
 async function onFetch(mailboxId, options, session, fn) {
-  logger.debug('FETCH', { mailboxId, options, session });
+  this.logger.debug('FETCH', { mailboxId, options, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'FETCH');
@@ -425,7 +424,7 @@ async function onFetch(mailboxId, options, session, fn) {
         await this.server.notifier.addEntries(mailbox, results.entries);
         this.server.notifier.fire(alias.id);
       } catch (err) {
-        logger.fatal(err, { mailboxId, options, session });
+        this.logger.fatal(err, { mailboxId, options, session });
       }
     }
 
@@ -436,7 +435,7 @@ async function onFetch(mailboxId, options, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { mailboxId, options, session });
+      this.logger.error(err, { mailboxId, options, session });
       return fn(null, err.imapResponse);
     }
 

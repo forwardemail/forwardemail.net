@@ -28,7 +28,9 @@ const { developerDocs, nsProviders, platforms } = require('#config/utilities');
 module.exports = function (config) {
   // in order for snapshots to be consistent we need the same date to be used
   const now =
-    config.env === 'test' ? dayjs('1/1/23', 'M/D/YY').toDate() : new Date();
+    config.env === 'test'
+      ? dayjs.tz('2023-01-01', 'America/Los_Angeles').toDate()
+      : new Date();
 
   // currently we cannot use the `|` pipe character due to this issue
   // <https://github.com/mashpie/i18n-node/issues/274>

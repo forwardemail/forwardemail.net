@@ -16,11 +16,10 @@
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onSubscribe(path, session, fn) {
-  logger.debug('SUBSCRIBE', { path, session });
+  this.logger.debug('SUBSCRIBE', { path, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'SUBSCRIBE');
@@ -48,7 +47,7 @@ async function onSubscribe(path, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { path, session });
+      this.logger.error(err, { path, session });
       return fn(null, err.imapResponse);
     }
 

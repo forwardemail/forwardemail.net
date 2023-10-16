@@ -21,12 +21,11 @@ const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 // eslint-disable-next-line complexity
 async function onExpunge(mailboxId, update, session, fn) {
-  logger.debug('EXPUNGE', { mailboxId, update, session });
+  this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'EXPUNGE');
@@ -72,13 +71,13 @@ async function onExpunge(mailboxId, update, session, fn) {
       .lean()
       .cursor();
 
-    logger.debug('expunge query', { query });
+    this.logger.debug('expunge query', { query });
 
     let err;
 
     try {
       for await (const message of cursor) {
-        logger.debug('expunge message', {
+        this.logger.debug('expunge message', {
           message,
           mailboxId,
           update,
@@ -89,7 +88,11 @@ async function onExpunge(mailboxId, update, session, fn) {
         // TODO: will edge cases like this in cursor() usage ever occur (?)
         //
         if (!message) {
-          logger.fatal('message not expunged', { mailboxId, update, session });
+          this.logger.fatal('message not expunged', {
+            mailboxId,
+            update,
+            session
+          });
           // write to stream
           if (
             !update.silent &&
@@ -122,7 +125,7 @@ async function onExpunge(mailboxId, update, session, fn) {
           } catch (err) {
             // duplicate error (already archived)
             if (err.code === 11000) {
-              logger.fatal(err, { message. mailboxId, update, session });
+              this.logger.fatal(err, { message. mailboxId, update, session });
             } else {
               throw err;
             }
@@ -153,7 +156,7 @@ async function onExpunge(mailboxId, update, session, fn) {
               .deleteManyPromise(attachmentIds, message.magic)
               .then()
               .catch((err) =>
-                logger.fatal(err, { mailboxId, update, session })
+                this.logger.fatal(err, { mailboxId, update, session })
               );
 
           // write to socket we've expunged message
@@ -182,7 +185,7 @@ async function onExpunge(mailboxId, update, session, fn) {
             });
             this.server.notifier.fire(alias.id);
           } catch (err) {
-            logger.fatal(err, { mailboxId, update, session });
+            this.logger.fatal(err, { mailboxId, update, session });
           }
         }
       }
@@ -194,14 +197,14 @@ async function onExpunge(mailboxId, update, session, fn) {
     try {
       await cursor.close();
     } catch (err) {
-      logger.fatal(err, { mailboxId, update, session });
+      this.logger.fatal(err, { mailboxId, update, session });
     }
 
     // release lock
     try {
       await this.server.lock.releaseLock(lock);
     } catch (err) {
-      logger.fatal(err, { mailboxId, update, session });
+      this.logger.fatal(err, { mailboxId, update, session });
     }
 
     // update storage quota
@@ -218,7 +221,7 @@ async function onExpunge(mailboxId, update, session, fn) {
       )
         .then()
         .catch((err) =>
-          logger.fatal(err, { storageUsed, mailboxId, update, session })
+          this.logger.fatal(err, { storageUsed, mailboxId, update, session })
         );
 
     // throw error
@@ -228,7 +231,7 @@ async function onExpunge(mailboxId, update, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { mailboxId, update, session });
+      this.logger.error(err, { mailboxId, update, session });
       return fn(null, err.imapResponse);
     }
 

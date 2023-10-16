@@ -21,7 +21,6 @@ const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 const MAX_BULK_WRITE_SIZE = 150;
@@ -51,7 +50,7 @@ async function getModseq(mailbox, alias) {
 
 // eslint-disable-next-line complexity
 async function onStore(mailboxId, update, session, fn) {
-  logger.debug('STORE', { mailboxId, update, session });
+  this.logger.debug('STORE', { mailboxId, update, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'STORE');
@@ -104,7 +103,7 @@ async function onStore(mailboxId, update, session, fn) {
 
     try {
       for await (const message of cursor) {
-        logger.debug('fetched message', {
+        this.logger.debug('fetched message', {
           message,
           mailboxId,
           update,
@@ -114,7 +113,7 @@ async function onStore(mailboxId, update, session, fn) {
         // return early if no message
         // TODO: does this actually occur as an edge case (?)
         if (!message) {
-          logger.fatal('message not fetched', {
+          this.logger.fatal('message not fetched', {
             mailboxId,
             update,
             session
@@ -361,7 +360,7 @@ async function onStore(mailboxId, update, session, fn) {
             bulkWrite = [];
           } catch (err) {
             bulkWrite = [];
-            logger.fatal(err, { mailboxId, update, session });
+            this.logger.fatal(err, { mailboxId, update, session });
             throw err;
           }
 
@@ -371,7 +370,7 @@ async function onStore(mailboxId, update, session, fn) {
               this.server.notifier.fire(alias.id);
               entries = [];
             } catch (err) {
-              logger.fatal(err, { mailboxId, update, session });
+              this.logger.fatal(err, { mailboxId, update, session });
             }
           }
         }
@@ -384,7 +383,7 @@ async function onStore(mailboxId, update, session, fn) {
     try {
       await cursor.close();
     } catch (err) {
-      logger.fatal(err, { mailboxId, update, session });
+      this.logger.fatal(err, { mailboxId, update, session });
     }
 
     // update messages
@@ -399,7 +398,7 @@ async function onStore(mailboxId, update, session, fn) {
         await this.server.notifier.addEntries(mailbox, entries);
         this.server.notifier.fire(alias.id);
       } catch (err) {
-        logger.fatal(err, { mailboxId, update, session });
+        this.logger.fatal(err, { mailboxId, update, session });
       }
     }
 
@@ -449,7 +448,7 @@ async function onStore(mailboxId, update, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { mailboxId, update, session });
+      this.logger.error(err, { mailboxId, update, session });
       return fn(null, err.imapResponse);
     }
 

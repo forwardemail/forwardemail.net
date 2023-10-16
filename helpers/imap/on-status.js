@@ -19,11 +19,10 @@ const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onStatus(path, session, fn) {
-  logger.debug('STATUS', { path, session });
+  this.logger.debug('STATUS', { path, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'STATUS');
@@ -66,7 +65,7 @@ async function onStatus(path, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { path, session });
+      this.logger.error(err, { path, session });
       return fn(null, err.imapResponse);
     }
 

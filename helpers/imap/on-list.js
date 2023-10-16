@@ -16,11 +16,10 @@
 const ms = require('ms');
 
 const Mailboxes = require('#models/mailboxes');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onList(query, session, fn) {
-  logger.debug('LIST', { query, session });
+  this.logger.debug('LIST', { query, session });
 
   try {
     const { alias } = await this.refreshSession(session, 'LIST');
@@ -36,7 +35,7 @@ async function onList(query, session, fn) {
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
-      logger.error(err, { query, session });
+      this.logger.error(err, { query, session });
       return fn(null, err.imapResponse);
     }
 

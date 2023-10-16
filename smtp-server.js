@@ -5,6 +5,7 @@
 
 const fs = require('node:fs');
 
+const Axe = require('axe');
 const RateLimiter = require('async-ratelimiter');
 const bytes = require('bytes');
 const ms = require('ms');
@@ -43,6 +44,9 @@ class SMTP {
       namespace: config.smtpLimitNamespace
     });
 
+    this.logger =
+      config.env === 'development' ? logger : new Axe({ silent: true });
+
     // setup our smtp server which listens for incoming email
     // TODO: <https://github.com/nodemailer/smtp-server/issues/177>
     this.server = new SMTPServer({
@@ -67,7 +71,7 @@ class SMTP {
       closeTimeout: ms('30s'),
       // <https://github.com/nodemailer/smtp-server/issues/177>
       disableReverseLookup: true,
-      logger: config.env === 'production' ? false : logger,
+      logger: this.logger,
 
       disabledCommands: secure ? ['STARTTLS'] : [],
       secure,
@@ -89,12 +93,15 @@ class SMTP {
         : {})
     });
 
+    // override logger
+    this.server.logger = this.logger;
+
     // kind of hacky but I filed a GH issue
     // <https://github.com/nodemailer/smtp-server/issues/135>
     this.server.address = this.server.server.address.bind(this.server.server);
 
     this.server.on('error', (err) => {
-      logger.warn(err);
+      logger.error(err);
     });
 
     this.listen = this.listen.bind(this);
