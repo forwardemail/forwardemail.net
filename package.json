@@ -187,7 +187,7 @@
     "url-regex-safe": "4.0.0",
     "validator": "13.11.0",
     "web-resource-inliner": "6.0.1",
-    "wildduck": "1.40.9",
+    "wildduck": "1.40.10",
     "wkhtmltopdf": "0.4.0",
     "zone-mta": "3.6.13",
     "zxcvbn": "4.4.2"
