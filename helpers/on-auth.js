@@ -187,22 +187,18 @@ async function onAuth(auth, session, fn) {
       );
 
     //
-    // rate limiting
+    // rate limiting (checks if we have had more than 5 failed auth attempts in a row)
     //
     if (
       // do not rate limit IP addresses corresponding to our servers
       !session.resolvedClientHostname ||
       parseRootDomain(session.resolvedClientHostname) !== env.WEB_HOST
     ) {
-      // rate limit to X failed attempts per day by IP address
-      const limit = await this.rateLimiter.get({
-        id: session.remoteAddress,
-        max: config.smtpLimitAuth,
-        duration: config.smtpLimitAuthDuration
-      });
-
-      // return 550 error code
-      if (!limit.remaining)
+      const count = await this.client.incrby(
+        `auth_limit_${config.env}:${session.remoteAddress}`,
+        0
+      );
+      if (count >= config.smtpLimitAuth)
         throw new SMTPError(
           `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`
           // { ignoreHook: true }
@@ -215,7 +211,16 @@ async function onAuth(auth, session, fn) {
       auth.password.trim()
     );
 
-    if (!isValid)
+    if (!isValid) {
+      // increase failed counter by 1
+      await this.client.incrby(
+        `auth_limit_${config.env}:${session.remoteAddress}`,
+        1
+      );
+      await this.client.pttl(
+        `auth_limit_${config.env}:${session.remoteAddress}`,
+        config.smtpLimitAuthDuration
+      );
       throw new SMTPError(
         `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
         {
@@ -223,12 +228,10 @@ async function onAuth(auth, session, fn) {
           // ignoreHook: true
         }
       );
+    }
 
-    // Clear authentication limit for this IP address (in the background)
-    this.client
-      .del(`${this.rateLimiter.namespace}:${session.remoteAddress}`)
-      .then()
-      .catch((err) => this.logger.fatal(err));
+    // Clear authentication limit for this IP address
+    await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
 
     //
     // If this was IMAP server then ensure the user has all essential folders
