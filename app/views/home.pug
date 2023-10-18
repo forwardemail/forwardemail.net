@@ -110,7 +110,10 @@ block body
       .row
         .col-12.col-lg-6
           h1.mb-3
-            = t("Free, private, and secure email for custom domains.")
+            if isBot(ctx.get("User-Agent"))
+              = t("Free, private, and secure email for custom domains.")
+            else
+              = t("Free, private, and secure email for everyone.")
           p.d-none.d-md-block
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
             = " "

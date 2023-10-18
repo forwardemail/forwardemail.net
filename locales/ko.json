@@ -4951,5 +4951,9 @@
   "Save your settings": "설정 저장",
   "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.  See our": "귀하는 제3자(귀하의 직원 및 계약자 제외)가 당사 서비스에 액세스하거나 당사 서비스로부터 혜택을 받을 수 있도록 허용하는 서비스를 운영하기 위해 당사 서비스를 사용해서는 안 됩니다. 이와 관련하여 예외를 적용해야 하는 경우 당사에 연락하여 기업 계약에 대해 논의하시기 바랍니다. 우리를 참조하십시오",
   "for more information.": "자세한 내용은.",
-  "Maximum message size exceeded": "최대 메시지 크기를 초과했습니다."
+  "Maximum message size exceeded": "최대 메시지 크기를 초과했습니다.",
+  "If you have a domain with <a href=\"https://www.namecheap.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Namecheap</a>, <a href=\"https://developers.cloudflare.com/registrar/get-started/register-domain/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare</a>, <a href=\"https://www.godaddy.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">GoDaddy</a>, or another <a href=\"https://en.wikipedia.org/wiki/Domain_name_registrar\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">registrar</a>, then enter it below:": "<a href=\"https://www.namecheap.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Namecheap</a> , <a href=\"https://developers.cloudflare.com/registrar/get-started/register-domain/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare</a> , <a href=\"https://www.godaddy.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">GoDaddy</a> 또는 다른 <a href=\"https://en.wikipedia.org/wiki/Domain_name_registrar\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">registrar</a> 의 도메인이 있는 경우 아래에 입력하세요.",
+  "Use one of our domains:": "다음 도메인 중 하나를 사용하세요.",
+  "Register a new domain name": "새 도메인 이름 등록",
+  "Free, private, and secure email for everyone.": "모든 사람을 위한 무료, 비공개 및 보안 이메일입니다."
 }

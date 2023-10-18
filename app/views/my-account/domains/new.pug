@@ -25,12 +25,14 @@ block body
       .row
         .col
           include ../../_breadcrumbs
-    .container.py-3
+    .container.pb-3.text-center
       .row
         .col-sm-12.col-md-12.col-lg-8.offset-lg-2
           form.ajax-form(action=ctx.path, method="POST")
             if isSANB(ctx.query.plan) && ['free','enhanced_protection','team'].includes(ctx.query.plan)
               input(type="hidden", name="plan", value=ctx.query.plan)
+            .alert.alert-success.small
+              != t('If you have a domain with <a href="https://www.namecheap.com/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">Namecheap</a>, <a href="https://developers.cloudflare.com/registrar/get-started/register-domain/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">Cloudflare</a>, <a href="https://www.godaddy.com/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">GoDaddy</a>, or another <a href="https://en.wikipedia.org/wiki/Domain_name_registrar" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">registrar</a>, then enter it below:')
             .form-group.floating-label
               input#input-domain.form-control.form-control-lg(
                 required,
@@ -55,14 +57,22 @@ block body
                 )
                 label.form-check-label(for="input-is-global")= t("Global domain")
             button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
-          .alert.alert-warning.mt-3.text-center
-            ul.list-inline.mb-0
-              li.list-inline-item= t("Don't have a domain name?")
-              li.list-inline-item
-                a.alert-link(href=l("/domain-registration"))= t("Register a domain")
+          .hr-text.d-flex.text-secondary.align-items-center= t("or")
+          h3.mb-3= t("Use one of our domains:")
+          form(action=l('/my-account/domains/aliases/new'), method='GET')
+            .form-group.floating-label
+              select#input-group.form-control.input-lg(name="domain", required)
+                each vanityDomain, i in config.vanityDomains
+                  span= i
+                  strong= vanityDomain
+                  option(value=vanityDomain, selected=i === 0)= vanityDomain
+              label(for="input-group")= t("Domain Name")
+            button.btn.btn-primary.btn-block.btn-lg(type="submit")= t("Continue")
+          .hr-text.d-flex.text-secondary.align-items-center= t("or")
+          a.btn.btn-dark.btn-lg(href=l("/domain-registration"))= t("Register a new domain name")
       - const filteredDomains = domains.filter((domain) => !domain.is_global || domain.group === "admin");
       if filteredDomains.length > 0
-        .row.text-center.my-5
+        .row.my-5
           .col
             a.btn.btn-outline-secondary(href=l("/my-account/domains"))
               i.fa.fa-angle-double-left

@@ -136,15 +136,14 @@ block body
                     )
                       = t("Card, Wallet, or Bank")
                       = " "
-                      a.btn.btn-link.text-themed.p-0.no-js(
-                        href="#",
-                        role="button",
-                        data-toggle="tooltip",
-                        data-placement="bottom",
-                        aria-label=t("Payment Methods"),
-                        title=t("We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.")
+                      button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                        type="button",
+                        data-confirm-type="info",
+                        data-confirm-show-cancel-button="false",
+                        data-confirm-prompt-title=t("Payment Methods"),
+                        data-confirm-prompt-html=t("We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.")
                       )
-                        i.fa.fa-question-circle
+                        i.fa.fa-info-circle
                   .form-check.form-check-inline.mr-0.no-js
                     input#input-payment-method-paypal.form-check-input(
                       type="radio",

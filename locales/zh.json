@@ -4642,5 +4642,9 @@
   "Save your settings": "保存您的设置",
   "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.  See our": "您不得使用我们的服务来运营允许第三方（您自己的员工和承包商除外）访问、使用我们的服务或从我们的服务中受益的服务。如果您需要我们在这方面为您破例，请联系我们讨论企业协议。看看我们的",
   "for more information.": "了解更多信息。",
-  "Maximum message size exceeded": "超出最大消息大小"
+  "Maximum message size exceeded": "超出最大消息大小",
+  "If you have a domain with <a href=\"https://www.namecheap.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Namecheap</a>, <a href=\"https://developers.cloudflare.com/registrar/get-started/register-domain/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare</a>, <a href=\"https://www.godaddy.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">GoDaddy</a>, or another <a href=\"https://en.wikipedia.org/wiki/Domain_name_registrar\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">registrar</a>, then enter it below:": "如果您有<a href=\"https://www.namecheap.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Namecheap</a> 、 <a href=\"https://developers.cloudflare.com/registrar/get-started/register-domain/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare</a> 、 <a href=\"https://www.godaddy.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">GoDaddy</a>或其他<a href=\"https://en.wikipedia.org/wiki/Domain_name_registrar\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">registrar</a>的域名，请在下面输入：",
+  "Use one of our domains:": "使用我们的域之一：",
+  "Register a new domain name": "注册新域名",
+  "Free, private, and secure email for everyone.": "为所有人提供免费、私密且安全的电子邮件。"
 }

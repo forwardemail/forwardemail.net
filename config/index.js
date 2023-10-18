@@ -147,7 +147,7 @@ const config = {
   },
 
   // vanity domains
-  vanityDomains: env.VANITY_DOMAINS.sort(),
+  vanityDomains: env.VANITY_DOMAINS,
 
   // record prefix (matches SMTP)
   recordPrefix: env.TXT_RECORD_PREFIX,

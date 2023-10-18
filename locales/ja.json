@@ -4951,5 +4951,9 @@
   "Save your settings": "設定を保存する",
   "You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.  See our": "お客様は、第三者 (お客様自身の従業員および請負業者を除く) が当社のサービスにアクセス、使用、またはその恩恵を受けることを可能にするサービスを運営するために当社のサービスを使用してはなりません。これに関して例外を設ける必要がある場合は、エンタープライズ契約についてご相談ください。私たちのを参照してください",
   "for more information.": "詳細については。",
-  "Maximum message size exceeded": "最大メッセージ サイズを超えました"
+  "Maximum message size exceeded": "最大メッセージ サイズを超えました",
+  "If you have a domain with <a href=\"https://www.namecheap.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Namecheap</a>, <a href=\"https://developers.cloudflare.com/registrar/get-started/register-domain/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare</a>, <a href=\"https://www.godaddy.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">GoDaddy</a>, or another <a href=\"https://en.wikipedia.org/wiki/Domain_name_registrar\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">registrar</a>, then enter it below:": "<a href=\"https://www.namecheap.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Namecheap</a> 、 <a href=\"https://developers.cloudflare.com/registrar/get-started/register-domain/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare</a> 、 <a href=\"https://www.godaddy.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">GoDaddy</a> 、または別の<a href=\"https://en.wikipedia.org/wiki/Domain_name_registrar\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">registrar</a>ドメインをお持ちの場合は、以下に入力します。",
+  "Use one of our domains:": "当社のドメインのいずれかを使用してください:",
+  "Register a new domain name": "新しいドメイン名を登録する",
+  "Free, private, and secure email for everyone.": "誰もが利用できる無料、プライベート、安全なメール。"
 }

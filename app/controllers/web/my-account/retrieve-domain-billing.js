@@ -1751,6 +1751,17 @@ async function retrieveDomainBilling(ctx) {
       redirectTo = ctx.state.l(`/denylist?q=${ctx.state.denylist}`);
     }
 
+    // if the user doesn't have any domains yet then redirect them to create a new one
+    try {
+      const count = await Aliases.countDocuments({
+        domain: { $in: ctx.state.domains.map((d) => d._id) },
+        user: ctx.state.user._id
+      });
+      if (count === 0) redirectTo = ctx.state.l('/my-account/domains/new');
+    } catch (err) {
+      ctx.logger.fatal(err);
+    }
+
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
   } catch (err) {
