@@ -59,7 +59,7 @@ block body
             button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
           .hr-text.d-flex.text-secondary.align-items-center= t("or")
           h3.mb-3= t("Use one of our domains:")
-          form(action=l('/my-account/domains/aliases/new'), method='GET')
+          form(action=l("/my-account/domains/aliases/new"), method="GET")
             .form-group.floating-label
               select#input-group.form-control.input-lg(name="domain", required)
                 each vanityDomain, i in config.vanityDomains
