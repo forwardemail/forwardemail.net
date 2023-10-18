@@ -176,7 +176,9 @@ Mailboxes.pre('save', async function (next) {
     // default to `alias.retention` or 0
     this.retention = ['\\Trash', '\\Junk'].includes(this.specialUse)
       ? ms('30d')
-      : alias.retention;
+      : typeof alias.retention === 'number'
+      ? alias.retention
+      : 0;
 
     next();
   } catch (err) {

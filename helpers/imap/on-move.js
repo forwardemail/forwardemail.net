@@ -190,8 +190,11 @@ async function onMove(mailboxId, update, session, fn) {
         message.id = message._id.toString();
         message.mailbox = targetMailbox._id;
         message.uid = updatedTargetMailbox.uidNext;
-        message.exp = targetMailbox.retention !== 0;
-        message.rdate = Date.now() + targetMailbox.retention;
+        message.exp =
+          typeof targetMailbox.retention === 'number'
+            ? targetMailbox.retention !== 0
+            : false;
+        message.rdate = new Date(Date.now() + (targetMailbox.retention || 0));
         message.modseq = updatedTargetMailbox.modifyIndex;
         message.junk = targetMailbox.specialUse === '\\Junk';
         message.remoteAddress = session.remoteAddress;

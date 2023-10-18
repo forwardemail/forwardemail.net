@@ -26,7 +26,7 @@ const SocketError = require('#helpers/socket-error');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
-// eslint-disable-next-line max-params
+// eslint-disable-next-line max-params, complexity
 async function onCopy(connection, mailboxId, update, session, fn) {
   this.logger.debug('COPY', { connection, mailboxId, update, session });
 
@@ -141,8 +141,16 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       message.id = message._id.toString();
       message.mailbox = targetMailbox._id;
       message.uid = updatedMailbox.uidNext;
-      message.exp = targetMailbox.retention !== 0;
-      message.rdate = Date.now() + targetMailbox.retention;
+      message.exp =
+        typeof targetMailbox.retention === 'number'
+          ? targetMailbox.retention !== 0
+          : false;
+      message.rdate = new Date(
+        Date.now() +
+          (typeof targetMailbox.retention === 'number'
+            ? targetMailbox.retention
+            : 0)
+      );
       message.modseq = updatedMailbox.modifyIndex;
       message.junk = targetMailbox.specialUse === '\\Junk';
       message.remoteAddress = session.remoteAddress;

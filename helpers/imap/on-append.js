@@ -146,13 +146,15 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //
     // prepare message for creation
     //
+    const retention =
+      typeof mailbox.retention === 'number' ? mailbox.retention : 0;
     const data = {
       alias: alias._id,
       mailbox: mailbox._id,
       _id: id,
       root: id,
-      exp: mailbox.retention !== 0,
-      rdate: Date.now() + mailbox.retention,
+      exp: retention !== 0,
+      rdate: new Date(Date.now() + retention),
       idate,
       hdate,
       flags,
