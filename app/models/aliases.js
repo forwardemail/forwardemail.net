@@ -463,14 +463,24 @@ Aliases.pre('save', async function (next) {
       // then the user can only have up to 5 aliases at a time on the domain
       if (domain.is_global) {
         // user must be on a paid plan to use a global domain
-        if (user.plan === 'free' && !alias.is_update)
+        if (user.plan === 'free' && !alias.is_update) {
+          const domainIds = await Domains.distinct('_id', {
+            is_global: true
+          });
+          const aliasCount = await alias.constructor.countDocuments({
+            user: user._id,
+            domain: { $in: domainIds }
+          });
           throw Boom.paymentRequired(
             i18n.translateError(
-              'PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS',
+              aliasCount > 0
+                ? 'PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS_AND_DELETE_REQUIRED'
+                : 'PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS',
               alias.locale,
               `/${alias.locale}/my-account/billing/upgrade?plan=enhanced_protection`
             )
           );
+        }
 
         if (user.group !== 'admin') {
           // user cannot exceed the max alias count on a global domain
