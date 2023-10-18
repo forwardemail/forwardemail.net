@@ -19,8 +19,7 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onConnect(session, fn) {
   logger.debug('CONNECT', { session });
 
-  if (this.server._closeTimeout)
-    return setImmediate(() => fn(new ServerShutdownError()));
+  if (this.server._closeTimeout) return fn(new ServerShutdownError());
 
   // this is used for setting Date header if missing on SMTP submission
   session.arrivalDate = new Date();
@@ -76,6 +75,7 @@ async function onConnect(session, fn) {
         );
 
       const results = await this.client.mget(arr);
+
       if (results.some((result) => boolean(result))) {
         throw new SMTPError(
           `The ${rootDomain ? 'domain' : 'IP'} ${
@@ -90,9 +90,9 @@ async function onConnect(session, fn) {
       }
     }
 
-    setImmediate(fn);
+    fn();
   } catch (err) {
-    setImmediate(() => fn(refineAndLogError(err, session)));
+    fn(refineAndLogError(err, session));
   }
 }
 

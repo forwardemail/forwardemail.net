@@ -12,10 +12,9 @@
 const { Buffer } = require('node:buffer');
 const { createHash } = require('node:crypto');
 
-//
 // NOTE: wait command not supported by `ioredis-mock`
-// const Redis = require('ioredis-mock');
-//
+// <https://github.com/stipsan/ioredis-mock/issues/1327>
+// const RedisMock = require('ioredis-mock');
 const Axe = require('axe');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');

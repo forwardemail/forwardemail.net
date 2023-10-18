@@ -6,6 +6,7 @@
 const punycode = require('node:punycode');
 
 const isSANB = require('is-string-and-not-blank');
+const pify = require('pify');
 const { IMAPServer } = require('wildduck/imap-core');
 const { isEmail } = require('validator');
 
@@ -22,6 +23,7 @@ const Domains = require('#models/domains');
 const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
 const env = require('#config/env');
+const onConnect = require('#helpers/smtp/on-connect');
 
 const REQUIRED_PATHS = [
   'INBOX',
@@ -38,6 +40,8 @@ const REQUIRED_PATHS = [
   'Trash'
 ];
 
+const onConnectPromise = pify(onConnect);
+
 // eslint-disable-next-line complexity
 async function onAuth(auth, session, fn) {
   this.logger.debug('AUTH', { auth, session });
@@ -53,6 +57,14 @@ async function onAuth(auth, session, fn) {
   // (password visible only once to user upon creation)
   //
   try {
+    //
+    // NOTE: until onConnect is available for IMAP server
+    //       we leverage the existing SMTP helper in the interim
+    //       <https://github.com/nodemailer/wildduck/issues/540>
+    //
+    if (this.server instanceof IMAPServer)
+      await onConnectPromise.call(this, session);
+
     // check if server is in the process of shutting down
     if (this.server._closeTimeout) throw new ServerShutdownError();
 
