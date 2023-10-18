@@ -217,7 +217,7 @@ async function onAuth(auth, session, fn) {
         `auth_limit_${config.env}:${session.remoteAddress}`,
         1
       );
-      await this.client.pttl(
+      await this.client.pexpire(
         `auth_limit_${config.env}:${session.remoteAddress}`,
         config.smtpLimitAuthDuration
       );
