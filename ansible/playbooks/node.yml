@@ -25,27 +25,34 @@
       debug:
         var: node_version
 
-    - name: Check Node version
-      become: true
-      become_user: deploy
-      shell: test "$(node -v 2> /dev/null)" = v{{node_version}}
-      register: node_version_installed
-      ignore_errors: True
-
-    - name: Debug Check Node version
-      debug:
-        var: node_version_installed
-
     - name: Debug n exists
       debug:
         var: n_result.stat.exists
 
+    - name: Check Node version
+      become: true
+      become_user: deploy
+      shell: source /home/deploy/.bashrc && node --version | sed "s/v//"
+      register: node_version_installed
+      when: n_result.stat.exists
+      args:
+         executable: /bin/bash
+
+    - name: Debug Node version installed
+      debug:
+        var: node_version_installed
+
+    - name: Debug Setup Node version comparison
+      debug:
+        var: n_result.stat.exists and node_version_installed and not node_version_installed.failed and node_version_installed.stdout is version(node_version, "ne", version_type="semver")
+
     - name: Setup Node
       become: true
       become_user: deploy
-      shell:
-        cmd: "n install {{node_version}} && n prune"
-      when: not node_version_installed and n_result.stat.exists
+      shell: source /home/deploy/.bashrc && n install {{node_version}} && n prune
+      args:
+         executable: /bin/bash
+      when: n_result.stat.exists and node_version_installed and not node_version_installed.failed and node_version_installed.stdout is version(node_version, "ne", version_type="semver")
 
     # install pm2 and pnpm
     - name: Check if pm2 exists
@@ -55,7 +62,9 @@
     - name: Install pm2
       become: true
       become_user: deploy
-      shell: bash -ilc 'npm install -g pm2'
+      shell: source /home/deploy/.bashrc && npm install -g pm2
+      args:
+         executable: /bin/bash
       when: not pm2_result.stat.exists
     - name: Reload pm2 every 4 hours
       become: true
@@ -72,7 +81,9 @@
     - name: Install pnpm
       become: true
       become_user: deploy
-      shell: bash -ilc 'npm install -g pnpm@7'
+      shell: source /home/deploy/.bashrc && npm install -g pnpm@7
+      args:
+         executable: /bin/bash
       when: not pnpm_result.stat.exists
     # install fonts
     - name: Accept fonts license
@@ -107,7 +118,9 @@
     - name: Install pm2-logrotate
       become: true
       become_user: deploy
-      shell: bash -ilc 'pm2 install pm2-logrotate'
+      shell: source /home/deploy/.bashrc && pm2 install pm2-logrotate
+      args:
+         executable: /bin/bash
     - name: Check that pm2 startup script exists
       stat:
         path: /etc/systemd/system/pm2-deploy.service
