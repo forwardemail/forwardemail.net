@@ -138,7 +138,14 @@ class IMAP {
         ? {
             key: fs.readFileSync(env.WEB_SSL_KEY_PATH),
             cert: fs.readFileSync(env.WEB_SSL_CERT_PATH),
-            ca: fs.readFileSync(env.WEB_SSL_CA_PATH)
+            ca: fs.readFileSync(env.WEB_SSL_CA_PATH),
+            // perfect forward secrecy
+            // <https://github.com/nodemailer/wildduck/issues/541>
+            dhparam:
+              isSANB(env.WEB_SSL_DHPARAM_PATH) &&
+              env.WEB_SSL_DHPARAM_PATH.toLowerCase() !== 'auto'
+                ? fs.readFileSync(env.WEB_SSL_DHPARAM_PATH)
+                : 'auto'
           }
         : {})
     });

@@ -85,3 +85,4 @@ temp/
 .ssl-ca
 .ssl-cert
 .ssl-key
+.ssl-dhparam

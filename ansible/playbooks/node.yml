@@ -6,6 +6,8 @@
   name: Node.js
   become: true
   become_user: root
+  vars:
+    node_version: "18.16.0"
   tasks:
     # install n and node lts
     - name: Check that n exists
@@ -16,8 +18,35 @@
       become: true
       become_user: deploy
       shell:
-        cmd: curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y
+        cmd: curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y {{node_version}}
       when: not n_result.stat.exists
+
+    - name: Debug Node version
+      debug:
+        var: node_version
+
+    - name: Check Node version
+      become: true
+      become_user: deploy
+      shell: test "$(node -v 2> /dev/null)" = v{{node_version}}
+      register: node_version_installed
+      ignore_errors: True
+
+    - name: Debug Check Node version
+      debug:
+        var: node_version_installed
+
+    - name: Debug n exists
+      debug:
+        var: n_result.stat.exists
+
+    - name: Setup Node
+      become: true
+      become_user: deploy
+      shell:
+        cmd: "n install {{node_version}} && n prune"
+      when: not node_version_installed and n_result.stat.exists
+
     # install pm2 and pnpm
     - name: Check if pm2 exists
       stat:
