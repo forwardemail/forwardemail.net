@@ -170,7 +170,7 @@ const Emails = new mongoose.Schema(
         required: true,
         lowercase: true,
         trim: true,
-        validate: isEmail
+        validate: (v) => isEmail(v, { ignore_max_length: true })
       },
       // list of email addresses to sent to
       // (combined To, Cc, Bcc - and then Bcc is removed from headers)
@@ -209,7 +209,7 @@ const Emails = new mongoose.Schema(
         type: String,
         lowercase: true,
         trim: true,
-        validate: isEmail
+        validate: (v) => isEmail(v, { ignore_max_length: true })
       }
     ],
     //
