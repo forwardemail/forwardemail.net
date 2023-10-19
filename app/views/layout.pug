@@ -306,20 +306,34 @@ html.h-100.no-js(
 
       if isBot(ctx.get('User-Agent'))
         //- lazyload only support for bots
-        script(
-          defer,
-          src=manifest("js/lazyload.js"),
-          integrity=manifest("js/lazyload.js", "integrity"),
-          crossorigin="anonymous"
-        )
+        if config.env === 'test'
+          script(
+            defer,
+            src=`${config.urls.web}/js/lazyload.js`,
+            crossorigin="anonymous"
+          )
+        else
+          script(
+            defer,
+            src=manifest("js/lazyload.js"),
+            integrity=manifest("js/lazyload.js", "integrity"),
+            crossorigin="anonymous"
+          )
       else
         //- build
-        script(
-          defer,
-          src=manifest("js/build.js"),
-          integrity=manifest("js/build.js", "integrity"),
-          crossorigin="anonymous"
-        )
+        if config.env === 'test'
+          script(
+            defer,
+            src=`${config.urls.web}/js/build.js`,
+            crossorigin="anonymous"
+          )
+        else
+          script(
+            defer,
+            src=manifest("js/build.js"),
+            integrity=manifest("js/build.js", "integrity"),
+            crossorigin="anonymous"
+          )
 
         //- TODO: remove plausible and migrate to our own
         //- analytics via plausible.io
