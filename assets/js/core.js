@@ -410,7 +410,10 @@ const $nav = $('.navbar.fixed-top');
 const el = document.querySelector('#freddy');
 
 function navbarScroll() {
-  if ($(window).scrollTop() >= $nav.outerHeight()) {
+  if (
+    $(window).scrollTop() >= $nav.outerHeight() ||
+    $('.navbar-collapse').hasClass('show')
+  ) {
     $nav
       .addClass('bg-white navbar-themed bg-themed border-bottom')
       .removeClass('text-white');
@@ -433,6 +436,6 @@ if (el && $nav.length > 0) {
   navbarScroll();
   $(window).scroll(debounce(navbarScroll, 125));
   $('#navbar-header')
-    .on('show.bs.collapse', navbarScroll)
-    .on('hide.bs.collapse', navbarScroll);
+    .on('shown.bs.collapse', navbarScroll)
+    .on('hidden.bs.collapse', navbarScroll);
 }
