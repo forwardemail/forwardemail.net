@@ -44,7 +44,7 @@ const graceful = new Graceful({
 });
 
 const queue = new PQueue({
-  concurrency: config.concurrency * 8
+  concurrency: config.concurrency * 16
   // timeout: config.smtpQueueTimeout
 });
 
@@ -200,8 +200,8 @@ async function sendEmails() {
     if (isCancelled) break;
     // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
     queue.add(() => processEmail({ email, resolver, client }), {
-      // if the email was admin owned domain then priority higher (see email pre-save hook)
-      priority: email.priority || 0
+      // TODO: if the email was admin owned domain then priority higher (see email pre-save hook)
+      // priority: email.priority || 0
     });
   }
 
