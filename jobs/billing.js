@@ -123,7 +123,7 @@ async function mapper(id) {
         $gte: dayjs().subtract(2, 'weeks').toDate()
       }
     });
-    if (paymentCount >= 0) return;
+    if (paymentCount > 0) return;
   }
 
   // if final notice sent then ensure it's been 1 month since final notice
