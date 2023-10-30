@@ -259,7 +259,7 @@ class IMAP {
       Domains.findById(session.user.domain_id)
         .populate(
           'members.user',
-          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt}`
+          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
         )
         .lean()
         .exec(),

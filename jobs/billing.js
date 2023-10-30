@@ -54,13 +54,23 @@ async function mapper(id) {
   // return early if the job was already cancelled
   if (isCancelled) return;
 
-  const user = await Users.findById(id).lean().exec();
+  let user = await Users.findById(id);
+
+  if (!user) return;
 
   // ensure not banned
   if (user[config.userFields.isBanned]) return;
 
   // if on free plan then ignore
   if (user.plan === 'free') return;
+
+  // run a quick save of the user to update fields
+  // (e.g. and remove expiration notice dates if plan expires in future)
+  await user.save();
+
+  user = await Users.findById(id).lean().exec();
+
+  if (!user) return;
 
   // if they started a subscription then ignore
   if (
@@ -104,9 +114,8 @@ async function mapper(id) {
 
   // ensure plan expires < 1 month from now
   if (
-    dayjs(user[config.userFields.planExpiresAt]).isAfter(
-      dayjs().add(1, 'month')
-    )
+    new Date(user[config.userFields.planExpiresAt]).getTime() <
+    dayjs().add(1, 'month').toDate().getTime()
   )
     return;
 
@@ -131,12 +140,11 @@ async function mapper(id) {
     // if it has been more than a month then ban the user and email admins
     // otherwise return early since we've already notified them
     if (
-      dayjs().isAfter(
-        dayjs(user[config.userFields.paymentReminderFinalNoticeSentAt]).add(
-          1,
-          'month'
-        )
-      ) &&
+      Date.now() >
+        dayjs(user[config.userFields.paymentReminderFinalNoticeSentAt])
+          .add(1, 'month')
+          .toDate()
+          .getTime() &&
       !_.isDate(user[config.userFields.paymentReminderTerminationNoticeSentAt])
     ) {
       await email({

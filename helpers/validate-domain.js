@@ -4,6 +4,7 @@
  */
 
 const _ = require('lodash');
+const isSANB = require('is-string-and-not-blank');
 
 const SMTPError = require('#helpers/smtp-error');
 const i18n = require('#helpers/i18n');
@@ -59,8 +60,10 @@ function validateDomain(domain, domainName) {
         !m.user[config.userFields.isBanned] &&
         m.user[config.userFields.hasVerifiedEmail] &&
         validPlans.includes(m.user.plan) &&
-        new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
-          Date.now() &&
+        (new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
+          Date.now() ||
+          isSANB(m.user[config.userFields.stripeSubscriptionID]) ||
+          isSANB(m.user[config.userFields.paypalSubscriptionID])) &&
         m.group === 'admin'
     )
   )

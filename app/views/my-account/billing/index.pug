@@ -82,13 +82,10 @@ block body
               .alert.text-center.mb-0(
                 class=hasPlanExpired ? "alert-danger" : "alert-success"
               )
-                if hasPlanExpired
+                if hasPlanExpired && !hasSubscription
                   != t('Your plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
                   = " "
-                  if hasSubscription && isSANB(user[config.userFields.stripeSubscriptionID])
-                    = t("Make payment or update card immediately to avoid account termination.")
-                  else
-                    = t("Make payment immediately to avoid account termination.")
+                  = t("Make payment immediately to avoid account termination.")
                 else
                   = emoji("tada")
                   = " "
@@ -104,9 +101,7 @@ block body
                   = t("Auto-renew enabled")
                 else
                   = t("Auto-renew disabled")
-              if hasSubscription && hasPlanExpired
-                .alert.alert-warning.small.mt-3.mb-0!= t('Something is wrong with your current <span class="notranslate">%s</span> subscription.', isSANB(user[config.userFields.stripeSubscriptionID]) ? t("card, wallet, or bank") : "PayPal")
-              else if !hasPlanExpired
+              if !hasPlanExpired
                 .alert.alert-warning.small.mt-3.mb-0
                   != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("LL"))
               ul.list-inline.text-center.mb-0

@@ -468,9 +468,8 @@ Users.pre('save', async function (next) {
       // Only reset the reminders if it is past the reminder period
       // NOTE: if you change this then also update `jobs/billing.js`
       if (
-        dayjs(user[config.userFields.planExpiresAt]).isAfter(
-          dayjs().add(1, 'month')
-        )
+        new Date(user[config.userFields.planExpiresAt]).getTime() >=
+        dayjs().add(1, 'month').toDate().getTime()
       ) {
         user[config.userFields.paymentReminderInitialSentAt] = undefined;
         user[config.userFields.paymentReminderFollowUpSentAt] = undefined;
