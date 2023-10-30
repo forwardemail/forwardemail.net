@@ -22,6 +22,9 @@ const connectionNameSymbol = Symbol.for('connection.name');
 
 const logger = new Axe(loggerConfig);
 
+// TODO: delete session.user.password
+// TODO: delete session.db
+
 //
 // NOTE: if you update the two constants below,
 //       then also update `app/models/log.js` similar usage

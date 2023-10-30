@@ -21,12 +21,12 @@ This license applies apart from third-party linked files published with their ow
 The following files (excluding linked files contained therein) are
 licensed under the [Mozilla Public License 2.0](mozilla-public-license-20) below.
 
-* [app/models/attachments-chunks.js](https://github.com/forwardemail/forwardemail.net/blob/master/app/models/attachments-chunks.js)
-* [app/models/attachments-files.js](https://github.com/forwardemail/forwardemail.net/blob/master/app/models/attachments-files.js)
+* [app/models/attachments.js](https://github.com/forwardemail/forwardemail.net/blob/master/app/models/attachments.js)
 * [app/models/journals.js](https://github.com/forwardemail/forwardemail.net/blob/master/app/models/journals.js)
 * [app/models/mailboxes.js](https://github.com/forwardemail/forwardemail.net/blob/master/app/models/mailboxes.js)
 * [app/models/messages.js](https://github.com/forwardemail/forwardemail.net/blob/master/app/models/messages.js)
 * [app/models/threads.js](https://github.com/forwardemail/forwardemail.net/blob/master/app/models/threads.js)
+* [helpers/attachment-storage.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/attachment-storage.js)
 * [helpers/imap-notifier.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/imap-notifier.js)
 * [helpers/imap/\*\*/\*](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/imap)
 * [helpers/socket-error.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/socket-error.js)

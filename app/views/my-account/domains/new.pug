@@ -63,9 +63,7 @@ block body
             .form-group.floating-label
               select#input-group.form-control.input-lg(name="domain", required)
                 each vanityDomain, i in config.vanityDomains
-                  span= i
-                  strong= vanityDomain
-                  option(value=vanityDomain, selected=i === 0)= vanityDomain
+                  option(value=vanityDomain, selected=i === 0)= `you@${vanityDomain}`
               label(for="input-group")= t("Domain Name")
             button.btn.btn-primary.btn-block.btn-lg(type="submit")= t("Continue")
           .hr-text.d-flex.text-secondary.align-items-center= t("or")

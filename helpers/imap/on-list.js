@@ -13,8 +13,6 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
-
 const Mailboxes = require('#models/mailboxes');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
@@ -22,14 +20,13 @@ async function onList(query, session, fn) {
   this.logger.debug('LIST', { query, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'LIST');
+    const { db } = await this.refreshSession(session, 'LIST');
 
-    const mailboxes = await Mailboxes.find({
-      alias: alias._id
-    })
-      .maxTimeMS(ms('3s'))
-      .lean()
-      .exec();
+    // eslint-disable-next-line unicorn/no-array-method-this-argument
+    const mailboxes = await Mailboxes.find(db, {});
+
+    // close the connection
+    db.close();
 
     fn(null, mailboxes);
   } catch (err) {

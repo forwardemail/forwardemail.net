@@ -114,7 +114,8 @@ class IMAPNotifier extends EventEmitter {
     this._listeners.removeListener(session.user.alias_id, handler);
   }
 
-  async addEntries(mailboxId, entries) {
+  // eslint-disable-next-line complexity
+  async addEntries(db, mailboxId, entries, lock = false) {
     if (entries && !Array.isArray(entries)) {
       entries = [entries];
     } else if (!entries || entries.length === 0) {
@@ -146,6 +147,7 @@ class IMAPNotifier extends EventEmitter {
 
     if (updated.length > 0)
       mailbox = await Mailboxes.findOneAndUpdate(
+        db,
         query,
         {
           $inc: {
@@ -153,11 +155,12 @@ class IMAPNotifier extends EventEmitter {
           }
         },
         {
+          lock,
           returnDocument: 'after'
         }
       );
 
-    if (!mailbox) mailbox = await Mailboxes.findOne(query).lean().exec();
+    if (!mailbox) mailbox = await Mailboxes.findOne(query);
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -183,7 +186,13 @@ class IMAPNotifier extends EventEmitter {
       });
 
       try {
+        //
+        // NOTE: sqlite doesn't support $max like MongoDB does
+        //
+
+        /*
         await Messages.updateMany(
+          db,
           {
             _id: {
               $in: updated
@@ -191,11 +200,104 @@ class IMAPNotifier extends EventEmitter {
             mailbox: mailbox._id
           },
           {
+            // only update modseq if value > existing
             $max: {
               modseq
             }
-          }
+          },
+          { lock }
         );
+        */
+
+        // eslint-disable-next-line unicorn/no-array-method-this-argument
+        const messages = await Messages.find(db, {
+          _id: {
+            $in: updated
+          },
+          mailbox: mailbox._id
+        });
+
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log('messages found', messages);
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+        console.log(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        );
+
+        for (const message of message) {
+          if (message.modseq < modseq)
+            // eslint-disable-next-line no-await-in-loop
+            await Messages.findByIdAndUpdate(
+              message._id,
+              {
+                $set: {
+                  modseq
+                }
+              },
+              { lock }
+            );
+        }
       } catch (err) {
         logger.fatal(err, { mailbox, updated, modseq });
       }

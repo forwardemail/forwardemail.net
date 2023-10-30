@@ -13,29 +13,21 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const Boom = require('@hapi/boom');
 const mongoose = require('mongoose');
-const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
-
-const Aliases = require('./aliases');
-
-const i18n = require('#helpers/i18n');
-const config = require('#config');
+const validationErrorTransform = require('mongoose-validation-error-transform');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const locale = i18n.config.defaultLocale;
+const {
+  dummyProofModel,
+  dummySchemaOptions,
+  sqliteVirtualDB
+} = require('#helpers/mongoose-to-sqlite');
 
 const Mailboxes = new mongoose.Schema(
   {
-    alias: {
-      type: mongoose.Schema.ObjectId,
-      ref: Aliases,
-      required: true,
-      index: true
-    },
     path: {
       type: String,
       required: true,
@@ -91,17 +83,8 @@ const Mailboxes = new mongoose.Schema(
       ]
     }
   },
-  {
-    writeConcern: {
-      w: 'majority'
-    }
-  }
+  dummySchemaOptions
 );
-
-Mailboxes.plugin(mongooseCommonPlugin, {
-  object: 'mailbox',
-  locale: false
-});
 
 Mailboxes.pre('validate', function (next) {
   if (this.path.toLowerCase().trim() === 'inbox') this.path = 'INBOX';
@@ -151,42 +134,13 @@ Mailboxes.pre('validate', function (next) {
   next();
 });
 
-//
-// we have this in a pre-save hook because `this.alias` is required after validation
-//
-Mailboxes.pre('save', async function (next) {
-  // ensure alias exists and re-use existing `alias.retention` value
-  try {
-    const alias = await Aliases.findById(this.alias)
-      .populate('user', `id ${config.userFields.isBanned}`)
-      .lean()
-      .exec();
-
-    if (!alias)
-      throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
-
-    // alias must not have banned user
-    if (alias.user[config.userFields.isBanned])
-      throw Boom.forbidden(i18n.translateError('ALIAS_ACCOUNT_BANNED', locale));
-
-    // alias must be enabled
-    if (!alias.is_enabled)
-      throw Boom.notFound(i18n.translateError('ALIAS_IS_NOT_ENABLED', locale));
-
-    // default to `alias.retention` or 0
-    this.retention = ['\\Trash', '\\Junk'].includes(this.specialUse)
-      ? ms('30d')
-      : typeof alias.retention === 'number'
-      ? alias.retention
-      : 0;
-
-    next();
-  } catch (err) {
-    next(err);
-  }
+Mailboxes.pre('validate', function (next) {
+  if (['\\Trash', '\\Junk'].includes(this.specialUse))
+    this.retention = ms('30d');
+  next();
 });
 
-const conn = mongoose.connections.find(
-  (conn) => conn[Symbol.for('connection.name')] === 'IMAP_MONGO_URI'
-);
-module.exports = conn.model('Mailboxes', Mailboxes);
+Mailboxes.plugin(sqliteVirtualDB);
+Mailboxes.plugin(validationErrorTransform);
+
+module.exports = dummyProofModel(mongoose.model('Mailboxes', Mailboxes));

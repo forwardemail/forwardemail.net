@@ -16,8 +16,9 @@
 const _ = require('lodash');
 const getStream = require('get-stream');
 const mongoose = require('mongoose');
-const ms = require('ms');
+const safeStringify = require('fast-safe-stringify');
 const tools = require('wildduck/lib/tools');
+const { Builder } = require('json-sql');
 const { imapHandler } = require('wildduck/imap-core');
 
 const IMAPError = require('#helpers/imap-error');
@@ -27,13 +28,16 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const { convertResult } = require('#helpers/mongoose-to-sqlite');
 
-const LIMITED_PROJECTION_KEYS = new Set(['_id', 'flags', 'modseq', 'uid']);
+// const LIMITED_PROJECTION_KEYS = new Set(['_id', 'flags', 'modseq', 'uid']);
 const MAX_PAGE_SIZE = 2500;
 const MAX_BULK_WRITE_SIZE = 150;
 
+const builder = new Builder();
+
 // eslint-disable-next-line complexity
-async function getMessages(opts = {}) {
+async function getMessages(db, opts = {}) {
   const {
     server,
     session,
@@ -54,10 +58,6 @@ async function getMessages(opts = {}) {
   // safeguard for mailbox
   if (!query?.mailbox || !mongoose.Types.ObjectId.isValid(query.mailbox))
     throw new Error('Mailbox missing from query');
-
-  // safeguard for alias
-  if (!query?.alias || !mongoose.Types.ObjectId.isValid(query.alias))
-    throw new Error('Alias missing from query');
 
   if (!_.isObject(attachmentStorage))
     throw new Error('Attachment storage missing');
@@ -105,35 +105,55 @@ async function getMessages(opts = {}) {
     else pageQuery.uid = { $gt: lastUid };
   }
 
-  // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
-  const cursor = Messages.find(pageQuery, projection)
-    // sort required for IMAP UIDPLUS
-    .sort({ uid: 1 })
-    .limit(MAX_PAGE_SIZE)
-    // <https://github.com/Automattic/mongoose/issues/4670#issuecomment-260161006>
-    .read('sp')
-    .maxTimeMS(ms('2m'))
-    .lean()
-    .cursor({
-      //
-      // NOTE: use larger batch size if the query was limited in its projection
-      //
-      // max batch size in mongoose is 5000
-      // <https://github.com/Automattic/mongoose/blob/1f6449576aac47dcb43f9974bb187a4f13d413d3/lib/cursor/QueryCursor.js#L78C1-L83>
-      //
-      // the default in mongodb for find query is 101
-      // <https://www.mongodb.com/docs/manual/tutorial/iterate-a-cursor/#cursor-batches>
-      //
-      // eslint-disable-next-line no-negated-condition
-      batchSize: !Object.keys(projection).some(
-        (key) => !LIMITED_PROJECTION_KEYS.has(key)
-      )
-        ? 1000
-        : 101
-    });
+  // converts objectids -> strings and arrays/json appropriately
+  const condition = JSON.parse(safeStringify(pageQuery));
 
-  for await (const message of cursor) {
+  // TODO: `condition` may need further refined for accuracy (e.g. see `prepareQuery`)
+
+  const fields = [];
+  for (const key of Object.keys(projection)) {
+    if (projection[key] === true) fields.push(key);
+  }
+
+  const sql = builder.build({
+    type: 'select',
+    table: 'Messages',
+    condition,
+    fields,
+    // sort required for IMAP UIDPLUS
+    sort: 'uid'
+    // no limits right now:
+    // limit: MAX_PAGE_SIZE
+  });
+
+  //
+  // NOTE: use larger batch size if the query was limited in its projection
+  //
+  // max batch size in mongoose is 5000
+  // <https://github.com/Automattic/mongoose/blob/1f6449576aac47dcb43f9974bb187a4f13d413d3/lib/cursor/QueryCursor.js#L78C1-L83>
+  //
+  // the default in mongodb for find query is 101
+  // <https://www.mongodb.com/docs/manual/tutorial/iterate-a-cursor/#cursor-batches>
+  //
+  // const batchSize: !Object.keys(projection).some(
+  //   (key) => !LIMITED_PROJECTION_KEYS.has(key)
+  // )
+  //   ? 1000
+  //   : 101
+
+  //
+  // TODO: we may want to use `.all()` instead of `.all()`
+  // with the `batchSize` value at a time (for better performance)
+  //
+  const stmt = db.prepare(sql.query);
+
+  // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
+  for (const result of stmt.iterate(sql.values)) {
+    // eslint-disable-next-line no-await-in-loop
+    const message = await convertResult(Messages, result, projection);
+
     server.logger.debug('fetched message', {
+      result,
       message,
       session,
       options,
@@ -158,16 +178,11 @@ async function getMessages(opts = {}) {
         query,
         pageQuery
       });
-      // close cursor for cleanup
-      try {
-        await cursor.close();
-      } catch (err) {
-        server.logger.fatal(err, { session, options, query, pageQuery });
-      }
 
       // may have more pages, try to fetch more
       if (count === MAX_PAGE_SIZE) {
-        const results = await getMessages({
+        // eslint-disable-next-line no-await-in-loop
+        const results = await getMessages(db, {
           server: this.server,
           session,
           options,
@@ -216,6 +231,7 @@ async function getMessages(opts = {}) {
 
     // write the response early since we don't need to perform db operation
     if (options.metadataOnly && !markAsSeen) {
+      // eslint-disable-next-line no-await-in-loop
       const values = await Promise.all(
         session
           .getQueryResponse(options.query, message, {
@@ -259,6 +275,7 @@ async function getMessages(opts = {}) {
     // NOTE: wildduck uses streams and a TTL limiter/counter however we can
     // simplify this for now just by writing to the socket writable stream
     //
+    // eslint-disable-next-line no-await-in-loop
     const values = await Promise.all(
       session
         .getQueryResponse(options.query, message, {
@@ -296,7 +313,6 @@ async function getMessages(opts = {}) {
           filter: {
             _id: message._id,
             mailbox: mailbox._id,
-            alias: alias._id,
             uid: message.uid
           },
           update: {
@@ -312,14 +328,16 @@ async function getMessages(opts = {}) {
 
     if (bulkWrite.length >= MAX_BULK_WRITE_SIZE) {
       try {
-        await Messages.bulkWrite(bulkWrite, {
+        // eslint-disable-next-line no-await-in-loop
+        await Messages.bulkWrite(db, bulkWrite, {
           ordered: false,
           w: 1
         });
         bulkWrite = [];
         if (entries.length >= MAX_BULK_WRITE_SIZE) {
           try {
-            await server.notifier.addEntries(mailbox, entries);
+            // eslint-disable-next-line no-await-in-loop
+            await server.notifier.addEntries(db, mailbox, entries);
             entries = [];
             server.notifier.fire(alias.id);
           } catch (err) {
@@ -330,13 +348,6 @@ async function getMessages(opts = {}) {
         bulkWrite = [];
         entries = [];
         server.logger.fatal(err, { message, session, options, query });
-
-        // close cursor for cleanup
-        try {
-          await cursor.close();
-        } catch (err) {
-          server.logger.fatal(err, { message, session, options, query });
-        }
 
         successful = false;
         break;
@@ -358,14 +369,11 @@ async function onFetch(mailboxId, options, session, fn) {
   this.logger.debug('FETCH', { mailboxId, options, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'FETCH');
+    const { alias, db } = await this.refreshSession(session, 'FETCH');
 
-    const mailbox = await Mailboxes.findOne({
-      _id: mailboxId,
-      alias: alias._id
-    })
-      .lean()
-      .exec();
+    const mailbox = await Mailboxes.findOne(db, {
+      _id: mailboxId
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -386,8 +394,7 @@ async function onFetch(mailboxId, options, session, fn) {
     if (!options.metadataOnly) projection.mimeTree = true;
 
     const query = {
-      mailbox: mailbox._id,
-      alias: alias._id
+      mailbox: mailbox._id
     };
 
     if (options.changedSince)
@@ -395,7 +402,7 @@ async function onFetch(mailboxId, options, session, fn) {
         $gt: options.changedSince
       };
 
-    const results = await getMessages({
+    const results = await getMessages(db, {
       server: this.server,
       session,
       options,
@@ -414,14 +421,17 @@ async function onFetch(mailboxId, options, session, fn) {
 
     // mark messages as Seen
     if (results.bulkWrite.length > 0)
-      await Messages.bulkWrite(results.bulkWrite, {
+      await Messages.bulkWrite(db, results.bulkWrite, {
         ordered: false,
         w: 1
       });
 
+    // close the connection
+    db.close();
+
     if (results.entries.length > 0) {
       try {
-        await this.server.notifier.addEntries(mailbox, results.entries);
+        await this.server.notifier.addEntries(db, mailbox, results.entries);
         this.server.notifier.fire(alias.id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, options, session });

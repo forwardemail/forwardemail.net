@@ -1,0 +1,171 @@
+/*
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: MPL-2.0
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
+ *   WildDuck Mail Agent is licensed under the European Union Public License 1.2 or later.
+ *   https://github.com/nodemailer/wildduck
+ */
+
+const { Buffer } = require('node:buffer');
+
+const intoStream = require('into-stream');
+const pify = require('pify');
+const revHash = require('rev-hash');
+
+const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
+
+//
+// we don't use base64 decoding/encoding of attachments (unlike wildduck)
+// instead we store raw buffer/binary blob in sqlite of the attachment
+// as `attachment.body` (as opposed to using gridfs and chunking)
+//
+
+const Attachments = require('#models/attachments');
+const logger = require('#helpers/logger');
+
+class AttachmentStorage {
+  constructor(options) {
+    this.options = options || {};
+    this.calculateHashPromise = pify(
+      WildDuckAttachmentStorage.prototype.calculateHash
+    );
+  }
+
+  async get(db, hash) {
+    // TODO: should we project w/o body since we're not using it here as an optimization (?)
+    const attachmentData = await Attachments.findOne(db, {
+      hash
+    });
+
+    if (!attachmentData) {
+      const err = new Error('This attachment does not exist');
+      err.responseCode = 404;
+      err.code = 'FileNotFound';
+      throw err;
+    }
+
+    // TODO: can we just return `attachment.body` here too (?)
+    return {
+      contentType: attachmentData.contentType,
+      transferEncoding: attachmentData.metadata.transferEncoding,
+      length: attachmentData.length,
+      count: attachmentData.metadata.c,
+      hash: attachmentData.hash,
+      metadata: attachmentData.metadata
+    };
+  }
+
+  async create(db, attachment) {
+    const hex = await this.calculateHashPromise(attachment.body);
+    attachment.hash = revHash(Buffer.from(hex, 'hex'));
+    attachment.counter = 1;
+    attachment.counterUpdated = new Date();
+    attachment.size = attachment.body.length;
+    if (
+      Number.isNaN(attachment.magic) ||
+      typeof attachment.magic !== 'number'
+    ) {
+      const err = new TypeError('Invalid magic');
+      err.attachment = attachment;
+      throw err;
+    }
+
+    const result = await Attachments.findOneAndUpdate(
+      db,
+      {
+        hash: attachment.hash
+      },
+      {
+        $inc: {
+          counter: 1,
+          magic: attachment.magic
+        },
+        $set: {
+          counterUpdated: new Date()
+        }
+      },
+      {
+        returnDocument: 'after'
+      }
+    );
+
+    if (result) {
+      return result._id;
+    }
+
+    // virtual helper for locking if we lock in advance
+    // attachment.lock = lock
+
+    // virtual helper
+    attachment.db = db;
+
+    return Attachments.create(attachment);
+  }
+
+  //
+  // we could also use `to-readable-stream` instead if desired
+  // <https://github.com/sindresorhus/to-readable-stream>
+  //
+  // TODO: we should replace `createReadStream` with simply using `attachment.body`
+  //
+  // }, options = {}) {
+  createReadStream(id, attachment) {
+    console.log('TODO: rewrite read stream stuff possibly?');
+    // NOTE: we don't use any `metadata` or `streamOptions` like wildduck does
+    return intoStream(attachment.body);
+  }
+
+  async deleteMany(db, attachmentIds, magic, lock = false) {
+    if (Number.isNaN(magic) || typeof magic !== 'number') {
+      const err = new TypeError('Invalid magic');
+      err.attachmentIds = attachmentIds;
+      err.magic = magic;
+      throw err;
+    }
+
+    const attachments = await Attachments.updateMany(
+      db,
+      {
+        hash: { $in: attachmentIds }
+      },
+      {
+        $inc: {
+          counter: -1,
+          magic: -magic
+        },
+        $set: {
+          counterUpdated: new Date()
+        }
+      },
+      {
+        lock,
+        returnDocument: 'after'
+      }
+    );
+
+    //
+    // NOTE: wildduck has this disabled (as they have a cleanup job that runs after a duration)
+    //       (e.g. if a user quickly re-adds the attachment, it would save the re-creation by hash lookup)
+    //       (but to keep things simple for now we're just going to delete it)
+    //
+    await Promise.all(
+      attachments.map(async (attachment) => {
+        try {
+          if (attachment.counter === 0 && attachment.magic === 0)
+            await Attachments.deleteOne(db, { _id: attachment._id }, { lock });
+        } catch (err) {
+          logger.fatal(err, { attachment });
+        }
+      })
+    );
+  }
+}
+
+module.exports = AttachmentStorage;

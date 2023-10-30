@@ -160,6 +160,12 @@ localeRouter
     render('reserved-email-addresses')
   )
   .get(
+    '/encrypted-email',
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    render('encrypted-email')
+  )
+  .get(
     '/free-email-webhooks',
     web.myAccount.retrieveDomains,
     web.onboard,

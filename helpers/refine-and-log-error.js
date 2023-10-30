@@ -15,6 +15,22 @@ const env = require('#config/env');
 
 // this is sourced from FE original codebase
 function refineAndLogError(err, session, isIMAP = false) {
+  //
+  // immediately close the connection
+  //
+  if (
+    isIMAP &&
+    session.db &&
+    session.db.open &&
+    typeof session.db.close === 'function'
+  ) {
+    try {
+      session.db.close();
+    } catch (err) {
+      logger.fatal(err, { session });
+    }
+  }
+
   // handle programmer mistakes
   // (don't re-check if we already checked)
   if (typeof err.isCodeBug !== 'boolean') {

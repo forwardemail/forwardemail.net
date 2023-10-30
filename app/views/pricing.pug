@@ -1,6 +1,7 @@
 extends layout
 
 block body
+  include _modal-storage
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
     #modal-pricing-video.modal.fade(
       tabindex="-1",
@@ -40,7 +41,7 @@ block body
         .row
           .col-12.col-lg-6
             h1.mb-3
-              = t("Free, private, and secure email for business and enterprise.")
+              = t("Free, private, and encrypted email for business and enterprise.")
             p.d-none.d-md-block
               = t("Create your free, private, and professional business email.")
               = " "
@@ -50,38 +51,53 @@ block body
               data-toggle="modal-anchor",
               data-target="#modal-sign-up"
             )
-              = t("Try for free")
+              = t("Sign up free")
             .d-none.d-md-block
               include _feature-list
             ul.list-inline
-              if !isBot(ctx.get('User-Agent'))
-                li.list-inline-item.d-block.d-md-inline.mb-3.mb-md-0
-                  a.btn.btn-outline-light(href="#features")
-                    i.fa.fa-fw.fa-layer-group
-                    = " "
-                    != t("Features &amp; Pricing")
+              li.list-inline-item.d-block.d-md-inline
+                a.btn.btn-outline-light.mb-3(
+                  class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-outline-light",
+                  href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true")
+                )
+                  i.fa.fa-fw.fa-layer-group
+                  = " "
+                  != t("Features &amp; Pricing")
+              //- Product Tour
               li.list-inline-item.d-block.d-md-inline
                 if isBot(ctx.get('User-Agent'))
-                  a.btn.btn-dark(
+                  a.btn.btn-dark.mb-3(
                     href="https://www.youtube.com/watch?v=N6zjv40zuIY",
                     target="_blank",
                     rel="noopener noreferrer"
                   )
-                    i.fab.fa-fw.fa-youtube.text-danger
+                    i.fab.fa-youtube.text-danger
                     = " "
                     = t("Product Tour")
                 else
-                  a.btn.btn-outline-light(
+                  a.btn.btn-outline-light.mb-3(
                     role="button",
                     data-toggle="modal",
-                    data-target="#modal-pricing-video",
+                    data-target="#modal-watch-video",
                     href="https://www.youtube.com/watch?v=N6zjv40zuIY",
                     target="_blank",
                     rel="noopener noreferrer"
                   )
-                    i.fab.fa-fw.fa-youtube.text-danger
+                    i.fab.fa-youtube.text-danger
                     = " "
                     = t("Product Tour")
+              //- Developers
+              li.list-inline-item.d-block.d-md-inline
+                if isBot(ctx.get('User-Agent'))
+                  a.btn.btn-dark.mb-3(href=l("/docs"))
+                    i.fa.fa-code
+                    = " "
+                    = t("Developers")
+                else
+                  a.btn.btn-outline-light.mb-3(href=l("/docs"))
+                    i.fa.fa-code
+                    = " "
+                    = t("Developers")
       a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
         href="#features"
       )
@@ -237,6 +253,27 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold.bg-success.text-white
                 i.fa.fa-fw.fa-lock.mr-3
                 = " "
+                = t("10 GB encrypted email storage")
+                = " "
+                button.btn.btn-link.text-themed.py-0.no-js(
+                  type="button",
+                  data-toggle="modal",
+                  data-target="#modal-storage"
+                )
+                  i.fa.fa-info-circle
+              li.list-group-item.d-flex.align-items-center
+                i.fa.fa-fw.fa-check-circle.text-themed.mr-3
+                ul.list-inline.mb-0
+                  li.list-inline-item.mr-1.small= t("Works with")
+                  li.list-inline-item.mr-1: span.badge.badge-dark= "Apple"
+                  li.list-inline-item.mr-1: span.badge.badge-dark= "Microsoft"
+                  li.list-inline-item.mr-1: span.badge.badge-dark= "Google"
+                  li.list-inline-item.mr-1: span.badge.badge-dark= "Thunderbird"
+                  li.list-inline-item.mr-1: span.badge.badge-dark= "Android"
+                  li.list-inline-item: span.badge.badge-secondary= "and more"
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-lock.mr-3
+                = " "
                 = t("Secure inbox privacy")
                 = " "
                 button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
@@ -282,11 +319,9 @@ block body
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 a.font-weight-bold.text-themed.text-decoration-underline(
-                  href=l("/faq#do-you-support-receiving-email-with-imap")
+                  href=l("/faq#do-you-have-an-allowlist")
                 )
-                  = t("IMAP storage support")
-                  = " "
-                  span.badge.badge-primary.text-uppercase= t("Beta")
+                  = t("Automatically allowlisted")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-stream.text-themed.mr-3
                 = " "

@@ -4955,5 +4955,433 @@
   "If you have a domain with <a href=\"https://www.namecheap.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Namecheap</a>, <a href=\"https://developers.cloudflare.com/registrar/get-started/register-domain/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare</a>, <a href=\"https://www.godaddy.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">GoDaddy</a>, or another <a href=\"https://en.wikipedia.org/wiki/Domain_name_registrar\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">registrar</a>, then enter it below:": "إذا كان لديك نطاق به <a href=\"https://www.namecheap.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Namecheap</a> أو <a href=\"https://developers.cloudflare.com/registrar/get-started/register-domain/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare</a> أو <a href=\"https://www.godaddy.com/\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">GoDaddy</a> أو <a href=\"https://en.wikipedia.org/wiki/Domain_name_registrar\" class=\"alert-link notranslate\" target=\"_blank\" rel=\"noopener noreferrer\">registrar</a> آخر، فأدخله أدناه:",
   "Use one of our domains:": "استخدم أحد نطاقاتنا:",
   "Register a new domain name": "قم بتسجيل اسم نطاق جديد",
-  "Free, private, and secure email for everyone.": "بريد إلكتروني مجاني وخاص وآمن للجميع."
+  "Free, private, and secure email for everyone.": "بريد إلكتروني مجاني وخاص وآمن للجميع.",
+  "for more insight.  Furthermore, our MongoDB and Redis databases are now running on clusters with primary and standby nodes for high availability, end-to-end SSL encryption, encryption-at-rest, and point-in-time recovery (PITR).": "لمزيد من المعرفة. علاوة على ذلك، تعمل الآن قواعد بيانات MongoDB وRedis الخاصة بنا على مجموعات ذات العقد الأساسية والاحتياطية للتوفر العالي، وتشفير SSL من طرف إلى طرف، والتشفير في حالة الراحة، والاسترداد في الوقت المناسب (PITR).",
+  "Deep dive: How we use encrypted SQLite mailboxes for our privacy-focused and secure email service": "الغوص العميق: كيف نستخدم صناديق بريد SQLite المشفرة لخدمة البريد الإلكتروني الآمنة التي تركز على الخصوصية",
+  "Email service provider comparison": "مقارنة مزود خدمة البريد الإلكتروني",
+  "How does it work": "كيف يعمل",
+  "Technologies": "التقنيات",
+  "Databases": "قواعد بيانات",
+  "Mailboxes": "صناديق البريد",
+  "Concurrency and Backups": "التزامن والنسخ الاحتياطي",
+  "Projects": "المشاريع",
+  "Providers": "مقدمي الخدمات",
+  "Thoughts": "أفكار",
+  "Principles": "مبادئ",
+  "Experiments": "التجارب",
+  "Lack of alternatives": "عدم وجود البدائل",
+  "Try out Forward Email": "جرب إعادة توجيه البريد الإلكتروني",
+  "tldr;": "تلدر؛",
+  "Our email service is": "خدمة البريد الإلكتروني لدينا هي",
+  "100% open-source": "100% مفتوح المصدر",
+  "and privacy-focused through secure and encrypted SQLite mailboxes.": "وتركز على الخصوصية من خلال صناديق بريد SQLite الآمنة والمشفرة.",
+  "Until we launched": "حتى أطلقنا",
+  "IMAP support": "دعم IMAP",
+  ", we used MongoDB for our persistent data storage needs.": "، استخدمنا MongoDB لتلبية احتياجات تخزين البيانات المستمرة لدينا.",
+  "This technology is amazing and we still use it today – but in order to have encryption-at-rest with MongoDB you need to use a provider that offers MongoDB Enterprise, such as Digital Ocean or Mongo Atlas – or pay for an enterprise license (and subsequently have to work with sales team latency).": "هذه التكنولوجيا مذهلة وما زلنا نستخدمها حتى اليوم - ولكن للحصول على تشفير ثابت مع MongoDB، يتعين عليك استخدام موفر يقدم MongoDB Enterprise، مثل Digital Ocean أو Mongo Atlas - أو الدفع مقابل ترخيص مؤسسة (و يتعين عليك لاحقًا العمل مع زمن وصول فريق المبيعات).",
+  "Our team at": "فريقنا في",
+  "needed a developer-friendly, scalable, reliable, and encrypted storage solution for IMAP mailboxes.  As open-source developers, using a technology you need to pay a license fee in order to get the encryption-at-rest feature was against": "كنت بحاجة إلى حل تخزين سهل الاستخدام وقابل للتطوير وموثوق ومشفر لصناديق بريد IMAP. باعتبارك مطورًا مفتوح المصدر، فإن استخدام التكنولوجيا التي تحتاج إلى دفع رسوم ترخيص للحصول على ميزة التشفير غير النشط يعد أمرًا مخالفًا",
+  "our principles": "مبادئنا",
+  "– and so we experimented, researched, and developed a new solution from scratch to solve these needs.": "- ولذلك قمنا بتجربة وبحث وتطوير حل جديد من الصفر لحل هذه الاحتياجات.",
+  "Instead of using a shared database to store your mailboxes, we individually store and encrypt your mailboxes with your password (which only you have).": "بدلاً من استخدام قاعدة بيانات مشتركة لتخزين صناديق البريد الخاصة بك، نقوم بشكل فردي بتخزين وتشفير صناديق البريد الخاصة بك باستخدام كلمة المرور الخاصة بك (والتي تمتلكها أنت فقط).",
+  "Our email service is so secure that if you forget your password, then you lose your mailbox": "خدمة البريد الإلكتروني لدينا آمنة جدًا لدرجة أنك إذا نسيت كلمة المرور الخاصة بك، فستفقد صندوق البريد الخاص بك",
+  "(and need to recover with offline backups or start over).": "(وتحتاج إلى الاسترداد باستخدام النسخ الاحتياطية دون اتصال بالإنترنت أو البدء من جديد).",
+  "Keep reading as we take a deep dive below with a": "استمر في القراءة بينما نتعمق في الأسفل باستخدام أ",
+  "comparison of email service providers": "مقارنة بين مقدمي خدمة البريد الإلكتروني",
+  "how our service works": "كيف تعمل خدمتنا",
+  "our technology stack": "كومة التكنولوجيا لدينا",
+  ", and more.": "، و اكثر.",
+  "We are the only 100% open-source and privacy-focused email service provider that stores individually encrypted SQLite mailboxes, offers unlimited domains, aliases, and users, and has outbound SMTP, IMAP, and POP3 support:": "نحن المزود الوحيد لخدمات البريد الإلكتروني مفتوحة المصدر والتي تركز على الخصوصية بنسبة 100% والتي تقوم بتخزين صناديق بريد SQLite مشفرة بشكل فردي، وتقدم نطاقات وأسماء مستعارة ومستخدمين غير محدودين، كما أنها تتمتع بدعم SMTP وIMAP وPOP3 الصادر:",
+  "Unlike other email providers, you do not need to pay for storage on a per domain or alias basis with Forward Email.": "على عكس موفري خدمة البريد الإلكتروني الآخرين، لا تحتاج إلى الدفع مقابل التخزين على أساس كل نطاق أو اسم مستعار باستخدام إعادة توجيه البريد الإلكتروني.",
+  "Storage is shared across your entire account – so if you have multiple custom domain names and multiple aliases on each, then we are the perfect solution for you.  Note that you can still enforce storage limits if desired on a per domain or alias basis.": "تتم مشاركة مساحة التخزين عبر حسابك بالكامل - لذا إذا كان لديك العديد من أسماء النطاقات المخصصة والأسماء المستعارة المتعددة في كل منها، فنحن الحل الأمثل لك. لاحظ أنه لا يزال بإمكانك فرض حدود التخزين إذا رغبت في ذلك على أساس كل نطاق أو اسم مستعار.",
+  "Provider": "مزود",
+  "Open Source": "مفتوح المصدر",
+  "Encrypted SQLite Mailboxes": "صناديق بريد SQLite المشفرة",
+  "Unlimited Custom Domains, Aliases, and Users": "نطاقات مخصصة وأسماء مستعارة ومستخدمين غير محدود",
+  "Basic IMAP Pricing": "تسعير IMAP الأساسي",
+  "Basic IMAP Storage": "تخزين IMAP الأساسي",
+  "$3/mo": "3 دولارات شهريًا",
+  "10 GB pooled (pay as you go)": "10 غيغابايت مجمعة (الدفع حسب الاستخدام)",
+  "Apple": "تفاحة",
+  "$0.99/mo": "0.99 دولارًا شهريًا",
+  "5 GB free or 50 GB basic pooled": "5 جيجابايت مجانية أو 50 جيجابايت أساسية مجمعة",
+  "Fastmail": "بريد سريع",
+  "2 GB per mailbox": "2 جيجابايت لكل صندوق بريد",
+  "Amazon SES": "أمازون سيس",
+  "$3.99/mo": "3.99 دولار/الشهر",
+  "10 GB per mailbox": "10 جيجابايت لكل صندوق بريد",
+  "Google": "جوجل",
+  "$7.20/mo": "7.20 دولارًا شهريًا",
+  "30 GB pooled": "30 جيجابايت مجمعة",
+  "Mailgun": "بريد",
+  "Microsoft 365": "مايكروسوفت 365",
+  "$6/mo billed annually ($72/year)": "6 دولارات شهريًا يتم إصدار فاتورة بها سنويًا (72 دولارًا سنويًا)",
+  "1 TB pooled": "1 تيرابايت مجمعة",
+  "Postmark": "ختم البريد",
+  "Proton Mail": "بريد بروتون",
+  "Front-end only": "الواجهة الأمامية فقط",
+  "$12.99/mo": "12.99 دولارًا شهريًا",
+  "500 GB pooled": "500 جيجابايت مجمعة",
+  "Tutanota": "توتانوتا",
+  "The comparison table above was last updated in October 2023 and may contain errors or inaccurate data.  We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with any of the Providers, or any of their subsidiaries or their affiliates.": "تم تحديث جدول المقارنة أعلاه آخر مرة في أكتوبر 2023 وقد يحتوي على أخطاء أو بيانات غير دقيقة. نحن لسنا تابعين أو مرتبطين أو مرخصين أو معتمدين أو مرتبطين رسميًا بأي شكل من الأشكال بأي من مقدمي الخدمة أو أي من الشركات التابعة لهم أو الشركات التابعة لهم.",
+  "Using your email client such as Apple Mail, Thunderbird, Gmail, or Outlook – you connect to our secure": "باستخدام برنامج البريد الإلكتروني الخاص بك مثل Apple Mail، أو Thunderbird، أو Gmail، أو Outlook - يمكنك الاتصال بخادمنا الآمن",
+  "servers using your username and password:": "الخوادم التي تستخدم اسم المستخدم وكلمة المرور الخاصة بك:",
+  "Your username is your full alias with your domain such as": "اسم المستخدم الخاص بك هو الاسم المستعار الكامل للمجال الخاص بك مثل",
+  "Your password is randomly generated and only displayed to you for 30 seconds when you click": "يتم إنشاء كلمة المرور الخاصة بك بشكل عشوائي ويتم عرضها لك لمدة 30 ثانية فقط عند النقر عليها",
+  "Aliases.": "اسماء مستعارة.",
+  "Once connected, your email client will send": "بمجرد الاتصال، سوف يرسل عميل البريد الإلكتروني الخاص بك",
+  "IMAP protocol commands": "أوامر بروتوكول IMAP",
+  "to our IMAP server to keep your mailbox in sync.  This includes writing and storing draft emails and other actions you might do (e.g. label an email as Important or flag an email as Spam/Junk Mail).": "إلى خادم IMAP الخاص بنا للحفاظ على مزامنة صندوق البريد الخاص بك. يتضمن ذلك كتابة وتخزين مسودات رسائل البريد الإلكتروني والإجراءات الأخرى التي قد تقوم بها (على سبيل المثال، تصنيف رسالة بريد إلكتروني على أنها مهمة أو وضع علامة على بريد إلكتروني كبريد عشوائي/بريد غير هام).",
+  "Mail exchange servers (commonly known as \"MX\" servers) receive new inbound email and store it to your mailbox.  When this happens your email client will get notified and sync your mailbox.  Our mail exchange servers can forward your email to one or more recipients (including": "تتلقى خوادم تبادل البريد (المعروفة باسم خوادم \"MX\") رسائل البريد الإلكتروني الواردة الجديدة وتقوم بتخزينها في صندوق البريد الخاص بك. عندما يحدث هذا، سيتم إخطار عميل البريد الإلكتروني الخاص بك وسيقوم بمزامنة صندوق البريد الخاص بك. يمكن لخوادم تبادل البريد لدينا إعادة توجيه بريدك الإلكتروني إلى واحد أو أكثر من المستلمين (بما في ذلك",
+  "webhooks": "خطافات الويب",
+  "), store your email for you in your encrypted IMAP storage with us,": ")، قم بتخزين بريدك الإلكتروني في مخزن IMAP المشفر لدينا،",
+  "or both": "او كلاهما",
+  "Learn": "يتعلم",
+  "how to setup email forwarding": "كيفية إعداد إعادة توجيه البريد الإلكتروني",
+  "how our mail exchange service works": "كيف تعمل خدمة تبادل البريد لدينا",
+  ", or view": "، أو عرض",
+  "our guides": "مرشدينا",
+  "Behind the scenes, our secure email storage design works in two ways to keep your mailboxes encrypted and only accessible by you:": "خلف الكواليس، يعمل تصميم تخزين البريد الإلكتروني الآمن الخاص بنا بطريقتين للحفاظ على صناديق البريد الخاصة بك مشفرة ولا يمكن الوصول إليها إلا بواسطتك:",
+  "When you connect to our IMAP server with your email client, your password is then encrypted in-memory and used to read and write to your mailbox.  Your mailbox can only be read from and written to with this password.  Keep in mind that since you are the only one with this password,": "عند الاتصال بخادم IMAP الخاص بنا من خلال برنامج البريد الإلكتروني الخاص بك، يتم بعد ذلك تشفير كلمة المرور الخاصة بك في الذاكرة واستخدامها للقراءة والكتابة في صندوق البريد الخاص بك. لا يمكن قراءة صندوق البريد الخاص بك والكتابة إليه إلا باستخدام كلمة المرور هذه. ضع في اعتبارك أنه نظرًا لأنك الوحيد الذي لديه كلمة المرور هذه،",
+  "only you": "أنت فقط",
+  "can read and write to your mailbox when you are accessing it.  This also means that you can export and download your mailbox database at anytime – and any copies of it you save can only be opened with this password.": "يمكنه القراءة والكتابة في صندوق البريد الخاص بك عند الوصول إليه. وهذا يعني أيضًا أنه يمكنك تصدير وتنزيل قاعدة بيانات صندوق البريد الخاص بك في أي وقت - وأي نسخ تحفظها لا يمكن فتحها إلا باستخدام كلمة المرور هذه.",
+  "When new mail is received for you from a sender, our mail exchange servers write to an individual, temporary, and encrypted mailbox for you.  The next time your email client attempts to poll for mail or syncs, your new messages will be transferred from this temporary mailbox and stored in your actual mailbox file using your supplied password.  Note that this temporary mailbox is purged and deleted afterwards so that only your password protected mailbox has the messages.": "عندما يتم استلام بريد جديد لك من أحد المرسلين، تقوم خوادم تبادل البريد لدينا بالكتابة إلى صندوق بريد فردي ومؤقت ومشفر نيابةً عنك. في المرة التالية التي يحاول فيها برنامج البريد الإلكتروني الخاص بك استطلاع البريد أو المزامنة، سيتم نقل رسائلك الجديدة من صندوق البريد المؤقت هذا وتخزينها في ملف صندوق البريد الفعلي الخاص بك باستخدام كلمة المرور المقدمة. لاحظ أنه تتم إزالة صندوق البريد المؤقت هذا وحذفه بعد ذلك بحيث لا يحتوي على الرسائل إلا صندوق البريد المحمي بكلمة مرور.",
+  "Automated snapshots and scheduled backups of your encrypted mailboxes are made in case of a disaster.  If you decide to switch to another email service, then you can easily migrate, download, export, and purge your mailboxes and backups at anytime.": "يتم عمل لقطات تلقائية ونسخ احتياطية مجدولة لصناديق البريد المشفرة الخاصة بك في حالة وقوع كارثة. إذا قررت التبديل إلى خدمة بريد إلكتروني أخرى، فيمكنك بسهولة ترحيل وتنزيل وتصدير وإزالة صناديق البريد والنسخ الاحتياطية الخاصة بك في أي وقت.",
+  "We explored other possible database storage layers, however none satisfied our requirements as much as SQLite did:": "لقد استكشفنا طبقات تخزين قاعدة البيانات المحتملة الأخرى، ولكن لم يلبي أي منها متطلباتنا بقدر ما فعلته SQLite:",
+  "Database": "قاعدة البيانات",
+  "Encryption-at-rest": "التشفير في الراحة",
+  "Sandboxed": "وضع الحماية",
+  "Used Everywhere": "تستخدم في كل مكان",
+  "SQLite": "سكليتي",
+  "✅ Yes with": "✅ نعم مع",
+  "SQLite3MultipleCiphers": "SQLite3MultipleCiphers",
+  "✅ Public Domain": "✅ المجال العام",
+  "MongoDB": "MongoDB",
+  "\"Available in MongoDB Enterprise only\"": "\"متوفر في MongoDB Enterprise فقط\"",
+  "❌ Relational database": "❌ قاعدة بيانات علائقية",
+  "❌ AGPL and": "❌AGPL و",
+  "rqlite": "rqlite",
+  "Network only": "الشبكة فقط",
+  "dqlite": "com.dqlite",
+  "Untested and not yet supported?": "لم تختبر ولم تدعم بعد؟",
+  "PostgreSQL": "PostgreSQL",
+  "(similar to": "(مشابه ل",
+  "MariaDB": "ماريا دي بي",
+  "For InnoDB only": "لInnoDB فقط",
+  "CockroachDB": "صرصورDB",
+  "Enterprise-only feature": "ميزة خاصة بالمؤسسات فقط",
+  "and others": "و اخرين",
+  "Here is a": "هنا أ",
+  "blog post that compares several SQLite database storage options": "منشور مدونة يقارن بين العديد من خيارات تخزين قاعدة بيانات SQLite",
+  "in the table above.": "في الجدول أعلاه.",
+  "At all times we use": "في جميع الأوقات نستخدمها",
+  "encryption-at-rest": "التشفير في الراحة",
+  "encryption-in-transit": "التشفير أثناء النقل",
+  "(\"DoH\") using 🍊": "(\"DoH\") باستخدام 🍊",
+  "sqleet": "com.sqleet",
+  "encryption on mailboxes.  Additionally we use token-based two-factor authentication (as opposed to SMS which is suspectible to": "التشفير على صناديق البريد. بالإضافة إلى ذلك، نستخدم المصادقة الثنائية القائمة على الرمز المميز (على عكس الرسائل النصية القصيرة التي يشتبه فيها",
+  "man-in-the-middle-attacks": "هجمات الرجل في المنتصف",
+  "), rotated SSH keys with root access disabled, exclusive access to servers through restricted IP addresses, and more.": ")، تدوير مفاتيح SSH مع تعطيل الوصول إلى الجذر، والوصول الحصري إلى الخوادم من خلال عناوين IP المقيدة، والمزيد.",
+  "In the event of an": "في حالة",
+  "evil maid attack": "هجوم الخادمة الشريرة",
+  "or rogue employee from a third-party vendor,": "أو موظف مارق من بائع طرف ثالث،",
+  "your mailbox can still only be opened with your generated password": "لا يزال من الممكن فتح صندوق البريد الخاص بك فقط باستخدام كلمة المرور التي تم إنشاؤها",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, Digital Ocean, and Vultr.": ". كن مطمئنًا، فنحن لا نعتمد على أي موردين خارجيين بخلاف موفري خوادم الشكاوى SOC Type 2 مثل Cloudflare وDigital Ocean وVultr.",
+  "Our goal is to have as few": "هدفنا هو الحصول على أقل عدد ممكن",
+  "single point of failures": "نقطة واحدة من الفشل",
+  "as possible.": "بقدر الإمكان.",
+  "Our IMAP servers use individually encrypted SQLite databases for each of your mailboxes.": "تستخدم خوادم IMAP الخاصة بنا قواعد بيانات SQLite مشفرة بشكل فردي لكل صندوق من صناديق البريد الخاصة بك.",
+  "SQLite is an extremely popular": "SQLite تحظى بشعبية كبيرة",
+  "embedded database – it's currently running on your phone and computer –": "قاعدة البيانات المضمنة – وهي قيد التشغيل حاليًا على هاتفك وجهاز الكمبيوتر –",
+  "and used by nearly all major technologies": "وتستخدمها جميع التقنيات الرئيسية تقريبًا",
+  "For example, on our encrypted servers there's a SQLite database mailbox for": "على سبيل المثال، يوجد على خوادمنا المشفرة صندوق بريد لقاعدة بيانات SQLite",
+  "and so on – one for each as a": "وهكذا - واحد لكل منهما",
+  "database file.  We don't name the database files with the email address either – instead we use BSON ObjectID and unique UUID's generated which do not share who the mailbox belongs to or which email address it is under (e.g.": "ملف قاعدة البيانات. نحن لا نقوم بتسمية ملفات قاعدة البيانات بعنوان البريد الإلكتروني أيضًا - بدلاً من ذلك نستخدم BSON ObjectID ومعرفات UUID الفريدة التي تم إنشاؤها والتي لا تشارك من ينتمي صندوق البريد أو عنوان البريد الإلكتروني الموجود ضمنه (على سبيل المثال:",
+  "Each of these databases are encrypted themselves using your password (which only you have) using": "يتم تشفير كل قاعدة من قواعد البيانات هذه بنفسها باستخدام كلمة المرور الخاصة بك (التي تمتلكها أنت فقط).",
+  "encryption.  This means that your mailboxes are individually encrypted, self-contained,": "التشفير. وهذا يعني أن صناديق البريد الخاصة بك مشفرة بشكل فردي، ومكتفية بذاتها،",
+  "sandboxed": "وضع الحماية",
+  ", and portable.": "، والمحمولة.",
+  "We have fine-tuned SQLite with the following": "لقد قمنا بضبط SQLite بما يلي",
+  "ChaCha20-Poly1305 SQLite database encryption": "ChaCha20-Poly1305 تشفير قاعدة بيانات SQLite",
+  ". Reference": ". مرجع",
+  "under": "تحت",
+  "This is your decrypted in-memory only password that gets passed through your email client's IMAP connection to our server.  New database instances are created and closed for each read and write session (in order to ensure sandboxing and isolation).": "هذه هي كلمة المرور التي تم فك تشفيرها في الذاكرة فقط والتي يتم تمريرها عبر اتصال IMAP الخاص بعميل البريد الإلكتروني الخاص بك بخادمنا. يتم إنشاء مثيلات قاعدة البيانات الجديدة وإغلاقها لكل جلسة قراءة وكتابة (من أجل ضمان وضع الحماية والعزل).",
+  "Write-ahead-log (\"WAL\")": "سجل الكتابة المسبقة (\"WAL\")",
+  "which boosts performance and allows concurrent read access": "مما يعزز الأداء ويسمح بالوصول المتزامن للقراءة",
+  "Prevents write-lock errors": "يمنع أخطاء قفل الكتابة",
+  "while other writes are taking place": "بينما تجري عمليات كتابية أخرى",
+  "Increases durability of transactions": "يزيد من متانة المعاملات",
+  "without data corruption risk": "دون خطر تلف البيانات",
+  "Enforces that foreign key references (e.g. a relation from one table to another) are enforced.": "يفرض فرض مراجع المفاتيح الخارجية (مثل العلاقة من جدول إلى آخر).",
+  "By default this is not turned on in SQLite": "بشكل افتراضي، لا يتم تشغيل هذا في SQLite",
+  ", but for validation and data integrity it should be enabled.": "ولكن للتحقق من صحة البيانات وتكاملها يجب تمكينها.",
+  "Default encoding": "التشفير الافتراضي",
+  "to use to ensure developer sanity.": "لاستخدامها لضمان سلامة المطور.",
+  "All other defaults are from SQLite as specified from the": "جميع الإعدادات الافتراضية الأخرى هي من SQLite كما هو محدد من ملف",
+  "official PRAGMA documentation": "وثائق براغما الرسمية",
+  "We use": "نحن نستخدم",
+  "for concurrent reads to your mailbox throughout our IMAP servers and a primary server for writes.": "للقراءات المتزامنة لصندوق البريد الخاص بك عبر خوادم IMAP لدينا وخادم أساسي للكتابة.",
+  "Your email client on your phone may resolve": "قد يتم حل مشكلة عميل البريد الإلكتروني الخاص بك على هاتفك",
+  "to one of our Digital Ocean IP addresses – and your desktop client may resolve a separate IP from a different provider altogether (such as Vultr).": "إلى أحد عناوين IP الخاصة بـ Digital Ocean - وقد يقوم عميل سطح المكتب الخاص بك بحل عنوان IP منفصل من مزود مختلف تمامًا (مثل Vultr).",
+  "In both cases, we want the connection to read from your database in real-time with 100% accuracy.  This is accomplished by using": "في كلتا الحالتين، نريد أن تتم قراءة الاتصال من قاعدة بياناتك في الوقت الفعلي وبدقة 100%. يتم تحقيق ذلك باستخدام",
+  "(the default).  Instead of using local disk cache, the cache is read directly from the remote mount (your database) in real-time.": "(الافتراضي). بدلاً من استخدام ذاكرة التخزين المؤقت على القرص المحلي، تتم قراءة ذاكرة التخزين المؤقت مباشرةً من التثبيت البعيد (قاعدة البيانات الخاصة بك) في الوقت الفعلي.",
+  "Each of our servers is configured to mount with consistency and alerts us in real-time of any errors.": "تم تكوين كل خادم من خوادمنا ليتم تشغيله بشكل متسق وينبهنا في الوقت الفعلي بأي أخطاء.",
+  "Writing to your database is a bit different – since SQLite is an embedded database and your mailbox lives in a single file by default.  We had explored options such as": "تختلف الكتابة إلى قاعدة البيانات الخاصة بك قليلًا – نظرًا لأن SQLite عبارة عن قاعدة بيانات مضمنة ويعيش صندوق البريد الخاص بك في ملف واحد افتراضيًا. لقد استكشفنا خيارات مثل",
+  "below – however none of these satisfied our requirements.": "أدناه - ولكن لم يلبي أي منها متطلباتنا.",
+  "To accomplish writes with write-ahead-logging (\"WAL\") enabled (which drastically speeds up concurrency and allows one writer and multiple readers) – we need to ensure that only one server (\"Primary\") is responsible for doing so.  The Primary is running on the data servers with the mounted volumes containing terabytes of encrypted mailboxes.  From a distribution standpoint, you could consider all the individual IMAP servers behind": "لإنجاز عمليات الكتابة مع تمكين تسجيل الكتابة المسبق (\"WAL\") (مما يؤدي إلى تسريع التزامن بشكل كبير ويسمح لكاتب واحد وعدة قراء) - نحتاج إلى التأكد من أن خادمًا واحدًا فقط (\"أساسي\") مسؤول عن القيام بذلك. يتم تشغيل الأساسي على خوادم البيانات مع وحدات التخزين المحملة التي تحتوي على تيرابايت من صناديق البريد المشفرة. من وجهة نظر التوزيع، يمكنك مراعاة جميع خوادم IMAP الفردية الموجودة خلفها",
+  "to be secondary servers (\"Secondary\").": "أن تكون خوادم ثانوية (\"ثانوية\").",
+  "We accomplish two-way communication with": "نحن ننجز التواصل في اتجاهين مع",
+  "WebSockets": "WebSockets",
+  "Primary servers use": "استخدام الخوادم الأساسية",
+  "ws": "ws",
+  "as the": "كما",
+  "server.": "الخادم.",
+  "Secondary servers use": "استخدام الخوادم الثانوية",
+  "undici WebSocket": "أحد عشر WebSockets",
+  "client.": "عميل.",
+  "For backups, we simply run the SQLite": "بالنسبة للنسخ الاحتياطية، نقوم ببساطة بتشغيل SQLite",
+  "command periodically, which leverages your encrypted password from an in-memory IMAP connection.": "الأمر بشكل دوري، مما يعزز كلمة المرور المشفرة من اتصال IMAP في الذاكرة.",
+  "The Secondary will instruct the Primary over the": "سيقوم الثانوي بإرشاد الابتدائية على",
+  "connection to execute the backup – and the Primary will then receive the command to do so and will subsequently:": "اتصال لتنفيذ النسخ الاحتياطي - وسيتلقى البرنامج الأساسي بعد ذلك الأمر للقيام بذلك وسيقوم بعد ذلك بما يلي:",
+  "Connect to your encrypted mailbox.": "الاتصال بصندوق البريد المشفر الخاص بك.",
+  "Run the": "تشغيل",
+  "SQLite command.": "أمر سكليتي.",
+  "Compress the resulting backup file with": "قم بضغط ملف النسخ الاحتياطي الناتج باستخدام",
+  "Upload it to Cloudflare R2 for storage (or your own provider if specified).": "قم بتحميله إلى Cloudflare R2 للتخزين (أو المزود الخاص بك إذا تم تحديده).",
+  "Remember that your mailboxes are encrypted – and while we have IP restrictions and other authentication measures in place for WebSocket communication – in the event of a bad actor, you can rest assured that unless the WebSocket payload has your IMAP password, it cannot open your database.": "تذكر أن صناديق البريد الخاصة بك مشفرة - وعلى الرغم من وجود قيود IP وإجراءات مصادقة أخرى مطبقة لاتصالات WebSocket - في حالة وجود ممثل سيئ، يمكنك الاطمئنان إلى أنه ما لم تكن حمولة WebSocket تحتوي على كلمة مرور IMAP الخاصة بك، فلن تتمكن من فتح قاعدة البيانات الخاصة بك .",
+  "Our IMAP servers support the": "تدعم خوادم IMAP لدينا",
+  "command with complex queries, regular expressions, and more.": "الأمر مع الاستعلامات المعقدة والتعبيرات العادية والمزيد.",
+  "Fast search performance is thanks to": "أداء البحث السريع بفضل",
+  "sqlite-regex": "sqlite-regex",
+  "values in the SQLite mailboxes as": "القيم في علب بريد SQLite مثل",
+  "strings via": "سلاسل عبر",
+  "Date.prototype.toISOString": "Date.prototype.toISOString",
+  "(with UTC timezone for equality comparisons to function properly).": "(مع المنطقة الزمنية UTC لتعمل مقارنات المساواة بشكل صحيح).",
+  "Indices are also stored for all properties that are in search queries.": "يتم أيضًا تخزين الفهارس لجميع الخصائص الموجودة في استعلامات البحث.",
+  "Here's a table outlining projects we use in our source code and development process (sorted alphabetically):": "فيما يلي جدول يوضح المشاريع التي نستخدمها في كود المصدر وعملية التطوير (مرتبة أبجديًا):",
+  "Project": "مشروع",
+  "Ansible": "غير مقبول",
+  "DevOps automation platform for maintaing, scaling, and managing our entire fleet of servers with ease.": "منصة أتمتة DevOps لصيانة أسطولنا الكامل من الخوادم وتوسيع نطاقه وإدارته بسهولة.",
+  "Bree": "بري",
+  "Job scheduler for Node.js and JavaScript with cron, dates, ms, later, and human-friendly support.": "أداة جدولة المهام لـ Node.js وJavaScript مع cron، والتواريخ، وms، والإصدارات الأحدث، ودعم سهل الاستخدام.",
+  "Cabin": "الطائرة",
+  "Developer-friendly JavaScript and Node.js logging library with security and privacy in mind.": "مكتبة تسجيل JavaScript وNode.js سهلة الاستخدام للمطورين مع وضع الأمان والخصوصية في الاعتبار.",
+  "Node.js framework which powers our entire architecture and engineering design with MVC and more.": "إطار عمل Node.js الذي يعمل على تشغيل الهندسة المعمارية والتصميم الهندسي بالكامل باستخدام MVC والمزيد.",
+  "NoSQL database solution that we use for storing all other data outside of mailboxes (e.g. your account, settings, domains, and alias configurations).": "حل قاعدة بيانات NoSQL الذي نستخدمه لتخزين جميع البيانات الأخرى خارج صناديق البريد (مثل حسابك والإعدادات والمجالات وتكوينات الاسم المستعار).",
+  "Mongoose": "النمس",
+  "MongoDB object document modeling (\"ODM\") which we use across our entire stack.  We wrote special helpers that allow us to simply continue using": "نمذجة مستند كائن MongoDB (\"ODM\") الذي نستخدمه عبر مجموعتنا بأكملها. لقد كتبنا مساعدين خاصين يسمحون لنا بمواصلة الاستخدام ببساطة",
+  "Mongoose with SQLite": "النمس مع SQLite",
+  "Node.js is the open-source, cross-platform JavaScript runtime environment which runs all of our server processes.": "Node.js هي بيئة تشغيل JavaScript مفتوحة المصدر ومتعددة الأنظمة الأساسية والتي تدير جميع عمليات الخادم لدينا.",
+  "Node.js package for sending emails, creating connections, and more.  We are an official sponsor of this project.": "حزمة Node.js لإرسال رسائل البريد الإلكتروني وإنشاء الاتصالات والمزيد. نحن الراعي الرسمي لهذا المشروع.",
+  "Redis": "ريديس",
+  "In-memory database for caching, publish/subscribe channels, and DNS over HTTPS requests.": "قاعدة بيانات في الذاكرة للتخزين المؤقت وقنوات النشر/الاشتراك وDNS عبر طلبات HTTPS.",
+  "Encryption extension for SQLite to allow entire database files to be encrypted (including the write-ahead-log (\"WAL\"), journal, rollback, …).": "ملحق التشفير لـ SQLite للسماح بتشفير ملفات قاعدة البيانات بأكملها (بما في ذلك سجل الكتابة المسبق (\"WAL\")، والمجلة، والتراجع، ...).",
+  "SQLiteStudio": "SQLiteStudio",
+  "Visual SQLite editor (which you could also use) to test, download, and view development mailboxes.": "محرر Visual SQLite (والذي يمكنك استخدامه أيضًا) لاختبار صناديق بريد التطوير وتنزيلها وعرضها.",
+  "Embedded database layer for scalable, self-contained, fast, and resilient IMAP storage.": "طبقة قاعدة بيانات مضمنة لتخزين IMAP قابل للتطوير ومكتفي بذاته وسريع ومرن.",
+  "Node.js anti-spam, email filtering, and phishing prevention tool (our alternative to": "أداة Node.js لمكافحة البريد العشوائي وتصفية البريد الإلكتروني ومنع التصيد الاحتيالي (بديلنا لـ",
+  "Spam Assassin": "قاتل البريد العشوائي",
+  "DNS over HTTPS requests with Node.js and caching using Redis – which ensures global consistency and much more.": "DNS عبر طلبات HTTPS باستخدام Node.js والتخزين المؤقت باستخدام Redis - مما يضمن الاتساق العالمي وغير ذلك الكثير.",
+  "Our development team uses this (and recommends this too) as": "يستخدم فريق التطوير لدينا هذا (ويوصي بهذا أيضًا) كـ",
+  "the preferred email client to use with Forward Email": "عميل البريد الإلكتروني المفضل لاستخدامه مع إعادة توجيه البريد الإلكتروني",
+  "Our development team uses this create virtual machines for iOS and macOS in order to test different email clients (in parallel) with our IMAP and SMTP servers.": "يستخدم فريق التطوير لدينا إنشاء أجهزة افتراضية لنظامي التشغيل iOS وmacOS من أجل اختبار عملاء البريد الإلكتروني المختلفين (بالتوازي) مع خوادم IMAP وSMTP الخاصة بنا.",
+  "Ubuntu": "أوبونتو",
+  "Modern open-source Linux-based server operating system which powers all of our infrastructure.": "نظام تشغيل خادم حديث مفتوح المصدر قائم على نظام Linux والذي يعمل على تشغيل جميع بنيتنا التحتية.",
+  "WildDuck": "البطة البرية",
+  "IMAP server library – see its notes on": "مكتبة خادم IMAP – راجع ملاحظاتها على",
+  "attachment de-duplication": "إلغاء تكرار المرفقات",
+  "IMAP protocol support": "دعم بروتوكول IMAP",
+  "better-sqlite3-multiple-ciphers": "أفضل-sqlite3-أصفار متعددة",
+  "Fast and simple API library for Node.js to interact with SQLite3 programmatically.": "مكتبة API سريعة وبسيطة لـ Node.js للتفاعل مع SQLite3 برمجيًا.",
+  "email-templates": "قوالب البريد الإلكتروني",
+  "Developer-friendly email framework to create, preview, and send custom emails (e.g. account notifications and more).": "إطار بريد إلكتروني صديق للمطورين لإنشاء رسائل بريد إلكتروني مخصصة ومعاينتها وإرسالها (مثل إشعارات الحساب والمزيد).",
+  "json-sql": "json-sql",
+  "SQL query builder using Mongo-style syntax.  This saves our development team time since we can continue to write in Mongo-style across the entire stack with a database agnostic approach.": "منشئ استعلام SQL باستخدام بناء جملة نمط مونغو. وهذا يوفر وقت فريق التطوير لدينا حيث يمكننا الاستمرار في الكتابة بأسلوب Mongo عبر المجموعة بأكملها باستخدام نهج حيادي لقاعدة البيانات.",
+  "It also helps to avoid SQL injection attacks by using query parameters.": "كما أنه يساعد على تجنب هجمات حقن SQL باستخدام معلمات الاستعلام.",
+  "knex-schema-inspector": "مفتش مخطط knex",
+  "SQL utility to extract information about existing database schema. This allows us to easily validate that all indices, tables, columns, constraints, and more are valid and are": "أداة SQL لاستخراج المعلومات حول مخطط قاعدة البيانات الموجودة. يتيح لنا ذلك التحقق بسهولة من صحة جميع المؤشرات والجداول والأعمدة والقيود وغيرها",
+  "with how they should be.  We even wrote automated helpers to add new columns and indexes if changes are made to database schemas (with extremely detailed error alerting too).": "مع كيف ينبغي أن يكونوا. حتى أننا كتبنا مساعدين آليين لإضافة أعمدة وفهارس جديدة إذا تم إجراء تغييرات على مخططات قاعدة البيانات (مع تنبيهات تفصيلية للغاية للأخطاء أيضًا).",
+  "knex": "knex",
+  "SQL query builder which we use only for database migrations and schema validation through": "منشئ استعلام SQL الذي نستخدمه فقط لعمليات ترحيل قاعدة البيانات والتحقق من صحة المخطط من خلاله",
+  "mandarin": "الماندرين",
+  "Automatic": "تلقائي",
+  "i18n": "i18n",
+  "phrase translation with support for Markdown using": "ترجمة العبارة مع دعم استخدام Markdown",
+  "Google Cloud Translation API": "واجهة برمجة تطبيقات الترجمة السحابية من Google",
+  "mx-connect": "mx-connect",
+  "Node.js package to resolve and establish connections with MX servers and handle errors.": "حزمة Node.js لحل وإنشاء الاتصالات مع خوادم MX ومعالجة الأخطاء.",
+  "pm2": "مساء2",
+  "Node.js production process manager with built-in load balancer (": "مدير عملية إنتاج Node.js مع موازن تحميل مدمج (",
+  "fine-tuned": "ضبطها بدقة",
+  "for performance).": "للأداء).",
+  "smtp-server": "خادم SMTP",
+  "SMTP server library – we use this for our mail exchange (\"MX\") and outbound SMTP servers.": "مكتبة خادم SMTP - نستخدمها لتبادل البريد (\"MX\") وخوادم SMTP الصادرة.",
+  "ImapTest": "ImapTest",
+  "Useful tool for testing IMAP servers against benchmarks and RFC specification IMAP protocol compatibility.  This project was created by the": "أداة مفيدة لاختبار خوادم IMAP مقابل المعايير وتوافق بروتوكول IMAP لمواصفات RFC. تم إنشاء هذا المشروع بواسطة",
+  "Dovecot": "حمامة",
+  "team (an active open-source IMAP and POP3 server from July 2002). We extensively tested our IMAP server with this tool.": "فريق (خادم IMAP وPOP3 مفتوح المصدر نشط من يوليو 2002). لقد اختبرنا خادم IMAP الخاص بنا على نطاق واسع باستخدام هذه الأداة.",
+  "You can find other projects we use in": "يمكنك العثور على مشاريع أخرى نستخدمها فيها",
+  "our source code on GitHub": "كود المصدر الخاص بنا على GitHub",
+  "DNS provider, health checks, load balancers, and backup storage using": "مزود DNS، والفحوصات الصحية، وموازنات التحميل، وتخزين النسخ الاحتياطي باستخدام",
+  "Cloudflare R2": "كلاودفلير R2",
+  "Dedicated server hosting, SSD block storage, and managed databases.": "استضافة خادم مخصص، وتخزين كتلة SSD، وقواعد البيانات المُدارة.",
+  "Dedicated server hosting and SSD block storage.": "استضافة خادم مخصص وتخزين كتلة SSD.",
+  "Forward Email is designed according to these principles:": "تم تصميم إعادة توجيه البريد الإلكتروني وفقًا لهذه المبادئ:",
+  "Always be developer-friendly, security and privacy-focused, and transparent.": "كن دائمًا صديقًا للمطورين، مع التركيز على الأمان والخصوصية، والشفافية.",
+  "Adhere to": "الالتزام",
+  "Unix": "يونكس",
+  "Twelve Factor": "اثنا عشر عامل",
+  "Occam's razor": "الحلاقة أوكام",
+  "dogfooding": "تطبيق تجريبي",
+  "Target the scrappy, bootstrapped, and": "استهدف Scrapy، Bootstrapped، و",
+  "ramen-profitable": "رامين مربح",
+  "developer": "مطور",
+  "Ultimately using S3-compatible object storage and/or Virtual Tables are not technically feasible for performance reasons and prone to error due to memory limitations.": "في نهاية المطاف، فإن استخدام تخزين الكائنات المتوافق مع S3 و/أو الجداول الافتراضية ليس ممكنًا من الناحية الفنية لأسباب تتعلق بالأداء ويكون عرضة للخطأ بسبب قيود الذاكرة.",
+  "We have done a few experiments leading up to our final SQLite solution as discussed above.": "لقد أجرينا بعض التجارب التي أدت إلى حل SQLite النهائي كما تمت مناقشته أعلاه.",
+  "One of these was to try using": "واحدة من هذه كانت محاولة استخدام",
+  "rclone": "com.rclone",
+  "and SQLite together with an S3-compatible storage layer.": "وSQLite مع طبقة تخزين متوافقة مع S3.",
+  "That experiment led us to further understand and discover edge cases surrounding rclone, SQLite, and": "قادتنا هذه التجربة إلى فهم واكتشاف حالات الحافة المحيطة بـ rclone وSQLite و",
+  "usage:": "الاستخدام:",
+  "If you enable": "إذا قمت بتمكين",
+  "flag with rclone, then reads will be OK, however writes will get cached.": "ضع علامة باستخدام rclone، وستكون عمليات القراءة على ما يرام، ولكن سيتم تخزين عمليات الكتابة مؤقتًا.",
+  "If you have multiple IMAP servers distributed globally, then the cache will be off across them unless you have a single writer and multiple listeners (e.g. a pub/sub approach).": "إذا كان لديك عدة خوادم IMAP موزعة عالميًا، فسيتم إيقاف تشغيل ذاكرة التخزين المؤقت عبرها ما لم يكن لديك كاتب واحد ومستمعين متعددين (على سبيل المثال، أسلوب النشر/الفرع).",
+  "This is incredibly complex and adding any additional complexity like this will result in more single points of failure.": "هذا أمر معقد بشكل لا يصدق، وإضافة أي تعقيد إضافي مثل هذا سيؤدي إلى المزيد من نقاط الفشل الفردية.",
+  "S3-compatible storage providers do not support partial file changes – which means any change of the": "لا يدعم موفرو التخزين المتوافقون مع S3 التغييرات الجزئية للملفات - مما يعني أي تغيير في",
+  "file will result in a complete change and re-upload of the database.": "سيؤدي الملف إلى تغيير كامل وإعادة تحميل قاعدة البيانات.",
+  "Other solutions like": "حلول أخرى مثل",
+  "exist, but they are not focused on write-ahead-log (\"WAL\") support – so we ended up reviewing Litestream.  Fortunately our encryption usage already encrypts the WAL files for us, so we do not need to rely on Litestream for that.  However we weren't yet confident in Litestream for production-use and have a few notes below on that.": "موجودة، لكنها لا تركز على دعم سجل الكتابة المسبق (\"WAL\") - لذلك انتهى بنا الأمر بمراجعة Litestream. ولحسن الحظ، فإن استخدامنا للتشفير يقوم بالفعل بتشفير ملفات WAL لنا، لذلك لا نحتاج إلى الاعتماد على Litestream للقيام بذلك. ومع ذلك، لم نكن واثقين بعد من استخدام Litestream في الإنتاج ولدينا بعض الملاحظات أدناه حول ذلك.",
+  "Using this option of": "باستخدام هذا الخيار من",
+  "(the": "(ال",
+  "only": "فقط",
+  "way to use SQLite over": "طريقة لاستخدام SQLite أكثر",
+  "for writes) will attempt to copy the entire database from scratch in-memory – handling one 10 GB mailbox is OK, however handling multiple mailboxes with exceedingly high storage will cause the IMAP servers to run into memory limitations and": "للكتابة) سيحاول نسخ قاعدة البيانات بأكملها من نقطة الصفر في الذاكرة - يعد التعامل مع صندوق بريد واحد بسعة 10 جيجابايت أمراً مقبولاً، إلا أن التعامل مع صناديق بريد متعددة ذات مساحة تخزين عالية للغاية سيؤدي إلى تشغيل خوادم IMAP في قيود الذاكرة و",
+  "errors, segmentation faults, and data corruption.": "الأخطاء وأخطاء التجزئة وفساد البيانات.",
+  "If you attempt to use SQLite": "إذا حاولت استخدام SQLite",
+  "Virtual Tables": "الجداول الافتراضية",
+  "(e.g. using": "(على سبيل المثال باستخدام",
+  "s3db": "s3db",
+  ") in order to have data live on an S3-compatible storage layer, then you will run into several more issues:": ") من أجل نشر البيانات على طبقة تخزين متوافقة مع S3، فسوف تواجه العديد من المشكلات الأخرى:",
+  "Read and writes will be extremely slow as S3 API endpoints will need to be hit with HTTP": "ستكون القراءة والكتابة بطيئة للغاية حيث يجب الوصول إلى نقاط نهاية S3 API باستخدام HTTP",
+  "methods.": "طُرق.",
+  "Development tests showed that exceeding 500K-1M+ records on fiber internet is still limited by the throughput of writing and reading to S3-compatible providers.  For example, our developers ran": "أظهرت اختبارات التطوير أن ما يزيد عن 500 ألف - 1 مليون+ من السجلات على إنترنت الألياف لا يزال محدودًا بإنتاجية الكتابة والقراءة لمقدمي الخدمات المتوافقين مع S3. على سبيل المثال، ركض مطورونا",
+  "loops to do both sequential SQL": "حلقات للقيام بكلا SQL المتسلسل",
+  "statements and ones that bulk wrote large amounts of data.  In both cases the performance was staggeringly slow.": "البيانات وتلك التي كتبت بكميات كبيرة من البيانات. وفي كلتا الحالتين كان الأداء بطيئا بشكل مذهل.",
+  "Virtual tables": "الجداول الافتراضية",
+  "cannot have indexes": "لا يمكن أن يكون لها فهارس",
+  "statements, and": "تصريحات، و",
+  "other": "آخر",
+  "limitations": "محددات",
+  "– which leads to delays upwards of 1-2 minutes or more depending on the amount of data.": "– مما يؤدي إلى تأخير يصل إلى 1-2 دقيقة أو أكثر حسب كمية البيانات.",
+  "Objects were stored unencrypted and no native encryption support is readily available.": "تم تخزين الكائنات غير مشفرة ولا يتوفر دعم التشفير الأصلي بسهولة.",
+  "We also explored using": "لقد استكشفنا أيضًا استخدام",
+  "sqlite-s3vfs": "sqlite-s3vfs",
+  "which is similar conceptually and technically to the previous bullet point (so it has the same issues).  A possibility would be to use a custom": "وهو مشابه من الناحية المفاهيمية والفنية للنقطة السابقة (لذلك فهو يحتوي على نفس المشكلات). سيكون الاحتمال هو استخدام العرف",
+  "build wrapped with encryption such as": "بناء ملفوف بالتشفير مثل",
+  "wxSQLite3": "wxSQLite3",
+  "(which we currently use in our solution above) through": "(الذي نستخدمه حاليًا في حلنا أعلاه) من خلال",
+  "editing the setup file": "تحرير ملف الإعداد",
+  "Another potential approach was to use the": "كان النهج المحتمل الآخر هو استخدام",
+  "multiplex extension": "تمديد متعدد",
+  ", however this has a limitation of 32 GB and would require complex building and development headaches.": "، ولكن هذا له حد قدره 32 جيجابايت وسيتطلب مشكلات معقدة في البناء والتطوير.",
+  "statements are required (so this completely rules out using Virtual Tables).  We need": "البيانات مطلوبة (لذا فإن هذا يستبعد تمامًا استخدام الجداول الافتراضية). نحن نحتاج",
+  "statements in order for our hook with": "البيانات من أجل ربطنا مع",
+  "to work properly – which ensures that data is not corrupted and rows retrieved can be converted to valid documents according to our": "للعمل بشكل صحيح - مما يضمن عدم تلف البيانات وإمكانية تحويل الصفوف المستردة إلى مستندات صالحة وفقًا لمتطلباتنا",
+  "schema definitions (which includes constraint, variable type, and arbitrary data validation).": "تعريفات المخطط (والتي تتضمن القيد ونوع المتغير والتحقق التعسفي من صحة البيانات).",
+  "Almost all of the S3-compatible projects related to SQLite in the open-source community are in Python (and not JavaScript which we use for 100% of our stack).": "تقريبًا جميع المشاريع المتوافقة مع S3 والمتعلقة بـ SQLite في مجتمع مفتوح المصدر موجودة بلغة Python (وليست JavaScript التي نستخدمها بنسبة 100% في مجموعتنا).",
+  "Compression libraries such as": "مكتبات الضغط مثل",
+  "sqlite-zstd": "sqlite-zstd",
+  "(see": "(يرى",
+  "comments": "تعليقات",
+  ") look promising, but": ") تبدو واعدة، ولكن",
+  "may not yet be ready for production usage": "قد لا يكون جاهزًا لاستخدام الإنتاج بعد",
+  ".  Instead application-side compression on data types such as": ". بدلاً من ذلك، يتم الضغط من جانب التطبيق على أنواع البيانات مثل",
+  "is going to be a cleaner and easier approach (and is easier to migrate too, since we could store a": "سيكون أسلوبًا أنظف وأسهل (وسيكون من الأسهل ترحيله أيضًا، حيث يمكننا تخزين ملف",
+  "flag or column – or even use": "العلم أو العمود – أو حتى استخدامه",
+  "for compression or": "للضغط أو",
+  "for no compression as database metadata).": "لعدم الضغط كبيانات تعريف قاعدة البيانات).",
+  "Fortunately we already have attachment de-duplication implemented in our IMAP server storage – therefore every message with the same attachment won't keep a copy of the attachment – instead a single attachment is stored for multiple messages and threads in a mailbox (and a foreign reference is subsequently used).": "لحسن الحظ، قمنا بالفعل بتنفيذ إلغاء تكرار المرفقات في مخزن خادم IMAP الخاص بنا - وبالتالي فإن كل رسالة تحتوي على نفس المرفق لن تحتفظ بنسخة من المرفق - وبدلاً من ذلك، يتم تخزين مرفق واحد لرسائل وسلاسل رسائل متعددة في صندوق بريد (وملف خارجي) يتم استخدام المرجع لاحقا).",
+  "The project Litestream, which is a SQLite replication and backup solution is very promising and we will most likely use it in the future.": "يعد مشروع Litestream، وهو حل النسخ الاحتياطي والنسخ الاحتياطي لـ SQLite، واعدًا جدًا وسنستخدمه على الأرجح في المستقبل.",
+  "Not to discredit the author(s) – because we love their work and contributions to open-source for well over a decade now – however from real-world usage it appears that there": "لا أريد تشويه سمعة المؤلف (المؤلفين) - لأننا نحب عملهم ومساهماتهم في المصادر المفتوحة منذ أكثر من عقد من الزمان - ولكن من الاستخدام في العالم الحقيقي يبدو أن هناك",
+  "may be a lot of headaches": "قد يكون هناك الكثير من الصداع",
+  "potential data loss from usage": "احتمال فقدان البيانات من الاستخدام",
+  "Instead we are simply": "بدلا من ذلك نحن ببساطة",
+  "using a cron-job": "باستخدام وظيفة كرون",
+  "for snapshots and backups.": "للقطات والنسخ الاحتياطية.",
+  "Backup restoration needs to be frictionless and trivial.  Using a solution such as MongoDB with": "يجب أن تكون استعادة النسخة الاحتياطية خالية من الاحتكاك وتافهة. باستخدام حل مثل MongoDB مع",
+  "is not only tedious, but time intensive and has configuration complexity.": "ليست مملة فحسب، بل تتطلب وقتًا طويلاً وتتسم بتعقيد التكوين.",
+  "SQLite databases make it simple (it's a single file).": "تجعل قواعد بيانات SQLite الأمر بسيطًا (إنه ملف واحد).",
+  "We wanted to design a solution where users could take their mailbox and leave at any moment.": "أردنا تصميم حل حيث يمكن للمستخدمين أخذ صندوق البريد الخاص بهم والمغادرة في أي لحظة.",
+  "Simple Node.js commands to": "أوامر Node.js البسيطة لـ",
+  "and it's permanently erased from disk storage.": "ويتم مسحه نهائيًا من مساحة تخزين القرص.",
+  "We can similarly use an S3-compatible API with HTTP": "يمكننا بالمثل استخدام واجهة برمجة التطبيقات المتوافقة مع S3 مع HTTP",
+  "to easily remove snapshots and backups for users.": "لإزالة اللقطات والنسخ الاحتياطية للمستخدمين بسهولة.",
+  "SQLite was the simplest, fastest, and most cost-effective solution.": "كان SQLite هو الحل الأبسط والأسرع والأكثر فعالية من حيث التكلفة.",
+  "To our knowledge, no other email services are designed this way nor are they open-source.": "على حد علمنا، لم يتم تصميم أي خدمات بريد إلكتروني أخرى بهذه الطريقة كما أنها ليست مفتوحة المصدر.",
+  "We": "نحن",
+  "think this might be due": "أعتقد أن هذا قد يكون بسبب",
+  "to existing email services having legacy technology in production with": "إلى خدمات البريد الإلكتروني الحالية التي تتمتع بتكنولوجيا قديمة في الإنتاج",
+  "spaghetti code": "كود السباغيتي",
+  "Most if not all of existing email service providers are either closed-source or advertise as open-source,": "معظم موفري خدمة البريد الإلكتروني الحاليين، إن لم يكن جميعهم، إما أن يكونوا مصدرًا مغلقًا أو يعلنون على أنهم مفتوح المصدر،",
+  "but in reality only their front-end is open-source.": "ولكن في الواقع فإن واجهتهم الأمامية هي فقط مفتوحة المصدر.",
+  "The most sensitive part of email": "الجزء الأكثر حساسية في البريد الإلكتروني",
+  "(the actual storage/IMAP/SMTP interaction)": "(التخزين الفعلي/تفاعل IMAP/SMTP)",
+  "is all done on the back-end (server), and": "يتم كل ذلك على الواجهة الخلفية (الخادم)، و",
+  "not": "لا",
+  "on the front-end (client)": "على الواجهة الأمامية (العميل)",
+  "Sign up today at": "سجل اليوم في",
+  "https://forwardemail.net": "https://forwardemail.net",
+  "Free Email Forwarding for Custom Domains": "إعادة توجيه البريد الإلكتروني مجانًا للنطاقات المخصصة",
+  "Setup encrypted email, free email forwarding, custom domains, private business email, and more with support for IMAP, POP3, and SMTP.": "قم بإعداد البريد الإلكتروني المشفر، وإعادة توجيه البريد الإلكتروني مجانًا، والمجالات المخصصة، والبريد الإلكتروني الخاص بالعمل، والمزيد مع دعم IMAP، وPOP3، وSMTP.",
+  "Encrypted Email": "البريد الإلكتروني المشفر",
+  "Encrypted Email Storage": "تخزين البريد الإلكتروني المشفر",
+  "How secure is this?": "ما مدى أمان هذا؟",
+  "Our service ensures your mailboxes are <strong class=\"text-decoration-underline\">only accessible by you</strong> and are not stored in a shared database.": "تضمن خدمتنا أن صناديق البريد الخاصة بك لا <strong class=\"text-decoration-underline\">يمكن الوصول إليها إلا بواسطتك</strong> ولا يتم تخزينها في قاعدة بيانات مشتركة.",
+  "We purposely designed our service so that it operates in-memory when you connect and <strong class=\"text-decoration-underline\">we don't even have access to your mailbox</strong> at rest.": "لقد صممنا خدمتنا عن قصد بحيث تعمل في الذاكرة عند الاتصال <strong class=\"text-decoration-underline\">ولا يمكننا حتى الوصول إلى صندوق البريد الخاص بك</strong> أثناء عدم النشاط.",
+  "If you forget your password, then you lose your mailbox and need to either recover with offline backups or start over.": "إذا نسيت كلمة المرور الخاصة بك، فستفقد صندوق البريد الخاص بك وتحتاج إما إلى استرداده باستخدام النسخ الاحتياطية دون اتصال أو البدء من جديد.",
+  "How does it work?": "كيف يعمل؟",
+  "We use individual mailboxes encrypted with your password.": "نحن نستخدم صناديق بريد فردية مشفرة بكلمة المرور الخاصة بك.",
+  "Our service uses encryption-at-rest (AES-256), encryption-in-transit (TLS), and industry standard security procedures.": "تستخدم خدمتنا التشفير غير الآمن (AES-256)، والتشفير أثناء النقل (TLS)، وإجراءات الأمان القياسية الصناعية.",
+  "We are also <strong>100% open-source</strong> and privacy-focused.": "نحن أيضًا <strong>مفتوح المصدر بنسبة 100%</strong> ونركز على الخصوصية.",
+  "At anytime you can download, view, export, backup, and/or delete your mailboxes &ndash; and <strong class=\"text-decoration-underline\">easily migrate to or from another email service provider</strong>.": "يمكنك في أي وقت تنزيل صناديق البريد الخاصة بك وعرضها وتصديرها ونسخها احتياطيًا و/أو حذفها - <strong class=\"text-decoration-underline\">والترحيل بسهولة إلى أو من مزود خدمة بريد إلكتروني آخر</strong> .",
+  "What are your storage limits?": "ما هي حدود التخزين الخاصة بك؟",
+  "If you exceed the default storage limit of 10 GB, then you can purchase additional storage as needed.": "إذا تجاوزت حد التخزين الافتراضي وهو 10 جيجابايت، فيمكنك شراء مساحة تخزين إضافية حسب الحاجة.",
+  "Storage is shared across all of your domains and aliases, but you can impose limits if desired on a per domain and alias basis.": "تتم مشاركة مساحة التخزين عبر جميع النطاقات والأسماء المستعارة الخاصة بك، ولكن يمكنك فرض حدود إذا رغبت في ذلك على أساس كل نطاق واسم مستعار.",
+  "Unlike other email providers, you do not need to pay for storage on a per domain or alias basis.": "على عكس موفري خدمة البريد الإلكتروني الآخرين، لا تحتاج إلى الدفع مقابل التخزين على أساس كل نطاق أو اسم مستعار.",
+  "<strong class=\"text-decoration-underline\">You can even bring your own storage provider</strong> for backups to use with our service &ndash; such as Amazon, Backblaze, Box, Cloudflare, Digital Ocean, Dropbox, SFTP, Google, Microsoft, Oracle, or any S3-compatible storage provider.": "<strong class=\"text-decoration-underline\">يمكنك أيضًا إحضار مزود التخزين الخاص بك</strong> للنسخ الاحتياطية لاستخدامه مع خدمتنا - مثل Amazon، أو Backblaze، أو Box، أو Cloudflare، أو Digital Ocean، أو Dropbox، أو SFTP، أو Google، أو Microsoft، أو Oracle، أو أي مزود تخزين متوافق مع S3.",
+  "This means you can own your data and most importantly &ndash; <strong>you don't have to operate and maintain your own email servers</strong>.": "وهذا يعني أنه يمكنك امتلاك بياناتك، والأهم من ذلك - <strong>أنك لا تحتاج إلى تشغيل وصيانة خوادم البريد الإلكتروني الخاصة بك</strong> .",
+  "Click to learn more": "اضغط لتتعلم المزيد",
+  "Privacy-focused encrypted email for everyone.": "بريد إلكتروني مشفر يركز على الخصوصية للجميع.",
+  "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span> with your custom domain or use one of ours!": "قم بإرسال واستقبال البريد الإلكتروني باسم <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span> باستخدام نطاقك المخصص أو استخدم أحد نطاقاتنا!",
+  "10 GB encrypted email storage": "مساحة تخزين بريد إلكتروني مشفرة تبلغ 10 جيجابايت",
+  "Bring your own storage provider": "أحضر مزود التخزين الخاص بك",
+  "Supports": "يدعم",
+  "Free Email Forwarder for Custom Domains": "وكيل بريد إلكتروني مجاني للنطاقات المخصصة",
+  "Private Policy": "سياسة خاصة",
+  "Private Business Email for Custom Domains": "البريد الإلكتروني الخاص بالعمل للمجالات المخصصة",
+  "Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains.": "قم بإنشاء بريدك الإلكتروني المجاني والخاص والمشفر والآمن للشركات والمؤسسات والمجالات المخصصة.",
+  "Free, private, and encrypted email for business and enterprise.": "بريد إلكتروني مجاني وخاص ومشفر للأعمال والمؤسسات.",
+  "Works with": "يعمل مع",
+  "Automatically allowlisted": "تم إدراجها في القائمة المسموح بها تلقائيًا",
+  "Frequently Asked Questions About Email": "الأسئلة المتداولة حول البريد الإلكتروني",
+  "Developer Email API for Custom Domains and Webhooks": "واجهة برمجة تطبيقات البريد الإلكتروني للمطور للنطاقات المخصصة وخطافات الويب",
+  "Free Email Webhooks for Developers and Custom Domains": "خطافات ويب مجانية للبريد الإلكتروني للمطورين والمجالات المخصصة",
+  "Email Forwarding Regular Expression for Custom Domains": "إعادة توجيه البريد الإلكتروني التعبير العادي للنطاقات المخصصة",
+  "Disposable Email Addresses for Custom Domains": "عناوين البريد الإلكتروني التي يمكن التخلص منها للمجالات المخصصة",
+  "Free Startup and Developer Email Tools List (<span class=\"notranslate\">2023</span>)": "قائمة أدوات البريد الإلكتروني المجانية لبدء التشغيل والمطورين ( <span class=\"notranslate\">2023</span> )",
+  "Encrypted Email: Get Your Private Email Account": "البريد الإلكتروني المشفر: احصل على حساب البريد الإلكتروني الخاص بك",
+  "Encrypted mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "صناديق بريد مشفرة لحماية خصوصيتك. بريد إلكتروني آمن يركز على الخصوصية لشركتك والمجالات المخصصة. برمجيات مفتوحة المصدر 100%.",
+  "Free Email Hosting Setup Guides (<span class=\"notranslate\">2023</span>)": "أدلة إعداد استضافة البريد الإلكتروني المجانية ( <span class=\"notranslate\">2023</span> )",
+  "Free Email Developer Tools and Resources (<span class=\"notranslate\">2023</span>)": "أدوات وموارد مطور البريد الإلكتروني المجانية ( <span class=\"notranslate\">2023</span> )",
+  "Ask a question and get support from our team.": "اطرح سؤالاً واحصل على الدعم من فريقنا.",
+  "Register Custom Domain for Email": "تسجيل المجال المخصص للبريد الإلكتروني",
+  "Reserved Email Addresses For Administrators": "عناوين البريد الإلكتروني المحجوزة للمسؤولين",
+  "<strong>Unlike other email services</strong>, we ensure that <strong class='text-decoration-underline'>only you have access to your mailbox</strong> at all times.": "<strong>على عكس خدمات البريد الإلكتروني الأخرى</strong> ، فإننا نضمن أنك <strong class='text-decoration-underline'>وحدك من يمكنه الوصول إلى صندوق البريد الخاص بك</strong> في جميع الأوقات.",
+  "Free Email Forwarding and Hosting for Custom Domain Setup Guide (<span class=\"notranslate\">2023</span>)": "إعادة توجيه واستضافة البريد الإلكتروني مجانًا لدليل إعداد النطاق المخصص ( <span class=\"notranslate\">2023</span> )",
+  "How to Send Mail As for Gmail Custom Domain Setup Guide (<span class=\"notranslate\">2023</span>)": "كيفية إرسال البريد كدليل إعداد المجال المخصص لـ Gmail ( <span class=\"notranslate\">2023</span> )",
+  "Failed to release write lock": "فشل تحرير قفل الكتابة",
+  "My Emails": "بريدي الإلكتروني",
+  "My Logs": "سجلاتي",
+  "My Profile": "ملفي",
+  "My Billing": "الفواتير الخاصة بي"
 }

@@ -13,27 +13,24 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
+const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
-const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+
+const builder = new Builder();
 
 async function onOpen(path, session, fn) {
   this.logger.debug('OPEN', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'OPEN');
+    const { db } = await this.refreshSession(session, 'OPEN');
 
-    const mailbox = await Mailboxes.findOne({
-      path,
-      alias: alias._id
-    })
-      .maxTimeMS(ms('3s'))
-      .lean()
-      .exec();
+    const mailbox = await Mailboxes.findOne(db, {
+      path
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -41,19 +38,38 @@ async function onOpen(path, session, fn) {
       });
 
     //
+    // NOTE: the below comment doesn't apply anymore
+    //       since we're actually using sqlite behind the scenes!
+    //
     // distinct has a limited response size of 16 MB
     // <https://www.mongodb.com/docs/manual/reference/method/db.collection.distinct/>
     // > 'The maximum BSON document size is 16 megabytes'
     // <https://github.com/nodemailer/wildduck/issues/530>
     //
-    // TODO: rewrite this to use cursor and sort { uid: 1 }
-    //
-    const uidList = await Messages.distinct('uid', {
-      mailbox: mailbox._id,
-      alias: alias._id
-    }).maxTimeMS(ms('2s'));
+    /*
+    const uidList = await Messages.distinct(db, 'uid', {
+      mailbox: mailbox._id
+    });
 
     mailbox.uidList = uidList.sort();
+    */
+
+    const sql = builder.build({
+      type: 'select',
+      table: 'Messages',
+      condition: {
+        mailbox: mailbox._id.toString()
+      },
+      group: 'uid',
+      fields: ['uid'],
+      sort: 'uid'
+    });
+
+    const docs = db.prepare(sql.query).pluck().all(sql.values);
+    if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
+    // close the connection
+    db.close();
+    mailbox.uidList = docs;
 
     // send response
     fn(null, mailbox);

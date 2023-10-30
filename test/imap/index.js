@@ -37,6 +37,8 @@ const Aliases = require('#models/aliases');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const config = require('#config');
+const getDatabase = require('#helpers/get-database');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const logger = new Axe({ silent: true });
 const IP_ADDRESS = ip.address();
@@ -131,8 +133,11 @@ test.beforeEach(async (t) => {
 
   // create inbox
   await t.context.imapFlow.mailboxCreate('INBOX');
-  const mailbox = await Mailboxes.findOne({
-    alias: alias._id,
+  const db = await getDatabase(imap.server, alias, {
+    user: { password: encrypt(pass) }
+  });
+  t.context.db = db;
+  const mailbox = await Mailboxes.findOne(db, {
     path: 'INBOX'
   });
   t.is(mailbox.specialUse, '\\Inbox');
@@ -153,12 +158,9 @@ test('onAppend', async (t) => {
   //
   await imapFlow.mailboxCreate('append');
 
-  let mailbox = await Mailboxes.findOne({
-    alias: alias._id,
+  let mailbox = await Mailboxes.findOne(t.context.db, {
     path: 'append'
-  })
-    .lean()
-    .exec();
+  });
 
   const raw = `
 Content-Type: multipart/mixed; boundary="------------cWFvDSey27tFG0hVYLqp9hs9"
@@ -195,7 +197,7 @@ ZXhhbXBsZQo=
   t.is(append.uid, 1);
   t.is(append.uidValidity, BigInt(mailbox.uidValidity));
 
-  mailbox = await Mailboxes.findById(mailbox._id).lean().exec();
+  mailbox = await Mailboxes.findById(t.context.db, mailbox._id);
 
   t.is(mailbox.uidNext, 2);
 });
@@ -225,8 +227,7 @@ test('onFetch', async (t) => {
   // create mailbox folder
   const mbox = await client.mailboxCreate(['INBOX', 'fetch', 'child']);
   t.is(mbox.path, 'INBOX/fetch/child');
-  const mailbox = await Mailboxes.findOne({
-    alias: t.context.alias._id,
+  const mailbox = await Mailboxes.findOne(t.context.db, {
     path: 'INBOX/fetch/child'
   });
   t.true(typeof mailbox === 'object');
@@ -293,13 +294,10 @@ ZXhhbXBsZQo=
     const message = await client.fetchOne(client.mailbox.exists, {
       source: true
     });
-    const msg = await Messages.findOne({
+    const msg = await Messages.findOne(t.context.db, {
       mailbox: mailbox._id,
-      alias: t.context.alias._id,
       uid: message.uid
-    })
-      .lean()
-      .exec();
+    });
     t.is(
       message.source.toString(),
       splitLines(msg.raw.toString()).join('\r\n')
@@ -481,21 +479,21 @@ ZXhhbXBsZQo=
     new Date()
   );
 
-  const mailbox = await Mailboxes.findOne({
-    alias: alias._id,
+  const db = await getDatabase(t.context.imap.server, alias, {
+    user: { password: encrypt(pass) }
+  });
+
+  const mailbox = await Mailboxes.findOne(db, {
     path: append.destination
   });
 
   t.is(mailbox.path, append.destination);
 
   {
-    const message = await Messages.findOne({
-      alias: alias._id,
+    const message = await Messages.findOne(db, {
       mailbox: mailbox._id,
       uid: append.uid
-    })
-      .lean()
-      .exec();
+    });
     const storageUsed = await Aliases.getStorageUsed(alias);
     t.is(storageUsed, 604);
     const quota = await imapFlow.getQuota('boopboop');
@@ -606,8 +604,7 @@ ZXhhbXBsZQo=
     new Date()
   );
 
-  const mailbox = await Mailboxes.findOne({
-    alias: t.context.alias._id,
+  const mailbox = await Mailboxes.findOne(t.context.db, {
     path: 'expunge'
   });
 
@@ -615,9 +612,8 @@ ZXhhbXBsZQo=
 
   // note that a message won't get marked as deleted
   // since it has to have a Deleted flag at first
-  const uids = await Messages.distinct('uid', {
+  const uids = await Messages.distinct(t.context.db, 'uid', {
     mailbox: mailbox._id,
-    alias: t.context.alias._id,
     undeleted: true
   });
 
@@ -625,14 +621,13 @@ ZXhhbXBsZQo=
 
   await t.context.imapFlow.mailboxOpen('expunge');
 
-  t.true(
-    await t.context.imapFlow.messageFlagsAdd(
-      uids,
-      ['\\Deleted'],
-      // <https://github.com/postalsys/imapflow/issues/21#issuecomment-658773009>
-      { uid: true }
-    )
+  const result = await t.context.imapFlow.messageFlagsAdd(
+    uids,
+    ['\\Deleted'],
+    // <https://github.com/postalsys/imapflow/issues/21#issuecomment-658773009>
+    { uid: true }
   );
+  t.true(result);
 
   let data;
   t.context.imapFlow.on('expunge', (_data) => {
@@ -795,10 +790,11 @@ test
     'from',
     'cc',
     'bcc',
+    'text',
     'body',
     'subject',
     'keyword',
-    'unKeyword'
+    'unKeyword' // TODO: (?)
   ]) {
     // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.search({ [key]: 'test' });
@@ -918,16 +914,14 @@ ZXhhbXBsZQo=
     await t.context.imapFlow.messageFlagsSet({ all: true }, ['\\Deleted'])
   );
 
-  const mailbox = await Mailboxes.findOne({
-    path: 'flag-set',
-    alias: t.context.alias._id
+  const mailbox = await Mailboxes.findOne(t.context.db, {
+    path: 'flag-set'
   });
 
   t.is(mailbox.path, 'flag-set');
 
-  const message = await Messages.findOne({
-    mailbox: mailbox._id,
-    alias: t.context.alias._id
+  const message = await Messages.findOne(t.context.db, {
+    mailbox: mailbox._id
   });
 
   t.deepEqual(message.flags, ['\\Deleted']);
@@ -972,16 +966,14 @@ ZXhhbXBsZQo=
     await t.context.imapFlow.messageFlagsRemove({ all: true }, ['\\Flagged'])
   );
 
-  const mailbox = await Mailboxes.findOne({
-    path: 'flag-remove',
-    alias: t.context.alias._id
+  const mailbox = await Mailboxes.findOne(t.context.db, {
+    path: 'flag-remove'
   });
 
   t.is(mailbox.path, 'flag-remove');
 
-  const message = await Messages.findOne({
-    mailbox: mailbox._id,
-    alias: t.context.alias._id
+  const message = await Messages.findOne(t.context.db, {
+    mailbox: mailbox._id
   });
 
   t.deepEqual(message.flags, ['\\Seen', '\\Draft']);

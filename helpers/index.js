@@ -59,6 +59,10 @@ const validateDomain = require('./validate-domain');
 const IMAPError = require('./imap-error');
 const SocketError = require('./socket-error');
 const IMAPNotifier = require('./imap-notifier');
+const refreshSession = require('./refresh-session');
+const getDatabase = require('./get-database');
+const mongooseToSqlite = require('./mongoose-to-sqlite');
+const AttachmentStorage = require('./attachment-storage');
 
 module.exports = {
   decrypt,
@@ -117,5 +121,9 @@ module.exports = {
   validateDomain,
   IMAPError,
   SocketError,
-  IMAPNotifier
+  IMAPNotifier,
+  refreshSession,
+  getDatabase,
+  mongooseToSqlite,
+  AttachmentStorage
 };

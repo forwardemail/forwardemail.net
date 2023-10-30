@@ -16,4 +16,8 @@ const env = require('@ladjs/env')({
   schema: path.join(__dirname, '..', '.env.schema')
 });
 
+// eslint-disable-next-line n/prefer-global/process
+if (test || process.env.NODE_ENV === 'development')
+  Error.stackTraceLimit = Number.POSITIVE_INFINITY;
+
 module.exports = env;

@@ -15,13 +15,17 @@
 
 const _ = require('lodash');
 const mongoose = require('mongoose');
-const mongooseCommonPlugin = require('mongoose-common-plugin');
+const validationErrorTransform = require('mongoose-validation-error-transform');
 
-const Aliases = require('./aliases');
 const Mailboxes = require('./mailboxes');
 const Threads = require('./threads');
 
 const env = require('#config/env');
+const {
+  dummyProofModel,
+  dummySchemaOptions,
+  sqliteVirtualDB
+} = require('#helpers/mongoose-to-sqlite');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -32,12 +36,6 @@ Str.checkRequired((v) => v !== null);
 
 const Messages = new mongoose.Schema(
   {
-    alias: {
-      type: mongoose.Schema.ObjectId,
-      ref: Aliases,
-      required: true,
-      index: true
-    },
     mailbox: {
       type: mongoose.Schema.ObjectId,
       ref: Mailboxes,
@@ -175,7 +173,8 @@ const Messages = new mongoose.Schema(
     // has attachments boolean
     ha: {
       type: Boolean,
-      required: true
+      required: true,
+      default: false
     },
 
     // uid and modseq
@@ -194,11 +193,13 @@ const Messages = new mongoose.Schema(
     searchable: {
       type: Boolean,
       required: true,
-      index: true
+      index: true,
+      default: true
     },
     junk: {
       type: Boolean,
-      required: true
+      required: true,
+      default: false
     },
 
     // IP address of creation
@@ -227,11 +228,7 @@ const Messages = new mongoose.Schema(
       trim: true
     }
   },
-  {
-    writeConcern: {
-      w: 'majority'
-    }
-  }
+  dummySchemaOptions
 );
 
 //
@@ -239,19 +236,12 @@ const Messages = new mongoose.Schema(
 //       (note that we'd have to feed the search query the search parsed tokens from message)
 //       (but at that point we might want to simply do another hash query lookup by tokens parsed)
 //
-Messages.index(
-  {
-    alias: 1,
-    'headers.value': 'text',
-    text: 'text'
-  },
-  { default_language: 'english' }
-);
-
-Messages.plugin(mongooseCommonPlugin, {
-  object: 'message',
-  locale: false
+Messages.index({
+  text: 'text'
 });
+
+Messages.plugin(sqliteVirtualDB);
+Messages.plugin(validationErrorTransform);
 
 /*
 Messages.pre('validate', async function (next) {
@@ -290,7 +280,7 @@ Messages.pre('validate', function (next) {
   this.flags = _.uniq(this.flags);
 
   // replace "@wildduck.email" in msgid
-  if (this.isNew)
+  if (this.isNew && typeof this.msgid === 'string')
     this.msgid = this.msgid.replace('@wildduck.email', `@${env.WEB_HOST}`);
 
   // update boolean based off attachments
@@ -300,7 +290,4 @@ Messages.pre('validate', function (next) {
   next();
 });
 
-const conn = mongoose.connections.find(
-  (conn) => conn[Symbol.for('connection.name')] === 'IMAP_MONGO_URI'
-);
-module.exports = conn.model('Messages', Messages);
+module.exports = dummyProofModel(mongoose.model('Messages', Messages));

@@ -13,8 +13,6 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
-
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -24,23 +22,15 @@ async function onRename(path, newPath, session, fn) {
   this.logger.debug('RENAME', { path, newPath, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'RENAME');
+    const { alias, db } = await this.refreshSession(session, 'RENAME');
 
     const [mailbox, targetMailbox] = await Promise.all([
-      Mailboxes.findOne({
-        path,
-        alias: alias._id
+      Mailboxes.findOne(db, {
+        path
+      }),
+      Mailboxes.findOne(db, {
+        path: newPath
       })
-        .maxTimeMS(ms('3s'))
-        .lean()
-        .exec(),
-      Mailboxes.findOne({
-        path: newPath,
-        alias: alias._id
-      })
-        .maxTimeMS(ms('3s'))
-        .lean()
-        .exec()
     ]);
 
     if (!mailbox)
@@ -59,9 +49,9 @@ async function onRename(path, newPath, session, fn) {
       });
 
     const renamedMailbox = await Mailboxes.findOneAndUpdate(
+      db,
       {
-        _id: mailbox._id,
-        alias: alias._id
+        _id: mailbox._id
       },
       {
         $set: {
@@ -70,6 +60,9 @@ async function onRename(path, newPath, session, fn) {
       }
     );
 
+    // close the connection
+    db.close();
+
     // could not write/lock mailbox
     if (!renamedMailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -77,7 +70,7 @@ async function onRename(path, newPath, session, fn) {
       });
 
     try {
-      await this.server.notifier.addEntries(mailbox, {
+      await this.server.notifier.addEntries(db, mailbox, {
         command: 'RENAME',
         mailbox: mailbox._id,
         path: renamedMailbox.path

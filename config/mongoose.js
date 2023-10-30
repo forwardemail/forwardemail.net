@@ -30,8 +30,8 @@ if (initialConnection) initialConnection.destroy();
 for (const name of [
   'MONGO_URI',
   'LOGS_MONGO_URI',
-  'EMAILS_MONGO_URI',
-  'IMAP_MONGO_URI'
+  'JOURNALS_MONGO_URI',
+  'EMAILS_MONGO_URI'
 ]) {
   const uri = env[name];
   if (mongoose.connections.some((conn) => conn._connectionString === uri))

@@ -129,6 +129,7 @@ footer.mt-auto.small.text-monospace
           hr.d-lg-none.w-100
           h3.h6.text-uppercase.mb-2: a.text-light(href=l("/resources"))= t("Resources")
           ul.list-unstyled.mb-0
+            li: a.d-block.text-light.py-2.py-md-0(href=l("/encrypted-email"))= t("Encrypted Email")
             - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
             if !isBot(ctx.get('User-Agent'))
               - pricingPageHref += "?pricing=true";

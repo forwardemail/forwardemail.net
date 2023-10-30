@@ -13,17 +13,20 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
 const mongoose = require('mongoose');
 const tools = require('wildduck/lib/tools');
+const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const { convertResult } = require('#helpers/mongoose-to-sqlite');
 
 const BULK_BATCH_SIZE = 150;
+
+const builder = new Builder();
 
 // eslint-disable-next-line complexity
 async function onMove(mailboxId, update, session, fn) {
@@ -32,23 +35,15 @@ async function onMove(mailboxId, update, session, fn) {
   let lock;
 
   try {
-    const { alias } = await this.refreshSession(session, 'MOVE');
+    const { alias, db } = await this.refreshSession(session, 'MOVE');
 
     const [mailbox, targetMailbox] = await Promise.all([
-      Mailboxes.findOne({
-        alias: alias._id,
+      Mailboxes.findOne(db, {
         _id: mailboxId
-      })
-        .maxTimeMS(ms('3s'))
-        .lean()
-        .exec(),
-      Mailboxes.findOne({
-        alias: alias._id,
+      }),
+      Mailboxes.findOne(db, {
         path: update.destination
       })
-        .maxTimeMS(ms('3s'))
-        .lean()
-        .exec()
     ]);
 
     if (!mailbox || !targetMailbox)
@@ -56,14 +51,7 @@ async function onMove(mailboxId, update, session, fn) {
         imapResponse: 'TRYCREATE'
       });
 
-    lock = await this.server.lock.waitAcquireLock(
-      `mbwr:${mailbox.id}`,
-      ms('5m'),
-      ms('1m')
-    );
-
-    if (!lock?.success)
-      throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
+    lock = await db.acquireLock();
 
     let err;
 
@@ -73,21 +61,25 @@ async function onMove(mailboxId, update, session, fn) {
     const sourceUid = [];
     const destinationUid = [];
 
-    const cursor = Messages.find({
-      mailbox: mailbox._id,
-      alias: alias._id,
-      uid: tools.checkRangeQuery(update.messages)
-    })
+    const sql = builder.build({
+      type: 'select',
+      table: 'Messages',
+      condition: {
+        mailbox: mailbox._id.toString(),
+        uid: tools.checkRangeQuery(update.messages)
+      },
       // sort required for IMAP UIDPLUS
-      .sort({ uid: 1 })
-      .lean();
+      sort: 'uid'
+    });
+
+    const stmt = db.prepare(sql.query);
 
     try {
       // increment modification index to indicate a change occurred
       const updatedMailbox = await Mailboxes.findOneAndUpdate(
+        db,
         {
-          _id: mailbox._id,
-          alias: alias._id
+          _id: mailbox._id
         },
         {
           $inc: {
@@ -95,6 +87,7 @@ async function onMove(mailboxId, update, session, fn) {
           }
         },
         {
+          lock,
           returnDocument: 'after',
           projection: {
             _id: true,
@@ -115,24 +108,21 @@ async function onMove(mailboxId, update, session, fn) {
 
       const newModseq = updatedMailbox.modifyIndex || 1;
 
-      for await (let message of cursor.cursor()) {
+      // turn on unsafe mode to allow us to iterate, select, and update at the same time
+      db.unsafeMode(true);
+
+      // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
+      for (const result of stmt.iterate(sql.values)) {
+        // eslint-disable-next-line no-await-in-loop
+        let message = await convertResult(Messages, result);
+
         this.logger.debug('fetched message', {
+          result,
           message,
           mailboxId,
           update,
           session
         });
-
-        // return early if no message
-        // TODO: does this actually occur as an edge case (?)
-        if (!message) {
-          this.logger.fatal('message not fetched', {
-            mailboxId,
-            update,
-            session
-          });
-          break;
-        }
 
         //
         // this is a fix for clients like Thunderbird which
@@ -152,10 +142,11 @@ async function onMove(mailboxId, update, session, fn) {
         // add to source uid array
         sourceUid.push(existingMessageUid);
 
+        // eslint-disable-next-line no-await-in-loop
         const updatedTargetMailbox = await Mailboxes.findOneAndUpdate(
+          db,
           {
             _id: targetMailbox._id,
-            alias: alias._id,
             path: update.destination
           },
           {
@@ -164,6 +155,7 @@ async function onMove(mailboxId, update, session, fn) {
             }
           },
           {
+            lock,
             projection: {
               uidNext: true,
               modifyIndex: true
@@ -201,7 +193,14 @@ async function onMove(mailboxId, update, session, fn) {
         message.transaction = 'MOVE';
         message.searchable = !message.flags.includes('\\Deleted');
 
+        // virtual helper for locking if we lock in advance
+        message.lock = lock;
+
+        // virtual db helper
+        message.db = db;
+
         // create new message (in new target mailbox)
+        // eslint-disable-next-line no-await-in-loop
         message = await Messages.create(message);
 
         existEntries.push({
@@ -219,12 +218,16 @@ async function onMove(mailboxId, update, session, fn) {
         });
 
         // delete old message
-        const results = await Messages.deleteOne({
-          _id: existingMessageId,
-          mailbox: existingMailboxId,
-          uid: existingMessageUid,
-          alias: alias._id
-        });
+        // eslint-disable-next-line no-await-in-loop
+        const results = await Messages.deleteOne(
+          db,
+          {
+            _id: existingMessageId,
+            mailbox: existingMailboxId,
+            uid: existingMessageUid
+          },
+          { lock }
+        );
 
         if (results && results.deletedCount) {
           session.writeStream.write(
@@ -258,7 +261,13 @@ async function onMove(mailboxId, update, session, fn) {
         if (expungeEntries.length >= BULK_BATCH_SIZE) {
           // expunge messages from old mailbox
           try {
-            await this.server.notifier.addEntries(mailbox, expungeEntries);
+            // eslint-disable-next-line no-await-in-loop
+            await this.server.notifier.addEntries(
+              db,
+              mailbox,
+              expungeEntries,
+              lock
+            );
             expungeEntries = [];
             this.server.notifier.fire(alias.id);
           } catch (err) {
@@ -269,9 +278,12 @@ async function onMove(mailboxId, update, session, fn) {
         if (existEntries.length >= BULK_BATCH_SIZE) {
           // add new messages to new mailbox
           try {
+            // eslint-disable-next-line no-await-in-loop
             await this.server.notifier.addEntries(
+              db,
               targetMailbox._id,
-              existEntries
+              existEntries,
+              lock
             );
             existEntries = [];
             this.server.notifier.fire(alias.id);
@@ -284,9 +296,15 @@ async function onMove(mailboxId, update, session, fn) {
       err = _err;
     }
 
+    // turn off unsafe mode
+    db.unsafeMode(false);
+
+    // close the connection
+    db.close();
+
     // release lock
     try {
-      await this.server.lock.releaseLock(lock);
+      await db.releaseLock(lock);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
@@ -310,7 +328,12 @@ async function onMove(mailboxId, update, session, fn) {
     if (expungeEntries.length > 0) {
       // expunge messages from old mailbox
       try {
-        await this.server.notifier.addEntries(mailbox, expungeEntries);
+        await this.server.notifier.addEntries(
+          db,
+          mailbox,
+          expungeEntries,
+          lock
+        );
         this.server.notifier.fire(alias.id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
@@ -320,7 +343,12 @@ async function onMove(mailboxId, update, session, fn) {
     if (existEntries.length > 0) {
       // add new messages to new mailbox
       try {
-        await this.server.notifier.addEntries(targetMailbox, existEntries);
+        await this.server.notifier.addEntries(
+          db,
+          targetMailbox,
+          existEntries,
+          lock
+        );
         this.server.notifier.fire(alias.id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });

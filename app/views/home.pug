@@ -1,6 +1,7 @@
 extends layout
 
 block body
+  include _modal-storage
   //- modal watch video
   if !isBot(ctx.get('User-Agent'))
     #modal-watch-video.modal.fade(
@@ -113,31 +114,32 @@ block body
             if isBot(ctx.get("User-Agent"))
               = t("Free, private, and secure email for custom domains.")
             else
-              = t("Free, private, and secure email for everyone.")
+              = t("Privacy-focused encrypted email for everyone.")
           p.d-none.d-md-block
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
             = " "
-            != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
+            != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with your custom domain or use one of ours!')
           a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mb-3(
             href=l("/register"),
             data-toggle="modal-anchor",
             data-target="#modal-sign-up"
           )
-            = t("Try for free")
+            = t("Sign up free")
           .d-none.d-md-block
             include _feature-list
           ul.list-inline
-            li.list-inline-item.d-block.d-md-inline.mb-3.mb-md-0
-              a.btn.btn-outline-light(
+            li.list-inline-item.d-block.d-md-inline
+              a.btn.btn-outline-light.mb-3(
                 class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-outline-light",
                 href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true")
               )
                 i.fa.fa-fw.fa-layer-group
                 = " "
                 != t("Features &amp; Pricing")
+            //- Product Tour
             li.list-inline-item.d-block.d-md-inline
               if isBot(ctx.get('User-Agent'))
-                a.btn.btn-dark(
+                a.btn.btn-dark.mb-3(
                   href="https://www.youtube.com/watch?v=N6zjv40zuIY",
                   target="_blank",
                   rel="noopener noreferrer"
@@ -146,7 +148,7 @@ block body
                   = " "
                   = t("Product Tour")
               else
-                a.btn.btn-outline-light(
+                a.btn.btn-outline-light.mb-3(
                   role="button",
                   data-toggle="modal",
                   data-target="#modal-watch-video",
@@ -157,6 +159,18 @@ block body
                   i.fab.fa-youtube.text-danger
                   = " "
                   = t("Product Tour")
+            //- Developers
+            li.list-inline-item.d-block.d-md-inline
+              if isBot(ctx.get('User-Agent'))
+                a.btn.btn-dark.mb-3(href=l("/docs"))
+                  i.fa.fa-code
+                  = " "
+                  = t("Developers")
+              else
+                a.btn.btn-outline-light.mb-3(href=l("/docs"))
+                  i.fa.fa-code
+                  = " "
+                  = t("Developers")
     a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
       href="#testimonials"
     )

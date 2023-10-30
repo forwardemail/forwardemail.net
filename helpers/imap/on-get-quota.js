@@ -23,7 +23,10 @@ async function onGetQuota(path, session, fn) {
   this.logger.debug('GETQUOTA', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'GETQUOTA');
+    const { alias, db } = await this.refreshSession(session, 'GETQUOTA');
+
+    // close the connection
+    db.close();
 
     if (path !== '') return fn(null, 'NONEXISTENT');
 

@@ -76,14 +76,7 @@ block content
                 li
                   = emoji("white_check_mark")
                   = " "
-                  = t("IMAP storage support")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/faq#do-you-support-receiving-email-with-imap`
-                  )
-                    = t("Beta")
-                    = " "
-                    != "&rarr;"
+                  = t("Works with Apple, Outlook, Gmail, Thunderbird, Android")
                 li
                   = emoji("white_check_mark")
                   = " "
@@ -136,5 +129,5 @@ block content
                 a.btn.btn-lg.btn-success.text-uppercase.font-weight-bold(
                   href=config.urls.web
                 )
-                  = t("Try for free")
+                  = t("Sign up free")
           .card-footer.small.text-muted= t("If you have any questions or comments, then please let us know.")

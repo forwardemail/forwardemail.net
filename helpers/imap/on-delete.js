@@ -13,8 +13,6 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
-
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
@@ -25,15 +23,11 @@ async function onDelete(path, session, fn) {
   this.logger.debug('DELETE', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'DELETE');
+    const { alias, db } = await this.refreshSession(session, 'DELETE');
 
-    const mailbox = await Mailboxes.findOne({
-      alias: alias._id,
+    const mailbox = await Mailboxes.findOne(db, {
       path
-    })
-      .maxTimeMS(ms('3s'))
-      .lean()
-      .exec();
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -46,8 +40,7 @@ async function onDelete(path, session, fn) {
       });
 
     // delete mailbox
-    const results = await Mailboxes.deleteOne({
-      alias: alias._id,
+    const results = await Mailboxes.deleteOne(db, {
       _id: mailbox._id
     });
 
@@ -56,7 +49,7 @@ async function onDelete(path, session, fn) {
     // results.deletedCount is mainly for publish/notifier
     if (results.deletedCount > 0) {
       try {
-        await this.server.notifier.addEntries(mailbox, {
+        await this.server.notifier.addEntries(db, mailbox, {
           command: 'DELETE',
           mailbox: mailbox._id
         });
@@ -68,21 +61,20 @@ async function onDelete(path, session, fn) {
 
     // set messages to expired
     await Messages.updateMany(
+      db,
       {
-        alias: alias._id,
         mailbox: mailbox._id
       },
       {
         $set: {
           exp: true,
-          rdate: Date.now() - 24 * 3600 * 1000
+          rdate: new Date(Date.now() - 24 * 3600 * 1000)
         }
-      },
-      {
-        multi: true,
-        w: 1
       }
     );
+
+    // close the connection
+    db.close();
 
     fn(null, true, mailbox._id);
   } catch (err) {

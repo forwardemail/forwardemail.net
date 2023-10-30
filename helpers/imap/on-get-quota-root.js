@@ -24,19 +24,19 @@ async function onGetQuotaRoot(path, session, fn) {
   this.logger.debug('GETQUOTAROOT', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'GETQUOTAROOT');
+    const { alias, db } = await this.refreshSession(session, 'GETQUOTAROOT');
 
-    const mailbox = await Mailboxes.findOne({
-      path,
-      alias: alias._id
-    })
-      .lean()
-      .exec();
+    const mailbox = await Mailboxes.findOne(db, {
+      path
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
         imapResponse: 'NONEXISTENT'
       });
+
+    // close the connection
+    db.close();
 
     const storageUsed = await Aliases.getStorageUsed(alias);
 

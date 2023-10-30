@@ -11,6 +11,10 @@ const phrases = require('#config/phrases');
 const i18nConfig = require('#config/i18n');
 const logger = require('#helpers/logger');
 const markdown = require('#helpers/markdown');
+const env = require('#config/env');
+
+const WEB_URL = env.WEB_URL.toLowerCase();
+const API_URL = env.API_URL.toLowerCase();
 
 // const cheerio = require('cheerio');
 /*
@@ -70,6 +74,37 @@ function fixTableOfContents(content, i18n, options) {
     anchor.rawTagName = 'span';
     anchor.removeAttribute('href');
     content = root.toString();
+  }
+
+  //
+  // go through all <a> anchor tags
+  // - if the link contains `http://` then rewrite the link to `https://`
+  // - if the link is to an external website, then ensure that:
+  //   - target="_blank"
+  //   - rel="noopener noreferrer"
+  //
+  for (const link of root.querySelectorAll('a')) {
+    let href = link.getAttribute('href');
+    if (href.startsWith('#')) continue;
+    if (href.includes('http://') || href.includes('https://')) {
+      href = href.replace('http://', 'https://');
+      link.setAttribute('href', href);
+
+      if (href.startsWith(WEB_URL) || href.startsWith(API_URL)) continue;
+
+      link.setAttribute('target', '_blank');
+
+      let rel = link.getAttribute('rel');
+      if (rel) {
+        rel = rel.toLowerCase().trim().split(' ');
+        if (!rel.includes('noopener')) rel.push('noopener');
+        if (!rel.includes('noreferrer')) rel.push('noreferrer');
+      } else {
+        rel = ['noopener', 'noreferrer'];
+      }
+
+      link.setAttribute('rel', rel.join(' '));
+    }
   }
 
   const h1 = root.querySelector('h1');

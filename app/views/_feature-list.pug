@@ -1,73 +1,53 @@
 ul.list-unstyled.text-left.mb-3
-  li.font-weight-bold
-    i.fa.fa-fw.fa-check-circle.text-success
-    = " "
-    != t("No credit card or phone required")
   li
     i.fa.fa-fw.fa-check-circle.text-success
     = " "
     = t("Unlimited domains and aliases")
   li
-    span.align-middle
-      i.fa.fa-fw.fa-check-circle.text-success
-      = " "
-      = t("Send outbound SMTP email")
+    i.fa.fa-fw.fa-check-circle.text-success
+    = " "
+    = t("10 GB encrypted email storage")
+    = " "
+    a.btn.btn-link.badge.badge-success.text-uppercase.text-white(
+      href=l("/encrypted-email"),
+      role="button",
+      data-toggle="modal",
+      data-target="#modal-storage"
+    )
+      if isBot(ctx.get('User-Agent'))
+        = t("Encrypted Email")
+      else
+        = t("Learn more")
   li
-    span.align-middle
-      i.fa.fa-fw.fa-check-circle.text-success
-      = " "
-      = t("IMAP storage support")
-      = " "
-      span.badge.badge-primary.text-uppercase= t("Beta")
-  //-.
-    li
-      i.fa.fa-fw.fa-check-circle.text-success
-      = " "
-      = t("Email delivery in under 5 seconds")
+    i.fa.fa-fw.fa-check-circle.text-success
+    = " "
+    != t("Bring your own storage provider")
   li
     i.fa.fa-fw.fa-check-circle.text-success
     = " "
     = t("Error logs and real-time alerts")
-  if !user
-    li
-      i.fa.fa-fw.fa-lock.text-themed
-      = " "
-      a.text-themed(
-        href=ctx.pathWithoutLocale === "/private-business-email" ? l("#enterprise-grade") : "#enterprise-grade",
-        data-toggle="tooltip",
-        data-title=t("Learn more"),
-        data-placement="bottom"
-      )= t("Enterprise-grade security")
   li
-    i.fa.fa-fw.fa-server.text-themed
+    i.fa.fa-fw.fa-check-circle.text-success
     = " "
-    a.text-themed(
-      href="https://status.forwardemail.net",
-      target="_blank",
-      rel="noopener noreferrer",
-      data-toggle="tooltip",
-      data-title=t("Visit our status page"),
-      data-placement="bottom"
-    )= t("Powered by bare metal servers")
-  li
-    i.fa.fa-fw.fa-github.text-themed
+    = t("Supports")
     = " "
-    a.text-themed(
-      href="https://github.com/forwardemail",
-      target="_blank",
-      rel="noopener noreferrer",
-      data-toggle="tooltip",
-      data-title=t("Visit our GitHub page"),
-      data-placement="bottom"
-    )
-      = t("100% open-source software")
-  li
-    i.fa.fa-fw.fa-code.text-themed
-    = " "
-    a.text-themed(
-      href=l("/email-api"),
-      data-toggle="tooltip",
-      data-title=t("Read our API documentation"),
-      data-placement="bottom"
-    )
-      = t("Email API designed for developers")
+    ul.list-inline.d-inline.lead.mb-0
+      li.list-inline-item.mr-1: span.badge.badge-dark= "Apple"
+      li.list-inline-item.mr-1: span.badge.badge-dark= "Microsoft"
+      li.list-inline-item.mr-1: span.badge.badge-dark= "Google"
+      li.list-inline-item.mr-1: span.badge.badge-dark= "Thunderbird"
+      li.list-inline-item: span.badge.badge-dark= "Android"
+    //-.
+      = ": "
+      ul.list-inline.d-inline.lead.mb-0(style='max-width:400px')
+        li.list-inline-item.mr-1: span.badge.badge-primary= "Amazon"
+        li.list-inline-item.mr-1: span.badge.badge-primary= "Backblaze"
+        li.list-inline-item.mr-1: span.badge.badge-primary= "Box"
+        li.list-inline-item.mr-1: span.badge.badge-primary= "Cloudflare"
+        li.list-inline-item.mr-1: span.badge.badge-primary= "Digital Ocean"
+        li.list-inline-item.mr-1: span.badge.badge-primary= "Dropbox"
+        li.list-inline-item.mr-1: span.badge.badge-primary= "SFTP"
+        li.list-inline-item.mr-1: span.badge.badge-primary= "Google"
+        li.list-inline-item.mr-1: span.badge.badge-primary= "Microsoft"
+        li.list-inline-item.mr-1: span.badge.badge-primary= "Oracle"
+        li.list-inline-item: span.badge.badge-primary= "S3-compatible"

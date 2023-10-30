@@ -16,7 +16,9 @@
 const mongoose = require('mongoose');
 const ms = require('ms');
 const tools = require('wildduck/lib/tools');
+const { Builder } = require('json-sql');
 
+const Attachments = require('#models/attachments');
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -25,13 +27,16 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const { convertResult } = require('#helpers/mongoose-to-sqlite');
+
+const builder = new Builder();
 
 // eslint-disable-next-line max-params, complexity
 async function onCopy(connection, mailboxId, update, session, fn) {
   this.logger.debug('COPY', { connection, mailboxId, update, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'COPY');
+    const { alias, db } = await this.refreshSession(session, 'COPY');
 
     // check if over quota
     const overQuota = await Aliases.isOverQuota(alias);
@@ -40,24 +45,18 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         imapResponse: 'OVERQUOTA'
       });
 
-    const mailbox = await Mailboxes.findOne({
-      _id: mailboxId,
-      alias: alias._id
-    })
-      .lean()
-      .exec();
+    const mailbox = await Mailboxes.findOne(db, {
+      _id: mailboxId
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
         imapResponse: 'NONEXISTENT'
       });
 
-    const targetMailbox = await Mailboxes.findOne({
-      path: update.destination,
-      alias: alias._id
-    })
-      .lean()
-      .exec();
+    const targetMailbox = await Mailboxes.findOne(db, {
+      path: update.destination
+    });
 
     if (!targetMailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -80,16 +79,38 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       }, ms('1m'));
     })();
 
-    for await (const message of Messages.find({
-      alias: alias._id,
-      mailbox: mailbox._id,
-      uid: tools.checkRangeQuery(update.messages)
-    })
-      .sort({ uid: 1 })
-      .maxTimeMS(ms('2m'))
-      .lean()
-      .cursor()) {
-      this.logger.debug('copying message', { message });
+    const sql = builder.build({
+      type: 'select',
+      table: 'Messages',
+      condition: {
+        mailbox: mailbox._id.toString(),
+        uid: tools.checkRangeQuery(update.messages)
+      },
+      // sort required for IMAP UIDPLUS
+      sort: 'uid'
+    });
+
+    const stmt = db.prepare(sql.query);
+
+    //
+    // NOTE: you cannot perform updates while iterating
+    //       <https://github.com/WiseLibs/better-sqlite3/issues/203#issuecomment-456534827>
+    //
+    // NOTE: but you can if you set unsafe mode on
+    //       <https://github.com/WiseLibs/better-sqlite3/issues/203#issuecomment-619401512>
+    //       <https://github.com/WiseLibs/better-sqlite3/blob/master/docs/unsafe.md>
+    //
+    // NOTE: since we use locking and non-standard row ID's we should be ok
+
+    // turn on unsafe mode to allow us to iterate, select, and update at the same time
+    db.unsafeMode(true);
+
+    // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
+    for (const result of stmt.iterate(sql.values)) {
+      // eslint-disable-next-line no-await-in-loop
+      const message = await convertResult(Messages, result);
+
+      this.logger.debug('copying message', { result, message });
 
       // check if server is in the process of shutting down
       if (this.server._closeTimeout) throw new ServerShutdownError();
@@ -104,17 +125,17 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       const query = {
         _id: message._id,
         uid: message.uid,
-        alias: alias._id,
         mailbox: message.mailbox
       };
 
       // don't copy in bulk so it doesn't get out of incremental uid sync
       sourceUid.unshift(message.uid);
 
+      // eslint-disable-next-line no-await-in-loop
       const updatedMailbox = await Mailboxes.findOneAndUpdate(
+        db,
         {
-          _id: targetMailbox._id,
-          alias: alias._id
+          _id: targetMailbox._id
         },
         {
           $inc: {
@@ -156,15 +177,23 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       message.remoteAddress = session.remoteAddress;
       message.transaction = 'COPY';
 
+      // virtual helper for locking if we lock in advance
+      // message.lock = lock;
+
+      // virtual helper
+      message.db = db;
+
       // set existing message as copied
       // TODO: may want to check for return value
-      await Messages.findOneAndUpdate(query, {
+      // eslint-disable-next-line no-await-in-loop
+      await Messages.findOneAndUpdate(db, query, {
         $set: {
           copied: true
         }
       });
 
       // create new message
+      // eslint-disable-next-line no-await-in-loop
       const newMessage = await Messages.create(message);
 
       // update attachment store magic number
@@ -173,10 +202,25 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       ).map((key) => newMessage.mimeTree.attachmentMap[key]);
       if (attachmentIds.length > 0) {
         try {
-          await this.attachmentStorage.updateManyPromise(
-            attachmentIds,
-            1,
-            newMessage.magic
+          // update attachments
+          // eslint-disable-next-line no-await-in-loop
+          await Attachments.updateMany(
+            db,
+            {
+              hash: { $in: attachmentIds }
+            },
+            {
+              $inc: {
+                counter: 1,
+                magic: newMessage.magic
+              },
+              $set: {
+                counterUpdated: new Date()
+              }
+            }
+            // {
+            //   multi: true
+            // }
           );
         } catch (err) {
           this.logger.fatal(err, { mailboxId, update, session });
@@ -189,7 +233,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
 
       // add entries
       try {
-        await this.server.notifier.addEntries(targetMailbox, {
+        // eslint-disable-next-line no-await-in-loop
+        await this.server.notifier.addEntries(db, targetMailbox, {
           command: 'EXISTS',
           uid: message.uid,
           mailbox: newMessage.mailbox,
@@ -203,6 +248,12 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
     }
+
+    // turn off unsafe mode
+    db.unsafeMode(false);
+
+    // close the connection
+    db.close();
 
     // update quota if copied messages
     if (copiedMessages > 0 && copiedStorage > 0) {

@@ -13,8 +13,8 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
 const tools = require('wildduck/lib/tools');
+const { Builder } = require('json-sql');
 
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
@@ -22,6 +22,9 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const { convertResult } = require('#helpers/mongoose-to-sqlite');
+
+const builder = new Builder();
 
 // eslint-disable-next-line complexity
 async function onExpunge(mailboxId, update, session, fn) {
@@ -29,89 +32,58 @@ async function onExpunge(mailboxId, update, session, fn) {
 
   let lock;
   try {
-    const { alias } = await this.refreshSession(session, 'EXPUNGE');
+    const { alias, db } = await this.refreshSession(session, 'EXPUNGE');
 
-    const mailbox = await Mailboxes.findOne({
-      alias: alias._id,
+    const mailbox = await Mailboxes.findOne(db, {
       _id: mailboxId
-    })
-      .maxTimeMS(ms('3s'))
-      .lean()
-      .exec();
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
         imapResponse: 'NONEXISTENT'
       });
 
-    lock = await this.server.lock.waitAcquireLock(
-      `mbwr:${mailbox.id}`,
-      ms('5m'),
-      ms('1m')
-    );
-
-    if (!lock?.success)
-      throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
-
     let storageUsed = 0;
 
-    const query = {
-      mailbox: mailbox._id,
-      alias: alias._id,
+    const condition = {
+      mailbox: mailbox._id.toString(),
       undeleted: false
     };
 
-    if (update.isUid) query.uid = tools.checkRangeQuery(update.messages);
+    if (update.isUid) condition.uid = tools.checkRangeQuery(update.messages);
 
-    // eslint-disable-next-line unicorn/no-array-callback-reference
-    const cursor = Messages.find(query)
-      .sort({
-        uid: 1
-      })
-      .maxTimeMS('2m')
-      .lean()
-      .cursor();
+    const sql = builder.build({
+      type: 'select',
+      table: 'Messages',
+      condition,
+      // sort required for IMAP UIDPLUS
+      sort: 'uid'
+    });
 
-    this.logger.debug('expunge query', { query });
+    const stmt = db.prepare(sql.query);
+
+    this.logger.debug('expunge query', { condition });
 
     let err;
 
+    // turn on unsafe mode to allow us to iterate, select, and update at the same time
+    db.unsafeMode(true);
+
+    lock = await db.acquireLock();
+
     try {
-      for await (const message of cursor) {
+      // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
+      for (const result of stmt.iterate(sql.values)) {
+        // eslint-disable-next-line no-await-in-loop
+        const message = await convertResult(Messages, result);
+
         this.logger.debug('expunge message', {
+          result,
           message,
           mailboxId,
           update,
           session
         });
-
-        //
-        // TODO: will edge cases like this in cursor() usage ever occur (?)
-        //
-        if (!message) {
-          this.logger.fatal('message not expunged', {
-            mailboxId,
-            update,
-            session
-          });
-          // write to stream
-          if (
-            !update.silent &&
-            session?.selected?.uidList &&
-            Array.isArray(session.selected.uidList)
-          )
-            session.writeStream.write({
-              tag: '*',
-              command: String(session.selected.uidList.length),
-              attributes: [
-                {
-                  type: 'atom',
-                  value: 'EXISTS'
-                }
-              ]
-            });
-          break;
-        }
 
         /*
         // archive message (not used yet)
@@ -135,12 +107,16 @@ async function onExpunge(mailboxId, update, session, fn) {
         */
 
         // delete message
-        const results = await Messages.deleteOne({
-          _id: message._id,
-          mailbox: mailbox._id,
-          alias: alias._id,
-          uid: message.uid
-        });
+        // eslint-disable-next-line no-await-in-loop
+        const results = await Messages.deleteOne(
+          db,
+          {
+            _id: message._id,
+            mailbox: mailbox._id,
+            uid: message.uid
+          },
+          { lock }
+        );
 
         if (results?.deletedCount === 1) {
           // if we deleted a message then adjust storage quota
@@ -152,13 +128,25 @@ async function onExpunge(mailboxId, update, session, fn) {
                 (key) => message.mimeTree.attachmentMap[key]
               )
             : [];
-          if (attachmentIds.length > 0)
-            this.attachmentStorage
-              .deleteManyPromise(attachmentIds, message.magic)
-              .then()
-              .catch((err) =>
-                this.logger.fatal(err, { mailboxId, update, session })
+          if (attachmentIds.length > 0) {
+            try {
+              // eslint-disable-next-line no-await-in-loop
+              await this.attachmentStorage.deleteMany(
+                db,
+                attachmentIds,
+                message.magic,
+                lock
               );
+            } catch (err) {
+              this.logger.fatal(err, {
+                attachmentIds,
+                message,
+                mailbox,
+                update,
+                session
+              });
+            }
+          }
 
           // write to socket we've expunged message
           if (
@@ -167,23 +155,30 @@ async function onExpunge(mailboxId, update, session, fn) {
               session.selected &&
               session.selected.mailbox &&
               session.selected.mailbox.toString() === mailbox.id)
-          )
+          ) {
             session.writeStream.write(
               session.formatResponse('EXPUNGE', message.uid)
             );
+          }
 
           try {
-            await this.server.notifier.addEntries(mailbox, {
-              ignore: session.id,
-              command: 'EXPUNGE',
-              uid: message.uid,
-              mailbox: mailbox._id,
-              message: message._id,
-              thread: message.thread,
-              // modseq: message.modseq,
-              unseen: message.unseen,
-              idate: message.idate
-            });
+            // eslint-disable-next-line no-await-in-loop
+            await this.server.notifier.addEntries(
+              db,
+              mailbox,
+              {
+                ignore: session.id,
+                command: 'EXPUNGE',
+                uid: message.uid,
+                mailbox: mailbox._id,
+                message: message._id,
+                thread: message.thread,
+                // modseq: message.modseq,
+                unseen: message.unseen,
+                idate: message.idate
+              },
+              lock
+            );
             this.server.notifier.fire(alias.id);
           } catch (err) {
             this.logger.fatal(err, { mailboxId, update, session });
@@ -194,16 +189,15 @@ async function onExpunge(mailboxId, update, session, fn) {
       err = _err;
     }
 
-    // close cursor for cleanup
-    try {
-      await cursor.close();
-    } catch (err) {
-      this.logger.fatal(err, { mailboxId, update, session });
-    }
+    // turn off unsafe mode
+    db.unsafeMode(false);
+
+    // close the connection
+    db.close();
 
     // release lock
     try {
-      await this.server.lock.releaseLock(lock);
+      await db.releaseLock(lock);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });
     }

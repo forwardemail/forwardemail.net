@@ -53,7 +53,7 @@ if !user && !registerOrLogin
             .modal-header.text-center.d-block
               .h4.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
                 if verb === 'sign up'
-                  = t("Try for free")
+                  = t("Sign up free")
                 else
                   = t("Welcome back!")
               button.close(
@@ -125,7 +125,7 @@ nav.navbar.navbar-expand-lg.fixed-top(
                 span.d-inline-block.d-sm-none
                   = t("Signup")
                 span.d-none.d-sm-inline-block
-                  = t("Try for free")
+                  = t("Sign up free")
       .no-js.is-bot.d-inline-block.mr-3
     if !isBot(ctx.get('User-Agent'))
       button.navbar-toggler.d-lg-none.no-js.text-themed(
@@ -151,7 +151,7 @@ nav.navbar.navbar-expand-lg.fixed-top(
               = t("Upgrade")
 
         //- Resources
-        - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses", "/report-abuse"];
+        - const resourcePages = ["/encrypted-email", "/private-business-email", "/faq", "/help", "/disposable-addresses", "/report-abuse"];
         - const companyPages = ["/about", "/privacy", "/terms"];
         - const isResourcesPage = ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale);
         li.nav-item.dropdown.no-js
@@ -440,13 +440,13 @@ nav.navbar.navbar-expand-lg.fixed-top(
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                 data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
-                = t("Try for free")
+                = t("Sign up free")
               a.btn.btn-success.text-left.text-uppercase.font-weight-bold.d-none.d-lg-block(
                 href=l("/register"),
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                 data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
-                = t("Try for free")
+                = t("Sign up free")
 if user
   noscript
     .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")

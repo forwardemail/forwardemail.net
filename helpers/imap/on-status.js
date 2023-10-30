@@ -13,8 +13,6 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
-
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
@@ -25,15 +23,11 @@ async function onStatus(path, session, fn) {
   this.logger.debug('STATUS', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'STATUS');
+    const { db } = await this.refreshSession(session, 'STATUS');
 
-    const mailbox = await Mailboxes.findOne({
-      alias: alias._id,
+    const mailbox = await Mailboxes.findOne(db, {
       path
-    })
-      .maxTimeMS(ms('3s'))
-      .lean()
-      .exec();
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -41,19 +35,12 @@ async function onStatus(path, session, fn) {
       });
 
     const [messages, unseen] = await Promise.all([
-      Messages.countDocuments(
-        { mailbox: mailbox._id, alias: alias._id },
-        {
-          maxTimeMS: ms('2m')
-        }
-      ),
-      Messages.countDocuments(
-        { mailbox: mailbox._id, alias: alias._id, unseen: true },
-        {
-          maxTimeMS: ms('2m')
-        }
-      )
+      Messages.countDocuments(db, { mailbox: mailbox._id }),
+      Messages.countDocuments(db, { mailbox: mailbox._id, unseen: true })
     ]);
+
+    // close the connection
+    db.close();
 
     fn(null, {
       messages,

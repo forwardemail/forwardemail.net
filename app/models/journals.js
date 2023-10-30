@@ -83,6 +83,6 @@ Journals.plugin(mongooseCommonPlugin, {
 });
 
 const conn = mongoose.connections.find(
-  (conn) => conn[Symbol.for('connection.name')] === 'IMAP_MONGO_URI'
+  (conn) => conn[Symbol.for('connection.name')] === 'JOURNALS_MONGO_URI'
 );
 module.exports = conn.model('Journals', Journals);

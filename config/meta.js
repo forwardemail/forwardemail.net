@@ -43,51 +43,48 @@ module.exports = function (config) {
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
     '/': [
-      `Free Email Forwarding ${lad}`,
-      'How to set up free email forwarding, private business email, and send outbound SMTP email for custom domains.'
+      'Free Email Forwarding for Custom Domains',
+      'Setup encrypted email, free email forwarding, custom domains, private business email, and more with support for IMAP, POP3, and SMTP.'
     ],
     '/about': [
-      `Free Email Forwarder ${lad}`,
+      'Free Email Forwarder for Custom Domains',
       `Learn more about ${config.appName} and the history of our service.`
     ],
     '/private-business-email': [
-      `Business Enterprise Free Private Secure Email ${lad}`,
-      'Create your free, private, secure email for professional business and enterprise.'
+      'Private Business Email for Custom Domains',
+      'Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains.'
     ],
     '/faq': [
-      `Frequently Asked Questions ${lad}`,
+      'Frequently Asked Questions About Email',
       'How to configure email for custom domain names, outbound SMTP service, and more.'
     ],
     '/email-api': [
-      `Email API ${lad}`,
+      'Developer Email API for Custom Domains and Webhooks',
       'Developers love our RESTful email forwarding API for custom domains.'
     ],
     '/free-email-webhooks': [
-      `Free Email Webhooks ${lad}`,
+      'Free Email Webhooks for Developers and Custom Domains',
       'Send email with HTTP using our developer webhooks and DNS email forwarding service.'
     ],
     '/email-forwarding-regex-pattern-filter': [
-      `Regex Email Forwarding ${lad}`,
+      'Email Forwarding Regular Expression for Custom Domains',
       'Send email with regular expression matching and DNS email forwarding service.'
     ],
     '/terms': [
-      `Terms ${lad}`,
+      'Terms of Service',
       'Read our terms and conditions of use for our email forwarding service.'
     ],
     '/report-abuse': [
-      `Report Abuse ${lad}`,
+      'Report Abuse',
       'Information on how to report abuse for the general public and law enforcement.'
     ],
     '/privacy': [
-      `Privacy Policy ${lad}`,
+      'Private Policy',
       'Read our privacy policy for our email forwarding service.'
     ],
-    '/help': [
-      `Help ${lad}`,
-      `Ask ${config.appName} your questions or leave comments`
-    ],
+    '/help': ['Help', 'Ask a question and get support from our team.'],
     '/denylist': [
-      `Denylist Removal ${lad}`,
+      'Denylist Removal',
       'Submit your email, domain, or IP address for DNS denylist removal.'
     ],
     '/logout': [`Sign out of ${lad}`, 'Sign out of your account now.'],
@@ -96,85 +93,86 @@ module.exports = function (config) {
       'Get a free account for custom domain email forwarding service.'
     ],
     '/disposable-addresses': [
-      `Disposable Addresses ${lad}`,
+      'Disposable Email Addresses for Custom Domains',
       'Get disposable email forwarding addresses using your custom domain name.'
     ],
     '/resources': [
       `Free Startup and Developer Email Tools List (<span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>) ${lad}`,
+      ).format('YYYY')}</span>)`,
       'Get free startup and developer email tools, bundles, resources, guides, tutorials, code samples, and more.'
+    ],
+    '/encrypted-email': [
+      'Encrypted Email: Get Your Private Email Account',
+      'Encrypted mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.'
     ],
     '/docs': [
       `Free Email Developer Tools and Resources (<span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>) ${lad}`,
+      ).format('YYYY')}</span>)`,
       'Free email developer tools and resources for startups and businesses. See our complete RESTful email API reference and manage your custom domains and aliases.'
     ],
     '/guides': [
       `Free Email Hosting Setup Guides (<span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>) ${lad}`,
+      ).format('YYYY')}</span>)`,
       'Follow our free email forwarding and hosting guides to send and receive mail with your custom domain. We publish an email hosting guide list of the most popular website and DNS providers.'
     ],
     '/guides/send-email-with-custom-domain-smtp': [
       `Free Email Forwarding and Hosting for Custom Domain Setup Guide (<span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>) ${lad}`,
+      ).format('YYYY')}</span>)`,
       'Set up free email forwarding and hosting with your custom domain, DNS, and SMTP configuration step by step guide.'
     ],
     '/guides/send-mail-as-gmail-custom-domain': [
       `How to Send Mail As for Gmail Custom Domain Setup Guide (<span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>) ${lad}`,
+      ).format('YYYY')}</span>)`,
       'Set up email forwarding for free with custom domain and Gmail to forward, send, and receive email. Send mail as not working? Follow our video and instructions.'
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
-      `Port 25 blocked by ISP ${lad}`,
+      'Port 25 blocked by ISP',
       'Workaround port blocking set by your Internet Service Provider on port 25.'
     ],
     '/domain-registration': [
-      `Register a domain name ${lad}`,
+      'Register Custom Domain for Email',
       'Buy a custom domain name for email forwarding.'
     ],
     '/reserved-email-addresses': [
-      `Reserved Email Addresses ${lad}`,
+      'Reserved Email Addresses For Administrators',
       'List of 1250+ email addresses reserved for security concerns.'
     ],
     '/my-account': [
-      `My Account ${lad}`,
+      'My Account',
       `Manage your ${config.appName} account, domains, and email forwarding aliases.`
     ],
     '/my-account/domains': [
-      `Domains ${lad}`,
+      'My Domains',
       `Manage your ${config.appName} domains.`
     ],
     '/my-account/emails': [
-      `Emails ${lad}`,
+      'My Emails',
       `Manage your ${config.appName} emails.`
     ],
-    '/my-account/logs': [`Logs ${lad}`, `Manage your ${config.appName} logs.`],
+    '/my-account/logs': ['My Logs', `Manage your ${config.appName} logs.`],
     '/my-account/profile': [
-      `Profile ${lad}`,
+      'My Profile',
       `Manage your ${config.appName} profile.`
     ],
     '/my-account/billing': [
-      `Billing ${lad}`,
+      'My Billing',
       `Manage your ${config.appName} billing.`
     ],
     '/my-account/security': [
-      `Security ${lad}`,
+      'My Security',
       `Manage your ${config.appName} security.`
     ],
     '/admin': [`Admin ${lad}`, `Access your ${config.appName} admin.`],
     '/forgot-password': [
-      `Forgot password ${lad}`,
+      'Forgot Password',
       'Reset your account password to regain access to your account.'
     ],
-    '/reset-password': [
-      `Reset password ${lad}`,
-      'Confirm your password reset token.'
-    ],
+    '/reset-password': ['Reset Password', 'Confirm your password reset token.'],
     '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in.']
   };
 

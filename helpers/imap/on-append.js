@@ -36,13 +36,16 @@ async function onAppend(path, flags, date, raw, session, fn) {
   let hasNodeBodies;
   let maildata;
   let mimeTreeData;
+  let db;
 
   try {
     // do not allow messages larger than 64 MB
     if (raw && raw.length > SIXTY_FOUR_MB_IN_BYTES)
       throw new IMAPError(i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', 'en'));
 
-    const { alias } = await this.refreshSession(session, 'APPEND');
+    const refreshResults = await this.refreshSession(session, 'APPEND');
+    const { alias } = refreshResults;
+    db = refreshResults.db;
 
     // check if over quota
     const overQuota = await Aliases.isOverQuota(alias);
@@ -52,12 +55,9 @@ async function onAppend(path, flags, date, raw, session, fn) {
       });
 
     // <https://github.com/nodemailer/wildduck/blob/b9349f6e8315873668d605e6567ced2d7b1c0c80/lib/handlers/on-append.js#L65>
-    let mailbox = await Mailboxes.findOne({
-      path,
-      alias: alias._id
-    })
-      .lean()
-      .exec();
+    let mailbox = await Mailboxes.findOne(db, {
+      path
+    });
 
     //
     // <https://www.rfc-editor.org/rfc/rfc3502.html#section-6.3.11>
@@ -108,10 +108,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     maildata = this.indexer.getMaildata(mimeTree);
 
     // store node bodies
-    hasNodeBodies = await this.indexer.storeNodeBodiesPromise(
-      maildata,
-      mimeTree
-    );
+    hasNodeBodies = await this.indexer.storeNodeBodies(db, maildata, mimeTree);
 
     // TODO: we should instead tokenize this with spamscanner
     // if (maildata.text) {
@@ -149,7 +146,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
     const retention =
       typeof mailbox.retention === 'number' ? mailbox.retention : 0;
     const data = {
-      alias: alias._id,
       mailbox: mailbox._id,
       _id: id,
       root: id,
@@ -206,6 +202,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // get new uid and modsec and return original values
     mailbox = await Mailboxes.findByIdAndUpdate(
+      db,
       mailbox._id,
       {
         $inc: {
@@ -239,11 +236,21 @@ async function onAppend(path, flags, date, raw, session, fn) {
     data.junk = mailbox.specialUse === '\\Junk';
 
     // get thread ID
-    thread = await Threads.getThreadId(alias._id, subject, mimeTree);
+    thread = await Threads.getThreadId(db, subject, mimeTree);
     data.thread = thread._id;
+
+    // virtual helper for locking if we lock in advance
+    // data.lock = lock;
+
+    // db virtual helper
+    data.db = db;
 
     // store the message
     const message = await Messages.create(data);
+
+    // close the connection
+    db.close();
+
     this.logger.debug('message created', {
       message,
       path,
@@ -253,7 +260,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     });
 
     try {
-      await this.server.notifier.addEntries(mailbox, {
+      await this.server.notifier.addEntries(db, mailbox, {
         // TODO: the wildduck code has this which means messages don't show in Sent folder
         // <https://github.com/nodemailer/wildduck/issues/537>
         // ignore: session.id,
@@ -293,11 +300,29 @@ async function onAppend(path, flags, date, raw, session, fn) {
             (key) => mimeTreeData.attachmentMap[key]
           )
         : [];
-    if (attachmentIds.length > 0)
-      this.attachmentStorage
-        .deleteManyPromise(attachmentIds, maildata.magic)
-        .then()
-        .catch((err) => this.logger.fatal(err, { storageUsed, session }));
+
+    if (attachmentIds.length > 0) {
+      if (db) {
+        try {
+          await this.attachmentStorage.deleteMany(
+            db,
+            attachmentIds,
+            maildata.magic
+          );
+        } catch (err) {
+          this.logger.fatal(err, {
+            attachmentIds,
+            storageUsed,
+            session
+          });
+        }
+      } else {
+        this.logger.fatal(
+          new TypeError('Attachment storage needs to cleanup'),
+          { attachmentIds, storageUsed, session }
+        );
+      }
+    }
 
     // rollback storage if there was an error and storage was consumed
     if (storageUsed > 0) {

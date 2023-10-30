@@ -24,7 +24,7 @@ async function onCreate(path, session, fn) {
   this.logger.debug('CREATE', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'CREATE');
+    const { alias, db } = await this.refreshSession(session, 'CREATE');
 
     // check if over quota
     const overQuota = await Aliases.isOverQuota(alias);
@@ -38,21 +38,16 @@ async function onCreate(path, session, fn) {
     // (Gmail defaults to 10,000 labels)
     // <https://github.com/nodemailer/wildduck/issues/512>
     //
-    const count = await Mailboxes.countDocuments({
-      alias: alias._id
-    });
+    const count = await Mailboxes.countDocuments(db, {});
 
     if (count > config.maxMailboxes)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_MAX_EXCEEDED', 'en'), {
         imapResponse: 'OVERQUOTA'
       });
 
-    let mailbox = await Mailboxes.findOne({
-      path,
-      alias: alias._id
-    })
-      .lean()
-      .exec();
+    let mailbox = await Mailboxes.findOne(db, {
+      path
+    });
 
     if (mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', 'en'), {
@@ -60,12 +55,16 @@ async function onCreate(path, session, fn) {
       });
 
     mailbox = await Mailboxes.create({
-      alias: alias._id,
-      path
+      db,
+      path,
+      retention: typeof alias.retention === 'number' ? alias.retention : 0
     });
 
+    // close the connection
+    db.close();
+
     try {
-      await this.server.notifier.addEntries(mailbox, {
+      await this.server.notifier.addEntries(db, mailbox, {
         command: 'CREATE',
         mailbox: mailbox._id,
         path

@@ -16,7 +16,6 @@
 const fs = require('node:fs');
 const os = require('node:os');
 
-const AttachmentStorage = require('wildduck/lib/attachment-storage');
 const Axe = require('axe');
 const Indexer = require('wildduck/imap-core/lib/indexer/indexer');
 const Lock = require('ioredfour');
@@ -27,26 +26,47 @@ const isSANB = require('is-string-and-not-blank');
 const pify = require('pify');
 const { IMAPServer } = require('wildduck/imap-core');
 
-const Aliases = require('#models/aliases');
-const Domains = require('#models/domains');
-const IMAPError = require('#helpers/imap-error');
+const AttachmentStorage = require('#helpers/attachment-storage');
 const IMAPNotifier = require('#helpers/imap-notifier');
-const Messages = require('#models/messages');
-const ServerShutdownError = require('#helpers/server-shutdown-error');
-const SocketError = require('#helpers/socket-error');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const imap = require('#helpers/imap');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
-const validateAlias = require('#helpers/validate-alias');
-const validateDomain = require('#helpers/validate-domain');
+const refreshSession = require('#helpers/refresh-session');
+
+// TODO: search filters like has:attachment
+//
+// TODO: mention in post about using
+//      <https://github.com/nodemailer/ioredfour>
+//      instead of
+//      <https://github.com/mike-marcacci/node-redlock>
+//      because the latter uses polling and ioredfour uses
+//      redis pubsub so it's much faster
+//
+// TODO: run validate() on all docs before 'update' and 'insert'
+// TODO: use transactions instead of iterator with unsafe mode and also for bulkWrite
+// TODO: mx server forwarding (e.g. can forward to another mailserver such as gmail)
+// TODO: auto-reply/vacation responder
+// TODO: enforce maxDownload and maxUpload
+// TODO: enforce 10-15 max connections per alias
+// TODO: disable transparent huge pages across all servers
+//       <https://www.mongodb.com/docs/manual/tutorial/transparent-huge-pages/
+// TODO: when user generates new password, if any existing were found, then prompt them to enter current password, complete captcha, and type out "I understand this message" and check a checkbox
+// TODO: search $text needs redone to support sqlite
+
+// TODO: refineAndLog and also after writing every response we should wrap a hook to run `session.db.close` if it was open
+// TODO: alias quota needs rewritten (ws message "quota:$alias_id" -> fs.stat)
+// TODO: db.close(); after transactions done
+// TODO: --allow-other and run as a different user for rclone
+// TODO: graceful needs to close all `db.close()` exposed that are open
+// TODO: each R2 bucket seems like it's 18 TB max?
+// TODO: ensure licensing accurate on new files with sqlite/rclone
 
 // TODO: future items
 // - [ ] contacts
 // - [ ] calendar
-// - [ ] rewrite onOpen to use cursor instead of distinct
 // - [ ] remove setImmediate from SMTP server
 // - [ ] remove or enforce maxTimeMS for all imap handlers
 // - [ ] projection on all handlers (instead of returning entire document)
@@ -55,7 +75,6 @@ const validateDomain = require('#helpers/validate-domain');
 //       <https://github.com/nodemailer/wildduck/issues/515>
 
 // TODO: urgent items
-// - [ ] fix rate limiting in helpers/on-auth (should only rate limit if user failed to auth)
 // - [ ] IMAP server needs onConnect to block spammers from denylist <https://github.com/nodemailer/wildduck/issues/540>
 // - [ ] enforce billing for IMAP support
 // - [ ] when users delete their account then delete all Emails, Messages, Attachments, Threads, and Mailboxes in the system (make this both a job and hook on delete)
@@ -66,26 +85,20 @@ const validateDomain = require('#helpers/validate-domain');
 // TODO: other items
 // - [ ] axe should parse out streams
 
-const IMAP_COMMANDS = new Set([
-  'APPEND',
-  'COPY',
-  'CREATE',
-  'DELETE',
-  'EXPUNGE',
-  'FETCH',
-  'GETQUOTAROOT',
-  'GETQUOTA',
-  'LIST',
-  'LSUB',
-  'MOVE',
-  'OPEN',
-  'RENAME',
-  'SEARCH',
-  'STATUS',
-  'STORE',
-  'SUBSCRIBE',
-  'UNSUBSCRIBE'
-]);
+async function storeNodeBodies(db, maildata, mimeTree) {
+  mimeTree.attachmentMap = {};
+  for (const node of maildata.nodes) {
+    // eslint-disable-next-line no-await-in-loop
+    const attachment = await this.attachmentStorage.create(db, node);
+    mimeTree.attachmentMap[node.attachmentId] = attachment.hash;
+    const attachmentInfo =
+      maildata.attachments &&
+      maildata.attachments.find((a) => a.id === node.attachmentId);
+    if (attachmentInfo && node.body) attachmentInfo.size = node.body.length;
+  }
+
+  return true;
+}
 
 class IMAP {
   constructor(options = {}, secure = env.IMAP_PORT === 2993) {
@@ -125,7 +138,7 @@ class IMAP {
       // NOTE: we don't need this since we have custom logic
       // settingsHandler: imap.settingsHandler.bind(this)
 
-      enableCompression: false,
+      enableCompression: true,
       skipFetchLog: false,
 
       // NOTE: a default `SNICallback` function is created already
@@ -157,8 +170,18 @@ class IMAP {
 
     server.lock = new Lock({
       redis: this.client,
-      namespace: 'mail'
+      namespace: 'imap_lock'
     });
+
+    //
+    // in test/development listen for locking and releasing
+    // <https://github.com/nodemailer/ioredfour/blob/0bc1035c34c548b2d3058352c588dc20422cfb96/lib/ioredfour.js#L48-L49>
+    //
+    if (config.env !== 'production') {
+      server.lock._redisSubscriber.on('message', (channel, message) => {
+        logger.debug('lock message received', { channel, message });
+      });
+    }
 
     server.onAuth = onAuth.bind(this);
     server.onAppend = imap.onAppend.bind(this);
@@ -192,24 +215,10 @@ class IMAP {
     // NOTE: it is using a lock under `wildduck` prefix
     // (to override set `this.attachmentStorage.storage.lock = new Lock(...)`)
     //
-    this.attachmentStorage = new AttachmentStorage({
-      gridfs: Messages.db,
-      options: {
-        type: 'gridstore',
-        bucket: 'attachments',
-        decodeBase64: true
-      },
-      redis: this.client
-    });
-    this.attachmentStorage.updateManyPromise = pify(
-      this.attachmentStorage.updateMany
-    );
-    this.attachmentStorage.deleteManyPromise = pify(
-      this.attachmentStorage.deleteMany
-    );
+    this.attachmentStorage = new AttachmentStorage();
 
     this.indexer = new Indexer({ attachmentStorage: this.attachmentStorage });
-    this.indexer.storeNodeBodiesPromise = pify(this.indexer.storeNodeBodies);
+    this.indexer.storeNodeBodies = storeNodeBodies.bind(this.indexer);
 
     // promisified version of prepare message from wildduck message handler
     this.prepareMessage = pify(
@@ -231,55 +240,9 @@ class IMAP {
     });
 
     this.server = server;
-    this.refreshSession = this.refreshSession.bind(this);
+    this.refreshSession = refreshSession.bind(this);
     this.listen = this.listen.bind(this);
     this.close = this.close.bind(this);
-  }
-
-  async refreshSession(session, command) {
-    if (!command) throw new Error('Command required');
-    command = command.toUpperCase().trim();
-    if (!IMAP_COMMANDS.has(command)) throw new Error('Invalid command');
-
-    // check if server is in the process of shutting down
-    if (this.server._closeTimeout) throw new ServerShutdownError();
-
-    // check if socket is still connected
-    const socket = (session.socket && session.socket._parent) || session.socket;
-    if (!socket || socket?.destroyed || socket?.readyState !== 'open')
-      throw new SocketError();
-
-    if (!isSANB(session?.user?.domain_id))
-      throw new IMAPError('Domain does not exist on session');
-
-    if (!isSANB(session?.user?.alias_id))
-      throw new IMAPError('Alias does not exist on session');
-
-    const [domain, alias] = await Promise.all([
-      Domains.findById(session.user.domain_id)
-        .populate(
-          'members.user',
-          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
-        )
-        .lean()
-        .exec(),
-      Aliases.findById(session.user.alias_id)
-        .populate(
-          'user',
-          // TODO: we can remove `smtpLimit` (?)
-          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
-        )
-        .lean()
-        .exec()
-    ]);
-
-    // validate domain (in case tampered with during session)
-    validateDomain(domain, session.user.domain_name);
-
-    // validate alias (in case tampered with during session)
-    validateAlias(alias, session.user.domain_name, session.user.alias_name);
-
-    return { domain, alias };
   }
 
   async listen(port = env.IMAP_PORT, host = '::', ...args) {

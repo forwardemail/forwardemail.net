@@ -22,21 +22,22 @@ async function onUnsubscribe(path, session, fn) {
   this.logger.debug('UNSUBSCRIBE', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'UNSUBSCRIBE');
+    const { db } = await this.refreshSession(session, 'UNSUBSCRIBE');
 
     const mailbox = await Mailboxes.findOneAndUpdate(
+      db,
       {
-        path,
-        alias: alias._id
+        path
       },
       {
         $set: {
           subscribed: false
         }
       }
-    )
-      .lean()
-      .exec();
+    );
+
+    // close the connection
+    db.close();
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {

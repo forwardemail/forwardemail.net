@@ -16,28 +16,26 @@
 const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
-const ms = require('ms');
 const tools = require('wildduck/lib/tools');
+const safeStringify = require('fast-safe-stringify');
+const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
-const Messages = require('#models/messages');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+
+const builder = new Builder();
 
 async function onSearch(mailboxId, options, session, fn) {
   this.logger.debug('SEARCH', { mailboxId, options, session, fn });
 
   try {
-    const { alias } = await this.refreshSession(session, 'SEARCH');
+    const { db } = await this.refreshSession(session, 'SEARCH');
 
-    const mailbox = await Mailboxes.findOne({
-      _id: mailboxId,
-      alias: alias._id
-    })
-      .maxTimeMS(ms('3s'))
-      .lean()
-      .exec();
+    const mailbox = await Mailboxes.findOne(db, {
+      _id: mailboxId
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -46,8 +44,7 @@ async function onSearch(mailboxId, options, session, fn) {
 
     // prepare query for search
     const query = {
-      mailbox: mailbox._id,
-      alias: alias._id
+      mailbox: mailbox._id
     };
 
     const uidList = [];
@@ -99,11 +96,29 @@ async function onSearch(mailboxId, options, session, fn) {
 
           case 'text': // search over entire email
           case 'body': {
+            //
+            // use FTS5 for full text search in onSearch function
+            // <https://kimsereylam.com/sqlite/2020/03/06/full-text-search-with-sqlite.html>
+            //
+            const ids = db
+              .prepare(
+                `select _id from Messages_fts where Messages_fts ${
+                  ne ? 'NOT MATCH' : 'MATCH'
+                } $p1 ORDER BY rank;`
+              )
+              .pluck()
+              .all({
+                p1: term.value
+              });
+
+            parent.push({
+              _id: { $in: ids }
+            });
+
+            // NOTE: this is the wildduck reference (which does not support NOT matches)
+            /*
             // search over email body
             if (term.value && !ne) {
-              // fulltext can only be in the root of the query, not in $not, $or expressions
-              // https://docs.mongodb.com/v3.4/tutorial/text-search-in-aggregation/#restrictions
-              query.alias = alias._id;
               query.searchable = true;
               query.$text = {
                 $search: term.value
@@ -115,6 +130,7 @@ async function onSearch(mailboxId, options, session, fn) {
                 _id: -1
               });
             }
+            */
 
             break;
           }
@@ -222,9 +238,62 @@ async function onSearch(mailboxId, options, session, fn) {
               //       since the usage is the same (but perf slightly better in lodash)
               //       <https://github.com/lodash/lodash/blob/0843bd46ef805dd03c0c8d804630804f3ba0ca3c/lodash.js#L14274-L14279>
               //
-              const regex = _.escapeRegExp(
-                Buffer.from(term.value, 'binary').toString()
-              );
+
+              // <https://github.com/asg017/sqlite-regex/issues/13>
+              // <https://github.com/nalgeon/sqlean/issues/100>
+              const regex =
+                '(?i)' + // case insensitive (PCRE_CASELESS)
+                _.escapeRegExp(Buffer.from(term.value, 'binary').toString());
+
+              const entry = {};
+              if (term.value) {
+                if (ne) {
+                  const ids = db
+                    .prepare(
+                      // `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') != $p2;`
+                      // NOTE: unlike MongoDB we can do a NOT for a RegExp here (see below commented out WildDuck reference)
+                      `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') NOT REGEXP $p2;`
+                    )
+                    .pluck()
+                    .all({
+                      p1: term.header,
+                      p2: Buffer.from(term.value, 'binary')
+                        .toString()
+                        .toLowerCase()
+                        .trim()
+                    });
+                  entry._id = { $in: ids };
+                } else {
+                  const ids = db
+                    .prepare(
+                      // NOTE: for array lookups:
+                      // REGEXP `select _id from Messages, json_each(Messages.headers) where key = $p1 and value REGEXP $p2;`
+                      `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`
+                    )
+                    .pluck()
+                    .all({ p1: term.header, p2: regex });
+                  entry._id = { $in: ids };
+                }
+              } else if (ne) {
+                const ids = db
+                  .prepare(
+                    `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') != $p1;`
+                  )
+                  .pluck()
+                  .all({ p1: term.header, p2: term.value });
+                entry._id = { $in: ids };
+              } else {
+                const ids = db
+                  .prepare(
+                    `select _id from Messages, json_each(Messages.headers) where key = $p1;`
+                  )
+                  .pluck()
+                  .all({ p1: term.header });
+                entry._id = { $in: ids };
+              }
+
+              // wildduck/mongodb version
+              /*
               const entry = term.value
                 ? {
                     headers: {
@@ -254,6 +323,7 @@ async function onSearch(mailboxId, options, session, fn) {
                         }
                       : term.header
                   };
+              */
               parent.push(entry);
             }
 
@@ -286,7 +356,13 @@ async function onSearch(mailboxId, options, session, fn) {
                 }
 
                 default: {
-                  // TODO: should we log an error here (?)
+                  this.logger.fatal(new TypeError('Unknown term operator'), {
+                    term,
+                    node,
+                    mailboxId,
+                    options,
+                    session
+                  });
                   break;
                 }
               }
@@ -295,14 +371,23 @@ async function onSearch(mailboxId, options, session, fn) {
                 ? {
                     [op]: value
                   }
-                : [
-                    {
-                      $gte: value
-                    },
-                    {
-                      $lt: new Date(value.getTime() + 24 * 3600 * 1000)
-                    }
-                  ];
+                : // NOTE: slight difference here with wildduck
+                  //       in that we support json-sql by having an object
+                  //       instead of an array of objects for the same prop
+                  // json-sql version:
+                  {
+                    $gte: value,
+                    $lt: new Date(value.getTime() + 24 * 3600 * 1000)
+                  };
+              // wildduck version:
+              // : [
+              //     {
+              //       $gte: value
+              //     },
+              //     {
+              //       $lt: new Date(value.getTime() + 24 * 3600 * 1000)
+              //     }
+              //   ];
 
               entry = {
                 idate: ne
@@ -344,7 +429,13 @@ async function onSearch(mailboxId, options, session, fn) {
                 }
 
                 default: {
-                  // TODO: should we log an error here (?)
+                  this.logger.fatal(new TypeError('Unknown term operator'), {
+                    term,
+                    node,
+                    mailboxId,
+                    options,
+                    session
+                  });
                   break;
                 }
               }
@@ -402,7 +493,13 @@ async function onSearch(mailboxId, options, session, fn) {
                 }
 
                 default: {
-                  // TODO: should we log an error here (?)
+                  this.logger.fatal(new TypeError('Unknown term operator'), {
+                    term,
+                    node,
+                    mailboxId,
+                    options,
+                    session
+                  });
                   break;
                 }
               }
@@ -426,7 +523,13 @@ async function onSearch(mailboxId, options, session, fn) {
           }
 
           default: {
-            // TODO: should we log an error here (?)
+            this.logger.fatal(new TypeError('Unknown term operator'), {
+              term,
+              node,
+              mailboxId,
+              options,
+              session
+            });
             break;
           }
         }
@@ -440,43 +543,59 @@ async function onSearch(mailboxId, options, session, fn) {
 
     if ($and.length > 0) query.$and = $and;
 
-    // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
-    const cursor = Messages.find(query, {
-      uid: true,
-      modseq: true
-    })
-      // <https://github.com/Automattic/mongoose/issues/4670#issuecomment-260161006>
-      .read('sp')
-      .maxTimeMS(ms('2m'))
-      .lean()
-      .cursor();
+    // converts objectids -> strings and arrays/json appropriately
+    const condition = JSON.parse(safeStringify(query));
+
+    // TODO: need to support FTS5 for text search
+    //       (using $match)
+    // `SELECT * FROM Messages_fts WHERE Messages_fts MATCH 'some phrase' ORDER BY rank;`
+    const sql = builder.build({
+      type: 'select',
+      table: 'Messages',
+      condition,
+      fields: ['uid', 'modseq']
+    });
+
+    const stmt = db.prepare(sql.query);
 
     try {
-      for await (const message of cursor) {
+      //
+      // NOTE: using `all()` currently for faster performance
+      //       (since we don't write to the socket here)
+      //
+      const messages = stmt.all(sql.values);
+      for (const message of messages) {
+        if (highestModseq < message.modseq) highestModseq = message.modseq;
+        uidList.push(message.uid);
+      }
+      /*
+      for (const result of stmt.iterate(sql.values)) {
+        // eslint-disable-next-line no-await-in-loop
+        const message = await convertResult(Messages, result, {
+          uid: true,
+          modseq: true
+        });
+
         this.logger.debug('fetched message', {
+          result,
           message,
           mailboxId,
           options,
           session
         });
 
-        if (!message) break;
-
         if (highestModseq < message.modseq) highestModseq = message.modseq;
 
         uidList.push(message.uid);
       }
+      */
     } catch (err) {
       this.logger.fatal(err, { mailboxId, options, session });
       throw new IMAPError(i18n.translateError('IMAP_INVALID_SEARCH'));
     }
 
-    // close cursor for cleanup
-    try {
-      await cursor.close();
-    } catch (err) {
-      this.logger.fatal(err, { mailboxId, options, session });
-    }
+    // close the connection
+    db.close();
 
     // send response
     fn(null, {

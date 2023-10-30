@@ -12,6 +12,13 @@ function isCodeBug(err) {
   const bool = boolean(
     err.isCodeBug === true ||
       err.message === CONNECTION_CLOSED_ERROR_MSG ||
+      err.name === 'SqliteError' ||
+      err.code === 'SQLITE_ERROR' ||
+      // <https://github.com/WiseLibs/better-sqlite3/blob/007d43e229190618884a9f976909c0b14a17d82c/docs/api.md?plain=1#L611>
+      (typeof err.code === 'string' &&
+        err.code.startsWith('UNKNOWN_SQLITE_ERROR_')) ||
+      isErrorConstructorName(err, 'SqliteError') ||
+      isErrorConstructorName(err, 'TypeError') ||
       isErrorConstructorName(err, 'TypeError') ||
       isErrorConstructorName(err, 'SyntaxError') ||
       isErrorConstructorName(err, 'ReferenceError') ||

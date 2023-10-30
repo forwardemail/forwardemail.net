@@ -14,26 +14,30 @@
  */
 
 const imapTools = require('wildduck/imap-core/lib/imap-tools');
-const ms = require('ms');
+const safeStringify = require('fast-safe-stringify');
 const tools = require('wildduck/lib/tools');
+const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const { convertResult } = require('#helpers/mongoose-to-sqlite');
 
 const MAX_BULK_WRITE_SIZE = 150;
+
+const builder = new Builder();
 
 function getFlag(f) {
   return f.trim().toLowerCase();
 }
 
-async function getModseq(mailbox, alias) {
+async function getModseq(db, mailbox) {
   const updatedMailbox = await Mailboxes.findOneAndUpdate(
+    db,
     {
-      _id: mailbox._id,
-      alias: alias._id
+      _id: mailbox._id
     },
     {
       $inc: {
@@ -41,8 +45,7 @@ async function getModseq(mailbox, alias) {
       }
     },
     {
-      returnDocument: 'after',
-      maxTimeMS: ms('3s')
+      returnDocument: 'after'
     }
   );
   return updatedMailbox && updatedMailbox.modifyIndex;
@@ -53,14 +56,11 @@ async function onStore(mailboxId, update, session, fn) {
   this.logger.debug('STORE', { mailboxId, update, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'STORE');
+    const { alias, db } = await this.refreshSession(session, 'STORE');
 
-    const mailbox = await Mailboxes.findOne({
-      _id: mailboxId,
-      alias: alias._id
-    })
-      .lean()
-      .exec();
+    const mailbox = await Mailboxes.findOne(db, {
+      _id: mailboxId
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -70,8 +70,7 @@ async function onStore(mailboxId, update, session, fn) {
     const condstoreEnabled = Boolean(session.selected.condstoreEnabled);
 
     const query = {
-      mailbox: mailbox._id,
-      alias: alias._id
+      mailbox: mailbox._id
     };
 
     const modified = [];
@@ -87,23 +86,45 @@ async function onStore(mailboxId, update, session, fn) {
     // NOTE: don't use uid for `1:*`
     else query.uid = tools.checkRangeQuery(update.messages);
 
-    // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
-    const cursor = Messages.find(query, {
+    // converts objectids -> strings and arrays/json appropriately
+    const condition = JSON.parse(safeStringify(query));
+
+    // TODO: `condition` may need further refined for accuracy (e.g. see `prepareQuery`)
+
+    const projection = {
       _id: true,
       uid: true,
       flags: true,
       modseq: true
-    })
-      .sort({ uid: 1 })
-      .maxTimeMS(ms('2m'))
-      .lean()
-      .cursor();
+    };
+
+    const fields = Object.keys(projection);
+
+    const sql = builder.build({
+      type: 'select',
+      table: 'Messages',
+      condition,
+      fields,
+      // sort required for IMAP UIDPLUS
+      sort: 'uid'
+    });
+
+    const stmt = db.prepare(sql.query);
 
     let err;
 
     try {
-      for await (const message of cursor) {
+      // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
+
+      // turn on unsafe mode to allow us to iterate, select, and update at the same time
+      db.unsafeMode(true);
+
+      for (const result of stmt.iterate(sql.values)) {
+        // eslint-disable-next-line no-await-in-loop
+        const message = await convertResult(Messages, result, projection);
+
         this.logger.debug('fetched message', {
+          result,
           message,
           mailboxId,
           update,
@@ -308,7 +329,8 @@ async function onStore(mailboxId, update, session, fn) {
         if (!updated) continue;
 
         // get modseq
-        const modseq = newModseq || (await getModseq(mailbox, alias));
+        // eslint-disable-next-line no-await-in-loop
+        const modseq = newModseq || (await getModseq(db, mailbox));
 
         if (!update.silent || condstoreEnabled) {
           // write to socket the response
@@ -354,9 +376,10 @@ async function onStore(mailboxId, update, session, fn) {
 
         if (bulkWrite.length >= MAX_BULK_WRITE_SIZE) {
           try {
-            await Messages.bulkWrite(bulkWrite, {
-              ordered: false,
-              w: 1
+            // eslint-disable-next-line no-await-in-loop
+            await Messages.bulkWrite(db, bulkWrite, {
+              // ordered: false,
+              // w: 1
             });
             bulkWrite = [];
           } catch (err) {
@@ -367,7 +390,8 @@ async function onStore(mailboxId, update, session, fn) {
 
           if (entries.length > 0) {
             try {
-              await this.server.notifier.addEntries(mailbox, entries);
+              // eslint-disable-next-line no-await-in-loop
+              await this.server.notifier.addEntries(db, mailbox, entries);
               this.server.notifier.fire(alias.id);
               entries = [];
             } catch (err) {
@@ -380,23 +404,19 @@ async function onStore(mailboxId, update, session, fn) {
       err = _err;
     }
 
-    // close cursor for cleanup
-    try {
-      await cursor.close();
-    } catch (err) {
-      this.logger.fatal(err, { mailboxId, update, session });
-    }
+    // turn off unsafe mode
+    db.unsafeMode(false);
 
     // update messages
     if (bulkWrite.length > 0)
-      await Messages.bulkWrite(bulkWrite, {
-        ordered: false,
-        w: 1
+      await Messages.bulkWrite(db, bulkWrite, {
+        // ordered: false,
+        // w: 1
       });
 
     if (entries.length > 0) {
       try {
-        await this.server.notifier.addEntries(mailbox, entries);
+        await this.server.notifier.addEntries(db, mailbox, entries);
         this.server.notifier.fire(alias.id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
@@ -413,6 +433,7 @@ async function onStore(mailboxId, update, session, fn) {
 
       // find flags that don't yet exist for mailbox to add
       for (const flag of update.value) {
+        // TODO: probably should error here for >= 100
         // limit mailbox flags by 100
         if (mailboxFlags.length + newFlags.length >= 100) continue;
 
@@ -423,9 +444,9 @@ async function onStore(mailboxId, update, session, fn) {
       if (newFlags.length > 0) {
         // TODO: see FIXME from wildduck at <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L419>
         await Mailboxes.updateOne(
+          db,
           {
-            _id: mailbox._id,
-            alias: alias._id
+            _id: mailbox._id
           },
           {
             $addToSet: {
@@ -433,13 +454,13 @@ async function onStore(mailboxId, update, session, fn) {
                 $each: newFlags
               }
             }
-          },
-          {
-            maxTimeMS: ms('3s')
           }
         );
       }
     }
+
+    // close the connection
+    db.close();
 
     // if there was an error during cursor then throw
     if (err) throw err;

@@ -13,6 +13,7 @@ const { isEmail } = require('validator');
 const SMTPError = require('./smtp-error');
 const ServerShutdownError = require('./server-shutdown-error');
 const SocketError = require('./socket-error');
+const getDatabase = require('./get-database');
 const parseRootDomain = require('./parse-root-domain');
 const refineAndLogError = require('./refine-and-log-error');
 const validateAlias = require('./validate-alias');
@@ -24,6 +25,7 @@ const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
 const env = require('#config/env');
 const onConnect = require('#helpers/smtp/on-connect');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const REQUIRED_PATHS = [
   'INBOX',
@@ -233,12 +235,32 @@ async function onAuth(auth, session, fn) {
     // Clear authentication limit for this IP address
     await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
 
+    // prepare user object for `session.user`
+    const user = {
+      // <https://github.com/nodemailer/wildduck/issues/510>
+      id: alias.id,
+      username: `${alias.name}@${domain.name}`,
+      alias_id: alias.id,
+      alias_name: alias.name,
+      domain_id: domain.id,
+      domain_name: domain.name,
+      // TODO: we probably don't need to encrypt but just a safeguard
+      //       (the `helpers/logger` already strips `session.user.password` from logs)
+      password: encrypt(auth.password.trim())
+    };
+
     //
     // If this was IMAP server then ensure the user has all essential folders
     //
     if (this.server instanceof IMAPServer) {
+      // connect to the database
+      const db = await getDatabase(this.server, alias, {
+        ...session,
+        user
+      });
+
       try {
-        const paths = await Mailboxes.distinct('path', {
+        const paths = await Mailboxes.distinct(db, 'path', {
           alias: alias._id
         });
         const required = [];
@@ -250,8 +272,12 @@ async function onAuth(auth, session, fn) {
           this.logger.debug('creating required', { required });
           await Mailboxes.create(
             required.map((path) => ({
-              alias: alias._id,
-              path
+              // virtual helper
+              db,
+
+              path,
+              retention:
+                typeof alias.retention === 'number' ? alias.retention : 0
             }))
           );
         }
@@ -262,17 +288,7 @@ async function onAuth(auth, session, fn) {
 
     // this response object sets `session.user` to have `domain` and `alias`
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L235>
-    fn(null, {
-      user: {
-        // <https://github.com/nodemailer/wildduck/issues/510>
-        id: alias.id,
-        username: `${alias.name}@${domain.name}`,
-        alias_id: alias.id,
-        alias_name: alias.name,
-        domain_id: domain.id,
-        domain_name: domain.name
-      }
-    });
+    fn(null, { user });
   } catch (err) {
     //
     // NOTE: we should actually share error message if it was not a code bug

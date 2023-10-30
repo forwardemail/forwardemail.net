@@ -1,0 +1,47 @@
+//- TODO: add all this to the FAQ (or include it rendered somehow)
+#modal-storage.modal.fade(
+  tabindex="-1",
+  role="dialog",
+  aria-labelledby="modal-storage-title",
+  aria-hidden="true"
+)
+  .modal-dialog.modal-xl(role="document")
+    .modal-content
+      .modal-header.d-block
+        h2#modal-storage-title.h3.d-inline-block.text-success
+          i.fa.fa-lock
+          = " "
+          = t("Encrypted Email Storage")
+        button.close(type="button", data-dismiss="modal", aria-label="Close")
+          span(aria-hidden="true") &times;
+      .modal-body
+        h2.h4= t("How secure is this?")
+        p
+          != t('Our service ensures your mailboxes are <strong class="text-decoration-underline">only accessible by you</strong> and are not stored in a shared database.')
+          = " "
+          != t('We purposely designed our service so that it operates in-memory when you connect and <strong class="text-decoration-underline">we don\'t even have access to your mailbox</strong> at rest.')
+          = " "
+          != t("If you forget your password, then you lose your mailbox and need to either recover with offline backups or start over.")
+        h2.h4= t("How does it work?")
+        p
+          != t("We use individual mailboxes encrypted with your password.")
+          = " "
+          = t("Our service uses encryption-at-rest (AES-256), encryption-in-transit (TLS), and industry standard security procedures.")
+          = " "
+          != t("We are also <strong>100% open-source</strong> and privacy-focused.")
+          = " "
+          != t('At anytime you can download, view, export, backup, and/or delete your mailboxes &ndash; and <strong class="text-decoration-underline">easily migrate to or from another email service provider</strong>.')
+        h2.h4= t("What are your storage limits?")
+        p
+          = t("If you exceed the default storage limit of 10 GB, then you can purchase additional storage as needed.")
+          = " "
+          = t("Storage is shared across all of your domains and aliases, but you can impose limits if desired on a per domain and alias basis.")
+          = " "
+          = t("Unlike other email providers, you do not need to pay for storage on a per domain or alias basis.")
+          = " "
+          != t('<strong class="text-decoration-underline">You can even bring your own storage provider</strong> for backups to use with our service &ndash; such as Amazon, Backblaze, Box, Cloudflare, Digital Ocean, Dropbox, SFTP, Google, Microsoft, Oracle, or any S3-compatible storage provider.')
+          = " "
+          != t("This means you can own your data and most importantly &ndash; <strong>you don't have to operate and maintain your own email servers</strong>.")
+        a.text-uppercase.font-weight-bold.btn.btn-block.btn-success.btn-lg(
+          href=l("/encrypted-email")
+        )= t("Click to learn more")
