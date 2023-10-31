@@ -39,9 +39,9 @@ const graceful = new Graceful({
 });
 graceful.listen();
 
-function heartbeat() {
+function ping() {
   clearTimeout(this.pingTimeout);
-  console.log('heartbeat');
+  console.log('ping');
   // Use `WebSocket#terminate()`, which immediately destroys the connection,
   // instead of `WebSocket#close()`, which waits for the close timer.
   // Delay should be equal to the interval at which your server
@@ -68,8 +68,8 @@ function heartbeat() {
       )}:@${ip.address()}:${port}`
     );
     client.on('error', console.error);
-    client.on('open', heartbeat);
-    client.on('ping', heartbeat);
+    client.on('open', ping);
+    client.on('ping', ping);
     client.on('close', function () {
       clearTimeout(this.pingTimeout);
     });

@@ -49,7 +49,8 @@ class SQLite {
 
       ws.on('error', (err) => console.error(err));
 
-      ws.on('pong', () => {
+      ws.on('pong', function () {
+        console.log('pong');
         this.isAlive = true;
       });
 
