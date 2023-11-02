@@ -16,6 +16,8 @@
 const { EventEmitter } = require('node:events');
 
 const Axe = require('axe');
+const Database = require('better-sqlite3-multiple-ciphers');
+const WebSocketAsPromised = require('websocket-as-promised');
 const _ = require('lodash');
 const safeStringify = require('fast-safe-stringify');
 
@@ -116,6 +118,15 @@ class IMAPNotifier extends EventEmitter {
 
   // eslint-disable-next-line complexity, max-params
   async addEntries(db, wsp, session, mailboxId, entries, lock = false) {
+    if (!db || (!(db instanceof Database) && !db.wsp))
+      throw new TypeError('Database is missing');
+
+    if (!wsp || !(wsp instanceof WebSocketAsPromised))
+      throw new TypeError('WebSocketAsPromised missing');
+
+    if (typeof session?.user?.password !== 'string')
+      throw new TypeError('Session user and password missing');
+
     if (entries && !Array.isArray(entries)) {
       entries = [entries];
     } else if (!entries || entries.length === 0) {

@@ -27,9 +27,9 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
 // partysocket.WebSocket.prototype._debug = (...args) =>
 //   logger.debug('partysocket', { args });
 
-ReconnectingWebSocket.prototype._debug = (...args) => {
-  if (config.env === 'development')
-    logger.debug('reconnectingwebsocket', { args });
+ReconnectingWebSocket.prototype._debug = () => {
+  // if (config.env === 'development')
+  //   logger.debug('reconnectingwebsocket', { args });
 };
 
 function createWebSocketAsPromised(options = {}) {
@@ -57,8 +57,8 @@ function createWebSocketAsPromised(options = {}) {
       // return new partysocket.WebSocket(url, [], {
       return new ReconnectingWebSocket(url, [], {
         // <https://github.com/pladaria/reconnecting-websocket#available-options>
-        WebSocket,
-        debug: config.env === 'development'
+        WebSocket
+        // debug: config.env === 'development'
       });
     },
     packMessage: (data) => safeStringify(data),
@@ -88,6 +88,7 @@ function createWebSocketAsPromised(options = {}) {
   //
   // bind event listeners
   //
+  /*
   if (config.env === 'development') {
     for (const event of [
       'onOpen',
@@ -103,6 +104,7 @@ function createWebSocketAsPromised(options = {}) {
       );
     }
   }
+  */
 
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
   wsp.request = async function (data) {

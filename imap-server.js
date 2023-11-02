@@ -217,11 +217,11 @@ class IMAP {
     // in test/development listen for locking and releasing
     // <https://github.com/nodemailer/ioredfour/blob/0bc1035c34c548b2d3058352c588dc20422cfb96/lib/ioredfour.js#L48-L49>
     //
-    if (config.env === 'development') {
-      this.lock._redisSubscriber.on('message', (channel, message) => {
-        logger.debug('lock message received', { channel, message });
-      });
-    }
+    // if (config.env === 'development') {
+    //   this.lock._redisSubscriber.on('message', (channel, message) => {
+    //     logger.debug('lock message received', { channel, message });
+    //   });
+    // }
 
     //
     // NOTE: it is using a lock under `wildduck` prefix

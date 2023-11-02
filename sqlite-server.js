@@ -59,7 +59,8 @@ class SQLite {
       namespace: 'imap_lock'
     });
 
-    this.wss = new WebSocketServer({ noServer: true, perMessageDeflate: true });
+    // this.wss = new WebSocketServer({ noServer: true, perMessageDeflate: true });
+    this.wss = new WebSocketServer({ noServer: true });
     this.server = server;
 
     // bind listen/close to this

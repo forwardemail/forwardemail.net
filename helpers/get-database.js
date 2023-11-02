@@ -85,7 +85,8 @@ async function setupPragma(db, session) {
   // safeguards
   if (!db.open) throw new TypeError('Database is not open');
   if (db.memory) throw new TypeError('Memory database');
-  db.pragma(`cipher='aes256cbc'`);
+  // db.pragma(`cipher='aes256cbc'`);
+  db.pragma(`cipher='chacha20'`);
   db.pragma(`key='${decrypt(session.user.password)}'`);
   db.pragma('journal_mode=WAL');
   // <https://litestream.io/tips/#busy-timeout>

@@ -260,9 +260,17 @@ async function onAuth(auth, session, fn) {
       });
 
       try {
-        const paths = await Mailboxes.distinct(db, this.wsp, session, 'path', {
-          alias: alias._id
-        });
+        const paths = await Mailboxes.distinct(
+          db,
+          this.wsp,
+          {
+            ...session,
+            user
+          },
+          'path',
+          {}
+        );
+
         const required = [];
         for (const path of REQUIRED_PATHS) {
           if (!paths.includes(path)) required.push(path);
@@ -274,6 +282,8 @@ async function onAuth(auth, session, fn) {
             required.map((path) => ({
               // virtual helper
               db,
+              wsp: this.wsp,
+              session: { ...session, user },
 
               path,
               retention:

@@ -177,7 +177,7 @@ async function getThreadId(db, wsp, session, subject, mimeTree) {
         });
 
         if (db.wsp) {
-          thread = await this.wsp.request({
+          thread = await wsp.request({
             action: 'stmt',
             session: { user: session.user },
             stmt: [

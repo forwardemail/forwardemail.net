@@ -31,7 +31,6 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 const { convertResult } = require('#helpers/mongoose-to-sqlite');
 
 // const LIMITED_PROJECTION_KEYS = new Set(['_id', 'flags', 'modseq', 'uid']);
-const MAX_PAGE_SIZE = 2500;
 const MAX_BULK_WRITE_SIZE = 150;
 
 const builder = new Builder();
@@ -76,7 +75,6 @@ async function getMessages(db, wsp, session, server, opts = {}) {
     throw new Error('Total bytes must be a number >= 0');
 
   let queryAll;
-  let count = 0;
 
   const pageQuery = { ...query };
 
@@ -175,48 +173,6 @@ async function getMessages(db, wsp, session, server, opts = {}) {
     if (!socket || socket?.destroyed || socket?.readyState !== 'open')
       throw new SocketError();
 
-    // break out of cursor if no message retrieved
-    // TODO: does this actually occur as an edge case (?)
-    if (!message) {
-      server.logger.fatal('message not fetched', {
-        session,
-        options,
-        query,
-        pageQuery
-      });
-
-      // may have more pages, try to fetch more
-      if (count === MAX_PAGE_SIZE) {
-        // eslint-disable-next-line no-await-in-loop
-        const results = await getMessages(db, wsp, session, server, {
-          options,
-          projection,
-          query,
-          mailbox,
-          alias,
-          attachmentStorage,
-          entries,
-          bulkWrite,
-          successful,
-          lastUid,
-          rowCount,
-          totalBytes
-        });
-        // re-assign variables (or we could return early here with `results`)
-        entries = results.entries;
-        bulkWrite = results.bulkWrite;
-        successful = results.successful;
-        lastUid = results.lastUid;
-        rowCount = results.rowCount;
-        totalBytes = results.totalBytes;
-      }
-
-      break;
-    }
-
-    // store counter for how many messages we processed
-    count++;
-
     // store reference to last message uid
     lastUid = message.uid;
 
@@ -226,8 +182,9 @@ async function getMessages(db, wsp, session, server, opts = {}) {
       typeof session?.selected?.uidList === 'object' &&
       Array.isArray(session.selected.uidList) &&
       !session.selected.uidList.includes(message.uid)
-    )
+    ) {
       continue;
+    }
 
     const markAsSeen =
       options.markAsSeen && message.flags && !message.flags.includes('\\Seen');
@@ -311,7 +268,7 @@ async function getMessages(db, wsp, session, server, opts = {}) {
     rowCount++;
 
     // add operation to bulkWrite
-    if (!markAsSeen)
+    if (!markAsSeen) {
       bulkWrite.push({
         updateOne: {
           filter: {
@@ -329,13 +286,23 @@ async function getMessages(db, wsp, session, server, opts = {}) {
           }
         }
       });
+      entries.push({
+        ignore: session.id,
+        command: 'FETCH',
+        uid: message.uid,
+        message: message._id,
+        mailbox: mailbox._id,
+        thread: message.thread,
+        flags: message.flags
+      });
+    }
 
     if (bulkWrite.length >= MAX_BULK_WRITE_SIZE) {
       try {
         // eslint-disable-next-line no-await-in-loop
         await Messages.bulkWrite(db, wsp, session, bulkWrite, {
-          ordered: false,
-          w: 1
+          // ordered: false,
+          // w: 1
         });
         bulkWrite = [];
         if (entries.length >= MAX_BULK_WRITE_SIZE) {
@@ -430,8 +397,8 @@ async function onFetch(mailboxId, options, session, fn) {
     // mark messages as Seen
     if (results.bulkWrite.length > 0)
       await Messages.bulkWrite(db, this.wsp, session, results.bulkWrite, {
-        ordered: false,
-        w: 1
+        // ordered: false,
+        // w: 1
       });
 
     // close the connection

@@ -305,6 +305,8 @@ async function onMove(mailboxId, update, session, fn) {
             // eslint-disable-next-line no-await-in-loop
             await this.server.notifier.addEntries(
               db,
+              this.wsp,
+              session,
               targetMailbox._id,
               existEntries,
               lock
@@ -351,6 +353,8 @@ async function onMove(mailboxId, update, session, fn) {
       try {
         await this.server.notifier.addEntries(
           db,
+          this.wsp,
+          session,
           mailbox,
           expungeEntries,
           lock
@@ -366,6 +370,8 @@ async function onMove(mailboxId, update, session, fn) {
       try {
         await this.server.notifier.addEntries(
           db,
+          this.wsp,
+          session,
           targetMailbox,
           existEntries,
           lock
