@@ -86,3 +86,4 @@ temp/
 .ssl-cert
 .ssl-key
 .ssl-dhparam
+.ssl-csr
