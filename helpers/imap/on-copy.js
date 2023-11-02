@@ -39,13 +39,13 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     const { alias, db } = await this.refreshSession(session, 'COPY');
 
     // check if over quota
-    const overQuota = await Aliases.isOverQuota(alias);
+    const overQuota = await Aliases.isOverQuota(this.wsp, session);
     if (overQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
       });
 
-    const mailbox = await Mailboxes.findOne(db, {
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
       _id: mailboxId
     });
 
@@ -54,7 +54,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         imapResponse: 'NONEXISTENT'
       });
 
-    const targetMailbox = await Mailboxes.findOne(db, {
+    const targetMailbox = await Mailboxes.findOne(db, this.wsp, session, {
       path: update.destination
     });
 
@@ -90,8 +90,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       sort: 'uid'
     });
 
-    const stmt = db.prepare(sql.query);
-
     //
     // NOTE: you cannot perform updates while iterating
     //       <https://github.com/WiseLibs/better-sqlite3/issues/203#issuecomment-456534827>
@@ -100,13 +98,24 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     //       <https://github.com/WiseLibs/better-sqlite3/issues/203#issuecomment-619401512>
     //       <https://github.com/WiseLibs/better-sqlite3/blob/master/docs/unsafe.md>
     //
-    // NOTE: since we use locking and non-standard row ID's we should be ok
+    //       however from tests we see that this causes write conflicts
+    //       (e.g. says it was written but then when you check it doesn't exist)
+    //
+    let messages;
+    if (db.wsp) {
+      messages = await this.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        stmt: [
+          ['prepare', sql.query],
+          ['all', sql.values]
+        ]
+      });
+    } else {
+      messages = db.prepare(sql.query).all(sql.values);
+    }
 
-    // turn on unsafe mode to allow us to iterate, select, and update at the same time
-    db.unsafeMode(true);
-
-    // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
-    for (const result of stmt.iterate(sql.values)) {
+    for (const result of messages) {
       // eslint-disable-next-line no-await-in-loop
       const message = await convertResult(Messages, result);
 
@@ -134,6 +143,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       // eslint-disable-next-line no-await-in-loop
       const updatedMailbox = await Mailboxes.findOneAndUpdate(
         db,
+        this.wsp,
+        session,
         {
           _id: targetMailbox._id
         },
@@ -182,11 +193,13 @@ async function onCopy(connection, mailboxId, update, session, fn) {
 
       // virtual helper
       message.db = db;
+      message.wsp = this.wsp;
+      message.session = session;
 
       // set existing message as copied
       // TODO: may want to check for return value
       // eslint-disable-next-line no-await-in-loop
-      await Messages.findOneAndUpdate(db, query, {
+      await Messages.findOneAndUpdate(db, this.wsp, session, query, {
         $set: {
           copied: true
         }
@@ -206,6 +219,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
           // eslint-disable-next-line no-await-in-loop
           await Attachments.updateMany(
             db,
+            this.wsp,
+            session,
             {
               hash: { $in: attachmentIds }
             },
@@ -234,23 +249,26 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       // add entries
       try {
         // eslint-disable-next-line no-await-in-loop
-        await this.server.notifier.addEntries(db, targetMailbox, {
-          command: 'EXISTS',
-          uid: message.uid,
-          mailbox: newMessage.mailbox,
-          message: newMessage._id,
-          thread: newMessage.thread,
-          unseen: newMessage.unseen,
-          idate: newMessage.idate,
-          junk: newMessage.junk
-        });
+        await this.server.notifier.addEntries(
+          db,
+          this.wsp,
+          session,
+          targetMailbox,
+          {
+            command: 'EXISTS',
+            uid: message.uid,
+            mailbox: newMessage.mailbox,
+            message: newMessage._id,
+            thread: newMessage.thread,
+            unseen: newMessage.unseen,
+            idate: newMessage.idate,
+            junk: newMessage.junk
+          }
+        );
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
     }
-
-    // turn off unsafe mode
-    db.unsafeMode(false);
 
     // close the connection
     db.close();
@@ -264,7 +282,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       // NOTE: we don't error for quota during copy due to this reasoning
       //       <https://github.com/nodemailer/wildduck/issues/517#issuecomment-1748329188>
       //
-      Aliases.isOverQuota(alias, copiedStorage)
+      Aliases.isOverQuota(this.wsp, session, copiedStorage)
         .then((exceedsQuota) => {
           if (exceedsQuota) {
             const err = new IMAPError(

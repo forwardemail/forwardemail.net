@@ -5383,5 +5383,16 @@
   "My Emails": "بريدي الإلكتروني",
   "My Logs": "سجلاتي",
   "My Profile": "ملفي",
-  "My Billing": "الفواتير الخاصة بي"
+  "My Billing": "الفواتير الخاصة بي",
+  "Primary servers use an instance of": "تستخدم الخوادم الأساسية مثيلاً لـ",
+  "Secondary servers use an instance of": "تستخدم الخوادم الثانوية مثيلاً لـ",
+  "client that is wrapped with": "العميل الذي تم تغليفه به",
+  "websocket-as-promised": "websocket كما وعدت",
+  "reconnecting-websocket": "إعادة الاتصال websocket",
+  ".  These two wrappers ensure that the": ". يضمن هذان الغلافان أن",
+  "reconnects and can send and receive data for specific database writes.": "يعيد الاتصال ويمكنه إرسال واستقبال البيانات لعمليات الكتابة في قاعدة بيانات محددة.",
+  "If for any reason the Secondary servers have read issues with": "إذا واجهت الخوادم الثانوية مشكلات في القراءة لأي سبب من الأسباب",
+  "(e.g. the mount failed or the": "(على سبيل المثال فشل التثبيت أو",
+  "file for the given alias cannot be found) – then it will fallback to use the": "لا يمكن العثور على الملف الخاص بالاسم المستعار المحدد) - عندها سيتم الرجوع لاستخدام الملف",
+  "connection for reads.": "اتصال للقراءات."
 }

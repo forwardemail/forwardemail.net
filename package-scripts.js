@@ -18,6 +18,7 @@ module.exports = {
     web: 'nodemon web.js',
     smtp: 'nodemon smtp.js',
     imap: 'nodemon imap.js',
+    sqlite: 'nodemon sqlite.js',
 
     watch: 'gulp watch',
     clean: 'gulp clean',

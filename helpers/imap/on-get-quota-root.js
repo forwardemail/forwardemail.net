@@ -24,9 +24,9 @@ async function onGetQuotaRoot(path, session, fn) {
   this.logger.debug('GETQUOTAROOT', { path, session });
 
   try {
-    const { alias, db } = await this.refreshSession(session, 'GETQUOTAROOT');
+    const { db } = await this.refreshSession(session, 'GETQUOTAROOT');
 
-    const mailbox = await Mailboxes.findOne(db, {
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
       path
     });
 
@@ -38,7 +38,7 @@ async function onGetQuotaRoot(path, session, fn) {
     // close the connection
     db.close();
 
-    const storageUsed = await Aliases.getStorageUsed(alias);
+    const storageUsed = await Aliases.getStorageUsed(this.wsp, session);
 
     fn(null, {
       root: '',

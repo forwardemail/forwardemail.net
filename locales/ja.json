@@ -5383,5 +5383,16 @@
   "My Emails": "私のメール",
   "My Logs": "私のログ",
   "My Profile": "私のプロフィール",
-  "My Billing": "私の請求"
+  "My Billing": "私の請求",
+  "Primary servers use an instance of": "プライマリサーバーは次のインスタンスを使用します。",
+  "Secondary servers use an instance of": "セカンダリ サーバーは次のインスタンスを使用します。",
+  "client that is wrapped with": "ラップされているクライアント",
+  "websocket-as-promised": "約束どおりの WebSocket",
+  "reconnecting-websocket": "再接続-WebSocket",
+  ".  These two wrappers ensure that the": "。これら 2 つのラッパーにより、",
+  "reconnects and can send and receive data for specific database writes.": "再接続し、特定のデータベース書き込みのデータを送受信できるようになります。",
+  "If for any reason the Secondary servers have read issues with": "何らかの理由でセカンダリ サーバーで読み取りの問題が発生した場合",
+  "(e.g. the mount failed or the": "(例: マウントが失敗した、または",
+  "file for the given alias cannot be found) – then it will fallback to use the": "指定されたエイリアスのファイルが見つかりません) – その場合はフォールバックして、",
+  "connection for reads.": "読み取り用の接続。"
 }

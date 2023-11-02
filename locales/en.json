@@ -5153,5 +5153,16 @@
   "Reserved Email Addresses For Administrators": "Reserved Email Addresses For Administrators",
   "<strong>Unlike other email services</strong>, we ensure that <strong class='text-decoration-underline'>only you have access to your mailbox</strong> at all times.": "<strong>Unlike other email services</strong>, we ensure that <strong class='text-decoration-underline'>only you have access to your mailbox</strong> at all times.",
   "Free Email Forwarding and Hosting for Custom Domain Setup Guide (<span class=\"notranslate\">2023</span>)": "Free Email Forwarding and Hosting for Custom Domain Setup Guide (<span class=\"notranslate\">2023</span>)",
-  "How to Send Mail As for Gmail Custom Domain Setup Guide (<span class=\"notranslate\">2023</span>)": "How to Send Mail As for Gmail Custom Domain Setup Guide (<span class=\"notranslate\">2023</span>)"
+  "How to Send Mail As for Gmail Custom Domain Setup Guide (<span class=\"notranslate\">2023</span>)": "How to Send Mail As for Gmail Custom Domain Setup Guide (<span class=\"notranslate\">2023</span>)",
+  "Primary servers use an instance of": "Primary servers use an instance of",
+  "Secondary servers use an instance of": "Secondary servers use an instance of",
+  "client that is wrapped with": "client that is wrapped with",
+  "websocket-as-promised": "websocket-as-promised",
+  "reconnecting-websocket": "reconnecting-websocket",
+  ".  These two wrappers ensure that the": ".  These two wrappers ensure that the",
+  "reconnects and can send and receive data for specific database writes.": "reconnects and can send and receive data for specific database writes.",
+  "If for any reason the Secondary servers have read issues with": "If for any reason the Secondary servers have read issues with",
+  "(e.g. the mount failed or the": "(e.g. the mount failed or the",
+  "file for the given alias cannot be found) – then it will fallback to use the": "file for the given alias cannot be found) – then it will fallback to use the",
+  "connection for reads.": "connection for reads."
 }

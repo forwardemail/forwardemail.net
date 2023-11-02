@@ -15,7 +15,9 @@
 
 const crypto = require('node:crypto');
 
+const Database = require('better-sqlite3-multiple-ciphers');
 const MessageHandler = require('wildduck/lib/message-handler');
+const WebSocketAsPromised = require('websocket-as-promised');
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
@@ -59,7 +61,17 @@ Threads.plugin(sqliteVirtualDB);
 Threads.plugin(validationErrorTransform);
 
 // code is inspired from wildduck (rewrite necessary for async/await and different db structure)
-async function getThreadId(db, subject, mimeTree) {
+// eslint-disable-next-line max-params, complexity
+async function getThreadId(db, wsp, session, subject, mimeTree) {
+  if (!db || (!(db instanceof Database) && !db.wsp))
+    throw new TypeError('Database is missing');
+
+  if (!wsp || !(wsp instanceof WebSocketAsPromised))
+    throw new TypeError('WebSocketAsPromised missing');
+
+  if (typeof session?.user?.password !== 'string')
+    throw new TypeError('Session user and password missing');
+
   let referenceIds = new Set(
     [
       [mimeTree.parsedHeader['message-id'] || []].flat().pop() || '',
@@ -97,8 +109,21 @@ async function getThreadId(db, subject, mimeTree) {
         .map(() => `"value" = ?`)
         .join(' or ')})) limit 1;`;
 
+      const values = [subject, ...referenceIds];
+
       // reading so no need to lock
-      thread = db.prepare(sql).get([subject, ...referenceIds]);
+      if (db.wsp) {
+        thread = await wsp.request({
+          action: 'stmt',
+          session: { user: session.user },
+          stmt: [
+            ['prepare', sql],
+            ['get', values]
+          ]
+        });
+      } else {
+        thread = db.prepare(sql).get(values);
+      }
     }
 
     if (thread) {
@@ -126,7 +151,20 @@ async function getThreadId(db, subject, mimeTree) {
 
         // result of this will be like:
         // `{ changes: 1, lastInsertRowid: 11 }`
-        db.prepare(sql.query).run(sql.values);
+
+        // use websockets if readonly
+        if (db.readonly) {
+          await wsp.request({
+            action: 'stmt',
+            session: { user: session.user },
+            stmt: [
+              ['prepare', sql.query],
+              ['run', sql.values]
+            ]
+          });
+        } else {
+          db.prepare(sql.query).run(sql.values);
+        }
       }
 
       {
@@ -138,7 +176,19 @@ async function getThreadId(db, subject, mimeTree) {
           }
         });
 
-        thread = db.prepare(sql.query).get(sql.values);
+        if (db.wsp) {
+          thread = await this.wsp.request({
+            action: 'stmt',
+            session: { user: session.user },
+            stmt: [
+              ['prepare', sql.query],
+              ['get', sql.values]
+            ]
+          });
+        } else {
+          thread = db.prepare(sql.query).get(sql.values);
+        }
+
         if (!thread) throw new TypeError('Thread does not exist');
         thread = await convertResult(this, thread);
       }
@@ -153,6 +203,8 @@ async function getThreadId(db, subject, mimeTree) {
 
   thread = await this.create({
     db,
+    wsp,
+    session,
     ids: referenceIds,
     subject
   });

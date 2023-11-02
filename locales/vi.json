@@ -5383,5 +5383,16 @@
   "My Emails": "Thư điện tử của tôi",
   "My Logs": "Nhật ký của tôi",
   "My Profile": "Thông tin của tôi",
-  "My Billing": "Thanh toán của tôi"
+  "My Billing": "Thanh toán của tôi",
+  "Primary servers use an instance of": "Các máy chủ chính sử dụng một phiên bản của",
+  "Secondary servers use an instance of": "Máy chủ thứ cấp sử dụng một phiên bản của",
+  "client that is wrapped with": "khách hàng được gói bằng",
+  "websocket-as-promised": "websocket-như đã hứa",
+  "reconnecting-websocket": "kết nối lại-websocket",
+  ".  These two wrappers ensure that the": ". Hai trình bao bọc này đảm bảo rằng",
+  "reconnects and can send and receive data for specific database writes.": "kết nối lại và có thể gửi và nhận dữ liệu để ghi cơ sở dữ liệu cụ thể.",
+  "If for any reason the Secondary servers have read issues with": "Nếu vì bất kỳ lý do nào mà máy chủ phụ gặp vấn đề về đọc",
+  "(e.g. the mount failed or the": "(ví dụ: việc gắn kết không thành công hoặc",
+  "file for the given alias cannot be found) – then it will fallback to use the": "không thể tìm thấy tệp cho bí danh đã cho) - sau đó nó sẽ dự phòng để sử dụng",
+  "connection for reads.": "kết nối để đọc."
 }

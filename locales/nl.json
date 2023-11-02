@@ -5383,5 +5383,16 @@
   "My Emails": "Mijn e-mails",
   "My Logs": "Mijn logboeken",
   "My Profile": "Mijn profiel",
-  "My Billing": "Mijn facturering"
+  "My Billing": "Mijn facturering",
+  "Primary servers use an instance of": "Primaire servers gebruiken een exemplaar van",
+  "Secondary servers use an instance of": "Secundaire servers gebruiken een exemplaar van",
+  "client that is wrapped with": "cliënt waarmee is omwikkeld",
+  "websocket-as-promised": "websocket-zoals beloofd",
+  "reconnecting-websocket": "opnieuw verbinden-websocket",
+  ".  These two wrappers ensure that the": ". Deze twee wikkels zorgen ervoor dat de",
+  "reconnects and can send and receive data for specific database writes.": "maakt opnieuw verbinding en kan gegevens verzenden en ontvangen voor specifieke databaseschrijfbewerkingen.",
+  "If for any reason the Secondary servers have read issues with": "Als om welke reden dan ook de secundaire servers leesproblemen hebben met",
+  "(e.g. the mount failed or the": "(bijvoorbeeld de mount is mislukt of de",
+  "file for the given alias cannot be found) – then it will fallback to use the": "bestand voor de gegeven alias kan niet worden gevonden) – dan zal het terugvallen op het gebruik van de",
+  "connection for reads.": "aansluiting voor lezen."
 }

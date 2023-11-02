@@ -5383,5 +5383,16 @@
   "My Emails": "อีเมลของฉัน",
   "My Logs": "บันทึกของฉัน",
   "My Profile": "ประวัติของฉัน",
-  "My Billing": "การเรียกเก็บเงินของฉัน"
+  "My Billing": "การเรียกเก็บเงินของฉัน",
+  "Primary servers use an instance of": "เซิร์ฟเวอร์หลักใช้อินสแตนซ์ของ",
+  "Secondary servers use an instance of": "เซิร์ฟเวอร์รองใช้อินสแตนซ์ของ",
+  "client that is wrapped with": "ลูกค้าที่ห่อด้วย",
+  "websocket-as-promised": "websocket ตามที่สัญญาไว้",
+  "reconnecting-websocket": "เชื่อมต่อใหม่-websocket",
+  ".  These two wrappers ensure that the": ". กระดาษห่อทั้งสองนี้ช่วยให้มั่นใจได้ว่า",
+  "reconnects and can send and receive data for specific database writes.": "เชื่อมต่อใหม่และสามารถส่งและรับข้อมูลสำหรับการเขียนฐานข้อมูลเฉพาะได้",
+  "If for any reason the Secondary servers have read issues with": "หากเซิร์ฟเวอร์รองอ่านปัญหาไม่ว่าด้วยเหตุผลใดก็ตาม",
+  "(e.g. the mount failed or the": "(เช่น การเมานต์ล้มเหลว หรือ",
+  "file for the given alias cannot be found) – then it will fallback to use the": "ไม่พบไฟล์สำหรับนามแฝงที่ระบุ) จากนั้นระบบจะเลือกใช้ไฟล์",
+  "connection for reads.": "การเชื่อมต่อสำหรับการอ่าน"
 }

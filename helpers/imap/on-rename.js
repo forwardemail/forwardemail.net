@@ -24,14 +24,11 @@ async function onRename(path, newPath, session, fn) {
   try {
     const { alias, db } = await this.refreshSession(session, 'RENAME');
 
-    const [mailbox, targetMailbox] = await Promise.all([
-      Mailboxes.findOne(db, {
-        path
-      }),
-      Mailboxes.findOne(db, {
-        path: newPath
-      })
-    ]);
+    // TODO: parallel
+
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+      path
+    });
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -43,6 +40,10 @@ async function onRename(path, newPath, session, fn) {
         imapResponse: 'CANNOT'
       });
 
+    const targetMailbox = await Mailboxes.findOne(db, this.wsp, session, {
+      path: newPath
+    });
+
     if (targetMailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', 'en'), {
         imapResponse: 'ALREADYEXISTS'
@@ -50,6 +51,8 @@ async function onRename(path, newPath, session, fn) {
 
     const renamedMailbox = await Mailboxes.findOneAndUpdate(
       db,
+      this.wsp,
+      session,
       {
         _id: mailbox._id
       },
@@ -70,7 +73,7 @@ async function onRename(path, newPath, session, fn) {
       });
 
     try {
-      await this.server.notifier.addEntries(db, mailbox, {
+      await this.server.notifier.addEntries(db, this.wsp, session, mailbox, {
         command: 'RENAME',
         mailbox: mailbox._id,
         path: renamedMailbox.path

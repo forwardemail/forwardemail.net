@@ -5383,5 +5383,16 @@
   "My Emails": "Benim e-postalarım",
   "My Logs": "Günlüklerim",
   "My Profile": "Benim profilim",
-  "My Billing": "Faturalarım"
+  "My Billing": "Faturalarım",
+  "Primary servers use an instance of": "Birincil sunucular şunun bir örneğini kullanır:",
+  "Secondary servers use an instance of": "İkincil sunucular aşağıdakilerin bir örneğini kullanır:",
+  "client that is wrapped with": "ile sarılmış müşteri",
+  "websocket-as-promised": "söz verildiği gibi websocket",
+  "reconnecting-websocket": "yeniden bağlanma-websocket",
+  ".  These two wrappers ensure that the": ". Bu iki sarmalayıcı,",
+  "reconnects and can send and receive data for specific database writes.": "yeniden bağlanır ve belirli veritabanı yazma işlemleri için veri gönderip alabilir.",
+  "If for any reason the Secondary servers have read issues with": "Herhangi bir nedenle İkincil sunucularda okuma sorunları varsa",
+  "(e.g. the mount failed or the": "(örneğin, montaj başarısız oldu veya",
+  "file for the given alias cannot be found) – then it will fallback to use the": "verilen takma ad için dosya bulunamıyor) - bu durumda,",
+  "connection for reads.": "okumalar için bağlantı."
 }

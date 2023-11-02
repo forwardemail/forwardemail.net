@@ -254,13 +254,13 @@ async function onAuth(auth, session, fn) {
     //
     if (this.server instanceof IMAPServer) {
       // connect to the database
-      const db = await getDatabase(this.server, alias, {
+      const db = await getDatabase(this, alias, {
         ...session,
         user
       });
 
       try {
-        const paths = await Mailboxes.distinct(db, 'path', {
+        const paths = await Mailboxes.distinct(db, this.wsp, session, 'path', {
           alias: alias._id
         });
         const required = [];

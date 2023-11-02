@@ -5383,5 +5383,16 @@
   "My Emails": "Мої електронні листи",
   "My Logs": "Мої журнали",
   "My Profile": "Мій профіль",
-  "My Billing": "Мій Білінг"
+  "My Billing": "Мій Білінг",
+  "Primary servers use an instance of": "Основні сервери використовують екземпляр",
+  "Secondary servers use an instance of": "Вторинні сервери використовують екземпляр",
+  "client that is wrapped with": "клієнт, який загорнутий у",
+  "websocket-as-promised": "websocket-as-promised",
+  "reconnecting-websocket": "reconnecting-websocket",
+  ".  These two wrappers ensure that the": ". Ці дві обгортки гарантують, що",
+  "reconnects and can send and receive data for specific database writes.": "повторно підключається та може надсилати та отримувати дані для певних записів бази даних.",
+  "If for any reason the Secondary servers have read issues with": "Якщо з будь-якої причини вторинні сервери мають проблеми з читанням",
+  "(e.g. the mount failed or the": "(наприклад, не вдалося встановити кріплення або",
+  "file for the given alias cannot be found) – then it will fallback to use the": "файл для вказаного псевдоніма не знайдено) – тоді буде використано резервний файл",
+  "connection for reads.": "підключення для читання."
 }

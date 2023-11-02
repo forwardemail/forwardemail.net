@@ -63,6 +63,9 @@ const refreshSession = require('./refresh-session');
 const getDatabase = require('./get-database');
 const mongooseToSqlite = require('./mongoose-to-sqlite');
 const AttachmentStorage = require('./attachment-storage');
+const createWebSocketAsPromised = require('./create-websocket-as-promised');
+const parseError = require('./parse-error');
+const getPathToDatabase = require('./get-path-to-database');
 
 module.exports = {
   decrypt,
@@ -125,5 +128,8 @@ module.exports = {
   refreshSession,
   getDatabase,
   mongooseToSqlite,
-  AttachmentStorage
+  AttachmentStorage,
+  createWebSocketAsPromised,
+  parseError,
+  getPathToDatabase
 };

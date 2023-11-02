@@ -19,9 +19,10 @@ const { convert } = require('html-to-text');
 
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
+const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
-const Mailboxes = require('#models/mailboxes');
+const config = require('#config');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
@@ -48,14 +49,14 @@ async function onAppend(path, flags, date, raw, session, fn) {
     db = refreshResults.db;
 
     // check if over quota
-    const overQuota = await Aliases.isOverQuota(alias);
-    if (overQuota)
+    const quota = await Aliases.isOverQuota(this.wsp, session, 0, true);
+    if (quota.isOverQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
       });
 
     // <https://github.com/nodemailer/wildduck/blob/b9349f6e8315873668d605e6567ced2d7b1c0c80/lib/handlers/on-append.js#L65>
-    let mailbox = await Mailboxes.findOne(db, {
+    let mailbox = await Mailboxes.findOne(db, this.wsp, session, {
       path
     });
 
@@ -95,8 +96,17 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // store reference for cleanup
     mimeTreeData = mimeTree;
 
+    //
+    // NOTE: this re-uses the existing quota from above to prevent additional fs.statSync calls
+    //
     // check if message would be over quota
-    const exceedsQuota = await Aliases.isOverQuota(alias, size);
+    //
+    // Old approach
+    // const exceedsQuota = await Aliases.isOverQuota(this.wsp, session, size);
+    //
+    // New approach:
+    //
+    const exceedsQuota = quota.storageUsed + size > config.maxQuotaPerAlias;
     if (exceedsQuota)
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA', 'en'),
@@ -108,7 +118,13 @@ async function onAppend(path, flags, date, raw, session, fn) {
     maildata = this.indexer.getMaildata(mimeTree);
 
     // store node bodies
-    hasNodeBodies = await this.indexer.storeNodeBodies(db, maildata, mimeTree);
+    hasNodeBodies = await this.indexer.storeNodeBodies(
+      db,
+      this.wsp,
+      session,
+      maildata,
+      mimeTree
+    );
 
     // TODO: we should instead tokenize this with spamscanner
     // if (maildata.text) {
@@ -203,6 +219,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // get new uid and modsec and return original values
     mailbox = await Mailboxes.findByIdAndUpdate(
       db,
+      this.wsp,
+      session,
       mailbox._id,
       {
         $inc: {
@@ -236,7 +254,14 @@ async function onAppend(path, flags, date, raw, session, fn) {
     data.junk = mailbox.specialUse === '\\Junk';
 
     // get thread ID
-    thread = await Threads.getThreadId(db, subject, mimeTree);
+    thread = await Threads.getThreadId(
+      db,
+      this.wsp,
+      session,
+      subject,
+      mimeTree
+    );
+
     data.thread = thread._id;
 
     // virtual helper for locking if we lock in advance
@@ -244,6 +269,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // db virtual helper
     data.db = db;
+    data.wsp = this.wsp;
+    data.session = session;
 
     // store the message
     const message = await Messages.create(data);
@@ -260,7 +287,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     });
 
     try {
-      await this.server.notifier.addEntries(db, mailbox, {
+      await this.server.notifier.addEntries(db, this.wsp, session, mailbox, {
         // TODO: the wildduck code has this which means messages don't show in Sent folder
         // <https://github.com/nodemailer/wildduck/issues/537>
         // ignore: session.id,
@@ -306,6 +333,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
         try {
           await this.attachmentStorage.deleteMany(
             db,
+            this.wsp,
+            session,
             attachmentIds,
             maildata.magic
           );

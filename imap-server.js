@@ -36,6 +36,9 @@ const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
 
+// TODO: bind `db.wsp` to the WSP instance (and then remove the extra param wsp everywhere)
+//       (note that we will need to rewrite our conditional checks for `if (db.wsp)` to something else like `if (!db.open)` or something)
+// TODO: addEntries when MX server writes for temporary storage (e.g. alert existing IMAP connections)
 // TODO: search filters like has:attachment
 //
 // TODO: mention in post about using
@@ -85,11 +88,17 @@ const refreshSession = require('#helpers/refresh-session');
 // TODO: other items
 // - [ ] axe should parse out streams
 
-async function storeNodeBodies(db, maildata, mimeTree) {
+// eslint-disable-next-line max-params
+async function storeNodeBodies(db, wsp, session, maildata, mimeTree) {
   mimeTree.attachmentMap = {};
   for (const node of maildata.nodes) {
     // eslint-disable-next-line no-await-in-loop
-    const attachment = await this.attachmentStorage.create(db, node);
+    const attachment = await this.attachmentStorage.create(
+      db,
+      wsp,
+      session,
+      node
+    );
     mimeTree.attachmentMap[node.attachmentId] = attachment.hash;
     const attachmentInfo =
       maildata.attachments &&
@@ -104,6 +113,8 @@ class IMAP {
   constructor(options = {}, secure = env.IMAP_PORT === 2993) {
     this.client = options.client;
     this.subscriber = options.subscriber;
+    this.wsp = options.wsp;
+
     this.resolver = createTangerine(this.client, logger);
 
     //
@@ -168,21 +179,6 @@ class IMAP {
 
     server.loggelf = (...args) => this.logger.debug(...args);
 
-    server.lock = new Lock({
-      redis: this.client,
-      namespace: 'imap_lock'
-    });
-
-    //
-    // in test/development listen for locking and releasing
-    // <https://github.com/nodemailer/ioredfour/blob/0bc1035c34c548b2d3058352c588dc20422cfb96/lib/ioredfour.js#L48-L49>
-    //
-    if (config.env !== 'production') {
-      server.lock._redisSubscriber.on('message', (channel, message) => {
-        logger.debug('lock message received', { channel, message });
-      });
-    }
-
     server.onAuth = onAuth.bind(this);
     server.onAppend = imap.onAppend.bind(this);
     server.onCopy = imap.onCopy.bind(this);
@@ -210,6 +206,22 @@ class IMAP {
     server.on('error', (err) => {
       logger.error(err);
     });
+
+    // lock for read/writes
+    this.lock = new Lock({
+      redis: this.client,
+      namespace: 'imap_lock'
+    });
+
+    //
+    // in test/development listen for locking and releasing
+    // <https://github.com/nodemailer/ioredfour/blob/0bc1035c34c548b2d3058352c588dc20422cfb96/lib/ioredfour.js#L48-L49>
+    //
+    if (config.env === 'development') {
+      this.lock._redisSubscriber.on('message', (channel, message) => {
+        logger.debug('lock message received', { channel, message });
+      });
+    }
 
     //
     // NOTE: it is using a lock under `wildduck` prefix
@@ -250,7 +262,7 @@ class IMAP {
   }
 
   async close() {
-    await pify(this.server.close).bind(this.server);
+    await pify(this.server.close).bind(this.server)();
   }
 }
 

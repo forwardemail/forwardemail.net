@@ -31,7 +31,8 @@ function getBounceInfo(err) {
   // }
 
   // set bounce info on the error object (useful for debugging)
-  const response = err.response || err.message;
+  const response =
+    typeof err.response === 'string' ? err.response : err.message;
   const bounceInfo = zoneMTABounces.check(response);
   if (typeof bounceInfo.category !== 'string') bounceInfo.category = 'other';
   if (bounceInfo.category === 'blacklist') bounceInfo.category = 'blocklist';

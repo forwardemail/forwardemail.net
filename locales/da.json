@@ -5119,5 +5119,16 @@
   "My Emails": "Mine e-mails",
   "My Logs": "Mine logs",
   "My Profile": "Min profil",
-  "My Billing": "Min fakturering"
+  "My Billing": "Min fakturering",
+  "Primary servers use an instance of": "Primære servere bruger en instans af",
+  "Secondary servers use an instance of": "Sekundære servere bruger en instans af",
+  "client that is wrapped with": "klient, der er pakket med",
+  "websocket-as-promised": "websocket-som-lovet",
+  "reconnecting-websocket": "gentilslutning-websocket",
+  ".  These two wrappers ensure that the": ". Disse to indpakninger sikrer, at",
+  "reconnects and can send and receive data for specific database writes.": "genopretter forbindelse og kan sende og modtage data til specifikke databaseskrivninger.",
+  "If for any reason the Secondary servers have read issues with": "Hvis de sekundære servere af en eller anden grund har læst problemer med",
+  "(e.g. the mount failed or the": "(f.eks. fejlede monteringen eller",
+  "file for the given alias cannot be found) – then it will fallback to use the": "fil for det givne alias kan ikke findes) – så vil den gå tilbage til at bruge",
+  "connection for reads.": "forbindelse til aflæsninger."
 }

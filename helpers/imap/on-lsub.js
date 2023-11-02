@@ -22,8 +22,7 @@ async function onLsub(query, session, fn) {
   try {
     const { db } = await this.refreshSession(session, 'LSUB');
 
-    // eslint-disable-next-line unicorn/no-array-method-this-argument
-    const mailboxes = await Mailboxes.find(db, {
+    const mailboxes = await Mailboxes.find(db, this.wsp, session, {
       subscribed: true
     });
 

@@ -147,8 +147,10 @@ To accomplish writes with write-ahead-logging ("WAL") enabled (which drastically
 
 We accomplish two-way communication with [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):
 
-* Primary servers use [ws](https://github.com/websockets/ws) as the `WebSocket` server.
-* Secondary servers use [undici WebSocket](https://undici.nodejs.org/#/docs/api/WebSocket) as the `WebSocket` client.
+* Primary servers use an instance of [ws](https://github.com/websockets/ws)'s `WebSocketServer` server.
+* Secondary servers use an instance of [ws](https://github.com/websockets/ws)'s `WebSocket` client that is wrapped with [websocket-as-promised](https://github.com/vitalets/websocket-as-promised) and [reconnecting-websocket](https://github.com/pladaria/reconnecting-websocket).  These two wrappers ensure that the `WebSocket` reconnects and can send and receive data for specific database writes.
+
+If for any reason the Secondary servers have read issues with `rclone` (e.g. the mount failed or the `*.sqlite` file for the given alias cannot be found) – then it will fallback to use the `WebSocket` connection for reads.
 
 For backups, we simply run the SQLite `backup` command periodically, which leverages your encrypted password from an in-memory IMAP connection.
 

@@ -36,18 +36,10 @@ const MAX_BULK_WRITE_SIZE = 150;
 
 const builder = new Builder();
 
-// eslint-disable-next-line complexity
-async function getMessages(db, opts = {}) {
-  const {
-    server,
-    session,
-    options,
-    projection,
-    query,
-    mailbox,
-    alias,
-    attachmentStorage
-  } = opts;
+// eslint-disable-next-line complexity, max-params
+async function getMessages(db, wsp, session, server, opts = {}) {
+  const { options, projection, query, mailbox, alias, attachmentStorage } =
+    opts;
 
   server.logger.debug('getting messages', opts);
 
@@ -145,10 +137,24 @@ async function getMessages(db, opts = {}) {
   // TODO: we may want to use `.all()` instead of `.all()`
   // with the `batchSize` value at a time (for better performance)
   //
-  const stmt = db.prepare(sql.query);
+  let messages;
 
-  // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
-  for (const result of stmt.iterate(sql.values)) {
+  if (db.wsp) {
+    messages = await wsp.request({
+      action: 'stmt',
+      session: { user: session.user },
+      stmt: [
+        ['prepare', sql.query],
+        ['all', sql.values]
+      ]
+    });
+  } else {
+    // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
+    // messages = db.prepare(sql.query).iterate(sql.values);
+    messages = db.prepare(sql.query).all(sql.values);
+  }
+
+  for (const result of messages) {
     // eslint-disable-next-line no-await-in-loop
     const message = await convertResult(Messages, result, projection);
 
@@ -182,9 +188,7 @@ async function getMessages(db, opts = {}) {
       // may have more pages, try to fetch more
       if (count === MAX_PAGE_SIZE) {
         // eslint-disable-next-line no-await-in-loop
-        const results = await getMessages(db, {
-          server: this.server,
-          session,
+        const results = await getMessages(db, wsp, session, server, {
           options,
           projection,
           query,
@@ -329,7 +333,7 @@ async function getMessages(db, opts = {}) {
     if (bulkWrite.length >= MAX_BULK_WRITE_SIZE) {
       try {
         // eslint-disable-next-line no-await-in-loop
-        await Messages.bulkWrite(db, bulkWrite, {
+        await Messages.bulkWrite(db, wsp, session, bulkWrite, {
           ordered: false,
           w: 1
         });
@@ -337,7 +341,13 @@ async function getMessages(db, opts = {}) {
         if (entries.length >= MAX_BULK_WRITE_SIZE) {
           try {
             // eslint-disable-next-line no-await-in-loop
-            await server.notifier.addEntries(db, mailbox, entries);
+            await server.notifier.addEntries(
+              db,
+              wsp,
+              session,
+              mailbox,
+              entries
+            );
             entries = [];
             server.notifier.fire(alias.id);
           } catch (err) {
@@ -371,7 +381,7 @@ async function onFetch(mailboxId, options, session, fn) {
   try {
     const { alias, db } = await this.refreshSession(session, 'FETCH');
 
-    const mailbox = await Mailboxes.findOne(db, {
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
       _id: mailboxId
     });
 
@@ -402,9 +412,7 @@ async function onFetch(mailboxId, options, session, fn) {
         $gt: options.changedSince
       };
 
-    const results = await getMessages(db, {
-      server: this.server,
-      session,
+    const results = await getMessages(db, this.wsp, session, this.server, {
       options,
       projection,
       query,
@@ -421,7 +429,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
     // mark messages as Seen
     if (results.bulkWrite.length > 0)
-      await Messages.bulkWrite(db, results.bulkWrite, {
+      await Messages.bulkWrite(db, this.wsp, session, results.bulkWrite, {
         ordered: false,
         w: 1
       });
@@ -431,7 +439,13 @@ async function onFetch(mailboxId, options, session, fn) {
 
     if (results.entries.length > 0) {
       try {
-        await this.server.notifier.addEntries(db, mailbox, results.entries);
+        await this.server.notifier.addEntries(
+          db,
+          this.wsp,
+          session,
+          mailbox,
+          results.entries
+        );
         this.server.notifier.fire(alias.id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, options, session });

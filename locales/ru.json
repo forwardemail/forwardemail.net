@@ -5383,5 +5383,16 @@
   "My Emails": "Мои электронные письма",
   "My Logs": "Мои журналы",
   "My Profile": "Мой профайл",
-  "My Billing": "Мой счет"
+  "My Billing": "Мой счет",
+  "Primary servers use an instance of": "Первичные серверы используют экземпляр",
+  "Secondary servers use an instance of": "Вторичные серверы используют экземпляр",
+  "client that is wrapped with": "клиент, который обернут",
+  "websocket-as-promised": "веб-сокет, как обещано",
+  "reconnecting-websocket": "повторное подключение-websocket",
+  ".  These two wrappers ensure that the": ". Эти две оболочки гарантируют, что",
+  "reconnects and can send and receive data for specific database writes.": "повторно подключается и может отправлять и получать данные для определенных операций записи в базу данных.",
+  "If for any reason the Secondary servers have read issues with": "Если по какой-либо причине на вторичных серверах возникли проблемы с чтением",
+  "(e.g. the mount failed or the": "(например, монтирование не удалось или",
+  "file for the given alias cannot be found) – then it will fallback to use the": "файл для данного псевдонима не может быть найден) – тогда он вернется к использованию",
+  "connection for reads.": "соединение для чтения."
 }

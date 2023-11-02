@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const os = require('node:os');
+const fs = require('node:fs');
 const path = require('node:path');
 
 // <https://github.com/knex/knex-schema-inspector/pull/146>
@@ -22,6 +22,8 @@ const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const combineErrors = require('#helpers/combine-errors');
 const config = require('#config');
+const env = require('#config/env');
+const getPathToDatabase = require('#helpers/get-path-to-database');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const { decrypt } = require('#helpers/encrypt-decrypt');
@@ -51,7 +53,6 @@ import('sqlite-regex').then((obj) => {
 //       <https://litestream.io/tips/#deleting-sqlite-databases>
 
 // TODO: test UTF-8 vs other encoding (e.g. Japanese etc) for accuracy across WebSockets
-// TODO: set pragma query_only=true for read-only connections
 
 // TODO: use worker threads to spawn custom env
 
@@ -83,7 +84,6 @@ function hasFTS5Already(db, table) {
 async function setupPragma(db, session) {
   // safeguards
   if (!db.open) throw new TypeError('Database is not open');
-  if (db.readonly) throw new TypeError('Readonly database');
   if (db.memory) throw new TypeError('Memory database');
   db.pragma(`cipher='aes256cbc'`);
   db.pragma(`key='${decrypt(session.user.password)}'`);
@@ -111,6 +111,8 @@ async function setupPragma(db, session) {
 
   // <https://www.sqlite.org/pragma.html#pragma_encoding>
   db.pragma(`encoding='UTF-8'`);
+
+  if (db.readonly) db.pragma('query_only=true');
 
   // load regex extension for REGEX support
   if (!sqliteRegex) await pWaitFor(() => Boolean(sqliteRegex));
@@ -235,13 +237,47 @@ function touchFile(s3, fileName) {
 }
 */
 
-// eslint-disable-next-line complexity
-async function getDatabase(server, alias, session) {
+// eslint-disable-next-line complexity, max-params
+async function getDatabase(
+  instance,
+  alias,
+  session,
+  existingLock,
+  newlyCreated = false
+) {
+  async function acquireLock() {
+    const lock = await instance.lock.waitAcquireLock(
+      `${alias.id}`,
+      ms('5m'),
+      ms('1m')
+    );
+    if (!lock.success)
+      throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
+    return lock;
+  }
+
+  async function releaseLock(lock) {
+    const result = await instance.lock.releaseLock(lock);
+    if (!result.success)
+      throw new IMAPError(i18n.translate('IMAP_RELEASE_LOCK_FAILED'));
+    return result;
+  }
+
+  // instance must be either IMAP or SQLite
+  if (!['IMAP', 'SQLite'].includes(instance?.constructor?.name))
+    throw new TypeError('Instance must be either SQLite or IMAP');
+
   // safeguard
   if (!isSANB(alias?.id)) throw new TypeError('Alias ID missing');
 
   // safeguard
   if (!isSANB(session?.user?.password)) throw new TypeError('Password missing');
+
+  // if true then `?mode=ro` will get appended below
+  // <https://www.sqlite.org/c3ref/open.html>
+  // <https://github.com/knex/knex/issues/1287>
+  let readonly = true;
+  if (instance?.constructor?.name === 'SQLite') readonly = false;
 
   //
   // we will substitute global with the unique bucket configuration hash
@@ -250,11 +286,89 @@ async function getDatabase(server, alias, session) {
   // TODO: instead of `global` it should be the default global bucket for the alias
   //       (e.g. `alias.bucket = 'production-xyz')
   //
-  const dbFileName = `${alias.id}.sqlite`;
-  const dbFilePath = path.join(os.tmpdir(), dbFileName);
   // const readmeFilePath = path.join(dir, readmeFileName);
-  console.log('dbFileName', dbFileName);
-  console.log('dbFilePath', dbFilePath);
+  const dbFilePath = getPathToDatabase(alias.id);
+
+  //
+  // NOTE: if readonly and database doesn't exist it will throw an error
+  //       so we need to signal to the websocket server to create it
+  //
+  if (readonly) {
+    let exists = false;
+    if (env.SQLITE_RCLONE_ENABLED) {
+      try {
+        const stats = await fs.promises.stat(dbFilePath);
+        if (stats.isFile()) exists = true;
+      } catch (err) {
+        err.isCodeBug = true; // hide error from end users
+        if (err.code !== 'ENOENT') throw err;
+      }
+    }
+
+    if (!exists) {
+      if (instance?.constructor?.name !== 'IMAP')
+        throw new TypeError('IMAP server instance required');
+
+      if (instance?.wsp?.constructor?.name !== 'WebSocketAsPromised')
+        throw new TypeError('WebSocketAsPromised instance required');
+
+      //
+      // if we already recursively called this function from
+      // a successful webhook response, then that must mean something
+      // is wrong with the local file system or rclone mount
+      //
+      if (newlyCreated) {
+        if (env.SQLITE_RCLONE_ENABLED) {
+          const err = new TypeError(
+            'Newly created and still having readonly issues'
+          );
+          err.alias = alias;
+          err.session = session;
+          err.dbFilePath = dbFilePath;
+          logger.fatal(err, { alias, session });
+        }
+
+        //
+        // return a dummy object with `wsp: true`
+        // which signals us to use the websocket connection
+        // in a fallback attempt in case the rclone mount failed
+        //
+        return {
+          open: true,
+          inTransaction: false,
+          readonly: true,
+          memory: false,
+          acquireLock,
+          releaseLock,
+          wsp: true,
+          close() {} // noop
+        };
+      }
+
+      // note that this will throw an error if it parses one
+      await instance.wsp.request({
+        action: 'setup',
+        lock: existingLock,
+        session: { user: session.user }
+      });
+
+      // if rclone was not enabled then return early
+      if (!env.SQLITE_RCLONE_ENABLED)
+        return {
+          open: true,
+          inTransaction: false,
+          readonly: true,
+          memory: false,
+          acquireLock,
+          releaseLock,
+          wsp: true,
+          close() {} // noop
+        };
+
+      // call this function again if it was successful
+      return getDatabase(instance, alias, session, existingLock, true);
+    }
+  }
 
   //
   // check if the file exists at the given path
@@ -447,42 +561,30 @@ async function getDatabase(server, alias, session) {
 
   try {
     const db = new Database(dbFilePath, {
-      // TODO: this should be set to true for everything BUT the websocket server
-      // readonly: true
+      readonly,
+      fileMustExist: readonly,
       timeout: config.busyTimeout,
       // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-      verbose: config.env === 'production' ? null : console.log
+      verbose: config.env === 'development' ? console.log : null
     });
 
     await setupPragma(db, session);
 
-    db.acquireLock = async function () {
-      const lock = await server.lock.waitAcquireLock(
-        `${alias.id}`,
-        ms('5m'),
-        ms('1m')
-      );
-      if (!lock.success)
-        throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
-      return lock;
-    };
+    db.acquireLock = acquireLock;
+    db.releaseLock = releaseLock;
 
-    db.releaseLock = async function (lock) {
-      const result = await server.lock.releaseLock(lock);
-      if (!result.success)
-        throw new IMAPError(i18n.translate('IMAP_RELEASE_LOCK_FAILED'));
-      return result;
-    };
-
+    // TODO: need to rewrite this
     // set session db helper (used in `refineAndLogError` to close connection)
     session.db = db;
+
+    // if it is readonly then return early
+    if (readonly) return db;
 
     // indices store for index list (which we use for conditionally adding indices)
     const indexList = {};
 
     // attempt to use knex
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/69>
-    console.time('initiate knex');
 
     //
     // this is too verbose so we're just giving it noops for now
@@ -496,14 +598,8 @@ async function getDatabase(server, alias, session) {
     };
     /*
     const log =
-      config.env === 'production'
+      config.env === 'development'
         ? {
-            warn() {},
-            error() {},
-            deprecate() {},
-            debug() {}
-          }
-        : {
             warn(...args) {
               console.warn('knex', ...args);
             },
@@ -516,6 +612,12 @@ async function getDatabase(server, alias, session) {
             debug(...args) {
               console.debug('knex', ...args);
             }
+          }
+        : {
+            warn() {},
+            error() {},
+            deprecate() {},
+            debug() {}
           };
     */
 
@@ -527,7 +629,7 @@ async function getDatabase(server, alias, session) {
           nativeBinding
         }
       },
-      debug: true,
+      debug: config.env === 'development',
       acquireConnectionTimeout: ms('15s'),
       log,
       useNullAsDefault: true,
@@ -561,7 +663,7 @@ async function getDatabase(server, alias, session) {
               indexList[table] = db.pragma(`index_list(${table})`);
               // TODO: drop other indices that aren't necessary (?)
             } catch (err) {
-              logger.error(err);
+              logger.error(err, { alias, session });
             }
           }
 
@@ -569,9 +671,7 @@ async function getDatabase(server, alias, session) {
         }
       }
     });
-    console.timeEnd('initiate knex');
 
-    console.time('inspector');
     const inspector = new SchemaInspector(knexDatabase);
 
     // ensure that all tables exist
@@ -697,13 +797,11 @@ async function getDatabase(server, alias, session) {
       }
     }
 
-    console.timeEnd('inspector');
-
     // we simply log a code bug for any migration errors (e.g. conflict on null/default values)
     if (errors.length > 0) {
       const err = combineErrors(errors);
       err.isCodeBug = true; // will email admins and text them
-      await logger.fatal(err);
+      await logger.fatal(err, { alias, session });
     }
 
     //
@@ -713,21 +811,25 @@ async function getDatabase(server, alias, session) {
     await knexDatabase.destroy();
 
     if (commands.length > 0) {
-      lock = await db.acquireLock();
+      if (!existingLock || existingLock?.success !== true)
+        lock = await db.acquireLock();
 
       for (const command of commands) {
         try {
+          // TODO: wsp here (?)
           db.prepare(command).run();
           // await knexDatabase.raw(command);
         } catch (err) {
-          console.error('db.prepare command', command, 'error', err);
+          err.isCodeBug = true;
+          // eslint-disable-next-line no-await-in-loop
+          await logger.fatal(err, { command, alias, session });
         }
       }
     }
 
     // release lock
     try {
-      await db.releaseLock(lock);
+      if (lock) await db.releaseLock(lock);
     } catch (err) {
       this.logger.fatal(err, { alias, session });
     }
@@ -738,7 +840,7 @@ async function getDatabase(server, alias, session) {
     // release lock
     if (lock) {
       try {
-        await server.lock.releaseLock(lock);
+        await instance.lock.releaseLock(lock);
       } catch (err) {
         logger.fatal(err, { alias, session });
       }

@@ -5383,5 +5383,16 @@
   "My Emails": "המיילים שלי",
   "My Logs": "היומנים שלי",
   "My Profile": "הפרופיל שלי",
-  "My Billing": "החיוב שלי"
+  "My Billing": "החיוב שלי",
+  "Primary servers use an instance of": "שרתים ראשיים משתמשים במופע של",
+  "Secondary servers use an instance of": "שרתים משניים משתמשים במופע של",
+  "client that is wrapped with": "לקוח שעטוף בו",
+  "websocket-as-promised": "websocket-כמו-מובטח",
+  "reconnecting-websocket": "reconnecting-websocket",
+  ".  These two wrappers ensure that the": ". שתי העטיפות הללו מבטיחות שה",
+  "reconnects and can send and receive data for specific database writes.": "מתחבר מחדש ויכול לשלוח ולקבל נתונים עבור כתיבת מסד נתונים ספציפיים.",
+  "If for any reason the Secondary servers have read issues with": "אם מסיבה כלשהי לשרתים המשניים יש בעיות בקריאה עם",
+  "(e.g. the mount failed or the": "(למשל, ההר נכשל או ה",
+  "file for the given alias cannot be found) – then it will fallback to use the": "לא ניתן למצוא את הקובץ עבור הכינוי הנתון) - אז הוא יחזור להשתמש ב-",
+  "connection for reads.": "חיבור לקריאה."
 }

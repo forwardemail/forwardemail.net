@@ -5383,5 +5383,16 @@
   "My Emails": "Moje e-maily",
   "My Logs": "Moje protokoly",
   "My Profile": "Můj profil",
-  "My Billing": "Moje fakturace"
+  "My Billing": "Moje fakturace",
+  "Primary servers use an instance of": "Primární servery používají instanci",
+  "Secondary servers use an instance of": "Sekundární servery používají instanci",
+  "client that is wrapped with": "klient, který je zabalen s",
+  "websocket-as-promised": "websocket-jak-slíbil",
+  "reconnecting-websocket": "reconnecting-websocket",
+  ".  These two wrappers ensure that the": ". Tyto dva obaly zajišťují, že",
+  "reconnects and can send and receive data for specific database writes.": "znovu připojí a může odesílat a přijímat data pro konkrétní zápisy do databáze.",
+  "If for any reason the Secondary servers have read issues with": "Pokud z nějakého důvodu sekundární servery mají problémy se čtením s",
+  "(e.g. the mount failed or the": "(např. montáž selhala nebo",
+  "file for the given alias cannot be found) – then it will fallback to use the": "soubor pro daný alias nelze nalézt) – pak se vrátí zpět k použití",
+  "connection for reads.": "připojení pro čtení."
 }

@@ -5383,5 +5383,16 @@
   "My Emails": "Email saya",
   "My Logs": "Log saya",
   "My Profile": "Profil saya",
-  "My Billing": "Penagihan saya"
+  "My Billing": "Penagihan saya",
+  "Primary servers use an instance of": "Server utama menggunakan contoh",
+  "Secondary servers use an instance of": "Server sekunder menggunakan contoh",
+  "client that is wrapped with": "klien yang dibungkus dengan",
+  "websocket-as-promised": "websocket-seperti yang dijanjikan",
+  "reconnecting-websocket": "menghubungkan kembali-websocket",
+  ".  These two wrappers ensure that the": ". Kedua pembungkus ini memastikan bahwa",
+  "reconnects and can send and receive data for specific database writes.": "menyambungkan kembali dan dapat mengirim dan menerima data untuk penulisan database tertentu.",
+  "If for any reason the Secondary servers have read issues with": "Jika karena alasan apa pun server Sekunder mengalami masalah pembacaan",
+  "(e.g. the mount failed or the": "(misalnya pemasangan gagal atau",
+  "file for the given alias cannot be found) – then it will fallback to use the": "file untuk alias yang diberikan tidak dapat ditemukan) – maka ia akan melakukan fallback untuk menggunakan",
+  "connection for reads.": "koneksi untuk membaca."
 }

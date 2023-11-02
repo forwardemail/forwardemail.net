@@ -5228,5 +5228,16 @@
   "My Emails": "Omat sähköpostit",
   "My Logs": "Omat lokit",
   "My Profile": "Profiilini",
-  "My Billing": "Minun laskutukseni"
+  "My Billing": "Minun laskutukseni",
+  "Primary servers use an instance of": "Ensisijaiset palvelimet käyttävät esiintymää",
+  "Secondary servers use an instance of": "Toissijaiset palvelimet käyttävät esiintymää",
+  "client that is wrapped with": "asiakas, joka on kääritty",
+  "websocket-as-promised": "websocket - kuten luvattiin",
+  "reconnecting-websocket": "uudelleenkytkentä-websocket",
+  ".  These two wrappers ensure that the": ". Nämä kaksi käärettä varmistavat, että",
+  "reconnects and can send and receive data for specific database writes.": "muodostaa yhteyden uudelleen ja voi lähettää ja vastaanottaa tietoja tiettyjä tietokantakirjoituksia varten.",
+  "If for any reason the Secondary servers have read issues with": "Jos toissijaisilla palvelimilla on jostain syystä lukuongelmia",
+  "(e.g. the mount failed or the": "(esim. kiinnitys epäonnistui tai",
+  "file for the given alias cannot be found) – then it will fallback to use the": "tiedostoa annetulle aliakselle ei löydy) – silloin se palaa käyttämään",
+  "connection for reads.": "liitäntä lukemista varten."
 }

@@ -847,11 +847,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
               // delete all existing tokens for the alias
               // (this way further retries will fail with incorrect password)
-              await Aliases.findByIdAndUpdate(alias._id, {
-                $set: {
-                  tokens: []
-                }
-              });
+              // await Aliases.findByIdAndUpdate(alias._id, {
+              //   $set: {
+              //     tokens: []
+              //   }
+              // });
             }
 
             //

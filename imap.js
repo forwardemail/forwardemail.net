@@ -17,6 +17,8 @@ const mongoose = require('mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 
 const IMAP = require('./imap-server');
+
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -24,13 +26,19 @@ const imapSharedConfig = sharedConfig('IMAP');
 const client = new Redis(imapSharedConfig.redis, logger);
 const subscriber = new Redis(imapSharedConfig.redis, logger);
 
-const imap = new IMAP({ client, subscriber });
+const wsp = createWebSocketAsPromised();
+
+const imap = new IMAP({ client, subscriber, wsp });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [imap.server],
   redisClients: [client, subscriber],
-  logger
+  logger,
+  customHandlers: [
+    // <https://github.com/vitalets/websocket-as-promised#wspclosecode-reason--promiseevent>
+    () => wsp.close()
+  ]
 });
 graceful.listen();
 

@@ -37,16 +37,22 @@ async function onMove(mailboxId, update, session, fn) {
   try {
     const { alias, db } = await this.refreshSession(session, 'MOVE');
 
-    const [mailbox, targetMailbox] = await Promise.all([
-      Mailboxes.findOne(db, {
-        _id: mailboxId
-      }),
-      Mailboxes.findOne(db, {
-        path: update.destination
-      })
-    ]);
+    // TODO: parallel
 
-    if (!mailbox || !targetMailbox)
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+      _id: mailboxId
+    });
+
+    if (!mailbox)
+      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
+        imapResponse: 'TRYCREATE'
+      });
+
+    const targetMailbox = await Mailboxes.findOne(db, this.wsp, session, {
+      path: update.destination
+    });
+
+    if (!targetMailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
         imapResponse: 'TRYCREATE'
       });
@@ -61,23 +67,12 @@ async function onMove(mailboxId, update, session, fn) {
     const sourceUid = [];
     const destinationUid = [];
 
-    const sql = builder.build({
-      type: 'select',
-      table: 'Messages',
-      condition: {
-        mailbox: mailbox._id.toString(),
-        uid: tools.checkRangeQuery(update.messages)
-      },
-      // sort required for IMAP UIDPLUS
-      sort: 'uid'
-    });
-
-    const stmt = db.prepare(sql.query);
-
     try {
       // increment modification index to indicate a change occurred
       const updatedMailbox = await Mailboxes.findOneAndUpdate(
         db,
+        this.wsp,
+        session,
         {
           _id: mailbox._id
         },
@@ -108,11 +103,34 @@ async function onMove(mailboxId, update, session, fn) {
 
       const newModseq = updatedMailbox.modifyIndex || 1;
 
-      // turn on unsafe mode to allow us to iterate, select, and update at the same time
-      db.unsafeMode(true);
+      const sql = builder.build({
+        type: 'select',
+        table: 'Messages',
+        condition: {
+          mailbox: mailbox._id.toString(),
+          uid: tools.checkRangeQuery(update.messages)
+        },
+        // sort required for IMAP UIDPLUS
+        sort: 'uid'
+      });
 
-      // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
-      for (const result of stmt.iterate(sql.values)) {
+      let messages;
+
+      if (db.wsp) {
+        messages = await this.wsp.request({
+          action: 'stmt',
+          session: { user: session.user },
+          lock,
+          stmt: [
+            ['prepare', sql.query],
+            ['all', sql.values]
+          ]
+        });
+      } else {
+        messages = db.prepare(sql.query).all(sql.values);
+      }
+
+      for (const result of messages) {
         // eslint-disable-next-line no-await-in-loop
         let message = await convertResult(Messages, result);
 
@@ -145,6 +163,8 @@ async function onMove(mailboxId, update, session, fn) {
         // eslint-disable-next-line no-await-in-loop
         const updatedTargetMailbox = await Mailboxes.findOneAndUpdate(
           db,
+          this.wsp,
+          session,
           {
             _id: targetMailbox._id,
             path: update.destination
@@ -198,6 +218,8 @@ async function onMove(mailboxId, update, session, fn) {
 
         // virtual db helper
         message.db = db;
+        message.wsp = this.wsp;
+        message.session = session;
 
         // create new message (in new target mailbox)
         // eslint-disable-next-line no-await-in-loop
@@ -221,6 +243,8 @@ async function onMove(mailboxId, update, session, fn) {
         // eslint-disable-next-line no-await-in-loop
         const results = await Messages.deleteOne(
           db,
+          this.wsp,
+          session,
           {
             _id: existingMessageId,
             mailbox: existingMailboxId,
@@ -296,9 +320,6 @@ async function onMove(mailboxId, update, session, fn) {
       err = _err;
     }
 
-    // turn off unsafe mode
-    db.unsafeMode(false);
-
     // close the connection
     db.close();
 
@@ -372,7 +393,7 @@ async function onMove(mailboxId, update, session, fn) {
     // release lock
     if (lock?.success) {
       try {
-        await this.server.lock.releaseLock(lock);
+        await this.lock.releaseLock(lock);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }

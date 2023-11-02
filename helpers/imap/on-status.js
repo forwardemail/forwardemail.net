@@ -25,7 +25,7 @@ async function onStatus(path, session, fn) {
   try {
     const { db } = await this.refreshSession(session, 'STATUS');
 
-    const mailbox = await Mailboxes.findOne(db, {
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
       path
     });
 
@@ -34,10 +34,16 @@ async function onStatus(path, session, fn) {
         imapResponse: 'NONEXISTENT'
       });
 
-    const [messages, unseen] = await Promise.all([
-      Messages.countDocuments(db, { mailbox: mailbox._id }),
-      Messages.countDocuments(db, { mailbox: mailbox._id, unseen: true })
-    ]);
+    // TODO: parallel
+
+    const messages = await Messages.countDocuments(db, this.wsp, session, {
+      mailbox: mailbox._id
+    });
+
+    const unseen = await Messages.countDocuments(db, this.wsp, session, {
+      mailbox: mailbox._id,
+      unseen: true
+    });
 
     // close the connection
     db.close();

@@ -28,7 +28,7 @@ async function onOpen(path, session, fn) {
   try {
     const { db } = await this.refreshSession(session, 'OPEN');
 
-    const mailbox = await Mailboxes.findOne(db, {
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
       path
     });
 
@@ -47,7 +47,7 @@ async function onOpen(path, session, fn) {
     // <https://github.com/nodemailer/wildduck/issues/530>
     //
     /*
-    const uidList = await Messages.distinct(db, 'uid', {
+    const uidList = await Messages.distinct(db, this.wsp, session, 'uid', {
       mailbox: mailbox._id
     });
 
@@ -65,7 +65,18 @@ async function onOpen(path, session, fn) {
       sort: 'uid'
     });
 
-    const docs = db.prepare(sql.query).pluck().all(sql.values);
+    let docs;
+
+    if (db.wsp) {
+      docs = await this.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
+      });
+    } else {
+      docs = db.prepare(sql.query).pluck().all(sql.values);
+    }
+
     if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
     // close the connection
     db.close();

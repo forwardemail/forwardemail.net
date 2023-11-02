@@ -23,14 +23,14 @@ async function onGetQuota(path, session, fn) {
   this.logger.debug('GETQUOTA', { path, session });
 
   try {
-    const { alias, db } = await this.refreshSession(session, 'GETQUOTA');
+    const { db } = await this.refreshSession(session, 'GETQUOTA');
 
     // close the connection
     db.close();
 
     if (path !== '') return fn(null, 'NONEXISTENT');
 
-    const storageUsed = await Aliases.getStorageUsed(alias);
+    const storageUsed = await Aliases.getStorageUsed(this.wsp, session);
 
     fn(null, {
       root: '',

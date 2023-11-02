@@ -5383,5 +5383,16 @@
   "My Emails": "Moje e-maile",
   "My Logs": "Moje dzienniki",
   "My Profile": "Mój profil",
-  "My Billing": "Moje rozliczenia"
+  "My Billing": "Moje rozliczenia",
+  "Primary servers use an instance of": "Serwery główne korzystają z instancji",
+  "Secondary servers use an instance of": "Serwery dodatkowe korzystają z instancji",
+  "client that is wrapped with": "klient, który jest opakowany",
+  "websocket-as-promised": "websocket-zgodnie z obietnicą",
+  "reconnecting-websocket": "ponowne łączenie-websocket",
+  ".  These two wrappers ensure that the": ". Te dwie owijki zapewniają, że",
+  "reconnects and can send and receive data for specific database writes.": "ponownie łączy się i może wysyłać i odbierać dane w ramach określonych zapisów w bazie danych.",
+  "If for any reason the Secondary servers have read issues with": "Jeśli z jakiegoś powodu serwery pomocnicze mają problemy z odczytem",
+  "(e.g. the mount failed or the": "(np. montaż nie powiódł się lub",
+  "file for the given alias cannot be found) – then it will fallback to use the": "nie można znaleźć pliku dla danego aliasu) – wówczas nastąpi powrót do użycia pliku",
+  "connection for reads.": "połączenie do odczytu."
 }

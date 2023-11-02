@@ -102,8 +102,7 @@ const config = {
     allowlist: env.RATELIMIT_ALLOWLIST
   },
 
-  // NOTE: during beta the limit is 1 GB per alias/domain/account (allows user to store Drafts/Sent Mail)
-  maxQuotaPerAlias: bytes('1GB'),
+  maxQuotaPerAlias: bytes('10GB'),
 
   // <https://github.com/nodemailer/wildduck/issues/512>
   maxMailboxes: 10000,

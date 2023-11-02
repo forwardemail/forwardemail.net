@@ -22,6 +22,7 @@ const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
+const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
@@ -33,7 +34,7 @@ async function onSearch(mailboxId, options, session, fn) {
   try {
     const { db } = await this.refreshSession(session, 'SEARCH');
 
-    const mailbox = await Mailboxes.findOne(db, {
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
       _id: mailboxId
     });
 
@@ -53,7 +54,7 @@ async function onSearch(mailboxId, options, session, fn) {
     let returned;
 
     // eslint-disable-next-line complexity
-    const walkQuery = (parent, ne, node) => {
+    const walkQuery = async (parent, ne, node) => {
       if (returned) {
         return;
       }
@@ -74,7 +75,8 @@ async function onSearch(mailboxId, options, session, fn) {
           }
 
           case 'not': {
-            walkQuery(parent, !ne, [term.value || []].flat());
+            // eslint-disable-next-line no-await-in-loop
+            await walkQuery(parent, !ne, [term.value || []].flat());
             break;
           }
 
@@ -82,7 +84,8 @@ async function onSearch(mailboxId, options, session, fn) {
             const $or = [];
 
             for (const entry of [term.value || []].flat()) {
-              walkQuery($or, false, [entry || []].flat());
+              // eslint-disable-next-line no-await-in-loop
+              await walkQuery($or, false, [entry || []].flat());
             }
 
             if ($or.length > 0) {
@@ -100,16 +103,42 @@ async function onSearch(mailboxId, options, session, fn) {
             // use FTS5 for full text search in onSearch function
             // <https://kimsereylam.com/sqlite/2020/03/06/full-text-search-with-sqlite.html>
             //
-            const ids = db
-              .prepare(
-                `select _id from Messages_fts where Messages_fts ${
+            let ids;
+
+            //
+            // TODO: note this is currently disabled (see notes in sqlite-server.js regarding fts5)
+            //
+            let sql;
+            if (env.SQLITE_FTS5_ENABLED) {
+              sql = {
+                query: `select _id from Messages_fts where Messages_fts ${
                   ne ? 'NOT MATCH' : 'MATCH'
-                } $p1 ORDER BY rank;`
-              )
-              .pluck()
-              .all({
-                p1: term.value
+                } $p1 ORDER BY rank;`,
+                values: {
+                  p1: term.value
+                }
+              };
+            } else {
+              sql = {
+                query: `select _id from Messages where text ${
+                  ne ? 'NOT LIKE' : 'LIKE'
+                } $p1;`,
+                values: {
+                  p1: `%${term.value}%`
+                }
+              };
+            }
+
+            if (db.wsp) {
+              // eslint-disable-next-line no-await-in-loop
+              ids = await this.wsp.request({
+                action: 'stmt',
+                session: { user: session.user },
+                stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
               });
+            } else {
+              ids = db.prepare(sql.query).pluck().all(sql.values);
+            }
 
             parent.push({
               _id: { $in: ids }
@@ -248,47 +277,103 @@ async function onSearch(mailboxId, options, session, fn) {
               const entry = {};
               if (term.value) {
                 if (ne) {
-                  const ids = db
-                    .prepare(
-                      // `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') != $p2;`
-                      // NOTE: unlike MongoDB we can do a NOT for a RegExp here (see below commented out WildDuck reference)
-                      `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') NOT REGEXP $p2;`
-                    )
-                    .pluck()
-                    .all({
+                  const sql = {
+                    // `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') != $p2;`
+                    // NOTE: unlike MongoDB we can do a NOT for a RegExp here (see below commented out WildDuck reference)
+                    query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') NOT REGEXP $p2;`,
+                    values: {
                       p1: term.header,
                       p2: Buffer.from(term.value, 'binary')
                         .toString()
                         .toLowerCase()
                         .trim()
+                    }
+                  };
+                  let ids;
+                  if (db.wsp) {
+                    // eslint-disable-next-line no-await-in-loop
+                    ids = await this.wsp.request({
+                      action: 'stmt',
+                      session: { user: session.user },
+                      stmt: [
+                        ['prepare', sql.query],
+                        ['pluck'],
+                        ['all', sql.values]
+                      ]
                     });
+                  } else {
+                    ids = db.prepare(sql.query).pluck().all(sql.values);
+                  }
+
                   entry._id = { $in: ids };
                 } else {
-                  const ids = db
-                    .prepare(
-                      // NOTE: for array lookups:
-                      // REGEXP `select _id from Messages, json_each(Messages.headers) where key = $p1 and value REGEXP $p2;`
-                      `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`
-                    )
-                    .pluck()
-                    .all({ p1: term.header, p2: regex });
+                  const sql = {
+                    // NOTE: for array lookups:
+                    // REGEXP `select _id from Messages, json_each(Messages.headers) where key = $p1 and value REGEXP $p2;`
+                    query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`,
+                    values: { p1: term.header, p2: regex }
+                  };
+                  let ids;
+                  if (db.wsp) {
+                    // eslint-disable-next-line no-await-in-loop
+                    ids = await this.wsp.request({
+                      action: 'stmt',
+                      session: { user: session.user },
+                      stmt: [
+                        ['prepare', sql.query],
+                        ['pluck'],
+                        ['all', sql.values]
+                      ]
+                    });
+                  } else {
+                    ids = db.prepare(sql.query).pluck().all(sql.values);
+                  }
+
                   entry._id = { $in: ids };
                 }
               } else if (ne) {
-                const ids = db
-                  .prepare(
-                    `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') != $p1;`
-                  )
-                  .pluck()
-                  .all({ p1: term.header, p2: term.value });
+                const sql = {
+                  query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') != $p1;`,
+                  values: { p1: term.header, p2: term.value }
+                };
+                let ids;
+                if (db.wsp) {
+                  // eslint-disable-next-line no-await-in-loop
+                  ids = await this.wsp.request({
+                    action: 'stmt',
+                    session: { user: session.user },
+                    stmt: [
+                      ['prepare', sql.query],
+                      ['pluck'],
+                      ['all', sql.values]
+                    ]
+                  });
+                } else {
+                  ids = db.prepare(sql.query).pluck().all(sql.values);
+                }
+
                 entry._id = { $in: ids };
               } else {
-                const ids = db
-                  .prepare(
-                    `select _id from Messages, json_each(Messages.headers) where key = $p1;`
-                  )
-                  .pluck()
-                  .all({ p1: term.header });
+                const sql = {
+                  query: `select _id from Messages, json_each(Messages.headers) where key = $p1;`,
+                  values: { p1: term.header }
+                };
+                let ids;
+                if (db.wsp) {
+                  // eslint-disable-next-line no-await-in-loop
+                  ids = await this.wsp.request({
+                    action: 'stmt',
+                    session: { user: session.user },
+                    stmt: [
+                      ['prepare', sql.query],
+                      ['pluck'],
+                      ['all', sql.values]
+                    ]
+                  });
+                } else {
+                  ids = db.prepare(sql.query).pluck().all(sql.values);
+                }
+
                 entry._id = { $in: ids };
               }
 
@@ -537,7 +622,7 @@ async function onSearch(mailboxId, options, session, fn) {
     };
 
     const $and = [];
-    walkQuery($and, false, options.query);
+    await walkQuery($and, false, options.query);
 
     if (returned) return;
 
@@ -546,9 +631,6 @@ async function onSearch(mailboxId, options, session, fn) {
     // converts objectids -> strings and arrays/json appropriately
     const condition = JSON.parse(safeStringify(query));
 
-    // TODO: need to support FTS5 for text search
-    //       (using $match)
-    // `SELECT * FROM Messages_fts WHERE Messages_fts MATCH 'some phrase' ORDER BY rank;`
     const sql = builder.build({
       type: 'select',
       table: 'Messages',
@@ -556,14 +638,26 @@ async function onSearch(mailboxId, options, session, fn) {
       fields: ['uid', 'modseq']
     });
 
-    const stmt = db.prepare(sql.query);
+    let messages;
+
+    //
+    // NOTE: using `all()` currently for faster performance
+    //       (since we don't write to the socket here)
+    //
+    if (db.wsp) {
+      messages = await this.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        stmt: [
+          ['prepare', sql.query],
+          ['all', sql.values]
+        ]
+      });
+    } else {
+      messages = db.prepare(sql.query).all(sql.values);
+    }
 
     try {
-      //
-      // NOTE: using `all()` currently for faster performance
-      //       (since we don't write to the socket here)
-      //
-      const messages = stmt.all(sql.values);
       for (const message of messages) {
         if (highestModseq < message.modseq) highestModseq = message.modseq;
         uidList.push(message.uid);

@@ -34,7 +34,7 @@ async function onExpunge(mailboxId, update, session, fn) {
   try {
     const { alias, db } = await this.refreshSession(session, 'EXPUNGE');
 
-    const mailbox = await Mailboxes.findOne(db, {
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
       _id: mailboxId
     });
 
@@ -52,28 +52,38 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     if (update.isUid) condition.uid = tools.checkRangeQuery(update.messages);
 
-    const sql = builder.build({
-      type: 'select',
-      table: 'Messages',
-      condition,
-      // sort required for IMAP UIDPLUS
-      sort: 'uid'
-    });
-
-    const stmt = db.prepare(sql.query);
-
     this.logger.debug('expunge query', { condition });
 
-    let err;
-
-    // turn on unsafe mode to allow us to iterate, select, and update at the same time
-    db.unsafeMode(true);
+    let messages;
 
     lock = await db.acquireLock();
 
+    let err;
+
     try {
-      // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
-      for (const result of stmt.iterate(sql.values)) {
+      const sql = builder.build({
+        type: 'select',
+        table: 'Messages',
+        condition,
+        // sort required for IMAP UIDPLUS
+        sort: 'uid'
+      });
+
+      if (db.wsp) {
+        messages = await this.wsp.request({
+          action: 'stmt',
+          session: { user: session.user },
+          lock,
+          stmt: [
+            ['prepare', sql.query],
+            ['all', sql.values]
+          ]
+        });
+      } else {
+        messages = db.prepare(sql.query).all(sql.values);
+      }
+
+      for (const result of messages) {
         // eslint-disable-next-line no-await-in-loop
         const message = await convertResult(Messages, result);
 
@@ -110,6 +120,8 @@ async function onExpunge(mailboxId, update, session, fn) {
         // eslint-disable-next-line no-await-in-loop
         const results = await Messages.deleteOne(
           db,
+          this.wsp,
+          session,
           {
             _id: message._id,
             mailbox: mailbox._id,
@@ -133,6 +145,8 @@ async function onExpunge(mailboxId, update, session, fn) {
               // eslint-disable-next-line no-await-in-loop
               await this.attachmentStorage.deleteMany(
                 db,
+                this.wsp,
+                session,
                 attachmentIds,
                 message.magic,
                 lock
@@ -165,6 +179,8 @@ async function onExpunge(mailboxId, update, session, fn) {
             // eslint-disable-next-line no-await-in-loop
             await this.server.notifier.addEntries(
               db,
+              this.wsp,
+              session,
               mailbox,
               {
                 ignore: session.id,
@@ -188,9 +204,6 @@ async function onExpunge(mailboxId, update, session, fn) {
     } catch (_err) {
       err = _err;
     }
-
-    // turn off unsafe mode
-    db.unsafeMode(false);
 
     // close the connection
     db.close();
@@ -227,7 +240,7 @@ async function onExpunge(mailboxId, update, session, fn) {
     // release lock
     if (lock?.success) {
       try {
-        await this.server.lock.releaseLock(lock);
+        await this.lock.releaseLock(lock);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }

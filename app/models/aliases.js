@@ -548,21 +548,20 @@ Aliases.pre('save', async function (next) {
   }
 });
 
-async function getStorageUsed(alias) {
-  let storageUsed = 0;
-
+// async function getStorageUsed(alias) {
+async function getStorageUsed(wsp, session) {
   //
   // calculate storage used across entire domain and its admin users domains
   // (this is rudimentary storage system and has edge cases)
   // (e.g. multi-accounts when users on team plan edge case)
   //
-  const domain = await Domains.findById(alias.domain)
+  const domain = await Domains.findOne({ id: session.user.domain_id })
     .populate('members.user', `id ${config.userFields.isBanned}`)
     .lean()
     .exec();
   if (!domain)
     throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
     );
 
   // filter out a domain's members without actual users
@@ -575,7 +574,7 @@ async function getStorageUsed(alias) {
 
   if (adminMembers.length === 0)
     throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
     );
 
   const ids = domain.members.map((m) => m.user);
@@ -583,7 +582,7 @@ async function getStorageUsed(alias) {
   // safeguard
   if (ids.length === 0)
     throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
     );
 
   // now get all domains where $elemMatch is the user id and group is admin
@@ -599,60 +598,50 @@ async function getStorageUsed(alias) {
   // safeguard
   if (domainIds.length === 0)
     throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
     );
 
-  if (domainIds.length > 0) {
-    const results = await this.aggregate([
-      {
-        $match: {
-          domain: {
-            $in: domainIds
-          }
-        }
-      },
-      {
-        $group: {
-          _id: '',
-          storageUsed: {
-            $sum: '$storageUsed'
-          }
-        }
-      }
-    ]);
-    // results [ { _id: '', storageUsed: 91360 } ]
-    if (
-      results.length !== 1 ||
-      typeof results[0] !== 'object' ||
-      typeof results[0].storageUsed !== 'number'
-    )
-      throw Boom.notFound(
-        i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
-      );
-
-    storageUsed += results[0].storageUsed;
-  }
+  const aliasIds = await this.distinct('id', {
+    domain: { $in: domainIds }
+  });
 
   // now get all aliases that belong to any of these domains and sum the storageQuota
-  return storageUsed;
+  const size = await wsp.request({
+    action: 'size',
+    session: { user: session.user },
+    alias_ids: aliasIds
+  });
+
+  return size;
 }
 
 Aliases.statics.getStorageUsed = getStorageUsed;
 
-Aliases.statics.isOverQuota = async function (alias, size = 0) {
-  const storageUsed = await getStorageUsed.call(this, alias);
+// Aliases.statics.isOverQuota = async function (alias, size = 0) {
+Aliases.statics.isOverQuota = async function (
+  wsp,
+  session,
+  size = 0,
+  returnStorageUsed = false
+) {
+  // const storageUsed = await getStorageUsed.call(this, alias);
+  const storageUsed = await getStorageUsed.call(this, wsp, session);
 
   const isOverQuota = storageUsed + size > config.maxQuotaPerAlias;
 
   // log fatal error to admins (so they will get notified by email/text)
   if (isOverQuota) {
     const err = new Error(
-      `Alias ID ${alias.id} is over quota (${storageUsed + size}/${
-        config.maxQuotaPerAlias
-      })`
+      `Alias ${session.user.username} (ID ${
+        session.user.alias_id
+      }) is over quota (${storageUsed + size}/${config.maxQuotaPerAlias})`
     );
     err.isCodeBug = true; // causes admin alerts
-    logger.fatal(err, { alias });
+    logger.fatal(err, { session });
+  }
+
+  if (returnStorageUsed) {
+    return { storageUsed, isOverQuota };
   }
 
   return isOverQuota;

@@ -114,8 +114,8 @@ class IMAPNotifier extends EventEmitter {
     this._listeners.removeListener(session.user.alias_id, handler);
   }
 
-  // eslint-disable-next-line complexity
-  async addEntries(db, mailboxId, entries, lock = false) {
+  // eslint-disable-next-line complexity, max-params
+  async addEntries(db, wsp, session, mailboxId, entries, lock = false) {
     if (entries && !Array.isArray(entries)) {
       entries = [entries];
     } else if (!entries || entries.length === 0) {
@@ -148,6 +148,8 @@ class IMAPNotifier extends EventEmitter {
     if (updated.length > 0)
       mailbox = await Mailboxes.findOneAndUpdate(
         db,
+        wsp,
+        session,
         query,
         {
           $inc: {
@@ -160,7 +162,7 @@ class IMAPNotifier extends EventEmitter {
         }
       );
 
-    if (!mailbox) mailbox = await Mailboxes.findOne(query);
+    if (!mailbox) mailbox = await Mailboxes.findOne(db, wsp, session, query);
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -182,7 +184,8 @@ class IMAPNotifier extends EventEmitter {
       logger.debug('updating messages', {
         mailbox,
         updated,
-        modseq
+        modseq,
+        session
       });
 
       try {
@@ -193,6 +196,8 @@ class IMAPNotifier extends EventEmitter {
         /*
         await Messages.updateMany(
           db,
+          wsp,
+          session
           {
             _id: {
               $in: updated
@@ -209,86 +214,20 @@ class IMAPNotifier extends EventEmitter {
         );
         */
 
-        // eslint-disable-next-line unicorn/no-array-method-this-argument
-        const messages = await Messages.find(db, {
+        const messages = await Messages.find(db, wsp, session, {
           _id: {
             $in: updated
           },
           mailbox: mailbox._id
         });
 
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log('messages found', messages);
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-        console.log(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        );
-
-        for (const message of message) {
+        for (const message of messages) {
           if (message.modseq < modseq)
             // eslint-disable-next-line no-await-in-loop
             await Messages.findByIdAndUpdate(
+              db,
+              wsp,
+              session,
               message._id,
               {
                 $set: {
@@ -299,7 +238,7 @@ class IMAPNotifier extends EventEmitter {
             );
         }
       } catch (err) {
-        logger.fatal(err, { mailbox, updated, modseq });
+        logger.fatal(err, { mailbox, updated, modseq, session });
       }
     }
 

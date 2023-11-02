@@ -5383,5 +5383,16 @@
   "My Emails": "Saját e-mailjeim",
   "My Logs": "Saját naplóim",
   "My Profile": "A profilom",
-  "My Billing": "Saját számlázás"
+  "My Billing": "Saját számlázás",
+  "Primary servers use an instance of": "Az elsődleges kiszolgálók a",
+  "Secondary servers use an instance of": "A másodlagos kiszolgálók a",
+  "client that is wrapped with": "kliens, amelyhez csomagolva van",
+  "websocket-as-promised": "websocket-az ígéret szerint",
+  "reconnecting-websocket": "újracsatlakozó-websocket",
+  ".  These two wrappers ensure that the": ". Ez a két burkolóanyag biztosítja, hogy a",
+  "reconnects and can send and receive data for specific database writes.": "újracsatlakozik, és adatokat küldhet és fogadhat adott adatbázis-írásokhoz.",
+  "If for any reason the Secondary servers have read issues with": "Ha bármilyen okból a másodlagos kiszolgálóknak olvasási problémái vannak a",
+  "(e.g. the mount failed or the": "(pl. a mount nem sikerült vagy a",
+  "file for the given alias cannot be found) – then it will fallback to use the": "az adott álnévhez tartozó fájl nem található) – akkor visszavált a",
+  "connection for reads.": "csatlakozás az olvasáshoz."
 }

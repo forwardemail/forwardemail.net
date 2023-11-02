@@ -33,9 +33,11 @@ function getFlag(f) {
   return f.trim().toLowerCase();
 }
 
-async function getModseq(db, mailbox) {
+async function getModseq(db, wsp, session, mailbox) {
   const updatedMailbox = await Mailboxes.findOneAndUpdate(
     db,
+    wsp,
+    session,
     {
       _id: mailbox._id
     },
@@ -58,7 +60,7 @@ async function onStore(mailboxId, update, session, fn) {
   try {
     const { alias, db } = await this.refreshSession(session, 'STORE');
 
-    const mailbox = await Mailboxes.findOne(db, {
+    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
       _id: mailboxId
     });
 
@@ -109,17 +111,25 @@ async function onStore(mailboxId, update, session, fn) {
       sort: 'uid'
     });
 
-    const stmt = db.prepare(sql.query);
+    let messages;
+
+    if (db.wsp) {
+      messages = await this.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        stmt: [
+          ['prepare', sql.query],
+          ['all', sql.values]
+        ]
+      });
+    } else {
+      messages = db.prepare(sql.query).all(sql.values);
+    }
 
     let err;
 
     try {
-      // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
-
-      // turn on unsafe mode to allow us to iterate, select, and update at the same time
-      db.unsafeMode(true);
-
-      for (const result of stmt.iterate(sql.values)) {
+      for (const result of messages) {
         // eslint-disable-next-line no-await-in-loop
         const message = await convertResult(Messages, result, projection);
 
@@ -329,8 +339,9 @@ async function onStore(mailboxId, update, session, fn) {
         if (!updated) continue;
 
         // get modseq
-        // eslint-disable-next-line no-await-in-loop
-        const modseq = newModseq || (await getModseq(db, mailbox));
+        const modseq =
+          // eslint-disable-next-line no-await-in-loop
+          newModseq || (await getModseq(db, this.wsp, session, mailbox));
 
         if (!update.silent || condstoreEnabled) {
           // write to socket the response
@@ -377,7 +388,7 @@ async function onStore(mailboxId, update, session, fn) {
         if (bulkWrite.length >= MAX_BULK_WRITE_SIZE) {
           try {
             // eslint-disable-next-line no-await-in-loop
-            await Messages.bulkWrite(db, bulkWrite, {
+            await Messages.bulkWrite(db, this.wsp, session, bulkWrite, {
               // ordered: false,
               // w: 1
             });
@@ -391,7 +402,13 @@ async function onStore(mailboxId, update, session, fn) {
           if (entries.length > 0) {
             try {
               // eslint-disable-next-line no-await-in-loop
-              await this.server.notifier.addEntries(db, mailbox, entries);
+              await this.server.notifier.addEntries(
+                db,
+                this.wsp,
+                session,
+                mailbox,
+                entries
+              );
               this.server.notifier.fire(alias.id);
               entries = [];
             } catch (err) {
@@ -404,19 +421,22 @@ async function onStore(mailboxId, update, session, fn) {
       err = _err;
     }
 
-    // turn off unsafe mode
-    db.unsafeMode(false);
-
     // update messages
     if (bulkWrite.length > 0)
-      await Messages.bulkWrite(db, bulkWrite, {
+      await Messages.bulkWrite(db, this.wsp, session, bulkWrite, {
         // ordered: false,
         // w: 1
       });
 
     if (entries.length > 0) {
       try {
-        await this.server.notifier.addEntries(db, mailbox, entries);
+        await this.server.notifier.addEntries(
+          db,
+          this.wsp,
+          session,
+          mailbox,
+          entries
+        );
         this.server.notifier.fire(alias.id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
@@ -443,8 +463,10 @@ async function onStore(mailboxId, update, session, fn) {
 
       if (newFlags.length > 0) {
         // TODO: see FIXME from wildduck at <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L419>
-        await Mailboxes.updateOne(
+        await Mailboxes.findOneAndUpdate(
           db,
+          this.wsp,
+          session,
           {
             _id: mailbox._id
           },

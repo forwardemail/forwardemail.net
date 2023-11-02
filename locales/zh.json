@@ -5074,5 +5074,16 @@
   "My Emails": "我的电子邮件",
   "My Logs": "我的日志",
   "My Profile": "我的简历",
-  "My Billing": "我的账单"
+  "My Billing": "我的账单",
+  "Primary servers use an instance of": "主服务器使用一个实例",
+  "Secondary servers use an instance of": "辅助服务器使用一个实例",
+  "client that is wrapped with": "包裹着的客户端",
+  "websocket-as-promised": "websocket 承诺",
+  "reconnecting-websocket": "重新连接-websocket",
+  ".  These two wrappers ensure that the": "。这两个包装器确保",
+  "reconnects and can send and receive data for specific database writes.": "重新连接并可以发送和接收特定数据库写入的数据。",
+  "If for any reason the Secondary servers have read issues with": "如果由于任何原因辅助服务器读取了以下问题",
+  "(e.g. the mount failed or the": "（例如安装失败或",
+  "file for the given alias cannot be found) – then it will fallback to use the": "找不到给定别名的文件） – 那么它将回退到使用",
+  "connection for reads.": "用于读取的连接。"
 }

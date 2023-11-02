@@ -26,6 +26,8 @@ async function onUnsubscribe(path, session, fn) {
 
     const mailbox = await Mailboxes.findOneAndUpdate(
       db,
+      this.wsp,
+      session,
       {
         path
       },

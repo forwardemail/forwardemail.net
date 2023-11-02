@@ -62,7 +62,7 @@ class AttachmentStorage {
     };
   }
 
-  async create(db, attachment) {
+  async create(db, wsp, session, attachment) {
     const hex = await this.calculateHashPromise(attachment.body);
     attachment.hash = revHash(Buffer.from(hex, 'hex'));
     attachment.counter = 1;
@@ -79,6 +79,8 @@ class AttachmentStorage {
 
     const result = await Attachments.findOneAndUpdate(
       db,
+      wsp,
+      session,
       {
         hash: attachment.hash
       },
@@ -105,6 +107,8 @@ class AttachmentStorage {
 
     // virtual helper
     attachment.db = db;
+    attachment.wsp = wsp;
+    attachment.session = session;
 
     return Attachments.create(attachment);
   }
@@ -122,7 +126,8 @@ class AttachmentStorage {
     return intoStream(attachment.body);
   }
 
-  async deleteMany(db, attachmentIds, magic, lock = false) {
+  // eslint-disable-next-line max-params
+  async deleteMany(db, wsp, session, attachmentIds, magic, lock = false) {
     if (Number.isNaN(magic) || typeof magic !== 'number') {
       const err = new TypeError('Invalid magic');
       err.attachmentIds = attachmentIds;
@@ -132,6 +137,8 @@ class AttachmentStorage {
 
     const attachments = await Attachments.updateMany(
       db,
+      wsp,
+      session,
       {
         hash: { $in: attachmentIds }
       },
@@ -159,7 +166,13 @@ class AttachmentStorage {
       attachments.map(async (attachment) => {
         try {
           if (attachment.counter === 0 && attachment.magic === 0)
-            await Attachments.deleteOne(db, { _id: attachment._id }, { lock });
+            await Attachments.deleteOne(
+              db,
+              wsp,
+              session,
+              { _id: attachment._id },
+              { lock }
+            );
         } catch (err) {
           logger.fatal(err, { attachment });
         }

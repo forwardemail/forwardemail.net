@@ -88,7 +88,7 @@ async function refreshSession(session, command) {
   // TODO: script to export as mbox
 
   // connect to the database
-  const db = await getDatabase(this.server, alias, session);
+  const db = await getDatabase(this, alias, session);
 
   return { db, domain, alias };
 }

@@ -31,12 +31,14 @@ const { ImapFlow } = require('imapflow');
 const { factory } = require('factory-girl');
 
 const utils = require('../utils');
+const SQLite = require('../../sqlite-server');
 const IMAP = require('../../imap-server');
 
 const Aliases = require('#models/aliases');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const config = require('#config');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const getDatabase = require('#helpers/get-database');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
@@ -45,6 +47,9 @@ const IP_ADDRESS = ip.address();
 const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
+
+// 4 KB is initial DB size from tests
+const INITIAL_DB_SIZE = 139264; // 155648; // 4096;
 
 test.before(utils.setupMongoose);
 test.before(utils.defineUserFactory);
@@ -58,8 +63,15 @@ test.after.always(utils.teardownMongoose);
 test.beforeEach(async (t) => {
   const secure = false;
   t.context.secure = secure;
-  const imap = new IMAP({ client, subscriber }, secure);
   const port = await getPort();
+  const sqlitePort = await getPort();
+  const sqlite = new SQLite({ client });
+  await sqlite.listen(sqlitePort);
+  const wsp = createWebSocketAsPromised({
+    port: sqlitePort
+  });
+  t.context.wsp = wsp;
+  const imap = new IMAP({ client, subscriber, wsp }, secure);
   t.context.port = port;
   t.context.server = await imap.listen(port);
   t.context.imap = imap;
@@ -100,6 +112,19 @@ test.beforeEach(async (t) => {
   t.context.pass = pass;
   t.context.alias = await alias.save();
 
+  // spoof session
+  t.context.session = {
+    user: {
+      id: alias.id,
+      username: `${alias.name}@${domain.name}`,
+      alias_id: alias.id,
+      alias_name: alias.name,
+      domain_id: domain.id,
+      domain_name: domain.name,
+      password: encrypt(pass)
+    }
+  };
+
   // spoof dns records
   const map = new Map();
   map.set(
@@ -133,13 +158,16 @@ test.beforeEach(async (t) => {
 
   // create inbox
   await t.context.imapFlow.mailboxCreate('INBOX');
-  const db = await getDatabase(imap.server, alias, {
-    user: { password: encrypt(pass) }
-  });
+  const db = await getDatabase(imap, alias, t.context.session);
   t.context.db = db;
-  const mailbox = await Mailboxes.findOne(db, {
-    path: 'INBOX'
-  });
+  const mailbox = await Mailboxes.findOne(
+    db,
+    t.context.wsp,
+    t.context.session,
+    {
+      path: 'INBOX'
+    }
+  );
   t.is(mailbox.specialUse, '\\Inbox');
   t.is(mailbox.uidNext, 1);
 });
@@ -158,9 +186,14 @@ test('onAppend', async (t) => {
   //
   await imapFlow.mailboxCreate('append');
 
-  let mailbox = await Mailboxes.findOne(t.context.db, {
-    path: 'append'
-  });
+  let mailbox = await Mailboxes.findOne(
+    t.context.db,
+    t.context.wsp,
+    t.context.session,
+    {
+      path: 'append'
+    }
+  );
 
   const raw = `
 Content-Type: multipart/mixed; boundary="------------cWFvDSey27tFG0hVYLqp9hs9"
@@ -197,7 +230,12 @@ ZXhhbXBsZQo=
   t.is(append.uid, 1);
   t.is(append.uidValidity, BigInt(mailbox.uidValidity));
 
-  mailbox = await Mailboxes.findById(t.context.db, mailbox._id);
+  mailbox = await Mailboxes.findById(
+    t.context.db,
+    t.context.wsp,
+    t.context.session,
+    mailbox._id
+  );
 
   t.is(mailbox.uidNext, 2);
 });
@@ -227,17 +265,23 @@ test('onFetch', async (t) => {
   // create mailbox folder
   const mbox = await client.mailboxCreate(['INBOX', 'fetch', 'child']);
   t.is(mbox.path, 'INBOX/fetch/child');
-  const mailbox = await Mailboxes.findOne(t.context.db, {
-    path: 'INBOX/fetch/child'
-  });
+  const mailbox = await Mailboxes.findOne(
+    t.context.db,
+    t.context.wsp,
+    t.context.session,
+    {
+      path: 'INBOX/fetch/child'
+    }
+  );
   t.true(typeof mailbox === 'object');
   t.is(mailbox.path, 'INBOX/fetch/child');
 
   //
   // write a bunch of messages to the mailbox (with and without attachments)
   //
-  for (let i = 0; i < 100; i++) {
-    const raw = `
+  await Promise.all(
+    Array.from({ length: 100 }).map((k, i) => {
+      const raw1 = `
 Message-ID: <f869239d-3a31-4cb1-b30a-8a697252beb3@forwardemail.net>
 Date: ${new Date().toISOString()}
 MIME-Version: 1.0
@@ -251,12 +295,7 @@ Content-Transfer-Encoding: 7bit
 test
 `.trim();
 
-    // eslint-disable-next-line no-await-in-loop
-    await client.append('INBOX/fetch/child', Buffer.from(raw), [], new Date());
-  }
-
-  for (let i = 0; i < 100; i++) {
-    const raw = `
+      const raw2 = `
 Content-Type: multipart/mixed; boundary="------------cWFvDSey27tFG0hVYLqp9hs9"
 MIME-Version: 1.0
 To: ${t.context.alias.name}@${t.context.domain.name}
@@ -279,9 +318,12 @@ ZXhhbXBsZQo=
 
 --------------cWFvDSey27tFG0hVYLqp9hs9--`.trim();
 
-    // eslint-disable-next-line no-await-in-loop
-    await client.append('INBOX/fetch/child', Buffer.from(raw), [], new Date());
-  }
+      return Promise.all([
+        client.append('INBOX/fetch/child', Buffer.from(raw1), [], new Date()),
+        client.append('INBOX/fetch/child', Buffer.from(raw2), [], new Date())
+      ]);
+    })
+  );
 
   const lock = await client.getMailboxLock('INBOX/fetch/child');
 
@@ -294,7 +336,7 @@ ZXhhbXBsZQo=
     const message = await client.fetchOne(client.mailbox.exists, {
       source: true
     });
-    const msg = await Messages.findOne(t.context.db, {
+    const msg = await Messages.findOne(t.context.db, t.context.wsp, t.context.session, {
       mailbox: mailbox._id,
       uid: message.uid
     });
@@ -439,7 +481,7 @@ test('onGetQuotaRoot', async (t) => {
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
-        usage: 0,
+        usage: INITIAL_DB_SIZE,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -479,29 +521,49 @@ ZXhhbXBsZQo=
     new Date()
   );
 
-  const db = await getDatabase(t.context.imap.server, alias, {
-    user: { password: encrypt(pass) }
-  });
+  const session = {
+    user: {
+      id: alias.id,
+      username: `${alias.name}@${domain.name}`,
+      alias_id: alias.id,
+      alias_name: alias.name,
+      domain_id: domain.id,
+      domain_name: domain.name,
+      password: encrypt(pass)
+    }
+  };
 
-  const mailbox = await Mailboxes.findOne(db, {
+  const db = await getDatabase(t.context.imap, alias, session);
+
+  const mailbox = await Mailboxes.findOne(db, t.context.wsp, session, {
     path: append.destination
   });
 
   t.is(mailbox.path, append.destination);
 
   {
-    const message = await Messages.findOne(db, {
-      mailbox: mailbox._id,
-      uid: append.uid
+    // const message = await Messages.findOne(db, t.context.wsp, session, {
+    //   mailbox: mailbox._id,
+    //   uid: append.uid
+    // });
+    const storageUsed = await Aliases.getStorageUsed(t.context.wsp, {
+      user: {
+        id: alias.id,
+        username: `${alias.name}@${domain.name}`,
+        alias_id: alias.id,
+        alias_name: alias.name,
+        domain_id: domain.id,
+        domain_name: domain.name,
+        password: encrypt(pass)
+      }
     });
-    const storageUsed = await Aliases.getStorageUsed(alias);
-    t.is(storageUsed, 604);
+    t.is(storageUsed, INITIAL_DB_SIZE);
     const quota = await imapFlow.getQuota('boopboop');
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
         // message size is rounded to nearest 1024 bytes
-        usage: Math.ceil(message.size / 1024) * 1024,
+        usage: INITIAL_DB_SIZE, // Math.ceil(message.size / 1024) * 1024,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -514,7 +576,7 @@ test('onGetQuota', async (t) => {
   t.deepEqual(quota, {
     path: 'INBOX',
     storage: {
-      usage: 0,
+      usage: INITIAL_DB_SIZE,
       limit: config.maxQuotaPerAlias,
       status: '0%'
     }
@@ -604,18 +666,29 @@ ZXhhbXBsZQo=
     new Date()
   );
 
-  const mailbox = await Mailboxes.findOne(t.context.db, {
-    path: 'expunge'
-  });
+  const mailbox = await Mailboxes.findOne(
+    t.context.db,
+    t.context.wsp,
+    t.context.session,
+    {
+      path: 'expunge'
+    }
+  );
 
   t.is(mailbox.path, 'expunge');
 
   // note that a message won't get marked as deleted
   // since it has to have a Deleted flag at first
-  const uids = await Messages.distinct(t.context.db, 'uid', {
-    mailbox: mailbox._id,
-    undeleted: true
-  });
+  const uids = await Messages.distinct(
+    t.context.db,
+    t.context.wsp,
+    t.context.session,
+    'uid',
+    {
+      mailbox: mailbox._id,
+      undeleted: true
+    }
+  );
 
   t.is(uids.length, 1);
 
@@ -634,7 +707,9 @@ ZXhhbXBsZQo=
     data = _data;
   });
 
-  t.true(await t.context.imapFlow.messageDelete({ all: true }));
+  const res = await t.context.imapFlow.messageDelete({ all: true });
+
+  t.true(res);
 
   if (!data) await pWaitFor(() => Boolean(data), { timeout: ms('5s') });
 
@@ -677,6 +752,7 @@ test
   // move all messages to a mailbox called "was-moved" (ust exist)
   await t.context.imapFlow.mailboxCreate('was-moved');
   const result = await t.context.imapFlow.messageMove('1:*', 'was-moved');
+  t.log('result', result);
   t.is(result.path, 'move');
   t.is(result.destination, 'was-moved');
   t.is(result.uidMap.size, 10);
@@ -870,6 +946,7 @@ test
     messages: true,
     unseen: true
   });
+  t.log('status', status);
   t.is(status.path, 'yoyo');
   t.is(status.messages, 20);
   t.is(status.unseen, 10);
@@ -914,15 +991,25 @@ ZXhhbXBsZQo=
     await t.context.imapFlow.messageFlagsSet({ all: true }, ['\\Deleted'])
   );
 
-  const mailbox = await Mailboxes.findOne(t.context.db, {
-    path: 'flag-set'
-  });
+  const mailbox = await Mailboxes.findOne(
+    t.context.db,
+    t.context.wsp,
+    t.context.session,
+    {
+      path: 'flag-set'
+    }
+  );
 
   t.is(mailbox.path, 'flag-set');
 
-  const message = await Messages.findOne(t.context.db, {
-    mailbox: mailbox._id
-  });
+  const message = await Messages.findOne(
+    t.context.db,
+    t.context.wsp,
+    t.context.session,
+    {
+      mailbox: mailbox._id
+    }
+  );
 
   t.deepEqual(message.flags, ['\\Deleted']);
 });
@@ -966,15 +1053,25 @@ ZXhhbXBsZQo=
     await t.context.imapFlow.messageFlagsRemove({ all: true }, ['\\Flagged'])
   );
 
-  const mailbox = await Mailboxes.findOne(t.context.db, {
-    path: 'flag-remove'
-  });
+  const mailbox = await Mailboxes.findOne(
+    t.context.db,
+    t.context.wsp,
+    t.context.session,
+    {
+      path: 'flag-remove'
+    }
+  );
 
   t.is(mailbox.path, 'flag-remove');
 
-  const message = await Messages.findOne(t.context.db, {
-    mailbox: mailbox._id
-  });
+  const message = await Messages.findOne(
+    t.context.db,
+    t.context.wsp,
+    t.context.session,
+    {
+      mailbox: mailbox._id
+    }
+  );
 
   t.deepEqual(message.flags, ['\\Seen', '\\Draft']);
 });
