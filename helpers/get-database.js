@@ -5,6 +5,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { randomUUID } = require('node:crypto');
 
 // <https://github.com/knex/knex-schema-inspector/pull/146>
 const Database = require('better-sqlite3-multiple-ciphers');
@@ -246,6 +247,15 @@ async function getDatabase(
   existingLock,
   newlyCreated = false
 ) {
+  // return early if the session.db was already assigned
+  if (
+    session.db &&
+    (session.db instanceof Database || session.db.wsp) &&
+    session.db.open === true
+  ) {
+    return session.db;
+  }
+
   async function acquireLock() {
     const lock = await instance.lock.waitAcquireLock(
       `${alias.id}`,
@@ -334,7 +344,8 @@ async function getDatabase(
         // which signals us to use the websocket connection
         // in a fallback attempt in case the rclone mount failed
         //
-        return {
+        const db = {
+          id: randomUUID(), // for debugging
           open: true,
           inTransaction: false,
           readonly: true,
@@ -342,8 +353,13 @@ async function getDatabase(
           acquireLock,
           releaseLock,
           wsp: true,
-          close() {} // noop
+          close() {
+            this.open = false;
+          }
         };
+        // set session db helper (used in `refineAndLogError` to close connection)
+        session.db = db;
+        return db;
       }
 
       // note that this will throw an error if it parses one
@@ -354,8 +370,9 @@ async function getDatabase(
       });
 
       // if rclone was not enabled then return early
-      if (!env.SQLITE_RCLONE_ENABLED)
-        return {
+      if (!env.SQLITE_RCLONE_ENABLED) {
+        const db = {
+          id: randomUUID(), // for debugging
           open: true,
           inTransaction: false,
           readonly: true,
@@ -363,8 +380,14 @@ async function getDatabase(
           acquireLock,
           releaseLock,
           wsp: true,
-          close() {} // noop
+          close() {
+            this.open = false;
+          }
         };
+        // set session db helper (used in `refineAndLogError` to close connection)
+        session.db = db;
+        return db;
+      }
 
       // call this function again if it was successful
       return getDatabase(instance, alias, session, existingLock, true);

@@ -283,6 +283,27 @@ class IMAPNotifier extends EventEmitter {
       })
       .toArray(fn);
   }
+
+  // TODO: move get database to here instead of onAuth and call it from within onAuth (?)
+  // TODO: allocateConnection
+  // <https://github.com/nodemailer/wildduck/blob/48b9efb8ca4b300597b2e8f5ef4aa307ac97dcfe/lib/imap-notifier.js#L368>
+
+  // <https://github.com/nodemailer/wildduck/blob/48b9efb8ca4b300597b2e8f5ef4aa307ac97dcfe/imap-core/lib/imap-connection.js#L364C46-L365>
+  releaseConnection(data, fn) {
+    // ignore unauthenticated sessions
+    if (!data?.session?.user) return fn(null, true);
+
+    // close the db connection
+    if (typeof data?.session?.db?.close === 'function') {
+      try {
+        data.session.db.close();
+      } catch (err) {
+        logger.fatal(err, { session: data.session });
+      }
+    }
+
+    fn(null, true);
+  }
 }
 
 module.exports = IMAPNotifier;

@@ -61,7 +61,6 @@ const refreshSession = require('#helpers/refresh-session');
 
 // TODO: refineAndLog and also after writing every response we should wrap a hook to run `session.db.close` if it was open
 // TODO: alias quota needs rewritten (ws message "quota:$alias_id" -> fs.stat)
-// TODO: db.close(); after transactions done
 // TODO: --allow-other and run as a different user for rclone
 // TODO: graceful needs to close all `db.close()` exposed that are open
 // TODO: each R2 bucket seems like it's 18 TB max?

@@ -75,9 +75,6 @@ async function onDelete(path, session, fn) {
       }
     );
 
-    // close the connection
-    db.close();
-
     fn(null, true, mailbox._id);
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent

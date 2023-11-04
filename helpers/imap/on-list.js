@@ -24,9 +24,6 @@ async function onList(query, session, fn) {
 
     const mailboxes = await Mailboxes.find(db, this.wsp, session, {});
 
-    // close the connection
-    db.close();
-
     fn(null, mailboxes);
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent

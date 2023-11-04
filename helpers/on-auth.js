@@ -253,47 +253,56 @@ async function onAuth(auth, session, fn) {
     // If this was IMAP server then ensure the user has all essential folders
     //
     if (this.server instanceof IMAPServer) {
+      //
       // connect to the database
+      //
+      // NOTE: this assigns `session.db` which is re-used everywhere
+      // (we could move to `allocateConnection`; see comments in `imap-notifier.js` under helpers)
+      //
       const db = await getDatabase(this, alias, {
         ...session,
         user
       });
 
-      try {
-        const paths = await Mailboxes.distinct(
-          db,
-          this.wsp,
-          {
-            ...session,
-            user
-          },
-          'path',
-          {}
-        );
+      //
+      // NOTE: this is in the background otherwise auth attempts would hang
+      //       if there was an issue with websocket connection or reading/writing
+      //
+      Mailboxes.distinct(
+        db,
+        this.wsp,
+        {
+          ...session,
+          user
+        },
+        'path',
+        {}
+      )
+        .then((paths) => {
+          const required = [];
+          for (const path of REQUIRED_PATHS) {
+            if (!paths.includes(path)) required.push(path);
+          }
 
-        const required = [];
-        for (const path of REQUIRED_PATHS) {
-          if (!paths.includes(path)) required.push(path);
-        }
+          if (required.length > 0) {
+            this.logger.debug('creating required', { required });
+            Mailboxes.create(
+              required.map((path) => ({
+                // virtual helper
+                db,
+                wsp: this.wsp,
+                session: { ...session, user },
 
-        if (required.length > 0) {
-          this.logger.debug('creating required', { required });
-          await Mailboxes.create(
-            required.map((path) => ({
-              // virtual helper
-              db,
-              wsp: this.wsp,
-              session: { ...session, user },
-
-              path,
-              retention:
-                typeof alias.retention === 'number' ? alias.retention : 0
-            }))
-          );
-        }
-      } catch (err) {
-        this.logger.fatal(err, { session });
-      }
+                path,
+                retention:
+                  typeof alias.retention === 'number' ? alias.retention : 0
+              }))
+            )
+              .then()
+              .catch((err) => this.logger.fatal(err, { session }));
+          }
+        })
+        .catch((err) => this.logger.fatal(err, { session }));
     }
 
     // this response object sets `session.user` to have `domain` and `alias`

@@ -270,9 +270,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       }
     }
 
-    // close the connection
-    db.close();
-
     // update quota if copied messages
     if (copiedMessages > 0 && copiedStorage > 0) {
       // send notifications

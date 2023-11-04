@@ -2,6 +2,16 @@ extends ../layout
 
 include ../_onboard
 
+block prepend scripts
+  //- since mermaid doesn't support CJS anymore
+  //- <https://github.com/mermaid-js/mermaid/issues/2559#issuecomment-1695614504>
+  script(
+    defer,
+    src=manifest("js/mermaid.js"),
+    integrity=manifest("js/mermaid.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
 block body
   .container.py-3.py-md-4.py-lg-5
     .row

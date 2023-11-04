@@ -130,7 +130,7 @@ class SQLite {
       ws.on('error', (err) => logger.error(err, { ws, request }));
 
       ws.on('pong', function () {
-        logger.debug('pong from %s', request.socket.remoteAddress);
+        // logger.debug('pong from %s', request.socket.remoteAddress);
         this.isAlive = true;
       });
 

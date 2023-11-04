@@ -22,11 +22,19 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onGetQuota(path, session, fn) {
   this.logger.debug('GETQUOTA', { path, session });
 
+  //
+  // NOTE: we don't use a single db connection here to get quota
+  //       because an aliases mailbox could live across multiple servers
+  //       and not all of them may be mounted to the current server (?)
+  //
+  //       if we mount everything to the current server then this is possible
+  //       and we would need to rewrite the logic below and elsewhere that
+  //       `getStorageUsed` is invoked in order to iterate over all
+  //       (perhaps in this case we then error and use wsp as fallback if
+  //       one of the mailboxes for an alias did not exist?)
+  //
   try {
-    const { db } = await this.refreshSession(session, 'GETQUOTA');
-
-    // close the connection
-    db.close();
+    // const { db } = await this.refreshSession(session, 'GETQUOTA');
 
     if (path !== '') return fn(null, 'NONEXISTENT');
 

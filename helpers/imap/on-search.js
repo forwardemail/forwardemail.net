@@ -688,9 +688,6 @@ async function onSearch(mailboxId, options, session, fn) {
       throw new IMAPError(i18n.translateError('IMAP_INVALID_SEARCH'));
     }
 
-    // close the connection
-    db.close();
-
     // send response
     fn(null, {
       uidList,

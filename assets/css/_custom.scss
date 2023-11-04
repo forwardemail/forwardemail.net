@@ -149,6 +149,11 @@ html {
     .dropdown-toggle:after {
       display: none !important;
     }
+
+    // hide mermaid charts
+    div.mermaid {
+      display: none !important;
+    }
   }
 }
 
@@ -196,5 +201,3 @@ pre {
     height: 0;
   }
 }
-
-

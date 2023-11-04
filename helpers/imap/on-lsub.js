@@ -26,9 +26,6 @@ async function onLsub(query, session, fn) {
       subscribed: true
     });
 
-    // close the connection
-    db.close();
-
     fn(null, mailboxes);
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent

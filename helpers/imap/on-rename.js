@@ -63,9 +63,6 @@ async function onRename(path, newPath, session, fn) {
       }
     );
 
-    // close the connection
-    db.close();
-
     // could not write/lock mailbox
     if (!renamedMailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {

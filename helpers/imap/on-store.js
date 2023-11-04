@@ -480,9 +480,6 @@ async function onStore(mailboxId, update, session, fn) {
       }
     }
 
-    // close the connection
-    db.close();
-
     // if there was an error during cursor then throw
     if (err) throw err;
 

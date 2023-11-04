@@ -401,9 +401,6 @@ async function onFetch(mailboxId, options, session, fn) {
         // w: 1
       });
 
-    // close the connection
-    db.close();
-
     if (results.entries.length > 0) {
       try {
         await this.server.notifier.addEntries(

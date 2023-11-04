@@ -35,7 +35,7 @@ async function onData(stream, _session, fn) {
   // store clone of session since it gets modified/destroyed
   const session = JSON.parse(safeStringify(_session));
 
-  logger.debug('DATA', { session });
+  this.logger.debug('DATA', { session });
 
   try {
     // we have to consume the stream

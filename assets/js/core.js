@@ -439,3 +439,43 @@ if (el && $nav.length > 0) {
     .on('shown.bs.collapse', navbarScroll)
     .on('hidden.bs.collapse', navbarScroll);
 }
+
+//
+// mermaid support + theme change support
+//
+if (window.mermaid) {
+  initializeMermaid();
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', initializeMermaid);
+} else {
+  $('div.mermaid').addClass('d-none');
+}
+
+function initializeMermaid() {
+  const theme =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'neutral';
+
+  // <https://github.com/mermaid-js/mermaid/issues/1945>
+  window.mermaid.initialize({
+    mermaid: {
+      startOnLoad: true
+    },
+    theme,
+    flowchart: {
+      useMaxWidth: true,
+      htmlLabels: true
+    },
+    secure: [
+      'secure',
+      'securityLevel',
+      'startOnLoad',
+      'maxTextSize',
+      'htmlLabels'
+    ],
+    securityLevel: 'strict'
+  });
+}

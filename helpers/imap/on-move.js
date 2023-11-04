@@ -322,9 +322,6 @@ async function onMove(mailboxId, update, session, fn) {
       err = _err;
     }
 
-    // close the connection
-    db.close();
-
     // release lock
     try {
       await db.releaseLock(lock);

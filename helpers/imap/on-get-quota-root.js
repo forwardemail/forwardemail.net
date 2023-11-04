@@ -35,9 +35,6 @@ async function onGetQuotaRoot(path, session, fn) {
         imapResponse: 'NONEXISTENT'
       });
 
-    // close the connection
-    db.close();
-
     const storageUsed = await Aliases.getStorageUsed(this.wsp, session);
 
     fn(null, {

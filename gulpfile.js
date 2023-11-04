@@ -388,6 +388,7 @@ async function bundle() {
   const since = lastRun(bundle);
   const polyfillPath = path.join(config.buildBase, 'js', 'polyfill.js');
   const lazyloadPath = path.join(config.buildBase, 'js', 'lazyload.js');
+  const mermaidPath = path.join(config.buildBase, 'js', 'mermaid.js');
   const factorBundlePath = path.join(
     config.buildBase,
     'js',
@@ -430,8 +431,13 @@ async function bundle() {
       polyfillPath
     ),
     fs.promises.copyFile(
-      path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.min.js'),
+      path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.js'),
       lazyloadPath
+    ),
+    // mermaid
+    fs.promises.copyFile(
+      path.join(__dirname, 'node_modules', 'mermaid', 'dist', 'mermaid.js'),
+      mermaidPath
     ),
     getFactorBundle()
   ]);

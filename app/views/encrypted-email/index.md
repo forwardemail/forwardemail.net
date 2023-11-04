@@ -71,12 +71,32 @@ We are the only 100% open-source and privacy-focused email service provider that
 
 3. Mail exchange servers (commonly known as "MX" servers) receive new inbound email and store it to your mailbox.  When this happens your email client will get notified and sync your mailbox.  Our mail exchange servers can forward your email to one or more recipients (including [webhooks](/faq#do-you-support-webhooks)), store your email for you in your encrypted IMAP storage with us, **or both**!
 
-   > Learn [how to setup email forwarding](/faq#how-do-i-get-started-and-set-up-email-forwarding), [how our mail exchange service works](/faq#how-does-your-email-forwarding-system-work), or view [our guides](https://forwardemail.net/guides).
+   > Interested in learning more? Read [how to setup email forwarding](/faq#how-do-i-get-started-and-set-up-email-forwarding), [how our mail exchange service works](/faq#how-does-your-email-forwarding-system-work), or view [our guides](https://forwardemail.net/guides).
 
 4. Behind the scenes, our secure email storage design works in two ways to keep your mailboxes encrypted and only accessible by you:
 
-   * When you connect to our IMAP server with your email client, your password is then encrypted in-memory and used to read and write to your mailbox.  Your mailbox can only be read from and written to with this password.  Keep in mind that since you are the only one with this password, **only you** can read and write to your mailbox when you are accessing it.  This also means that you can export and download your mailbox database at anytime – and any copies of it you save can only be opened with this password.
-   * When new mail is received for you from a sender, our mail exchange servers write to an individual, temporary, and encrypted mailbox for you.  The next time your email client attempts to poll for mail or syncs, your new messages will be transferred from this temporary mailbox and stored in your actual mailbox file using your supplied password.  Note that this temporary mailbox is purged and deleted afterwards so that only your password protected mailbox has the messages.
+   * When new mail is received for you from a sender, our mail exchange servers write to an individual, temporary, and encrypted mailbox for you.
+
+     ```mermaid
+     sequenceDiagram
+         actor Sender
+         Sender->>MX: Inbound message received for your alias (e.g. you@yourdomain.com).
+         MX->>SQLite: Message is stored in a temporary mailbox.
+         Note over MX,SQLite: Forwards to other recipients and webhooks configured.
+         MX->>Sender: Success!
+     ```
+
+   * When you connect to our IMAP server with your email client, your password is then encrypted in-memory and used to read and write to your mailbox.  Your mailbox can only be read from and written to with this password.  Keep in mind that since you are the only one with this password, **only you** can read and write to your mailbox when you are accessing it.  The next time your email client attempts to poll for mail or syncs, your new messages will be transferred from this temporary mailbox and stored in your actual mailbox file using your supplied password.  Note that this temporary mailbox is purged and deleted afterwards so that only your password protected mailbox has the messages.
+
+     ```mermaid
+     sequenceDiagram
+         actor You
+         You->>IMAP: You connect to IMAP server using an email client.
+         IMAP->>SQLite: Transfer message from temporary mailbox to your alias' mailbox.
+         Note over IMAP,SQLite: Your alias' mailbox is only available in-memory using IMAP password.
+         SQLite->>IMAP: Retrieves messages as requested by email client.
+         IMAP->>You: Success!
+     ```
 
 5. Automated snapshots and scheduled backups of your encrypted mailboxes are made in case of a disaster.  If you decide to switch to another email service, then you can easily migrate, download, export, and purge your mailboxes and backups at anytime.
 

@@ -78,8 +78,6 @@ async function onOpen(path, session, fn) {
     }
 
     if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
-    // close the connection
-    db.close();
     mailbox.uidList = docs;
 
     // send response

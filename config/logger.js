@@ -12,11 +12,11 @@ const env = require('./env');
 module.exports = {
   // eslint-disable-next-line no-undef
   logger: typeof window === 'object' ? console : signale,
-  level: env.NODE_ENV === 'development' ? 'debug' : 'info',
+  level: env.NODE_ENV === 'production' ? 'info' : 'debug',
   levels:
-    env.NODE_ENV === 'development'
-      ? ['trace', 'info', 'debug', 'warn', 'error', 'fatal']
-      : ['info', 'warn', 'error', 'fatal'],
+    env.NODE_ENV === 'production'
+      ? ['info', 'warn', 'error', 'fatal']
+      : ['trace', 'info', 'debug', 'warn', 'error', 'fatal'],
   showStack: env.AXE_SHOW_STACK,
   meta: {
     show: env.AXE_SHOW_META

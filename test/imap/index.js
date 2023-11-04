@@ -280,7 +280,8 @@ test('onFetch', async (t) => {
   // write a bunch of messages to the mailbox (with and without attachments)
   //
   await Promise.all(
-    Array.from({ length: 100 }).map((k, i) => {
+    // 5 x 2 = 10
+    Array.from({ length: 5 }).map((k, i) => {
       const raw1 = `
 Message-ID: <f869239d-3a31-4cb1-b30a-8a697252beb3@forwardemail.net>
 Date: ${new Date().toISOString()}

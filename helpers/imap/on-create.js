@@ -62,9 +62,6 @@ async function onCreate(path, session, fn) {
       retention: typeof alias.retention === 'number' ? alias.retention : 0
     });
 
-    // close the connection
-    db.close();
-
     try {
       await this.server.notifier.addEntries(db, this.wsp, session, mailbox, {
         command: 'CREATE',

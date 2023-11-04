@@ -201,7 +201,6 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     console.log('message', message);
     console.timeEnd('read and write to database');
 
-    // TODO: close
     db.close();
 
     console.log('DONE!');

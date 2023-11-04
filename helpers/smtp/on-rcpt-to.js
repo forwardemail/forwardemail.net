@@ -9,11 +9,10 @@ const { isEmail } = require('validator');
 const SMTPError = require('#helpers/smtp-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const config = require('#config');
-const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 function onRcptTo(address, session, fn) {
-  logger.debug('RCPT TO', { address, session });
+  this.logger.debug('RCPT TO', { address, session });
 
   if (this.server._closeTimeout)
     return setImmediate(() => fn(new ServerShutdownError()));

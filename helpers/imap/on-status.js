@@ -45,9 +45,6 @@ async function onStatus(path, session, fn) {
       unseen: true
     });
 
-    // close the connection
-    db.close();
-
     fn(null, {
       messages,
       uidNext: mailbox.uidNext,

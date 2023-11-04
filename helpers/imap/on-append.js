@@ -48,6 +48,10 @@ async function onAppend(path, flags, date, raw, session, fn) {
     const { alias } = refreshResults;
     db = refreshResults.db;
 
+    //
+    // TODO: we could cache quota in memory and then update the cached value
+    //       if we add/remove to it (this would reduce time by ~50ms)
+    //
     // check if over quota
     const quota = await Aliases.isOverQuota(this.wsp, session, 0, true);
     if (quota.isOverQuota)
@@ -274,9 +278,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // store the message
     const message = await Messages.create(data);
-
-    // close the connection
-    db.close();
 
     this.logger.debug('message created', {
       message,

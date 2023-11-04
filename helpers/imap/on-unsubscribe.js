@@ -38,9 +38,6 @@ async function onUnsubscribe(path, session, fn) {
       }
     );
 
-    // close the connection
-    db.close();
-
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
         imapResponse: 'NONEXISTENT'
