@@ -19,6 +19,7 @@ const apiConfig = require('#config/api');
 const Users = require('#models/users');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
+const monitorServer = require('#helpers/monitor-server');
 
 const api = new API(apiConfig, Users);
 const graceful = new Graceful({
@@ -28,6 +29,7 @@ const graceful = new Graceful({
   logger
 });
 graceful.listen();
+monitorServer();
 
 (async () => {
   try {

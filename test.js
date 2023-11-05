@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
@@ -212,12 +217,3 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     process.exit(0);
   }
 })();
-
-// TODO: ensure all sql queries are protected from unsafe user input
-
-// TODO: primary key must be id on all databases
-
-// TODO: user-version is compiled revhash of the entire database string creation
-// then execute one per line to alter everything
-// note that we need to get a lock on the database beforehand
-// ALTER TABLE employees ADD status VARCHAR;

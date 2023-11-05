@@ -229,6 +229,11 @@ async function generateOpenGraphImage(ctx) {
       noCreditCard = i18n.translate('NO_CREDIT_CARD', 'en');
 
     const svgReplaced = SVG_STR.replace('NO_CREDIT_CARD', noCreditCard)
+      .replaceAll(
+        'MONOSPACE_NAME',
+        'Inconsolata-dz, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
+      )
+      .replaceAll('FONT_NAME', '"Helvetica Neue", Arial')
       .replace('PRIVATE_BUSINESS', str.trim())
       .replace('FREE_EMAIL', freeEmail)
       .replace(
@@ -237,11 +242,14 @@ async function generateOpenGraphImage(ctx) {
       )
       .replace('forwardemail.net', 'forwardemail.net' + match)
       .replace('font-size="56"', `font-size="${str.length >= 40 ? 40 : 56}"`);
+
     const svg = Buffer.from(svgReplaced, 'utf8');
     const hash = revHash(ctx.type + ':' + svgReplaced);
 
     const key = `og:${hash}`;
-    const result = await ctx.client.get(key);
+    let result;
+
+    if (config.env === 'production') result = await ctx.client.get(key);
 
     if (result) {
       ctx.body = Buffer.from(result, 'hex');

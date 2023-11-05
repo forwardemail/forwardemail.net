@@ -36,27 +36,6 @@ import('sqlite-regex').then((obj) => {
   sqliteRegex = obj;
 });
 
-// const mountPath = path.join(os.tmpdir(), 'rclone');
-
-// const rcloneConfigFilePath = path.join(mountPath, 'rclone.conf');
-
-// const readmeFileName = `.forwardemail-README.txt`;
-
-// TODO: on shutdown wait for `killall rclone` command to finish
-// TODO: validate all args (e.g. sanitized a-z0-9)
-
-// const bucketName = 'beepboop';
-
-// TODO: initially do a cron-based backup AND litestream backup
-//       <https://litestream.io/alternatives/cron/>
-
-// TODO: when deletes occur also need to delete -wal and -shm files in addition to db
-//       <https://litestream.io/tips/#deleting-sqlite-databases>
-
-// TODO: test UTF-8 vs other encoding (e.g. Japanese etc) for accuracy across WebSockets
-
-// TODO: use worker threads to spawn custom env
-
 // <https://www.sqlite.org/pragma.html#pragma_table_list>
 function hasFTS5Already(db, table) {
   // [
@@ -858,7 +837,6 @@ async function getDatabase(
       this.logger.fatal(err, { alias, session });
     }
 
-    // TODO: fetch all new messages for inbound queue and write them to the database
     return db;
   } catch (err) {
     // release lock

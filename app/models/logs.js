@@ -304,6 +304,19 @@ Logs.pre('validate', function (next) {
   next();
 });
 
+// safeguard for sensitive stuff
+Logs.pre('save', function (next) {
+  // delete err.payload.user.password (safeguard)
+  if (this?.err?.payload?.session?.user?.password)
+    delete this.err.payload.session.user.password;
+
+  // delete session.user.password (safeguard)
+  if (this?.meta?.session?.user?.password)
+    delete this.meta.session.user.password;
+
+  next();
+});
+
 //
 // NOTE: this comes after validate because validation ensures `required: true`
 // - before saving ensure that the `message` is converted from html to text

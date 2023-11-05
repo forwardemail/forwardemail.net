@@ -5432,5 +5432,11 @@
   "Please read our deep-dive article": "Přečtěte si náš podrobný článek",
   "on": "na",
   "how our encrypted SQLite mailbox storage feature works": "jak funguje naše funkce úložiště šifrovaných schránek SQLite",
-  "storage limitation (additional storage can be purchased with pay-as-you-go).": "omezení úložiště (další úložiště lze zakoupit s průběžným platem)."
+  "storage limitation (additional storage can be purchased with pay-as-you-go).": "omezení úložiště (další úložiště lze zakoupit s průběžným platem).",
+  "Compressed backups of your encrypted mailboxes": "Compressed backups of your encrypted mailboxes",
+  "are made every 24 hours.  You can also request a new backup at any time or download the latest backup from": "are made every 24 hours.  You can also request a new backup at any time or download the latest backup from",
+  "Aliases.  If you decide to switch to another email service, then you can easily migrate, download, export, and purge your mailboxes and backups at anytime.": "Aliases.  If you decide to switch to another email service, then you can easily migrate, download, export, and purge your mailboxes and backups at anytime.",
+  "Compressed backups of your encrypted mailboxes are made every 24 hours.  You can also instantly request a new backup or download the latest backup at anytime from": "Compressed backups of your encrypted mailboxes are made every 24 hours.  You can also instantly request a new backup or download the latest backup at anytime from",
+  "command every 24 hours during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "command every 24 hours during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.",
+  "Only one backup is stored per mailbox at this time, but in the future we may offer point-in-time-recovery (\"": "Only one backup is stored per mailbox at this time, but in the future we may offer point-in-time-recovery (\""
 }

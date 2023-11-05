@@ -90,10 +90,13 @@ Token.plugin(mongooseCommonPlugin, {
 });
 
 const Aliases = new mongoose.Schema({
+  imap_backup_at: Date,
+  // TODO: fix to snake case
   storageUsed: {
     type: Number,
     default: 0
   },
+  // TODO: fix to snake case
   storageLocation: {
     type: String,
     default: 'storage_do_1',

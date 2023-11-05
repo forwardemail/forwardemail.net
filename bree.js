@@ -10,6 +10,7 @@ const Bree = require('bree');
 const Graceful = require('@ladjs/graceful');
 
 const logger = require('#helpers/logger');
+const monitorServer = require('#helpers/monitor-server');
 
 const bree = new Bree({ logger });
 
@@ -18,6 +19,7 @@ const graceful = new Graceful({
   logger
 });
 graceful.listen();
+monitorServer();
 
 (async () => {
   await bree.start();

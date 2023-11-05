@@ -66,6 +66,7 @@ const AttachmentStorage = require('./attachment-storage');
 const createWebSocketAsPromised = require('./create-websocket-as-promised');
 const parseError = require('./parse-error');
 const getPathToDatabase = require('./get-path-to-database');
+const monitorServer = require('./monitor-server');
 
 module.exports = {
   decrypt,
@@ -131,5 +132,6 @@ module.exports = {
   AttachmentStorage,
   createWebSocketAsPromised,
   parseError,
-  getPathToDatabase
+  getPathToDatabase,
+  monitorServer
 };

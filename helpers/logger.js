@@ -9,6 +9,7 @@ const cuid = require('cuid');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const superagent = require('superagent');
+const _ = require('lodash');
 
 // this package is ignored in `browser` config in `package.json`
 // in order to make the client-side payload less kb
@@ -20,10 +21,37 @@ const isCodeBug = require('./is-code-bug');
 const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
 
+// <https://stackoverflow.com/a/41978063>
+_.mixin({
+  deeply(map) {
+    return function (obj, fn) {
+      return map(
+        _.mapValues(obj, function (v) {
+          return _.isPlainObject(v)
+            ? _.deeply(map)(v, fn)
+            : _.isArray(v)
+            ? v.map(function (x) {
+                return _.deeply(map)(x, fn);
+              })
+            : v;
+        }),
+        fn
+      );
+    };
+  }
+});
+
 const logger = new Axe(loggerConfig);
 
-// TODO: delete session.user.password
-// TODO: delete session.db
+const REDACTED_FIELDS = new Set([
+  'password',
+  'pass',
+  'token',
+  'tokens',
+  'hash',
+  'hashes',
+  'salt'
+]);
 
 //
 // NOTE: if you update the two constants below,
@@ -72,9 +100,6 @@ async function hook(err, message, meta) {
   // if it was a duplicate error then ignore it
   //
   if (err && err.is_duplicate_log) return;
-
-  // add `isCodeBug` parsing here to `err` (safeguard)
-  if (typeof err === 'object') err.isCodeBug = isCodeBug(err);
 
   if (mongoose) {
     try {
@@ -183,6 +208,31 @@ async function hook(err, message, meta) {
 //
 for (const level of logger.config.levels) {
   logger.pre(level, function (err, message, meta) {
+    // add `isCodeBug` parsing here to `err` (safeguard)
+    if (typeof err === 'object') err.isCodeBug = isCodeBug(err);
+
+    //
+    // TODO: merge this into axe
+    //
+    // safeguard to redact sensitive fields
+    //
+    err = _.deeply(_.mapValues)(err, function (val, key) {
+      if (REDACTED_FIELDS.has(key)) {
+        return 'REDACTED';
+      }
+
+      return val;
+    });
+    const hash = meta && meta.app && meta.app.hash;
+    meta = _.deeply(_.mapValues)(meta, function (val, key) {
+      if (REDACTED_FIELDS.has(key)) {
+        return 'REDACTED';
+      }
+
+      return val;
+    });
+    if (hash) meta.app.hash = hash;
+
     if (
       meta.is_http &&
       meta.response &&

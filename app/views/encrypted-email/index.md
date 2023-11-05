@@ -101,7 +101,7 @@ We are the only 100% open-source and privacy-focused email service provider that
          IMAP->>You: Success!
      ```
 
-5. Automated snapshots and scheduled backups of your encrypted mailboxes are made in case of a disaster.  If you decide to switch to another email service, then you can easily migrate, download, export, and purge your mailboxes and backups at anytime.
+5. [Compressed backups of your encrypted mailboxes](#backups) are made every 24 hours.  You can also request a new backup at any time or download the latest backup from <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases.  If you decide to switch to another email service, then you can easily migrate, download, export, and purge your mailboxes and backups at anytime.
 
 
 ## Technologies
@@ -189,7 +189,9 @@ We accomplish two-way communication with [WebSockets](https://developer.mozilla.
 
 ### Backups
 
-For backups, we simply run the SQLite `backup` command periodically, which leverages your encrypted password from an in-memory IMAP connection.
+> **tldr;** Compressed backups of your encrypted mailboxes are made every 24 hours.  You can also instantly request a new backup or download the latest backup at anytime from <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases.
+
+For backups, we simply run the SQLite `backup` command every 24 hours during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.
 
 The Secondary will instruct the Primary over the `WebSocket` connection to execute the backup – and the Primary will then receive the command to do so and will subsequently:
 
@@ -199,6 +201,8 @@ The Secondary will instruct the Primary over the `WebSocket` connection to execu
 4. Upload it to Cloudflare R2 for storage (or your own provider if specified).
 
 Remember that your mailboxes are encrypted – and while we have IP restrictions and other authentication measures in place for WebSocket communication – in the event of a bad actor, you can rest assured that unless the WebSocket payload has your IMAP password, it cannot open your database.
+
+Only one backup is stored per mailbox at this time, but in the future we may offer point-in-time-recovery ("[PITR](https://en.wikipedia.org/wiki/Point-in-time_recovery)").
 
 ### Search
 

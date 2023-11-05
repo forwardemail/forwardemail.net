@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 
 const Aliases = require('#models/aliases');
@@ -12,6 +14,7 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const config = require('#config');
 const getDatabase = require('#helpers/get-database');
+const logger = require('#helpers/logger');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
 
@@ -89,6 +92,67 @@ async function refreshSession(session, command) {
 
   // connect to the database
   const db = await getDatabase(this, alias, session);
+
+  // NOTE: daily backups for now (could be configurable by user, e.g. `alias.backupFrequency`)
+  const twentyFourHoursAgo = dayjs().subtract(1, 'day').toDate();
+  const now = new Date();
+  if (
+    !_.isDate(alias.imap_backup_at) ||
+    new Date(alias.imap_backup_at).getTime() <= twentyFourHoursAgo.getTime()
+  ) {
+    Aliases.findOneAndUpdate(
+      {
+        _id: alias._id,
+        imap_backup_at: _.isDate(alias.imap_backup_at)
+          ? {
+              $exists: true,
+              $lte: twentyFourHoursAgo
+            }
+          : {
+              $exists: false
+            }
+      },
+      {
+        $set: {
+          imap_backup_at: now
+        }
+      }
+    )
+      .then((alias) => {
+        // return early if no alias found (point in time safeguard)
+        if (!alias) return;
+        this.wsp
+          .request({
+            action: 'backup',
+            session: { user: session.user }
+          })
+          .then(() => {
+            logger.debug('backup performed', { session });
+          })
+          .catch((err) => {
+            logger.fatal(err, { session });
+            // if the backup failed then we unset the imap_backup_at
+            Aliases.findOneAndUpdate(
+              {
+                _id: alias._id,
+                imap_backup_at: now
+              },
+              {
+                $unset: {
+                  imap_backup_at: 1
+                }
+              }
+            )
+              .then()
+              .catch((err) => logger.fatal(err, { session }));
+          });
+      })
+      .catch((err) => {
+        logger.fatal(err, { session });
+      });
+  }
+
+  // TODO: fetch and sync all new messages for the given alias from its temporary mailbox
 
   return { db, domain, alias };
 }

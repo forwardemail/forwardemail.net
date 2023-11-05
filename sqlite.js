@@ -20,6 +20,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const SQLite = require('./sqlite-server');
 
 const logger = require('#helpers/logger');
+const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -35,6 +36,7 @@ const graceful = new Graceful({
   customHandlers: [() => promisify(sqlite.wss.close).bind(sqlite.wss)()]
 });
 graceful.listen();
+monitorServer();
 
 (async () => {
   try {

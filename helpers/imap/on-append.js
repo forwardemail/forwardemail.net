@@ -101,7 +101,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     mimeTreeData = mimeTree;
 
     //
-    // NOTE: this re-uses the existing quota from above to prevent additional fs.statSync calls
+    // NOTE: this re-uses the existing quota from above to prevent additional fs.stat calls
     //
     // check if message would be over quota
     //

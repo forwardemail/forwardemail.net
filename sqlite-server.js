@@ -6,12 +6,17 @@
 const fs = require('node:fs');
 const http = require('node:http');
 const https = require('node:https');
+const os = require('node:os');
+const path = require('node:path');
+const { createGzip } = require('node:zlib');
 const { promisify } = require('node:util');
 
 const Boom = require('@hapi/boom');
 const Lock = require('ioredfour');
 const _ = require('lodash');
 const auth = require('basic-auth');
+const dashify = require('dashify');
+const hasha = require('hasha');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -19,6 +24,17 @@ const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { WebSocketServer } = require('ws');
 const { validate: uuidValidate } = require('uuid');
+const prettyBytes = require('pretty-bytes');
+const checkDiskSpace = require('check-disk-space').default;
+const { Upload } = require('@aws-sdk/lib-storage');
+const {
+  S3Client,
+  CreateBucketCommand,
+  HeadBucketCommand,
+  HeadObjectCommand
+  // PutObjectCommand
+} = require('@aws-sdk/client-s3');
+// const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
@@ -29,8 +45,17 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
-const PAYLOAD_ACTIONS = new Set(['setup', 'size', 'stmt']);
+const PAYLOAD_ACTIONS = new Set(['setup', 'size', 'stmt', 'backup']);
 const STATEMENT_OPERATIONS = new Set(['prepare', 'run', 'get', 'all', 'pluck']);
+
+const S3 = new S3Client({
+  region: env.AWS_REGION,
+  endpoint: env.AWS_ENDPOINT_URL,
+  credentials: {
+    accessKeyId: env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY
+  }
+});
 
 class SQLite {
   constructor(options = {}) {
@@ -249,74 +274,56 @@ class SQLite {
           if (!isSANB(payload.session.user.storage_location))
             throw new TypeError('Payload storage location missing');
 
-          //
-          // NOTE: we are relying on getDatabase to open the database successfully
-          //       otherwise it was an invalid database or there wasn't a valid password
-          //
-          /*
-          const [domain, alias] = await Promise.all([
-            Domains.findOne({
-              id: payload.session.user.domain_id,
-              name: payload.session.user.domain_name
-            })
-              .populate(
-                'members.user',
-                `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
-              )
-              .lean()
-              .exec(),
-            Aliases.findOne({
-              id: payload.session.user.alias_id,
-              name: payload.session.user.alias_name
-            })
-              .populate(
-                'user',
-                `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
-              )
-              .select('+tokens.hash +tokens.salt')
-              .lean()
-              .exec()
-          ]);
-
-          // validate domain
-          validateDomain(domain, payload.session.user.domain_name);
-
-          // validate alias
-          validateAlias(alias, domain, payload.session.user.alias_name);
-
-          //
-          // validate password
-          //
-          if (!Array.isArray(alias.tokens) || alias.tokens.length === 0)
-            throw new TypeError(
-              'Alias does not have any generated passwords yet'
-            );
-
-          // ensure that the token is valid
-          const isValid = await Aliases.isValidPassword(
-            alias.tokens,
-            decrypt(payload.session.user.password)
-          );
-
-          if (!isValid) throw new TypeError('Invalid password');
-          */
-
           // NOTE: `this` is the sqlite instance
-          db = await getDatabase(
-            this,
-            // alias
-            {
-              id: payload.session.user.alias_id,
-              storageLocation: payload.session.user.storage_location
-            },
-            payload.session,
-            payload?.lock
-          );
+          if (payload.action !== 'setup')
+            db = await getDatabase(
+              this,
+              // alias
+              {
+                id: payload.session.user.alias_id,
+                storageLocation: payload.session.user.storage_location
+              },
+              payload.session,
+              payload?.lock
+            );
 
           // handle action
           switch (payload.action) {
             // initial db setup for readonly imap servers
             case 'setup': {
+              //
+              // NOTE: this ensures we have enough space to
+              //       add the new user to the storage location
+              //
+
+              // check how much space is remaining on storage location
+              const storagePath = getPathToDatabase({
+                id: payload.session.user.alias_id,
+                storageLocation: payload.session.user.storage_location
+              });
+              const diskSpace = await checkDiskSpace(storagePath);
+
+              // slight 2x overhead for backups
+              const spaceRequired = config.maxQuotaPerAlias * 2;
+
+              if (diskSpace.free < spaceRequired)
+                throw new TypeError(
+                  `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                    diskSpace.free
+                  )} was available`
+                );
+
+              db = await getDatabase(
+                this,
+                // alias
+                {
+                  id: payload.session.user.alias_id,
+                  storageLocation: payload.session.user.storage_location
+                },
+                payload.session,
+                payload?.lock
+              );
+
               ws.send(
                 safeStringify({
                   id: payload.id,
@@ -332,15 +339,20 @@ class SQLite {
                 throw new TypeError('Aliases missing');
 
               let size = 0;
-              for (const alias of payload.aliases) {
-                try {
-                  // <https://github.com/nodejs/node/issues/38006>
-                  const stats = fs.statSync(getPathToDatabase(alias));
-                  if (stats.isFile() && stats.size > 0) size += stats.size;
-                } catch (err) {
-                  if (err.code !== 'ENOENT') throw err;
-                }
-              }
+
+              await Promise.all(
+                payload.aliases.map(async (alias) => {
+                  try {
+                    // <https://github.com/nodejs/node/issues/38006>
+                    const stats = await fs.promises.stat(
+                      getPathToDatabase(alias)
+                    );
+                    if (stats.isFile() && stats.size > 0) size += stats.size;
+                  } catch (err) {
+                    if (err.code !== 'ENOENT') throw err;
+                  }
+                })
+              );
 
               ws.send(
                 safeStringify({
@@ -353,7 +365,6 @@ class SQLite {
 
             // this assumes locking already took place
             case 'stmt': {
-              // TODO: payload must contain `stmt`
               // payload = {
               //   ...,
               //   stmt: [
@@ -448,6 +459,143 @@ class SQLite {
               break;
             }
 
+            // TODO: allow backups at anytime (prompt for pass)
+            // TODO: change password (prompt for pass)
+            // TODO: email notifications
+            // TODO: send password info (both API and user endpoint)
+            // TODO: admin alert when user creates new alias (and not via API)
+            // TODO: admin alert when alias generated password changed
+            // TODO: allow user to download from cloudflare R2 at anytime
+
+            // TODO: add test
+            case 'backup': {
+              const tmp = path.join(os.tmpdir(), `${payload.id}.sqlite`);
+
+              let backup;
+              let err;
+
+              // check how much space is remaining on storage location
+              const storagePath = getPathToDatabase({
+                id: payload.session.user.alias_id,
+                storageLocation: payload.session.user.storage_location
+              });
+              const diskSpace = await checkDiskSpace(storagePath);
+
+              // <https://github.com/nodejs/node/issues/38006>
+              const stats = await fs.promises.stat(storagePath);
+              if (!stats.isFile() || stats.size === 0)
+                throw new TypeError('Database empty');
+
+              // we calculate size of db x 2 (backup + tarball)
+              const spaceRequired = stats.size * 2;
+
+              if (diskSpace.free < spaceRequired)
+                throw new TypeError(
+                  `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                    diskSpace.free
+                  )} was available`
+                );
+
+              try {
+                // create bucket on s3 if it doesn't already exist
+                // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
+                const bucket = `${config.env}-${dashify(
+                  _.camelCase(payload.session.user.storage_location)
+                )}`;
+
+                const response = await S3.send(
+                  new HeadBucketCommand({
+                    Bucket: bucket
+                  })
+                );
+
+                if (response?.$metadata?.httpStatusCode !== 200) {
+                  try {
+                    await S3.send(
+                      new CreateBucketCommand({
+                        ACL: 'private',
+                        Bucket: bucket
+                      })
+                    );
+                  } catch (err) {
+                    if (err.name !== 'BucketAlreadyOwnedByYou') throw err;
+                  }
+                }
+
+                const key = `${payload.session.user.alias_id}.sqlite.gz`;
+
+                // create backup
+                await db.backup(tmp);
+                backup = true;
+
+                // calculate hash of file
+                const hash = await hasha.fromFile(tmp, { algorithm: 'md5' });
+
+                // check if hash already exists in s3
+                try {
+                  const obj = await S3.send(
+                    new HeadObjectCommand({
+                      Bucket: bucket,
+                      Key: key
+                    })
+                  );
+
+                  if (obj?.Metadata?.hash === hash)
+                    throw new TypeError('Hash already exists, returning early');
+                } catch (err) {
+                  if (err.name !== 'NotFound') throw err;
+                }
+
+                // gzip the backup
+                // await S3.send(
+                //   new PutObjectCommand({
+                //     ACL: 'private',
+                //     Body: fs.createReadStream(tmp).pipe(createGzip()),
+                //     Bucket: bucket,
+                //     Key: key,
+                //     Metadata: {
+                //       hash
+                //     }
+                //   })
+                // );
+                const upload = new Upload({
+                  client: S3,
+                  params: {
+                    Bucket: bucket,
+                    Key: key,
+                    Body: fs.createReadStream(tmp).pipe(createGzip()),
+                    Metadata: { hash }
+                  }
+                });
+                await upload.done();
+
+                // console.log(
+                //   await getSignedUrl(S3, new GetObjectCommand({Bucket: 'my-bucket-name', Key: 'dog.png'}), { expiresIn: 3600 })
+                // )
+              } catch (_err) {
+                err = _err;
+              }
+
+              // always do cleanup in case of errors
+              if (backup) {
+                try {
+                  await fs.promises.unlink(tmp);
+                } catch (err) {
+                  logger.fatal(err);
+                }
+              }
+
+              if (err) throw err;
+
+              ws.send(
+                safeStringify({
+                  id: payload.id,
+                  data: true
+                })
+              );
+              break;
+            }
+
             default: {
               throw new TypeError('Action not yet configured');
             }
@@ -456,7 +604,14 @@ class SQLite {
           db.close();
         } catch (err) {
           err.payload = payload;
+
+          // delete err.payload.user.password (safeguard)
+          if (err?.payload?.session?.user?.password)
+            delete err.payload.session.user.password;
+
           err.data = data.toString();
+          // at least early on we should get errors in advance
+          err.isCodeBug = true;
           logger.fatal(err);
           if (db && db.open && typeof db.close === 'function') db.close();
           if (_.isPlainObject(payload) && uuidValidate(payload.id))
