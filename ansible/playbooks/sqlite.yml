@@ -39,5 +39,5 @@
     - name: Allow websocket port
       ufw:
         rule: allow
-        port: {{ lookup('env', 'SQLITE_WEBSOCKET_PORT' }}
+        port: "{{ lookup('env', 'SQLITE_WEBSOCKET_PORT' }}"
         proto: tcp
