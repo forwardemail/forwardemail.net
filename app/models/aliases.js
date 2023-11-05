@@ -94,6 +94,13 @@ const Aliases = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  storageLocation: {
+    type: String,
+    default: 'storage_do_1',
+    enum: ['storage_do_1'],
+    trim: true,
+    lowercase: true
+  },
   retention: {
     type: Number,
     default: 0,
@@ -601,15 +608,22 @@ async function getStorageUsed(wsp, session) {
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
     );
 
-  const aliasIds = await this.distinct('id', {
+  const aliases = await this.find({
     domain: { $in: domainIds }
-  });
+  })
+    .select({
+      _id: -1,
+      id: 1,
+      storageLocation: 1
+    })
+    .lean()
+    .exec();
 
   // now get all aliases that belong to any of these domains and sum the storageQuota
   const size = await wsp.request({
     action: 'size',
     session: { user: session.user },
-    alias_ids: aliasIds
+    aliases
   });
 
   return size;

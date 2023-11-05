@@ -1,0 +1,43 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+- name: Import security playbook
+  ansible.builtin.import_playbook: security.yml
+- name: Import Node.js playbook
+  ansible.builtin.import_playbook: node.yml
+- name: Import SSH keys playbook
+  ansible.builtin.import_playbook: ssh-keys.yml
+
+- hosts: sqlite
+  name: SQLITE
+  become: true
+  become_user: root
+  # this was already defined in the ufw role
+  # https://github.com/Oefenweb/ansible-ufw/blob/master/handlers/main.yml
+  handlers:
+    - name: Reload UFW
+      ufw:
+        state: reloaded
+  tasks:
+    # ufw
+    - name: Enable ufw
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+    - name: Limit ufw ssh
+      ufw:
+        rule: limit
+        port: 22
+        proto: tcp
+    - name: Allow ssh
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+    - name: Allow websocket port
+      ufw:
+        rule: allow
+        port: {{ lookup('env', 'SQLITE_WEBSOCKET_PORT' }}
+        proto: tcp

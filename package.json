@@ -123,7 +123,7 @@
     "markdown-it-highlightjs": "4.0.1",
     "markdown-it-task-checkbox": "1.0.6",
     "memoizee": "0.4.15",
-    "mermaid": "10.6.0",
+    "mermaid": "9",
     "mkdirp": "3.0.1",
     "mongodb-memory-server": "9.0.1",
     "mongodb-query-parser": "3.1.3",

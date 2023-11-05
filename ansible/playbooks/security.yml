@@ -22,6 +22,21 @@
           * hard core 0
           * soft core 0
 
+    # https://www.mongodb.com/docs/manual/tutorial/transparent-huge-pages/
+    # https://unix.stackexchange.com/questions/99154/disable-transparent-hugepages
+    # https://stackoverflow.com/questions/51246128/disabling-thp-transparent-hugepages-with-ansible-role
+    - name: "Disable Transparent Huge Pages (THP)"
+      template:
+        src: "{{ playbook_dir }}/templates/thp.j2"
+        dest: /etc/systemd/system/disable-transparent-huge-pages.service
+        owner: root
+        mode: "0644"
+    - name: "Enable THP Systemd Service"
+      service:
+        daemon_reload: yes
+        name: disable-transparent-huge-pages
+        enabled: true
+        state: started
     - name: Ensure fs.suid_dumpable is set to 0 and added in sysctl
       sysctl:
         name: fs.suid_dumpable

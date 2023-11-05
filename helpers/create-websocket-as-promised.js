@@ -10,8 +10,10 @@ const { randomUUID } = require('node:crypto');
 
 const ReconnectingWebSocket = require('reconnecting-websocket');
 const WebSocketAsPromised = require('websocket-as-promised');
+const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
+const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const { WebSocket } = require('ws');
 
@@ -107,6 +109,12 @@ function createWebSocketAsPromised(options = {}) {
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
   wsp.request = async function (data) {
     try {
+      if (
+        typeof data?.session?.user?.alias_id !== 'string' ||
+        !mongoose.Types.ObjectId.isValid(data.session.user.alias_id)
+      )
+        throw new TypeError('Alias ID missing from session');
+
       // will retry by default up to 10x with exponential backoff
       if (!wsp.isOpened)
         await pRetry(() => wsp.open(), {
@@ -116,13 +124,14 @@ function createWebSocketAsPromised(options = {}) {
           }
         });
 
-      // TODO: turn this off for prod
       // helper for debugging
-      data.stack = new Error('stack').stack;
+      if (config.env !== 'production') data.stack = new Error('stack').stack;
 
       const response = await wsp.sendRequest(data, {
         timeout: ms('1m'),
-        requestId: randomUUID()
+        requestId: `${revHash(data.session.user.alias_id)}:${revHash(
+          randomUUID()
+        )}`
       });
 
       if (
@@ -138,6 +147,7 @@ function createWebSocketAsPromised(options = {}) {
       if (response.err) throw parseError(response.err);
       return response.data;
     } catch (err) {
+      logger.fatal(err);
       err.isCodeBug = true;
       throw err;
     }

@@ -181,7 +181,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    vim .env.production
    ```
 
-5. Generate [pm2][] [ecosystem files][ecosystem-files] using our automatic template generator. We created an [ansible-playbook.js](ansible-playbook.js) which loads the `.env.production` environment variables rendered with [@ladjs/env][] into `process.env`, which then gets used in the playbooks.  This is a superior, simple, and the only known dotenv approach we know of in Ansible. Newly created `ecosystem-api.json`, `ecosystem-bree.json`, `ecosystem-web.json`, `ecosystem-smtp.json`, and `ecosystem-imap.json` files will now be created for you in the root of the repository.  If you ever more add or change IP addresses, you can simply re-run this command.
+5. Generate [pm2][] [ecosystem files][ecosystem-files] using our automatic template generator. We created an [ansible-playbook.js](ansible-playbook.js) which loads the `.env.production` environment variables rendered with [@ladjs/env][] into `process.env`, which then gets used in the playbooks.  This is a superior, simple, and the only known dotenv approach we know of in Ansible. Newly created `ecosystem-api.json`, `ecosystem-bree.json`, `ecosystem-web.json`, `ecosystem-smtp.json`, `ecosystem-imap.json`, and `ecosystem-sqlite.json` files will now be created for you in the root of the repository.  If you ever more add or change IP addresses, you can simply re-run this command.
 
    ```sh
    node ansible-playbook ansible/playbooks/ecosystem.yml -l 'localhost'
@@ -253,6 +253,12 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-imap.json production setup
     ```
 
+    > NOTE: `ecosystem-sqlite-private.json` is ignored in `.gitignore` and not commited to repository as it contains the private IP of the SQLite server.
+
+    ```sh
+    pm2 deploy ecosystem-sqlite-private.json production setup
+    ```
+
 13. Create a SSL certificate at [Namecheap][] (we recommend a 5 year wildcard certificate), set up the certificate, and download and extract the ZIP file with the certificate (emailed to you) to your computer. We do not recommend using tools like [LetsEncrypt][] and `certbot` due to complexity when you have (or scale to) a cluster of servers set up behind load balancers.  In other words, we've tried approaches like `lsyncd` in combination with `crontab` for `certbot` renewals and automatic checking.  Furthermore, using this exposes the server(s) to downtime as ports `80` and `443` may need to be shut down so that `certbot` can use them for certificate generation.  This is not a reliable approach, and simply renewing certificates once a year is vastly simpler and also makes using load balancers trivial.  Instead you can use a provider like [Namecheap][] to get a cheap SSL certificate, then run a few commands as we've documented below. This command will prompt you for an absolute file path to the certificates you downloaded. Renewed your certificate after 1 year? Simply follow this step again.  Do not set a password on the certificate files.  When using the `openssl` command (see Namecheap instructions), you need to use `*.example.com` with an asterisk followed by a period if you are registering a wildcard certificate.
 
     ```sh
@@ -270,6 +276,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-api.json production exec "pm2 reload all"
     pm2 deploy ecosystem-smtp.json production exec "pm2 reload all"
     pm2 deploy ecosystem-imap.json production exec "pm2 reload all"
+    pm2 deploy ecosystem-sqlite-private.json production exec "pm2 reload all"
     ```
 
 14. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
@@ -306,6 +313,12 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-imap.json production
     ```
 
+    > NOTE: `ecosystem-sqlite-private.json` is ignored in `.gitignore` and not commited to repository as it contains the private IP of the SQLite server.
+
+    ```sh
+    pm2 deploy ecosystem-sqlite-private.json production
+    ```
+
 17. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
 
     ```sh
@@ -326,6 +339,12 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
     ```sh
     pm2 deploy ecosystem-imap.json production exec "pm2 save"
+    ```
+
+    > NOTE: `ecosystem-sqlite-private.json` is ignored in `.gitignore` and not commited to repository as it contains the private IP of the SQLite server.
+
+    ```sh
+    pm2 deploy ecosystem-sqlite-private.json production exec "pm2 save"
     ```
 
 18. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).

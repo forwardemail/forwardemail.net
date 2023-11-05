@@ -298,7 +298,7 @@ async function getDatabase(
   //       (e.g. `alias.bucket = 'production-xyz')
   //
   // const readmeFilePath = path.join(dir, readmeFileName);
-  const dbFilePath = getPathToDatabase(alias.id);
+  const dbFilePath = getPathToDatabase(alias);
 
   //
   // NOTE: if readonly and database doesn't exist it will throw an error

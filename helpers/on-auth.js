@@ -246,7 +246,8 @@ async function onAuth(auth, session, fn) {
       domain_name: domain.name,
       // TODO: we probably don't need to encrypt but just a safeguard
       //       (the `helpers/logger` already strips `session.user.password` from logs)
-      password: encrypt(auth.password.trim())
+      password: encrypt(auth.password.trim()),
+      storage_location: alias.storageLocation
     };
 
     //

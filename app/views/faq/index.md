@@ -815,7 +815,9 @@ In order to send outbound email with our API, you must use your API token availa
 
 Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.
 
-**Our Beta IMAP support is useful at the moment for storing Draft messages in your "Drafts" folder, copies of [Outbound SMTP](#do-you-support-sending-email-with-smtp) messages sent your "Sent Mail" folder, and for initial mailbox setup across mail clients such as Thunderbird, K-9 Mail, and Apple Mail.**  There is a <span class="notranslate">1 GB</span> storage limitation with 30 day retention – note that permanent storage tiers and more features will be available soon.
+**Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/encrypted-emaill).
+
+**Our Beta IMAP support is useful at the moment for storing Draft messages in your "Drafts" folder, copies of [Outbound SMTP](#do-you-support-sending-email-with-smtp) messages sent your "Sent Mail" folder, and for initial mailbox setup across mail clients such as Thunderbird, K-9 Mail, and Apple Mail.**  There is a <span class="notranslate">10 GB</span> storage limitation (additional storage can be purchased with pay-as-you-go).
 
 <div id="imap-instructions">
 

@@ -36,35 +36,16 @@ const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
 
-// TODO: bind `db.wsp` to the WSP instance (and then remove the extra param wsp everywhere)
-//       (note that we will need to rewrite our conditional checks for `if (db.wsp)` to something else like `if (!db.open)` or something)
+// TODO: use `session.db` and `session.wsp` everywhere (rewrite everything for less args)
 // TODO: addEntries when MX server writes for temporary storage (e.g. alert existing IMAP connections)
 // TODO: search filters like has:attachment
-//
-// TODO: mention in post about using
-//      <https://github.com/nodemailer/ioredfour>
-//      instead of
-//      <https://github.com/mike-marcacci/node-redlock>
-//      because the latter uses polling and ioredfour uses
-//      redis pubsub so it's much faster
-//
 // TODO: run validate() on all docs before 'update' and 'insert'
-// TODO: use transactions instead of iterator with unsafe mode and also for bulkWrite
 // TODO: mx server forwarding (e.g. can forward to another mailserver such as gmail)
 // TODO: auto-reply/vacation responder
 // TODO: enforce maxDownload and maxUpload
 // TODO: enforce 10-15 max connections per alias
-// TODO: disable transparent huge pages across all servers
-//       <https://www.mongodb.com/docs/manual/tutorial/transparent-huge-pages/
 // TODO: when user generates new password, if any existing were found, then prompt them to enter current password, complete captcha, and type out "I understand this message" and check a checkbox
-// TODO: search $text needs redone to support sqlite
-
-// TODO: refineAndLog and also after writing every response we should wrap a hook to run `session.db.close` if it was open
-// TODO: alias quota needs rewritten (ws message "quota:$alias_id" -> fs.stat)
-// TODO: --allow-other and run as a different user for rclone
-// TODO: graceful needs to close all `db.close()` exposed that are open
 // TODO: each R2 bucket seems like it's 18 TB max?
-// TODO: ensure licensing accurate on new files with sqlite/rclone
 
 // TODO: future items
 // - [ ] contacts

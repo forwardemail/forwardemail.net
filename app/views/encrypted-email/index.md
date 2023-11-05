@@ -10,7 +10,8 @@
   * [Databases](#databases)
   * [Security](#security)
   * [Mailboxes](#mailboxes)
-  * [Concurrency and Backups](#concurrency-and-backups)
+  * [Concurrency](#concurrency)
+  * [Backups](#backups)
   * [Search](#search)
   * [Projects](#projects)
   * [Providers](#providers)
@@ -79,6 +80,7 @@ We are the only 100% open-source and privacy-focused email service provider that
 
      ```mermaid
      sequenceDiagram
+         autonumber
          actor Sender
          Sender->>MX: Inbound message received for your alias (e.g. you@yourdomain.com).
          MX->>SQLite: Message is stored in a temporary mailbox.
@@ -90,6 +92,7 @@ We are the only 100% open-source and privacy-focused email service provider that
 
      ```mermaid
      sequenceDiagram
+         autonumber
          actor You
          You->>IMAP: You connect to IMAP server using an email client.
          IMAP->>SQLite: Transfer message from temporary mailbox to your alias' mailbox.
@@ -143,7 +146,7 @@ We have fine-tuned SQLite with the following [PRAGMA](https://www.sqlite.org/pra
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `cipher=sqleet`          | [ChaCha20-Poly1305 SQLite database encryption](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/). Reference `better-sqlite3-multiple-ciphers` under [Projects](#projects) for more insight.                                 |
 | `key="****************"` | This is your decrypted in-memory only password that gets passed through your email client's IMAP connection to our server.  New database instances are created and closed for each read and write session (in order to ensure sandboxing and isolation). |
-| `journal_model=WAL`      | Write-ahead-log ("WAL") [which boosts performance and allows concurrent read access](https://litestream.io/tips/#wal-journal-mode).                                                                                                                      |
+| `journal_model=WAL`      | Write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)") [which boosts performance and allows concurrent read access](https://litestream.io/tips/#wal-journal-mode).                                                                                   |
 | `busy_timeout=5000`      | Prevents write-lock errors [while other writes are taking place](https://litestream.io/tips/#busy-timeout).                                                                                                                                              |
 | `synchronous=NORMAL`     | Increases durability of transactions [without data corruption risk](https://litestream.io/tips/#synchronous-pragma).                                                                                                                                     |
 | `foreign_keys=ON`        | Enforces that foreign key references (e.g. a relation from one table to another) are enforced.  [By default this is not turned on in SQLite](https://www.sqlite.org/foreignkeys.html), but for validation and data integrity it should be enabled.       |
@@ -151,26 +154,40 @@ We have fine-tuned SQLite with the following [PRAGMA](https://www.sqlite.org/pra
 
 > All other defaults are from SQLite as specified from the [official PRAGMA documentation](https://www.sqlite.org/pragma.html#pragma_auto_vacuum).
 
-### Concurrency and Backups
+### Concurrency
 
-> **tldr;** We use `rclone` for concurrent reads to your mailbox throughout our IMAP servers and a primary server for writes.
+> **tldr;** We use `rclone` and `WebSocket` for concurrent reads and writes to your encrypted SQLite mailboxes.
 
-Your email client on your phone may resolve `imap.forwardemail.net` to one of our Digital Ocean IP addresses – and your desktop client may resolve a separate IP from a different provider altogether (such as Vultr).
+#### Reads
 
-In both cases, we want the connection to read from your database in real-time with 100% accuracy.  This is accomplished by using `rclone` with `--vfs-cache-mode off` (the default).  Instead of using local disk cache, the cache is read directly from the remote mount (your database) in real-time.
+Your email client on your phone may resolve `imap.forwardemail.net` to one of our Digital Ocean IP addresses – and your desktop client may resolve a separate IP from a different [provider](#providers) altogether.
 
-Each of our servers is configured to mount with consistency and alerts us in real-time of any errors.
+Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy:
 
-Writing to your database is a bit different – since SQLite is an embedded database and your mailbox lives in a single file by default.  We had explored options such as `litestream`, `rqlite`, and `dqlite` below – however none of these satisfied our requirements.
+* This is accomplished by using `rclone` with `--vfs-cache-mode off` (the default).
 
-To accomplish writes with write-ahead-logging ("WAL") enabled (which drastically speeds up concurrency and allows one writer and multiple readers) – we need to ensure that only one server ("Primary") is responsible for doing so.  The Primary is running on the data servers with the mounted volumes containing terabytes of encrypted mailboxes.  From a distribution standpoint, you could consider all the individual IMAP servers behind `imap.forwardemail.net` to be secondary servers ("Secondary").
+* Instead of using local disk cache, the cache is read directly from the remote mount (your database) in real-time.
+
+* In the event that the local file cannot be found, this indicates that `rclone` failed to mount or has an issue.  In this case we use a `WebSocket` fallback for reads (which slightly decreases performance, but still maintains the integrity of the service).
+
+* Each of our servers is configured to mount with consistency and alerts us in real-time of any errors.
+
+#### Writes
+
+Writing to your database is a bit different – since SQLite is an embedded database and your mailbox lives in a single file by default.
+
+We had explored options such as `litestream`, `rqlite`, and `dqlite` below – however none of these satisfied our requirements.
+
+To accomplish writes with write-ahead-logging ("[WAL](https://www.sqlite.org/wal.html)") enabled – we need to ensure that only one server ("Primary") is responsible for doing so.  [WAL](https://www.sqlite.org/wal.html) drastically speeds up concurrency and allows one writer and multiple readers.
+
+The Primary is running on the data servers with the mounted volumes containing the encrypted mailboxes.  From a distribution standpoint, you could consider all the individual IMAP servers behind `imap.forwardemail.net` to be secondary servers ("Secondary").
 
 We accomplish two-way communication with [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):
 
 * Primary servers use an instance of [ws](https://github.com/websockets/ws)'s `WebSocketServer` server.
 * Secondary servers use an instance of [ws](https://github.com/websockets/ws)'s `WebSocket` client that is wrapped with [websocket-as-promised](https://github.com/vitalets/websocket-as-promised) and [reconnecting-websocket](https://github.com/pladaria/reconnecting-websocket).  These two wrappers ensure that the `WebSocket` reconnects and can send and receive data for specific database writes.
 
-If for any reason the Secondary servers have read issues with `rclone` (e.g. the mount failed or the `*.sqlite` file for the given alias cannot be found) – then it will fallback to use the `WebSocket` connection for reads.
+### Backups
 
 For backups, we simply run the SQLite `backup` command periodically, which leverages your encrypted password from an in-memory IMAP connection.
 
@@ -208,7 +225,7 @@ Here's a table outlining projects we use in our source code and development proc
 | [Node.js](https://nodejs.org/en)                                                              | Node.js is the open-source, cross-platform JavaScript runtime environment which runs all of our server processes.                                                                                                                                                                                                                                                    |
 | [Nodemailer](https://github.com/nodemailer/nodemailer)                                        | Node.js package for sending emails, creating connections, and more.  We are an official sponsor of this project.                                                                                                                                                                                                                                                     |
 | [Redis](https://redis.io/)                                                                    | In-memory database for caching, publish/subscribe channels, and DNS over HTTPS requests.                                                                                                                                                                                                                                                                             |
-| [SQLite3MultipleCiphers](https://github.com/utelle/SQLite3MultipleCiphers)                    | Encryption extension for SQLite to allow entire database files to be encrypted (including the write-ahead-log ("WAL"), journal, rollback, …).                                                                                                                                                                                                                        |
+| [SQLite3MultipleCiphers](https://github.com/utelle/SQLite3MultipleCiphers)                    | Encryption extension for SQLite to allow entire database files to be encrypted (including the write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)"), journal, rollback, …).                                                                                                                                                                                     |
 | [SQLiteStudio](https://github.com/pawelsalawa/sqlitestudio)                                   | Visual SQLite editor (which you could also use) to test, download, and view development mailboxes.                                                                                                                                                                                                                                                                   |
 | [SQLite](https://www.sqlite.org/about.html)                                                   | Embedded database layer for scalable, self-contained, fast, and resilient IMAP storage.                                                                                                                                                                                                                                                                              |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner)                                    | Node.js anti-spam, email filtering, and phishing prevention tool (our alternative to [Spam Assassin](https://spamassassin.apache.org/) and [rspamd](https://github.com/rspamd/rspamd)).                                                                                                                                                                              |
@@ -263,7 +280,7 @@ That experiment led us to further understand and discover edge cases surrounding
   * If you have multiple IMAP servers distributed globally, then the cache will be off across them unless you have a single writer and multiple listeners (e.g. a pub/sub approach).
   * This is incredibly complex and adding any additional complexity like this will result in more single points of failure.
   * S3-compatible storage providers do not support partial file changes – which means any change of the `.sqlite` file will result in a complete change and re-upload of the database.
-  * Other solutions like `rsync` exist, but they are not focused on write-ahead-log ("WAL") support – so we ended up reviewing Litestream.  Fortunately our encryption usage already encrypts the WAL files for us, so we do not need to rely on Litestream for that.  However we weren't yet confident in Litestream for production-use and have a few notes below on that.
+  * Other solutions like `rsync` exist, but they are not focused on write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)") support – so we ended up reviewing Litestream.  Fortunately our encryption usage already encrypts the [WAL](https://www.sqlite.org/wal.html) files for us, so we do not need to rely on Litestream for that.  However we weren't yet confident in Litestream for production-use and have a few notes below on that.
   * Using this option of `--vfs-cache-mode writes` (the *only* way to use SQLite over `rclone` for writes) will attempt to copy the entire database from scratch in-memory – handling one 10 GB mailbox is OK, however handling multiple mailboxes with exceedingly high storage will cause the IMAP servers to run into memory limitations and `ENOMEM` errors, segmentation faults, and data corruption.
 * If you attempt to use SQLite [Virtual Tables](https://www.sqlite.org/vtab.html) (e.g. using [s3db](https://github.com/jrhy/s3db)) in order to have data live on an S3-compatible storage layer, then you will run into several more issues:
   * Read and writes will be extremely slow as S3 API endpoints will need to be hit with HTTP `GET`, `PUT`, `HEAD`, and `POST` methods.

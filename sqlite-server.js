@@ -165,8 +165,9 @@ class SQLite {
 
           // id
           // <https://github.com/nodejs/node/issues/46748>
-          if (!uuidValidate(payload.id))
-            throw new TypeError('Payload id missing or invalid UUID');
+          // if (!uuidValidate(payload.id))
+          //   throw new TypeError('Payload id missing or invalid UUID');
+          if (!isSANB(payload.id)) throw new TypeError('Payload id missing');
 
           // if lock was passed it must be valid
           if (_.isPlainObject(payload.lock)) {
@@ -244,6 +245,10 @@ class SQLite {
           if (!isSANB(payload.session.user.password))
             throw new TypeError('Payload password missing');
 
+          // storage location
+          if (!isSANB(payload.session.user.storage_location))
+            throw new TypeError('Payload storage location missing');
+
           //
           // NOTE: we are relying on getDatabase to open the database successfully
           //       otherwise it was an invalid database or there wasn't a valid password
@@ -301,7 +306,8 @@ class SQLite {
             this,
             // alias
             {
-              id: payload.session.user.alias_id
+              id: payload.session.user.alias_id,
+              storageLocation: payload.session.user.storage_location
             },
             payload.session,
             payload?.lock
@@ -322,20 +328,14 @@ class SQLite {
 
             // storage quota
             case 'size': {
-              if (
-                !_.isArray(payload.alias_ids) ||
-                payload.alias_ids.length === 0
-              )
-                throw new TypeError('Alias ids missing');
+              if (!_.isArray(payload.aliases) || payload.aliases.length === 0)
+                throw new TypeError('Aliases missing');
 
               let size = 0;
-              for (const id of payload.alias_ids) {
-                // validate that they are all object ids
-                if (!mongoose.Types.ObjectId.isValid(id))
-                  throw new TypeError('Invalid alias id');
+              for (const alias of payload.aliases) {
                 try {
                   // <https://github.com/nodejs/node/issues/38006>
-                  const stats = fs.statSync(getPathToDatabase(id));
+                  const stats = fs.statSync(getPathToDatabase(alias));
                   if (stats.isFile() && stats.size > 0) size += stats.size;
                 } catch (err) {
                   if (err.code !== 'ENOENT') throw err;
