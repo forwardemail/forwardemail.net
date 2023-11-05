@@ -557,7 +557,8 @@ ZXhhbXBsZQo=
         alias_name: alias.name,
         domain_id: domain.id,
         domain_name: domain.name,
-        password: encrypt(pass)
+        password: encrypt(pass),
+        storage_location: alias.storageLocation
       }
     });
     t.is(storageUsed, INITIAL_DB_SIZE);

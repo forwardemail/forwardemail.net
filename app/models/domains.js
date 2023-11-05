@@ -1304,7 +1304,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
             )
           );
       } catch (err) {
-        logger.debug(err);
+        // logger.debug(err);
         if (err.code === 'ENOTFOUND') {
           const error = Boom.badRequest(
             i18n.translateError('ENOTFOUND', domain.locale)
