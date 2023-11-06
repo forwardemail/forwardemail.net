@@ -5,6 +5,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { Buffer } = require('node:buffer');
 const { randomUUID } = require('node:crypto');
 
 // <https://github.com/knex/knex-schema-inspector/pull/146>
@@ -66,8 +67,11 @@ async function setupPragma(db, session) {
   if (!db.open) throw new TypeError('Database is not open');
   if (db.memory) throw new TypeError('Memory database');
   // db.pragma(`cipher='aes256cbc'`);
+  // NOTE: if you change anything in here change backup in sqlite-server
   db.pragma(`cipher='chacha20'`);
-  db.pragma(`key='${decrypt(session.user.password)}'`);
+  if (typeof db.key === 'function')
+    db.key(Buffer.from(decrypt(session.user.password)));
+  else db.pragma(`key="${decrypt(session.user.password)}"`);
   db.pragma('journal_mode=WAL');
   // <https://litestream.io/tips/#busy-timeout>
   db.pragma(`busy_timeout=${config.busyTimeout}`);

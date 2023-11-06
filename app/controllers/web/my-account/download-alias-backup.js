@@ -1,0 +1,217 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+const Boom = require('@hapi/boom');
+const _ = require('lodash');
+const dashify = require('dashify');
+const isSANB = require('is-string-and-not-blank');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
+const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
+const config = require('#config');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
+const email = require('#helpers/email');
+const env = require('#config/env');
+const i18n = require('#helpers/i18n');
+const { encrypt } = require('#helpers/encrypt-decrypt');
+
+const S3 = new S3Client({
+  region: env.AWS_REGION,
+  endpoint: env.AWS_ENDPOINT_URL,
+  credentials: {
+    accessKeyId: env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY
+  }
+});
+
+async function downloadAliasBackup(ctx) {
+  const redirectTo = ctx.state.l(
+    `/my-account/domains/${ctx.state.domain.name}/aliases`
+  );
+  try {
+    const alias = await Aliases.findById(ctx.state.alias._id)
+      .select('+tokens.hash +tokens.salt')
+      .lean()
+      .exec();
+
+    if (alias.name === '*' || alias.name.startsWith('/'))
+      throw Boom.badRequest(ctx.translateError('INVALID_ALIAS_BACKUP'));
+
+    // validate the `auth.password` provided
+    if (!Array.isArray(alias.tokens) || alias.tokens.length === 0)
+      throw Boom.badRequest(ctx.translateError('ALIAS_NO_GENERATED_PASSWORD'));
+
+    if (isSANB(ctx.request.body.password)) {
+      //
+      // rate limiting (checks if we have had more than 5 failed auth attempts in a row)
+      //
+      const count = await ctx.client.incrby(
+        `auth_limit_${config.env}:${ctx.state.user.id}`,
+        0
+      );
+
+      if (count >= config.smtpLimitAuth)
+        throw Boom.forbidden(ctx.translateError('ALIAS_RATE_LIMITED'));
+
+      // trim password
+      ctx.request.body.password = ctx.request.body.password.trim();
+
+      // ensure that the token is valid
+      const isValid = await Aliases.isValidPassword(
+        alias.tokens,
+        ctx.request.body.password
+      );
+
+      if (!isValid) {
+        // increase failed counter by 1
+        await ctx.client.incrby(
+          `auth_limit_${config.env}:${ctx.state.user.id}`,
+          1
+        );
+        await ctx.client.pexpire(
+          `auth_limit_${config.env}:${ctx.state.user.id}`,
+          config.smtpLimitAuthDuration
+        );
+        throw Boom.forbidden(ctx.translateError('INVALID_PASSWORD'));
+      }
+
+      // Clear authentication limit for this user
+      await ctx.client.del(`auth_limit_${config.env}:${ctx.state.user.id}`);
+    }
+
+    const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
+      ctx.state.domain
+    );
+
+    // send email notification when backup downloaded
+    if (!isSANB(ctx.request.body.password))
+      email({
+        template: 'alert',
+        message: {
+          to,
+          ...(to.includes(ctx.state.user.email)
+            ? {}
+            : { cc: ctx.state.user[config.userFields.fullEmail] }),
+          subject: i18n.translate(
+            'ALIAS_BACKUP_DOWNLOAD_SUBJECT',
+            locale,
+            `${alias.name}@${ctx.state.domain.name}`
+          )
+        },
+        locals: {
+          user: ctx.state.user,
+          locale,
+          message: i18n.translate(
+            'ALIAS_BACKUP_DOWNLOAD',
+            locale,
+            ctx.state.user.email,
+            `${alias.name}@${ctx.state.domain.name}`
+          )
+        }
+      })
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+
+    // send backup request
+    if (isSANB(ctx.request.body.password)) {
+      const wsp = createWebSocketAsPromised();
+      wsp
+        .request({
+          action: 'backup',
+          backup_at: new Date().toISOString(),
+          session: {
+            user: {
+              id: alias.id,
+              username: `${alias.name}@${ctx.state.domain.name}`,
+              alias_id: alias.id,
+              alias_name: alias.name,
+              domain_id: ctx.state.domain.id,
+              domain_name: ctx.state.domain.name,
+              password: encrypt(ctx.request.body.password),
+              storage_location: alias.storage_location
+            }
+          }
+        })
+        .then(() => {
+          ctx.logger.debug('backup performed');
+          // send email to user
+          email({
+            template: 'alert',
+            message: {
+              to: ctx.state.user[config.userFields.fullEmail],
+              subject: ctx.translate(
+                'ALIAS_BACKUP_READY_SUBJECT',
+                `${alias.name}@${ctx.state.domain.name}`
+              )
+            },
+            locals: {
+              user: ctx.state.user,
+              message: ctx.translate(
+                'ALIAS_BACKUP_READY',
+                `${alias.name}@${ctx.state.domain.name}`
+              )
+            }
+          })
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
+
+          // close websocket
+          wsp
+            .close()
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
+        })
+        .catch((err) => {
+          ctx.logger.fatal(err);
+          // close websocket
+          wsp
+            .close()
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
+        });
+
+      // otherwise flash message that email will be sent once download ready
+      ctx.flash(
+        'success',
+        ctx.translate(
+          'ALIAS_BACKUP_STARTED',
+          `${alias.name}@${ctx.state.domain.name}`
+        )
+      );
+    } else {
+      // otherwise get signed URL if password not specified
+      const link = await getSignedUrl(
+        S3,
+        new GetObjectCommand({
+          Bucket: `${config.env}-${dashify(
+            _.camelCase(alias.storage_location)
+          )}`,
+          Key: `${alias.id}.sqlite.gz`
+        }),
+        { expiresIn: 3600 }
+      );
+      ctx.flash('success', ctx.translate('ALIAS_BACKUP_LINK', link));
+    }
+
+    if (ctx.accepts('html')) {
+      ctx.redirect(redirectTo);
+    } else {
+      ctx.body = { redirectTo };
+    }
+  } catch (err) {
+    if (err && err.isBoom) throw err;
+    ctx.logger.fatal(err);
+    ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
+    const redirectTo = ctx.state.l(
+      `/my-account/domains/${ctx.state.domain.name}/aliases`
+    );
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+  }
+}
+
+module.exports = downloadAliasBackup;

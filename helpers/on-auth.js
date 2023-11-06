@@ -181,7 +181,7 @@ async function onAuth(auth, session, fn) {
     // validate the `auth.password` provided
     if (!Array.isArray(alias.tokens) || alias.tokens.length === 0)
       throw new SMTPError(
-        `Alias does not have any generated passwords yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
+        `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -247,7 +247,7 @@ async function onAuth(auth, session, fn) {
       // TODO: we probably don't need to encrypt but just a safeguard
       //       (the `helpers/logger` already strips `session.user.password` from logs)
       password: encrypt(auth.password.trim()),
-      storage_location: alias.storageLocation
+      storage_location: alias.storage_location
     };
 
     //

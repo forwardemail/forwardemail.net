@@ -93,12 +93,14 @@ async function refreshSession(session, command) {
   // connect to the database
   const db = await getDatabase(this, alias, session);
 
-  // NOTE: daily backups for now (could be configurable by user, e.g. `alias.backupFrequency`)
-  const twentyFourHoursAgo = dayjs().subtract(1, 'day').toDate();
+  //
+  // hourly backups
+  //
+  const oneHourAgo = dayjs().subtract(1, 'hour').toDate();
   const now = new Date();
   if (
     !_.isDate(alias.imap_backup_at) ||
-    new Date(alias.imap_backup_at).getTime() <= twentyFourHoursAgo.getTime()
+    new Date(alias.imap_backup_at).getTime() <= oneHourAgo.getTime()
   ) {
     Aliases.findOneAndUpdate(
       {
@@ -106,7 +108,7 @@ async function refreshSession(session, command) {
         imap_backup_at: _.isDate(alias.imap_backup_at)
           ? {
               $exists: true,
-              $lte: twentyFourHoursAgo
+              $lte: oneHourAgo
             }
           : {
               $exists: false
@@ -124,6 +126,7 @@ async function refreshSession(session, command) {
         this.wsp
           .request({
             action: 'backup',
+            backup_at: now.toISOString(),
             session: { user: session.user }
           })
           .then(() => {

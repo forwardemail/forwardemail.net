@@ -92,7 +92,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
         domain_id: domain.id,
         domain_name: domain.name,
         password: encrypt(pass),
-        storage_location: alias.storageLocation
+        storage_location: alias.storage_location
       }
     };
     const db = await getDatabase(imap, alias, session);

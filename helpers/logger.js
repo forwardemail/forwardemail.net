@@ -50,7 +50,13 @@ const REDACTED_FIELDS = new Set([
   'tokens',
   'hash',
   'hashes',
-  'salt'
+  'salt',
+  'tls',
+  'ssl',
+  'key',
+  'cert',
+  'ca',
+  'dhparam'
 ]);
 
 //

@@ -15,7 +15,7 @@ const tmpdir = os.tmpdir();
 
 function getPathToDatabase(alias) {
   if (typeof alias !== 'object') throw new TypeError('Alias missing');
-  if (typeof alias?.storageLocation !== 'string')
+  if (typeof alias?.storage_location !== 'string')
     throw new TypeError('Alias storage location missing');
   if (typeof alias?.id !== 'string') throw new TypeError('Alias ID missing');
   // validate that they are all object ids
@@ -24,7 +24,7 @@ function getPathToDatabase(alias) {
 
   const dir = path.join(
     config.env === 'production' ? '/mnt' : tmpdir,
-    alias.storageLocation
+    alias.storage_location
   );
 
   if (config.env !== 'production') mkdirp.sync(dir);

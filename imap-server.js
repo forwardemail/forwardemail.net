@@ -36,8 +36,17 @@ const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
 
+// TODO: send welcome email to user in their sqlite dbs
+// TODO: restore locales, then run through pages, then mandarin
+// TODO: alias storage, pooled, etc
+// TODO: alias has to either have at least one recipient or has_imap everywhere (including via API)
+// TODO: alias.has_imap validation on IMAP connection
+// TODO: when user deletes account then also purge sqlite databases and backups
+// TODO: automated job to detect files on block storage and R2 that don't correspond to actual aliases
 // TODO: use `session.db` and `session.wsp` everywhere (rewrite everything for less args)
+
 // TODO: addEntries when MX server writes for temporary storage (e.g. alert existing IMAP connections)
+
 // TODO: search filters like has:attachment
 // TODO: run validate() on all docs before 'update' and 'insert'
 // TODO: mx server forwarding (e.g. can forward to another mailserver such as gmail)

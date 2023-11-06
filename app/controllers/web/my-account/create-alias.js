@@ -79,7 +79,7 @@ async function createAlias(ctx, next) {
       position: 'top'
     });
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/aliases`
+      `/my-account/domains/${ctx.state.domain.name}/aliases?q=${ctx.state.alias.name}@${ctx.state.domain.name}`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };

@@ -4,7 +4,7 @@ if alias
 .form-row
   .form-group(class=domain ? "col" : "col col-md-6")
     label(for="input-alias-name")
-      = t("Alias Name")
+      = t("Name")
       = " "
       span.text-danger= t("(required)")
     .input-group
@@ -82,14 +82,14 @@ if alias
             = t("Add new domain")
 .form-group
   label(for="textarea-alias-recipients")
-    = t("Alias Recipients")
+    = t("Forwarding Recipients")
     = " "
     span.text-danger= t("(required)")
   textarea#textarea-alias-recipients.form-control(name="recipients", rows=1)= alias && Array.isArray(alias.recipients) ? alias.recipients.join(", ") : user.email
   p.form-text.small.text-black.text-themed-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
 .form-group
   label(for="textarea-alias-description")
-    = t("Alias Description")
+    = t("Description")
     = " "
     span.text-muted= "(optional)"
   textarea#textarea-alias-description.form-control(
@@ -100,9 +100,9 @@ if alias
   p.form-text.small.text-black.text-themed-50= t("Description has a max of 150 characters.")
 .form-group
   label(for="input-alias-labels")
-    = t("Alias Labels")
+    = t("Labels")
     = " "
-    span.text-muted= "(optional)"
+    span.text-muted= "(optional; for organization purposes only)"
   textarea#input-alias-labels.form-control(name="labels", rows=1)= alias && Array.isArray(alias.labels) ? _.without(alias.labels, "catch-all").join(", ") : ""
   p.form-text.small.text-black.text-themed-50= t("Labels must be a line-break/space/comma separated list with a maximum of 20 characters per label.")
 if !domain || (domain && !domain.is_global)

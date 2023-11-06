@@ -122,7 +122,7 @@ test.beforeEach(async (t) => {
       domain_id: domain.id,
       domain_name: domain.name,
       password: encrypt(pass),
-      storage_location: alias.storageLocation
+      storage_location: alias.storage_location
     }
   };
 
@@ -532,7 +532,7 @@ ZXhhbXBsZQo=
       domain_id: domain.id,
       domain_name: domain.name,
       password: encrypt(pass),
-      storage_location: alias.storageLocation
+      storage_location: alias.storage_location
     }
   };
 
@@ -558,7 +558,7 @@ ZXhhbXBsZQo=
         domain_id: domain.id,
         domain_name: domain.name,
         password: encrypt(pass),
-        storage_location: alias.storageLocation
+        storage_location: alias.storage_location
       }
     });
     t.is(storageUsed, INITIAL_DB_SIZE);

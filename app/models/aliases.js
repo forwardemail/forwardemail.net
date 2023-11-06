@@ -16,7 +16,6 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
-const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const scmp = require('scmp');
@@ -35,8 +34,6 @@ const Users = require('./users');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
-
-const NO_REPLY_USERNAMES = new Set(noReplyList);
 
 const randomBytes = promisify(crypto.randomBytes);
 
@@ -90,14 +87,25 @@ Token.plugin(mongooseCommonPlugin, {
 });
 
 const Aliases = new mongoose.Schema({
+  has_imap: {
+    type: Boolean,
+    default: false
+  },
+  emailed_instructions: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    validate: (value) => (typeof value === 'string' ? isEmail(value) : true)
+  },
   imap_backup_at: Date,
+  // NOTE: this isn't actual storage, just message size
+  //       (it doesn't include sqlite db overhead, e.g. indices, and R2 backups)
   // TODO: fix to snake case
   storageUsed: {
     type: Number,
     default: 0
   },
-  // TODO: fix to snake case
-  storageLocation: {
+  storage_location: {
     type: String,
     default: 'storage_do_1',
     enum: ['storage_do_1'],
@@ -414,19 +422,7 @@ Aliases.pre('save', async function (next) {
 
     const string = alias.name.replace(/[^\da-z]/g, '');
 
-    if (member.group === 'admin') {
-      // always disable no-reply usernames
-      if (NO_REPLY_USERNAMES.has(string)) alias.is_enabled = false;
-    } else {
-      // prevent users from registering no-reply usernames
-      if (NO_REPLY_USERNAMES.has(string)) {
-        const err = Boom.badRequest(
-          i18n.translateError('NO_REPLY_USERNAME_DISALLOWED', alias.locale)
-        );
-        err.is_reserved_word = true;
-        throw err;
-      }
-
+    if (member.group !== 'admin') {
       // alias name cannot be a wildcard "*" if the user is not an admin
       if (alias.name === '*')
         throw Boom.badRequest(
@@ -558,7 +554,6 @@ Aliases.pre('save', async function (next) {
   }
 });
 
-// async function getStorageUsed(alias) {
 async function getStorageUsed(wsp, session) {
   //
   // calculate storage used across entire domain and its admin users domains
@@ -617,7 +612,7 @@ async function getStorageUsed(wsp, session) {
     .select({
       _id: -1,
       id: 1,
-      storageLocation: 1
+      storage_location: 1
     })
     .lean()
     .exec();

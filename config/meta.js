@@ -44,7 +44,7 @@ module.exports = function (config) {
     // in the title bar in the user's browser
     '/': [
       'Free Email Forwarding for Custom Domains',
-      'Setup encrypted email, free email forwarding, custom domains, private business email, and more with support for IMAP, POP3, and SMTP.'
+      'Setup encrypted email, free email forwarding, custom domains, private business email, and more with support for outbound SMTP and IMAP storage.'
     ],
     '/about': [
       'Free Email Forwarder for Custom Domains',

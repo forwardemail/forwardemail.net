@@ -4,79 +4,291 @@
  */
 
 const Boom = require('@hapi/boom');
-const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
+const isSANB = require('is-string-and-not-blank');
+const { isEmail } = require('validator');
 
 const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
+const config = require('#config');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
+const email = require('#helpers/email');
+const i18n = require('#helpers/i18n');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 
-const NO_REPLY_USERNAMES = new Set(noReplyList);
-
+// eslint-disable-next-line complexity
 async function generateAliasPassword(ctx) {
-  // if domain has not yet been setup yet then alert user
-  if (
-    !ctx.api &&
-    (!ctx.state.domain.has_dkim_record ||
-      !ctx.state.domain.has_return_path_record ||
-      !ctx.state.domain.has_dmarc_record)
-  ) {
-    ctx.flash(
-      'warning',
-      ctx.translate(
-        'EMAIL_SMTP_CONFIGURATION_REQUIRED',
-        ctx.state.domain.name,
-        ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/verify-smtp`)
-      )
-    );
-
-    const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
-    );
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
-    return;
-  }
-
   const redirectTo = ctx.state.l(
     `/my-account/domains/${ctx.state.domain.name}/aliases`
   );
   try {
-    const alias = await Aliases.findById(ctx.state.alias._id);
-    // prevent for disabled usernames
-    if (!alias.is_enabled)
-      throw Boom.badRequest(ctx.translateError('ALIAS_IS_NOT_ENABLED'));
+    const alias = await Aliases.findById(ctx.state.alias._id)
+      .select('+tokens.hash +tokens.salt')
+      .exec();
 
-    // prevent for no-reply usernames
-    const string = alias.name.replace(/[^\da-z]/g, '');
-    if (NO_REPLY_USERNAMES.has(string))
-      throw Boom.badRequest(ctx.translateError('NO_REPLY_USERNAME_NO_SMTP'));
+    if (alias.name === '*')
+      throw Boom.badRequest(
+        ctx.translateError('CANNOT_CREATE_TOKEN_FOR_CATCHALL')
+      );
+
+    if (alias.name.startsWith('/'))
+      throw Boom.badRequest(
+        ctx.translateError('CANNOT_CREATE_TOKEN_FOR_REGEX')
+      );
+
+    // if user did not specify is_override === true and no password provided
+    // and the alias had existing passwords then throw an error
+    if (
+      Array.isArray(alias.tokens) &&
+      alias.tokens.length > 0 &&
+      !isSANB(ctx.request.body.password) &&
+      ctx.request.body.is_override !== 'true'
+    )
+      throw Boom.badRequest(ctx.translateError('ALIAS_OVERRIDE_REQUIRED'));
+
+    // prompt user for email address to send password to
+    let emailedInstructions;
+    if (isSANB(ctx.request.body.emailed_instructions)) {
+      if (!isEmail(ctx.request.body.emailed_instructions))
+        throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
+      emailedInstructions = ctx.request.body.emailed_instructions.toLowerCase();
+    }
+
+    if (isSANB(ctx.request.body.password)) {
+      if (ctx.request.body.is_override === 'true')
+        throw Boom.badRequest(
+          ctx.translateError('ALIAS_OVERRIDE_CANNOT_HAVE_PASSWORD')
+        );
+
+      //
+      // rate limiting (checks if we have had more than 5 failed auth attempts in a row)
+      //
+      const count = await ctx.client.incrby(
+        `auth_limit_${config.env}:${ctx.state.user.id}`,
+        0
+      );
+
+      if (count >= config.smtpLimitAuth)
+        throw Boom.forbidden(ctx.translateError('ALIAS_RATE_LIMITED'));
+
+      // trim password
+      ctx.request.body.password = ctx.request.body.password.trim();
+
+      // ensure that the token is valid
+      const isValid = await Aliases.isValidPassword(
+        alias.tokens,
+        ctx.request.body.password
+      );
+
+      if (!isValid) {
+        // increase failed counter by 1
+        await ctx.client.incrby(
+          `auth_limit_${config.env}:${ctx.state.user.id}`,
+          1
+        );
+        await ctx.client.pexpire(
+          `auth_limit_${config.env}:${ctx.state.user.id}`,
+          config.smtpLimitAuthDuration
+        );
+        throw Boom.forbidden(ctx.translateError('INVALID_PASSWORD'));
+      }
+
+      // Clear authentication limit for this user
+      await ctx.client.del(`auth_limit_${config.env}:${ctx.state.user.id}`);
+    }
 
     // set locale for translation in `createToken`
     alias.locale = ctx.locale;
-    // TODO: support more than one generated password
     alias.tokens = [];
     const pass = await alias.createToken(ctx.state.user.email);
-    await alias.save();
+    alias.emailed_instructions = emailedInstructions || undefined;
+
+    if (isSANB(ctx.request.body.password)) {
+      // change password on existing sqlite file using supplied password and new password
+      const wsp = createWebSocketAsPromised();
+      await wsp.request({
+        action: 'rekey',
+        new_password: encrypt(pass),
+        session: {
+          user: {
+            id: alias.id,
+            username: `${alias.name}@${ctx.state.domain.name}`,
+            alias_id: alias.id,
+            alias_name: alias.name,
+            domain_id: ctx.state.domain.id,
+            domain_name: ctx.state.domain.name,
+            password: encrypt(ctx.request.body.password),
+            storage_location: alias.storage_location
+          }
+        }
+      });
+
+      // don't save until we're sure that sqlite operations were performed
+      await alias.save();
+
+      // close websocket
+      wsp
+        .close()
+        .then()
+        .catch((err) => ctx.logger.error(err));
+    } else if (ctx.request.body.is_override === 'true') {
+      // reset existing mailbox and create new mailbox
+      const wsp = createWebSocketAsPromised();
+      await wsp.request({
+        action: 'reset',
+        session: {
+          user: {
+            id: alias.id,
+            username: `${alias.name}@${ctx.state.domain.name}`,
+            alias_id: alias.id,
+            alias_name: alias.name,
+            domain_id: ctx.state.domain.id,
+            domain_name: ctx.state.domain.name,
+            password: encrypt(pass),
+            storage_location: alias.storage_location
+          }
+        }
+      });
+
+      // don't save until we're sure that sqlite operations were performed
+      await alias.save();
+
+      // close websocket
+      wsp
+        .close()
+        .then()
+        .catch((err) => ctx.logger.error(err));
+    } else {
+      // save alias
+      await alias.save();
+      // create new mailbox
+      const wsp = createWebSocketAsPromised();
+      await wsp.request({
+        action: 'setup',
+        session: {
+          user: {
+            id: alias.id,
+            username: `${alias.name}@${ctx.state.domain.name}`,
+            alias_id: alias.id,
+            alias_name: alias.name,
+            domain_id: ctx.state.domain.id,
+            domain_name: ctx.state.domain.name,
+            password: encrypt(pass),
+            storage_location: alias.storage_location
+          }
+        }
+      });
+
+      // close websocket
+      wsp
+        .close()
+        .then()
+        .catch((err) => ctx.logger.error(err));
+    }
+
+    const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
+      ctx.state.domain
+    );
+
+    // send password instructions to address provided
+    if (emailedInstructions) {
+      await email({
+        template: 'alert',
+        message: {
+          to: emailedInstructions,
+          locale,
+          subject: i18n.translate(
+            'ALIAS_PASSWORD_INSTRUCTIONS_SUBJECT',
+            locale,
+            `${alias.name}@${ctx.state.domain.name}`
+          )
+        },
+        locals: {
+          locale,
+          message: i18n.translate(
+            'ALIAS_PASSWORD_EMAIL',
+            locale,
+            ctx.state.user.email,
+            `${alias.name}@${ctx.state.domain.name}`,
+            //
+            // NOTE: if this URL is retrieved and valid then a new password is generated and rendered for 30s
+            //       (and can only be accessed if the alias has `emailed_instructions` equal to the entered value
+            //
+            `${config.urls.web}/ap/${ctx.state.domain.id}/${alias.id}/${encrypt(
+              pass
+            )}`
+          )
+        }
+      });
+    }
+
+    // send email notification when new password generated
+    email({
+      template: 'alert',
+      message: {
+        to,
+        ...(to.includes(ctx.state.user.email)
+          ? {}
+          : { cc: ctx.state.user[config.userFields.fullEmail] }),
+        subject: i18n.translate(
+          'ALIAS_PASSWORD_GENERATED_SUBJECT',
+          locale,
+          `${alias.name}@${ctx.state.domain.name}`
+        )
+      },
+      locals: {
+        user: ctx.state.user,
+        locale,
+        message: (
+          i18n.translate(
+            'ALIAS_PASSWORD_GENERATED',
+            locale,
+            `${alias.name}@${ctx.state.domain.name}`,
+            ctx.state.user.email
+          ) +
+          ' ' +
+          (emailedInstructions
+            ? i18n.translate(
+                'ALIAS_PASSWORD_INSTRUCTIONS',
+                locale,
+                emailedInstructions
+              )
+            : '')
+        ).trim()
+      }
+    })
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    const html = emailedInstructions
+      ? ctx.translate('ALIAS_PASSWORD_INSTRUCTIONS', emailedInstructions)
+      : ctx.translate(
+          'ALIAS_GENERATED_PASSWORD',
+          `${alias.name}@${ctx.state.domain.name}`,
+          pass
+        );
+
     const swal = {
       title: ctx.request.t('Success'),
-      html: ctx.translate(
-        'ALIAS_GENERATED_PASSWORD',
-        `${alias.name}@${ctx.state.domain.name}`,
-        pass
-      ),
-      timer: 30000,
+      html,
       type: 'success',
-      position: 'top',
-      allowEscapeKey: false,
-      allowOutsideClick: false,
-      focusConfirm: false,
-      returnFocus: false,
-      grow: 'fullscreen',
-      backdrop: 'rgba(0,0,0,0.8)'
+      ...(emailedInstructions
+        ? {}
+        : {
+            timer: 30000,
+            position: 'top',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            focusConfirm: false,
+            returnFocus: false,
+            grow: 'fullscreen',
+            backdrop: 'rgba(0,0,0,0.8)'
+          })
     };
+    ctx.flash('custom', swal);
     if (ctx.accepts('html')) {
-      ctx.flash('custom', swal);
       ctx.redirect(redirectTo);
     } else {
-      ctx.body = { swal };
+      ctx.body = { redirectTo };
     }
   } catch (err) {
     if (err && err.isBoom) throw err;

@@ -3,6 +3,70 @@ extends ../../../layout
 block body
   include ../_modal-domain
 
+  //- Setup Instructions
+  #modal-setup-instructions.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-setup-instructions-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          h4#modal-setup-instructions-title.d-inline-block.ml-4= t("Setup Instructions")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body.text-center
+          h2.h4= t("Our service works with popular email clients:")
+          ul.list-inline.h3.mb-0
+            li.list-inline-item.mr-1: span.badge.badge-dark= "Apple"
+            li.list-inline-item.mr-1: span.badge.badge-dark= "Microsoft"
+            li.list-inline-item.mr-1: span.badge.badge-dark= "Google"
+            li.list-inline-item.mr-1: span.badge.badge-dark= "Thunderbird"
+            li.list-inline-item.mr-1: span.badge.badge-dark= "Android"
+            li.list-inline-item: span.badge.badge-secondary= "and more"
+          hr
+          h2.h4= t("What should I use for my email client settings?")
+          .alert.alert-primary.small!= t('Your username is your alias\' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").')
+          table.table.table-hover.table-bordered.table-sm.mb-0
+            thead.thead-dark
+              tr
+                th(scope="col")= t("Type")
+                th(scope="col")= t("Hostname")
+                th(scope="col")= t("Protocol")
+                th(scope="col")= t("Ports")
+            tbody
+              tr
+                td IMAP
+                td: span.markdown-body: code= "imap.forwardemail.net"
+                td TLS (STARTTLS)
+                td
+                  ul.list-unstyled
+                    li: span.markdown-body: code= 993
+                    li: span.markdown-body: code= 2993
+              tr
+                td SMTP
+                td: span.markdown-body: code= "smtp.forwardemail.net"
+                td
+                  = "TLS (STARTTLS)"
+                  .hr-text.d-flex.text-secondary.align-items-center= t("or")
+                  = "SSL"
+                td
+                  ul.list-unstyled
+                    li: span.markdown-body: code= 587
+                    li: span.markdown-body: code= 2587
+                    li: span.markdown-body: code= 2525
+                    li: span.markdown-body: code= 25
+                  .hr-text.d-flex.text-secondary.align-items-center= t("or")
+                  ul.list-unstyled
+                    li: span.markdown-body: code= 465
+                    li: span.markdown-body: code= 2465
+          hr
+          h2.h4= t("How do I import and migrate my existing mailbox?")
+          a.btn.btn-lg.btn-dark(
+            href=l("/faq#how-do-i-import-and-migrate-my-existing-mailbox"),
+            target="_blank"
+          )= t("Click here for instructions")
   #modal-alias.modal.fade(
     tabindex="-1",
     role="dialog",

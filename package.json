@@ -20,6 +20,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "3.441.0",
     "@aws-sdk/lib-storage": "3.441.0",
+    "@aws-sdk/s3-request-presigner": "3.441.0",
     "@forevolve/bootstrap-dark": "4.0.0",
     "@fortawesome/fontawesome-free": "5.15.4",
     "@hapi/boom": "10.0.1",

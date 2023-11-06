@@ -8,10 +8,12 @@ const http = require('node:http');
 const https = require('node:https');
 const os = require('node:os');
 const path = require('node:path');
+const { Buffer } = require('node:buffer');
 const { createGzip } = require('node:zlib');
 const { promisify } = require('node:util');
 
 const Boom = require('@hapi/boom');
+const Database = require('better-sqlite3-multiple-ciphers');
 const Lock = require('ioredfour');
 const _ = require('lodash');
 const auth = require('basic-auth');
@@ -20,10 +22,11 @@ const hasha = require('hasha');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { WebSocketServer } = require('ws');
-const { validate: uuidValidate } = require('uuid');
+// const { validate: uuidValidate } = require('uuid');
 const prettyBytes = require('pretty-bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const { Upload } = require('@aws-sdk/lib-storage');
@@ -34,8 +37,8 @@ const {
   HeadObjectCommand
   // PutObjectCommand
 } = require('@aws-sdk/client-s3');
-// const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
+const Aliases = require('#models/aliases');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
@@ -45,7 +48,14 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
-const PAYLOAD_ACTIONS = new Set(['setup', 'size', 'stmt', 'backup']);
+const PAYLOAD_ACTIONS = new Set([
+  'setup',
+  'size',
+  'stmt',
+  'backup',
+  'rekey',
+  'reset'
+]);
 const STATEMENT_OPERATIONS = new Set(['prepare', 'run', 'get', 'all', 'pluck']);
 
 const S3 = new S3Client({
@@ -161,10 +171,13 @@ class SQLite {
 
       // eslint-disable-next-line complexity
       ws.on('message', async (data) => {
+        ws.isAlive = true;
+
         // return early for ping/pong
         if (data && data.toString() === 'ping') return;
 
         let db;
+        let lock;
         let payload;
         try {
           if (!data) throw new TypeError('Data missing');
@@ -275,13 +288,13 @@ class SQLite {
             throw new TypeError('Payload storage location missing');
 
           // NOTE: `this` is the sqlite instance
-          if (payload.action !== 'setup')
+          if (payload.action !== 'setup' && payload.action !== 'reset')
             db = await getDatabase(
               this,
               // alias
               {
                 id: payload.session.user.alias_id,
-                storageLocation: payload.session.user.storage_location
+                storage_location: payload.session.user.storage_location
               },
               payload.session,
               payload?.lock
@@ -299,7 +312,7 @@ class SQLite {
               // check how much space is remaining on storage location
               const storagePath = getPathToDatabase({
                 id: payload.session.user.alias_id,
-                storageLocation: payload.session.user.storage_location
+                storage_location: payload.session.user.storage_location
               });
               const diskSpace = await checkDiskSpace(storagePath);
 
@@ -318,7 +331,7 @@ class SQLite {
                 // alias
                 {
                   id: payload.session.user.alias_id,
-                  storageLocation: payload.session.user.storage_location
+                  storage_location: payload.session.user.storage_location
                 },
                 payload.session,
                 payload?.lock
@@ -333,6 +346,8 @@ class SQLite {
               break;
             }
 
+            // TODO: include backups on R2 in this storage calculation
+            //       (note the HTTP request will slow things down here; so we most likely want to use redis in the future)
             // storage quota
             case 'size': {
               if (!_.isArray(payload.aliases) || payload.aliases.length === 0)
@@ -459,25 +474,26 @@ class SQLite {
               break;
             }
 
-            // TODO: allow backups at anytime (prompt for pass)
-            // TODO: change password (prompt for pass)
-            // TODO: email notifications
-            // TODO: send password info (both API and user endpoint)
-            // TODO: admin alert when user creates new alias (and not via API)
-            // TODO: admin alert when alias generated password changed
-            // TODO: allow user to download from cloudflare R2 at anytime
-
-            // TODO: add test
-            case 'backup': {
-              const tmp = path.join(os.tmpdir(), `${payload.id}.sqlite`);
-
-              let backup;
-              let err;
+            // leverages `payload.new_password` to rekey existing
+            case 'rekey': {
+              lock = await db.acquireLock();
+              if (!isSANB(payload.new_password))
+                throw new TypeError('New password missing');
+              //
+              // NOTE: rekeying is not supported in WAL mode
+              //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/64>
+              //       e.g. this results in "SqliteError: SQL logic error"
+              //       `db.rekey(Buffer.from(decrypt(payload.new_password)));`
+              //       `db.pragma(`rekey="${decrypt(payload.new_password)}"`);`
+              //
+              // instead we will simply make a backup
+              // and then remove the old db and then add the new db
+              //
 
               // check how much space is remaining on storage location
               const storagePath = getPathToDatabase({
                 id: payload.session.user.alias_id,
-                storageLocation: payload.session.user.storage_location
+                storage_location: payload.session.user.storage_location
               });
               const diskSpace = await checkDiskSpace(storagePath);
 
@@ -496,18 +512,171 @@ class SQLite {
                   )} was available`
                 );
 
+              // create backup
+              const tmp = path.join(os.tmpdir(), `${payload.id}.sqlite`);
+              const results = await db.backup(tmp);
+              let backup = true;
+
+              let err;
+
+              logger.debug('results', { results });
+
               try {
+                // NOTE: if you change anything in here change `setupPragma`
+                // open the backup and encrypt it
+                const backupDb = new Database(tmp, {
+                  fileMustExist: true,
+                  timeout: config.busyTimeout,
+                  verbose: config.env === 'development' ? console.log : null
+                });
+                backupDb.pragma(`cipher='chacha20'`);
+                backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
+                backupDb.close();
+
+                // rename backup file (overwrites existing destination file)
+                await fs.promises.rename(tmp, storagePath);
+                backup = false;
+                logger.debug('renamed', { tmp, storagePath });
+              } catch (_err) {
+                err = _err;
+              }
+
+              // always do cleanup in case of errors
+              if (backup) {
+                try {
+                  await fs.promises.unlink(tmp);
+                } catch (err) {
+                  logger.fatal(err);
+                }
+              }
+
+              if (err) throw err;
+
+              ws.send(
+                safeStringify({
+                  id: payload.id,
+                  data: true
+                })
+              );
+              break;
+            }
+
+            case 'reset': {
+              lock = await this.lock.waitAcquireLock(
+                `${payload.session.user.alias_id}`,
+                ms('5m'),
+                ms('1m')
+              );
+              if (!lock.success)
+                throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
+
+              // check how much space is remaining on storage location
+              const storagePath = getPathToDatabase({
+                id: payload.session.user.alias_id,
+                storage_location: payload.session.user.storage_location
+              });
+              const diskSpace = await checkDiskSpace(storagePath);
+
+              // slight 2x overhead for backups
+              const spaceRequired = config.maxQuotaPerAlias * 2;
+
+              if (diskSpace.free < spaceRequired)
+                throw new TypeError(
+                  `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                    diskSpace.free
+                  )} was available`
+                );
+
+              try {
+                await fs.promises.unlink(storagePath);
+              } catch (err) {
+                logger.fatal(err);
+              }
+
+              db = await getDatabase(
+                this,
+                // alias
+                {
+                  id: payload.session.user.alias_id,
+                  storage_location: payload.session.user.storage_location
+                },
+                payload.session,
+                lock
+              );
+
+              ws.send(
+                safeStringify({
+                  id: payload.id,
+                  data: true
+                })
+              );
+              break;
+            }
+
+            case 'backup': {
+              // ensure payload.backup_at is a string and valid date
+              if (!isSANB(payload.backup_at))
+                throw new TypeError('Backup at date missing');
+
+              if (!_.isDate(new Date(payload.backup_at)))
+                throw new TypeError('Backup at invalid date');
+
+              const tmp = path.join(os.tmpdir(), `${payload.id}.sqlite`);
+
+              // only allow one backup at a time and once every hour
+              const lock = await this.lock.waitAcquireLock(
+                `${payload.session.user.alias_id}-backup`,
+                ms('5s'),
+                ms('1h')
+              );
+
+              if (!lock.success)
+                throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
+
+              let backup;
+              let err;
+
+              try {
+                // check how much space is remaining on storage location
+                const storagePath = getPathToDatabase({
+                  id: payload.session.user.alias_id,
+                  storage_location: payload.session.user.storage_location
+                });
+                const diskSpace = await checkDiskSpace(storagePath);
+
+                // <https://github.com/nodejs/node/issues/38006>
+                const stats = await fs.promises.stat(storagePath);
+                if (!stats.isFile() || stats.size === 0)
+                  throw new TypeError('Database empty');
+
+                // we calculate size of db x 2 (backup + tarball)
+                const spaceRequired = stats.size * 2;
+
+                if (diskSpace.free < spaceRequired)
+                  throw new TypeError(
+                    `Needed ${prettyBytes(
+                      spaceRequired
+                    )} but only ${prettyBytes(diskSpace.free)} was available`
+                  );
+
                 // create bucket on s3 if it doesn't already exist
                 // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
                 const bucket = `${config.env}-${dashify(
                   _.camelCase(payload.session.user.storage_location)
                 )}`;
 
-                const response = await S3.send(
-                  new HeadBucketCommand({
-                    Bucket: bucket
-                  })
-                );
+                const key = `${payload.session.user.alias_id}.sqlite.gz`;
+
+                let response;
+                try {
+                  response = await S3.send(
+                    new HeadBucketCommand({
+                      Bucket: bucket
+                    })
+                  );
+                } catch (err) {
+                  if (err.name !== 'NotFound') throw err;
+                }
 
                 if (response?.$metadata?.httpStatusCode !== 200) {
                   try {
@@ -522,14 +691,26 @@ class SQLite {
                   }
                 }
 
-                const key = `${payload.session.user.alias_id}.sqlite.gz`;
-
                 // create backup
-                await db.backup(tmp);
+                const results = await db.backup(tmp);
+                logger.debug('results', { results });
                 backup = true;
 
+                // NOTE: if you change anything in here change `setupPragma`
+                // open the backup and encrypt it
+                const backupDb = new Database(tmp, {
+                  fileMustExist: true,
+                  timeout: config.busyTimeout,
+                  verbose: config.env === 'development' ? console.log : null
+                });
+                backupDb.pragma(`cipher='chacha20'`);
+                backupDb.rekey(
+                  Buffer.from(decrypt(payload.session.user.password))
+                );
+                backupDb.close();
+
                 // calculate hash of file
-                const hash = await hasha.fromFile(tmp, { algorithm: 'md5' });
+                const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
 
                 // check if hash already exists in s3
                 try {
@@ -569,9 +750,17 @@ class SQLite {
                 });
                 await upload.done();
 
-                // console.log(
-                //   await getSignedUrl(S3, new GetObjectCommand({Bucket: 'my-bucket-name', Key: 'dog.png'}), { expiresIn: 3600 })
-                // )
+                // update alias imap backup date using provided time
+                await Aliases.findOneAndUpdate(
+                  {
+                    id: payload.session.user.alias_id
+                  },
+                  {
+                    $set: {
+                      imap_backup_at: new Date(payload.backup_at)
+                    }
+                  }
+                );
               } catch (_err) {
                 err = _err;
               }
@@ -580,6 +769,17 @@ class SQLite {
               if (backup) {
                 try {
                   await fs.promises.unlink(tmp);
+                } catch (err) {
+                  logger.fatal(err);
+                }
+              }
+
+              // release lock if any
+              if (lock) {
+                try {
+                  const result = await this.lock.releaseLock(lock);
+                  if (!result.success)
+                    throw i18n.translateError('IMAP_RELEASE_LOCK_FAILED');
                 } catch (err) {
                   logger.fatal(err);
                 }
@@ -601,6 +801,11 @@ class SQLite {
             }
           }
 
+          if (lock)
+            db.releaseLock(lock)
+              .then()
+              .catch((err) => logger.fatal(err));
+
           db.close();
         } catch (err) {
           err.payload = payload;
@@ -613,8 +818,18 @@ class SQLite {
           // at least early on we should get errors in advance
           err.isCodeBug = true;
           logger.fatal(err);
+
+          if (lock) {
+            this.lock
+              .releaseLock(lock)
+              .then()
+              .catch((err) => logger.fatal(err));
+          }
+
           if (db && db.open && typeof db.close === 'function') db.close();
-          if (_.isPlainObject(payload) && uuidValidate(payload.id))
+
+          // if (_.isPlainObject(payload) && uuidValidate(payload.id))
+          if (_.isPlainObject(payload) && isSANB(payload.id))
             ws.send(
               safeStringify({
                 id: payload.id,
@@ -631,7 +846,7 @@ class SQLite {
         ws.isAlive = false;
         ws.ping();
       }
-    }, 5000); // TODO: change this to 30s
+    }, ms('35s'));
 
     this.wss.on('close', () => {
       clearInterval(interval);

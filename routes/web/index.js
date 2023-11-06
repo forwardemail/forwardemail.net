@@ -219,6 +219,11 @@ localeRouter
     web.auth.forgotPassword
   )
   .get(
+    '/ap/:domain_id/:alias_id/:encrypted_password',
+    rateLimit(20, 'regenerate alias password'),
+    web.regenerateAliasPassword
+  )
+  .get(
     '/reset-password/:token',
     policies.ensureLoggedOut,
     render('reset-password')

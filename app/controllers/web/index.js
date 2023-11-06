@@ -12,6 +12,7 @@ const Meta = require('koa-meta');
 const _ = require('lodash');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
+const mongoose = require('mongoose');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const revHash = require('rev-hash');
 const sharp = require('sharp');
@@ -32,11 +33,14 @@ const denylist = require('./denylist');
 const guides = require('./guides');
 const sitemap = require('./sitemap');
 
+const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const config = require('#config');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
+const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
-const { Domains, Aliases } = require('#models');
-const { decrypt } = require('#helpers/encrypt-decrypt');
+const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
 const meta = new Meta(config.meta, logger);
 
@@ -276,6 +280,159 @@ async function generateOpenGraphImage(ctx) {
   }
 }
 
+async function regenerateAliasPassword(ctx) {
+  try {
+    // validate domain_id is set
+    if (
+      !isSANB(ctx.params.domain_id) ||
+      !mongoose.Types.ObjectId.isValid(ctx.params.domain_id)
+    )
+      throw new Error('Domain param missing');
+
+    // validate alias_id is set
+    if (
+      !isSANB(ctx.params.alias_id) ||
+      !mongoose.Types.ObjectId.isValid(ctx.params.alias_id)
+    )
+      throw new Error('Alias param missing');
+
+    // validate encrypted_password is set
+    if (!isSANB(ctx.params.encrypted_password))
+      throw new Error('Encrypted password param missing');
+
+    // validate domain exists
+    const domain = await Domains.findById(ctx.params.domain_id).lean().exec();
+    if (!domain) throw new Error('Domain does not exist');
+
+    const alias = await Aliases.findOne({
+      id: ctx.params.alias_id,
+      domain: domain._id
+    })
+      .select('+tokens.hash +tokens.salt')
+      .exec();
+
+    // validate alias exists
+    if (!alias || alias.name === '*' || alias.name.startsWith('/'))
+      throw new Error('Alias does not exist');
+
+    if (!Array.isArray(alias.tokens) || alias.tokens.length === 0)
+      throw new Error('Alias does not have any generated passwords');
+
+    // validate emailed_instructions is set and an email
+    if (
+      !isSANB(alias.emailed_instructions) ||
+      !isEmail(alias.emailed_instructions)
+    )
+      throw new Error('Emailed instructions was not set');
+
+    // validate password
+    // ensure that the token is valid
+    const isValid = await Aliases.isValidPassword(
+      alias.tokens,
+      decrypt(ctx.params.encrypted_password)
+    );
+
+    if (!isValid) throw new Error('Invalid password');
+
+    const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(domain);
+
+    // generate new password
+    // set locale for translation in `createToken`
+    alias.locale = ctx.locale;
+    alias.tokens = [];
+    const pass = await alias.createToken(alias.emailed_instructions);
+
+    // change password on existing sqlite file using supplied password and new password
+    const wsp = createWebSocketAsPromised();
+    await wsp.request({
+      action: 'rekey',
+      new_password: encrypt(pass),
+      session: {
+        user: {
+          id: alias.id,
+          username: `${alias.name}@${domain.name}`,
+          alias_id: alias.id,
+          alias_name: alias.name,
+          domain_id: domain.id,
+          domain_name: domain.name,
+          password: ctx.params.encrypted_password,
+          storage_location: alias.storage_location
+        }
+      }
+    });
+
+    // don't save until we're sure that sqlite operations were performed
+    await alias.save();
+
+    // close websocket
+    wsp
+      .close()
+      .then()
+      .catch((err) => ctx.logger.error(err));
+
+    // email admins that user claimed password
+    email({
+      template: 'alert',
+      message: {
+        to,
+        subject: i18n.translate(
+          'ALIAS_PASSWORD_GENERATED_SUBJECT',
+          locale,
+          `${alias.name}@${domain.name}`
+        )
+      },
+      locals: {
+        locale,
+        message: i18n.translate(
+          'ALIAS_PASSWORD_GENERATED',
+          locale,
+          `${alias.name}@${domain.name}`,
+          alias.emailed_instructions
+        )
+      }
+    })
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    // render modal with pass
+    const html = ctx.translate(
+      'ALIAS_GENERATED_PASSWORD',
+      `${alias.name}@${domain.name}`,
+      pass
+    );
+
+    const swal = {
+      title: ctx.request.t('Success'),
+      html,
+      type: 'success',
+      timer: 30000,
+      position: 'top',
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      focusConfirm: false,
+      returnFocus: false,
+      grow: 'fullscreen',
+      backdrop: 'rgba(0,0,0,0.8)'
+    };
+
+    ctx.flash('custom', swal);
+
+    // redirect to faq section:
+    const redirectTo = ctx.state.l(
+      '/faq#how-do-i-configure-my-email-client-to-work-with-forward-email'
+    );
+
+    if (ctx.accepts('html')) {
+      ctx.redirect(redirectTo);
+    } else {
+      ctx.body = { redirectTo };
+    }
+  } catch (err) {
+    ctx.logger.error(err);
+    ctx.throw(Boom.notFound(ctx.translateError('UNKNOWN_ERROR')));
+  }
+}
+
 module.exports = {
   admin,
   api,
@@ -292,5 +449,6 @@ module.exports = {
   denylist,
   guides,
   sitemap,
-  generateOpenGraphImage
+  generateOpenGraphImage,
+  regenerateAliasPassword
 };

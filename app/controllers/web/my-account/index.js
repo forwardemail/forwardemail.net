@@ -57,6 +57,7 @@ const removeEmail = require('./remove-email');
 const ensureSMTPAccess = require('./ensure-smtp-access');
 const verifySMTP = require('./verify-smtp');
 const generateAliasPassword = require('./generate-alias-password');
+const downloadAliasBackup = require('./download-alias-backup');
 
 module.exports = {
   cancelEmailChange,
@@ -112,5 +113,6 @@ module.exports = {
   removeEmail,
   ensureSMTPAccess,
   verifySMTP,
-  generateAliasPassword
+  generateAliasPassword,
+  downloadAliasBackup
 };

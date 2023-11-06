@@ -282,8 +282,20 @@ router
     web.myAccount.ensureSMTPAccess,
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
+    policies.ensureTurnstile,
     rateLimit(20, 'generate alias password'),
     web.myAccount.generateAliasPassword
+  )
+  .post(
+    '/domains/:domain_id/aliases/:alias_id/download-backup',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.ensureSMTPAccess,
+    web.myAccount.retrieveAlias,
+    web.myAccount.ensureAliasAdmin,
+    policies.ensureTurnstile,
+    rateLimit(10, 'download alias backup'),
+    web.myAccount.downloadAliasBackup
   )
   .get(
     '/domains/:domain_id/billing',

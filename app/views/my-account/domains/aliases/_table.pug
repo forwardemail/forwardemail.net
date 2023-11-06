@@ -22,6 +22,140 @@ include ../../../_pagination
         each alias in domain.aliases
           tr
             td.align-middle
+              //- Download Backup
+              .modal.fade(
+                id=`modal-download-backup-${alias.id}`,
+                tabindex="-1",
+                role="dialog",
+                aria-labelledby=`modal-download-backup-${alias.id}-title`,
+                aria-hidden="true"
+              )
+                .modal-dialog(role="document")
+                  .modal-content
+                    .modal-header.text-center.d-block
+                      h4.d-inline-block.ml-4(
+                        id=`modal-download-backup-${alias.id}-title`
+                      )= t("Download Backup")
+                      button.close(
+                        type="button",
+                        data-dismiss="modal",
+                        aria-label="Close"
+                      )
+                        span(aria-hidden="true") &times;
+                    .modal-body.text-center
+                      p.alert.alert-warning.small
+                        i.fa.fa-exclamation-circle.font-weight-bold
+                        = " "
+                        != t('<strong>Warning:</strong> This feature is experimental.  It allows you to download a SQLite file that you can open with <a href="https://github.com/pawelsalawa/sqlitestudio" target="_blank" class="alert-link">SQLiteStudio</a>. You must select <span class="notranslate">"WxSQLite3"</span> as the database type and use <span class="notranslate">"sqleet"</span> cipher to decrypt it using your password.  In the near future we will allow you to download or convert this into an MBOX file for migration.')
+                      form.ajax-form.d-block.confirm-prompt(
+                        action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/download-backup`),
+                        method="POST"
+                      )
+                        p.font-weight-bold.lead= t("Enter current password to get a new backup:")
+                        .form-group.floating-label
+                          input.form-control.form-control-lg(
+                            id=`input-backup-password-${alias.id}`,
+                            name="password",
+                            required=!_.isDate(alias.imap_backup_at),
+                            type="password",
+                            placeholder=" ",
+                            autocomplete="off"
+                          )
+                          label(for=`input-backup-password-${alias.id}`)= t("Password")
+                        if _.isDate(alias.imap_backup_at)
+                          p.alert.alert-primary.small
+                            = emoji("point_up")
+                            = " "
+                            != t("Leave this blank to download the backup from:")
+                            = " "
+                            span.dayjs.font-weight-bold(
+                              data-time=new Date(alias.imap_backup_at).getTime()
+                            )= dayjs(alias.imap_backup_at).format("M/D/YY h:mm A z")
+                        if config.turnstileEnabled
+                          noscript
+                            .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
+                          .cf-explicit-turnstile
+                        button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
+
+              //- Generate Password
+              if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
+                .modal.fade(
+                  id=`modal-generate-password-${alias.id}`,
+                  tabindex="-1",
+                  role="dialog",
+                  aria-labelledby=`modal-generate-password-${alias.id}-title`,
+                  aria-hidden="true"
+                )
+                  .modal-dialog.modal-lg(role="document")
+                    .modal-content
+                      .modal-header.text-center.d-block
+                        h4.d-inline-block.ml-4(
+                          id=`modal-generate-password-${alias.id}-title`
+                        )= t("Generate Password")
+                        button.close(
+                          type="button",
+                          data-dismiss="modal",
+                          aria-label="Close"
+                        )
+                          span(aria-hidden="true") &times;
+                      .modal-body.text-center
+                        form.ajax-form.d-block.confirm-prompt(
+                          action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/generate-password`),
+                          method="POST"
+                        )
+                          if alias.tokens.length > 0
+                            p.alert.alert-warning.small
+                              i.fa.fa-exclamation-circle.font-weight-bold
+                              = " "
+                              != t("<strong>Warning:</strong> This removes the current password for this alias.")
+                          p.font-weight-bold.lead= t("Need to email instructions to someone?")
+                          .form-group.floating-label
+                            input.form-control.form-control-lg(
+                              id=`input-emailed-instructions-${alias.id}`,
+                              type="email",
+                              autocomplete="off",
+                              name="emailed_instructions",
+                              placeholder="name@example.com"
+                            )
+                            label(for=`input-emailed-instructions-${alias.id}`)= t("Email address")
+                          p.alert.alert-primary.small
+                            = emoji("point_up")
+                            = " "
+                            = t("Leave this blank to get your password instantly.")
+                          if alias.tokens.length > 0
+                            p.font-weight-bold.lead= t("Enter current password to keep existing mailbox and messages:")
+                            .form-group.floating-label
+                              input.form-control.form-control-lg(
+                                id=`input-password-${alias.id}`,
+                                name="password",
+                                type="password",
+                                placeholder=" ",
+                                autocomplete="off"
+                              )
+                              label(for=`input-password-${alias.id}`)= t("Password")
+                            p.alert.alert-primary.small
+                              = emoji("point_up")
+                              = " "
+                              != t('This will <a href="%s" class="alert-link" target="_blank">re-encrypt your mailbox</a> with a new password.', l("/encrypted-email"))
+                            .alert.alert-danger
+                              .form-check.text-left.small
+                                input.form-check-input(
+                                  id=`input-is-override-${alias.id}`,
+                                  type="checkbox",
+                                  name="is_override",
+                                  value="true"
+                                )
+                                label.form-check-label(
+                                  for=`input-is-override-${alias.id}`
+                                )
+                                  != t("Don't remember your current password? If you check this, then we'll delete the entire mailbox and all messages for this alias. <strong>We recommend that you download the latest backup before proceeding.</strong>")
+                          if config.turnstileEnabled
+                            noscript
+                              .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
+                            .cf-explicit-turnstile
+                          button.btn.btn-success.btn-block.btn-lg(
+                            type="submit"
+                          )= t("Continue")
               p.mb-0.markdown-body.ml-0.mr-0
                 button.btn.btn-sm.btn-link.d-lg-none(
                   type="button",
@@ -54,6 +188,12 @@ include ../../../_pagination
                   = t("Recipients")
                   = ":"
                 ul.list-inline.mb-1
+                  if alias.has_imap
+                    li.list-inline-item
+                      span.badge.badge-success.text-monospace.font-weight-normal.text-nowrap
+                        i.fa.fa-check-circle
+                        = " "
+                        = "IMAP"
                   //- no recipient verification required
                   if domain.plan === 'free' || !alias.has_recipient_verification
                     each recipient in alias.recipients
@@ -119,35 +259,53 @@ include ../../../_pagination
 
                 ul.list-inline.mb-0
                   li.list-inline-item
-                    a.btn.btn-sm.btn-dark(
+                    a.btn.btn-sm.btn-link.text-themed.btn-block(
                       href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
                     )
                       i.fa.fa-pencil
                       = " "
-                      = t("Edit Alias")
+                      = t("Edit")
                   li.list-inline-item
-                    form.ajax-form.confirm-prompt.d-inline-block(
+                    form.ajax-form.confirm-prompt.d-block(
                       action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
                       method="POST"
                     )
                       input(type="hidden", name="_method", value="DELETE")
-                      button.btn.btn-sm.btn-danger(type="submit")
+                      button.btn.btn-sm.btn-link.text-danger.btn-block(
+                        type="submit"
+                      )
                         i.fa.fa-trash
                         = " "
-                        = t("Delete Alias")
-                  //- generate password for alias
-                  //- TODO: support more than one generated password
-                  if !domain.is_global && alias.name !== '*' && alias.is_enabled && !alias.name.startsWith('/') && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
-                    form.ajax-form.confirm-prompt.d-inline-block(
-                      action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/generate-password`),
-                      data-confirm-prompt-title=t("Generate new password?"),
-                      data-confirm-prompt-html=t("This will delete all previously created passwords for this alias. We will support multiple passwords soon!"),
-                      method="POST"
-                    )
-                      button.btn.btn-sm.btn-success(type="submit")
+                        = t("Delete")
+                  //- generate password for alias, setup instructions, download backup
+                  if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
+                    li.list-inline-item
+                      button.btn.btn-sm.btn-link.text-success.btn-block(
+                        type="button",
+                        data-toggle="modal",
+                        data-target=`#modal-generate-password-${alias.id}`
+                      )
                         i.fa.fa-key
                         = " "
-                        = t("Generate password")
+                        = t("Generate Password")
+                    li.list-inline-item
+                      button.btn.btn-sm.btn-link.text-dark.btn-block(
+                        type="button",
+                        data-toggle="modal",
+                        data-target="#modal-setup-instructions"
+                      )
+                        i.fa.fa-list-ol
+                        = " "
+                        = t("Setup Instructions")
+                    li.list-inline-item
+                      button.btn.btn-sm.btn-link.text-dark.btn-block(
+                        type="button",
+                        data-toggle="modal",
+                        data-target=`#modal-download-backup-${alias.id}`
+                      )
+                        i.fa.fa-database
+                        = " "
+                        = t("Download Backup")
 
             td.align-middle.d-none.d-lg-table-cell
               if isSANB(alias.description)
@@ -177,6 +335,12 @@ include ../../../_pagination
                 i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
             td.align-middle.d-none.d-lg-table-cell
               ul.list-inline.mb-0
+                if alias.has_imap
+                  li.list-inline-item
+                    span.badge.badge-success.text-monospace.font-weight-normal.text-nowrap
+                      i.fa.fa-check-circle
+                      = " "
+                      = "IMAP"
                 //- no recipient verification required
                 if domain.plan === 'free' || !alias.has_recipient_verification
                   each recipient in alias.recipients
@@ -261,20 +425,33 @@ include ../../../_pagination
                       = " "
                       = t("Delete")
                 //- generate password for alias
-                //- TODO: support more than one generated password
-                if domain.plan !== 'free'
+                if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
                   li.list-inline-item
-                    form.ajax-form.confirm-prompt.d-block(
-                      action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/generate-password`),
-                      data-confirm-prompt-title=t("Generate new password?"),
-                      data-confirm-prompt-html=t("This will delete all previously created passwords for this alias. We will support multiple passwords soon!"),
-                      method="POST"
+                    button.btn.btn-sm.btn-link.text-success.btn-block(
+                      type="button",
+                      data-toggle="modal",
+                      data-target=`#modal-generate-password-${alias.id}`
                     )
-                      button.btn.btn-sm.btn-link.text-success.btn-block(
-                        type="submit"
-                      )
-                        i.fa.fa-key
-                        = " "
-                        = t("Generate password")
+                      i.fa.fa-key
+                      = " "
+                      = t("Generate Password")
+                  li.list-inline-item
+                    button.btn.btn-sm.btn-link.text-dark.btn-block(
+                      type="button",
+                      data-toggle="modal",
+                      data-target="#modal-setup-instructions"
+                    )
+                      i.fa.fa-list-ol
+                      = " "
+                      = t("Setup Instructions")
+                  li.list-inline-item
+                    button.btn.btn-sm.btn-link.text-dark.btn-block(
+                      type="button",
+                      data-toggle="modal",
+                      data-target=`#modal-download-backup-${alias.id}`
+                    )
+                      i.fa.fa-database
+                      = " "
+                      = t("Download Backup")
 
 +paginate('#table-aliases')

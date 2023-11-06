@@ -14,6 +14,8 @@
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
+* [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+* [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
 * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
 * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
 * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
@@ -712,7 +714,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
 
 2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
 4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
@@ -727,7 +729,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
 
 6. When prompted for SMTP server port, enter `587` (TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> in step 3 above
+7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
 
 8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
 
@@ -765,9 +767,9 @@ It supports both IPv4 and IPv6 and is available over ports `587`, `2587`, `2525`
 | Login    | Example                    | Description                                                                                                                                                                               |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Username | `user@example.com`         | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific or domain-wide (coming soon) generated password.                                                                                                                           |
+| Password | `************************` | Alias-specific generated password.                                                                                                                                                        |
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be either an alias-specific or a domain-wide (coming soon) generated password.
+In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be either an alias-specific generated password.
 
 Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
 
@@ -785,9 +787,9 @@ It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for 
 | Login    | Example                    | Description                                                                                                                                                                               |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Username | `user@example.com`         | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific or domain-wide (coming soon) generated password.                                                                                                                           |
+| Password | `************************` | Alias-specific generated password.                                                                                                                                                        |
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be either an alias-specific or a domain-wide (coming soon) generated password.
+In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be either an alias-specific generated password.
 
 Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
 
@@ -833,7 +835,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
 
 1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
 3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
@@ -848,7 +850,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
 
 5. When prompted for IMAP server port, enter `993` (TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
 
-6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> in step 3 above
+6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
 
 7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 
@@ -912,7 +914,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
 
 2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
 4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
 
@@ -928,7 +930,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
 
 10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate password</strong> in step 3 above
+11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
 
 12. Leave the radio button checked for "Secured connection using TLS"
 
@@ -1046,6 +1048,59 @@ This is a widely known issue, and also affects services such as Gmail.  <a href=
 If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
 
 **Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
+
+
+## How do I configure my email client to work with Forward Email
+
+<div class="mb-3">
+  Our service works with popular email clients such as:
+  <ul class="ml-1 h4 d-inline list-inline mb-0" style="padding-left: 0px;">
+    <li class="list-inline-item"><span class="badge badge-dark">Apple</span></li>
+    <li class="list-inline-item"><span class="badge badge-dark">Microsoft</span></li>
+    <li class="list-inline-item"><span class="badge badge-dark">Google</span></li>
+    <li class="list-inline-item"><span class="badge badge-dark">Thunderbird</span></li>
+    <li class="list-inline-item"><span class="badge badge-dark">Android</span></li>
+    <li class="list-inline-item"><span class="badge badge-secondary">and more</span></li>
+  </ul>
+</div>
+
+<div class="alert alert-primary">
+  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+</div>
+
+| Type |         Hostname        |         Protocol        |                                       Ports                                       |
+| :--: | :---------------------: | :---------------------: | :-------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net` |      TLS (STARTTLS)     |                                  `993` and `2993`                                 |
+| SMTP | `smtp.forwardemail.net` | TLS (STARTTLS) (or) SSL | `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) (or) `465` and `2465` for SSL. |
+
+
+## How do I import and migrate my existing mailbox
+
+You can import and migrate your existing mailbox to our service with a bit of effort.
+
+This section assumes that you are familiar with how to use Python scripts and how to download open-source software from GitHub.
+
+1. Backup and download your existing mailbox in [MBOX](https://en.wikipedia.org/wiki/Mbox) archive format (e.g. see guides for [Google](https://support.google.com/mail/answer/10016932?hl=en) or [Microsoft](https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833)).
+2. Download the [imap-upload](https://github.com/forwardemail/imap-upload) tool from GitHub.
+3. Run the `imap-upload` tool with the following options:
+
+   > **Note:** You must replace `USER` with your alias' email address and `PASSWORD` with your alias' generated password:
+
+   ```sh
+   python imap_upload.py --host=imap.forwardemail.net --port=993 --ssl --retry=3 --user=USER --pass=PASSWORD
+   ```
+
+   > **Using Google Takeout?** See the options such as `--google-takeout` in the [imap-upload documentation](https://github.com/rgladwell/imap-upload/issues/63#issuecomment-1589447928).
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    You may also want to try other open-source tools such as <a href="https://github.com/joeyates/imap-backup">imap-backup</a> or <a href="https://github.com/imapsync/imapsync">imapsync</a>.
+  <span>
+  </span>
+</div>
 
 
 ## How does your email forwarding system work

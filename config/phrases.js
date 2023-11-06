@@ -20,6 +20,31 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  ALIAS_OVERRIDE_CANNOT_HAVE_PASSWORD:
+    'You cannot enter your current password and also attempt to override at the same time.',
+  ALIAS_OVERRIDE_REQUIRED:
+    'You must enter the current password for the alias or check the checkbox to override and delete the mailbox.',
+  ALIAS_NO_GENERATED_PASSWORD:
+    'Alias does not yet have a generated password yet.',
+  ALIAS_RATE_LIMITED:
+    'You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us.',
+  ALIAS_BACKUP_LINK:
+    'Please <a href="%s" target="_blank">click here</a> to download the backup. This link will expire soon.',
+  ALIAS_BACKUP_READY:
+    'Please refresh the page and download the latest alias backup for <span class="notranslate font-weight-bold text-monospace">%s</span>.',
+  ALIAS_BACKUP_READY_SUBJECT:
+    'Alias backup for <span class="notranslate">%s</span> is ready for download',
+  ALIAS_BACKUP_STARTED:
+    'Alias backup has been started for <span class="notranslate text-monospace font-weight-bold">%s</span> and you will be emailed once it is ready for download.',
+  ALIAS_BACKUP_DOWNLOAD_SUBJECT: `New alias backup download for <span class="notranslate">%s</span>`,
+  ALIAS_BACKUP_DOWNLOAD:
+    'Alias mailbox backup was downloaded by <span class="font-weight-bold text-monospace notranslate">%s</span> for <span class="font-weight-bold text-monospace notranslate">%s</span>.',
+  ALIAS_PASSWORD_INSTRUCTIONS:
+    'Alias password instructions have been emailed to <span class="font-weight-bold text-monospace notranslate">%s</span>.',
+  ALIAS_PASSWORD_INSTRUCTIONS_SUBJECT: `Here is your password for <span class="notranslate">%s</span>`,
+  ALIAS_PASSWORD_GENERATED:
+    'New password was generated for <span class="font-weight-bold text-monospace notranslate">%s</span> by <span class="font-weight-bold text-monospace notranslate">%s</span>.',
+  ALIAS_PASSWORD_GENERATED_SUBJECT: `New password generated for <span class="notranslate">%s</span>`,
   NO_RESULTS_FOUND: 'No results were found.',
   EMAIL_SETUP_GUIDE: 'Email Setup Guide',
   NO_CREDIT_CARD: '100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.',
@@ -43,6 +68,8 @@ module.exports = {
   ADD_DOMAIN: 'What is your domain name?',
   CANNOT_CREATE_TOKEN_FOR_CATCHALL: 'Cannot create token for catch-all alias.',
   CANNOT_CREATE_TOKEN_FOR_REGEX: 'Cannot create token for regex alias.',
+  ALIAS_PASSWORD_EMAIL:
+    '<p><span class="notranslate text-monospace font-weight-bold">%s</span> has sent you a password to use for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p><a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> within the next 3 days and follow the instructions.</p>',
   ALIAS_GENERATED_PASSWORD:
     'You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class="text-decoration-underline"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />',
   PAST_DUE_OR_INVALID_ADMIN:
@@ -126,6 +153,8 @@ module.exports = {
   INVALID_SET_EMAIL: 'Change email token and email were not valid together.',
   INVALID_RESET_TOKEN: 'Reset token provided was invalid.',
   INVALID_SESSION_SECRET: 'Invalid session secret.',
+  INVALID_ALIAS_BACKUP:
+    'You cannot download a backup for a catch-all or regex.',
   INVALID_SLUG: 'Please slightly change values to ensure slug uniqueness.',
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
   INVALID_USER: 'User does not exist.',

@@ -29,9 +29,9 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
 // partysocket.WebSocket.prototype._debug = (...args) =>
 //   logger.debug('partysocket', { args });
 
-ReconnectingWebSocket.prototype._debug = (...args) => {
-  if (config.env === 'development')
-    logger.debug('reconnectingwebsocket', { args });
+ReconnectingWebSocket.prototype._debug = () => {
+  // if (config.env === 'development')
+  //   logger.debug('reconnectingwebsocket', { args });
 };
 
 function createWebSocketAsPromised(options = {}) {
@@ -90,21 +90,21 @@ function createWebSocketAsPromised(options = {}) {
   //
   // bind event listeners
   //
-  if (config.env === 'development') {
-    for (const event of [
-      'onOpen',
-      'onSend',
-      'onMessage',
-      'onUnpackedMessage',
-      'onResponse',
-      'onClose',
-      'onError'
-    ]) {
-      wsp[event].addListener((...args) =>
-        logger[event === 'onError' ? 'error' : 'debug'](event, { args })
-      );
-    }
-  }
+  // if (config.env === 'development') {
+  //   for (const event of [
+  //     'onOpen',
+  //     'onSend',
+  //     'onMessage',
+  //     'onUnpackedMessage',
+  //     'onResponse',
+  //     'onClose',
+  //     'onError'
+  //   ]) {
+  //     wsp[event].addListener((...args) =>
+  //       logger[event === 'onError' ? 'error' : 'debug'](event, { args })
+  //     );
+  //   }
+  // }
 
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
   wsp.request = async function (data) {
@@ -156,7 +156,7 @@ function createWebSocketAsPromised(options = {}) {
   // <https://github.com/vitalets/websocket-as-promised/issues/2#issuecomment-618241047>
   wsp._interval = setInterval(() => {
     if (wsp.isOpened) wsp.send('ping');
-  }, 5000);
+  }, ms('30s'));
 
   wsp.onClose.addListener(
     () => {
