@@ -6,7 +6,6 @@
 const fs = require('node:fs');
 const http = require('node:http');
 const https = require('node:https');
-const os = require('node:os');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
 const { createGzip } = require('node:zlib');
@@ -539,7 +538,10 @@ class SQLite {
                 );
 
               // create backup
-              const tmp = path.join(os.tmpdir(), `${payload.id}.sqlite`);
+              const tmp = path.join(
+                path.dirname(storagePath),
+                `${payload.id}.sqlite`
+              );
               const results = await db.backup(tmp);
               let backup = true;
 
@@ -647,8 +649,6 @@ class SQLite {
               if (!_.isDate(new Date(payload.backup_at)))
                 throw new TypeError('Backup at invalid date');
 
-              const tmp = path.join(os.tmpdir(), `${payload.id}.sqlite`);
-
               // only allow one backup at a time and once every hour
               const lock = await this.lock.waitAcquireLock(
                 `${payload.session.user.alias_id}-backup`,
@@ -659,6 +659,7 @@ class SQLite {
               if (!lock.success)
                 throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
 
+              let tmp;
               let backup;
               let err;
 
@@ -669,6 +670,10 @@ class SQLite {
                   storage_location: payload.session.user.storage_location
                 });
                 const diskSpace = await checkDiskSpace(storagePath);
+                tmp = path.join(
+                  path.dirname(storagePath),
+                  `${payload.id}.sqlite`
+                );
 
                 // <https://github.com/nodejs/node/issues/38006>
                 const stats = await fs.promises.stat(storagePath);
@@ -792,7 +797,7 @@ class SQLite {
               }
 
               // always do cleanup in case of errors
-              if (backup) {
+              if (tmp && backup) {
                 try {
                   await fs.promises.unlink(tmp);
                 } catch (err) {
