@@ -13,6 +13,19 @@
   name: SQLITE
   become: true
   become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ lookup('env', 'SQLITE_HOST') }}"
+  roles:
+    # https://github.com/holms/ansible-fqdn
+    - role: fqdn
+      fqdn: "{{ lookup('env', 'SQLITE_HOST') }}"
+
+- hosts: sqlite
+  name: SQLITE
+  become: true
+  become_user: root
   # this was already defined in the ufw role
   # https://github.com/Oefenweb/ansible-ufw/blob/master/handlers/main.yml
   handlers:
@@ -39,5 +52,5 @@
     - name: Allow websocket port
       ufw:
         rule: allow
-        port: "{{ lookup('env', 'SQLITE_WEBSOCKET_PORT') }}"
+        port: "{{ lookup('env', 'SQLITE_PORT') }}"
         proto: tcp

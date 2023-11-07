@@ -103,7 +103,7 @@ class SQLite {
     this.close = this.close.bind(this);
   }
 
-  async listen(port = env.SQLITE_WEBSOCKET_PORT, host = '::', ...args) {
+  async listen(port = env.SQLITE_PORT, host = '::', ...args) {
     function authenticate(request, socket, head, fn) {
       try {
         const credentials = auth(request);

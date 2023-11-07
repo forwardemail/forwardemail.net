@@ -46,8 +46,8 @@ function createWebSocketAsPromised(options = {}) {
   const protocol =
     options.protocol || config.env === 'production' ? 'wss' : 'ws';
   const auth = `${encrypt(env.API_SECRETS[0])}:`;
-  const host = options.host || env.SQLITE_WEBSOCKET_HOST;
-  const port = options.port || env.SQLITE_WEBSOCKET_PORT;
+  const host = options.host || env.SQLITE_HOST;
+  const port = options.port || env.SQLITE_PORT;
   const url = `${protocol}://${auth}@${host}:${port}`;
 
   // TODO: implement round robin URL provider
