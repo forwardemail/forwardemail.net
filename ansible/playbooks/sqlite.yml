@@ -54,3 +54,14 @@
         rule: allow
         port: "{{ lookup('env', 'SQLITE_PORT') }}"
         proto: tcp
+    #
+    # modify ufw setup
+    # https://github.com/Oefenweb/ansible-ufw/issues/21
+    #
+    - name: "Update ufw before.rules until #21 is resolved"
+      template:
+        src: "{{ playbook_dir }}/templates/before.sqlite.rules.j2"
+        dest: /etc/ufw/before.rules
+        owner: root
+        mode: "0644"
+      notify: Reload UFW
