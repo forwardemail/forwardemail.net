@@ -80,25 +80,26 @@ if alias
             i.fa.fa-plus
             = " "
             = t("Add new domain")
-if !domain || !domain.is_global
-  .form-group
-    = t("IMAP Storage")
-    = " "
-    span.text-muted= t("(optional)")
-  .alert.alert-success
-    .form-check.text-left.small
-      input#input-has-imap.form-check-input(
-        type="checkbox",
-        name="has_imap",
-        checked=alias ? alias.has_imap : true,
-        value="true"
-      )
-      label.form-check-label(for="input-has-imap")
-        = t("This will enable our new IMAP storage feature for this alias.")
-        = " "
-        = t("You can have both IMAP storage and forwarding recipients enabled at the same time.")
-        = " "
-        != t('If you would like to learn more about our new IMAP storage feature, please <a class="alert-link" href="%s" target="_blank">click here to read our deep dive on Encrypted Email.</a>', l("/encrypted-email"))
+//- early feature not available yet
+//-  if !domain || !domain.is_global
+//-    .form-group
+//-      = t("IMAP Storage")
+//-      = " "
+//-      span.text-muted= t("(optional)")
+//-    .alert.alert-success
+//-      .form-check.text-left.small
+//-        input#input-has-imap.form-check-input(
+//-          type="checkbox",
+//-          name="has_imap",
+//-          checked=alias ? alias.has_imap : true,
+//-          value="true"
+//-        )
+//-        label.form-check-label(for="input-has-imap")
+//-          = t("This will enable our new IMAP storage feature for this alias.")
+//-          = " "
+//-          = t("You can have both IMAP storage and forwarding recipients enabled at the same time.")
+//-          = " "
+//-          != t('If you would like to learn more about our new IMAP storage feature, please <a class="alert-link" href="%s" target="_blank">click here to read our deep dive on Encrypted Email.</a>', l("/encrypted-email"))
 .form-group
   label(for="textarea-alias-recipients")
     = t("Forwarding Recipients")
