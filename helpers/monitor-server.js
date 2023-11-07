@@ -76,7 +76,8 @@ async function check() {
             );
             // diskSpace = { diskPath: '/mnt/xyz', free: 37175373824, size: 494384795648 }
             logger.debug('diskSpace', { diskSpace });
-            const usedPercentage = (diskSpace.free / diskSpace.size) * 100;
+            const usedPercentage =
+              ((diskSpace.size - diskSpace.free) / diskSpace.size) * 100;
             if (usedPercentage >= 75)
               logger.fatal(
                 new TypeError(
