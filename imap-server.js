@@ -37,6 +37,7 @@ const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
 
 //
+// TODO: run migration for existing IMAP db storage in Mongo -> SQLite temp mailboxes
 // TODO: redo storage calculation stuff (right now limited to 1K lookups)
 //       (automated job will run on sqlite-server on interval to fs list all files)
 //       (and for each it will perform lookup on alias, if no alias then alert admins)
