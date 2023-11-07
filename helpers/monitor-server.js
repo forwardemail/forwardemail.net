@@ -7,7 +7,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const checkDiskSpace = require('check-disk-space');
+const checkDiskSpace = require('check-disk-space').default;
 const ip = require('ip');
 const ms = require('ms');
 const osu = require('node-os-utils');
