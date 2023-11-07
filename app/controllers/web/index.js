@@ -235,9 +235,9 @@ async function generateOpenGraphImage(ctx) {
     const svgReplaced = SVG_STR.replace('NO_CREDIT_CARD', noCreditCard)
       .replaceAll(
         'MONOSPACE_NAME',
-        'Inconsolata-dz, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
+        'Inconsolata-dz, Menlo, Monaco, Consolas, monospace'
       )
-      .replaceAll('FONT_NAME', '"Helvetica Neue", Arial')
+      .replaceAll('FONT_NAME', 'Arial')
       .replace('PRIVATE_BUSINESS', str.trim())
       .replace('FREE_EMAIL', freeEmail)
       .replace(
