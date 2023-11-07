@@ -38,8 +38,7 @@ const refreshSession = require('#helpers/refresh-session');
 
 // TODO: send welcome email to user in their sqlite dbs
 // TODO: restore locales, then run through pages, then mandarin
-// TODO: alias storage, pooled, etc
-// TODO: alias has to either have at least one recipient or has_imap everywhere (including via API)
+// TODO: alias bootstrap progress bars for storage, pooled, etc
 // TODO: alias.has_imap validation on IMAP connection
 // TODO: when user deletes account then also purge sqlite databases and backups
 // TODO: automated job to detect files on block storage and R2 that don't correspond to actual aliases
@@ -53,7 +52,6 @@ const refreshSession = require('#helpers/refresh-session');
 // TODO: auto-reply/vacation responder
 // TODO: enforce maxDownload and maxUpload
 // TODO: enforce 10-15 max connections per alias
-// TODO: when user generates new password, if any existing were found, then prompt them to enter current password, complete captcha, and type out "I understand this message" and check a checkbox
 // TODO: each R2 bucket seems like it's 18 TB max?
 
 // TODO: future items

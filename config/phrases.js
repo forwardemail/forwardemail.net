@@ -55,6 +55,7 @@ module.exports = {
     'The target <span class="notranslate">%s</span> has recently blocked this IP address, please try again in 1 hour.',
   CANNOT_CREATE_CATCHALL_ON_GLOBAL: 'Cannot create catch-all on global domain.',
   CANNOT_CREATE_REGEX_ON_GLOBAL: 'Cannot create regex on global domain.',
+  CANNOT_USE_IMAP_ON_GLOBAL: 'Cannot use IMAP on global domain.',
   CANNOT_CREATE_CATCHALL_ON_DOMAIN:
     'Cannot create catch-all on domain due to large alias volume size.',
   CANNOT_CREATE_REGEX_ON_DOMAIN:
@@ -69,7 +70,7 @@ module.exports = {
   CANNOT_CREATE_TOKEN_FOR_CATCHALL: 'Cannot create token for catch-all alias.',
   CANNOT_CREATE_TOKEN_FOR_REGEX: 'Cannot create token for regex alias.',
   ALIAS_PASSWORD_EMAIL:
-    '<p><span class="notranslate text-monospace font-weight-bold">%s</span> has sent you a password to use for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p><a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> within the next 3 days and follow the instructions.</p>',
+    '<p><span class="notranslate text-monospace font-weight-bold">%s</span> has sent you a password to use for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p><a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> and immediately follow the instructions.</p>',
   ALIAS_GENERATED_PASSWORD:
     'You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class="text-decoration-underline"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />',
   PAST_DUE_OR_INVALID_ADMIN:

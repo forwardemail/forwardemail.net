@@ -83,7 +83,11 @@ function validateAlias(ctx, next) {
     );
   else body.recipients = [];
 
-  if (_.isEmpty(body.recipients)) body.recipients = [ctx.state.user.email];
+  if (typeof ctx.request.body.has_imap !== 'undefined' || !ctx.api)
+    body.has_imap = boolean(ctx.request.body.has_imap);
+
+  if (ctx.api && _.isEmpty(body.recipients))
+    body.recipients = [ctx.state.user.email];
 
   ctx.state.body = body;
 

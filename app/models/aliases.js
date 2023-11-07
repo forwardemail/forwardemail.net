@@ -281,8 +281,13 @@ Aliases.pre('validate', function (next) {
   if (!isSANB(this.description)) this.description = undefined;
 
   // alias must have at least one recipient
-  if (!_.isArray(this.recipients) || _.isEmpty(this.recipients))
-    return next(new Error('Alias must have at least one recipient.'));
+  if (
+    !this.has_imap &&
+    (!_.isArray(this.recipients) || _.isEmpty(this.recipients))
+  )
+    return next(
+      new Error('Alias must have at least one recipient or IMAP enabled.')
+    );
 
   next();
 });
@@ -294,6 +299,17 @@ Aliases.pre('validate', function (next) {
     return next(
       new Error(
         'Alias that is a catch-all must be enabled or deleted entirely to be disabled.'
+      )
+    );
+  next();
+});
+
+// user cannot have imap enabled on a catchall nor regex
+Aliases.pre('validate', function (next) {
+  if (this.has_imap && (this.name === '*' || this.name.startsWith('/')))
+    return next(
+      new Error(
+        'Alias cannot have IMAP enabled with a catch-all nor regex name.'
       )
     );
   next();
@@ -389,6 +405,11 @@ Aliases.pre('save', async function (next) {
     if (domain.is_global && alias.name.startsWith('/'))
       throw Boom.badRequest(
         i18n.translateError('CANNOT_CREATE_REGEX_ON_GLOBAL', alias.locale)
+      );
+
+    if (domain.is_global && alias.has_imap)
+      throw Boom.badRequest(
+        i18n.translateError('CANNOT_USE_IMAP_ON_GLOBAL', alias.locale)
       );
 
     if (domain.is_catchall_regex_disabled && alias.name === '*')

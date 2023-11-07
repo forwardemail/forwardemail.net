@@ -385,10 +385,7 @@ Test`.trim()
       })
     );
     t.is(err.responseCode, 550);
-    t.regex(
-      err.message,
-      /You cannot use a "no-reply" username to send outbound mail/
-    );
+    t.regex(err.message, /From header must be equal to/);
   }
 });
 

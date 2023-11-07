@@ -80,11 +80,32 @@ if alias
             i.fa.fa-plus
             = " "
             = t("Add new domain")
+if !domain || !domain.is_global
+  .form-group
+    = t("IMAP Storage")
+    = " "
+    span.text-muted= t("(optional)")
+  .alert.alert-success
+    .form-check.text-left.small
+      input#input-has-imap.form-check-input(
+        type="checkbox",
+        name="has_imap",
+        checked=alias ? alias.has_imap : true,
+        value="true"
+      )
+      label.form-check-label(
+        for='input-has-imap'
+      )
+        = t("This will enable our new IMAP storage feature for this alias.")
+        = " "
+        = t("You can have both IMAP storage and forwarding recipients enabled at the same time.")
+        = " "
+        != t('If you would like to learn more about our new IMAP storage feature, please <a class="alert-link" href="%s" target="_blank">click here to read our deep dive on Encrypted Email.</a>', l('/encrypted-email'))
 .form-group
   label(for="textarea-alias-recipients")
     = t("Forwarding Recipients")
     = " "
-    span.text-danger= t("(required)")
+    span.text-muted= t("(optional)")
   textarea#textarea-alias-recipients.form-control(name="recipients", rows=1)= alias && Array.isArray(alias.recipients) ? alias.recipients.join(", ") : user.email
   p.form-text.small.text-black.text-themed-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
 .form-group
@@ -114,7 +135,7 @@ if !domain || (domain && !domain.is_global)
       checked=alias ? alias.has_recipient_verification : domain && domain.has_recipient_verification
     )
     label.form-check-label(for="input-has-recipient-verification")= t("Requires recipients to click email verification link")
-    p.form-text.small.text-black.text-themed-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
+    p.form-text.small.text-black.text-themed-50= t("If you check this, then each forwarding recipient will be required to click an email verification link in order for emails to flow through.")
 .form-group.form-check
   input#input-is-enabled.form-check-input(
     type="checkbox",
