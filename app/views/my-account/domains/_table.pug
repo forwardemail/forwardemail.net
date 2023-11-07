@@ -7,6 +7,16 @@ include ../../_pagination
       tr
         th(scope="col", colspan=2)
           +sortHeader('name', 'Domain Name', '#table-domains', 'text-left')
+        //-.
+          th.align-middle(scope="col")
+            = t("Storage Usage")
+            a.btn.btn-link.text-uppercase.text-white(
+              href=l("/encrypted-email"),
+              role="button",
+              data-toggle="modal",
+              data-target="#modal-storage"
+            )
+              i.fa.fa-info-circle
         th.align-middle(scope="col")= t("Quick Links")
     tbody
       if domains.length === 0
@@ -55,6 +65,38 @@ include ../../_pagination
                         class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning"
                       )
                         = titleize(humanize(domain.plan))
+            //-.
+              td.align-middle.p-3
+                if (typeof domain.storage_used === 'number')
+                  .progress.bg-light.border.border-dark
+                    if domain.storage_used > config.maxQuotaPerAlias
+                      .progress-bar.bg-danger(
+                        role="progressbar",
+                        style="width: 100%",
+                        aria-valuenow=100,
+                        aria-valuemin=0,
+                        aria-valuemax=100
+                      )= t("No storage remaining")
+                    else
+                      - let percentage = Math.round((domain.storage_used / config.maxQuotaPerAlias) * 100);
+                      if domain.storage_used >= config.maxQuotaPerAlias
+                        - percentage = 100;
+                      - let progressClass = "bg-success";
+                      if (percentage >= 80)
+                        - progressClass = "bg-danger";
+                      else if (percentage >= 60)
+                        - progressClass = "bg-warning";
+                      .progress-bar(
+                        class=progressClass,
+                        role="progressbar",
+                        style=`width:${percentage}%; min-width:30%;`,
+                        aria-valuenow=percentage,
+                        aria-valuemin=0,
+                        aria-valuemax=100
+                      )= `${percentage}%`
+                  small.text-monospace.text-muted= `${prettyBytes(domain.storage_used)} / ${prettyBytes(config.maxQuotaPerAlias)}`
+                else
+                  = t("Not Available")
             td.align-middle
               ul.list-inline.mb-0
                 li.list-inline-item.d-block.d-sm-inline-block

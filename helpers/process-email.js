@@ -585,6 +585,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       : false;
 
     // verify DKIM
+    // <https://github.com/postalsys/mailauth/issues/48>
     if (!dkim || !dkimAlignedMatch)
       throw Boom.badRequest(i18n.translateError('INVALID_DKIM_SIGNATURE'));
 

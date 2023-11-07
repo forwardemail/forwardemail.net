@@ -16,6 +16,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const ms = require('ms');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const scmp = require('scmp');
@@ -110,7 +111,8 @@ const Aliases = new mongoose.Schema({
     default: 'storage_do_1',
     enum: ['storage_do_1'],
     trim: true,
-    lowercase: true
+    lowercase: true,
+    index: true
   },
   retention: {
     type: Number,
@@ -581,7 +583,10 @@ async function getStorageUsed(wsp, session) {
   // (this is rudimentary storage system and has edge cases)
   // (e.g. multi-accounts when users on team plan edge case)
   //
-  const domain = await Domains.findOne({ id: session.user.domain_id })
+  const domain = await Domains.findOne({
+    id: session.user.domain_id,
+    is_global: false
+  })
     .populate('members.user', `id ${config.userFields.isBanned}`)
     .lean()
     .exec();
@@ -613,6 +618,7 @@ async function getStorageUsed(wsp, session) {
 
   // now get all domains where $elemMatch is the user id and group is admin
   const domainIds = await Domains.distinct('_id', {
+    is_global: false,
     members: {
       $elemMatch: {
         user: { $in: ids },
@@ -627,8 +633,21 @@ async function getStorageUsed(wsp, session) {
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
     );
 
+  const count = await this.countDocuments({
+    domain: { $in: domainIds },
+    storage_location: {
+      $exists: true
+    }
+  });
+
+  // don't allow more than 1K lookups at once
+  if (count > 1000) throw new TypeError('Cannot lookup more than 1K at once');
+
   const aliases = await this.find({
-    domain: { $in: domainIds }
+    domain: { $in: domainIds },
+    storage_location: {
+      $exists: true
+    }
   })
     .select({
       _id: -1,
@@ -639,9 +658,10 @@ async function getStorageUsed(wsp, session) {
     .exec();
 
   // now get all aliases that belong to any of these domains and sum the storageQuota
-  const size = await wsp.request({
+  const { size } = await wsp.request({
     action: 'size',
-    session: { user: session.user },
+    timeout: ms('5s'),
+    // session: { user: session.user },
     aliases
   });
 

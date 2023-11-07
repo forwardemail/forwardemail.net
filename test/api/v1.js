@@ -404,6 +404,7 @@ Test`.trim()
     const email = await Emails.findOne({ id: res.body.id }).lean().exec();
     delete email.message; // suppress buffer output from console log
     t.is(email.id, res.body.id);
+    t.log('email', email);
     t.is(email.status, 'deferred');
     t.deepEqual(
       email.accepted.sort(),

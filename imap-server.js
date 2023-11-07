@@ -36,6 +36,14 @@ const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
 
+//
+// TODO: redo storage calculation stuff (right now limited to 1K lookups)
+//       (automated job will run on sqlite-server on interval to fs list all files)
+//       (and for each it will perform lookup on alias, if no alias then alert admins)
+//       (e.g. the alias no longer exists so we need to remove it)
+//       and if it does exist then store its size as storage_used (not storageUsed)
+//
+// TODO: handle translation of the folder names (similar to wildduck)
 // TODO: send welcome email to user in their sqlite dbs
 // TODO: restore locales, then run through pages, then mandarin
 // TODO: alias bootstrap progress bars for storage, pooled, etc

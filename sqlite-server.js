@@ -241,54 +241,66 @@ class SQLite {
           if (!isSANB(payload.action) || !PAYLOAD_ACTIONS.has(payload.action))
             throw new TypeError('Payload action missing or invalid');
 
-          // session
-          if (!_.isPlainObject(payload.session))
-            throw new TypeError('Payload session must be plain Object');
+          //
+          // size action does not require session payload
+          // (since it just uses `fs.stat` - see below)
+          //
+          if (payload.action !== 'size') {
+            // session
+            if (!_.isPlainObject(payload.session))
+              throw new TypeError('Payload session must be plain Object');
 
-          // session.user
-          if (!_.isPlainObject(payload.session.user))
-            throw new TypeError('Payload session user must be plain Object');
+            // session.user
+            if (!_.isPlainObject(payload.session.user))
+              throw new TypeError('Payload session user must be plain Object');
 
-          // session.user.domain_id
-          if (
-            !isSANB(payload.session.user.domain_id) ||
-            !mongoose.Types.ObjectId.isValid(payload.session.user.domain_id)
-          ) {
-            throw new TypeError(
-              'Payload domain ID missing or invalid BSON ObjectId'
-            );
+            // session.user.domain_id
+            if (
+              !isSANB(payload.session.user.domain_id) ||
+              !mongoose.Types.ObjectId.isValid(payload.session.user.domain_id)
+            ) {
+              throw new TypeError(
+                'Payload domain ID missing or invalid BSON ObjectId'
+              );
+            }
+
+            // session.user.domain name
+            if (
+              !isSANB(payload.session.user.domain_name) ||
+              !isFQDN(payload.session.user.domain_name)
+            )
+              throw new TypeError(
+                'Payload domain name missing or invalid FQDN'
+              );
+
+            // session.user.alias_id
+            if (
+              !isSANB(payload.session.user.alias_id) ||
+              !mongoose.Types.ObjectId.isValid(payload.session.user.alias_id)
+            )
+              throw new TypeError(
+                'Payload alias ID missing or invalid BSON ObjectId'
+              );
+
+            // session.user.alias_name
+            if (!isSANB(payload.session.user.alias_name))
+              throw new TypeError('Payload alias name missing');
+
+            // password
+            if (!isSANB(payload.session.user.password))
+              throw new TypeError('Payload password missing');
+
+            // storage location
+            if (!isSANB(payload.session.user.storage_location))
+              throw new TypeError('Payload storage location missing');
           }
 
-          // session.user.domain name
-          if (
-            !isSANB(payload.session.user.domain_name) ||
-            !isFQDN(payload.session.user.domain_name)
-          )
-            throw new TypeError('Payload domain name missing or invalid FQDN');
-
-          // session.user.alias_id
-          if (
-            !isSANB(payload.session.user.alias_id) ||
-            !mongoose.Types.ObjectId.isValid(payload.session.user.alias_id)
-          )
-            throw new TypeError(
-              'Payload alias ID missing or invalid BSON ObjectId'
-            );
-
-          // session.user.alias_name
-          if (!isSANB(payload.session.user.alias_name))
-            throw new TypeError('Payload alias name missing');
-
-          // password
-          if (!isSANB(payload.session.user.password))
-            throw new TypeError('Payload password missing');
-
-          // storage location
-          if (!isSANB(payload.session.user.storage_location))
-            throw new TypeError('Payload storage location missing');
-
           // NOTE: `this` is the sqlite instance
-          if (payload.action !== 'setup' && payload.action !== 'reset')
+          if (
+            payload.action !== 'setup' &&
+            payload.action !== 'reset' &&
+            payload.action !== 'size'
+          )
             db = await getDatabase(
               this,
               // alias
@@ -355,24 +367,38 @@ class SQLite {
 
               let size = 0;
 
-              await Promise.all(
+              const aliases = await Promise.all(
                 payload.aliases.map(async (alias) => {
                   try {
                     // <https://github.com/nodejs/node/issues/38006>
                     const stats = await fs.promises.stat(
                       getPathToDatabase(alias)
                     );
-                    if (stats.isFile() && stats.size > 0) size += stats.size;
+                    if (stats.isFile() && stats.size > 0) {
+                      size += stats.size;
+                      return {
+                        ...alias,
+                        size: stats.size
+                      };
+                    }
                   } catch (err) {
                     if (err.code !== 'ENOENT') throw err;
                   }
+
+                  return {
+                    ...alias,
+                    size: 0
+                  };
                 })
               );
 
               ws.send(
                 safeStringify({
                   id: payload.id,
-                  data: size
+                  data: {
+                    size,
+                    aliases
+                  }
                 })
               );
               break;
@@ -801,12 +827,17 @@ class SQLite {
             }
           }
 
-          if (lock)
-            db.releaseLock(lock)
-              .then()
+          if (lock) {
+            this.lock
+              .releaseLock(lock)
+              .then((result) => {
+                if (!result.success)
+                  throw i18n.translateError('IMAP_RELEASE_LOCK_FAILED');
+              })
               .catch((err) => logger.fatal(err));
+          }
 
-          db.close();
+          if (db && db.open && typeof db.close === 'function') db.close();
         } catch (err) {
           err.payload = payload;
 

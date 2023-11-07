@@ -109,9 +109,13 @@ function createWebSocketAsPromised(options = {}) {
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
   wsp.request = async function (data) {
     try {
+      if (typeof data?.action !== 'string')
+        throw new TypeError('Action missing from payload');
+
       if (
-        typeof data?.session?.user?.alias_id !== 'string' ||
-        !mongoose.Types.ObjectId.isValid(data.session.user.alias_id)
+        data.action !== 'size' &&
+        (typeof data?.session?.user?.alias_id !== 'string' ||
+          !mongoose.Types.ObjectId.isValid(data.session.user.alias_id))
       )
         throw new TypeError('Alias ID missing from session');
 
@@ -127,11 +131,20 @@ function createWebSocketAsPromised(options = {}) {
       // helper for debugging
       if (config.env !== 'production') data.stack = new Error('stack').stack;
 
+      const requestId =
+        data.action === 'size'
+          ? `size:${randomUUID()}`
+          : `${revHash(data.session.user.alias_id)}:${revHash(randomUUID())}`;
+
       const response = await wsp.sendRequest(data, {
-        timeout: ms('1m'),
-        requestId: `${revHash(data.session.user.alias_id)}:${revHash(
-          randomUUID()
-        )}`
+        timeout:
+          typeof data.timeout === 'number' &&
+          Number.isFinite(data.timeout) &&
+          data.timeout > 0 &&
+          data.timeout <= ms('1m')
+            ? data.timeout
+            : ms('1m'),
+        requestId
       });
 
       if (

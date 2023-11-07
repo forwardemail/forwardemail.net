@@ -820,7 +820,8 @@ config.views.locals.config = _.pick(config, [
   'verifyRoute',
   'goodDomains',
   'meta',
-  'metaTitleAffix'
+  'metaTitleAffix',
+  'maxQuotaPerAlias'
 ]);
 
 // <https://nodemailer.com/transports/>

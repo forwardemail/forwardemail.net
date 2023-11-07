@@ -103,7 +103,7 @@ include ../../../_pagination
                           action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/generate-password`),
                           method="POST"
                         )
-                          if alias.tokens.length > 0
+                          if Array.isArray(alias.tokens) && alias.tokens.length > 0
                             p.alert.alert-warning.small
                               i.fa.fa-exclamation-circle.font-weight-bold
                               = " "
@@ -122,7 +122,7 @@ include ../../../_pagination
                             = emoji("point_up")
                             = " "
                             = t("Leave this blank to get your password instantly.")
-                          if alias.tokens.length > 0
+                          if Array.isArray(alias.tokens) && alias.tokens.length > 0
                             p.font-weight-bold.lead= t("Enter current password to keep existing mailbox and messages:")
                             .form-group.floating-label
                               input.form-control.form-control-lg(
@@ -297,15 +297,16 @@ include ../../../_pagination
                         i.fa.fa-list-ol
                         = " "
                         = t("Setup Instructions")
-                    li.list-inline-item
-                      button.btn.btn-sm.btn-link.text-dark.btn-block(
-                        type="button",
-                        data-toggle="modal",
-                        data-target=`#modal-download-backup-${alias.id}`
-                      )
-                        i.fa.fa-database
-                        = " "
-                        = t("Download Backup")
+                    if Array.isArray(alias.tokens) && alias.tokens.length > 0
+                      li.list-inline-item
+                        button.btn.btn-sm.btn-link.text-dark.btn-block(
+                          type="button",
+                          data-toggle="modal",
+                          data-target=`#modal-download-backup-${alias.id}`
+                        )
+                          i.fa.fa-database
+                          = " "
+                          = t("Download Backup")
 
             td.align-middle.d-none.d-lg-table-cell
               if isSANB(alias.description)
@@ -444,14 +445,15 @@ include ../../../_pagination
                       i.fa.fa-list-ol
                       = " "
                       = t("Setup Instructions")
-                  li.list-inline-item
-                    button.btn.btn-sm.btn-link.text-dark.btn-block(
-                      type="button",
-                      data-toggle="modal",
-                      data-target=`#modal-download-backup-${alias.id}`
-                    )
-                      i.fa.fa-database
-                      = " "
-                      = t("Download Backup")
+                  if Array.isArray(alias.tokens) && alias.tokens.length > 0
+                    li.list-inline-item
+                      button.btn.btn-sm.btn-link.text-dark.btn-block(
+                        type="button",
+                        data-toggle="modal",
+                        data-target=`#modal-download-backup-${alias.id}`
+                      )
+                        i.fa.fa-database
+                        = " "
+                        = t("Download Backup")
 
 +paginate('#table-aliases')

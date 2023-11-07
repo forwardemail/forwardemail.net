@@ -215,7 +215,8 @@ const purgeCssOptions = {
       /-themed-/,
       /^hljs/,
       /^language-/,
-      'floating-animation'
+      'floating-animation',
+      /^progress-bar/
     ])
   ]
 };

@@ -1,6 +1,7 @@
 extends ../../layout
 
 block body
+  include ../../_modal-storage
   if domains.length > 0
     #modal-alias.modal.fade(
       tabindex="-1",
