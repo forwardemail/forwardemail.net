@@ -282,14 +282,6 @@ Aliases.pre('validate', function (next) {
   if (isSANB(this.description)) this.description = striptags(this.description);
   if (!isSANB(this.description)) this.description = undefined;
 
-  // early feature not available yet
-  if (this.has_imap)
-    return next(
-      new Error(
-        'IMAP storage is in final testing and will be released this week'
-      )
-    );
-
   // alias must have at least one recipient
   if (
     !this.has_imap &&

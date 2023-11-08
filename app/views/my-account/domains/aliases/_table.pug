@@ -289,7 +289,7 @@ include ../../../_pagination
                         = " "
                         = t("Generate Password")
                     li.list-inline-item
-                      button.btn.btn-sm.btn-link.text-themed.btn-block(
+                      button.btn.btn-sm.btn-link.text-dark.btn-block(
                         type="button",
                         data-toggle="modal",
                         data-target="#modal-setup-instructions"
@@ -299,7 +299,7 @@ include ../../../_pagination
                         = t("Setup Instructions")
                     if Array.isArray(alias.tokens) && alias.tokens.length > 0
                       li.list-inline-item
-                        button.btn.btn-sm.btn-link.text-themed.btn-block(
+                        button.btn.btn-sm.btn-link.text-dark.btn-block(
                           type="button",
                           data-toggle="modal",
                           data-target=`#modal-download-backup-${alias.id}`
@@ -437,7 +437,7 @@ include ../../../_pagination
                       = " "
                       = t("Generate Password")
                   li.list-inline-item
-                    button.btn.btn-sm.btn-link.text-themed.btn-block(
+                    button.btn.btn-sm.btn-link.text-dark.btn-block(
                       type="button",
                       data-toggle="modal",
                       data-target="#modal-setup-instructions"
@@ -447,7 +447,7 @@ include ../../../_pagination
                       = t("Setup Instructions")
                   if Array.isArray(alias.tokens) && alias.tokens.length > 0
                     li.list-inline-item
-                      button.btn.btn-sm.btn-link.text-themed.btn-block(
+                      button.btn.btn-sm.btn-link.text-dark.btn-block(
                         type="button",
                         data-toggle="modal",
                         data-target=`#modal-download-backup-${alias.id}`
