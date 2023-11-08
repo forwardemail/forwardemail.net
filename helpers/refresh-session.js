@@ -101,7 +101,7 @@ async function refreshSession(session, command) {
     // sync with temp db on every request
     const sync = await this.wsp.request({
       action: 'sync',
-      timeout: ms('30s'),
+      timeout: ms('10s'),
       session: { user: session.user }
     });
 
