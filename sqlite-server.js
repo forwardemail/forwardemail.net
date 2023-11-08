@@ -53,13 +53,19 @@ const getDatabase = require('#helpers/get-database');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
+const onAppend = require('#helpers/imap/on-append');
 const recursivelyParse = require('#helpers/recursively-parse');
 const refreshSession = require('#helpers/refresh-session');
+const setupPragma = require('#helpers/setup-pragma');
+const migrateSchema = require('#helpers/migrate-schema');
 const storeNodeBodies = require('#helpers/store-node-bodies');
-const { decrypt } = require('#helpers/encrypt-decrypt');
+const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 
+const onAppendPromise = pify(onAppend);
+
 const PAYLOAD_ACTIONS = new Set([
+  'sync',
   'tmp',
   'setup',
   'size',
@@ -78,6 +84,67 @@ const S3 = new S3Client({
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY
   }
 });
+
+async function getTemporaryDatabase(payload) {
+  // TODO: check disk space here (2x existing tmp db size)
+  const storagePath = getPathToDatabase({
+    id: payload.session.user.alias_id,
+    storage_location: payload.session.user.storage_location
+  });
+
+  const filePath = path.join(
+    path.dirname(storagePath),
+    `${payload.session.user.alias_id}-tmp.sqlite`
+  );
+
+  const tmpDb = new Database(filePath, {
+    // if the db wasn't found it means there wasn't any mail
+    // fileMustExist: true,
+    timeout: config.busyTimeout,
+    // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
+    verbose: config.env === 'development' ? console.log : null
+  });
+
+  const tmpSession = {
+    ...payload.session,
+    user: {
+      ...payload.session.user,
+      password: encrypt(env.API_SECRETS[0])
+    }
+  };
+
+  await setupPragma(tmpDb, tmpSession);
+
+  // migrate schema
+  const commands = await migrateSchema(tmpDb, tmpSession, {
+    TemporaryMessages
+  });
+
+  const lock = await acquireLock(this, tmpDb);
+
+  if (commands.length > 0) {
+    for (const command of commands) {
+      try {
+        // TODO: wsp here (?)
+        tmpDb.prepare(command).run();
+        // await knexDatabase.raw(command);
+      } catch (err) {
+        err.isCodeBug = true;
+        // eslint-disable-next-line no-await-in-loop
+        await logger.fatal(err, { command });
+      }
+    }
+  }
+
+  // release lock
+  try {
+    await releaseLock(this, tmpDb, lock);
+  } catch (err) {
+    logger.fatal(err);
+  }
+
+  return tmpDb;
+}
 
 // eslint-disable-next-line complexity
 async function parsePayload(data, ws) {
@@ -216,19 +283,73 @@ async function parsePayload(data, ws) {
         payload?.lock
       );
       db = databases.db;
-      tmpDb = databases.tmpDb;
     }
 
     // handle action
     switch (payload.action) {
+      // sync the user's temp mailbox to their current
+      case 'sync': {
+        tmpDb = await getTemporaryDatabase.call(this, payload);
+
+        let count = 0;
+
+        // copy and purge messages
+        try {
+          const messages = await TemporaryMessages.find(
+            this,
+            { user: payload.session.user, db: tmpDb },
+            {}
+          );
+
+          for (const message of messages) {
+            //
+            // if one message fails then not all of them should
+            // (e.g. one might have an issue with `date` or `raw`)
+            //
+            try {
+              // eslint-disable-next-line no-await-in-loop
+              const results = await onAppendPromise.call(
+                this,
+                'INBOX',
+                [],
+                message.date,
+                message.raw,
+                {
+                  ..._.omit(payload.session, 'db'),
+                  remoteAddress: message.remoteAddress
+                }
+              );
+
+              count++;
+
+              logger.debug('results', { results });
+
+              // if successfully appended then delete from the database
+              // eslint-disable-next-line no-await-in-loop
+              await TemporaryMessages.deleteOne(
+                this,
+                { user: payload.session.user, db: tmpDb },
+                { _id: message._id }
+              );
+            } catch (err) {
+              logger.fatal(err);
+            }
+          }
+        } catch (err) {
+          logger.fatal(err);
+        }
+
+        response = {
+          id: payload.id,
+          data: count
+        };
+        break;
+      }
+
       // store an inbound message from MX server
       // into temporary encrypted sqlite db
       case 'tmp': {
-        //
-        // since `getDatabase` was already invoked
-        // we have access to the `session.tmpDb` variable
-        //
-        if (!tmpDb) throw new TypeError('tmpDb does not exist');
+        tmpDb = await getTemporaryDatabase.call(this, payload);
 
         // ensure payload.date is a string and valid date
         if (!isSANB(payload.date)) throw new TypeError('Payload date missing');
@@ -299,7 +420,6 @@ async function parsePayload(data, ws) {
         );
 
         db = databases.db;
-        tmpDb = databases.tmpDb;
 
         response = {
           id: payload.id,
@@ -570,7 +690,6 @@ async function parsePayload(data, ws) {
         );
 
         db = databases.db;
-        tmpDb = databases.tmpDb;
 
         response = {
           id: payload.id,
@@ -590,7 +709,7 @@ async function parsePayload(data, ws) {
         // only allow one backup at a time and once every hour
         const lock = await this.lock.waitAcquireLock(
           `${payload.session.user.alias_id}-backup`,
-          ms('5s'),
+          ms('5m'),
           ms('1h')
         );
 

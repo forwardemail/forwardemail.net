@@ -6,6 +6,7 @@
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -92,65 +93,99 @@ async function refreshSession(session, command) {
   const { db } = await getDatabase(this, alias, session);
 
   //
-  // hourly backups
+  // if and only if we're not an instance of SQLite
+  // (otherwise this would result in recursion)
   //
-  const oneHourAgo = dayjs().subtract(1, 'hour').toDate();
-  const now = new Date();
-  if (
-    !_.isDate(alias.imap_backup_at) ||
-    new Date(alias.imap_backup_at).getTime() <= oneHourAgo.getTime()
-  ) {
-    Aliases.findOneAndUpdate(
-      {
-        _id: alias._id,
-        imap_backup_at: _.isDate(alias.imap_backup_at)
-          ? {
-              $exists: true,
-              $lte: oneHourAgo
-            }
-          : {
-              $exists: false
-            }
-      },
-      {
-        $set: {
-          imap_backup_at: now
-        }
-      }
-    )
-      .then((alias) => {
-        // return early if no alias found (point in time safeguard)
-        if (!alias) return;
-        this.wsp
-          .request({
-            action: 'backup',
-            backup_at: now.toISOString(),
-            session: { user: session.user }
-          })
-          .then(() => {
-            logger.debug('backup performed', { session });
-          })
-          .catch((err) => {
-            logger.fatal(err, { session });
-            // if the backup failed then we unset the imap_backup_at
-            Aliases.findOneAndUpdate(
-              {
-                _id: alias._id,
+  // prevent circular dep (otherwise we could do instanceof)
+  if (this?.constructor?.name === 'IMAP') {
+    // sync with temp db on every request
+    const sync = await this.wsp.request({
+      action: 'sync',
+      timeout: ms('30s'),
+      session: { user: session.user }
+    });
+
+    this.logger.debug('sync', { sync });
+
+    // TODO: this needs limited to only being one once per alias across all its IMAP connections
+    // offset by 10s to prevent locking db while a read is in progress
+    if (!session.backupInProgress) {
+      session.backupInProgress = true;
+      setTimeout(() => {
+        //
+        // hourly backups
+        //
+        const oneHourAgo = dayjs().subtract(1, 'hour').toDate();
+        const now = new Date();
+        if (
+          !_.isDate(alias.imap_backup_at) ||
+          new Date(alias.imap_backup_at).getTime() <= oneHourAgo.getTime()
+        ) {
+          Aliases.findOneAndUpdate(
+            {
+              _id: alias._id,
+              imap_backup_at: _.isDate(alias.imap_backup_at)
+                ? {
+                    $exists: true,
+                    $lte: oneHourAgo
+                  }
+                : {
+                    $exists: false
+                  }
+            },
+            {
+              $set: {
                 imap_backup_at: now
-              },
-              {
-                $unset: {
-                  imap_backup_at: 1
-                }
               }
-            )
-              .then()
-              .catch((err) => logger.fatal(err, { session }));
-          });
-      })
-      .catch((err) => {
-        logger.fatal(err, { session });
-      });
+            }
+          )
+            .then((alias) => {
+              // return early if no alias found (point in time safeguard)
+              if (!alias) {
+                session.backupInProgress = false;
+                return;
+              }
+
+              this.wsp
+                .request({
+                  action: 'backup',
+                  backup_at: now.toISOString(),
+                  session: { user: session.user }
+                })
+                .then(() => {
+                  logger.debug('backup performed', { session });
+                  session.backupInProgress = false;
+                })
+                .catch((err) => {
+                  logger.fatal(err, { session });
+                  // if the backup failed then we unset the imap_backup_at
+                  Aliases.findOneAndUpdate(
+                    {
+                      _id: alias._id,
+                      imap_backup_at: now
+                    },
+                    {
+                      $unset: {
+                        imap_backup_at: 1
+                      }
+                    }
+                  )
+                    .then(() => {
+                      session.backupInProgress = false;
+                    })
+                    .catch((err) => {
+                      logger.fatal(err, { session });
+                      session.backupInProgress = false;
+                    });
+                });
+            })
+            .catch((err) => {
+              logger.fatal(err, { session });
+              session.backupInProgress = false;
+            });
+        }
+      }, ms('10s'));
+    }
   }
 
   return { db, domain, alias };

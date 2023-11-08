@@ -304,15 +304,6 @@ class IMAPNotifier extends EventEmitter {
       }
     }
 
-    // close the tmp db connection
-    if (typeof data?.session?.tmpDb?.close === 'function') {
-      try {
-        data.session.tmpDb.close();
-      } catch (err) {
-        logger.fatal(err, { session: data.session });
-      }
-    }
-
     fn(null, true);
   }
 }

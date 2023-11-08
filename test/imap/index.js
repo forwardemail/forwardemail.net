@@ -1082,6 +1082,6 @@ test
     subject
   });
 
-  t.true(typeof msg === 'object')
+  t.true(msg !== null);
   t.is(msg.subject, subject);
 });

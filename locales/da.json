@@ -5262,6 +5262,6 @@
   "You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us.": "Du har overskredet det maksimale antal mislykkede godkendelsesforsøg. Prøv venligst igen senere eller kontakt os.",
   "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> has sent you a password to use for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p><a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Click this link</a> and immediately follow the instructions.</p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> har sendt dig en adgangskode til brug for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> .</p><p> <a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Klik på dette link</a> og følg vejledningen med det samme.</p>",
   "You cannot download a backup for a catch-all or regex.": "Du kan ikke downloade en sikkerhedskopi til et catch-all eller regulært udtryk.",
-  "Leave blank to get password instantly.": "Leave blank to get password instantly.",
-  "Leave blank to download backup from:": "Leave blank to download backup from:"
+  "Leave blank to get password instantly.": "Lad stå tomt for at få adgangskode med det samme.",
+  "Leave blank to download backup from:": "Lad stå tomt for at downloade backup fra:"
 }

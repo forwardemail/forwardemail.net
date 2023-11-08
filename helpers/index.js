@@ -70,6 +70,7 @@ const monitorServer = require('./monitor-server');
 const storeNodeBodies = require('./store-node-bodies');
 const setupPragma = require('./setup-pragma');
 const recursivelyParse = require('./recursively-parse');
+const migrateSchema = require('./migrate-schema');
 
 module.exports = {
   decrypt,
@@ -139,5 +140,6 @@ module.exports = {
   monitorServer,
   storeNodeBodies,
   setupPragma,
-  recursivelyParse
+  recursivelyParse,
+  migrateSchema
 };

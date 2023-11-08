@@ -4556,6 +4556,6 @@
   "You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us.": "Sie haben die maximale Anzahl fehlgeschlagener Authentifizierungsversuche überschritten. Bitte versuchen Sie es später noch einmal oder kontaktieren Sie uns.",
   "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> has sent you a password to use for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p><a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Click this link</a> and immediately follow the instructions.</p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> hat Ihnen ein Passwort zur Verwendung für <span class=\"notranslate text-monospace font-weight-bold\">%s</span> gesendet.</p><p> <a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Klicken Sie auf diesen Link</a> und befolgen Sie sofort die Anweisungen.</p>",
   "You cannot download a backup for a catch-all or regex.": "Sie können kein Backup für einen Catch-All oder einen regulären Ausdruck herunterladen.",
-  "Leave blank to get password instantly.": "Leave blank to get password instantly.",
-  "Leave blank to download backup from:": "Leave blank to download backup from:"
+  "Leave blank to get password instantly.": "Lassen Sie das Feld leer, um sofort das Passwort zu erhalten.",
+  "Leave blank to download backup from:": "Lassen Sie das Feld leer, um das Backup herunterzuladen von:"
 }

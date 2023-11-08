@@ -37,16 +37,13 @@ async function onAppend(path, flags, date, raw, session, fn) {
   let hasNodeBodies;
   let maildata;
   let mimeTreeData;
-  let db;
 
   try {
     // do not allow messages larger than 64 MB
     if (raw && raw.length > SIXTY_FOUR_MB_IN_BYTES)
       throw new IMAPError(i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', 'en'));
 
-    const refreshResults = await this.refreshSession(session, 'APPEND');
-    const { alias } = refreshResults;
-    db = refreshResults.db;
+    const { alias } = await this.refreshSession(session, 'APPEND');
 
     //
     // TODO: we could cache quota in memory and then update the cached value
@@ -321,7 +318,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
         : [];
 
     if (attachmentIds.length > 0) {
-      if (db) {
+      if (session.db) {
         try {
           await this.attachmentStorage.deleteMany(
             this,

@@ -95,10 +95,9 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
         storage_location: alias.storage_location
       }
     };
-    const { db, tmpDb } = await getDatabase(imap, alias, session);
+    const { db } = await getDatabase(imap, alias, session);
 
     console.log('db', db);
-    console.log('tmpDb', tmpDb);
 
     //
     // TODO: sqlite error with object insertion (is this a bug?)
@@ -201,7 +200,6 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     console.timeEnd('read and write to database');
 
     db.close();
-    tmpDb.close();
 
     console.log('DONE!');
   } catch (err) {
