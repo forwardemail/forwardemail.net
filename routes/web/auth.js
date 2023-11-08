@@ -13,6 +13,24 @@ const web = require('#controllers/web');
 
 const router = new Router({ prefix: '/auth' });
 
+function callbackCheck(ctx, next) {
+  return ctx.passport && ctx.passport.authenticate
+    ? ctx.passport.authenticate(ctx.params.provider, {
+        ...config.passportCallbackOptions,
+        successReturnToOrRedirect: false
+      })(ctx, next)
+    : next();
+}
+
+async function callbackRedirect(ctx, next) {
+  if (!ctx.passport) return next();
+
+  const redirectTo = await parseLoginSuccessRedirect(ctx);
+
+  if (ctx.accepts('html')) ctx.redirect(redirectTo);
+  else ctx.body = { redirectTo };
+}
+
 router
   .param('provider', (provider, ctx, next) => {
     if (!ctx.passport || !isSANB(provider)) return next();
@@ -36,25 +54,8 @@ router
           )(ctx, next)
         : next()
   )
-  .get(
-    '/:provider/ok',
-    web.auth.catchError,
-    (ctx, next) =>
-      ctx.passport && ctx.passport.authenticate
-        ? ctx.passport.authenticate(ctx.params.provider, {
-            ...config.passportCallbackOptions,
-            successReturnToOrRedirect: false
-          })(ctx, next)
-        : next(),
-    async (ctx, next) => {
-      if (!ctx.passport) return next();
-
-      const redirectTo = await parseLoginSuccessRedirect(ctx);
-
-      if (ctx.accepts('html')) ctx.redirect(redirectTo);
-      else ctx.body = { redirectTo };
-    }
-  )
+  .get('/:provider/ok', web.auth.catchError, callbackCheck, callbackRedirect)
+  .post('/:provider/ok', web.auth.catchError, callbackCheck, callbackRedirect)
   .get('/google/consent', web.auth.catchError, (ctx, next) =>
     ctx.passport && ctx.passport.authenticate
       ? ctx.passport.authenticate('google', {
