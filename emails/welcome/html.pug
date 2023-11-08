@@ -25,6 +25,17 @@ block content
                 li
                   = emoji("white_check_mark")
                   = " "
+                  = t("10 GB encrypted email storage")
+                  = " "
+                  a.badge.badge-dark(
+                    href=`${config.urls.web}/${locale}/encrypted-email`
+                  )
+                    = t("Learn more")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
                   = t("Privacy-focused email")
                   = " "
                   a.badge.badge-dark.align-middle(
