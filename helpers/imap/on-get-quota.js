@@ -34,11 +34,12 @@ async function onGetQuota(path, session, fn) {
   //       one of the mailboxes for an alias did not exist?)
   //
   try {
-    // const { db } = await this.refreshSession(session, 'GETQUOTA');
+    // TODO: we may want to disable this (assuming getStorageUsed does not use session.db)
+    await this.refreshSession(session, 'GETQUOTA');
 
     if (path !== '') return fn(null, 'NONEXISTENT');
 
-    const storageUsed = await Aliases.getStorageUsed(this.wsp, session);
+    const storageUsed = await Aliases.getStorageUsed(this, session);
 
     fn(null, {
       root: '',

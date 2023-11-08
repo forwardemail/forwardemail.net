@@ -15,6 +15,8 @@ const { Builder } = require('json-sql');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');
+const recursivelyParse = require('#helpers/recursively-parse');
+const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const builder = new Builder();
 
@@ -97,8 +99,7 @@ function noop(fnName) {
 // TODO: support `multi: true` option for this function (and rewrite IMAP helpers to leverage it)
 // eslint-disable-next-line complexity, max-params
 async function updateMany(
-  db,
-  wsp,
+  instance,
   session,
   filter = {},
   update = {},
@@ -108,10 +109,14 @@ async function updateMany(
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!db || (!(db instanceof Database) && !db.wsp))
+  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (!wsp || !(wsp instanceof WebSocketAsPromised))
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
     throw new TypeError('WebSocketAsPromised missing');
 
   if (typeof session?.user?.password !== 'string')
@@ -146,8 +151,8 @@ async function updateMany(
       condition
     });
 
-    if (db.wsp) {
-      beforeDocs = await wsp.request({
+    if (session.db.wsp) {
+      beforeDocs = await instance.wsp.request({
         action: 'stmt',
         session: { user: session.user },
         lock: options.lock,
@@ -157,7 +162,7 @@ async function updateMany(
         ]
       });
     } else {
-      beforeDocs = db.prepare(sql.query).all(sql.values);
+      beforeDocs = session.db.prepare(sql.query).all(sql.values);
     }
   }
 
@@ -188,7 +193,7 @@ async function updateMany(
     // acquire lock if options.lock not set
     let lock;
     if (!options?.lock) {
-      lock = await db.acquireLock();
+      lock = await acquireLock(instance, session.db);
     }
 
     let err;
@@ -196,8 +201,8 @@ async function updateMany(
     // result of this will be like:
     // `{ changes: 1, lastInsertRowid: 11 }`
     try {
-      if (db.readonly) {
-        await wsp.request({
+      if (session.db.readonly) {
+        await instance.wsp.request({
           action: 'stmt',
           session: { user: session.user },
           lock: options.lock || lock,
@@ -207,14 +212,14 @@ async function updateMany(
           ]
         });
       } else {
-        db.prepare(sql.query).run(sql.values);
+        session.db.prepare(sql.query).run(sql.values);
       }
     } catch (_err) {
       err = _err;
     }
 
     // release lock if options.lock not set
-    if (lock) await db.releaseLock(lock);
+    if (lock) await releaseLock(instance, session.db, lock);
 
     // throw error if any
     if (err) throw err;
@@ -228,8 +233,8 @@ async function updateMany(
 
   if (options?.returnDocument === 'after') {
     let docs;
-    if (db.wsp) {
-      docs = await wsp.request({
+    if (session.db.wsp) {
+      docs = await instance.wsp.request({
         action: 'stmt',
         session: { user: session.user },
         lock: options.lock,
@@ -239,25 +244,29 @@ async function updateMany(
         ]
       });
     } else {
-      docs = db.prepare(sql.query).all(sql.values);
+      docs = session.db.prepare(sql.query).all(sql.values);
     }
 
     return Promise.all(docs.map((doc) => convertResult(this, doc)));
   }
 
-  // db.prepare(sql.query).all(sql.values);
+  // session.db.prepare(sql.query).all(sql.values);
   return Promise.all(beforeDocs.map((doc) => convertResult(this, doc)));
 }
 
-async function countDocuments(db, wsp, session, filter = {}) {
+async function countDocuments(instance, session, filter = {}) {
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!db || (!(db instanceof Database) && !db.wsp))
+  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (!wsp || !(wsp instanceof WebSocketAsPromised))
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
     throw new TypeError('WebSocketAsPromised missing');
 
   if (typeof session?.user?.password !== 'string')
@@ -277,8 +286,8 @@ async function countDocuments(db, wsp, session, filter = {}) {
   });
 
   let result;
-  if (db.wsp) {
-    result = await wsp.request({
+  if (session.db.wsp) {
+    result = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
       // lock: options.lock,
@@ -288,7 +297,7 @@ async function countDocuments(db, wsp, session, filter = {}) {
       ]
     });
   } else {
-    result = db.prepare(sql.query).get(sql.values);
+    result = session.db.prepare(sql.query).get(sql.values);
   }
 
   if (typeof result !== 'object' || typeof result[expression] !== 'number')
@@ -296,16 +305,20 @@ async function countDocuments(db, wsp, session, filter = {}) {
   return result[expression];
 }
 
-// eslint-disable-next-line max-params
-async function deleteOne(db, wsp, session, conditions = {}, options = {}) {
+// eslint-disable-next-line complexity
+async function deleteOne(instance, session, conditions = {}, options = {}) {
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!db || (!(db instanceof Database) && !db.wsp))
+  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (!wsp || !(wsp instanceof WebSocketAsPromised))
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
     throw new TypeError('WebSocketAsPromised missing');
 
   if (typeof session?.user?.password !== 'string')
@@ -323,8 +336,7 @@ async function deleteOne(db, wsp, session, conditions = {}, options = {}) {
 
   const doc = await findOne.call(
     this,
-    db,
-    wsp,
+    instance,
     session,
     conditions,
     {},
@@ -340,14 +352,14 @@ async function deleteOne(db, wsp, session, conditions = {}, options = {}) {
 
   // acquire lock if options.lock not set
   let lock;
-  if (!options?.lock) lock = await db.acquireLock();
+  if (!options?.lock) lock = await acquireLock(instance, session.db);
 
   let result;
   let err;
   try {
     // use websockets if readonly
-    if (db.readonly) {
-      result = await wsp.request({
+    if (session.db.readonly) {
+      result = await instance.wsp.request({
         action: 'stmt',
         session: { user: session.user },
         lock: options.lock || lock,
@@ -357,27 +369,26 @@ async function deleteOne(db, wsp, session, conditions = {}, options = {}) {
         ]
       });
     } else {
-      result = db.prepare(sql.query).run(sql.values);
+      result = session.db.prepare(sql.query).run(sql.values);
     }
   } catch (_err) {
     err = _err;
   }
 
   // release lock if options.lock not set
-  if (lock) await db.releaseLock(lock);
+  if (lock) await releaseLock(instance, session.db, lock);
 
   // throw error if any
   if (err) throw err;
 
-  if (typeof result.changes !== 'number')
+  if (typeof result?.changes !== 'number')
     throw new TypeError('Result should be a number');
   return { deletedCount: result.changes };
 }
 
 // eslint-disable-next-line max-params
 async function find(
-  db,
-  wsp,
+  instance,
   session,
   filter = {},
   projections = {},
@@ -391,10 +402,14 @@ async function find(
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!db || (!(db instanceof Database) && !db.wsp))
+  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (!wsp || !(wsp instanceof WebSocketAsPromised))
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
     throw new TypeError('WebSocketAsPromised missing');
 
   if (typeof session?.user?.password !== 'string')
@@ -407,8 +422,8 @@ async function find(
   });
 
   let docs;
-  if (db.wsp) {
-    docs = await wsp.request({
+  if (session.db.wsp) {
+    docs = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
       lock: options.lock,
@@ -418,7 +433,7 @@ async function find(
       ]
     });
   } else {
-    docs = db.prepare(sql.query).all(sql.values);
+    docs = session.db.prepare(sql.query).all(sql.values);
   }
 
   if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
@@ -427,14 +442,19 @@ async function find(
 }
 
 // eslint-disable-next-line max-params
-async function findById(db, wsp, session, _id, projections = {}, options = {}) {
-  return findOne.call(this, db, wsp, session, { _id }, projections, options);
+async function findById(
+  instance,
+  session,
+  _id,
+  projections = {},
+  options = {}
+) {
+  return findOne.call(this, instance, session, { _id }, projections, options);
 }
 
 // eslint-disable-next-line max-params
 async function findOne(
-  db,
-  wsp,
+  instance,
   session,
   conditions = {},
   projections = {},
@@ -460,10 +480,14 @@ async function findOne(
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!db || (!(db instanceof Database) && !db.wsp))
+  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (!wsp || !(wsp instanceof WebSocketAsPromised))
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
     throw new TypeError('WebSocketAsPromised missing');
 
   if (typeof session?.user?.password !== 'string')
@@ -479,8 +503,8 @@ async function findOne(
 
   let doc;
 
-  if (db.wsp) {
-    doc = await wsp.request({
+  if (session.db.wsp) {
+    doc = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
       lock: options.lock,
@@ -490,7 +514,7 @@ async function findOne(
       ]
     });
   } else {
-    doc = db.prepare(sql.query).get(sql.values);
+    doc = session.db.prepare(sql.query).get(sql.values);
   }
 
   if (!doc) return null;
@@ -507,10 +531,17 @@ async function $__handleSave(options = {}, fn) {
     if (!isSANB(table)) throw new TypeError('Table name missing');
     const mapping = this?.mapping || this?.constructor?.mapping;
     if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-    if (!this.db || (!(this.db instanceof Database) && !this.db.wsp))
+    if (
+      !this.session.db ||
+      (!(this.session.db instanceof Database) && !this.session.db.wsp)
+    )
       throw new TypeError('Database is missing');
 
-    if (!this.wsp || !(this.wsp instanceof WebSocketAsPromised))
+    if (
+      !this?.instance?.wsp ||
+      (!(this.instance.wsp instanceof WebSocketAsPromised) &&
+        !this.instance.wsp[Symbol.for('isWSP')])
+    )
       throw new TypeError('WebSocketAsPromised missing');
 
     if (typeof this?.session?.user?.password !== 'string')
@@ -536,11 +567,12 @@ async function $__handleSave(options = {}, fn) {
         });
 
         // acquire lock if options.lock not set
-        if (!this.lock && !options?.lock) lock = await this.db.acquireLock();
+        if (!this.lock && !options?.lock)
+          lock = await acquireLock(this.instance, this.session.db);
 
         // use websockets if readonly
-        if (this.db.readonly) {
-          await this.wsp.request({
+        if (this.session.db.readonly) {
+          await this.instance.wsp.request({
             action: 'stmt',
             session: { user: this.session.user },
             lock: this.lock || options.lock || lock,
@@ -550,7 +582,7 @@ async function $__handleSave(options = {}, fn) {
             ]
           });
         } else {
-          this.db.prepare(sql.query).run(sql.values);
+          this.session.db.prepare(sql.query).run(sql.values);
         }
       } else {
         const sql = builder.build({
@@ -562,10 +594,11 @@ async function $__handleSave(options = {}, fn) {
           modifier: values
         });
         // acquire lock if options.lock not set
-        if (!this.lock && !options?.lock) lock = await this.db.acquireLock();
+        if (!this.lock && !options?.lock)
+          lock = await acquireLock(this.instance, this.session.db);
         // use websockets if readonly
-        if (this.db.readonly) {
-          await this.wsp.request({
+        if (this.session.db.readonly) {
+          await this.instance.wsp.request({
             action: 'stmt',
             session: { user: this.session.user },
             lock: this.lock || options.lock || lock,
@@ -575,7 +608,7 @@ async function $__handleSave(options = {}, fn) {
             ]
           });
         } else {
-          this.db.prepare(sql.query).run(sql.values);
+          this.session.db.prepare(sql.query).run(sql.values);
         }
       }
     } catch (_err) {
@@ -583,7 +616,7 @@ async function $__handleSave(options = {}, fn) {
     }
 
     // release lock if options.lock not set
-    if (lock) await this.db.releaseLock(lock);
+    if (lock) await releaseLock(this.instance, this.session.db, lock);
 
     // throw error if any
     if (err) throw err;
@@ -600,8 +633,8 @@ async function $__handleSave(options = {}, fn) {
 
       let doc;
 
-      if (this.db.wsp) {
-        doc = await this.wsp.request({
+      if (this.session.db.wsp) {
+        doc = await this.instance.wsp.request({
           action: 'stmt',
           session: { user: this.session.user },
           lock: this.lock || options.lock,
@@ -611,7 +644,7 @@ async function $__handleSave(options = {}, fn) {
           ]
         });
       } else {
-        doc = this.db.prepare(sql.query).get(sql.values);
+        doc = this.session.db.prepare(sql.query).get(sql.values);
       }
 
       if (!doc) throw new TypeError('Document failed to save');
@@ -620,13 +653,9 @@ async function $__handleSave(options = {}, fn) {
     }
   } catch (err) {
     // release lock if options.lock not set
-    if (
-      typeof this.db === 'object' &&
-      typeof this.db.releaseLock === 'function' &&
-      lock
-    ) {
+    if (lock) {
       try {
-        await this.db.releaseLock(lock);
+        await releaseLock(this.instance, this.session.db, lock);
       } catch (err) {
         logger.fatal(err, { lock });
       }
@@ -638,8 +667,7 @@ async function $__handleSave(options = {}, fn) {
 
 // eslint-disable-next-line max-params
 async function findByIdAndUpdate(
-  db,
-  wsp,
+  instance,
   session,
   _id,
   update = {},
@@ -647,8 +675,7 @@ async function findByIdAndUpdate(
 ) {
   return findOneAndUpdate.call(
     this,
-    db,
-    wsp,
+    instance,
     session,
     { _id },
     update,
@@ -659,8 +686,7 @@ async function findByIdAndUpdate(
 // TODO: handle projection from `options` (?)
 // eslint-disable-next-line complexity, max-params
 async function findOneAndUpdate(
-  db,
-  wsp,
+  instance,
   session,
   conditions = {},
   update = {},
@@ -670,10 +696,14 @@ async function findOneAndUpdate(
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!db || (!(db instanceof Database) && !db.wsp))
+  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (!wsp || !(wsp instanceof WebSocketAsPromised))
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
     throw new TypeError('WebSocketAsPromised missing');
 
   if (typeof session?.user?.password !== 'string')
@@ -681,8 +711,7 @@ async function findOneAndUpdate(
 
   const beforeDoc = await findOne.call(
     this,
-    db,
-    wsp,
+    instance,
     session,
     conditions,
     {},
@@ -736,15 +765,15 @@ async function findOneAndUpdate(
 
     // acquire lock if options.lock not set
     let lock;
-    if (!options?.lock) lock = await db.acquireLock();
+    if (!options?.lock) lock = await acquireLock(instance, session.db);
 
     let err;
 
     try {
       // result of this will be like:
       // `{ changes: 1, lastInsertRowid: 11 }`
-      if (db.readonly) {
-        await wsp.request({
+      if (session.db.readonly) {
+        await instance.wsp.request({
           action: 'stmt',
           session: { user: session.user },
           lock: options.lock || lock,
@@ -754,14 +783,14 @@ async function findOneAndUpdate(
           ]
         });
       } else {
-        db.prepare(sql.query).run(sql.values);
+        session.db.prepare(sql.query).run(sql.values);
       }
     } catch (_err) {
       err = _err;
     }
 
     // release lock if options.lock not set
-    if (lock) await db.releaseLock(lock);
+    if (lock) await releaseLock(instance, session.db, lock);
 
     // throw error if any
     if (err) throw err;
@@ -777,8 +806,8 @@ async function findOneAndUpdate(
 
   let doc;
 
-  if (db.wsp) {
-    doc = await wsp.request({
+  if (session.db.wsp) {
+    doc = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
       lock: options.lock,
@@ -788,7 +817,7 @@ async function findOneAndUpdate(
       ]
     });
   } else {
-    doc = db.prepare(sql.query).get(sql.values);
+    doc = session.db.prepare(sql.query).get(sql.values);
   }
 
   if (!doc) throw new TypeError('Document does not exist');
@@ -796,15 +825,20 @@ async function findOneAndUpdate(
   return options?.returnDocument === 'after' ? doc : beforeDoc;
 }
 
-// eslint-disable-next-line max-params
-async function distinct(db, wsp, session, field, conditions = {}) {
+async function distinct(instance, session, field, conditions = {}) {
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!db || (!(db instanceof Database) && !db.wsp))
+  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
     throw new TypeError('Database is missing');
   if (!isSANB(field)) throw new TypeError('Field missing');
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
+    throw new TypeError('WebSocketAsPromised missing');
 
   const sql = builder.build({
     type: 'select',
@@ -816,15 +850,15 @@ async function distinct(db, wsp, session, field, conditions = {}) {
 
   let docs;
 
-  if (db.wsp) {
-    docs = await wsp.request({
+  if (session.db.wsp) {
+    docs = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
       // lock: options.lock,
       stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
     });
   } else {
-    docs = db.prepare(sql.query).pluck().all(sql.values);
+    docs = session.db.prepare(sql.query).pluck().all(sql.values);
   }
 
   if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
@@ -832,8 +866,8 @@ async function distinct(db, wsp, session, field, conditions = {}) {
   return docs;
 }
 
-// eslint-disable-next-line complexity, max-params
-async function bulkWrite(db, wsp, session, ops = [], options = {}) {
+// eslint-disable-next-line complexity
+async function bulkWrite(instance, session, ops = [], options = {}) {
   if (!Array.isArray(ops) || ops.length === 0)
     throw new TypeError('Ops is empty');
 
@@ -843,10 +877,14 @@ async function bulkWrite(db, wsp, session, ops = [], options = {}) {
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!db || (!(db instanceof Database) && !db.wsp))
+  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (!wsp || !(wsp instanceof WebSocketAsPromised))
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
     throw new TypeError('WebSocketAsPromised missing');
 
   if (typeof session?.user?.password !== 'string')
@@ -914,8 +952,7 @@ async function bulkWrite(db, wsp, session, ops = [], options = {}) {
             // eslint-disable-next-line no-await-in-loop
             doc = await findOne.call(
               this,
-              db,
-              wsp,
+              instance,
               session,
               op.updateOne.update.filter
             );
@@ -985,8 +1022,7 @@ async function bulkWrite(db, wsp, session, ops = [], options = {}) {
             // eslint-disable-next-line no-await-in-loop
             doc = await findOne.call(
               this,
-              db,
-              wsp,
+              instance,
               session,
               op.updateOne.update.filter
             );
@@ -1145,16 +1181,16 @@ async function bulkWrite(db, wsp, session, ops = [], options = {}) {
         // acquire lock if options.lock not set
         let lock;
         // eslint-disable-next-line no-await-in-loop
-        if (!options?.lock) lock = await db.acquireLock();
+        if (!options?.lock) lock = await acquireLock(instance, session.db);
 
         let err;
 
         try {
           // result of this will be like:
           // `{ changes: 1, lastInsertRowid: 11 }`
-          if (db.readonly) {
+          if (session.db.readonly) {
             // eslint-disable-next-line no-await-in-loop
-            await wsp.request({
+            await instance.wsp.request({
               action: 'stmt',
               session: { user: session.user },
               lock: options.lock || lock,
@@ -1164,7 +1200,7 @@ async function bulkWrite(db, wsp, session, ops = [], options = {}) {
               ]
             });
           } else {
-            db.prepare(sql.query).run(sql.values);
+            session.db.prepare(sql.query).run(sql.values);
           }
         } catch (_err) {
           err = _err;
@@ -1172,7 +1208,7 @@ async function bulkWrite(db, wsp, session, ops = [], options = {}) {
 
         // release lock if options.lock not set
         // eslint-disable-next-line no-await-in-loop
-        if (lock) await db.releaseLock(lock);
+        if (lock) await releaseLock(instance, session.db, lock);
 
         // throw error if any
         if (err) throw err;
@@ -1233,40 +1269,6 @@ function prepareQuery(mapping, doc) {
   }
 
   return obj;
-}
-
-// this function takes stringified JSON
-// and iterates recursively to convert
-// { type: 'Buffer', data: [...] } back to a Buffer
-function parseBuffers(json) {
-  if (typeof json !== 'object' || json === null) {
-    return json;
-  }
-
-  if (Array.isArray(json)) {
-    for (let i = 0; i < json.length; i++) {
-      json[i] = parseBuffers(json[i]);
-    }
-  } else if (
-    json &&
-    json.type === 'Buffer' &&
-    typeof json.data === 'object' &&
-    Array.isArray(json.data)
-  ) {
-    json = Buffer.from(json.data);
-  } else {
-    for (const key of Object.keys(json)) {
-      // iterate recursively
-      json[key] = parseBuffers(json[key]);
-    }
-  }
-
-  return json;
-}
-
-function recursivelyParse(str) {
-  const json = JSON.parse(str);
-  return parseBuffers(json);
 }
 
 // eslint-disable-next-line complexity
@@ -1683,24 +1685,13 @@ async function convertResult(Model, doc, projection = {}) {
 
 function sqliteVirtualDB(schema) {
   schema
-    .virtual('db')
+    .virtual('instance')
     .get(function () {
-      return this.__db;
+      return this.__instance;
     })
-    .set(function (db) {
-      if (!db || (!(db instanceof Database) && !db.wsp))
-        throw new TypeError('db not an instance of Database');
-      this.__db = db;
-    });
-  schema
-    .virtual('wsp')
-    .get(function () {
-      return this.__wsp;
-    })
-    .set(function (wsp) {
-      if (!(wsp instanceof WebSocketAsPromised))
-        throw new TypeError('wsp not an instance  of WebSocketAsPromised');
-      this.__wsp = wsp;
+    .set(function (instance) {
+      // TODO: validate it is instanceof SQLite or IMAP server
+      this.__instance = instance;
     });
   schema
     .virtual('session')

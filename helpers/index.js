@@ -67,6 +67,9 @@ const createWebSocketAsPromised = require('./create-websocket-as-promised');
 const parseError = require('./parse-error');
 const getPathToDatabase = require('./get-path-to-database');
 const monitorServer = require('./monitor-server');
+const storeNodeBodies = require('./store-node-bodies');
+const setupPragma = require('./setup-pragma');
+const recursivelyParse = require('./recursively-parse');
 
 module.exports = {
   decrypt,
@@ -133,5 +136,8 @@ module.exports = {
   createWebSocketAsPromised,
   parseError,
   getPathToDatabase,
-  monitorServer
+  monitorServer,
+  storeNodeBodies,
+  setupPragma,
+  recursivelyParse
 };

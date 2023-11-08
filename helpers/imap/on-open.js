@@ -28,7 +28,7 @@ async function onOpen(path, session, fn) {
   try {
     const { db } = await this.refreshSession(session, 'OPEN');
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       path
     });
 
@@ -47,7 +47,7 @@ async function onOpen(path, session, fn) {
     // <https://github.com/nodemailer/wildduck/issues/530>
     //
     /*
-    const uidList = await Messages.distinct(db, this.wsp, session, 'uid', {
+    const uidList = await Messages.distinct(this, session, 'uid', {
       mailbox: mailbox._id
     });
 

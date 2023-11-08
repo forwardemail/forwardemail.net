@@ -66,7 +66,7 @@ include ../../../_pagination
                           p.alert.alert-primary.small
                             = emoji("point_up")
                             = " "
-                            != t("Leave this blank to download the backup from:")
+                            != t("Leave blank to download backup from:")
                             = " "
                             span.dayjs.font-weight-bold(
                               data-time=new Date(alias.imap_backup_at).getTime()
@@ -121,7 +121,7 @@ include ../../../_pagination
                           p.alert.alert-primary.small
                             = emoji("point_up")
                             = " "
-                            = t("Leave this blank to get your password instantly.")
+                            = t("Leave blank to get password instantly.")
                           if Array.isArray(alias.tokens) && alias.tokens.length > 0
                             p.font-weight-bold.lead= t("Enter current password to keep existing mailbox and messages:")
                             .form-group.floating-label

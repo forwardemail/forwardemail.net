@@ -61,12 +61,16 @@ Threads.plugin(sqliteVirtualDB);
 Threads.plugin(validationErrorTransform);
 
 // code is inspired from wildduck (rewrite necessary for async/await and different db structure)
-// eslint-disable-next-line max-params, complexity
-async function getThreadId(db, wsp, session, subject, mimeTree) {
-  if (!db || (!(db instanceof Database) && !db.wsp))
+// eslint-disable-next-line complexity
+async function getThreadId(instance, session, subject, mimeTree) {
+  if (!session?.db || (!(session.db instanceof Database) && !session.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (!wsp || !(wsp instanceof WebSocketAsPromised))
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
     throw new TypeError('WebSocketAsPromised missing');
 
   if (typeof session?.user?.password !== 'string')
@@ -112,8 +116,8 @@ async function getThreadId(db, wsp, session, subject, mimeTree) {
       const values = [subject, ...referenceIds];
 
       // reading so no need to lock
-      if (db.wsp) {
-        thread = await wsp.request({
+      if (session.db.wsp) {
+        thread = await instance.wsp.request({
           action: 'stmt',
           session: { user: session.user },
           stmt: [
@@ -122,7 +126,7 @@ async function getThreadId(db, wsp, session, subject, mimeTree) {
           ]
         });
       } else {
-        thread = db.prepare(sql).get(values);
+        thread = session.db.prepare(sql).get(values);
       }
     }
 
@@ -153,8 +157,8 @@ async function getThreadId(db, wsp, session, subject, mimeTree) {
         // `{ changes: 1, lastInsertRowid: 11 }`
 
         // use websockets if readonly
-        if (db.readonly) {
-          await wsp.request({
+        if (session.db.readonly) {
+          await instance.wsp.request({
             action: 'stmt',
             session: { user: session.user },
             stmt: [
@@ -163,7 +167,7 @@ async function getThreadId(db, wsp, session, subject, mimeTree) {
             ]
           });
         } else {
-          db.prepare(sql.query).run(sql.values);
+          session.db.prepare(sql.query).run(sql.values);
         }
       }
 
@@ -176,8 +180,8 @@ async function getThreadId(db, wsp, session, subject, mimeTree) {
           }
         });
 
-        if (db.wsp) {
-          thread = await wsp.request({
+        if (session.db.wsp) {
+          thread = await instance.wsp.request({
             action: 'stmt',
             session: { user: session.user },
             stmt: [
@@ -186,7 +190,7 @@ async function getThreadId(db, wsp, session, subject, mimeTree) {
             ]
           });
         } else {
-          thread = db.prepare(sql.query).get(sql.values);
+          thread = session.db.prepare(sql.query).get(sql.values);
         }
 
         if (!thread) throw new TypeError('Thread does not exist');
@@ -202,8 +206,7 @@ async function getThreadId(db, wsp, session, subject, mimeTree) {
   }
 
   thread = await this.create({
-    db,
-    wsp,
+    instance,
     session,
     ids: referenceIds,
     subject

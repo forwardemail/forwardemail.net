@@ -20,9 +20,9 @@ async function onList(query, session, fn) {
   this.logger.debug('LIST', { query, session });
 
   try {
-    const { db } = await this.refreshSession(session, 'LIST');
+    await this.refreshSession(session, 'LIST');
 
-    const mailboxes = await Mailboxes.find(db, this.wsp, session, {});
+    const mailboxes = await Mailboxes.find(this, session, {});
 
     fn(null, mailboxes);
   } catch (err) {

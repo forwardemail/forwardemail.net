@@ -24,9 +24,9 @@ async function onGetQuotaRoot(path, session, fn) {
   this.logger.debug('GETQUOTAROOT', { path, session });
 
   try {
-    const { db } = await this.refreshSession(session, 'GETQUOTAROOT');
+    await this.refreshSession(session, 'GETQUOTAROOT');
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       path
     });
 
@@ -35,7 +35,7 @@ async function onGetQuotaRoot(path, session, fn) {
         imapResponse: 'NONEXISTENT'
       });
 
-    const storageUsed = await Aliases.getStorageUsed(this.wsp, session);
+    const storageUsed = await Aliases.getStorageUsed(this, session);
 
     fn(null, {
       root: '',

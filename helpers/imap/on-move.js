@@ -23,6 +23,7 @@ const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const { convertResult } = require('#helpers/mongoose-to-sqlite');
+const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const BULK_BATCH_SIZE = 150;
 
@@ -33,13 +34,16 @@ async function onMove(mailboxId, update, session, fn) {
   this.logger.debug('MOVE', { mailboxId, update, session });
 
   let lock;
-
+  let db;
+  let alias;
   try {
-    const { alias, db } = await this.refreshSession(session, 'MOVE');
+    const results = await this.refreshSession(session, 'MOVE');
+    alias = results.alias;
+    db = results.db;
 
     // TODO: parallel
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
     });
 
@@ -48,7 +52,7 @@ async function onMove(mailboxId, update, session, fn) {
         imapResponse: 'TRYCREATE'
       });
 
-    const targetMailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const targetMailbox = await Mailboxes.findOne(this, session, {
       path: update.destination
     });
 
@@ -57,7 +61,7 @@ async function onMove(mailboxId, update, session, fn) {
         imapResponse: 'TRYCREATE'
       });
 
-    lock = await db.acquireLock();
+    lock = await acquireLock(this, db);
 
     let err;
 
@@ -70,8 +74,7 @@ async function onMove(mailboxId, update, session, fn) {
     try {
       // increment modification index to indicate a change occurred
       const updatedMailbox = await Mailboxes.findOneAndUpdate(
-        db,
-        this.wsp,
+        this,
         session,
         {
           _id: mailbox._id
@@ -162,8 +165,7 @@ async function onMove(mailboxId, update, session, fn) {
 
         // eslint-disable-next-line no-await-in-loop
         const updatedTargetMailbox = await Mailboxes.findOneAndUpdate(
-          db,
-          this.wsp,
+          this,
           session,
           {
             _id: targetMailbox._id,
@@ -217,8 +219,7 @@ async function onMove(mailboxId, update, session, fn) {
         message.lock = lock;
 
         // virtual db helper
-        message.db = db;
-        message.wsp = this.wsp;
+        message.instance = this;
         message.session = session;
 
         // create new message (in new target mailbox)
@@ -242,8 +243,7 @@ async function onMove(mailboxId, update, session, fn) {
         // delete old message
         // eslint-disable-next-line no-await-in-loop
         const results = await Messages.deleteOne(
-          db,
-          this.wsp,
+          this,
           session,
           {
             _id: existingMessageId,
@@ -304,8 +304,7 @@ async function onMove(mailboxId, update, session, fn) {
           try {
             // eslint-disable-next-line no-await-in-loop
             await this.server.notifier.addEntries(
-              db,
-              this.wsp,
+              this,
               session,
               targetMailbox._id,
               existEntries,
@@ -324,7 +323,7 @@ async function onMove(mailboxId, update, session, fn) {
 
     // release lock
     try {
-      await db.releaseLock(lock);
+      await releaseLock(this, db, lock);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
@@ -349,8 +348,7 @@ async function onMove(mailboxId, update, session, fn) {
       // expunge messages from old mailbox
       try {
         await this.server.notifier.addEntries(
-          db,
-          this.wsp,
+          this,
           session,
           mailbox,
           expungeEntries,
@@ -366,8 +364,7 @@ async function onMove(mailboxId, update, session, fn) {
       // add new messages to new mailbox
       try {
         await this.server.notifier.addEntries(
-          db,
-          this.wsp,
+          this,
           session,
           targetMailbox,
           existEntries,
@@ -396,7 +393,7 @@ async function onMove(mailboxId, update, session, fn) {
     // release lock
     if (lock?.success) {
       try {
-        await this.lock.releaseLock(lock);
+        await releaseLock(this, db, lock);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }

@@ -35,7 +35,10 @@ const imap = require('#helpers/imap');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
+const storeNodeBodies = require('#helpers/store-node-bodies');
 
+//
+// TODO: add Received header on FE side
 //
 // TODO: run migration for existing IMAP db storage in Mongo -> SQLite temp mailboxes
 // TODO: redo storage calculation stuff (right now limited to 1K lookups)
@@ -44,6 +47,7 @@ const refreshSession = require('#helpers/refresh-session');
 //       (e.g. the alias no longer exists so we need to remove it)
 //       and if it does exist then store its size as storage_used (not storageUsed)
 //
+// TODO: include R2 backups and -tmp storage files in calculations
 // TODO: handle translation of the folder names (similar to wildduck)
 // TODO: send welcome email to user in their sqlite dbs
 // TODO: restore locales, then run through pages, then mandarin
@@ -51,7 +55,7 @@ const refreshSession = require('#helpers/refresh-session');
 // TODO: alias.has_imap validation on IMAP connection
 // TODO: when user deletes account then also purge sqlite databases and backups
 // TODO: automated job to detect files on block storage and R2 that don't correspond to actual aliases
-// TODO: use `session.db` and `session.wsp` everywhere (rewrite everything for less args)
+// TODO: alert user they have new email if messages detected > 24 hours ago
 
 // TODO: addEntries when MX server writes for temporary storage (e.g. alert existing IMAP connections)
 
@@ -83,27 +87,6 @@ const refreshSession = require('#helpers/refresh-session');
 
 // TODO: other items
 // - [ ] axe should parse out streams
-
-// eslint-disable-next-line max-params
-async function storeNodeBodies(db, wsp, session, maildata, mimeTree) {
-  mimeTree.attachmentMap = {};
-  for (const node of maildata.nodes) {
-    // eslint-disable-next-line no-await-in-loop
-    const attachment = await this.attachmentStorage.create(
-      db,
-      wsp,
-      session,
-      node
-    );
-    mimeTree.attachmentMap[node.attachmentId] = attachment.hash;
-    const attachmentInfo =
-      maildata.attachments &&
-      maildata.attachments.find((a) => a.id === node.attachmentId);
-    if (attachmentInfo && node.body) attachmentInfo.size = node.body.length;
-  }
-
-  return true;
-}
 
 class IMAP {
   constructor(options = {}, secure = env.IMAP_PORT === 2993) {
@@ -172,7 +155,6 @@ class IMAP {
 
     // override logger
     server.logger = this.logger;
-
     server.loggelf = (...args) => this.logger.debug(...args);
 
     server.onAuth = onAuth.bind(this);

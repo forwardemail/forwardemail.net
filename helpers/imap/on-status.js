@@ -23,9 +23,9 @@ async function onStatus(path, session, fn) {
   this.logger.debug('STATUS', { path, session });
 
   try {
-    const { db } = await this.refreshSession(session, 'STATUS');
+    await this.refreshSession(session, 'STATUS');
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       path
     });
 
@@ -36,11 +36,11 @@ async function onStatus(path, session, fn) {
 
     // TODO: parallel
 
-    const messages = await Messages.countDocuments(db, this.wsp, session, {
+    const messages = await Messages.countDocuments(this, session, {
       mailbox: mailbox._id
     });
 
-    const unseen = await Messages.countDocuments(db, this.wsp, session, {
+    const unseen = await Messages.countDocuments(this, session, {
       mailbox: mailbox._id,
       unseen: true
     });

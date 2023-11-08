@@ -5525,5 +5525,7 @@
   "imapsync": "จิตไม่ปกติ",
   "You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us.": "คุณพยายามตรวจสอบสิทธิ์ที่ล้มเหลวเกินจำนวนสูงสุดแล้ว โปรดลองอีกครั้งในภายหลังหรือติดต่อเรา",
   "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> has sent you a password to use for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p><a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Click this link</a> and immediately follow the instructions.</p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> ได้ส่งรหัสผ่านให้คุณเพื่อใช้สำหรับ <span class=\"notranslate text-monospace font-weight-bold\">%s</span></p><p> <a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">คลิกลิงก์นี้</a> แล้วทำตามคำแนะนำทันที</p>",
-  "You cannot download a backup for a catch-all or regex.": "คุณไม่สามารถดาวน์โหลดข้อมูลสำรองสำหรับ catch-all หรือ regex ได้"
+  "You cannot download a backup for a catch-all or regex.": "คุณไม่สามารถดาวน์โหลดข้อมูลสำรองสำหรับ catch-all หรือ regex ได้",
+  "Leave blank to get password instantly.": "Leave blank to get password instantly.",
+  "Leave blank to download backup from:": "Leave blank to download backup from:"
 }

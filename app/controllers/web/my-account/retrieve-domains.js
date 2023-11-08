@@ -149,7 +149,7 @@ async function retrieveDomains(ctx, next) {
       if (d.is_global) return d;
       try {
         // virtual helper for accurate storage from sqlite databases
-        d.storage_used = await Aliases.getStorageUsed(wsp, {
+        d.storage_used = await Aliases.getStorageUsed({ wsp }, {
           user: {
             domain_id: d.id
           }

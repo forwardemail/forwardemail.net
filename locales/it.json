@@ -5525,5 +5525,7 @@
   "imapsync": "imapsync",
   "You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us.": "Hai superato il numero massimo di tentativi di autenticazione non riusciti. Riprova più tardi o contattaci.",
   "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> has sent you a password to use for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p><a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Click this link</a> and immediately follow the instructions.</p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> ti ha inviato una password da utilizzare per <span class=\"notranslate text-monospace font-weight-bold\">%s</span> .</p><p> <a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Clicca su questo link</a> e segui subito le istruzioni.</p>",
-  "You cannot download a backup for a catch-all or regex.": "Non è possibile scaricare un backup per un catch-all o una regex."
+  "You cannot download a backup for a catch-all or regex.": "Non è possibile scaricare un backup per un catch-all o una regex.",
+  "Leave blank to get password instantly.": "Leave blank to get password instantly.",
+  "Leave blank to download backup from:": "Leave blank to download backup from:"
 }

@@ -23,9 +23,9 @@ async function onDelete(path, session, fn) {
   this.logger.debug('DELETE', { path, session });
 
   try {
-    const { alias, db } = await this.refreshSession(session, 'DELETE');
+    const { alias } = await this.refreshSession(session, 'DELETE');
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       path
     });
 
@@ -40,7 +40,7 @@ async function onDelete(path, session, fn) {
       });
 
     // delete mailbox
-    const results = await Mailboxes.deleteOne(db, this.wsp, session, {
+    const results = await Mailboxes.deleteOne(this, session, {
       _id: mailbox._id
     });
 
@@ -49,7 +49,7 @@ async function onDelete(path, session, fn) {
     // results.deletedCount is mainly for publish/notifier
     if (results.deletedCount > 0) {
       try {
-        await this.server.notifier.addEntries(db, this.wsp, session, mailbox, {
+        await this.server.notifier.addEntries(this, session, mailbox, {
           command: 'DELETE',
           mailbox: mailbox._id
         });
@@ -61,8 +61,7 @@ async function onDelete(path, session, fn) {
 
     // set messages to expired
     await Messages.updateMany(
-      db,
-      this.wsp,
+      this,
       session,
       {
         mailbox: mailbox._id

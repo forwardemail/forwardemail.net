@@ -22,11 +22,10 @@ async function onUnsubscribe(path, session, fn) {
   this.logger.debug('UNSUBSCRIBE', { path, session });
 
   try {
-    const { db } = await this.refreshSession(session, 'UNSUBSCRIBE');
+    await this.refreshSession(session, 'UNSUBSCRIBE');
 
     const mailbox = await Mailboxes.findOneAndUpdate(
-      db,
-      this.wsp,
+      this,
       session,
       {
         path

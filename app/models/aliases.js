@@ -585,7 +585,7 @@ Aliases.pre('save', async function (next) {
   }
 });
 
-async function getStorageUsed(wsp, session) {
+async function getStorageUsed(instance, session) {
   //
   // calculate storage used across entire domain and its admin users domains
   // (this is rudimentary storage system and has edge cases)
@@ -666,7 +666,7 @@ async function getStorageUsed(wsp, session) {
     .exec();
 
   // now get all aliases that belong to any of these domains and sum the storageQuota
-  const { size } = await wsp.request({
+  const { size } = await instance.wsp.request({
     action: 'size',
     timeout: ms('5s'),
     // session: { user: session.user },
@@ -676,17 +676,18 @@ async function getStorageUsed(wsp, session) {
   return size;
 }
 
+// TODO: include R2 backups and -tmp storage files in calculations
 Aliases.statics.getStorageUsed = getStorageUsed;
 
 // Aliases.statics.isOverQuota = async function (alias, size = 0) {
 Aliases.statics.isOverQuota = async function (
-  wsp,
+  instance,
   session,
   size = 0,
   returnStorageUsed = false
 ) {
   // const storageUsed = await getStorageUsed.call(this, alias);
-  const storageUsed = await getStorageUsed.call(this, wsp, session);
+  const storageUsed = await getStorageUsed.call(this, instance, session);
 
   const isOverQuota = storageUsed + size > config.maxQuotaPerAlias;
 

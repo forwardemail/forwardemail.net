@@ -34,7 +34,7 @@ async function onSearch(mailboxId, options, session, fn) {
   try {
     const { db } = await this.refreshSession(session, 'SEARCH');
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
     });
 

@@ -1,0 +1,45 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+const { Buffer } = require('node:buffer');
+
+const mongoose = require('mongoose');
+const validationErrorTransform = require('mongoose-validation-error-transform');
+
+const {
+  dummyProofModel,
+  dummySchemaOptions,
+  sqliteVirtualDB
+} = require('#helpers/mongoose-to-sqlite');
+
+// <https://github.com/Automattic/mongoose/issues/5534>
+mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
+
+const TemporaryMessages = new mongoose.Schema(
+  {
+    date: {
+      type: Date,
+      required: true,
+      index: true
+    },
+    raw: {
+      type: Buffer,
+      required: true
+    },
+    // IP address of creation
+    remoteAddress: {
+      type: String,
+      required: true
+    }
+  },
+  dummySchemaOptions
+);
+
+TemporaryMessages.plugin(sqliteVirtualDB);
+TemporaryMessages.plugin(validationErrorTransform);
+
+module.exports = dummyProofModel(
+  mongoose.model('TemporaryMessages', TemporaryMessages)
+);

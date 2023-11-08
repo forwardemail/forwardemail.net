@@ -23,6 +23,7 @@ const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const { convertResult } = require('#helpers/mongoose-to-sqlite');
+const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const builder = new Builder();
 
@@ -30,11 +31,15 @@ const builder = new Builder();
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
+  let alias;
+  let db;
   let lock;
   try {
-    const { alias, db } = await this.refreshSession(session, 'EXPUNGE');
+    const results = await this.refreshSession(session, 'EXPUNGE');
+    alias = results.alias;
+    db = results.db;
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
     });
 
@@ -56,7 +61,7 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     let messages;
 
-    lock = await db.acquireLock();
+    lock = await acquireLock(this, db);
 
     let err;
 
@@ -119,8 +124,7 @@ async function onExpunge(mailboxId, update, session, fn) {
         // delete message
         // eslint-disable-next-line no-await-in-loop
         const results = await Messages.deleteOne(
-          db,
-          this.wsp,
+          this,
           session,
           {
             _id: message._id,
@@ -144,8 +148,7 @@ async function onExpunge(mailboxId, update, session, fn) {
             try {
               // eslint-disable-next-line no-await-in-loop
               await this.attachmentStorage.deleteMany(
-                db,
-                this.wsp,
+                this,
                 session,
                 attachmentIds,
                 message.magic,
@@ -178,8 +181,7 @@ async function onExpunge(mailboxId, update, session, fn) {
           try {
             // eslint-disable-next-line no-await-in-loop
             await this.server.notifier.addEntries(
-              db,
-              this.wsp,
+              this,
               session,
               mailbox,
               {
@@ -207,7 +209,7 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     // release lock
     try {
-      await db.releaseLock(lock);
+      await releaseLock(this, db, lock);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
@@ -237,7 +239,7 @@ async function onExpunge(mailboxId, update, session, fn) {
     // release lock
     if (lock?.success) {
       try {
-        await this.lock.releaseLock(lock);
+        await releaseLock(this, db, lock);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }

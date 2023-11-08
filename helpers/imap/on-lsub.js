@@ -20,9 +20,9 @@ async function onLsub(query, session, fn) {
   this.logger.debug('LSUB', { query, session });
 
   try {
-    const { db } = await this.refreshSession(session, 'LSUB');
+    await this.refreshSession(session, 'LSUB');
 
-    const mailboxes = await Mailboxes.find(db, this.wsp, session, {
+    const mailboxes = await Mailboxes.find(this, session, {
       subscribed: true
     });
 

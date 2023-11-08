@@ -39,13 +39,13 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     const { alias, db } = await this.refreshSession(session, 'COPY');
 
     // check if over quota
-    const overQuota = await Aliases.isOverQuota(this.wsp, session);
+    const overQuota = await Aliases.isOverQuota(this, session);
     if (overQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
       });
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
     });
 
@@ -54,7 +54,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         imapResponse: 'NONEXISTENT'
       });
 
-    const targetMailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const targetMailbox = await Mailboxes.findOne(this, session, {
       path: update.destination
     });
 
@@ -142,8 +142,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
 
       // eslint-disable-next-line no-await-in-loop
       const updatedMailbox = await Mailboxes.findOneAndUpdate(
-        db,
-        this.wsp,
+        this,
         session,
         {
           _id: targetMailbox._id
@@ -192,14 +191,13 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       // message.lock = lock;
 
       // virtual helper
-      message.db = db;
-      message.wsp = this.wsp;
+      message.instance = this;
       message.session = session;
 
       // set existing message as copied
       // TODO: may want to check for return value
       // eslint-disable-next-line no-await-in-loop
-      await Messages.findOneAndUpdate(db, this.wsp, session, query, {
+      await Messages.findOneAndUpdate(this, session, query, {
         $set: {
           copied: true
         }
@@ -218,8 +216,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
           // update attachments
           // eslint-disable-next-line no-await-in-loop
           await Attachments.updateMany(
-            db,
-            this.wsp,
+            this,
             session,
             {
               hash: { $in: attachmentIds }
@@ -249,22 +246,16 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       // add entries
       try {
         // eslint-disable-next-line no-await-in-loop
-        await this.server.notifier.addEntries(
-          db,
-          this.wsp,
-          session,
-          targetMailbox,
-          {
-            command: 'EXISTS',
-            uid: message.uid,
-            mailbox: newMessage.mailbox,
-            message: newMessage._id,
-            thread: newMessage.thread,
-            unseen: newMessage.unseen,
-            idate: newMessage.idate,
-            junk: newMessage.junk
-          }
-        );
+        await this.server.notifier.addEntries(this, session, targetMailbox, {
+          command: 'EXISTS',
+          uid: message.uid,
+          mailbox: newMessage.mailbox,
+          message: newMessage._id,
+          thread: newMessage.thread,
+          unseen: newMessage.unseen,
+          idate: newMessage.idate,
+          junk: newMessage.junk
+        });
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
@@ -279,7 +270,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       // NOTE: we don't error for quota during copy due to this reasoning
       //       <https://github.com/nodemailer/wildduck/issues/517#issuecomment-1748329188>
       //
-      Aliases.isOverQuota(this.wsp, session, copiedStorage)
+      Aliases.isOverQuota(this, session, copiedStorage)
         .then((exceedsQuota) => {
           if (exceedsQuota) {
             const err = new IMAPError(

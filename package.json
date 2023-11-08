@@ -205,7 +205,6 @@
     "url-parse": "1.5.10",
     "url-regex-safe": "4.0.0",
     "utf-8-validate": "6.0.3",
-    "uuid": "9.0.1",
     "validator": "13.11.0",
     "web-resource-inliner": "6.0.1",
     "websocket-as-promised": "2.0.1",

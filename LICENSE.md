@@ -30,6 +30,7 @@ licensed under the [Mozilla Public License 2.0](mozilla-public-license-20) below
 * [helpers/imap-notifier.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/imap-notifier.js)
 * [helpers/imap/\*\*/\*](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/imap)
 * [helpers/socket-error.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/socket-error.js)
+* [helpers/store-node-bodies.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/store-node-bodies.js)
 * [imap-server.js](https://github.com/forwardemail/forwardemail.net/blob/master/imap-server.js)
 * [test/imap/\*\*/\*](https://github.com/forwardemail/forwardemail.net/blob/master/test/imap)
 

@@ -260,7 +260,7 @@ async function onAuth(auth, session, fn) {
       // NOTE: this assigns `session.db` which is re-used everywhere
       // (we could move to `allocateConnection`; see comments in `imap-notifier.js` under helpers)
       //
-      const db = await getDatabase(this, alias, {
+      await getDatabase(this, alias, {
         ...session,
         user
       });
@@ -270,8 +270,7 @@ async function onAuth(auth, session, fn) {
       //       if there was an issue with websocket connection or reading/writing
       //
       Mailboxes.distinct(
-        db,
-        this.wsp,
+        this,
         {
           ...session,
           user
@@ -290,8 +289,7 @@ async function onAuth(auth, session, fn) {
             Mailboxes.create(
               required.map((path) => ({
                 // virtual helper
-                db,
-                wsp: this.wsp,
+                instance: this,
                 session: { ...session, user },
 
                 path,

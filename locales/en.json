@@ -5292,5 +5292,8 @@
   "imap-upload documentation": "imap-upload documentation",
   "You may also want to try other open-source tools such as": "You may also want to try other open-source tools such as",
   "imap-backup": "imap-backup",
-  "imapsync": "imapsync"
+  "imapsync": "imapsync",
+  "Failed to release write lock": "Failed to release write lock",
+  "Leave blank to get password instantly.": "Leave blank to get password instantly.",
+  "Leave blank to download backup from:": "Leave blank to download backup from:"
 }

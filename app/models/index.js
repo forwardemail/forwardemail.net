@@ -17,6 +17,7 @@ const Mailboxes = require('./mailboxes');
 const Messages = require('./messages');
 const Threads = require('./threads');
 const Journals = require('./journals');
+const TemporaryMessages = require('./temporary-messages');
 
 module.exports = {
   Attachments,
@@ -32,5 +33,6 @@ module.exports = {
   Mailboxes,
   Messages,
   Threads,
-  Journals
+  Journals,
+  TemporaryMessages
 };

@@ -22,11 +22,10 @@ async function onSubscribe(path, session, fn) {
   this.logger.debug('SUBSCRIBE', { path, session });
 
   try {
-    const { db } = await this.refreshSession(session, 'SUBSCRIBE');
+    await this.refreshSession(session, 'SUBSCRIBE');
 
     const mailbox = await Mailboxes.findOneAndUpdate(
-      db,
-      this.wsp,
+      this,
       session,
       {
         path

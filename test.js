@@ -39,7 +39,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     const client = new Redis();
     const subscriber = new Redis();
     const wsp = createWebSocketAsPromised();
-    const sqlite = new SQLite({ client });
+    const sqlite = new SQLite({ client, subscriber });
     await sqlite.listen();
     const imap = new IMAP({ client, subscriber, wsp }, false);
     const user = await Users.create({
@@ -95,9 +95,10 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
         storage_location: alias.storage_location
       }
     };
-    const db = await getDatabase(imap, alias, session);
+    const { db, tmpDb } = await getDatabase(imap, alias, session);
 
     console.log('db', db);
+    console.log('tmpDb', tmpDb);
 
     //
     // TODO: sqlite error with object insertion (is this a bug?)
@@ -105,8 +106,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     //
 
     const mailbox = await Mailboxes.create({
-      db,
-      wsp,
+      imap,
       session,
       path: 'INBOX'
     });
@@ -155,13 +155,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
       date,
       raw
     });
-    const thread = await Threads.getThreadId(
-      db,
-      wsp,
-      session,
-      subject,
-      mimeTree
-    );
+    const thread = await Threads.getThreadId(imap, session, subject, mimeTree);
     console.log('thread', thread);
     const retention =
       typeof mailbox.retention === 'number' ? mailbox.retention : 0;
@@ -169,8 +163,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     const maildata = imap.indexer.getMaildata(mimeTree);
 
     const message = await Messages.create({
-      db,
-      wsp,
+      imap,
       session,
       mailbox: mailbox._id,
       _id: id,
@@ -208,6 +201,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     console.timeEnd('read and write to database');
 
     db.close();
+    tmpDb.close();
 
     console.log('DONE!');
   } catch (err) {

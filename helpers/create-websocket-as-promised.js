@@ -109,9 +109,11 @@ function createWebSocketAsPromised(options = {}) {
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
   wsp.request = async function (data) {
     try {
+      // TODO: we could probably remove this validation
       if (typeof data?.action !== 'string')
         throw new TypeError('Action missing from payload');
 
+      // TODO: we could probably remove this validation
       if (
         data.action !== 'size' &&
         (typeof data?.session?.user?.alias_id !== 'string' ||

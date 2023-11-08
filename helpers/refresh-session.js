@@ -48,9 +48,11 @@ async function refreshSession(session, command) {
   if (this.server._closeTimeout) throw new ServerShutdownError();
 
   // check if socket is still connected
-  const socket = (session.socket && session.socket._parent) || session.socket;
-  if (!socket || socket?.destroyed || socket?.readyState !== 'open')
-    throw new SocketError();
+  if (this?.constructor?.name !== 'SQLite') {
+    const socket = (session.socket && session.socket._parent) || session.socket;
+    if (!socket || socket?.destroyed || socket?.readyState !== 'open')
+      throw new SocketError();
+  }
 
   if (!isSANB(session?.user?.domain_id))
     throw new IMAPError('Domain does not exist on session');
@@ -82,16 +84,12 @@ async function refreshSession(session, command) {
   // validate alias (in case tampered with during session)
   validateAlias(alias, session.user.domain_name, session.user.alias_name);
 
-  // TODO: ensure helper logger removes `session.user.password`
-  // TODO: ensure all logger statements have _.omit(session, 'user.password')
-  // TODO: rewrite attachment storage and everything else to use sqlite
-  // TODO: flush the queue from existing -> into the Database
   // TODO: notifications via web/sms/desktop/mobile electron + react native app
   //       (e.g. if there are any issues such as IMAP access being locked due to r/w issues)
   // TODO: script to export as mbox
 
   // connect to the database
-  const db = await getDatabase(this, alias, session);
+  const { db } = await getDatabase(this, alias, session);
 
   //
   // hourly backups
@@ -154,8 +152,6 @@ async function refreshSession(session, command) {
         logger.fatal(err, { session });
       });
   }
-
-  // TODO: fetch and sync all new messages for the given alias from its temporary mailbox
 
   return { db, domain, alias };
 }

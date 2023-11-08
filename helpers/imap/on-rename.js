@@ -22,11 +22,11 @@ async function onRename(path, newPath, session, fn) {
   this.logger.debug('RENAME', { path, newPath, session });
 
   try {
-    const { alias, db } = await this.refreshSession(session, 'RENAME');
+    const { alias } = await this.refreshSession(session, 'RENAME');
 
     // TODO: parallel
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       path
     });
 
@@ -40,7 +40,7 @@ async function onRename(path, newPath, session, fn) {
         imapResponse: 'CANNOT'
       });
 
-    const targetMailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const targetMailbox = await Mailboxes.findOne(this, session, {
       path: newPath
     });
 
@@ -50,8 +50,7 @@ async function onRename(path, newPath, session, fn) {
       });
 
     const renamedMailbox = await Mailboxes.findOneAndUpdate(
-      db,
-      this.wsp,
+      this,
       session,
       {
         _id: mailbox._id
@@ -70,7 +69,7 @@ async function onRename(path, newPath, session, fn) {
       });
 
     try {
-      await this.server.notifier.addEntries(db, this.wsp, session, mailbox, {
+      await this.server.notifier.addEntries(this, session, mailbox, {
         command: 'RENAME',
         mailbox: mailbox._id,
         path: renamedMailbox.path

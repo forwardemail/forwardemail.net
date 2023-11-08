@@ -53,14 +53,14 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //       if we add/remove to it (this would reduce time by ~50ms)
     //
     // check if over quota
-    const quota = await Aliases.isOverQuota(this.wsp, session, 0, true);
+    const quota = await Aliases.isOverQuota(this, session, 0, true);
     if (quota.isOverQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
       });
 
     // <https://github.com/nodemailer/wildduck/blob/b9349f6e8315873668d605e6567ced2d7b1c0c80/lib/handlers/on-append.js#L65>
-    let mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    let mailbox = await Mailboxes.findOne(this, session, {
       path
     });
 
@@ -106,7 +106,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // check if message would be over quota
     //
     // Old approach
-    // const exceedsQuota = await Aliases.isOverQuota(this.wsp, session, size);
+    // const exceedsQuota = await Aliases.isOverQuota(this, session, size);
     //
     // New approach:
     //
@@ -123,8 +123,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // store node bodies
     hasNodeBodies = await this.indexer.storeNodeBodies(
-      db,
-      this.wsp,
+      this,
       session,
       maildata,
       mimeTree
@@ -222,8 +221,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // get new uid and modsec and return original values
     mailbox = await Mailboxes.findByIdAndUpdate(
-      db,
-      this.wsp,
+      this,
       session,
       mailbox._id,
       {
@@ -258,13 +256,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     data.junk = mailbox.specialUse === '\\Junk';
 
     // get thread ID
-    thread = await Threads.getThreadId(
-      db,
-      this.wsp,
-      session,
-      subject,
-      mimeTree
-    );
+    thread = await Threads.getThreadId(this, session, subject, mimeTree);
 
     data.thread = thread._id;
 
@@ -272,8 +264,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // data.lock = lock;
 
     // db virtual helper
-    data.db = db;
-    data.wsp = this.wsp;
+    data.instance = this;
     data.session = session;
 
     // store the message
@@ -288,7 +279,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     });
 
     try {
-      await this.server.notifier.addEntries(db, this.wsp, session, mailbox, {
+      await this.server.notifier.addEntries(this, session, mailbox, {
         // TODO: the wildduck code has this which means messages don't show in Sent folder
         // <https://github.com/nodemailer/wildduck/issues/537>
         // ignore: session.id,
@@ -333,8 +324,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       if (db) {
         try {
           await this.attachmentStorage.deleteMany(
-            db,
-            this.wsp,
+            this,
             session,
             attachmentIds,
             maildata.magic

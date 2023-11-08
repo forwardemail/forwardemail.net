@@ -35,8 +35,8 @@ const MAX_BULK_WRITE_SIZE = 150;
 
 const builder = new Builder();
 
-// eslint-disable-next-line complexity, max-params
-async function getMessages(db, wsp, session, server, opts = {}) {
+// eslint-disable-next-line complexity
+async function getMessages(instance, session, server, opts = {}) {
   const { options, projection, query, mailbox, alias, attachmentStorage } =
     opts;
 
@@ -137,8 +137,8 @@ async function getMessages(db, wsp, session, server, opts = {}) {
   //
   let messages;
 
-  if (db.wsp) {
-    messages = await wsp.request({
+  if (session.db.wsp) {
+    messages = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
       stmt: [
@@ -149,7 +149,7 @@ async function getMessages(db, wsp, session, server, opts = {}) {
   } else {
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
     // messages = db.prepare(sql.query).iterate(sql.values);
-    messages = db.prepare(sql.query).all(sql.values);
+    messages = session.db.prepare(sql.query).all(sql.values);
   }
 
   for (const result of messages) {
@@ -300,7 +300,7 @@ async function getMessages(db, wsp, session, server, opts = {}) {
     if (bulkWrite.length >= MAX_BULK_WRITE_SIZE) {
       try {
         // eslint-disable-next-line no-await-in-loop
-        await Messages.bulkWrite(db, wsp, session, bulkWrite, {
+        await Messages.bulkWrite(instance, session, bulkWrite, {
           // ordered: false,
           // w: 1
         });
@@ -309,8 +309,7 @@ async function getMessages(db, wsp, session, server, opts = {}) {
           try {
             // eslint-disable-next-line no-await-in-loop
             await server.notifier.addEntries(
-              db,
-              wsp,
+              instance,
               session,
               mailbox,
               entries
@@ -346,9 +345,9 @@ async function onFetch(mailboxId, options, session, fn) {
   this.logger.debug('FETCH', { mailboxId, options, session });
 
   try {
-    const { alias, db } = await this.refreshSession(session, 'FETCH');
+    const { alias } = await this.refreshSession(session, 'FETCH');
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
     });
 
@@ -379,7 +378,7 @@ async function onFetch(mailboxId, options, session, fn) {
         $gt: options.changedSince
       };
 
-    const results = await getMessages(db, this.wsp, session, this.server, {
+    const results = await getMessages(this, session, this.server, {
       options,
       projection,
       query,
@@ -396,7 +395,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
     // mark messages as Seen
     if (results.bulkWrite.length > 0)
-      await Messages.bulkWrite(db, this.wsp, session, results.bulkWrite, {
+      await Messages.bulkWrite(this, session, results.bulkWrite, {
         // ordered: false,
         // w: 1
       });
@@ -404,8 +403,7 @@ async function onFetch(mailboxId, options, session, fn) {
     if (results.entries.length > 0) {
       try {
         await this.server.notifier.addEntries(
-          db,
-          this.wsp,
+          this,
           session,
           mailbox,
           results.entries

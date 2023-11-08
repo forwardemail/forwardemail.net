@@ -117,11 +117,15 @@ class IMAPNotifier extends EventEmitter {
   }
 
   // eslint-disable-next-line complexity, max-params
-  async addEntries(db, wsp, session, mailboxId, entries, lock = false) {
-    if (!db || (!(db instanceof Database) && !db.wsp))
+  async addEntries(instance, session, mailboxId, entries, lock = false) {
+    if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
       throw new TypeError('Database is missing');
 
-    if (!wsp || !(wsp instanceof WebSocketAsPromised))
+    if (
+      !instance?.wsp ||
+      (!(instance.wsp instanceof WebSocketAsPromised) &&
+        !instance.wsp[Symbol.for('isWSP')])
+    )
       throw new TypeError('WebSocketAsPromised missing');
 
     if (typeof session?.user?.password !== 'string')
@@ -158,8 +162,7 @@ class IMAPNotifier extends EventEmitter {
 
     if (updated.length > 0)
       mailbox = await Mailboxes.findOneAndUpdate(
-        db,
-        wsp,
+        instance,
         session,
         query,
         {
@@ -173,7 +176,7 @@ class IMAPNotifier extends EventEmitter {
         }
       );
 
-    if (!mailbox) mailbox = await Mailboxes.findOne(db, wsp, session, query);
+    if (!mailbox) mailbox = await Mailboxes.findOne(instance, session, query);
 
     if (!mailbox)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
@@ -225,7 +228,7 @@ class IMAPNotifier extends EventEmitter {
         );
         */
 
-        const messages = await Messages.find(db, wsp, session, {
+        const messages = await Messages.find(instance, session, {
           _id: {
             $in: updated
           },
@@ -236,8 +239,7 @@ class IMAPNotifier extends EventEmitter {
           if (message.modseq < modseq)
             // eslint-disable-next-line no-await-in-loop
             await Messages.findByIdAndUpdate(
-              db,
-              wsp,
+              instance,
               session,
               message._id,
               {
@@ -297,6 +299,15 @@ class IMAPNotifier extends EventEmitter {
     if (typeof data?.session?.db?.close === 'function') {
       try {
         data.session.db.close();
+      } catch (err) {
+        logger.fatal(err, { session: data.session });
+      }
+    }
+
+    // close the tmp db connection
+    if (typeof data?.session?.tmpDb?.close === 'function') {
+      try {
+        data.session.tmpDb.close();
       } catch (err) {
         logger.fatal(err, { session: data.session });
       }

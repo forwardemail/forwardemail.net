@@ -33,10 +33,9 @@ function getFlag(f) {
   return f.trim().toLowerCase();
 }
 
-async function getModseq(db, wsp, session, mailbox) {
+async function getModseq(instance, session, mailbox) {
   const updatedMailbox = await Mailboxes.findOneAndUpdate(
-    db,
-    wsp,
+    instance,
     session,
     {
       _id: mailbox._id
@@ -60,7 +59,7 @@ async function onStore(mailboxId, update, session, fn) {
   try {
     const { alias, db } = await this.refreshSession(session, 'STORE');
 
-    const mailbox = await Mailboxes.findOne(db, this.wsp, session, {
+    const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
     });
 
@@ -341,7 +340,7 @@ async function onStore(mailboxId, update, session, fn) {
         // get modseq
         const modseq =
           // eslint-disable-next-line no-await-in-loop
-          newModseq || (await getModseq(db, this.wsp, session, mailbox));
+          newModseq || (await getModseq(this, session, mailbox));
 
         if (!update.silent || condstoreEnabled) {
           // write to socket the response
@@ -387,7 +386,7 @@ async function onStore(mailboxId, update, session, fn) {
         if (bulkWrite.length >= MAX_BULK_WRITE_SIZE) {
           try {
             // eslint-disable-next-line no-await-in-loop
-            await Messages.bulkWrite(db, this.wsp, session, bulkWrite, {
+            await Messages.bulkWrite(this, session, bulkWrite, {
               // ordered: false,
               // w: 1
             });
@@ -402,8 +401,7 @@ async function onStore(mailboxId, update, session, fn) {
             try {
               // eslint-disable-next-line no-await-in-loop
               await this.server.notifier.addEntries(
-                db,
-                this.wsp,
+                this,
                 session,
                 mailbox,
                 entries
@@ -422,20 +420,14 @@ async function onStore(mailboxId, update, session, fn) {
 
     // update messages
     if (bulkWrite.length > 0)
-      await Messages.bulkWrite(db, this.wsp, session, bulkWrite, {
+      await Messages.bulkWrite(this, session, bulkWrite, {
         // ordered: false,
         // w: 1
       });
 
     if (entries.length > 0) {
       try {
-        await this.server.notifier.addEntries(
-          db,
-          this.wsp,
-          session,
-          mailbox,
-          entries
-        );
+        await this.server.notifier.addEntries(this, session, mailbox, entries);
         this.server.notifier.fire(alias.id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
@@ -463,8 +455,7 @@ async function onStore(mailboxId, update, session, fn) {
       if (newFlags.length > 0) {
         // TODO: see FIXME from wildduck at <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L419>
         await Mailboxes.findOneAndUpdate(
-          db,
-          this.wsp,
+          this,
           session,
           {
             _id: mailbox._id

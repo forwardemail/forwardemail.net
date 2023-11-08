@@ -23,15 +23,16 @@ const logger = require('#helpers/logger');
 const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
-const breeSharedConfig = sharedConfig('BREE');
-const client = new Redis(breeSharedConfig.redis, logger);
+const imapSharedConfig = sharedConfig('IMAP');
+const client = new Redis(imapSharedConfig.redis, logger);
+const subscriber = new Redis(imapSharedConfig.redis, logger);
 
-const sqlite = new SQLite({ client });
+const sqlite = new SQLite({ client, subscriber });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [sqlite.server],
-  redisClients: [client],
+  redisClients: [client, subscriber],
   logger,
   customHandlers: [() => promisify(sqlite.wss.close).bind(sqlite.wss)()]
 });
