@@ -40,7 +40,7 @@ if !isHelp && user && !isBot(ctx.get('User-Agent'))
 if !user && !registerOrLogin
   include _register-or-login
   if !isBot(ctx.get('User-Agent')) && ctx.pathWithoutLocale !== '/register' && ctx.pathWithoutLocale !== config.loginRoute
-    each verb in [ 'sign up', 'log in' ]
+    each verb in [ 'sign up', 'sign in' ]
       .modal.fade(
         tabindex="-1",
         role="dialog",

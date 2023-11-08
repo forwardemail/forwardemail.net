@@ -125,7 +125,7 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
     Important:
   </strong>
   <span>
-    You must open a new tab and log in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
+    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
     <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
   </span>
 </div>

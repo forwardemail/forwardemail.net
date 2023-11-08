@@ -1,4 +1,5 @@
 mixin registerOrLogin(verb, isModal = false)
+  - verb = verb === 'log in' ? 'sign in' : verb
   div(class=isModal ? false : "container py-3")
     if !isModal
       .text-center
@@ -18,7 +19,7 @@ mixin registerOrLogin(verb, isModal = false)
           - anchorHref = l(config.loginRoute);
           - dataDismissModal = isRegisterOrLogin ? false : "true";
           - dataToggle = isRegisterOrLogin ? false : "modal-anchor";
-          - dataTarget = isRegisterOrLogin ? false : "#modal-log-in";
+          - dataTarget = isRegisterOrLogin ? false : "#modal-sign-in";
         else
           - anchorHref = l("/register");
           - dataDismissModal = isRegisterOrLogin ? false : "true";
@@ -39,35 +40,49 @@ mixin registerOrLogin(verb, isModal = false)
               = t("Don't have an account?")
             = " "
             = t("Click here")
+        //- <https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple>
+        if passport && passport.apple
+          a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
+            href="/auth/apple",
+            role="button"
+          )
+            span.btn-auth-icon.btn-auth-icon-fill.lazyload(
+              data-src=manifest("img/apple-logo.svg")
+            )
+            noscript
+              span.btn-auth-icon.btn-auth-icon-fill(
+                style=`background-image:url("${manifest("img/apple-logo.svg")}")`
+              )
+            span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with Apple`)
+        //- <https://developers.google.com/identity/branding-guidelines>
         if passport && passport.google
-          a.btn-auth.btn-auth-google.btn-auth-google-dark.border-themed.border.mb-3.text-decoration-none(
+          a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
             href="/auth/google",
             role="button"
           )
-            .btn-auth-wrapper
-              span.btn-auth-icon.lazyload(
-                data-src=manifest("img/google-logo.svg")
+            span.btn-auth-icon.lazyload(
+              data-src=manifest("img/google-logo.svg")
+            )
+            noscript
+              span.btn-auth-icon(
+                style=`background-image:url("${manifest("img/google-logo.svg")}")`
               )
-              noscript
-                span.btn-auth-icon(
-                  style=`background-image:url("${manifest("img/google-logo.svg")}")`
-                )
-              span.btn-auth-text= t(`${humanize(verb)} with Google`)
+            span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with Google`)
+        //- <https://github.com/logos>
         if passport && passport.github
-          a.btn-auth.btn-auth-github.btn-auth-github-dark.border-themed.border.mb-3.text-decoration-none(
+          a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
             href="/auth/github",
             role="button"
           )
-            .btn-auth-wrapper
-              span.btn-auth-icon.lazyload(
-                data-src=manifest("img/github-logo.svg")
+            span.btn-auth-icon.btn-auth-icon-fill.lazyload(
+              data-src=manifest("img/github-logo.svg")
+            )
+            noscript
+              span.btn-auth-icon.btn-auth-icon-fill(
+                style=`background-image:url("${manifest("img/github-logo.svg")}")`
               )
-              noscript
-                span.btn-auth-icon(
-                  style=`background-image:url("${manifest("img/github-logo.svg")}")`
-                )
-              span.btn-auth-text= t(`${humanize(verb)} with GitHub`)
-        if passport && (passport.google || passport.github)
+            span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with GitHub`)
+        if passport && (passport.apple || passport.google || passport.github)
           .hr-text.d-flex.text-secondary.align-items-center= t("or")
         - const action = verb === "sign up" ? "/register" : config.loginRoute;
         form.ajax-form(action=l(action), method="POST")
@@ -104,6 +119,6 @@ mixin registerOrLogin(verb, isModal = false)
               = t(capitalize(verb))
           if verb === 'sign up'
             p.mt-3.mb-1.text-center.small.text-black.text-themed-50!= t('You agree to our <a href="%s" target="_blank">Privacy Policy</a> and <a href="%s" target="_blank">Terms</a>.', l("/privacy"), l("/terms"))
-          else if verb === 'log in'
+          else if verb === 'sign in'
             p.mt-3.mb-1.text-center.small
               a.text-black.text-themed-50(href=l("/forgot-password"))= t("Forget your password?")

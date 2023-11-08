@@ -5295,5 +5295,14 @@
   "imapsync": "imapsync",
   "Failed to release write lock": "Failed to release write lock",
   "Leave blank to get password instantly.": "Leave blank to get password instantly.",
-  "Leave blank to download backup from:": "Leave blank to download backup from:"
+  "Leave blank to download backup from:": "Leave blank to download backup from:",
+  "Sign up with Apple": "Sign up with Apple",
+  "Log in with Apple": "Log in with Apple",
+  "You must open a new tab and sign in to your domain registrar.  You can easily click on your \"Registrar\" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar – and we have provided the step by step navigation steps below under the \"Steps to Configure\" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.": "You must open a new tab and sign in to your domain registrar.  You can easily click on your \"Registrar\" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar – and we have provided the step by step navigation steps below under the \"Steps to Configure\" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.",
+  "Sign in with Apple": "Sign in with Apple",
+  "Sign in with Google": "Sign in with Google",
+  "Sign in with GitHub": "Sign in with GitHub",
+  "Sign in": "Sign in",
+  "Sign in now": "Sign in now",
+  "Simply sign up or sign in to have your API keys and real account data populated below.": "Simply sign up or sign in to have your API keys and real account data populated below."
 }

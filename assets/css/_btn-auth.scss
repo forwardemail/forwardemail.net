@@ -9,22 +9,33 @@
 $roboto: 'Roboto-Medium', $font-family-sans-serif;
 
 @mixin button($height) {
-  border-radius: #{$height * (1 / 40)}px;
+  // border-radius: #{$height * (10 / $height)}px;
   .btn-auth-icon {
-    background-size: #{$height * (18 / 40)}px;
+    background-size: #{$height / 2}px;
     background-repeat: no-repeat;
     background-position: center;
     display: inline-block;
     vertical-align: middle;
-    width: #{$height}px;
+    width: #{$height / 2}px;
     height: #{$height}px;
-    border-radius: #{$height * (1 / 40)}px;
-    margin-right: #{$height * (12 / 40)}px;
+    // border-radius: #{$height / 4}px;
+    margin-right: #{$height / 4}px; // #{$height * (12 / $height)}px;
   }
   .btn-auth-text {
-    font-size: #{$height * (14 / 40)}px;
-    margin-left: #{$height * (6 / 40)}px;
-    margin-right: #{$height * (6 / 40)}px;
+    font-size: #{$height * (20 / $height)}px;
+    // margin-left: #{$height * (6 / $height)}px;
+    // margin-right: #{$height * (6 / $height)}px;
+  }
+}
+
+// <https://stackoverflow.com/a/60167530>
+// <https://codepen.io/sosuke/pen/Pjoqqp>
+.btn-auth-icon-fill {
+  filter: invert(100%) sepia(95%) saturate(19%) hue-rotate(316deg) brightness(106%) contrast(106%);
+}
+@media (prefers-color-scheme: dark) {
+  .btn-auth-icon-fill {
+    filter: invert(0%) sepia(57%) saturate(10%) hue-rotate(251deg) brightness(99%) contrast(100%);
   }
 }
 
@@ -94,12 +105,11 @@ $roboto: 'Roboto-Medium', $font-family-sans-serif;
   outline: none;
   cursor: pointer;
   text-align: left;
-  @include button(40);
-  .btn-auth-wrapper {
-    height: 100%;
-    width: 100%;
-    border: 1px solid transparent;
-  }
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  color: #E3E3E3 !important;
+  border: 1px solid #8E918F !important;
+  background-color: #131314 !important;
+  @include button(50);
   .btn-auth-text {
     font-family: $roboto;
     display: inline-block;
@@ -107,3 +117,12 @@ $roboto: 'Roboto-Medium', $font-family-sans-serif;
     vertical-align: middle;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .btn-auth {
+    color: #1F1F1F !important;
+    border: 1px solid #747775 !important;
+    background-color: #FFFFFF !important;
+  }
+}
+

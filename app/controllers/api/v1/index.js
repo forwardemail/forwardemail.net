@@ -4,6 +4,7 @@
  */
 
 const aliases = require('./aliases');
+const apple = require('./apple');
 const domains = require('./domains');
 const enforcePaidPlan = require('./enforce-paid-plan');
 const log = require('./log');
@@ -22,6 +23,7 @@ const emails = require('./emails');
 
 module.exports = {
   aliases,
+  apple,
   domains,
   enforcePaidPlan,
   log,

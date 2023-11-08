@@ -17,6 +17,9 @@
     - name: input_dhparam
       prompt: "Optional: Leave blank or enter path to certificate DHPARAM file (e.g. /path/to/.ssl-dhparam)"
       private: false
+    - name: input_apple_key
+      prompt: "Optional: Leave blank or enter path to Apple K8 certificate key file (e.g. /path/to/AuthKey_00000000000.p8)"
+      private: false
 
   tasks:
     # key file
@@ -63,6 +66,18 @@
       fail:
         msg: "dhparam file does not exist: {{ input_dhparam }}"
       when: (input_dhparam is defined) and (input_dhparam | length > 0) and (not local_dhparam_file.stat.exists)
+
+    # apple_key file
+    - name: Check if apple_key file exists
+      local_action: stat path={{ input_apple_key }}
+      register: local_apple_key_file
+      become: false
+      when: (input_apple_key is defined) and (input_apple_key | length > 0)
+
+    - name: Fail when local apple_key file does not exist
+      fail:
+        msg: "apple_key file does not exist: {{ input_apple_key }}"
+      when: (input_apple_key is defined) and (input_apple_key | length > 0) and (not local_apple_key_file.stat.exists)
 
     # remote dir
     - name: Check if remote dir exists
@@ -112,3 +127,13 @@
         # https://chmodcommand.com/chmod-660/
         mode: "0660"
       when: (input_dhparam is defined) and (input_dhparam | length > 0)
+
+    # copy local apple_key
+    - name: Copy local apple_key file to server
+      copy:
+        src: "{{ input_apple_key }}"
+        dest: "/var/www/production/{{ input_apple_key | basename }}"
+        owner: deploy
+        # https://chmodcommand.com/chmod-660/
+        mode: "0660"
+      when: (input_apple_key is defined) and (input_apple_key | length > 0)

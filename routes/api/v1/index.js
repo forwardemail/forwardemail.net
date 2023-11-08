@@ -51,6 +51,8 @@ router
   )
   .post('/stripe', api.v1.stripe)
   .post('/paypal', api.v1.paypal)
+  // <https://api.forwardemail.net/v1/apple>
+  .post('/apple', api.v1.apple)
 
   //
   // restricted

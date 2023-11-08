@@ -87,3 +87,4 @@ temp/
 .ssl-key
 .ssl-dhparam
 .ssl-csr
+*.p8

@@ -5218,5 +5218,14 @@
   "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> has sent you a password to use for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p><a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Click this link</a> and immediately follow the instructions.</p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span>已向您发送了<span class=\"notranslate text-monospace font-weight-bold\">%s</span>使用的密码。</p><p> <a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">单击此链接</a>并立即按照说明进行操作。</p>",
   "You cannot download a backup for a catch-all or regex.": "您无法下载包罗万象或正则表达式的备份。",
   "Leave blank to get password instantly.": "留空可立即获取密码。",
-  "Leave blank to download backup from:": "留空可从以下位置下载备份："
+  "Leave blank to download backup from:": "留空可从以下位置下载备份：",
+  "Sign up with Apple": "与苹果公司注册",
+  "Log in with Apple": "使用苹果登录",
+  "You must open a new tab and sign in to your domain registrar.  You can easily click on your \"Registrar\" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar – and we have provided the step by step navigation steps below under the \"Steps to Configure\" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.": "您必须打开一个新选项卡并登录到您的域名注册商。您可以轻松地单击下面的“注册商”来自动执行此操作。在此新选项卡中，您必须导航到注册商处的 DNS 管理页面 - 我们在下面的“配置步骤”列下提供了分步导航步骤。在新选项卡中导航到此页面后，您可以返回此选项卡并继续执行下面的第三步。",
+  "Sign in with Apple": "使用 Apple 登录",
+  "Sign in with Google": "使用 Google 登录",
+  "Sign in with GitHub": "使用 GitHub 登录",
+  "Sign in": "登入",
+  "Sign in now": "立即登录",
+  "Simply sign up or sign in to have your API keys and real account data populated below.": "Simply sign up or sign in to have your API keys and real account data populated below."
 }

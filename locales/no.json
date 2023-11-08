@@ -5532,5 +5532,14 @@
   "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> has sent you a password to use for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p><a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Click this link</a> and immediately follow the instructions.</p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> har sendt deg et passord som skal brukes for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> .</p><p> <a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Klikk på denne linken</a> og følg instruksjonene umiddelbart.</p>",
   "You cannot download a backup for a catch-all or regex.": "Du kan ikke laste ned en sikkerhetskopi for en catch-all eller regulært uttrykk.",
   "Leave blank to get password instantly.": "La stå tomt for å få passord umiddelbart.",
-  "Leave blank to download backup from:": "La stå tomt for å laste ned sikkerhetskopi fra:"
+  "Leave blank to download backup from:": "La stå tomt for å laste ned sikkerhetskopi fra:",
+  "Sign up with Apple": "Registrer deg hos Apple",
+  "Log in with Apple": "Logg inn med Apple",
+  "You must open a new tab and sign in to your domain registrar.  You can easily click on your \"Registrar\" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar – and we have provided the step by step navigation steps below under the \"Steps to Configure\" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.": "Du må åpne en ny fane og logge på domeneregistratoren din. Du kan enkelt klikke på \"Registrator\" nedenfor for å gjøre dette automatisk. I denne nye fanen må du navigere til DNS-administrasjonssiden hos registraren din – og vi har gitt trinnvise navigasjonstrinn nedenfor under \"Trinn for å konfigurere\"-kolonnen. Når du har navigert til denne siden i den nye fanen, kan du gå tilbake til denne fanen og gå videre til trinn tre nedenfor.",
+  "Sign in with Apple": "Logg på med Apple",
+  "Sign in with Google": "Logg på med Google",
+  "Sign in with GitHub": "Logg på med GitHub",
+  "Sign in": "Logg inn",
+  "Sign in now": "Logg inn nå",
+  "Simply sign up or sign in to have your API keys and real account data populated below.": "Simply sign up or sign in to have your API keys and real account data populated below."
 }
