@@ -38,7 +38,7 @@ class AttachmentStorage {
     );
   }
 
-  async get(db, hash) {
+  async get(hash) {
     // TODO: should we project w/o body since we're not using it here as an optimization (?)
     const attachmentData = await Attachments.findOne(db, {
       hash

@@ -17,17 +17,27 @@ import('sqlite-regex').then((obj) => {
   sqliteRegex = obj;
 });
 
-async function setupPragma(db, session) {
+async function setupPragma(db, session, cipher = 'chacha20') {
   // safeguards
   if (!db.open) throw new TypeError('Database is not open');
   if (db.memory) throw new TypeError('Memory database');
-  // db.pragma(`cipher='aes256cbc'`);
   // NOTE: if you change anything in here change backup in sqlite-server
-  db.pragma(`cipher='chacha20'`);
+  db.pragma(`cipher='${cipher}'`);
   if (typeof db.key === 'function')
     db.key(Buffer.from(decrypt(session.user.password)));
   else db.pragma(`key="${decrypt(session.user.password)}"`);
-  db.pragma('journal_mode=WAL');
+  try {
+    db.pragma('journal_mode=WAL');
+  } catch (err) {
+    // legacy fallback
+    if (
+      cipher === 'chacha20' &&
+      (err.code === 'SQLITE_NOTADB' || err.code === 'SQLITE_ERROR')
+    )
+      return setupPragma(db, session, 'aes256cbc');
+    throw err;
+  }
+
   // <https://litestream.io/tips/#busy-timeout>
   db.pragma(`busy_timeout=${config.busyTimeout}`);
   // <https://litestream.io/tips/#synchronous-pragma>
