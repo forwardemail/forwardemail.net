@@ -41,6 +41,7 @@ const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const getDatabase = require('#helpers/get-database');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const createPassword = require('#helpers/create-password');
 
 const logger = new Axe({ silent: true });
 const IP_ADDRESS = ip.address();
@@ -172,6 +173,35 @@ test.beforeEach(async (t) => {
 test.afterEach(async (t) => {
   await t.context.imapFlow.logout();
   await t.context.imap.close();
+});
+
+test('prevents domain-wide passwords', async (t) => {
+  const { domain } = t.context;
+  const { password, salt, hash } = await createPassword();
+  domain.tokens.push({
+    description: 'test',
+    salt,
+    hash,
+    user: t.context.user._id
+  });
+  domain.locale = 'en';
+  domain.resolver = t.context.imap.resolver;
+  domain.skip_verification = true;
+  await domain.save();
+  const imapFlow = new ImapFlow({
+    host: IP_ADDRESS,
+    port: t.context.port,
+    secure: t.context.secure,
+    logger,
+    tls,
+    auth: {
+      user: `test@${domain.name}`,
+      pass: password
+    }
+  });
+  const err = await t.throwsAsync(imapFlow.connect());
+  t.true(err.authenticationFailed);
+  t.regex(err.response, /Alias does not exist/);
 });
 
 test('onAppend', async (t) => {

@@ -39,6 +39,7 @@ const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
+const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
@@ -327,7 +328,7 @@ async function regenerateAliasPassword(ctx) {
 
     // validate password
     // ensure that the token is valid
-    const isValid = await Aliases.isValidPassword(
+    const isValid = await isValidPassword(
       alias.tokens,
       decrypt(ctx.params.encrypted_password)
     );

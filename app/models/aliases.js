@@ -3,15 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const crypto = require('node:crypto');
-const { Buffer } = require('node:buffer');
-const { promisify } = require('node:util');
-
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
 const captainHook = require('captain-hook');
-const cryptoRandomString = require('crypto-random-string');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -19,7 +14,6 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
-const scmp = require('scmp');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
@@ -33,26 +27,9 @@ const Domains = require('./domains');
 const Users = require('./users');
 
 const config = require('#config');
+const createPassword = require('#helpers/create-password');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
-
-const randomBytes = promisify(crypto.randomBytes);
-
-function pbkdf2(options) {
-  return new Promise((resolve, reject) => {
-    crypto.pbkdf2(
-      options.password,
-      options.salt,
-      options.iterations,
-      options.keylen,
-      options.digestAlgorithm,
-      (err, buffer) => {
-        if (err) return reject(err);
-        resolve(buffer);
-      }
-    );
-  });
-}
 
 // <https://1loc.dev/string/check-if-a-string-consists-of-a-repeated-character-sequence/>
 const consistsRepeatedSubstring = (str) =>
@@ -67,15 +44,19 @@ const quotedEmailUserUtf8 = new RE2(
 const Token = new mongoose.Schema({
   description: {
     type: String,
-    select: false
+    select: false,
+    maxlength: 150,
+    trim: true
   },
   salt: {
     type: String,
-    select: false
+    select: false,
+    required: true
   },
   hash: {
     type: String,
-    select: false
+    select: false,
+    required: true
   }
 });
 
@@ -642,7 +623,11 @@ async function getStorageUsed(instance, session) {
   });
 
   // don't allow more than 1K lookups at once
-  if (count > 1000) throw new TypeError('Cannot lookup more than 1K at once');
+  if (count > 1000) {
+    const err = new TypeError('Cannot lookup more than 1K at once');
+    err.domain_id = session.user.domain_id;
+    throw err;
+  }
 
   const aliases = await this.find({
     domain: { $in: domainIds },
@@ -702,50 +687,6 @@ Aliases.statics.isOverQuota = async function (
   return isOverQuota;
 };
 
-Aliases.statics.isValidPassword = async function (tokens = [], password) {
-  if (
-    typeof tokens !== 'object' ||
-    !Array.isArray(tokens) ||
-    tokens.length === 0 ||
-    !password ||
-    typeof password !== 'string'
-  )
-    return false;
-
-  let match = false;
-  for (const token of tokens) {
-    if (
-      typeof token !== 'object' ||
-      !token.salt ||
-      !token.hash ||
-      typeof token.salt !== 'string' ||
-      typeof token.hash !== 'string'
-    )
-      continue;
-
-    // eslint-disable-next-line no-await-in-loop
-    const rawHash = await pbkdf2({
-      password,
-      salt: token.salt,
-      iterations: config.passportLocalMongoose.iterations,
-      keylen: config.passportLocalMongoose.keylen,
-      digestAlgorithm: config.passportLocalMongoose.digestAlgorithm
-    });
-
-    if (
-      scmp(
-        rawHash,
-        Buffer.from(token.hash, config.passportLocalMongoose.encoding)
-      )
-    ) {
-      match = true;
-      break;
-    }
-  }
-
-  return match;
-};
-
 Aliases.methods.createToken = async function (description = '') {
   if (this.name === '*')
     throw Boom.badRequest(
@@ -755,21 +696,7 @@ Aliases.methods.createToken = async function (description = '') {
     throw Boom.badRequest(
       i18n.translateError('CANNOT_CREATE_TOKEN_FOR_REGEX', this.locale)
     );
-  const password = await cryptoRandomString.async({
-    length: 24
-  });
-  const buffer = await randomBytes(config.passportLocalMongoose.saltlen);
-  const salt = buffer.toString(config.passportLocalMongoose.encoding);
-  const rawHash = await pbkdf2({
-    password,
-    salt,
-    iterations: config.passportLocalMongoose.iterations,
-    keylen: config.passportLocalMongoose.keylen,
-    digestAlgorithm: config.passportLocalMongoose.digestAlgorithm
-  });
-  const hash = Buffer.from(rawHash, 'binary').toString(
-    config.passportLocalMongoose.encoding
-  );
+  const { password, salt, hash } = await createPassword();
   this.tokens.push({
     description,
     salt,

@@ -277,6 +277,19 @@ include ../../../_pagination
                         i.fa.fa-trash
                         = " "
                         = t("Delete")
+                  //- if it was not a global domain and it was a catch-all or regex
+                  //- then divert users to advanced settings #domain-tokens section
+                  if domain.group === 'admin' && !domain.is_global && alias.name === '*' && domain.plan !== 'free'
+                    li.list-inline-item
+                      a.btn.btn-sm.btn-link.text-success.btn-block(
+                        href=l(`/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`),
+                        role="button",
+                        data-toggle="modal",
+                        data-target="#modal-domain-tokens"
+                      )
+                        i.fa.fa-key
+                        = " "
+                        = t("Catch-all Passwords")
                   //- generate password for alias, setup instructions, download backup
                   if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
                     li.list-inline-item
@@ -425,7 +438,20 @@ include ../../../_pagination
                       i.fa.fa-trash
                       = " "
                       = t("Delete")
-                //- generate password for alias
+                //- if it was not a global domain and it was a catch-all or regex
+                //- then divert users to advanced settings #domain-tokens section
+                if domain.group === 'admin' && !domain.is_global && alias.name === '*' && domain.plan !== 'free'
+                  li.list-inline-item
+                    a.btn.btn-sm.btn-link.text-success.btn-block(
+                      href=l(`/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`),
+                      role="button",
+                      data-toggle="modal",
+                      data-target="#modal-domain-tokens"
+                    )
+                      i.fa.fa-key
+                      = " "
+                      = t("Catch-all Passwords")
+                //- generate password for alias, setup instructions, download backup
                 if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
                   li.list-inline-item
                     button.btn.btn-sm.btn-link.text-success.btn-block(

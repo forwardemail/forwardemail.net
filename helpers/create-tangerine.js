@@ -6,6 +6,8 @@
 const commands = require('@ioredis/commands');
 const Tangerine = require('tangerine');
 
+const env = require('#config/env');
+
 // modern approach inspired by `refix` package
 // <https://github.com/luin/ioredis/issues/983#issuecomment-1448839874>
 // <https://github.com/luin/ioredis/issues/983#issuecomment-1536728696>
@@ -45,8 +47,21 @@ function refix(client, prefix) {
   return proxy;
 }
 
-function createTangerine(client, logger = require('./logger'), options = {}) {
+function createTangerine(
+  client,
+  logger = require('./logger'),
+  options = false
+) {
   if (!client) throw new Error('Client required');
+
+  if (!options || typeof options !== 'object')
+    options = {
+      // speeds up tests x2 if any DNS errors detected
+      timeout: env.NODE_ENV === 'production' ? 5000 : 2500,
+      tries: env.NODE_ENV === 'production' ? 4 : 2,
+      // use Cloudflare first then Google as a fallback in round-robin approach
+      servers: new Set(['1.1.1.1', '1.0.0.1', '8.8.8.8', '8.8.4.4'])
+    };
 
   // <https://github.com/forwardemail/tangerine#cache>
   const cache = refix(client, 'tangerine:');

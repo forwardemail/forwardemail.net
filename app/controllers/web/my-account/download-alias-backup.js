@@ -17,6 +17,8 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const email = require('#helpers/email');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
+const isValidPassword = require('#helpers/is-valid-password');
+const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const S3 = new S3Client({
@@ -61,21 +63,18 @@ async function downloadAliasBackup(ctx) {
       ctx.request.body.password = ctx.request.body.password.trim();
 
       // ensure that the token is valid
-      const isValid = await Aliases.isValidPassword(
+      const isValid = await isValidPassword(
         alias.tokens,
         ctx.request.body.password
       );
 
       if (!isValid) {
         // increase failed counter by 1
-        await ctx.client.incrby(
-          `auth_limit_${config.env}:${ctx.state.user.id}`,
-          1
-        );
-        await ctx.client.pexpire(
-          `auth_limit_${config.env}:${ctx.state.user.id}`,
-          config.smtpLimitAuthDuration
-        );
+        const key = `auth_limit_${config.env}:${ctx.state.user.id}`;
+        await ctx.client
+          .pipeline()
+          .incr(key)
+          .pexpire(key, config.smtpLimitAuthDuration);
         throw Boom.forbidden(ctx.translateError('INVALID_PASSWORD'));
       }
 
@@ -204,6 +203,7 @@ async function downloadAliasBackup(ctx) {
     }
   } catch (err) {
     if (err && err.isBoom) throw err;
+    if (isErrorConstructorName(err, 'ValidationError')) throw err;
     ctx.logger.fatal(err);
     ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
     const redirectTo = ctx.state.l(

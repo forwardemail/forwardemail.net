@@ -103,12 +103,13 @@ async function increaseRateLimiting(client, date, sender, root, byteLength) {
   const countKey = `imap_limit_count_${config.env}:${date}:${sender}`;
   const specificSizeKey = `imap_limit_size_${config.env}:${date}:${sender}:${root}`;
   const specificCountKey = `imap_limit_count_${config.env}:${date}:${sender}:${root}`;
-  await Promise.all([
-    client.incrby(sizeKey, byteLength),
-    client.incrby(countKey, 1),
-    client.incrby(specificSizeKey, byteLength),
-    client.incrby(specificCountKey, 1)
-  ]);
+  await client
+    .pipeline()
+    .incrby(sizeKey, byteLength)
+    .incr(countKey)
+    .incrby(specificSizeKey, byteLength)
+    .incr(specificCountKey)
+    .exec();
 }
 
 async function getTemporaryDatabase(payload) {

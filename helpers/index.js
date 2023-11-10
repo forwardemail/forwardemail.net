@@ -71,6 +71,9 @@ const storeNodeBodies = require('./store-node-bodies');
 const setupPragma = require('./setup-pragma');
 const recursivelyParse = require('./recursively-parse');
 const migrateSchema = require('./migrate-schema');
+const isValidPassword = require('./is-valid-password');
+const pbkdf2 = require('./pbkdf2');
+const createPassword = require('./create-password');
 
 module.exports = {
   decrypt,
@@ -141,5 +144,8 @@ module.exports = {
   storeNodeBodies,
   setupPragma,
   recursivelyParse,
-  migrateSchema
+  migrateSchema,
+  isValidPassword,
+  pbkdf2,
+  createPassword
 };

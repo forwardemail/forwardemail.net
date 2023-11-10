@@ -1,0 +1,118 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+const Boom = require('@hapi/boom');
+const isSANB = require('is-string-and-not-blank');
+const striptags = require('striptags');
+
+const Domains = require('#models/domains');
+const config = require('#config');
+const createPassword = require('#helpers/create-password');
+const email = require('#helpers/email');
+const i18n = require('#helpers/i18n');
+const isErrorConstructorName = require('#helpers/is-error-constructor-name');
+
+async function createCatchAllPassword(ctx) {
+  try {
+    const domain = await Domains.findById(ctx.state.domain._id).select(
+      '+tokens +tokens.description +tokens.hash +tokens.salt'
+    );
+    if (!domain)
+      throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+
+    // domain cannot have more than 10 at once
+    if (Array.isArray(domain.tokens) && domain.tokens.length >= 10)
+      throw Boom.badRequest(
+        ctx.translateError('DOMAIN_EXCEEDS_CATCHALL_PASSWORD_LIMIT', 10)
+      );
+
+    const description = isSANB(ctx.request.body.description)
+      ? striptags(ctx.request.body.description)
+      : '';
+
+    const { password, salt, hash } = await createPassword();
+    domain.tokens.push({
+      description,
+      salt,
+      hash
+    });
+    domain.locale = ctx.locale;
+    domain.resolver = ctx.resolver;
+    domain.skip_verification = true;
+    await domain.save();
+
+    const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(domain);
+
+    email({
+      template: 'alert',
+      message: {
+        to,
+        ...(to.includes(ctx.state.user.email)
+          ? {}
+          : { cc: ctx.state.user[config.userFields.fullEmail] }),
+        subject: i18n.translate(
+          'ALIAS_PASSWORD_GENERATED_SUBJECT',
+          locale,
+          `*@${domain.name}`
+        )
+      },
+      locals: {
+        user: ctx.state.user,
+        locale,
+        message: i18n.translate(
+          'ALIAS_PASSWORD_GENERATED',
+          locale,
+          `*@${domain.name}`,
+          ctx.state.user.email
+        )
+      }
+    })
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    const html = ctx.translate(
+      'ALIAS_GENERATED_PASSWORD',
+      `*@${domain.name}`,
+      password
+    );
+
+    const swal = {
+      title: ctx.request.t('Success'),
+      html,
+      type: 'success',
+      timer: 30000,
+      position: 'top',
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      focusConfirm: false,
+      returnFocus: false,
+      grow: 'fullscreen',
+      backdrop: 'rgba(0,0,0,0.8)'
+    };
+    // TODO: blog about how we use `?hash=hash` to avoid the issue where
+    //       window.location = someUrlWith#hash doesn't actually redirect user
+    const redirectTo = ctx.state.l(
+      `/my-account/domains/${domain.name}/advanced-settings?hash=catch-all-passwords`
+    );
+    ctx.flash('custom', swal);
+    if (ctx.accepts('html')) {
+      ctx.redirect(redirectTo);
+    } else {
+      ctx.body = { redirectTo };
+    }
+  } catch (err) {
+    if (err && err.isBoom) throw err;
+    if (isErrorConstructorName(err, 'ValidationError')) throw err;
+    ctx.logger.error(err);
+    ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
+    const redirectTo = ctx.state.l(
+      `/my-account/domains/${ctx.state.domain.name}/advanced-settings?hash=catch-all-passwords`
+    );
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+  }
+}
+
+module.exports = createCatchAllPassword;

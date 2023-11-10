@@ -77,15 +77,63 @@ async function retrieveDomain(ctx, next) {
     ctx.pathWithoutLocale ===
       `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
   ) {
-    ctx.state.domain.members = await Promise.all(
-      ctx.state.domain.members.map(async (member) => {
+    const domain = await Domains.findOne(ctx.state.domain._id)
+      .populate(
+        'members.user',
+        `id email plan ${config.passport.fields.displayName} ${config.userFields.isBanned}`
+      )
+      .select('+tokens.description')
+      .sort('name') // A-Z domains
+      .lean()
+      .exec();
+    domain.locale = ctx.locale;
+    domain.resolver = ctx.resolver;
+    let x = domain.members.length;
+    let member;
+    while (x--) {
+      const m = domain.members[x];
+
+      // ensure members have populated users and are not banned
+      if (!_.isObject(m.user) || m.user[config.userFields.isBanned]) {
+        domain.members.splice(x, 1);
+        continue;
+      }
+
+      // omit properties we don't need to share
+      delete m.user[config.userFields.isBanned];
+
+      // check if there was a match for the current member (logged in user)
+      if (m.user.id === ctx.state.user.id) member = m;
+    }
+
+    // if the domain was not global and there was no member
+    if (
+      domain.is_global && // store a boolean for the count
+      !member
+    ) {
+      member = {
+        user: {
+          _id: ctx.state.user._id,
+          id: ctx.state.user.id,
+          email: ctx.state.user.email
+        },
+        group: 'user'
+      };
+      domain.members.push(member);
+    }
+
+    // set a `group` virtual helper alias to the member's group
+    domain.group = member.group;
+    domain.members = await Promise.all(
+      domain.members.map(async (member) => {
         member.alias_count = await Aliases.countDocuments({
-          domain: ctx.state.domain._id,
+          domain: domain._id,
           user: member.user._id
         });
         return member;
       })
     );
+    ctx.state.domain = domain;
   }
 
   //

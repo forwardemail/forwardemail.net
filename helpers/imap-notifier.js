@@ -19,6 +19,7 @@ const Axe = require('axe');
 const Database = require('better-sqlite3-multiple-ciphers');
 const WebSocketAsPromised = require('websocket-as-promised');
 const _ = require('lodash');
+const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
 
 const IMAPError = require('#helpers/imap-error');
@@ -283,14 +284,11 @@ class IMAPNotifier extends EventEmitter {
       .toArray(fn);
   }
 
-  // TODO: move get database to here instead of onAuth and call it from within onAuth (?)
-  // TODO: allocateConnection
   // <https://github.com/nodemailer/wildduck/blob/48b9efb8ca4b300597b2e8f5ef4aa307ac97dcfe/lib/imap-notifier.js#L368>
-
   // <https://github.com/nodemailer/wildduck/blob/48b9efb8ca4b300597b2e8f5ef4aa307ac97dcfe/imap-core/lib/imap-connection.js#L364C46-L365>
   releaseConnection(data, fn) {
     // ignore unauthenticated sessions
-    if (!data?.session?.user) return fn(null, true);
+    if (!data?.session?.user?.alias_id) return fn(null, true);
 
     // close the db connection
     if (typeof data?.session?.db?.close === 'function') {
@@ -300,6 +298,19 @@ class IMAPNotifier extends EventEmitter {
         logger.fatal(err, { session: data.session });
       }
     }
+
+    // decrease # connections for this alias and domain
+    const key = `connections_${config.env}:${data.session.user.alias_id}`;
+    const domainKey = `connections_${config.env}:${data.session.user.domain_id}`;
+    this.publisher
+      .pipeline()
+      .decr(key)
+      .pexpire(key, ms('1h'))
+      .decr(domainKey)
+      .pexpire(domainKey, ms('1h'))
+      .exec()
+      .then()
+      .catch((err) => logger.fatal(err));
 
     fn(null, true);
   }

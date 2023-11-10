@@ -1625,6 +1625,8 @@ The MX servers also limit messages being forwarded to one or more recipients thr
 
 * `Senders` that exceed the rate limit will be rejected with a 421 error.
 
+Our IMAP and SMTP servers limit your aliases from having more than `15` concurrent connections at once – which is [similar to Gmail's limits](https://support.google.com/mail/answer/7126229).
+
 
 ## How do you protect against backscatter
 

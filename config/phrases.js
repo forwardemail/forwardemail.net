@@ -111,6 +111,8 @@ module.exports = {
   INVALID_DKIM_SIGNATURE: 'Invalid DKIM signature.',
   INVALID_FROM_HEADER:
     'From header must be equal to <span class="notranslate">%s</span>',
+  INVALID_CATCHALL_FROM_HEADER:
+    'From header must end with <span class="notranslate">%s</span>',
   ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',
   ALIAS_MUST_HAVE_ONE_RECIPIENT: 'Alias must have at least one recipient.',
   ENCRYPTED_VALUE: 'encrypted value',
@@ -145,6 +147,8 @@ module.exports = {
     'Value was invalid, must be FQDN, EMAIL, IP, FQDN:email, or IP:email.',
   INVALID_MESSAGE: `Your message was invalid, as it was either blank or more than (${env.SUPPORT_REQUEST_MAX_LENGTH}) characters.`,
   INVALID_PASSWORD: 'Password was invalid.',
+  DOMAIN_EXCEEDS_CATCHALL_PASSWORD_LIMIT:
+    'You cannot have more than <span class="notranslate">%d</span> catch-all passwords generated at once',
   INVALID_PASSWORD_CONFIRM: 'Password confirmation did not match new password.',
   INVALID_PASSWORD_STRENGTH: 'Password strength was not strong enough.',
   INVALID_PORT: 'Invalid port number.',

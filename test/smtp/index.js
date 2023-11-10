@@ -26,11 +26,13 @@ const utils = require('../utils');
 const SMTP = require('../../smtp-server');
 
 const config = require('#config');
+const createPassword = require('#helpers/create-password');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
+const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
-const { Emails, Aliases } = require('#models');
+const { Emails } = require('#models');
 
 const asyncMxConnect = pify(mxConnect);
 const IP_ADDRESS = ip.address();
@@ -188,6 +190,206 @@ Test`.trim()
       '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
     );
   }
+});
+
+test('auth with catch-all pass', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, true);
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  const resolver = createTangerine(t.context.client, logger);
+
+  const domain = await factory.create('domain', {
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    resolver,
+    has_smtp: true
+  });
+
+  const alias = await factory.create('alias', {
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email]
+  });
+
+  await alias.save();
+
+  // generate password for domain
+  const { password, salt, hash } = await createPassword();
+  domain.tokens.push({
+    description: 'test',
+    salt,
+    hash,
+    user: user._id
+  });
+  domain.skip_verification = true;
+  await domain.save();
+
+  // spoof dns records
+  const map = new Map();
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  // store spoofed dns cache
+  await resolver.options.cache.mset(map);
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: IP_ADDRESS,
+    port,
+    ignoreTLS: true,
+    secure: true,
+    tls: {
+      rejectUnauthorized: false
+    },
+    auth: {
+      user: `${Math.random()}@${domain.name}`,
+      pass: password
+    }
+  });
+
+  {
+    const err = await t.throwsAsync(
+      transporter.sendMail({
+        envelope: {
+          from: `${Math.random()}@${domain.name}`,
+          to: 'test@test.com'
+        },
+        raw: `
+To: test@test.com
+From: ${Math.random()}@${domain.name}
+Subject: test
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+      })
+    );
+    t.is(err.responseCode, 535);
+    t.regex(
+      err.message,
+      /Catch-all password is being used which requires your domain to upgrade to the Team plan/
+    );
+  }
+
+  // upgrade user to team
+  user.plan = 'team';
+  await factory.create('payment', {
+    user: user._id,
+    amount: 900,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  // set domain plan to team
+  domain.plan = 'team';
+  await domain.save();
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: `${Math.random()}@${domain.name}`,
+        to: 'test@test.com'
+      },
+      raw: `
+To: test@test.com
+From: ${Math.random()}@${domain.name}
+Subject: test
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+    })
+  );
 });
 
 test('auth with pass as alias', async (t) => {
@@ -429,7 +631,7 @@ test('smtp outbound auth', async (t) => {
   t.true(typeof pass === 'string' && pass.length === 24);
   await alias.save();
 
-  const isValid = await Aliases.isValidPassword(alias.tokens, pass);
+  const isValid = await isValidPassword(alias.tokens, pass);
 
   t.true(isValid);
 

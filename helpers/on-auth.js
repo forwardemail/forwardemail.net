@@ -6,6 +6,7 @@
 const punycode = require('node:punycode');
 
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const pify = require('pify');
 const { IMAPServer } = require('wildduck/imap-core');
 const { isEmail } = require('validator');
@@ -24,6 +25,7 @@ const config = require('#config');
 const env = require('#config/env');
 const onConnect = require('#helpers/smtp/on-connect');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const isValidPassword = require('#helpers/is-valid-password');
 
 const onConnectPromise = pify(onConnect);
 
@@ -35,12 +37,6 @@ async function onAuth(auth, session, fn) {
   // TODO: salt/hash/deprecate legacy API token + remove from API docs page
   // TODO: replace usage of config.recordPrefix with config.paidPrefix and config.freePrefix
 
-  //
-  // TODO: add support for domain-wide tokens (right now it's only alias-specific)
-  // `auth.username` must be an alias that exists in the system
-  // `auth.password` must be domain-wide or alias-specific generated token
-  // (password visible only once to user upon creation)
-  //
   try {
     //
     // NOTE: until onConnect is available for IMAP server
@@ -101,6 +97,9 @@ async function onAuth(auth, session, fn) {
         }
       );
 
+    // trim password in-memory
+    auth.password = auth.password.trim();
+
     const verifications = [];
     try {
       const records = await this.resolver.resolveTxt(domainName);
@@ -140,6 +139,7 @@ async function onAuth(auth, session, fn) {
         'members.user',
         `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
       )
+      .select('+tokens.hash +tokens.salt')
       .lean()
       .exec();
 
@@ -158,11 +158,30 @@ async function onAuth(auth, session, fn) {
       .lean()
       .exec();
 
-    // validate alias
-    validateAlias(alias, domain, name);
+    // validate alias (will throw an error if !alias)
+    if (alias || this.server instanceof IMAPServer)
+      validateAlias(alias, domain, name);
 
+    //
     // validate the `auth.password` provided
-    if (!Array.isArray(alias.tokens) || alias.tokens.length === 0)
+    //
+
+    // IMAP servers can only validate against aliases
+    if (this.server instanceof IMAPServer) {
+      if (!Array.isArray(alias.tokens) || alias?.tokens?.length === 0)
+        throw new SMTPError(
+          `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
+          {
+            responseCode: 535,
+            ignoreHook: true
+          }
+        );
+    } else if (
+      alias &&
+      ((!Array.isArray(alias.tokens) && !Array.isArray(domain.tokens)) ||
+        (alias?.tokens?.length === 0 && domain?.tokens?.length === 0))
+    )
+      // SMTP servers can validate against both alias and domain-wide tokens
       throw new SMTPError(
         `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
         {
@@ -191,21 +210,38 @@ async function onAuth(auth, session, fn) {
     }
 
     // ensure that the token is valid
-    const isValid = await Aliases.isValidPassword(
-      alias.tokens,
-      auth.password.trim()
-    );
+    let isValid = false;
+    if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0)
+      isValid = await isValidPassword(alias.tokens, auth.password);
+
+    //
+    // NOTE: this is only applicable to SMTP servers (outbound mail)
+    //       we allow users to use a generated token for the domain
+    //
+    if (
+      !(this.server instanceof IMAPServer) &&
+      !isValid &&
+      Array.isArray(domain.tokens) &&
+      domain.tokens.length > 0
+    ) {
+      isValid = await isValidPassword(domain.tokens, auth.password);
+      if (isValid && domain.plan !== 'team')
+        throw new SMTPError(
+          `Catch-all password is being used which requires your domain to upgrade to the Team plan`,
+          {
+            responseCode: 535
+          }
+        );
+    }
 
     if (!isValid) {
       // increase failed counter by 1
-      await this.client.incrby(
-        `auth_limit_${config.env}:${session.remoteAddress}`,
-        1
-      );
-      await this.client.pexpire(
-        `auth_limit_${config.env}:${session.remoteAddress}`,
-        config.smtpLimitAuthDuration
-      );
+      const key = `auth_limit_${config.env}:${session.remoteAddress}`;
+      await this.client
+        .pipeline()
+        .incrby(key, 1)
+        .pexpire(key, config.smtpLimitAuthDuration)
+        .exec();
       throw new SMTPError(
         `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
         {
@@ -218,19 +254,38 @@ async function onAuth(auth, session, fn) {
     // Clear authentication limit for this IP address
     await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
 
+    // ensure we don't have more than 15 connections per alias
+    // (or per domain if we're using a catch-all)
+    const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
+    const count = await this.client.incrby(key, 0);
+    if (count < 0) await this.client.del(key); // safeguard
+    else if (count > 15)
+      throw new SMTPError('Too many concurrent connections', {
+        responseCode: 421
+      });
+
+    // increase counter for alias by 1 (with ttl safeguard)
+    await this.client.pipeline().incr(key).pexpire(key, ms('1h')).exec();
+
     // prepare user object for `session.user`
+    // <https://github.com/nodemailer/wildduck/issues/510>
     const user = {
-      // <https://github.com/nodemailer/wildduck/issues/510>
-      id: alias.id,
-      username: `${alias.name}@${domain.name}`,
-      alias_id: alias.id,
-      alias_name: alias.name,
+      // support domain-wide catch-all by conditionally checking `alias` below:
+      id: alias ? alias.id : domain.id,
+      username: alias
+        ? `${alias.name}@${domain.name}`
+        : auth.username.trim().toLowerCase(),
+      ...(alias
+        ? {
+            alias_id: alias.id,
+            alias_name: alias.name,
+            storage_location: alias.storage_location
+          }
+        : {}),
       domain_id: domain.id,
       domain_name: domain.name,
-      // TODO: we probably don't need to encrypt but just a safeguard
-      //       (the `helpers/logger` already strips `session.user.password` from logs)
-      password: encrypt(auth.password.trim()),
-      storage_location: alias.storage_location
+      // safeguard to encrypt in-memory
+      password: encrypt(auth.password)
     };
 
     // this response object sets `session.user` to have `domain` and `alias`

@@ -3,6 +3,62 @@ extends ../../../layout
 block body
   include ../_modal-domain
 
+  //- Domain Tokens
+  #modal-domain-tokens.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-domain-tokens-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          h4#modal-domain-tokens-title.d-inline-block.ml-4= t("Catch-all Passwords")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body.text-center
+          p!= t('You can easily use catch-all passwords to send email with <i class="font-weight-bold">any</i> alias at your domain.')
+          a.btn.btn-lg.btn-primary(
+            href=l(`/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`),
+            target="_blank"
+          )
+            = t("Go to Advanced Settings")
+            = " "
+            != "&rarr;"
+            = " "
+            = t("Catch-all Passwords")
+          hr
+          h2.h4= t("What should I use for outbound SMTP settings?")
+          .alert.alert-primary.small!= t('Your username is any email address with your domain and password is from <a href="%s" target="_blank" class="alert-link">Advanced Settings</a>.', l(`/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`))
+          table.table.table-hover.table-bordered.table-sm.mb-0
+            thead.thead-dark
+              tr
+                th(scope="col")= t("Type")
+                th(scope="col")= t("Hostname")
+                th(scope="col")= t("Protocol")
+                th(scope="col")= t("Ports")
+            tbody
+              tr
+                td SMTP
+                td: span.markdown-body: code= "smtp.forwardemail.net"
+                td
+                  = "TLS (STARTTLS)"
+                  .hr-text.d-flex.text-secondary.align-items-center= t("or")
+                  = "SSL"
+                td
+                  ul.list-unstyled
+                    li: span.markdown-body: code= 587
+                    li: span.markdown-body: code= 2587
+                    li: span.markdown-body: code= 2525
+                    li: span.markdown-body: code= 25
+                  .hr-text.d-flex.text-secondary.align-items-center= t("or")
+                  ul.list-unstyled
+                    li: span.markdown-body: code= 465
+                    li: span.markdown-body: code= 2465
+          hr
+          h2.h4= t("Do you have any developer resources?")
+          a.btn.btn-lg.btn-dark(href=l("/docs"), target="_blank")= t("Free Email Developer Tools and Resources")
+
   //- Setup Instructions
   #modal-setup-instructions.modal.fade(
     tabindex="-1",

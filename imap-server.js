@@ -43,8 +43,6 @@ const storeNodeBodies = require('#helpers/store-node-bodies');
 //
 // TODO: fix attachmentStorage.get and `getQueryResponse` rewrite
 //
-// TODO: add rate limiting to IMAP connections
-//
 // TODO: automatic emails if user is low on storage quota or exceeds it
 //
 // TODO: run migration for existing IMAP db storage in Mongo -> SQLite temp mailboxes
@@ -81,8 +79,6 @@ const storeNodeBodies = require('#helpers/store-node-bodies');
 //       <https://github.com/nodemailer/wildduck/issues/515>
 
 // TODO: urgent items
-// - [ ] IMAP server needs onConnect to block spammers from denylist <https://github.com/nodemailer/wildduck/issues/540>
-// - [ ] enforce billing for IMAP support
 // - [ ] when users delete their account then delete all Emails, Messages, Attachments, Threads, and Mailboxes in the system (make this both a job and hook on delete)
 // - [ ] auto expunge in bree job when message gets a Deleted flag
 // - [ ] message.exp needs to be deleted after time (message.rtime) via background job

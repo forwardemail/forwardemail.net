@@ -45,6 +45,112 @@ block body
   - const isDisabled = domain.plan === "free";
   - const isTeamDisabled = domain.plan !== "team";
 
+  //- Generate Password
+  if domain.group === 'admin' && !domain.is_global
+    #modal-generate-password.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-generate-password-title",
+      aria-hidden="true"
+    )
+      .modal-dialog(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            h4#modal-generate-password-title.d-inline-block.ml-4= t("Generate Catch-All Password")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
+          .modal-body
+            .text-center
+              +planRequired(true)
+              form.ajax-form.confirm-prompt(
+                action=l(`/my-account/domains/${domain.name}/catch-all-passwords`),
+                method="POST",
+                disabled=isTeamDisabled
+              )
+                .form-group
+                  label(for="textarea-token-description")
+                    = t("Description")
+                    = " "
+                    span.text-danger= t("(required; for organization purposes only)")
+                  textarea#textarea-token-description.form-control(
+                    required,
+                    name="description",
+                    readonly=isTeamDisabled,
+                    maxlength=150,
+                    rows=2
+                  )= striptags(t('Created by <span class="notranslate">%s</span> on <span class="notranslate">%s</span>.', user.email, dayjs().format("YYYY-MM-DD")))
+                  p.form-text.small.text-black.text-themed-50= t("Description has a max of 150 characters.")
+                button.btn.btn-lg.btn-block.btn-success(
+                  type="submit",
+                  disabled=isTeamDisabled
+                )
+                  i.fa.fa-key
+                  = " "
+                  = t("Generate Password")
+
+  //- Manage Passwords
+  if domain.group === 'admin' && !domain.is_global
+    #modal-manage-passwords.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-manage-passwords-title",
+      aria-hidden="true"
+    )
+      .modal-dialog.modal-lg(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            h4#modal-manage-passwords-title.d-inline-block.ml-4= t("Manage Catch-all Passwords")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
+          .modal-body
+            .text-center
+              +planRequired(true)
+              table.table.table-hover.table-bordered.table-sm.mb-0
+                thead.thead-dark
+                  tr
+                    th(scope="col")= t("Description")
+                    th(scope="col")= t("Created")
+                    th(scope="col")= t("Actions")
+                tbody
+                  if domain.tokens.length === 0 || domain.plan !== 'team'
+                    tr
+                      td(colspan=3)
+                        .alert.alert-info.text-center.mb-0= t("No catch-all passwords exist yet.")
+                  else
+                    each token in domain.tokens
+                      tr
+                        td.align-middle.small.text-monospace= token.description
+                        td.align-middle.text-center.dayjs(
+                          data-time=new Date(token.created_at).getTime()
+                        )
+                          = dayjs(token.created_at).format("M/D/YY h:mm A z")
+                        td.align-middle
+                          form.ajax-form.confirm-prompt.d-inline-block(
+                            action=l(`/my-account/domains/${domain.name}/catch-all-passwords/${token.id}`),
+                            method="POST",
+                            disabled=isTeamDisabled
+                          )
+                            input(
+                              type="hidden",
+                              name="_method",
+                              value="DELETE"
+                            )
+                            button.btn.btn-danger(
+                              type="submit",
+                              disabled=isTeamDisabled
+                            )
+                              i.fa.fa-trash
+                              = " "
+                              = t("Delete Password")
+
   //- Invite Modal
   if domain.group === 'admin'
     #modal-invite.modal.fade(
@@ -144,6 +250,37 @@ block body
       .row
         .col
           include ../../_breadcrumbs
+      //- Catch-all Passwords
+      if domain.group === 'admin' && !domain.is_global
+        #catch-all-passwords.row
+          .col
+            .card.border-themed.mb-3
+              h2.h6.card-header= t("Catch-all Passwords")
+              .card-body
+                //- Make this require Team plan
+                +planRequired(true)
+                != t('You can easily use catch-all passwords to send email with <i class="font-weight-bold">any</i> alias at your domain.')
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.btn.btn-sm.btn-dark(
+                      type="button",
+                      data-toggle="modal",
+                      data-target="#modal-manage-passwords"
+                    )
+                      i.fa.fa-list
+                      = " "
+                      = t("Manage Passwords")
+                  li.list-inline-item
+                    button.btn.btn-sm.btn-success(
+                      type="button",
+                      data-toggle="modal",
+                      data-target="#modal-generate-password"
+                    )
+                      i.fa.fa-key
+                      = " "
+                      = t("Generate Password")
+
       //- Outbound SMTP
       if domain.group === 'admin'
         .row
@@ -154,7 +291,7 @@ block body
                 +planRequired(false)
                 if domain.plan !== 'free'
                   if _.isDate(domain.smtp_suspended_sent_at)
-                    .alert.alert-danger.text-center!= t('Domain is suspended from outbound SMTP service, please <a href="alert-link" href="%s">contact us</a> to resolve.', l("/help"))
+                    .alert.alert-danger.text-center!= t('Domain is suspended from outbound SMTP service, please <a class="alert-link" href="%s">contact us</a> to resolve.', l("/help"))
                   else
                     if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
                       .alert.alert-success
@@ -418,7 +555,7 @@ block body
                   )
                   label.form-check-label(for="input-has-executable-protection")= t("Executable protection")
                   p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then links and attachments will <u>not be scanned</u> for potentially-malicious <a target="_blank" rel="noopener noreferrer" href="%s">executable</a> file types, extensions, names, headers, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor <a target="_blank" rel="noopener noreferrer" href="%s">magic numbers</a>.', "https://github.com/spamscanner/spamscanner/blob/master/executables.json", "https://wikipedia.org/wiki/IDN_homograph_attack", "https://wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files")
-                .form-group.form-check
+                .form-group.form-check.mb-0
                   input#input-has-virus-protection.form-check-input(
                     type="checkbox",
                     disabled=isDisabled,
@@ -461,7 +598,7 @@ block body
                     aria-describedby="help-port"
                   )
                   label(for="input-port")= t("Port number (SMTP)")
-                #help-port.alert.alert-secondary.small
+                #help-port.alert.alert-secondary.small.mb-0
                   = t("Do not modify this unless you know what you are doing.  This will forward all emails to the specific port for all aliases and their recipients.  For example, if you are forwarding to info@example.com, and input port number 1337 here, then our server will forward email to example.com on port 1337 (as opposed to the standard SMTP port of 25).")
                   if domain.plan === 'free'
                     = " "
@@ -483,7 +620,7 @@ block body
             .card-body
               if domain.group === 'admin'
                 +planRequired(false)
-              p.card-text
+              .card-text
                 != t('You are currently limited to forwarding to <strong class="notranslate">%d</strong> recipients per alias.', domain.max_recipients_per_alias <= 0 ? config.maxForwardedAddresses : domain.max_recipients_per_alias)
                 = " "
                 != t('If you need to increase this limit, then please contact <span class="notranslate">%s</span> and include a valid reason.', domain.group === "admin" ? t("us") : t("your domain's administrator"))
@@ -512,7 +649,7 @@ block body
               h2.h6.card-header= t("Recipient Verification")
               .card-body
                 +planRequired(false)
-                .form-group.form-check
+                .form-group.form-check.mb-0
                   input#input-has-recipient-verification.form-check-input(
                     type="checkbox",
                     disabled=isDisabled,
@@ -523,7 +660,7 @@ block body
                   label.form-check-label(
                     for="input-has-recipient-verification"
                   )= t("Requires recipients to click email verification link")
-                  p.form-text.small.text-black.text-themed-50= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
+                  p.form-text.small.text-black.text-themed-50.mb-0= t("If you check this, then each email recipient will be required to click an email verification link in order for emails to flow through.")
               .card-footer.text-right
                 ul.list-inline.mb-0
                   li.list-inline-item

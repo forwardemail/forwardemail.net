@@ -114,6 +114,39 @@ crawlDisposable();
 
 const REGEX_VERIFICATION = new RE2(/[^\da-z]/i);
 
+const Token = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Users',
+    index: true,
+    required: true
+  },
+  description: {
+    type: String,
+    select: false,
+    maxlength: 150,
+    trim: true
+  },
+  salt: {
+    type: String,
+    select: false,
+    required: true
+  },
+  hash: {
+    type: String,
+    select: false,
+    required: true
+  }
+});
+
+Token.plugin(mongooseCommonPlugin, {
+  object: 'token',
+  omitCommonFields: false,
+  omitExtraFields: ['_id', '__v', 'description', 'salt', 'hash'],
+  uniqueId: false,
+  locale: false
+});
+
 const Member = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
@@ -368,7 +401,8 @@ const Domains = new mongoose.Schema({
       type: String,
       validate: (value) => isIP(value) || isFQDN(value)
     }
-  ]
+  ],
+  tokens: [Token]
 });
 
 Domains.index(
@@ -781,7 +815,8 @@ Domains.plugin(mongooseCommonPlugin, {
     'has_dmarc_record',
     'missing_dmarc_sent_at',
     'smtp_checked_at',
-    'smtp_emails_blocked'
+    'smtp_emails_blocked',
+    'tokens'
   ],
   mongooseHidden: {
     virtuals: {

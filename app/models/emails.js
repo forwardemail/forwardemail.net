@@ -104,7 +104,8 @@ const Emails = new mongoose.Schema(
     alias: {
       type: mongoose.Schema.ObjectId,
       ref: Aliases,
-      required: true,
+      // NOTE: no longer required since we can have catch-alls
+      // required: true,
       index: true
     },
     domain: {
@@ -600,6 +601,7 @@ Emails.statics.getMessage = async function (obj) {
 // options.domain
 // options.user (from `ctx.state.user` or `alias.user`)
 // options.date
+// options.catchall (boolean, true, if using domain-wide generated catch-all password)
 // eslint-disable-next-line complexity
 Emails.statics.queue = async function (
   options = {},
@@ -735,7 +737,7 @@ Emails.statics.queue = async function (
 
   domainName = punycode.toUnicode(domainName);
 
-  if (aliasName === '*')
+  if (aliasName === '*' && !options.catchall)
     throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
 
   let userId;
@@ -808,40 +810,40 @@ Emails.statics.queue = async function (
     throw Boom.notFound(i18n.translateError('INVALID_MEMBER', locale));
 
   //
-  // ensure the alias exists
+  // ensure the alias exists (if it was not a catch-all)
   //
-  // NOTE: in the future we will support admins sending from _any_ alias regardless if it exists or not
-  //       (most likely with a fall-back that is to the catch-all on the domain, and enforce that as a requirement)
-  //
-  const alias =
-    options.alias ||
-    (userId
-      ? await Aliases.findOne(
-          member.group === 'admin'
-            ? {
-                domain: domain._id,
-                name: aliasName
-              }
-            : {
-                // users that are not admins must be an owner of the alias to send as it
-                user: new mongoose.Types.ObjectId(userId),
-                domain: domain._id,
-                name: aliasName
-              }
-        ).populate('user', `id ${config.userFields.isBanned}`)
-      : null);
+  let alias;
+  if (!options.catchall) {
+    alias =
+      options.alias ||
+      (userId
+        ? await Aliases.findOne(
+            member.group === 'admin'
+              ? {
+                  domain: domain._id,
+                  name: aliasName
+                }
+              : {
+                  // users that are not admins must be an owner of the alias to send as it
+                  user: new mongoose.Types.ObjectId(userId),
+                  domain: domain._id,
+                  name: aliasName
+                }
+          ).populate('user', `id ${config.userFields.isBanned}`)
+        : null);
 
-  // alias must exist
-  if (!alias)
-    throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
+    // alias must exist
+    if (!alias)
+      throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
 
-  // alias must not have banned user
-  if (alias.user[config.userFields.isBanned])
-    throw Boom.forbidden(i18n.translateError('ALIAS_ACCOUNT_BANNED', locale));
+    // alias must not have banned user
+    if (alias.user[config.userFields.isBanned])
+      throw Boom.forbidden(i18n.translateError('ALIAS_ACCOUNT_BANNED', locale));
 
-  // alias must be enabled
-  if (!alias.is_enabled)
-    throw Boom.notFound(i18n.translateError('ALIAS_IS_NOT_ENABLED', locale));
+    // alias must be enabled
+    if (!alias.is_enabled)
+      throw Boom.notFound(i18n.translateError('ALIAS_IS_NOT_ENABLED', locale));
+  }
 
   // TODO: switch to use `spamscanner.scan` instead
   const parsed = await simpleParser(message, {
@@ -877,7 +879,26 @@ Emails.statics.queue = async function (
       from = fromHeader.value[0].address.toLowerCase();
   }
 
-  if (!from || from !== `${alias.name}@${domain.name}`)
+  if (!from)
+    throw Boom.forbidden(
+      i18n.translateError(
+        'INVALID_FROM_HEADER',
+        locale,
+        `${!options.catchall && alias ? alias.name : '*'}@${domain.name}`
+      )
+    );
+
+  // if we're a catch-all then validate from ends with @domain
+  if (options.catchall && !from.endsWith(`@${domain.name}`))
+    throw Boom.forbidden(
+      i18n.translateError(
+        'INVALID_CATCHALL_FROM_HEADER',
+        locale,
+        `@${domain.name}`
+      )
+    );
+  // otherwise it must be a specific match to the alias
+  else if (!options.catchall && from !== `${alias.name}@${domain.name}`)
     throw Boom.forbidden(
       i18n.translateError(
         'INVALID_FROM_HEADER',
@@ -1031,7 +1052,7 @@ Emails.statics.queue = async function (
 
   // TODO: encrypt and compress message
   const email = await this.create({
-    alias: alias._id,
+    alias: !options.catchall && alias ? alias._id : undefined,
     domain: domain._id,
     user: userId ? new mongoose.Types.ObjectId(userId) : undefined,
     envelope: info.envelope,

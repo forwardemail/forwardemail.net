@@ -129,6 +129,25 @@ router
     web.myAccount.createDomain
   )
 
+  .post(
+    '/domains/:domain_id/catch-all-passwords',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureTeamPlan,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(10, 'create catch all password'),
+    web.myAccount.createCatchAllPassword
+  )
+
+  .delete(
+    '/domains/:domain_id/catch-all-passwords/:token_id',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureTeamPlan,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.removeCatchAllPassword
+  )
+
   .get('/domains/:domain_id/invites', web.myAccount.retrieveInvite)
 
   .post(

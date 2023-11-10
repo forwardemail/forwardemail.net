@@ -21,6 +21,22 @@ const smtp = require('#helpers/smtp');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
+function onClose(session) {
+  // ignore unauthenticated sessions
+  if (!session?.user?.alias_id) return;
+  // decrease # connections for this alias (or domain if using catch-all)
+  const key = `connections_${config.env}:${
+    session.user.alias_id || session.user.domain_id
+  }`;
+  this.client
+    .pipeline()
+    .decr(key)
+    .pexpire(key, ms('1h'))
+    .exec()
+    .then()
+    .catch((err) => logger.fatal(err));
+}
+
 class SMTP {
   //
   // NOTE: we port forward 25, 587, and 2525 -> 2587 (and 2587 is itself available)
@@ -59,6 +75,7 @@ class SMTP {
       size: MAX_BYTES,
       onData: smtp.onData.bind(this),
       onConnect: smtp.onConnect.bind(this),
+      onClose: onClose.bind(this),
       onAuth: onAuth.bind(this),
       onMailFrom: smtp.onMailFrom.bind(this),
       onRcptTo: smtp.onRcptTo.bind(this),

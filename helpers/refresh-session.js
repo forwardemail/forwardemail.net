@@ -8,17 +8,19 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 
-const Mailboxes = require('#models/mailboxes');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const IMAPError = require('#helpers/imap-error');
+const Mailboxes = require('#models/mailboxes');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const config = require('#config');
 const getDatabase = require('#helpers/get-database');
+const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const REQUIRED_PATHS = [
   'INBOX',
@@ -56,6 +58,7 @@ const IMAP_COMMANDS = new Set([
   'UNSUBSCRIBE'
 ]);
 
+// eslint-disable-next-line complexity
 async function refreshSession(session, command) {
   if (!command) throw new Error('Command required');
   command = command.toUpperCase().trim();
@@ -71,10 +74,10 @@ async function refreshSession(session, command) {
       throw new SocketError();
   }
 
-  if (!isSANB(session?.user?.domain_id))
+  if (!isSANB(session?.user?.domain_id) || !isSANB(session?.user?.domain_name))
     throw new IMAPError('Domain does not exist on session');
 
-  if (!isSANB(session?.user?.alias_id))
+  if (!isSANB(session?.user?.alias_id) || !isSANB(session?.user?.alias_name))
     throw new IMAPError('Alias does not exist on session');
 
   const [domain, alias] = await Promise.all([
@@ -91,6 +94,7 @@ async function refreshSession(session, command) {
         // TODO: we can remove `smtpLimit` (?)
         `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
       )
+      .select('+tokens.hash +tokens.salt')
       .lean()
       .exec()
   ]);
@@ -100,6 +104,27 @@ async function refreshSession(session, command) {
 
   // validate alias (in case tampered with during session)
   validateAlias(alias, session.user.domain_name, session.user.alias_name);
+
+  //
+  // NOTE: we validate that the in-memory password is still active for the given user
+  //       (e.g. edge case where AUTH done, a few seconds go by, then pass removed by user, and IMAP command couldn't been tried)
+  //       (e.g. the SQLite database password would've been changed if user changed alias' password, so we should error)
+  //
+  // ensure the token is still valid
+  let isValid = false;
+  if (Array.isArray(alias.tokens) && alias.tokens.length > 0)
+    isValid = await isValidPassword(
+      alias.tokens,
+      decrypt(session.user.password)
+    );
+  if (!isValid)
+    throw new IMAPError(
+      `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
+      {
+        responseCode: 535
+        // ignoreHook: true
+      }
+    );
 
   // TODO: notifications via web/sms/desktop/mobile electron + react native app
   //       (e.g. if there are any issues such as IMAP access being locked due to r/w issues)
