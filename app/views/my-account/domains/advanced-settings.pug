@@ -120,7 +120,7 @@ block body
                     th(scope="col")= t("Created")
                     th(scope="col")= t("Actions")
                 tbody
-                  if domain.tokens.length === 0 || domain.plan !== 'team'
+                  if !Array.isArray(domain.tokens) || domain.tokens.length === 0 || domain.plan !== 'team'
                     tr
                       td(colspan=3)
                         .alert.alert-info.text-center.mb-0= t("No catch-all passwords exist yet.")
