@@ -197,7 +197,7 @@ module.exports = {
   IMAP_WRITE_LOCK_FAILED: 'Failed to acquire write lock',
   IMAP_RELEASE_LOCK_FAILED: 'Failed to release write lock',
   IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA:
-    'Mailbox quota would be exceeded by message size',
+    'Mailbox quota for <span class="notranslate">%s</span> would be exceeded by message size',
   NO_DOMAINS_EXIST: 'Enter your custom domain name to continue.',
   NO_ALIASES_EXIST: 'Add a new alias to continue.',
   INVALID_DOMAIN:

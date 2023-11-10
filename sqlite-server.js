@@ -6,6 +6,7 @@
 const fs = require('node:fs');
 const http = require('node:http');
 const https = require('node:https');
+const os = require('node:os');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
 const { createGzip } = require('node:zlib');
@@ -20,31 +21,35 @@ const Lock = require('ioredfour');
 const MessageHandler = require('wildduck/lib/message-handler');
 const _ = require('lodash');
 const auth = require('basic-auth');
+const bytes = require('bytes');
+const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
 const hasha = require('hasha');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
+const pMap = require('p-map');
 const parseErr = require('parse-err');
+const pify = require('pify');
+const prettyBytes = require('pretty-bytes');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
-const { WebSocketServer } = require('ws');
-const prettyBytes = require('pretty-bytes');
-const pify = require('pify');
-const checkDiskSpace = require('check-disk-space').default;
-const { Upload } = require('@aws-sdk/lib-storage');
+const { isEmail } = require('validator');
 const {
   S3Client,
   CreateBucketCommand,
   HeadBucketCommand,
   HeadObjectCommand
-  // PutObjectCommand
 } = require('@aws-sdk/client-s3');
+const { Upload } = require('@aws-sdk/lib-storage');
+const { WebSocketServer } = require('ws');
+const { boolean } = require('boolean');
 
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const IMAPNotifier = require('#helpers/imap-notifier');
+const SMTPError = require('#helpers/smtp-error');
 const TemporaryMessages = require('#models/temporary-messages');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
@@ -52,17 +57,21 @@ const env = require('#config/env');
 const getDatabase = require('#helpers/get-database');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const i18n = require('#helpers/i18n');
+const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
+const migrateSchema = require('#helpers/migrate-schema');
 const onAppend = require('#helpers/imap/on-append');
+const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
 const refreshSession = require('#helpers/refresh-session');
 const setupPragma = require('#helpers/setup-pragma');
-const migrateSchema = require('#helpers/migrate-schema');
 const storeNodeBodies = require('#helpers/store-node-bodies');
-const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const { acquireLock, releaseLock } = require('#helpers/lock');
+const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
 const onAppendPromise = pify(onAppend);
+
+const concurrency = os.cpus().length;
 
 const PAYLOAD_ACTIONS = new Set([
   'sync',
@@ -75,6 +84,8 @@ const PAYLOAD_ACTIONS = new Set([
   'reset'
 ]);
 const STATEMENT_OPERATIONS = new Set(['prepare', 'run', 'get', 'all', 'pluck']);
+
+const SIXTY_FOUR_MB_IN_BYTES = bytes('64MB');
 
 const S3 = new S3Client({
   region: env.AWS_REGION,
@@ -152,7 +163,6 @@ async function parsePayload(data, ws) {
   if (data && data.toString() === 'ping') return;
 
   let db;
-  let tmpDb;
   let lock;
   let payload;
   let response;
@@ -270,7 +280,8 @@ async function parsePayload(data, ws) {
     if (
       payload.action !== 'setup' &&
       payload.action !== 'reset' &&
-      payload.action !== 'size'
+      payload.action !== 'size' &&
+      payload.action !== 'tmp'
     ) {
       const databases = await getDatabase(
         this,
@@ -285,11 +296,17 @@ async function parsePayload(data, ws) {
       db = databases.db;
     }
 
+    //
+    // TODO: payload.storage_location should not be used as source of truth
+    //       instead the latest from Aliases database should be used
+    //       (e.g. `const alias = await Aliases.findOne(...)` and `alias.storage_location`
+    //
+
     // handle action
     switch (payload.action) {
       // sync the user's temp mailbox to their current
       case 'sync': {
-        tmpDb = await getTemporaryDatabase.call(this, payload);
+        const tmpDb = await getTemporaryDatabase.call(this, payload);
 
         let count = 0;
 
@@ -307,6 +324,21 @@ async function parsePayload(data, ws) {
             // (e.g. one might have an issue with `date` or `raw`)
             //
             try {
+              // check that we have available space
+              const storagePath = getPathToDatabase({
+                id: payload.session.user.alias_id,
+                storage_location: payload.session.user.storage_location
+              });
+              const spaceRequired = Buffer.byteLength(message.raw);
+              // eslint-disable-next-line no-await-in-loop
+              const diskSpace = await checkDiskSpace(storagePath);
+              if (diskSpace.free < spaceRequired)
+                throw new TypeError(
+                  `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                    diskSpace.free
+                  )} was available`
+                );
+
               // eslint-disable-next-line no-await-in-loop
               const results = await onAppendPromise.call(
                 this,
@@ -339,6 +371,8 @@ async function parsePayload(data, ws) {
           logger.fatal(err);
         }
 
+        tmpDb.close();
+
         response = {
           id: payload.id,
           data: count
@@ -349,8 +383,6 @@ async function parsePayload(data, ws) {
       // store an inbound message from MX server
       // into temporary encrypted sqlite db
       case 'tmp': {
-        tmpDb = await getTemporaryDatabase.call(this, payload);
-
         // ensure payload.date is a string and valid date
         if (!isSANB(payload.date)) throw new TypeError('Payload date missing');
 
@@ -361,6 +393,10 @@ async function parsePayload(data, ws) {
         if (!Buffer.isBuffer(payload.raw))
           throw new TypeError('Payload raw is not a Buffer');
 
+        // do not allow messages larger than 64 MB
+        if (Buffer.byteLength(payload.raw) > SIXTY_FOUR_MB_IN_BYTES)
+          throw i18n.translateError('IMAP_MESSAGE_SIZE_EXCEEDED');
+
         // ensure remote address is an IP
         if (
           typeof payload.remoteAddress !== 'string' ||
@@ -368,19 +404,300 @@ async function parsePayload(data, ws) {
         )
           throw new TypeError('Payload remote address must be an IP');
 
-        // create the temporary message
-        const result = await TemporaryMessages.create({
-          instance: this,
-          session: { user: payload.session.user, db: tmpDb },
-          date: new Date(payload.date),
-          raw: payload.raw,
-          remoteAddress: payload.remoteAddress
-        });
+        if (!_.isArray(payload.aliases) || payload.aliases.length === 0)
+          throw new TypeError('Aliases missing');
+
+        if (
+          payload.aliases.some(
+            (a) =>
+              typeof a !== 'object' ||
+              typeof a.id !== 'string' ||
+              !mongoose.Types.ObjectId.isValid(a.id) ||
+              typeof a.address !== 'string' ||
+              !isEmail(a.address)
+          )
+        )
+          throw new TypeError('Invalid aliases');
+
+        if (
+          _.uniqBy(payload.aliases, (a) => `${a.address}:${a.id}`).length !==
+          payload.aliases.length
+        )
+          throw new TypeError('Duplicate aliases passed');
+
+        // create the temporary message for each alias
+        const errors = {};
+
+        await pMap(
+          payload.aliases,
+          // eslint-disable-next-line complexity
+          async (obj) => {
+            try {
+              const alias = await Aliases.findOne({ id: obj.id })
+                .populate('domain', 'id name')
+                .populate('user', config.userFields.isBanned)
+                .select(
+                  'id has_imap storage_location user is_enabled name domain'
+                )
+                .lean()
+                .exec();
+
+              if (!alias) throw new TypeError('Alias does not exist');
+
+              // alias must not have banned user
+              if (alias.user[config.userFields.isBanned])
+                throw new TypeError('Alias user is banned');
+
+              // alias must be enabled
+              if (!alias.is_enabled) throw new TypeError('Alias is disabled');
+
+              // alias must not be catch-all
+              if (alias.name === '*')
+                throw new TypeError('Alias cannot be a catch-all');
+
+              // alias cannot be regex
+              if (alias.name.startsWith('/'))
+                throw new TypeError('Alias cannot be a regex');
+
+              // alias must have IMAP
+              if (!alias.has_imap)
+                throw new TypeError('Alias does not have IMAP');
+
+              // alias must have domain
+              if (!alias.domain || !alias.domain.name)
+                throw new TypeError('Alias does not have domain');
+
+              const session = {
+                user: {
+                  id: alias.id,
+                  username: `${alias.name}@${alias.domain.name}`,
+                  alias_id: alias.id,
+                  alias_name: alias.name,
+                  domain_id: alias.domain.id,
+                  domain_name: alias.domain.name,
+                  password: encrypt(env.API_SECRETS[0]),
+                  storage_location: alias.storage_location
+                }
+              };
+
+              // check quota
+              const quota = await Aliases.isOverQuota(this, session, 0, true);
+
+              const exceedsQuota =
+                quota.storageUsed + Buffer.byteLength(payload.raw) >
+                config.maxQuotaPerAlias;
+
+              if (exceedsQuota) {
+                const err = new TypeError(
+                  `${
+                    session.user.username
+                  } has exceeded quota with ${prettyBytes(
+                    quota.storageUsed
+                  )} storage used`
+                );
+                logger.fatal(err); // send alert to admins
+                throw new SMTPError(
+                  i18n.translate(
+                    'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
+                    'en',
+                    session.user.username
+                  ),
+                  {
+                    responseCode: 421
+                  }
+                );
+              }
+
+              //
+              // rate limit the payload.remoteAddress from
+              // sending more than 1 GB per day or 1000 messages per day
+              // but attempt to use the reverse PTR root domain of the remoteAddress
+              //
+              let sender = payload.remoteAddress;
+              try {
+                const [clientHostname] = await this.resolver.reverse(
+                  payload.remoteAddress
+                );
+                if (isFQDN(clientHostname)) sender = parseRootDomain(sender);
+              } catch (err) {
+                logger.warn(err);
+              }
+
+              //
+              // TODO: this rate limiting logic needs to get moved to the MX server
+              //       (but we should keep parity with key names and such)
+              //       (moving it to MX server would prevent an unnecessary websocket request)
+              //
+              // 1) Senders that we consider to be "trusted" as a source of truth
+              //    (e.g. gmail.com, microsoft.com, apple.com) are limited to sending 100 GB per day.
+              // 2) Senders that are allowlisted are limited to sending 10 GB per day.
+              // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
+              // 4) We have a specific limit per Sender and yourdomain.com of 1 GB and/or 1000 messages daily.
+
+              const date = new Date().toISOString().split('T')[0];
+
+              // check current size and message count for sender
+              const [size, count] = await Promise.all(
+                ['size', 'count'].map(async (kind) => {
+                  const key = `imap_limit_${kind}_${config.env}:${date}:${sender}`;
+                  const result = await this.client.incrby(key, 0);
+                  // TODO: ttl should be milliseconds until end of day
+                  //       (right now it will go until 24h after if 11:59pm for example)
+                  await this.client.pexpire(key, ms('1d')); // TODO: all ansible servers should be set to use utc timezone
+                  return result;
+                })
+              );
+
+              if (isFQDN(sender)) {
+                if (config.truthSources.has(sender)) {
+                  // 1) Senders that we consider to be "trusted" as a source of truth
+                  if (size >= bytes('100GB'))
+                    throw new SMTPError(
+                      `${sender} limited to 100 GB with current of ${prettyBytes(
+                        size
+                      )} from ${count} messages`,
+                      { responseCode: 421 }
+                    );
+                } else {
+                  const isAllowlisted = await this.client.get(
+                    `allowlist:${sender}`
+                  );
+                  if (boolean(isAllowlisted)) {
+                    // 2) Senders that are allowlisted are limited to sending 10 GB per day.
+                    if (size >= bytes('10GB'))
+                      throw new SMTPError(
+                        `${sender} limited to 10 GB with current of ${prettyBytes(
+                          size
+                        )} from ${count} messages`,
+                        { responseCode: 421 }
+                      );
+                    // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
+                  } else if (size >= bytes('1GB') || count >= 300) {
+                    throw new SMTPError(
+                      `#3 ${sender} limited with current of ${prettyBytes(
+                        size
+                      )} from ${count} messages`,
+                      { responseCode: 421 }
+                    );
+                  }
+                }
+              } else if (size >= bytes('1GB') || count >= 300) {
+                // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
+                throw new SMTPError(
+                  `#3 ${sender} limited with current of ${prettyBytes(
+                    size
+                  )} from ${count} messages`,
+                  { responseCode: 421 }
+                );
+              }
+
+              const root = parseRootDomain(alias.domain.name);
+
+              // 4) We have a specific limit per Sender and yourdomain.com of 1 GB and/or 1000 messages daily.
+              const specific = await Promise.all(
+                ['size', 'count'].map(async (kind) => {
+                  const key = `imap_limit_${kind}_${config.env}:${date}:${sender}:${root}`;
+                  const result = await this.client.incrby(key, 0);
+                  // TODO: ttl should be milliseconds until end of day
+                  //       (right now it will go until 24h after if 11:59pm for example)
+                  await this.client.pexpire(key, ms('1d')); // TODO: all ansible servers should be set to use utc timezone
+                  return result;
+                })
+              );
+
+              if (specific.size >= bytes('1GB') || specific.count >= 1000)
+                throw new SMTPError(
+                  `${sender} limited with current of ${prettyBytes(
+                    specific.size
+                  )} from ${specific.count} messages to ${root}`,
+                  {
+                    responseCode: 421
+                  }
+                );
+
+              // check that we have available space
+              const storagePath = getPathToDatabase({
+                id: alias.id,
+                storage_location: alias.storage_location
+              });
+              const spaceRequired = Buffer.byteLength(payload.raw) * 2; // 2x to account for syncing
+              const diskSpace = await checkDiskSpace(storagePath);
+              if (diskSpace.free < spaceRequired)
+                throw new TypeError(
+                  `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                    diskSpace.free
+                  )} was available`
+                );
+
+              const tmpDb = await getTemporaryDatabase.call(this, {
+                session
+              });
+
+              let err;
+
+              try {
+                await TemporaryMessages.create({
+                  instance: this,
+                  session: { user: session.user, db: tmpDb },
+                  date: new Date(payload.date),
+                  raw: payload.raw,
+                  remoteAddress: payload.remoteAddress
+                });
+
+                //
+                // increase rate limiting size and count
+                //
+                try {
+                  const sizeKey = `imap_limit_size_${config.env}:${date}:${sender}`;
+                  const countKey = `imap_limit_count_${config.env}:${date}:${sender}`;
+                  const specificSizeKey = `imap_limit_size_${config.env}:${date}:${sender}:${root}`;
+                  const specificCountKey = `imap_limit_count_${config.env}:${date}:${sender}:${root}`;
+
+                  await Promise.all([
+                    this.client.incrby(sizeKey, Buffer.byteLength(payload.raw)),
+                    this.client.incrby(countKey, 1),
+                    this.client.incrby(
+                      specificSizeKey,
+                      Buffer.byteLength(payload.raw)
+                    ),
+                    this.client.incrby(specificCountKey, 1)
+                  ]);
+                } catch (err) {
+                  logger.fatal(err);
+                }
+
+                //
+                // NOTE: we can't publish an event because we don't have mailbox/modseq
+                //       so instead we rely on the IMAP connection polling for new messages
+                //       (e.g. Thunderbird checks every 10m by default)
+                //
+                // setImmediate(() => {
+                //   this.client.publish(IMAP_REDIS_CHANNEL_NAME, safeStringify({
+                //     e: alias.id,
+                //     p: { ... }
+                //   }));
+                // });
+              } catch (_err) {
+                err = _err;
+              }
+
+              tmpDb.close();
+              if (err) throw err;
+            } catch (err) {
+              logger.error(err);
+              err.isCodeBug = isCodeBug(err);
+              errors[`${obj.address}`] =
+                !ws || typeof ws.send !== 'function' ? err : parseErr(err);
+            }
+          },
+          { concurrency }
+        );
 
         response = {
           id: payload.id,
-          data: result
+          data: errors
         };
+
         break;
       }
 
@@ -894,8 +1211,6 @@ async function parsePayload(data, ws) {
 
     if (db && db.open && typeof db.close === 'function') db.close();
 
-    if (tmpDb && tmpDb.open && typeof tmpDb.close === 'function') tmpDb.close();
-
     if (!ws || typeof ws.send !== 'function') return response;
 
     ws.send(safeStringify(response));
@@ -918,7 +1233,6 @@ async function parsePayload(data, ws) {
     }
 
     if (db && db.open && typeof db.close === 'function') db.close();
-    if (tmpDb && tmpDb.open && typeof tmpDb.close === 'function') tmpDb.close();
 
     if (!ws || typeof ws.send !== 'function') throw err;
 

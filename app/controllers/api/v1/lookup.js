@@ -37,10 +37,15 @@ async function lookup(ctx) {
   // safeguard to prevent returning any domain
   if (_.isEmpty(query)) throw new Error('Domain query was empty');
 
-  const domain = await Domains.findOne(query).lean().exec();
+  const domain = await Domains.findOne(query)
+    .select(
+      'is_global _id is_catchall_regex_disabled members name id plan email_suspended_sent_at'
+    )
+    .lean()
+    .exec();
 
   if (!domain) {
-    ctx.body = [];
+    ctx.body = {};
     return;
   }
 
@@ -108,10 +113,15 @@ async function lookup(ctx) {
   if (_.isEmpty(aliasQuery)) throw new Error('Alias query was empty');
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
-  const aliases = await Aliases.find(aliasQuery).lean().exec();
+  const aliases = await Aliases.find(aliasQuery)
+    .select(
+      'id has_imap recipients name is_enabled has_recipient_verification verified_recipients'
+    )
+    .lean()
+    .exec();
 
   if (aliases.length === 0) {
-    ctx.body = [];
+    ctx.body = {};
     return;
   }
 
@@ -134,7 +144,7 @@ async function lookup(ctx) {
         new Error(`Empty admin user ids: ${domain.name} (${domain.id})`),
         { domain }
       );
-      ctx.body = [];
+      ctx.body = {};
       return;
     }
 
@@ -240,7 +250,7 @@ async function lookup(ctx) {
       }
 
       // suspend forwarding by returning empty array (which causes 421 retry)
-      ctx.body = [];
+      ctx.body = {};
       return;
     }
 
@@ -257,7 +267,51 @@ async function lookup(ctx) {
         .catch((err) => ctx.logger.error(err));
   }
 
+  const body = {
+    has_imap: false,
+    mapping: []
+  };
+
+  function pushToBody(alias) {
+    // alias.name = "*" (wildcard catchall) otherwise an alias
+    // alias.is_enabled = "!" prefixed alias name
+    // alias.recipients = comma separated (split with a colon)
+
+    // NOTE: we don't allow catch-all's to be disabled (see logic in alias model)
+
+    // push "IMAP" to alias.recipients if it has IMAP and username
+    if (
+      username &&
+      alias.has_imap &&
+      alias.is_enabled &&
+      alias.name !== '*' &&
+      !alias.name.startsWith('/')
+    ) {
+      body.alias_id = alias.id;
+      body.has_imap = true;
+    }
+
+    // if the alias requires recipient verification
+    // then filter out recipients that haven't yet clicked
+    // the verification link required and sent
+    // (but if and only if the domain was not on free plan)
+    if (alias.name === '*') {
+      body.mapping.push(alias.recipients.join(','));
+      return;
+    }
+
+    body.mapping.push(
+      alias.recipients
+        .map((recipient) =>
+          alias.is_enabled ? `${alias.name}:${recipient}` : `!${alias.name}`
+        )
+        .join(',')
+    );
+  }
+
   for (const alias of aliases) {
+    // rewrite `alias.recipients` to verified recipients only
+    // if and only if user has recipient verification enabled
     if (alias.has_recipient_verification) {
       const recipients = [];
       for (const recipient of alias.recipients) {
@@ -267,100 +321,98 @@ async function lookup(ctx) {
 
       alias.recipients = recipients;
     }
-  }
 
-  ctx.body = aliases
-    .filter((alias) => {
-      if (alias.recipients.length === 0) return false;
-      if (alias.name === '*') return true;
-      if (!username) return true;
+    // if there were no recipients and it wasnt a username query with IMAP
+    if (alias.recipients.length === 0 && (!username || !alias.has_imap))
+      continue;
 
+    if (alias.name === '*') {
+      pushToBody(alias);
+      continue;
+    }
+
+    if (!username) {
+      pushToBody(alias);
+      continue;
+    }
+
+    //
+    // regex is not supported on global vanity domains
+    // (this is noted of in the FAQ section regarding regex)
+    // (also the majority of this code is copied from the FE smtp server codebase)
+    //
+    if (!domain.is_global && !domain.is_catchall_regex_disabled) {
+      // must start with / and end with /: and not have the same index for the last index
+      // forward-email=/^(support|info)$/:forwardemail+$1@gmail.com
+      // -> this would forward to forwardemail+support@gmail.com if email sent to support@
+
+      // it either ends with:
+      // "/gi:"
+      // "/ig:"
+      // "/g:"
+      // "/i:"
+      // "/:"
       //
-      // regex is not supported on global vanity domains
-      // (this is noted of in the FAQ section regarding regex)
-      // (also the majority of this code is copied from the FE smtp server codebase)
-      //
-      if (!domain.is_global && !domain.is_catchall_regex_disabled) {
-        // must start with / and end with /: and not have the same index for the last index
-        // forward-email=/^(support|info)$/:forwardemail+$1@gmail.com
-        // -> this would forward to forwardemail+support@gmail.com if email sent to support@
-
-        // it either ends with:
-        // "/gi:"
-        // "/ig:"
-        // "/g:"
-        // "/i:"
-        // "/:"
-        //
-        let lastIndex;
-        const hasTwoSlashes = alias.name.lastIndexOf('/') !== 0;
-        const startsWithSlash = alias.name.startsWith('/');
-        if (startsWithSlash && hasTwoSlashes) {
-          for (const ending of REGEX_FLAG_ENDINGS) {
-            if (
-              alias.name.lastIndexOf(ending) !== -1 &&
-              alias.name.lastIndexOf(ending) !== 0
-            ) {
-              lastIndex = ending;
-              break;
-            }
+      let lastIndex;
+      const hasTwoSlashes = alias.name.lastIndexOf('/') !== 0;
+      const startsWithSlash = alias.name.startsWith('/');
+      if (startsWithSlash && hasTwoSlashes) {
+        for (const ending of REGEX_FLAG_ENDINGS) {
+          if (
+            alias.name.lastIndexOf(ending) !== -1 &&
+            alias.name.lastIndexOf(ending) !== 0
+          ) {
+            lastIndex = ending;
+            break;
           }
-        }
-
-        //
-        // regular expression support
-        // <https://github.com/forwardemail/free-email-forwarding/pull/245/commits/e04ea02d700b51771bf61ed512d1763bbf80784b>
-        // (with added support for regex gi flags)
-        //
-        if (startsWithSlash && hasTwoSlashes && lastIndex) {
-          let parsedRegex = alias.name.slice(
-            0,
-            Math.max(0, alias.name.lastIndexOf(lastIndex) + 1)
-          );
-
-          // add case insensitive flag since email addresses are case insensitive
-          if (lastIndex === '/g:' || lastIndex === '/:') parsedRegex += 'i';
-          //
-          // `forward-email=/^(support|info)$/:forwardemail+$1@gmail.com`
-          // support@mydomain.com -> forwardemail+support@gmail.com
-          //
-          // `forward-email=/^(support|info)$/:forwardemail.net/$1`
-          // info@mydomain.com -> POST to forwardemail.net/info
-          //
-          // `forward-email=/Support/g:forwardemail.net`
-          //
-          // `forward-email=/SUPPORT/gi:forwardemail.net`
-          let regex;
-          try {
-            regex = new RE2(regexParser(parsedRegex));
-          } catch (err) {
-            ctx.logger.warn(err, { parsedRegex, alias });
-          }
-
-          if (regex) return regex.test(username);
         }
       }
 
-      if (username !== alias.name) return false;
-      return true;
-    })
-    .map((alias) => {
-      // alias.name = "*" (wildcard catchall) otherwise an alias
-      // alias.is_enabled = "!" prefixed alias name
-      // alias.recipients = comma separated (split with a colon)
+      //
+      // regular expression support
+      // <https://github.com/forwardemail/free-email-forwarding/pull/245/commits/e04ea02d700b51771bf61ed512d1763bbf80784b>
+      // (with added support for regex gi flags)
+      //
+      if (startsWithSlash && hasTwoSlashes && lastIndex) {
+        let parsedRegex = alias.name.slice(
+          0,
+          Math.max(0, alias.name.lastIndexOf(lastIndex) + 1)
+        );
 
-      // if the alias requires recipient verification
-      // then filter out recipients that haven't yet clicked
-      // the verification link required and sent
-      // (but if and only if the domain was not on free plan)
-      if (alias.name === '*') return alias.recipients.join(',');
+        // add case insensitive flag since email addresses are case insensitive
+        if (lastIndex === '/g:' || lastIndex === '/:') parsedRegex += 'i';
+        //
+        // `forward-email=/^(support|info)$/:forwardemail+$1@gmail.com`
+        // support@mydomain.com -> forwardemail+support@gmail.com
+        //
+        // `forward-email=/^(support|info)$/:forwardemail.net/$1`
+        // info@mydomain.com -> POST to forwardemail.net/info
+        //
+        // `forward-email=/Support/g:forwardemail.net`
+        //
+        // `forward-email=/SUPPORT/gi:forwardemail.net`
+        let regex;
+        try {
+          regex = new RE2(regexParser(parsedRegex));
+        } catch (err) {
+          ctx.logger.warn(err, { parsedRegex, alias });
+        }
 
-      return alias.recipients
-        .map((recipient) =>
-          alias.is_enabled ? `${alias.name}:${recipient}` : `!${alias.name}`
-        )
-        .join(',');
-    });
+        if (regex) {
+          if (regex.test(username)) {
+            pushToBody(alias);
+          }
+
+          continue;
+        }
+      }
+    }
+
+    if (username !== alias.name) continue;
+    pushToBody(alias);
+  }
+
+  ctx.body = body;
 }
 
 module.exports = lookup;

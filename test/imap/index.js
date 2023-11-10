@@ -27,7 +27,6 @@ const ip = require('ip');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');
-const _ = require('lodash');
 const { ImapFlow } = require('imapflow');
 const { factory } = require('factory-girl');
 
@@ -107,7 +106,8 @@ test.beforeEach(async (t) => {
   const alias = await factory.create('alias', {
     user: user._id,
     domain: domain._id,
-    recipients: [user.email]
+    recipients: [user.email],
+    has_imap: true
   });
 
   const pass = await alias.createToken();
@@ -1060,19 +1060,27 @@ test
 
   const result = await t.context.wsp.request({
     action: 'tmp',
-    session: _.omit(t.context.session, 'db'),
+    aliases: [
+      {
+        address: `${t.context.alias.name}@${t.context.domain.name}`,
+        id: t.context.alias.id
+      }
+    ],
     remoteAddress: IP_ADDRESS,
     date: now.toISOString(),
     raw
   });
 
-  t.is(result.date, now.toISOString());
-  t.is(result.raw.type, 'Buffer');
-  t.deepEqual(raw, Buffer.from(result.raw.data));
-  t.is(result.remoteAddress, IP_ADDRESS);
-  t.true(typeof result._id === 'string');
-  t.true(typeof result.created_at === 'string');
-  t.true(typeof result.updated_at === 'string');
+  // errors should be empty object
+  t.deepEqual(result, {});
+
+  // t.is(result.date, now.toISOString());
+  // t.is(result.raw.type, 'Buffer');
+  // t.deepEqual(raw, Buffer.from(result.raw.data));
+  // t.is(result.remoteAddress, IP_ADDRESS);
+  // t.true(typeof result._id === 'string');
+  // t.true(typeof result.created_at === 'string');
+  // t.true(typeof result.updated_at === 'string');
 
   // leverage existing connection to fetch
   await t.context.imapFlow.mailboxOpen('INBOX');

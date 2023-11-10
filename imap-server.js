@@ -40,6 +40,10 @@ const storeNodeBodies = require('#helpers/store-node-bodies');
 //
 // TODO: add Received header on FE side
 //
+// TODO: add rate limiting to IMAP connections
+//
+// TODO: automatic emails if user is low on storage quota or exceeds it
+//
 // TODO: run migration for existing IMAP db storage in Mongo -> SQLite temp mailboxes
 // TODO: redo storage calculation stuff (right now limited to 1K lookups)
 //       (automated job will run on sqlite-server on interval to fs list all files)

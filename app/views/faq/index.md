@@ -1602,17 +1602,28 @@ Allowlist requests (or denylist removal requests) can be sent to <allowlist@forw
 
 ## Do you have rate limiting
 
-Yes, we have rate limiting which applies only to senders not on the [allowlist](#do-you-have-an-allowlist).
+Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
 
-We only permit up to 100 connections per hour, per sender resolved FQDN root domain (or) sender remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/encrypted-email):
 
-If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
+* We have general limits that apply to all `Senders` across our service regardless of recipient:
+  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
+  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
+  * All other `Senders` are limited to sending 1 GB and/or 300 messages per day.
+* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
 
-Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
 
-If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
 
-Senders that exceed the rate limit will be rejected with a 421 error.
+* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+
+* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+
+* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+
+* `Senders` that exceed the rate limit will be rejected with a 421 error.
 
 
 ## How do you protect against backscatter

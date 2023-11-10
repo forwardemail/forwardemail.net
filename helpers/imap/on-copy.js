@@ -274,7 +274,11 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         .then((exceedsQuota) => {
           if (exceedsQuota) {
             const err = new IMAPError(
-              i18n.translate('IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA', 'en'),
+              i18n.translate(
+                'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
+                'en',
+                session.user.username
+              ),
               {
                 imapResponse: 'OVERQUOTA',
                 isCodeBug: true // admins will get an email/sms alert

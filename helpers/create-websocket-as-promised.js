@@ -115,6 +115,7 @@ function createWebSocketAsPromised(options = {}) {
 
       // TODO: we could probably remove this validation
       if (
+        data.action !== 'tmp' &&
         data.action !== 'size' &&
         (typeof data?.session?.user?.alias_id !== 'string' ||
           !mongoose.Types.ObjectId.isValid(data.session.user.alias_id))
@@ -133,10 +134,9 @@ function createWebSocketAsPromised(options = {}) {
       // helper for debugging
       if (config.env !== 'production') data.stack = new Error('stack').stack;
 
-      const requestId =
-        data.action === 'size'
-          ? `size:${randomUUID()}`
-          : `${revHash(data.session.user.alias_id)}:${revHash(randomUUID())}`;
+      const requestId = data?.session?.user?.alias_id
+        ? `${revHash(data.session.user.alias_id)}:${revHash(randomUUID())}`
+        : `${data.action}:${randomUUID()}`;
 
       const response = await wsp.sendRequest(data, {
         timeout:

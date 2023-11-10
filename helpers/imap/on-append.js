@@ -13,6 +13,8 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const { Buffer } = require('node:buffer');
+
 const bytes = require('bytes');
 const splitLines = require('split-lines');
 const { convert } = require('html-to-text');
@@ -40,7 +42,11 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
   try {
     // do not allow messages larger than 64 MB
-    if (raw && raw.length > SIXTY_FOUR_MB_IN_BYTES)
+    if (
+      raw &&
+      (Buffer.isBuffer(raw) ? Buffer.byteLength(raw) : raw.length) >
+        SIXTY_FOUR_MB_IN_BYTES
+    )
       throw new IMAPError(i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', 'en'));
 
     const { alias } = await this.refreshSession(session, 'APPEND');
@@ -110,7 +116,11 @@ async function onAppend(path, flags, date, raw, session, fn) {
     const exceedsQuota = quota.storageUsed + size > config.maxQuotaPerAlias;
     if (exceedsQuota)
       throw new IMAPError(
-        i18n.translate('IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA', 'en'),
+        i18n.translate(
+          'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
+          'en',
+          session.user.username
+        ),
         {
           imapResponse: 'OVERQUOTA'
         }

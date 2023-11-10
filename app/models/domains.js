@@ -463,7 +463,19 @@ Domains.pre('validate', async function (next) {
       );
 
     // if it is a FQDN then convert to unicode
-    if (isFQDN(domain.name)) domain.name = punycode.toUnicode(domain.name);
+    if (isFQDN(domain.name)) {
+      domain.name = punycode.toUnicode(domain.name);
+      // domain cannot be one of the trusted senders
+      if (config.truthSources.has(parseRootDomain(domain.name)))
+        throw Boom.badRequest(
+          i18n.translateError(
+            'ALLOWLIST_DOMAIN_NOT_ALLOWED',
+            domain.locale,
+            parseRootDomain(domain.name),
+            `/${domain.locale}/help`
+          )
+        );
+    }
 
     if (!isSANB(this.verification_record))
       this.verification_record = await cryptoRandomString.async(
@@ -1277,9 +1289,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
         const hasOtherExchanges = exchanges.some(
           (exchange) => !config.exchanges.includes(exchange)
         );
-        const hasAllExchanges = exchanges.every((exchange) =>
-          config.exchanges.includes(exchange)
-        );
+        const hasAllExchanges =
+          exchanges.length > 0 &&
+          exchanges.every((exchange) => config.exchanges.includes(exchange));
         if (hasOtherExchanges) {
           const err = Boom.badRequest(
             i18n.translateError(

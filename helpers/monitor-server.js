@@ -23,12 +23,19 @@ const logger = require('#helpers/logger');
 const IP_ADDRESS = ip.address();
 const HOSTNAME = os.hostname();
 
+// every minute we compare the values and if
+// they were both exceeding threshold then we alert
+let lastFreeMemPercentage = 100;
+let lastCpuPercentage = 0;
+let lastUsedPercentage = 0;
+const mountMapping = {};
+
 async function check() {
   try {
     // check memory
     const memInfo = await osu.mem.info();
     logger.debug('memInfo', { memInfo });
-    if (memInfo.freeMemPercentage <= 25)
+    if (lastFreeMemPercentage <= 25 && memInfo.freeMemPercentage <= 25)
       logger.fatal(
         new TypeError(
           `${Math.round(
@@ -36,11 +43,13 @@ async function check() {
           )}% memory remaining on ${HOSTNAME} (${IP_ADDRESS})`
         )
       );
+    // assign to memory
+    lastFreeMemPercentage = memInfo.freeMemPercentage;
 
     // check cpu
     const cpuPercentage = await osu.cpu.usage();
     logger.debug('cpuPercentage', { cpuPercentage });
-    if (cpuPercentage >= 80)
+    if (lastCpuPercentage >= 80 && cpuPercentage >= 80)
       logger.fatal(
         new TypeError(
           `${Math.round(
@@ -48,11 +57,13 @@ async function check() {
           )}% CPU usage on ${HOSTNAME} (${IP_ADDRESS})`
         )
       );
+    // assign to memory
+    lastCpuPercentage = cpuPercentage;
 
     // check main disk (cwd)
     const diskInfo = await osu.drive.info();
     logger.debug('diskInfo', { diskInfo });
-    if (diskInfo.usedPercentage >= 75)
+    if (lastUsedPercentage >= 75 && diskInfo.usedPercentage >= 75)
       logger.fatal(
         new TypeError(
           `${Math.round(
@@ -60,6 +71,8 @@ async function check() {
           )}% disk usage on ${HOSTNAME} (${IP_ADDRESS})`
         )
       );
+    // assign to memory
+    lastUsedPercentage = diskInfo.usedPercentage;
 
     // check all /mnt paths
     try {
@@ -68,6 +81,9 @@ async function check() {
       });
       for (const dirent of dirents) {
         if (dirent.isDirectory()) {
+          if (typeof mountMapping[dirent] !== 'number')
+            mountMapping[dirent] = 0;
+
           // dirent.name
           try {
             // eslint-disable-next-line no-await-in-loop
@@ -78,7 +94,7 @@ async function check() {
             logger.debug('diskSpace', { diskSpace });
             const usedPercentage =
               ((diskSpace.size - diskSpace.free) / diskSpace.size) * 100;
-            if (usedPercentage >= 75)
+            if (mountMapping[dirent] >= 75 && usedPercentage >= 75)
               logger.fatal(
                 new TypeError(
                   `${Math.round(
@@ -88,6 +104,8 @@ async function check() {
                   }`
                 )
               );
+            // assign to memory
+            mountMapping[dirent] = usedPercentage;
           } catch (err) {
             logger.fatal(err);
           }

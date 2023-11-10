@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const _ = require('lodash');
 const bytes = require('bytes');
 const getStream = require('get-stream');
 const safeStringify = require('fast-safe-stringify');
@@ -11,9 +12,9 @@ const { isEmail } = require('validator');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
-const Users = require('#models/users');
 const SMTPError = require('#helpers/smtp-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
+const Users = require('#models/users');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
 const env = require('#config/env');
@@ -28,6 +29,7 @@ const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 // NOTE: we can merge SMTP/FE codebase in future and simply check if auth disabled
 //       then this will act as a forwarding server only (MTA)
 //
+// eslint-disable-next-line complexity
 async function onData(stream, _session, fn) {
   if (this.server._closeTimeout)
     return setImmediate(() => fn(new ServerShutdownError()));
@@ -84,6 +86,33 @@ async function onData(stream, _session, fn) {
 
     // validate domain
     validateDomain(domain, session.user.domain_name);
+
+    //
+    // NOTE: if the domain is suspended then the state is "pending" not queued
+    //
+    if (_.isDate(domain.smtp_suspended_sent_at))
+      throw new SMTPError(
+        `Domain is suspended from outbound SMTP access, contact us at ${config.supportEmail}`
+      );
+
+    if (!domain.has_smtp) {
+      if (!_.isDate(domain.smtp_verified_at))
+        throw new SMTPError(
+          `Domain is not configured for outbound SMTP, go to ${config.urls.web}/my-account/domains/${domain.name}/verify-smtp and click "Verify"`,
+          {
+            responseCode: 535,
+            ignoreHook: true
+          }
+        );
+
+      throw new SMTPError(
+        `Domain is pending admin approval for outbound SMTP access. Approval typically takes less than 24 hours; please check your inbox soon as we may be requesting additional information`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
+    }
 
     // alias must exist
     if (!alias) throw new Error('Alias does not exist');

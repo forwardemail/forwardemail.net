@@ -299,7 +299,6 @@ That experiment led us to further understand and discover edge cases surrounding
   * Fortunately we already have attachment de-duplication implemented in our IMAP server storage – therefore every message with the same attachment won't keep a copy of the attachment – instead a single attachment is stored for multiple messages and threads in a mailbox (and a foreign reference is subsequently used).
 * The project Litestream, which is a SQLite replication and backup solution is very promising and we will most likely use it in the future.
   * Not to discredit the author(s) – because we love their work and contributions to open-source for well over a decade now – however from real-world usage it appears that there [may be a lot of headaches](https://github.com/benbjohnson/litestream/issues) and [potential data loss from usage](https://github.com/benbjohnson/litestream/issues/218).
-  * Instead we are simply [using a cron-job](https://litestream.io/alternatives/cron/) for snapshots and backups.
 * Backup restoration needs to be frictionless and trivial.  Using a solution such as MongoDB with `mongodump` and `mongoexport` is not only tedious, but time intensive and has configuration complexity.
   * SQLite databases make it simple (it's a single file).
   * We wanted to design a solution where users could take their mailbox and leave at any moment.

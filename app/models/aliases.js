@@ -90,7 +90,8 @@ Token.plugin(mongooseCommonPlugin, {
 const Aliases = new mongoose.Schema({
   has_imap: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true
   },
   emailed_instructions: {
     type: String,

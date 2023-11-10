@@ -113,7 +113,7 @@ nav.navbar.navbar-expand-lg.fixed-top(
                 role=isRegisterOrLogin ? "link" : "button",
                 href=l(config.loginRoute),
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
-                data-target=isRegisterOrLogin ? false : "#modal-log-in"
+                data-target=isRegisterOrLogin ? false : "#modal-sign-in"
               )= t("Log in")
           if ctx.pathWithoutLocale !== '/register'
             li.list-inline-item.d-inline-block.d-lg-none
@@ -431,7 +431,7 @@ nav.navbar.navbar-expand-lg.fixed-top(
                 role=isRegisterOrLogin ? "link" : "button",
                 href=l(config.loginRoute),
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
-                data-target=isRegisterOrLogin ? false : "#modal-log-in"
+                data-target=isRegisterOrLogin ? false : "#modal-sign-in"
               )= t("Log in")
           if ctx.pathWithoutLocale !== '/register'
             li.nav-item.ml-0.ml-lg-3

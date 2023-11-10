@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 
 const SMTPError = require('#helpers/smtp-error');
@@ -22,31 +21,6 @@ function validateDomain(domain, domainName) {
     throw new SMTPError(
       i18n.translate('EMAIL_SMTP_GLOBAL_NOT_PERMITTED', 'en')
     );
-
-  //
-  // NOTE: if the domain is suspended then the state is "pending" not queued
-  //
-  // if (_.isDate(domain.smtp_suspended_sent_at))
-  //   throw new SMTPError('Domain is suspended from outbound SMTP access');
-
-  if (!domain.has_smtp) {
-    if (!_.isDate(domain.smtp_verified_at))
-      throw new SMTPError(
-        `Domain is not configured for outbound SMTP, go to ${config.urls.web}/my-account/domains/${domain.name}/verify-smtp and click "Verify"`,
-        {
-          responseCode: 535,
-          ignoreHook: true
-        }
-      );
-
-    throw new SMTPError(
-      `Domain is pending admin approval for outbound SMTP access, please check your inbox and provide us with requested information or contact us at ${config.supportEmail}`,
-      {
-        responseCode: 535,
-        ignoreHook: true
-      }
-    );
-  }
 
   //
   // validate that at least one paying, non-banned admin on >= same plan without expiration
