@@ -300,13 +300,14 @@ async function lookup(ctx) {
       return;
     }
 
-    body.mapping.push(
-      alias.recipients
-        .map((recipient) =>
-          alias.is_enabled ? `${alias.name}:${recipient}` : `!${alias.name}`
-        )
-        .join(',')
-    );
+    if (alias.recipients.length > 0)
+      body.mapping.push(
+        alias.recipients
+          .map((recipient) =>
+            alias.is_enabled ? `${alias.name}:${recipient}` : `!${alias.name}`
+          )
+          .join(',')
+      );
   }
 
   for (const alias of aliases) {

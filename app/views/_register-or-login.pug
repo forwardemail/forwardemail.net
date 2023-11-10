@@ -1,5 +1,5 @@
 mixin registerOrLogin(verb, isModal = false)
-  - verb = verb === 'log in' ? 'sign in' : verb
+  - verb = verb === "log in" ? "sign in" : verb;
   div(class=isModal ? false : "container py-3")
     if !isModal
       .text-center

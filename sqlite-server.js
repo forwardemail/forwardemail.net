@@ -666,6 +666,11 @@ async function parsePayload(data, ws) {
                   logger.fatal(err);
                 }
 
+                // TODO: we should leverage existing websocket and communicate
+                //       directly to an open IMAP conenction to fetch the latest
+                //       password in-memory and transmit it back and then
+                //       we can leverage that to publish with modseq etc
+
                 //
                 // NOTE: we can't publish an event because we don't have mailbox/modseq
                 //       so instead we rely on the IMAP connection polling for new messages
