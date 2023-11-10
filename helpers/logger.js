@@ -44,6 +44,8 @@ _.mixin({
 const logger = new Axe(loggerConfig);
 
 const REDACTED_FIELDS = new Set([
+  'body',
+  'data',
   'password',
   'pass',
   'token',

@@ -43,8 +43,6 @@ const storeNodeBodies = require('#helpers/store-node-bodies');
 //
 // TODO: fix attachmentStorage.get and `getQueryResponse` rewrite
 //
-// TODO: if user changes password then drop IMAP connections
-//
 // TODO: add rate limiting to IMAP connections
 //
 // TODO: automatic emails if user is low on storage quota or exceeds it
@@ -59,14 +57,10 @@ const storeNodeBodies = require('#helpers/store-node-bodies');
 // TODO: include R2 backups and -tmp storage files in calculations
 // TODO: handle translation of the folder names (similar to wildduck)
 // TODO: send welcome email to user in their sqlite dbs
-// TODO: restore locales, then run through pages, then mandarin
 // TODO: alias bootstrap progress bars for storage, pooled, etc
-// TODO: alias.has_imap validation on IMAP connection
 // TODO: when user deletes account then also purge sqlite databases and backups
 // TODO: automated job to detect files on block storage and R2 that don't correspond to actual aliases
 // TODO: alert user they have new email if messages detected > 24 hours ago
-
-// TODO: addEntries when MX server writes for temporary storage (e.g. alert existing IMAP connections)
 
 // TODO: search filters like has:attachment
 // TODO: run validate() on all docs before 'update' and 'insert'
@@ -239,30 +233,46 @@ class IMAP {
     });
 
     this.subscriber.on('message', (channel, id) => {
-      if (channel !== 'sqlite_auth_request') return;
+      if (channel !== 'sqlite_auth_request' && channel !== 'sqlite_auth_reset')
+        return;
       try {
         if (typeof id !== 'string' || !mongoose.Types.ObjectId.isValid(id))
           throw new TypeError('Alias ID missing');
-        // this.connections is a Set
-        const connections = [...this.server.connections];
-        const matches = connections.filter(
-          (c) => c?.session?.user?.alias_id === id
-        );
-        // if no matches found then timer will run out since no response
-        // (e.g. if this IMAP server doesn't have a connection maybe another does)
-        if (matches.length === 0) throw new Error('No matches available');
 
-        // sort by desc date find the first match
-        const sorted = _.sortBy(
-          matches,
-          (c) => c?.session?.arrivalDate
-        ).reverse();
+        if (channel === 'sqlite_auth_reset') {
+          for (const connection of this.server.connections) {
+            if (connection?.session?.user?.alias_id !== id) continue;
+            connection.send('* BYE Password was changed');
+            setImmediate(() => connection.close());
+          }
 
-        // find the most recent connection if any and broadcast that
-        this.client.publish(
-          'sqlite_auth_response',
-          safeStringify(sorted[0].session.user)
-        );
+          return;
+        }
+
+        if (channel === 'sqlite_auth_request') {
+          const connections = [...this.server.connections];
+          const matches = connections.filter(
+            (c) => c?.session?.user?.alias_id === id
+          );
+          // if no matches found then timer will run out since no response
+          // (e.g. if this IMAP server doesn't have a connection maybe another does)
+          if (matches.length === 0) throw new Error('No matches available');
+
+          // sort by desc date find the first match
+          const sorted = _.sortBy(
+            matches,
+            (c) => c?.session?.arrivalDate
+          ).reverse();
+
+          // find the most recent connection if any and broadcast that
+          this.client.publish(
+            'sqlite_auth_response',
+            safeStringify(sorted[0].session.user)
+          );
+          return;
+        }
+
+        throw new TypeError(`Unknown channel ${channel}`);
       } catch (err) {
         this.logger.error(err);
       }
@@ -276,11 +286,13 @@ class IMAP {
 
   async listen(port = env.IMAP_PORT, host = '::', ...args) {
     this.subscriber.subscribe('sqlite_auth_request');
+    this.subscriber.subscribe('sqlite_auth_reset');
     await pify(this.server.listen).bind(this.server)(port, host, ...args);
   }
 
   async close() {
     this.subscriber.unsubscribe('sqlite_auth_request');
+    this.subscriber.unsubscribe('sqlite_auth_reset');
     await pify(this.server.close).bind(this.server)();
   }
 }

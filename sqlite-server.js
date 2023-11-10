@@ -1021,6 +1021,7 @@ async function parsePayload(data, ws) {
           id: payload.id,
           data: true
         };
+        this.client.publish('sqlite_auth_reset', payload.session.user.alias_id);
         break;
       }
 
@@ -1072,6 +1073,8 @@ async function parsePayload(data, ws) {
           id: payload.id,
           data: true
         };
+
+        this.client.publish('sqlite_auth_reset', payload.session.user.alias_id);
         break;
       }
 
