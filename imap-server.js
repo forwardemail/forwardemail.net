@@ -21,9 +21,12 @@ const Indexer = require('wildduck/imap-core/lib/indexer/indexer');
 const Lock = require('ioredfour');
 const MessageHandler = require('wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
+const _ = require('lodash');
 const bytes = require('bytes');
 const isSANB = require('is-string-and-not-blank');
+const mongoose = require('mongoose');
 const pify = require('pify');
+const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('wildduck/imap-core');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
@@ -38,7 +41,9 @@ const refreshSession = require('#helpers/refresh-session');
 const storeNodeBodies = require('#helpers/store-node-bodies');
 
 //
-// TODO: add Received header on FE side
+// TODO: fix attachmentStorage.get and `getQueryResponse` rewrite
+//
+// TODO: if user changes password then drop IMAP connections
 //
 // TODO: add rate limiting to IMAP connections
 //
@@ -233,6 +238,36 @@ class IMAP {
       subscriber: this.subscriber
     });
 
+    this.subscriber.on('message', (channel, id) => {
+      if (channel !== 'sqlite_auth_request') return;
+      try {
+        if (typeof id !== 'string' || !mongoose.Types.ObjectId.isValid(id))
+          throw new TypeError('Alias ID missing');
+        // this.connections is a Set
+        const connections = [...this.server.connections];
+        const matches = connections.filter(
+          (c) => c?.session?.user?.alias_id === id
+        );
+        // if no matches found then timer will run out since no response
+        // (e.g. if this IMAP server doesn't have a connection maybe another does)
+        if (matches.length === 0) throw new Error('No matches available');
+
+        // sort by desc date find the first match
+        const sorted = _.sortBy(
+          matches,
+          (c) => c?.session?.arrivalDate
+        ).reverse();
+
+        // find the most recent connection if any and broadcast that
+        this.client.publish(
+          'sqlite_auth_response',
+          safeStringify(sorted[0].session.user)
+        );
+      } catch (err) {
+        this.logger.error(err);
+      }
+    });
+
     this.server = server;
     this.refreshSession = refreshSession.bind(this);
     this.listen = this.listen.bind(this);
@@ -240,10 +275,12 @@ class IMAP {
   }
 
   async listen(port = env.IMAP_PORT, host = '::', ...args) {
+    this.subscriber.subscribe('sqlite_auth_request');
     await pify(this.server.listen).bind(this.server)(port, host, ...args);
   }
 
   async close() {
+    this.subscriber.unsubscribe('sqlite_auth_request');
     await pify(this.server.close).bind(this.server)();
   }
 }

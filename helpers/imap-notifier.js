@@ -32,8 +32,6 @@ const i18n = require('#helpers/i18n');
 const logger =
   config.env === 'development' ? helperLogger : new Axe({ silent: true });
 
-const IMAP_REDIS_CHANNEL_NAME = 'imap_events';
-
 class IMAPNotifier extends EventEmitter {
   constructor(options) {
     super();
@@ -87,23 +85,22 @@ class IMAPNotifier extends EventEmitter {
     };
 
     this.subscriber.on('message', (channel, message) => {
-      if (channel === IMAP_REDIS_CHANNEL_NAME) {
-        let data;
-        try {
-          data = JSON.parse(message);
-        } catch {
-          return;
-        }
+      if (channel !== config.IMAP_REDIS_CHANNEL_NAME) return;
+      let data;
+      try {
+        data = JSON.parse(message);
+      } catch {
+        return;
+      }
 
-        if (data.e && !data.p) {
-          scheduleDataEvent(data.e);
-        } else if (data.e) {
-          this._listeners.emit(data.e, data.p);
-        }
+      if (data.e && !data.p) {
+        scheduleDataEvent(data.e);
+      } else if (data.e) {
+        this._listeners.emit(data.e, data.p);
       }
     });
 
-    this.subscriber.subscribe(IMAP_REDIS_CHANNEL_NAME);
+    this.subscriber.subscribe(config.IMAP_REDIS_CHANNEL_NAME);
   }
 
   addListener(session, handler) {
@@ -265,7 +262,7 @@ class IMAPNotifier extends EventEmitter {
 
     setImmediate(() => {
       this.publisher.publish(
-        IMAP_REDIS_CHANNEL_NAME,
+        config.IMAP_REDIS_CHANNEL_NAME,
         safeStringify({
           e: aliasId,
           p: payload

@@ -29,6 +29,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
+const pEvent = require('p-event');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const pify = require('pify');
@@ -95,6 +96,20 @@ const S3 = new S3Client({
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY
   }
 });
+
+// eslint-disable-next-line max-params
+async function increaseRateLimiting(client, date, sender, root, byteLength) {
+  const sizeKey = `imap_limit_size_${config.env}:${date}:${sender}`;
+  const countKey = `imap_limit_count_${config.env}:${date}:${sender}`;
+  const specificSizeKey = `imap_limit_size_${config.env}:${date}:${sender}:${root}`;
+  const specificCountKey = `imap_limit_count_${config.env}:${date}:${sender}:${root}`;
+  await Promise.all([
+    client.incrby(sizeKey, byteLength),
+    client.incrby(countKey, 1),
+    client.incrby(specificSizeKey, byteLength),
+    client.incrby(specificCountKey, 1)
+  ]);
+}
 
 async function getTemporaryDatabase(payload) {
   // TODO: check disk space here (2x existing tmp db size)
@@ -394,7 +409,8 @@ async function parsePayload(data, ws) {
           throw new TypeError('Payload raw is not a Buffer');
 
         // do not allow messages larger than 64 MB
-        if (Buffer.byteLength(payload.raw) > SIXTY_FOUR_MB_IN_BYTES)
+        const byteLength = Buffer.byteLength(payload.raw);
+        if (byteLength > SIXTY_FOUR_MB_IN_BYTES)
           throw i18n.translateError('IMAP_MESSAGE_SIZE_EXCEEDED');
 
         // ensure remote address is an IP
@@ -484,8 +500,7 @@ async function parsePayload(data, ws) {
               const quota = await Aliases.isOverQuota(this, session, 0, true);
 
               const exceedsQuota =
-                quota.storageUsed + Buffer.byteLength(payload.raw) >
-                config.maxQuotaPerAlias;
+                quota.storageUsed + byteLength > config.maxQuotaPerAlias;
 
               if (exceedsQuota) {
                 const err = new TypeError(
@@ -620,7 +635,7 @@ async function parsePayload(data, ws) {
                 id: alias.id,
                 storage_location: alias.storage_location
               });
-              const spaceRequired = Buffer.byteLength(payload.raw) * 2; // 2x to account for syncing
+              const spaceRequired = payload.raw * 2; // 2x to account for syncing
               const diskSpace = await checkDiskSpace(storagePath);
               if (diskSpace.free < spaceRequired)
                 throw new TypeError(
@@ -629,65 +644,105 @@ async function parsePayload(data, ws) {
                   )} was available`
                 );
 
-              const tmpDb = await getTemporaryDatabase.call(this, {
-                session
-              });
-
-              let err;
-
+              //
+              // attempt to get in-memory password from IMAP servers
+              //
+              let fallback = true;
               try {
-                await TemporaryMessages.create({
-                  instance: this,
-                  session: { user: session.user, db: tmpDb },
-                  date: new Date(payload.date),
-                  raw: payload.raw,
-                  remoteAddress: payload.remoteAddress
+                this.client.publish('sqlite_auth_request', alias.id);
+                const [, response] = await pEvent(this.subscriber, 'message', {
+                  filter(args) {
+                    const [channel, data] = args;
+                    if (channel !== 'sqlite_auth_response' || !data) return;
+                    try {
+                      const { id } = JSON.parse(data);
+                      return id === alias.id;
+                    } catch {}
+                  },
+                  multiArgs: true,
+                  timeout: ms('5s')
                 });
+
+                const user = JSON.parse(response);
+
+                // since we use onAppend it re-uses addEntries
+                // which notifies all connected imap users via EXISTS
+                await onAppendPromise.call(
+                  this,
+                  'INBOX',
+                  [],
+                  new Date(payload.date),
+                  payload.raw,
+                  {
+                    user: {
+                      ...session.user,
+                      password: user.password
+                    },
+                    remoteAddress: payload.remoteAddress
+                  }
+                );
+
+                // store that we don't need fallback
+                fallback = false;
 
                 //
                 // increase rate limiting size and count
                 //
                 try {
-                  const sizeKey = `imap_limit_size_${config.env}:${date}:${sender}`;
-                  const countKey = `imap_limit_count_${config.env}:${date}:${sender}`;
-                  const specificSizeKey = `imap_limit_size_${config.env}:${date}:${sender}:${root}`;
-                  const specificCountKey = `imap_limit_count_${config.env}:${date}:${sender}:${root}`;
-
-                  await Promise.all([
-                    this.client.incrby(sizeKey, Buffer.byteLength(payload.raw)),
-                    this.client.incrby(countKey, 1),
-                    this.client.incrby(
-                      specificSizeKey,
-                      Buffer.byteLength(payload.raw)
-                    ),
-                    this.client.incrby(specificCountKey, 1)
-                  ]);
+                  await increaseRateLimiting(
+                    this.client,
+                    date,
+                    sender,
+                    root,
+                    byteLength
+                  );
                 } catch (err) {
                   logger.fatal(err);
                 }
-
-                // TODO: we should leverage existing websocket and communicate
-                //       directly to an open IMAP conenction to fetch the latest
-                //       password in-memory and transmit it back and then
-                //       we can leverage that to publish with modseq etc
-
-                //
-                // NOTE: we can't publish an event because we don't have mailbox/modseq
-                //       so instead we rely on the IMAP connection polling for new messages
-                //       (e.g. Thunderbird checks every 10m by default)
-                //
-                // setImmediate(() => {
-                //   this.client.publish(IMAP_REDIS_CHANNEL_NAME, safeStringify({
-                //     e: alias.id,
-                //     p: { ... }
-                //   }));
-                // });
-              } catch (_err) {
-                err = _err;
+              } catch (err) {
+                logger.error(err);
               }
 
-              tmpDb.close();
-              if (err) throw err;
+              //
+              // fallback to writing to temporary database storage
+              //
+              if (fallback) {
+                const tmpDb = await getTemporaryDatabase.call(this, {
+                  session
+                });
+
+                let err;
+
+                try {
+                  await TemporaryMessages.create({
+                    instance: this,
+                    session: { user: session.user, db: tmpDb },
+                    date: new Date(payload.date),
+                    raw: payload.raw,
+                    remoteAddress: payload.remoteAddress
+                  });
+
+                  //
+                  // increase rate limiting size and count
+                  //
+                  try {
+                    await increaseRateLimiting(
+                      this.client,
+                      date,
+                      sender,
+                      root,
+                      byteLength
+                    );
+                  } catch (err) {
+                    logger.fatal(err);
+                  }
+                } catch (_err) {
+                  err = _err;
+                }
+
+                tmpDb.close();
+                if (err) throw err;
+              }
             } catch (err) {
               logger.error(err);
               err.isCodeBug = isCodeBug(err);
@@ -1356,12 +1411,6 @@ class SQLite {
       }
     };
 
-    // bind listen/close to this
-    this.listen = this.listen.bind(this);
-    this.close = this.close.bind(this);
-  }
-
-  async listen(port = env.SQLITE_PORT, host = '::', ...args) {
     function authenticate(request, socket, head, fn) {
       try {
         const credentials = auth(request);
@@ -1436,7 +1485,19 @@ class SQLite {
       });
     });
 
-    const interval = setInterval(() => {
+    this.wss.on('close', () => {
+      clearInterval(this.wsInterval);
+    });
+
+    // bind listen/close to this
+    this.listen = this.listen.bind(this);
+    this.close = this.close.bind(this);
+  }
+
+  async listen(port = env.SQLITE_PORT, host = '::', ...args) {
+    this.subscriber.subscribe('sqlite_auth_response');
+
+    this.wsInterval = setInterval(() => {
       for (const ws of this.wss.clients) {
         if (ws.isAlive === false) return ws.terminate();
         ws.isAlive = false;
@@ -1444,14 +1505,13 @@ class SQLite {
       }
     }, ms('35s'));
 
-    this.wss.on('close', () => {
-      clearInterval(interval);
-    });
-
     await promisify(this.server.listen).bind(this.server)(port, host, ...args);
   }
 
   async close() {
+    this.subscriber.unsubscribe('sqlite_auth_response');
+    clearInterval(this.wsInterval);
+
     // close websocket connections
     // if (this.wss && this.wss.clients) {
     //   for (const ws of this.wss.clients) {

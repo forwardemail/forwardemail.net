@@ -38,9 +38,13 @@ class AttachmentStorage {
     );
   }
 
-  async get(hash) {
+  // async get(instance, session, hash) {
+  async get() {
+    throw new TypeError('Coming soon');
+    /*
     // TODO: should we project w/o body since we're not using it here as an optimization (?)
-    const attachmentData = await Attachments.findOne(db, {
+    // const attachmentData = await Attachments.findOne(instance, session, {
+    const attachmentData = await Attachments.findOne(null, null, {
       hash
     });
 
@@ -60,6 +64,7 @@ class AttachmentStorage {
       hash: attachmentData.hash,
       metadata: attachmentData.metadata
     };
+    */
   }
 
   async create(instance, session, attachment) {

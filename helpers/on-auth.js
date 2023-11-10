@@ -13,7 +13,6 @@ const { isEmail } = require('validator');
 const SMTPError = require('./smtp-error');
 const ServerShutdownError = require('./server-shutdown-error');
 const SocketError = require('./socket-error');
-const getDatabase = require('./get-database');
 const parseRootDomain = require('./parse-root-domain');
 const refineAndLogError = require('./refine-and-log-error');
 const validateAlias = require('./validate-alias');
@@ -21,26 +20,10 @@ const validateDomain = require('./validate-domain');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
-const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
 const env = require('#config/env');
 const onConnect = require('#helpers/smtp/on-connect');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-
-const REQUIRED_PATHS = [
-  'INBOX',
-  'Drafts',
-  'Sent Mail',
-  //
-  // NOTE: we could use "All Mail" to match existing standards (e.g. instead of "Archive")
-  // <https://github.com/mozilla/releases-comm-central/blob/34d8c5cba2df3154e1c38b376e8c10ca24e4f939/mailnews/imap/src/nsImapMailFolder.cpp#L1171-L1173>
-  //
-  // 'All Mail' but we would need to use labels
-  //
-  'Archive',
-  'Spam',
-  'Trash'
-];
 
 const onConnectPromise = pify(onConnect);
 
@@ -249,60 +232,6 @@ async function onAuth(auth, session, fn) {
       password: encrypt(auth.password.trim()),
       storage_location: alias.storage_location
     };
-
-    //
-    // If this was IMAP server then ensure the user has all essential folders
-    //
-    if (this.server instanceof IMAPServer) {
-      //
-      // connect to the database
-      //
-      // NOTE: this assigns `session.db` which is re-used everywhere
-      // (we could move to `allocateConnection`; see comments in `imap-notifier.js` under helpers)
-      //
-      await getDatabase(this, alias, {
-        ...session,
-        user
-      });
-
-      //
-      // NOTE: this is in the background otherwise auth attempts would hang
-      //       if there was an issue with websocket connection or reading/writing
-      //
-      Mailboxes.distinct(
-        this,
-        {
-          ...session,
-          user
-        },
-        'path',
-        {}
-      )
-        .then((paths) => {
-          const required = [];
-          for (const path of REQUIRED_PATHS) {
-            if (!paths.includes(path)) required.push(path);
-          }
-
-          if (required.length > 0) {
-            this.logger.debug('creating required', { required });
-            Mailboxes.create(
-              required.map((path) => ({
-                // virtual helper
-                instance: this,
-                session: { ...session, user },
-
-                path,
-                retention:
-                  typeof alias.retention === 'number' ? alias.retention : 0
-              }))
-            )
-              .then()
-              .catch((err) => this.logger.fatal(err, { session }));
-          }
-        })
-        .catch((err) => this.logger.fatal(err, { session }));
-    }
 
     // this response object sets `session.user` to have `domain` and `alias`
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L235>

@@ -33,6 +33,8 @@ const metaConfig = require('./meta-config');
 
 const config = {
   ...metaConfig,
+  IMAP_REDIS_CHANNEL_NAME: 'imap_events',
+
   srs: {
     separator: '=',
     secret: env.SRS_SECRET,

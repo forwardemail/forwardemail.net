@@ -8,6 +8,7 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 
+const Mailboxes = require('#models/mailboxes');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const IMAPError = require('#helpers/imap-error');
@@ -18,6 +19,21 @@ const getDatabase = require('#helpers/get-database');
 const logger = require('#helpers/logger');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
+
+const REQUIRED_PATHS = [
+  'INBOX',
+  'Drafts',
+  'Sent Mail',
+  //
+  // NOTE: we could use "All Mail" to match existing standards (e.g. instead of "Archive")
+  // <https://github.com/mozilla/releases-comm-central/blob/34d8c5cba2df3154e1c38b376e8c10ca24e4f939/mailnews/imap/src/nsImapMailFolder.cpp#L1171-L1173>
+  //
+  // 'All Mail' but we would need to use labels
+  //
+  'Archive',
+  'Spam',
+  'Trash'
+];
 
 const IMAP_COMMANDS = new Set([
   'APPEND',
@@ -98,6 +114,32 @@ async function refreshSession(session, command) {
   //
   // prevent circular dep (otherwise we could do instanceof)
   if (this?.constructor?.name === 'IMAP') {
+    //
+    // NOTE: this is in the background otherwise auth attempts would hang
+    //       if there was an issue with websocket connection or reading/writing
+    //
+    try {
+      const paths = await Mailboxes.distinct(this, session, 'path', {});
+      const required = [];
+      for (const path of REQUIRED_PATHS) {
+        if (!paths.includes(path)) required.push(path);
+      }
+
+      if (required.length > 0)
+        await Mailboxes.create(
+          required.map((path) => ({
+            // virtual helper
+            instance: this,
+            session,
+
+            path,
+            retention: typeof alias.retention === 'number' ? alias.retention : 0
+          }))
+        );
+    } catch (err) {
+      this.logger.fatal(err, { session });
+    }
+
     // sync with temp db on every request
     const sync = await this.wsp.request({
       action: 'sync',
