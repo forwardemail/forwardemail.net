@@ -293,7 +293,7 @@ Aliases.pre('validate', function (next) {
   if (this.has_imap && (this.name === '*' || this.name.startsWith('/')))
     return next(
       new Error(
-        'Alias cannot have IMAP enabled with a catch-all nor regex name.'
+        'You cannot enable IMAP for catch-all/regular expression alias names.  Please go back and create a unique/individual alias (e.g. "you@yourdomain.com") and try again.'
       )
     );
   next();
