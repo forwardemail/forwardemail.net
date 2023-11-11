@@ -332,48 +332,6 @@ test('auth with catch-all pass', async (t) => {
     }
   });
 
-  {
-    const err = await t.throwsAsync(
-      transporter.sendMail({
-        envelope: {
-          from: `${Math.random()}@${domain.name}`,
-          to: 'test@test.com'
-        },
-        raw: `
-To: test@test.com
-From: ${Math.random()}@${domain.name}
-Subject: test
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-Test`.trim()
-      })
-    );
-    t.is(err.responseCode, 535);
-    t.regex(
-      err.message,
-      /Catch-all password is being used which requires your domain to upgrade to the Team plan/
-    );
-  }
-
-  // upgrade user to team
-  user.plan = 'team';
-  await factory.create('payment', {
-    user: user._id,
-    amount: 900,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
-
-  await user.save();
-
-  // set domain plan to team
-  domain.plan = 'team';
-  await domain.save();
-
   await t.notThrowsAsync(
     transporter.sendMail({
       envelope: {

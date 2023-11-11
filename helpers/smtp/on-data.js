@@ -228,14 +228,6 @@ async function onData(stream, _session, fn) {
           }
         );
 
-      if (isValid && domain.plan !== 'team')
-        throw new SMTPError(
-          `Catch-all password is being used which requires your domain to upgrade to the Team plan`,
-          {
-            responseCode: 535
-          }
-        );
-
       // now that we have `tokenUsed` we can perform a lookup on `tokenUsed.user`
       user = await Users.findById(tokenUsed.user)
         .select(

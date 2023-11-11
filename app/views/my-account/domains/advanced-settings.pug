@@ -65,11 +65,9 @@ block body
               span(aria-hidden="true") &times;
           .modal-body
             .text-center
-              +planRequired(true)
               form.ajax-form.confirm-prompt(
                 action=l(`/my-account/domains/${domain.name}/catch-all-passwords`),
-                method="POST",
-                disabled=isTeamDisabled
+                method="POST"
               )
                 .form-group
                   label(for="textarea-token-description")
@@ -79,15 +77,11 @@ block body
                   textarea#textarea-token-description.form-control(
                     required,
                     name="description",
-                    readonly=isTeamDisabled,
                     maxlength=150,
                     rows=2
                   )= striptags(t('Created by <span class="notranslate">%s</span> on <span class="notranslate">%s</span>.', user.email, dayjs().format("YYYY-MM-DD")))
                   p.form-text.small.text-black.text-themed-50= t("Description has a max of 150 characters.")
-                button.btn.btn-lg.btn-block.btn-success(
-                  type="submit",
-                  disabled=isTeamDisabled
-                )
+                button.btn.btn-lg.btn-block.btn-success(type="submit")
                   i.fa.fa-key
                   = " "
                   = t("Generate Password")
@@ -112,7 +106,6 @@ block body
               span(aria-hidden="true") &times;
           .modal-body
             .text-center
-              +planRequired(true)
               table.table.table-hover.table-bordered.table-sm.mb-0
                 thead.thead-dark
                   tr
@@ -120,7 +113,7 @@ block body
                     th(scope="col")= t("Created")
                     th(scope="col")= t("Actions")
                 tbody
-                  if !Array.isArray(domain.tokens) || domain.tokens.length === 0 || domain.plan !== 'team'
+                  if !Array.isArray(domain.tokens) || domain.tokens.length === 0
                     tr
                       td(colspan=3)
                         .alert.alert-info.text-center.mb-0= t("No catch-all passwords exist yet.")
@@ -135,18 +128,14 @@ block body
                         td.align-middle
                           form.ajax-form.confirm-prompt.d-inline-block(
                             action=l(`/my-account/domains/${domain.name}/catch-all-passwords/${token.id}`),
-                            method="POST",
-                            disabled=isTeamDisabled
+                            method="POST"
                           )
                             input(
                               type="hidden",
                               name="_method",
                               value="DELETE"
                             )
-                            button.btn.btn-danger(
-                              type="submit",
-                              disabled=isTeamDisabled
-                            )
+                            button.btn.btn-danger(type="submit")
                               i.fa.fa-trash
                               = " "
                               = t("Delete Password")
@@ -257,8 +246,6 @@ block body
             .card.border-themed.mb-3
               h2.h6.card-header= t("Catch-all Passwords")
               .card-body
-                //- Make this require Team plan
-                +planRequired(true)
                 != t('You can easily use catch-all passwords to send email with <i class="font-weight-bold">any</i> alias at your domain.')
               .card-footer.text-right
                 ul.list-inline.mb-0

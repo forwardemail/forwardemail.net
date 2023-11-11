@@ -133,7 +133,6 @@ router
     '/domains/:domain_id/catch-all-passwords',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
-    web.myAccount.ensureTeamPlan,
     web.myAccount.ensureUpgradedPlan,
     rateLimit(10, 'create catch all password'),
     web.myAccount.createCatchAllPassword
@@ -143,7 +142,6 @@ router
     '/domains/:domain_id/catch-all-passwords/:token_id',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
-    web.myAccount.ensureTeamPlan,
     web.myAccount.ensureUpgradedPlan,
     web.myAccount.removeCatchAllPassword
   )

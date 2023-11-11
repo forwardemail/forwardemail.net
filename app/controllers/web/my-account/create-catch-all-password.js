@@ -36,7 +36,8 @@ async function createCatchAllPassword(ctx) {
     domain.tokens.push({
       description,
       salt,
-      hash
+      hash,
+      user: ctx.state.user._id
     });
     domain.locale = ctx.locale;
     domain.resolver = ctx.resolver;

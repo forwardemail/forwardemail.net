@@ -223,16 +223,8 @@ async function onAuth(auth, session, fn) {
       !isValid &&
       Array.isArray(domain.tokens) &&
       domain.tokens.length > 0
-    ) {
+    )
       isValid = await isValidPassword(domain.tokens, auth.password);
-      if (isValid && domain.plan !== 'team')
-        throw new SMTPError(
-          `Catch-all password is being used which requires your domain to upgrade to the Team plan`,
-          {
-            responseCode: 535
-          }
-        );
-    }
 
     if (!isValid) {
       // increase failed counter by 1
