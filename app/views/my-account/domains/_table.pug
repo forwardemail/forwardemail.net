@@ -208,39 +208,41 @@ include ../../_pagination
                       i.fa.fa-fw.fa-tools
                       = " "
                       = t("Settings")
-                  li.list-inline-item.d-block.d-sm-inline-block
-                    .btn-group.btn-block.btn-group-sm
-                      button.btn.btn-sm.btn-link.btn-block.dropdown-toggle(
-                        class=user.plan !== "free" && domain.plan !== user.plan && domain.plan !== "team" ? "text-warning font-weight-bold" : "text-themed",
-                        type="button",
-                        data-toggle="dropdown",
-                        data-boundary="window",
-                        aria-haspopup="true",
-                        aria-expanded="false"
-                      )
-                        = t("Change Plan")
-                      .dropdown-menu
-                        h6.dropdown-header.text-uppercase= t("Change plan to:")
-                        each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
-                          a.dropdown-item(
-                            href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)
-                          )
-                            case plan
-                              when 'enhanced_protection'
-                                i.fa.fa-fw.fa-shield
-                                = " "
-                                = t("Enhanced Protection")
-                              when 'team'
-                                i.fa.fa-fw.fa-users
-                                = " "
-                                = t("Team")
-                              default
-                                = t("Free")
-                                = " ("
-                                = t("DNS-based")
-                                = ")"
-                        .dropdown-divider
-                        a.dropdown-item.small.text-muted(
-                          href=l(`/private-business-email?domain=${domain.name}`)
-                        )= t("See all plan features")
+                  //- we hide the change plan button if the plan was team
+                  if domain.plan !== 'team'
+                    li.list-inline-item.d-block.d-sm-inline-block
+                      .btn-group.btn-block.btn-group-sm
+                        button.btn.btn-sm.btn-link.btn-block.dropdown-toggle(
+                          class=user.plan !== "free" && domain.plan !== user.plan && domain.plan !== "team" ? "text-warning font-weight-bold" : "text-themed",
+                          type="button",
+                          data-toggle="dropdown",
+                          data-boundary="window",
+                          aria-haspopup="true",
+                          aria-expanded="false"
+                        )
+                          = t("Change Plan")
+                        .dropdown-menu
+                          h6.dropdown-header.text-uppercase= t("Change plan to:")
+                          each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
+                            a.dropdown-item(
+                              href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)
+                            )
+                              case plan
+                                when 'enhanced_protection'
+                                  i.fa.fa-fw.fa-shield
+                                  = " "
+                                  = t("Enhanced Protection")
+                                when 'team'
+                                  i.fa.fa-fw.fa-users
+                                  = " "
+                                  = t("Team")
+                                default
+                                  = t("Free")
+                                  = " ("
+                                  = t("DNS-based")
+                                  = ")"
+                          .dropdown-divider
+                          a.dropdown-item.small.text-muted(
+                            href=l(`/private-business-email?domain=${domain.name}`)
+                          )= t("See all plan features")
 +paginate('#table-domains')
