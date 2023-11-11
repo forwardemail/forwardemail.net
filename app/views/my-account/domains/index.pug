@@ -40,7 +40,7 @@ block body
             .alert.alert-info.text-center= t("No domains exist yet.")
           else
             if !ctx.query.page || ctx.query.page === 1
-              - const mismatch = user.plan !== "free" && domains.some((d) => d.group === "admin" && d.plan !== user.plan);
+              - const mismatch = user.plan !== "free" && domains.some((d) => d.group === "admin" && d.plan !== user.plan && d.plan !== 'team');
               if mismatch
                 .alert.alert-warning.small.text-center
                   != t('One or more of your domains are not on the <span class="notranslate">%s</span> plan.', t(titleize(humanize(user.plan))))
