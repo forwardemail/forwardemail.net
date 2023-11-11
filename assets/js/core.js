@@ -248,6 +248,10 @@ function successHandler(ev) {
 }
 
 if (Clipboard.isSupported()) {
+  // <https://github.com/zenorocha/clipboard.js/issues/860>
+  // <https://github.com/zenorocha/clipboard.js/wiki/Known-Issues>
+  // <https://github.com/twbs/bootstrap/issues/19850>
+  $.fn.modal.Constructor.prototype._enforceFocus = function () {};
   $body.on('mouseenter', 'code', function () {
     let $container = $(this).parents('pre:first');
     if ($container.length === 0) $container = $(this);
