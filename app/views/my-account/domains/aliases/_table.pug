@@ -191,9 +191,9 @@ include ../../../_pagination
                   if alias.name !== '*' && !alias.name.startsWith('/')
                     li.list-inline-item
                       span.badge.badge-success.text-monospace.font-weight-normal.text-nowrap(
-                        class=alias.has_imap ? 'badge-success' : 'badge-danger'
+                        class=alias.has_imap ? "badge-success" : "badge-danger"
                       )
-                        i.fa(class=alias.has_imap ? 'fa-check-circle' : 'fa-times')
+                        i.fa(class=alias.has_imap ? "fa-check-circle" : "fa-times")
                         = " "
                         = "IMAP"
                   //- no recipient verification required
@@ -354,9 +354,9 @@ include ../../../_pagination
                 if alias.name !== '*' && !alias.name.startsWith('/')
                   li.list-inline-item
                     span.badge.badge-success.text-monospace.font-weight-normal.text-nowrap(
-                      class=alias.has_imap ? 'badge-success' : 'badge-danger'
+                      class=alias.has_imap ? "badge-success" : "badge-danger"
                     )
-                      i.fa(class=alias.has_imap ? 'fa-check-circle' : 'fa-times')
+                      i.fa(class=alias.has_imap ? "fa-check-circle" : "fa-times")
                       = " "
                       = "IMAP"
                 //- no recipient verification required

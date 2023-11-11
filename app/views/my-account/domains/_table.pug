@@ -26,7 +26,7 @@ include ../../_pagination
           - domain.plan = domain.plan || "free";
           tr
             td(
-              class=domain.is_global ? "bg-secondary" : domain.has_mx_record && domain.has_txt_record ? (domain.plan === user.plan || domain.plan === 'team' ? "bg-success" : "bg-warning") : "bg-danger"
+              class=domain.is_global ? "bg-secondary" : domain.has_mx_record && domain.has_txt_record ? (domain.plan === user.plan || domain.plan === "team" ? "bg-success" : "bg-warning") : "bg-danger"
             )
             td.align-middle.p-3.position-relative
               h2.h5.mb-0= domain.name
@@ -44,7 +44,7 @@ include ../../_pagination
                     a.badge.badge-secondary.text-uppercase.stretched-link(
                       href=l(`/my-account/domains/${domain.name}/aliases`)
                     )= t("Vanity Domain")
-                else if domain.plan === user.plan && user.plan !== 'free'
+                else if (domain.plan === user.plan || domain.plan === 'team') && user.plan !== 'free'
                   li.list-inline-item
                     if domain.has_mx_record && domain.has_txt_record
                       a.badge.badge-success.text-uppercase.stretched-link(
@@ -211,7 +211,7 @@ include ../../_pagination
                   li.list-inline-item.d-block.d-sm-inline-block
                     .btn-group.btn-block.btn-group-sm
                       button.btn.btn-sm.btn-link.btn-block.dropdown-toggle(
-                        class=user.plan !== "free" && domain.plan !== user.plan && domain.plan !== 'team' ? "text-warning font-weight-bold" : "text-themed",
+                        class=user.plan !== "free" && domain.plan !== user.plan && domain.plan !== "team" ? "text-warning font-weight-bold" : "text-themed",
                         type="button",
                         data-toggle="dropdown",
                         data-boundary="window",
