@@ -34,6 +34,15 @@ ReconnectingWebSocket.prototype._debug = () => {
   //   logger.debug('reconnectingwebsocket', { args });
 };
 
+// <https://github.com/pladaria/reconnecting-websocket/issues/138#issuecomment-698206018>
+function createWebSocketClass(options) {
+  return class extends WebSocket {
+    constructor(url, protocols) {
+      super(url, protocols, options);
+    }
+  };
+}
+
 function createWebSocketAsPromised(options = {}) {
   //
   // <https://github.com/websockets/ws/issues/2050>
@@ -59,7 +68,10 @@ function createWebSocketAsPromised(options = {}) {
       // return new partysocket.WebSocket(url, [], {
       return new ReconnectingWebSocket(url, [], {
         // <https://github.com/pladaria/reconnecting-websocket#available-options>
-        WebSocket,
+        // <https://github.com/pladaria/reconnecting-websocket/issues/138#issuecomment-698206018>
+        WebSocket: createWebSocketClass({
+          maxPayload: 0 // disable max payload size
+        }),
         debug: config.env === 'development'
       });
     },

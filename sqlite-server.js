@@ -1385,7 +1385,10 @@ class SQLite {
     // }
 
     // this.wss = new WebSocketServer({ noServer: true, perMessageDeflate: true });
-    this.wss = new WebSocketServer({ noServer: true });
+    this.wss = new WebSocketServer({
+      noServer: true,
+      maxPayload: 0 // disable max payload size
+    });
     this.server = server;
     this.refreshSession = refreshSession.bind(this);
 

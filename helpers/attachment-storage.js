@@ -18,6 +18,7 @@ const { Buffer } = require('node:buffer');
 const intoStream = require('into-stream');
 const pify = require('pify');
 const revHash = require('rev-hash');
+const _ = require('lodash');
 
 const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
 
@@ -56,21 +57,15 @@ class AttachmentStorage {
 
     // since we don't use streams (e.g. gridfs)
     // (see notes in `helpers/indexer.js`)
-    return attachmentData;
-
-    /*
     return {
-      // TODO: can we just return `attachment.body` here too (?)
       body: attachmentData.body,
-
       contentType: attachmentData.contentType,
       transferEncoding: attachmentData.transferEncoding, // (instead of `.metadata.transferEncoding`)
       length: attachmentData.size, // (instead of `.length`)
       count: attachmentData.counter, // instead of `.metadata.c`)
       hash: attachmentData.hash,
-      metadata: {} // instead of `.metadata` we have empty object
+      metadata: { decoded: false, lineLen: attachmentData.lineCount } // instead of `.metadata` we have empty object
     };
-    */
   }
 
   async create(instance, session, attachment) {
@@ -128,7 +123,17 @@ class AttachmentStorage {
   //
   createReadStream(id, attachment) {
     // NOTE: we don't use any `metadata` or `streamOptions` like wildduck does
-    return intoStream(attachment.body);
+    try {
+      const stream = intoStream(attachment.body);
+      return stream;
+    } catch (err) {
+      // for some reason we got some symbol errors on `intoStream`
+      // invocation so keeping this here to help debug further
+      err.isCodeBug = true;
+      if (typeof attachment === 'object')
+        err.attachment = _.omit(attachment, ['body']);
+      throw err;
+    }
   }
 
   // eslint-disable-next-line max-params
