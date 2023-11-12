@@ -158,11 +158,10 @@ async function getMessages(instance, session, server, opts = {}) {
     const message = await convertResult(Messages, result, projection);
 
     // NOTE: we bind a few symbols so we don't have to rewrite everything
-    if (typeof message?.mimeTree !== 'object')
-      throw new TypeError('mimeTree does not exist');
-
-    message.mimeTree[Symbol.for('instance')] = instance;
-    message.mimeTree[Symbol.for('session')] = session;
+    if (message.mimeTree) {
+      message.mimeTree[Symbol.for('instance')] = instance;
+      message.mimeTree[Symbol.for('session')] = session;
+    }
 
     server.logger.debug('fetched message', {
       result,
