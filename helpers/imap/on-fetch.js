@@ -221,8 +221,10 @@ async function getMessages(instance, session, server, opts = {}) {
       //
       // security safeguard
       //
-      delete message.mimeTree[Symbol.for('instance')];
-      delete message.mimeTree[Symbol.for('session')];
+      if (message.mimeTree) {
+        delete message.mimeTree[Symbol.for('instance')];
+        delete message.mimeTree[Symbol.for('session')];
+      }
 
       const data = session.formatResponse('FETCH', message.uid, {
         query: options.query,
@@ -270,8 +272,10 @@ async function getMessages(instance, session, server, opts = {}) {
     //
     // security safeguard
     //
-    delete message.mimeTree[Symbol.for('instance')];
-    delete message.mimeTree[Symbol.for('session')];
+    if (message.mimeTree) {
+      delete message.mimeTree[Symbol.for('instance')];
+      delete message.mimeTree[Symbol.for('session')];
+    }
 
     const data = session.formatResponse('FETCH', message.uid, {
       query: options.query,
