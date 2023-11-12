@@ -5600,5 +5600,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Du kan ikke ha mer enn <span class=\"notranslate\">%d</span> oppsamlingspassord generert samtidig",
   "Generate Catch-All Password": "Generer Catch-All-passord",
   "Description is longer than the maximum allowed length (150).": "Beskrivelsen er lengre enn den maksimalt tillatte lengden (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "Fra topptekst må slutte med <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "Fra topptekst må slutte med <span class=\"notranslate\">%s</span>",
+  "Author": "Forfatter",
+  "(optional; for organization purposes only)": "(valgfritt; kun for organisasjonsformål)"
 }

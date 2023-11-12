@@ -5440,5 +5440,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Sinulla voi olla enintään <span class=\"notranslate\">%d</span> keräilysalasanaa luotu kerralla",
   "Generate Catch-All Password": "Luo Catch-All-salasana",
   "Description is longer than the maximum allowed length (150).": "Kuvaus on pidempi kuin suurin sallittu pituus (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "Otsikon on päättyvä <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "Otsikon on päättyvä <span class=\"notranslate\">%s</span>",
+  "Author": "Tekijä",
+  "(optional; for organization purposes only)": "(valinnainen; vain organisointitarkoituksiin)"
 }

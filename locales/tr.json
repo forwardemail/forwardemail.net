@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Aynı anda <span class=\"notranslate\">%d</span> den fazla tümünü kapsayan şifre oluşturamazsınız",
   "Generate Catch-All Password": "Tümünü Yakala Şifresi Oluştur",
   "Description is longer than the maximum allowed length (150).": "Açıklama izin verilen maksimum uzunluktan (150) daha uzun.",
-  "From header must end with <span class=\"notranslate\">%s</span>": "Başlıktan <span class=\"notranslate\">%s</span> ile bitmelidir"
+  "From header must end with <span class=\"notranslate\">%s</span>": "Başlıktan <span class=\"notranslate\">%s</span> ile bitmelidir",
+  "Author": "Yazar",
+  "(optional; for organization purposes only)": "(isteğe bağlı; yalnızca organizasyon amaçlı)"
 }

@@ -5593,5 +5593,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "No puedes tener más de <span class=\"notranslate\">%d</span> contraseñas generales generadas a la vez",
   "Generate Catch-All Password": "Generar contraseña general",
   "Description is longer than the maximum allowed length (150).": "La descripción es más larga que la longitud máxima permitida (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "El encabezado debe terminar con <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "El encabezado debe terminar con <span class=\"notranslate\">%s</span>",
+  "Author": "Autor",
+  "(optional; for organization purposes only)": "(opcional; solo para fines de organización)"
 }

@@ -5286,5 +5286,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "一次生成的全能密码不能超过<span class=\"notranslate\">%d</span>个",
   "Generate Catch-All Password": "生成全能密码",
   "Description is longer than the maximum allowed length (150).": "描述长于允许的最大长度 (150)。",
-  "From header must end with <span class=\"notranslate\">%s</span>": "From 标头必须以<span class=\"notranslate\">%s</span>结尾"
+  "From header must end with <span class=\"notranslate\">%s</span>": "From 标头必须以<span class=\"notranslate\">%s</span>结尾",
+  "Author": "作者",
+  "(optional; for organization purposes only)": "（可选；仅用于组织目的）"
 }

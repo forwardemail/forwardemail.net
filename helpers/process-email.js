@@ -193,17 +193,17 @@ async function processEmail({ email, port = 25, resolver, client }) {
     //       (since they get unlimited credits, e.g. ourselves forwardemail.net)
     //
 
-    // alias must exist
-    if (!alias)
-      throw Boom.notFound(i18n.translateError('ALIAS_DOES_NOT_EXIST'));
+    // NOTE: we support catch-all passwords so alias may not always exist
 
-    // alias must be enabled
-    if (!alias.is_enabled)
-      throw Boom.notFound(i18n.translateError('ALIAS_IS_NOT_ENABLED'));
+    if (alias) {
+      // alias must be enabled
+      if (!alias.is_enabled)
+        throw Boom.notFound(i18n.translateError('ALIAS_IS_NOT_ENABLED'));
 
-    // alias owner must not be banned
-    if (alias.user[config.userFields.isBanned])
-      throw Boom.forbidden(i18n.translateError('ACCOUNT_BANNED'));
+      // alias owner must not be banned
+      if (alias.user[config.userFields.isBanned])
+        throw Boom.forbidden(i18n.translateError('ACCOUNT_BANNED'));
+    }
 
     //
     // validate that at least one paying, non-banned admin on >= same plan without expiration

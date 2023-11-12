@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "לא ניתן להפיק יותר מ- <span class=\"notranslate\">%d</span> סיסמאות תופסות בבת אחת",
   "Generate Catch-All Password": "צור סיסמא לכל דבר",
   "Description is longer than the maximum allowed length (150).": "התיאור ארוך מהאורך המרבי המותר (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "מהכותרת חייבת להסתיים ב- <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "מהכותרת חייבת להסתיים ב- <span class=\"notranslate\">%s</span>",
+  "Author": "מְחַבֵּר",
+  "(optional; for organization purposes only)": "(אופציונלי; למטרות ארגון בלבד)"
 }

@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "لا يمكنك إنشاء أكثر من <span class=\"notranslate\">%d</span> من كلمات مرور التقاط الكل مرة واحدة",
   "Generate Catch-All Password": "إنشاء كلمة مرور شاملة",
   "Description is longer than the maximum allowed length (150).": "الوصف أطول من الحد الأقصى المسموح به للطول (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "يجب أن ينتهي الرأس بـ <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "يجب أن ينتهي الرأس بـ <span class=\"notranslate\">%s</span>",
+  "Author": "مؤلف",
+  "(optional; for organization purposes only)": "(اختياري؛ لأغراض تنظيمية فقط)"
 }

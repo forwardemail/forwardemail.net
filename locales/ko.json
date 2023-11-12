@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "한 번에 <span class=\"notranslate\">%d</span> 개 이상의 포괄 비밀번호를 생성할 수 없습니다.",
   "Generate Catch-All Password": "포괄 비밀번호 생성",
   "Description is longer than the maximum allowed length (150).": "설명이 최대 허용 길이(150)보다 깁니다.",
-  "From header must end with <span class=\"notranslate\">%s</span>": "보낸 헤더는 <span class=\"notranslate\">%s</span> 로 끝나야 합니다."
+  "From header must end with <span class=\"notranslate\">%s</span>": "보낸 헤더는 <span class=\"notranslate\">%s</span> 로 끝나야 합니다.",
+  "Author": "작가",
+  "(optional; for organization purposes only)": "(선택사항, 조직 목적으로만)"
 }

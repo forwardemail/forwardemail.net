@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "<span class=\"notranslate\">%d</span>個を超えるキャッチオール パスワードを一度に生成することはできません",
   "Generate Catch-All Password": "キャッチオールパスワードの生成",
   "Description is longer than the maximum allowed length (150).": "説明が最大許容長 (150) を超えています。",
-  "From header must end with <span class=\"notranslate\">%s</span>": "From ヘッダーは<span class=\"notranslate\">%s</span>で終わる必要があります"
+  "From header must end with <span class=\"notranslate\">%s</span>": "From ヘッダーは<span class=\"notranslate\">%s</span>で終わる必要があります",
+  "Author": "著者",
+  "(optional; for organization purposes only)": "(オプション、組織化のみを目的としています)"
 }

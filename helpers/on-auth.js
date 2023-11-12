@@ -251,10 +251,10 @@ async function onAuth(auth, session, fn) {
     const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
     const count = await this.client.incrby(key, 0);
     if (count < 0) await this.client.del(key); // safeguard
-    else if (count > 15)
-      throw new SMTPError('Too many concurrent connections', {
-        responseCode: 421
-      });
+    // else if (count > 15)
+    //   throw new SMTPError('Too many concurrent connections', {
+    //     responseCode: 421
+    //   });
 
     // increase counter for alias by 1 (with ttl safeguard)
     await this.client.pipeline().incr(key).pexpire(key, ms('1h')).exec();

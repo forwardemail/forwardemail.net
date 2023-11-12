@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Egyszerre legfeljebb <span class=\"notranslate\">%d</span> összesítő jelszót generálhat",
   "Generate Catch-All Password": "Hozzon létre mindenre kiterjedő jelszót",
   "Description is longer than the maximum allowed length (150).": "A leírás hosszabb, mint a megengedett maximális hossz (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "A fejléctől a következővel kell végződnie <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "A fejléctől a következővel kell végződnie <span class=\"notranslate\">%s</span>",
+  "Author": "Szerző",
+  "(optional; for organization purposes only)": "(nem kötelező; csak szervezési célokra)"
 }

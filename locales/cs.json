@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Nemůžete mít najednou vygenerováno více než <span class=\"notranslate\">%d</span> univerzálních hesel",
   "Generate Catch-All Password": "Vygenerujte heslo Catch-All",
   "Description is longer than the maximum allowed length (150).": "Popis je delší než maximální povolená délka (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "Od záhlaví musí končit <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "Od záhlaví musí končit <span class=\"notranslate\">%s</span>",
+  "Author": "Autor",
+  "(optional; for organization purposes only)": "(volitelné; pouze pro účely organizace)"
 }

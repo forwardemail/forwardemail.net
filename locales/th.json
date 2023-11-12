@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "คุณไม่สามารถสร้างรหัสผ่านที่รับทั้งหมดได้มากกว่า <span class=\"notranslate\">%d</span> รายการในคราวเดียว",
   "Generate Catch-All Password": "สร้างรหัสผ่านที่รับทั้งหมด",
   "Description is longer than the maximum allowed length (150).": "คำอธิบายยาวเกินความยาวสูงสุดที่อนุญาต (150)",
-  "From header must end with <span class=\"notranslate\">%s</span>": "จากส่วนหัวต้องลงท้ายด้วย <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "จากส่วนหัวต้องลงท้ายด้วย <span class=\"notranslate\">%s</span>",
+  "Author": "ผู้เขียน",
+  "(optional; for organization purposes only)": "(ไม่บังคับ เพื่อวัตถุประสงค์ในองค์กรเท่านั้น)"
 }

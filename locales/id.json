@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Anda tidak boleh membuat lebih dari <span class=\"notranslate\">%d</span> kata sandi penampung semua sekaligus",
   "Generate Catch-All Password": "Hasilkan Kata Sandi Catch-All",
   "Description is longer than the maximum allowed length (150).": "Deskripsi lebih panjang dari panjang maksimum yang diperbolehkan (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "Dari header harus diakhiri dengan <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "Dari header harus diakhiri dengan <span class=\"notranslate\">%s</span>",
+  "Author": "Pengarang",
+  "(optional; for organization purposes only)": "(opsional; hanya untuk tujuan organisasi)"
 }

@@ -82,6 +82,7 @@ async function retrieveDomain(ctx, next) {
         'members.user',
         `id email plan ${config.passport.fields.displayName} ${config.userFields.isBanned}`
       )
+      .populate('tokens.user', 'email')
       .select('+tokens.description')
       .sort('name') // A-Z domains
       .lean()

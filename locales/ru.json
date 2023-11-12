@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Вы не можете создать более <span class=\"notranslate\">%d</span> универсальных паролей одновременно.",
   "Generate Catch-All Password": "Создать универсальный пароль",
   "Description is longer than the maximum allowed length (150).": "Описание превышает максимально допустимую длину (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "Заголовок From должен заканчиваться на <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "Заголовок From должен заканчиваться на <span class=\"notranslate\">%s</span>",
+  "Author": "Автор",
+  "(optional; for organization purposes only)": "(необязательно; только для организационных целей)"
 }

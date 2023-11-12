@@ -81,9 +81,21 @@ const Aliases = new mongoose.Schema({
     validate: (value) => (typeof value === 'string' ? isEmail(value) : true)
   },
   imap_backup_at: Date,
-  // NOTE: this isn't actual storage, just message size
-  //       (it doesn't include sqlite db overhead, e.g. indices, and R2 backups)
-  // TODO: fix to snake case
+  //
+  // NOTE: this storage is updated in real-time on each `getDatabase` invocation
+  //       and it contains the sum of fs.stat -> stat.size for each of the following:
+  //
+  //       - $id-tmp.sqlite (temporary encrypted database for alias)
+  //       - $id-tmp-wal.sqlite (WAL)
+  //       - $id-tmp-shm.sqlite (SHM)
+  //
+  //       - $id.sqlite (actual encrypted database for alias)
+  //       - $id-wal.sqlite (WAL)
+  //       - $id-shm.sqlite (WAL)
+  //
+  //       - $id.sqlite.gz (R2 backup) <--- excluded for now
+  //
+  // storage_used: {
   storageUsed: {
     type: Number,
     default: 0

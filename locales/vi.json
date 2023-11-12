@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Bạn không thể tạo nhiều hơn <span class=\"notranslate\">%d</span> mật khẩu nhận tất cả cùng một lúc",
   "Generate Catch-All Password": "Tạo mật khẩu Catch-All",
   "Description is longer than the maximum allowed length (150).": "Mô tả dài hơn độ dài tối đa cho phép (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "Tiêu đề từ phải kết thúc bằng <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "Tiêu đề từ phải kết thúc bằng <span class=\"notranslate\">%s</span>",
+  "Author": "Tác giả",
+  "(optional; for organization purposes only)": "(tùy chọn; chỉ dành cho mục đích tổ chức)"
 }

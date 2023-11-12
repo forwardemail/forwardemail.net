@@ -73,13 +73,12 @@ block body
                   label(for="textarea-token-description")
                     = t("Description")
                     = " "
-                    span.text-danger= t("(required; for organization purposes only)")
+                    span.text-muted= t("(optional; for organization purposes only)")
                   textarea#textarea-token-description.form-control(
-                    required,
                     name="description",
                     maxlength=150,
                     rows=2
-                  )= striptags(t('Created by <span class="notranslate">%s</span> on <span class="notranslate">%s</span>.', user.email, dayjs().format("YYYY-MM-DD")))
+                  )
                   p.form-text.small.text-black.text-themed-50= t("Description has a max of 150 characters.")
                 button.btn.btn-lg.btn-block.btn-success(type="submit")
                   i.fa.fa-key
@@ -109,18 +108,31 @@ block body
               table.table.table-hover.table-bordered.table-sm.mb-0
                 thead.thead-dark
                   tr
-                    th(scope="col")= t("Description")
+                    th(scope="col")= t("Author")
+                    if !Array.isArray(domain.tokens) || domain.tokens.length === 0 || domain.tokens.some(t => Boolean(t.description))
+                      th(scope="col")= t("Description")
                     th(scope="col")= t("Created")
                     th(scope="col")= t("Actions")
                 tbody
                   if !Array.isArray(domain.tokens) || domain.tokens.length === 0
                     tr
-                      td(colspan=3)
+                      - const colspan = !Array.isArray(domain.tokens) || domain.tokens.length === 0 || domain.tokens.some(t => Boolean(t.description)) ? 4 : 3;
+                      td(colspan=colspan)
                         .alert.alert-info.text-center.mb-0= t("No catch-all passwords exist yet.")
                   else
                     each token in domain.tokens
                       tr
-                        td.align-middle.small.text-monospace= token.description
+                        td.align-middle.small.text-monospace
+                          if token.user && token.user.email
+                            = token.user.email
+                          else
+                            i.text-muted= t("Not Available")
+                        if !Array.isArray(domain.tokens) || domain.tokens.length === 0 || domain.tokens.some(t => Boolean(t.description))
+                          td.align-middle.small.text-monospace
+                            if token.description
+                              = token.description
+                            else
+                              i.text-muted= t("None")
                         td.align-middle.text-center.dayjs(
                           data-time=new Date(token.created_at).getTime()
                         )

@@ -737,8 +737,8 @@ Emails.statics.queue = async function (
 
   domainName = punycode.toUnicode(domainName);
 
-  if (aliasName === '*' && !options.catchall)
-    throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
+  // if (aliasName === '*' && !options.catchall)
+  //  throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
 
   let userId;
 
@@ -831,11 +831,9 @@ Emails.statics.queue = async function (
                 }
           ).populate('user', `id ${config.userFields.isBanned}`)
         : null);
+  }
 
-    // alias must exist
-    if (!alias)
-      throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
-
+  if (alias) {
     // alias must not have banned user
     if (alias.user[config.userFields.isBanned])
       throw Boom.forbidden(i18n.translateError('ALIAS_ACCOUNT_BANNED', locale));

@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Er kunnen niet meer dan <span class=\"notranslate\">%d</span> verzamelwachtwoorden tegelijk worden gegenereerd",
   "Generate Catch-All Password": "Genereer Catch-All-wachtwoord",
   "Description is longer than the maximum allowed length (150).": "Beschrijving is langer dan de maximaal toegestane lengte (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "Van-header moet eindigen op <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "Van-header moet eindigen op <span class=\"notranslate\">%s</span>",
+  "Author": "Auteur",
+  "(optional; for organization purposes only)": "(optioneel; alleen voor organisatiedoeleinden)"
 }

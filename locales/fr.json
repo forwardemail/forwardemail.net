@@ -5595,5 +5595,7 @@
   "You cannot have more than <span class=\"notranslate\">%d</span> catch-all passwords generated at once": "Vous ne pouvez pas générer plus de <span class=\"notranslate\">%d</span> mots de passe fourre-tout à la fois",
   "Generate Catch-All Password": "Générer un mot de passe fourre-tout",
   "Description is longer than the maximum allowed length (150).": "La description est plus longue que la longueur maximale autorisée (150).",
-  "From header must end with <span class=\"notranslate\">%s</span>": "L&#39;en-tête From doit se terminer par <span class=\"notranslate\">%s</span>"
+  "From header must end with <span class=\"notranslate\">%s</span>": "L&#39;en-tête From doit se terminer par <span class=\"notranslate\">%s</span>",
+  "Author": "Auteur",
+  "(optional; for organization purposes only)": "(facultatif ; à des fins d’organisation uniquement)"
 }
