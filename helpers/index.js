@@ -74,6 +74,8 @@ const migrateSchema = require('./migrate-schema');
 const isValidPassword = require('./is-valid-password');
 const pbkdf2 = require('./pbkdf2');
 const createPassword = require('./create-password');
+const Indexer = require('./indexer');
+const getQueryResponse = require('./get-query-response');
 
 module.exports = {
   decrypt,
@@ -147,5 +149,7 @@ module.exports = {
   migrateSchema,
   isValidPassword,
   pbkdf2,
-  createPassword
+  createPassword,
+  Indexer,
+  getQueryResponse
 };

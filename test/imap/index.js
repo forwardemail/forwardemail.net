@@ -23,10 +23,13 @@ const Axe = require('axe');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const getPort = require('get-port');
+const getStream = require('get-stream');
 const ip = require('ip');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
+const splitLines = require('split-lines');
 const test = require('ava');
+const _ = require('lodash');
 const { ImapFlow } = require('imapflow');
 const { factory } = require('factory-girl');
 
@@ -1051,6 +1054,15 @@ ZXhhbXBsZQo=
   );
 
   await t.context.imapFlow.mailboxOpen('flag-remove');
+
+  // download latest to test attachment storage
+  const download = await t.context.imapFlow.download('*');
+  t.true(_.isObject(download) && !_.isEmpty(download));
+  const content = await getStream(download.content);
+  t.deepEqual(
+    _.compact(splitLines(raw)).join(''),
+    _.compact(splitLines(content)).join('')
+  );
 
   t.true(
     await t.context.imapFlow.messageFlagsRemove({ all: true }, ['\\Flagged'])

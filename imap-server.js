@@ -17,7 +17,6 @@ const fs = require('node:fs');
 const os = require('node:os');
 
 const Axe = require('axe');
-const Indexer = require('wildduck/imap-core/lib/indexer/indexer');
 const Lock = require('ioredfour');
 const MessageHandler = require('wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
@@ -31,6 +30,7 @@ const { IMAPServer } = require('wildduck/imap-core');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
 const IMAPNotifier = require('#helpers/imap-notifier');
+const Indexer = require('#helpers/indexer');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
@@ -38,10 +38,7 @@ const imap = require('#helpers/imap');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
-const storeNodeBodies = require('#helpers/store-node-bodies');
 
-//
-// TODO: fix attachmentStorage.get and `getQueryResponse` rewrite
 //
 // TODO: automatic emails if user is low on storage quota or exceeds it
 //
@@ -207,7 +204,6 @@ class IMAP {
     this.attachmentStorage = new AttachmentStorage();
 
     this.indexer = new Indexer({ attachmentStorage: this.attachmentStorage });
-    this.indexer.storeNodeBodies = storeNodeBodies.bind(this.indexer);
 
     // promisified version of prepare message from wildduck message handler
     this.prepareMessage = pify(

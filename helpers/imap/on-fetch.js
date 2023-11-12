@@ -26,6 +26,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
+const getQueryResponse = require('#helpers/get-query-response');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const { convertResult } = require('#helpers/mongoose-to-sqlite');
@@ -156,6 +157,13 @@ async function getMessages(instance, session, server, opts = {}) {
     // eslint-disable-next-line no-await-in-loop
     const message = await convertResult(Messages, result, projection);
 
+    // NOTE: we bind a few symbols so we don't have to rewrite everything
+    if (typeof message?.mimeTree !== 'object')
+      throw new TypeError('mimeTree does not exist');
+
+    message.mimeTree[Symbol.for('instance')] = instance;
+    message.mimeTree[Symbol.for('session')] = session;
+
     server.logger.debug('fetched message', {
       result,
       message,
@@ -194,24 +202,29 @@ async function getMessages(instance, session, server, opts = {}) {
     if (options.metadataOnly && !markAsSeen) {
       // eslint-disable-next-line no-await-in-loop
       const values = await Promise.all(
-        session
-          .getQueryResponse(options.query, message, {
-            logger: server.logger,
-            fetchOptions: {},
-            // database
-            attachmentStorage,
-            acceptUTF8Enabled: session.isUTF8Enabled()
-          })
-          .map((obj) => {
-            if (
-              typeof obj !== 'object' ||
-              obj.type !== 'stream' ||
-              typeof obj.value !== 'object'
-            )
-              return obj;
-            return getStream(obj.value);
-          })
+        getQueryResponse(options.query, message, {
+          logger: server.logger,
+          fetchOptions: {},
+          // database
+          attachmentStorage,
+          acceptUTF8Enabled: session.isUTF8Enabled()
+        }).map((obj) => {
+          if (
+            typeof obj !== 'object' ||
+            obj.type !== 'stream' ||
+            typeof obj.value !== 'object'
+          )
+            return obj;
+          return getStream(obj.value);
+        })
       );
+
+      //
+      // security safeguard
+      //
+      delete message.mimeTree[Symbol.for('instance')];
+      delete message.mimeTree[Symbol.for('session')];
+
       const data = session.formatResponse('FETCH', message.uid, {
         query: options.query,
         values
@@ -238,24 +251,28 @@ async function getMessages(instance, session, server, opts = {}) {
     //
     // eslint-disable-next-line no-await-in-loop
     const values = await Promise.all(
-      session
-        .getQueryResponse(options.query, message, {
-          logger: server.logger,
-          fetchOptions: {},
-          // database
-          attachmentStorage,
-          acceptUTF8Enabled: session.isUTF8Enabled()
-        })
-        .map((obj) => {
-          if (
-            typeof obj !== 'object' ||
-            obj.type !== 'stream' ||
-            typeof obj.value !== 'object'
-          )
-            return obj;
-          return getStream(obj.value);
-        })
+      getQueryResponse(options.query, message, {
+        logger: server.logger,
+        fetchOptions: {},
+        // database
+        attachmentStorage,
+        acceptUTF8Enabled: session.isUTF8Enabled()
+      }).map((obj) => {
+        if (
+          typeof obj !== 'object' ||
+          obj.type !== 'stream' ||
+          typeof obj.value !== 'object'
+        )
+          return obj;
+        return getStream(obj.value);
+      })
     );
+
+    //
+    // security safeguard
+    //
+    delete message.mimeTree[Symbol.for('instance')];
+    delete message.mimeTree[Symbol.for('session')];
 
     const data = session.formatResponse('FETCH', message.uid, {
       query: options.query,

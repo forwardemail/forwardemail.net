@@ -16,7 +16,6 @@ const { randomUUID } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
 const Database = require('better-sqlite3-multiple-ciphers');
-const Indexer = require('wildduck/imap-core/lib/indexer/indexer');
 const Lock = require('ioredfour');
 const MessageHandler = require('wildduck/lib/message-handler');
 const _ = require('lodash');
@@ -50,6 +49,7 @@ const { boolean } = require('boolean');
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const IMAPNotifier = require('#helpers/imap-notifier');
+const Indexer = require('#helpers/indexer');
 const SMTPError = require('#helpers/smtp-error');
 const TemporaryMessages = require('#models/temporary-messages');
 const config = require('#config');
@@ -66,7 +66,6 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
 const refreshSession = require('#helpers/refresh-session');
 const setupPragma = require('#helpers/setup-pragma');
-const storeNodeBodies = require('#helpers/store-node-bodies');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
@@ -1350,7 +1349,6 @@ class SQLite {
     this.attachmentStorage = new AttachmentStorage();
 
     this.indexer = new Indexer({ attachmentStorage: this.attachmentStorage });
-    this.indexer.storeNodeBodies = storeNodeBodies.bind(this.indexer);
 
     // promisified version of prepare message from wildduck message handler
     this.prepareMessage = pify(

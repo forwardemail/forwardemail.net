@@ -26,6 +26,7 @@ const env = require('#config/env');
 const onConnect = require('#helpers/smtp/on-connect');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const isValidPassword = require('#helpers/is-valid-password');
+const getQueryResponse = require('#helpers/get-query-response');
 
 const onConnectPromise = pify(onConnect);
 
@@ -56,6 +57,9 @@ async function onAuth(auth, session, fn) {
       if (!socket || socket?.destroyed || socket?.readyState !== 'open')
         throw new SocketError();
     }
+
+    // override session.getQueryResponse (safeguard)
+    session.getQueryResponse = getQueryResponse;
 
     // username must be a valid email address
     if (

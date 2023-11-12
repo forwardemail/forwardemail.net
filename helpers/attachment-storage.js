@@ -38,13 +38,12 @@ class AttachmentStorage {
     );
   }
 
-  // async get(instance, session, hash) {
-  async get() {
-    throw new TypeError('Coming soon');
-    /*
+  async get(mimeTree, hash) {
+    const instance = mimeTree[Symbol.for('instance')];
+    const session = mimeTree[Symbol.for('session')];
+
     // TODO: should we project w/o body since we're not using it here as an optimization (?)
-    // const attachmentData = await Attachments.findOne(instance, session, {
-    const attachmentData = await Attachments.findOne(null, null, {
+    const attachmentData = await Attachments.findOne(instance, session, {
       hash
     });
 
@@ -55,14 +54,21 @@ class AttachmentStorage {
       throw err;
     }
 
-    // TODO: can we just return `attachment.body` here too (?)
+    // since we don't use streams (e.g. gridfs)
+    // (see notes in `helpers/indexer.js`)
+    return attachmentData;
+
+    /*
     return {
+      // TODO: can we just return `attachment.body` here too (?)
+      body: attachmentData.body,
+
       contentType: attachmentData.contentType,
-      transferEncoding: attachmentData.metadata.transferEncoding,
-      length: attachmentData.length,
-      count: attachmentData.metadata.c,
+      transferEncoding: attachmentData.transferEncoding, // (instead of `.metadata.transferEncoding`)
+      length: attachmentData.size, // (instead of `.length`)
+      count: attachmentData.counter, // instead of `.metadata.c`)
       hash: attachmentData.hash,
-      metadata: attachmentData.metadata
+      metadata: {} // instead of `.metadata` we have empty object
     };
     */
   }
@@ -120,11 +126,7 @@ class AttachmentStorage {
   // we could also use `to-readable-stream` instead if desired
   // <https://github.com/sindresorhus/to-readable-stream>
   //
-  // TODO: we should replace `createReadStream` with simply using `attachment.body`
-  //
-  // }, options = {}) {
   createReadStream(id, attachment) {
-    console.log('TODO: rewrite read stream stuff possibly?');
     // NOTE: we don't use any `metadata` or `streamOptions` like wildduck does
     return intoStream(attachment.body);
   }
