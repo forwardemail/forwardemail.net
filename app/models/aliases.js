@@ -83,6 +83,7 @@ const Aliases = new mongoose.Schema({
   imap_backup_at: Date,
   //
   // NOTE: this storage is updated in real-time on each `getDatabase` invocation
+  //       and also when temporary databases are fetched, and after writes are performed
   //       and it contains the sum of fs.stat -> stat.size for each of the following:
   //
   //       - $id-tmp.sqlite (temporary encrypted database for alias)
@@ -91,7 +92,7 @@ const Aliases = new mongoose.Schema({
   //
   //       - $id.sqlite (actual encrypted database for alias)
   //       - $id-wal.sqlite (WAL)
-  //       - $id-shm.sqlite (WAL)
+  //       - $id-shm.sqlite (SHM)
   //
   //       - $id.sqlite.gz (R2 backup) <--- excluded for now
   //

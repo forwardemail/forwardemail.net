@@ -146,17 +146,19 @@ async function onAuth(auth, session, fn) {
     // validate domain
     validateDomain(domain, domainName);
 
-    const alias = await Aliases.findOne({
-      name,
-      domain: domain._id
-    })
-      .populate(
-        'user',
-        `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
-      )
-      .select('+tokens.hash +tokens.salt')
-      .lean()
-      .exec();
+    let alias;
+    if (name !== '*')
+      alias = await Aliases.findOne({
+        name,
+        domain: domain._id
+      })
+        .populate(
+          'user',
+          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
+        )
+        .select('+tokens.hash +tokens.salt')
+        .lean()
+        .exec();
 
     // validate alias (will throw an error if !alias)
     if (alias || this.server instanceof IMAPServer)
