@@ -748,8 +748,55 @@ async function findOneAndUpdate(
       if (keys.filter((k) => k === key).length > 1)
         throw new TypeError('Only one of each type is supported');
 
-      if (key !== '$set' && key !== '$inc')
-        throw new TypeError('Only $set and $inc are supported');
+      if (key !== '$set' && key !== '$inc' && key !== '$addToSet')
+        throw new TypeError('Only $set, $inc, and $addToSet are supported');
+
+      if (key === '$addToSet') {
+        for (const prop of Object.keys(update.$addToSet)) {
+          // only support boolean, string, or number (not array or object)
+          if (!['boolean', 'string', 'number'].includes(typeof prop))
+            throw new TypeError(
+              'Only boolean, string, number are supported for $addToSet'
+            );
+          // ensure that the same prop doesn't exist in a $set
+          if (update.$set && update.$set[prop])
+            throw new TypeError(
+              'You cannot use both $addToSet and $set for the same prop'
+            );
+          // ensure the prop we're trying to push to is an array
+          if (!Array.isArray(beforeDoc[prop]))
+            throw new TypeError('Prop was not an array');
+
+          // if it was an object
+          if (typeof update.$addToSet[prop] === 'object') {
+            // only support one key which is $each
+            for (const subProp of Object.keys(update.$addToSet[prop])) {
+              if (subProp !== '$each')
+                throw new TypeError(
+                  'Only $each is supported in $addToSet objects'
+                );
+              if (!Array.isArray(update.$addToSet[prop].$each))
+                throw new TypeError('$each must be an array');
+              // only add to the set if it doesn't exist
+              for (const val of update.$addToSet[prop].$each) {
+                if (!beforeDoc[prop].includes(val)) {
+                  if (!update.$set) update.$set = {};
+
+                  update.$set[prop] = [...beforeDoc[prop], val];
+                }
+              }
+            }
+          } else if (!beforeDoc[prop].includes(update.$addToSet[prop])) {
+            // only add to the set if it doesn't exist
+            if (!update.$set) update.$set = {};
+
+            update.$set[prop] = [...beforeDoc[prop], update.$addToSet[prop]];
+          }
+        }
+
+        // delete $addToSet from the query preparation
+        delete update.$addToSet;
+      }
 
       if (key === '$set') update[key] = prepareQuery(mapping, update[key]);
     }

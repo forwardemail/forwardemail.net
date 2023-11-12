@@ -248,7 +248,7 @@ class IMAP {
           );
           // if no matches found then timer will run out since no response
           // (e.g. if this IMAP server doesn't have a connection maybe another does)
-          if (matches.length === 0) throw new Error('No matches available');
+          if (matches.length === 0) return;
 
           // sort by desc date find the first match
           const sorted = _.sortBy(
