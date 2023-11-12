@@ -108,7 +108,8 @@ block body
               table.table.table-hover.table-bordered.table-sm.mb-0
                 thead.thead-dark
                   tr
-                    th(scope="col")= t("Author")
+                    if domain.plan === 'team'
+                      th(scope="col")= t("Author")
                     if !Array.isArray(domain.tokens) || domain.tokens.length === 0 || domain.tokens.some(t => Boolean(t.description))
                       th(scope="col")= t("Description")
                     th(scope="col")= t("Created")
@@ -116,17 +117,20 @@ block body
                 tbody
                   if !Array.isArray(domain.tokens) || domain.tokens.length === 0
                     tr
-                      - const colspan = !Array.isArray(domain.tokens) || domain.tokens.length === 0 || domain.tokens.some(t => Boolean(t.description)) ? 4 : 3;
+                      - let colspan = !Array.isArray(domain.tokens) || domain.tokens.length === 0 || domain.tokens.some((t) => Boolean(t.description)) ? 4 : 3;
+                      if domain.plan !== 'team'
+                        - colspan = colspan - 1;
                       td(colspan=colspan)
                         .alert.alert-info.text-center.mb-0= t("No catch-all passwords exist yet.")
                   else
                     each token in domain.tokens
                       tr
-                        td.align-middle.small.text-monospace
-                          if token.user && token.user.email
-                            = token.user.email
-                          else
-                            i.text-muted= t("Not Available")
+                        if domain.plan === 'team'
+                          td.align-middle.small.text-monospace
+                            if token.user && token.user.email
+                              = token.user.email
+                            else
+                              i.text-muted= t("Not Available")
                         if !Array.isArray(domain.tokens) || domain.tokens.length === 0 || domain.tokens.some(t => Boolean(t.description))
                           td.align-middle.small.text-monospace
                             if token.description
