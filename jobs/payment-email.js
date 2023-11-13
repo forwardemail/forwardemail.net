@@ -130,9 +130,9 @@ async function mapper(id) {
     const ids = await Payments.distinct('_id', {
       $or: [
         {
-          // within the past 24 hours
+          // within the past 3 months
           invoice_at: {
-            $gte: dayjs().subtract(24, 'hour').toDate()
+            $gte: dayjs().subtract(3, 'month').toDate()
           },
           receipt_sent_at: {
             $exists: false
