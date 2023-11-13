@@ -95,33 +95,42 @@ async function mapper(id) {
 
   // TODO: if user email is removed (e.g. `id@config.removedEmailDomain`)
   //       then attempt to look up the transaction to get the end users email
+  if (user.email.endsWith(`@${config.removedEmailDomain}`)) {
+    await Payments.findByIdAndUpdate(payment._id, { $set });
+    return;
+  }
 
   // send email
-  await email({
-    template: 'payment',
-    message: {
-      to:
-        user[config.userFields.receiptEmail] ||
-        user[config.userFields.fullEmail],
-      ...(user[config.userFields.receiptEmail]
-        ? { cc: user[config.userFields.fullEmail] }
-        : {}),
-      bcc,
-      attachments: [
-        {
-          filename,
-          content
-        }
-      ]
-    },
-    locals: {
-      user,
-      payment: payment.toObject(),
-      receiptHTML
-    }
-  });
+  try {
+    await email({
+      template: 'payment',
+      message: {
+        to:
+          user[config.userFields.receiptEmail] ||
+          user[config.userFields.fullEmail],
+        ...(user[config.userFields.receiptEmail]
+          ? { cc: user[config.userFields.fullEmail] }
+          : {}),
+        bcc,
+        attachments: [
+          {
+            filename,
+            content
+          }
+        ]
+      },
+      locals: {
+        user,
+        payment: payment.toObject(),
+        receiptHTML
+      }
+    });
 
-  await Payments.findByIdAndUpdate(payment._id, { $set });
+    await Payments.findByIdAndUpdate(payment._id, { $set });
+  } catch (err) {
+    err.isCodeBug = true;
+    logger.error(err);
+  }
 }
 
 (async () => {
