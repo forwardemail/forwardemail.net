@@ -155,6 +155,7 @@ async function mapper(id) {
     });
     await pMapSeries(ids, mapper);
   } catch (err) {
+    err.isCodeBug = true;
     await logger.error(err);
   }
 
