@@ -887,7 +887,7 @@ Emails.statics.queue = async function (
     );
 
   // if we're a catch-all then validate from ends with @domain
-  if (options.catchall && !from.endsWith(`@${domain.name}`))
+  if ((options.catchall || !alias) && !from.endsWith(`@${domain.name}`))
     throw Boom.forbidden(
       i18n.translateError(
         'INVALID_CATCHALL_FROM_HEADER',
@@ -896,7 +896,11 @@ Emails.statics.queue = async function (
       )
     );
   // otherwise it must be a specific match to the alias
-  else if (!options.catchall && from !== `${alias.name}@${domain.name}`)
+  else if (
+    !options.catchall &&
+    alias &&
+    from !== `${alias.name}@${domain.name}`
+  )
     throw Boom.forbidden(
       i18n.translateError(
         'INVALID_FROM_HEADER',
