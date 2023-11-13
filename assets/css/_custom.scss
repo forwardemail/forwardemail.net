@@ -7,6 +7,9 @@
 .min-vh-80 {
   min-height: 80vh !important;
 }
+.min-vh-100 {
+  min-height: calc(100vh - 57.6328px) !important;
+}
 .min-h-100 {
   min-height: 100%;
 }
@@ -14,7 +17,7 @@
 // NOTE: we have to use class name here otherwise emails get a padding on top
 //       which is especially annoying in email clients like Thunderbird where it pads the top of composition window
 body.app {
-  padding-top: 60px;
+  padding-top: 57.6328px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

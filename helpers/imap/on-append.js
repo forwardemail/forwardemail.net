@@ -100,6 +100,35 @@ async function onAppend(path, flags, date, raw, session, fn) {
       raw
     });
 
+    //
+    // NOTE: this prevents storing duplicate messages
+    //
+    // Message-ID + PATH are used as determinent factors
+    // `msg` and `path` (mailbox._id)
+    // (e.g. in case MX server attempts multiple delivery attempts)
+    // (and in this case we simply return the already existing message)
+    // <https://github.com/nodemailer/wildduck/issues/555>
+    //
+    const existingMessage = await Messages.findOne(this, session, {
+      mailbox: mailbox._id,
+      msgid
+    });
+
+    if (existingMessage) {
+      const response = {
+        uidValidity: mailbox.uidValidity,
+        uid: existingMessage.uid,
+        id: existingMessage.id,
+        mailbox: mailbox.id,
+        mailboxPath: mailbox.path,
+        size: existingMessage.size,
+        status: 'new'
+      };
+      this.logger.debug('command response', { response });
+      fn(null, true, response);
+      return;
+    }
+
     // store reference for cleanup
     mimeTreeData = mimeTree;
 

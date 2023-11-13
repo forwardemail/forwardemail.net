@@ -187,7 +187,7 @@ include ../../../_pagination
                 p.font-weight-bold.small.mb-1
                   = t("Recipients")
                   = ":"
-                ul.list-inline.mb-1
+                ul.list-inline.mb-1.lead
                   if alias.name !== '*' && !alias.name.startsWith('/')
                     li.list-inline-item
                       span.badge.badge-success.text-monospace.font-weight-normal.text-nowrap(
@@ -196,6 +196,15 @@ include ../../../_pagination
                         i.fa(class=alias.has_imap ? "fa-check-circle" : "fa-times")
                         = " "
                         = "IMAP"
+                      = " "
+                      a.btn.btn-link.text-themed.p-0.no-js(
+                        href=l("/encrypted-email"),
+                        target="_blank",
+                        type="button",
+                        data-toggle="modal",
+                        data-target="#modal-storage"
+                      )
+                        i.fa.fa-info-circle
                   //- no recipient verification required
                   if domain.plan === 'free' || !alias.has_recipient_verification
                     each recipient in alias.recipients
@@ -350,7 +359,7 @@ include ../../../_pagination
               )
                 i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
             td.align-middle.d-none.d-lg-table-cell
-              ul.list-inline.mb-0
+              ul.list-inline.mb-0.lead
                 if alias.name !== '*' && !alias.name.startsWith('/')
                   li.list-inline-item
                     span.badge.badge-success.text-monospace.font-weight-normal.text-nowrap(
@@ -359,6 +368,15 @@ include ../../../_pagination
                       i.fa(class=alias.has_imap ? "fa-check-circle" : "fa-times")
                       = " "
                       = "IMAP"
+                    = " "
+                    a.btn.btn-link.text-themed.p-0.no-js(
+                      href=l("/encrypted-email"),
+                      target="_blank",
+                      type="button",
+                      data-toggle="modal",
+                      data-target="#modal-storage"
+                    )
+                      i.fa.fa-info-circle
                 //- no recipient verification required
                 if domain.plan === 'free' || !alias.has_recipient_verification
                   each recipient in alias.recipients

@@ -141,7 +141,7 @@ async function onAuth(auth, session, fn) {
     })
       .populate(
         'members.user',
-        `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+        `id group plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
       )
       .select('+tokens.hash +tokens.salt')
       .lean()
@@ -252,15 +252,28 @@ async function onAuth(auth, session, fn) {
     // Clear authentication limit for this IP address
     await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
 
+    // if any of the domain admins are admins then don't rate limit concurrent connections
+    const adminExists = domain.members.some((m) => {
+      return m.group === 'admin' && m?.user?.group === 'admin';
+    });
+
     // ensure we don't have more than 15 connections per alias
     // (or per domain if we're using a catch-all)
     const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
     const count = await this.client.incrby(key, 0);
     if (count < 0) await this.client.del(key); // safeguard
-    // else if (count > 15)
-    //   throw new SMTPError('Too many concurrent connections', {
-    //     responseCode: 421
-    //   });
+    else if (!adminExists && count > 15) {
+      // early monitoring for admins (probably remove this later once it becomes a burden)
+      const err = new TypeError(
+        `Too many concurrent connections from ${
+          alias ? `${alias.name}@${domain.name}` : domain.name
+        } with key "${key}"`
+      );
+      this.logger.error(err, { session });
+      throw new SMTPError('Too many concurrent connections', {
+        responseCode: 421
+      });
+    }
 
     // increase counter for alias by 1 (with ttl safeguard)
     await this.client.pipeline().incr(key).pexpire(key, ms('1h')).exec();

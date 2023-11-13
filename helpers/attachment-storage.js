@@ -103,9 +103,7 @@ class AttachmentStorage {
       }
     );
 
-    if (result) {
-      return result._id;
-    }
+    if (result) return result;
 
     // virtual helper for locking if we lock in advance
     // attachment.lock = lock

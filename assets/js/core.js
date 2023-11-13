@@ -64,6 +64,17 @@ $('.navbar-collapse').on('hidden.bs.collapse shown.bs.collapse', () => {
   resizeNavbarPadding($);
 });
 
+// Add calc to min-vh-100
+const $navbarFixedTop = $('.navbar.fixed-top');
+if ($navbarFixedTop.length > 0) {
+  $('.min-vh-100').attr(
+    'style',
+    `min-height: calc(100vh - ${$navbarFixedTop.outerHeight()}px) !important;`
+  );
+} else {
+  $('.min-vh-100').attr('style', 'min-height: 100vh !important;');
+}
+
 // Some pages have a navbar fixed to bottom (e.g. Step 1, Step 2)
 const $navbarFixedBottom = $('.fixed-bottom');
 if ($navbarFixedBottom.length === 1)

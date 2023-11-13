@@ -1162,8 +1162,6 @@
   "on our servers and test environments.": "auf unseren Servern und Testumgebungen.",
   "The latest version, v2 (released on May 6, 2019) was a major rewrite from v1 and focuses on performance through streams.": "Die neueste Version v2 (veröffentlicht am 6. Mai 2019) war eine umfassende Neufassung von v1 und konzentriert sich auf die Leistung durch Streams.",
   "Nodemailer's": "Nodemailers",
-  "prolific author Andris Reinman (": "produktiver Autor Andris Reinman (",
-  "@andris9": "@anders9",
   ") helped us switch off using the": ") hat uns geholfen, mit dem abzuschalten",
   "library and use": "Bibliothek und Nutzung",
   "instead with some custom transform logic to split the header and the body of the message without affecting the body.  This allows us to perform operations on headers very fast (such as security checks and for SPF/DKIM/DMARC compliance).": "stattdessen mit einer benutzerdefinierten Transformationslogik, um den Header und den Text der Nachricht aufzuteilen, ohne den Text zu beeinflussen. Dadurch können wir Operationen an Headern sehr schnell durchführen (z. B. Sicherheitsprüfungen und für die Einhaltung von SPF/DKIM/DMARC).",
@@ -4627,5 +4625,13 @@
   "Description is longer than the maximum allowed length (150).": "Die Beschreibung ist länger als die maximal zulässige Länge (150).",
   "From header must end with <span class=\"notranslate\">%s</span>": "Der From-Header muss mit <span class=\"notranslate\">%s</span> enden",
   "Author": "Autor",
-  "(optional; for organization purposes only)": "(optional; nur zu Organisationszwecken)"
+  "(optional; for organization purposes only)": "(optional; nur zu Organisationszwecken)",
+  "ChaCha20-Poly1305": "ChaCha20-Poly1305",
+  ") encryption on mailboxes.  Additionally we use token-based two-factor authentication (as opposed to SMS which is suspectible to": ") Verschlüsselung auf Postfächern. Darüber hinaus verwenden wir eine tokenbasierte Zwei-Faktor-Authentifizierung (im Gegensatz zu SMS, die verdächtig ist).",
+  ").  This means that your mailboxes are individually encrypted, self-contained,": "). Das bedeutet, dass Ihre Postfächer individuell verschlüsselt, in sich geschlossen und",
+  "How do I get started?": "Wie fange ich an?",
+  "Simply go to <a class=\"font-weight-bold text-decoration-underline\" href=\"%s\">My Account &rarr; Domains</a> &rarr; Aliases, click Add Alias (or) Edit Alias, and then click the checkbox to enable IMAP Storage.": "Gehen Sie einfach zu <a class=\"font-weight-bold text-decoration-underline\" href=\"%s\">„Mein Konto“ → „Domänen“</a> → „Aliase“, klicken Sie auf „Alias hinzufügen“ (oder „Alias bearbeiten“) und klicken Sie dann auf das Kontrollkästchen, um den IMAP-Speicher zu aktivieren.",
+  "You can even have both IMAP storage and forwarding recipients enabled at the same time.": "Sie können sogar gleichzeitig die IMAP-Speicherung und Weiterleitungsempfänger aktivieren.",
+  "What email clients can I use?": "Welche E-Mail-Clients kann ich verwenden?",
+  "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Mithilfe unserer Anleitung <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(hier klicken)</a> können Sie ganz einfach E-Mails mit diesen beliebten E-Mail-Clients senden und empfangen."
 }

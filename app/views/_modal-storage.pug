@@ -22,6 +22,23 @@
           != t('We purposely designed our service so that it operates in-memory when you connect and <strong class="text-decoration-underline">we don\'t even have access to your mailbox</strong> at rest.')
           = " "
           != t("If you forget your password, then you lose your mailbox and need to either recover with offline backups or start over.")
+        hr
+        h2.h4= t("How do I get started?")
+        p
+          != t('Simply go to <a class="font-weight-bold text-decoration-underline" href="%s">My Account &rarr; Domains</a> &rarr; Aliases, click Add Alias (or) Edit Alias, and then click the checkbox to enable IMAP Storage.', l("/my-account/domains"))
+          = ' '
+          = t('You can even have both IMAP storage and forwarding recipients enabled at the same time.')
+        hr
+        h2.h4= t("What email clients can I use?")
+        p.mb-2!= t('You can easily send and receive email with these popular email clients using our instructions <a href="%s" class="font-weight-bold text-decoration-underline" target="_blank">(click here)</a>.', l('/faq#how-do-i-configure-my-email-client-to-work-with-forward-email'))
+        ul.list-inline.h3
+          li.list-inline-item.mr-1: span.badge.badge-dark= "Apple"
+          li.list-inline-item.mr-1: span.badge.badge-dark= "Microsoft"
+          li.list-inline-item.mr-1: span.badge.badge-dark= "Google"
+          li.list-inline-item.mr-1: span.badge.badge-dark= "Thunderbird"
+          li.list-inline-item.mr-1: span.badge.badge-dark= "Android"
+          li.list-inline-item: span.badge.badge-secondary= "and more"
+        hr
         h2.h4= t("How does it work?")
         p
           != t("We use individual mailboxes encrypted with your password.")
@@ -31,6 +48,7 @@
           != t("We are also <strong>100% open-source</strong> and privacy-focused.")
           = " "
           != t('At anytime you can download, view, export, backup, and/or delete your mailboxes &ndash; and <strong class="text-decoration-underline">easily migrate to or from another email service provider</strong>.')
+        hr
         h2.h4= t("What are your storage limits?")
         p
           = t("If you exceed the default storage limit of 10 GB, then you can purchase additional storage as needed.")
@@ -42,6 +60,7 @@
           != t('<strong class="text-decoration-underline">You can even bring your own storage provider</strong> for backups to use with our service &ndash; such as Amazon, Backblaze, Box, Cloudflare, Digital Ocean, Dropbox, SFTP, Google, Microsoft, Oracle, or any S3-compatible storage provider.')
           = " "
           != t("This means you can own your data and most importantly &ndash; <strong>you don't have to operate and maintain your own email servers</strong>.")
+        hr
         a.text-uppercase.font-weight-bold.btn.btn-block.btn-success.btn-lg(
           href=l("/encrypted-email")
         )= t("Click to learn more")
