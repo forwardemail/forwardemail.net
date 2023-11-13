@@ -61,6 +61,9 @@ async function mapper(id) {
   // ensure not banned
   if (user[config.userFields.isBanned]) return;
 
+  // ensure not removed
+  if (user[config.userFields.isRemoved]) return;
+
   // if on free plan then ignore
   if (user.plan === 'free') return;
 
