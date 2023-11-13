@@ -208,11 +208,30 @@ async function onAuth(auth, session, fn) {
         `auth_limit_${config.env}:${session.remoteAddress}`,
         0
       );
-      if (count >= config.smtpLimitAuth)
+      if (count >= config.smtpLimitAuth) {
+        // alert admins of failed login by IP address
+        // (until this gets out of hand)
+        if (session.resolvedClientHostname) {
+          this.logger.error(
+            new TypeError(
+              `${session.resolvedClientHostname} (${parseRootDomain(
+                session.resolvedClientHostname
+              )}) has exceeded failed login attempts`
+            )
+          );
+        } else {
+          this.logger.error(
+            new TypeError(
+              `${session.remoteAddress} has exceeded failed login attempts`
+            )
+          );
+        }
+
         throw new SMTPError(
           `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`
           // { ignoreHook: true }
         );
+      }
     }
 
     // ensure that the token is valid

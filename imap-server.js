@@ -103,8 +103,7 @@ class IMAP {
       namespace: config.smtpLimitNamespace
     });
 
-    this.logger =
-      config.env === 'development' ? logger : new Axe({ silent: true });
+    this.logger = config.env === 'test' ? new Axe({ silent: true }) : logger;
 
     const server = new IMAPServer({
       secure,

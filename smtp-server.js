@@ -60,8 +60,7 @@ class SMTP {
       namespace: config.smtpLimitNamespace
     });
 
-    this.logger =
-      config.env === 'development' ? logger : new Axe({ silent: true });
+    this.logger = config.env === 'test' ? new Axe({ silent: true }) : logger;
 
     // setup our smtp server which listens for incoming email
     // TODO: <https://github.com/nodemailer/smtp-server/issues/177>
