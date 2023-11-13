@@ -452,13 +452,6 @@ async function webhook(ctx) {
     return;
   }
 
-  //
-  // wait a random and arbitrary amount of time (~1-5s)
-  // (this helps but does not ensure duplicate tx persisted)
-  // (we will need to investigate `unique` with `background: false` usage on `stripe_payment_intent_id` in future)
-  //
-  await delay(Math.round((_.random(1, 5) + Math.random()) * 1000));
-
   // run in background
   processEvent(ctx, event)
     .then()

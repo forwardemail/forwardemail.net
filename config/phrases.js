@@ -166,6 +166,7 @@ module.exports = {
   INVALID_LOG: 'Log does not exist.',
   INVALID_MEMBER: 'Member does not exist.',
   INVALID_VERIFICATION_PIN: 'The verification code entered was invalid.',
+  PAYMENT_ALREADY_EXISTS: 'Payment already exists',
   INVALID_PAYMENT_METHOD:
     'Payment method must be either card, wallet, bank, or PayPal.',
   INVALID_PAYMENT_TYPE: 'Payment type must be either one-time or subscription.',

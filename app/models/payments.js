@@ -5,6 +5,7 @@
 
 const path = require('path');
 
+const Boom = require('@hapi/boom');
 const numeral = require('numeral');
 const capitalize = require('lodash/capitalize');
 const cryptoRandomString = require('crypto-random-string');
@@ -228,6 +229,52 @@ Payments.pre('validate', async function (next) {
     // get unique reference recursively
     this.reference = await getUniqueReference(this);
 
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+//
+// safeguard to attempt to prevent duplicates from stripe/paypal:
+// - `stripe_payment_intent_id`
+// - `paypal_transaction_id`
+//
+Payments.pre('save', async function (next) {
+  // only check if this was a new document
+  if (!this.isNew) return next();
+
+  // don't check for unknown, free_beta_program, and plan_conversion methods
+  if (['unknown', 'free_beta_program', 'plan_conversion'].includes(this.method))
+    return next();
+
+  // if it doesn't have either stripe payment intent or paypal tx id return early
+  if (
+    !isSANB(this.stripe_payment_intent_id) &&
+    !isSANB(this.paypal_transaction_id)
+  )
+    return next();
+
+  try {
+    const query = {
+      _id: {
+        $ne: this._id
+      }
+    };
+    if (isSANB(this.stripe_payment_intent_id)) {
+      query.stripe_payment_intent_id = this.stripe_payment_intent_id;
+    } else if (isSANB(this.paypal_transaction_id)) {
+      query.paypal_transaction_id = this.paypal_transaction_id;
+    } else {
+      // safeguard
+      throw new TypeError('Missing Stripe or PayPal transaction ID');
+    }
+
+    const exists = await this.constructor.exists(query);
+    if (exists)
+      throw Boom.badRequest(
+        i18n.translateError('PAYMENT_ALREADY_EXISTS', this.locale)
+      );
     next();
   } catch (err) {
     next(err);
