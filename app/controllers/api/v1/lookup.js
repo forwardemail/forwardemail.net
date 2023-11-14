@@ -10,6 +10,7 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const regexParser = require('regex-parser');
 const { boolean } = require('boolean');
+const { isEmail } = require('validator');
 
 const config = require('#config');
 const Domains = require('#models/domains');
@@ -268,6 +269,7 @@ async function lookup(ctx) {
   }
 
   const body = {
+    alias_ids: [], // ids of IMAP storage to deliver to (supports 1 nested lookup)
     has_imap: false,
     mapping: []
   };
@@ -285,10 +287,34 @@ async function lookup(ctx) {
       alias.has_imap &&
       alias.is_enabled &&
       alias.name !== '*' &&
-      !alias.name.startsWith('/')
+      !alias.name.startsWith('/') &&
+      !body.alias_ids.includes(alias.id)
     ) {
-      body.alias_id = alias.id;
+      body.alias_ids.push(alias.id);
       body.has_imap = true;
+    }
+
+    // recursively lookup all inboxes we need to deliver this to
+    if (username && alias.is_enabled && alias.recipients.length > 0) {
+      for (const recipient of alias.recipients) {
+        if (!isEmail(recipient)) continue;
+        const [rcptName, rcptDomain] = recipient.split('@');
+        if (rcptDomain !== domain.name) continue;
+        const id = aliasIdsWithIMAPByName[rcptName];
+        if (!id) continue;
+        if (body.alias_ids.includes(id)) continue;
+        // rudimentary limitation to max of 25 IMAP storage inboxes at once
+        if (body.alias_ids.length >= 25) {
+          ctx.logger.error(
+            new TypeError(
+              `${username} ${alias.name}@${domain.name} (${alias.id}) from ${domain.name} (${domain.id}) attempted to be forwarded to more than 25 IMAP mailboxes at once`
+            )
+          );
+        } else {
+          body.alias_ids.push(id);
+          body.has_imap = true;
+        }
+      }
     }
 
     // if the alias requires recipient verification
@@ -308,6 +334,22 @@ async function lookup(ctx) {
           )
           .join(',')
       );
+  }
+
+  // create a mapping in advance for
+  // recursive IMAP storage support
+  const aliasIdsWithIMAPByName = {};
+  if (username) {
+    for (const alias of aliases) {
+      if (
+        alias.has_imap &&
+        alias.is_enabled &&
+        alias.name !== '*' &&
+        !alias.name.startsWith('/')
+      ) {
+        aliasIdsWithIMAPByName[alias.name] = alias.id;
+      }
+    }
   }
 
   for (const alias of aliases) {

@@ -5599,5 +5599,7 @@
   "Simply go to <a class=\"font-weight-bold text-decoration-underline\" href=\"%s\">My Account &rarr; Domains</a> &rarr; Aliases, click Add Alias (or) Edit Alias, and then click the checkbox to enable IMAP Storage.": "<a class=\"font-weight-bold text-decoration-underline\" href=\"%s\">[マイ アカウント] → [ドメイン]</a> → [エイリアス] に移動し、[エイリアスの追加] (または) [エイリアスの編集] をクリックして、チェックボックスをクリックして IMAP ストレージを有効にするだけです。",
   "You can even have both IMAP storage and forwarding recipients enabled at the same time.": "IMAP ストレージと受信者の転送の両方を同時に有効にすることもできます。",
   "What email clients can I use?": "どのような電子メール クライアントを使用できますか?",
-  "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "手順<a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(ここをクリック)</a>を使用すると、これらの一般的な電子メール クライアントで電子メールを簡単に送受信できます。"
+  "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "手順<a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(ここをクリック)</a>を使用すると、これらの一般的な電子メール クライアントで電子メールを簡単に送受信できます。",
+  "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "複数のレベルの深さを再帰的に転送することはサポートされていません。複数レベルの深さで再帰的に転送すると、目的の構成が意図したとおりに機能しない可能性があります。",
+  "Payment already exists": "支払いはすでに存在します"
 }

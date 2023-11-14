@@ -5290,5 +5290,7 @@
   "Simply go to <a class=\"font-weight-bold text-decoration-underline\" href=\"%s\">My Account &rarr; Domains</a> &rarr; Aliases, click Add Alias (or) Edit Alias, and then click the checkbox to enable IMAP Storage.": "只需转至<a class=\"font-weight-bold text-decoration-underline\" href=\"%s\">我的帐户 → 域</a>→ 别名，单击添加别名（或）编辑别名，然后单击复选框以启用 IMAP 存储。",
   "You can even have both IMAP storage and forwarding recipients enabled at the same time.": "您甚至可以同时启用 IMAP 存储和转发收件人。",
   "What email clients can I use?": "我可以使用哪些电子邮件客户端？",
-  "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "您可以按照我们的说明，通过这些流行的电子邮件客户端轻松发送和接收电子邮件<a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">（单击此处）</a> 。"
+  "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "您可以按照我们的说明，通过这些流行的电子邮件客户端轻松发送和接收电子邮件<a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">（单击此处）</a> 。",
+  "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "我们不支持递归转发超过一层深度。如果您递归转发的深度超过一级，那么您所需的配置可能无法按预期工作。",
+  "Payment already exists": "付款已存在"
 }

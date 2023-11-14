@@ -105,7 +105,10 @@ if !domain || !domain.is_global
     = " "
     span.text-muted= t("(optional)")
   textarea#textarea-alias-recipients.form-control(name="recipients", rows=1)= alias && Array.isArray(alias.recipients) ? alias.recipients.join(", ") : user.email
-  p.form-text.small.text-black.text-themed-50= t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
+  p.form-text.small.text-black.text-themed-50
+    = t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
+    = ' '
+    = t('We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.')
 .form-group
   label(for="textarea-alias-description")
     = t("Description")
