@@ -16,14 +16,12 @@ const bree = new Bree({
   jobs: [
     {
       //
-      // this is a long running job, but we attempt to restart it
-      // every 30s in case errors (e.g. uncaught exception edge case causes `process.exit()`)
-      // this job cleans up any backup artifacts from 1 hr+ ago for 'rekey' and 'backup' sqlite-server cases
+      // this job cleans up any backup artifacts from 4 hr+ ago for 'rekey' and 'backup' sqlite-server cases
       // (e.g. the server stopped mid-backup or an error occurred, e.g. ran out of memory)
       // and in an attempt to save on disk stoarge, we will run `fs.unlink` on each of these files
       //
       name: 'sqlite-cleanup',
-      interval: '30s',
+      interval: '1h',
       timeout: 0
     }
   ]

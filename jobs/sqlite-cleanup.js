@@ -72,6 +72,8 @@ const AFFIXES = ['-backup', '-backup-wal', '-backup-shm'];
       withFileTypes: true
     });
 
+    const filePaths = [];
+
     for (const dirent of dirents) {
       if (!dirent.isDirectory()) continue;
       // eslint-disable-next-line no-await-in-loop
@@ -92,12 +94,28 @@ const AFFIXES = ['-backup', '-backup-wal', '-backup-shm'];
           if (stat.mtimeMs && stat.mtimeMs <= Date.now() - ms('4h')) {
             // eslint-disable-next-line no-await-in-loop
             await fs.promises.unlink(filePath);
+            filePaths.push(filePath);
           }
 
           break;
         }
       }
     }
+
+    // email admins of any old files cleaned up
+    if (filePaths.length > 0)
+      await emailHelper({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: `SQLite cleanup successfully removed (${filePaths.length}) stale backups`
+        },
+        locals: {
+          message: `<ul><li><code class="small">${filePaths.join(
+            '</code></li><li><code class="small">'
+          )}</code></li></ul>`
+        }
+      });
   } catch (err) {
     await logger.error(err);
 
