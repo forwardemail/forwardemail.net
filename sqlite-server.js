@@ -977,7 +977,7 @@ async function parsePayload(data, ws) {
         // create backup
         const tmp = path.join(
           path.dirname(storagePath),
-          `${payload.id}.sqlite`
+          `${payload.id}-backup.sqlite`
         );
         const results = await db.backup(tmp);
         let backup = true;
@@ -1106,7 +1106,10 @@ async function parsePayload(data, ws) {
             storage_location: payload.session.user.storage_location
           });
           const diskSpace = await checkDiskSpace(storagePath);
-          tmp = path.join(path.dirname(storagePath), `${payload.id}.sqlite`);
+          tmp = path.join(
+            path.dirname(storagePath),
+            `${payload.id}-backup.sqlite`
+          );
 
           // <https://github.com/nodejs/node/issues/38006>
           const stats = await fs.promises.stat(storagePath);
