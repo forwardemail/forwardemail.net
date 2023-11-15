@@ -7,6 +7,7 @@
 require('#config/env');
 
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
@@ -21,19 +22,28 @@ const ms = require('ms');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
 
+const Aliases = require('#models/aliases');
 const config = require('#config');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
+const tmpdir = os.tmpdir();
 
 const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [client],
-  logger
+  logger,
+  customHandlers: [
+    // <https://github.com/vitalets/websocket-as-promised#wspclosecode-reason--promiseevent>
+    () => wsp.close()
+  ]
 });
+
+const wsp = createWebSocketAsPromised();
 
 // store boolean if the job is cancelled
 let isCancelled = false;
@@ -62,31 +72,43 @@ graceful.listen();
 //
 const AFFIXES = ['-backup', '-backup-wal', '-backup-shm'];
 
+const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
+
 (async () => {
   await setupMongoose(logger);
 
   try {
     if (isCancelled) return;
 
-    const dirents = await fs.promises.readdir('/mnt', {
+    const dirents = await fs.promises.readdir(mountDir, {
       withFileTypes: true
     });
 
+    const ids = new Set();
     const filePaths = [];
 
     for (const dirent of dirents) {
       if (!dirent.isDirectory()) continue;
       // eslint-disable-next-line no-await-in-loop
-      const files = await fs.promises.readdir(path.join('/mnt', dirent.name), {
-        withFileTypes: true
-      });
+      const files = await fs.promises.readdir(
+        path.join(mountDir, dirent.name),
+        {
+          withFileTypes: true
+        }
+      );
       for (const file of files) {
         if (!file.isFile()) continue;
         if (path.extname(file.name) !== '.sqlite') continue;
         const basename = path.basename(file.name, path.extname(file.name));
+        // TODO: automated job to detect files on block storage
+        //       and R2 that don't correspond to actual aliases (e.g. is_banned and/or is_removed)
         for (const affix of AFFIXES) {
-          if (!basename.endsWith(affix)) continue;
-          const filePath = path.join('/mnt', dirent.name, file.name);
+          if (!basename.endsWith(affix)) {
+            ids.add(basename.replace('-tmp', ''));
+            continue;
+          }
+
+          const filePath = path.join(mountDir, dirent.name, file.name);
           // eslint-disable-next-line no-await-in-loop
           const stat = await fs.promises.stat(filePath);
           if (!stat.isFile()) continue; // safeguard
@@ -104,7 +126,7 @@ const AFFIXES = ['-backup', '-backup-wal', '-backup-shm'];
 
     // email admins of any old files cleaned up
     if (filePaths.length > 0)
-      await emailHelper({
+      emailHelper({
         template: 'alert',
         message: {
           to: config.email.message.from,
@@ -115,7 +137,72 @@ const AFFIXES = ['-backup', '-backup-wal', '-backup-shm'];
             '</code></li><li><code class="small">'
           )}</code></li></ul>`
         }
+      })
+        .then()
+        .catch((err) => logger.error(err));
+
+    // go through ids and find any
+    // that were banned or removed
+    if (ids.size > 0) {
+      const badIds = await Aliases.distinct('id', {
+        $or: [
+          {
+            id: { $in: [...ids] },
+            [config.userFields.isBanned]: true
+          },
+          {
+            id: { $in: [...ids] },
+            [config.userFields.isRemoved]: true
+          }
+        ]
       });
+      // email admins (manually remove for now, may automate this in near future once certain)
+      if (badIds.length > 0) {
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: 'SQLite banned/removed aliases detected'
+          },
+          locals: {
+            message: `<ul><li><code class="small">${badIds.join(
+              '</code></li><li><code class="small">'
+            )}</code></li></ul>`
+          }
+        })
+          .then()
+          .catch((err) => logger.error(err));
+      }
+
+      // go through all ids filtered out from bad ones and update storage
+      for (const badId of badIds) {
+        ids.delete(badId);
+      }
+
+      // now iterate through all ids and update their sizes
+      await Promise.all(
+        [...ids].map(async (id) => {
+          try {
+            await wsp.request({
+              action: 'size',
+              timeout: ms('5s'),
+              alias_id: id
+            });
+          } catch {
+            // commented out as a safeguard
+            // easy way to cleanup non-production environments tmpdir folders
+            // if (
+            //   config.env !== 'production' &&
+            //   err.message === 'Alias does not exist'
+            // ) {
+            //   await fs.promises.unlink(
+            //     path.join(mountDir, config.defaultStoragePath, `${id}.sqlite`)
+            //   );
+            // }
+          }
+        })
+      );
+    }
   } catch (err) {
     await logger.error(err);
 

@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "באילו לקוחות דוא\"ל אני יכול להשתמש?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "אתה יכול לשלוח ולקבל דוא&quot;ל בקלות עם לקוחות הדוא&quot;ל הפופולריים האלה באמצעות ההוראות שלנו <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(לחץ כאן)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "אנחנו לא תומכים בהעברה רקורסיבית של יותר מרמה אחת לעומק. אם תעביר באופן רקורסיבי יותר מרמה אחת לעומק, ייתכן שהתצורה הרצויה שלך לא תפעל כמתוכנן.",
-  "Payment already exists": "התשלום כבר קיים"
+  "Payment already exists": "התשלום כבר קיים",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "אם אתה מחובר ל-IMAP (למשל באמצעות לקוח דוא\"ל כגון Apple Mail או Thunderbird), אז איננו צריכים לכתוב לאחסון דיסק זמני. במקום זאת, סיסמת ה-IMAP המוצפנת שלך בזיכרון מאוחזרת ונעשה בה שימוש. בזמן אמת, כאשר הודעה מנסה להימסר אליך, אנו שולחים בקשת WebSocket לכל שרתי ה-IMAP ושואלים אותם אם יש להם הפעלה פעילה עבורך (זהו חלק האחזור), ולאחר מכן נעביר את זה סיסמה מוצפנת בזיכרון - כך שאיננו צריכים לכתוב לתיבת דואר זמנית, אנו יכולים לכתוב לתיבת הדואר המוצפנת בפועל שלך באמצעות הסיסמה המוצפנת שלך.",
+  "Privacy-focused encrypted email for enterprise.": "דוא\"ל מוצפן ממוקד פרטיות לארגונים.",
+  "Privacy-focused encrypted email for education.": "דוא\"ל מוצפן ממוקד פרטיות לחינוך.",
+  "Privacy-focused encrypted email for startups.": "דוא\"ל מוצפן ממוקד פרטיות עבור סטארט-אפים.",
+  "Privacy-focused encrypted email for stores.": "דוא\"ל מוצפן ממוקד פרטיות לחנויות.",
+  "Privacy-focused encrypted email for designers.": "דוא\"ל מוצפן ממוקד פרטיות למעצבים.",
+  "Privacy-focused encrypted email for developers.": "דוא\"ל מוצפן ממוקד פרטיות למפתחים.",
+  "Privacy-focused encrypted email for marketing.": "דוא\"ל מוצפן ממוקד פרטיות לשיווק.",
+  "Privacy-focused encrypted email for sales.": "דוא\"ל מוצפן ממוקד פרטיות למכירות.",
+  "Privacy-focused encrypted email for you.": "דוא\"ל מוצפן ממוקד פרטיות בשבילך.",
+  "Enterprise-grade 99.99% uptime SLA": "SLA בדרגה ארגונית של 99.99% זמן פעילות",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "מחיקת החשבון שלך היא בלתי הפיכה. נא לנקוט משנה זהירות בעת מחיקת חשבונך.",
+  "Please remove all invited members to the domain before changing plans.": "אנא הסר את כל החברים המוזמנים לדומיין לפני שתשנה תוכניות."
 }

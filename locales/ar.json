@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "ما هي برامج البريد الإلكتروني التي يمكنني استخدامها؟",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "يمكنك بسهولة إرسال واستقبال البريد الإلكتروني مع عملاء البريد الإلكتروني المشهورين باستخدام تعليماتنا <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(انقر هنا)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "نحن لا ندعم إعادة التوجيه بشكل متكرر لأكثر من مستوى واحد. إذا قمت بإعادة التوجيه بشكل متكرر لأكثر من مستوى واحد، فقد لا يعمل التكوين المطلوب على النحو المنشود.",
-  "Payment already exists": "الدفع موجود بالفعل"
+  "Payment already exists": "الدفع موجود بالفعل",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "إذا كنت متصلاً بـ IMAP (على سبيل المثال، باستخدام برنامج بريد إلكتروني مثل Apple Mail أو Thunderbird)، فلن نحتاج إلى الكتابة إلى وحدة تخزين القرص المؤقتة. بدلاً من ذلك، يتم جلب كلمة مرور IMAP المشفرة في الذاكرة واستخدامها. في الوقت الفعلي، عندما نحاول تسليم رسالة إليك، نرسل طلب WebSocket إلى جميع خوادم IMAP لنسألهم عما إذا كانت لديهم جلسة نشطة لك (هذا هو جزء الجلب)، وبعد ذلك سنمرر ذلك كلمة المرور المشفرة في الذاكرة - لذلك لا نحتاج إلى الكتابة إلى صندوق بريد مؤقت، يمكننا الكتابة إلى صندوق البريد المشفر الفعلي الخاص بك باستخدام كلمة المرور المشفرة.",
+  "Privacy-focused encrypted email for enterprise.": "بريد إلكتروني مشفر يركز على الخصوصية للمؤسسات.",
+  "Privacy-focused encrypted email for education.": "بريد إلكتروني مشفر يركز على الخصوصية للتعليم.",
+  "Privacy-focused encrypted email for startups.": "بريد إلكتروني مشفر يركز على الخصوصية للشركات الناشئة.",
+  "Privacy-focused encrypted email for stores.": "بريد إلكتروني مشفر يركز على الخصوصية للمتاجر.",
+  "Privacy-focused encrypted email for designers.": "بريد إلكتروني مشفر يركز على الخصوصية للمصممين.",
+  "Privacy-focused encrypted email for developers.": "بريد إلكتروني مشفر يركز على الخصوصية للمطورين.",
+  "Privacy-focused encrypted email for marketing.": "بريد إلكتروني مشفر يركز على الخصوصية للتسويق.",
+  "Privacy-focused encrypted email for sales.": "بريد إلكتروني مشفر يركز على الخصوصية للمبيعات.",
+  "Privacy-focused encrypted email for you.": "بريد إلكتروني مشفر يركز على الخصوصية.",
+  "Enterprise-grade 99.99% uptime SLA": "اتفاقية مستوى الخدمة (SLA) لوقت تشغيل بنسبة 99.99% على مستوى المؤسسات",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "حذف حسابك لا رجعة فيه. يرجى توخي الحذر الشديد عند حذف حسابك.",
+  "Please remove all invited members to the domain before changing plans.": "الرجاء إزالة كافة الأعضاء المدعوين إلى المجال قبل تغيير الخطط."
 }

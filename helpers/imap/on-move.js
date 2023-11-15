@@ -14,6 +14,7 @@
  */
 
 const mongoose = require('mongoose');
+const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 
@@ -374,6 +375,17 @@ async function onMove(mailboxId, update, session, fn) {
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
+    }
+
+    // update storage
+    try {
+      await this.wsp.request({
+        action: 'size',
+        timeout: ms('5s'),
+        alias_id: alias.id
+      });
+    } catch (err) {
+      this.logger.fatal(err);
     }
 
     // throw error if any

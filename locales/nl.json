@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Welke e-mailclients kan ik gebruiken?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "U kunt eenvoudig e-mail verzenden en ontvangen met deze populaire e-mailclients met behulp van onze instructies <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(klik hier)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "We bieden geen ondersteuning voor het recursief doorsturen van meer dan één niveau diep. Als u recursief meer dan één niveau diep doorstuurt, werkt de gewenste configuratie mogelijk niet zoals bedoeld.",
-  "Payment already exists": "Er bestaat al een betaling"
+  "Payment already exists": "Er bestaat al een betaling",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Als u verbonden bent met IMAP (bijvoorbeeld met behulp van een e-mailclient zoals Apple Mail of Thunderbird), hoeven we niet naar tijdelijke schijfopslag te schrijven. In plaats daarvan wordt uw in het geheugen gecodeerde IMAP-wachtwoord opgehaald en gebruikt. Wanneer een bericht bij u probeert te worden afgeleverd, sturen we in realtime een WebSocket-verzoek naar alle IMAP-servers met de vraag of ze een actieve sessie voor u hebben (dit is het ophaalgedeelte), en geven dat vervolgens door gecodeerd wachtwoord in het geheugen – we hoeven dus niet naar een tijdelijke mailbox te schrijven; we kunnen met uw gecodeerde wachtwoord naar uw daadwerkelijke gecodeerde mailbox schrijven.",
+  "Privacy-focused encrypted email for enterprise.": "Op privacy gerichte gecodeerde e-mail voor ondernemingen.",
+  "Privacy-focused encrypted email for education.": "Op privacy gerichte gecodeerde e-mail voor het onderwijs.",
+  "Privacy-focused encrypted email for startups.": "Op privacy gerichte gecodeerde e-mail voor startups.",
+  "Privacy-focused encrypted email for stores.": "Op privacy gerichte gecodeerde e-mail voor winkels.",
+  "Privacy-focused encrypted email for designers.": "Op privacy gerichte gecodeerde e-mail voor ontwerpers.",
+  "Privacy-focused encrypted email for developers.": "Op privacy gerichte gecodeerde e-mail voor ontwikkelaars.",
+  "Privacy-focused encrypted email for marketing.": "Op privacy gerichte gecodeerde e-mail voor marketing.",
+  "Privacy-focused encrypted email for sales.": "Op privacy gerichte gecodeerde e-mail voor verkoop.",
+  "Privacy-focused encrypted email for you.": "Op privacy gerichte gecodeerde e-mail voor u.",
+  "Enterprise-grade 99.99% uptime SLA": "SLA voor een uptime van 99,99% op bedrijfsniveau",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Het verwijderen van uw account is onomkeerbaar. Wees uiterst voorzichtig bij het verwijderen van uw account.",
+  "Please remove all invited members to the domain before changing plans.": "Verwijder alle uitgenodigde leden van het domein voordat u uw abonnement wijzigt."
 }

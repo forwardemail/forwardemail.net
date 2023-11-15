@@ -14,6 +14,7 @@
  */
 
 const imapTools = require('wildduck/imap-core/lib/imap-tools');
+const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
@@ -469,6 +470,17 @@ async function onStore(mailboxId, update, session, fn) {
           }
         );
       }
+    }
+
+    // update storage
+    try {
+      await this.wsp.request({
+        action: 'size',
+        timeout: ms('5s'),
+        alias_id: alias.id
+      });
+    } catch (err) {
+      this.logger.fatal(err);
     }
 
     // if there was an error during cursor then throw

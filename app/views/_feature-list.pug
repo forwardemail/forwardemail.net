@@ -18,14 +18,24 @@ ul.list-unstyled.text-left.mb-3
         = t("Encrypted Email")
       else
         = t("Learn more")
-  li
-    i.fa.fa-fw.fa-check-circle.text-success
-    = " "
-    != t("Bring your own storage provider")
-  li
-    i.fa.fa-fw.fa-check-circle.text-success
-    = " "
-    = t("Error logs and real-time alerts")
+  //-.
+    li
+      i.fa.fa-fw.fa-check-circle.text-success
+      = " "
+      != t("100% open-source software")
+      = " "
+      a.btn.btn-link.badge.badge-dark.text-uppercase.text-white(
+        href="https://github.com/forwardemail",
+        target="_blank",
+        rel="noopener noreferrer"
+      )
+        i.fa.fa-github
+        = " "
+        = "GitHub"
+    li
+      i.fa.fa-fw.fa-check-circle.text-success
+      = " "
+      = t("Enterprise-grade 99.99% uptime SLA")
   li
     i.fa.fa-fw.fa-check-circle.text-success
     = " "

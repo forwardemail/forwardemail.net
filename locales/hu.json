@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Milyen e-mail klienseket használhatok?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Könnyedén küldhet és fogadhat e-maileket ezekkel a népszerű e-mail kliensekkel az utasításaink szerint <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(kattintson ide)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Egy szintnél mélyebb rekurzív továbbítást nem támogatunk. Ha rekurzívan egy szintnél mélyebbre továbbít, előfordulhat, hogy a kívánt konfiguráció nem fog megfelelően működni.",
-  "Payment already exists": "A fizetés már létezik"
+  "Payment already exists": "A fizetés már létezik",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Ha IMAP-hoz csatlakozik (például olyan e-mail kliens használatával, mint az Apple Mail vagy a Thunderbird), akkor nem kell ideiglenes lemeztárolóra írnunk. Ehelyett a rendszer lekéri és felhasználja a memóriában lévő titkosított IMAP-jelszót. Valós időben, amikor egy üzenetet megpróbálnak kézbesíteni Önnek, egy WebSocket kérést küldünk az összes IMAP-szervernek, amelyben megkérdezzük, hogy van-e aktív munkamenetük az Ön számára (ez a letöltési rész), majd ezt követően továbbítjuk. titkosított, memórián belüli jelszó – így nem kell ideiglenes postafiókba írnunk, az Ön titkosított jelszavával írhatunk a tényleges titkosított postafiókjába.",
+  "Privacy-focused encrypted email for enterprise.": "Az adatvédelemre összpontosító titkosított e-mail vállalati célokra.",
+  "Privacy-focused encrypted email for education.": "Az adatvédelemre összpontosító titkosított e-mail oktatási célokra.",
+  "Privacy-focused encrypted email for startups.": "Adatvédelemre összpontosító titkosított e-mail induló vállalkozások számára.",
+  "Privacy-focused encrypted email for stores.": "Adatvédelemre összpontosító titkosított e-mail az üzletek számára.",
+  "Privacy-focused encrypted email for designers.": "Adatvédelemre összpontosító titkosított e-mail tervezőknek.",
+  "Privacy-focused encrypted email for developers.": "Adatvédelemre összpontosító titkosított e-mail fejlesztők számára.",
+  "Privacy-focused encrypted email for marketing.": "Az adatvédelemre összpontosító titkosított e-mail marketing célokra.",
+  "Privacy-focused encrypted email for sales.": "Az adatvédelemre összpontosító titkosított e-mail értékesítéshez.",
+  "Privacy-focused encrypted email for you.": "Adatvédelemre összpontosító titkosított e-mail az Ön számára.",
+  "Enterprise-grade 99.99% uptime SLA": "Vállalati szintű, 99,99%-os rendelkezésre állási SLA",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "A fiók törlése visszafordíthatatlan. Kérjük, legyen rendkívül óvatos fiókja törlésekor.",
+  "Please remove all invited members to the domain before changing plans.": "Kérjük, távolítsa el az összes meghívott tagot a domainből, mielőtt módosítana."
 }

@@ -152,7 +152,13 @@ async function verifySMTP(ctx) {
     domain = await domain.save();
 
     // if we haven't yet sent an email to admins then send it now
-    if (!domain.has_smtp && !_.isDate(domain.smtp_verified_at)) {
+    if (
+      !domain.has_smtp &&
+      domain.has_dkim_record &&
+      domain.has_return_path_record &&
+      domain.has_dmarc_record &&
+      !_.isDate(domain.smtp_verified_at)
+    ) {
       try {
         // send an email to all admins of the domain
         const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
@@ -171,13 +177,16 @@ async function verifySMTP(ctx) {
           }
         });
         // save the date
-        Domains.findByIdAndUpdate(domain._id, {
-          $set: {
-            smtp_verified_at: new Date()
-          }
-        })
-          .then()
-          .catch((err) => ctx.logger.error(err));
+        try {
+          await Domains.findByIdAndUpdate(domain._id, {
+            $set: {
+              smtp_verified_at: new Date()
+            }
+          });
+        } catch (err) {
+          ctx.logger.error(err);
+        }
+
         // flash success message
         if (!ctx.api) ctx.flash('success', message);
       } catch (err) {

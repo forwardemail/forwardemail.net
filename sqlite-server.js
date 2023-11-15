@@ -73,6 +73,8 @@ const onAppendPromise = pify(onAppend);
 
 const concurrency = os.cpus().length;
 
+const AFFIXES = ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm'];
+
 const PAYLOAD_ACTIONS = new Set([
   'sync',
   'tmp',
@@ -378,6 +380,18 @@ async function parsePayload(data, ws) {
                 { user: payload.session.user, db: tmpDb },
                 { _id: message._id }
               );
+
+              // update storage
+              try {
+                // eslint-disable-next-line no-await-in-loop
+                await this.wsp.request({
+                  action: 'size',
+                  timeout: ms('5s'),
+                  alias_id: payload.session.user.alias_id
+                });
+              } catch (err) {
+                this.logger.fatal(err);
+              }
             } catch (err) {
               logger.fatal(err);
             }
@@ -497,17 +511,40 @@ async function parsePayload(data, ws) {
               };
 
               // check quota
-              const quota = await Aliases.isOverQuota(this, session, 0, true);
+              const { isOverQuota, storageUsed } = await Aliases.isOverQuota(
+                alias
+              );
+
+              if (isOverQuota) {
+                const err = new TypeError(
+                  `${
+                    session.user.username
+                  } has exceeded quota with ${prettyBytes(
+                    storageUsed
+                  )} storage used`
+                );
+                logger.fatal(err); // send alert to admins
+                throw new SMTPError(
+                  i18n.translate(
+                    'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
+                    'en',
+                    session.user.username
+                  ),
+                  {
+                    responseCode: 421
+                  }
+                );
+              }
 
               const exceedsQuota =
-                quota.storageUsed + byteLength > config.maxQuotaPerAlias;
+                storageUsed + byteLength > config.maxQuotaPerAlias;
 
               if (exceedsQuota) {
                 const err = new TypeError(
                   `${
                     session.user.username
                   } has exceeded quota with ${prettyBytes(
-                    quota.storageUsed
+                    storageUsed
                   )} storage used`
                 );
                 logger.fatal(err); // send alert to admins
@@ -722,6 +759,17 @@ async function parsePayload(data, ws) {
                     remoteAddress: payload.remoteAddress
                   });
 
+                  // update storage after temporary message created
+                  try {
+                    await this.wsp.request({
+                      action: 'size',
+                      timeout: ms('5s'),
+                      alias_id: alias.id
+                    });
+                  } catch (err) {
+                    logger.fatal(err);
+                  }
+
                   //
                   // increase rate limiting size and count
                   //
@@ -802,47 +850,88 @@ async function parsePayload(data, ws) {
           id: payload.id,
           data: true
         };
+
+        // update storage
+        try {
+          await this.wsp.request({
+            action: 'size',
+            timeout: ms('5s'),
+            alias_id: payload.session.user.alias_id
+          });
+        } catch (err) {
+          this.logger.fatal(err);
+        }
+
         break;
       }
 
-      // TODO: include backups on R2 + -tmp in this storage calculation
-      //       (note the HTTP request will slow things down here; so we most likely want to use redis in the future)
-      // storage quota
+      // updates storage_used for a specific alias by its id
       case 'size': {
-        if (!_.isArray(payload.aliases) || payload.aliases.length === 0)
-          throw new TypeError('Aliases missing');
+        if (
+          !isSANB(payload.alias_id) ||
+          !mongoose.Types.ObjectId.isValid(payload.alias_id)
+        )
+          throw new TypeError('Alias ID missing');
+
+        const alias = await Aliases.findOne({ id: payload.alias_id })
+          .select('id storage_location')
+          .lean()
+          .exec();
+
+        if (!alias) throw new TypeError('Alias does not exist');
 
         let size = 0;
 
-        const aliases = await Promise.all(
-          payload.aliases.map(async (alias) => {
-            try {
-              // <https://github.com/nodejs/node/issues/38006>
-              const stats = await fs.promises.stat(getPathToDatabase(alias));
-              if (stats.isFile() && stats.size > 0) {
-                size += stats.size;
-                return {
-                  ...alias,
-                  size: stats.size
-                };
+        try {
+          // <https://github.com/nodejs/node/issues/38006>
+          const filePath = getPathToDatabase(alias);
+          const dirName = path.dirname(filePath);
+          const ext = path.extname(filePath);
+          const basename = path.basename(filePath, ext);
+          // $id.sqlite
+          const stats = await fs.promises.stat(filePath);
+          if (stats.isFile() && stats.size > 0) {
+            size += stats.size;
+            // $id-wal.sqlite
+            // $id-shm.sqlite
+            // $id-tmp.sqlite
+            // $id-tmp-wal.sqlite
+            // $id-tmp-shm.sqlite
+            for (const affix of AFFIXES) {
+              const affixFilePath = path.join(
+                dirName,
+                `${basename}${affix}${ext}`
+              );
+              try {
+                // eslint-disable-next-line no-await-in-loop
+                const stats = await fs.promises.stat(affixFilePath);
+                if (stats.isFile() && stats.size > 0) {
+                  size += stats.size;
+                }
+              } catch (err) {
+                if (err.code !== 'ENOENT') throw err;
               }
-            } catch (err) {
-              if (err.code !== 'ENOENT') throw err;
             }
+          }
+        } catch (err) {
+          if (err.code !== 'ENOENT') throw err;
+        }
 
-            return {
-              ...alias,
-              size: 0
-            };
-          })
+        // save storage_used on the given alias
+        await Aliases.findOneAndUpdate(
+          {
+            id: payload.alias_id
+          },
+          {
+            $set: {
+              storage_used: size
+            }
+          }
         );
 
         response = {
           id: payload.id,
-          data: {
-            size,
-            aliases
-          }
+          data: size
         };
         break;
       }

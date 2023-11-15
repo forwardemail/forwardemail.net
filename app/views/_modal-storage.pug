@@ -26,11 +26,11 @@
         h2.h4= t("How do I get started?")
         p
           != t('Simply go to <a class="font-weight-bold text-decoration-underline" href="%s">My Account &rarr; Domains</a> &rarr; Aliases, click Add Alias (or) Edit Alias, and then click the checkbox to enable IMAP Storage.', l("/my-account/domains"))
-          = ' '
-          = t('You can even have both IMAP storage and forwarding recipients enabled at the same time.')
+          = " "
+          = t("You can even have both IMAP storage and forwarding recipients enabled at the same time.")
         hr
         h2.h4= t("What email clients can I use?")
-        p.mb-2!= t('You can easily send and receive email with these popular email clients using our instructions <a href="%s" class="font-weight-bold text-decoration-underline" target="_blank">(click here)</a>.', l('/faq#how-do-i-configure-my-email-client-to-work-with-forward-email'))
+        p.mb-2!= t('You can easily send and receive email with these popular email clients using our instructions <a href="%s" class="font-weight-bold text-decoration-underline" target="_blank">(click here)</a>.', l("/faq#how-do-i-configure-my-email-client-to-work-with-forward-email"))
         ul.list-inline.h3
           li.list-inline-item.mr-1: span.badge.badge-dark= "Apple"
           li.list-inline-item.mr-1: span.badge.badge-dark= "Microsoft"

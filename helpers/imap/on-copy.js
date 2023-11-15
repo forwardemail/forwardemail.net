@@ -39,8 +39,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     const { alias, db } = await this.refreshSession(session, 'COPY');
 
     // check if over quota
-    const overQuota = await Aliases.isOverQuota(this, session);
-    if (overQuota)
+    const { isOverQuota } = await Aliases.isOverQuota(alias);
+    if (isOverQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
       });
@@ -270,9 +270,9 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       // NOTE: we don't error for quota during copy due to this reasoning
       //       <https://github.com/nodemailer/wildduck/issues/517#issuecomment-1748329188>
       //
-      Aliases.isOverQuota(this, session, copiedStorage)
-        .then((exceedsQuota) => {
-          if (exceedsQuota) {
+      Aliases.isOverQuota(alias, copiedStorage)
+        .then((results) => {
+          if (results.isOverQuota) {
             const err = new IMAPError(
               i18n.translate(
                 'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
@@ -284,7 +284,11 @@ async function onCopy(connection, mailboxId, update, session, fn) {
                 isCodeBug: true // admins will get an email/sms alert
               }
             );
-            this.logger.fatal(err, { mailboxId, update, session });
+            this.logger.fatal(err, {
+              mailboxId,
+              update,
+              session
+            });
           }
         })
         .catch((err) =>
@@ -297,22 +301,34 @@ async function onCopy(connection, mailboxId, update, session, fn) {
           })
         );
 
+      // NOTE: we update storage used in real-time in `getDatabase`
       // add to `alias.storageSize` the message `size`
-      Aliases.findByIdAndUpdate(alias._id, {
-        $inc: {
-          storageUsed: copiedStorage
-        }
-      })
-        .then()
-        .catch((err) =>
-          this.logger.fatal(err, {
-            copiedStorage,
-            connection,
-            mailboxId,
-            update,
-            session
-          })
-        );
+      // Aliases.findByIdAndUpdate(alias._id, {
+      //   $inc: {
+      //     storageUsed: copiedStorage
+      //   }
+      // })
+      //   .then()
+      //   .catch((err) =>
+      //     this.logger.fatal(err, {
+      //       copiedStorage,
+      //       connection,
+      //       mailboxId,
+      //       update,
+      //       session
+      //     })
+      //   );
+    }
+
+    // update storage
+    try {
+      await this.wsp.request({
+        action: 'size',
+        timeout: ms('5s'),
+        alias_id: alias.id
+      });
+    } catch (err) {
+      this.logger.fatal(err);
     }
 
     fn(null, true, {

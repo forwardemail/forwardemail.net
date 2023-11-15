@@ -5,6 +5,7 @@
 
 const os = require('node:os');
 const { Buffer } = require('node:buffer');
+const { createPublicKey } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
@@ -571,18 +572,36 @@ async function processEmail({ email, port = 25, resolver, client }) {
       resolver: resolver.resolve
     });
 
-    const dkimAlignedMatch = dkim?.results
-      ? dkim.results.find(
-          (result) =>
-            result.signingDomain === domain.name &&
-            result.selector === domain.dkim_key_selector &&
-            result?.status?.result === 'pass' &&
-            (result?.status?.aligned === domain.name ||
-              result?.status?.aligned === parseRootDomain(domain.name)) &&
-            result?.publicKey?.split('\n')?.slice(1, -1)?.join('') ===
-              domain.dkim_public_key.toString('base64')
-        )
-      : false;
+    const dkimPublicKey = createPublicKey(
+      Buffer.from(
+        `-----BEGIN PUBLIC KEY-----\n${domain.dkim_public_key.toString(
+          'base64'
+        )}\n-----END PUBLIC KEY-----`
+      ),
+      { encoding: 'base64' }
+    );
+
+    let dkimAlignedMatch;
+
+    try {
+      dkimAlignedMatch = dkim?.results
+        ? dkim.results.find((result) => {
+            const isAligned =
+              result.signingDomain === domain.name &&
+              result.selector === domain.dkim_key_selector &&
+              result?.status?.result === 'pass' &&
+              (result?.status?.aligned === domain.name ||
+                result?.status?.aligned === parseRootDomain(domain.name));
+
+            if (!isAligned) return;
+
+            // <https://github.com/postalsys/mailauth/issues/48#issuecomment-1797936586>
+            return dkimPublicKey.equals(createPublicKey(result.publicKey));
+          })
+        : false;
+    } catch (err) {
+      logger.fatal(err);
+    }
 
     // verify DKIM
     // <https://github.com/postalsys/mailauth/issues/48>

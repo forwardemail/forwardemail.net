@@ -13,6 +13,8 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const ms = require('ms');
+
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -77,6 +79,17 @@ async function onRename(path, newPath, session, fn) {
       this.server.notifier.fire(alias.id);
     } catch (err) {
       this.logger.fatal(err, { path, session });
+    }
+
+    // update storage
+    try {
+      await this.wsp.request({
+        action: 'size',
+        timeout: ms('5s'),
+        alias_id: alias.id
+      });
+    } catch (err) {
+      this.logger.fatal(err);
     }
 
     // send response

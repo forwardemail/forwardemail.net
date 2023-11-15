@@ -5337,5 +5337,18 @@
   "What email clients can I use?": "Hvilke e-mail-klienter kan jeg bruge?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Du kan nemt sende og modtage e-mail med disse populære e-mail-klienter ved at bruge vores instruktioner <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(klik her)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Vi understøtter ikke videresendelse rekursivt mere end et niveau dybt. Hvis du videresender rekursivt mere end ét niveau dybt, fungerer din ønskede konfiguration muligvis ikke efter hensigten.",
-  "Payment already exists": "Betaling findes allerede"
+  "Payment already exists": "Betaling findes allerede",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Hvis du er forbundet til IMAP (f.eks. ved at bruge en e-mail-klient som Apple Mail eller Thunderbird), så behøver vi ikke at skrive til midlertidigt disklager. Din krypterede IMAP-adgangskode i hukommelsen bliver i stedet hentet og brugt. I realtid, når en besked forsøger at blive leveret til dig, sender vi en WebSocket-anmodning til alle IMAP-servere og spørger dem, om de har en aktiv session til dig (dette er hente-delen), og derefter videresende den krypteret adgangskode i hukommelsen – så vi behøver ikke at skrive til en midlertidig postkasse, vi kan skrive til din faktiske krypterede postkasse ved hjælp af dit krypterede kodeord.",
+  "Privacy-focused encrypted email for enterprise.": "Privatlivsfokuseret krypteret e-mail til virksomheder.",
+  "Privacy-focused encrypted email for education.": "Privatlivsfokuseret krypteret e-mail til uddannelse.",
+  "Privacy-focused encrypted email for startups.": "Privatlivsfokuseret krypteret e-mail til startups.",
+  "Privacy-focused encrypted email for stores.": "Privatlivsfokuseret krypteret e-mail til butikker.",
+  "Privacy-focused encrypted email for designers.": "Privatlivsfokuseret krypteret e-mail til designere.",
+  "Privacy-focused encrypted email for developers.": "Privatlivsfokuseret krypteret e-mail til udviklere.",
+  "Privacy-focused encrypted email for marketing.": "Privatlivsfokuseret krypteret e-mail til markedsføring.",
+  "Privacy-focused encrypted email for sales.": "Privatlivsfokuseret krypteret e-mail til salg.",
+  "Privacy-focused encrypted email for you.": "Privatlivsfokuseret krypteret e-mail til dig.",
+  "Enterprise-grade 99.99% uptime SLA": "Enterprise-grade 99,99 % oppetid SLA",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Det er irreversibelt at slette din konto. Vær yderst forsigtig, når du sletter din konto.",
+  "Please remove all invited members to the domain before changing plans.": "Fjern venligst alle inviterede medlemmer til domænet, før du ændrer planer."
 }

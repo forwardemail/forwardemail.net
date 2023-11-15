@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "ฉันสามารถใช้ไคลเอนต์อีเมลใดได้บ้าง?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "คุณสามารถส่งและรับอีเมลด้วยโปรแกรมรับส่งเมลยอดนิยมเหล่านี้ได้อย่างง่ายดายโดยใช้คำแนะนำของเรา <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(คลิกที่นี่)</a>",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "เราไม่สนับสนุนการส่งต่อแบบวนซ้ำมากกว่าหนึ่งระดับลึก หากคุณส่งต่อซ้ำมากกว่าหนึ่งระดับ การกำหนดค่าที่คุณต้องการอาจไม่ทำงานตามที่ตั้งใจไว้",
-  "Payment already exists": "มีการชำระเงินอยู่แล้ว"
+  "Payment already exists": "มีการชำระเงินอยู่แล้ว",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "หากคุณเชื่อมต่อกับ IMAP (เช่น ใช้โปรแกรมรับส่งเมล เช่น Apple Mail หรือ Thunderbird) เราไม่จำเป็นต้องเขียนลงพื้นที่จัดเก็บดิสก์ชั่วคราว รหัสผ่าน IMAP ที่เข้ารหัสในหน่วยความจำของคุณจะถูกดึงและใช้งานแทน แบบเรียลไทม์ เมื่อมีการพยายามส่งข้อความถึงคุณ เราจะส่งคำขอ WebSocket ไปยังเซิร์ฟเวอร์ IMAP ทั้งหมดเพื่อสอบถามว่าพวกเขามีเซสชันที่ใช้งานอยู่สำหรับคุณหรือไม่ (นี่คือส่วนที่ดึงข้อมูล) จากนั้นจะส่งต่อไปตามนั้น รหัสผ่านในหน่วยความจำที่เข้ารหัส – ดังนั้นเราจึงไม่จำเป็นต้องเขียนลงในกล่องจดหมายชั่วคราว เราสามารถเขียนไปยังกล่องจดหมายที่เข้ารหัสจริงของคุณได้โดยใช้รหัสผ่านที่เข้ารหัสของคุณ",
+  "Privacy-focused encrypted email for enterprise.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวสำหรับองค์กร",
+  "Privacy-focused encrypted email for education.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวเพื่อการศึกษา",
+  "Privacy-focused encrypted email for startups.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวสำหรับสตาร์ทอัพ",
+  "Privacy-focused encrypted email for stores.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวสำหรับร้านค้า",
+  "Privacy-focused encrypted email for designers.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวสำหรับนักออกแบบ",
+  "Privacy-focused encrypted email for developers.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวสำหรับนักพัฒนา",
+  "Privacy-focused encrypted email for marketing.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวเพื่อการตลาด",
+  "Privacy-focused encrypted email for sales.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวสำหรับการขาย",
+  "Privacy-focused encrypted email for you.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวสำหรับคุณ",
+  "Enterprise-grade 99.99% uptime SLA": "SLA ความพร้อมในการทำงานระดับองค์กร 99.99%",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "การลบบัญชีของคุณไม่สามารถย้อนกลับได้ โปรดใช้ความระมัดระวังอย่างยิ่งในการลบบัญชีของคุณ",
+  "Please remove all invited members to the domain before changing plans.": "โปรดลบสมาชิกที่ได้รับเชิญทั้งหมดออกจากโดเมนก่อนที่จะเปลี่ยนแผน"
 }

@@ -19,8 +19,9 @@ const bree = new Bree({
       // this job cleans up any backup artifacts from 4 hr+ ago for 'rekey' and 'backup' sqlite-server cases
       // (e.g. the server stopped mid-backup or an error occurred, e.g. ran out of memory)
       // and in an attempt to save on disk stoarge, we will run `fs.unlink` on each of these files
+      // and it also updates the storage size across all aliases found
       //
-      name: 'sqlite-cleanup',
+      name: 'cleanup-sqlite',
       interval: '1h',
       timeout: 0
     }

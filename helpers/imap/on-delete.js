@@ -13,6 +13,8 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const ms = require('ms');
+
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
@@ -73,6 +75,17 @@ async function onDelete(path, session, fn) {
         }
       }
     );
+
+    // update storage
+    try {
+      await this.wsp.request({
+        action: 'size',
+        timeout: ms('5s'),
+        alias_id: alias.id
+      });
+    } catch (err) {
+      this.logger.fatal(err);
+    }
 
     fn(null, true, mailbox._id);
   } catch (err) {

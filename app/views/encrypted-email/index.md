@@ -90,6 +90,8 @@ We are the only 100% open-source and privacy-focused email service provider that
 
    * When you connect to our IMAP server with your email client, your password is then encrypted in-memory and used to read and write to your mailbox.  Your mailbox can only be read from and written to with this password.  Keep in mind that since you are the only one with this password, **only you** can read and write to your mailbox when you are accessing it.  The next time your email client attempts to poll for mail or syncs, your new messages will be transferred from this temporary mailbox and stored in your actual mailbox file using your supplied password.  Note that this temporary mailbox is purged and deleted afterwards so that only your password protected mailbox has the messages.
 
+   * **If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.**
+
      ```mermaid
      sequenceDiagram
          autonumber

@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "どのような電子メール クライアントを使用できますか?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "手順<a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(ここをクリック)</a>を使用すると、これらの一般的な電子メール クライアントで電子メールを簡単に送受信できます。",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "複数のレベルの深さを再帰的に転送することはサポートされていません。複数レベルの深さで再帰的に転送すると、目的の構成が意図したとおりに機能しない可能性があります。",
-  "Payment already exists": "支払いはすでに存在します"
+  "Payment already exists": "支払いはすでに存在します",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "IMAP に接続している場合 (Apple Mail や Thunderbird などの電子メール クライアントを使用している場合)、一時ディスク ストレージに書き込む必要はありません。代わりに、メモリ内で暗号化された IMAP パスワードが取得されて使用されます。リアルタイムで、メッセージが配信されようとすると、すべての IMAP サーバーに WebSocket リクエストを送信して、アクティブなセッションがあるかどうかを尋ね (これがフェッチ部分です)、その後、そのリクエストが渡されます。暗号化されたメモリ内パスワード – そのため、一時的なメールボックスに書き込む必要はなく、暗号化されたパスワードを使用して実際の暗号化されたメールボックスに書き込むことができます。",
+  "Privacy-focused encrypted email for enterprise.": "プライバシーを重視した企業向けの暗号化メール。",
+  "Privacy-focused encrypted email for education.": "プライバシーを重視した教育向けの暗号化メール。",
+  "Privacy-focused encrypted email for startups.": "スタートアップ向けのプライバシーを重視した暗号化メール。",
+  "Privacy-focused encrypted email for stores.": "プライバシーを重視した店舗向けの暗号化メール。",
+  "Privacy-focused encrypted email for designers.": "デザイナー向けのプライバシーを重視した暗号化メール。",
+  "Privacy-focused encrypted email for developers.": "開発者向けのプライバシーを重視した暗号化メール。",
+  "Privacy-focused encrypted email for marketing.": "プライバシーを重視したマーケティング用の暗号化メール。",
+  "Privacy-focused encrypted email for sales.": "プライバシーを重視した販売用の暗号化メール。",
+  "Privacy-focused encrypted email for you.": "プライバシーを重視した暗号化メール。",
+  "Enterprise-grade 99.99% uptime SLA": "エンタープライズ グレードの 99.99% 稼働時間 SLA",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "アカウントを削除すると元に戻せません。アカウントを削除する場合は細心の注意を払ってください。",
+  "Please remove all invited members to the domain before changing plans.": "プランを変更する前に、招待されたメンバーをすべてドメインから削除してください。"
 }

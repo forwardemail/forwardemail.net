@@ -13,10 +13,10 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 
-const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
@@ -48,7 +48,7 @@ async function onExpunge(mailboxId, update, session, fn) {
         imapResponse: 'NONEXISTENT'
       });
 
-    let storageUsed = 0;
+    // let storageUsed = 0;
 
     const condition = {
       mailbox: mailbox._id.toString(),
@@ -136,7 +136,7 @@ async function onExpunge(mailboxId, update, session, fn) {
 
         if (results?.deletedCount === 1) {
           // if we deleted a message then adjust storage quota
-          storageUsed += message.size;
+          // storageUsed += message.size;
 
           // delete attachments
           const attachmentIds = message?.mimeTree?.attachmentMap
@@ -214,22 +214,34 @@ async function onExpunge(mailboxId, update, session, fn) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
 
+    // NOTE: we update storage used in real-time in `getDatabase`
     // update storage quota
-    if (storageUsed > 0)
-      Aliases.findOneAndUpdate(
-        {
-          _id: alias._id
-        },
-        {
-          $inc: {
-            storageUsed: storageUsed * -1
-          }
-        }
-      )
-        .then()
-        .catch((err) =>
-          this.logger.fatal(err, { storageUsed, mailboxId, update, session })
-        );
+    // if (storageUsed > 0)
+    //   Aliases.findOneAndUpdate(
+    //     {
+    //       _id: alias._id
+    //     },
+    //     {
+    //       $inc: {
+    //         storageUsed: storageUsed * -1
+    //       }
+    //     }
+    //   )
+    //     .then()
+    //     .catch((err) =>
+    //       this.logger.fatal(err, { storageUsed, mailboxId, update, session })
+    //     );
+
+    // update storage
+    try {
+      await this.wsp.request({
+        action: 'size',
+        timeout: ms('5s'),
+        alias_id: alias.id
+      });
+    } catch (err) {
+      this.logger.fatal(err);
+    }
 
     // throw error
     if (err) throw err;

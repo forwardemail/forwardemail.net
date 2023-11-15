@@ -52,8 +52,7 @@ const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
 
-// 4 KB is initial DB size from tests
-const INITIAL_DB_SIZE = 139264; // 155648; // 4096;
+const INITIAL_DB_SIZE = 159744;
 
 test.before(utils.setupMongoose);
 test.before(utils.defineUserFactory);
@@ -567,18 +566,7 @@ ZXhhbXBsZQo=
     //   mailbox: mailbox._id,
     //   uid: append.uid
     // });
-    const storageUsed = await Aliases.getStorageUsed(t.context.imap, {
-      user: {
-        id: alias.id,
-        username: `${alias.name}@${domain.name}`,
-        alias_id: alias.id,
-        alias_name: alias.name,
-        domain_id: domain.id,
-        domain_name: domain.name,
-        password: encrypt(pass),
-        storage_location: alias.storage_location
-      }
-    });
+    const storageUsed = await Aliases.getStorageUsed(alias);
     t.is(storageUsed, INITIAL_DB_SIZE);
     const quota = await imapFlow.getQuota('boopboop');
     t.deepEqual(quota, {

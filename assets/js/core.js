@@ -11,6 +11,7 @@ const Swal = require('sweetalert2');
 const URLParse = require('url-parse');
 const debounce = require('lodash/debounce');
 const lazyframe = require('lazyframe');
+const Typed = require('typed.js');
 const { randomstring } = require('@sidoshi/random-string');
 
 // load jQuery and Bootstrap
@@ -22,7 +23,21 @@ window.jQuery = $;
 // required for bootstrap (we could use the bundle but this is cleaner)
 window.Popper = Popper;
 
+// bind Typed to window namespace for specific pages
+window.Typed = Typed;
+
 require('bootstrap');
+
+require('bootstrap-dropdown-hover')(window, $);
+
+// <https://stackoverflow.com/a/52855084>
+if (!window.matchMedia('(any-pointer: coarse)').matches) {
+  // if any input is a touch then don't use dropdown hover
+  $.fn.bootstrapDropdownHover({
+    clickBehavior: 'default',
+    hideTimeout: 350
+  });
+}
 
 const $body = $('body');
 

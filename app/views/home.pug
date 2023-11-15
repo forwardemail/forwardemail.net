@@ -1,5 +1,25 @@
 extends layout
 
+block append scripts
+  if !isBot(ctx.get("User-Agent"))
+    script(async, defer).
+      document.addEventListener(
+        "DOMContentLoaded",
+        function load() {
+          if (!window.Typed) return setTimeout(load, 50);
+          if ($("#typed-home").length === 0 || $("#typed-home-strings").length === 0) return;
+          const typed = new window.Typed("#typed-home", {
+            stringsElement: "#typed-home-strings",
+            smartBackspace: true,
+            typeSpeed: 70,
+            backSpeed: 70,
+            startDelay: 2000,
+            backDelay: 2000,
+          });
+        },
+        false
+      );
+
 block body
   include _modal-storage
   //- modal watch video
@@ -109,12 +129,24 @@ block body
       #waving.user-select-none(class=isSafari ? "" : "floating-animation")
     .container.my-auto.pt-5
       .row
+        if !isBot(ctx.get("User-Agent"))
+          #typed-home-strings.d-none
+            div= t("Privacy-focused encrypted email for enterprise.")
+            div= t("Privacy-focused encrypted email for education.")
+            div= t("Privacy-focused encrypted email for startups.")
+            div= t("Privacy-focused encrypted email for stores.")
+            div= t("Privacy-focused encrypted email for designers.")
+            div= t("Privacy-focused encrypted email for developers.")
+            div= t("Privacy-focused encrypted email for marketing.")
+            div= t("Privacy-focused encrypted email for sales.")
+            div= t("Privacy-focused encrypted email for you.")
         .col-12.col-lg-6
           h1.mb-3
-            if isBot(ctx.get("User-Agent"))
-              = t("Free, private, and secure email for custom domains.")
-            else
-              = t("Privacy-focused encrypted email for everyone.")
+            span#typed-home
+              if isBot(ctx.get("User-Agent"))
+                = t("Free, private, and secure email for custom domains.")
+              else
+                = t("Privacy-focused encrypted email for everyone.")
           p.d-none.d-md-block
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
             = " "

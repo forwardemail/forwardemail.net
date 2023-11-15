@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Quali client di posta elettronica posso utilizzare?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Puoi inviare e ricevere facilmente e-mail con questi popolari client di posta elettronica utilizzando le nostre istruzioni <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(fai clic qui)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Non supportiamo l'inoltro ricorsivo a più di un livello di profondità. Se inoltri in modo ricorsivo più di un livello di profondità, la configurazione desiderata potrebbe non funzionare come previsto.",
-  "Payment already exists": "Il pagamento esiste già"
+  "Payment already exists": "Il pagamento esiste già",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Se sei connesso a IMAP (ad esempio utilizzando un client di posta elettronica come Apple Mail o Thunderbird), non è necessario scrivere sull'archivio temporaneo del disco. La tua password IMAP crittografata in memoria viene invece recuperata e utilizzata. In tempo reale, quando un messaggio tenta di esserti recapitato, inviamo una richiesta WebSocket a tutti i server IMAP chiedendo loro se hanno una sessione attiva per te (questa è la parte di recupero), e successivamente la passeremo password in memoria crittografata: quindi non abbiamo bisogno di scrivere su una casella di posta temporanea, possiamo scrivere sulla tua casella di posta crittografata effettiva utilizzando la tua password crittografata.",
+  "Privacy-focused encrypted email for enterprise.": "E-mail crittografate incentrate sulla privacy per le aziende.",
+  "Privacy-focused encrypted email for education.": "E-mail crittografate incentrate sulla privacy per l'istruzione.",
+  "Privacy-focused encrypted email for startups.": "E-mail crittografate incentrate sulla privacy per le startup.",
+  "Privacy-focused encrypted email for stores.": "E-mail crittografate incentrate sulla privacy per i negozi.",
+  "Privacy-focused encrypted email for designers.": "E-mail crittografate incentrate sulla privacy per i progettisti.",
+  "Privacy-focused encrypted email for developers.": "E-mail crittografate incentrate sulla privacy per gli sviluppatori.",
+  "Privacy-focused encrypted email for marketing.": "E-mail crittografate incentrate sulla privacy per il marketing.",
+  "Privacy-focused encrypted email for sales.": "E-mail crittografate incentrate sulla privacy per le vendite.",
+  "Privacy-focused encrypted email for you.": "E-mail crittografate incentrate sulla privacy per te.",
+  "Enterprise-grade 99.99% uptime SLA": "SLA con tempo di attività del 99,99% di livello aziendale",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "L'eliminazione del tuo account è irreversibile. Ti preghiamo di prestare la massima attenzione quando elimini il tuo account.",
+  "Please remove all invited members to the domain before changing plans.": "Rimuovi tutti i membri invitati al dominio prima di modificare i piani."
 }

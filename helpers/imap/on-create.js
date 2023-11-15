@@ -13,6 +13,8 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const ms = require('ms');
+
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -27,8 +29,8 @@ async function onCreate(path, session, fn) {
     const { alias } = await this.refreshSession(session, 'CREATE');
 
     // check if over quota
-    const overQuota = await Aliases.isOverQuota(this, session);
-    if (overQuota)
+    const { isOverQuota } = await Aliases.isOverQuota(alias);
+    if (isOverQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
       });
@@ -70,6 +72,17 @@ async function onCreate(path, session, fn) {
       this.server.notifier.fire(alias.id);
     } catch (err) {
       this.logger.fatal(err, { path, session });
+    }
+
+    // update storage
+    try {
+      await this.wsp.request({
+        action: 'size',
+        timeout: ms('5s'),
+        alias_id: alias.id
+      });
+    } catch (err) {
+      this.logger.fatal(err);
     }
 
     fn(null, true, mailbox._id);

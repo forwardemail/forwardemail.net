@@ -197,7 +197,7 @@ include ../../../_pagination
                         = " "
                         = "IMAP"
                       = " "
-                      a.btn.btn-link.text-themed.p-0.no-js(
+                      a.badge.badge-dark.font-weight-normal.text-nowrap(
                         href=l("/encrypted-email"),
                         target="_blank",
                         type="button",
@@ -205,6 +205,8 @@ include ../../../_pagination
                         data-target="#modal-storage"
                       )
                         i.fa.fa-info-circle
+                        = " "
+                        = t("Learn more")
                   //- no recipient verification required
                   if domain.plan === 'free' || !alias.has_recipient_verification
                     each recipient in alias.recipients
@@ -369,7 +371,7 @@ include ../../../_pagination
                       = " "
                       = "IMAP"
                     = " "
-                    a.btn.btn-link.text-themed.p-0.no-js(
+                    a.badge.badge-dark.font-weight-normal.text-nowrap(
                       href=l("/encrypted-email"),
                       target="_blank",
                       type="button",
@@ -377,6 +379,8 @@ include ../../../_pagination
                       data-target="#modal-storage"
                     )
                       i.fa.fa-info-circle
+                      = " "
+                      = t("Learn more")
                 //- no recipient verification required
                 if domain.plan === 'free' || !alias.has_recipient_verification
                   each recipient in alias.recipients

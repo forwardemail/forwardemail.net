@@ -16,6 +16,7 @@
 const { Buffer } = require('node:buffer');
 
 const bytes = require('bytes');
+const ms = require('ms');
 const splitLines = require('split-lines');
 const { convert } = require('html-to-text');
 
@@ -35,7 +36,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
   this.logger.debug('APPEND', { path, flags, date, session });
 
   let thread;
-  let storageUsed = 0;
   let hasNodeBodies;
   let maildata;
   let mimeTreeData;
@@ -51,13 +51,9 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     const { alias } = await this.refreshSession(session, 'APPEND');
 
-    //
-    // TODO: we could cache quota in memory and then update the cached value
-    //       if we add/remove to it (this would reduce time by ~50ms)
-    //
     // check if over quota
-    const quota = await Aliases.isOverQuota(this, session, 0, true);
-    if (quota.isOverQuota)
+    const { storageUsed, isOverQuota } = await Aliases.isOverQuota(alias);
+    if (isOverQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
       });
@@ -132,17 +128,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // store reference for cleanup
     mimeTreeData = mimeTree;
 
-    //
-    // NOTE: this re-uses the existing quota from above to prevent additional fs.stat calls
-    //
-    // check if message would be over quota
-    //
-    // Old approach
-    // const exceedsQuota = await Aliases.isOverQuota(this, session, size);
-    //
-    // New approach:
-    //
-    const exceedsQuota = quota.storageUsed + size > config.maxQuotaPerAlias;
+    const exceedsQuota = storageUsed + size > config.maxQuotaPerAlias;
     if (exceedsQuota)
       throw new IMAPError(
         i18n.translate(
@@ -231,24 +217,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
     if (maildata.attachments && maildata.attachments.length > 0)
       data.attachments = maildata.attachments;
 
-    // safeguard if alias storage was reduced less than zero
-    if (alias.storageUsed < 0)
-      await Aliases.findByIdAndUpdate(alias._id, {
-        $set: {
-          storageUsed: 0
-        }
-      });
-
-    // add to `alias.storageSize` the message `size`
-    await Aliases.findByIdAndUpdate(alias._id, {
-      $inc: {
-        storageUsed: size
-      }
-    });
-
-    // set `storageUsed = size`
-    storageUsed = size;
-
     // TODO: encrypt message if it is not a Draft and user has a public key
 
     //
@@ -314,6 +282,17 @@ async function onAppend(path, flags, date, raw, session, fn) {
       session
     });
 
+    // update storage
+    try {
+      await this.wsp.request({
+        action: 'size',
+        timeout: ms('5s'),
+        alias_id: alias.id
+      });
+    } catch (err) {
+      this.logger.fatal(err);
+    }
+
     try {
       await this.server.notifier.addEntries(this, session, mailbox, {
         // TODO: the wildduck code has this which means messages don't show in Sent folder
@@ -368,33 +347,15 @@ async function onAppend(path, flags, date, raw, session, fn) {
         } catch (err) {
           this.logger.fatal(err, {
             attachmentIds,
-            storageUsed,
             session
           });
         }
       } else {
         this.logger.fatal(
           new TypeError('Attachment storage needs to cleanup'),
-          { attachmentIds, storageUsed, session }
+          { attachmentIds, session }
         );
       }
-    }
-
-    // rollback storage if there was an error and storage was consumed
-    if (storageUsed > 0) {
-      // decrease storage used
-      Aliases.findOneAndUpdate(
-        {
-          id: session.user.alias_id
-        },
-        {
-          $inc: {
-            storageUsed: storageUsed * -1
-          }
-        }
-      )
-        .then()
-        .catch((err) => this.logger.fatal(err, { storageUsed, session }));
     }
 
     // handle mongodb error

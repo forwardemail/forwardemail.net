@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Quels clients de messagerie puis-je utiliser ?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Vous pouvez facilement envoyer et recevoir des e-mails avec ces clients de messagerie populaires en suivant nos instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(cliquez ici)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Nous ne prenons pas en charge le transfert récursif de plus d'un niveau de profondeur. Si vous transférez de manière récursive plusieurs niveaux de profondeur, la configuration souhaitée risque de ne pas fonctionner comme prévu.",
-  "Payment already exists": "Le paiement existe déjà"
+  "Payment already exists": "Le paiement existe déjà",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Si vous êtes connecté à IMAP (par exemple en utilisant un client de messagerie tel qu'Apple Mail ou Thunderbird), nous n'avons pas besoin d'écrire sur un disque de stockage temporaire. Votre mot de passe IMAP crypté en mémoire est récupéré et utilisé. En temps réel, lorsqu'un message tente de vous être transmis, nous envoyons une requête WebSocket à tous les serveurs IMAP pour leur demander s'ils ont une session active pour vous (c'est la partie récupération), puis nous transmettons cela par la suite. mot de passe crypté en mémoire – nous n'avons donc pas besoin d'écrire dans une boîte aux lettres temporaire, nous pouvons écrire dans votre boîte aux lettres cryptée réelle en utilisant votre mot de passe crypté.",
+  "Privacy-focused encrypted email for enterprise.": "Courriel chiffré axé sur la confidentialité pour les entreprises.",
+  "Privacy-focused encrypted email for education.": "Courriel crypté axé sur la confidentialité pour l'éducation.",
+  "Privacy-focused encrypted email for startups.": "E-mail crypté axé sur la confidentialité pour les startups.",
+  "Privacy-focused encrypted email for stores.": "E-mail crypté axé sur la confidentialité pour les magasins.",
+  "Privacy-focused encrypted email for designers.": "E-mail crypté axé sur la confidentialité pour les concepteurs.",
+  "Privacy-focused encrypted email for developers.": "E-mail crypté axé sur la confidentialité pour les développeurs.",
+  "Privacy-focused encrypted email for marketing.": "Courriel crypté axé sur la confidentialité à des fins de marketing.",
+  "Privacy-focused encrypted email for sales.": "E-mail crypté axé sur la confidentialité pour les ventes.",
+  "Privacy-focused encrypted email for you.": "E-mail crypté axé sur la confidentialité pour vous.",
+  "Enterprise-grade 99.99% uptime SLA": "SLA de disponibilité de 99,99 % de niveau entreprise",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "La suppression de votre compte est irréversible. Veuillez être extrêmement prudent lors de la suppression de votre compte.",
+  "Please remove all invited members to the domain before changing plans.": "Veuillez supprimer tous les membres invités du domaine avant de modifier les plans."
 }

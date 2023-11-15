@@ -40,21 +40,12 @@ const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
 
 //
-// TODO: automatic emails if user is low on storage quota or exceeds it
-//
 // TODO: run migration for existing IMAP db storage in Mongo -> SQLite temp mailboxes
-// TODO: redo storage calculation stuff (right now limited to 1K lookups)
-//       (automated job will run on sqlite-server on interval to fs list all files)
-//       (and for each it will perform lookup on alias, if no alias then alert admins)
-//       (e.g. the alias no longer exists so we need to remove it)
-//       and if it does exist then store its size as storage_used (not storageUsed)
 //
-// TODO: include R2 backups and -tmp storage files in calculations
 // TODO: handle translation of the folder names (similar to wildduck)
 // TODO: send welcome email to user in their sqlite dbs
 // TODO: alias bootstrap progress bars for storage, pooled, etc
 // TODO: when user deletes account then also purge sqlite databases and backups
-// TODO: automated job to detect files on block storage and R2 that don't correspond to actual aliases
 // TODO: alert user they have new email if messages detected > 24 hours ago
 
 // TODO: search filters like has:attachment

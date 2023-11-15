@@ -5370,5 +5370,19 @@
   "You can even have both IMAP storage and forwarding recipients enabled at the same time.": "You can even have both IMAP storage and forwarding recipients enabled at the same time.",
   "What email clients can I use?": "What email clients can I use?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.",
-  "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended."
+  "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.",
+  "Privacy-focused encrypted email for enterprise.": "Privacy-focused encrypted email for enterprise.",
+  "Privacy-focused encrypted email for education.": "Privacy-focused encrypted email for education.",
+  "Privacy-focused encrypted email for startups.": "Privacy-focused encrypted email for startups.",
+  "Privacy-focused encrypted email for stores.": "Privacy-focused encrypted email for stores.",
+  "Privacy-focused encrypted email for designers.": "Privacy-focused encrypted email for designers.",
+  "Privacy-focused encrypted email for developers.": "Privacy-focused encrypted email for developers.",
+  "Privacy-focused encrypted email for marketing.": "Privacy-focused encrypted email for marketing.",
+  "Privacy-focused encrypted email for sales.": "Privacy-focused encrypted email for sales.",
+  "Privacy-focused encrypted email for you.": "Privacy-focused encrypted email for you.",
+  "Enterprise-grade 99.99% uptime SLA": "Enterprise-grade 99.99% uptime SLA",
+  "My Emails": "My Emails",
+  "My Billing": "My Billing",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Deleting your account is irreversible.  Please take extreme caution when deleting your account."
 }

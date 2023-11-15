@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Vilka e-postklienter kan jag använda?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Du kan enkelt skicka och ta emot e-post med dessa populära e-postklienter med hjälp av våra instruktioner <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(klicka här)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Vi stöder inte vidarebefordran rekursivt mer än en nivå djup. Om du vidarebefordrar rekursivt mer än en nivå djupt, kanske din önskade konfiguration inte fungerar som avsett.",
-  "Payment already exists": "Betalning finns redan"
+  "Payment already exists": "Betalning finns redan",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Om du är ansluten till IMAP (t.ex. genom att använda en e-postklient som Apple Mail eller Thunderbird), behöver vi inte skriva till temporär disklagring. Ditt krypterade IMAP-lösenord i minnet hämtas och används istället. I realtid, när ett meddelande försöker levereras till dig, skickar vi en WebSocket-förfrågan till alla IMAP-servrar och frågar dem om de har en aktiv session för dig (detta är hämtningsdelen), och skickar sedan vidare den krypterat lösenord i minnet – så vi behöver inte skriva till en tillfällig brevlåda, vi kan skriva till din faktiska krypterade brevlåda med ditt krypterade lösenord.",
+  "Privacy-focused encrypted email for enterprise.": "Sekretessfokuserad krypterad e-post för företag.",
+  "Privacy-focused encrypted email for education.": "Sekretessfokuserad krypterad e-post för utbildning.",
+  "Privacy-focused encrypted email for startups.": "Sekretessfokuserad krypterad e-post för nystartade företag.",
+  "Privacy-focused encrypted email for stores.": "Sekretessfokuserad krypterad e-post för butiker.",
+  "Privacy-focused encrypted email for designers.": "Sekretessfokuserad krypterad e-post för designers.",
+  "Privacy-focused encrypted email for developers.": "Sekretessfokuserad krypterad e-post för utvecklare.",
+  "Privacy-focused encrypted email for marketing.": "Sekretessfokuserad krypterad e-post för marknadsföring.",
+  "Privacy-focused encrypted email for sales.": "Sekretessfokuserad krypterad e-post för försäljning.",
+  "Privacy-focused encrypted email for you.": "Sekretessfokuserad krypterad e-post för dig.",
+  "Enterprise-grade 99.99% uptime SLA": "SLA för företagsklass 99,99 % drifttid",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Att ta bort ditt konto är oåterkalleligt. Var extremt försiktig när du raderar ditt konto.",
+  "Please remove all invited members to the domain before changing plans.": "Ta bort alla inbjudna medlemmar till domänen innan du ändrar planer."
 }

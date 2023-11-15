@@ -5292,5 +5292,18 @@
   "What email clients can I use?": "我可以使用哪些电子邮件客户端？",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "您可以按照我们的说明，通过这些流行的电子邮件客户端轻松发送和接收电子邮件<a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">（单击此处）</a> 。",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "我们不支持递归转发超过一层深度。如果您递归转发的深度超过一级，那么您所需的配置可能无法按预期工作。",
-  "Payment already exists": "付款已存在"
+  "Payment already exists": "付款已存在",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "如果您连接到 IMAP（例如使用 Apple Mail 或 Thunderbird 等电子邮件客户端），则我们不需要写入临时磁盘存储。相反，您的内存中加密的 IMAP 密码将被获取并使用。实时地，当一条消息试图传递给您时，我们会向所有 IMAP 服务器发送一个 WebSocket 请求，询问它们是否有一个活动会话供您使用（这是获取部分），然后将其传递给所有 IMAP 服务器。加密的内存密码 – 因此我们不需要写入临时邮箱，我们可以使用您的加密密码写入您的实际加密邮箱。",
+  "Privacy-focused encrypted email for enterprise.": "面向企业的注重隐私的加密电子邮件。",
+  "Privacy-focused encrypted email for education.": "用于教育的注重隐私的加密电子邮件。",
+  "Privacy-focused encrypted email for startups.": "适合初创公司的注重隐私的加密电子邮件。",
+  "Privacy-focused encrypted email for stores.": "适用于商店的注重隐私的加密电子邮件。",
+  "Privacy-focused encrypted email for designers.": "面向设计师的注重隐私的加密电子邮件。",
+  "Privacy-focused encrypted email for developers.": "面向开发人员的注重隐私的加密电子邮件。",
+  "Privacy-focused encrypted email for marketing.": "用于营销的注重隐私的加密电子邮件。",
+  "Privacy-focused encrypted email for sales.": "用于销售的注重隐私的加密电子邮件。",
+  "Privacy-focused encrypted email for you.": "为您提供注重隐私的加密电子邮件。",
+  "Enterprise-grade 99.99% uptime SLA": "企业级 99.99% 正常运行时间 SLA",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "删除您的帐户是不可逆转的。删除您的帐户时请格外小心。",
+  "Please remove all invited members to the domain before changing plans.": "更改计划之前，请删除域中所有受邀请的成员。"
 }

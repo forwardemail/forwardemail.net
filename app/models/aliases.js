@@ -11,7 +11,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
-const ms = require('ms');
+const prettyBytes = require('pretty-bytes');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const slug = require('speakingurl');
@@ -82,29 +82,32 @@ const Aliases = new mongoose.Schema({
   },
   imap_backup_at: Date,
   //
-  // NOTE: this storage is updated in real-time on each `getDatabase` invocation
-  //       and also when temporary databases are fetched, and after writes are performed
-  //       and it contains the sum of fs.stat -> stat.size for each of the following:
+  // TODO: job under sqlite-bree that checks and updates storage
+  //       and alerts admins if the size difference is larger than 1 GB
   //
-  //       - $id-tmp.sqlite (temporary encrypted database for alias)
-  //       - $id-tmp-wal.sqlite (WAL)
-  //       - $id-tmp-shm.sqlite (SHM)
+  // TODO: on copy and on move need in-memory storage checks
+  //
+  // NOTE: this storage is updated in real-time after writes are performed
+  //       and it contains the sum of fs.stat -> stat.size for each of the following:
   //
   //       - $id.sqlite (actual encrypted database for alias)
   //       - $id-wal.sqlite (WAL)
   //       - $id-shm.sqlite (SHM)
   //
+  //       - $id-tmp.sqlite (temporary encrypted database for alias)
+  //       - $id-tmp-wal.sqlite (WAL)
+  //       - $id-tmp-shm.sqlite (SHM)
+  //
   //       - $id.sqlite.gz (R2 backup) <--- excluded for now
   //
-  // storage_used: {
-  storageUsed: {
+  storage_used: {
     type: Number,
     default: 0
   },
   storage_location: {
     type: String,
-    default: 'storage_do_1',
-    enum: ['storage_do_1'],
+    default: config.defaultStoragePath,
+    enum: [config.defaultStoragePath],
     trim: true,
     lowercase: true,
     index: true
@@ -203,7 +206,7 @@ Aliases.plugin(captainHook);
 // eslint-disable-next-line complexity
 Aliases.pre('validate', function (next) {
   // if storage used was below zero then set to zero
-  if (this.storageUsed < 0) this.storageUsed = 0;
+  if (this.storage_used < 0) this.storage_used = 0;
 
   // if name was not a string then generate a random one
   if (!isSANB(this.name)) {
@@ -572,22 +575,69 @@ Aliases.pre('save', async function (next) {
   }
 });
 
-async function getStorageUsed(instance, session) {
+//
+// TODO: storage quota for any given alias is the sum
+//       of all admins for the domain (if not a paid plan domain then error)
+//       (we sum the `user.storage_quota` or fallback to the default `config.maxQuotaPerAlias`)
+//       (we only sum the storage quota if the alias' domain is on a team plan)
+//
+
+//
+// NOTE: storage used calculation for any given alias is
+//       the sum of all aliases across all domains from admins on the same domain
+//       (e.g. user A is admin of 10 domains and user B is admin of 10 domains)
+//       (even though 5 of them may not overlap, the sum of all 20 domains is combined)
+//       (this isn't best case scenario right now, and instead we should allow users to allocate restrictions)
+//       (note that we filter it for admins that are on matching paid plans only as well)
+//       (so this edge case would really only apply to users that on team plans with multiple admins that have signed up for the team plan)
+//       (but even then that's such a small edge case, but we still at least pool together the 10 GB each that both get)
+//
+//       shared storage pooling would only apply for domains that are on the team plan
+//       if the domain has two admins that are both on paid plans then the max quota should be maxQuota * 2 (or sum of `user.storage_quota`)
+//
+//       basically if a member of a domain is a user and not an admin, then this means the domain is on the team plan
+//       and if the user has other aliases on other domains of their own on their own enhanced protection plan
+//       then the storage quota for the aliases on the domain that the user belongs to under the team plan
+//       won't affect their storage quota for their own domains on their own enhanced plan
+//
+async function getStorageUsed(alias) {
+  let storageUsed = 0;
+
   //
   // calculate storage used across entire domain and its admin users domains
   // (this is rudimentary storage system and has edge cases)
   // (e.g. multi-accounts when users on team plan edge case)
   //
-  const domain = await Domains.findOne({
-    id: session.user.domain_id,
-    is_global: false
-  })
-    .populate('members.user', `id ${config.userFields.isBanned}`)
+  const domain = await Domains.findById(alias.domain)
+    .populate('members.user', `_id id plan ${config.userFields.isBanned}`)
     .lean()
     .exec();
+
   if (!domain)
     throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+    );
+
+  // safeguard to not check storage used for global domains
+  if (domain.is_global)
+    throw new TypeError('Global domains not supported for storage');
+
+  // safeguard for storage to only be used on paid plans
+  if (domain.plan === 'free')
+    throw Boom.badRequest(
+      i18n.translateError(
+        'DOMAIN_PLAN_UPGRADE_REQUIRED',
+        alias.locale,
+        domain.name,
+        i18n.translate('ENHANCED_PROTECTION', alias.locale),
+        `${config.urls.web}/${alias.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+      )
+    );
+
+  // if we're on non-team plan, then there should only be one member (safeguard)
+  if (domain.plan !== 'team' && domain.members.length > 1)
+    throw new TypeError(
+      `Domain ${domain.name} (${domain.id}) has more than one member`
     );
 
   // filter out a domain's members without actual users
@@ -595,28 +645,26 @@ async function getStorageUsed(instance, session) {
     (member) =>
       _.isObject(member.user) &&
       !member.user[config.userFields.isBanned] &&
-      member.group === 'admin'
+      member.group === 'admin' &&
+      mongoose.Types.ObjectId.isValid(member.user._id)
   );
 
   if (adminMembers.length === 0)
     throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
     );
 
-  const ids = domain.members.map((m) => m.user);
-
-  // safeguard
-  if (ids.length === 0)
-    throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
+  // if we're on non-team plan, then there should only be one admin (safeguard)
+  if (domain.plan !== 'team' && adminMembers.length > 1)
+    throw new TypeError(
+      `Domain ${domain.name} (${domain.id}) has more than one admin`
     );
 
-  // now get all domains where $elemMatch is the user id and group is admin
+  // now get all domains where $elemMatch is the admin user id and group is admin
   const domainIds = await Domains.distinct('_id', {
-    is_global: false,
     members: {
       $elemMatch: {
-        user: { $in: ids },
+        user: { $in: adminMembers.map((m) => m.user._id) },
         group: 'admin'
       }
     }
@@ -625,79 +673,66 @@ async function getStorageUsed(instance, session) {
   // safeguard
   if (domainIds.length === 0)
     throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', 'en')
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
     );
 
-  const count = await this.countDocuments({
-    domain: { $in: domainIds },
-    storage_location: {
-      $exists: true
-    }
-  });
+  if (domainIds.length > 0) {
+    const results = await this.aggregate([
+      {
+        $match: {
+          domain: {
+            $in: domainIds
+          }
+        }
+      },
+      {
+        $group: {
+          _id: '',
+          storage_used: {
+            $sum: '$storage_used'
+          }
+        }
+      }
+    ]);
+    // results [ { _id: '', storage_used: 91360 } ]
+    if (
+      results.length !== 1 ||
+      typeof results[0] !== 'object' ||
+      typeof results[0].storage_used !== 'number'
+    )
+      throw Boom.notFound(
+        i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
+      );
 
-  // don't allow more than 1K lookups at once
-  if (count > 1000) {
-    const err = new TypeError('Cannot lookup more than 1K at once');
-    err.domain_id = session.user.domain_id;
-    throw err;
+    storageUsed += results[0].storage_used;
   }
 
-  const aliases = await this.find({
-    domain: { $in: domainIds },
-    storage_location: {
-      $exists: true
-    }
-  })
-    .select({
-      _id: -1,
-      id: 1,
-      storage_location: 1
-    })
-    .lean()
-    .exec();
-
-  // now get all aliases that belong to any of these domains and sum the storageQuota
-  const { size } = await instance.wsp.request({
-    action: 'size',
-    timeout: ms('5s'),
-    // session: { user: session.user },
-    aliases
-  });
-
-  return size;
+  return storageUsed;
 }
 
-// TODO: include R2 backups and -tmp storage files in calculations
 Aliases.statics.getStorageUsed = getStorageUsed;
 
-// Aliases.statics.isOverQuota = async function (alias, size = 0) {
-Aliases.statics.isOverQuota = async function (
-  instance,
-  session,
-  size = 0,
-  returnStorageUsed = false
-) {
-  // const storageUsed = await getStorageUsed.call(this, alias);
-  const storageUsed = await getStorageUsed.call(this, instance, session);
+Aliases.statics.isOverQuota = async function (alias, size = 0) {
+  const storageUsed = await getStorageUsed.call(this, alias);
 
+  // TODO: allow users to purchase more storage (tied to their user.storage_quota)
+  //       but this is only relative here if the user is an admin of their aliases domain
+
+  // TODO: if user is on team plan then check if any other user is on team plan
+  //       and multiply that user count by the max quota (pooling concept for teams)
   const isOverQuota = storageUsed + size > config.maxQuotaPerAlias;
 
   // log fatal error to admins (so they will get notified by email/text)
-  if (isOverQuota) {
-    const err = new Error(
-      `Alias ${session.user.username} (ID ${
-        session.user.alias_id
-      }) is over quota (${storageUsed + size}/${config.maxQuotaPerAlias})`
+  if (isOverQuota)
+    logger.fatal(
+      new TypeError(
+        `Alias ${alias.id} is over quota (${prettyBytes(
+          storageUsed + size
+        )}/${prettyBytes(config.maxQuotaPerAlias)})`
+      )
     );
-    err.isCodeBug = true; // causes admin alerts
-    logger.fatal(err, { session });
-  }
 
-  if (returnStorageUsed) {
-    return { storageUsed, isOverQuota };
-  }
-
-  return isOverQuota;
+  return { storageUsed, isOverQuota };
 };
 
 Aliases.methods.createToken = async function (description = '') {

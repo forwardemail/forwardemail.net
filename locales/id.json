@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Klien email apa yang dapat saya gunakan?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Anda dapat dengan mudah mengirim dan menerima email dengan klien email populer ini menggunakan instruksi kami <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(klik di sini)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Kami tidak mendukung penerusan secara rekursif lebih dari satu level. Jika Anda meneruskan lebih dari satu tingkat secara rekursif, maka konfigurasi yang Anda inginkan mungkin tidak berfungsi sebagaimana mestinya.",
-  "Payment already exists": "Pembayaran sudah ada"
+  "Payment already exists": "Pembayaran sudah ada",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Jika Anda terhubung ke IMAP (misalnya menggunakan klien email seperti Apple Mail atau Thunderbird), maka kita tidak perlu menulis ke penyimpanan disk sementara. Kata sandi IMAP terenkripsi dalam memori Anda malah diambil dan digunakan. Secara real-time, ketika sebuah pesan mencoba dikirimkan kepada Anda, kami mengirimkan permintaan WebSocket ke semua server IMAP menanyakan apakah mereka memiliki sesi aktif untuk Anda (ini adalah bagian pengambilan), dan selanjutnya akan meneruskannya. kata sandi dalam memori terenkripsi – jadi kami tidak perlu menulis ke kotak surat sementara, kami dapat menulis ke kotak surat terenkripsi Anda yang sebenarnya menggunakan kata sandi terenkripsi Anda.",
+  "Privacy-focused encrypted email for enterprise.": "Email terenkripsi yang berfokus pada privasi untuk perusahaan.",
+  "Privacy-focused encrypted email for education.": "Email terenkripsi yang berfokus pada privasi untuk pendidikan.",
+  "Privacy-focused encrypted email for startups.": "Email terenkripsi yang berfokus pada privasi untuk startup.",
+  "Privacy-focused encrypted email for stores.": "Email terenkripsi yang berfokus pada privasi untuk toko.",
+  "Privacy-focused encrypted email for designers.": "Email terenkripsi yang berfokus pada privasi untuk desainer.",
+  "Privacy-focused encrypted email for developers.": "Email terenkripsi yang berfokus pada privasi untuk pengembang.",
+  "Privacy-focused encrypted email for marketing.": "Email terenkripsi yang berfokus pada privasi untuk pemasaran.",
+  "Privacy-focused encrypted email for sales.": "Email terenkripsi yang berfokus pada privasi untuk penjualan.",
+  "Privacy-focused encrypted email for you.": "Email terenkripsi yang berfokus pada privasi untuk Anda.",
+  "Enterprise-grade 99.99% uptime SLA": "SLA waktu aktif 99,99% tingkat perusahaan",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Menghapus akun Anda tidak dapat diubah. Harap berhati-hati saat menghapus akun Anda.",
+  "Please remove all invited members to the domain before changing plans.": "Harap hapus semua anggota yang diundang ke domain sebelum mengubah rencana."
 }

@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Які поштові клієнти я можу використовувати?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Ви можете легко надсилати й отримувати електронну пошту за допомогою цих популярних поштових клієнтів, використовуючи наші інструкції <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(натисніть тут)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Ми не підтримуємо рекурсивне пересилання більш ніж на один рівень. Якщо ви рекурсивно пересилаєте більш ніж один рівень углиб, бажана конфігурація може не працювати належним чином.",
-  "Payment already exists": "Оплата вже є"
+  "Payment already exists": "Оплата вже є",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Якщо ви підключені до IMAP (наприклад, за допомогою клієнта електронної пошти, наприклад Apple Mail або Thunderbird), нам не потрібно писати на тимчасове сховище на диску. Натомість отримується та використовується ваш зашифрований у пам’яті пароль IMAP. У режимі реального часу, коли повідомлення намагається доставити вам, ми надсилаємо запит WebSocket до всіх серверів IMAP із запитом, чи є у них активний сеанс для вас (це частина отримання), а потім передаємо цей запит зашифрований пароль у пам’яті – тому нам не потрібно писати у тимчасову поштову скриньку, ми можемо писати у вашу справжню зашифровану поштову скриньку, використовуючи ваш зашифрований пароль.",
+  "Privacy-focused encrypted email for enterprise.": "Зашифрована електронна пошта, орієнтована на конфіденційність, для підприємств.",
+  "Privacy-focused encrypted email for education.": "Зашифрована електронна пошта, орієнтована на конфіденційність, для навчання.",
+  "Privacy-focused encrypted email for startups.": "Зашифрована електронна пошта, орієнтована на конфіденційність, для стартапів.",
+  "Privacy-focused encrypted email for stores.": "Зашифрована електронна пошта для магазинів, орієнтована на конфіденційність.",
+  "Privacy-focused encrypted email for designers.": "Зашифрована електронна пошта для дизайнерів, орієнтована на конфіденційність.",
+  "Privacy-focused encrypted email for developers.": "Зашифрована електронна пошта для розробників, орієнтована на конфіденційність.",
+  "Privacy-focused encrypted email for marketing.": "Зашифрована електронна пошта для маркетингу, орієнтована на конфіденційність.",
+  "Privacy-focused encrypted email for sales.": "Зашифрована електронна пошта для продажу, орієнтована на конфіденційність.",
+  "Privacy-focused encrypted email for you.": "Зашифрована електронна пошта, орієнтована на конфіденційність, для вас.",
+  "Enterprise-grade 99.99% uptime SLA": "Корпоративний рівень безперебійної роботи 99,99% SLA",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Видалення вашого облікового запису незворотне. Будь ласка, будьте дуже обережні, видаляючи свій обліковий запис.",
+  "Please remove all invited members to the domain before changing plans.": "Перш ніж змінювати плани, видаліть усіх запрошених учасників домену."
 }

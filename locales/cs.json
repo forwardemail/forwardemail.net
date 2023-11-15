@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Jaké e-mailové klienty mohu používat?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Pomocí těchto oblíbených e-mailových klientů můžete snadno odesílat a přijímat e-maily pomocí našich pokynů <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(klikněte zde)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Nepodporujeme rekurzivní předávání více než jednu úroveň hluboko. Pokud přeposíláte rekurzivně více než jednu úroveň hluboko, pak vaše požadovaná konfigurace nemusí fungovat tak, jak bylo zamýšleno.",
-  "Payment already exists": "Platba již existuje"
+  "Payment already exists": "Platba již existuje",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Pokud jste připojeni k IMAP (např. pomocí e-mailového klienta, jako je Apple Mail nebo Thunderbird), nemusíme zapisovat na dočasné diskové úložiště. Místo toho se načte a použije vaše heslo IMAP zašifrované v paměti. V reálném čase, když se vám zpráva pokouší doručit, odešleme požadavek WebSocket na všechny servery IMAP, kde se jich zeptáme, zda pro vás mají aktivní relaci (toto je část načtení), a následně ji předáme šifrované heslo v paměti – takže nemusíme psát do dočasné schránky, můžeme psát do vaší skutečné šifrované schránky pomocí vašeho zašifrovaného hesla.",
+  "Privacy-focused encrypted email for enterprise.": "Šifrovaný e-mail zaměřený na ochranu soukromí pro podniky.",
+  "Privacy-focused encrypted email for education.": "Šifrovaný e-mail zaměřený na ochranu soukromí pro vzdělávání.",
+  "Privacy-focused encrypted email for startups.": "Šifrovaný e-mail zaměřený na soukromí pro začínající uživatele.",
+  "Privacy-focused encrypted email for stores.": "Šifrovaný e-mail pro obchody zaměřený na ochranu soukromí.",
+  "Privacy-focused encrypted email for designers.": "Šifrovaný e-mail zaměřený na soukromí pro návrháře.",
+  "Privacy-focused encrypted email for developers.": "Šifrovaný e-mail pro vývojáře zaměřený na ochranu soukromí.",
+  "Privacy-focused encrypted email for marketing.": "Šifrovaný e-mail zaměřený na soukromí pro marketing.",
+  "Privacy-focused encrypted email for sales.": "Šifrovaný e-mail zaměřený na ochranu soukromí pro prodej.",
+  "Privacy-focused encrypted email for you.": "Šifrovaný e-mail zaměřený na ochranu soukromí pro vás.",
+  "Enterprise-grade 99.99% uptime SLA": "99,99% dostupnost SLA na podnikové úrovni",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Smazání účtu je nevratné. Při mazání účtu buďte velmi opatrní.",
+  "Please remove all invited members to the domain before changing plans.": "Před změnou plánů odeberte všechny pozvané členy do domény."
 }

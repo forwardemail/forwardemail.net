@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Tôi có thể sử dụng những ứng dụng email nào?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Bạn có thể dễ dàng gửi và nhận email bằng các ứng dụng email phổ biến này bằng cách sử dụng hướng dẫn của chúng tôi <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(bấm vào đây)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Chúng tôi không hỗ trợ chuyển tiếp đệ quy sâu hơn một cấp. Nếu bạn chuyển tiếp đệ quy sâu hơn một cấp thì cấu hình mong muốn của bạn có thể không hoạt động như dự định.",
-  "Payment already exists": "Thanh toán đã tồn tại"
+  "Payment already exists": "Thanh toán đã tồn tại",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Nếu bạn được kết nối với IMAP (ví dụ: sử dụng ứng dụng email như Apple Mail hoặc Thunderbird), thì chúng tôi không cần ghi vào bộ lưu trữ đĩa tạm thời. Thay vào đó, mật khẩu IMAP được mã hóa trong bộ nhớ của bạn sẽ được tìm nạp và sử dụng. Trong thời gian thực, khi một tin nhắn đang cố gắng được gửi đến bạn, chúng tôi sẽ gửi yêu cầu WebSocket tới tất cả các máy chủ IMAP để hỏi xem họ có phiên hoạt động nào cho bạn không (đây là phần tìm nạp) và sau đó sẽ chuyển tiếp yêu cầu đó mật khẩu trong bộ nhớ được mã hóa – vì vậy chúng tôi không cần ghi vào hộp thư tạm thời, chúng tôi có thể ghi vào hộp thư được mã hóa thực tế bằng mật khẩu được mã hóa của bạn.",
+  "Privacy-focused encrypted email for enterprise.": "Email được mã hóa tập trung vào quyền riêng tư dành cho doanh nghiệp.",
+  "Privacy-focused encrypted email for education.": "Email được mã hóa tập trung vào quyền riêng tư dành cho giáo dục.",
+  "Privacy-focused encrypted email for startups.": "Email được mã hóa tập trung vào quyền riêng tư dành cho người khởi nghiệp.",
+  "Privacy-focused encrypted email for stores.": "Email được mã hóa tập trung vào quyền riêng tư cho các cửa hàng.",
+  "Privacy-focused encrypted email for designers.": "Email được mã hóa tập trung vào quyền riêng tư dành cho nhà thiết kế.",
+  "Privacy-focused encrypted email for developers.": "Email được mã hóa tập trung vào quyền riêng tư dành cho nhà phát triển.",
+  "Privacy-focused encrypted email for marketing.": "Email được mã hóa tập trung vào quyền riêng tư để tiếp thị.",
+  "Privacy-focused encrypted email for sales.": "Email được mã hóa tập trung vào quyền riêng tư để bán hàng.",
+  "Privacy-focused encrypted email for you.": "Email được mã hóa tập trung vào quyền riêng tư dành cho bạn.",
+  "Enterprise-grade 99.99% uptime SLA": "SLA thời gian hoạt động 99,99% cấp doanh nghiệp",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Việc xóa tài khoản của bạn là không thể thay đổi được. Hãy hết sức thận trọng khi xóa tài khoản của bạn.",
+  "Please remove all invited members to the domain before changing plans.": "Vui lòng xóa tất cả các thành viên được mời vào miền trước khi thay đổi gói."
 }

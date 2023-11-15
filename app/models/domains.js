@@ -736,6 +736,17 @@ Domains.pre('validate', function (next) {
   next();
 });
 
+// prevent members from existing on domains after plan changes
+Domains.pre('save', function (next) {
+  if (this.plan === 'team') return next();
+  if (this.members.length === 1) return next();
+  return next(
+    Boom.badRequest(
+      i18n.translateError('REMOVE_MEMBERS_BEFORE_PLAN_CHANGE', this.locale)
+    )
+  );
+});
+
 Domains.pre('save', async function (next) {
   try {
     const domain = this;

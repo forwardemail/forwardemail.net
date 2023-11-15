@@ -278,6 +278,8 @@ module.exports = {
   PLAN_ALREADY_ACTIVE: 'This plan is already active, please refresh.',
   UPGRADE_PLAN: 'Upgrade Plan',
   INVALID_PLAN: 'Invalid plan selected.',
+  REMOVE_MEMBERS_BEFORE_PLAN_CHANGE:
+    'Please remove all invited members to the domain before changing plans.',
   PLAN_UPGRADE_REQUIRED:
     'Please <a class="font-weight-bold" href="%s">upgrade to a paid plan</a> to unlock this feature.',
   PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS:

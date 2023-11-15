@@ -5601,5 +5601,18 @@
   "What email clients can I use?": "Hangi e-posta istemcilerini kullanabilirim?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Talimatlarımızı kullanarak bu popüler e-posta istemcileriyle kolayca e-posta gönderip alabilirsiniz <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(buraya tıklayın)</a> .",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Bir düzeyden daha derin yinelemeli iletmeyi desteklemiyoruz. Yinelemeli olarak birden fazla düzeyden daha derine iletirseniz, istediğiniz konfigürasyon amaçlandığı gibi çalışmayabilir.",
-  "Payment already exists": "Ödeme zaten mevcut"
+  "Payment already exists": "Ödeme zaten mevcut",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "IMAP'ye bağlıysanız (örneğin, Apple Mail veya Thunderbird gibi bir e-posta istemcisi kullanarak), geçici disk depolama alanına yazmamız gerekmez. Bunun yerine bellek içi şifrelenmiş IMAP şifreniz alınır ve kullanılır. Gerçek zamanlı olarak, size bir mesaj teslim edilmeye çalışıldığında, tüm IMAP sunucularına, sizin için aktif bir oturumları olup olmadığını soran bir WebSocket isteği göndeririz (bu, getirme kısmıdır) ve daha sonra bu mesajı iletiriz. şifrelenmiş bellek içi şifre - böylece geçici bir posta kutusuna yazmamıza gerek kalmaz, şifrelenmiş şifrenizi kullanarak gerçek şifrelenmiş posta kutunuza yazabiliriz.",
+  "Privacy-focused encrypted email for enterprise.": "Kurumsal için gizlilik odaklı şifreli e-posta.",
+  "Privacy-focused encrypted email for education.": "Eğitim için gizlilik odaklı şifreli e-posta.",
+  "Privacy-focused encrypted email for startups.": "Yeni başlayanlar için gizlilik odaklı şifreli e-posta.",
+  "Privacy-focused encrypted email for stores.": "Mağazalar için gizlilik odaklı şifreli e-posta.",
+  "Privacy-focused encrypted email for designers.": "Tasarımcılar için gizlilik odaklı şifreli e-posta.",
+  "Privacy-focused encrypted email for developers.": "Geliştiriciler için gizlilik odaklı şifreli e-posta.",
+  "Privacy-focused encrypted email for marketing.": "Pazarlama için gizlilik odaklı şifreli e-posta.",
+  "Privacy-focused encrypted email for sales.": "Satışlar için gizlilik odaklı şifreli e-posta.",
+  "Privacy-focused encrypted email for you.": "Sizin için gizlilik odaklı şifreli e-posta.",
+  "Enterprise-grade 99.99% uptime SLA": "Kurumsal düzeyde %99,99 kesintisiz çalışma HDS'si",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Hesabınızın silinmesi geri alınamaz. Hesabınızı silerken lütfen çok dikkatli olun.",
+  "Please remove all invited members to the domain before changing plans.": "Planları değiştirmeden önce lütfen alan adına davet edilen tüm üyeleri kaldırın."
 }

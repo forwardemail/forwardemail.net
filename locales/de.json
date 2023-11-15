@@ -4635,5 +4635,18 @@
   "What email clients can I use?": "Welche E-Mail-Clients kann ich verwenden?",
   "You can easily send and receive email with these popular email clients using our instructions <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(click here)</a>.": "Mithilfe unserer Anleitung <a href=\"%s\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">(hier klicken)</a> können Sie ganz einfach E-Mails mit diesen beliebten E-Mail-Clients senden und empfangen.",
   "We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.": "Wir unterstützen keine rekursive Weiterleitung mehr als eine Ebene tief. Wenn Sie rekursiv mehr als eine Ebene tief weiterleiten, funktioniert Ihre gewünschte Konfiguration möglicherweise nicht wie beabsichtigt.",
-  "Payment already exists": "Die Zahlung ist bereits vorhanden"
+  "Payment already exists": "Die Zahlung ist bereits vorhanden",
+  "If you are connected to IMAP (e.g. using an email client such as Apple Mail or Thunderbird), then we do not need to write to temporary disk storage.  Your in-memory encrypted IMAP password is instead fetched and used.  In real-time, when a message is attempting to be delivered to you, we send a WebSocket request to all IMAP servers asking them if they have an active session for you (this is the fetch part), and then subsequently will pass along that encrypted in-memory password – so we don't need to write to a temporary mailbox, we can write to your actual encrypted mailbox using your encrypted password.": "Wenn Sie mit IMAP verbunden sind (z. B. über einen E-Mail-Client wie Apple Mail oder Thunderbird), müssen wir nicht auf den temporären Festplattenspeicher schreiben. Stattdessen wird Ihr im Speicher verschlüsseltes IMAP-Passwort abgerufen und verwendet. Wenn eine Nachricht an Sie zugestellt werden soll, senden wir in Echtzeit eine WebSocket-Anfrage an alle IMAP-Server und fragen sie, ob sie eine aktive Sitzung für Sie haben (dies ist der Abrufteil), und leiten diese anschließend weiter verschlüsseltes In-Memory-Passwort – damit wir nicht in ein temporäres Postfach schreiben müssen, können wir mit Ihrem verschlüsselten Passwort in Ihr tatsächlich verschlüsseltes Postfach schreiben.",
+  "Privacy-focused encrypted email for enterprise.": "Datenschutzorientierte verschlüsselte E-Mail für Unternehmen.",
+  "Privacy-focused encrypted email for education.": "Datenschutzorientierte verschlüsselte E-Mail für den Bildungsbereich.",
+  "Privacy-focused encrypted email for startups.": "Datenschutzorientierte verschlüsselte E-Mail für Startups.",
+  "Privacy-focused encrypted email for stores.": "Datenschutzorientierte verschlüsselte E-Mail für Geschäfte.",
+  "Privacy-focused encrypted email for designers.": "Datenschutzorientierte verschlüsselte E-Mail für Designer.",
+  "Privacy-focused encrypted email for developers.": "Datenschutzorientierte verschlüsselte E-Mail für Entwickler.",
+  "Privacy-focused encrypted email for marketing.": "Datenschutzorientierte, verschlüsselte E-Mail für Marketingzwecke.",
+  "Privacy-focused encrypted email for sales.": "Datenschutzorientierte, verschlüsselte E-Mail für den Vertrieb.",
+  "Privacy-focused encrypted email for you.": "Datenschutzorientierte, verschlüsselte E-Mail für Sie.",
+  "Enterprise-grade 99.99% uptime SLA": "SLA mit 99,99 % Verfügbarkeit auf Unternehmensniveau",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Die Löschung Ihres Kontos ist unwiderruflich. Bitte seien Sie beim Löschen Ihres Kontos äußerst vorsichtig.",
+  "Please remove all invited members to the domain before changing plans.": "Bitte entfernen Sie alle eingeladenen Mitglieder aus der Domain, bevor Sie Ihre Pläne ändern."
 }
