@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "Зашифрованная электронная почта, ориентированная на конфиденциальность.",
   "Enterprise-grade 99.99% uptime SLA": "Соглашение об уровне обслуживания корпоративного уровня с бесперебойной работой 99,99 %",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Удаление вашей учетной записи является необратимым. Пожалуйста, будьте предельно осторожны при удалении своей учетной записи.",
-  "Please remove all invited members to the domain before changing plans.": "Прежде чем менять планы, удалите всех приглашенных участников в домен."
+  "Please remove all invited members to the domain before changing plans.": "Прежде чем менять планы, удалите всех приглашенных участников в домен.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Переключиться на <span class=\"notranslate\">%d</span> -битный ключ DKIM?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Подтвердите, если вы хотите изменить длину модуля ключа DKIM с <strong>%d</strong> на <strong>%d</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Ограничивает ли ваш провайдер записи TXT 255 символами? Кликните сюда.",
+  "New DKIM public and private key pair generated.": "Создана новая пара открытого и закрытого ключей DKIM.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Поддерживает ли ваш провайдер записи TXT длиной более 255 символов? Кликните сюда."
 }

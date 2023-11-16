@@ -204,3 +204,15 @@ pre {
     height: 0;
   }
 }
+
+#typed-home-header {
+  min-height: 3.75em;
+  line-height: 1.25em;
+}
+
+@include media-breakpoint-up(sm) {
+  #typed-home-header {
+    min-height: auto;
+    line-height: normal;
+  }
+}

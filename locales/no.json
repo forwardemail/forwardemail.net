@@ -5179,7 +5179,7 @@
   "Visual SQLite editor (which you could also use) to test, download, and view development mailboxes.": "Visual SQLite editor (som du også kan bruke) for å teste, laste ned og se utviklingspostbokser.",
   "Embedded database layer for scalable, self-contained, fast, and resilient IMAP storage.": "Innebygd databaselag for skalerbar, selvstendig, rask og spenstig IMAP-lagring.",
   "Node.js anti-spam, email filtering, and phishing prevention tool (our alternative to": "Node.js anti-spam, e-postfiltrering og phishing-forebyggingsverktøy (vårt alternativ til",
-  "Spam Assassin": "Spam Assassin",
+  "Spam Assassin": "Spammorder",
   "DNS over HTTPS requests with Node.js and caching using Redis – which ensures global consistency and much more.": "DNS over HTTPS-forespørsler med Node.js og caching ved hjelp av Redis – som sikrer global konsistens og mye mer.",
   "Our development team uses this (and recommends this too) as": "Utviklingsteamet vårt bruker dette (og anbefaler dette også) som",
   "the preferred email client to use with Forward Email": "den foretrukne e-postklienten som skal brukes med Videresend e-post",
@@ -5619,5 +5619,10 @@
   "Privacy-focused encrypted email for you.": "Personvernfokusert kryptert e-post for deg.",
   "Enterprise-grade 99.99% uptime SLA": "Enterprise-grade 99,99 % oppetid SLA",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Å slette kontoen din er irreversibel. Vær ekstremt forsiktig når du sletter kontoen din.",
-  "Please remove all invited members to the domain before changing plans.": "Fjern alle inviterte medlemmer til domenet før du endrer planer."
+  "Please remove all invited members to the domain before changing plans.": "Fjern alle inviterte medlemmer til domenet før du endrer planer.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Bytte til <span class=\"notranslate\">%d</span> -bit DKIM-nøkkel?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Vennligst bekreft om du ønsker å endre DKIM-nøkkelmodulens lengde fra <strong>%d</strong> til <strong>%d</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Begrenser leverandøren din TXT-poster til 255 tegn? Klikk her.",
+  "New DKIM public and private key pair generated.": "Nytt DKIM offentlig og privat nøkkelpar generert.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Støtter leverandøren din TXT-poster som er lengre enn 255 tegn? Klikk her."
 }

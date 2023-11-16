@@ -60,6 +60,7 @@ const generateAliasPassword = require('./generate-alias-password');
 const downloadAliasBackup = require('./download-alias-backup');
 const createCatchAllPassword = require('./create-catch-all-password');
 const removeCatchAllPassword = require('./remove-catch-all-password');
+const changeModulusLength = require('./change-modulus-length');
 
 module.exports = {
   cancelEmailChange,
@@ -118,5 +119,6 @@ module.exports = {
   generateAliasPassword,
   downloadAliasBackup,
   createCatchAllPassword,
-  removeCatchAllPassword
+  removeCatchAllPassword,
+  changeModulusLength
 };

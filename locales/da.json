@@ -5350,5 +5350,10 @@
   "Privacy-focused encrypted email for you.": "Privatlivsfokuseret krypteret e-mail til dig.",
   "Enterprise-grade 99.99% uptime SLA": "Enterprise-grade 99,99 % oppetid SLA",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Det er irreversibelt at slette din konto. Vær yderst forsigtig, når du sletter din konto.",
-  "Please remove all invited members to the domain before changing plans.": "Fjern venligst alle inviterede medlemmer til domænet, før du ændrer planer."
+  "Please remove all invited members to the domain before changing plans.": "Fjern venligst alle inviterede medlemmer til domænet, før du ændrer planer.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Skift til <span class=\"notranslate\">%d</span> -bit DKIM-nøgle?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Bekræft venligst, om du ønsker at ændre DKIM-nøglemodulets længde fra <strong>%d</strong> til <strong>%d</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Begrænser din udbyder TXT-poster til 255 tegn? Klik her.",
+  "New DKIM public and private key pair generated.": "Nyt DKIM offentlige og private nøglepar genereret.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Understøtter din udbyder TXT-registreringer på mere end 255 tegn? Klik her."
 }

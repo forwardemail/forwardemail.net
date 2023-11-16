@@ -20,6 +20,7 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  CHANGED_MODULUS_LENGTH: 'New DKIM public and private key pair generated.',
   ALIAS_OVERRIDE_CANNOT_HAVE_PASSWORD:
     'You cannot enter your current password and also attempt to override at the same time.',
   ALIAS_OVERRIDE_REQUIRED:

@@ -141,7 +141,7 @@ block body
             div= t("Privacy-focused encrypted email for sales.")
             div= t("Privacy-focused encrypted email for you.")
         .col-12.col-lg-6
-          h1.mb-3
+          h1#typed-home-header.mb-3
             span#typed-home
               if isBot(ctx.get("User-Agent"))
                 = t("Free, private, and secure email for custom domains.")

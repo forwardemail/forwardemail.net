@@ -215,6 +215,15 @@ router
     rateLimit(200, 'verify smtp'),
     web.myAccount.verifySMTP
   )
+  .post(
+    '/domains/:domain_id/change-modulus-length',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.ensureSMTPAccess,
+    rateLimit(20, 'change modulus length'),
+    web.myAccount.changeModulusLength
+  )
   .get(
     '/domains/:domain_id/aliases',
     web.myAccount.retrieveDomain,

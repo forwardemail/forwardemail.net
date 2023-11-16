@@ -235,31 +235,90 @@ block body
                       td.align-middle.text-left.py-3
                         //- DKIM (required)
                         - let str = `v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString("base64")};`;
+                        - let splitDKIM = false;
                         //-
-                        //- if the provider is AWS Route 53 or Hover then we need to split to max 255 each
+                        //- if the provider is AWS Route 53, Google, or Hover then we need to split to max 255 each
+                        //- <https://www.mailhardener.com/tools/dns-record-splitter>
+                        //- <https://www.mailhardener.com/blog/how-to-enter-txt-values-in-google-cloud-dns>
                         //- <https://serverfault.com/a/763871>
+                        //- <https://serverfault.com/a/255676>
                         //-
-                        if provider && provider.slug && (provider.slug === 'amazon-route-53' || provider.slug === 'hover')
-                          - const index = Math.floor(str.length / 2);
-                          - str = `"${str.slice(0, index)}" "${str.slice(index)}"`;
+                        - const modulusLength = domain.dkim_modulus_length || 2048; //- legacy support (2048 was the original setting we had before changing to 1024)
+                        //- Button to allow users to switch between 1024 and 2048 bit keys
+                        form.ajax-form.confirm-prompt.text-center.mb-3(
+                          action=l(`/my-account/domains/${domain.name}/change-modulus-length`),
+                          method="POST",
+                          data-confirm-prompt-title=striptags(t('Switch to <span class="notranslate">%d</span>-bit DKIM key?', modulusLength === 2048 ? 1024 : 2048)),
+                          data-confirm-prompt-html=t("Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.", modulusLength, modulusLength === 2048 ? 1024 : 2048)
+                        )
+                          //- safeguard in case the user has multiple tabs open
+                          input(
+                            type="hidden",
+                            name="dkim_modulus_length",
+                            value=modulusLength === 2048 ? 1024 : 2048
+                          )
+                          button.btn.btn-sm.btn-link.font-weight-bold.text-decoration-underline(
+                            type="submit",
+                            class=modulusLength === 2048 ? 'text-danger' : 'text-muted'
+                          )
+                            if modulusLength === 2048
+                              = t("Does your provider limit TXT records to 255 characters? Click here.")
+                            else
+                              = t("Does your provider support TXT records longer than 255 characters? Click here.")
+                        if modulusLength === 2048 && provider && provider.slug && provider.slug !== 'cloudflare'
+                          - splitDKIM = true;
                           .alert.alert-warning.user-select-none.small
-                            = t("Please use the exact value below; it is split into two strings surrounded by quotes and separated with a space.")
+                            = t("Please use the exact values below to support a 2048-bit DKIM key.")
+                            = " "
+                            != t('Each value below needs to be entered as its own TXT record with the same <span class="notranslate">Name/Host/Alias</span>.')
+                            = " "
                             if provider.slug === 'amazon-route-53'
                               = " "
                               != t('Refer to <a class="alert-link notranslate" target="_blank" href="https://repost.aws/knowledge-center/route53-resolve-dkim-text-record-error" rel="noopener noreferrer">re:Post</a> and <a target="_blank" rel="noopener noreferrer" class="notranslate alert-link" href="https://serverfault.com/a/875184">StackExchange</a> answers on this topic.')
                             else if provider.slug === 'hover'
                               = " "
-                              != t('If you have issues, we recommend that you contact Hover support or switch to a different provider such as <a href="https://cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare</a>.')
-                        code#copy-dkim.d-block.text-break.small= str
-                        if !domain.has_dkim_record
-                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
-                            type="button",
-                            data-toggle="clipboard",
-                            data-clipboard-target="#copy-dkim"
-                          )
-                            i.fa.fa-clipboard
-                            = " "
-                            = t("Copy")
+                              != t('If you have issues, we recommend that you contact Hover support or switch to a different provider such as <a href="https://cloudflare.com" class="alert-link" target="_blank" rel="noopener noreferrer">Cloudflare</a>.')
+                            else if provider.slug === 'google-domains'
+                              = " "
+                              != t('Refer to Google\'s official topic on <a class="alert-link notranslate" target="_blank" href="https://support.google.com/a/answer/11613097?hl=en" rel="noopener noreferrer">DKIM keys and TXT record limits</a>.')
+                            else
+                              = t("We did not detect that your provider supports TXT records longer than 255 characters, however if it does, then you can combine these two strings together.")
+
+                        if splitDKIM
+                          - const index = Math.floor(str.length / 2);
+                          code#copy-dkim-part-1.d-block.text-break.small= str.slice(0, index)
+                          if !domain.has_dkim_record
+                            button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                              type="button",
+                              data-toggle="clipboard",
+                              data-clipboard-target="#copy-dkim-part-1"
+                            )
+                              i.fa.fa-clipboard
+                              = " "
+                              = t("Copy")
+                          .hr-text.d-flex.text-secondary.align-items-center= t("and")
+                          code#copy-dkim-part-2.d-block.text-break.small= str.slice(index)
+                          if !domain.has_dkim_record
+                            button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                              type="button",
+                              data-toggle="clipboard",
+                              data-clipboard-target="#copy-dkim-part-2"
+                            )
+                              i.fa.fa-clipboard
+                              = " "
+                              = t("Copy")
+                        else
+                          code#copy-dkim.d-block.text-break.small= str
+                          if !domain.has_dkim_record
+                            button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                              type="button",
+                              data-toggle="clipboard",
+                              data-clipboard-target="#copy-dkim"
+                            )
+                              i.fa.fa-clipboard
+                              = " "
+                              = t("Copy")
+
                     //- Return-Path (required)
                     tr
                       td(

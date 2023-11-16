@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "Зашифрована електронна пошта, орієнтована на конфіденційність, для вас.",
   "Enterprise-grade 99.99% uptime SLA": "Корпоративний рівень безперебійної роботи 99,99% SLA",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Видалення вашого облікового запису незворотне. Будь ласка, будьте дуже обережні, видаляючи свій обліковий запис.",
-  "Please remove all invited members to the domain before changing plans.": "Перш ніж змінювати плани, видаліть усіх запрошених учасників домену."
+  "Please remove all invited members to the domain before changing plans.": "Перш ніж змінювати плани, видаліть усіх запрошених учасників домену.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Перейти на <span class=\"notranslate\">%d</span> -розрядний ключ DKIM?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Підтвердьте, якщо ви бажаєте змінити довжину модуля ключа DKIM з <strong>%d</strong> на <strong>%d</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Ваш провайдер обмежує записи TXT 255 символами? Натисніть тут.",
+  "New DKIM public and private key pair generated.": "Створено нову пару відкритих і закритих ключів DKIM.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Чи підтримує ваш провайдер записи TXT, довші за 255 символів? Натисніть тут."
 }

@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "דוא\"ל מוצפן ממוקד פרטיות בשבילך.",
   "Enterprise-grade 99.99% uptime SLA": "SLA בדרגה ארגונית של 99.99% זמן פעילות",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "מחיקת החשבון שלך היא בלתי הפיכה. נא לנקוט משנה זהירות בעת מחיקת חשבונך.",
-  "Please remove all invited members to the domain before changing plans.": "אנא הסר את כל החברים המוזמנים לדומיין לפני שתשנה תוכניות."
+  "Please remove all invited members to the domain before changing plans.": "אנא הסר את כל החברים המוזמנים לדומיין לפני שתשנה תוכניות.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "לעבור למפתח DKIM <span class=\"notranslate\">%d</span> -bit?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "אנא אשר אם ברצונך לשנות את אורך מודול מפתח DKIM מ- <strong>%d</strong> ל- <strong>%d</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "האם הספק שלך מגביל את רשומות ה-TXT ל-255 תווים? לחץ כאן.",
+  "New DKIM public and private key pair generated.": "נוצר זוג מפתחות DKIM ציבורי ופרטי חדש.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "האם הספק שלך תומך ברשומות TXT ארוכות מ-255 תווים? לחץ כאן."
 }

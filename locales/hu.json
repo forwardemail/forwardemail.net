@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "Adatvédelemre összpontosító titkosított e-mail az Ön számára.",
   "Enterprise-grade 99.99% uptime SLA": "Vállalati szintű, 99,99%-os rendelkezésre állási SLA",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "A fiók törlése visszafordíthatatlan. Kérjük, legyen rendkívül óvatos fiókja törlésekor.",
-  "Please remove all invited members to the domain before changing plans.": "Kérjük, távolítsa el az összes meghívott tagot a domainből, mielőtt módosítana."
+  "Please remove all invited members to the domain before changing plans.": "Kérjük, távolítsa el az összes meghívott tagot a domainből, mielőtt módosítana.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "<span class=\"notranslate\">%d</span> bites DKIM-kulcsra vált?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Kérjük, erősítse meg, ha módosítani szeretné a DKIM kulcs modulus hosszát <strong>%d</strong> -ről <strong>%d-re</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "A szolgáltató 255 karakterre korlátozza a TXT rekordokat? Kattints ide.",
+  "New DKIM public and private key pair generated.": "Új DKIM nyilvános és privát kulcspár jött létre.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Az Ön szolgáltatója támogatja a 255 karakternél hosszabb TXT rekordokat? Kattints ide."
 }

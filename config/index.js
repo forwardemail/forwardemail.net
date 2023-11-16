@@ -46,6 +46,7 @@ const config = {
     from: env.TWILIO_FROM_NUMBER,
     to: env.TWILIO_TO_NUMBER
   },
+  defaultModulusLength: 2048,
   defaultStoragePath: 'storage_do_1',
   // 60 items (50 MB * 60 = 3000 MB = 3 GB)
   smtpMaxQueue: 60,
@@ -824,7 +825,8 @@ config.views.locals.config = _.pick(config, [
   'goodDomains',
   'meta',
   'metaTitleAffix',
-  'maxQuotaPerAlias'
+  'maxQuotaPerAlias',
+  'modulusLength'
 ]);
 
 // <https://nodemailer.com/transports/>

@@ -5459,5 +5459,10 @@
   "Privacy-focused encrypted email for you.": "Yksityisyyteen keskittyvä salattu sähköposti sinulle.",
   "Enterprise-grade 99.99% uptime SLA": "Yritystason 99,99 % käytettävyyden SLA",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Tilin poistaminen on peruuttamaton. Ole erittäin varovainen poistaessasi tiliäsi.",
-  "Please remove all invited members to the domain before changing plans.": "Poista kaikki kutsutut jäsenet verkkotunnukseen ennen suunnitelmien muuttamista."
+  "Please remove all invited members to the domain before changing plans.": "Poista kaikki kutsutut jäsenet verkkotunnukseen ennen suunnitelmien muuttamista.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Vaihdetaanko <span class=\"notranslate\">%d</span> -bittiseen DKIM-avaimeen?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Vahvista, jos haluat muuttaa DKIM-avaimen moduulipituuden <strong>%d</strong> :stä <strong>%d</strong> :ksi.",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Rajoittaako palveluntarjoajasi TXT-tietueet 255 merkkiin? Klikkaa tästä.",
+  "New DKIM public and private key pair generated.": "Uusi DKIM-julkinen ja yksityinen avainpari luotu.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Tukeeko palveluntarjoajasi yli 255 merkin pituisia TXT-tietueita? Klikkaa tästä."
 }

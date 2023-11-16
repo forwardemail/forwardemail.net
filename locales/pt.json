@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "E-mail criptografado com foco na privacidade para você.",
   "Enterprise-grade 99.99% uptime SLA": "SLA de nível empresarial com 99,99% de tempo de atividade",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Excluir sua conta é irreversível. Por favor, tome muito cuidado ao excluir sua conta.",
-  "Please remove all invited members to the domain before changing plans.": "Remova todos os membros convidados do domínio antes de alterar os planos."
+  "Please remove all invited members to the domain before changing plans.": "Remova todos os membros convidados do domínio antes de alterar os planos.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Mudar para chave DKIM <span class=\"notranslate\">%d</span> -bit?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Por favor, confirme se deseja alterar o comprimento do módulo da chave DKIM de <strong>%d</strong> para <strong>%d</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "O seu provedor limita os registros TXT a 255 caracteres? Clique aqui.",
+  "New DKIM public and private key pair generated.": "Novo par de chaves pública e privada DKIM gerado.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "O seu provedor oferece suporte a registros TXT com mais de 255 caracteres? Clique aqui."
 }

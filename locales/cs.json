@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "Šifrovaný e-mail zaměřený na ochranu soukromí pro vás.",
   "Enterprise-grade 99.99% uptime SLA": "99,99% dostupnost SLA na podnikové úrovni",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Smazání účtu je nevratné. Při mazání účtu buďte velmi opatrní.",
-  "Please remove all invited members to the domain before changing plans.": "Před změnou plánů odeberte všechny pozvané členy do domény."
+  "Please remove all invited members to the domain before changing plans.": "Před změnou plánů odeberte všechny pozvané členy do domény.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Přepnout na <span class=\"notranslate\">%d</span> -bitový klíč DKIM?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Potvrďte prosím, zda si přejete změnit délku modulu klíče DKIM z <strong>%d</strong> na <strong>%d</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Omezuje váš poskytovatel záznamy TXT na 255 znaků? Klikněte zde.",
+  "New DKIM public and private key pair generated.": "Byl vygenerován nový pár veřejného a soukromého klíče DKIM.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Podporuje váš poskytovatel TXT záznamy delší než 255 znaků? Klikněte zde."
 }

@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "プライバシーを重視した暗号化メール。",
   "Enterprise-grade 99.99% uptime SLA": "エンタープライズ グレードの 99.99% 稼働時間 SLA",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "アカウントを削除すると元に戻せません。アカウントを削除する場合は細心の注意を払ってください。",
-  "Please remove all invited members to the domain before changing plans.": "プランを変更する前に、招待されたメンバーをすべてドメインから削除してください。"
+  "Please remove all invited members to the domain before changing plans.": "プランを変更する前に、招待されたメンバーをすべてドメインから削除してください。",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "<span class=\"notranslate\">%d</span> -bit DKIM キーに切り替えますか?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "DKIM キーのモジュール長を<strong>%d</strong>から<strong>%d</strong>に変更するかどうかを確認してください。",
+  "Does your provider limit TXT records to 255 characters? Click here.": "プロバイダーは TXT レコードを 255 文字に制限していますか?ここをクリック。",
+  "New DKIM public and private key pair generated.": "新しい DKIM 公開キーと秘密キーのペアが生成されました。",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "プロバイダーは 255 文字を超える TXT レコードをサポートしていますか?ここをクリック。"
 }

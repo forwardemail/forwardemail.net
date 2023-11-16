@@ -291,6 +291,11 @@ const Domains = new mongoose.Schema({
     trim: true,
     index: true
   },
+  dkim_modulus_length: {
+    type: Number,
+    default: config.defaultModulusLength,
+    enum: [1024, 2048]
+  },
   dkim_key_selector: {
     type: String,
     default: () => `fe-${revHash(dayjs().format('YYYYMMDDHHmmss'))}`
@@ -447,6 +452,14 @@ Domains.virtual('skip_verification')
     this.__skip_verification = boolean(skipVerification);
   });
 
+Domains.virtual('skip_ns_check')
+  .get(function () {
+    return this.__skip_ns_check;
+  })
+  .set(function (skipNsCheck) {
+    this.__skip_ns_check = boolean(skipNsCheck);
+  });
+
 Domains.pre('remove', function (next) {
   if (this.is_global)
     return next(
@@ -460,11 +473,19 @@ Domains.pre('remove', function (next) {
 // set a default dkim key for the user
 Domains.pre('validate', async function (next) {
   if (isSANB(this.dkim_private_key)) return next();
+  // if the provider is cloudflare then default to 2048 bit modulus
+  if (
+    Array.isArray(this.ns) &&
+    this.ns.length > 0 &&
+    this.ns.every((val) => val.endsWith('cloudflare.com')) &&
+    !this.skip_ns_check
+  )
+    this.dkim_modulus_length = 2048;
   try {
     const { privateKey, publicKey } = await promisify(crypto.generateKeyPair)(
       'rsa',
       {
-        modulusLength: 2048, // TODO: support 1024 bit as an option
+        modulusLength: this.dkim_modulus_length || config.defaultModulusLength,
         // default as of nodemailer v6.9.1
         hashAlgorithm: 'RSA-SHA256',
         publicKeyEncoding: {
@@ -815,6 +836,7 @@ Domains.plugin(mongooseCommonPlugin, {
     'missing_txt_sent_at',
     'multiple_exchanges_sent_at',
     'ns',
+    'dkim_modulus_length',
     'dkim_key_selector',
     'dkim_private_key',
     'dkim_public_key',

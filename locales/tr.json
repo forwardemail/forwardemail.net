@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "Sizin için gizlilik odaklı şifreli e-posta.",
   "Enterprise-grade 99.99% uptime SLA": "Kurumsal düzeyde %99,99 kesintisiz çalışma HDS'si",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Hesabınızın silinmesi geri alınamaz. Hesabınızı silerken lütfen çok dikkatli olun.",
-  "Please remove all invited members to the domain before changing plans.": "Planları değiştirmeden önce lütfen alan adına davet edilen tüm üyeleri kaldırın."
+  "Please remove all invited members to the domain before changing plans.": "Planları değiştirmeden önce lütfen alan adına davet edilen tüm üyeleri kaldırın.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "<span class=\"notranslate\">%d</span> -bit DKIM anahtarına geçilsin mi?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "DKIM anahtar modülü uzunluğunu <strong>%d&#39;</strong> den <strong>%d&#39;</strong> ye değiştirmek isteyip istemediğinizi lütfen onaylayın.",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Sağlayıcınız TXT kayıtlarını 255 karakterle sınırlıyor mu? Buraya tıklayın.",
+  "New DKIM public and private key pair generated.": "Yeni DKIM genel ve özel anahtar çifti oluşturuldu.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Sağlayıcınız 255 karakterden uzun TXT kayıtlarını destekliyor mu? Buraya tıklayın."
 }

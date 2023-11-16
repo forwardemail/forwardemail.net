@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "Sekretessfokuserad krypterad e-post för dig.",
   "Enterprise-grade 99.99% uptime SLA": "SLA för företagsklass 99,99 % drifttid",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Att ta bort ditt konto är oåterkalleligt. Var extremt försiktig när du raderar ditt konto.",
-  "Please remove all invited members to the domain before changing plans.": "Ta bort alla inbjudna medlemmar till domänen innan du ändrar planer."
+  "Please remove all invited members to the domain before changing plans.": "Ta bort alla inbjudna medlemmar till domänen innan du ändrar planer.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Byt till <span class=\"notranslate\">%d</span> -bitars DKIM-nyckel?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Bekräfta om du vill ändra DKIM-nyckelmodulens längd från <strong>%d</strong> till <strong>%d</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Begränsar din leverantör TXT-poster till 255 tecken? Klicka här.",
+  "New DKIM public and private key pair generated.": "Nytt DKIM publika och privata nyckelpar genereras.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Har din leverantör stöd för TXT-poster som är längre än 255 tecken? Klicka här."
 }

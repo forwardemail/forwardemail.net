@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัวสำหรับคุณ",
   "Enterprise-grade 99.99% uptime SLA": "SLA ความพร้อมในการทำงานระดับองค์กร 99.99%",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "การลบบัญชีของคุณไม่สามารถย้อนกลับได้ โปรดใช้ความระมัดระวังอย่างยิ่งในการลบบัญชีของคุณ",
-  "Please remove all invited members to the domain before changing plans.": "โปรดลบสมาชิกที่ได้รับเชิญทั้งหมดออกจากโดเมนก่อนที่จะเปลี่ยนแผน"
+  "Please remove all invited members to the domain before changing plans.": "โปรดลบสมาชิกที่ได้รับเชิญทั้งหมดออกจากโดเมนก่อนที่จะเปลี่ยนแผน",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "เปลี่ยนเป็นคีย์ <span class=\"notranslate\">%d</span> -bit DKIM หรือไม่",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "โปรดยืนยันว่าคุณต้องการเปลี่ยนความยาวโมดูลัสคีย์ DKIM จาก <strong>%d</strong> เป็น <strong>%d</strong>",
+  "Does your provider limit TXT records to 255 characters? Click here.": "ผู้ให้บริการของคุณจำกัดระเบียน TXT ไว้ที่ 255 อักขระหรือไม่ คลิกที่นี่.",
+  "New DKIM public and private key pair generated.": "สร้างคู่คีย์สาธารณะและคีย์ส่วนตัว DKIM ใหม่แล้ว",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "ผู้ให้บริการของคุณรองรับบันทึก TXT ที่ยาวเกิน 255 อักขระหรือไม่ คลิกที่นี่."
 }

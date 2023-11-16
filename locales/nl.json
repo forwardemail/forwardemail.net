@@ -5614,5 +5614,10 @@
   "Privacy-focused encrypted email for you.": "Op privacy gerichte gecodeerde e-mail voor u.",
   "Enterprise-grade 99.99% uptime SLA": "SLA voor een uptime van 99,99% op bedrijfsniveau",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Het verwijderen van uw account is onomkeerbaar. Wees uiterst voorzichtig bij het verwijderen van uw account.",
-  "Please remove all invited members to the domain before changing plans.": "Verwijder alle uitgenodigde leden van het domein voordat u uw abonnement wijzigt."
+  "Please remove all invited members to the domain before changing plans.": "Verwijder alle uitgenodigde leden van het domein voordat u uw abonnement wijzigt.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Overschakelen naar <span class=\"notranslate\">%d</span> -bit DKIM-sleutel?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Bevestig of u de lengte van de DKIM-sleutelmodulus wilt wijzigen van <strong>%d</strong> in <strong>%d</strong> .",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Beperkt uw provider TXT-records tot 255 tekens? Klik hier.",
+  "New DKIM public and private key pair generated.": "Er is een nieuw openbaar en privésleutelpaar voor DKIM gegenereerd.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Ondersteunt uw provider TXT-records die langer zijn dan 255 tekens? Klik hier."
 }

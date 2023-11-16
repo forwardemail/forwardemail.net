@@ -5305,5 +5305,10 @@
   "Privacy-focused encrypted email for you.": "为您提供注重隐私的加密电子邮件。",
   "Enterprise-grade 99.99% uptime SLA": "企业级 99.99% 正常运行时间 SLA",
   "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "删除您的帐户是不可逆转的。删除您的帐户时请格外小心。",
-  "Please remove all invited members to the domain before changing plans.": "更改计划之前，请删除域中所有受邀请的成员。"
+  "Please remove all invited members to the domain before changing plans.": "更改计划之前，请删除域中所有受邀请的成员。",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "切换到<span class=\"notranslate\">%d</span>位 DKIM 密钥吗？",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "请确认您是否希望将 DKIM 密钥模数长度从<strong>%d</strong>更改为<strong>%d</strong> 。",
+  "Does your provider limit TXT records to 255 characters? Click here.": "您的提供商是否将 TXT 记录限制为 255 个字符？点击这里。",
+  "New DKIM public and private key pair generated.": "生成新的 DKIM 公钥和私钥对。",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "您的提供商是否支持长度超过 255 个字符的 TXT 记录？点击这里。"
 }

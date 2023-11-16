@@ -5384,5 +5384,11 @@
   "Enterprise-grade 99.99% uptime SLA": "Enterprise-grade 99.99% uptime SLA",
   "My Emails": "My Emails",
   "My Billing": "My Billing",
-  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Deleting your account is irreversible.  Please take extreme caution when deleting your account."
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "Deleting your account is irreversible.  Please take extreme caution when deleting your account.",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.",
+  "Does your provider limit TXT records to 255 characters? Click here.": "Does your provider limit TXT records to 255 characters? Click here.",
+  "New DKIM public and private key pair generated.": "New DKIM public and private key pair generated.",
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Does your provider support TXT records longer than 255 characters? Click here.",
+  "Invalid DMARC result (policy must be <span class=\"notranslate\">\"p=none\"</span>, <span class=\"notranslate\">\"p=reject\"</span>, or <span class=\"notranslate\">\"p=quarantine\"</span>, and <span class=\"notranslate\">\"pct=100\"</span> must be set).": "Invalid DMARC result (policy must be <span class=\"notranslate\">\"p=none\"</span>, <span class=\"notranslate\">\"p=reject\"</span>, or <span class=\"notranslate\">\"p=quarantine\"</span>, and <span class=\"notranslate\">\"pct=100\"</span> must be set)."
 }
