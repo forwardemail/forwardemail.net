@@ -296,7 +296,7 @@ block body
                               i.fa.fa-clipboard
                               = " "
                               = t("Copy")
-                          .hr-text.d-flex.text-secondary.align-items-center= t("and")
+                          .hr-text.d-flex.text-secondary.align-items-center.user-select-none= t("and")
                           code#copy-dkim-part-2.d-block.text-break.small= str.slice(index)
                           if !domain.has_dkim_record
                             button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
