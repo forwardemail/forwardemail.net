@@ -58,7 +58,9 @@ const REDACTED_FIELDS = new Set([
   'key',
   'cert',
   'ca',
-  'dhparam'
+  'dhparam',
+  'private_key',
+  'dkim_private_key'
 ]);
 
 //
