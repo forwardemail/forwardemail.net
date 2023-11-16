@@ -365,7 +365,9 @@ function css() {
             'mt-3',
             'pre',
             'text-danger',
-            'text-left'
+            'text-left',
+            'col-lg-9',
+            'col-lg-6'
           ])
         ]
       }),
