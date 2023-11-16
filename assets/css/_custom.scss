@@ -212,7 +212,6 @@ pre {
 
 @include media-breakpoint-up(sm) {
   #typed-home-header {
-    min-height: auto;
-    line-height: normal;
+    min-height: 2.5em;
   }
 }
