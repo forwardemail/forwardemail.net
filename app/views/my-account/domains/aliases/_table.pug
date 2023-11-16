@@ -187,17 +187,17 @@ include ../../../_pagination
                 p.font-weight-bold.small.mb-1
                   = t("Recipients")
                   = ":"
-                ul.list-inline.mb-1.lead
+                ul.list-inline.mb-1
                   if alias.name !== '*' && !alias.name.startsWith('/')
                     li.list-inline-item
-                      span.badge.badge-success.text-monospace.font-weight-normal.text-nowrap(
-                        class=alias.has_imap ? "badge-success" : "badge-danger"
+                      span.badge.text-nowrap.text-uppercase(
+                        class=alias.has_imap ? "badge-success" : "badge-secondary"
                       )
                         i.fa(class=alias.has_imap ? "fa-check-circle" : "fa-times")
                         = " "
                         = "IMAP"
                       = " "
-                      a.badge.badge-dark.font-weight-normal.text-nowrap(
+                      a.badge.badge-primary.text-uppercase.text-nowrap(
                         href=l("/encrypted-email"),
                         target="_blank",
                         role="button",
@@ -361,17 +361,17 @@ include ../../../_pagination
               )
                 i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
             td.align-middle.d-none.d-lg-table-cell
-              ul.list-inline.mb-0.lead
+              ul.list-inline.mb-0
                 if alias.name !== '*' && !alias.name.startsWith('/')
                   li.list-inline-item
-                    span.badge.badge-success.text-monospace.font-weight-normal.text-nowrap(
-                      class=alias.has_imap ? "badge-success" : "badge-danger"
+                    span.badge.text-nowrap.text-uppercase(
+                      class=alias.has_imap ? "badge-success" : "badge-secondary"
                     )
                       i.fa(class=alias.has_imap ? "fa-check-circle" : "fa-times")
                       = " "
                       = "IMAP"
                     = " "
-                    a.badge.badge-dark.font-weight-normal.text-nowrap(
+                    a.badge.badge-primary.text-uppercase.text-nowrap(
                       href=l("/encrypted-email"),
                       target="_blank",
                       role="button",

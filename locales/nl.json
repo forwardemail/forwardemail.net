@@ -5619,5 +5619,6 @@
   "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Bevestig of u de lengte van de DKIM-sleutelmodulus wilt wijzigen van <strong>%d</strong> in <strong>%d</strong> .",
   "Does your provider limit TXT records to 255 characters? Click here.": "Beperkt uw provider TXT-records tot 255 tekens? Klik hier.",
   "New DKIM public and private key pair generated.": "Er is een nieuw openbaar en privésleutelpaar voor DKIM gegenereerd.",
-  "Does your provider support TXT records longer than 255 characters? Click here.": "Ondersteunt uw provider TXT-records die langer zijn dan 255 tekens? Klik hier."
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Ondersteunt uw provider TXT-records die langer zijn dan 255 tekens? Klik hier.",
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") respecteerde ons privacybeleid. Spamscanner is volledig gratis en open source"
 }

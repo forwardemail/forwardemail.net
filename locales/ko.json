@@ -5619,5 +5619,6 @@
   "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "DKIM 키 모듈러스 길이를 <strong>%d</strong> 에서 <strong>%d(</strong> 으)로 변경하려는지 확인하세요.",
   "Does your provider limit TXT records to 255 characters? Click here.": "공급자가 TXT 레코드를 255자로 제한합니까? 여기를 클릭하세요.",
   "New DKIM public and private key pair generated.": "새로운 DKIM 공개 및 개인 키 쌍이 생성되었습니다.",
-  "Does your provider support TXT records longer than 255 characters? Click here.": "공급자가 255자를 초과하는 TXT 레코드를 지원합니까? 여기를 클릭하세요."
+  "Does your provider support TXT records longer than 255 characters? Click here.": "공급자가 255자를 초과하는 TXT 레코드를 지원합니까? 여기를 클릭하세요.",
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ")는 당사의 개인정보 보호정책을 존중했습니다. 스팸 스캐너는 완전 무료이며 오픈 소스입니다."
 }

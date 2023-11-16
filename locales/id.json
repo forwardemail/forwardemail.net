@@ -5619,5 +5619,6 @@
   "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Harap konfirmasi jika Anda ingin mengubah panjang modulus kunci DKIM dari <strong>%d</strong> menjadi <strong>%d</strong> .",
   "Does your provider limit TXT records to 255 characters? Click here.": "Apakah penyedia Anda membatasi data TXT hingga 255 karakter? Klik disini.",
   "New DKIM public and private key pair generated.": "Pasangan kunci publik dan pribadi DKIM baru telah dibuat.",
-  "Does your provider support TXT records longer than 255 characters? Click here.": "Apakah penyedia Anda mendukung data TXT yang panjangnya lebih dari 255 karakter? Klik disini."
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Apakah penyedia Anda mendukung data TXT yang panjangnya lebih dari 255 karakter? Klik disini.",
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") menghormati kebijakan privasi kami. Pemindai Spam sepenuhnya gratis dan bersumber terbuka"
 }

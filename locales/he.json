@@ -5619,5 +5619,6 @@
   "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "אנא אשר אם ברצונך לשנות את אורך מודול מפתח DKIM מ- <strong>%d</strong> ל- <strong>%d</strong> .",
   "Does your provider limit TXT records to 255 characters? Click here.": "האם הספק שלך מגביל את רשומות ה-TXT ל-255 תווים? לחץ כאן.",
   "New DKIM public and private key pair generated.": "נוצר זוג מפתחות DKIM ציבורי ופרטי חדש.",
-  "Does your provider support TXT records longer than 255 characters? Click here.": "האם הספק שלך תומך ברשומות TXT ארוכות מ-255 תווים? לחץ כאן."
+  "Does your provider support TXT records longer than 255 characters? Click here.": "האם הספק שלך תומך ברשומות TXT ארוכות מ-255 תווים? לחץ כאן.",
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") כיבד את מדיניות הפרטיות שלנו. סורק דואר זבל הוא קוד פתוח לגמרי בחינם"
 }

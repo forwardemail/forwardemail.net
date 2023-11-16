@@ -5617,5 +5617,6 @@
   "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Confirme si desea cambiar la longitud del módulo de la clave DKIM de <strong>%d</strong> a <strong>%d</strong> .",
   "Does your provider limit TXT records to 255 characters? Click here.": "¿Su proveedor limita los registros TXT a 255 caracteres? Haga clic aquí.",
   "New DKIM public and private key pair generated.": "Se generó un nuevo par de claves públicas y privadas DKIM.",
-  "Does your provider support TXT records longer than 255 characters? Click here.": "¿Su proveedor admite registros TXT de más de 255 caracteres? Haga clic aquí."
+  "Does your provider support TXT records longer than 255 characters? Click here.": "¿Su proveedor admite registros TXT de más de 255 caracteres? Haga clic aquí.",
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") respetó nuestra política de privacidad. Spam Scanner es una herramienta completamente gratuita y de código abierto."
 }

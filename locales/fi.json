@@ -5464,5 +5464,6 @@
   "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "Vahvista, jos haluat muuttaa DKIM-avaimen moduulipituuden <strong>%d</strong> :stä <strong>%d</strong> :ksi.",
   "Does your provider limit TXT records to 255 characters? Click here.": "Rajoittaako palveluntarjoajasi TXT-tietueet 255 merkkiin? Klikkaa tästä.",
   "New DKIM public and private key pair generated.": "Uusi DKIM-julkinen ja yksityinen avainpari luotu.",
-  "Does your provider support TXT records longer than 255 characters? Click here.": "Tukeeko palveluntarjoajasi yli 255 merkin pituisia TXT-tietueita? Klikkaa tästä."
+  "Does your provider support TXT records longer than 255 characters? Click here.": "Tukeeko palveluntarjoajasi yli 255 merkin pituisia TXT-tietueita? Klikkaa tästä.",
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") kunnioitti tietosuojakäytäntöämme. Spam Scanner on täysin ilmainen ja avoimen lähdekoodin ohjelma"
 }
