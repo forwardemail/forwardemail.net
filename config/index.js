@@ -580,7 +580,7 @@ const config = {
     'gov.be',
     'gov.bg',
     'gov.bm',
-    'gov.br',
+    // 'gov.br',
     'gov.by',
     'gov.cl',
     'gov.cn',

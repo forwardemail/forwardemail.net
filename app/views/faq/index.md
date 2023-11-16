@@ -1382,7 +1382,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">gov.be</code></li>
   <li class="list-inline-item"><code class="notranslate">gov.bg</code></li>
   <li class="list-inline-item"><code class="notranslate">gov.bm</code></li>
-  <li class="list-inline-item"><code class="notranslate">gov.br</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>-->
   <li class="list-inline-item"><code class="notranslate">gov.by</code></li>
   <li class="list-inline-item"><code class="notranslate">gov.cl</code></li>
   <li class="list-inline-item"><code class="notranslate">gov.cn</code></li>
