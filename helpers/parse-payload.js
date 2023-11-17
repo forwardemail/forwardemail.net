@@ -560,97 +560,98 @@ async function parsePayload(data, ws) {
                 logger.warn(err);
               }
 
-              //
-              // TODO: this rate limiting logic needs to get moved to the MX server
-              //       (but we should keep parity with key names and such)
-              //       (moving it to MX server would prevent an unnecessary websocket request)
-              //
-              // 1) Senders that we consider to be "trusted" as a source of truth
-              //    (e.g. gmail.com, microsoft.com, apple.com) are limited to sending 100 GB per day.
-              // 2) Senders that are allowlisted are limited to sending 10 GB per day.
-              // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
-              // 4) We have a specific limit per Sender and yourdomain.com of 1 GB and/or 1000 messages daily.
-
+              // don't rate limit our own servers
               const date = new Date().toISOString().split('T')[0];
+              const root = parseRootDomain(alias.domain.name);
+              if (sender !== env.WEB_HOST) {
+                //
+                // TODO: this rate limiting logic needs to get moved to the MX server
+                //       (but we should keep parity with key names and such)
+                //       (moving it to MX server would prevent an unnecessary websocket request)
+                //
+                // 1) Senders that we consider to be "trusted" as a source of truth
+                //    (e.g. gmail.com, microsoft.com, apple.com) are limited to sending 100 GB per day.
+                // 2) Senders that are allowlisted are limited to sending 10 GB per day.
+                // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
+                // 4) We have a specific limit per Sender and yourdomain.com of 1 GB and/or 1000 messages daily.
 
-              // check current size and message count for sender
-              const [size, count] = await Promise.all(
-                ['size', 'count'].map(async (kind) => {
-                  const key = `imap_limit_${kind}_${config.env}:${date}:${sender}`;
-                  const result = await this.client.incrby(key, 0);
-                  // TODO: ttl should be milliseconds until end of day
-                  //       (right now it will go until 24h after if 11:59pm for example)
-                  await this.client.pexpire(key, ms('1d')); // TODO: all ansible servers should be set to use utc timezone
-                  return result;
-                })
-              );
+                // check current size and message count for sender
+                const [size, count] = await Promise.all(
+                  ['size', 'count'].map(async (kind) => {
+                    const key = `imap_limit_${kind}_${config.env}:${date}:${sender}`;
+                    const result = await this.client.incrby(key, 0);
+                    // TODO: ttl should be milliseconds until end of day
+                    //       (right now it will go until 24h after if 11:59pm for example)
+                    await this.client.pexpire(key, ms('1d')); // TODO: all ansible servers should be set to use utc timezone
+                    return result;
+                  })
+                );
 
-              if (isFQDN(sender)) {
-                if (config.truthSources.has(sender)) {
-                  // 1) Senders that we consider to be "trusted" as a source of truth
-                  if (size >= bytes('100GB'))
-                    throw new SMTPError(
-                      `${sender} limited to 100 GB with current of ${prettyBytes(
-                        size
-                      )} from ${count} messages`,
-                      { responseCode: 421 }
-                    );
-                } else {
-                  const isAllowlisted = await this.client.get(
-                    `allowlist:${sender}`
-                  );
-                  if (boolean(isAllowlisted)) {
-                    // 2) Senders that are allowlisted are limited to sending 10 GB per day.
-                    if (size >= bytes('10GB'))
+                if (isFQDN(sender)) {
+                  if (config.truthSources.has(sender)) {
+                    // 1) Senders that we consider to be "trusted" as a source of truth
+                    if (size >= bytes('100GB'))
                       throw new SMTPError(
-                        `${sender} limited to 10 GB with current of ${prettyBytes(
+                        `${sender} limited to 100 GB with current of ${prettyBytes(
                           size
                         )} from ${count} messages`,
                         { responseCode: 421 }
                       );
-                    // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
-                  } else if (size >= bytes('1GB') || count >= 300) {
-                    throw new SMTPError(
-                      `#3 ${sender} limited with current of ${prettyBytes(
-                        size
-                      )} from ${count} messages`,
-                      { responseCode: 421 }
+                  } else {
+                    const isAllowlisted = await this.client.get(
+                      `allowlist:${sender}`
                     );
+                    if (boolean(isAllowlisted)) {
+                      // 2) Senders that are allowlisted are limited to sending 10 GB per day.
+                      if (size >= bytes('10GB'))
+                        throw new SMTPError(
+                          `${sender} limited to 10 GB with current of ${prettyBytes(
+                            size
+                          )} from ${count} messages`,
+                          { responseCode: 421 }
+                        );
+                      // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
+                    } else if (size >= bytes('1GB') || count >= 300) {
+                      throw new SMTPError(
+                        `#3 ${sender} limited with current of ${prettyBytes(
+                          size
+                        )} from ${count} messages`,
+                        { responseCode: 421 }
+                      );
+                    }
                   }
+                } else if (size >= bytes('1GB') || count >= 300) {
+                  // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
+                  throw new SMTPError(
+                    `#3 ${sender} limited with current of ${prettyBytes(
+                      size
+                    )} from ${count} messages`,
+                    { responseCode: 421 }
+                  );
                 }
-              } else if (size >= bytes('1GB') || count >= 300) {
-                // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
-                throw new SMTPError(
-                  `#3 ${sender} limited with current of ${prettyBytes(
-                    size
-                  )} from ${count} messages`,
-                  { responseCode: 421 }
+
+                // 4) We have a specific limit per Sender and yourdomain.com of 1 GB and/or 1000 messages daily.
+                const specific = await Promise.all(
+                  ['size', 'count'].map(async (kind) => {
+                    const key = `imap_limit_${kind}_${config.env}:${date}:${sender}:${root}`;
+                    const result = await this.client.incrby(key, 0);
+                    // TODO: ttl should be milliseconds until end of day
+                    //       (right now it will go until 24h after if 11:59pm for example)
+                    await this.client.pexpire(key, ms('1d')); // TODO: all ansible servers should be set to use utc timezone
+                    return result;
+                  })
                 );
+
+                if (specific.size >= bytes('1GB') || specific.count >= 1000)
+                  throw new SMTPError(
+                    `${sender} limited with current of ${prettyBytes(
+                      specific.size
+                    )} from ${specific.count} messages to ${root}`,
+                    {
+                      responseCode: 421
+                    }
+                  );
               }
-
-              const root = parseRootDomain(alias.domain.name);
-
-              // 4) We have a specific limit per Sender and yourdomain.com of 1 GB and/or 1000 messages daily.
-              const specific = await Promise.all(
-                ['size', 'count'].map(async (kind) => {
-                  const key = `imap_limit_${kind}_${config.env}:${date}:${sender}:${root}`;
-                  const result = await this.client.incrby(key, 0);
-                  // TODO: ttl should be milliseconds until end of day
-                  //       (right now it will go until 24h after if 11:59pm for example)
-                  await this.client.pexpire(key, ms('1d')); // TODO: all ansible servers should be set to use utc timezone
-                  return result;
-                })
-              );
-
-              if (specific.size >= bytes('1GB') || specific.count >= 1000)
-                throw new SMTPError(
-                  `${sender} limited with current of ${prettyBytes(
-                    specific.size
-                  )} from ${specific.count} messages to ${root}`,
-                  {
-                    responseCode: 421
-                  }
-                );
 
               // check that we have available space
               const storagePath = getPathToDatabase({
@@ -863,62 +864,68 @@ async function parsePayload(data, ws) {
           .lean()
           .exec();
 
-        if (!alias) throw new TypeError('Alias does not exist');
+        if (alias) {
+          let size = 0;
 
-        let size = 0;
-
-        try {
-          // <https://github.com/nodejs/node/issues/38006>
-          const filePath = getPathToDatabase(alias);
-          const dirName = path.dirname(filePath);
-          const ext = path.extname(filePath);
-          const basename = path.basename(filePath, ext);
-          // $id.sqlite
-          const stats = await fs.promises.stat(filePath);
-          if (stats.isFile() && stats.size > 0) {
-            size += stats.size;
-            // $id-wal.sqlite
-            // $id-shm.sqlite
-            // $id-tmp.sqlite
-            // $id-tmp-wal.sqlite
-            // $id-tmp-shm.sqlite
-            for (const affix of AFFIXES) {
-              const affixFilePath = path.join(
-                dirName,
-                `${basename}${affix}${ext}`
-              );
-              try {
-                // eslint-disable-next-line no-await-in-loop
-                const stats = await fs.promises.stat(affixFilePath);
-                if (stats.isFile() && stats.size > 0) {
-                  size += stats.size;
+          try {
+            // <https://github.com/nodejs/node/issues/38006>
+            const filePath = getPathToDatabase(alias);
+            const dirName = path.dirname(filePath);
+            const ext = path.extname(filePath);
+            const basename = path.basename(filePath, ext);
+            // $id.sqlite
+            const stats = await fs.promises.stat(filePath);
+            if (stats.isFile() && stats.size > 0) {
+              size += stats.size;
+              // $id-wal.sqlite
+              // $id-shm.sqlite
+              // $id-tmp.sqlite
+              // $id-tmp-wal.sqlite
+              // $id-tmp-shm.sqlite
+              for (const affix of AFFIXES) {
+                const affixFilePath = path.join(
+                  dirName,
+                  `${basename}${affix}${ext}`
+                );
+                try {
+                  // eslint-disable-next-line no-await-in-loop
+                  const stats = await fs.promises.stat(affixFilePath);
+                  if (stats.isFile() && stats.size > 0) {
+                    size += stats.size;
+                  }
+                } catch (err) {
+                  if (err.code !== 'ENOENT') throw err;
                 }
-              } catch (err) {
-                if (err.code !== 'ENOENT') throw err;
               }
             }
+          } catch (err) {
+            if (err.code !== 'ENOENT') throw err;
           }
-        } catch (err) {
-          if (err.code !== 'ENOENT') throw err;
-        }
 
-        // save storage_used on the given alias
-        await Aliases.findOneAndUpdate(
-          {
-            id: payload.alias_id
-          },
-          {
-            $set: {
-              storage_used: size
+          // save storage_used on the given alias
+          await Aliases.findOneAndUpdate(
+            {
+              id: payload.alias_id
+            },
+            {
+              $set: {
+                storage_used: size
+              }
             }
-          }
-        );
+          );
 
-        response = {
-          id: payload.id,
-          data: size
-        };
-        break;
+          response = {
+            id: payload.id,
+            data: size
+          };
+          break;
+        } else {
+          response = {
+            id: payload.id,
+            data: 0
+          };
+          break;
+        }
       }
 
       // this assumes locking already took place

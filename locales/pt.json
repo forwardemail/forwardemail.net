@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "As remoções da lista de bloqueios podem ser solicitadas em",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "Nossa configuração pode ser encontrada publicamente no GitHub em",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "Você usou <span class=\"notranslate\">%d</span> % da sua cota de armazenamento",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">Você usou <span class=\"notranslate\">%d</span> % da sua cota de armazenamento ( <span class=\"notranslate\">%s</span> de <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\"> Se você exceder sua cota, as mensagens não serão entregues.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">Atualizar armazenamento</a></p>"
 }

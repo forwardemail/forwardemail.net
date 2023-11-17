@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "Verwijdering van de denylist kan worden aangevraagd op",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "Onze configuratie is openbaar te vinden op GitHub op",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "U heeft <span class=\"notranslate\">%d</span> % van uw opslagquotum gebruikt",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">Je hebt <span class=\"notranslate\">%d</span> % van je opslagquotum gebruikt ( <span class=\"notranslate\">%s</span> van <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\"> Als u uw quotum overschrijdt, worden berichten niet afgeleverd.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade opslag</a></p>"
 }

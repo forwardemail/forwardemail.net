@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "يمكن طلب عمليات إزالة قائمة الحظر على",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "يمكن العثور على التكوين الخاص بنا بشكل عام على GitHub على",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "لقد استخدمت <span class=\"notranslate\">%d</span> % من حصة التخزين الخاصة بك",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\" style=\";text-align:right;direction:rtl\">لقد استخدمت <span class=\"notranslate\">%d</span> % من حصة التخزين لديك ( <span class=\"notranslate\">%s</span> من <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\" style=\";text-align:right;direction:rtl\"> إذا تجاوزت حصتك، فلن يتم تسليم الرسائل.</p><p class=\"text-center mb-0\" style=\";text-align:right;direction:rtl\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">ترقية التخزين</a></p>"
 }

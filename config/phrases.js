@@ -20,6 +20,10 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  STORAGE_THRESHOLD_SUBJECT:
+    'You have used <span class="notranslate">%d</span>% of your storage quota',
+  STORAGE_THRESHOLD_MESSAGE:
+    '<div class="alert alert-danger small text-center">You have used <span class="notranslate">%d</span>% of your storage quota (<span class="notranslate">%s</span> of <span class="notranslate">%s</span>).</div><p class="text-center">If you exceed your quota, then messages will not be delivered.</p><p class="text-center mb-0"><a href="%s" class="btn btn-lg btn-danger">Upgrade Storage</a></p>',
   CHANGED_MODULUS_LENGTH: 'New DKIM public and private key pair generated.',
   ALIAS_OVERRIDE_CANNOT_HAVE_PASSWORD:
     'You cannot enter your current password and also attempt to override at the same time.',

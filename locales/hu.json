@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "Az elutasító listák eltávolítását a címen lehet kérni",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "A konfigurációnk nyilvánosan megtalálható a GitHubon a következő címen",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "Felhasználta a tárhelykvótájának <span class=\"notranslate\">%d</span> %-át",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">Felhasználta a tárhelykvótájának <span class=\"notranslate\">%d</span> %-át ( <span class=\"notranslate\">%s</span> / <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\"> Ha túllépi a kvótát, az üzeneteket nem kézbesítjük.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">Tárhely frissítése</a></p>"
 }

@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "Borttagning av denylist kan begäras på",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "Vår konfiguration kan hittas offentligt på GitHub på",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "Du har använt <span class=\"notranslate\">%d</span> % av din lagringskvot",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">Du har använt <span class=\"notranslate\">%d</span> % av din lagringskvot ( <span class=\"notranslate\">%s</span> av <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\"> Om du överskrider din kvot kommer meddelanden inte att levereras.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">Uppgradera lagring</a></p>"
 }

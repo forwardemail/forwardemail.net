@@ -17,14 +17,19 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
+const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
+const prettyBytes = require('pretty-bytes');
 const sharedConfig = require('@ladjs/shared-config');
 
 const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const wspServer = require('#helpers/wsp-server');
@@ -173,16 +178,106 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         ids.delete(badId);
       }
 
-      // now iterate through all ids and update their sizes
+      // now iterate through all ids and update their sizes and send (or unset) quota alerts
       await Promise.all(
         [...ids].map(async (id) => {
           try {
+            // update `storage_used` for given alias
             await wspServer.request({
               action: 'size',
               timeout: ms('5s'),
               alias_id: id
             });
-          } catch {
+
+            // get total storage used for an alias (includes across all relevant domains/aliases)
+            const alias = await Aliases.findOne({ id });
+
+            if (!alias) throw new TypeError('Alias does not exist');
+
+            // if the alias did not have imap or it was not enabled
+            // then we can return early since the check is not useful
+            if (!alias.has_imap || !alias.is_enabled) return;
+
+            const storageUsed = await Aliases.getStorageUsed(alias);
+
+            const percentageUsed = Math.round(
+              (storageUsed / config.maxQuotaPerAlias) * 100
+            );
+
+            // find closest threshold
+            let threshold;
+            for (const percentage of [50, 60, 70, 80, 90, 100]) {
+              if (percentageUsed >= percentage) threshold = percentage;
+            }
+
+            // return early if no threshold found
+            if (!threshold) return;
+
+            // if user already received threshold notification
+            // and the notification was sent within the past 7 days
+            // then we can return early
+            if (
+              typeof alias.storage_thresholds_sent_at === 'object' &&
+              alias.storage_thresholds_sent_at[threshold.toString()] &&
+              _.isDate(
+                alias.storage_thresholds_sent_at[threshold.toString()]
+              ) &&
+              new Date(
+                alias.storage_thresholds_sent_at[threshold.toString()]
+              ).getTime() >= dayjs().subtract(1, 'week').toDate().getTime()
+            )
+              return;
+
+            if (typeof alias.storage_thresholds_sent_at !== 'object')
+              alias.storage_thresholds_sent_at = {};
+
+            const domain = await Domains.findById(alias.domain);
+
+            if (!domain) throw new TypeError('Domain does not exist');
+
+            // get recipients and the majority favored locale
+            const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
+              domain
+            );
+
+            // send the email to the user with threshold notification
+            const subject =
+              config.views.locals.emoji('warning') +
+              ' ' +
+              i18n.translate(
+                'STORAGE_THRESHOLD_SUBJECT',
+                locale,
+                percentageUsed
+              );
+
+            const message = i18n.translate(
+              'STORAGE_THRESHOLD_MESSAGE',
+              locale,
+              percentageUsed,
+              prettyBytes(storageUsed),
+              prettyBytes(config.maxQuotaPerAlias),
+              `${config.urls.web}/${locale}/my-account/billing`
+            );
+
+            await emailHelper({
+              template: 'alert',
+              message: {
+                to,
+                bcc: config.email.message.from,
+                subject
+              },
+              locals: {
+                message,
+                locale
+              }
+            });
+
+            // mark when the email was successfully sent/queued
+            alias.storage_thresholds_sent_at[threshold.toString()] = new Date();
+            alias.markModified('storage_thresholds_sent_at');
+            await alias.save();
+          } catch (err) {
+            logger.debug(err);
             // commented out as a safeguard
             // easy way to cleanup non-production environments tmpdir folders
             // if (

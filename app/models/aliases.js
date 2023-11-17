@@ -104,6 +104,14 @@ const Aliases = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  // this is an object that looks like:
+  // {
+  //   '50': new Date(),
+  //   '60': new Date()
+  // }
+  // and it is when the threshold email for that percentage was sent
+  // (e.g. 50% of storage used, please upgrade your storage now)
+  storage_thresholds_sent_at: mongoose.Schema.Types.Mixed,
   storage_location: {
     type: String,
     default: config.defaultStoragePath,

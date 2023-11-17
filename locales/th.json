@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "สามารถขอลบรายการปฏิเสธได้ที่",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "การกำหนดค่าของเราสามารถพบได้แบบสาธารณะบน GitHub ที่",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "คุณใช้โควต้าพื้นที่เก็บข้อมูลไปแล้ว <span class=\"notranslate\">%d</span> %",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">คุณใช้โควต้าพื้นที่เก็บข้อมูลของคุณไปแล้ว <span class=\"notranslate\">%d</span> % ( <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> )</div><p class=\"text-center\"> หากคุณเกินโควต้า ข้อความจะไม่ถูกส่ง</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">อัพเกรดพื้นที่เก็บข้อมูล</a></p>"
 }

@@ -2948,5 +2948,7 @@
   "Use one of our domains:": "השתמש באחד מהדומיינים שלנו:",
   "Domain Name": "שם דומיין",
   "Register a new domain name": "רשום שם דומיין חדש",
-  "Add New Domain": "הוסף דומיין חדש"
+  "Add New Domain": "הוסף דומיין חדש",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "השתמשת <span class=\"notranslate\">%d</span> % ממכסת האחסון שלך",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\" style=\";text-align:right;direction:rtl\">השתמשת ב- <span class=\"notranslate\">%d</span> % ממכסת האחסון שלך ( <span class=\"notranslate\">%s</span> מתוך <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\" style=\";text-align:right;direction:rtl\"> אם תחרוג מהמכסה שלך, ההודעות לא יימסרו.</p><p class=\"text-center mb-0\" style=\";text-align:right;direction:rtl\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">שדרוג אחסון</a></p>"
 }

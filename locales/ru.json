@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "Удаление из списка запрещенных можно запросить по адресу:",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "Нашу конфигурацию можно найти в открытом доступе на GitHub по адресу",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "Вы использовали <span class=\"notranslate\">%d</span> % квоты хранилища.",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">Вы использовали <span class=\"notranslate\">%d</span> % своей квоты хранилища ( <span class=\"notranslate\">%s</span> из <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\"> Если вы превысите квоту, сообщения не будут доставлены.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">Обновить хранилище</a></p>"
 }

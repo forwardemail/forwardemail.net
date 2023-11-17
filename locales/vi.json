@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "Bạn có thể yêu cầu xóa danh sách từ chối tại",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "Cấu hình của chúng tôi có thể được tìm thấy công khai trên GitHub tại",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "Bạn đã sử dụng <span class=\"notranslate\">%d</span> % hạn ngạch bộ nhớ của mình",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">Bạn đã sử dụng <span class=\"notranslate\">%d</span> % hạn ngạch bộ nhớ của mình ( <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\"> Nếu bạn vượt quá hạn ngạch thì tin nhắn sẽ không được gửi.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">Nâng cấp bộ nhớ</a></p>"
 }

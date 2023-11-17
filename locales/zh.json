@@ -5333,5 +5333,7 @@
   "Denylist removals can be requested at": "可以请求删除黑名单",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "我们的配置可以在 GitHub 上公开找到：",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "您已使用<span class=\"notranslate\">%d</span> % 的存储配额",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">您已使用<span class=\"notranslate\">%d</span> % 的存储配额（ <span class=\"notranslate\">%s</span> ，共<span class=\"notranslate\">%s</span> ）。</div><p class=\"text-center\">如果超出配额，则消息将不会被传送。</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">升级存储</a></p>"
 }

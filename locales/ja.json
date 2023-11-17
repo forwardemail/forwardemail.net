@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "拒否リストの削除は次の場所でリクエストできます。",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "私たちの設定は GitHub で公開されています。",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "ストレージ割り当ての<span class=\"notranslate\">%d</span> % を使用しました",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">ストレージ クォータの<span class=\"notranslate\">%d</span> % ( <span class=\"notranslate\">%s</span> / <span class=\"notranslate\">%s</span> ) を使用しました。</div><p class=\"text-center\">クォータを超えると、メッセージは配信されません。</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">ストレージのアップグレード</a></p>"
 }

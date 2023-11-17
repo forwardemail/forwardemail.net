@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "O odstranění ze seznamu odmítnutých lze požádat na adrese",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "Naši konfiguraci lze veřejně najít na GitHubu na adrese",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "Využili jste <span class=\"notranslate\">%d</span> % své kvóty úložiště",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">Využili jste <span class=\"notranslate\">%d</span> % své kvóty úložiště ( <span class=\"notranslate\">%s</span> z <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\"> Pokud překročíte svou kvótu, zprávy nebudou doručeny.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">Vylepšit sklad</a></p>"
 }

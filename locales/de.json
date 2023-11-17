@@ -4676,5 +4676,7 @@
   "Denylist removals can be requested at": "Die Entfernung von Sperrlisten kann unter beantragt werden",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "Unsere Konfiguration finden Sie öffentlich auf GitHub unter",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "Sie haben <span class=\"notranslate\">%d</span> % Ihres Speicherkontingents verbraucht",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">Sie haben <span class=\"notranslate\">%d</span> % Ihres Speicherkontingents verbraucht ( <span class=\"notranslate\">%s</span> von <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\"> Wenn Sie Ihr Kontingent überschreiten, werden Nachrichten nicht zugestellt.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">Speicher aufrüsten</a></p>"
 }

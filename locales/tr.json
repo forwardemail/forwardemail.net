@@ -5641,5 +5641,7 @@
   "Denylist removals can be requested at": "Red listesinin kaldırılması şu adresten talep edilebilir:",
   "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
   "Our configuration can be found publicly on GitHub at": "Yapılandırmamız GitHub'da herkese açık olarak şu adreste bulunabilir:",
-  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net",
+  "You have used <span class=\"notranslate\">%d</span>% of your storage quota": "Depolama kotanızın <span class=\"notranslate\">%d</span> %&#39;sini kullandınız",
+  "<div class=\"alert alert-danger small text-center\">You have used <span class=\"notranslate\">%d</span>% of your storage quota (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>).</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">Depolama kotanızın <span class=\"notranslate\">%d</span> %&#39;sini kullandınız ( <span class=\"notranslate\">%s</span> / <span class=\"notranslate\">%s</span> ).</div><p class=\"text-center\"> Kotanızı aşarsanız mesajlar teslim edilmeyecektir.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">Depolamayı Yükseltme</a></p>"
 }
