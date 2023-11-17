@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Nastavte <span class=\"notranslate\">&quot;Proxy status&quot;</span> v Cloudflare na <span class=\"notranslate\">&quot;DNS only&quot;</span> a <strong class=\"text-decoration-underline\">ne</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
   "Does your provider support 255+ character TXT records?": "Podporuje váš poskytovatel záznamy TXT o délce více než 255 znaků?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Pro <span class=\"notranslate\">%s</span> byl zjištěn problém s odchozí konfigurací SMTP",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Ve vaší doméně <span class=\"notranslate\">%s</span> byl zjištěn problém s konfigurací pro odchozí přístup SMTP.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Ověřte nastavení</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Ve vaší doméně <span class=\"notranslate\">%s</span> byl zjištěn problém s konfigurací pro odchozí přístup SMTP.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Ověřte nastavení</a></p>",
+  "required": "Požadované",
+  "Easily set up webhooks for email delivery.": "Snadno nastavte webhooky pro doručování e-mailů.",
+  "How do I set up SPF for Forward Email": "Jak nastavím SPF pro přeposílání e-mailů",
+  "How do I set up DKIM for Forward Email": "Jak nastavím DKIM pro přeposílání e-mailů",
+  "How do I set up DMARC for Forward Email": "Jak nastavím DMARC pro přeposílání e-mailů",
+  "How do I set up SRS for Forward Email": "Jak nastavím SRS pro přeposílání e-mailů",
+  "How do I set up MTA-STS for Forward Email": "Jak nastavím MTA-STS pro přeposílání e-mailů",
+  "Using your registrar's DNS management page, set the following": "Na stránce správy DNS vašeho registrátora nastavte následující",
+  "Outbound SMTP Configuration and follow setup instructions.": "Konfigurace odchozího SMTP a postupujte podle pokynů k nastavení.",
+  "We automatically configure": "Konfigurujeme automaticky",
+  "(\"SRS\") – you do not need to do this yourself.": "(„SRS“) – nemusíte to dělat sami.",
+  "our section on MTA-STS": "naše sekce o MTA-STS",
+  "Denylist removals can be requested at": "O odstranění ze seznamu odmítnutých lze požádat na adrese",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Naši konfiguraci lze veřejně najít na GitHubu na adrese",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

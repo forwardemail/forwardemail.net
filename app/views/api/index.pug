@@ -4,7 +4,7 @@ include ../_onboard
 
 block body
   if !user
-    +onboard(t('Need docs with real data and keys?'), t('Simply sign up or sign in to have your API keys and real account data populated below.'), l(`/faq?redirect_to=${l('/email-api')}`), '#top', 'border-bottom')
+    +onboard(t('Need docs with real data and keys?'), t('Simply sign up or sign in to have your API keys and real account data populated below.'), l(`/faq?redirect_to=${l('/email-api')}`), '#top', 'border-bottom', true)
   .container.py-5
     .row
       .col

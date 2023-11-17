@@ -5471,5 +5471,21 @@
   "Does your provider support 255+ character TXT records?": "Tukeeko palveluntarjoajasi yli 255 merkin TXT-tietueita?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Lähtevän SMTP-määritysongelma havaittu kohteelle <span class=\"notranslate\">%s</span>",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Verkkotunnuksessasi <span class=\"notranslate\">%s</span> on havaittu lähtevän SMTP-käytön määritysongelma.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Tarkista asetukset</a></p>",
-  "Make Admin": "Nimeä ylläpitäjäksi"
+  "Make Admin": "Nimeä ylläpitäjäksi",
+  "required": "edellytetään",
+  "Easily set up webhooks for email delivery.": "Asenna webhookit helposti sähköpostin toimittamista varten.",
+  "How do I set up SPF for Forward Email": "Kuinka määritän SPF:n edelleenlähetystä varten",
+  "How do I set up DKIM for Forward Email": "Kuinka määritän DKIM:n edelleenlähetystä varten",
+  "How do I set up DMARC for Forward Email": "Kuinka määritän DMARC:n edelleenlähetystä varten",
+  "How do I set up SRS for Forward Email": "Kuinka määritän SRS:n edelleenlähetystä varten",
+  "How do I set up MTA-STS for Forward Email": "Kuinka otan MTA-STS:n käyttöön sähköpostin edelleenlähetystä varten",
+  "Using your registrar's DNS management page, set the following": "Määritä seuraavat asetukset rekisteröijän DNS-hallintasivulla",
+  "Outbound SMTP Configuration and follow setup instructions.": "Lähtevän SMTP-määritykset ja noudata asennusohjeita.",
+  "We automatically configure": "Määritämme automaattisesti",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – sinun ei tarvitse tehdä tätä itse.",
+  "our section on MTA-STS": "osiomme MTA-STS:stä",
+  "Denylist removals can be requested at": "Kieltoluettelon poistoja voi pyytää osoitteessa",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Määritykset löytyvät julkisesti GitHubista osoitteessa",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

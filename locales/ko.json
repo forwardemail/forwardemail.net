@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Cloudflare에서 <span class=\"notranslate\">&quot;Proxy status&quot;</span> &quot;프록시됨&quot;이 <strong class=\"text-decoration-underline\">아닌</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> <span class=\"notranslate\">&quot;DNS only&quot;</span> &quot;으로 설정하세요.",
   "Does your provider support 255+ character TXT records?": "귀하의 공급자는 255자 이상의 TXT 레코드를 지원합니까?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> 에 대한 아웃바운드 SMTP 구성 문제가 감지되었습니다.",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">귀하의 도메인 <span class=\"notranslate\">%s</span> 아웃바운드 SMTP 액세스에 대한 구성 문제가 감지되었습니다.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">설정 확인</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">귀하의 도메인 <span class=\"notranslate\">%s</span> 아웃바운드 SMTP 액세스에 대한 구성 문제가 감지되었습니다.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">설정 확인</a></p>",
+  "required": "필수의",
+  "Easily set up webhooks for email delivery.": "이메일 전달을 위해 웹후크를 쉽게 설정할 수 있습니다.",
+  "How do I set up SPF for Forward Email": "이메일 전달을 위해 SPF를 어떻게 설정하나요?",
+  "How do I set up DKIM for Forward Email": "이메일 전달을 위해 DKIM을 어떻게 설정하나요?",
+  "How do I set up DMARC for Forward Email": "이메일 전달을 위해 DMARC를 어떻게 설정하나요?",
+  "How do I set up SRS for Forward Email": "이메일 전달을 위해 SRS를 어떻게 설정하나요?",
+  "How do I set up MTA-STS for Forward Email": "이메일 전달을 위해 MTA-STS를 어떻게 설정하나요?",
+  "Using your registrar's DNS management page, set the following": "등록기관의 DNS 관리 페이지를 사용하여 다음을 설정하세요.",
+  "Outbound SMTP Configuration and follow setup instructions.": "아웃바운드 SMTP 구성을 클릭하고 설정 지침을 따르세요.",
+  "We automatically configure": "우리는 자동으로 구성합니다",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – 이 작업을 직접 수행할 필요는 없습니다.",
+  "our section on MTA-STS": "MTA-STS에 관한 섹션",
+  "Denylist removals can be requested at": "거부 목록 제거는 다음에서 요청할 수 있습니다.",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "우리의 구성은 GitHub에서 공개적으로 찾을 수 있습니다.",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

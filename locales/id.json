@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Setel <span class=\"notranslate\">&quot;Proxy status&quot;</span> di Cloudflare ke <span class=\"notranslate\">&quot;DNS only&quot;</span> dan <strong class=\"text-decoration-underline\">bukan</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
   "Does your provider support 255+ character TXT records?": "Apakah penyedia Anda mendukung data TXT 255+ karakter?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Masalah Konfigurasi SMTP Keluar Terdeteksi untuk <span class=\"notranslate\">%s</span>",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Domain Anda <span class=\"notranslate\">%s</span> mendeteksi masalah konfigurasi untuk akses SMTP keluar.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Verifikasi Pengaturan</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Domain Anda <span class=\"notranslate\">%s</span> mendeteksi masalah konfigurasi untuk akses SMTP keluar.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Verifikasi Pengaturan</a></p>",
+  "required": "diperlukan",
+  "Easily set up webhooks for email delivery.": "Siapkan webhook dengan mudah untuk pengiriman email.",
+  "How do I set up SPF for Forward Email": "Bagaimana cara mengatur SPF untuk Email Teruskan",
+  "How do I set up DKIM for Forward Email": "Bagaimana cara mengatur DKIM untuk Email Teruskan",
+  "How do I set up DMARC for Forward Email": "Bagaimana cara mengatur DMARC untuk Email Teruskan",
+  "How do I set up SRS for Forward Email": "Bagaimana cara mengatur SRS untuk Email Teruskan",
+  "How do I set up MTA-STS for Forward Email": "Bagaimana cara mengatur MTA-STS untuk Email Teruskan",
+  "Using your registrar's DNS management page, set the following": "Menggunakan halaman manajemen DNS registrar Anda, atur yang berikut ini",
+  "Outbound SMTP Configuration and follow setup instructions.": "Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan.",
+  "We automatically configure": "Kami secara otomatis mengkonfigurasi",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – Anda tidak perlu melakukannya sendiri.",
+  "our section on MTA-STS": "bagian kami tentang MTA-STS",
+  "Denylist removals can be requested at": "Penghapusan daftar penolakan dapat diminta di",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Konfigurasi kami dapat ditemukan secara publik di GitHub di",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

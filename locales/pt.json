@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Defina o <span class=\"notranslate\">&quot;Proxy status&quot;</span> no Cloudflare para <span class=\"notranslate\">&quot;DNS only&quot;</span> e <strong class=\"text-decoration-underline\">não</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
   "Does your provider support 255+ character TXT records?": "O seu provedor oferece suporte a registros TXT com mais de 255 caracteres?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Problema de configuração SMTP de saída detectado para <span class=\"notranslate\">%s</span>",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Seu domínio <span class=\"notranslate\">%s</span> detectou um problema de configuração para acesso SMTP de saída.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Verifique a configuração</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Seu domínio <span class=\"notranslate\">%s</span> detectou um problema de configuração para acesso SMTP de saída.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Verifique a configuração</a></p>",
+  "required": "obrigatório",
+  "Easily set up webhooks for email delivery.": "Configure facilmente webhooks para entrega de e-mail.",
+  "How do I set up SPF for Forward Email": "Como configuro o SPF para encaminhamento de e-mail",
+  "How do I set up DKIM for Forward Email": "Como configuro o DKIM para encaminhamento de e-mail",
+  "How do I set up DMARC for Forward Email": "Como configuro o DMARC para encaminhamento de e-mail",
+  "How do I set up SRS for Forward Email": "Como configuro o SRS para encaminhamento de e-mail",
+  "How do I set up MTA-STS for Forward Email": "Como configuro o MTA-STS para encaminhamento de e-mail",
+  "Using your registrar's DNS management page, set the following": "Usando a página de gerenciamento de DNS do seu registrador, defina o seguinte",
+  "Outbound SMTP Configuration and follow setup instructions.": "Configuração SMTP de saída e siga as instruções de configuração.",
+  "We automatically configure": "Nós configuramos automaticamente",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – você não precisa fazer isso sozinho.",
+  "our section on MTA-STS": "nossa seção sobre MTA-STS",
+  "Denylist removals can be requested at": "As remoções da lista de bloqueios podem ser solicitadas em",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Nossa configuração pode ser encontrada publicamente no GitHub em",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

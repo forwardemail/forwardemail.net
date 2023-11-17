@@ -53,7 +53,8 @@ const {
   handleHashOnLoad,
   modalAnchor,
   resizeNavbarPadding,
-  returnTo
+  returnTo,
+  jumpTo
 } = require('@ladjs/assets');
 
 // Resize navbar padding on load, window resize, and navbar collapse/show
@@ -509,3 +510,22 @@ function initializeMermaid() {
     securityLevel: 'strict'
   });
 }
+
+//
+// if user attempts to use CTRL+F or CMD+F then expand all collapsed sections
+// so that full text search will work on pages like the FAQ
+//
+let collapsed = false;
+$(window).keydown((ev) => {
+  if ((ev.key === 'f' || ev.which === 70) && (ev.metaKey || ev.ctrlKey)) {
+    const { hash } = window.location;
+    $('.collapse').collapse('show');
+    if (collapsed) {
+      setTimeout(() => {
+        jumpTo(hash);
+      }, 1);
+    }
+
+    collapsed = true;
+  }
+});

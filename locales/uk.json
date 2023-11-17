@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Встановіть <span class=\"notranslate\">&quot;Proxy status&quot;</span> в Cloudflare на <span class=\"notranslate\">&quot;DNS only&quot;</span> , а <strong class=\"text-decoration-underline\">не на</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
   "Does your provider support 255+ character TXT records?": "Чи підтримує ваш провайдер записи TXT довжиною понад 255 символів?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Виявлено проблему конфігурації вихідного SMTP для <span class=\"notranslate\">%s</span>",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">У вашому домені <span class=\"notranslate\">%s</span> виявлено проблему конфігурації вихідного SMTP-доступу.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Перевірте налаштування</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">У вашому домені <span class=\"notranslate\">%s</span> виявлено проблему конфігурації вихідного SMTP-доступу.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Перевірте налаштування</a></p>",
+  "required": "вимагається",
+  "Easily set up webhooks for email delivery.": "Легко налаштуйте веб-хуки для доставки електронної пошти.",
+  "How do I set up SPF for Forward Email": "Як налаштувати SPF для пересилання електронної пошти",
+  "How do I set up DKIM for Forward Email": "Як налаштувати DKIM для пересилання електронної пошти",
+  "How do I set up DMARC for Forward Email": "Як налаштувати DMARC для пересилання електронної пошти",
+  "How do I set up SRS for Forward Email": "Як налаштувати SRS для пересилання електронної пошти",
+  "How do I set up MTA-STS for Forward Email": "Як налаштувати MTA-STS для пересилання електронної пошти",
+  "Using your registrar's DNS management page, set the following": "На сторінці керування DNS вашого реєстратора встановіть наступне",
+  "Outbound SMTP Configuration and follow setup instructions.": "Конфігурація вихідного SMTP і дотримуйтесь інструкцій із налаштування.",
+  "We automatically configure": "Автоматично налаштовуємо",
+  "(\"SRS\") – you do not need to do this yourself.": "(«СГД») – вам не потрібно робити це самостійно.",
+  "our section on MTA-STS": "наш розділ про MTA-STS",
+  "Denylist removals can be requested at": "Вилучення зі списку заборонених запитів можна надіслати за адресою",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Нашу конфігурацію можна знайти відкрито на GitHub за адресою",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Đặt <span class=\"notranslate\">&quot;Proxy status&quot;</span> trong Cloudflare thành <span class=\"notranslate\">&quot;DNS only&quot;</span> chứ <strong class=\"text-decoration-underline\">không phải</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
   "Does your provider support 255+ character TXT records?": "Nhà cung cấp của bạn có hỗ trợ bản ghi TXT hơn 255 ký tự không?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Đã phát hiện sự cố cấu hình SMTP gửi đi cho <span class=\"notranslate\">%s</span>",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Miền <span class=\"notranslate\">%s</span> của bạn được phát hiện có vấn đề về cấu hình đối với quyền truy cập SMTP gửi đi.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Xác minh thiết lập</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Miền <span class=\"notranslate\">%s</span> của bạn được phát hiện có vấn đề về cấu hình đối với quyền truy cập SMTP gửi đi.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Xác minh thiết lập</a></p>",
+  "required": "yêu cầu",
+  "Easily set up webhooks for email delivery.": "Dễ dàng thiết lập webhook để gửi email.",
+  "How do I set up SPF for Forward Email": "Làm cách nào để thiết lập SPF cho Email chuyển tiếp",
+  "How do I set up DKIM for Forward Email": "Làm cách nào để thiết lập DKIM cho Email chuyển tiếp",
+  "How do I set up DMARC for Forward Email": "Làm cách nào để thiết lập DMARC cho Email chuyển tiếp",
+  "How do I set up SRS for Forward Email": "Làm cách nào để thiết lập SRS cho Email chuyển tiếp",
+  "How do I set up MTA-STS for Forward Email": "Làm cách nào để thiết lập MTA-STS cho Email chuyển tiếp",
+  "Using your registrar's DNS management page, set the following": "Sử dụng trang quản lý DNS của nhà đăng ký của bạn, hãy đặt thông tin sau",
+  "Outbound SMTP Configuration and follow setup instructions.": "Cấu hình SMTP gửi đi và làm theo hướng dẫn thiết lập.",
+  "We automatically configure": "Chúng tôi tự động cấu hình",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – bạn không cần phải tự mình làm việc này.",
+  "our section on MTA-STS": "phần của chúng tôi về MTA-STS",
+  "Denylist removals can be requested at": "Bạn có thể yêu cầu xóa danh sách từ chối tại",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Cấu hình của chúng tôi có thể được tìm thấy công khai trên GitHub tại",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

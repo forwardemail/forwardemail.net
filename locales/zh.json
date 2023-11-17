@@ -5317,5 +5317,21 @@
   "Does your provider support 255+ character TXT records?": "您的提供商是否支持 255 个以上字符的 TXT 记录？",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "检测到<span class=\"notranslate\">%s</span>的出站 SMTP 配置问题",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">您的域<span class=\"notranslate\">%s</span>检测到出站 SMTP 访问存在配置问题。</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">验证设置</a></p>",
-  "Make Admin": "设为管理员"
+  "Make Admin": "设为管理员",
+  "required": "必需的",
+  "Easily set up webhooks for email delivery.": "轻松设置用于电子邮件传送的 Webhook。",
+  "How do I set up SPF for Forward Email": "如何为转发电子邮件设置 SPF",
+  "How do I set up DKIM for Forward Email": "如何设置 DKIM 转发电子邮件",
+  "How do I set up DMARC for Forward Email": "如何设置 DMARC 转发电子邮件",
+  "How do I set up SRS for Forward Email": "如何为转发电子邮件设置 SRS",
+  "How do I set up MTA-STS for Forward Email": "如何设置 MTA-STS 转发电子邮件",
+  "Using your registrar's DNS management page, set the following": "使用注册商的 DNS 管理页面，设置以下内容",
+  "Outbound SMTP Configuration and follow setup instructions.": "出站 SMTP 配置并遵循设置说明。",
+  "We automatically configure": "我们自动配置",
+  "(\"SRS\") – you do not need to do this yourself.": "（“SRS”）——您不需要自己执行此操作。",
+  "our section on MTA-STS": "我们的 MTA-STS 部分",
+  "Denylist removals can be requested at": "可以请求删除黑名单",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "我们的配置可以在 GitHub 上公开找到：",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Ställ in <span class=\"notranslate\">&quot;Proxy status&quot;</span> i Cloudflare till <span class=\"notranslate\">&quot;DNS only&quot;</span> och <strong class=\"text-decoration-underline\">inte</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
   "Does your provider support 255+ character TXT records?": "Har din leverantör stöd för 255+ tecken TXT-poster?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Utgående SMTP-konfigurationsproblem upptäckt för <span class=\"notranslate\">%s</span>",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Din domän <span class=\"notranslate\">%s</span> har ett konfigurationsproblem upptäckt för utgående SMTP-åtkomst.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Verifiera installationen</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Din domän <span class=\"notranslate\">%s</span> har ett konfigurationsproblem upptäckt för utgående SMTP-åtkomst.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Verifiera installationen</a></p>",
+  "required": "nödvändig",
+  "Easily set up webhooks for email delivery.": "Ställ enkelt in webhooks för e-postleverans.",
+  "How do I set up SPF for Forward Email": "Hur ställer jag in SPF för vidarebefordran av e-post",
+  "How do I set up DKIM for Forward Email": "Hur ställer jag in DKIM för vidarebefordra e-post",
+  "How do I set up DMARC for Forward Email": "Hur ställer jag in DMARC för vidarebefordran av e-post",
+  "How do I set up SRS for Forward Email": "Hur ställer jag in SRS för vidarebefordran av e-post",
+  "How do I set up MTA-STS for Forward Email": "Hur ställer jag in MTA-STS för vidarebefordran av e-post",
+  "Using your registrar's DNS management page, set the following": "Använd din registrars DNS-hanteringssida och ställ in följande",
+  "Outbound SMTP Configuration and follow setup instructions.": "Utgående SMTP-konfiguration och följ installationsinstruktionerna.",
+  "We automatically configure": "Vi konfigurerar automatiskt",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – du behöver inte göra detta själv.",
+  "our section on MTA-STS": "vårt avsnitt om MTA-STS",
+  "Denylist removals can be requested at": "Borttagning av denylist kan begäras på",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Vår konfiguration kan hittas offentligt på GitHub på",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

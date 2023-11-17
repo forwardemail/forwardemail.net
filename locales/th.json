@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "ตั้ง <span class=\"notranslate\">&quot;Proxy status&quot;</span> ใน Cloudflare เป็น <span class=\"notranslate\">&quot;DNS only&quot;</span> <strong class=\"text-decoration-underline\">ไม่ใช่</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span>",
   "Does your provider support 255+ character TXT records?": "ผู้ให้บริการของคุณรองรับบันทึก TXT 255+ ตัวอักษรหรือไม่",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "ตรวจพบปัญหาการกำหนดค่า SMTP ขาออกสำหรับ <span class=\"notranslate\">%s</span>",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">โดเมน <span class=\"notranslate\">%s</span> ของคุณมีปัญหาการกำหนดค่าที่ตรวจพบสำหรับการเข้าถึง SMTP ขาออก</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">ตรวจสอบการตั้งค่า</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">โดเมน <span class=\"notranslate\">%s</span> ของคุณมีปัญหาการกำหนดค่าที่ตรวจพบสำหรับการเข้าถึง SMTP ขาออก</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">ตรวจสอบการตั้งค่า</a></p>",
+  "required": "ที่จำเป็น",
+  "Easily set up webhooks for email delivery.": "ตั้งค่า webhooks สำหรับการส่งอีเมลได้อย่างง่ายดาย",
+  "How do I set up SPF for Forward Email": "ฉันจะตั้งค่า SPF สำหรับการส่งต่ออีเมลได้อย่างไร",
+  "How do I set up DKIM for Forward Email": "ฉันจะตั้งค่า DKIM สำหรับการส่งต่ออีเมลได้อย่างไร",
+  "How do I set up DMARC for Forward Email": "ฉันจะตั้งค่า DMARC สำหรับการส่งต่ออีเมลได้อย่างไร",
+  "How do I set up SRS for Forward Email": "ฉันจะตั้งค่า SRS สำหรับการส่งต่ออีเมลได้อย่างไร",
+  "How do I set up MTA-STS for Forward Email": "ฉันจะตั้งค่า MTA-STS สำหรับการส่งต่ออีเมลได้อย่างไร",
+  "Using your registrar's DNS management page, set the following": "ใช้หน้าการจัดการ DNS ของผู้รับจดทะเบียนของคุณ ให้ตั้งค่าดังต่อไปนี้",
+  "Outbound SMTP Configuration and follow setup instructions.": "การกำหนดค่า SMTP ขาออก และปฏิบัติตามคำแนะนำในการตั้งค่า",
+  "We automatically configure": "เรากำหนดค่าโดยอัตโนมัติ",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – คุณไม่จำเป็นต้องดำเนินการด้วยตนเอง",
+  "our section on MTA-STS": "ส่วนของเราเกี่ยวกับ MTA-STS",
+  "Denylist removals can be requested at": "สามารถขอลบรายการปฏิเสธได้ที่",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "การกำหนดค่าของเราสามารถพบได้แบบสาธารณะบน GitHub ที่",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

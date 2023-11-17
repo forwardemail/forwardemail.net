@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Cloudflare&#39;deki <span class=\"notranslate\">&quot;Proxy status&quot;</span> <span class=\"notranslate\">&quot;Proxied&quot;</span> olarak <strong class=\"text-decoration-underline\">değil</strong> &quot; <span class=\"notranslate\">&quot;DNS only&quot;</span> &quot; olarak ayarlayın.",
   "Does your provider support 255+ character TXT records?": "Sağlayıcınız 255+ karakterli TXT kayıtlarını destekliyor mu?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> İçin Giden SMTP Yapılandırma Sorunu Algılandı",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\"><span class=\"notranslate\">%s</span> alan adınızda, giden SMTP erişimi için bir yapılandırma sorunu algılandı.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Kurulumu Doğrulayın</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\"><span class=\"notranslate\">%s</span> alan adınızda, giden SMTP erişimi için bir yapılandırma sorunu algılandı.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Kurulumu Doğrulayın</a></p>",
+  "required": "gerekli",
+  "Easily set up webhooks for email delivery.": "E-posta dağıtımı için web kancalarını kolayca ayarlayın.",
+  "How do I set up SPF for Forward Email": "İleri E-posta için SPF'yi nasıl ayarlarım?",
+  "How do I set up DKIM for Forward Email": "E-postayı Yönlendirmek için DKIM'yi nasıl kurarım",
+  "How do I set up DMARC for Forward Email": "Yönlendirme E-postası için DMARC'yi nasıl ayarlarım?",
+  "How do I set up SRS for Forward Email": "İleri E-posta için SRS'yi nasıl kurarım",
+  "How do I set up MTA-STS for Forward Email": "İleri E-posta için MTA-STS'yi nasıl kurarım",
+  "Using your registrar's DNS management page, set the following": "Kayıt kuruluşunuzun DNS yönetimi sayfasını kullanarak aşağıdakileri ayarlayın",
+  "Outbound SMTP Configuration and follow setup instructions.": "Giden SMTP Yapılandırması'nı seçin ve kurulum talimatlarını izleyin.",
+  "We automatically configure": "Otomatik olarak yapılandırıyoruz",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – bunu kendi başınıza yapmanıza gerek yoktur.",
+  "our section on MTA-STS": "MTA-STS ile ilgili bölümümüz",
+  "Denylist removals can be requested at": "Red listesinin kaldırılması şu adresten talep edilebilir:",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Yapılandırmamız GitHub'da herkese açık olarak şu adreste bulunabilir:",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

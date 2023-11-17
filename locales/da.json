@@ -5362,5 +5362,21 @@
   "Does your provider support 255+ character TXT records?": "Understøtter din udbyder 255+ tegn TXT-poster?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Udgående SMTP-konfigurationsproblem fundet for <span class=\"notranslate\">%s</span>",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Dit domæne <span class=\"notranslate\">%s</span> har et konfigurationsproblem fundet for udgående SMTP-adgang.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Bekræft opsætning</a></p>",
-  "Make Admin": "Gør Admin"
+  "Make Admin": "Gør Admin",
+  "required": "påkrævet",
+  "Easily set up webhooks for email delivery.": "Konfigurer nemt webhooks til levering af e-mail.",
+  "How do I set up SPF for Forward Email": "Hvordan konfigurerer jeg SPF til Videresend e-mail",
+  "How do I set up DKIM for Forward Email": "Hvordan konfigurerer jeg DKIM til Videresend e-mail",
+  "How do I set up DMARC for Forward Email": "Hvordan konfigurerer jeg DMARC til Videresend e-mail",
+  "How do I set up SRS for Forward Email": "Hvordan konfigurerer jeg SRS til Videresend e-mail",
+  "How do I set up MTA-STS for Forward Email": "Hvordan konfigurerer jeg MTA-STS til Videresend e-mail",
+  "Using your registrar's DNS management page, set the following": "Brug din registrators DNS-administrationsside til at indstille følgende",
+  "Outbound SMTP Configuration and follow setup instructions.": "Udgående SMTP-konfiguration og følg opsætningsinstruktionerne.",
+  "We automatically configure": "Vi konfigurerer automatisk",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – du behøver ikke at gøre dette selv.",
+  "our section on MTA-STS": "vores afsnit om MTA-STS",
+  "Denylist removals can be requested at": "Denylist fjernelse kan rekvireres på",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Vores konfiguration kan findes offentligt på GitHub på",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

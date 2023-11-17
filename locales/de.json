@@ -4660,5 +4660,21 @@
   "Does your provider support 255+ character TXT records?": "Unterstützt Ihr Anbieter TXT-Einträge mit mehr als 255 Zeichen?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Für <span class=\"notranslate\">%s</span> wurde ein ausgehendes SMTP-Konfigurationsproblem erkannt",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">In Ihrer Domain <span class=\"notranslate\">%s</span> wurde ein Konfigurationsproblem für den ausgehenden SMTP-Zugriff festgestellt.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Überprüfen Sie die Einrichtung</a></p>",
-  "Make Admin": "Machen Admin"
+  "Make Admin": "Machen Admin",
+  "required": "erforderlich",
+  "Easily set up webhooks for email delivery.": "Richten Sie ganz einfach Webhooks für die E-Mail-Zustellung ein.",
+  "How do I set up SPF for Forward Email": "Wie richte ich SPF für die E-Mail-Weiterleitung ein?",
+  "How do I set up DKIM for Forward Email": "Wie richte ich DKIM für die E-Mail-Weiterleitung ein?",
+  "How do I set up DMARC for Forward Email": "Wie richte ich DMARC für die E-Mail-Weiterleitung ein?",
+  "How do I set up SRS for Forward Email": "Wie richte ich SRS für die E-Mail-Weiterleitung ein?",
+  "How do I set up MTA-STS for Forward Email": "Wie richte ich MTA-STS für die Weiterleitung von E-Mails ein?",
+  "Using your registrar's DNS management page, set the following": "Legen Sie auf der DNS-Verwaltungsseite Ihres Registrars Folgendes fest",
+  "Outbound SMTP Configuration and follow setup instructions.": "Gehen Sie zur ausgehenden SMTP-Konfiguration und befolgen Sie die Einrichtungsanweisungen.",
+  "We automatically configure": "Wir konfigurieren automatisch",
+  "(\"SRS\") – you do not need to do this yourself.": "(„SRS“) – Sie müssen dies nicht selbst tun.",
+  "our section on MTA-STS": "unser Abschnitt über MTA-STS",
+  "Denylist removals can be requested at": "Die Entfernung von Sperrlisten kann unter beantragt werden",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Unsere Konfiguration finden Sie öffentlich auf GitHub unter",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

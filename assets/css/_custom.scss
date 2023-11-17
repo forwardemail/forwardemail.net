@@ -157,6 +157,11 @@ html {
     div.mermaid {
       display: none !important;
     }
+
+    // override for pages like FAQ to render q&a dropdowns
+    .collapse:not(.show) {
+      display: block;
+    }
   }
 }
 

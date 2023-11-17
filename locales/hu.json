@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Állítsa be a Cloudflare <span class=\"notranslate\">&quot;Proxy status&quot;</span> <span class=\"notranslate\">&quot;DNS only&quot;</span> értékre, és <strong class=\"text-decoration-underline\">ne</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
   "Does your provider support 255+ character TXT records?": "Az Ön szolgáltatója támogatja a 255+ karakteres TXT rekordokat?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Kimenő SMTP konfigurációs probléma észlelve a következőnél: <span class=\"notranslate\">%s</span>",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">A <span class=\"notranslate\">%s</span> domain konfigurációs problémát észlelt a kimenő SMTP-hozzáféréssel kapcsolatban.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Ellenőrizze a beállítást</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">A <span class=\"notranslate\">%s</span> domain konfigurációs problémát észlelt a kimenő SMTP-hozzáféréssel kapcsolatban.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Ellenőrizze a beállítást</a></p>",
+  "required": "kívánt",
+  "Easily set up webhooks for email delivery.": "Könnyen beállíthat webhookot az e-mailek kézbesítéséhez.",
+  "How do I set up SPF for Forward Email": "Hogyan állíthatom be az SPF-et az e-mailek továbbításához",
+  "How do I set up DKIM for Forward Email": "Hogyan állíthatom be a DKIM-et az e-mailek továbbításához",
+  "How do I set up DMARC for Forward Email": "Hogyan állíthatom be a DMARC-t az e-mailek továbbításához",
+  "How do I set up SRS for Forward Email": "Hogyan állíthatom be az SRS-t az e-mailek továbbításához",
+  "How do I set up MTA-STS for Forward Email": "Hogyan állíthatom be az MTA-STS-t az e-mailek továbbításához",
+  "Using your registrar's DNS management page, set the following": "A regisztrátor DNS-kezelési oldalán állítsa be a következőket",
+  "Outbound SMTP Configuration and follow setup instructions.": "Kimenő SMTP konfiguráció, és kövesse a beállítási utasításokat.",
+  "We automatically configure": "Automatikusan beállítjuk",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – ezt nem kell magának megtennie.",
+  "our section on MTA-STS": "rovatunk az MTA-STS-ről",
+  "Denylist removals can be requested at": "Az elutasító listák eltávolítását a címen lehet kérni",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "A konfigurációnk nyilvánosan megtalálható a GitHubon a következő címen",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

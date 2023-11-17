@@ -5,6 +5,11 @@
 
 * [How fast is this service](#how-fast-is-this-service)
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
+* [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
+* [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+* [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+* [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
+* [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
 * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
 * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
 * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
@@ -681,6 +686,90 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
   </span>
 </div>
+
+
+## How do I set up SPF for Forward Email
+
+Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>v=spf1 a mx include:spf.forwardemail.net -all</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    <br /><br />
+    <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a mx include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
+</div>
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    <br /><br />
+    <code>v=spf1 a mx include:spf.forwardemail.net include:host.com -all</code>
+    <br /><br />
+    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+  </span>
+</div>
+
+
+## How do I set up DKIM for Forward Email
+
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+
+
+## How do I set up DMARC for Forward Email
+
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+
+
+## How do I set up SRS for Forward Email
+
+We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+
+
+## How do I set up MTA-STS for Forward Email
+
+Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
 
 
 ## Do you support sending email with SMTP
@@ -1597,7 +1686,7 @@ Yes, we operate our own private denylist and update it automatically in real-tim
 
 We also pull from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our Redis database with a 7 day expiry.
 
-Allowlist requests (or denylist removal requests) can be sent to <allowlist@forwardemail.net> (please provide a complete description and reason for being added to the allowlist, links to websites, and your businesses' certificate of formation to be listed in our allowlist).
+Denylist removals can be requested at <https://forwardemail.net/denylist>.
 
 
 ## Do you have rate limiting
@@ -2698,6 +2787,8 @@ The Free plan requires you to use public DNS records to store your forwarding co
 ## Do you support MTA-STS
 
 Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+
+Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
 
 ## Do you support email best practices

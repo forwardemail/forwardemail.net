@@ -1,5 +1,5 @@
-mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKeepReading=false, onboardContainerClass='')
-  if !isBot(ctx.get('User-Agent'))
+mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKeepReading=false, onboardContainerClass='', isModalOnboard=false, isInsideModal=false)
+  if !isBot(ctx.get('User-Agent')) && !isInsideModal
     #modal-onboard-pricing-video.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -23,20 +23,62 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
+  if !isBot(ctx.get('User-Agent')) && isModalOnboard
+    script(async, defer).
+      document.addEventListener(
+        "DOMContentLoaded",
+        function load() {
+          if (!window.jQuery) return setTimeout(load, 50);
+          $(function() {
+            $("#modal-onboard").modal('show');
+          });
+        },
+        false
+      );
+    #modal-onboard.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-onboard-title",
+      aria-hidden="true"
+    )
+      .modal-dialog(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            #modal-onboard-pricing-video-title.h4.d-inline-block.ml-4= onboardHeader
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
+          .modal-body
+            if onboardText
+              p.text-muted.text-center.mb-0!= onboardText
+            +onboard(onboardHeader, onboardText, onboardFormAction, onboardKeepReading, onboardContainerClass, false, true)
+  else
     div&attributes(attributes)
-      .bg-light.bg-themed.py-3.py-md-4.py-lg-5(class=onboardContainerClass)
-        .container
-          .row
-            .col
-              if onboardHeader
+      div(
+        class=isInsideModal ? [].join(" ") : [onboardContainerClass, "bg-light", "bg-themed", "py-3", "py-md-4", "py-lg-5"].join(" ")
+      )
+        div(class=isInsideModal ? false : "container")
+          div(class=isInsideModal ? false : "row")
+            div(class=isInsideModal ? false : "col")
+              if onboardHeader && !isInsideModal
                 h2.h3.text-center!= onboardHeader
-              if onboardText
+              if onboardText && !isInsideModal
                 p.text-center.mb-0.text-muted.small!= onboardText
-              form.ajax-form.pt-3.mb-3(action=onboardFormAction, method="POST")
+              form.ajax-form.pt-3.mb-3(
+                action=onboardFormAction,
+                method="POST"
+              )
                 .form-row
-                  .col-12.col-md-6.offset-md-3
-                    .form-group.floating-label
-                      input#input-onboard-domain.form-control(
+                  div(class=isInsideModal ? "col-12" : "col-12 col-md-6 offset-md-3")
+                    .form-group.floating-label.position-relative
+                      .position-absolute(style="right: 0")
+                        label.badge.badge-pill.badge-dark.mt-3.mr-3(
+                          for="input-onboard-domain"
+                        )= t("Step 1")
+                      input#input-onboard-domain.form-control.form-control-lg(
                         type="text",
                         name="domain",
                         value=domainName ? domainName : (domain && domain.name) || "",
@@ -44,8 +86,12 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                         placeholder="example.com"
                       )
                       label(for="input-onboard-domain")= t("Your custom domain")
-                    .form-group.floating-label
-                      input#input-onboard-email.form-control(
+                    .form-group.floating-label.position-relative
+                      .position-absolute(style="right: 0")
+                        label.badge.badge-pill.badge-dark.mt-3.mr-3(
+                          for="input-onboard-email"
+                        )= t("Step 2")
+                      input#input-onboard-email.form-control.form-control-lg(
                         type="email",
                         autocomplete="email",
                         name="email",
@@ -58,12 +104,20 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                       noscript
                         .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
                       .cf-explicit-turnstile
-                    button.btn.btn-success.btn-block(type="submit")
+                    button.btn.btn-success.btn-lg.btn-block(type="submit")
                       = t("Continue")
                       = " "
                       i.fa.fa-angle-double-right.align-middle
                     p.mt-3.mb-0.text-center.small.text-black.text-themed-50: small!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
               if onboardKeepReading
-                p.text-center.mb-0.small: a.text-black.text-themed-50.font-weight-bold.small(
-                  href=onboardKeepReading
-                )= t("Not interested?  Click here to keep reading")
+                if isInsideModal
+                  button.btn.btn-link.btn-sm.btn-block.text-muted(
+                    type="button",
+                    data-dismiss="modal",
+                    aria-label="Close"
+                  )
+                    = t("Not interested?  Click here to keep reading")
+                else
+                  p.text-center.mb-0.small: a.text-black.text-themed-50.font-weight-bold.small(
+                    href=onboardKeepReading
+                  )= t("Not interested?  Click here to keep reading")

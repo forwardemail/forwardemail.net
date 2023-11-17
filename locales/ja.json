@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Cloudflareの<span class=\"notranslate\">&quot;Proxy status&quot;</span> 「 <span class=\"notranslate\">&quot;Proxied&quot;</span>では<strong class=\"text-decoration-underline\">なく</strong>「 <span class=\"notranslate\">&quot;DNS only&quot;</span> 」に設定します。",
   "Does your provider support 255+ character TXT records?": "プロバイダーは 255 文字以上の TXT レコードをサポートしていますか?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span>のアウトバウンド SMTP 構成の問題が検出されました",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">ドメイン<span class=\"notranslate\">%s</span>送信 SMTP アクセスに関する構成の問題が検出されました。</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">セットアップの確認</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">ドメイン<span class=\"notranslate\">%s</span>送信 SMTP アクセスに関する構成の問題が検出されました。</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">セットアップの確認</a></p>",
+  "required": "必須",
+  "Easily set up webhooks for email delivery.": "電子メール配信用の Webhook を簡単に設定します。",
+  "How do I set up SPF for Forward Email": "メール転送用に SPF を設定するにはどうすればよいですか",
+  "How do I set up DKIM for Forward Email": "メール転送用に DKIM を設定するにはどうすればよいですか",
+  "How do I set up DMARC for Forward Email": "電子メール転送用に DMARC を設定するにはどうすればよいですか",
+  "How do I set up SRS for Forward Email": "メール転送用に SRS を設定するにはどうすればよいですか",
+  "How do I set up MTA-STS for Forward Email": "電子メール転送用に MTA-STS を設定するにはどうすればよいですか",
+  "Using your registrar's DNS management page, set the following": "レジストラの DNS 管理ページを使用して、次のように設定します。",
+  "Outbound SMTP Configuration and follow setup instructions.": "アウトバウンド SMTP 構成を選択し、セットアップ手順に従います。",
+  "We automatically configure": "自動的に設定します",
+  "(\"SRS\") – you do not need to do this yourself.": "(「SRS」) – これを自分で行う必要はありません。",
+  "our section on MTA-STS": "MTA-STS に関するセクション",
+  "Denylist removals can be requested at": "拒否リストの削除は次の場所でリクエストできます。",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "私たちの設定は GitHub で公開されています。",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }

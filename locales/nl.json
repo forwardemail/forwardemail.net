@@ -5625,5 +5625,21 @@
   "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Stel de <span class=\"notranslate\">&quot;Proxy status&quot;</span> in Cloudflare in op <span class=\"notranslate\">&quot;DNS only&quot;</span> en <strong class=\"text-decoration-underline\">niet</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
   "Does your provider support 255+ character TXT records?": "Ondersteunt uw provider TXT-records van meer dan 255 tekens?",
   "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Uitgaand SMTP-configuratieprobleem gedetecteerd voor <span class=\"notranslate\">%s</span>",
-  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Er is een configuratieprobleem gedetecteerd voor uitgaande SMTP-toegang voor uw domein <span class=\"notranslate\">%s</span> .</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Controleer de instellingen</a></p>"
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Er is een configuratieprobleem gedetecteerd voor uitgaande SMTP-toegang voor uw domein <span class=\"notranslate\">%s</span> .</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Controleer de instellingen</a></p>",
+  "required": "vereist",
+  "Easily set up webhooks for email delivery.": "Stel eenvoudig webhooks in voor e-mailbezorging.",
+  "How do I set up SPF for Forward Email": "Hoe stel ik SPF in voor het doorsturen van e-mail",
+  "How do I set up DKIM for Forward Email": "Hoe stel ik DKIM in voor Forward Email",
+  "How do I set up DMARC for Forward Email": "Hoe stel ik DMARC in voor het doorsturen van e-mail",
+  "How do I set up SRS for Forward Email": "Hoe stel ik SRS in voor het doorsturen van e-mail",
+  "How do I set up MTA-STS for Forward Email": "Hoe stel ik MTA-STS in voor Forward Email",
+  "Using your registrar's DNS management page, set the following": "Gebruik de DNS-beheerpagina van uw registrar om het volgende in te stellen",
+  "Outbound SMTP Configuration and follow setup instructions.": "Uitgaande SMTP-configuratie en volg de installatie-instructies.",
+  "We automatically configure": "Wij configureren automatisch",
+  "(\"SRS\") – you do not need to do this yourself.": "(\"SRS\") – u hoeft dit niet zelf te doen.",
+  "our section on MTA-STS": "onze sectie over MTA-STS",
+  "Denylist removals can be requested at": "Verwijdering van de denylist kan worden aangevraagd op",
+  "https://forwardemail.net/denylist": "https://forwardemail.net/denylist",
+  "Our configuration can be found publicly on GitHub at": "Onze configuratie is openbaar te vinden op GitHub op",
+  "https://github.com/forwardemail/mta-sts.forwardemail.net": "https://github.com/forwardemail/mta-sts.forwardemail.net"
 }
