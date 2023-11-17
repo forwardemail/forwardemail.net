@@ -63,6 +63,10 @@ module.exports = {
     'Cannot create regex on domain due to large alias volume size.',
   ALL_RECIPIENTS_BLOCKED: 'All recipients are blocked from sending mail to.',
   RECIPIENT_BLOCKED: 'Recipient is blocked from sending mail to.',
+  SMTP_ERROR_SUBJECT:
+    'Outbound SMTP Configuration Issue Detected for <span class="notranslate">%s</span>',
+  SMTP_ERROR_MESSAGE:
+    '<p class="text-center">Your domain <span class="notranslate">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class="text-center mb-0"><a class="btn btn-lg btn-danger" href="%s">Verify Setup</a></p>',
   SMTP_ACCESS_SUBJECT:
     'Outbound SMTP for <span class="notranslate">%s</span> is now pending admin approval',
   SMTP_ACCESS_PENDING:

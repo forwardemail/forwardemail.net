@@ -10,6 +10,7 @@ block append scripts
     )
 
 block body
+  - const provider = nsProviderLookup(domain);
   if !domain.has_mx_record || !domain.has_txt_record
     .fixed-bottom.text-center.d-print-none
       .bg-dark.p-2.border-top.border-themed
@@ -135,7 +136,6 @@ block body
     .container.text-center.mb-3
       .row
         .col-12
-          - const provider = nsProviderLookup(domain);
           .card.position-relative
             if domain.has_mx_record && domain.has_txt_record
               .position-absolute.w-100.text-right
@@ -265,6 +265,11 @@ block body
                       i.fa.fa-refresh
                       = " "
                       = t("Verify")
+              if provider && provider.slug && provider.slug === 'cloudflare'
+                .alert.alert-warning.my-3.small
+                  strong= t("Important Note:")
+                  = " "
+                  != t('Set the <span class="notranslate">"Proxy status"</span> in Cloudflare to <span class="notranslate">"DNS only"</span> and <strong class="text-decoration-underline">not</strong> <span class="notranslate">"Proxied"</span>.')
               .d-block.d-md-none.my-3.text-muted.small
                 = "("
                 = t("Scroll to the right to see entire table")
@@ -278,6 +283,8 @@ block body
                       th.border-0.align-middle Type
                       th.border-0.align-middle Priority
                       th.border-0.align-middle.text-left Answer/Value
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        th.border-0.align-middle.text-nowrap Proxy status
                   tbody
                     tr
                       td(class=domain.has_mx_record ? "bg-success" : "bg-danger")
@@ -308,6 +315,8 @@ block body
                             i.fa.fa-clipboard
                             = " "
                             = t("Copy")
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
                     tr
                       td(class=domain.has_mx_record ? "bg-success" : "bg-danger")
                       td.align-middle.small
@@ -337,6 +346,8 @@ block body
                             i.fa.fa-clipboard
                             = " "
                             = t("Copy")
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
                     if domain.plan === 'free' && hasExistingTXT
                       each record in existingTXT
                         tr
@@ -355,6 +366,8 @@ block body
                           td.align-middle: strong.px-2 TXT
                           td.align-middle
                           td.align-middle.text-left.py-3: code.text-themed.text-nowrap= record
+                        if provider && provider.slug && provider.slug === 'cloudflare'
+                          td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
                     else
                       tr
                         td(class=domain.has_txt_record ? "bg-success" : "bg-danger")
@@ -386,6 +399,8 @@ block body
                               i.fa.fa-clipboard
                               = " "
                               = t("Copy")
+                        if provider && provider.slug && provider.slug === 'cloudflare'
+                          td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
               .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (60 minutes) as possible.')
               if domain.plan === 'free'
                 .alert.alert-primary.small

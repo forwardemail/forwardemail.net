@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Ваш провайдер обмежує записи TXT 255 символами? Натисніть тут.",
   "New DKIM public and private key pair generated.": "Створено нову пару відкритих і закритих ключів DKIM.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Чи підтримує ваш провайдер записи TXT, довші за 255 символів? Натисніть тут.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") дотримувався нашої політики конфіденційності. Спам-сканер є абсолютно безкоштовним і відкритим кодом"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") дотримувався нашої політики конфіденційності. Спам-сканер є абсолютно безкоштовним і відкритим кодом",
+  "Important Note:": "Важлива примітка:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Встановіть <span class=\"notranslate\">&quot;Proxy status&quot;</span> в Cloudflare на <span class=\"notranslate\">&quot;DNS only&quot;</span> , а <strong class=\"text-decoration-underline\">не на</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Чи підтримує ваш провайдер записи TXT довжиною понад 255 символів?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Виявлено проблему конфігурації вихідного SMTP для <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">У вашому домені <span class=\"notranslate\">%s</span> виявлено проблему конфігурації вихідного SMTP-доступу.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Перевірте налаштування</a></p>"
 }

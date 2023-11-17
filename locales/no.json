@@ -5625,5 +5625,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Begrenser leverandøren din TXT-poster til 255 tegn? Klikk her.",
   "New DKIM public and private key pair generated.": "Nytt DKIM offentlig og privat nøkkelpar generert.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Støtter leverandøren din TXT-poster som er lengre enn 255 tegn? Klikk her.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") respektert personvernreglene våre. Spam Scanner er en helt gratis og åpen kildekode"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") respektert personvernreglene våre. Spam Scanner er en helt gratis og åpen kildekode",
+  "Important Note:": "Viktig notat:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Sett <span class=\"notranslate\">&quot;Proxy status&quot;</span> i Cloudflare til <span class=\"notranslate\">&quot;DNS only&quot;</span> og <strong class=\"text-decoration-underline\">ikke</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Støtter leverandøren 255+ tegn TXT-poster?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Utgående SMTP-konfigurasjonsproblem oppdaget for <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Domenet ditt <span class=\"notranslate\">%s</span> har et konfigurasjonsproblem oppdaget for utgående SMTP-tilgang.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Bekreft oppsett</a></p>"
 }

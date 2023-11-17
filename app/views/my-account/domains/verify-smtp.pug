@@ -10,6 +10,7 @@ block append scripts
     )
 
 block body
+  - const provider = nsProviderLookup(domain);
   //- FAQ modal
   if modalFAQTable
     #modal-faq-table.modal.fade(
@@ -89,7 +90,6 @@ block body
     .container.text-center.mb-3
       .row
         .col-12
-          - const provider = nsProviderLookup(domain);
           .card.position-relative
             if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
               .position-absolute.w-100.text-right
@@ -188,6 +188,11 @@ block body
                     i.fa.fa-refresh
                     = " "
                     = t("Verify")
+                if provider && provider.slug && provider.slug === 'cloudflare'
+                  .alert.alert-warning.my-3
+                    strong= t("Important Note:")
+                    = " "
+                    != t('Set the <span class="notranslate">"Proxy status"</span> in Cloudflare to <span class="notranslate">"DNS only"</span> and <strong class="text-decoration-underline">not</strong> <span class="notranslate">"Proxied"</span>.')
                 .d-block.d-md-none.my-3.text-muted.small
                   = "("
                   = t("Scroll to the right to see entire table")
@@ -201,6 +206,8 @@ block body
                       th.border-0.align-middle.text-left Name/Host/Alias
                       th.border-0.align-middle Type
                       th.border-0.align-middle.text-left Answer/Value
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        th.border-0.align-middle.text-nowrap Proxy status
                   tbody
                     tr
                       td(class=domain.has_dkim_record ? "bg-success" : "bg-danger")
@@ -259,12 +266,12 @@ block body
                           )
                           button.btn.btn-sm.btn-link.font-weight-bold.text-decoration-underline(
                             type="submit",
-                            class=modulusLength === 2048 ? 'text-danger' : 'text-muted'
+                            class=modulusLength === 2048 ? 'text-danger' : 'text-primary'
                           )
                             if modulusLength === 2048
-                              = t("Does your provider limit TXT records to 255 characters? Click here.")
+                              = t("Does your provider limit TXT records to 255 characters?")
                             else
-                              = t("Does your provider support TXT records longer than 255 characters? Click here.")
+                              = t("Does your provider support 255+ character TXT records?")
                         if modulusLength === 2048 && provider && provider.slug && provider.slug !== 'cloudflare'
                           - splitDKIM = true;
                           .alert.alert-warning.user-select-none.small
@@ -318,6 +325,8 @@ block body
                               i.fa.fa-clipboard
                               = " "
                               = t("Copy")
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
 
                     //- Return-Path (required)
                     tr
@@ -369,6 +378,9 @@ block body
                             i.fa.fa-clipboard
                             = " "
                             = t("Copy")
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
+
                     //- DMARC (required)
                     tr
                       td(class=domain.has_dmarc_record ? "bg-success" : "bg-danger")
@@ -414,6 +426,9 @@ block body
                             i.fa.fa-clipboard
                             = " "
                             = t("Copy")
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
+
               .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (60 minutes) as possible.')
               form.ajax-form(action=ctx.path, method="POST")
                 button.btn.btn-success.btn-lg.btn-block(type="submit")

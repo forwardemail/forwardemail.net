@@ -239,6 +239,7 @@ const Domains = new mongoose.Schema({
       validate: (value) => isEmail(value)
     }
   ],
+  smtp_last_checked_at: Date,
   smtp_verified_at: Date,
   has_smtp: {
     type: Boolean,
@@ -337,21 +338,17 @@ const Domains = new mongoose.Schema({
     default: false,
     index: true
   },
-  missing_dkim_sent_at: Date,
   has_return_path_record: {
     type: Boolean,
     default: false,
     index: true
   },
-  missing_return_path_sent_at: Date,
   has_dmarc_record: {
     type: Boolean,
     default: false,
     index: true
   },
-  missing_dmarc_sent_at: Date,
-  smtp_checked_at: Date,
-
+  missing_smtp_sent_at: Date,
   restrictions_reminder_sent_at: Date,
   onboard_email_sent_at: Date,
   verified_email_sent_at: Date,
@@ -827,6 +824,7 @@ Domains.plugin(mongooseCommonPlugin, {
     'is_api',
     'onboard_email_sent_at',
     'verified_email_sent_at',
+    'smtp_last_checked_at',
     'smtp_verified_at',
     'has_smtp',
     'smtp_suspended_sent_at',
@@ -841,13 +839,10 @@ Domains.plugin(mongooseCommonPlugin, {
     'dkim_private_key',
     'dkim_public_key',
     'return_path',
+    'missing_smtp_sent_at',
     'has_dkim_record',
-    'missing_dkim_sent_at',
     'has_return_path_record',
-    'missing_return_path_sent_at',
     'has_dmarc_record',
-    'missing_dmarc_sent_at',
-    'smtp_checked_at',
     'smtp_emails_blocked',
     'tokens'
   ],
@@ -947,16 +942,69 @@ async function getNSRecords(domain, resolver) {
   return { ns, errors };
 }
 
-async function verifySMTP(domain, resolver) {
-  //
-  // TODO: attempt to purge Cloudflare cache programmatically
-  //
-
+async function verifySMTP(domain, resolver, purgeCache = true) {
   const errors = [];
   let ns = false;
   let dkim = false;
   let returnPath = false;
   let dmarc = false;
+
+  //
+  // attempt to purge Cloudflare cache programmatically
+  //
+  if (purgeCache) {
+    // NOTE: we don't purge ns here since we assume it's already setup
+    const records = [
+      {
+        // dkim
+        domain: `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+        type: 'TXT'
+      },
+      {
+        // return-path
+        domain: `${domain.return_path}.${domain.name}`,
+        type: 'CNAME'
+      },
+      {
+        // dmarc
+        domain: `_dmarc.${domain.name}`,
+        type: 'TXT'
+      }
+    ];
+
+    console.log('PURGING', records);
+
+    try {
+      await pMap(
+        records,
+        (record) => {
+          const url = new URL(CLOUDFLARE_PURGE_CACHE_URL);
+          url.searchParams.append('domain', record.domain);
+          url.searchParams.append('type', record.type);
+          return retryRequest(url, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'User-Agent': USER_AGENT
+            },
+            timeout: ms('3s'),
+            retries: 1
+          });
+        },
+        { concurrency }
+      );
+      logger.debug('cleared DNS cache for cloudflare', {
+        domain,
+        records
+      });
+      // wait one second for DNS changes to propagate
+      await delay(ms('1s'));
+    } catch (err) {
+      err.domain = domain;
+      err.records = records;
+      logger.error(err);
+    }
+  }
 
   await Promise.all([
     //

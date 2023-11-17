@@ -4654,5 +4654,11 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Beschränkt Ihr Anbieter TXT-Einträge auf 255 Zeichen? Klicken Sie hier.",
   "New DKIM public and private key pair generated.": "Neues öffentliches und privates DKIM-Schlüsselpaar generiert.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Unterstützt Ihr Anbieter TXT-Einträge mit mehr als 255 Zeichen? Klicken Sie hier.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") respektiert unsere Datenschutzrichtlinie. Der Spam-Scanner ist völlig kostenlos und Open Source"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") respektiert unsere Datenschutzrichtlinie. Der Spam-Scanner ist völlig kostenlos und Open Source",
+  "Important Note:": "Wichtiger Hinweis:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Setzen Sie den <span class=\"notranslate\">&quot;Proxy status&quot;</span> in Cloudflare auf <span class=\"notranslate\">&quot;DNS only&quot;</span> und <strong class=\"text-decoration-underline\">nicht auf</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Unterstützt Ihr Anbieter TXT-Einträge mit mehr als 255 Zeichen?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Für <span class=\"notranslate\">%s</span> wurde ein ausgehendes SMTP-Konfigurationsproblem erkannt",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">In Ihrer Domain <span class=\"notranslate\">%s</span> wurde ein Konfigurationsproblem für den ausgehenden SMTP-Zugriff festgestellt.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Überprüfen Sie die Einrichtung</a></p>",
+  "Make Admin": "Machen Admin"
 }

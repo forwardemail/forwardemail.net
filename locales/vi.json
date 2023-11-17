@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Nhà cung cấp của bạn có giới hạn bản ghi TXT ở 255 ký tự không? Bấm vào đây.",
   "New DKIM public and private key pair generated.": "Cặp khóa công khai và riêng tư DKIM mới được tạo.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Nhà cung cấp của bạn có hỗ trợ bản ghi TXT dài hơn 255 ký tự không? Bấm vào đây.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") tôn trọng chính sách bảo mật của chúng tôi. Máy quét thư rác là một công cụ mã nguồn mở và hoàn toàn miễn phí"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") tôn trọng chính sách bảo mật của chúng tôi. Máy quét thư rác là một công cụ mã nguồn mở và hoàn toàn miễn phí",
+  "Important Note:": "Lưu ý quan trọng:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Đặt <span class=\"notranslate\">&quot;Proxy status&quot;</span> trong Cloudflare thành <span class=\"notranslate\">&quot;DNS only&quot;</span> chứ <strong class=\"text-decoration-underline\">không phải</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Nhà cung cấp của bạn có hỗ trợ bản ghi TXT hơn 255 ký tự không?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Đã phát hiện sự cố cấu hình SMTP gửi đi cho <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Miền <span class=\"notranslate\">%s</span> của bạn được phát hiện có vấn đề về cấu hình đối với quyền truy cập SMTP gửi đi.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Xác minh thiết lập</a></p>"
 }

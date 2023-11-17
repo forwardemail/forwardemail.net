@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "공급자가 TXT 레코드를 255자로 제한합니까? 여기를 클릭하세요.",
   "New DKIM public and private key pair generated.": "새로운 DKIM 공개 및 개인 키 쌍이 생성되었습니다.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "공급자가 255자를 초과하는 TXT 레코드를 지원합니까? 여기를 클릭하세요.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ")는 당사의 개인정보 보호정책을 존중했습니다. 스팸 스캐너는 완전 무료이며 오픈 소스입니다."
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ")는 당사의 개인정보 보호정책을 존중했습니다. 스팸 스캐너는 완전 무료이며 오픈 소스입니다.",
+  "Important Note:": "중요 사항:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Cloudflare에서 <span class=\"notranslate\">&quot;Proxy status&quot;</span> &quot;프록시됨&quot;이 <strong class=\"text-decoration-underline\">아닌</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> <span class=\"notranslate\">&quot;DNS only&quot;</span> &quot;으로 설정하세요.",
+  "Does your provider support 255+ character TXT records?": "귀하의 공급자는 255자 이상의 TXT 레코드를 지원합니까?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> 에 대한 아웃바운드 SMTP 구성 문제가 감지되었습니다.",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">귀하의 도메인 <span class=\"notranslate\">%s</span> 아웃바운드 SMTP 액세스에 대한 구성 문제가 감지되었습니다.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">설정 확인</a></p>"
 }

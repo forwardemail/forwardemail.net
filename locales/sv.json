@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Begränsar din leverantör TXT-poster till 255 tecken? Klicka här.",
   "New DKIM public and private key pair generated.": "Nytt DKIM publika och privata nyckelpar genereras.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Har din leverantör stöd för TXT-poster som är längre än 255 tecken? Klicka här.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") respekterade vår integritetspolicy. Spam Scanner är en helt gratis och öppen källkod"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") respekterade vår integritetspolicy. Spam Scanner är en helt gratis och öppen källkod",
+  "Important Note:": "Viktig notering:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Ställ in <span class=\"notranslate\">&quot;Proxy status&quot;</span> i Cloudflare till <span class=\"notranslate\">&quot;DNS only&quot;</span> och <strong class=\"text-decoration-underline\">inte</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Har din leverantör stöd för 255+ tecken TXT-poster?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Utgående SMTP-konfigurationsproblem upptäckt för <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Din domän <span class=\"notranslate\">%s</span> har ett konfigurationsproblem upptäckt för utgående SMTP-åtkomst.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Verifiera installationen</a></p>"
 }

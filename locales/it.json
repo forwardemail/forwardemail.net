@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Il tuo provider limita i record TXT a 255 caratteri? Clicca qui.",
   "New DKIM public and private key pair generated.": "Generata nuova coppia di chiavi pubblica e privata DKIM.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Il tuo provider supporta record TXT più lunghi di 255 caratteri? Clicca qui.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") ha onorato la nostra politica sulla privacy. Spam Scanner è completamente gratuito e open source"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") ha onorato la nostra politica sulla privacy. Spam Scanner è completamente gratuito e open source",
+  "Important Note:": "Nota importante:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Imposta lo <span class=\"notranslate\">&quot;Proxy status&quot;</span> in Cloudflare su <span class=\"notranslate\">&quot;DNS only&quot;</span> e <strong class=\"text-decoration-underline\">non su</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Il tuo provider supporta record TXT di oltre 255 caratteri?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Rilevato problema di configurazione SMTP in uscita per <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Nel tuo dominio <span class=\"notranslate\">%s</span> è stato rilevato un problema di configurazione per l&#39;accesso SMTP in uscita.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Verifica l&#39;impostazione</a></p>"
 }

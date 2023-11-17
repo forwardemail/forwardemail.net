@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Votre fournisseur limite-t-il les enregistrements TXT à 255 caractères ? Cliquez ici.",
   "New DKIM public and private key pair generated.": "Nouvelle paire de clés publique et privée DKIM générée.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Votre fournisseur prend-il en charge les enregistrements TXT de plus de 255 caractères ? Cliquez ici.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") a respecté notre politique de confidentialité. Spam Scanner est un logiciel entièrement gratuit et open source"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") a respecté notre politique de confidentialité. Spam Scanner est un logiciel entièrement gratuit et open source",
+  "Important Note:": "Note importante:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Définissez le <span class=\"notranslate\">&quot;Proxy status&quot;</span> dans Cloudflare sur <span class=\"notranslate\">&quot;DNS only&quot;</span> et <strong class=\"text-decoration-underline\">non</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Votre fournisseur prend-il en charge les enregistrements TXT de plus de 255 caractères ?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Problème de configuration SMTP sortant détecté pour <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Votre domaine <span class=\"notranslate\">%s</span> a un problème de configuration détecté pour l&#39;accès SMTP sortant.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Vérifier la configuration</a></p>"
 }

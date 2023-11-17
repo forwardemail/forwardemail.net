@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Sağlayıcınız TXT kayıtlarını 255 karakterle sınırlıyor mu? Buraya tıklayın.",
   "New DKIM public and private key pair generated.": "Yeni DKIM genel ve özel anahtar çifti oluşturuldu.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Sağlayıcınız 255 karakterden uzun TXT kayıtlarını destekliyor mu? Buraya tıklayın.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") gizlilik politikamızı onurlandırdı. Spam Tarayıcı tamamen ücretsiz ve açık kaynaklıdır"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") gizlilik politikamızı onurlandırdı. Spam Tarayıcı tamamen ücretsiz ve açık kaynaklıdır",
+  "Important Note:": "Önemli Not:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Cloudflare&#39;deki <span class=\"notranslate\">&quot;Proxy status&quot;</span> <span class=\"notranslate\">&quot;Proxied&quot;</span> olarak <strong class=\"text-decoration-underline\">değil</strong> &quot; <span class=\"notranslate\">&quot;DNS only&quot;</span> &quot; olarak ayarlayın.",
+  "Does your provider support 255+ character TXT records?": "Sağlayıcınız 255+ karakterli TXT kayıtlarını destekliyor mu?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> İçin Giden SMTP Yapılandırma Sorunu Algılandı",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\"><span class=\"notranslate\">%s</span> alan adınızda, giden SMTP erişimi için bir yapılandırma sorunu algılandı.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Kurulumu Doğrulayın</a></p>"
 }

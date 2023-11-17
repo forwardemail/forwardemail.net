@@ -5356,5 +5356,11 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Begrænser din udbyder TXT-poster til 255 tegn? Klik her.",
   "New DKIM public and private key pair generated.": "Nyt DKIM offentlige og private nøglepar genereret.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Understøtter din udbyder TXT-registreringer på mere end 255 tegn? Klik her.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") overholdt vores privatlivspolitik. Spam Scanner er en helt gratis og open source"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") overholdt vores privatlivspolitik. Spam Scanner er en helt gratis og open source",
+  "Important Note:": "Vigtig note:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Indstil <span class=\"notranslate\">&quot;Proxy status&quot;</span> i Cloudflare til <span class=\"notranslate\">&quot;DNS only&quot;</span> og <strong class=\"text-decoration-underline\">ikke</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Understøtter din udbyder 255+ tegn TXT-poster?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Udgående SMTP-konfigurationsproblem fundet for <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Dit domæne <span class=\"notranslate\">%s</span> har et konfigurationsproblem fundet for udgående SMTP-adgang.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Bekræft opsætning</a></p>",
+  "Make Admin": "Gør Admin"
 }

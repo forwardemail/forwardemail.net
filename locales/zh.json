@@ -5311,5 +5311,11 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "您的提供商是否将 TXT 记录限制为 255 个字符？点击这里。",
   "New DKIM public and private key pair generated.": "生成新的 DKIM 公钥和私钥对。",
   "Does your provider support TXT records longer than 255 characters? Click here.": "您的提供商是否支持长度超过 255 个字符的 TXT 记录？点击这里。",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": "）遵守我们的隐私政策。垃圾邮件扫描程序是一个完全免费且开源的"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": "）遵守我们的隐私政策。垃圾邮件扫描程序是一个完全免费且开源的",
+  "Important Note:": "重要的提示：",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "将 Cloudflare 中的<span class=\"notranslate\">&quot;Proxy status&quot;</span>设置为<span class=\"notranslate\">&quot;DNS only&quot;</span>而<strong class=\"text-decoration-underline\">不是</strong><span class=\"notranslate\">&quot;Proxied&quot;</span> 。",
+  "Does your provider support 255+ character TXT records?": "您的提供商是否支持 255 个以上字符的 TXT 记录？",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "检测到<span class=\"notranslate\">%s</span>的出站 SMTP 配置问题",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">您的域<span class=\"notranslate\">%s</span>检测到出站 SMTP 访问存在配置问题。</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">验证设置</a></p>",
+  "Make Admin": "设为管理员"
 }

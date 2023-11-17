@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "プロバイダーは TXT レコードを 255 文字に制限していますか?ここをクリック。",
   "New DKIM public and private key pair generated.": "新しい DKIM 公開キーと秘密キーのペアが生成されました。",
   "Does your provider support TXT records longer than 255 characters? Click here.": "プロバイダーは 255 文字を超える TXT レコードをサポートしていますか?ここをクリック。",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": "）当社のプライバシーポリシーを尊重しました。スパム スキャナーは完全に無料のオープンソースです"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": "）当社のプライバシーポリシーを尊重しました。スパム スキャナーは完全に無料のオープンソースです",
+  "Important Note:": "重要な注意点：",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Cloudflareの<span class=\"notranslate\">&quot;Proxy status&quot;</span> 「 <span class=\"notranslate\">&quot;Proxied&quot;</span>では<strong class=\"text-decoration-underline\">なく</strong>「 <span class=\"notranslate\">&quot;DNS only&quot;</span> 」に設定します。",
+  "Does your provider support 255+ character TXT records?": "プロバイダーは 255 文字以上の TXT レコードをサポートしていますか?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span>のアウトバウンド SMTP 構成の問題が検出されました",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">ドメイン<span class=\"notranslate\">%s</span>送信 SMTP アクセスに関する構成の問題が検出されました。</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">セットアップの確認</a></p>"
 }

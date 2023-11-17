@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "هل يقوم مزود الخدمة الخاص بك بتحديد سجلات TXT بـ 255 حرفًا؟ انقر هنا.",
   "New DKIM public and private key pair generated.": "تم إنشاء زوج مفاتيح عام وخاص جديد لـ DKIM.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "هل يدعم مزود الخدمة الخاص بك سجلات TXT التي يزيد طولها عن 255 حرفًا؟ انقر هنا.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") احترام سياسة الخصوصية لدينا. يعد برنامج Spam Scanner مجانيًا تمامًا ومفتوح المصدر"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") احترام سياسة الخصوصية لدينا. يعد برنامج Spam Scanner مجانيًا تمامًا ومفتوح المصدر",
+  "Important Note:": "ملاحظة مهمة:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "اضبط <span class=\"notranslate\">&quot;Proxy status&quot;</span> في Cloudflare على <span class=\"notranslate\">&quot;DNS only&quot;</span> <strong class=\"text-decoration-underline\">وليس</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "هل يدعم مزود الخدمة الخاص بك أكثر من 255 حرفًا من سجلات TXT؟",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "تم اكتشاف مشكلة في تكوين SMTP الصادر لـ <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\" style=\";text-align:right;direction:rtl\">تم اكتشاف مشكلة في تكوين الوصول إلى SMTP الصادر للمجال الخاص بك <span class=\"notranslate\">%s</span> .</p><p class=\"text-center mb-0\" style=\";text-align:right;direction:rtl\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">التحقق من الإعداد</a></p>"
 }

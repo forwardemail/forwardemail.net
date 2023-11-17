@@ -5465,5 +5465,11 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Rajoittaako palveluntarjoajasi TXT-tietueet 255 merkkiin? Klikkaa tästä.",
   "New DKIM public and private key pair generated.": "Uusi DKIM-julkinen ja yksityinen avainpari luotu.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Tukeeko palveluntarjoajasi yli 255 merkin pituisia TXT-tietueita? Klikkaa tästä.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") kunnioitti tietosuojakäytäntöämme. Spam Scanner on täysin ilmainen ja avoimen lähdekoodin ohjelma"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") kunnioitti tietosuojakäytäntöämme. Spam Scanner on täysin ilmainen ja avoimen lähdekoodin ohjelma",
+  "Important Note:": "Tärkeä muistiinpano:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Aseta <span class=\"notranslate\">&quot;Proxy status&quot;</span> Cloudflaressa arvoon <span class=\"notranslate\">&quot;DNS only&quot;</span> <strong class=\"text-decoration-underline\">äläkä</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Tukeeko palveluntarjoajasi yli 255 merkin TXT-tietueita?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Lähtevän SMTP-määritysongelma havaittu kohteelle <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Verkkotunnuksessasi <span class=\"notranslate\">%s</span> on havaittu lähtevän SMTP-käytön määritysongelma.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Tarkista asetukset</a></p>",
+  "Make Admin": "Nimeä ylläpitäjäksi"
 }

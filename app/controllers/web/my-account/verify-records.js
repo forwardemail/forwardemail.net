@@ -114,10 +114,10 @@ async function verifyRecords(ctx) {
       domain.has_txt_record = txt;
       domain.has_mx_record = mx;
       if (ns) domain.ns = ns;
-
-      // skip verification since we just verified it
-      domain.skip_verification = true;
     }
+
+    // skip verification since we just verified it
+    domain.skip_verification = true;
 
     // store when we last checked it
     domain.last_checked_at = new Date();

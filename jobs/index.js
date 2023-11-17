@@ -43,6 +43,11 @@ const jobs = [
     timeout: 0
   },
   {
+    name: 'check-smtp',
+    interval: '1h',
+    timeout: 0
+  },
+  {
     name: 'check-bad-domains',
     interval: '1h',
     timeout: 0

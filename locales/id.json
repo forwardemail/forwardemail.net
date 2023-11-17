@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "Apakah penyedia Anda membatasi data TXT hingga 255 karakter? Klik disini.",
   "New DKIM public and private key pair generated.": "Pasangan kunci publik dan pribadi DKIM baru telah dibuat.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "Apakah penyedia Anda mendukung data TXT yang panjangnya lebih dari 255 karakter? Klik disini.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") menghormati kebijakan privasi kami. Pemindai Spam sepenuhnya gratis dan bersumber terbuka"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") menghormati kebijakan privasi kami. Pemindai Spam sepenuhnya gratis dan bersumber terbuka",
+  "Important Note:": "Catatan penting:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "Setel <span class=\"notranslate\">&quot;Proxy status&quot;</span> di Cloudflare ke <span class=\"notranslate\">&quot;DNS only&quot;</span> dan <strong class=\"text-decoration-underline\">bukan</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "Apakah penyedia Anda mendukung data TXT 255+ karakter?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "Masalah Konfigurasi SMTP Keluar Terdeteksi untuk <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\">Domain Anda <span class=\"notranslate\">%s</span> mendeteksi masalah konfigurasi untuk akses SMTP keluar.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Verifikasi Pengaturan</a></p>"
 }

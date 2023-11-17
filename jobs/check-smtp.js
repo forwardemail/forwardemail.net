@@ -3,13 +3,40 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const Boom = require('@hapi/boom');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/env');
+
+const process = require('process');
+const { parentPort } = require('worker_threads');
+
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
+
+const Graceful = require('@ladjs/graceful');
+const Redis = require('@ladjs/redis');
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
+const pMapSeries = require('p-map-series');
+const sharedConfig = require('@ladjs/shared-config');
+const mongoose = require('mongoose');
 
 const Domains = require('#models/domains');
 const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
+const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
+
+const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
+const resolver = createTangerine(client, logger);
+
+const graceful = new Graceful({
+  mongooses: [mongoose],
+  redisClients: [client],
+  logger
+});
 
 // <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
 // <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
@@ -33,7 +60,8 @@ const DNS_RETRY_CODES = new Set([
   'ENOMEM',
   'ENONAME',
   // NOTE: ENOTFOUND indicates the domain doesn't exist
-  // 'ENOTFOUND',
+  //       (and we don't want to send emails to people that didn't even register it yet)
+  'ENOTFOUND',
   'ENOTIMP',
   'ENOTINITIALIZED',
   'EOF',
@@ -43,28 +71,50 @@ const DNS_RETRY_CODES = new Set([
   'ETIMEOUT'
 ]);
 
-// eslint-disable-next-line complexity
-async function verifySMTP(ctx) {
+// store boolean if the job is cancelled
+let isCancelled = false;
+
+// handle cancellation (this is a very simple example)
+if (parentPort)
+  parentPort.once('message', (message) => {
+    //
+    // TODO: once we can manipulate concurrency option to p-map
+    // we could make it `Number.MAX_VALUE` here to speed cancellation up
+    // <https://github.com/sindresorhus/p-map/issues/28>
+    //
+    if (message === 'cancel') isCancelled = true;
+  });
+
+graceful.listen();
+
+async function mapper(id) {
+  // return early if the job was already cancelled
+  if (isCancelled) return;
+
   try {
-    const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/verify-smtp`
-    );
-    const domain = await Domains.findById(ctx.state.domain._id);
-    if (!domain)
-      return ctx.throw(
-        Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-      );
+    const domain = await Domains.findById(id);
+
+    // it could have been deleted by the user mid-process
+    if (!domain) return;
+
+    // if the domain was checked since this job started
+    if (
+      _.isDate(domain.smtp_last_checked_at) &&
+      new Date(domain.smtp_last_checked_at).getTime() >=
+        dayjs().subtract(2, 'hour').toDate().getTime()
+    )
+      return;
 
     // get recipients and the majority favored locale
     const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(domain);
 
     // set locale of domain
-    domain.locale = ctx.locale;
-    domain.resolver = ctx.resolver;
+    domain.locale = locale;
+    domain.resolver = resolver;
 
     const { ns, dkim, returnPath, dmarc, errors } = await Domains.verifySMTP(
       domain,
-      ctx.resolver
+      resolver
     );
 
     // skip verification since this is separate from domain forwarding setup
@@ -85,15 +135,7 @@ async function verifySMTP(ctx) {
     if (hasDNSError) {
       // save the domain
       await domain.save();
-
-      const err = new Error(
-        errors.length === 1
-          ? errors[0]
-          : ctx.translate('MULTIPLE_VERIFICATION_ERRORS')
-      );
-      err.no_translate = true;
-      if (errors.length > 1) err.errors = errors;
-      throw err;
+      return;
     }
 
     const isVerified = dkim && returnPath && dmarc;
@@ -156,7 +198,6 @@ async function verifySMTP(ctx) {
           }
         });
         domain.smtp_verified_at = new Date();
-        if (!ctx.api) ctx.flash('success', message);
       }
     }
 
@@ -169,76 +210,79 @@ async function verifySMTP(ctx) {
     // save the domain
     await domain.save();
 
-    if (!isVerified) {
-      if (errors.length > 0) {
-        const err = new Error(
-          errors.length === 1
-            ? errors[0]
-            : ctx.translate('MULTIPLE_VERIFICATION_ERRORS')
-        );
-        err.no_translate = true;
-        if (errors.length > 1) err.errors = errors;
-        throw err;
-      }
-
-      // safeguard
-      ctx.logger.fatal(
-        new TypeError('Edge case occurred with SMTP verification'),
-        { domain, ns, dkim, returnPath, dmarc, errors }
-      );
-      throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
-    }
-
-    let extra;
-    if (errors.length > 0) {
-      extra =
-        errors.length === 1
-          ? errors[0].message
-          : `<ul class="text-left mb-0">${errors
-              .map(
-                (e) => `<li class="mb-3">${e && e.message ? e.message : e}</li>`
-              )
-              .join('')}</ul>`;
-      if (!ctx.api) ctx.flash('warning', extra);
-    }
-
-    const text = ctx.translate('EMAIL_SMTP_IS_VERIFIED');
-
-    if (ctx.api) {
-      const response = [text];
-      if (extra) response.push(extra);
-      ctx.body = response.join(' ');
-      return;
-    }
-
-    // if everything OK then success
-    ctx.flash('custom', {
-      title: ctx.request.t('Success'),
-      text,
-      type: 'success',
-      toast: true,
-      showConfirmButton: false,
-      timer: 3000,
-      position: 'top'
-    });
-
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
+    //
+    // TODO: store historical checks (so we can evaluate Cloudflare accuracy)
+    // TODO: if the last 3 historical checks failed in a
+    //       row failed including this one then send an email alert
+    //
   } catch (err) {
-    ctx.logger.warn(err);
-
-    if (Array.isArray(err.errors)) {
-      if (ctx.api) {
-        err.message = err.errors.map((e) => e.message);
-      } else {
-        err.message = `<ul class="text-left mb-0">${err.errors
-          .map((e) => `<li class="mb-3">${e && e.message ? e.message : e}</li>`)
-          .join('')}</ul>`;
-      }
-    }
-
-    ctx.throw(Boom.badRequest(err.message));
+    logger.warn(err);
   }
 }
 
-module.exports = verifySMTP;
+(async () => {
+  await setupMongoose(logger);
+
+  try {
+    //
+    // TODO: in the future when we integrate historical checks
+    //       and routine checking (e.g. 3 in a row fail)
+    //       then we will need to modify this query
+    //
+    // get all non-API created domains (sorted by last_checked_at)
+    const results = await Domains.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              plan: {
+                $ne: 'free'
+              }
+            },
+            {
+              $or: [
+                {
+                  smtp_last_checked_at: {
+                    $exists: false
+                  }
+                },
+                {
+                  smtp_last_checked_at: {
+                    $lte: dayjs().subtract(2, 'hour').toDate()
+                  }
+                },
+                {
+                  smtp_verified_at: {
+                    $exists: false
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        $sort: {
+          smtp_last_checked_at: 1
+        }
+      },
+      {
+        $group: {
+          _id: '$_id'
+        }
+      }
+    ]);
+
+    // flatten array
+    const ids = results.map((r) => r._id);
+
+    logger.info('checking domains', { count: ids.length });
+
+    await pMapSeries(ids, mapper);
+  } catch (err) {
+    await logger.error(err);
+  }
+
+  if (parentPort) parentPort.postMessage('done');
+  else process.exit(0);
+})();

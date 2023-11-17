@@ -5620,5 +5620,10 @@
   "Does your provider limit TXT records to 255 characters? Click here.": "האם הספק שלך מגביל את רשומות ה-TXT ל-255 תווים? לחץ כאן.",
   "New DKIM public and private key pair generated.": "נוצר זוג מפתחות DKIM ציבורי ופרטי חדש.",
   "Does your provider support TXT records longer than 255 characters? Click here.": "האם הספק שלך תומך ברשומות TXT ארוכות מ-255 תווים? לחץ כאן.",
-  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") כיבד את מדיניות הפרטיות שלנו. סורק דואר זבל הוא קוד פתוח לגמרי בחינם"
+  ") honored our privacy policy. Spam Scanner is a completely free and open-source": ") כיבד את מדיניות הפרטיות שלנו. סורק דואר זבל הוא קוד פתוח לגמרי בחינם",
+  "Important Note:": "הערה חשובה:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "הגדר את <span class=\"notranslate\">&quot;Proxy status&quot;</span> ב-Cloudflare ל <span class=\"notranslate\">&quot;DNS only&quot;</span> <strong class=\"text-decoration-underline\">ולא</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Does your provider support 255+ character TXT records?": "האם הספק שלך תומך ברשומות TXT של יותר מ-255 תווים?",
+  "Outbound SMTP Configuration Issue Detected for <span class=\"notranslate\">%s</span>": "זוהתה בעיית תצורת SMTP יוצאת עבור <span class=\"notranslate\">%s</span>",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Verify Setup</a></p>": "<p class=\"text-center\" style=\";text-align:right;direction:rtl\">בדומיין שלך <span class=\"notranslate\">%s</span> זוהתה בעיית תצורה עבור גישת SMTP יוצאת.</p><p class=\"text-center mb-0\" style=\";text-align:right;direction:rtl\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">אמת את ההגדרה</a></p>"
 }
