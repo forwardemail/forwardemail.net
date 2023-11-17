@@ -140,7 +140,7 @@ block body
             div= t("Privacy-focused encrypted email for marketing.")
             div= t("Privacy-focused encrypted email for sales.")
             div= t("Privacy-focused encrypted email for you.")
-        .col-12(class=["en"].includes(locale) ? "col-lg-6" : "col-lg-9")
+        .col-12(class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9")
           h1#typed-home-header.mb-3
             span#typed-home
               if isBot(ctx.get("User-Agent"))

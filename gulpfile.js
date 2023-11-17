@@ -366,8 +366,11 @@ function css() {
             'pre',
             'text-danger',
             'text-left',
+            'col-lg-6',
+            'col-lg-8',
             'col-lg-9',
-            'col-lg-6'
+            'col-md-9',
+            'col-xl-6'
           ])
         ]
       }),

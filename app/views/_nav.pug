@@ -150,10 +150,20 @@ nav.navbar.navbar-expand-lg.fixed-top(
             )
               = t("Upgrade")
 
+        //- Pricing
+        - let hasPricingLink = false;
+        if !isBot(ctx.get('User-Agent')) && (!user || user.plan === 'free')
+          - hasPricingLink = true
+          li.nav-item
+            a.btn.btn-link.d-block.text-left(
+              href=l('/private-business-email?pricing=true'),
+              class=ctx.pathWithoutLocale === '/private-business-email'  ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+            )= t("Pricing")
+
         //- Resources
         - const resourcePages = ["/encrypted-email", "/private-business-email", "/faq", "/help", "/disposable-addresses", "/report-abuse"];
         - const companyPages = ["/about", "/privacy", "/terms"];
-        - const isResourcesPage = ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale);
+        - const isResourcesPage = (ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale)) && !hasPricingLink;
         li.nav-item.dropdown.no-js
           form.mb-0
             a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(

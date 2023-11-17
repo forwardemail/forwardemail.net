@@ -76,6 +76,8 @@ const pbkdf2 = require('./pbkdf2');
 const createPassword = require('./create-password');
 const Indexer = require('./indexer');
 const getQueryResponse = require('./get-query-response');
+const parsePayload = require('./parse-payload');
+const wspServer = require('./wsp-server');
 
 module.exports = {
   decrypt,
@@ -151,5 +153,7 @@ module.exports = {
   pbkdf2,
   createPassword,
   Indexer,
-  getQueryResponse
+  getQueryResponse,
+  parsePayload,
+  wspServer
 };

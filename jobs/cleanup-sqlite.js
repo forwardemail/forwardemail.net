@@ -24,10 +24,10 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const Aliases = require('#models/aliases');
 const config = require('#config');
-const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
+const wspServer = require('#helpers/wsp-server');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
@@ -36,14 +36,8 @@ const tmpdir = os.tmpdir();
 const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [client],
-  logger,
-  customHandlers: [
-    // <https://github.com/vitalets/websocket-as-promised#wspclosecode-reason--promiseevent>
-    () => wsp.close()
-  ]
+  logger
 });
-
-const wsp = createWebSocketAsPromised();
 
 // store boolean if the job is cancelled
 let isCancelled = false;
@@ -183,7 +177,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       await Promise.all(
         [...ids].map(async (id) => {
           try {
-            await wsp.request({
+            await wspServer.request({
               action: 'size',
               timeout: ms('5s'),
               alias_id: id

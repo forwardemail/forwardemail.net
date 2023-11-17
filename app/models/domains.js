@@ -972,8 +972,6 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
       }
     ];
 
-    console.log('PURGING', records);
-
     try {
       await pMap(
         records,
