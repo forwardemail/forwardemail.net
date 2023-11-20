@@ -12,9 +12,18 @@
   name: Bree
   become: true
   become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ lookup('env', 'BREE_HOST') }}"
   roles:
     # https://github.com/holms/ansible-fqdn
     - role: fqdn
+      fqdn: "{{ lookup('env', 'BREE_HOST') }}"
+- hosts: bree
+  name: Bree
+  become: true
+  become_user: root
   tasks:
     # ufw
     - name: Enable ufw
