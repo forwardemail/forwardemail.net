@@ -153,7 +153,7 @@ async function getTemporaryDatabase(payload) {
   try {
     await releaseLock(this, tmpDb, lock);
   } catch (err) {
-    logger.fatal(err);
+    logger.fatal(err, { payload });
   }
 
   return tmpDb;
@@ -375,14 +375,14 @@ async function parsePayload(data, ws) {
                   alias_id: payload.session.user.alias_id
                 });
               } catch (err) {
-                this.logger.fatal(err);
+                this.logger.fatal(err, { payload });
               }
             } catch (err) {
-              logger.fatal(err);
+              logger.fatal(err, { payload });
             }
           }
         } catch (err) {
-          logger.fatal(err);
+          logger.fatal(err, { payload });
         }
 
         tmpDb.close();
@@ -508,7 +508,7 @@ async function parsePayload(data, ws) {
                     storageUsed
                   )} storage used`
                 );
-                logger.fatal(err); // send alert to admins
+                logger.fatal(err, { payload }); // send alert to admins
                 throw new SMTPError(
                   i18n.translate(
                     'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
@@ -532,7 +532,7 @@ async function parsePayload(data, ws) {
                     storageUsed
                   )} storage used`
                 );
-                logger.fatal(err); // send alert to admins
+                logger.fatal(err, { payload }); // send alert to admins
                 throw new SMTPError(
                   i18n.translate(
                     'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
@@ -590,44 +590,54 @@ async function parsePayload(data, ws) {
                 if (isFQDN(sender)) {
                   if (config.truthSources.has(sender)) {
                     // 1) Senders that we consider to be "trusted" as a source of truth
-                    if (size >= bytes('100GB'))
-                      throw new SMTPError(
+                    if (size >= bytes('100GB')) {
+                      const err = new SMTPError(
                         `${sender} limited to 100 GB with current of ${prettyBytes(
                           size
                         )} from ${count} messages`,
                         { responseCode: 421 }
                       );
+                      err.payload = payload;
+                      throw err;
+                    }
                   } else {
                     const isAllowlisted = await this.client.get(
                       `allowlist:${sender}`
                     );
                     if (boolean(isAllowlisted)) {
                       // 2) Senders that are allowlisted are limited to sending 10 GB per day.
-                      if (size >= bytes('10GB'))
-                        throw new SMTPError(
+                      if (size >= bytes('10GB')) {
+                        const err = new SMTPError(
                           `${sender} limited to 10 GB with current of ${prettyBytes(
                             size
                           )} from ${count} messages`,
                           { responseCode: 421 }
                         );
+                        err.payload = payload;
+                        throw err;
+                      }
                       // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
                     } else if (size >= bytes('1GB') || count >= 300) {
-                      throw new SMTPError(
+                      const err = new SMTPError(
                         `#3 ${sender} limited with current of ${prettyBytes(
                           size
                         )} from ${count} messages`,
                         { responseCode: 421 }
                       );
+                      err.payload = payload;
+                      throw err;
                     }
                   }
                 } else if (size >= bytes('1GB') || count >= 300) {
                   // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
-                  throw new SMTPError(
+                  const err = new SMTPError(
                     `#3 ${sender} limited with current of ${prettyBytes(
                       size
                     )} from ${count} messages`,
                     { responseCode: 421 }
                   );
+                  err.payload = payload;
+                  throw err;
                 }
 
                 // 4) We have a specific limit per Sender and yourdomain.com of 1 GB and/or 1000 messages daily.
@@ -642,8 +652,8 @@ async function parsePayload(data, ws) {
                   })
                 );
 
-                if (specific.size >= bytes('1GB') || specific.count >= 1000)
-                  throw new SMTPError(
+                if (specific.size >= bytes('1GB') || specific.count >= 1000) {
+                  const err = new SMTPError(
                     `${sender} limited with current of ${prettyBytes(
                       specific.size
                     )} from ${specific.count} messages to ${root}`,
@@ -651,6 +661,9 @@ async function parsePayload(data, ws) {
                       responseCode: 421
                     }
                   );
+                  err.payload = payload;
+                  throw err;
+                }
               }
 
               // check that we have available space
@@ -720,10 +733,10 @@ async function parsePayload(data, ws) {
                     byteLength
                   );
                 } catch (err) {
-                  logger.fatal(err);
+                  logger.fatal(err, { payload });
                 }
               } catch (err) {
-                logger.error(err);
+                logger.error(err, { payload });
               }
 
               //
@@ -753,7 +766,7 @@ async function parsePayload(data, ws) {
                       alias_id: alias.id
                     });
                   } catch (err) {
-                    logger.fatal(err);
+                    logger.fatal(err, { payload });
                   }
 
                   //
@@ -768,7 +781,7 @@ async function parsePayload(data, ws) {
                       byteLength
                     );
                   } catch (err) {
-                    logger.fatal(err);
+                    logger.fatal(err, { payload });
                   }
                 } catch (_err) {
                   err = _err;
@@ -778,7 +791,7 @@ async function parsePayload(data, ws) {
                 if (err) throw err;
               }
             } catch (err) {
-              logger.error(err);
+              logger.error(err, { payload });
               err.isCodeBug = isCodeBug(err);
               errors[`${obj.address}`] =
                 !ws || typeof ws.send !== 'function' ? err : parseErr(err);
@@ -845,7 +858,7 @@ async function parsePayload(data, ws) {
             alias_id: payload.session.user.alias_id
           });
         } catch (err) {
-          this.logger.fatal(err);
+          this.logger.fatal(err, { payload });
         }
 
         break;
@@ -1092,7 +1105,7 @@ async function parsePayload(data, ws) {
           try {
             await fs.promises.unlink(tmp);
           } catch (err) {
-            logger.fatal(err);
+            logger.fatal(err, { payload });
           }
         }
 
@@ -1134,7 +1147,7 @@ async function parsePayload(data, ws) {
         try {
           await fs.promises.unlink(storagePath);
         } catch (err) {
-          logger.fatal(err);
+          logger.fatal(err, { payload });
         }
 
         const databases = await getDatabase(
@@ -1318,7 +1331,7 @@ async function parsePayload(data, ws) {
           try {
             await fs.promises.unlink(tmp);
           } catch (err) {
-            logger.fatal(err);
+            logger.fatal(err, { payload });
           }
         }
 
@@ -1329,7 +1342,7 @@ async function parsePayload(data, ws) {
             if (!result.success)
               throw i18n.translateError('IMAP_RELEASE_LOCK_FAILED');
           } catch (err) {
-            logger.fatal(err);
+            logger.fatal(err, { payload });
           }
         }
 
@@ -1353,7 +1366,7 @@ async function parsePayload(data, ws) {
           if (!result.success)
             throw i18n.translateError('IMAP_RELEASE_LOCK_FAILED');
         })
-        .catch((err) => logger.fatal(err));
+        .catch((err) => logger.fatal(err, { payload }));
     }
 
     if (db && db.open && typeof db.close === 'function') db.close();
@@ -1371,12 +1384,12 @@ async function parsePayload(data, ws) {
     err.data = data.toString();
     // at least early on we should get errors in advance
     err.isCodeBug = true;
-    logger.fatal(err);
+    logger.fatal(err, { payload });
 
     if (lock) {
       releaseLock(this, db, lock)
         .then()
-        .catch((err) => logger.fatal(err));
+        .catch((err) => logger.fatal(err, { payload }));
     }
 
     if (db && db.open && typeof db.close === 'function') db.close();
