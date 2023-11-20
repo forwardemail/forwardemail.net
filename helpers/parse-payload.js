@@ -16,6 +16,7 @@ const bytes = require('bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
 const hasha = require('hasha');
+const ip = require('ip');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -59,6 +60,8 @@ const onAppendPromise = pify(onAppend);
 const concurrency = os.cpus().length;
 
 const AFFIXES = ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm'];
+
+const IP_ADDRESS = ip.address();
 
 const PAYLOAD_ACTIONS = new Set([
   'sync',
@@ -555,8 +558,9 @@ async function parsePayload(data, ws) {
                 const [clientHostname] = await this.resolver.reverse(
                   payload.remoteAddress
                 );
-                if (isFQDN(clientHostname))
+                if (isFQDN(clientHostname)) {
                   sender = parseRootDomain(clientHostname);
+                }
               } catch (err) {
                 logger.warn(err);
               }
@@ -564,7 +568,10 @@ async function parsePayload(data, ws) {
               // don't rate limit our own servers
               const date = new Date().toISOString().split('T')[0];
               const root = parseRootDomain(alias.domain.name);
-              if (sender !== env.WEB_HOST) {
+              if (
+                payload.remoteAddress !== IP_ADDRESS &&
+                sender !== env.WEB_HOST
+              ) {
                 //
                 // TODO: this rate limiting logic needs to get moved to the MX server
                 //       (but we should keep parity with key names and such)
