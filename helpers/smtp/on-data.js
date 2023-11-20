@@ -71,6 +71,7 @@ async function onData(stream, _session, fn) {
     //
 
     let alias;
+    let isValid = false;
     if (session.user.alias_id) {
       alias = await Aliases.findOne({ id: session.user.alias_id })
         .populate(
@@ -88,19 +89,10 @@ async function onData(stream, _session, fn) {
       validateAlias(alias, session.user.domain_name, session.user.alias_name);
 
       // ensure the token is still valid
-      let isValid = false;
       if (Array.isArray(alias.tokens) && alias.tokens.length > 0)
         isValid = await isValidPassword(
           alias.tokens,
           decrypt(session.user.password)
-        );
-      if (!isValid)
-        throw new SMTPError(
-          `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
-          {
-            responseCode: 535
-            // ignoreHook: true
-          }
         );
     }
 
@@ -122,6 +114,25 @@ async function onData(stream, _session, fn) {
 
     // validate domain
     validateDomain(domain, session.user.domain_name);
+
+    //
+    // NOTE: this is only applicable to SMTP servers (outbound mail)
+    //       we allow users to use a generated token for the domain
+    //
+    if (!isValid && Array.isArray(domain.tokens) && domain.tokens.length > 0)
+      isValid = await isValidPassword(
+        domain.tokens,
+        decrypt(session.user.password)
+      );
+
+    if (!isValid)
+      throw new SMTPError(
+        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
+        {
+          responseCode: 535
+          // ignoreHook: true
+        }
+      );
 
     //
     // NOTE: if the domain is suspended then the state is "pending" not queued
