@@ -47,6 +47,16 @@ const jobs = [
     interval: '1h',
     timeout: 0
   },
+  // this job runs every 5m to check for emails
+  // that have a date that differs from created_at by more than 1m
+  // and it alerts the user of this once a month as a safeguard
+  // (e.g. in case they have local clock set wrong or not using ntp)
+  // (e.g. someone using a printer/scanner to send an email)
+  {
+    name: 'check-scheduled-send',
+    interval: '5m',
+    timeout: 0
+  },
   {
     name: 'check-bad-domains',
     interval: '1h',

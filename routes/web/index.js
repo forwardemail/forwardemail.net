@@ -294,6 +294,14 @@ for (const platform of platforms) {
     },
     render('open-source')
   );
+  localeRouter.get(
+    `/open-source/${dashify(platform)}-email-clients`,
+    (ctx, next) => {
+      ctx.state.platform = platform;
+      return next();
+    },
+    render('open-source')
+  );
 }
 
 // YouTube warns "site may be harmful" if it has a dot extension

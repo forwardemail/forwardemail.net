@@ -12,7 +12,8 @@ ul.list-unstyled.text-left.mb-3
       href=l("/encrypted-email"),
       role="button",
       data-toggle="modal",
-      data-target="#modal-storage"
+      data-target="#modal-storage",
+      title=striptags(t(config.meta["/encrypted-email"][0]))
     )
       if isBot(ctx.get('User-Agent'))
         = t("Encrypted Email")
@@ -42,11 +43,81 @@ ul.list-unstyled.text-left.mb-3
     = t("Supports")
     = " "
     ul.list-inline.d-inline.lead.mb-0
-      li.list-inline-item.mr-1: span.badge.badge-dark= "Apple"
-      li.list-inline-item.mr-1: span.badge.badge-dark= "Microsoft"
-      li.list-inline-item.mr-1: span.badge.badge-dark= "Google"
-      li.list-inline-item.mr-1: span.badge.badge-dark= "Thunderbird"
-      li.list-inline-item: span.badge.badge-dark= "Android"
+      //- Apple
+      li.list-inline-item.mr-1
+        a.badge.badge-dark(
+          href=l("/open-source/apple-email-clients"),
+          title=striptags(t(config.meta["/open-source/apple-email-clients"][0]))
+        )
+          //- apple doesn't let you use logo
+          = "Apple"
+          != "&reg;"
+      //- Windows
+      li.list-inline-item.mr-1
+        a.badge.badge-dark(
+          href=l("/open-source/windows-email-clients"),
+          title=striptags(t(config.meta["/open-source/windows-email-clients"][0]))
+        )
+          = "Windows"
+          != "&reg;"
+      //- Android
+      li.list-inline-item.mr-1
+        a.badge.badge-dark(
+          href=l("/open-source/android-email-clients"),
+          title=striptags(t(config.meta["/open-source/android-email-clients"][0]))
+        )
+          i.fa-fw.fab.fa-android
+          = " "
+          = "Android"
+          != "&trade;"
+      //- Linux
+      li.list-inline-item.mr-1
+        a.badge.badge-dark(
+          href=l("/open-source/linux-email-clients"),
+          title=striptags(t(config.meta["/open-source/linux-email-clients"][0]))
+        )
+          i.fa-fw.fab.fa-linux
+          = " "
+          = "Linux"
+          != "&reg;"
+      //- Desktop
+      li.list-inline-item.mr-1
+        a.badge.badge-dark(
+          href=l("/open-source/desktop-email-clients"),
+          title=striptags(t(config.meta["/open-source/desktop-email-clients"][0]))
+        )
+          i.fa-fw.fas.fa-desktop
+          = " "
+          = "Desktop"
+      //- Web
+      li.list-inline-item.mr-1
+        a.badge.badge-dark(
+          href=l("/open-source/web-email-clients"),
+          title=striptags(t(config.meta["/open-source/web-email-clients"][0]))
+        )
+          if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
+            i.fab.fa-fw.fa-firefox-browser
+            = " "
+            = "Firefox"
+            != "&reg;"
+          else if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Safari") && !ctx.get("User-Agent").includes("Chrome")
+            = " "
+            = "Safari"
+            != "&reg;"
+          else
+            i.fab.fa-fw.fa-chrome
+            = " "
+            = "Chrome"
+            != "&reg;"
+      //- Terminal
+      li.list-inline-item.mr-1
+        a.badge.badge-dark(
+          href=l("/open-source/terminal-email-clients"),
+          title=striptags(t(config.meta["/open-source/terminal-email-clients"][0]))
+        )
+          i.fa-fw.fas.fa-terminal
+          = " "
+          = "Terminal"
     //-.
       = ": "
       ul.list-inline.d-inline.lead.mb-0(style='max-width:400px')

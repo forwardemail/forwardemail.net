@@ -118,19 +118,23 @@ block body
               data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
             )
   .min-vh-100.d-flex.flex-column(
+    data-ignore-hash-change,
     id=!isPDF && (ctx.pathWithoutLocale === "/" || ctx.pathWithoutLocale === "/private-business-email") && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
     class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
   )
     - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
     if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email') && !isBot(ctx.get('User-Agent')))
-      #stars.user-select-none
+      #stars.user-select-none(data-ignore-hash-change)
       if !isSafari
-        #rocket.user-select-none
-      #waving.user-select-none(class=isSafari ? "" : "floating-animation")
+        #rocket.user-select-none(data-ignore-hash-change)
+      #waving.user-select-none(
+        class=isSafari ? "" : "floating-animation",
+        data-ignore-hash-change
+      )
     .container.my-auto.pt-5
       .row
         if !isBot(ctx.get("User-Agent"))
-          #typed-home-strings.d-none
+          #typed-home-strings.d-none(data-ignore-hash-change)
             div= t("Privacy-focused encrypted email for enterprise.")
             div= t("Privacy-focused encrypted email for education.")
             div= t("Privacy-focused encrypted email for startups.")
@@ -140,14 +144,16 @@ block body
             div= t("Privacy-focused encrypted email for marketing.")
             div= t("Privacy-focused encrypted email for sales.")
             div= t("Privacy-focused encrypted email for you.")
-        .col-12(class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9")
-          h1#typed-home-header.mb-3
-            span#typed-home
+        .col-12(
+          class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
+        )
+          h1#typed-home-header.mb-3(data-ignore-hash-change)
+            span#typed-home(data-ignore-hash-change)
               if isBot(ctx.get("User-Agent"))
                 = t("Free, private, and secure email for custom domains.")
               else
                 = t("Privacy-focused encrypted email for everyone.")
-          p.d-none.d-md-block
+          p(class=isBot(ctx.get("User-Agent")) ? "" : "d-none d-md-block")
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
             = " "
             != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with your custom domain or use one of ours!')
@@ -161,9 +167,10 @@ block body
             include _feature-list
           ul.list-inline
             li.list-inline-item.d-block.d-md-inline
-              a.btn.btn-outline-light.mb-3(
+              a.btn.mb-3(
                 class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-outline-light",
-                href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true")
+                href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true"),
+                title=striptags(t(config.meta["/private-business-email"][0]))
               )
                 i.fa.fa-fw.fa-layer-group
                 = " "
@@ -178,7 +185,7 @@ block body
                 )
                   i.fab.fa-youtube.text-danger
                   = " "
-                  = t("Product Tour")
+                  = t("Email Software Product Tour")
               else
                 a.btn.btn-outline-light.mb-3(
                   role="button",
@@ -197,7 +204,7 @@ block body
                 a.btn.btn-dark.mb-3(href=l("/docs"))
                   i.fa.fa-code
                   = " "
-                  = t("Developers")
+                  = t("Transactional Email API for Developers")
               else
                 a.btn.btn-outline-light.mb-3(href=l("/docs"))
                   i.fa.fa-code
@@ -212,7 +219,8 @@ block body
       = " "
       i.fa.fa-angle-double-down
   #testimonials.bg-fixed.border-md-top.border-themed.lazyload(
-    data-src=manifest("img/art/postcard.svg")
+    data-src=manifest("img/art/postcard.svg"),
+    data-ignore-hash-change
   )
     .text-center.d-block.d-md-none.mt-3
       .h2.display-3.mb-1.text-danger
@@ -446,7 +454,7 @@ block body
         .col-12
           h2.display-5.font-weight-bold.text-white.mb-3.text-center.text-uppercase= t("Unlimited email aliases")
           if isBot(ctx.get('User-Agent'))
-            a.btn.btn-lg.btn-light(
+            a.btn.btn-lg.btn-light.btn-block(
               href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
               target="_blank",
               rel="noopener noreferrer"
@@ -463,7 +471,7 @@ block body
             )
   .border-top.border-bottom.py-3.py-md-4.py-lg-5.d-block.bg-light.bg-themed
     .container
-      .row.text-center.d-block.mb-5
+      .row.text-center.d-block.mb-3.mb-md-5
         .h2.display-3.mb-1.text-danger
           i.fab.fa-youtube
         .h1!= t("Made for you")
@@ -631,7 +639,9 @@ block body
               = t("Configure your inbox")
               = " "
               i.fa.fa-angle-double-right.align-middle
-  #enterprise-grade.bg-dark.py-3.py-md-5.d-block.overflow-hidden
+  #enterprise-grade.bg-dark.py-3.py-md-5.d-block.overflow-hidden(
+    data-ignore-hash-change
+  )
     .container
       .row
         .col-12

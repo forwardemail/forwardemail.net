@@ -66,10 +66,12 @@ block body
   .container.pt-5.text-center(id=providerId)
     .row
       .col-12
-        h1
+        h1!= meta.title
+        //-.
           = provider.name
           = " "
           = t("Email Setup Guide")
+        //- p!= meta.description
         p!= t("Follow the steps below to setup free email forwarding and send/receive email with <span class='notranslate'>%s</span>.", provider.name)
         include ../_author
     if provider && provider.video
@@ -193,10 +195,11 @@ block body
                   i.fa.fa-refresh
                   = " "
                   = t("Verify")
-              .d-block.d-md-none.my-3.text-muted.small
-                = "("
-                = t("Scroll to the right to see entire table")
-                = ")"
+              if !isBot(ctx.get("User-Agent"))
+                .d-block.d-md-none.my-3.text-muted.small
+                  = "("
+                  = t("Scroll to the right to see entire table")
+                  = ")"
             .table-responsive.mb-3
               table.table.table-hover.table-sm.mb-0
                 thead
@@ -208,7 +211,7 @@ block body
                         = "Name/Host/Alias"
                     th.border-0.align-middle Type
                     th.border-0.align-middle Priority
-                    th.border-0.align-middle(
+                    th.border-0.align-middle.text-left(
                       class=isBot(ctx.get("User-Agent")) ? "" : "text-left"
                     )
                       if isBot(ctx.get("User-Agent"))

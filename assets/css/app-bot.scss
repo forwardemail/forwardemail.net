@@ -65,6 +65,9 @@ $question: theme-color('light');
 // <https://github.com/vb/lazyframe>
 @import 'node_modules/lazyframe/src/scss/lazyframe';
 
+// ekko-lightbox
+@import 'node_modules/ekko-lightbox/dist/ekko-lightbox';
+
 // markdown
 @import 'markdown';
 
@@ -85,3 +88,27 @@ $question: theme-color('light');
 
 // custom app styling
 @import 'custom';
+
+.bot-detected {
+  @media (prefers-color-scheme: light) {
+    @include media-breakpoint-up(md) {
+      .bg-fixed {
+        background-color: transparent !important;
+        background-image: none !important;
+      }
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    @include media-breakpoint-up(md) {
+      .bg-fixed {
+        background-color: transparent !important;
+        background-image: none !important;
+      }
+    }
+  }
+
+  body.app {
+    padding-top: 0 !important;
+  }
+}

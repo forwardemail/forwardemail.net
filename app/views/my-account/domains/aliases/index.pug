@@ -75,16 +75,85 @@ block body
             span(aria-hidden="true") &times;
         .modal-body.text-center
           h2.h4= t("Our service works with popular email clients:")
-          ul.list-inline.h3.mb-0
-            li.list-inline-item.mr-1: span.badge.badge-dark= "Apple"
-            li.list-inline-item.mr-1: span.badge.badge-dark= "Microsoft"
-            li.list-inline-item.mr-1: span.badge.badge-dark= "Google"
-            li.list-inline-item.mr-1: span.badge.badge-dark= "Thunderbird"
-            li.list-inline-item.mr-1: span.badge.badge-dark= "Android"
-            li.list-inline-item: span.badge.badge-secondary= "and more"
+          ul.list-inline.d-inline.lead.mb-0
+            //- Apple
+            li.list-inline-item.mr-1
+              a.badge.badge-dark(
+                href=l("/open-source/apple-email-clients"),
+                target="_blank"
+              )
+                = "Apple"
+                != "&reg;"
+            //- Windows
+            li.list-inline-item.mr-1
+              a.badge.badge-dark(
+                href=l("/open-source/windows-email-clients"),
+                target="_blank"
+              )
+                = "Windows"
+                != "&reg;"
+            //- Android
+            li.list-inline-item.mr-1
+              a.badge.badge-dark(
+                href=l("/open-source/android-email-clients"),
+                target="_blank"
+              )
+                i.fa-fw.fab.fa-android
+                = " "
+                = "Android"
+                != "&trade;"
+            //- Linux
+            li.list-inline-item.mr-1
+              a.badge.badge-dark(
+                href=l("/open-source/linux-email-clients"),
+                target="_blank"
+              )
+                i.fa-fw.fab.fa-linux
+                = " "
+                = "Linux"
+                != "&reg;"
+            //- Desktop
+            li.list-inline-item.mr-1
+              a.badge.badge-dark(
+                href=l("/open-source/desktop-email-clients"),
+                target="_blank"
+              )
+                i.fa-fw.fas.fa-desktop
+                = " "
+                = "Desktop"
+            //- Web
+            li.list-inline-item.mr-1
+              a.badge.badge-dark(
+                href=l("/open-source/web-email-clients"),
+                target="_blank"
+              )
+                if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
+                  i.fab.fa-fw.fa-firefox-browser
+                  = " "
+                  = "Firefox"
+                  != "&reg;"
+                else if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Safari") && !ctx.get("User-Agent").includes("Chrome")
+                  = " "
+                  = "Safari"
+                  != "&reg;"
+                else
+                  i.fab.fa-fw.fa-chrome
+                  = " "
+                  = "Chrome"
+                  != "&reg;"
+            //- Terminal
+            li.list-inline-item
+              a.badge.badge-dark(
+                href=l("/open-source/terminal-email-clients"),
+                target="_blank"
+              )
+                i.fa-fw.fas.fa-terminal
+                = " "
+                = "Terminal"
           hr
           h2.h4= t("What should I use for my email client settings?")
           .alert.alert-primary.small!= t('Your username is your alias\' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").')
+          .alert.alert-warning.small!= t('If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".')
           table.table.table-hover.table-bordered.table-sm.mb-0
             thead.thead-dark
               tr

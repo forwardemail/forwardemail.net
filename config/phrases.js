@@ -20,6 +20,10 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  SCHEDULED_SEND_SUBJECT:
+    'Did you mean to use scheduled sending? (<span class="notranslate">%d</span> minute(s) delay detected)',
+  SCHEDULED_SEND_MESSAGE:
+    'Our servers detected that one or more emails you queued for outbound SMTP have a "Date" header time difference of <span class="notranslate">%d</span> minute(s).  This means that these emails will not be sent until this time period has elapsed.  If this is not intended, then you may need to check your time and date settings on your device that is queueing emails.  We recommend that you use <a href="https://developers.cloudflare.com/time-services/ntp/usage/" target="_blank" rel="noopener noreferrer">Cloudflare\'s Time Service</a> as your NTP provider if possible.',
   STORAGE_THRESHOLD_SUBJECT:
     'You have used <span class="notranslate">%d</span>% of your storage quota',
   STORAGE_THRESHOLD_MESSAGE:

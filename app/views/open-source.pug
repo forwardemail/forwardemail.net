@@ -1,80 +1,361 @@
 extends layout
 
-block body
-  .py-5.position-relative.bg-fixed.lazyload(
-    data-src=manifest("img/art/stars.svg")
+//- include _onboard
+
+mixin renderCard(platform, provider)
+  - const isEmailClients = ctx.pathWithoutLocale.endsWith("-email-clients");
+  .card.rounded-lg.position-relative.d-inline-block.mb-3
+    if provider.starred || provider.language
+      .position-absolute.w-100.text-right.lead.d-none.d-xl-block
+        if provider.starred
+          span.badge.badge-success.mr-3.mt-3
+            = emoji("star")
+            = " "
+            = t("Recommended")
+        if provider.language
+          span.badge.mr-3.mt-3(
+            class=provider.language === "Proprietary" ? "badge-danger" : "badge-dark"
+          )
+            != provider.language
+    - let str;
+    if provider.language
+      - str = provider.language === "Proprietary" ? t('<span class="notranslate">%s</span> is a closed-source and proprietary email <span class="notranslate">%s</span> for <span class="notranslate">%s</span>.', provider.name, isEmailClients ? t("client") : t("server"), platform) : t(`<span class="notranslate">%s</span> is an open-source email <span class="notranslate">%s</span> for <span class="notranslate">%s</span> and is written in the <span class="notranslate">%s</span> programming language.`, provider.name, t(isEmailClients ? "client" : "server"), platform, provider.language);
+    else
+      - str = t(`<span class="notranslate">%s</span> is an open-source email <span class="notranslate">%s</span> for <span class="notranslate">%s</span>.`, provider.name, t(isEmailClients ? "client" : "server"), platform);
+    .card-body
+      h2.h5.card-title= provider.name
+      if provider.starred || provider.language
+        .d-block.d-xl-none.lead.mb-3
+          if provider.starred
+            span.badge.badge-success.mr-3
+              = emoji("star")
+              = " "
+              = t("Recommended")
+          if provider.language
+            span.badge.mr-3(
+              class=provider.language === "Proprietary" ? "badge-danger" : "badge-dark"
+            )!= provider.language
+      if !isEmailClients
+        ul.list-inline
+          each attr in ['imap','smtp','mx']
+            li.list-inline-item
+              span.badge(
+                class=provider[attr] === true ? "badge-success" : "badge-danger"
+              )
+                i.fa(class=provider[attr] === true ? "fa-check-circle" : "fa-times")
+                = " "
+                = attr.toUpperCase()
+          li.list-inline-item
+            span.badge(
+              class=provider.name === "Forward Email" ? "badge-success" : "badge-danger"
+            )
+              i.fa(
+                class=provider.name === "Forward Email" ? "fa-check-circle" : "fa-times"
+              )
+              = " "
+              = t("SQLite Encrypted")
+      p
+        != str
+        = " "
+        != t('The official description from its website says, "<span class="notranslate">%s</span>"', t(provider.description))
+      .text-center
+        noscript
+          a(
+            href=manifest(provider.img),
+            target="_blank",
+            data-toggle="lightbox",
+            data-title=provider.name,
+            data-footer=t(provider.attribution)
+          )
+            img.img-fluid.img-thumbnail(
+              src=manifest(provider.img),
+              alt=striptags(str),
+              style="max-height: 300px"
+            )
+        a(
+          href=manifest(provider.img),
+          target="_blank",
+          data-toggle="lightbox",
+          data-title=provider.name,
+          data-footer=t(provider.attribution)
+        )
+          img.lazyload.img-fluid.img-thumbnail(
+            src=manifest(provider.img),
+            alt=striptags(str),
+            style="max-height: 300px"
+          )
+      if provider.screenshot
+        .small.text-center: a.small.text-muted(
+          href=provider.screenshot,
+          target="_blank",
+          rel="noopener noreferrer"
+        )= t(provider.attribution)
+      else
+        .small.text-center: span.small.text-muted= t(provider.attribution)
+    .card-footer
+      a.btn.btn-md.btn-dark.btn-block(
+        href=provider.link,
+        target="_blank",
+        rel="noopener noreferrer",
+        title=striptags(t('<span class="notranslate">%s</span> <span class="notranslate">%s</span> Email Setup Tutorial', provider.name, platform))
+      )
+        span.text-uppercase.font-weight-bold.align-middle!= t("Visit Website")
+        = " "
+        i.fa.fa-external-link.align-middle
+
+block append scripts
+  script(
+    defer,
+    src=manifest("js/ekko-lightbox.js"),
+    integrity=manifest("js/ekko-lightbox.js", "integrity"),
+    crossorigin="anonymous"
   )
+
+block body
+  include _modal-storage
+  //-.
+    if !user
+      +onboard(t('Setup email in minutes'), t('Simply enter your domain below to setup its email.'), l('/faq?redirect_to_domain=true'), '#top', 'border-top', true)
+
+  if !isBot(ctx.get('User-Agent'))
+    script(async, defer).
+      document.addEventListener(
+        "DOMContentLoaded",
+        function load() {
+          if (!window.jQuery) return setTimeout(load, 50);
+          $(function () {
+            $(document).on("click", '[data-toggle="lightbox"]', function (ev) {
+              ev.preventDefault();
+              $(this).ekkoLightbox();
+            });
+          });
+        },
+        false
+      );
+
+  if platform && !isBot(ctx.get('User-Agent'))
+    .fixed-bottom.text-center.d-print-none
+      .bg-dark.p-2.border-top.border-themed
+        ul.list-inline.mb-0
+          li.list-inline-item
+            a.btn.btn-sm.btn-light(
+              href=`#email-${isEmailClients ? "client" : "server"}-screenshots`
+            )
+              span.badge.badge-pill.mr-1.badge-success
+                i.fa.fa-image
+              = t("Screenshots")
+          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item
+            a.btn.btn-sm.btn-light(
+              href=`#email-${isEmailClients ? "client" : "server"}-comparison`
+            )
+              span.badge.badge-pill.mr-1.badge-primary
+                i.fa.fa-table
+              = t("Comparison")
+
+  .py-5
     .container
       .row
         .col-12
           .text-center
             if platform
-              h1!= t('Free and Open Source <span class="notranslate">%s</span> Email Server (<span class="notranslate">%s</span>)', platform, dayjs().format("YYYY"))
-              p!= t("Here is our list of the best guides for setting up an open-source <span class='notranslate'>%s</span> email forwarding server.", platform)
+              h1!= meta.title
+              p!= meta.description
+              //- != t('Free and Open Source <span class="notranslate">%s</span> Email Server (<span class="notranslate">%s</span>)', platform, dayjs().format("YYYY"))
+              //- p!= t("Here is our list of the best guides for setting up an open-source <span class='notranslate'>%s</span> email forwarding server.", platform)
             else
-              h1!= t('The Best Free and Open Source Email Servers (<span class="notranslate">%s</span>)', dayjs().format("YYYY"))
-              p!= t("Our list below highlights the best free and open source email forwarding server setup tutorials.")
+              h1!= meta.title
+              p!= meta.description
+              //- t('The Best Free and Open Source Email Servers (<span class="notranslate">%s</span>)', dayjs().format("YYYY"))
+              //- t("Our list below description the best free and open source email forwarding server setup tutorials.")
             include _author
-      .row.mt-3
-        if platform
-          - const providers = [...nsProviders];
-          each provider in providers
-            .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
-              .card.rounded-lg.position-relative
-                if provider.video || provider.gif
-                  .position-absolute.w-100.text-right
-                    if provider.video
-                      span.badge.badge-danger.text-monospace.text-uppercase.mr-1.mt-1
-                        i.fa.fa-play-circle
-                        = " "
-                        = t("Video")
-                    if provider.video && provider.gif
-                      = " "
-                    if provider.gif
-                      span.badge.badge-success.text-monospace.text-uppercase.mr-1.mt-1
-                        = "GIF"
-                - const str = t('<span class="notranslate">%s</span> Email Server Setup for <span class="notranslate">%s</span>', provider.name, platform);
-                - const str2 = t('<span class="notranslate">%s</span> Email Tutorial for <span class="notranslate">%s</span>', provider.name, platform);
-                noscript
-                  img.card-img-top.img-fluid(
-                    src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
-                    alt=striptags(str)
-                  )
-                img.lazyload.card-img-top.img-fluid(
-                  src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
-                  alt=striptags(str)
-                )
-                .card-body
-                  h2.h5.card-title= provider.name
-                  h3.h6.card-subtitle.text-muted.mb-1!= str2
-                  p.card-text
-                    if provider.video
-                      != t('Video tutorial for <span class="notranslate">%s</span> to setup email server with <span class="notranslate">%s</span>.', provider.name, platform)
+      if platform
+        - const isEmailClients = ctx.pathWithoutLocale.endsWith("-email-clients");
+        - const providers = getServersOrClientsList(platform, isEmailClients);
+        if isEmailClients && !isBot(ctx.get('User-Agent'))
+          .row.mt-3
+            .col-12
+              .alert.alert-primary.small.text-center.mb-0
+                = emoji("tada")
+                = " "
+                = t("Great news!")
+                = " "
+                = t("Forward Email is compatible with all email clients.")
+                br
+                != t('Download and install your favorite &rarr; and then <a href="%s" target="_blank" class="alert-link text-decoration-underline">click here to follow instructions</a>.', l("/faq#do-you-support-receiving-email-with-imap"))
+        .row
+          .col-12
+            h2.text-center.py-3.py-md-5.mb-0(
+              id=isEmailClients ? "email-client-screenshots" : "email-server-screenshots"
+            )!= isEmailClients ? t("Email Client Screenshots") : t("Email Server Screenshots")
+        .row
+          if providers.length <= 2
+            each provider in providers
+              .d-flex.col-md-6.mb-3.align-items-stretch
+                +renderCard(platform, provider)
+          else
+            .card-columns-2
+              each provider in providers
+                +renderCard(platform, provider)
+        .row.mt-1
+          .col-12
+            h2.text-center.py-3.py-md-5.mb-0(
+              id=isEmailClients ? "email-client-comparison" : "email-server-comparison"
+            )!= isEmailClients ? t("Email Client Comparison") : t("Email Server Comparison")
+            if !isBot(ctx.get("User-Agent"))
+              .d-block.d-md-none.my-3.text-muted.small.text-center
+                = "("
+                = t("Scroll to the right to see entire table")
+                = ")"
+            .table-responsive.rounded-lg
+              table.table.table-striped.table-hover.table-bordered.table-sm.mb-0.bg-white.bg-themed
+                thead.thead-dark
+                  tr
+                    th.align-middle(scope="col")= t("Name")
+                    th.align-middle(scope="col")= t("Description")
+                    th.align-middle.text-center(scope="col")= t("Screenshot")
+                    if isEmailClients
+                      th.align-middle.text-center(scope="col")= t("Platforms")
+                      th.align-middle.text-center(scope="col")= t("Language")
                     else
-                      != t('Step by step guide and tutorial for <span class="notranslate">%s</span> to setup open-source mail server with <span class="notranslate">%s</span>.', provider.name, platform)
-                .card-footer
-                  a.stretched-link.btn.btn-md.btn-dark.btn-block(
-                    href=l(`/guides/${provider.slug}?platform=${dashify(platform)}`),
-                    title=striptags(t('<span class="notranslate">%s</span> <span class="notranslate">%s</span> Email Setup Tutorial', provider.name, platform))
-                  )
-                    span.text-uppercase.font-weight-bold.align-middle!= t("<span class='notranslate'>%s</span> tutorial", platform)
-                    = " "
-                    i.fa.fa-angle-double-right.align-middle
-          //- Disclaimer
-          if !isBot(ctx.get('User-Agent'))
-            .row
+                      th.align-middle.text-center(scope="col")= "IMAP"
+                      th.align-middle.text-center(scope="col")= "MX"
+                      th.align-middle.text-center(scope="col")= "SMTP"
+                      th.align-middle.text-center.text-nowrap(scope="col")
+                        a.text-white.text-decoration-underline(
+                          href=l("/encrypted-email"),
+                          role="button",
+                          data-toggle="modal",
+                          data-target="#modal-storage",
+                          title=striptags(t(config.meta["/encrypted-email"][0]))
+                        )
+                          = t("SQLite Encrypted")
+                          = " "
+                          i.fa.fa-info-circle
+                    th.align-middle.text-center(scope="col")= t("Website")
+                    th.align-middle.text-center(scope="col")= t("Wikipedia")
+                tbody
+                  each provider in providers
+                    tr(class=provider.starred ? "table-success" : "")
+                      td.align-middle
+                        strong: a(
+                          href=provider.link,
+                          target="_blank",
+                          rel="noopener noreferrer",
+                          class=provider.starred ? "text-dark font-weight-bold" : ""
+                        )= provider.name
+                        if provider.starred
+                          = " "
+                          span.badge.badge-success
+                            = emoji("star")
+                            = " "
+                            = t("Recommended")
+                      td.align-middle= t(provider.description)
+                      td.align-middle.text-center
+                        a.btn.btn-primary.btn-sm.text-nowrap(
+                          href=manifest(provider.img),
+                          target="_blank",
+                          data-toggle="lightbox",
+                          data-title=provider.name,
+                          data-footer=t(provider.attribution)
+                        )
+                          i.fa.fa-image
+                          = " "
+                          = t("Screenshot")
+                      if isEmailClients
+                        td.align-middle.text-center
+                          ul.list-inline.mb-0
+                            each platform in ['apple', 'windows', 'android', 'linux', 'terminal', 'web']
+                              if provider[platform]
+                                li.list-inline-item.lead
+                                  span.badge.badge-dark
+                                    if platform === 'apple'
+                                      //- apple doesn't let you use logo
+                                    else if platform === 'windows'
+                                      //- msft doesn't let you use logo
+                                    else if platform === 'android'
+                                      i.fab.fa-android
+                                      = " "
+                                    else if platform === 'linux'
+                                      i.fab.fa-linux
+                                      = " "
+                                    else if platform === 'terminal'
+                                      i.fas.fa-terminal
+                                      = " "
+                                    else if platform === 'web'
+                                      if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
+                                        i.fab.fa-fw.fa-firefox-browser
+                                        = " "
+                                        = "Firefox"
+                                      else if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Safari") && !ctx.get("User-Agent").includes("Chrome")
+                                        = " "
+                                        = "Safari"
+                                      else
+                                        i.fab.fa-fw.fa-chrome
+                                        = " "
+                                        = "Chrome"
+                                    if platform !== 'web'
+                                      = titleize(platform)
+                      else
+                        td.align-middle.text-center
+                          if isBot(ctx.get("User-Agent"))
+                            = provider.imap ? t("Yes") : t("No")
+                          else
+                            = provider.imap ? emoji("white_check_mark") : emoji("x")
+                        td.align-middle.text-center
+                          if isBot(ctx.get("User-Agent"))
+                            = provider.smtp ? t("Yes") : t("No")
+                          else
+                            = provider.smtp ? emoji("white_check_mark") : emoji("x")
+                        td.align-middle.text-center
+                          if isBot(ctx.get("User-Agent"))
+                            = provider.mx ? t("Yes") : t("No")
+                          else
+                            = provider.mx ? emoji("white_check_mark") : emoji("x")
+                        td.align-middle.text-center
+                          if isBot(ctx.get("User-Agent"))
+                            = provider.name === "Forward Email" ? t("Yes") : t("No")
+                          else
+                            = provider.name === "Forward Email" ? emoji("white_check_mark") : emoji("x")
+                      if isEmailClients
+                        td.align-middle.text-center.lead: span.badge(
+                          class=provider.language === "Proprietary" ? "badge-danger" : "badge-dark"
+                        )!= provider.language
+                      td.align-middle.text-center
+                        a.btn.btn-dark.btn-sm.text-nowrap(
+                          href=provider.link,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          = t("Website")
+                          = " "
+                          i.fa.fa-external-link
+                      td.align-middle.text-center
+                        if provider.wikipedia
+                          a.btn.btn-dark.btn-sm.text-nowrap(
+                            href=provider.wikipedia,
+                            target="_blank",
+                            rel="noopener noreferrer"
+                          )
+                            i.fab.fa-wikipedia-w
+                            = " "
+                            = t("Wikipedia")
+        if isEmailClients && !isBot(ctx.get('User-Agent'))
+          .row.mt-3
+            .col-12
+              .text-center.text-muted.small!= t("P.S. Don't worry &ndash; we're coming out with our own desktop, mobile, and web apps soon!")
+        //- Disclaimer
+        if !isBot(ctx.get('User-Agent'))
+          - const externalProviders = providers.filter((p) => p.name !== "Forward Email");
+          if externalProviders.length > 0
+            .row.mt-3
               .col-12
-                .alert.alert-secondary.small.mt-3.mb-0
+                .alert.alert-secondary.small.mb-0
                   strong= t("Notice of Non-Affiliation and Disclaimer:")
                   = " "
-                  != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', platform, platform)
-            .row
-              .col-12
-                .alert.alert-secondary.small.mt-3.mb-0
-                  strong= t("Notice of Non-Affiliation and Disclaimer:")
-                  = " "
-                  != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(nsProviders.map((p) => p.name)), arrayJoinConjunction(nsProviders.map((p) => p.name)))
-        else
+                  != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(externalProviders.map((p) => p.name)), arrayJoinConjunction(externalProviders.map((p) => p.name)))
+      else
+        .row.mt-3
           - const tools = [];
           - const list = Object.keys(config.meta).filter((key) => key !== "/open-source" && key.startsWith("/open-source"));
           each item in list

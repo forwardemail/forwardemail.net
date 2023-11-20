@@ -103,7 +103,8 @@ const Users = new mongoose.Schema({
     lowercase: true,
     unique: true,
     validate: (value) => validator.isEmail(value)
-  }
+  },
+  scheduled_send_sent_at: Date
 });
 
 // Additional variable based properties to add to the schema

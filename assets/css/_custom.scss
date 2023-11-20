@@ -187,6 +187,13 @@ pre {
   }
 }
 
+.card-columns-2 {
+  column-count: 1;
+  @include media-breakpoint-up(md) {
+    column-count: 2;
+  }
+}
+
 .dropdown-menu {
   overflow-y: auto !important;
   max-height: 50vh !important;

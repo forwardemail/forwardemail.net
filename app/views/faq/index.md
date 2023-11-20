@@ -811,12 +811,19 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or an open-source and privacy-focused alternative.</span>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
 
 6. When prompted for SMTP server port, enter `587` (TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
 7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
 
@@ -904,11 +911,7 @@ In order to send outbound email with our API, you must use your API token availa
 
 ## Do you support receiving email with IMAP
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.
-
-**Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/encrypted-emaill).
-
-**Our Beta IMAP support is useful at the moment for storing Draft messages in your "Drafts" folder, copies of [Outbound SMTP](#do-you-support-sending-email-with-smtp) messages sent your "Sent Mail" folder, and for initial mailbox setup across mail clients such as Thunderbird, K-9 Mail, and Apple Mail.**  There is a <span class="notranslate">10 GB</span> storage limitation (additional storage can be purchased with pay-as-you-go).
+Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/encrypted-emaill).
 
 <div id="imap-instructions">
 
@@ -932,12 +935,19 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or an open-source and privacy-focused alternative.</span>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 4. When prompted for IMAP server name, enter `imap.forwardemail.net`
 
 5. When prompted for IMAP server port, enter `993` (TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
 6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
 
@@ -1144,17 +1154,28 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 <div class="mb-3">
   Our service works with popular email clients such as:
   <ul class="ml-1 h4 d-inline list-inline mb-0" style="padding-left: 0px;">
-    <li class="list-inline-item"><span class="badge badge-dark">Apple</span></li>
-    <li class="list-inline-item"><span class="badge badge-dark">Microsoft</span></li>
-    <li class="list-inline-item"><span class="badge badge-dark">Google</span></li>
-    <li class="list-inline-item"><span class="badge badge-dark">Thunderbird</span></li>
-    <li class="list-inline-item"><span class="badge badge-dark">Android</span></li>
-    <li class="list-inline-item"><span class="badge badge-secondary">and more</span></li>
+    <li class="list-inline-item"><a href="/open-source/apple-email-clients" target="_blank" class="badge badge-dark bg-dark text-white">Apple&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/windows-email-clients" target="_blank" class="badge badge-dark bg-dark text-white">Windows&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/android-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fab fa-android"></i> Android&trade;</a></li>
+    <li class="list-inline-item"><a href="/open-source/linux-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fab fa-linux"></i> Linux&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/desktop-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/safari-email-clients" target="_blank" class="badge badge-dark bg-dark text-white">Safari&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/google-chrome-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/terminal-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fas fa-terminal"></i> Terminal</a></li>
   </ul>
 </div>
 
 <div class="alert alert-primary">
   Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
 </div>
 
 | Type |         Hostname        |         Protocol        |                                       Ports                                       |

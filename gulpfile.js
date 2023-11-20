@@ -216,7 +216,21 @@ const purgeCssOptions = {
       /^hljs/,
       /^language-/,
       'floating-animation',
-      /^progress-bar/
+      /^progress-bar/,
+      'collapse',
+      'navbar-collapse',
+      'list-inline',
+      'navbar-nav',
+      'ml-auto',
+      'mt-2',
+      'mt-md-0',
+      'navbar-dark',
+      'bg-dark',
+      'navbar-themed',
+      'bg-themed',
+      'navbar-expand-lg',
+      'fixed-top',
+      'card-columns-2'
     ])
   ]
 };
@@ -395,6 +409,11 @@ async function bundle() {
   const polyfillPath = path.join(config.buildBase, 'js', 'polyfill.js');
   const lazyloadPath = path.join(config.buildBase, 'js', 'lazyload.js');
   const mermaidPath = path.join(config.buildBase, 'js', 'mermaid.js');
+  const ekkoLightboxPath = path.join(
+    config.buildBase,
+    'js',
+    'ekko-lightbox.js'
+  );
   const factorBundlePath = path.join(
     config.buildBase,
     'js',
@@ -425,6 +444,7 @@ async function bundle() {
   }
 
   await Promise.all([
+    // babel polyfill
     fs.promises.copyFile(
       path.join(
         __dirname,
@@ -436,9 +456,21 @@ async function bundle() {
       ),
       polyfillPath
     ),
+    // lazyload
     fs.promises.copyFile(
       path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.js'),
       lazyloadPath
+    ),
+    // ekko-lightbox
+    fs.promises.copyFile(
+      path.join(
+        __dirname,
+        'node_modules',
+        'ekko-lightbox',
+        'dist',
+        'ekko-lightbox.js'
+      ),
+      ekkoLightboxPath
     ),
     // mermaid
     fs.promises.copyFile(

@@ -222,7 +222,8 @@ async function generateOpenGraphImage(ctx) {
     // if it was a open source guide then parse the title
     const platform = config.views.locals.platforms.find(
       (p) =>
-        `/open-source/${config.views.locals.dashify(p)}-email-server` === url
+        `/open-source/${config.views.locals.dashify(p)}-email-server` === url ||
+        `/open-source/${config.views.locals.dashify(p)}-email-clients` === url
     );
     if (platform) freeEmail = platform;
 

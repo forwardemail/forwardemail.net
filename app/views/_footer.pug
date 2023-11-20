@@ -24,8 +24,8 @@ footer.mt-auto.small.text-monospace
   .bg-dark.text-white
     .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
       .d-flex.flex-column.flex-lg-row
-        .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1
-          if !isBot(ctx.get('User-Agent'))
+        if !isBot(ctx.get('User-Agent'))
+          .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1.mr-lg-3
             .no-js
               hr.d-lg-none.w-100
               .dropdown.dropup
@@ -47,24 +47,24 @@ footer.mt-auto.small.text-monospace
                   each language in availableLanguages
                     if language.locale !== locale
                       li: a.dropdown-item(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
-          hr.d-lg-none.w-100
-          .mt-auto
-            a(href="#", aria-label=t("Go to top"))
-              noscript
-                img.d-inline-block.mx-lg-auto(
-                  src=manifest("img/logo-square.svg"),
+            hr.d-lg-none.w-100
+            .mt-auto
+              a(href="#", aria-label=t("Go to top"))
+                noscript
+                  img.d-inline-block.mx-lg-auto(
+                    src=manifest("img/logo-square.svg"),
+                    width=50,
+                    height=50,
+                    alt="Go to top"
+                  )
+                img.d-inline-block.mx-lg-auto.lazyload(
+                  data-src=manifest("img/logo-square.svg"),
                   width=50,
                   height=50,
                   alt="Go to top"
                 )
-              img.d-inline-block.mx-lg-auto.lazyload(
-                data-src=manifest("img/logo-square.svg"),
-                width=50,
-                height=50,
-                alt="Go to top"
-              )
         //-.
-          .flex-wrap.flex-fill
+          .flex-wrap.flex-fill.mr-lg-3
             h3.h6.text-uppercase.mb-2= t("Guides")
             ul.list-unstyled.mb-0
               //-.
@@ -103,7 +103,70 @@ footer.mt-auto.small.text-monospace
               )= t("Other providers")
           hr.d-lg-none.w-100
 
-        .flex-wrap.flex-fill
+        .flex-wrap.flex-fill.mr-lg-3
+          hr.d-lg-none.w-100
+          h3.h6.text-uppercase.mb-2: a.text-light(href=l("/open-source"))= t("Apps")
+          ul.list-unstyled.mb-0.mb-lg-3
+            //- Apple
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/open-source/apple-email-clients")
+            )
+              = "Apple"
+              != "&reg;"
+            //- Windows
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/open-source/windows-email-clients")
+            )
+              = "Windows"
+              != "&reg;"
+            //- Android
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/open-source/android-email-clients")
+            )
+              i.fa-fw.fab.fa-android
+              = " "
+              = "Android"
+              != "&trade;"
+            //- Linux
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/open-source/linux-email-clients")
+            )
+              i.fa-fw.fab.fa-linux
+              = " "
+              = "Linux"
+              != "&reg;"
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/open-source/desktop-email-clients")
+            )
+              i.fa-fw.fas.fa-desktop
+              = " "
+              = "Desktop"
+            //- Web
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/open-source/web-email-clients")
+            )
+              if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
+                i.fab.fa-fw.fa-firefox-browser
+                = " "
+                = "Firefox"
+                != "&reg;"
+              else if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Safari") && !ctx.get("User-Agent").includes("Chrome")
+                = " "
+                = "Safari"
+                != "&reg;"
+              else
+                i.fab.fa-fw.fa-chrome
+                = " "
+                = "Chrome"
+                != "&reg;"
+            //- Terminal
+            li: a.d-block.text-light.py-2.py-md-0(
+              href=l("/open-source/terminal-email-clients")
+            )
+              i.fa-fw.fas.fa-terminal
+              = " "
+              = "Terminal"
+
           hr.d-lg-none.w-100
           h3.h6.text-uppercase.mb-2: a.text-light(href=l("/guides"))= t("Guides")
           ul.list-unstyled.mb-0.mb-lg-3
@@ -118,9 +181,9 @@ footer.mt-auto.small.text-monospace
             if isBot(ctx.get('User-Agent'))
               each provider in nsProviders
                 li: a.d-block.text-light.py-2.py-md-0(
-                  title=striptags(t('<span class="notranslate">%s</span> Email Server Setup', provider.name)),
+                  title=striptags(t('How to Setup Email with <span class="notranslate">%s</span>', provider.name)),
                   href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`)
-                )!= t('<span class="notranslate">%s</span> Email Server Setup', provider.name)
+                )!= t('How to Setup Email with <span class="notranslate">%s</span>', provider.name)
             else
               li: a.d-block.text-light.py-2.py-md-0(href=l("/guides"))= t("Email Setup Guides")
             li: a.d-block.text-light.py-2.py-md-0(
@@ -157,7 +220,7 @@ footer.mt-auto.small.text-monospace
             if !isBot(ctx.get('User-Agent'))
               li: a.d-block.text-light.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
         hr.d-lg-none.w-100
-        .flex-wrap.flex-fill
+        .flex-wrap.flex-fill.mr-lg-3
           h3.h6.text-uppercase.mb-2: a.text-light(href=l("/docs"))= t("Developers")
           ul.list-unstyled.mb-0.mb-lg-3
             li: a.d-block.text-light.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
@@ -166,7 +229,7 @@ footer.mt-auto.small.text-monospace
               href=l("/email-forwarding-regex-pattern-filter")
             )= t("Regex Email Forwarding")
             if platforms.length > 0
-              li: a.d-block.text-light.py-2.py-md-0(href=l("/open-source"))= t("Open Source Server Setup")
+              li: a.d-block.text-light.py-2.py-md-0(href=l("/open-source"))= t("Open Source")
           if developerDocs.length > 0
             hr.d-lg-none.w-100
             h3.h6.text-uppercase.mb-2= t("Code Examples")
@@ -180,16 +243,20 @@ footer.mt-auto.small.text-monospace
                       = " "
                     = t(doc.title)
           if platforms.length > 0 && isBot(ctx.get('User-Agent'))
-            h3.h6.text-uppercase.mb-2: a.text-light(href=l("/open-source"))= t("Open Source Server Setup")
             hr.d-lg-none.w-100
+            h3.h6.text-uppercase.mb-2: a.text-light(href=l("/open-source"))= t("Open Source Email Clients and Servers")
             ul.list-unstyled.mb-0.mb-lg-3
-              each platform in platforms
-                li
-                  a.d-block.text-light.py-2.py-md-0(
-                    href=l(`/open-source/${dashify(platform)}-email-server`),
-                    title=striptags(t('Open Source <span class="notranslate">%s</span> Email Server', platform))
-                  )
-                    != t('<span class="notranslate">%s</span> Email Server', platform)
+              - const tools = [];
+              - const list = Object.keys(config.meta).filter((key) => key !== "/open-source" && key.startsWith("/open-source"));
+              each item in list
+                - const match = config.meta[item];
+                if match
+                  - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
+              each tool in tools
+                a.d-block.text-light.py-2.py-md-0(
+                  href=l(tool.slug),
+                  title=striptags(t(tool.title))
+                )!= t(tool.title)
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
@@ -266,13 +333,6 @@ footer.mt-auto.small.text-monospace
                   data-title=t("Send us an email"),
                   data-placement="bottom"
                 )= config.supportEmail
-          .mt-lg-auto.mt-3.text-center.text-lg-left.small.text-muted
-            = " "
-            != "&copy;"
-            = " "
-            = dayjs().format("YYYY")
-            = " "
-            = "Forward Email LLC"
         if isBot(ctx.get('User-Agent'))
           hr.d-lg-none.w-100
           .flex-wrap.flex-fill.d-flex.flex-column
@@ -290,3 +350,27 @@ footer.mt-auto.small.text-monospace
                 ul.list-unstyled.mb-0.small
                   each language in availableLanguages
                     li: a.d-block.text-light.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
+      .mt-5.text-muted.small
+        ul.list-unstyled.small
+          // <https://www.apple.com/legal/intellectual-property/trademark/appletmlist.html>
+          li= t("Apple, Mac mini, Macbook, iMac, iPhone, macOS, iPad, watchOS, and Safari are registered trademarks of Apple Inc.")
+          li= t("IOS is a trademark or registered trademark of Cisco.")
+          //- <https://about.google/brand-resource-center/trademark-list/>
+          //- <https://developer.android.com/distribute/marketing-tools/brand-guidelines>
+          li= t("Android, Gmail, Google Chrome, Google Pixel, Chrome OS, Chromebook, and Chromium are trademarks of Google LLC.")
+          //- <https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks>
+          li= t("Microsoft, Windows, Internet Explorer, and Microsoft Edge are trademarks of the Microsoft group of companies.")
+          //- <https://www.mozilla.org/en-US/foundation/trademarks/list/>
+          //- <https://www-archive.mozilla.org/foundation/trademarks/policy>
+          li= t("Mozilla, Firefox, and Thunderbird are trademarks or registered trademarks of the Mozilla Foundation.")
+          //- <https://www.linuxfoundation.org/legal/trademark-usage>
+          //- <https://isc.tamu.edu/~lewing/linux/> (Tux the Penguin)
+          li= t("Linux is the registered trademark of Linus Torvalds.")
+        ul.list-unstyled
+          li
+            != "&copy;"
+            = " "
+            = dayjs().format("YYYY")
+            = " "
+            = "Forward Email LLC"
+          li= t("All rights reserved. All trademarks are property of their respective owners in the US and other countries.")

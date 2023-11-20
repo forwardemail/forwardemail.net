@@ -29,8 +29,8 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
         "DOMContentLoaded",
         function load() {
           if (!window.jQuery) return setTimeout(load, 50);
-          $(function() {
-            $("#modal-onboard").modal('show');
+          $(function () {
+            $("#modal-onboard").modal("show");
           });
         },
         false
@@ -55,7 +55,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
             if onboardText
               p.text-muted.text-center.mb-0!= onboardText
             +onboard(onboardHeader, onboardText, onboardFormAction, onboardKeepReading, onboardContainerClass, false, true)
-  else
+  else if !isBot(ctx.get('User-Agent'))
     div&attributes(attributes)
       div(
         class=isInsideModal ? [].join(" ") : [onboardContainerClass, "bg-light", "bg-themed", "py-3", "py-md-4", "py-lg-5"].join(" ")
@@ -67,10 +67,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                 h2.h3.text-center!= onboardHeader
               if onboardText && !isInsideModal
                 p.text-center.mb-0.text-muted.small!= onboardText
-              form.ajax-form.pt-3.mb-3(
-                action=onboardFormAction,
-                method="POST"
-              )
+              form.ajax-form.pt-3.mb-3(action=onboardFormAction, method="POST")
                 .form-row
                   div(class=isInsideModal ? "col-12" : "col-12 col-md-6 offset-md-3")
                     .form-group.floating-label.position-relative
