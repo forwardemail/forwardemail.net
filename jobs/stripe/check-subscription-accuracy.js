@@ -20,7 +20,7 @@ const Users = require('#models/users');
 const emailHelper = require('#helpers/email');
 
 // stripe api rate limitation is 100 writes/100 reads per second in live mode
-const concurrency = os.cpus().length * 4; // 32 in prod for bree (8 cpu server)
+const concurrency = os.cpus().length;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 //

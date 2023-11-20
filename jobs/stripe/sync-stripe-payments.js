@@ -21,6 +21,8 @@ const Users = require('#models/users');
 const Payments = require('#models/payments');
 const ThresholdError = require('#helpers/threshold-error');
 
+// stripe api rate limitation is 100 writes/100 reads per second in live mode
+const concurrency = os.cpus().length;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function syncStripePayments() {
