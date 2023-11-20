@@ -27,7 +27,7 @@
     "@ioredis/commands": "1.2.0",
     "@koa/router": "12.0.1",
     "@ladjs/api": "14.1.10",
-    "@ladjs/assets": "2.1.23",
+    "@ladjs/assets": "2.1.24",
     "@ladjs/consolidate": "1.0.3",
     "@ladjs/env": "4.0.0",
     "@ladjs/graceful": "3.2.2",

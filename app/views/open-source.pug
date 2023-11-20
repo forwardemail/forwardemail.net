@@ -181,7 +181,8 @@ block body
                 = t("Great news!")
                 = " "
                 = t("Forward Email is compatible with all email clients.")
-                br
+                br.d-none.d-md-block
+                span.d-inline-block.d-md-none= " "
                 != t('Download and install your favorite &rarr; and then <a href="%s" target="_blank" class="alert-link text-decoration-underline">click here to follow instructions</a>.', l("/faq#do-you-support-receiving-email-with-imap"))
         .row
           .col-12
