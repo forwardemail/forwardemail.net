@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const os = require('node:os');
+
 const Stripe = require('stripe');
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 
@@ -17,6 +19,8 @@ const logger = require('#helpers/logger');
 const Users = require('#models/users');
 const emailHelper = require('#helpers/email');
 
+// stripe api rate limitation is 100 writes/100 reads per second in live mode
+const concurrency = os.cpus().length * 4; // 32 in prod for bree (8 cpu server)
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 //
@@ -105,9 +109,13 @@ async function mapper(customer) {
       const subscriptionsToCancel = subscriptions.filter(
         (s) => s.id !== trialing.id
       );
-      await pMapSeries(subscriptionsToCancel, async (subscription) => {
-        await stripe.subscriptions.del(subscription.id);
-      });
+      await pMap(
+        subscriptionsToCancel,
+        async (subscription) => {
+          await stripe.subscriptions.del(subscription.id);
+        },
+        { concurrency }
+      );
     } else {
       // sort subscriptions by `created` in reverse (gets newest timestamp first)
       subscriptions = _.sortBy(subscriptions, 'created').reverse();
@@ -117,9 +125,13 @@ async function mapper(customer) {
           [config.userFields.stripeSubscriptionID]: first.id
         }
       });
-      await pMapSeries(others, async (subscription) => {
-        await stripe.subscriptions.del(subscription.id);
-      });
+      await pMap(
+        others,
+        async (subscription) => {
+          await stripe.subscriptions.del(subscription.id);
+        },
+        { concurrency }
+      );
     }
   } else if (
     subscriptions.length === 1 &&
@@ -239,7 +251,7 @@ async function checkSubscriptionAccuracy() {
   logger.info('Fetching Stripe customers');
   const customers = await getAllStripeCustomers();
   logger.info(`Started checking ${customers.length} Stripe customers`);
-  await pMapSeries(customers, mapper);
+  await pMap(customers, mapper, { concurrency });
   logger.info(`Finished checking ${customers.length} Stripe customers`);
 }
 

@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const os = require('node:os');
+
 const Stripe = require('stripe');
 const isSANB = require('is-string-and-not-blank');
 const pReduce = require('p-reduce');
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 const parseErr = require('parse-err');
 
 const getAllStripePaymentIntents = require('./get-all-stripe-payment-intents');
@@ -190,7 +192,7 @@ async function syncStripePayments() {
     }
   }
 
-  await pMapSeries(stripeCustomers, mapper);
+  await pMap(stripeCustomers, mapper, { concurrency });
 
   if (errorEmails.length > 0)
     await Promise.all(errorEmails.map((email) => emailHelper(email)));

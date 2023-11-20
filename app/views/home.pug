@@ -157,14 +157,18 @@ block body
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
             = " "
             != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with your custom domain or use one of ours!')
-          a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mb-3(
-            href=l("/register"),
-            data-toggle="modal-anchor",
-            data-target="#modal-sign-up"
-          )
-            = t("Sign up free")
-          .d-none.d-md-block
+          if !isBot(ctx.get("User-Agent"))
+            a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mb-3(
+              href=l("/register"),
+              data-toggle="modal-anchor",
+              data-target="#modal-sign-up"
+            )
+              = t("Sign up free")
+          if isBot(ctx.get("User-Agent"))
             include _feature-list
+          else
+            .d-none.d-md-block
+              include _feature-list
           ul.list-inline
             li.list-inline-item.d-block.d-md-inline
               a.btn.mb-3(
@@ -176,17 +180,8 @@ block body
                 = " "
                 != t("Features &amp; Pricing")
             //- Product Tour
-            li.list-inline-item.d-block.d-md-inline
-              if isBot(ctx.get('User-Agent'))
-                a.btn.btn-dark.mb-3(
-                  href="https://www.youtube.com/watch?v=N6zjv40zuIY",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                )
-                  i.fab.fa-youtube.text-danger
-                  = " "
-                  = t("Email Software Product Tour")
-              else
+            if !isBot(ctx.get('User-Agent'))
+              li.list-inline-item.d-block.d-md-inline
                 a.btn.btn-outline-light.mb-3(
                   role="button",
                   data-toggle="modal",
@@ -204,7 +199,7 @@ block body
                 a.btn.btn-dark.mb-3(href=l("/docs"))
                   i.fa.fa-code
                   = " "
-                  = t("Transactional Email API for Developers")
+                  = t("Transactional Email API")
               else
                 a.btn.btn-outline-light.mb-3(href=l("/docs"))
                   i.fa.fa-code

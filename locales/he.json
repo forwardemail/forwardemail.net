@@ -3396,5 +3396,17 @@
   "Send React Emails Code Example (<span class=\"notranslate\">2023</span>)": "דוגמה לקוד שלח תגובה אימייל ( <span class=\"notranslate\">2023</span> )",
   "URL Regex JavaScript and Node.js Code Example (<span class=\"notranslate\">2023</span>)": "כתובת URL Regex JavaScript וקוד Node.js ( <span class=\"notranslate\">2023</span> )",
   "Did you mean to use scheduled sending? (<span class=\"notranslate\">%d</span> minute(s) delay detected)": "האם התכוונת להשתמש בשליחה מתוזמנת? (זוהתה עיכוב של <span class=\"notranslate\">%d</span> דקות)",
-  "Our servers detected that one or more emails you queued for outbound SMTP have a \"Date\" header time difference of <span class=\"notranslate\">%d</span> minute(s).  This means that these emails will not be sent until this time period has elapsed.  If this is not intended, then you may need to check your time and date settings on your device that is queueing emails.  We recommend that you use <a href=\"https://developers.cloudflare.com/time-services/ntp/usage/\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare's Time Service</a> as your NTP provider if possible.": "השרתים שלנו זיהו שלמייל אחד או יותר שהמתת בתור ל-SMTP יוצא יש הפרש זמן של כותרת &quot;תאריך&quot; של <span class=\"notranslate\">%d</span> דקות. משמעות הדבר היא שהודעות דוא&quot;ל אלו לא יישלחו עד לחלוף פרק זמן זה. אם זה לא נועד, ייתכן שתצטרך לבדוק את הגדרות השעה והתאריך שלך במכשיר שלך שמעמיד בתור דוא&quot;ל. אנו ממליצים להשתמש <a href=\"https://developers.cloudflare.com/time-services/ntp/usage/\" target=\"_blank\" rel=\"noopener noreferrer\">בשירות הזמן של Cloudflare</a> כספק ה-NTP שלך במידת האפשר."
+  "Our servers detected that one or more emails you queued for outbound SMTP have a \"Date\" header time difference of <span class=\"notranslate\">%d</span> minute(s).  This means that these emails will not be sent until this time period has elapsed.  If this is not intended, then you may need to check your time and date settings on your device that is queueing emails.  We recommend that you use <a href=\"https://developers.cloudflare.com/time-services/ntp/usage/\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare's Time Service</a> as your NTP provider if possible.": "השרתים שלנו זיהו שלמייל אחד או יותר שהמתת בתור ל-SMTP יוצא יש הפרש זמן של כותרת &quot;תאריך&quot; של <span class=\"notranslate\">%d</span> דקות. משמעות הדבר היא שהודעות דוא&quot;ל אלו לא יישלחו עד לחלוף פרק זמן זה. אם זה לא נועד, ייתכן שתצטרך לבדוק את הגדרות השעה והתאריך שלך במכשיר שלך שמעמיד בתור דוא&quot;ל. אנו ממליצים להשתמש <a href=\"https://developers.cloudflare.com/time-services/ntp/usage/\" target=\"_blank\" rel=\"noopener noreferrer\">בשירות הזמן של Cloudflare</a> כספק ה-NTP שלך במידת האפשר.",
+  "Encryption": "הצפנה",
+  "Free, private, and secure email for custom domains.": "דוא\"ל חינם, פרטי ומאובטח עבור דומיינים מותאמים אישית.",
+  "Email Software Product Tour": "סיור מוצרי תוכנה בדוא\"ל",
+  "Transactional Email API for Developers": "API של דוא\"ל עסקה למפתחים",
+  "Watch Video": "צפה בוידאו",
+  "Website Email Forwarding": "העברת דוא\"ל לאתר",
+  "Startup Email Forwarding": "העברת דוא\"ל להפעלה",
+  "Shopify Email Forwarding": "העברת דוא\"ל של Shopify",
+  "Open-source email forwarding": "העברת דוא\"ל בקוד פתוח",
+  "Private Business Email": "דוא\"ל עסקי פרטי",
+  "Open Source Email Clients and Servers": "לקוחות ושרתים דוא\"ל בקוד פתוח",
+  "Transactional Email API": "API של אימייל עסקה"
 }
