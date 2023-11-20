@@ -555,7 +555,8 @@ async function parsePayload(data, ws) {
                 const [clientHostname] = await this.resolver.reverse(
                   payload.remoteAddress
                 );
-                if (isFQDN(clientHostname)) sender = parseRootDomain(sender);
+                if (isFQDN(clientHostname))
+                  sender = parseRootDomain(clientHostname);
               } catch (err) {
                 logger.warn(err);
               }
