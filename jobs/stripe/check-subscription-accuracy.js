@@ -6,9 +6,12 @@
 const os = require('node:os');
 
 const Stripe = require('stripe');
-const pMap = require('p-map');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
+const delay = require('delay');
+const ms = require('ms');
+const pMap = require('p-map');
+const pMapSeries = require('p-map-series');
 
 const getAllStripeCustomers = require('./get-all-stripe-customers');
 
@@ -20,7 +23,7 @@ const Users = require('#models/users');
 const emailHelper = require('#helpers/email');
 
 // stripe api rate limitation is 100 writes/100 reads per second in live mode
-const concurrency = os.cpus().length;
+const concurrency = os.cpus().length * 4; // 32 per second in prod mode
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 //
@@ -32,6 +35,9 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 //
 // eslint-disable-next-line complexity
 async function mapper(customer) {
+  // wait a second to prevent rate limitation error
+  await delay(ms('1s'));
+
   // check for user on our side
   let user = await Users.findOne({
     [config.userFields.stripeCustomerID]: customer.id
@@ -109,13 +115,9 @@ async function mapper(customer) {
       const subscriptionsToCancel = subscriptions.filter(
         (s) => s.id !== trialing.id
       );
-      await pMap(
-        subscriptionsToCancel,
-        async (subscription) => {
-          await stripe.subscriptions.del(subscription.id);
-        },
-        { concurrency }
-      );
+      await pMapSeries(subscriptionsToCancel, async (subscription) => {
+        await stripe.subscriptions.del(subscription.id);
+      });
     } else {
       // sort subscriptions by `created` in reverse (gets newest timestamp first)
       subscriptions = _.sortBy(subscriptions, 'created').reverse();
@@ -125,13 +127,9 @@ async function mapper(customer) {
           [config.userFields.stripeSubscriptionID]: first.id
         }
       });
-      await pMap(
-        others,
-        async (subscription) => {
-          await stripe.subscriptions.del(subscription.id);
-        },
-        { concurrency }
-      );
+      await pMapSeries(others, async (subscription) => {
+        await stripe.subscriptions.del(subscription.id);
+      });
     }
   } else if (
     subscriptions.length === 1 &&

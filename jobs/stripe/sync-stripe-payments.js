@@ -22,7 +22,7 @@ const Payments = require('#models/payments');
 const ThresholdError = require('#helpers/threshold-error');
 
 // stripe api rate limitation is 100 writes/100 reads per second in live mode
-const concurrency = os.cpus().length;
+const concurrency = os.cpus().length * 4; // 32 per second in prod mode
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function syncStripePayments() {
@@ -41,6 +41,9 @@ async function syncStripePayments() {
   );
 
   async function mapper(user) {
+    // wait a second to prevent rate limitation error
+    await delay(ms('1s'));
+
     logger.info(
       `Syncing payments for customer ${user.email} ${
         user[config.userFields.stripeCustomerID]
