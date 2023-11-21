@@ -25,9 +25,9 @@ module.exports = {
   SCHEDULED_SEND_MESSAGE:
     'Our servers detected that one or more emails you queued for outbound SMTP have a "Date" header time difference of <span class="notranslate">%d</span> minute(s).  This means that these emails will not be sent until this time period has elapsed.  If this is not intended, then you may need to check your time and date settings on your device that is queueing emails.  We recommend that you use <a href="https://developers.cloudflare.com/time-services/ntp/usage/" target="_blank" rel="noopener noreferrer">Cloudflare\'s Time Service</a> as your NTP provider if possible.',
   STORAGE_THRESHOLD_SUBJECT:
-    'You have used <span class="notranslate">%d</span>% of your storage quota',
+    '<span class="notranslate">%d</span>% of your pooled storage quota has been reached',
   STORAGE_THRESHOLD_MESSAGE:
-    '<div class="alert alert-danger small text-center">You have used <span class="notranslate">%d</span>% of your storage quota (<span class="notranslate">%s</span> of <span class="notranslate">%s</span>).</div><p class="text-center">If you exceed your quota, then messages will not be delivered.</p><p class="text-center mb-0"><a href="%s" class="btn btn-lg btn-danger">Upgrade Storage</a></p>',
+    '<div class="alert alert-danger small text-center"><span class="notranslate">%d</span>% of your pooled storage quota has been reached (<span class="notranslate">%s</span> of <span class="notranslate">%s</span>).</div><p class="text-center">If you exceed your quota, then messages will not be delivered.</p><p class="text-center mb-0"><a href="%s" class="btn btn-lg btn-danger">Upgrade Storage</a></p>',
   CHANGED_MODULUS_LENGTH: 'New DKIM public and private key pair generated.',
   ALIAS_OVERRIDE_CANNOT_HAVE_PASSWORD:
     'You cannot enter your current password and also attempt to override at the same time.',

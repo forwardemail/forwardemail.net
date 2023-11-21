@@ -20,7 +20,7 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 
 const Emails = require('#models/emails');
-const Users = require('#models/emails');
+const Users = require('#models/users');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
