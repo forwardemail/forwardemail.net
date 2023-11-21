@@ -527,6 +527,7 @@ const platforms = _.uniq([
   // generic
   'Desktop',
   'Terminal',
+  'Command-line (CLI)',
   // windows
   ...WINDOWS_PLATFORMS.keys()
 ]).sort();
@@ -1008,7 +1009,7 @@ function getServersOrClientsList(platform, isEmailClients = false) {
     providers = providers.filter(
       (p) => p.web || p.apple || p.windows || p.linux
     );
-  } else if (platform === 'Terminal') {
+  } else if (platform === 'Terminal' || platform === 'Command-line (CLI)') {
     providers = providers.filter((p) => p.terminal);
   } else if (APPLE_IOS_PLATFORMS.has(platform)) {
     providers = providers.filter((p) => p.ios);
