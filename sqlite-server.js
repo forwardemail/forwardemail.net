@@ -183,6 +183,7 @@ class SQLite {
       });
 
       ws.on('message', (data) => {
+        // TODO: spawn worker thread to parse the payload (?)
         parsePayload.call(this, data, ws);
       });
     });

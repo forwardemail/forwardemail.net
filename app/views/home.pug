@@ -206,13 +206,44 @@ block body
                   = " "
                   = t("Developers")
     a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
-      href="#testimonials"
+      href="#learn-more"
     )
       i.fa.fa-angle-double-down
       = " "
       = t("Learn more")
       = " "
       i.fa.fa-angle-double-down
+  #learn-more.bg-dark.py-3.d-block.overflow-hidden.min-vh-100(
+    data-ignore-hash-change
+  )
+    .container
+      .row
+        .col-12
+          h2.display-3.font-weight-bold.text-white.my-3.my-md-5= "TL;DR"
+      .row
+        .col-12
+          p.lead.text-white!= t("We are are a fully-featured email service provider that is focused on <strong>security</strong>, <strong>privacy</strong>, and <strong>transparency</strong>.")
+          ol.text-white.lead
+            li.mb-3
+              = t("Unlike other services, we are the only 100% truly open-source email service provider.")
+              = " "
+              != t('Others claim to be "open-source", but they are actually only releasing the source code to their front-end &ndash; <strong>and not the back-end</strong> (<i class="text-danger">the most sensitive part of an email service</i>).')
+              = " "
+              = t("Open-source builds trust and allows community members to contribute.")
+            li.mb-3
+              = t("You can use us as a drop-in replacement and alternative to any other email service provider.")
+            li.mb-3
+              = t("If you\'re a software developer, then you can use our transactional email API to programatically send emails.")
+            li.mb-3= t("We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.")
+            li= t("Support requests are answered by real humans; they are the actual engineers working on our product.")
+        a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
+          href="#testimonials"
+        )
+          i.fa.fa-angle-double-down
+          = " "
+          = t("Testimonials")
+          = " "
+          i.fa.fa-angle-double-down
   #testimonials.bg-fixed.border-md-top.border-themed.lazyload(
     data-src=manifest("img/art/postcard.svg"),
     data-ignore-hash-change
