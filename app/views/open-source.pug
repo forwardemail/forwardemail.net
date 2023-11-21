@@ -134,6 +134,7 @@ block body
       );
 
   if platform && !isBot(ctx.get('User-Agent'))
+    - const isEmailClients = ctx.pathWithoutLocale.endsWith("-email-clients");
     .fixed-bottom.text-center.d-print-none
       .bg-dark.p-2.border-top.border-themed
         ul.list-inline.mb-0
