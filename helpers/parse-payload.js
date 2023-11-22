@@ -46,6 +46,7 @@ const getDatabase = require('#helpers/get-database');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
 const onAppend = require('#helpers/imap/on-append');
@@ -153,10 +154,12 @@ async function getTemporaryDatabase(payload) {
   }
 
   // release lock
-  try {
-    await releaseLock(this, tmpDb, lock);
-  } catch (err) {
-    logger.fatal(err, { payload });
+  if (lock) {
+    try {
+      await releaseLock(this, tmpDb, lock);
+    } catch (err) {
+      logger.fatal(err, { payload });
+    }
   }
 
   return tmpDb;
@@ -744,7 +747,11 @@ async function parsePayload(data, ws) {
                   logger.fatal(err, { payload });
                 }
               } catch (err) {
-                logger.error(err, { payload });
+                if (isTimeoutError(err)) {
+                  logger.warn(err, { payload });
+                } else {
+                  logger.error(err, { payload });
+                }
               }
 
               //

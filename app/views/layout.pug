@@ -1,7 +1,7 @@
 //- Pug makes it DOCTYPE if we do this:
 //- `doctype html`
 != "<!doctype html>"
-- const isNotPrivateRoute = ["/my-account", "/admin", "/verify", "/denylist", "/forgot-password", "/reset-password", "/help", "/auth", "/register", config.loginOtpRoute, config.loginRoute, config.verifyRoute].every((s) => !ctx.pathWithoutLocale.startsWith(s));
+- const isNotPrivateRoute = ["/my-account", "/admin", "/verify", "/denylist", "/forgot-password", "/reset-password", "/help", "/auth", "/register", config.loginOtpRoute, config.loginRoute, config.verifyRoute, config.otpRoutePrefix].every((s) => !ctx.pathWithoutLocale.startsWith(s));
 html.h-100.no-js(
   lang=locale,
   class=isBot(ctx.get("User-Agent")) ? "bot-detected" : ""

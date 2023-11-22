@@ -3,9 +3,9 @@
     {
       "name": "sqlite",
       "script": "sqlite.js",
-      "exec_mode": "fork",
       "wait_ready": true,
-      "instances": "1",
+      "exec_mode": "cluster",
+      "instances": "max",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production"

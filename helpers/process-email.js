@@ -24,8 +24,6 @@ const { authenticate } = require('mailauth');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { isEmail } = require('validator');
 
-const sendEmail = require('./send-email');
-
 const combineErrors = require('./combine-errors');
 const createBounce = require('./create-bounce');
 const createSession = require('./create-session');
@@ -34,12 +32,13 @@ const getBlockedHashes = require('./get-blocked-hashes');
 const getErrorCode = require('./get-error-code');
 const i18n = require('./i18n');
 const isCodeBug = require('./is-code-bug');
-const logger = require('./logger');
-const parseRootDomain = require('./parse-root-domain');
-const { decrypt } = require('./encrypt-decrypt');
 const isRetryableError = require('./is-retryable-error');
 const isSSLError = require('./is-ssl-error');
 const isTLSError = require('./is-tls-error');
+const logger = require('./logger');
+const parseRootDomain = require('./parse-root-domain');
+const sendEmail = require('./send-email');
+const { decrypt } = require('./encrypt-decrypt');
 
 const config = require('#config');
 const env = require('#config/env');

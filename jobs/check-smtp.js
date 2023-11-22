@@ -20,6 +20,7 @@ const pMapSeries = require('p-map-series');
 const sharedConfig = require('@ladjs/shared-config');
 const mongoose = require('mongoose');
 
+const Emails = require('#models/emails');
 const Domains = require('#models/domains');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
@@ -138,11 +139,20 @@ async function mapper(id) {
       return;
     }
 
+    // only email the user if there were emails in the past 30+ days
+    // (otherwise we spam users that may no longer use outbound smtp)
+    const count = await Emails.countDocuments({
+      domain: domain._id,
+      created_at: {
+        $gte: dayjs().subtract(1, 'month').toDate()
+      }
+    });
+
     const isVerified = dkim && returnPath && dmarc;
 
     if (domain.has_smtp && !isVerified) {
       domain.smtp_verified_at = undefined;
-      if (!_.isDate(domain.missing_smtp_sent_at)) {
+      if (count > 0 && !_.isDate(domain.missing_smtp_sent_at)) {
         // if the domain has_smtp and it is not verified
         // and it hasn't been sent error notification
         // then send the notification and mark it as being sent
@@ -172,7 +182,7 @@ async function mapper(id) {
       }
     } else if (!domain.has_smtp && isVerified) {
       domain.missing_smtp_sent_at = undefined;
-      if (!_.isDate(domain.smtp_verified_at)) {
+      if (count > 0 && !_.isDate(domain.smtp_verified_at)) {
         // otherwise if the domain was newly verified
         // and doesn't have smtp yet then email admins
         const subject = i18n.translate(
