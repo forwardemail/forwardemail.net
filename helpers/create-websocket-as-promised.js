@@ -21,6 +21,7 @@ const config = require('#config');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
+const refineAndLogError = require('#helpers/refine-and-log-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 // <https://github.com/partykit/partykit/tree/main/packages/partysocket>
@@ -174,9 +175,8 @@ function createWebSocketAsPromised(options = {}) {
       if (response.err) throw parseError(response.err);
       return response.data;
     } catch (err) {
-      logger.fatal(err);
       err.isCodeBug = true;
-      throw err;
+      throw refineAndLogError(err);
     }
   };
 

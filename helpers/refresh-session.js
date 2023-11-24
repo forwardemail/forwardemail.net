@@ -170,28 +170,34 @@ async function refreshSession(session, command) {
       if (required.length > 0) {
         // NOTE: we don't invoke `onCreate` here or re-use it since it calls `refreshSession`
         //       (and that would lead to unnecessary recursion)
-        await Promise.all(required, async (path) => {
-          const mailbox = await Mailboxes.create({
-            // virtual helper
-            instance: this,
-            session,
+        await Promise.all(
+          required.map(async (path) => {
+            try {
+              const mailbox = await Mailboxes.create({
+                // virtual helper
+                instance: this,
+                session,
 
-            path,
-            // NOTE: this is the same uncommented code as `helpers/imap/on-create`
-            // TODO: support custom alias retention (would get stored on session)
-            // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
-            // retention: typeof alias.retention === 'number' ? alias.retention : 0
-            retention: 0
-          });
+                path,
+                // NOTE: this is the same uncommented code as `helpers/imap/on-create`
+                // TODO: support custom alias retention (would get stored on session)
+                // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
+                // retention: typeof alias.retention === 'number' ? alias.retention : 0
+                retention: 0
+              });
 
-          await this.server.notifier.addEntries(this, session, mailbox, {
-            command: 'CREATE',
-            mailbox: mailbox._id,
-            path
-          });
+              await this.server.notifier.addEntries(this, session, mailbox, {
+                command: 'CREATE',
+                mailbox: mailbox._id,
+                path
+              });
 
-          this.server.notifier.fire(session.user.alias_id);
-        });
+              this.server.notifier.fire(session.user.alias_id);
+            } catch (err) {
+              this.logger.fatal(err, { session });
+            }
+          })
+        );
       }
     } catch (err) {
       this.logger.fatal(err, { session });

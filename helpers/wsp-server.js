@@ -9,7 +9,7 @@ const isSANB = require('is-string-and-not-blank');
 const revHash = require('rev-hash');
 
 const parsePayload = require('#helpers/parse-payload');
-const logger = require('#helpers/logger');
+const refineAndLogError = require('#helpers/refine-and-log-error');
 
 // instead of having a websocket we're focusing on performance since we're local to the fs
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof#instanceof_and_hasinstance>
@@ -28,9 +28,8 @@ wsp.request = async function (data) {
     const response = await parsePayload.call(this, data);
     return response.data;
   } catch (err) {
-    logger.fatal(err);
     err.isCodeBug = true;
-    throw err;
+    throw refineAndLogError(err);
   }
 };
 

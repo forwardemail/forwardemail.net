@@ -70,6 +70,8 @@ const refreshSession = require('#helpers/refresh-session');
 // - [ ] when users delete their account then delete all Emails, Messages, Attachments, Threads, and Mailboxes in the system (make this both a job and hook on delete)
 // - [ ] auto expunge in bree job when message gets a Deleted flag
 // - [ ] message.exp needs to be deleted after time (message.rtime) via background job
+// - [ ] mailboxes with retention not 0 need all messages purged after that time
+// - [ ] messages expunged need removed after retention time
 // - [ ] cleanup journal items (e.g. expire after 30d or something)
 
 // TODO: other items

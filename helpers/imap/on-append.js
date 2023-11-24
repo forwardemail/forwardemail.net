@@ -131,6 +131,17 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // (and in this case we simply return the already existing message)
     // <https://github.com/nodemailer/wildduck/issues/555>
     //
+
+    // TODO: calculate message fingerprint and use that instead
+    //       of the "Message-ID" header
+    // TODO: also check other mailboxes for this fingerprint
+    // headers [
+    //   { key: 'to', value: 'foo-1@example-1.com' },
+    //   { key: 'from', value: 'foo-1@example-1.com' },
+    //   { key: 'subject', value: 'test' }
+    // ]
+
+    /*
     const existingMessage = await Messages.findOne(this, session, {
       mailbox: mailbox._id,
       msgid
@@ -150,6 +161,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       fn(null, true, response);
       return;
     }
+    */
 
     // store reference for cleanup
     mimeTreeData = mimeTree;
