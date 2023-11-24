@@ -26,7 +26,26 @@ async function onOpen(path, session, fn) {
   this.logger.debug('OPEN', { path, session });
 
   try {
-    const { db } = await this.refreshSession(session, 'OPEN');
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const data = await this.wsp.request({
+          action: 'open',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress
+          },
+          path
+        });
+        fn(null, ...data);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'OPEN');
 
     const mailbox = await Mailboxes.findOne(this, session, {
       path
@@ -67,21 +86,22 @@ async function onOpen(path, session, fn) {
 
     let docs;
 
-    if (db.wsp) {
+    if (session.db.wsp) {
       docs = await this.wsp.request({
         action: 'stmt',
         session: { user: session.user },
         stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
       });
     } else {
-      docs = db.prepare(sql.query).pluck().all(sql.values);
+      docs = session.db.prepare(sql.query).pluck().all(sql.values);
     }
 
     if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
-    mailbox.uidList = docs;
 
     // send response
-    fn(null, mailbox);
+    const response = mailbox.toObject();
+    response.uidList = docs;
+    fn(null, response);
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {

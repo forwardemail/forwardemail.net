@@ -32,7 +32,28 @@ async function onSearch(mailboxId, options, session, fn) {
   this.logger.debug('SEARCH', { mailboxId, options, session, fn });
 
   try {
-    const { db } = await this.refreshSession(session, 'SEARCH');
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const data = await this.wsp.request({
+          action: 'search',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress,
+            selected: session.selected
+          },
+          mailboxId,
+          options
+        });
+        fn(null, ...data);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'SEARCH');
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -129,7 +150,7 @@ async function onSearch(mailboxId, options, session, fn) {
               };
             }
 
-            if (db.wsp) {
+            if (session.db.wsp) {
               // eslint-disable-next-line no-await-in-loop
               ids = await this.wsp.request({
                 action: 'stmt',
@@ -137,7 +158,7 @@ async function onSearch(mailboxId, options, session, fn) {
                 stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
               });
             } else {
-              ids = db.prepare(sql.query).pluck().all(sql.values);
+              ids = session.db.prepare(sql.query).pluck().all(sql.values);
             }
 
             parent.push({
@@ -290,7 +311,7 @@ async function onSearch(mailboxId, options, session, fn) {
                     }
                   };
                   let ids;
-                  if (db.wsp) {
+                  if (session.db.wsp) {
                     // eslint-disable-next-line no-await-in-loop
                     ids = await this.wsp.request({
                       action: 'stmt',
@@ -302,7 +323,7 @@ async function onSearch(mailboxId, options, session, fn) {
                       ]
                     });
                   } else {
-                    ids = db.prepare(sql.query).pluck().all(sql.values);
+                    ids = session.db.prepare(sql.query).pluck().all(sql.values);
                   }
 
                   entry._id = { $in: ids };
@@ -314,7 +335,7 @@ async function onSearch(mailboxId, options, session, fn) {
                     values: { p1: term.header, p2: regex }
                   };
                   let ids;
-                  if (db.wsp) {
+                  if (session.db.wsp) {
                     // eslint-disable-next-line no-await-in-loop
                     ids = await this.wsp.request({
                       action: 'stmt',
@@ -326,7 +347,7 @@ async function onSearch(mailboxId, options, session, fn) {
                       ]
                     });
                   } else {
-                    ids = db.prepare(sql.query).pluck().all(sql.values);
+                    ids = session.db.prepare(sql.query).pluck().all(sql.values);
                   }
 
                   entry._id = { $in: ids };
@@ -337,7 +358,7 @@ async function onSearch(mailboxId, options, session, fn) {
                   values: { p1: term.header, p2: term.value }
                 };
                 let ids;
-                if (db.wsp) {
+                if (session.db.wsp) {
                   // eslint-disable-next-line no-await-in-loop
                   ids = await this.wsp.request({
                     action: 'stmt',
@@ -349,7 +370,7 @@ async function onSearch(mailboxId, options, session, fn) {
                     ]
                   });
                 } else {
-                  ids = db.prepare(sql.query).pluck().all(sql.values);
+                  ids = session.db.prepare(sql.query).pluck().all(sql.values);
                 }
 
                 entry._id = { $in: ids };
@@ -359,7 +380,7 @@ async function onSearch(mailboxId, options, session, fn) {
                   values: { p1: term.header }
                 };
                 let ids;
-                if (db.wsp) {
+                if (session.db.wsp) {
                   // eslint-disable-next-line no-await-in-loop
                   ids = await this.wsp.request({
                     action: 'stmt',
@@ -371,7 +392,7 @@ async function onSearch(mailboxId, options, session, fn) {
                     ]
                   });
                 } else {
-                  ids = db.prepare(sql.query).pluck().all(sql.values);
+                  ids = session.db.prepare(sql.query).pluck().all(sql.values);
                 }
 
                 entry._id = { $in: ids };
@@ -415,79 +436,8 @@ async function onSearch(mailboxId, options, session, fn) {
             break;
           }
 
-          case 'internaldate': {
-            {
-              let op = false;
-              const value = new Date(term.value + ' GMT');
-              switch (term.operator) {
-                case '<': {
-                  op = '$lt';
-                  break;
-                }
-
-                case '<=': {
-                  op = '$lte';
-                  break;
-                }
-
-                case '>': {
-                  op = '$gt';
-                  break;
-                }
-
-                case '>=': {
-                  op = '$gte';
-                  break;
-                }
-
-                default: {
-                  this.logger.fatal(new TypeError('Unknown term operator'), {
-                    term,
-                    node,
-                    mailboxId,
-                    options,
-                    session
-                  });
-                  break;
-                }
-              }
-
-              let entry = op
-                ? {
-                    [op]: value
-                  }
-                : // NOTE: slight difference here with wildduck
-                  //       in that we support json-sql by having an object
-                  //       instead of an array of objects for the same prop
-                  // json-sql version:
-                  {
-                    $gte: value,
-                    $lt: new Date(value.getTime() + 24 * 3600 * 1000)
-                  };
-              // wildduck version:
-              // : [
-              //     {
-              //       $gte: value
-              //     },
-              //     {
-              //       $lt: new Date(value.getTime() + 24 * 3600 * 1000)
-              //     }
-              //   ];
-
-              entry = {
-                idate: ne
-                  ? {
-                      $not: entry
-                    }
-                  : entry
-              };
-
-              parent.push(entry);
-            }
-
-            break;
-          }
-
+          case 'date':
+          case 'internaldate':
           case 'headerdate': {
             {
               let op = false;
@@ -514,13 +464,6 @@ async function onSearch(mailboxId, options, session, fn) {
                 }
 
                 default: {
-                  this.logger.fatal(new TypeError('Unknown term operator'), {
-                    term,
-                    node,
-                    mailboxId,
-                    options,
-                    session
-                  });
                   break;
                 }
               }
@@ -529,22 +472,79 @@ async function onSearch(mailboxId, options, session, fn) {
                 ? {
                     [op]: value
                   }
-                : [
-                    {
-                      $gte: value
-                    },
-                    {
-                      $lt: new Date(value.getTime() + 24 * 3600 * 1000)
-                    }
-                  ];
+                : // NOTE: slight difference here with wildduck
+                  //       in that we support json-sql by having an object
+                  //       instead of an array of objects for the same prop
+                  // json-sql version:
+                  {
+                    $gte: value,
+                    $lt: new Date(value.getTime() + 24 * 3600 * 1000)
+                  };
+              // wildduck version:
+              // : [
+              //     {
+              //       $gte: value
+              //     },
+              //     {
+              //       $lt: new Date(value.getTime() + 24 * 3600 * 1000)
+              //     }
+              //   ];
 
-              entry = {
-                hdate: ne
-                  ? {
-                      $not: entry
-                    }
-                  : entry
-              };
+              // headerdate => hdate
+              // internaldate => idate
+              // date => $or
+              // <https://github.com/nodemailer/wildduck/issues/560>
+              switch (term.key) {
+                case 'headerdate': {
+                  entry = {
+                    hdate: ne
+                      ? {
+                          $not: entry
+                        }
+                      : entry
+                  };
+                  break;
+                }
+
+                case 'internaldate': {
+                  entry = {
+                    idate: ne
+                      ? {
+                          $not: entry
+                        }
+                      : entry
+                  };
+
+                  break;
+                }
+
+                case 'date': {
+                  entry = {
+                    $or: [
+                      {
+                        hdate: ne
+                          ? {
+                              $not: entry
+                            }
+                          : entry
+                      },
+                      {
+                        idate: ne
+                          ? {
+                              $not: entry
+                            }
+                          : entry
+                      }
+                    ]
+                  };
+
+                  break;
+                }
+
+                default: {
+                  throw new TypeError(`${term.key} unsupported`);
+                }
+              }
 
               parent.push(entry);
             }
@@ -608,7 +608,7 @@ async function onSearch(mailboxId, options, session, fn) {
           }
 
           default: {
-            this.logger.fatal(new TypeError('Unknown term operator'), {
+            this.logger.fatal(new TypeError(`Unknown term key "${term.key}"`), {
               term,
               node,
               mailboxId,
@@ -644,7 +644,7 @@ async function onSearch(mailboxId, options, session, fn) {
     // NOTE: using `all()` currently for faster performance
     //       (since we don't write to the socket here)
     //
-    if (db.wsp) {
+    if (session.db.wsp) {
       messages = await this.wsp.request({
         action: 'stmt',
         session: { user: session.user },
@@ -654,7 +654,7 @@ async function onSearch(mailboxId, options, session, fn) {
         ]
       });
     } else {
-      messages = db.prepare(sql.query).all(sql.values);
+      messages = session.db.prepare(sql.query).all(sql.values);
     }
 
     try {

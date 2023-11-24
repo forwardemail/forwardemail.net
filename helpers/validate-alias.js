@@ -13,6 +13,11 @@ function validateAlias(alias, domain, name) {
       { responseCode: 535, ignoreHook: true }
     );
 
+  //
+  // TODO: adjust refineAndLogError to detect this error
+  //       and subsequently invoke `sqlite_auth_reset` for this id
+  //       and also close the current connection
+  //
   // alias must not have banned user
   if (alias.user[config.userFields.isBanned])
     throw new SMTPError('Alias user is banned');

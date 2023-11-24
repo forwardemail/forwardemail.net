@@ -24,15 +24,22 @@ const connectionNameSymbol = Symbol.for('connection.name');
 // <https://stackoverflow.com/a/41978063>
 _.mixin({
   deeply(map) {
+    // <https://stackoverflow.com/a/48032359>
+    const deeplyArray = function (obj, fn) {
+      return obj.map(function (x) {
+        return _.isPlainObject(x) ? _.deeply(map)(x, fn) : x;
+      });
+    };
+
     return function (obj, fn) {
+      if (_.isArray(obj)) return deeplyArray(obj, fn);
+
       return map(
         _.mapValues(obj, function (v) {
           return _.isPlainObject(v)
             ? _.deeply(map)(v, fn)
             : _.isArray(v)
-            ? v.map(function (x) {
-                return _.deeply(map)(x, fn);
-              })
+            ? deeplyArray(v, fn)
             : v;
         }),
         fn

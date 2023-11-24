@@ -16,11 +16,8 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const config = require('#config');
 const getDatabase = require('#helpers/get-database');
-const isValidPassword = require('#helpers/is-valid-password');
-const logger = require('#helpers/logger');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
-const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const REQUIRED_PATHS = [
   'INBOX',
@@ -75,10 +72,13 @@ async function refreshSession(session, command) {
   }
 
   if (!isSANB(session?.user?.domain_id) || !isSANB(session?.user?.domain_name))
-    throw new IMAPError('Domain does not exist on session');
+    throw new IMAPError('Domain ID and name do not exist on session');
 
   if (!isSANB(session?.user?.alias_id) || !isSANB(session?.user?.alias_name))
-    throw new IMAPError('Alias does not exist on session');
+    throw new IMAPError('Alias ID and name do not exist on session');
+
+  if (!isSANB(session?.user?.storage_location))
+    throw new IMAPError('Alias storage location does not exist on session');
 
   const [domain, alias] = await Promise.all([
     Domains.findById(session.user.domain_id)
@@ -106,11 +106,23 @@ async function refreshSession(session, command) {
   validateAlias(alias, session.user.domain_name, session.user.alias_name);
 
   //
+  // NOTE: we don't need to perform the below validation because we
+  //       will close connections via "sqlite_auth_reset" command via pub/sub
+  //       if we detect that the user changed their password
+  //       and the above code with `validateDomain` and `validateAlias`
+  //       ensures that the user cannot be banned or have all admins banned
+  //       (and ensures the user is up to date on payment too)
+  //
+  //       (this saves 100-600ms+ because pbkdf2 is slow by design)
+  //
+
+  //
   // NOTE: we validate that the in-memory password is still active for the given user
   //       (e.g. edge case where AUTH done, a few seconds go by, then pass removed by user, and IMAP command couldn't been tried)
   //       (e.g. the SQLite database password would've been changed if user changed alias' password, so we should error)
   //
   // ensure the token is still valid
+  /*
   let isValid = false;
   if (Array.isArray(alias.tokens) && alias.tokens.length > 0)
     isValid = await isValidPassword(
@@ -125,24 +137,29 @@ async function refreshSession(session, command) {
         // ignoreHook: true
       }
     );
+  */
 
   // TODO: notifications via web/sms/desktop/mobile electron + react native app
   //       (e.g. if there are any issues such as IMAP access being locked due to r/w issues)
   // TODO: script to export as mbox
 
-  // connect to the database
-  const { db } = await getDatabase(this, alias, session);
+  // connect to the database (sets `session.db` for us automatically)
+  await getDatabase(
+    this,
+    {
+      // alias
+      id: session.user.alias_id,
+      storage_location: session.user.storage_location
+    },
+    session
+  );
 
   //
   // if and only if we're not an instance of SQLite
   // (otherwise this would result in recursion)
   //
   // prevent circular dep (otherwise we could do instanceof)
-  if (this?.constructor?.name === 'IMAP') {
-    //
-    // NOTE: this is in the background otherwise auth attempts would hang
-    //       if there was an issue with websocket connection or reading/writing
-    //
+  if (this?.constructor?.name !== 'IMAP') {
     try {
       const paths = await Mailboxes.distinct(this, session, 'path', {});
       const required = [];
@@ -150,29 +167,48 @@ async function refreshSession(session, command) {
         if (!paths.includes(path)) required.push(path);
       }
 
-      if (required.length > 0)
-        await Mailboxes.create(
-          required.map((path) => ({
+      if (required.length > 0) {
+        // NOTE: we don't invoke `onCreate` here or re-use it since it calls `refreshSession`
+        //       (and that would lead to unnecessary recursion)
+        await Promise.all(required, async (path) => {
+          const mailbox = await Mailboxes.create({
             // virtual helper
             instance: this,
             session,
 
             path,
-            retention: typeof alias.retention === 'number' ? alias.retention : 0
-          }))
-        );
+            // NOTE: this is the same uncommented code as `helpers/imap/on-create`
+            // TODO: support custom alias retention (would get stored on session)
+            // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
+            // retention: typeof alias.retention === 'number' ? alias.retention : 0
+            retention: 0
+          });
+
+          await this.server.notifier.addEntries(this, session, mailbox, {
+            command: 'CREATE',
+            mailbox: mailbox._id,
+            path
+          });
+
+          this.server.notifier.fire(session.user.alias_id);
+        });
+      }
     } catch (err) {
       this.logger.fatal(err, { session });
     }
 
+    //
+    // NOTE: this takes 100ms+ so we put it in onAuth instead running in the background
+    //       (if a message gets delivered to tmp then it will notify IMAP connections already)
+    //
     // sync with temp db on every request
-    const sync = await this.wsp.request({
-      action: 'sync',
-      timeout: ms('10s'),
-      session: { user: session.user }
-    });
-
-    this.logger.debug('sync', { sync });
+    //
+    // const sync = await this.wsp.request.call(this, {
+    //   action: 'sync',
+    //   timeout: ms('10s'),
+    //   session: { user: session.user }
+    // });
+    // this.logger.debug('sync', { sync });
 
     // TODO: this needs limited to only being one once per alias across all its IMAP connections
     // offset by 10s to prevent locking db while a read is in progress
@@ -213,18 +249,18 @@ async function refreshSession(session, command) {
                 return;
               }
 
-              this.wsp
-                .request({
+              this.wsp.request
+                .call(this, {
                   action: 'backup',
                   backup_at: now.toISOString(),
                   session: { user: session.user }
                 })
                 .then(() => {
-                  logger.debug('backup performed', { session });
+                  this.logger.debug('backup performed', { session });
                   session.backupInProgress = false;
                 })
                 .catch((err) => {
-                  logger.fatal(err, { session });
+                  this.logger.fatal(err, { session });
                   // if the backup failed then we unset the imap_backup_at
                   Aliases.findOneAndUpdate(
                     {
@@ -241,21 +277,19 @@ async function refreshSession(session, command) {
                       session.backupInProgress = false;
                     })
                     .catch((err) => {
-                      logger.fatal(err, { session });
+                      this.logger.fatal(err, { session });
                       session.backupInProgress = false;
                     });
                 });
             })
             .catch((err) => {
-              logger.fatal(err, { session });
+              this.logger.fatal(err, { session });
               session.backupInProgress = false;
             });
         }
       }, ms('10s'));
     }
   }
-
-  return { db, domain, alias };
 }
 
 module.exports = refreshSession;

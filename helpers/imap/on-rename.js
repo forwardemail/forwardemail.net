@@ -24,7 +24,27 @@ async function onRename(path, newPath, session, fn) {
   this.logger.debug('RENAME', { path, newPath, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'RENAME');
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const data = await this.wsp.request({
+          action: 'rename',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress
+          },
+          path,
+          newPath
+        });
+        fn(null, ...data);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'RENAME');
 
     // TODO: parallel
 
@@ -76,7 +96,7 @@ async function onRename(path, newPath, session, fn) {
         mailbox: mailbox._id,
         path: renamedMailbox.path
       });
-      this.server.notifier.fire(alias.id);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       this.logger.fatal(err, { path, session });
     }
@@ -86,7 +106,7 @@ async function onRename(path, newPath, session, fn) {
       await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
-        alias_id: alias.id
+        alias_id: session.user.alias_id
       });
     } catch (err) {
       this.logger.fatal(err);

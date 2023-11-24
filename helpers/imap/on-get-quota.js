@@ -23,11 +23,34 @@ async function onGetQuota(path, session, fn) {
   this.logger.debug('GETQUOTA', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'GETQUOTA');
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const data = await this.wsp.request({
+          action: 'get_quota',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress
+          },
+          path
+        });
+        fn(null, ...data);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'GETQUOTA');
 
     if (path !== '') return fn(null, 'NONEXISTENT');
 
-    const storageUsed = await Aliases.getStorageUsed(alias);
+    const storageUsed = await Aliases.getStorageUsed({
+      id: session.user.alias_id,
+      domain: session.user.domain_id,
+      locale: 'en'
+    });
 
     fn(null, {
       root: '',

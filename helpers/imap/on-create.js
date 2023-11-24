@@ -26,10 +26,33 @@ async function onCreate(path, session, fn) {
   this.logger.debug('CREATE', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'CREATE');
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const data = await this.wsp.request({
+          action: 'create',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress
+          },
+          path
+        });
+        fn(null, ...data);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'CREATE');
 
     // check if over quota
-    const { isOverQuota } = await Aliases.isOverQuota(alias);
+    const { isOverQuota } = await Aliases.isOverQuota({
+      id: session.user.alias_id,
+      domain: session.user.domain_id,
+      locale: 'en'
+    });
     if (isOverQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
@@ -60,7 +83,11 @@ async function onCreate(path, session, fn) {
       instance: this,
       session,
       path,
-      retention: typeof alias.retention === 'number' ? alias.retention : 0
+      // NOTE: this is the same uncommented code as `helpers/refresh-session`
+      // TODO: support custom alias retention (would get stored on session)
+      // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
+      // retention: typeof alias.retention === 'number' ? alias.retention : 0
+      retention: 0
     });
 
     try {
@@ -69,7 +96,7 @@ async function onCreate(path, session, fn) {
         mailbox: mailbox._id,
         path
       });
-      this.server.notifier.fire(alias.id);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       this.logger.fatal(err, { path, session });
     }
@@ -79,7 +106,7 @@ async function onCreate(path, session, fn) {
       await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
-        alias_id: alias.id
+        alias_id: session.user.alias_id
       });
     } catch (err) {
       this.logger.fatal(err);

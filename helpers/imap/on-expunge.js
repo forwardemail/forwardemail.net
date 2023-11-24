@@ -31,13 +31,40 @@ const builder = new Builder();
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
-  let alias;
-  let db;
   let lock;
   try {
-    const results = await this.refreshSession(session, 'EXPUNGE');
-    alias = results.alias;
-    db = results.db;
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const [bool, writeStream] = await this.wsp.request({
+          action: 'expunge',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress,
+            selected: session.selected
+          },
+          mailboxId,
+          update
+        });
+        if (Array.isArray(writeStream)) {
+          for (const write of writeStream) {
+            if (Array.isArray(write)) {
+              session.writeStream.write(session.formatResponse(...write));
+            } else {
+              session.writeStream.write(write);
+            }
+          }
+        }
+
+        fn(null, bool);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'EXPUNGE');
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -47,6 +74,8 @@ async function onExpunge(mailboxId, update, session, fn) {
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
         imapResponse: 'NONEXISTENT'
       });
+
+    const writeStream = [];
 
     // let storageUsed = 0;
 
@@ -61,7 +90,7 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     let messages;
 
-    lock = await acquireLock(this, db);
+    lock = await acquireLock(this, session.db);
 
     let err;
 
@@ -74,7 +103,7 @@ async function onExpunge(mailboxId, update, session, fn) {
         sort: 'uid'
       });
 
-      if (db.wsp) {
+      if (session.db.wsp) {
         messages = await this.wsp.request({
           action: 'stmt',
           session: { user: session.user },
@@ -85,7 +114,7 @@ async function onExpunge(mailboxId, update, session, fn) {
           ]
         });
       } else {
-        messages = db.prepare(sql.query).all(sql.values);
+        messages = session.db.prepare(sql.query).all(sql.values);
       }
 
       for (const result of messages) {
@@ -173,9 +202,13 @@ async function onExpunge(mailboxId, update, session, fn) {
               session.selected.mailbox &&
               session.selected.mailbox.toString() === mailbox.id)
           ) {
-            session.writeStream.write(
-              session.formatResponse('EXPUNGE', message.uid)
-            );
+            if (this?.constructor?.name === 'IMAP') {
+              session.writeStream.write(
+                session.formatResponse('EXPUNGE', message.uid)
+              );
+            } else {
+              writeStream.push(['EXPUNGE', message.uid]);
+            }
           }
 
           try {
@@ -197,7 +230,7 @@ async function onExpunge(mailboxId, update, session, fn) {
               },
               lock
             );
-            this.server.notifier.fire(alias.id);
+            this.server.notifier.fire(session.user.alias_id);
           } catch (err) {
             this.logger.fatal(err, { mailboxId, update, session });
           }
@@ -209,7 +242,7 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     // release lock
     try {
-      await releaseLock(this, db, lock);
+      await releaseLock(this, session.db, lock);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
@@ -237,7 +270,7 @@ async function onExpunge(mailboxId, update, session, fn) {
       await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
-        alias_id: alias.id
+        alias_id: session.user.alias_id
       });
     } catch (err) {
       this.logger.fatal(err);
@@ -246,12 +279,12 @@ async function onExpunge(mailboxId, update, session, fn) {
     // throw error
     if (err) throw err;
 
-    fn(null, true);
+    fn(null, true, writeStream);
   } catch (err) {
     // release lock
     if (lock?.success) {
       try {
-        await releaseLock(this, db, lock);
+        await releaseLock(this, session.db, lock);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }

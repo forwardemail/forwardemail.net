@@ -19,6 +19,7 @@ const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
+const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const { imapHandler } = require('wildduck/imap-core');
 
 const IMAPError = require('#helpers/imap-error');
@@ -36,10 +37,11 @@ const MAX_BULK_WRITE_SIZE = 150;
 
 const builder = new Builder();
 
+const { formatResponse } = IMAPConnection.prototype;
+
 // eslint-disable-next-line complexity
 async function getMessages(instance, session, server, opts = {}) {
-  const { options, projection, query, mailbox, alias, attachmentStorage } =
-    opts;
+  const { options, projection, query, mailbox, attachmentStorage } = opts;
 
   server.logger.debug('getting messages', opts);
 
@@ -54,7 +56,15 @@ async function getMessages(instance, session, server, opts = {}) {
   if (!_.isObject(attachmentStorage))
     throw new Error('Attachment storage missing');
 
-  let { entries, bulkWrite, successful, lastUid, rowCount, totalBytes } = opts;
+  let {
+    entries,
+    bulkWrite,
+    writeStream,
+    successful,
+    lastUid,
+    rowCount,
+    totalBytes
+  } = opts;
 
   //
   // extra safeguards for development
@@ -62,6 +72,9 @@ async function getMessages(instance, session, server, opts = {}) {
   if (!Array.isArray(entries)) throw new Error('Entries is not an array');
 
   if (!Array.isArray(bulkWrite)) throw new Error('Bulk write is not an array');
+
+  if (!Array.isArray(writeStream))
+    throw new Error('Write stream is not an array');
 
   if (typeof successful !== 'boolean')
     throw new Error('Successful is not a boolean');
@@ -175,10 +188,16 @@ async function getMessages(instance, session, server, opts = {}) {
     // check if server is in the process of shutting down
     if (server._closeTimeout) throw new ServerShutdownError();
 
+    // TODO: we should use web socket request to check against IMAP server if it's still open
     // check if socket is still connected
-    const socket = (session.socket && session.socket._parent) || session.socket;
-    if (!socket || socket?.destroyed || socket?.readyState !== 'open')
-      throw new SocketError();
+    if (this?.constructor?.name === 'IMAP') {
+      const socket =
+        (session.socket && session.socket._parent) || session.socket;
+      if (!socket || socket?.destroyed || socket?.readyState !== 'open')
+        throw new SocketError();
+    } else {
+      // TODO: finish this for SQLite server to check websocket if still open
+    }
 
     // store reference to last message uid
     lastUid = message.uid;
@@ -206,7 +225,10 @@ async function getMessages(instance, session, server, opts = {}) {
           fetchOptions: {},
           // database
           attachmentStorage,
-          acceptUTF8Enabled: session.isUTF8Enabled()
+          acceptUTF8Enabled:
+            typeof session.isUTF8Enabled === 'function'
+              ? session.isUTF8Enabled()
+              : session.acceptUTF8Enabled || false
         }).map((obj) => {
           if (
             typeof obj !== 'object' ||
@@ -226,14 +248,19 @@ async function getMessages(instance, session, server, opts = {}) {
         delete message.mimeTree[Symbol.for('session')];
       }
 
-      const data = session.formatResponse('FETCH', message.uid, {
+      const data = formatResponse.call(session, 'FETCH', message.uid, {
         query: options.query,
         values
       });
       const compiled = imapHandler.compiler(data);
       // `compiled` is a 'binary' string
       totalBytes += compiled.length;
-      session.writeStream.write({ compiled });
+      if (this?.constructor?.name === 'IMAP') {
+        session.writeStream.write({ compiled });
+      } else {
+        writeStream.push({ compiled });
+      }
+
       rowCount++;
 
       //
@@ -250,6 +277,7 @@ async function getMessages(instance, session, server, opts = {}) {
     // NOTE: wildduck uses streams and a TTL limiter/counter however we can
     // simplify this for now just by writing to the socket writable stream
     //
+
     // eslint-disable-next-line no-await-in-loop
     const values = await Promise.all(
       getQueryResponse(options.query, message, {
@@ -257,7 +285,10 @@ async function getMessages(instance, session, server, opts = {}) {
         fetchOptions: {},
         // database
         attachmentStorage,
-        acceptUTF8Enabled: session.isUTF8Enabled()
+        acceptUTF8Enabled:
+          typeof session.isUTF8Enabled === 'function'
+            ? session.isUTF8Enabled()
+            : session.acceptUTF8Enabled || false
       }).map((obj) => {
         if (
           typeof obj !== 'object' ||
@@ -277,14 +308,19 @@ async function getMessages(instance, session, server, opts = {}) {
       delete message.mimeTree[Symbol.for('session')];
     }
 
-    const data = session.formatResponse('FETCH', message.uid, {
+    const data = formatResponse.call(session, 'FETCH', message.uid, {
       query: options.query,
       values
     });
     const compiled = imapHandler.compiler(data);
     // `compiled` is a 'binary' string
     totalBytes += compiled.length;
-    session.writeStream.write({ compiled });
+    if (this?.constructor?.name === 'IMAP') {
+      session.writeStream.write({ compiled });
+    } else {
+      writeStream.push({ compiled });
+    }
+
     rowCount++;
 
     // add operation to bulkWrite
@@ -335,7 +371,7 @@ async function getMessages(instance, session, server, opts = {}) {
               entries
             );
             entries = [];
-            server.notifier.fire(alias.id);
+            server.notifier.fire(session.user.alias_id);
           } catch (err) {
             server.logger.fatal(err, { message, session, options, query });
           }
@@ -354,6 +390,7 @@ async function getMessages(instance, session, server, opts = {}) {
   return {
     entries,
     bulkWrite,
+    writeStream,
     successful,
     lastUid,
     rowCount,
@@ -365,7 +402,39 @@ async function onFetch(mailboxId, options, session, fn) {
   this.logger.debug('FETCH', { mailboxId, options, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'FETCH');
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const [bool, response, writeStream] = await this.wsp.request({
+          action: 'fetch',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress,
+            selected: session.selected,
+            acceptUTF8Enabled: session.isUTF8Enabled()
+          },
+          mailboxId,
+          options
+        });
+        if (Array.isArray(writeStream)) {
+          for (const write of writeStream) {
+            if (Array.isArray(write)) {
+              session.writeStream.write(session.formatResponse(...write));
+            } else {
+              session.writeStream.write(write);
+            }
+          }
+        }
+
+        fn(null, bool, response);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'FETCH');
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -403,41 +472,57 @@ async function onFetch(mailboxId, options, session, fn) {
       projection,
       query,
       mailbox,
-      alias,
       attachmentStorage: this.attachmentStorage,
       entries: [],
       bulkWrite: [],
+      writeStream: [],
       successful: true,
       lastUid: null,
       rowCount: 0,
       totalBytes: 0
     });
 
-    // mark messages as Seen
-    if (results.bulkWrite.length > 0)
-      await Messages.bulkWrite(this, session, results.bulkWrite, {
-        // ordered: false,
-        // w: 1
-      });
+    //
+    // NOTE: if bulkWrite > 0 then entries is also > 0
+    //
+    // (this is a safeguard just in case)
+    //
+    if (results.bulkWrite.length !== results.entries.length)
+      this.logger.fatal(
+        new TypeError('Bulk write length and entries not equal')
+      );
 
-    if (results.entries.length > 0) {
-      try {
+    try {
+      // mark messages as Seen
+      if (results.bulkWrite.length > 0) {
+        await Messages.bulkWrite(this, session, results.bulkWrite, {
+          // ordered: false,
+          // w: 1
+        });
+      }
+
+      if (results.entries.length > 0) {
         await this.server.notifier.addEntries(
           this,
           session,
           mailbox,
           results.entries
         );
-        this.server.notifier.fire(alias.id);
-      } catch (err) {
-        this.logger.fatal(err, { mailboxId, options, session });
+        this.server.notifier.fire(session.user.alias_id);
       }
+    } catch (err) {
+      this.logger.fatal(err, { mailboxId, options, session });
     }
 
-    fn(null, results.successful, {
-      rowCount: results.rowCount,
-      totalBytes: results.totalBytes
-    });
+    fn(
+      null,
+      results.successful,
+      {
+        rowCount: results.rowCount,
+        totalBytes: results.totalBytes
+      },
+      results.writeStream
+    );
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {

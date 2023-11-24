@@ -49,14 +49,49 @@ const isCodeBug = require('#helpers/is-code-bug');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
-const onAppend = require('#helpers/imap/on-append');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
 const setupPragma = require('#helpers/setup-pragma');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
-const onAppendPromise = pify(onAppend);
+const onAppend = require('#helpers/imap/on-append');
+const onCopy = require('#helpers/imap/on-copy');
+const onCreate = require('#helpers/imap/on-create');
+const onDelete = require('#helpers/imap/on-delete');
+const onExpunge = require('#helpers/imap/on-expunge');
+const onFetch = require('#helpers/imap/on-fetch');
+const onGetQuotaRoot = require('#helpers/imap/on-get-quota-root');
+const onGetQuota = require('#helpers/imap/on-get-quota');
+const onList = require('#helpers/imap/on-list');
+const onLsub = require('#helpers/imap/on-lsub');
+const onMove = require('#helpers/imap/on-move');
+const onOpen = require('#helpers/imap/on-open');
+const onRename = require('#helpers/imap/on-rename');
+const onSearch = require('#helpers/imap/on-search');
+const onStatus = require('#helpers/imap/on-status');
+const onStore = require('#helpers/imap/on-store');
+const onSubscribe = require('#helpers/imap/on-subscribe');
+const onUnsubscribe = require('#helpers/imap/on-unsubscribe');
+
+const onAppendPromise = pify(onAppend, { multiArgs: true });
+const onCopyPromise = pify(onCopy, { multiArgs: true });
+const onCreatePromise = pify(onCreate, { multiArgs: true });
+const onDeletePromise = pify(onDelete, { multiArgs: true });
+const onExpungePromise = pify(onExpunge, { multiArgs: true });
+const onFetchPromise = pify(onFetch, { multiArgs: true });
+const onGetQuotaRootPromise = pify(onGetQuotaRoot, { multiArgs: true });
+const onGetQuotaPromise = pify(onGetQuota, { multiArgs: true });
+const onListPromise = pify(onList, { multiArgs: true });
+const onLsubPromise = pify(onLsub, { multiArgs: true });
+const onMovePromise = pify(onMove, { multiArgs: true });
+const onOpenPromise = pify(onOpen, { multiArgs: true });
+const onRenamePromise = pify(onRename, { multiArgs: true });
+const onSearchPromise = pify(onSearch, { multiArgs: true });
+const onStatusPromise = pify(onStatus, { multiArgs: true });
+const onStorePromise = pify(onStore, { multiArgs: true });
+const onSubscribePromise = pify(onSubscribe, { multiArgs: true });
+const onUnsubscribePromise = pify(onUnsubscribe, { multiArgs: true });
 
 const concurrency = os.cpus().length;
 
@@ -72,7 +107,26 @@ const PAYLOAD_ACTIONS = new Set([
   'stmt',
   'backup',
   'rekey',
-  'reset'
+  'reset',
+
+  'append',
+  'copy',
+  'create',
+  'delete',
+  'expunge',
+  'fetch',
+  'get_quota_root',
+  'get_quota',
+  'list',
+  'lsub',
+  'move',
+  'open',
+  'rename',
+  'search',
+  'status',
+  'store',
+  'subscribe',
+  'unsubscribe'
 ]);
 const STATEMENT_OPERATIONS = new Set(['prepare', 'run', 'get', 'all', 'pluck']);
 
@@ -291,7 +345,7 @@ async function parsePayload(data, ws) {
       payload.action !== 'size' &&
       payload.action !== 'tmp'
     ) {
-      const databases = await getDatabase(
+      db = await getDatabase(
         this,
         // alias
         {
@@ -301,7 +355,6 @@ async function parsePayload(data, ws) {
         payload.session,
         payload?.lock
       );
-      db = databases.db;
     }
 
     //
@@ -312,6 +365,269 @@ async function parsePayload(data, ws) {
 
     // handle action
     switch (payload.action) {
+      // append
+      case 'append': {
+        const data = await onAppendPromise.call(
+          this,
+          payload.path,
+          payload.flags,
+          new Date(payload.date),
+          payload.raw,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // copy
+      case 'copy': {
+        const data = await onCopyPromise.call(
+          this,
+          null,
+          payload.mailboxId,
+          payload.update,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // create
+      case 'create': {
+        const data = await onCreatePromise.call(
+          this,
+          payload.path,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // delete
+      case 'delete': {
+        const data = await onDeletePromise.call(
+          this,
+          payload.path,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // expunge
+      case 'expunge': {
+        const data = await onExpungePromise.call(
+          this,
+          payload.mailboxId,
+          payload.update,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // fetch
+      case 'fetch': {
+        const data = await onFetchPromise.call(
+          this,
+          payload.mailboxId,
+          payload.options,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // get_quota_root
+      case 'get_quota_root': {
+        const data = await onGetQuotaRootPromise.call(
+          this,
+          payload.path,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // get_quota
+      case 'get_quota': {
+        const data = await onGetQuotaPromise.call(
+          this,
+          payload.path,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // list
+      case 'list': {
+        const data = await onListPromise.call(
+          this,
+          payload.query,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // lsub
+      case 'lsub': {
+        const data = await onLsubPromise.call(
+          this,
+          payload.query,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // move
+      case 'move': {
+        const data = await onMovePromise.call(
+          this,
+          payload.mailboxId,
+          payload.update,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // open
+      case 'open': {
+        const data = await onOpenPromise.call(
+          this,
+          payload.path,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // rename
+      case 'rename': {
+        const data = await onRenamePromise.call(
+          this,
+          payload.path,
+          payload.newPath,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // search
+      case 'search': {
+        const data = await onSearchPromise.call(
+          this,
+          payload.mailboxId,
+          payload.options,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // status
+      case 'status': {
+        const data = await onStatusPromise.call(
+          this,
+          payload.path,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // store
+      case 'store': {
+        const data = await onStorePromise.call(
+          this,
+          payload.mailboxId,
+          payload.update,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // subscribe
+      case 'subscribe': {
+        const data = await onSubscribePromise.call(
+          this,
+          payload.path,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
+      // unsubscribe
+      case 'unsubscribe': {
+        const data = await onUnsubscribePromise.call(
+          this,
+          payload.path,
+          payload.session
+        );
+        response = {
+          id: payload.id,
+          data
+        };
+        break;
+      }
+
       // sync the user's temp mailbox to their current
       case 'sync': {
         const tmpDb = await getTemporaryDatabase.call(this, payload);
@@ -348,7 +664,7 @@ async function parsePayload(data, ws) {
                 );
 
               // eslint-disable-next-line no-await-in-loop
-              const results = await onAppendPromise.call(
+              await onAppendPromise.call(
                 this,
                 'INBOX',
                 [],
@@ -361,8 +677,6 @@ async function parsePayload(data, ws) {
               );
 
               count++;
-
-              logger.debug('results', { results });
 
               // if successfully appended then delete from the database
               // eslint-disable-next-line no-await-in-loop
@@ -847,7 +1161,7 @@ async function parsePayload(data, ws) {
             )} was available`
           );
 
-        const databases = await getDatabase(
+        db = await getDatabase(
           this,
           // alias
           {
@@ -857,8 +1171,6 @@ async function parsePayload(data, ws) {
           payload.session,
           payload?.lock
         );
-
-        db = databases.db;
 
         response = {
           id: payload.id,
@@ -1165,7 +1477,7 @@ async function parsePayload(data, ws) {
           logger.fatal(err, { payload });
         }
 
-        const databases = await getDatabase(
+        db = await getDatabase(
           this,
           // alias
           {
@@ -1175,8 +1487,6 @@ async function parsePayload(data, ws) {
           payload.session,
           lock
         );
-
-        db = databases.db;
 
         response = {
           id: payload.id,
@@ -1389,7 +1699,13 @@ async function parsePayload(data, ws) {
     if (!ws || typeof ws.send !== 'function') return response;
 
     ws.send(safeStringify(response));
-  } catch (err) {
+  } catch (_err) {
+    // since we use multiArgs from pify
+    // if a promise that was wrapped with multiArgs: true
+    // throws, then the error will be an array so we need to get first key
+    let err = _err;
+    if (Array.isArray(err)) err = _err[0];
+
     err.payload = payload;
 
     // delete err.payload.user.password (safeguard)

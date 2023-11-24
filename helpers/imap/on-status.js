@@ -23,6 +23,25 @@ async function onStatus(path, session, fn) {
   this.logger.debug('STATUS', { path, session });
 
   try {
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const data = await this.wsp.request({
+          action: 'status',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress
+          },
+          path
+        });
+        fn(null, ...data);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
     await this.refreshSession(session, 'STATUS');
 
     const mailbox = await Mailboxes.findOne(this, session, {

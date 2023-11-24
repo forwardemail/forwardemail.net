@@ -26,6 +26,8 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const imapSharedConfig = sharedConfig('IMAP');
 const client = new Redis(imapSharedConfig.redis, logger);
 const subscriber = new Redis(imapSharedConfig.redis, logger);
+client.setMaxListeners(0);
+subscriber.setMaxListeners(0);
 
 const wsp = createWebSocketAsPromised();
 

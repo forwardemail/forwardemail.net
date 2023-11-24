@@ -35,12 +35,39 @@ async function onMove(mailboxId, update, session, fn) {
   this.logger.debug('MOVE', { mailboxId, update, session });
 
   let lock;
-  let db;
-  let alias;
   try {
-    const results = await this.refreshSession(session, 'MOVE');
-    alias = results.alias;
-    db = results.db;
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const [bool, response, writeStream] = await this.wsp.request({
+          action: 'move',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress,
+            selected: session.selected
+          },
+          mailboxId,
+          update
+        });
+        if (Array.isArray(writeStream)) {
+          for (const write of writeStream) {
+            if (Array.isArray(write)) {
+              session.writeStream.write(session.formatResponse(...write));
+            } else {
+              session.writeStream.write(write);
+            }
+          }
+        }
+
+        fn(null, bool, response);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'MOVE');
 
     // TODO: parallel
 
@@ -62,7 +89,7 @@ async function onMove(mailboxId, update, session, fn) {
         imapResponse: 'TRYCREATE'
       });
 
-    lock = await acquireLock(this, db);
+    lock = await acquireLock(this, session.db);
 
     let err;
 
@@ -71,6 +98,7 @@ async function onMove(mailboxId, update, session, fn) {
 
     const sourceUid = [];
     const destinationUid = [];
+    const writeStream = [];
 
     try {
       // increment modification index to indicate a change occurred
@@ -120,7 +148,7 @@ async function onMove(mailboxId, update, session, fn) {
 
       let messages;
 
-      if (db.wsp) {
+      if (session.db.wsp) {
         messages = await this.wsp.request({
           action: 'stmt',
           session: { user: session.user },
@@ -131,7 +159,7 @@ async function onMove(mailboxId, update, session, fn) {
           ]
         });
       } else {
-        messages = db.prepare(sql.query).all(sql.values);
+        messages = session.db.prepare(sql.query).all(sql.values);
       }
 
       for (const result of messages) {
@@ -145,16 +173,6 @@ async function onMove(mailboxId, update, session, fn) {
           update,
           session
         });
-
-        //
-        // this is a fix for clients like Thunderbird which
-        // do not display Draft flagged messages in the Inbox
-        // (even though they exist in the Inbox)
-        //
-        // TODO: notify wildduck about this in GH issues
-        //
-        // if (targetMailbox.specialUse !== '\\Drafts')
-        //   message.flags = _.pull(message.flags, '\\Draft');
 
         // store reference to existing message data
         const existingMessageId = message._id;
@@ -255,12 +273,20 @@ async function onMove(mailboxId, update, session, fn) {
         );
 
         if (results && results.deletedCount) {
-          session.writeStream.write(
-            session.formatResponse('EXPUNGE', sourceUid)
-          );
-          session.writeStream.write(
-            session.formatResponse('EXPUNGE', existingMessageUid)
-          );
+          if (this?.constructor?.name === 'IMAP') {
+            session.writeStream.write(
+              session.formatResponse('EXPUNGE', sourceUid)
+            );
+            session.writeStream.write(
+              session.formatResponse('EXPUNGE', existingMessageUid)
+            );
+          } else {
+            writeStream.push(
+              ['EXPUNGE', sourceUid],
+              ['EXPUNGE', existingMessageUid]
+            );
+          }
+
           expungeEntries.push({
             ignore: session.id,
             command: 'EXPUNGE',
@@ -288,13 +314,13 @@ async function onMove(mailboxId, update, session, fn) {
           try {
             // eslint-disable-next-line no-await-in-loop
             await this.server.notifier.addEntries(
-              db,
+              session.db,
               mailbox,
               expungeEntries,
               lock
             );
             expungeEntries = [];
-            this.server.notifier.fire(alias.id);
+            this.server.notifier.fire(session.user.alias_id);
           } catch (err) {
             this.logger.fatal(err, { mailboxId, update, session });
           }
@@ -312,7 +338,7 @@ async function onMove(mailboxId, update, session, fn) {
               lock
             );
             existEntries = [];
-            this.server.notifier.fire(alias.id);
+            this.server.notifier.fire(session.user.alias_id);
           } catch (err) {
             this.logger.fatal(err, { mailboxId, update, session });
           }
@@ -324,14 +350,14 @@ async function onMove(mailboxId, update, session, fn) {
 
     // release lock
     try {
-      await releaseLock(this, db, lock);
+      await releaseLock(this, session.db, lock);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
 
     // write any if needed
-    if (sourceUid.length > 0)
-      session.writeStream.write({
+    if (sourceUid.length > 0) {
+      const payload = {
         tag: '*',
         command: String(session.selected.uidList.length),
         attributes: [
@@ -340,7 +366,13 @@ async function onMove(mailboxId, update, session, fn) {
             value: 'EXISTS'
           }
         ]
-      });
+      };
+      if (this?.constructor?.name === 'IMAP') {
+        session.writeStream.write(payload);
+      } else {
+        writeStream.push(payload);
+      }
+    }
 
     //
     // iterate over entries if necessary
@@ -355,7 +387,7 @@ async function onMove(mailboxId, update, session, fn) {
           expungeEntries,
           lock
         );
-        this.server.notifier.fire(alias.id);
+        this.server.notifier.fire(session.user.alias_id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
@@ -371,7 +403,7 @@ async function onMove(mailboxId, update, session, fn) {
           existEntries,
           lock
         );
-        this.server.notifier.fire(alias.id);
+        this.server.notifier.fire(session.user.alias_id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
@@ -382,7 +414,7 @@ async function onMove(mailboxId, update, session, fn) {
       await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
-        alias_id: alias.id
+        alias_id: session.user.alias_id
       });
     } catch (err) {
       this.logger.fatal(err);
@@ -400,12 +432,12 @@ async function onMove(mailboxId, update, session, fn) {
       target: targetMailbox._id,
       status: 'moved'
     };
-    fn(null, true, response);
+    fn(null, true, response, writeStream);
   } catch (err) {
     // release lock
     if (lock?.success) {
       try {
-        await releaseLock(this, db, lock);
+        await releaseLock(this, session.db, lock);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }

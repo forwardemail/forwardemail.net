@@ -54,6 +54,8 @@ const tls = { rejectUnauthorized: false };
 
 const INITIAL_DB_SIZE = 159744;
 
+subscriber.setMaxListeners(0);
+
 test.before(utils.setupMongoose);
 test.before(utils.defineUserFactory);
 test.before(utils.defineDomainFactory);
@@ -638,8 +640,57 @@ test('onDelete', async (t) => {
   t.is(err.responseText, 'DELETE completed');
   t.is(err.serverResponseCode, 'NONEXISTENT');
   await t.context.imapFlow.mailboxCreate('WUHWOH');
-  const info = await t.context.imapFlow.mailboxDelete('WUHWOH');
-  t.is(info.path, 'WUHWOH');
+  await t.context.imapFlow.mailboxDelete('WUHWOH');
+
+  // now attempt to create a mailbox with messages and delete it
+  await t.context.imapFlow.mailboxCreate('DELETE-WITH-MESSAGES');
+  const raw = `
+Content-Type: multipart/mixed; boundary="------------cWFvDSey27tFG0hVYLqp9hs9"
+MIME-Version: 1.0
+To: ${t.context.alias.name}@${t.context.domain.name}
+From: ${t.context.alias.name}@${t.context.domain.name}
+Subject: test
+
+This is a multi-part message in MIME format.
+--------------cWFvDSey27tFG0hVYLqp9hs9
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+test
+
+--------------cWFvDSey27tFG0hVYLqp9hs9
+Content-Type: text/plain; charset=UTF-8; name="example.txt"
+Content-Disposition: attachment; filename="example.txt"
+Content-Transfer-Encoding: base64
+
+ZXhhbXBsZQo=
+
+--------------cWFvDSey27tFG0hVYLqp9hs9--`.trim();
+  await t.context.imapFlow.append(
+    'DELETE-WITH-MESSAGES',
+    Buffer.from(raw),
+    ['\\Seen'],
+    new Date()
+  );
+  await t.context.imapFlow.append(
+    'DELETE-WITH-MESSAGES',
+    Buffer.from(raw),
+    ['\\Seen'],
+    new Date()
+  );
+  await t.context.imapFlow.append(
+    'DELETE-WITH-MESSAGES',
+    Buffer.from(raw),
+    ['\\Seen'],
+    new Date()
+  );
+  await t.context.imapFlow.append(
+    'DELETE-WITH-MESSAGES',
+    Buffer.from(raw),
+    ['\\Seen'],
+    new Date()
+  );
+  await t.context.imapFlow.mailboxDelete('DELETE-WITH-MESSAGES');
 });
 
 // expunge deletes messages

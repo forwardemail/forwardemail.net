@@ -25,7 +25,26 @@ async function onDelete(path, session, fn) {
   this.logger.debug('DELETE', { path, session });
 
   try {
-    const { alias } = await this.refreshSession(session, 'DELETE');
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const data = await this.wsp.request({
+          action: 'delete',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress
+          },
+          path
+        });
+        fn(null, ...data);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'DELETE');
 
     const mailbox = await Mailboxes.findOne(this, session, {
       path
@@ -41,6 +60,9 @@ async function onDelete(path, session, fn) {
         imapResponse: 'CANNOT'
       });
 
+    // TODO: move all messages to trash dir if it exists else create it
+    // TODO: getting foreign key restraint
+
     // delete mailbox
     const results = await Mailboxes.deleteOne(this, session, {
       _id: mailbox._id
@@ -55,7 +77,7 @@ async function onDelete(path, session, fn) {
           command: 'DELETE',
           mailbox: mailbox._id
         });
-        this.server.notifier.fire(alias.id);
+        this.server.notifier.fire(session.user.alias_id);
       } catch (err) {
         this.logger.fatal(err, { path, session });
       }
@@ -81,7 +103,7 @@ async function onDelete(path, session, fn) {
       await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
-        alias_id: alias.id
+        alias_id: session.user.alias_id
       });
     } catch (err) {
       this.logger.fatal(err);

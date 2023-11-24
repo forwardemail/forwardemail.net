@@ -318,6 +318,21 @@ async function onAuth(auth, session, fn) {
       password: encrypt(auth.password)
     };
 
+    //
+    // sync with tmp db in the background
+    // (will cause imap-notifier to send IDLE notifications)
+    //
+    if (this.wsp && this.server instanceof IMAPServer) {
+      this.wsp
+        .request({
+          action: 'sync',
+          timeout: ms('10s'),
+          session: { user }
+        })
+        .then()
+        .catch((err) => this.logger.fatal(err, { user }));
+    }
+
     // this response object sets `session.user` to have `domain` and `alias`
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L235>
     fn(null, { user });

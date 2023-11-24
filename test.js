@@ -38,6 +38,8 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
 
     const client = new Redis();
     const subscriber = new Redis();
+    client.setMaxListeners(0);
+    subscriber.setMaxListeners(0);
     const wsp = createWebSocketAsPromised();
     const sqlite = new SQLite({ client, subscriber });
     await sqlite.listen();
@@ -95,7 +97,8 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
         storage_location: alias.storage_location
       }
     };
-    const { db } = await getDatabase(imap, alias, session);
+
+    const db = await getDatabase(imap, alias, session);
 
     console.log('db', db);
 

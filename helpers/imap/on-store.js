@@ -58,7 +58,38 @@ async function onStore(mailboxId, update, session, fn) {
   this.logger.debug('STORE', { mailboxId, update, session });
 
   try {
-    const { alias, db } = await this.refreshSession(session, 'STORE');
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const [bool, response, writeStream] = await this.wsp.request({
+          action: 'store',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress,
+            selected: session.selected
+          },
+          mailboxId,
+          update
+        });
+        if (Array.isArray(writeStream)) {
+          for (const write of writeStream) {
+            if (Array.isArray(write)) {
+              session.writeStream.write(session.formatResponse(...write));
+            } else {
+              session.writeStream.write(write);
+            }
+          }
+        }
+
+        fn(null, bool, response);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'STORE');
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -76,6 +107,7 @@ async function onStore(mailboxId, update, session, fn) {
     };
 
     const modified = [];
+    const writeStream = [];
 
     let entries = [];
     let bulkWrite = [];
@@ -113,7 +145,7 @@ async function onStore(mailboxId, update, session, fn) {
 
     let messages;
 
-    if (db.wsp) {
+    if (session.db.wsp) {
       messages = await this.wsp.request({
         action: 'stmt',
         session: { user: session.user },
@@ -123,7 +155,7 @@ async function onStore(mailboxId, update, session, fn) {
         ]
       });
     } else {
-      messages = db.prepare(sql.query).all(sql.values);
+      messages = session.db.prepare(sql.query).all(sql.values);
     }
 
     let err;
@@ -345,13 +377,20 @@ async function onStore(mailboxId, update, session, fn) {
 
         if (!update.silent || condstoreEnabled) {
           // write to socket the response
-          session.writeStream.write(
-            session.formatResponse('FETCH', message.uid, {
+          const payload = [
+            'FETCH',
+            message.uid,
+            {
               uid: update.isUid ? message.uid : false,
               flags: message.flags,
               modseq: condstoreEnabled ? modseq : false
-            })
-          );
+            }
+          ];
+          if (this?.constructor?.name === 'IMAP') {
+            session.writeStream.write(session.formatResponse(...payload));
+          } else {
+            writeStream.push(payload);
+          }
         }
 
         if (!flagsUpdate.$set) flagsUpdate.$set = {};
@@ -407,7 +446,7 @@ async function onStore(mailboxId, update, session, fn) {
                 mailbox,
                 entries
               );
-              this.server.notifier.fire(alias.id);
+              this.server.notifier.fire(session.user.alias_id);
               entries = [];
             } catch (err) {
               this.logger.fatal(err, { mailboxId, update, session });
@@ -429,7 +468,7 @@ async function onStore(mailboxId, update, session, fn) {
     if (entries.length > 0) {
       try {
         await this.server.notifier.addEntries(this, session, mailbox, entries);
-        this.server.notifier.fire(alias.id);
+        this.server.notifier.fire(session.user.alias_id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
@@ -477,7 +516,7 @@ async function onStore(mailboxId, update, session, fn) {
       await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
-        alias_id: alias.id
+        alias_id: session.user.alias_id
       });
     } catch (err) {
       this.logger.fatal(err);
@@ -487,7 +526,7 @@ async function onStore(mailboxId, update, session, fn) {
     if (err) throw err;
 
     // send response
-    fn(null, true, modified);
+    fn(null, true, modified, writeStream);
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {

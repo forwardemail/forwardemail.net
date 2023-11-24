@@ -16,7 +16,7 @@ const logger = require('#helpers/logger');
 const wsp = {
   [Symbol.for('isWSP')]: true
 };
-wsp.request = async (data) => {
+wsp.request = async function (data) {
   try {
     if (typeof data?.action !== 'string') throw new TypeError('Action missing');
 

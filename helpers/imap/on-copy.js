@@ -36,10 +36,47 @@ async function onCopy(connection, mailboxId, update, session, fn) {
   this.logger.debug('COPY', { connection, mailboxId, update, session });
 
   try {
-    const { alias, db } = await this.refreshSession(session, 'COPY');
+    if (this?.constructor?.name === 'IMAP') {
+      // start notifying connection of progress
+      let timeout;
+      (function update() {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          connection.send('* OK Copy still in progress...');
+          update();
+        }, ms('1m'));
+      })();
+
+      try {
+        const data = await this.wsp.request({
+          action: 'copy',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress
+          },
+          // connection: null,
+          mailboxId,
+          update
+        });
+        clearTimeout(timeout);
+        fn(null, ...data);
+      } catch (err) {
+        clearTimeout(timeout);
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'COPY');
 
     // check if over quota
-    const { isOverQuota } = await Aliases.isOverQuota(alias);
+    const { isOverQuota } = await Aliases.isOverQuota({
+      id: session.user.alias_id,
+      domain: session.user.domain_id,
+      locale: 'en'
+    });
     if (isOverQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
@@ -69,16 +106,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     let copiedMessages = 0;
     let copiedStorage = 0;
 
-    // start notifying connection of progress
-    let timeout;
-    (function update() {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        connection.send('* OK Copy still in progress...');
-        update();
-      }, ms('1m'));
-    })();
-
     const sql = builder.build({
       type: 'select',
       table: 'Messages',
@@ -102,7 +129,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     //       (e.g. says it was written but then when you check it doesn't exist)
     //
     let messages;
-    if (db.wsp) {
+    if (session.db.wsp) {
       messages = await this.wsp.request({
         action: 'stmt',
         session: { user: session.user },
@@ -112,7 +139,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         ]
       });
     } else {
-      messages = db.prepare(sql.query).all(sql.values);
+      messages = session.db.prepare(sql.query).all(sql.values);
     }
 
     for (const result of messages) {
@@ -124,11 +151,16 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       // check if server is in the process of shutting down
       if (this.server._closeTimeout) throw new ServerShutdownError();
 
+      // TODO: we should use web socket request to check against IMAP server if it's still open
       // check if socket is still connected
-      const socket =
-        (session.socket && session.socket._parent) || session.socket;
-      if (!socket || socket?.destroyed || socket?.readyState !== 'open')
-        throw new SocketError();
+      if (this?.constructor?.name === 'IMAP') {
+        const socket =
+          (session.socket && session.socket._parent) || session.socket;
+        if (!socket || socket?.destroyed || socket?.readyState !== 'open')
+          throw new SocketError();
+      } else {
+        // TODO: finish this for SQLite server to check websocket if still open
+      }
 
       // store current query for updating copied state
       const query = {
@@ -264,13 +296,20 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     // update quota if copied messages
     if (copiedMessages > 0 && copiedStorage > 0) {
       // send notifications
-      this.server.notifier.fire(alias.id);
+      this.server.notifier.fire(session.user.alias_id);
 
       //
       // NOTE: we don't error for quota during copy due to this reasoning
       //       <https://github.com/nodemailer/wildduck/issues/517#issuecomment-1748329188>
       //
-      Aliases.isOverQuota(alias, copiedStorage)
+      Aliases.isOverQuota(
+        {
+          id: session.user.alias_id,
+          domain: session.user.domain_id,
+          locale: 'en'
+        },
+        copiedStorage
+      )
         .then((results) => {
           if (results.isOverQuota) {
             const err = new IMAPError(
@@ -325,7 +364,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
-        alias_id: alias.id
+        alias_id: session.user.alias_id
       });
     } catch (err) {
       this.logger.fatal(err);

@@ -226,12 +226,20 @@ class IMAPNotifier extends EventEmitter {
         );
         */
 
-        const messages = await Messages.find(instance, session, {
-          _id: {
-            $in: updated
+        const messages = await Messages.find(
+          instance,
+          session,
+          {
+            _id: {
+              $in: updated
+            },
+            mailbox: mailbox._id
           },
-          mailbox: mailbox._id
-        });
+          {},
+          {
+            lock
+          }
+        );
 
         for (const message of messages) {
           if (message.modseq < modseq)

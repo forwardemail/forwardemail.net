@@ -49,10 +49,36 @@ async function onAppend(path, flags, date, raw, session, fn) {
     )
       throw new IMAPError(i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', 'en'));
 
-    const { alias } = await this.refreshSession(session, 'APPEND');
+    if (this?.constructor?.name === 'IMAP') {
+      try {
+        const data = await this.wsp.request({
+          action: 'append',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress
+          },
+          path,
+          flags,
+          date,
+          raw
+        });
+        fn(null, ...data);
+      } catch (err) {
+        fn(err);
+      }
+
+      return;
+    }
+
+    await this.refreshSession(session, 'APPEND');
 
     // check if over quota
-    const { storageUsed, isOverQuota } = await Aliases.isOverQuota(alias);
+    const { storageUsed, isOverQuota } = await Aliases.isOverQuota({
+      id: session.user.alias_id,
+      domain: session.user.domain_id,
+      locale: 'en'
+    });
     if (isOverQuota)
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
         imapResponse: 'OVERQUOTA'
@@ -287,7 +313,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
-        alias_id: alias.id
+        alias_id: session.user.alias_id
       });
     } catch (err) {
       this.logger.fatal(err);
@@ -308,7 +334,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
         idate: message.idate,
         junk: message.junk
       });
-      this.server.notifier.fire(alias.id);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       this.logger.fatal(err, { path, flags, date, session });
     }

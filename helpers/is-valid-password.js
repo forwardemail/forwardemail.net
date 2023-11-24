@@ -5,7 +5,13 @@
 
 const { Buffer } = require('node:buffer');
 
+//
+// NOTE: scmp and tsse appear to be identical
+//       <https://github.com/freewil/scmp/issues/18>
+//       <https://github.com/simonepri/tsse/issues/5>
+//
 const scmp = require('scmp');
+// const tsse = require('tsse');
 
 const pbkdf2 = require('./pbkdf2');
 

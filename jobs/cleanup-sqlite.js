@@ -183,6 +183,8 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         [...ids].map(async (id) => {
           try {
             // update `storage_used` for given alias
+            // NOTE: "size" action does not require getDatabase call
+            //       (so we don't need to do a `wsp.request.bind` like we do in `sqlite-server.js`)
             await wspServer.request({
               action: 'size',
               timeout: ms('5s'),

@@ -415,10 +415,12 @@ async function find(
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
 
+  const condition = prepareQuery(mapping, filter);
+
   const sql = builder.build({
     type: 'select',
     table,
-    condition: prepareQuery(mapping, filter)
+    condition
   });
 
   let docs;
@@ -1353,15 +1355,23 @@ function parseSchema(Model, modelName = '') {
       foreign_key_table: null,
 
       // primary key index
-      indexStatement: `CREATE UNIQUE INDEX IF NOT EXISTS "${name}_id" ON ${name} ("_id")`,
+      // NOTE: double "__" underscore to match consistency
+      // (we call it _id instead of id so that we know it's bson objectid)
+      indexStatement: `CREATE UNIQUE INDEX IF NOT EXISTS "${name}__id" ON ${name} ("_id")`,
       alterStatement: false,
 
       getter: (v) => new mongoose.Types.ObjectId(v),
       setter(v) {
-        if (!mongoose.Types.ObjectId.isValid(v))
-          throw new TypeError('Invalid object ID');
+        if (mongoose.Types.ObjectId.isValid(v)) return v.toString();
 
-        return v.toString();
+        // could be an object such as:
+        // { $in: [...] }
+        if (_.isPlainObject(v) && Array.isArray(v.$in))
+          v.$in = v.$in.map((value) =>
+            mongoose.Types.ObjectId.isValid(value) ? value.toString() : value
+          );
+
+        return v;
       },
 
       // FTS5 support
@@ -1410,9 +1420,11 @@ function parseSchema(Model, modelName = '') {
 
         getter = (v) => new mongoose.Types.ObjectId(v);
         setter = (v) => {
-          if (!mongoose.Types.ObjectId.isValid(v))
-            throw new TypeError('Invalid object ID');
-          return v.toString();
+          if (mongoose.Types.ObjectId.isValid(v)) return v.toString();
+
+          // could be an object such as:
+          // { $in: [...] }
+          return v;
         };
 
         break;

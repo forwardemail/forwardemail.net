@@ -99,7 +99,7 @@ async function getDatabase(
     (session.db instanceof Database || session.db.wsp) &&
     session.db.open === true
   )
-    return { db: session.db };
+    return session.db;
 
   // instance must be either IMAP or SQLite
   if (!['IMAP', 'SQLite'].includes(instance?.constructor?.name))
@@ -187,7 +187,7 @@ async function getDatabase(
         };
         // set session db helper (used in `refineAndLogError` to close connection)
         session.db = db;
-        return { db };
+        return db;
       }
 
       // note that this will throw an error if it parses one
@@ -212,7 +212,7 @@ async function getDatabase(
         };
         // set session db helper (used in `refineAndLogError` to close connection)
         session.db = db;
-        return { db };
+        return db;
       }
 
       // call this function again if it was successful
@@ -427,7 +427,7 @@ async function getDatabase(
     session.db = db;
 
     // if it is readonly then return early
-    if (readonly) return { db };
+    if (readonly) return db;
 
     // migrate schema
     const commands = await migrateSchema(db, session, {
@@ -461,7 +461,7 @@ async function getDatabase(
       logger.fatal(err, { alias, session });
     }
 
-    return { db };
+    return db;
   } catch (err) {
     // release lock
     if (lock) {
