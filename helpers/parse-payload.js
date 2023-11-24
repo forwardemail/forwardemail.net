@@ -1449,8 +1449,8 @@ async function parsePayload(data, ws) {
       case 'reset': {
         lock = await this.lock.waitAcquireLock(
           `${payload.session.user.alias_id}`,
-          ms('5m'),
-          ms('1m')
+          ms('15s'),
+          ms('30s')
         );
         if (!lock.success) throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
 
@@ -1508,8 +1508,8 @@ async function parsePayload(data, ws) {
         // only allow one backup at a time and once every hour
         const lock = await this.lock.waitAcquireLock(
           `${payload.session.user.alias_id}-backup`,
-          ms('5m'),
-          ms('1h')
+          ms('30m'), // expires after 30m
+          ms('10s') // wait for 10s
         );
 
         if (!lock.success) throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
