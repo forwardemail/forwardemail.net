@@ -607,6 +607,12 @@ async function onSearch(mailboxId, options, session, fn) {
             break;
           }
 
+          // NOTE: CHARSET unsupported
+          case 'charset': {
+            // <https://github.com/nodemailer/wildduck/issues/562>
+            break;
+          }
+
           default: {
             this.logger.fatal(new TypeError(`Unknown term key "${term.key}"`), {
               term,

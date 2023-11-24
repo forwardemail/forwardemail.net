@@ -314,7 +314,7 @@ async function onMove(mailboxId, update, session, fn) {
           try {
             // eslint-disable-next-line no-await-in-loop
             await this.server.notifier.addEntries(
-              session.db,
+              session,
               mailbox,
               expungeEntries,
               lock

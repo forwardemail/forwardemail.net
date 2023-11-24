@@ -109,7 +109,7 @@ async function updateMany(
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
   if (
@@ -259,7 +259,7 @@ async function countDocuments(instance, session, filter = {}) {
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
   if (
@@ -311,7 +311,7 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
   if (
@@ -402,7 +402,7 @@ async function find(
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
   if (
@@ -482,7 +482,7 @@ async function findOne(
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
   if (
@@ -534,7 +534,7 @@ async function $__handleSave(options = {}, fn) {
     const mapping = this?.mapping || this?.constructor?.mapping;
     if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
     if (
-      !this.session.db ||
+      !this.session?.db ||
       (!(this.session.db instanceof Database) && !this.session.db.wsp)
     )
       throw new TypeError('Database is missing');
@@ -698,7 +698,7 @@ async function findOneAndUpdate(
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
   if (
@@ -879,7 +879,7 @@ async function distinct(instance, session, field, conditions = {}) {
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
   if (!isSANB(field)) throw new TypeError('Field missing');
   if (
@@ -926,7 +926,7 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
   if (

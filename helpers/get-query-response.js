@@ -20,8 +20,8 @@ const libmime = require('libmime');
 
 const Indexer = require('./indexer');
 
-// eslint-disable-next-line complexity
-function getQueryResponse(query, message, options) {
+// eslint-disable-next-line complexity, max-params
+function getQueryResponse(query, message, options, instance, session) {
   options = options || {};
 
   // for optimization purposes try to use cached mimeTree etc. if available
@@ -29,6 +29,12 @@ function getQueryResponse(query, message, options) {
   // So if the query is for (UID FLAGS) then mimeTree is never generated
   let { mimeTree } = message;
   const indexer = new Indexer(options);
+
+  // NOTE: we bind a few symbols so we don't have to rewrite everything
+  if (mimeTree) {
+    mimeTree[Symbol.for('instance')] = instance;
+    mimeTree[Symbol.for('session')] = session;
+  }
 
   // generate response object
   const values = [];
@@ -65,6 +71,8 @@ function getQueryResponse(query, message, options) {
         } else {
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree[Symbol.for('instance')] = instance;
+            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getBodyStructure(mimeTree);
@@ -113,6 +121,8 @@ function getQueryResponse(query, message, options) {
         } else {
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree[Symbol.for('instance')] = instance;
+            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getEnvelope(mimeTree);
@@ -185,6 +195,8 @@ function getQueryResponse(query, message, options) {
       case 'rfc822': {
         if (!mimeTree) {
           mimeTree = indexer.parseMimeTree(message.raw);
+          mimeTree[Symbol.for('instance')] = instance;
+          mimeTree[Symbol.for('session')] = session;
         }
 
         value = indexer.getContents(mimeTree);
@@ -197,6 +209,8 @@ function getQueryResponse(query, message, options) {
         } else {
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree[Symbol.for('instance')] = instance;
+            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getSize(mimeTree);
@@ -209,6 +223,8 @@ function getQueryResponse(query, message, options) {
         // Equivalent to BODY[HEADER]
         if (!mimeTree) {
           mimeTree = indexer.parseMimeTree(message.raw);
+          mimeTree[Symbol.for('session')] = session;
+          mimeTree[Symbol.for('instance')] = instance;
         }
 
         value = [mimeTree.header || []].flat().join('\r\n') + '\r\n\r\n';
@@ -219,6 +235,8 @@ function getQueryResponse(query, message, options) {
         // Equivalent to BODY[TEXT]
         if (!mimeTree) {
           mimeTree = indexer.parseMimeTree(message.raw);
+          mimeTree[Symbol.for('instance')] = instance;
+          mimeTree[Symbol.for('session')] = session;
         }
 
         value = indexer.getContents(mimeTree, {
@@ -234,6 +252,8 @@ function getQueryResponse(query, message, options) {
           // BODY
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree[Symbol.for('instance')] = instance;
+            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getBody(mimeTree);
@@ -241,6 +261,8 @@ function getQueryResponse(query, message, options) {
           // BODY[]
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree[Symbol.for('instance')] = instance;
+            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getContents(mimeTree, false, {
@@ -251,6 +273,8 @@ function getQueryResponse(query, message, options) {
           // BODY[SELECTOR]
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree[Symbol.for('instance')] = instance;
+            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getContents(mimeTree, item, {

@@ -220,16 +220,22 @@ async function getMessages(instance, session, server, opts = {}) {
     if (options.metadataOnly && !markAsSeen) {
       // eslint-disable-next-line no-await-in-loop
       const values = await Promise.all(
-        getQueryResponse(options.query, message, {
-          logger: server.logger,
-          fetchOptions: {},
-          // database
-          attachmentStorage,
-          acceptUTF8Enabled:
-            typeof session.isUTF8Enabled === 'function'
-              ? session.isUTF8Enabled()
-              : session.acceptUTF8Enabled || false
-        }).map((obj) => {
+        getQueryResponse(
+          options.query,
+          message,
+          {
+            logger: server.logger,
+            fetchOptions: {},
+            // database
+            attachmentStorage,
+            acceptUTF8Enabled:
+              typeof session.isUTF8Enabled === 'function'
+                ? session.isUTF8Enabled()
+                : session.acceptUTF8Enabled || false
+          },
+          instance,
+          session
+        ).map((obj) => {
           if (
             typeof obj !== 'object' ||
             obj.type !== 'stream' ||
@@ -280,16 +286,22 @@ async function getMessages(instance, session, server, opts = {}) {
 
     // eslint-disable-next-line no-await-in-loop
     const values = await Promise.all(
-      getQueryResponse(options.query, message, {
-        logger: server.logger,
-        fetchOptions: {},
-        // database
-        attachmentStorage,
-        acceptUTF8Enabled:
-          typeof session.isUTF8Enabled === 'function'
-            ? session.isUTF8Enabled()
-            : session.acceptUTF8Enabled || false
-      }).map((obj) => {
+      getQueryResponse(
+        options.query,
+        message,
+        {
+          logger: server.logger,
+          fetchOptions: {},
+          // database
+          attachmentStorage,
+          acceptUTF8Enabled:
+            typeof session.isUTF8Enabled === 'function'
+              ? session.isUTF8Enabled()
+              : session.acceptUTF8Enabled || false
+        },
+        instance,
+        session
+      ).map((obj) => {
         if (
           typeof obj !== 'object' ||
           obj.type !== 'stream' ||

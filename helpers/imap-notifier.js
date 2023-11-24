@@ -116,7 +116,7 @@ class IMAPNotifier extends EventEmitter {
 
   // eslint-disable-next-line complexity, max-params
   async addEntries(instance, session, mailboxId, entries, lock = false) {
-    if (!session.db || (!(session.db instanceof Database) && !session.db.wsp))
+    if (!session?.db || (!(session.db instanceof Database) && !session.db.wsp))
       throw new TypeError('Database is missing');
 
     if (

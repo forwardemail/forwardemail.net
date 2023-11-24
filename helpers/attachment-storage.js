@@ -43,6 +43,9 @@ class AttachmentStorage {
     const instance = mimeTree[Symbol.for('instance')];
     const session = mimeTree[Symbol.for('session')];
 
+    if (!instance) throw new TypeError('Instance is not defined');
+    if (!session) throw new TypeError('Session is not defined');
+
     // TODO: should we project w/o body since we're not using it here as an optimization (?)
     const attachmentData = await Attachments.findOne(instance, session, {
       hash
