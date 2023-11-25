@@ -799,9 +799,9 @@ async function findOneAndUpdate(
         // delete $addToSet from the query preparation
         delete update.$addToSet;
       }
-
-      if (key === '$set') update[key] = prepareQuery(mapping, update[key]);
     }
+
+    if (update.$set) update.$set = prepareQuery(mapping, update.$set);
 
     const sql = builder.build({
       type: 'update',
@@ -1314,6 +1314,7 @@ function prepareQuery(mapping, doc) {
     if (!mapping[key]) throw new TypeError(`Mapping for ${key} does not exist`);
     if (typeof mapping[key].setter !== 'function')
       throw new TypeError(`Mapping setter for ${key} does not exist`);
+
     obj[key] = mapping[key].setter(toObject[key]);
   }
 
@@ -1499,6 +1500,7 @@ function parseSchema(Model, modelName = '') {
 
         getter = (v) => recursivelyParse(v);
         setter = (v) => safeStringify(v);
+
         break;
       }
 

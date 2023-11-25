@@ -751,7 +751,7 @@ ZXhhbXBsZQo=
 
   const result = await t.context.imapFlow.messageFlagsAdd(
     uids,
-    ['\\Deleted'],
+    ['\\Deleted', 'NonJunk'],
     // <https://github.com/postalsys/imapflow/issues/21#issuecomment-658773009>
     { uid: true }
   );
