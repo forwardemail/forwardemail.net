@@ -700,7 +700,7 @@ async function parsePayload(data, ws) {
                   this.logger.fatal(err, { payload });
                 }
               } catch (_err) {
-                const err = Array.isArray(_err) ? _err[0] : err;
+                const err = Array.isArray(_err) ? _err[0] : _err;
                 err.isCodeBug = true;
                 logger.fatal(err, { payload });
               }
@@ -1067,7 +1067,7 @@ async function parsePayload(data, ws) {
                   logger.fatal(err, { payload });
                 }
               } catch (_err) {
-                const err = Array.isArray(_err) ? _err[0] : err;
+                const err = Array.isArray(_err) ? _err[0] : _err;
                 if (isTimeoutError(err)) {
                   logger.warn(err, { payload });
                 } else {
