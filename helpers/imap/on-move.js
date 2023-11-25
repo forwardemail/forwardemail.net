@@ -409,6 +409,9 @@ async function onMove(mailboxId, update, session, fn) {
       }
     }
 
+    // TODO: We shouldn't have two .fire() invocations
+    //       just one
+
     // update storage
     try {
       await this.wsp.request({

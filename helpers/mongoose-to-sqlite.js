@@ -91,7 +91,6 @@ function noop(fnName) {
   };
 }
 
-// TODO: update quota stuff to use file size (if beyond 1 TB then email admins)
 // TODO: save(), find() etc all these methods need timeout wrapped around (?)
 // maybe we want to rewrite the usage of these on
 // a case by case basis instead of writing this out
@@ -394,9 +393,15 @@ async function find(
   projections = {},
   options = {}
 ) {
-  if (!_.isEmpty(projections) || !_.isEmpty(options)) {
-    throw new TypeError('Projections and options not yet supported');
+  if (!_.isEmpty(projections)) {
+    throw new TypeError('Projections not yet supported');
   }
+
+  if (
+    !_.isEmpty(options) &&
+    !Object.keys(options).every((key) => key === 'lock')
+  )
+    throw new TypeError('Only lock option supported');
 
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');

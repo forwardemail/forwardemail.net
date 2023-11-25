@@ -158,7 +158,7 @@ class IMAPNotifier extends EventEmitter {
     // safeguard
     if (_.isEmpty(query) || !query._id) throw new Error('Query empty');
 
-    if (updated.length > 0)
+    if (updated.length > 0) {
       mailbox = await Mailboxes.findOneAndUpdate(
         instance,
         session,
@@ -173,6 +173,7 @@ class IMAPNotifier extends EventEmitter {
           returnDocument: 'after'
         }
       );
+    }
 
     if (!mailbox) mailbox = await Mailboxes.findOne(instance, session, query);
 
@@ -194,9 +195,10 @@ class IMAPNotifier extends EventEmitter {
 
     if (updated.length > 0) {
       logger.debug('updating messages', {
+        entries,
+        modseq,
         mailbox,
         updated,
-        modseq,
         session
       });
 

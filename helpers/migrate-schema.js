@@ -247,7 +247,7 @@ async function migrateSchema(db, session, tables) {
           ) {
             // drop it and add it back
             commands.push(
-              `DROP INDEX IF EXISTS "${table}_${key}" ON ${table}`,
+              `DROP INDEX IF EXISTS "${table}_${key}"`,
               tables[table].mapping[key].indexStatement
             );
           }

@@ -31,7 +31,8 @@ const Mailboxes = new mongoose.Schema(
     path: {
       type: String,
       required: true,
-      index: true
+      index: true,
+      unique: true
     },
     uidValidity: {
       type: Number,

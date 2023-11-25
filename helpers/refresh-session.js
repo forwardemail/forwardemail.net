@@ -12,6 +12,7 @@ const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
+const Messages = require('#models/messages');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const config = require('#config');
@@ -173,6 +174,12 @@ async function refreshSession(session, command) {
         await Promise.all(
           required.map(async (path) => {
             try {
+              const count = await Mailboxes.countDocuments(this, session, {
+                path
+              });
+
+              if (count > 0) return;
+
               const mailbox = await Mailboxes.create({
                 // virtual helper
                 instance: this,
@@ -198,6 +205,39 @@ async function refreshSession(session, command) {
             }
           })
         );
+      }
+
+      // since we didn't originally have "UNIQUE" constraint on "path"
+      // we need to keep this in here for a while until we're sure it's fixed
+      for (const path of REQUIRED_PATHS) {
+        // eslint-disable-next-line no-await-in-loop
+        const mailboxes = await Mailboxes.find(this, session, {
+          path
+        });
+
+        if (mailboxes.length > 1) {
+          // merge together mailboxes without notifications for now
+          // (assume user will close/reopen app at some point)
+          for (const mailbox of mailboxes.slice(1)) {
+            // eslint-disable-next-line no-await-in-loop
+            await Messages.updateMany(
+              this,
+              session,
+              {
+                mailbox: mailbox._id
+              },
+              {
+                $set: {
+                  mailbox: mailboxes[0]._id
+                }
+              }
+            );
+            // eslint-disable-next-line no-await-in-loop
+            await Mailboxes.deleteOne(this, session, {
+              _id: mailbox._id
+            });
+          }
+        }
       }
     } catch (err) {
       this.logger.fatal(err, { session });
