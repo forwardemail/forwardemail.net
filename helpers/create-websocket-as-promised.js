@@ -176,6 +176,7 @@ function createWebSocketAsPromised(options = {}) {
       return response.data;
     } catch (err) {
       err.isCodeBug = true;
+      err.wsData = data;
       throw refineAndLogError(err);
     }
   };
