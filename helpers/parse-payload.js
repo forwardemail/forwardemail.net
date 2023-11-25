@@ -371,7 +371,7 @@ async function parsePayload(data, ws) {
           this,
           payload.path,
           payload.flags,
-          new Date(payload.date),
+          payload.date ? new Date(payload.date) : false,
           payload.raw,
           payload.session
         );

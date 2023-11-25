@@ -239,6 +239,28 @@ async function refreshSession(session, command) {
           }
         }
       }
+
+      // for any idate values that were set from `new Date(false)`
+      // (e.g. the value is `1970-01-01T00:00:00.000Z` which is incorrect)
+      // we need to set the value of `idate` to the value of `hdate`
+      const messages = await Messages.find(this, session, {
+        idate: new Date(false)
+      });
+      for (const message of messages) {
+        // eslint-disable-next-line no-await-in-loop
+        await Messages.findOneAndUpdate(
+          this,
+          session,
+          {
+            _id: message._id
+          },
+          {
+            $set: {
+              idate: message.hdate
+            }
+          }
+        );
+      }
     } catch (err) {
       this.logger.fatal(err, { session });
     }
