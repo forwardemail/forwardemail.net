@@ -642,66 +642,72 @@ async function parsePayload(data, ws) {
             {}
           );
 
-          for (const message of messages) {
-            //
-            // if one message fails then not all of them should
-            // (e.g. one might have an issue with `date` or `raw`)
-            //
-            try {
-              // check that we have available space
-              const storagePath = getPathToDatabase({
-                id: payload.session.user.alias_id,
-                storage_location: payload.session.user.storage_location
-              });
-              const spaceRequired = Buffer.byteLength(message.raw);
-              // eslint-disable-next-line no-await-in-loop
-              const diskSpace = await checkDiskSpace(storagePath);
-              if (diskSpace.free < spaceRequired)
-                throw new TypeError(
-                  `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
-                    diskSpace.free
-                  )} was available`
+          if (messages.length > 0) {
+            for (const message of messages) {
+              //
+              // if one message fails then not all of them should
+              // (e.g. one might have an issue with `date` or `raw`)
+              //
+              try {
+                // check that we have available space
+                const storagePath = getPathToDatabase({
+                  id: payload.session.user.alias_id,
+                  storage_location: payload.session.user.storage_location
+                });
+                const spaceRequired = Buffer.byteLength(message.raw);
+                // eslint-disable-next-line no-await-in-loop
+                const diskSpace = await checkDiskSpace(storagePath);
+                if (diskSpace.free < spaceRequired)
+                  throw new TypeError(
+                    `Needed ${prettyBytes(
+                      spaceRequired
+                    )} but only ${prettyBytes(diskSpace.free)} was available`
+                  );
+
+                // eslint-disable-next-line no-await-in-loop
+                await onAppendPromise.call(
+                  this,
+                  'INBOX',
+                  [],
+                  message.date,
+                  message.raw,
+                  {
+                    ..._.omit(payload.session, 'db'),
+                    remoteAddress: message.remoteAddress
+                  }
                 );
 
-              // eslint-disable-next-line no-await-in-loop
-              await onAppendPromise.call(
-                this,
-                'INBOX',
-                [],
-                message.date,
-                message.raw,
-                {
-                  ..._.omit(payload.session, 'db'),
-                  remoteAddress: message.remoteAddress
-                }
-              );
+                count++;
 
-              count++;
-
-              // if successfully appended then delete from the database
-              // eslint-disable-next-line no-await-in-loop
-              await TemporaryMessages.deleteOne(
-                this,
-                { user: payload.session.user, db: tmpDb },
-                { _id: message._id }
-              );
-
-              // update storage
-              try {
+                // if successfully appended then delete from the database
                 // eslint-disable-next-line no-await-in-loop
-                await this.wsp.request({
-                  action: 'size',
-                  timeout: ms('5s'),
-                  alias_id: payload.session.user.alias_id
-                });
-              } catch (err) {
-                this.logger.fatal(err, { payload });
+                await TemporaryMessages.deleteOne(
+                  this,
+                  { user: payload.session.user, db: tmpDb },
+                  { _id: message._id }
+                );
+
+                // update storage
+                try {
+                  // eslint-disable-next-line no-await-in-loop
+                  await this.wsp.request({
+                    action: 'size',
+                    timeout: ms('5s'),
+                    alias_id: payload.session.user.alias_id
+                  });
+                } catch (err) {
+                  err.isCodeBug = true;
+                  this.logger.fatal(err, { payload });
+                }
+              } catch (_err) {
+                const err = Array.isArray(_err) ? _err[0] : err;
+                err.isCodeBug = true;
+                logger.fatal(err, { payload });
               }
-            } catch (err) {
-              logger.fatal(err, { payload });
             }
           }
         } catch (err) {
+          err.isCodeBug = true;
           logger.fatal(err, { payload });
         }
 
@@ -1060,7 +1066,8 @@ async function parsePayload(data, ws) {
                 } catch (err) {
                   logger.fatal(err, { payload });
                 }
-              } catch (err) {
+              } catch (_err) {
+                const err = Array.isArray(_err) ? _err[0] : err;
                 if (isTimeoutError(err)) {
                   logger.warn(err, { payload });
                 } else {

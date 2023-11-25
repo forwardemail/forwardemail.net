@@ -125,11 +125,17 @@ class AttachmentStorage {
   createReadStream(id, attachment) {
     // NOTE: we don't use any `metadata` or `streamOptions` like wildduck does
     try {
-      const stream = intoStream(attachment.body);
+      //
+      // NOTE: `attachmnent.body` can be undefined if FileNotFound error occurs
+      //       so in order to prevent an error being thrown per below GH issue
+      //       we allocate a new Buffer with size of 0 bytes
+      //       <https://github.com/sindresorhus/into-stream/issues/23>
+      //
+      const stream = intoStream(attachment.body || Buffer.alloc(0));
       return stream;
     } catch (err) {
-      // for some reason we got some symbol errors on `intoStream`
-      // invocation so keeping this here to help debug further
+      // errors most likely won't get thrown anymore since we have `Buffer.alloc(0)` now
+      // but in the event they do, we at least have this to help debug the issue
       err.isCodeBug = true;
       if (typeof attachment === 'object')
         err.attachment = _.omit(attachment, ['body']);

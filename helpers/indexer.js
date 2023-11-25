@@ -38,6 +38,12 @@ class Indexer extends WildDuckIndexer {
     this.storeNodeBodies = storeNodeBodies.bind(this);
   }
 
+  // TODO: the issue is that rebuild is called with a `node`
+  //       and not the original `mimeTree` with the symbols binded
+  //       so we need to modify `getContents` to pass them
+  //       as `instance` and `session` properties and then rebind after
+  //       and also modify `getQueryResponse` to pass them as well
+  //
   rebuild(mimeTree, textOnly, options) {
     options = options || {};
 

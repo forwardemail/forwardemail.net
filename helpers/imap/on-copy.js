@@ -44,7 +44,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         timeout = setTimeout(() => {
           connection.send('* OK Copy still in progress...');
           update();
-        }, ms('1m'));
+        }, ms('15s'));
       })();
 
       try {
