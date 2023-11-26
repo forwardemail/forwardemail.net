@@ -1008,7 +1008,7 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
               this,
               instance,
               session,
-              op.updateOne.update.filter
+              op.updateOne.filter
             );
 
           if (!doc) throw new TypeError('Doc does not exist');
@@ -1078,7 +1078,7 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
               this,
               instance,
               session,
-              op.updateOne.update.filter
+              op.updateOne.filter
             );
 
           if (!doc) throw new TypeError('Doc does not exist');

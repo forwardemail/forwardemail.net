@@ -190,8 +190,9 @@ async function onStore(mailboxId, update, session, fn) {
           session?.selected?.uidList &&
           Array.isArray(session.selected.uidList) &&
           !session.selected.uidList.includes(message.uid)
-        )
+        ) {
           continue;
+        }
 
         if (update.unchangedSince && message.modseq > update.unchangedSince) {
           modified.push(message.uid);
@@ -413,15 +414,11 @@ async function onStore(mailboxId, update, session, fn) {
 
         entries.push({
           command: 'FETCH',
-          ignore: session.id,
+          // ignore: session.id,
           uid: message.uid,
           flags: message.flags,
           message: message._id,
-          modseq,
-          mailbox: mailbox._id,
-          thread: message.thread,
-          unseen: update.value && update.value.includes('\\Seen'),
-          idate: message.idate
+          modseq
         });
 
         if (bulkWrite.length >= MAX_BULK_WRITE_SIZE) {
