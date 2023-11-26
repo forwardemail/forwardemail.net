@@ -52,7 +52,7 @@ const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
 
-const INITIAL_DB_SIZE = 159744;
+const INITIAL_DB_SIZE = 163840;
 
 subscriber.setMaxListeners(0);
 

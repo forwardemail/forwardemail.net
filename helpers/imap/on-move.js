@@ -309,6 +309,8 @@ async function onMove(mailboxId, update, session, fn) {
         //
         // iterate over entries if necessary
         //
+        let notify = false;
+
         if (expungeEntries.length >= BULK_BATCH_SIZE) {
           // expunge messages from old mailbox
           try {
@@ -320,7 +322,7 @@ async function onMove(mailboxId, update, session, fn) {
               lock
             );
             expungeEntries = [];
-            this.server.notifier.fire(session.user.alias_id);
+            notify = true;
           } catch (err) {
             this.logger.fatal(err, { mailboxId, update, session });
           }
@@ -338,6 +340,14 @@ async function onMove(mailboxId, update, session, fn) {
               lock
             );
             existEntries = [];
+            notify = true;
+          } catch (err) {
+            this.logger.fatal(err, { mailboxId, update, session });
+          }
+        }
+
+        if (notify) {
+          try {
             this.server.notifier.fire(session.user.alias_id);
           } catch (err) {
             this.logger.fatal(err, { mailboxId, update, session });
@@ -387,7 +397,6 @@ async function onMove(mailboxId, update, session, fn) {
           expungeEntries,
           lock
         );
-        this.server.notifier.fire(session.user.alias_id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
@@ -403,14 +412,18 @@ async function onMove(mailboxId, update, session, fn) {
           existEntries,
           lock
         );
-        this.server.notifier.fire(session.user.alias_id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
     }
 
-    // TODO: We shouldn't have two .fire() invocations
-    //       just one
+    if (expungeEntries.length > 0 || existEntries.length > 0) {
+      try {
+        this.server.notifier.fire(session.user.alias_id);
+      } catch (err) {
+        this.logger.fatal(err, { mailboxId, update, session });
+      }
+    }
 
     // update storage
     try {

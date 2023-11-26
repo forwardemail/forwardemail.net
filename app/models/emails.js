@@ -566,7 +566,7 @@ Emails.statics.getMessage = async function (obj) {
 
   if (typeof obj !== 'object') throw new Error('Invalid GridFS object');
 
-  if (!obj?._id || !mongoose.Types.ObjectId.isValid(obj._id))
+  if (!obj?._id || !mongoose.isObjectIdOrHexString(obj._id))
     throw new Error('Invalid GridFS ObjectId');
 
   if (typeof obj.length !== 'number') throw new Error('Invalid GridFS length');

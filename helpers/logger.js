@@ -135,12 +135,12 @@ async function hook(err, message, meta) {
         if (
           typeof log.meta.user === 'object' &&
           typeof log.meta.user.id === 'string' &&
-          mongoose.Types.ObjectId.isValid(log.meta.user.id)
+          mongoose.isObjectIdOrHexString(log.meta.user.id)
         )
           log.user = new mongoose.Types.ObjectId(log.meta.user.id);
         else if (
           typeof log.meta.user === 'object' &&
-          mongoose.Types.ObjectId.isValid(log.meta.user)
+          mongoose.isObjectIdOrHexString(log.meta.user)
         )
           log.user = log.meta.user;
 
@@ -148,7 +148,7 @@ async function hook(err, message, meta) {
         if (Array.isArray(log.meta.domains)) {
           const domains = [];
           for (const d of log.meta.domains) {
-            if (typeof d === 'object' && mongoose.Types.ObjectId.isValid(d))
+            if (typeof d === 'object' && mongoose.isObjectIdOrHexString(d))
               domains.push(d);
           }
 
@@ -159,12 +159,12 @@ async function hook(err, message, meta) {
         if (
           typeof log.meta.email === 'object' &&
           typeof log.meta.email.id === 'string' &&
-          mongoose.Types.ObjectId.isValid(log.meta.email.id)
+          mongoose.isObjectIdOrHexString(log.meta.email.id)
         )
           log.email = new mongoose.Types.ObjectId(log.meta.email.id);
         else if (
           typeof log.meta.email === 'object' &&
-          mongoose.Types.ObjectId.isValid(log.meta.email)
+          mongoose.isObjectIdOrHexString(log.meta.email)
         )
           log.email = log.meta.email;
       }

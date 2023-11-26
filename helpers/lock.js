@@ -31,7 +31,7 @@ async function acquireLock(instance, db) {
   if (
     db.wsp === true &&
     typeof db.id === 'string' &&
-    mongoose.Types.ObjectId.isValid(db.id)
+    mongoose.isObjectIdOrHexString(db.id)
   ) {
     id = db.id;
   } else if (

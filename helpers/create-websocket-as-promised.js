@@ -21,6 +21,7 @@ const config = require('#config');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
+const recursivelyParse = require('#helpers/recursively-parse');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
@@ -131,7 +132,7 @@ function createWebSocketAsPromised(options = {}) {
         data.action !== 'tmp' &&
         data.action !== 'size' &&
         (typeof data?.session?.user?.alias_id !== 'string' ||
-          !mongoose.Types.ObjectId.isValid(data.session.user.alias_id))
+          !mongoose.isObjectIdOrHexString(data.session.user.alias_id))
       )
         throw new TypeError('Alias ID missing from session');
 
@@ -173,7 +174,7 @@ function createWebSocketAsPromised(options = {}) {
       }
 
       if (response.err) throw parseError(response.err);
-      return response.data;
+      return recursivelyParse(response.data, true);
     } catch (err) {
       err.isCodeBug = true;
       err.wsData = data;

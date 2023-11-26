@@ -8,6 +8,7 @@ const fs = require('node:fs');
 // <https://github.com/knex/knex-schema-inspector/pull/146>
 const Database = require('better-sqlite3-multiple-ciphers');
 const isSANB = require('is-string-and-not-blank');
+const mongoose = require('mongoose');
 
 const Attachments = require('#models/attachments');
 const Mailboxes = require('#models/mailboxes');
@@ -106,7 +107,8 @@ async function getDatabase(
     throw new TypeError('Instance must be either SQLite or IMAP');
 
   // safeguard
-  if (!isSANB(alias?.id)) throw new TypeError('Alias ID missing');
+  if (!mongoose.isObjectIdOrHexString(alias?.id))
+    throw new TypeError('Alias ID missing');
 
   // safeguard
   if (!isSANB(session?.user?.password)) throw new TypeError('Password missing');

@@ -28,7 +28,7 @@ async function onOpen(path, session, fn) {
   try {
     if (this?.constructor?.name === 'IMAP') {
       try {
-        const data = await this.wsp.request({
+        const response = await this.wsp.request({
           action: 'open',
           session: {
             id: session.id,
@@ -37,7 +37,8 @@ async function onOpen(path, session, fn) {
           },
           path
         });
-        fn(null, ...data);
+
+        fn(null, response);
       } catch (err) {
         fn(err);
       }

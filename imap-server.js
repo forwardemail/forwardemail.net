@@ -220,12 +220,13 @@ class IMAP {
       if (channel !== 'sqlite_auth_request' && channel !== 'sqlite_auth_reset')
         return;
       try {
-        if (typeof id !== 'string' || !mongoose.Types.ObjectId.isValid(id))
+        if (typeof id !== 'string' || !mongoose.isObjectIdOrHexString(id))
           throw new TypeError('Alias ID missing');
 
         if (channel === 'sqlite_auth_reset') {
           for (const connection of this.server.connections) {
             if (connection?.session?.user?.alias_id !== id) continue;
+            connection.clearNotificationListener();
             connection.send('* BYE Password was changed');
             setImmediate(() => connection.close());
           }

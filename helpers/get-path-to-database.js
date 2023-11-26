@@ -17,9 +17,9 @@ function getPathToDatabase(alias) {
   if (typeof alias !== 'object') throw new TypeError('Alias missing');
   if (typeof alias?.storage_location !== 'string')
     throw new TypeError('Alias storage location missing');
-  if (typeof alias?.id !== 'string') throw new TypeError('Alias ID missing');
+  if (alias?.id === undefined) throw new TypeError('Alias ID missing');
   // validate that they are all object ids
-  if (!mongoose.Types.ObjectId.isValid(alias.id))
+  if (!mongoose.isObjectIdOrHexString(alias.id))
     throw new TypeError('Invalid alias id');
 
   const dir = path.join(

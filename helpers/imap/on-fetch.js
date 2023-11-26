@@ -50,7 +50,7 @@ async function getMessages(instance, session, server, opts = {}) {
     throw new Error('Query cannot be empty');
 
   // safeguard for mailbox
-  if (!query?.mailbox || !mongoose.Types.ObjectId.isValid(query.mailbox))
+  if (!query?.mailbox || !mongoose.isObjectIdOrHexString(query.mailbox))
     throw new Error('Mailbox missing from query');
 
   if (!_.isObject(attachmentStorage))
@@ -190,7 +190,7 @@ async function getMessages(instance, session, server, opts = {}) {
 
     // TODO: we should use web socket request to check against IMAP server if it's still open
     // check if socket is still connected
-    if (this?.constructor?.name === 'IMAP') {
+    if (instance?.constructor?.name === 'IMAP') {
       const socket =
         (session.socket && session.socket._parent) || session.socket;
       if (!socket || socket?.destroyed || socket?.readyState !== 'open')
@@ -261,7 +261,7 @@ async function getMessages(instance, session, server, opts = {}) {
       const compiled = imapHandler.compiler(data);
       // `compiled` is a 'binary' string
       totalBytes += compiled.length;
-      if (this?.constructor?.name === 'IMAP') {
+      if (instance?.constructor?.name === 'IMAP') {
         session.writeStream.write({ compiled });
       } else {
         writeStream.push({ compiled });
@@ -327,7 +327,7 @@ async function getMessages(instance, session, server, opts = {}) {
     const compiled = imapHandler.compiler(data);
     // `compiled` is a 'binary' string
     totalBytes += compiled.length;
-    if (this?.constructor?.name === 'IMAP') {
+    if (instance?.constructor?.name === 'IMAP') {
       session.writeStream.write({ compiled });
     } else {
       writeStream.push({ compiled });
@@ -359,6 +359,7 @@ async function getMessages(instance, session, server, opts = {}) {
         command: 'FETCH',
         uid: message.uid,
         message: message._id,
+        // modseq: message.modseq,
         mailbox: mailbox._id,
         thread: message.thread,
         flags: message.flags
@@ -414,6 +415,7 @@ async function onFetch(mailboxId, options, session, fn) {
   this.logger.debug('FETCH', { mailboxId, options, session });
 
   try {
+    /*
     if (this?.constructor?.name === 'IMAP') {
       try {
         const [bool, response, writeStream] = await this.wsp.request({
@@ -428,6 +430,7 @@ async function onFetch(mailboxId, options, session, fn) {
           mailboxId,
           options
         });
+
         if (Array.isArray(writeStream)) {
           for (const write of writeStream) {
             if (Array.isArray(write)) {
@@ -445,6 +448,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
       return;
     }
+    */
 
     await this.refreshSession(session, 'FETCH');
 

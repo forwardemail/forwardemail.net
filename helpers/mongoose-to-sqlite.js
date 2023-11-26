@@ -1368,13 +1368,13 @@ function parseSchema(Model, modelName = '') {
 
       getter: (v) => new mongoose.Types.ObjectId(v),
       setter(v) {
-        if (mongoose.Types.ObjectId.isValid(v)) return v.toString();
+        if (mongoose.isObjectIdOrHexString(v)) return v.toString();
 
         // could be an object such as:
         // { $in: [...] }
         if (_.isPlainObject(v) && Array.isArray(v.$in))
           v.$in = v.$in.map((value) =>
-            mongoose.Types.ObjectId.isValid(value) ? value.toString() : value
+            mongoose.isObjectIdOrHexString(value) ? value.toString() : value
           );
 
         return v;
@@ -1426,7 +1426,7 @@ function parseSchema(Model, modelName = '') {
 
         getter = (v) => new mongoose.Types.ObjectId(v);
         setter = (v) => {
-          if (mongoose.Types.ObjectId.isValid(v)) return v.toString();
+          if (mongoose.isObjectIdOrHexString(v)) return v.toString();
 
           // could be an object such as:
           // { $in: [...] }

@@ -654,7 +654,7 @@ async function getStorageUsed(alias) {
       _.isObject(member.user) &&
       !member.user[config.userFields.isBanned] &&
       member.group === 'admin' &&
-      mongoose.Types.ObjectId.isValid(member.user._id)
+      mongoose.isObjectIdOrHexString(member.user._id)
   );
 
   if (adminMembers.length === 0)

@@ -85,7 +85,7 @@ const onGetQuotaPromise = pify(onGetQuota, { multiArgs: true });
 const onListPromise = pify(onList, { multiArgs: true });
 const onLsubPromise = pify(onLsub, { multiArgs: true });
 const onMovePromise = pify(onMove, { multiArgs: true });
-const onOpenPromise = pify(onOpen, { multiArgs: true });
+const onOpenPromise = pify(onOpen);
 const onRenamePromise = pify(onRename, { multiArgs: true });
 const onSearchPromise = pify(onSearch, { multiArgs: true });
 const onStatusPromise = pify(onStatus, { multiArgs: true });
@@ -300,10 +300,7 @@ async function parsePayload(data, ws) {
         throw new TypeError('Payload session user must be plain Object');
 
       // session.user.domain_id
-      if (
-        !isSANB(payload.session.user.domain_id) ||
-        !mongoose.Types.ObjectId.isValid(payload.session.user.domain_id)
-      ) {
+      if (!mongoose.isObjectIdOrHexString(payload.session.user.domain_id)) {
         throw new TypeError(
           'Payload domain ID missing or invalid BSON ObjectId'
         );
@@ -317,10 +314,7 @@ async function parsePayload(data, ws) {
         throw new TypeError('Payload domain name missing or invalid FQDN');
 
       // session.user.alias_id
-      if (
-        !isSANB(payload.session.user.alias_id) ||
-        !mongoose.Types.ObjectId.isValid(payload.session.user.alias_id)
-      )
+      if (!mongoose.isObjectIdOrHexString(payload.session.user.alias_id))
         throw new TypeError(
           'Payload alias ID missing or invalid BSON ObjectId'
         );
@@ -371,7 +365,11 @@ async function parsePayload(data, ws) {
           this,
           payload.path,
           payload.flags,
-          payload.date ? new Date(payload.date) : false,
+          payload.date
+            ? _.isDate(payload.date)
+              ? payload.date
+              : new Date(payload.date)
+            : false,
           payload.raw,
           payload.session
         );
@@ -724,7 +722,8 @@ async function parsePayload(data, ws) {
       // into temporary encrypted sqlite db
       case 'tmp': {
         // ensure payload.date is a string and valid date
-        if (!isSANB(payload.date)) throw new TypeError('Payload date missing');
+        if (payload.date === undefined)
+          throw new TypeError('Payload date missing');
 
         if (!_.isDate(new Date(payload.date)))
           throw new TypeError('Payload date is invalid');
@@ -752,8 +751,8 @@ async function parsePayload(data, ws) {
           payload.aliases.some(
             (a) =>
               typeof a !== 'object' ||
-              typeof a.id !== 'string' ||
-              !mongoose.Types.ObjectId.isValid(a.id) ||
+              a.id === undefined ||
+              !mongoose.isObjectIdOrHexString(a.id) ||
               typeof a.address !== 'string' ||
               !isEmail(a.address)
           )
@@ -774,7 +773,7 @@ async function parsePayload(data, ws) {
           // eslint-disable-next-line complexity
           async (obj) => {
             try {
-              const alias = await Aliases.findOne({ id: obj.id })
+              const alias = await Aliases.findById(obj.id)
                 .populate('domain', 'id name')
                 .populate('user', config.userFields.isBanned)
                 .select(
@@ -1038,7 +1037,9 @@ async function parsePayload(data, ws) {
                   this,
                   'INBOX',
                   [],
-                  new Date(payload.date),
+                  _.isDate(payload.date)
+                    ? payload.date
+                    : new Date(payload.date),
                   payload.raw,
                   {
                     user: {
@@ -1089,7 +1090,9 @@ async function parsePayload(data, ws) {
                   await TemporaryMessages.create({
                     instance: this,
                     session: { user: session.user, db: tmpDb },
-                    date: new Date(payload.date),
+                    date: _.isDate(payload.date)
+                      ? payload.date
+                      : new Date(payload.date),
                     raw: payload.raw,
                     remoteAddress: payload.remoteAddress
                   });
@@ -1200,13 +1203,10 @@ async function parsePayload(data, ws) {
 
       // updates storage_used for a specific alias by its id
       case 'size': {
-        if (
-          !isSANB(payload.alias_id) ||
-          !mongoose.Types.ObjectId.isValid(payload.alias_id)
-        )
+        if (!mongoose.isObjectIdOrHexString(payload.alias_id))
           throw new TypeError('Alias ID missing');
 
-        const alias = await Aliases.findOne({ id: payload.alias_id })
+        const alias = await Aliases.findById(payload.alias_id)
           .select('id storage_location')
           .lean()
           .exec();
@@ -1250,16 +1250,11 @@ async function parsePayload(data, ws) {
           }
 
           // save storage_used on the given alias
-          await Aliases.findOneAndUpdate(
-            {
-              id: payload.alias_id
-            },
-            {
-              $set: {
-                storage_used: size
-              }
+          await Aliases.findByIdAndUpdate(payload.alias_id, {
+            $set: {
+              storage_used: size
             }
-          );
+          });
 
           response = {
             id: payload.id,

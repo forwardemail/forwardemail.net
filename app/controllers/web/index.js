@@ -287,14 +287,14 @@ async function regenerateAliasPassword(ctx) {
     // validate domain_id is set
     if (
       !isSANB(ctx.params.domain_id) ||
-      !mongoose.Types.ObjectId.isValid(ctx.params.domain_id)
+      !mongoose.isObjectIdOrHexString(ctx.params.domain_id)
     )
       throw new Error('Domain param missing');
 
     // validate alias_id is set
     if (
       !isSANB(ctx.params.alias_id) ||
-      !mongoose.Types.ObjectId.isValid(ctx.params.alias_id)
+      !mongoose.isObjectIdOrHexString(ctx.params.alias_id)
     )
       throw new Error('Alias param missing');
 

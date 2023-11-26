@@ -33,7 +33,7 @@ async function onDelete(path, session, fn) {
   try {
     if (this?.constructor?.name === 'IMAP') {
       try {
-        // const [bool, mailboxId, writeStream] = await this.wsp.request({
+        // const [bool, mailboxId, writeStream] = await this.wsp.request(
         const [bool, mailboxId] = await this.wsp.request({
           action: 'delete',
           session: {
