@@ -412,13 +412,14 @@ async function onStore(mailboxId, update, session, fn) {
         });
 
         entries.push({
-          // TODO: ignore: session.id,
           command: 'FETCH',
+          ignore: session.id,
           uid: message.uid,
+          flags: message.flags,
           message: message._id,
+          modseq,
           mailbox: mailbox._id,
           thread: message.thread,
-          modseq,
           unseen: update.value && update.value.includes('\\Seen'),
           idate: message.idate
         });
