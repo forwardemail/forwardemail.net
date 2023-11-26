@@ -483,6 +483,8 @@ async function getDatabase(
     // <https://sqlite.org/pragma.html#pragma_user_version>
     // TODO: notify user here by sms/notification/email of any issues
     // if (err.code === 'SQLITE_NOTADB') throw new Error('Bad password');
+    err.readonly = readonly;
+    err.dbFilePath = dbFilePath;
     throw err;
   }
 }

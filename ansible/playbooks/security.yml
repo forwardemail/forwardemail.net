@@ -31,12 +31,14 @@
         dest: /etc/systemd/system/disable-transparent-huge-pages.service
         owner: root
         mode: "0644"
-    - name: "Enable THP Systemd Service"
+
+    - name: "Enable Disabled THP Systemd Service"
       service:
         daemon_reload: yes
         name: disable-transparent-huge-pages
         enabled: true
         state: started
+
     - name: Ensure fs.suid_dumpable is set to 0 and added in sysctl
       sysctl:
         name: fs.suid_dumpable
@@ -49,6 +51,101 @@
         state: present
         block: |
           ulimit -S -c 0 > /dev/null 2>&1
+
+    # Disable swap entirely (we also set swappiness to 0 below)
+    # https://unix.stackexchange.com/a/636526
+    - name: Disable swap for current session
+      command: swapoff -a
+    - name: Disable swap permanently, persist reboots
+      replace:
+        path: /etc/fstab
+        regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
+        replace: '#\1\2\3swap\4'
+        backup: yes
+    - name: Disable swap on boot via systemd
+      template:
+        src: "{{ playbook_dir }}/templates/noswap.j2"
+        dest: /etc/systemd/system/noswap.service
+        owner: root
+        mode: "0644"
+    - name: Enable noswap service via systemd
+      systemd:
+        daemon_reload: yes
+        name: noswap
+        enabled: true
+        state: started
+
+    # Disable Modprobe Loading of USB Storage Driver
+    # https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-kernel-module-usb-storage-disabled/
+    - name: Ensure kernel module 'usb-storage' is disabled
+      lineinfile:
+        create: true
+        dest: /etc/modprobe.d/usb-storage.conf
+        regexp: install\s+usb-storage
+        line: install usb-storage /bin/true
+
+    # TODO: Disable Accepting ICMP Redirects for All IPv4 Interfaces
+    #       https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-sysctl-net-ipv4-conf-all-accept-redirects/#ansible-playbook
+
+    # Disable Apport Service
+    # https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-service-apport-disabled/#ansible-playbook
+    - name: Disable service apport
+      systemd:
+        name: apport.service
+        enabled: 'no'
+        state: stopped
+        masked: 'yes'
+    # NOTE: this does not seem necessary since apport.socket does not exist
+    #- name: Disable socket apport
+    #  systemd:
+    #    name: apport.socket
+    #    enabled: 'no'
+    #    state: stopped
+    #    masked: 'yes'
+    - name: Disable apport via config
+      block:
+        - name: Deduplicate values from /etc/default/apport
+          lineinfile:
+            path: /etc/default/apport
+            create: false
+            line: enabled=1
+            state: absent
+        - name: Insert correct line to /etc/default/apport
+          lineinfile:
+            path: /etc/default/apport
+            create: false
+            line: enabled=0
+            state: present
+
+    #
+    # Disable coredump backtraces
+    # https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-coredump-disable-backtraces/
+    #
+    - name: Disable core dump backtraces
+      block:
+        - name: Check for duplicate values
+          lineinfile:
+            path: /etc/systemd/coredump.conf
+            create: true
+            regexp: ^\s\*ProcessSizeMax\s\*=\s\*
+            state: absent
+          check_mode: true
+          changed_when: false
+          register: dupes
+        - name: Deduplicate values from /etc/systemd/coredump.conf
+          lineinfile:
+            path: /etc/systemd/coredump.conf
+            create: true
+            regexp: ^\s\*ProcessSizeMax\s\*=\s\*
+            state: absent
+          when: dupes.found is defined and dupes.found > 1
+        - name: Insert correct line to /etc/systemd/coredump.conf
+          lineinfile:
+            path: /etc/systemd/coredump.conf
+            create: true
+            regexp: ^\s\*ProcessSizeMax\s\*=\s\*
+            line: ProcessSizeMax=0
+            state: present
 
     # update deps
     - name: Update apt
@@ -218,6 +315,11 @@
       - name: kernel.core_pattern
         value: "|/bin/false"
 
+      # Enable Randomized Layout of Virtual Address Space
+      # https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-sysctl-kernel-randomize-va-space/
+      - name: kernel.randomize_va_space
+        value: 2
+
       #
       # handle ufw forwarding
       #
@@ -231,7 +333,7 @@
       # handle swapping idle processes to disk
       # https://medium.com/@sauravomar01/linux-kernel-tuning-and-performance-tweaks-d7848178aaa2
       - name: vm.swappiness
-        value: 10
+        value: 0
       - name: vm.dirty_ratio
         value: 60
       - name: vm.dirty_background_ratio

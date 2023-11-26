@@ -1,0 +1,12 @@
+[Unit]
+Description=Disable swapfile
+Documentation=man:swapon(8) man:systemd.swap(5)
+After=local-fs.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/sbin/swapoff -a
+
+[Install]
+WantedBy=default.target
