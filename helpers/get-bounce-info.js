@@ -75,7 +75,16 @@ function getBounceInfo(err) {
     bounceInfo.action = 'defer';
     bounceInfo.category = 'network';
   } else if (response.includes('unsolicited mail')) {
-    bounceInfo.category = 'spam';
+    // 421-4.7.28 Gmail has detected an unusual rate of unsolicited mail originating
+    // 421-4.7.28 from your SPF domain [fe-bounces.somedomain.com]
+    if (
+      response.includes('IP address') ||
+      response.includes('from your SPF domain')
+    ) {
+      bounceInfo.category = 'blocklist';
+    } else {
+      bounceInfo.category = 'spam';
+    }
   } else if (response.toLowerCase().includes('access denied')) {
     bounceInfo.category = 'blocklist';
   } else if (

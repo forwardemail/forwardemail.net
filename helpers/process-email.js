@@ -855,14 +855,21 @@ async function processEmail({ email, port = 25, resolver, client }) {
               group: 'admin'
             });
 
-            // store when we sent this email
             if (!adminExists) {
+              // store when we sent this email and mark user as suspended
               await Domains.findByIdAndUpdate(domain._id, {
                 $set: {
                   smtp_suspended_sent_at: new Date(),
                   is_smtp_suspended: true
                 }
               });
+
+              // send sms/email alert to admins
+              const _err = new TypeError(
+                `${domain.name} (ID ${domain.id}) was suspended from SMTP access per email ID ${email.id}`
+              );
+              _err.err = err; // reference original error
+              logger.error(_err, meta);
 
               // delete all existing tokens for the alias
               // (this way further retries will fail with incorrect password)
