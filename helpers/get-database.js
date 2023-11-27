@@ -480,7 +480,7 @@ async function getDatabase(
                   mailbox: mailboxes[0]._id
                 }
               },
-              { lock }
+              { lock: existingLock?.success ? existingLock : lock }
             );
             // eslint-disable-next-line no-await-in-loop
             await Mailboxes.deleteOne(
@@ -489,7 +489,7 @@ async function getDatabase(
               {
                 _id: mailbox._id
               },
-              { lock }
+              { lock: existingLock?.success ? existingLock : lock }
             );
           }
         }
@@ -514,11 +514,15 @@ async function getDatabase(
               idate: message.hdate
             }
           },
-          { lock }
+          { lock: existingLock?.success ? existingLock : lock }
         );
       }
     } catch (err) {
-      instance.logger.fatal(err, { session });
+      if (
+        err.code !== 'SQLITE_ERROR' ||
+        !err.message.startsWith('no such table:')
+      )
+        instance.logger.fatal(err, { session });
     }
 
     // migrate schema
@@ -569,7 +573,7 @@ async function getDatabase(
                 // virtual helper
                 instance,
                 session,
-                lock,
+                lock: existingLock?.success ? existingLock : lock,
 
                 path,
                 // NOTE: this is the same uncommented code as `helpers/imap/on-create`
@@ -588,7 +592,7 @@ async function getDatabase(
                   mailbox: mailbox._id,
                   path
                 },
-                lock
+                existingLock?.success ? existingLock : lock
               );
             } catch (err) {
               instance.logger.fatal(err, { session });
