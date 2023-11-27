@@ -446,81 +446,16 @@ async function getDatabase(
     // if it is readonly then return early
     if (readonly) return db;
 
-    // migrate schema
-    const commands = await migrateSchema(db, session, {
-      Mailboxes,
-      Messages,
-      Threads,
-      Attachments
-    });
-
     if (!existingLock || existingLock?.success !== true)
       lock = await acquireLock(instance, db);
 
-    if (commands.length > 0) {
-      for (const command of commands) {
-        try {
-          // TODO: wsp here (?)
-          db.prepare(command).run();
-          // await knexDatabase.raw(command);
-        } catch (err) {
-          err.isCodeBug = true;
-          // eslint-disable-next-line no-await-in-loop
-          await logger.fatal(err, { command, alias, session });
-        }
-      }
-    }
-
-    // create initial folders
+    //
+    // NOTE: this logic can be removed in the future
+    //       it is here to cleanup duplicate mailboxes (legacy bug)
+    //       and fix an issue where idate was set incorrectly (legacy bug)
+    //       note that these must come before schema operations (e.g. unique index constraints)
+    //
     try {
-      const paths = await Mailboxes.distinct(instance, session, 'path', {});
-      const required = [];
-      for (const path of REQUIRED_PATHS) {
-        if (!paths.includes(path)) required.push(path);
-      }
-
-      if (required.length > 0) {
-        // NOTE: we don't invoke `onCreate` here or re-use it since it calls `refreshSession`
-        //       (and that would lead to unnecessary recursion)
-        await Promise.all(
-          required.map(async (path) => {
-            try {
-              const count = await Mailboxes.countDocuments(instance, session, {
-                path
-              });
-
-              if (count > 0) return;
-
-              const mailbox = await Mailboxes.create({
-                // virtual helper
-                instance,
-                session,
-
-                path,
-                // NOTE: this is the same uncommented code as `helpers/imap/on-create`
-                // TODO: support custom alias retention (would get stored on session)
-                // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
-                // retention: typeof alias.retention === 'number' ? alias.retention : 0
-                retention: 0
-              });
-
-              await instance.server.notifier.addEntries(
-                instance,
-                session,
-                mailbox,
-                {
-                  command: 'CREATE',
-                  mailbox: mailbox._id,
-                  path
-                }
-              );
-            } catch (err) {
-              instance.logger.fatal(err, { session });
-            }
-          })
-        );
-      }
-
       // since we didn't originally have "UNIQUE" constraint on "path"
       // we need to keep this in here for a while until we're sure it's fixed
       for (const path of REQUIRED_PATHS) {
@@ -544,12 +479,18 @@ async function getDatabase(
                 $set: {
                   mailbox: mailboxes[0]._id
                 }
-              }
+              },
+              { lock }
             );
             // eslint-disable-next-line no-await-in-loop
-            await Mailboxes.deleteOne(instance, session, {
-              _id: mailbox._id
-            });
+            await Mailboxes.deleteOne(
+              instance,
+              session,
+              {
+                _id: mailbox._id
+              },
+              { lock }
+            );
           }
         }
       }
@@ -572,7 +513,87 @@ async function getDatabase(
             $set: {
               idate: message.hdate
             }
-          }
+          },
+          { lock }
+        );
+      }
+    } catch (err) {
+      instance.logger.fatal(err, { session });
+    }
+
+    // migrate schema
+    const commands = await migrateSchema(db, session, {
+      Mailboxes,
+      Messages,
+      Threads,
+      Attachments
+    });
+
+    if (commands.length > 0) {
+      for (const command of commands) {
+        try {
+          // TODO: wsp here (?)
+          db.prepare(command).run();
+          // await knexDatabase.raw(command);
+        } catch (err) {
+          err.isCodeBug = true;
+          // eslint-disable-next-line no-await-in-loop
+          await logger.fatal(err, { command, alias, session });
+        }
+      }
+    }
+
+    //
+    // create initial folders for the user if they do not yet exist
+    //
+    try {
+      const paths = await Mailboxes.distinct(instance, session, 'path', {});
+      const required = [];
+      for (const path of REQUIRED_PATHS) {
+        if (!paths.includes(path)) required.push(path);
+      }
+
+      if (required.length > 0) {
+        // NOTE: we don't invoke `onCreate` here or re-use it since it calls `refreshSession`
+        //       (and that would lead to unnecessary recursion)
+        await Promise.all(
+          required.map(async (path) => {
+            try {
+              const count = await Mailboxes.countDocuments(instance, session, {
+                path
+              });
+
+              if (count > 0) return;
+
+              const mailbox = await Mailboxes.create({
+                // virtual helper
+                instance,
+                session,
+                lock,
+
+                path,
+                // NOTE: this is the same uncommented code as `helpers/imap/on-create`
+                // TODO: support custom alias retention (would get stored on session)
+                // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
+                // retention: typeof alias.retention === 'number' ? alias.retention : 0
+                retention: 0
+              });
+
+              await instance.server.notifier.addEntries(
+                instance,
+                session,
+                mailbox,
+                {
+                  command: 'CREATE',
+                  mailbox: mailbox._id,
+                  path
+                },
+                lock
+              );
+            } catch (err) {
+              instance.logger.fatal(err, { session });
+            }
+          })
         );
       }
     } catch (err) {

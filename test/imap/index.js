@@ -1120,6 +1120,15 @@ ZXhhbXBsZQo=
   t.deepEqual(message.flags, ['\\Seen', '\\Draft']);
 });
 
+test('sync', async (t) => {
+  await t.context.wsp.request({
+    action: 'sync',
+    timeout: ms('10s'),
+    session: t.context.session
+  });
+  t.pass();
+});
+
 test('temporary storage', async (t) => {
   // add some messages to tmp
   const now = new Date();
