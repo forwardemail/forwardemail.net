@@ -88,9 +88,11 @@ async function createCatchAllPassword(ctx) {
       allowEscapeKey: false,
       allowOutsideClick: false,
       focusConfirm: false,
-      returnFocus: false,
       grow: 'fullscreen',
-      backdrop: 'rgba(0,0,0,0.8)'
+      backdrop: 'rgba(0,0,0,0.8)',
+      customClass: {
+        container: 'swal2-grow-fullscreen'
+      }
     };
     // TODO: blog about how we use `?hash=hash` to avoid the issue where
     //       window.location = someUrlWith#hash doesn't actually redirect user

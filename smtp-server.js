@@ -99,6 +99,9 @@ class SMTP {
         config.env === 'production' ? false : env.SMTP_ALLOW_INSECURE_AUTH,
       authOptional: false,
 
+      // <https://github.com/nodemailer/wildduck/issues/563>
+      // hide8BITMIME: true,
+
       // keys
       ...(config.env === 'production'
         ? {

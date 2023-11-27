@@ -317,7 +317,8 @@ async function retrieveDomain(ctx, next) {
       `/my-account/domains/${ctx.state.domain.name}`
     ) &&
     ctx.pathWithoutLocale !==
-      `/my-account/domains/${ctx.state.domain.name}/verify-smtp`
+      `/my-account/domains/${ctx.state.domain.name}/verify-smtp` &&
+    ctx.accepts('html')
   ) {
     ctx.flash('custom', {
       title: ctx.request.t('Important'),
@@ -334,7 +335,8 @@ async function retrieveDomain(ctx, next) {
 
   if (
     ctx.method === 'GET' &&
-    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}`
+    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}` &&
+    ctx.accepts('html')
   ) {
     // if we're on the setup page and the user is not on paid plan and it's not allowed anymore
     let message;
@@ -403,9 +405,10 @@ async function retrieveDomain(ctx, next) {
     }
 
     if (
-      message ||
-      !ctx.state.domain.has_mx_record ||
-      !ctx.state.domain.has_txt_record
+      (message ||
+        !ctx.state.domain.has_mx_record ||
+        !ctx.state.domain.has_txt_record) &&
+      ctx.accepts('html')
     ) {
       ctx.flash('custom', {
         title: ctx.request.t('Important'),
@@ -435,7 +438,8 @@ async function retrieveDomain(ctx, next) {
     if (
       ctx.state.domain.is_global &&
       ctx.state.user.group !== 'admin' &&
-      ctx.state.user.plan === 'free'
+      ctx.state.user.plan === 'free' &&
+      ctx.accepts('html')
     ) {
       ctx.flash(
         'warning',
@@ -446,7 +450,10 @@ async function retrieveDomain(ctx, next) {
       );
     }
 
-    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record) {
+    if (
+      ctx.accepts('html') &&
+      (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
+    ) {
       ctx.flash('warning', message);
     }
 
@@ -476,7 +483,10 @@ async function retrieveDomain(ctx, next) {
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/aliases/new`
   ) {
-    if (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record) {
+    if (
+      ctx.accepts('html') &&
+      (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
+    ) {
       ctx.flash('warning', message);
     }
 
@@ -502,7 +512,8 @@ async function retrieveDomain(ctx, next) {
   } else if (
     ctx.pathWithoutLocale ===
       `/my-account/domains/${ctx.state.domain.name}/logs` &&
-    (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record)
+    (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record) &&
+    ctx.accepts('html')
   ) {
     ctx.flash('warning', message);
   }

@@ -132,38 +132,42 @@ async function migrateSchema(db, session, tables) {
     pool: {
       // <https://knexjs.org/faq/recipes.html#db-access-using-sqlite-and-sqlcipher>
       async afterCreate(db, fn) {
-        await setupPragma(db, session);
-        //
-        // when you run `db.pragma('index_list(table)')` it will return output like:
-        //
-        // [
-        //   { seq: 0, name: 'specialUse', unique: 0, origin: 'c', partial: 0 },
-        //   { seq: 1, name: 'subscribed', unique: 0, origin: 'c', partial: 0 },
-        //   { seq: 2, name: 'path', unique: 0, origin: 'c', partial: 0 },
-        //   { seq: 3, name: '_id', unique: 1, origin: 'c', partial: 0 },
-        //   {
-        //     seq: 4,
-        //     name: 'sqlite_autoindex_mailboxes_1',
-        //     unique: 1,
-        //     origin: 'pk',
-        //     partial: 0
-        //   }
-        // ]
-        //
-        // <https://www.sqlite.org/pragma.html#pragma_index_list>
-        //
-        // we do this in advance in order to add missing indices if and only if needed
-        //
-        for (const table of Object.keys(tables)) {
-          try {
-            indexList[table] = db.pragma(`index_list(${table})`);
-            // TODO: drop other indices that aren't necessary (?)
-          } catch (err) {
-            logger.error(err, { session });
+        try {
+          await setupPragma(db, session);
+          //
+          // when you run `db.pragma('index_list(table)')` it will return output like:
+          //
+          // [
+          //   { seq: 0, name: 'specialUse', unique: 0, origin: 'c', partial: 0 },
+          //   { seq: 1, name: 'subscribed', unique: 0, origin: 'c', partial: 0 },
+          //   { seq: 2, name: 'path', unique: 0, origin: 'c', partial: 0 },
+          //   { seq: 3, name: '_id', unique: 1, origin: 'c', partial: 0 },
+          //   {
+          //     seq: 4,
+          //     name: 'sqlite_autoindex_mailboxes_1',
+          //     unique: 1,
+          //     origin: 'pk',
+          //     partial: 0
+          //   }
+          // ]
+          //
+          // <https://www.sqlite.org/pragma.html#pragma_index_list>
+          //
+          // we do this in advance in order to add missing indices if and only if needed
+          //
+          for (const table of Object.keys(tables)) {
+            try {
+              indexList[table] = db.pragma(`index_list(${table})`);
+              // TODO: drop other indices that aren't necessary (?)
+            } catch (err) {
+              logger.error(err, { session });
+            }
           }
-        }
 
-        fn();
+          fn();
+        } catch (err) {
+          fn(err);
+        }
       }
     }
   });

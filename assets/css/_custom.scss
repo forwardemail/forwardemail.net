@@ -227,3 +227,9 @@ pre {
     min-height: 2.5em;
   }
 }
+
+// render fullscreen (see @ladjs/assets since it does Swal.fire immediately)
+// (e.g. this is so generated password modals render above everything else and instantly)
+.swal2-grow-fullscreen {
+  z-index: 9999;
+}

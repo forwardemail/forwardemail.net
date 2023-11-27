@@ -246,8 +246,7 @@ async function onMove(mailboxId, update, session, fn) {
         message = await Messages.create(message);
 
         existEntries.push({
-          // NOTE: we don't want to ignore this
-          // ignore: session.id,
+          ignore: session.id,
           command: 'EXISTS',
           uid: message.uid,
           // mailbox: message.mailbox,

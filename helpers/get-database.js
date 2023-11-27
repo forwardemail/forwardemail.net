@@ -22,6 +22,21 @@ const setupPragma = require('#helpers/setup-pragma');
 const migrateSchema = require('#helpers/migrate-schema');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 
+const REQUIRED_PATHS = [
+  'INBOX',
+  'Drafts',
+  'Sent Mail',
+  //
+  // NOTE: we could use "All Mail" to match existing standards (e.g. instead of "Archive")
+  // <https://github.com/mozilla/releases-comm-central/blob/34d8c5cba2df3154e1c38b376e8c10ca24e4f939/mailnews/imap/src/nsImapMailFolder.cpp#L1171-L1173>
+  //
+  // 'All Mail' but we would need to use labels
+  //
+  'Archive',
+  'Spam',
+  'Trash'
+];
+
 // always ensure `rclone.conf` is an empty file
 // function syncRcloneConfig() {
 //   try {
@@ -456,6 +471,114 @@ async function getDatabase(
       }
     }
 
+    // create initial folders
+    try {
+      const paths = await Mailboxes.distinct(instance, session, 'path', {});
+      const required = [];
+      for (const path of REQUIRED_PATHS) {
+        if (!paths.includes(path)) required.push(path);
+      }
+
+      if (required.length > 0) {
+        // NOTE: we don't invoke `onCreate` here or re-use it since it calls `refreshSession`
+        //       (and that would lead to unnecessary recursion)
+        await Promise.all(
+          required.map(async (path) => {
+            try {
+              const count = await Mailboxes.countDocuments(instance, session, {
+                path
+              });
+
+              if (count > 0) return;
+
+              const mailbox = await Mailboxes.create({
+                // virtual helper
+                instance,
+                session,
+
+                path,
+                // NOTE: this is the same uncommented code as `helpers/imap/on-create`
+                // TODO: support custom alias retention (would get stored on session)
+                // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
+                // retention: typeof alias.retention === 'number' ? alias.retention : 0
+                retention: 0
+              });
+
+              await instance.server.notifier.addEntries(
+                instance,
+                session,
+                mailbox,
+                {
+                  command: 'CREATE',
+                  mailbox: mailbox._id,
+                  path
+                }
+              );
+            } catch (err) {
+              instance.logger.fatal(err, { session });
+            }
+          })
+        );
+      }
+
+      // since we didn't originally have "UNIQUE" constraint on "path"
+      // we need to keep this in here for a while until we're sure it's fixed
+      for (const path of REQUIRED_PATHS) {
+        // eslint-disable-next-line no-await-in-loop
+        const mailboxes = await Mailboxes.find(instance, session, {
+          path
+        });
+
+        if (mailboxes.length > 1) {
+          // merge together mailboxes without notifications for now
+          // (assume user will close/reopen app at some point)
+          for (const mailbox of mailboxes.slice(1)) {
+            // eslint-disable-next-line no-await-in-loop
+            await Messages.updateMany(
+              instance,
+              session,
+              {
+                mailbox: mailbox._id
+              },
+              {
+                $set: {
+                  mailbox: mailboxes[0]._id
+                }
+              }
+            );
+            // eslint-disable-next-line no-await-in-loop
+            await Mailboxes.deleteOne(instance, session, {
+              _id: mailbox._id
+            });
+          }
+        }
+      }
+
+      // for any idate values that were set from `new Date(false)`
+      // (e.g. the value is `1970-01-01T00:00:00.000Z` which is incorrect)
+      // we need to set the value of `idate` to the value of `hdate`
+      const messages = await Messages.find(instance, session, {
+        idate: new Date(false)
+      });
+      for (const message of messages) {
+        // eslint-disable-next-line no-await-in-loop
+        await Messages.findOneAndUpdate(
+          instance,
+          session,
+          {
+            _id: message._id
+          },
+          {
+            $set: {
+              idate: message.hdate
+            }
+          }
+        );
+      }
+    } catch (err) {
+      instance.logger.fatal(err, { session });
+    }
+
     // release lock
     try {
       if (lock) await releaseLock(instance, db, lock);
@@ -465,6 +588,11 @@ async function getDatabase(
 
     return db;
   } catch (err) {
+    // in case developers are connected to it in SQLiteStudio (this will cause a read/write error)
+    if (err.code === 'SQLITE_IOERR_SHORT_READ')
+      err.message +=
+        '******************* PLEASE DISCONNECT FROM SQLiteStudio IF YOU ARE CONNECTED *************';
+
     // release lock
     if (lock) {
       try {

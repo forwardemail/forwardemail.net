@@ -258,6 +258,20 @@ async function getMessages(instance, session, server, opts = {}) {
         query: options.query,
         values
       });
+
+      // <https://github.com/nodemailer/wildduck/issues/563#issuecomment-1826943401>
+      const stream = imapHandler.compileStream(data);
+      // eslint-disable-next-line no-await-in-loop
+      const buffer = await getStream.buffer(stream);
+      const compiled = buffer.toString('binary');
+      totalBytes += compiled.length;
+      if (instance?.constructor?.name === 'IMAP') {
+        session.writeStream.write({ compiled });
+      } else {
+        writeStream.push({ compiled });
+      }
+
+      /*
       const compiled = imapHandler.compiler(data);
       // `compiled` is a 'binary' string
       totalBytes += compiled.length;
@@ -266,6 +280,7 @@ async function getMessages(instance, session, server, opts = {}) {
       } else {
         writeStream.push({ compiled });
       }
+      */
 
       rowCount++;
 
@@ -324,6 +339,20 @@ async function getMessages(instance, session, server, opts = {}) {
       query: options.query,
       values
     });
+
+    // <https://github.com/nodemailer/wildduck/issues/563#issuecomment-1826943401>
+    const stream = imapHandler.compileStream(data);
+    // eslint-disable-next-line no-await-in-loop
+    const buffer = await getStream.buffer(stream);
+    const compiled = buffer.toString('binary');
+    totalBytes += compiled.length;
+    if (instance?.constructor?.name === 'IMAP') {
+      session.writeStream.write({ compiled });
+    } else {
+      writeStream.push({ compiled });
+    }
+
+    /*
     const compiled = imapHandler.compiler(data);
     // `compiled` is a 'binary' string
     totalBytes += compiled.length;
@@ -332,6 +361,7 @@ async function getMessages(instance, session, server, opts = {}) {
     } else {
       writeStream.push({ compiled });
     }
+    */
 
     rowCount++;
 
@@ -415,7 +445,6 @@ async function onFetch(mailboxId, options, session, fn) {
   this.logger.debug('FETCH', { mailboxId, options, session });
 
   try {
-    /*
     if (this?.constructor?.name === 'IMAP') {
       try {
         const [bool, response, writeStream] = await this.wsp.request({
@@ -448,7 +477,6 @@ async function onFetch(mailboxId, options, session, fn) {
 
       return;
     }
-    */
 
     await this.refreshSession(session, 'FETCH');
 

@@ -412,9 +412,11 @@ async function regenerateAliasPassword(ctx) {
       allowEscapeKey: false,
       allowOutsideClick: false,
       focusConfirm: false,
-      returnFocus: false,
       grow: 'fullscreen',
-      backdrop: 'rgba(0,0,0,0.8)'
+      backdrop: 'rgba(0,0,0,0.8)',
+      customClass: {
+        container: 'swal2-grow-fullscreen'
+      }
     };
 
     ctx.flash('custom', swal);

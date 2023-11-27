@@ -1500,10 +1500,6 @@ async function parsePayload(data, ws) {
       }
 
       case 'backup': {
-        // ensure payload.backup_at is a string and valid date
-        if (!isSANB(payload.backup_at))
-          throw new TypeError('Backup at date missing');
-
         if (!_.isDate(new Date(payload.backup_at)))
           throw new TypeError('Backup at invalid date');
 

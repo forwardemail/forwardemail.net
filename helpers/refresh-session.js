@@ -11,29 +11,12 @@ const ms = require('ms');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const IMAPError = require('#helpers/imap-error');
-const Mailboxes = require('#models/mailboxes');
-const Messages = require('#models/messages');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const config = require('#config');
 const getDatabase = require('#helpers/get-database');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
-
-const REQUIRED_PATHS = [
-  'INBOX',
-  'Drafts',
-  'Sent Mail',
-  //
-  // NOTE: we could use "All Mail" to match existing standards (e.g. instead of "Archive")
-  // <https://github.com/mozilla/releases-comm-central/blob/34d8c5cba2df3154e1c38b376e8c10ca24e4f939/mailnews/imap/src/nsImapMailFolder.cpp#L1171-L1173>
-  //
-  // 'All Mail' but we would need to use labels
-  //
-  'Archive',
-  'Spam',
-  'Trash'
-];
 
 const IMAP_COMMANDS = new Set([
   'APPEND',
@@ -56,7 +39,6 @@ const IMAP_COMMANDS = new Set([
   'UNSUBSCRIBE'
 ]);
 
-// eslint-disable-next-line complexity
 async function refreshSession(session, command) {
   if (!command) throw new Error('Command required');
   command = command.toUpperCase().trim();
@@ -155,117 +137,16 @@ async function refreshSession(session, command) {
     session
   );
 
+  // fire notifications if any (e.g. initial creation of databases)
+  this.server.notifier.fire(session.user.alias_id);
+
   //
   // if and only if we're not an instance of SQLite
   // (otherwise this would result in recursion)
   //
   // prevent circular dep (otherwise we could do instanceof)
-  if (this?.constructor?.name !== 'IMAP') {
-    try {
-      const paths = await Mailboxes.distinct(this, session, 'path', {});
-      const required = [];
-      for (const path of REQUIRED_PATHS) {
-        if (!paths.includes(path)) required.push(path);
-      }
-
-      if (required.length > 0) {
-        // NOTE: we don't invoke `onCreate` here or re-use it since it calls `refreshSession`
-        //       (and that would lead to unnecessary recursion)
-        await Promise.all(
-          required.map(async (path) => {
-            try {
-              const count = await Mailboxes.countDocuments(this, session, {
-                path
-              });
-
-              if (count > 0) return;
-
-              const mailbox = await Mailboxes.create({
-                // virtual helper
-                instance: this,
-                session,
-
-                path,
-                // NOTE: this is the same uncommented code as `helpers/imap/on-create`
-                // TODO: support custom alias retention (would get stored on session)
-                // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
-                // retention: typeof alias.retention === 'number' ? alias.retention : 0
-                retention: 0
-              });
-
-              await this.server.notifier.addEntries(this, session, mailbox, {
-                command: 'CREATE',
-                mailbox: mailbox._id,
-                path
-              });
-
-              this.server.notifier.fire(session.user.alias_id);
-            } catch (err) {
-              this.logger.fatal(err, { session });
-            }
-          })
-        );
-      }
-
-      // since we didn't originally have "UNIQUE" constraint on "path"
-      // we need to keep this in here for a while until we're sure it's fixed
-      for (const path of REQUIRED_PATHS) {
-        // eslint-disable-next-line no-await-in-loop
-        const mailboxes = await Mailboxes.find(this, session, {
-          path
-        });
-
-        if (mailboxes.length > 1) {
-          // merge together mailboxes without notifications for now
-          // (assume user will close/reopen app at some point)
-          for (const mailbox of mailboxes.slice(1)) {
-            // eslint-disable-next-line no-await-in-loop
-            await Messages.updateMany(
-              this,
-              session,
-              {
-                mailbox: mailbox._id
-              },
-              {
-                $set: {
-                  mailbox: mailboxes[0]._id
-                }
-              }
-            );
-            // eslint-disable-next-line no-await-in-loop
-            await Mailboxes.deleteOne(this, session, {
-              _id: mailbox._id
-            });
-          }
-        }
-      }
-
-      // for any idate values that were set from `new Date(false)`
-      // (e.g. the value is `1970-01-01T00:00:00.000Z` which is incorrect)
-      // we need to set the value of `idate` to the value of `hdate`
-      const messages = await Messages.find(this, session, {
-        idate: new Date(false)
-      });
-      for (const message of messages) {
-        // eslint-disable-next-line no-await-in-loop
-        await Messages.findOneAndUpdate(
-          this,
-          session,
-          {
-            _id: message._id
-          },
-          {
-            $set: {
-              idate: message.hdate
-            }
-          }
-        );
-      }
-    } catch (err) {
-      this.logger.fatal(err, { session });
-    }
-
-    //
+  if (
+    this?.constructor?.name !== 'IMAP' && //
     // NOTE: this takes 100ms+ so we put it in onAuth instead running in the background
     //       (if a message gets delivered to tmp then it will notify IMAP connections already)
     //
@@ -280,83 +161,83 @@ async function refreshSession(session, command) {
 
     // TODO: this needs limited to only being one once per alias across all its IMAP connections
     // offset by 10s to prevent locking db while a read is in progress
-    if (!session.backupInProgress) {
-      session.backupInProgress = true;
-      setTimeout(() => {
-        //
-        // hourly backups
-        //
-        const oneHourAgo = dayjs().subtract(1, 'hour').toDate();
-        const now = new Date();
-        if (
-          !_.isDate(alias.imap_backup_at) ||
-          new Date(alias.imap_backup_at).getTime() <= oneHourAgo.getTime()
-        ) {
-          Aliases.findOneAndUpdate(
-            {
-              _id: alias._id,
-              imap_backup_at: _.isDate(alias.imap_backup_at)
-                ? {
-                    $exists: true,
-                    $lte: oneHourAgo
-                  }
-                : {
-                    $exists: false
-                  }
-            },
-            {
-              $set: {
-                imap_backup_at: now
-              }
+    !session.backupInProgress
+  ) {
+    session.backupInProgress = true;
+    setTimeout(() => {
+      //
+      // hourly backups
+      //
+      const oneHourAgo = dayjs().subtract(1, 'hour').toDate();
+      const now = new Date();
+      if (
+        !_.isDate(alias.imap_backup_at) ||
+        new Date(alias.imap_backup_at).getTime() <= oneHourAgo.getTime()
+      ) {
+        Aliases.findOneAndUpdate(
+          {
+            _id: alias._id,
+            imap_backup_at: _.isDate(alias.imap_backup_at)
+              ? {
+                  $exists: true,
+                  $lte: oneHourAgo
+                }
+              : {
+                  $exists: false
+                }
+          },
+          {
+            $set: {
+              imap_backup_at: now
             }
-          )
-            .then((alias) => {
-              // return early if no alias found (point in time safeguard)
-              if (!alias) {
-                session.backupInProgress = false;
-                return;
-              }
-
-              this.wsp.request
-                .call(this, {
-                  action: 'backup',
-                  backup_at: now.toISOString(),
-                  session: { user: session.user }
-                })
-                .then(() => {
-                  this.logger.debug('backup performed', { session });
-                  session.backupInProgress = false;
-                })
-                .catch((err) => {
-                  this.logger.fatal(err, { session });
-                  // if the backup failed then we unset the imap_backup_at
-                  Aliases.findOneAndUpdate(
-                    {
-                      _id: alias._id,
-                      imap_backup_at: now
-                    },
-                    {
-                      $unset: {
-                        imap_backup_at: 1
-                      }
-                    }
-                  )
-                    .then(() => {
-                      session.backupInProgress = false;
-                    })
-                    .catch((err) => {
-                      this.logger.fatal(err, { session });
-                      session.backupInProgress = false;
-                    });
-                });
-            })
-            .catch((err) => {
-              this.logger.fatal(err, { session });
+          }
+        )
+          .then((alias) => {
+            // return early if no alias found (point in time safeguard)
+            if (!alias) {
               session.backupInProgress = false;
-            });
-        }
-      }, ms('10s'));
-    }
+              return;
+            }
+
+            this.wsp.request
+              .call(this, {
+                action: 'backup',
+                backup_at: now.toISOString(),
+                session: { user: session.user }
+              })
+              .then(() => {
+                this.logger.debug('backup performed', { session });
+                session.backupInProgress = false;
+              })
+              .catch((err) => {
+                this.logger.fatal(err, { session });
+                // if the backup failed then we unset the imap_backup_at
+                Aliases.findOneAndUpdate(
+                  {
+                    _id: alias._id,
+                    imap_backup_at: now
+                  },
+                  {
+                    $unset: {
+                      imap_backup_at: 1
+                    }
+                  }
+                )
+                  .then(() => {
+                    session.backupInProgress = false;
+                  })
+                  .catch((err) => {
+                    this.logger.fatal(err, { session });
+                    session.backupInProgress = false;
+                  });
+              });
+          })
+          .catch((err) => {
+            this.logger.fatal(err, { session });
+            session.backupInProgress = false;
+          });
+      }
+    }, ms('10s'));
   }
 }
 
