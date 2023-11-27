@@ -299,6 +299,7 @@ async function lookup(ctx) {
       for (const recipient of alias.recipients) {
         if (!isEmail(recipient)) continue;
         const [rcptName, rcptDomain] = recipient.split('@');
+        if (rcptName !== username) continue;
         if (rcptDomain !== domain.name) continue;
         const id = aliasIdsWithIMAPByName[rcptName];
         if (!id) continue;
