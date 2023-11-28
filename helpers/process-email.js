@@ -778,7 +778,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
             throw err;
           }
 
-          const info = await sendEmail({
+          const options = {
             session: createSession(email),
             cache,
             target,
@@ -792,7 +792,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
             localHostname: HOSTNAME,
             resolver,
             client
-          });
+          };
+          logger.debug('sending email', { options });
+          const info = await sendEmail(options);
+          logger.debug('sent email', { info });
           return info;
         } catch (err) {
           // log the error (dups will be removed)

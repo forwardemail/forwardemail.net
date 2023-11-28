@@ -1782,21 +1782,12 @@ We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered
 
 If the MAIL FROM is blank OR is equal to (case-insensitive) any of the following usernames (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
 
-* `abuse`
-* `admin`
-* `admini`
 * `automailer`
 * `autoresponder`
 * `bounce`
 * `bounce-notification`
 * `bounce-notifications`
 * `bounces`
-* `do-not-reply`
-* `do-not-respond`
-* `do.not.reply`
-* `donotreply`
-* `donotrespond`
-* `dont-reply`
 * `e-bounce`
 * `ebounce`
 * `host-master`
@@ -1810,24 +1801,9 @@ If the MAIL FROM is blank OR is equal to (case-insensitive) any of the following
 * `mailer-daemon`
 * `mailer.daemon`
 * `mailerdaemon`
-* `naoresponda`
-* `no-replies`
-* `no-reply`
-* `no-replys`
-* `no.replies`
-* `no.reply`
-* `no.replys`
-* `no_reply`
-* `nobody`
-* `noreplies`
-* `noreply`
-* `noreplys`
 * `post-master`
 * `post.master`
 * `postmaster`
-* `root`
-* `www`
-* `www-data`
 
 If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
 

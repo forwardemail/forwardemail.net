@@ -29,6 +29,7 @@ function getFingerprint(session, headers, body, useSender = true) {
   //         { key: 'from', value: 'foo-1@example-1.com' },
   //         { key: 'subject', value: 'test' }
   //       ]
+  let hasHeader = false;
   for (const key of ['message-id', 'date', 'from', 'to', 'cc', 'subject']) {
     let value;
     if (Array.isArray(headers)) {
@@ -38,10 +39,16 @@ function getFingerprint(session, headers, body, useSender = true) {
       value = headers.getFirst(key);
     }
 
-    if (isSANB(value)) arr.push(value);
+    if (isSANB(value)) {
+      arr.push(value);
+      hasHeader = true;
+    }
   }
 
-  if (body) arr.push(body);
+  // this should pretty much never occur
+  // and if it did, it's hard on CPU
+  // (e.g. since we enforce "From" header)
+  if (!hasHeader && body) arr.push(body);
 
   if (useSender && sender) {
     return [revHash(sender), revHash(safeStringify(arr))].join(':');

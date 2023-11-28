@@ -19,6 +19,7 @@ const { WebSocket } = require('ws');
 
 const config = require('#config');
 const env = require('#config/env');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
 const recursivelyParse = require('#helpers/recursively-parse');
@@ -137,8 +138,10 @@ function createWebSocketAsPromised(options = {}) {
         throw new TypeError('Alias ID missing from session');
 
       // will retry by default up to 10x with exponential backoff
+      // (for initial connection)
       if (!wsp.isOpened)
         await pRetry(() => wsp.open(), {
+          retries: 10, // in case the default in node-retry changes
           onFailedAttempt(err) {
             // <https://github.com/vitalets/websocket-as-promised/issues/47>
             logger.error(err);
@@ -152,16 +155,33 @@ function createWebSocketAsPromised(options = {}) {
         ? `${revHash(data.session.user.alias_id)}:${revHash(randomUUID())}`
         : `${data.action}:${randomUUID()}`;
 
-      const response = await wsp.sendRequest(data, {
-        timeout:
-          typeof data.timeout === 'number' &&
-          Number.isFinite(data.timeout) &&
-          data.timeout > 0 &&
-          data.timeout <= ms('30s')
-            ? data.timeout
-            : ms('30s'),
-        requestId
-      });
+      // attempt to send the request 3x
+      // (e.g. in case connection disconnected and no response was made)
+      const response = await pRetry(
+        () => {
+          return wsp.sendRequest(data, {
+            timeout:
+              typeof data.timeout === 'number' &&
+              Number.isFinite(data.timeout) &&
+              data.timeout > 0 &&
+              data.timeout <= ms('30s')
+                ? data.timeout
+                : ms('30s'),
+            requestId
+          });
+        },
+        {
+          retries: 3,
+          onFailedAttempt(err) {
+            if (isTimeoutError(err)) {
+              logger.error(err, { data });
+              return;
+            }
+
+            throw err;
+          }
+        }
+      );
 
       if (
         !response.id ||
