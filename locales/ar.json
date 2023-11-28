@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "إذا كنت مطور برامج، فيمكنك استخدام واجهة برمجة تطبيقات البريد الإلكتروني للمعاملات الخاصة بنا لإرسال رسائل البريد الإلكتروني برمجيًا.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "لدينا قسم مخصص للأسئلة الشائعة، وأدلة وهمية، وتطبيقات لمساعدتك على التعامل مع تعقيدات البريد الإلكتروني.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "يتم الرد على طلبات الدعم من قبل بشر حقيقيين؛ إنهم المهندسون الفعليون الذين يعملون على منتجنا.",
-  "Testimonials": "الشهادات - التوصيات"
+  "Testimonials": "الشهادات - التوصيات",
+  "concurrent connections at once.": "الاتصالات المتزامنة في وقت واحد.",
+  "The fingerprint is calculated from the following list:": "يتم حساب البصمة من القائمة التالية:",
+  "header value (if any)": "قيمة الرأس (إن وجدت)",
+  "value (if any)": "القيمة (إن وجدت)"
 }

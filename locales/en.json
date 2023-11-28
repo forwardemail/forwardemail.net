@@ -5946,5 +5946,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "If you're a software developer, then you can use our transactional email API to programatically send emails.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "Support requests are answered by real humans; they are the actual engineers working on our product.",
-  "Testimonials": "Testimonials"
+  "Testimonials": "Testimonials",
+  "concurrent connections at once.": "concurrent connections at once.",
+  "The fingerprint is calculated from the following list:": "The fingerprint is calculated from the following list:",
+  "header value (if any)": "header value (if any)",
+  "value (if any)": "value (if any)"
 }

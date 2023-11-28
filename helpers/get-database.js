@@ -18,8 +18,8 @@ const config = require('#config');
 const env = require('#config/env');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const logger = require('#helpers/logger');
-const setupPragma = require('#helpers/setup-pragma');
 const migrateSchema = require('#helpers/migrate-schema');
+const setupPragma = require('#helpers/setup-pragma');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const REQUIRED_PATHS = [
@@ -498,24 +498,26 @@ async function getDatabase(
       // for any idate values that were set from `new Date(false)`
       // (e.g. the value is `1970-01-01T00:00:00.000Z` which is incorrect)
       // we need to set the value of `idate` to the value of `hdate`
-      const messages = await Messages.find(instance, session, {
-        idate: new Date(false)
-      });
-      for (const message of messages) {
-        // eslint-disable-next-line no-await-in-loop
-        await Messages.findOneAndUpdate(
-          instance,
-          session,
-          {
-            _id: message._id
-          },
-          {
-            $set: {
-              idate: message.hdate
-            }
-          },
-          { lock: existingLock?.success ? existingLock : lock }
-        );
+      {
+        const messages = await Messages.find(instance, session, {
+          idate: new Date(false)
+        });
+        for (const message of messages) {
+          // eslint-disable-next-line no-await-in-loop
+          await Messages.findOneAndUpdate(
+            instance,
+            session,
+            {
+              _id: message._id
+            },
+            {
+              $set: {
+                idate: message.hdate
+              }
+            },
+            { lock: existingLock?.success ? existingLock : lock }
+          );
+        }
       }
     } catch (err) {
       if (

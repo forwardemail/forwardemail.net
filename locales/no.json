@@ -6184,5 +6184,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Hvis du er en programvareutvikler, kan du bruke vår transaksjonelle e-post-API til å sende e-poster programmessig.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "Vi har en dedikert FAQ-seksjon, dummysikre guider og apper som hjelper deg med å navigere i kompleksiteten til e-post.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "Støtteforespørsler blir besvart av ekte mennesker; de er de faktiske ingeniørene som jobber med produktet vårt.",
-  "Testimonials": "Attester"
+  "Testimonials": "Attester",
+  "concurrent connections at once.": "samtidige tilkoblinger på en gang.",
+  "The fingerprint is calculated from the following list:": "Fingeravtrykket er beregnet fra følgende liste:",
+  "header value (if any)": "topptekstverdi (hvis noen)",
+  "value (if any)": "verdi (hvis noen)"
 }

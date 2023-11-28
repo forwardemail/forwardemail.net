@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "ソフトウェア開発者の場合は、トランザクション電子メール API を使用してプログラム的に電子メールを送信できます。",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "専用の FAQ セクション、ダミープルーフ ガイド、電子メールの複雑さを理解するのに役立つアプリを用意しています。",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "サポート リクエストには実際の人間が回答します。彼らは私たちの製品に取り組んでいる実際のエンジニアです。",
-  "Testimonials": "お客様の声"
+  "Testimonials": "お客様の声",
+  "concurrent connections at once.": "同時接続を一度に行います。",
+  "The fingerprint is calculated from the following list:": "フィンガープリントは次のリストから計算されます。",
+  "header value (if any)": "ヘッダー値 (存在する場合)",
+  "value (if any)": "値 (ある場合)"
 }

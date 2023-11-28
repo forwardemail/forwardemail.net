@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Якщо ви розробник програмного забезпечення, ви можете використовувати наш транзакційний API електронної пошти для програмного надсилання електронних листів.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "У нас є спеціальний розділ поширених запитань, посібники з захисту від манекенів і програми, які допоможуть вам орієнтуватися в складній електронній пошті.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "На запити підтримки відповідають реальні люди; вони справжні інженери, які працюють над нашим продуктом.",
-  "Testimonials": "Відгуки"
+  "Testimonials": "Відгуки",
+  "concurrent connections at once.": "одночасні підключення одночасно.",
+  "The fingerprint is calculated from the following list:": "Відбиток пальця обчислюється з наступного списку:",
+  "header value (if any)": "значення заголовка (якщо є)",
+  "value (if any)": "значення (якщо є)"
 }

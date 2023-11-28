@@ -5871,5 +5871,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "如果您是软件开发人员，那么您可以使用我们的交易电子邮件 API 以编程方式发送电子邮件。",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "我们有专门的常见问题解答部分、防伪指南和应用程序来帮助您应对电子邮件的复杂性。",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "支持请求由真人回答；他们是开发我们产品的实际工程师。",
-  "Testimonials": "感言"
+  "Testimonials": "感言",
+  "concurrent connections at once.": "一次并发连接。",
+  "The fingerprint is calculated from the following list:": "指纹是根据以下列表计算的：",
+  "header value (if any)": "标头值（如果有）",
+  "value (if any)": "值（如果有）"
 }

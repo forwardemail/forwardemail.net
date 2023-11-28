@@ -46,6 +46,7 @@ async function onExpunge(mailboxId, update, session, fn) {
           mailboxId,
           update
         });
+
         if (Array.isArray(writeStream)) {
           for (const write of writeStream) {
             if (Array.isArray(write)) {
@@ -200,7 +201,7 @@ async function onExpunge(mailboxId, update, session, fn) {
             (session &&
               session.selected &&
               session.selected.mailbox &&
-              session.selected.mailbox.toString() === mailbox.id)
+              session.selected.mailbox.toString() === mailbox._id.toString())
           ) {
             if (this?.constructor?.name === 'IMAP') {
               session.writeStream.write(

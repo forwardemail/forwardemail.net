@@ -17,6 +17,7 @@ const imapTools = require('wildduck/imap-core/lib/imap-tools');
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
 const tools = require('wildduck/lib/tools');
+const _ = require('lodash');
 const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
@@ -115,7 +116,7 @@ async function onStore(mailboxId, update, session, fn) {
 
     let queryAll;
     // `1:*`
-    if (update.messages.length === session.selected.uidList.length)
+    if (_.isEqual(update.messages.sort(), session.selected.uidList.sort()))
       queryAll = true;
     // NOTE: don't use uid for `1:*`
     else query.uid = tools.checkRangeQuery(update.messages);
@@ -159,6 +160,7 @@ async function onStore(mailboxId, update, session, fn) {
     }
 
     let err;
+    let fire = false;
 
     try {
       for (const result of messages) {
@@ -191,10 +193,22 @@ async function onStore(mailboxId, update, session, fn) {
           Array.isArray(session.selected.uidList) &&
           !session.selected.uidList.includes(message.uid)
         ) {
+          this.logger.debug('message skipped due to queryAll', {
+            message,
+            queryAll,
+            session,
+            update
+          });
           continue;
         }
 
         if (update.unchangedSince && message.modseq > update.unchangedSince) {
+          this.logger.debug('message skipped due to unchangedSince', {
+            message,
+            queryAll,
+            session,
+            update
+          });
           modified.push(message.uid);
           continue;
         }
@@ -414,7 +428,7 @@ async function onStore(mailboxId, update, session, fn) {
 
         entries.push({
           command: 'FETCH',
-          // ignore: session.id,
+          ignore: session.id,
           uid: message.uid,
           flags: message.flags,
           message: message._id,
@@ -444,7 +458,7 @@ async function onStore(mailboxId, update, session, fn) {
                 mailbox,
                 entries
               );
-              this.server.notifier.fire(session.user.alias_id);
+              fire = true;
               entries = [];
             } catch (err) {
               this.logger.fatal(err, { mailboxId, update, session });
@@ -466,6 +480,14 @@ async function onStore(mailboxId, update, session, fn) {
     if (entries.length > 0) {
       try {
         await this.server.notifier.addEntries(this, session, mailbox, entries);
+        fire = true;
+      } catch (err) {
+        this.logger.fatal(err, { mailboxId, update, session });
+      }
+    }
+
+    if (fire) {
+      try {
         this.server.notifier.fire(session.user.alias_id);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });

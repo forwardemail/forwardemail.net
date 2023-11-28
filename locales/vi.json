@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Nếu bạn là nhà phát triển phần mềm thì bạn có thể sử dụng API email giao dịch của chúng tôi để gửi email theo chương trình.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "Chúng tôi có phần Câu hỏi thường gặp riêng, hướng dẫn chống giả và các ứng dụng để giúp bạn giải quyết sự phức tạp của email.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "Các yêu cầu hỗ trợ được trả lời bởi con người thực; họ là những kỹ sư thực tế đang làm việc trên sản phẩm của chúng tôi.",
-  "Testimonials": "Lời chứng thực"
+  "Testimonials": "Lời chứng thực",
+  "concurrent connections at once.": "kết nối đồng thời cùng một lúc.",
+  "The fingerprint is calculated from the following list:": "Dấu vân tay được tính từ danh sách sau:",
+  "header value (if any)": "giá trị tiêu đề (nếu có)",
+  "value (if any)": "giá trị (nếu có)"
 }

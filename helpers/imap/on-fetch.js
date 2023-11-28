@@ -93,7 +93,7 @@ async function getMessages(instance, session, server, opts = {}) {
   const pageQuery = { ...query };
 
   // `1:*`
-  if (options.messages.length === session.selected.uidList.length)
+  if (_.isEqual(options.messages.sort(), session.selected.uidList.sort()))
     queryAll = true;
   // NOTE: don't use uid for `1:*`
   else pageQuery.uid = tools.checkRangeQuery(options.messages, false);
@@ -366,7 +366,7 @@ async function getMessages(instance, session, server, opts = {}) {
     rowCount++;
 
     // add operation to bulkWrite
-    if (!markAsSeen) {
+    if (markAsSeen) {
       bulkWrite.push({
         updateOne: {
           filter: {
@@ -384,16 +384,14 @@ async function getMessages(instance, session, server, opts = {}) {
           }
         }
       });
-      entries.push({
+      const entry = {
         ignore: session.id,
         command: 'FETCH',
         uid: message.uid,
-        message: message._id,
-        // modseq: message.modseq,
-        mailbox: mailbox._id,
-        thread: message.thread,
-        flags: message.flags
-      });
+        flags: message.flags,
+        message: message._id
+      };
+      entries.push(entry);
     }
 
     if (bulkWrite.length >= MAX_BULK_WRITE_SIZE) {

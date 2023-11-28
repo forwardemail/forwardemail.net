@@ -78,6 +78,7 @@ const Indexer = require('./indexer');
 const getQueryResponse = require('./get-query-response');
 const parsePayload = require('./parse-payload');
 const wspServer = require('./wsp-server');
+const getFingerprint = require('./get-fingerprint');
 
 module.exports = {
   decrypt,
@@ -155,5 +156,6 @@ module.exports = {
   Indexer,
   getQueryResponse,
   parsePayload,
-  wspServer
+  wspServer,
+  getFingerprint
 };

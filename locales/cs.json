@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Pokud jste vývojář softwaru, můžete k programovému odesílání e-mailů použít naše rozhraní API pro transakční e-maily.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "Máme vyhrazenou sekci FAQ, fiktivní průvodce a aplikace, které vám pomohou orientovat se ve složitosti e-mailu.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "Žádosti o podporu jsou zodpovězeny skutečnými lidmi; jsou to skuteční inženýři pracující na našem produktu.",
-  "Testimonials": "Posudky"
+  "Testimonials": "Posudky",
+  "concurrent connections at once.": "souběžná připojení najednou.",
+  "The fingerprint is calculated from the following list:": "Otisk prstu se vypočítá z následujícího seznamu:",
+  "header value (if any)": "hodnota záhlaví (pokud existuje)",
+  "value (if any)": "hodnota (pokud existuje)"
 }

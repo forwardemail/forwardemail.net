@@ -3585,5 +3585,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "אם אתה מפתח תוכנה, אתה יכול להשתמש ב-API שלנו לדוא\"ל עסקאות כדי לשלוח הודעות דוא\"ל באופן פרוגרמטי.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "יש לנו קטע ייעודי של שאלות נפוצות, מדריכים מוגני דמה ואפליקציות שיעזרו לך לנווט במורכבות הדוא\"ל.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "בקשות תמיכה נענות על ידי בני אדם אמיתיים; הם המהנדסים בפועל שעובדים על המוצר שלנו.",
-  "Testimonials": "המלצות"
+  "Testimonials": "המלצות",
+  "concurrent connections at once.": "חיבורים במקביל בבת אחת.",
+  "The fingerprint is calculated from the following list:": "טביעת האצבע מחושבת מהרשימה הבאה:",
+  "header value (if any)": "ערך כותרת (אם יש)",
+  "value (if any)": "ערך (אם יש)"
 }

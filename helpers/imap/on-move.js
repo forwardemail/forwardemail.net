@@ -245,17 +245,37 @@ async function onMove(mailboxId, update, session, fn) {
         // eslint-disable-next-line no-await-in-loop
         message = await Messages.create(message);
 
+        /*
+        let ignore = false;
+        if (
+          session.selected &&
+          session.selected.mailbox &&
+          session.selected.mailbox.toString() === mailbox._id.toString()
+        ) {
+          ignore = session.id;
+          if (this?.constructor?.name === 'IMAP') {
+            session.writeStream.write(
+              session.formatResponse('EXISTS', message.uid)
+            );
+          } else {
+            writeStream.push(['EXISTS', message.uid]);
+          }
+        }
+        */
+
         existEntries.push({
           ignore: session.id,
           command: 'EXISTS',
           uid: message.uid,
+          message: message._id
           // mailbox: message.mailbox,
-          message: message._id,
-          thread: message.thread,
+          // TODO: we can remove `thread`, `unseen`, and `idate`
+          //       from all addEntries and from journal db itself
+          // unseen: message.unseen,
+          // thread: message.thread,
           // modseq: message.modseq,
-          unseen: message.unseen,
-          idate: message.idate,
-          ...(message.junk ? { junk: true } : {})
+          // idate: message.idate,
+          // ...(message.junk ? { junk: true } : {})
         });
 
         // delete old message
@@ -364,6 +384,7 @@ async function onMove(mailboxId, update, session, fn) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
 
+    // TODO: do we need this
     // write any if needed
     if (sourceUid.length > 0) {
       const payload = {

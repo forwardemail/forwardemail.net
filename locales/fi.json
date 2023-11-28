@@ -6025,5 +6025,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Jos olet ohjelmistokehittäjä, voit lähettää sähköpostit ohjelmallisesti sähköpostin sovellusliittymämme avulla.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "Meillä on oma UKK-osio, pätevät oppaat ja sovellukset, jotka auttavat sinua navigoimaan sähköpostin monimutkaisessa tilassa.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "Todelliset ihmiset vastaavat tukipyyntöihin; he ovat todellisia tuotteemme parissa työskenteleviä insinöörejä.",
-  "Testimonials": "Suositukset"
+  "Testimonials": "Suositukset",
+  "concurrent connections at once.": "samanaikaiset yhteydet kerralla.",
+  "The fingerprint is calculated from the following list:": "Sormenjälki lasketaan seuraavasta luettelosta:",
+  "header value (if any)": "otsikon arvo (jos sellainen on)",
+  "value (if any)": "arvo (jos on)"
 }

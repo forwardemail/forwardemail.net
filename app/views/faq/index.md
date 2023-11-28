@@ -1767,7 +1767,7 @@ The MX servers also limit messages being forwarded to one or more recipients thr
 
 * `Senders` that exceed the rate limit will be rejected with a 421 error.
 
-Our IMAP and SMTP servers limit your aliases from having more than `15` concurrent connections at once – which is [similar to Gmail's limits](https://support.google.com/mail/answer/7126229).
+Our IMAP and SMTP servers limit your aliases from having more than `30` concurrent connections at once.
 
 
 ## How do you protect against backscatter
@@ -1868,18 +1868,16 @@ A common reason for getting listed on the Backscatterer list is misdirected boun
 
 An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
 
-The fingerprint is a series of cryptographically calculated hashes delimited by a colon, and it is used internally in our codebase.
-
-These calculated hashes are pushed to an Array (a list) if and only if their values exist:
+The fingerprint is calculated from the following list:
 
 * Client resolved FQDN hostname or IP address
-* `Message-ID` header value
-* `Date` header value (if and only if `Message-ID` did not exist)
-* `From` header value (if and only if `Message-ID` did not exist)
-* `To` header value (if and only if `Message-ID` did not exist)
-* `Cc` header value (if and only if `Message-ID` did not exist)
-* `Subject` header value (if and only if `Message-ID` did not exist)
-* `Body` value (if and only if `Message-ID` did not exist)
+* `Message-ID` header value (if any)
+* `Date` header value (if any)
+* `From` header value (if any)
+* `To` header value (if any)
+* `Cc` header value (if any)
+* `Subject` header value (if any)
+* `Body` value (if any)
 
 
 ## Why are my test emails sent to myself in Gmail showing as "suspicious"

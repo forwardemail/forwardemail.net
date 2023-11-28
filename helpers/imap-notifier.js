@@ -190,7 +190,6 @@ class IMAPNotifier extends EventEmitter {
       entry.modseq = entry.modseq || modseq;
       entry.created = entry.created || created;
       entry.mailbox = entry.mailbox || mailbox._id;
-      entry.alias = mailbox.alias;
     }
 
     if (updated.length > 0) {
@@ -262,6 +261,8 @@ class IMAPNotifier extends EventEmitter {
         logger.fatal(err, { mailbox, updated, modseq, session });
       }
     }
+
+    logger.debug('creating entries', { entries });
 
     await Journals.create(entries);
 

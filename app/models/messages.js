@@ -119,6 +119,15 @@ const Messages = new mongoose.Schema(
       required: true
     },
 
+    //
+    // NOTE: this cannot be unique because MOVE command
+    //       will create a new message first and then delete old
+    //
+    fingerprint: {
+      type: String,
+      index: true
+    },
+
     // booleans for search
     unseen: {
       type: Boolean,

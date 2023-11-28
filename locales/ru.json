@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Если вы разработчик программного обеспечения, вы можете использовать наш API транзакционной электронной почты для программной отправки электронных писем.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "У нас есть специальный раздел часто задаваемых вопросов, надежные руководства и приложения, которые помогут вам разобраться в сложной электронной почте.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "На запросы поддержки отвечают реальные люди; они настоящие инженеры, работающие над нашим продуктом.",
-  "Testimonials": "Отзывы"
+  "Testimonials": "Отзывы",
+  "concurrent connections at once.": "одновременные соединения одновременно.",
+  "The fingerprint is calculated from the following list:": "Отпечаток пальца рассчитывается из следующего списка:",
+  "header value (if any)": "значение заголовка (если есть)",
+  "value (if any)": "стоимость (если есть)"
 }

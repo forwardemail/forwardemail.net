@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Si vous êtes un développeur de logiciels, vous pouvez utiliser notre API de courrier électronique transactionnel pour envoyer des e-mails par programmation.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "Nous proposons une section FAQ dédiée, des guides infaillibles et des applications pour vous aider à naviguer dans la complexité du courrier électronique.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "Les demandes d'assistance sont traitées par de vrais humains ; ce sont les véritables ingénieurs qui travaillent sur notre produit.",
-  "Testimonials": "Témoignages"
+  "Testimonials": "Témoignages",
+  "concurrent connections at once.": "connexions simultanées à la fois.",
+  "The fingerprint is calculated from the following list:": "L'empreinte digitale est calculée à partir de la liste suivante :",
+  "header value (if any)": "valeur d'en-tête (le cas échéant)",
+  "value (if any)": "valeur (le cas échéant)"
 }

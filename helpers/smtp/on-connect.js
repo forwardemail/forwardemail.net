@@ -56,7 +56,9 @@ async function onConnect(session, fn) {
       `allowlist:${rootDomain || session.remoteAddress}`
     );
 
-    if (!boolean(result)) {
+    if (boolean(result)) {
+      session.allowlistValue = rootDomain || session.remoteAddress;
+    } else {
       //
       // prevent connections from backscatter, silent ban, and denylist
       //

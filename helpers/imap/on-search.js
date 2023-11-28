@@ -206,7 +206,9 @@ async function onSearch(mailboxId, options, session, fn) {
                 continue;
               }
 
-              if (term.value.length !== session.selected.uidList.length) {
+              if (
+                !_.isEqual(term.value.sort(), session.selected.uidList.sort())
+              ) {
                 // not 1:*
                 parent.push({
                   uid: tools.checkRangeQuery(term.value, ne)

@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "หากคุณเป็นนักพัฒนาซอฟต์แวร์ คุณสามารถใช้ API อีเมลธุรกรรมของเราเพื่อส่งอีเมลโดยทางโปรแกรมได้",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "เรามีส่วนคำถามที่พบบ่อยโดยเฉพาะ คำแนะนำที่ไม่น่าเชื่อถือ และแอปที่จะช่วยคุณจัดการกับความซับซ้อนของอีเมล",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "คำขอการสนับสนุนได้รับคำตอบจากมนุษย์จริงๆ พวกเขาคือวิศวกรตัวจริงที่ทำงานเกี่ยวกับผลิตภัณฑ์ของเรา",
-  "Testimonials": "ข้อความรับรอง"
+  "Testimonials": "ข้อความรับรอง",
+  "concurrent connections at once.": "การเชื่อมต่อพร้อมกันในคราวเดียว",
+  "The fingerprint is calculated from the following list:": "ลายนิ้วมือคำนวณจากรายการต่อไปนี้:",
+  "header value (if any)": "ค่าส่วนหัว (ถ้ามี)",
+  "value (if any)": "มูลค่า (ถ้ามี)"
 }

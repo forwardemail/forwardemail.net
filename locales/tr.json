@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Bir yazılım geliştiricisiyseniz programlı olarak e-posta göndermek için işlemsel e-posta API'mizi kullanabilirsiniz.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "E-postanın karmaşıklığında gezinmenize yardımcı olacak özel bir SSS bölümümüz, sahte kılavuzlarımız ve uygulamalarımız var.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "Destek talepleri gerçek kişiler tarafından yanıtlanmaktadır; onlar ürünümüz üzerinde çalışan gerçek mühendislerdir.",
-  "Testimonials": "Görüşler"
+  "Testimonials": "Görüşler",
+  "concurrent connections at once.": "Aynı anda eşzamanlı bağlantılar.",
+  "The fingerprint is calculated from the following list:": "Parmak izi aşağıdaki listeden hesaplanır:",
+  "header value (if any)": "başlık değeri (varsa)",
+  "value (if any)": "değer (varsa)"
 }

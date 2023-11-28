@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Ha Ön szoftverfejlesztő, akkor a tranzakciós e-mail API segítségével programozottan küldhet e-maileket.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "Rendelkezünk egy külön GYIK részleggel, álbiztos útmutatókkal és alkalmazásokkal, amelyek segítenek eligazodni az e-mailek bonyolultságában.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "A támogatási kéréseket valódi emberek válaszolják meg; ők a termékünkön dolgozó tényleges mérnökök.",
-  "Testimonials": "Beszámolók"
+  "Testimonials": "Beszámolók",
+  "concurrent connections at once.": "párhuzamos kapcsolatokat egyszerre.",
+  "The fingerprint is calculated from the following list:": "Az ujjlenyomat kiszámítása a következő listából történik:",
+  "header value (if any)": "fejléc értéke (ha van)",
+  "value (if any)": "érték (ha van)"
 }

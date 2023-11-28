@@ -6179,5 +6179,9 @@
   "If you're a software developer, then you can use our transactional email API to programatically send emails.": "Jika Anda seorang pengembang perangkat lunak, Anda dapat menggunakan API email transaksional kami untuk mengirim email secara terprogram.",
   "We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.": "Kami memiliki bagian FAQ khusus, panduan anti-palsu, dan aplikasi untuk membantu Anda menavigasi kompleksitas email.",
   "Support requests are answered by real humans; they are the actual engineers working on our product.": "Permintaan dukungan dijawab oleh manusia sungguhan; mereka adalah insinyur sebenarnya yang mengerjakan produk kami.",
-  "Testimonials": "Testimonial"
+  "Testimonials": "Testimonial",
+  "concurrent connections at once.": "koneksi bersamaan sekaligus.",
+  "The fingerprint is calculated from the following list:": "Sidik jari dihitung dari daftar berikut:",
+  "header value (if any)": "nilai header (jika ada)",
+  "value (if any)": "nilai (jika ada)"
 }

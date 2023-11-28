@@ -261,7 +261,7 @@ html.h-100.no-js(
             warning: "#{ t('Warning') }",
             question: "#{ t('Question') }"
           };
-        script(defer).
+        script(defer, data-ignore-hash-change)#flash-messages.
           window._messages = !{json(flash(), null, null)};
 
         //- set defaults for sweetalert2

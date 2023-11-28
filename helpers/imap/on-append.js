@@ -18,6 +18,7 @@ const { Buffer } = require('node:buffer');
 const bytes = require('bytes');
 const ms = require('ms');
 const splitLines = require('split-lines');
+const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const { convert } = require('html-to-text');
 
 const Aliases = require('#models/aliases');
@@ -26,8 +27,11 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const config = require('#config');
+const getFingerprint = require('#helpers/get-fingerprint');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+
+const { formatResponse } = IMAPConnection.prototype;
 
 const SIXTY_FOUR_MB_IN_BYTES = bytes('64MB');
 
@@ -51,7 +55,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     if (this?.constructor?.name === 'IMAP') {
       try {
-        const data = await this.wsp.request({
+        const [bool, response, writeStream] = await this.wsp.request({
           action: 'append',
           session: {
             id: session.id,
@@ -63,7 +67,18 @@ async function onAppend(path, flags, date, raw, session, fn) {
           date,
           raw
         });
-        fn(null, ...data);
+
+        if (Array.isArray(writeStream)) {
+          for (const write of writeStream) {
+            if (Array.isArray(write)) {
+              session.writeStream.write(session.formatResponse(...write));
+            } else {
+              session.writeStream.write(write);
+            }
+          }
+        }
+
+        fn(null, bool, response);
       } catch (err) {
         fn(err);
       }
@@ -72,6 +87,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
     }
 
     await this.refreshSession(session, 'APPEND');
+
+    const writeStream = [];
 
     // check if over quota
     const { storageUsed, isOverQuota } = await Aliases.isOverQuota({
@@ -125,43 +142,47 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //
     // NOTE: this prevents storing duplicate messages
     //
-    // Message-ID + PATH are used as determinent factors
-    // `msg` and `path` (mailbox._id)
     // (e.g. in case MX server attempts multiple delivery attempts)
     // (and in this case we simply return the already existing message)
     // <https://github.com/nodemailer/wildduck/issues/555>
     //
+    //
+    // NOTE: this assumes that if a message was received
+    //       and it's not in the INBOX, then the user moved it
+    //       and so we shouldn't store a duplicate copy
+    //
 
-    // TODO: calculate message fingerprint and use that instead
-    //       of the "Message-ID" header
-    // TODO: also check other mailboxes for this fingerprint
-    // headers [
-    //   { key: 'to', value: 'foo-1@example-1.com' },
-    //   { key: 'from', value: 'foo-1@example-1.com' },
-    //   { key: 'subject', value: 'test' }
-    // ]
+    //
+    // NOTE: we pass `false` as an argument here because a sender could
+    //       try to send a message from multiple different SMTP providers
+    //       (e.g. or in the case they need to do damage control, they would send via another provider)
+    //       (and so for ones that went through, we don't want to store them twice)
+    //       (note that this is unlike the MX server, which has this set to `true`)
+    //
+    const fingerprint = getFingerprint(session, headers, mimeTree.body, false);
 
-    /*
     const existingMessage = await Messages.findOne(this, session, {
-      mailbox: mailbox._id,
-      msgid
+      fingerprint
     });
 
+    //
+    // this typically only happens if we're sending from MX server
+    // (sometimes senders will make multiple attempts even if one succeeded)
+    //
     if (existingMessage) {
       const response = {
         uidValidity: mailbox.uidValidity,
         uid: existingMessage.uid,
         id: existingMessage.id,
-        mailbox: mailbox.id,
+        mailbox: mailbox._id,
         mailboxPath: mailbox.path,
         size: existingMessage.size,
-        status: 'new'
+        status: 'new' // TODO: should this be "existing"
       };
       this.logger.debug('command response', { response });
-      fn(null, true, response);
+      fn(null, true, response, writeStream);
       return;
     }
-    */
 
     // store reference for cleanup
     mimeTreeData = mimeTree;
@@ -225,6 +246,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     const retention =
       typeof mailbox.retention === 'number' ? mailbox.retention : 0;
     const data = {
+      fingerprint,
       mailbox: mailbox._id,
       _id: id,
       root: id,
@@ -331,11 +353,24 @@ async function onAppend(path, flags, date, raw, session, fn) {
       this.logger.fatal(err);
     }
 
+    let ignore = false;
+    if (
+      session.selected &&
+      session.selected.mailbox &&
+      session.selected.mailbox.toString() === mailbox._id.toString()
+    ) {
+      ignore = session.id;
+      const payload = formatResponse.call(session, 'EXISTS', message.uid);
+      if (this?.constructor?.name === 'IMAP') {
+        session.writeStream.write(payload);
+      } else {
+        writeStream.push(payload);
+      }
+    }
+
     try {
       await this.server.notifier.addEntries(this, session, mailbox, {
-        // TODO: the wildduck code has this which means messages don't show in Sent folder
-        // <https://github.com/nodemailer/wildduck/issues/537>
-        // ignore: session.id,
+        ignore,
         command: 'EXISTS',
         uid: message.uid,
         mailbox: mailbox._id,
@@ -355,15 +390,14 @@ async function onAppend(path, flags, date, raw, session, fn) {
       uidValidity: mailbox.uidValidity,
       uid: message.uid,
       id,
-      mailbox: mailbox.id,
-      mailboxPath: mailbox.path,
+      mailbox: mailbox._id,
       size,
       status: 'new'
     };
 
     this.logger.debug('command response', { response });
 
-    fn(null, true, response);
+    fn(null, true, response, writeStream);
   } catch (err) {
     // delete attachments if we need to cleanup
     const attachmentIds =

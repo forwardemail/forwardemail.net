@@ -1046,7 +1046,9 @@ async function parsePayload(data, ws) {
                       ...session.user,
                       password: user.password
                     },
-                    remoteAddress: payload.remoteAddress
+                    remoteAddress: payload.remoteAddress,
+                    resolvedClientHostname: payload.resolvedClientHostname,
+                    allowlistValue: payload.allowlistValue
                   }
                 );
 
