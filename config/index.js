@@ -825,7 +825,6 @@ config.views.locals.config = _.pick(config, [
   'goodDomains',
   'meta',
   'metaTitleAffix',
-  'maxQuotaPerAlias',
   'modulusLength'
 ]);
 

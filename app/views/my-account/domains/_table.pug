@@ -1,26 +1,133 @@
 include ../../_sort-header
 include ../../_pagination
 
+mixin renderProgressBar(domain, isMobile = false)
+  if (typeof domain.storage_used === 'number' && typeof domain.storage_used_by_aliases === 'number' && typeof domain.storage_quota === 'number')
+    - const storageUsedByAliases = Math.round((domain.storage_used_by_aliases / domain.storage_quota) * 100);
+    - const pooledStorageUsed = Math.round(((domain.storage_used - domain.storage_used_by_aliases) / domain.storage_quota) * 100);
+    - const availableStorage = Math.round(((domain.storage_quota - domain.storage_used) / domain.storage_quota) * 100);
+    - let percentage = Math.round((domain.storage_used / domain.storage_quota) * 100);
+    if domain.storage_used >= domain.storage_quota
+      - percentage = 100;
+    - let progressClass = "bg-primary";
+    - let textClass = "text-muted";
+    if (percentage >= 80)
+      - progressClass = "bg-danger";
+      - textClass = "text-danger";
+    else if (percentage >= 60)
+      - progressClass = "bg-warning";
+      - textClass = "text-warning";
+    .progress.bg-light.border.border-dark
+      //-
+        if domain.storage_used > domain.storage_quota
+          .progress-bar.bg-danger(
+            role="progressbar",
+            style="width: 100%",
+            aria-valuenow=100,
+            aria-valuemin=0,
+            aria-valuemax=100
+          )= t("No storage remaining")
+        else
+      if percentage === 0
+        .progress-bar.bg-success(
+          style='width:100%;',
+          aria-valuenow=100,
+          aria-valuemin=0,
+          aria-valuemax=100,
+          data-toggle="tooltip",
+          data-title=t("Available storage"),
+          data-placement="bottom"
+          role="button"
+        )= '100%'
+      else
+        //- Render Storage Used By Aliases
+        if storageUsedByAliases > 0
+          .progress-bar.bg-primary(
+            style=`width:${storageUsedByAliases}%; min-width:25%;`,
+            aria-valuenow=storageUsedByAliases,
+            aria-valuemin=0,
+            aria-valuemax=100,
+            data-toggle="tooltip",
+            data-title=t("Storage used by domain's aliases"),
+            data-placement="bottom",
+            role="button"
+          )= `${storageUsedByAliases}%`
+
+        //- Render Pooled Storage Used
+        if pooledStorageUsed > 0
+          .progress-bar(
+            class=progressClass,
+            style=`width:${pooledStorageUsed}%; min-width:25%;`,
+            aria-valuenow=pooledStorageUsed,
+            aria-valuemin=0,
+            aria-valuemax=100,
+            data-toggle="tooltip",
+            data-title=t("Storage used by other domains"),
+            data-placement="bottom",
+            role="button"
+          )= `${pooledStorageUsed}%`
+
+        //- Render Available Storage
+        if availableStorage > 0
+          .progress-bar.bg-success(
+            style=`width:${availableStorage}%; min-width:25%;`,
+            aria-valuenow=availableStorage
+            aria-valuemin=0,
+            aria-valuemax=100,
+            data-toggle="tooltip",
+            data-title=t("Available storage"),
+            data-placement="bottom"
+            role="button"
+          )= `${availableStorage}%`
+    ul.list-unstyled.small.mt-1.mb-0
+      if storageUsedByAliases > 0
+        li.text-primary
+          = prettyBytes(domain.storage_used_by_aliases)
+          = ' '
+          = t("domain")
+      if pooledStorageUsed > 0
+        li(class=textClass)
+          = prettyBytes(domain.storage_used)
+          = ' '
+          = t('pooled')
+      if availableStorage > 0
+        li.text-success
+          = prettyBytes(domain.storage_quota - domain.storage_used)
+          = ' '
+          = t('available')
+  else
+    = t("Not Available")
+
+p.text-center.d-lg-none
+  a.btn.btn-link.btn-sm(
+    href=l("/encrypted-email"),
+    role="button",
+    data-toggle="modal",
+    data-target="#modal-storage"
+  )
+    = "Click here to learn about storage"
+    = " "
+    i.fa.fa-info-circle
+
 .table-responsive
   table.table.table-hover.table-bordered.table-sm
     thead.thead-dark
       tr
         th(scope="col", colspan=2)
           +sortHeader('name', 'Domain Name', '#table-domains', 'text-left')
-        //-.
-          th.align-middle(scope="col")
-            = t("Storage Usage")
-            a.btn.btn-link.text-uppercase.text-white(
-              href=l("/encrypted-email"),
-              role="button",
-              data-toggle="modal",
-              data-target="#modal-storage"
-            )
-              i.fa.fa-info-circle
-        th.align-middle(scope="col")= t("Quick Links")
+        th.text-center.align-middle(scope="col").d-none.d-lg-table-cell
+          = t("Storage Usage")
+          a.btn.btn-link.text-uppercase.text-white(
+            href=l("/encrypted-email"),
+            role="button",
+            data-toggle="modal",
+            data-target="#modal-storage"
+          )
+            i.fa.fa-info-circle
+        th.align-middle.text-nowrap(scope="col")= t("Quick Links")
     tbody
       if domains.length === 0
-        td.alert.alert-info(colspan=3)= t("No domains exist for that search.")
+        td.alert.alert-info(colspan=4)= t("No domains exist for that search.")
       else
         each domain in domains
           - domain.plan = domain.plan || "free";
@@ -65,40 +172,12 @@ include ../../_pagination
                         class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning"
                       )
                         = titleize(humanize(domain.plan))
-            //-.
-              td.align-middle.p-3
-                if (typeof domain.storage_used === 'number')
-                  .progress.bg-light.border.border-dark
-                    if domain.storage_used > config.maxQuotaPerAlias
-                      .progress-bar.bg-danger(
-                        role="progressbar",
-                        style="width: 100%",
-                        aria-valuenow=100,
-                        aria-valuemin=0,
-                        aria-valuemax=100
-                      )= t("No storage remaining")
-                    else
-                      - let percentage = Math.round((domain.storage_used / config.maxQuotaPerAlias) * 100);
-                      if domain.storage_used >= config.maxQuotaPerAlias
-                        - percentage = 100;
-                      - let progressClass = "bg-success";
-                      if (percentage >= 80)
-                        - progressClass = "bg-danger";
-                      else if (percentage >= 60)
-                        - progressClass = "bg-warning";
-                      .progress-bar(
-                        class=progressClass,
-                        role="progressbar",
-                        style=`width:${percentage}%; min-width:30%;`,
-                        aria-valuenow=percentage,
-                        aria-valuemin=0,
-                        aria-valuemax=100
-                      )= `${percentage}%`
-                  small.text-monospace.text-muted= `${prettyBytes(domain.storage_used)} / ${prettyBytes(config.maxQuotaPerAlias)}`
-                else
-                  = t("Not Available")
+              .d-lg-none.small.mt-1
+                +renderProgressBar(domain, true)
+            td.align-middle.p-3.small.d-none.d-lg-table-cell.text-center
+              +renderProgressBar(domain)
             td.align-middle
-              ul.list-inline.mb-0
+              ul.list-inline.mb-0.text-nowrap
                 li.list-inline-item.d-block.d-sm-inline-block
                   if domain.plan === 'free'
                     if user.plan === 'free'

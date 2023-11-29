@@ -90,6 +90,7 @@ const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(
 // TODO: this should be moved to redis or its own package under forwardemail or @ladjs
 //
 const disposableDomains = new Set();
+
 async function crawlDisposable() {
   try {
     const response = await retryRequest(
@@ -109,10 +110,12 @@ async function crawlDisposable() {
   }
 }
 
-setInterval(crawlDisposable, ms('1d'));
-crawlDisposable();
-
 const REGEX_VERIFICATION = new RE2(/[^\da-z]/i);
+
+const conn = mongoose.connections.find(
+  (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
+);
+if (!conn) throw new Error('Mongoose connection does not exist');
 
 const Token = new mongoose.Schema({
   user: {
@@ -1737,8 +1740,138 @@ async function ensureUserHasValidPlan(user, locale) {
 
 Domains.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
 
-const conn = mongoose.connections.find(
-  (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
-);
-if (!conn) throw new Error('Mongoose connection does not exist');
+// eslint-disable-next-line complexity
+async function getStorageUsed(_id, locale, aliasesOnly = false) {
+  let storageUsed = 0;
+
+  //
+  // calculate storage used across entire domain and its admin users domains
+  // (this is rudimentary storage system and has edge cases)
+  // (e.g. multi-accounts when users on team plan edge case)
+  //
+  const domain = await this.findById(_id)
+    .populate('members.user', `_id id plan ${config.userFields.isBanned}`)
+    .lean()
+    .exec();
+
+  if (!domain)
+    throw Boom.notFound(
+      i18n.translateError(
+        'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
+        locale || domain.locale
+      )
+    );
+
+  // safeguard to not check storage used for global domains
+  if (domain.is_global)
+    throw new TypeError('Global domains not supported for storage');
+
+  // safeguard for storage to only be used on paid plans
+  if (domain.plan === 'free')
+    throw Boom.badRequest(
+      i18n.translateError(
+        'DOMAIN_PLAN_UPGRADE_REQUIRED',
+        locale || domain.locale,
+        domain.name,
+        i18n.translate('ENHANCED_PROTECTION', locale || domain.locale),
+        `${config.urls.web}/${locale || domain.locale}/my-account/domains/${
+          domain.name
+        }/billing?plan=enhanced_protection`
+      )
+    );
+
+  // if we're on non-team plan, then there should only be one member (safeguard)
+  if (domain.plan !== 'team' && domain.members.length > 1)
+    throw new TypeError(
+      `Domain ${domain.name} (${domain.id}) has more than one member`
+    );
+
+  // filter out a domain's members without actual users
+  const adminMembers = domain.members.filter(
+    (member) =>
+      _.isObject(member.user) &&
+      !member.user[config.userFields.isBanned] &&
+      member.group === 'admin' &&
+      mongoose.isObjectIdOrHexString(member.user._id)
+  );
+
+  if (adminMembers.length === 0)
+    throw Boom.notFound(
+      i18n.translateError(
+        'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
+        locale || domain.locale
+      )
+    );
+
+  // if we're on non-team plan, then there should only be one admin (safeguard)
+  if (domain.plan !== 'team' && adminMembers.length > 1)
+    throw new TypeError(
+      `Domain ${domain.name} (${domain.id}) has more than one admin`
+    );
+
+  // now get all domains where $elemMatch is the admin user id and group is admin
+  const domainIds = aliasesOnly
+    ? [_id]
+    : await this.distinct('_id', {
+        members: {
+          $elemMatch: {
+            user: { $in: adminMembers.map((m) => m.user._id) },
+            group: 'admin'
+          }
+        }
+      });
+
+  // safeguard
+  if (domainIds.length === 0)
+    throw Boom.notFound(
+      i18n.translateError(
+        'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
+        locale || domain.locale
+      )
+    );
+
+  if (domainIds.length > 0) {
+    if (typeof conn?.models?.Aliases?.aggregate !== 'function')
+      throw new TypeError('Aliases model is not ready');
+    const results = await conn.models.Aliases.aggregate([
+      {
+        $match: {
+          domain: {
+            $in: domainIds
+          }
+        }
+      },
+      {
+        $group: {
+          _id: '',
+          storage_used: {
+            $sum: '$storage_used'
+          }
+        }
+      }
+    ]);
+    // results [ { _id: '', storage_used: 91360 } ]
+    if (
+      results.length !== 1 ||
+      typeof results[0] !== 'object' ||
+      typeof results[0].storage_used !== 'number'
+    )
+      throw Boom.notFound(
+        i18n.translateError(
+          'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
+          locale || domain.locale
+        )
+      );
+
+    storageUsed += results[0].storage_used;
+  }
+
+  return storageUsed;
+}
+
+Domains.statics.getStorageUsed = getStorageUsed;
+
 module.exports = conn.model('Domains', Domains);
+
+setInterval(crawlDisposable, ms('1d'));
+crawlDisposable();

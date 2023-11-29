@@ -395,6 +395,19 @@ async function retrieveDomain(ctx, next) {
       // set a `group` virtual helper alias to the member's group
       ctx.state.domain.group = member.group;
 
+      // get storage quota for the domain
+      try {
+        const [storageUsed, storageUsedByAliases] = await Promise.all([
+          Domains.getStorageUsed(ctx.state.domain._id, ctx.locale),
+          Domains.getStorageUsed(ctx.state.domain._id, ctx.locale, true)
+        ]);
+        ctx.state.domain.storage_used = storageUsed;
+        ctx.state.domain.storage_used_by_aliases = storageUsedByAliases;
+        ctx.state.domain.storage_quota = config.maxQuotaPerAlias;
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
+
       //
       // populate a virtual helper for rendering views
       // (e.g. subdomain in Host column for onboarding DNS setup)

@@ -141,15 +141,18 @@ async function retrieveDomains(ctx, next) {
 
   if (ctx.api) return next();
 
-  /*
-  // check storage for each domain
-  const wsp = createWebSocketAsPromised();
+  // get storage quota for each domain
   ctx.state.domains = await Promise.all(
     ctx.state.domains.map(async (d) => {
-      if (d.is_global) return d;
+      if (d.is_global || d.plan === 'free') return d;
       try {
-        // virtual helper for accurate storage from sqlite databases
-        d.storage_used = await Aliases.getStorageUsed(alias);
+        const [storageUsed, storageUsedByAliases] = await Promise.all([
+          Domains.getStorageUsed(d._id, ctx.locale),
+          Domains.getStorageUsed(d._id, ctx.locale, true)
+        ]);
+        d.storage_used = storageUsed;
+        d.storage_used_by_aliases = storageUsedByAliases;
+        d.storage_quota = config.maxQuotaPerAlias;
       } catch (err) {
         ctx.logger.fatal(err);
       }
@@ -157,12 +160,6 @@ async function retrieveDomains(ctx, next) {
       return d;
     })
   );
-  // close websocket
-  wsp
-    .close()
-    .then()
-    .catch((err) => ctx.logger.error(err));
-  */
 
   // as part of onboarding redirect users to create a new domain right away
   if (

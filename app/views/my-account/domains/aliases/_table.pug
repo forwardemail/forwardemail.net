@@ -1,6 +1,134 @@
 include ../../../_sort-header
 include ../../../_pagination
 
+mixin renderProgressBar(domain, alias, isMobile = false)
+  if (typeof domain.storage_used === 'number' && typeof domain.storage_used_by_aliases === 'number' && typeof domain.storage_quota === 'number')
+    - alias.storage_used = typeof alias.storage_used === 'number' ? alias.storage_used : 0
+    - const storageUsedBySpecificAlias = Math.round((alias.storage_used / domain.storage_quota) * 100);
+    - const storageUsedByAliases = Math.round(((domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
+    - const pooledStorageUsed = Math.round(((domain.storage_used - domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
+    - const availableStorage = Math.round(((domain.storage_quota - domain.storage_used) / domain.storage_quota) * 100);
+    - let percentage = Math.round((domain.storage_used / domain.storage_quota) * 100);
+    if domain.storage_used >= domain.storage_quota
+      - percentage = 100;
+    - let progressClass = "bg-primary";
+    - let textClass = "text-muted";
+    if (percentage >= 80)
+      - progressClass = "bg-danger";
+      - textClass = "text-danger";
+    else if (percentage >= 60)
+      - progressClass = "bg-warning";
+      - textClass = "text-warning";
+    .progress.bg-light.border.border-dark
+      //-
+        if domain.storage_used > domain.storage_quota
+          .progress-bar.bg-danger(
+            role="progressbar",
+            style="width: 100%",
+            aria-valuenow=100,
+            aria-valuemin=0,
+            aria-valuemax=100
+          )= t("No storage remaining")
+        else
+      if percentage === 0
+        .progress-bar.bg-success(
+          style='width:100%;',
+          aria-valuenow=100,
+          aria-valuemin=0,
+          aria-valuemax=100,
+          data-toggle="tooltip",
+          data-title=t("Available storage"),
+          data-placement="bottom"
+          role="button"
+        )= '100%'
+      else
+        //- Render Storage Used by Specific Alias
+        if storageUsedBySpecificAlias > 0
+          .progress-bar.progress-bar-striped.progress-bar-animated.bg-primary(
+            style=`width:${storageUsedBySpecificAlias}%; min-width:25%;`,
+            aria-valuenow=storageUsedBySpecificAlias,
+            aria-valuemin=0,
+            aria-valuemax=100,
+            data-toggle="tooltip",
+            data-title=t("Storage used by this alias"),
+            data-placement="bottom",
+            role="button"
+          )= `${storageUsedBySpecificAlias}%`
+
+        //- Render Storage Used By Aliases
+        if storageUsedByAliases > 0
+          .progress-bar.bg-primary(
+            style=`width:${storageUsedByAliases}%; min-width:25%;`,
+            aria-valuenow=storageUsedByAliases,
+            aria-valuemin=0,
+            aria-valuemax=100,
+            data-toggle="tooltip",
+            data-title=t("Storage used by other aliases"),
+            data-placement="bottom",
+            role="button"
+          )= `${storageUsedByAliases}%`
+
+        //- Render Pooled Storage Used
+        if pooledStorageUsed > 0
+          .progress-bar(
+            class=progressClass,
+            style=`width:${pooledStorageUsed}%; min-width:25%;`,
+            aria-valuenow=pooledStorageUsed,
+            aria-valuemin=0,
+            aria-valuemax=100,
+            data-toggle="tooltip",
+            data-title=t("Storage used by other domains"),
+            data-placement="bottom",
+            role="button"
+          )= `${pooledStorageUsed}%`
+
+        //- Render Available Storage
+        if availableStorage > 0
+          .progress-bar.bg-success(
+            style=`width:${availableStorage}%; min-width:25%;`,
+            aria-valuenow=availableStorage
+            aria-valuemin=0,
+            aria-valuemax=100,
+            data-toggle="tooltip",
+            data-title=t("Available storage"),
+            data-placement="bottom"
+            role="button"
+          )= `${availableStorage}%`
+    ul.list-unstyled.small.mt-1.mb-0
+      if storageUsedBySpecificAlias > 0
+        li.text-primary
+          = prettyBytes(alias.storage_used)
+          = ' '
+          = t("alias")
+      if storageUsedByAliases > 0
+        li.text-primary
+          = prettyBytes(domain.storage_used_by_aliases - alias.storage_used)
+          = ' '
+          = t("domain")
+      if pooledStorageUsed > 0
+        li(class=textClass)
+          = prettyBytes(domain.storage_used)
+          = ' '
+          = t('pooled')
+      if availableStorage > 0
+        li.text-success
+          = prettyBytes(domain.storage_quota - domain.storage_used)
+          = ' '
+          = t('available')
+  else
+    = t("Not Available")
+
+p.text-center.d-lg-none
+  a.btn.btn-link.btn-sm(
+    href=l("/encrypted-email"),
+    role="button",
+    data-toggle="modal",
+    data-target="#modal-storage"
+  )
+    = "Click here to learn about storage"
+    = " "
+    i.fa.fa-info-circle
+
 .table-responsive
   table.table.table-hover.table-bordered.table-sm
     thead.thead-dark
@@ -11,6 +139,15 @@ include ../../../_pagination
           +sortHeader('description', 'Description', '#table-aliases')
         th.text-center.d-none.d-lg-table-cell(scope="col")
           +sortHeader('is_enabled', 'Active', '#table-aliases')
+        th.align-middle.d-none.d-lg-table-cell.text-nowrap.text-center(scope="col")
+          span.ml-3= t("Storage Usage")
+          a.btn.btn-link.text-uppercase.text-white(
+            href=l("/encrypted-email"),
+            role="button",
+            data-toggle="modal",
+            data-target="#modal-storage"
+          )
+            i.fa.fa-info-circle
         th.align-middle.d-none.d-lg-table-cell(scope="col")= t("Recipients")
         th.text-center.text-md-left.align-middle.d-none.d-lg-table-cell(
           scope="col"
@@ -168,6 +305,8 @@ include ../../../_pagination
                 code= `${alias.name}@${domain.name}`
               //- on mobile we need to render this different
               .d-lg-none.p-2
+                .small
+                  +renderProgressBar(domain, alias, true)
                 if domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
                   if isSANB(alias.description)
                     p.mb-1.small= alias.description
@@ -360,6 +499,8 @@ include ../../../_pagination
                 class=alias.is_enabled ? "text-success" : "text-danger"
               )
                 i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
+            td.align-middle.p-3.small.d-none.d-lg-table-cell.text-center
+              +renderProgressBar(domain, alias)
             td.align-middle.d-none.d-lg-table-cell
               ul.list-inline.mb-0
                 if alias.name !== '*' && !alias.name.startsWith('/')
