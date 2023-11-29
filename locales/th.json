@@ -6202,5 +6202,17 @@
   "domain": "โดเมน",
   "Storage used by this alias": "พื้นที่เก็บข้อมูลที่ใช้โดยนามแฝงนี้",
   "Storage used by other aliases": "พื้นที่เก็บข้อมูลที่ใช้โดยนามแฝงอื่น",
-  "alias": "นามแฝง"
+  "alias": "นามแฝง",
+  "command as opposed to the built-in": "คำสั่งตรงข้ามกับในตัว",
+  "command because if a page is modified during a": "คำสั่งเพราะหากเพจถูกแก้ไขระหว่าง",
+  "command operation, then it has to start over.  The": "การดำเนินการตามคำสั่งแล้วจะต้องเริ่มต้นใหม่ ที่",
+  "command will take a snapshot.  See these comments on": "คำสั่งจะจับภาพ ดูความคิดเห็นเหล่านี้ได้ที่",
+  "Hacker News": "ข่าวแฮ็กเกอร์",
+  "Additionally we use": "นอกจากนี้เรายังใช้",
+  "as opposed to": "ตรงข้ามกับ",
+  ", because the": ", เพราะว่า",
+  "command would leave the database unencrypted for a brief period until": "คำสั่งจะปล่อยให้ฐานข้อมูลไม่ได้เข้ารหัสในช่วงเวลาสั้น ๆ จนกระทั่ง",
+  "is invoked (see this GitHub": "ถูกเรียกใช้ (ดู GitHub นี้",
+  "comment": "ความคิดเห็น",
+  "for insight).": "เพื่อความเข้าใจ)"
 }

@@ -5939,5 +5939,17 @@
   "domain": "domæne",
   "Storage used by this alias": "Lager, der bruges af dette alias",
   "Storage used by other aliases": "Lager, der bruges af andre aliaser",
-  "alias": "alias"
+  "alias": "alias",
+  "command as opposed to the built-in": "kommando i modsætning til den indbyggede",
+  "command because if a page is modified during a": "kommando, fordi hvis en side ændres i løbet af en",
+  "command operation, then it has to start over.  The": "kommandooperation, så skal den starte forfra. Det",
+  "command will take a snapshot.  See these comments on": "kommandoen tager et øjebliksbillede. Se disse kommentarer vedr",
+  "Hacker News": "Hacker nyheder",
+  "Additionally we use": "Derudover bruger vi",
+  "as opposed to": "i modsætning til",
+  ", because the": ", fordi",
+  "command would leave the database unencrypted for a brief period until": "kommando ville lade databasen være ukrypteret i en kort periode indtil",
+  "is invoked (see this GitHub": "påkaldes (se denne GitHub",
+  "comment": "kommentar",
+  "for insight).": "for indsigt)."
 }

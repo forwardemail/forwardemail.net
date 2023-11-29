@@ -6202,5 +6202,17 @@
   "domain": "domínio",
   "Storage used by this alias": "Armazenamento usado por este alias",
   "Storage used by other aliases": "Armazenamento usado por outros aliases",
-  "alias": "apelido"
+  "alias": "apelido",
+  "command as opposed to the built-in": "comando em oposição ao embutido",
+  "command because if a page is modified during a": "comando porque se uma página for modificada durante um",
+  "command operation, then it has to start over.  The": "operação de comando, então ele tem que começar de novo. O",
+  "command will take a snapshot.  See these comments on": "O comando tirará um instantâneo. Veja esses comentários em",
+  "Hacker News": "Notícias sobre hackers",
+  "Additionally we use": "Além disso usamos",
+  "as opposed to": "em oposição a",
+  ", because the": ", porque o",
+  "command would leave the database unencrypted for a brief period until": "comando deixaria o banco de dados sem criptografia por um breve período até",
+  "is invoked (see this GitHub": "é invocado (veja este GitHub",
+  "comment": "Comente",
+  "for insight).": "para obter insights)."
 }

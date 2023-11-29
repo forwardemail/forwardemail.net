@@ -6202,5 +6202,17 @@
   "domain": "اِختِصاص",
   "Storage used by this alias": "التخزين المستخدم بواسطة هذا الاسم المستعار",
   "Storage used by other aliases": "التخزين المستخدم من قبل الأسماء المستعارة الأخرى",
-  "alias": "الاسم المستعار"
+  "alias": "الاسم المستعار",
+  "command as opposed to the built-in": "الأمر بدلا من المدمج في",
+  "command because if a page is modified during a": "الأمر لأنه إذا تم تعديل الصفحة أثناء",
+  "command operation, then it has to start over.  The": "عملية القيادة، ثم عليه أن يبدأ من جديد. ال",
+  "command will take a snapshot.  See these comments on": "سوف يأخذ الأمر لقطة. انظر هذه التعليقات على",
+  "Hacker News": "أخبار القراصنة",
+  "Additionally we use": "بالإضافة إلى ذلك نستخدم",
+  "as opposed to": "في مقابل",
+  ", because the": "، بسبب ال",
+  "command would leave the database unencrypted for a brief period until": "سيترك الأمر قاعدة البيانات غير مشفرة لفترة وجيزة حتى",
+  "is invoked (see this GitHub": "تم استدعاؤه (راجع GitHub",
+  "comment": "تعليق",
+  "for insight).": "للبصيرة)."
 }

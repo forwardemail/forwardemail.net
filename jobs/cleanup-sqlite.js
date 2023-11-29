@@ -188,7 +188,8 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             await wspServer.request({
               action: 'size',
               timeout: ms('5s'),
-              alias_id: id
+              alias_id: id,
+              vacuum: true
             });
 
             // get total storage used for an alias (includes across all relevant domains/aliases)

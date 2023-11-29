@@ -6202,5 +6202,17 @@
   "domain": "ドメイン",
   "Storage used by this alias": "このエイリアスによって使用されるストレージ",
   "Storage used by other aliases": "他のエイリアスによって使用されるストレージ",
-  "alias": "エイリアス"
+  "alias": "エイリアス",
+  "command as opposed to the built-in": "組み込みではなくコマンド",
+  "command because if a page is modified during a": "コマンドの実行中にページが変更された場合、",
+  "command operation, then it has to start over.  The": "コマンド操作を実行した場合は、最初からやり直す必要があります。の",
+  "command will take a snapshot.  See these comments on": "コマンドはスナップショットを取得します。これらのコメントを参照してください",
+  "Hacker News": "ハッカーニュース",
+  "Additionally we use": "さらに、私たちは使用します",
+  "as opposed to": "とは対照的に",
+  ", because the": "、 なぜなら",
+  "command would leave the database unencrypted for a brief period until": "このコマンドは、データベースを短期間暗号化しないままにしておきます。",
+  "is invoked (see this GitHub": "が呼び出されます (この GitHub を参照してください)",
+  "comment": "コメント",
+  "for insight).": "洞察力のために）。"
 }

@@ -6202,5 +6202,17 @@
   "domain": "doména",
   "Storage used by this alias": "Úložiště používané tímto aliasem",
   "Storage used by other aliases": "Úložiště používané jinými aliasy",
-  "alias": "alias"
+  "alias": "alias",
+  "command as opposed to the built-in": "příkaz na rozdíl od vestavěného",
+  "command because if a page is modified during a": "příkaz, protože pokud je stránka změněna během a",
+  "command operation, then it has to start over.  The": "příkazovou operaci, pak musí začít znovu. The",
+  "command will take a snapshot.  See these comments on": "příkaz pořídí snímek. Viz tyto komentáře na",
+  "Hacker News": "Hackerské zprávy",
+  "Additionally we use": "Navíc používáme",
+  "as opposed to": "naproti tomu",
+  ", because the": ", protože",
+  "command would leave the database unencrypted for a brief period until": "příkaz by ponechal databázi nezašifrovanou na krátkou dobu, dokud",
+  "is invoked (see this GitHub": "je vyvoláno (viz tento GitHub",
+  "comment": "komentář",
+  "for insight).": "pro nahlédnutí)."
 }

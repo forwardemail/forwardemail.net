@@ -193,7 +193,11 @@ We accomplish two-way communication with [WebSockets](https://developer.mozilla.
 
 > **tldr;** Compressed backups of your encrypted mailboxes are made every hour.  You can also instantly request a new backup or download the latest backup at anytime from <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases.
 
-For backups, we simply run the SQLite `backup` command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash has changed on the file as compared to the most recent backup.
+For backups, we simply run the SQLite `VACUUM INTO` command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash has changed on the file as compared to the most recent backup.
+
+Note that we use the `VACUUM INTO` command as opposed to the built-in `backup` command because if a page is modified during a `backup` command operation, then it has to start over.  The `VACUUM INTO` command will take a snapshot.  See these comments on [GitHub](https://github.com/benbjohnson/litestream.io/issues/56) and [Hacker News](https://news.ycombinator.com/item?id=31387556) for more insight.
+
+Additionally we use `VACUUM INTO` as opposed to `backup`, because the `backup` command would leave the database unencrypted for a brief period until `rekey` is invoked (see this GitHub [comment](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) for insight).
 
 The Secondary will instruct the Primary over the `WebSocket` connection to execute the backup – and the Primary will then receive the command to do so and will subsequently:
 

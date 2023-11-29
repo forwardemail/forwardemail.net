@@ -5894,5 +5894,17 @@
   "domain": "领域",
   "Storage used by this alias": "该别名使用的存储空间",
   "Storage used by other aliases": "其他别名使用的存储",
-  "alias": "别名"
+  "alias": "别名",
+  "command as opposed to the built-in": "命令而不是内置命令",
+  "command because if a page is modified during a": "命令，因为如果在执行期间修改了页面",
+  "command operation, then it has to start over.  The": "命令操作，然后它必须重新开始。这",
+  "command will take a snapshot.  See these comments on": "命令将拍摄快照。请参阅以下评论",
+  "Hacker News": "黑客新闻",
+  "Additionally we use": "另外我们使用",
+  "as opposed to": "相对于",
+  ", because the": "，因为",
+  "command would leave the database unencrypted for a brief period until": "命令将使数据库在短时间内保持未加密状态，直到",
+  "is invoked (see this GitHub": "被调用（请参阅此 GitHub",
+  "comment": "评论",
+  "for insight).": "以获得洞察力）。"
 }

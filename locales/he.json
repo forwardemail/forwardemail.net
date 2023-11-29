@@ -3663,5 +3663,20 @@
   "Storage used by this alias": "אחסון המשמש את הכינוי הזה",
   "Storage used by other aliases": "אחסון בשימוש על ידי כינויים אחרים",
   "alias": "כינוי",
-  "Back to Aliases": "חזרה לכינויים"
+  "Back to Aliases": "חזרה לכינויים",
+  "command as opposed to the built-in": "פקודה בניגוד למובנה",
+  "command because if a page is modified during a": "פקודה כי אם דף שונה במהלך א",
+  "command operation, then it has to start over.  The": "פעולת הפקודה, אז היא צריכה להתחיל מחדש. ה",
+  "command will take a snapshot.  See these comments on": "הפקודה תצלם תמונת מצב. ראה הערות אלה על",
+  "GitHub": "GitHub",
+  "Hacker News": "חדשות האקר",
+  "No aliases exist for that search.": "לא קיימים כינויים עבור חיפוש זה.",
+  "Additionally we use": "בנוסף אנו משתמשים",
+  "as opposed to": "בניגוד ל",
+  ", because the": ", בגלל ה",
+  "command would leave the database unencrypted for a brief period until": "הפקודה תשאיר את מסד הנתונים לא מוצפן למשך תקופה קצרה עד",
+  "is invoked (see this GitHub": "מופעל (ראה GitHub זה",
+  "comment": "תגובה",
+  "for insight).": "לתובנה).",
+  "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:": "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:"
 }

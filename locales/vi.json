@@ -6202,5 +6202,17 @@
   "domain": "lãnh địa",
   "Storage used by this alias": "Bộ nhớ được sử dụng bởi bí danh này",
   "Storage used by other aliases": "Bộ nhớ được sử dụng bởi các bí danh khác",
-  "alias": "bí danh"
+  "alias": "bí danh",
+  "command as opposed to the built-in": "lệnh trái ngược với lệnh tích hợp",
+  "command because if a page is modified during a": "lệnh vì nếu một trang được sửa đổi trong quá trình",
+  "command operation, then it has to start over.  The": "lệnh hoạt động, sau đó nó phải bắt đầu lại. Các",
+  "command will take a snapshot.  See these comments on": "lệnh sẽ chụp ảnh nhanh. Xem những nhận xét này trên",
+  "Hacker News": "tin tức hacker",
+  "Additionally we use": "Ngoài ra chúng tôi sử dụng",
+  "as opposed to": "như trái ngược với",
+  ", because the": ", bởi vì",
+  "command would leave the database unencrypted for a brief period until": "lệnh sẽ khiến cơ sở dữ liệu không được mã hóa trong một khoảng thời gian ngắn cho đến khi",
+  "is invoked (see this GitHub": "được gọi (xem GitHub này",
+  "comment": "bình luận",
+  "for insight).": "để có cái nhìn sâu sắc)."
 }

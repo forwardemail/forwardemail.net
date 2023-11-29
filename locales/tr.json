@@ -6202,5 +6202,17 @@
   "domain": "ihtisas",
   "Storage used by this alias": "Bu takma ad tarafından kullanılan depolama alanı",
   "Storage used by other aliases": "Diğer takma adlar tarafından kullanılan depolama alanı",
-  "alias": "takma ad"
+  "alias": "takma ad",
+  "command as opposed to the built-in": "yerleşik komutun aksine komut",
+  "command because if a page is modified during a": "komutu çünkü bir sayfa bir işlem sırasında değiştirilirse",
+  "command operation, then it has to start over.  The": "komut işlemi, o zaman baştan başlaması gerekir.",
+  "command will take a snapshot.  See these comments on": "komut anlık görüntü alacaktır. Şu yorumlara bakın",
+  "Hacker News": "Hacker Haberleri",
+  "Additionally we use": "Ek olarak kullanıyoruz",
+  "as opposed to": "aksine",
+  ", because the": ", Çünkü",
+  "command would leave the database unencrypted for a brief period until": "komutu veritabanını kısa bir süreliğine şifrelenmemiş olarak bırakacaktır.",
+  "is invoked (see this GitHub": "çağrılır (bu GitHub'a bakın",
+  "comment": "Yorum",
+  "for insight).": "içgörü için)."
 }

@@ -6202,5 +6202,17 @@
   "domain": "домен",
   "Storage used by this alias": "Пам'ять, яку використовує цей псевдонім",
   "Storage used by other aliases": "Пам'ять, яку використовують інші псевдоніми",
-  "alias": "псевдонім"
+  "alias": "псевдонім",
+  "command as opposed to the built-in": "команди на відміну від вбудованої",
+  "command because if a page is modified during a": "оскільки якщо сторінку змінено під час a",
+  "command operation, then it has to start over.  The": "командну операцію, тоді її потрібно починати спочатку. The",
+  "command will take a snapshot.  See these comments on": "команда зробить знімок. Перегляньте ці коментарі на",
+  "Hacker News": "Хакерські новини",
+  "Additionally we use": "Додатково використовуємо",
+  "as opposed to": "на відміну від",
+  ", because the": ", тому що",
+  "command would leave the database unencrypted for a brief period until": "команда залишить базу даних незашифрованою на короткий період, поки",
+  "is invoked (see this GitHub": "викликається (див. цей GitHub",
+  "comment": "коментар",
+  "for insight).": "для розуміння)."
 }

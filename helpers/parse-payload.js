@@ -103,6 +103,7 @@ const PAYLOAD_ACTIONS = new Set([
   'sync',
   'tmp',
   'setup',
+  'vacuum',
   'size',
   'stmt',
   'backup',
@@ -630,6 +631,8 @@ async function parsePayload(data, ws) {
       case 'sync': {
         const tmpDb = await getTemporaryDatabase.call(this, payload);
 
+        // TODO: lock the temporary database
+
         let count = 0;
 
         // copy and purge messages
@@ -691,7 +694,8 @@ async function parsePayload(data, ws) {
                   await this.wsp.request({
                     action: 'size',
                     timeout: ms('5s'),
-                    alias_id: payload.session.user.alias_id
+                    alias_id: payload.session.user.alias_id,
+                    lock: payload?.lock
                   });
                 } catch (err) {
                   err.isCodeBug = true;
@@ -708,6 +712,14 @@ async function parsePayload(data, ws) {
           err.isCodeBug = true;
           logger.fatal(err, { payload });
         }
+
+        // run a checkpoint to copy over wal to db
+        tmpDb.pragma('wal_checkpoint(PASSIVE)');
+
+        // vacuum temporary database
+        tmpDb.prepare('VACUUM').run();
+
+        // TODO: unlock the temporary database
 
         tmpDb.close();
 
@@ -1104,7 +1116,8 @@ async function parsePayload(data, ws) {
                     await this.wsp.request({
                       action: 'size',
                       timeout: ms('5s'),
-                      alias_id: alias.id
+                      alias_id: alias.id,
+                      lock: payload?.lock
                     });
                   } catch (err) {
                     logger.fatal(err, { payload });
@@ -1194,12 +1207,33 @@ async function parsePayload(data, ws) {
           await this.wsp.request({
             action: 'size',
             timeout: ms('5s'),
-            alias_id: payload.session.user.alias_id
+            alias_id: payload.session.user.alias_id,
+            lock: payload?.lock
           });
         } catch (err) {
           this.logger.fatal(err, { payload });
         }
 
+        break;
+      }
+
+      case 'vacuum': {
+        // TODO: we should check that we have 2x space required
+        // <https://www.theunterminatedstring.com/sqlite-vacuuming/>
+
+        // lock database if not already locked
+        if (!payload?.lock) lock = await acquireLock(this, db);
+
+        // run a checkpoint to copy over wal to db
+        db.pragma('wal_checkpoint(PASSIVE)');
+
+        // vacuum database
+        db.prepare('VACUUM').run();
+
+        response = {
+          id: payload.id,
+          data: true
+        };
         break;
       }
 
@@ -1214,6 +1248,18 @@ async function parsePayload(data, ws) {
           .exec();
 
         if (alias) {
+          //
+          // vacuum database if necessary
+          // (e.g. on move, expunge, delete, copy)
+          //
+          if (payload.vacuum) {
+            await this.wsp.request({
+              action: 'vacuum',
+              timeout: ms('15s'),
+              alias_id: payload.session.user.alias_id
+            });
+          }
+
           let size = 0;
 
           try {
@@ -1404,22 +1450,52 @@ async function parsePayload(data, ws) {
           path.dirname(storagePath),
           `${payload.id}-backup.sqlite`
         );
-        const results = await db.backup(tmp);
-        let backup = true;
 
-        let err;
+        //
+        // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
+        //       because if a page is modified during backup, it has to start over
+        //       <https://news.ycombinator.com/item?id=31387556>
+        //       <https://github.com/benbjohnson/litestream.io/issues/56>
+        //
+        //       also, if we used `backup` then for a temporary period
+        //       the database would be unencrypted on disk, and instead
+        //       we use VACUUM INTO which keeps the encryption as-is
+        //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
+        //
+        //       const results = await db.backup(tmp);
+        //
+        //       so instead we use the VACUUM INTO command with the `tmp` path
+        //
+
+        // lock database if not already locked
+        if (!payload?.lock) lock = await acquireLock(this, db);
+
+        // run a checkpoint to copy over wal to db
+        db.pragma('wal_checkpoint(PASSIVE)');
+
+        // create backup
+        const results = db.exec(`VACUUM INTO "${tmp}"`);
 
         logger.debug('results', { results });
 
+        let backup = true;
+        let err;
+
         try {
-          // NOTE: if you change anything in here change `setupPragma`
           // open the backup and encrypt it
-          const backupDb = new Database(tmp, {
-            fileMustExist: true,
-            timeout: config.busyTimeout,
-            verbose: config.env === 'development' ? console.log : null
-          });
-          backupDb.pragma(`cipher='chacha20'`);
+          const backupDb = await getDatabase(
+            this,
+            // alias
+            {
+              id: payload.session.user.alias_id,
+              storage_location: payload.session.user.storage_location
+            },
+            payload.session,
+            lock,
+            false,
+            tmp
+          );
+          // rekey the database with new password
           backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
           backupDb.close();
 
@@ -1506,13 +1582,14 @@ async function parsePayload(data, ws) {
           throw new TypeError('Backup at invalid date');
 
         // only allow one backup at a time and once every hour
-        const lock = await this.lock.waitAcquireLock(
+        const backupLock = await this.lock.waitAcquireLock(
           `${payload.session.user.alias_id}-backup`,
           ms('30m'), // expires after 30m
           ms('10s') // wait for 10s
         );
 
-        if (!lock.success) throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
+        if (!backupLock.success)
+          throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
 
         let tmp;
         let backup;
@@ -1579,20 +1656,47 @@ async function parsePayload(data, ws) {
             }
           }
 
+          //
+          // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
+          //       because if a page is modified during backup, it has to start over
+          //       <https://news.ycombinator.com/item?id=31387556>
+          //       <https://github.com/benbjohnson/litestream.io/issues/56>
+          //
+          //       also, if we used `backup` then for a temporary period
+          //       the database would be unencrypted on disk, and instead
+          //       we use VACUUM INTO which keeps the encryption as-is
+          //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
+          //
+          //       const results = await db.backup(tmp);
+          //
+          //       so instead we use the VACUUM INTO command with the `tmp` path
+          //
+
+          // lock database if not already locked
+          if (!payload?.lock) lock = await acquireLock(this, db);
+
+          // run a checkpoint to copy over wal to db
+          db.pragma('wal_checkpoint(PASSIVE)');
+
           // create backup
-          const results = await db.backup(tmp);
+          const results = db.exec(`VACUUM INTO '${tmp}'`);
+
           logger.debug('results', { results });
           backup = true;
 
-          // NOTE: if you change anything in here change `setupPragma`
-          // open the backup and encrypt it
-          const backupDb = new Database(tmp, {
-            fileMustExist: true,
-            timeout: config.busyTimeout,
-            verbose: config.env === 'development' ? console.log : null
-          });
-          backupDb.pragma(`cipher='chacha20'`);
-          backupDb.rekey(Buffer.from(decrypt(payload.session.user.password)));
+          // open the backup to ensure that encryption still valid
+          const backupDb = await getDatabase(
+            this,
+            // alias
+            {
+              id: payload.session.user.alias_id,
+              storage_location: payload.session.user.storage_location
+            },
+            payload.session,
+            lock,
+            false,
+            tmp
+          );
           backupDb.close();
 
           // calculate hash of file
@@ -1661,9 +1765,9 @@ async function parsePayload(data, ws) {
         }
 
         // release lock if any
-        if (lock) {
+        if (backupLock) {
           try {
-            const result = await releaseLock(this, db, lock);
+            const result = await releaseLock(this, db, backupLock);
             if (!result.success)
               throw i18n.translateError('IMAP_RELEASE_LOCK_FAILED');
           } catch (err) {

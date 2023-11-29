@@ -6202,5 +6202,17 @@
   "domain": "domein",
   "Storage used by this alias": "Opslag die door deze alias wordt gebruikt",
   "Storage used by other aliases": "Opslag gebruikt door andere aliassen",
-  "alias": "alias"
+  "alias": "alias",
+  "command as opposed to the built-in": "commando in tegenstelling tot het ingebouwde",
+  "command because if a page is modified during a": "opdracht omdat als een pagina wordt gewijzigd tijdens een",
+  "command operation, then it has to start over.  The": "commandobewerking, dan moet het opnieuw beginnen. De",
+  "command will take a snapshot.  See these comments on": "commando maakt een momentopname. Zie deze opmerkingen op",
+  "Hacker News": "Hackernieuws",
+  "Additionally we use": "Daarnaast gebruiken wij",
+  "as opposed to": "in tegenstelling tot",
+  ", because the": ", omdat de",
+  "command would leave the database unencrypted for a brief period until": "commando zou de database gedurende een korte periode onversleuteld laten",
+  "is invoked (see this GitHub": "wordt aangeroepen (zie dit GitHub",
+  "comment": "opmerking",
+  "for insight).": "voor inzicht)."
 }

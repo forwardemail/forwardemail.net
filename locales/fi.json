@@ -6048,5 +6048,17 @@
   "domain": "verkkotunnus",
   "Storage used by this alias": "Tämän aliaksen käyttämä tallennustila",
   "Storage used by other aliases": "Muiden aliasten käyttämä tallennustila",
-  "alias": "alias"
+  "alias": "alias",
+  "command as opposed to the built-in": "komento, toisin kuin sisäänrakennettu",
+  "command because if a page is modified during a": "komennon, koska jos sivua muutetaan a",
+  "command operation, then it has to start over.  The": "komento, sen on aloitettava alusta. The",
+  "command will take a snapshot.  See these comments on": "komento ottaa tilannekuvan. Katso nämä kommentit",
+  "Hacker News": "Hakkeri uutiset",
+  "Additionally we use": "Lisäksi käytämme",
+  "as opposed to": "toisin kuin",
+  ", because the": ", koska",
+  "command would leave the database unencrypted for a brief period until": "komento jättäisi tietokannan salaamatta lyhyeksi ajaksi, kunnes",
+  "is invoked (see this GitHub": "kutsutaan (katso tämä GitHub",
+  "comment": "kommentti",
+  "for insight).": "näkemyksen vuoksi)."
 }

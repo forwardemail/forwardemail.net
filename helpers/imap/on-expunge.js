@@ -271,7 +271,8 @@ async function onExpunge(mailboxId, update, session, fn) {
       await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
-        alias_id: session.user.alias_id
+        alias_id: session.user.alias_id,
+        lock
       });
     } catch (err) {
       this.logger.fatal(err);

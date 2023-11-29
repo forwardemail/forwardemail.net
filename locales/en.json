@@ -5970,5 +5970,17 @@
   "domain": "domain",
   "Storage used by this alias": "Storage used by this alias",
   "Storage used by other aliases": "Storage used by other aliases",
-  "alias": "alias"
+  "alias": "alias",
+  "command as opposed to the built-in": "command as opposed to the built-in",
+  "command because if a page is modified during a": "command because if a page is modified during a",
+  "command operation, then it has to start over.  The": "command operation, then it has to start over.  The",
+  "command will take a snapshot.  See these comments on": "command will take a snapshot.  See these comments on",
+  "Hacker News": "Hacker News",
+  "Additionally we use": "Additionally we use",
+  "as opposed to": "as opposed to",
+  ", because the": ", because the",
+  "command would leave the database unencrypted for a brief period until": "command would leave the database unencrypted for a brief period until",
+  "is invoked (see this GitHub": "is invoked (see this GitHub",
+  "comment": "comment",
+  "for insight).": "for insight)."
 }

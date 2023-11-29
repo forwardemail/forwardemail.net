@@ -6202,5 +6202,17 @@
   "domain": "domain",
   "Storage used by this alias": "Penyimpanan yang digunakan oleh alias ini",
   "Storage used by other aliases": "Penyimpanan yang digunakan oleh alias lain",
-  "alias": "alias"
+  "alias": "alias",
+  "command as opposed to the built-in": "perintah sebagai lawan dari bawaan",
+  "command because if a page is modified during a": "perintah karena jika suatu halaman diubah selama a",
+  "command operation, then it has to start over.  The": "operasi perintah, maka harus dimulai dari awal. Itu",
+  "command will take a snapshot.  See these comments on": "perintah akan mengambil snapshot. Lihat komentar ini di",
+  "Hacker News": "Berita Peretas",
+  "Additionally we use": "Selain itu kami menggunakan",
+  "as opposed to": "sebagai lawan",
+  ", because the": ", karena",
+  "command would leave the database unencrypted for a brief period until": "perintah akan membiarkan database tidak terenkripsi untuk waktu yang singkat sampai",
+  "is invoked (see this GitHub": "dipanggil (lihat GitHub ini",
+  "comment": "komentar",
+  "for insight).": "untuk wawasan)."
 }

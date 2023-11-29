@@ -107,7 +107,8 @@ async function getDatabase(
   alias,
   session,
   existingLock,
-  newlyCreated = false
+  newlyCreated = false,
+  customDbFilePath = false
 ) {
   // return early if the session.db was already assigned
   if (
@@ -142,7 +143,7 @@ async function getDatabase(
   //       (e.g. `alias.bucket = 'production-xyz')
   //
   // const readmeFilePath = path.join(dir, readmeFileName);
-  const dbFilePath = getPathToDatabase(alias);
+  const dbFilePath = customDbFilePath || getPathToDatabase(alias);
 
   //
   // NOTE: if readonly and database doesn't exist it will throw an error

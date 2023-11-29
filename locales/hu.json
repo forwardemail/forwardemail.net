@@ -6202,5 +6202,17 @@
   "domain": "tartomány",
   "Storage used by this alias": "Az alias által használt tárhely",
   "Storage used by other aliases": "Más álnevek által használt tárhely",
-  "alias": "álnév"
+  "alias": "álnév",
+  "command as opposed to the built-in": "parancsot, szemben a beépített",
+  "command because if a page is modified during a": "parancsot, mert ha egy oldal módosul a",
+  "command operation, then it has to start over.  The": "parancsot, akkor elölről kell kezdenie. A",
+  "command will take a snapshot.  See these comments on": "parancs pillanatképet készít. Lásd ezeket a megjegyzéseket",
+  "Hacker News": "Hacker hírek",
+  "Additionally we use": "Ezen kívül használjuk",
+  "as opposed to": "szemben a",
+  ", because the": ", mert a",
+  "command would leave the database unencrypted for a brief period until": "parancs titkosítatlanul hagyná az adatbázist egy rövid ideig, amíg",
+  "is invoked (see this GitHub": "meghívásra kerül (lásd ezt a GitHub",
+  "comment": "megjegyzés",
+  "for insight).": "betekintés céljából)."
 }

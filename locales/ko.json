@@ -6202,5 +6202,17 @@
   "domain": "도메인",
   "Storage used by this alias": "이 별칭에서 사용하는 저장소",
   "Storage used by other aliases": "다른 별칭에서 사용하는 저장소",
-  "alias": "별명"
+  "alias": "별명",
+  "command as opposed to the built-in": "내장 명령과 반대되는 명령",
+  "command because if a page is modified during a": "명령을 실행하는 동안 페이지가 수정되면",
+  "command operation, then it has to start over.  The": "명령 작업을 수행한 다음 다시 시작해야 합니다. 그만큼",
+  "command will take a snapshot.  See these comments on": "명령은 스냅샷을 찍습니다. 다음 댓글을 참조하세요.",
+  "Hacker News": "해커 뉴스",
+  "Additionally we use": "추가적으로 우리는",
+  "as opposed to": "반대로",
+  ", because the": ", 왜냐하면",
+  "command would leave the database unencrypted for a brief period until": "명령은 다음까지 짧은 기간 동안 데이터베이스를 암호화되지 않은 상태로 둡니다.",
+  "is invoked (see this GitHub": "호출됩니다(이 GitHub 참조).",
+  "comment": "논평",
+  "for insight).": "통찰력을 위해)."
 }

@@ -30,15 +30,20 @@ mixin renderProgressBar(domain, isMobile = false)
         else
       if percentage === 0
         .progress-bar.bg-success(
-          style='width:100%;',
+          style="width: 100%",
           aria-valuenow=100,
           aria-valuemin=0,
           aria-valuemax=100,
           data-toggle="tooltip",
           data-title=t("Available storage"),
-          data-placement="bottom"
+          data-placement="bottom",
           role="button"
-        )= '100%'
+        )
+          = "100%"
+          = " "
+          = t("Free")
+          = " "
+          = t("available")
       else
         //- Render Storage Used By Aliases
         if storageUsedByAliases > 0
@@ -71,30 +76,30 @@ mixin renderProgressBar(domain, isMobile = false)
         if availableStorage > 0
           .progress-bar.bg-success(
             style=`width:${availableStorage}%; min-width:25%;`,
-            aria-valuenow=availableStorage
+            aria-valuenow=availableStorage,
             aria-valuemin=0,
             aria-valuemax=100,
             data-toggle="tooltip",
             data-title=t("Available storage"),
-            data-placement="bottom"
+            data-placement="bottom",
             role="button"
           )= `${availableStorage}%`
     ul.list-unstyled.small.mt-1.mb-0
       if storageUsedByAliases > 0
         li.text-primary
           = prettyBytes(domain.storage_used_by_aliases)
-          = ' '
+          = " "
           = t("domain")
       if pooledStorageUsed > 0
         li(class=textClass)
           = prettyBytes(domain.storage_used)
-          = ' '
-          = t('pooled')
+          = " "
+          = t("pooled")
       if availableStorage > 0
         li.text-success
           = prettyBytes(domain.storage_quota - domain.storage_used)
-          = ' '
-          = t('available')
+          = " "
+          = t("available")
   else
     = t("Not Available")
 
@@ -115,7 +120,7 @@ p.text-center.d-lg-none
       tr
         th(scope="col", colspan=2)
           +sortHeader('name', 'Domain Name', '#table-domains', 'text-left')
-        th.text-center.align-middle(scope="col").d-none.d-lg-table-cell
+        th.text-center.align-middle.d-none.d-lg-table-cell(scope="col")
           = t("Storage Usage")
           a.btn.btn-link.text-uppercase.text-white(
             href=l("/encrypted-email"),
