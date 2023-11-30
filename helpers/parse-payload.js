@@ -255,6 +255,10 @@ async function parsePayload(data, ws) {
     // <https://github.com/nodejs/node/issues/46748>
     if (!isSANB(payload.id)) throw new TypeError('Payload id missing');
 
+    // action
+    if (!isSANB(payload.action) || !PAYLOAD_ACTIONS.has(payload.action))
+      throw new TypeError('Payload action missing or invalid');
+
     // if lock was passed it must be valid
     if (_.isPlainObject(payload.lock)) {
       // lock.id (string, type?)
@@ -269,8 +273,15 @@ async function parsePayload(data, ws) {
       if (!isSANB(payload.lock.id))
         throw new TypeError('Payload lock must be a string');
       // lock id must be equal to session user alias id
-      if (payload.lock.id !== payload?.session?.user?.alias_id)
+      if (payload.action === 'size') {
+        if (payload.lock.id !== payload?.alias_id)
+          throw new TypeError(
+            'Payload lock must be for the given alias session'
+          );
+      } else if (payload.lock.id !== payload?.session?.user?.alias_id) {
         throw new TypeError('Payload lock must be for the given alias session');
+      }
+
       if (typeof payload.lock.success !== 'boolean')
         throw new TypeError('Payload lock success must be a boolean');
       if (payload.lock.success === false)
@@ -282,10 +293,6 @@ async function parsePayload(data, ws) {
     } else {
       delete payload.lock;
     }
-
-    // action
-    if (!isSANB(payload.action) || !PAYLOAD_ACTIONS.has(payload.action))
-      throw new TypeError('Payload action missing or invalid');
 
     //
     // neither size/tmp actions require session payload
