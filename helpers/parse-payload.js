@@ -1481,7 +1481,7 @@ async function parsePayload(data, ws) {
         db.pragma('wal_checkpoint(PASSIVE)');
 
         // create backup
-        const results = db.exec(`VACUUM INTO "${tmp}"`);
+        const results = db.exec(`VACUUM INTO '${tmp}'`);
 
         logger.debug('results', { results });
 
@@ -1503,7 +1503,19 @@ async function parsePayload(data, ws) {
             tmp
           );
           // rekey the database with new password
-          backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
+          backupDb.pragma('wal_checkpoint(PASSIVE)');
+          const journalModeResult = backupDb.pragma('journal_mode=DELETE');
+          if (
+            !Array.isArray(journalModeResult) ||
+            journalModeResult.length !== 1 ||
+            !journalModeResult[0] ||
+            typeof journalModeResult[0] !== 'object' ||
+            journalModeResult[0].journal_mode !== 'delete'
+          )
+            throw new TypeError('Journal mode could not be changed');
+          // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
+          backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
+          backupDb.pragma('journal_mode=WAL');
           backupDb.close();
 
           // rename backup file (overwrites existing destination file)

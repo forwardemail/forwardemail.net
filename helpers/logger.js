@@ -54,6 +54,7 @@ const REDACTED_FIELDS = new Set([
   'body',
   'data',
   'password',
+  'new_password',
   'pass',
   'token',
   'tokens',
