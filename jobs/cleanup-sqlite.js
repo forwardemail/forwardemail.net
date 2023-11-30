@@ -28,11 +28,11 @@ const sharedConfig = require('@ladjs/shared-config');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const config = require('#config');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-const wspServer = require('#helpers/wsp-server');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
@@ -75,6 +75,8 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
 (async () => {
   await setupMongoose(logger);
+
+  const wsp = createWebSocketAsPromised();
 
   try {
     if (isCancelled) return;
@@ -183,9 +185,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         [...ids].map(async (id) => {
           try {
             // update `storage_used` for given alias
-            // NOTE: "size" action does not require getDatabase call
-            //       (so we don't need to do a `wsp.request.bind` like we do in `sqlite-server.js`)
-            await wspServer.request({
+            await wsp.request({
               action: 'size',
               timeout: ms('5s'),
               alias_id: id,
@@ -313,6 +313,8 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       }
     });
   }
+
+  wsp.close();
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
