@@ -195,7 +195,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             // get total storage used for an alias (includes across all relevant domains/aliases)
             const alias = await Aliases.findOne({ id });
 
-            if (!alias) throw new TypeError('Alias does not exist');
+            if (!alias) return;
 
             // if the alias did not have imap or it was not enabled
             // then we can return early since the check is not useful
@@ -236,7 +236,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
             const domain = await Domains.findById(alias.domain);
 
-            if (!domain) throw new TypeError('Domain does not exist');
+            if (!domain) return;
 
             // get recipients and the majority favored locale
             const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
@@ -280,7 +280,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             alias.markModified('storage_thresholds_sent_at');
             await alias.save();
           } catch (err) {
-            logger.debug(err);
+            logger.error(err);
             // commented out as a safeguard
             // easy way to cleanup non-production environments tmpdir folders
             // if (
