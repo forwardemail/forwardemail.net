@@ -93,7 +93,9 @@ async function getMessages(instance, session, server, opts = {}) {
   const pageQuery = { ...query };
 
   // `1:*`
-  if (_.isEqual(options.messages.sort(), session.selected.uidList.sort()))
+  // <https://github.com/nodemailer/wildduck/pull/559>
+  // if (_.isEqual(options.messages.sort(), session.selected.uidList.sort()))
+  if (options.messages.length === session.selected.uidList.length)
     queryAll = true;
   // NOTE: don't use uid for `1:*`
   else pageQuery.uid = tools.checkRangeQuery(options.messages, false);

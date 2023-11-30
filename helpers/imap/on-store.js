@@ -17,7 +17,6 @@ const imapTools = require('wildduck/imap-core/lib/imap-tools');
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
 const tools = require('wildduck/lib/tools');
-const _ = require('lodash');
 const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
@@ -116,7 +115,9 @@ async function onStore(mailboxId, update, session, fn) {
 
     let queryAll;
     // `1:*`
-    if (_.isEqual(update.messages.sort(), session.selected.uidList.sort()))
+    // <https://github.com/nodemailer/wildduck/pull/569>
+    // if (_.isEqual(update.messages.sort(), session.selected.uidList.sort()))
+    if (update.messages.length === session.selected.uidList.length)
       queryAll = true;
     // NOTE: don't use uid for `1:*`
     else query.uid = tools.checkRangeQuery(update.messages);

@@ -206,9 +206,11 @@ async function onSearch(mailboxId, options, session, fn) {
                 continue;
               }
 
-              if (
-                !_.isEqual(term.value.sort(), session.selected.uidList.sort())
-              ) {
+              // <https://github.com/nodemailer/wildduck/pull/570>
+              // if (
+              //   !_.isEqual(term.value.sort(), session.selected.uidList.sort())
+              // ) {
+              if (term.value.length !== session.selected.uidList.length) {
                 // not 1:*
                 parent.push({
                   uid: tools.checkRangeQuery(term.value, ne)
