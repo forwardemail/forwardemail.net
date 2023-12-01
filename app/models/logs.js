@@ -624,7 +624,8 @@ function getQueryHash(log) {
       'BSONObjectTooLarge',
       'VersionError',
       'RangeError',
-      'DenylistError'
+      'DenylistError',
+      'TimeoutError'
     ]) {
       if (
         log?.err?.name === errorName ||
