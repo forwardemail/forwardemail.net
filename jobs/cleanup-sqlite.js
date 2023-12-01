@@ -22,6 +22,7 @@ const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
+const pEvent = require('p-event');
 const prettyBytes = require('pretty-bytes');
 const sharedConfig = require('@ladjs/shared-config');
 
@@ -184,13 +185,44 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       // now iterate through all ids and update their sizes and send (or unset) quota alerts
       for (const id of ids) {
         try {
+          //
+          // attempt to vacuum database
+          // (if and only if the user was logged in via IMAP)
+          // (this fetches the password in-memory real-time)
+          // (similar to when we write to tmp storage)
+          //
+          try {
+            this.client.publish('sqlite_auth_request', id);
+            // eslint-disable-next-line no-await-in-loop
+            const [, response] = await pEvent(this.subscriber, 'message', {
+              filter(args) {
+                const [channel, data] = args;
+                if (channel !== 'sqlite_auth_response' || !data) return;
+                try {
+                  const d = JSON.parse(data);
+                  return d.id === id;
+                } catch {}
+              },
+              multiArgs: true,
+              timeout: ms('5s')
+            });
+            const user = JSON.parse(response);
+            // eslint-disable-next-line no-await-in-loop
+            await wsp.request({
+              action: 'vacuum',
+              timeout: ms('5m'),
+              session: { user }
+            });
+          } catch (err) {
+            logger.error(err);
+          }
+
           // update `storage_used` for given alias
           // eslint-disable-next-line no-await-in-loop
           await wsp.request({
             action: 'size',
-            timeout: ms('5m'), // since timeout for vacuum is 5m
-            alias_id: id,
-            vacuum: true
+            timeout: ms('5s'),
+            alias_id: id
           });
 
           // get total storage used for an alias (includes across all relevant domains/aliases)

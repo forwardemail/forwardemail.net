@@ -1255,18 +1255,6 @@ async function parsePayload(data, ws) {
           .exec();
 
         if (alias) {
-          //
-          // vacuum database if necessary
-          // (e.g. on move, expunge, delete, copy)
-          //
-          if (payload.vacuum) {
-            await this.wsp.request({
-              action: 'vacuum',
-              timeout: ms('5m'),
-              alias_id: payload.alias_id
-            });
-          }
-
           let size = 0;
 
           try {
