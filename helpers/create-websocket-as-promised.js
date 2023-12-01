@@ -122,7 +122,7 @@ function createWebSocketAsPromised(options = {}) {
   // }
 
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
-  wsp.request = async function (data) {
+  wsp.request = async function (data, retries = 3) {
     try {
       // TODO: we could probably remove this validation
       if (typeof data?.action !== 'string')
@@ -170,7 +170,7 @@ function createWebSocketAsPromised(options = {}) {
           });
         },
         {
-          retries: 3,
+          retries,
           onFailedAttempt(err) {
             if (isTimeoutError(err)) {
               logger.error(err, { data });

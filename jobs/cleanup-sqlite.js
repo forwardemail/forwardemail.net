@@ -211,22 +211,28 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             });
             const user = JSON.parse(response);
             // eslint-disable-next-line no-await-in-loop
-            await wsp.request({
-              action: 'vacuum',
-              timeout: ms('5m'),
-              session: { user }
-            });
+            await wsp.request(
+              {
+                action: 'vacuum',
+                timeout: ms('5m'),
+                session: { user }
+              },
+              0
+            );
           } catch (err) {
             logger.error(err);
           }
 
           // update `storage_used` for given alias
           // eslint-disable-next-line no-await-in-loop
-          await wsp.request({
-            action: 'size',
-            timeout: ms('5s'),
-            alias_id: id
-          });
+          await wsp.request(
+            {
+              action: 'size',
+              timeout: ms('5s'),
+              alias_id: id
+            },
+            0
+          );
 
           // get total storage used for an alias (includes across all relevant domains/aliases)
           // eslint-disable-next-line no-await-in-loop
