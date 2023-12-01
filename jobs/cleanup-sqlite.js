@@ -79,6 +79,8 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 (async () => {
   await setupMongoose(logger);
 
+  subscriber.subscribe('sqlite_auth_response');
+
   const wsp = createWebSocketAsPromised();
 
   try {
