@@ -37,11 +37,12 @@ const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
+const subscriber = new Redis(breeSharedConfig.redis, logger);
 const tmpdir = os.tmpdir();
 
 const graceful = new Graceful({
   mongooses: [mongoose],
-  redisClients: [client],
+  redisClients: [client, subscriber],
   logger
 });
 
@@ -192,9 +193,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           // (similar to when we write to tmp storage)
           //
           try {
-            this.client.publish('sqlite_auth_request', id);
+            client.publish('sqlite_auth_request', id);
             // eslint-disable-next-line no-await-in-loop
-            const [, response] = await pEvent(this.subscriber, 'message', {
+            const [, response] = await pEvent(subscriber, 'message', {
               filter(args) {
                 const [channel, data] = args;
                 if (channel !== 'sqlite_auth_response' || !data) return;
