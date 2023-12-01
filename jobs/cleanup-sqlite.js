@@ -188,7 +188,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           // eslint-disable-next-line no-await-in-loop
           await wsp.request({
             action: 'size',
-            timeout: ms('5s'),
+            timeout: ms('5m'), // since timeout for vacuum is 5m
             alias_id: id,
             vacuum: true
           });

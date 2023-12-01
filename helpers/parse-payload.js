@@ -1262,7 +1262,7 @@ async function parsePayload(data, ws) {
           if (payload.vacuum) {
             await this.wsp.request({
               action: 'vacuum',
-              timeout: ms('15s'),
+              timeout: ms('5m'),
               alias_id: payload.alias_id
             });
           }
