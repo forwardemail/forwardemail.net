@@ -73,6 +73,7 @@ const AFFIXES = ['-backup', '-backup-wal', '-backup-shm'];
 
 const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
+// eslint-disable-next-line complexity
 (async () => {
   await setupMongoose(logger);
 
@@ -181,119 +182,118 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       }
 
       // now iterate through all ids and update their sizes and send (or unset) quota alerts
-      await Promise.all(
-        [...ids].map(async (id) => {
-          try {
-            // update `storage_used` for given alias
-            await wsp.request({
-              action: 'size',
-              timeout: ms('5s'),
-              alias_id: id,
-              vacuum: true
-            });
+      for (const id of ids) {
+        try {
+          // update `storage_used` for given alias
+          // eslint-disable-next-line no-await-in-loop
+          await wsp.request({
+            action: 'size',
+            timeout: ms('5s'),
+            alias_id: id,
+            vacuum: true
+          });
 
-            // get total storage used for an alias (includes across all relevant domains/aliases)
-            const alias = await Aliases.findOne({ id });
+          // get total storage used for an alias (includes across all relevant domains/aliases)
+          // eslint-disable-next-line no-await-in-loop
+          const alias = await Aliases.findOne({ id });
 
-            if (!alias) return;
+          if (!alias) return;
 
-            // if the alias did not have imap or it was not enabled
-            // then we can return early since the check is not useful
-            if (!alias.has_imap || !alias.is_enabled) return;
+          // if the alias did not have imap or it was not enabled
+          // then we can return early since the check is not useful
+          if (!alias.has_imap || !alias.is_enabled) return;
 
-            const storageUsed = await Aliases.getStorageUsed(alias);
+          // eslint-disable-next-line no-await-in-loop
+          const storageUsed = await Aliases.getStorageUsed(alias);
 
-            const percentageUsed = Math.round(
-              (storageUsed / config.maxQuotaPerAlias) * 100
-            );
+          const percentageUsed = Math.round(
+            (storageUsed / config.maxQuotaPerAlias) * 100
+          );
 
-            // find closest threshold
-            let threshold;
-            for (const percentage of [50, 60, 70, 80, 90, 100]) {
-              if (percentageUsed >= percentage) threshold = percentage;
-            }
-
-            // return early if no threshold found
-            if (!threshold) return;
-
-            // if user already received threshold notification
-            // and the notification was sent within the past 7 days
-            // then we can return early
-            if (
-              typeof alias.storage_thresholds_sent_at === 'object' &&
-              alias.storage_thresholds_sent_at[threshold.toString()] &&
-              _.isDate(
-                alias.storage_thresholds_sent_at[threshold.toString()]
-              ) &&
-              new Date(
-                alias.storage_thresholds_sent_at[threshold.toString()]
-              ).getTime() >= dayjs().subtract(1, 'week').toDate().getTime()
-            )
-              return;
-
-            if (typeof alias.storage_thresholds_sent_at !== 'object')
-              alias.storage_thresholds_sent_at = {};
-
-            const domain = await Domains.findById(alias.domain);
-
-            if (!domain) return;
-
-            // get recipients and the majority favored locale
-            const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
-              domain
-            );
-
-            // send the email to the user with threshold notification
-            const subject =
-              config.views.locals.emoji('warning') +
-              ' ' +
-              i18n.translate(
-                'STORAGE_THRESHOLD_SUBJECT',
-                locale,
-                percentageUsed
-              );
-
-            const message = i18n.translate(
-              'STORAGE_THRESHOLD_MESSAGE',
-              locale,
-              percentageUsed,
-              prettyBytes(storageUsed),
-              prettyBytes(config.maxQuotaPerAlias),
-              `${config.urls.web}/${locale}/my-account/billing`
-            );
-
-            await emailHelper({
-              template: 'alert',
-              message: {
-                to,
-                bcc: config.email.message.from,
-                subject
-              },
-              locals: {
-                message,
-                locale
-              }
-            });
-
-            // mark when the email was successfully sent/queued
-            alias.storage_thresholds_sent_at[threshold.toString()] = new Date();
-            alias.markModified('storage_thresholds_sent_at');
-            await alias.save();
-          } catch (err) {
-            logger.error(err);
-            // commented out as a safeguard
-            // easy way to cleanup non-production environments tmpdir folders
-            // if (
-            //   config.env !== 'production' &&
-            //   err.message === 'Alias does not exist'
-            // ) {
-            //   await fs.promises.unlink(
-            //     path.join(mountDir, config.defaultStoragePath, `${id}.sqlite`)
-            //   );
-            // }
+          // find closest threshold
+          let threshold;
+          for (const percentage of [50, 60, 70, 80, 90, 100]) {
+            if (percentageUsed >= percentage) threshold = percentage;
           }
-        })
-      );
+
+          // return early if no threshold found
+          if (!threshold) return;
+
+          // if user already received threshold notification
+          // and the notification was sent within the past 7 days
+          // then we can return early
+          if (
+            typeof alias.storage_thresholds_sent_at === 'object' &&
+            alias.storage_thresholds_sent_at[threshold.toString()] &&
+            _.isDate(alias.storage_thresholds_sent_at[threshold.toString()]) &&
+            new Date(
+              alias.storage_thresholds_sent_at[threshold.toString()]
+            ).getTime() >= dayjs().subtract(1, 'week').toDate().getTime()
+          )
+            return;
+
+          if (typeof alias.storage_thresholds_sent_at !== 'object')
+            alias.storage_thresholds_sent_at = {};
+
+          // eslint-disable-next-line no-await-in-loop
+          const domain = await Domains.findById(alias.domain);
+
+          if (!domain) return;
+
+          // get recipients and the majority favored locale
+          // eslint-disable-next-line no-await-in-loop
+          const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
+            domain
+          );
+
+          // send the email to the user with threshold notification
+          const subject =
+            config.views.locals.emoji('warning') +
+            ' ' +
+            i18n.translate('STORAGE_THRESHOLD_SUBJECT', locale, percentageUsed);
+
+          const message = i18n.translate(
+            'STORAGE_THRESHOLD_MESSAGE',
+            locale,
+            percentageUsed,
+            prettyBytes(storageUsed),
+            prettyBytes(config.maxQuotaPerAlias),
+            `${config.urls.web}/${locale}/my-account/billing`
+          );
+
+          // eslint-disable-next-line no-await-in-loop
+          await emailHelper({
+            template: 'alert',
+            message: {
+              to,
+              bcc: config.email.message.from,
+              subject
+            },
+            locals: {
+              message,
+              locale
+            }
+          });
+
+          // mark when the email was successfully sent/queued
+          alias.storage_thresholds_sent_at[threshold.toString()] = new Date();
+          alias.markModified('storage_thresholds_sent_at');
+          // eslint-disable-next-line no-await-in-loop
+          await alias.save();
+        } catch (err) {
+          logger.error(err);
+          // commented out as a safeguard
+          // easy way to cleanup non-production environments tmpdir folders
+          // if (
+          //   config.env !== 'production' &&
+          //   err.message === 'Alias does not exist'
+          // ) {
+          //   await fs.promises.unlink(
+          //     path.join(mountDir, config.defaultStoragePath, `${id}.sqlite`)
+          //   );
+          // }
+        }
+      }
     }
   } catch (err) {
     await logger.error(err);
