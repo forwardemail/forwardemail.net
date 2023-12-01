@@ -163,8 +163,7 @@ function createWebSocketAsPromised(options = {}) {
             timeout:
               typeof data.timeout === 'number' &&
               Number.isFinite(data.timeout) &&
-              data.timeout > 0 &&
-              data.timeout <= ms('30s')
+              data.timeout > 0
                 ? data.timeout
                 : ms('30s'),
             requestId
