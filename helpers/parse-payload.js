@@ -704,7 +704,7 @@ async function parsePayload(data, ws) {
                 // update storage
                 try {
                   // eslint-disable-next-line no-await-in-loop
-                  await this.wsp.request({
+                  await this.wsp.request.call(this, {
                     action: 'size',
                     timeout: ms('5s'),
                     alias_id: payload.session.user.alias_id,
@@ -738,7 +738,7 @@ async function parsePayload(data, ws) {
         tmpDb.close();
 
         // vacuum database
-        await this.wsp.request({
+        await this.wsp.request.call(this, {
           action: 'vacuum',
           timeout: ms('5m'),
           session: { user: payload.session.user }
@@ -1175,7 +1175,7 @@ async function parsePayload(data, ws) {
 
                   // update storage after temporary message created
                   try {
-                    await this.wsp.request({
+                    await this.wsp.request.call(this, {
                       action: 'size',
                       timeout: ms('5s'),
                       alias_id: alias.id,
@@ -1267,7 +1267,7 @@ async function parsePayload(data, ws) {
 
         // update storage
         try {
-          await this.wsp.request({
+          await this.wsp.request.call(this, {
             action: 'size',
             timeout: ms('5s'),
             alias_id: payload.session.user.alias_id,
