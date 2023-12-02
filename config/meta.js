@@ -85,7 +85,7 @@ module.exports = function (config) {
       'Information on how to report abuse for the general public and law enforcement.'
     ],
     '/privacy': [
-      'Private Policy',
+      'Privacy Policy',
       'Read our privacy policy for our email forwarding service.'
     ],
     '/help': ['Help', 'Ask a question and get support from our team.'],

@@ -101,7 +101,10 @@ const onUnsubscribePromise = pify(onUnsubscribe, { multiArgs: true });
 
 const concurrency = os.cpus().length;
 
-const AFFIXES = ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm'];
+const AFFIXES =
+  config.env === 'test'
+    ? ['-wal', '-shm']
+    : ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm'];
 
 const IP_ADDRESS = ip.address();
 

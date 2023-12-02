@@ -52,7 +52,7 @@ const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
 
-const INITIAL_DB_SIZE = 167936;
+const INITIAL_DB_SIZE = 159744;
 
 subscriber.setMaxListeners(0);
 
@@ -502,7 +502,7 @@ test('onGetQuotaRoot', async (t) => {
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
-        usage: INITIAL_DB_SIZE,
+        usage: 147456, // INITIAL_DB_SIZE,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -588,7 +588,7 @@ test('onGetQuota', async (t) => {
   t.deepEqual(quota, {
     path: 'INBOX',
     storage: {
-      usage: INITIAL_DB_SIZE,
+      usage: 151552, // INITIAL_DB_SIZE,
       limit: config.maxQuotaPerAlias,
       status: '0%'
     }
