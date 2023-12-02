@@ -17,6 +17,11 @@ import('sqlite-regex').then((obj) => {
   sqliteRegex = obj;
 });
 
+//
+// NOTE: on all invocations of db.close() we run the pragma command "optimize"
+// <https://phiresky.github.io/blog/2020/sqlite-performance-tuning/#more-things-that-must-be-run-manually>
+// <https://www.sqlite.org/pragma.html#pragma_optimize>
+//
 async function setupPragma(db, session, cipher = 'chacha20') {
   // safeguards
   if (!db.open) throw new TypeError('Database is not open');
@@ -38,10 +43,24 @@ async function setupPragma(db, session, cipher = 'chacha20') {
     throw err;
   }
 
+  // overwrite deleted content with zeros
+  // <https://www.sqlite.org/pragma.html#pragma_secure_delete>
+  db.pragma('secure_delete=ON');
+
+  //
+  // NOTE: we still run a manual vacuum every 24 hours
+  //
+  // turn on auto vacuum (for large amounts of deleted content)
+  // <https://www.sqlite.org/pragma.html#pragma_auto_vacuum>
+  //
+  db.pragma('auto_vacuum=FULL');
+
   // <https://litestream.io/tips/#busy-timeout>
   db.pragma(`busy_timeout=${config.busyTimeout}`);
+
   // <https://litestream.io/tips/#synchronous-pragma>
   db.pragma('synchronous=NORMAL');
+
   //
   // NOTE: only if we're using Litestream
   // <https://litestream.io/tips/#disable-autocheckpoints-for-high-write-load-servers>

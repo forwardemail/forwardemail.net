@@ -81,6 +81,7 @@ const Aliases = new mongoose.Schema({
     validate: (value) => (typeof value === 'string' ? isEmail(value) : true)
   },
   imap_backup_at: Date,
+  last_vacuum_at: Date,
   //
   // TODO: job under sqlite-bree that checks and updates storage
   //       and alerts admins if the size difference is larger than 1 GB

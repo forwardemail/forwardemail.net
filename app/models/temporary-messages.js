@@ -19,6 +19,10 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const TemporaryMessages = new mongoose.Schema(
   {
+    fingerprint: {
+      type: String,
+      index: true
+    },
     date: {
       type: Date,
       required: true,

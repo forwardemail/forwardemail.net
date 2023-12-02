@@ -9,13 +9,17 @@ const path = require('node:path');
 const { Buffer } = require('node:buffer');
 const { createGzip } = require('node:zlib');
 const { isIP } = require('node:net');
+const { Headers, Splitter, Joiner } = require('mailsplit');
 
 const Database = require('better-sqlite3-multiple-ciphers');
 const _ = require('lodash');
 const bytes = require('bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
+const dayjs = require('dayjs-with-plugins');
+const getStream = require('get-stream');
 const hasha = require('hasha');
+const intoStream = require('into-stream');
 const ip = require('ip');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -27,7 +31,7 @@ const parseErr = require('parse-err');
 const pify = require('pify');
 const prettyBytes = require('pretty-bytes');
 const safeStringify = require('fast-safe-stringify');
-const { isEmail } = require('validator');
+const { Iconv } = require('iconv');
 const {
   S3Client,
   CreateBucketCommand,
@@ -36,6 +40,7 @@ const {
 } = require('@aws-sdk/client-s3');
 const { Upload } = require('@aws-sdk/lib-storage');
 const { boolean } = require('boolean');
+const { isEmail } = require('validator');
 
 const Aliases = require('#models/aliases');
 const SMTPError = require('#helpers/smtp-error');
@@ -43,6 +48,7 @@ const TemporaryMessages = require('#models/temporary-messages');
 const config = require('#config');
 const env = require('#config/env');
 const getDatabase = require('#helpers/get-database');
+const getFingerprint = require('#helpers/get-fingerprint');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
@@ -728,7 +734,15 @@ async function parsePayload(data, ws) {
 
         // TODO: unlock the temporary database
 
+        tmpDb.pragma('optimize');
         tmpDb.close();
+
+        // vacuum database
+        await this.wsp.request({
+          action: 'vacuum',
+          timeout: ms('5m'),
+          session: { user: payload.session.user }
+        });
 
         response = {
           id: payload.id,
@@ -787,6 +801,47 @@ async function parsePayload(data, ws) {
         // create the temporary message for each alias
         const errors = {};
 
+        //
+        // rate limit the payload.remoteAddress from
+        // sending more than 1 GB per day or 1000 messages per day
+        // but attempt to use the reverse PTR root domain of the remoteAddress
+        //
+        let sender = payload.remoteAddress;
+        try {
+          const [clientHostname] = await this.resolver.reverse(
+            payload.remoteAddress
+          );
+          if (isFQDN(clientHostname)) {
+            sender = parseRootDomain(clientHostname);
+          }
+        } catch (err) {
+          logger.warn(err);
+        }
+
+        const date = new Date().toISOString().split('T')[0];
+
+        //
+        // parse headers from message
+        //
+        const splitter = new Splitter();
+        const joiner = new Joiner();
+        let headers;
+        splitter.on('data', (data) => {
+          if (data.type !== 'node' || data.root !== true) return;
+          const headerLines = Buffer.concat(
+            data._headersLines,
+            data._headerlen
+          );
+          headers = new Headers(headerLines, { Iconv });
+        });
+        await getStream(intoStream(payload.raw).pipe(splitter).pipe(joiner));
+
+        //
+        // get fingerprint (somewhat CPU intensive since we're using raw message)
+        // (arguments = `session`, `headers`, `body`, `useSender`)
+        //
+        const fingerprint = getFingerprint({}, headers, payload.raw, false);
+
         await pMap(
           payload.aliases,
           // eslint-disable-next-line complexity
@@ -825,6 +880,8 @@ async function parsePayload(data, ws) {
               // alias must have domain
               if (!alias.domain || !alias.domain.name)
                 throw new TypeError('Alias does not have domain');
+
+              const root = parseRootDomain(alias.domain.name);
 
               const session = {
                 user: {
@@ -889,26 +946,7 @@ async function parsePayload(data, ws) {
                 );
               }
 
-              //
-              // rate limit the payload.remoteAddress from
-              // sending more than 1 GB per day or 1000 messages per day
-              // but attempt to use the reverse PTR root domain of the remoteAddress
-              //
-              let sender = payload.remoteAddress;
-              try {
-                const [clientHostname] = await this.resolver.reverse(
-                  payload.remoteAddress
-                );
-                if (isFQDN(clientHostname)) {
-                  sender = parseRootDomain(clientHostname);
-                }
-              } catch (err) {
-                logger.warn(err);
-              }
-
               // don't rate limit our own servers
-              const date = new Date().toISOString().split('T')[0];
-              const root = parseRootDomain(alias.domain.name);
               if (
                 payload.remoteAddress !== IP_ADDRESS &&
                 sender !== env.WEB_HOST
@@ -1108,9 +1146,26 @@ async function parsePayload(data, ws) {
                 let err;
 
                 try {
+                  // check if fingerprint exists
+                  const count = await TemporaryMessages.countDocuments(
+                    this,
+                    {
+                      user: session.user,
+                      db: tmpDb
+                    },
+                    {
+                      fingerprint
+                    }
+                  );
+
+                  // if already existed then return early
+                  if (count > 0) return;
+
+                  // store temp message
                   await TemporaryMessages.create({
                     instance: this,
                     session: { user: session.user, db: tmpDb },
+                    fingerprint,
                     date: _.isDate(payload.date)
                       ? payload.date
                       : new Date(payload.date),
@@ -1148,6 +1203,7 @@ async function parsePayload(data, ws) {
                   err = _err;
                 }
 
+                tmpDb.pragma('optimize');
                 tmpDb.close();
                 if (err) throw err;
               }
@@ -1225,17 +1281,50 @@ async function parsePayload(data, ws) {
       }
 
       case 'vacuum': {
-        // TODO: we should check that we have 2x space required
-        // <https://www.theunterminatedstring.com/sqlite-vacuuming/>
+        const alias = await Aliases.findOne({
+          id: payload.session.user.alias_id
+        })
+          .lean()
+          .exec();
 
-        // lock database if not already locked
-        if (!payload?.lock) lock = await acquireLock(this, db);
+        if (!alias) throw new TypeError('Alias does not exist');
 
-        // run a checkpoint to copy over wal to db
-        db.pragma('wal_checkpoint(PASSIVE)');
+        // vacuum every 24 hours
+        if (
+          !_.isDate(alias.last_vacuum_at) ||
+          new Date(alias.last_vacuum_at).getTime() <
+            dayjs().subtract(1, 'day').toDate().getTime()
+        ) {
+          //
+          // NOTE: we store this immediately instead of after success
+          //       in case multiple connections are authenticated at the same time
+          //       (e.g. multiple IMAP connections calling onAuth which invokes this)
+          //       (it gets invoked from the "sync" payload action; see above)
+          //
+          // store when we last vacuumed database
+          await Aliases.findOneAndUpdate(
+            {
+              _id: alias._id
+            },
+            {
+              $set: {
+                last_vacuum_at: new Date()
+              }
+            }
+          );
 
-        // vacuum database
-        db.prepare('VACUUM').run();
+          // TODO: we should check that we have 2x space required
+          // <https://www.theunterminatedstring.com/sqlite-vacuuming/>
+
+          // lock database if not already locked
+          if (!payload?.lock) lock = await acquireLock(this, db);
+
+          // run a checkpoint to copy over wal to db
+          db.pragma('wal_checkpoint(PASSIVE)');
+
+          // vacuum database
+          db.prepare('VACUUM').run();
+        }
 
         response = {
           id: payload.id,
@@ -1504,6 +1593,7 @@ async function parsePayload(data, ws) {
           // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
           backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
           backupDb.pragma('journal_mode=WAL');
+          backupDb.pragma('optimize');
           backupDb.close();
 
           // rename backup file (overwrites existing destination file)
@@ -1704,6 +1794,7 @@ async function parsePayload(data, ws) {
             false,
             tmp
           );
+          backupDb.pragma('optimize');
           backupDb.close();
 
           // calculate hash of file
@@ -1805,7 +1896,10 @@ async function parsePayload(data, ws) {
         .catch((err) => logger.fatal(err, { payload }));
     }
 
-    if (db && db.open && typeof db.close === 'function') db.close();
+    if (db && db.open && typeof db.close === 'function') {
+      db.pragma('optimize');
+      db.close();
+    }
 
     if (!ws || typeof ws.send !== 'function') return response;
 
@@ -1834,7 +1928,10 @@ async function parsePayload(data, ws) {
         .catch((err) => logger.fatal(err, { payload }));
     }
 
-    if (db && db.open && typeof db.close === 'function') db.close();
+    if (db && db.open && typeof db.close === 'function') {
+      db.pragma('optimize');
+      db.close();
+    }
 
     if (!ws || typeof ws.send !== 'function') throw err;
 

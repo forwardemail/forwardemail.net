@@ -326,7 +326,7 @@ async function onAuth(auth, session, fn) {
       this.wsp
         .request({
           action: 'sync',
-          timeout: ms('10s'),
+          timeout: ms('5m'),
           session: { user }
         })
         .then()

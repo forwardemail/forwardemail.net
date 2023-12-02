@@ -304,6 +304,7 @@ class IMAPNotifier extends EventEmitter {
     // close the db connection
     if (typeof data?.session?.db?.close === 'function') {
       try {
+        data.session.db.pragma('optimize');
         data.session.db.close();
       } catch (err) {
         logger.fatal(err, { session: data.session });

@@ -165,7 +165,7 @@ function createWebSocketAsPromised(options = {}) {
               Number.isFinite(data.timeout) &&
               data.timeout > 0
                 ? data.timeout
-                : ms('30s'),
+                : ms('5m'),
             requestId
           });
         },
