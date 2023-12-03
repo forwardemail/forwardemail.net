@@ -5249,5 +5249,15 @@
   "command would leave the database unencrypted for a brief period until": "Der Befehl würde die Datenbank für kurze Zeit unverschlüsselt lassen, bis",
   "is invoked (see this GitHub": "aufgerufen wird (siehe diesen GitHub",
   "comment": "Kommentar",
-  "for insight).": "zur Einsicht)."
+  "for insight).": "zur Einsicht).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> für Unternehmen.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> für die Bildung.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> für Startups.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> für Geschäfte.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> für Designer.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> für Entwickler.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> für das Marketing.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> zu verkaufen.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> für dich.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Datenschutzorientierte verschlüsselte E-Mail<br class=\"d-block d-md-none\" /> für jeden."
 }

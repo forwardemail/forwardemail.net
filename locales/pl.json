@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "polecenie pozostawi bazę danych niezaszyfrowaną na krótki okres do",
   "is invoked (see this GitHub": "jest wywoływany (zobacz ten GitHub",
   "comment": "komentarz",
-  "for insight).": "dla wglądu)."
+  "for insight).": "dla wglądu).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> dla przedsiębiorstw.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> dla edukacji.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> dla startupów.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> dla sklepów.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> dla projektantów.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> dla programistów.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> dla marketingu.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> na sprzedaż.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> dla Ciebie.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Szyfrowana wiadomość e-mail zapewniająca prywatność<br class=\"d-block d-md-none\" /> dla wszystkich."
 }

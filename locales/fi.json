@@ -6060,5 +6060,15 @@
   "command would leave the database unencrypted for a brief period until": "komento jättäisi tietokannan salaamatta lyhyeksi ajaksi, kunnes",
   "is invoked (see this GitHub": "kutsutaan (katso tämä GitHub",
   "comment": "kommentti",
-  "for insight).": "näkemyksen vuoksi)."
+  "for insight).": "näkemyksen vuoksi).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> yritystä varten.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> koulutusta varten.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> startup-yrityksille.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> kauppoja varten.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> suunnittelijoille.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> kehittäjille.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> markkinointia varten.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> myynnissä.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> sinulle.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Yksityisyyteen keskittyvä salattu sähköposti<br class=\"d-block d-md-none\" /> kaikille."
 }

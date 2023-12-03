@@ -176,7 +176,7 @@ class IMAP {
     // lock for read/writes
     this.lock = new Lock({
       redis: this.client,
-      namespace: 'imap_lock'
+      namespace: config.imapLockNamespace
     });
 
     //

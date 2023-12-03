@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "명령은 다음까지 짧은 기간 동안 데이터베이스를 암호화되지 않은 상태로 둡니다.",
   "is invoked (see this GitHub": "호출됩니다(이 GitHub 참조).",
   "comment": "논평",
-  "for insight).": "통찰력을 위해)."
+  "for insight).": "통찰력을 위해).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 기업용.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 교육을 위해.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 스타트업을 위한.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 매장용.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 디자이너를 위한.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 개발자를 위한.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 마케팅을 위해.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 판매용.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 당신을 위한.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "개인 정보 보호에 중점을 둔 암호화된 이메일<br class=\"d-block d-md-none\" /> 모두를위한."
 }

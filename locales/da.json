@@ -5951,5 +5951,15 @@
   "command would leave the database unencrypted for a brief period until": "kommando ville lade databasen være ukrypteret i en kort periode indtil",
   "is invoked (see this GitHub": "påkaldes (se denne GitHub",
   "comment": "kommentar",
-  "for insight).": "for indsigt)."
+  "for insight).": "for indsigt).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> for virksomheden.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> til uddannelse.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> til startups.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> til butikker.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> for designere.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> for udviklere.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> til markedsføring.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> til salg.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> for dig.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Privatlivsfokuseret krypteret e-mail<br class=\"d-block d-md-none\" /> for alle."
 }

@@ -6212,5 +6212,15 @@
   "command would leave the database unencrypted for a brief period until": "El comando dejaría la base de datos sin cifrar durante un breve período hasta que",
   "is invoked (see this GitHub": "se invoca (ver este GitHub",
   "comment": "comentario",
-  "for insight).": "para obtener información)."
+  "for insight).": "para obtener información).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> para empresas.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> para educacion.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> para startups.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> para tiendas.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> para diseñadores.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> para desarrolladores.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> para marketing.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> en venta.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> para ti.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Correo electrónico cifrado centrado en la privacidad<br class=\"d-block d-md-none\" /> para todo el mundo."
 }

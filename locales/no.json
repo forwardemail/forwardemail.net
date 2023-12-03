@@ -6219,5 +6219,15 @@
   "command would leave the database unencrypted for a brief period until": "kommando ville la databasen være ukryptert i en kort periode til",
   "is invoked (see this GitHub": "påkalles (se denne GitHub",
   "comment": "kommentar",
-  "for insight).": "for innsikt)."
+  "for insight).": "for innsikt).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for bedriften.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for utdanning.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for oppstart.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for butikker.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for designere.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for utviklere.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for markedsføring.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for salg.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for deg.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Personvernfokusert kryptert e-post<br class=\"d-block d-md-none\" /> for alle."
 }

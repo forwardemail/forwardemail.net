@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "commando zou de database gedurende een korte periode onversleuteld laten",
   "is invoked (see this GitHub": "wordt aangeroepen (zie dit GitHub",
   "comment": "opmerking",
-  "for insight).": "voor inzicht)."
+  "for insight).": "voor inzicht).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> voor ondernemen.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> voor onderwijs.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> voor startups.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> voor winkels.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> voor ontwerpers.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> voor ontwikkelaars.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> voor marketing.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> te koop.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> voor jou.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Op privacy gerichte gecodeerde e-mail<br class=\"d-block d-md-none\" /> voor iedereen."
 }

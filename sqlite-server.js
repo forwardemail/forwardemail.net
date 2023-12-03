@@ -91,7 +91,7 @@ class SQLite {
 
     this.lock = new Lock({
       redis: this.client,
-      namespace: 'imap_lock'
+      namespace: config.imapLockNamespace
     });
 
     //

@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "คำสั่งจะปล่อยให้ฐานข้อมูลไม่ได้เข้ารหัสในช่วงเวลาสั้น ๆ จนกระทั่ง",
   "is invoked (see this GitHub": "ถูกเรียกใช้ (ดู GitHub นี้",
   "comment": "ความคิดเห็น",
-  "for insight).": "เพื่อความเข้าใจ)"
+  "for insight).": "เพื่อความเข้าใจ)",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> สำหรับองค์กร",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> เพื่อการศึกษา",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> สำหรับสตาร์ทอัพ",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> สำหรับร้านค้า",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> สำหรับนักออกแบบ",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> สำหรับนักพัฒนา",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> เพื่อการตลาด",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> สำหรับการขาย",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> สำหรับคุณ.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "อีเมลเข้ารหัสที่เน้นความเป็นส่วนตัว<br class=\"d-block d-md-none\" /> สำหรับทุกคน."
 }

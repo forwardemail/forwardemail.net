@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "команда оставит базу данных незашифрованной на короткое время, пока",
   "is invoked (see this GitHub": "вызывается (см. этот GitHub",
   "comment": "комментарий",
-  "for insight).": "для понимания)."
+  "for insight).": "для понимания).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для предприятия.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для образования.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для стартапов.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для магазинов.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для дизайнеров.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для разработчиков.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для маркетинга.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для продаж.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для тебя.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Зашифрованная электронная почта, ориентированная на конфиденциальность<br class=\"d-block d-md-none\" /> для всех."
 }

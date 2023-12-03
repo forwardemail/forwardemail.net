@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "سيترك الأمر قاعدة البيانات غير مشفرة لفترة وجيزة حتى",
   "is invoked (see this GitHub": "تم استدعاؤه (راجع GitHub",
   "comment": "تعليق",
-  "for insight).": "للبصيرة)."
+  "for insight).": "للبصيرة).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> للمؤسسات.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> للتعليم.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> للشركات الناشئة.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> للمخازن.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> للمصممين.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> للمطورين.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> للتسويق.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> للبيع.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> لك.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "بريد إلكتروني مشفر يركز على الخصوصية<br class=\"d-block d-md-none\" /> للجميع."
 }

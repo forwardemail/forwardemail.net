@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "kommandot skulle lämna databasen okrypterad under en kort period tills",
   "is invoked (see this GitHub": "anropas (se denna GitHub",
   "comment": "kommentar",
-  "for insight).": "för insikt)."
+  "for insight).": "för insikt).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> för företag.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> för undervisning.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> för nystartade företag.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> för butiker.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> för designers.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> för utvecklare.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> för marknadsföring.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> till salu.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> till dig.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Sekretessfokuserad krypterad e-post<br class=\"d-block d-md-none\" /> för alla."
 }

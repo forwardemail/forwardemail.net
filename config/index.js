@@ -56,6 +56,7 @@ const config = {
   smtpLimitAuthDuration: ms('1h'),
   smtpLimitDuration: ms('1d'),
   smtpLimitNamespace: `smtp_auth_limit_${env.NODE_ENV.toLowerCase()}`,
+  imapLockNamespace: `imap_lock_${env.NODE_ENV.toLowerCase()}`,
   supportEmail: env.EMAIL_DEFAULT_FROM_EMAIL,
   maxRecipients: env.MAX_RECIPIENTS,
   paidPrefix: `${env.TXT_RECORD_PREFIX}-site-verification=`,

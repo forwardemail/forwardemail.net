@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "comando deixaria o banco de dados sem criptografia por um breve período até",
   "is invoked (see this GitHub": "é invocado (veja este GitHub",
   "comment": "Comente",
-  "for insight).": "para obter insights)."
+  "for insight).": "para obter insights).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> para empresa.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> para educação.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> para startups.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> para lojas.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> para designers.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> para desenvolvedores.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> para marketing.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> à venda.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> para você.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "E-mail criptografado com foco na privacidade<br class=\"d-block d-md-none\" /> para todos."
 }

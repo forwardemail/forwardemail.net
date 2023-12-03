@@ -135,15 +135,15 @@ block body
       .row
         if !isBot(ctx.get("User-Agent"))
           #typed-home-strings.d-none(data-ignore-hash-change)
-            div= t("Privacy-focused encrypted email for enterprise.")
-            div= t("Privacy-focused encrypted email for education.")
-            div= t("Privacy-focused encrypted email for startups.")
-            div= t("Privacy-focused encrypted email for stores.")
-            div= t("Privacy-focused encrypted email for designers.")
-            div= t("Privacy-focused encrypted email for developers.")
-            div= t("Privacy-focused encrypted email for marketing.")
-            div= t("Privacy-focused encrypted email for sales.")
-            div= t("Privacy-focused encrypted email for you.")
+            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for enterprise.')
+            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for education.')
+            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for startups.')
+            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for stores.')
+            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for designers.')
+            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for developers.')
+            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for marketing.')
+            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for sales.')
+            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for you.')
         .col-12(
           class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
         )
@@ -152,7 +152,7 @@ block body
               if isBot(ctx.get("User-Agent"))
                 = t("Free, private, and secure email for custom domains.")
               else
-                = t("Privacy-focused encrypted email for everyone.")
+                != t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for everyone.')
           p(class=isBot(ctx.get("User-Agent")) ? "" : "d-none d-md-block")
             != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
             = " "

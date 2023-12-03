@@ -344,11 +344,12 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // update storage
     try {
-      await this.wsp.request({
+      const size = await this.wsp.request({
         action: 'size',
         timeout: ms('5s'),
         alias_id: session.user.alias_id
       });
+      this.logger.debug('size updated', size);
     } catch (err) {
       this.logger.fatal(err);
     }

@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "parancs titkosítatlanul hagyná az adatbázist egy rövid ideig, amíg",
   "is invoked (see this GitHub": "meghívásra kerül (lásd ezt a GitHub",
   "comment": "megjegyzés",
-  "for insight).": "betekintés céljából)."
+  "for insight).": "betekintés céljából).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> vállalkozás számára.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> oktatásra.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> startupoknak.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> üzletek számára.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> tervezők számára.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> fejlesztők számára.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> marketingre.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> értékesítésre.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> neked.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Az adatvédelemre összpontosító titkosított e-mail<br class=\"d-block d-md-none\" /> mindenkinek."
 }

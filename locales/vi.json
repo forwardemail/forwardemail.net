@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "lệnh sẽ khiến cơ sở dữ liệu không được mã hóa trong một khoảng thời gian ngắn cho đến khi",
   "is invoked (see this GitHub": "được gọi (xem GitHub này",
   "comment": "bình luận",
-  "for insight).": "để có cái nhìn sâu sắc)."
+  "for insight).": "để có cái nhìn sâu sắc).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> cho doanh nghiệp.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> dành cho giáo dục.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> dành cho các công ty khởi nghiệp.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> cho các cửa hàng.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> dành cho các nhà thiết kế.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> cho các nhà phát triển.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> cho việc tiếp thị.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> giảm giá.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> cho bạn.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Email được mã hóa tập trung vào quyền riêng tư<br class=\"d-block d-md-none\" /> cho tất cả mọi người."
 }

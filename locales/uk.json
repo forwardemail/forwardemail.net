@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "команда залишить базу даних незашифрованою на короткий період, поки",
   "is invoked (see this GitHub": "викликається (див. цей GitHub",
   "comment": "коментар",
-  "for insight).": "для розуміння)."
+  "for insight).": "для розуміння).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для підприємства.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для освіти.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для стартапів.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для магазинів.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для дизайнерів.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для розробників.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для маркетингу.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для продажу.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для вас.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Зашифрована електронна пошта, орієнтована на конфіденційність<br class=\"d-block d-md-none\" /> для всіх."
 }

@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "La commande laisserait la base de données non chiffrée pendant une brève période jusqu'à ce que",
   "is invoked (see this GitHub": "est invoqué (voir ce GitHub",
   "comment": "commentaire",
-  "for insight).": "pour un aperçu)."
+  "for insight).": "pour un aperçu).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> pour entreprise.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> pour l&#39;éducation.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> pour les startups.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> pour les magasins.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> pour les créateurs.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> pour les développeurs.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> pour la commercialisation.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> à vendre.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> pour toi.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "E-mail chiffré axé sur la confidentialité<br class=\"d-block d-md-none\" /> pour tout le monde."
 }

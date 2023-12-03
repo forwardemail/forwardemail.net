@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "perintah akan membiarkan database tidak terenkripsi untuk waktu yang singkat sampai",
   "is invoked (see this GitHub": "dipanggil (lihat GitHub ini",
   "comment": "komentar",
-  "for insight).": "untuk wawasan)."
+  "for insight).": "untuk wawasan).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untuk perusahaan.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untuk pendidikan.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untuk startup.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untuk toko.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untuk desainer.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untuk pengembang.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untuk pemasaran.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untuk dijual.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untukmu.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Email terenkripsi yang berfokus pada privasi<br class=\"d-block d-md-none\" /> untuk semua orang."
 }

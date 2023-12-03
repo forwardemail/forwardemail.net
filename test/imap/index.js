@@ -52,7 +52,7 @@ const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
 
-const INITIAL_DB_SIZE = 159744;
+const INITIAL_DB_SIZE = 151552;
 
 subscriber.setMaxListeners(0);
 
@@ -61,8 +61,22 @@ test.before(utils.defineUserFactory);
 test.before(utils.defineDomainFactory);
 test.before(utils.definePaymentFactory);
 test.before(utils.defineAliasFactory);
+//
+// NOTE: we don't want to `client.flushall()`
+//       because it will remove caching from mandarin
+//       (and translations will need run from scratch again)
+//
 test.before(async () => {
-  await client.flushall();
+  // imapLockNamespace
+  // smtpLimitNamespace
+  const [imapLockKeys, smtpLimitKeys] = await Promise.all([
+    client.keys(`${config.imapLockNamespace}*`),
+    client.keys(`${config.smtpLimitNamespace}*`)
+  ]);
+  await Promise.all([
+    imapLockKeys.map((k) => client.del(k)),
+    smtpLimitKeys.map((k) => client.del(k))
+  ]);
 });
 test.after.always(utils.teardownMongoose);
 test.beforeEach(async (t) => {
@@ -495,14 +509,29 @@ test('onGetQuotaRoot', async (t) => {
 
   await imapFlow.connect();
 
+  {
+    const quota = await t.context.imapFlow.getQuota();
+    t.deepEqual(quota, {
+      path: 'INBOX',
+      storage: {
+        usage: INITIAL_DB_SIZE,
+        limit: config.maxQuotaPerAlias,
+        status: '0%'
+      }
+    });
+  }
+
   await imapFlow.mailboxCreate('boopboop');
+
+  const mailboxes = await imapFlow.list();
+  t.log('mailboxes', mailboxes);
 
   {
     const quota = await imapFlow.getQuota('boopboop');
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
-        usage: 147456, // INITIAL_DB_SIZE,
+        usage: INITIAL_DB_SIZE,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -569,13 +598,13 @@ ZXhhbXBsZQo=
     //   uid: append.uid
     // });
     const storageUsed = await Aliases.getStorageUsed(alias);
-    t.is(storageUsed, INITIAL_DB_SIZE);
+    t.is(storageUsed, 159744);
     const quota = await imapFlow.getQuota('boopboop');
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
         // message size is rounded to nearest 1024 bytes
-        usage: INITIAL_DB_SIZE, // Math.ceil(message.size / 1024) * 1024,
+        usage: 159744,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -588,7 +617,7 @@ test('onGetQuota', async (t) => {
   t.deepEqual(quota, {
     path: 'INBOX',
     storage: {
-      usage: 151552, // INITIAL_DB_SIZE,
+      usage: INITIAL_DB_SIZE,
       limit: config.maxQuotaPerAlias,
       status: '0%'
     }

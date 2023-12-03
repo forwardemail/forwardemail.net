@@ -5906,5 +5906,15 @@
   "command would leave the database unencrypted for a brief period until": "命令将使数据库在短时间内保持未加密状态，直到",
   "is invoked (see this GitHub": "被调用（请参阅此 GitHub",
   "comment": "评论",
-  "for insight).": "以获得洞察力）。"
+  "for insight).": "以获得洞察力）。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />对于企业来说。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />为了教育。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />对于初创公司来说。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />对于商店。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />对于设计师来说。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />对于开发人员来说。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />用于营销。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />用于销售。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />为你。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "注重隐私的加密电子邮件<br class=\"d-block d-md-none\" />为了所有人。"
 }

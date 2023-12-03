@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "komutu veritabanını kısa bir süreliğine şifrelenmemiş olarak bırakacaktır.",
   "is invoked (see this GitHub": "çağrılır (bu GitHub'a bakın",
   "comment": "Yorum",
-  "for insight).": "içgörü için)."
+  "for insight).": "içgörü için).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> kurumsal için.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> Eğitim için.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> yeni başlayanlar için.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> mağazalar için.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> tasarımcılar için.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> geliştiriciler için.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> pazarlama için.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> indirimde.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> senin için.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Gizlilik odaklı şifreli e-posta<br class=\"d-block d-md-none\" /> herkes için."
 }

@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "このコマンドは、データベースを短期間暗号化しないままにしておきます。",
   "is invoked (see this GitHub": "が呼び出されます (この GitHub を参照してください)",
   "comment": "コメント",
-  "for insight).": "洞察力のために）。"
+  "for insight).": "洞察力のために）。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />エンタープライズ向け。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />教育のために。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />スタートアップ向け。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />店舗向け。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />デザイナー向け。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />開発者向け。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />マーケティングのために。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />販売用。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />あなたのために。",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "プライバシーを重視した暗号化メール<br class=\"d-block d-md-none\" />すべての人のために。"
 }

@@ -3678,5 +3678,15 @@
   "is invoked (see this GitHub": "מופעל (ראה GitHub זה",
   "comment": "תגובה",
   "for insight).": "לתובנה).",
-  "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:": "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:"
+  "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:": "<strong>עליך למחוק</strong> את <span class=\"notranslate\">%d</span> הרשומות האלה <strong class=\"text-decoration-underline\">לפני שתמשיך</strong> :",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "דואר אלקטרוני מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> לארגונים.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "דואר אלקטרוני מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> לחינוך.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "דואר אלקטרוני מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> עבור סטארטאפים.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "דואר אלקטרוני מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> עבור חנויות.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "דואר אלקטרוני מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> עבור מעצבים.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "דואר אלקטרוני מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> עבור מפתחים.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "דוא&quot;ל מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> לשיווק.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "דואר אלקטרוני מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> למכירות.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "דואר אלקטרוני מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> בשבילך.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "דואר אלקטרוני מוצפן ממוקד פרטיות<br class=\"d-block d-md-none\" /> לכולם."
 }

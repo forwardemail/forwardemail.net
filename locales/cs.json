@@ -6214,5 +6214,15 @@
   "command would leave the database unencrypted for a brief period until": "příkaz by ponechal databázi nezašifrovanou na krátkou dobu, dokud",
   "is invoked (see this GitHub": "je vyvoláno (viz tento GitHub",
   "comment": "komentář",
-  "for insight).": "pro nahlédnutí)."
+  "for insight).": "pro nahlédnutí).",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for enterprise.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro podnik.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for education.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro vzdělání.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for startups.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro startupy.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for stores.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro obchody.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for designers.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro designéry.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for developers.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro vývojáře.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for marketing.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro marketing.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for sales.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro prodej.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for you.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro tebe.",
+  "Privacy-focused encrypted email<br class=\"d-block d-md-none\" /> for everyone.": "Šifrovaný e-mail zaměřený na soukromí<br class=\"d-block d-md-none\" /> pro každého."
 }
