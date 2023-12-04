@@ -29,20 +29,20 @@ const cssnano = require('cssnano');
 const del = require('del');
 const discardFonts = require('postcss-discard-font-face');
 const envify = require('@ladjs/gulp-envify');
+const filter = require('gulp-filter');
 const getStream = require('get-stream');
 const globby = require('globby');
 const gulpRemark = require('gulp-remark');
 const gulpXo = require('gulp-xo');
-const filter = require('gulp-filter');
-const imagemin = require('gulp-imagemin');
 const isCI = require('is-ci');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
+const ms = require('ms');
 const order = require('gulp-order');
-const pngquant = require('imagemin-pngquant');
+const pWaitFor = require('p-wait-for');
 const postcss = require('gulp-postcss');
-const postcssPresetEnv = require('postcss-preset-env');
 const postcssInlineBase64 = require('postcss-inline-base64');
+const postcssPresetEnv = require('postcss-preset-env');
 const prettier = require('gulp-prettier');
 const pugLinter = require('gulp-pug-linter');
 const pump = require('pump');
@@ -70,6 +70,13 @@ const { developerDocs } = require('#config/utilities');
 const PROD = config.env === 'production';
 const DEV = config.env === 'development';
 const TEST = config.env === 'test';
+
+// dynamically import file-type
+let imagemin;
+
+import('gulp-imagemin').then((obj) => {
+  imagemin = obj.default;
+});
 
 const developerDocsIcons = [
   ...new Set(
@@ -260,22 +267,26 @@ function pug() {
   return stream;
 }
 
-function img() {
+async function img() {
+  if (!imagemin) await pWaitFor(() => Boolean(imagemin), { timeout: ms('5s') });
   let stream = src('assets/img/**/*', {
     base: 'assets',
     since: lastRun(img)
   })
     .pipe(
-      imagemin({
-        progressive: true,
-        svgoPlugins: [{ removeViewBox: false }, { cleanupIDs: false }],
-        use: [pngquant()]
-      })
+      // <https://github.com/sindresorhus/gulp-imagemin/tree/main#custom-plugin-options>
+      // progressive: true,
+      // svgoPlugins: [{ removeViewBox: false }, { cleanupIDs: false }],
+      imagemin()
     )
     .pipe(dest(config.buildBase));
 
   if (DEV) stream = stream.pipe(lr(config.livereload));
-  return stream;
+
+  // convert to conventional stream
+  stream = stream.pipe(through2.obj((chunk, enc, cb) => cb()));
+
+  await getStream(stream);
 }
 
 function fonts() {
