@@ -203,6 +203,7 @@ const config = {
   },
 
   // build directory
+  assetsBase: 'assets',
   buildBase: 'build',
 
   // templating

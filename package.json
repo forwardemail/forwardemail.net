@@ -211,7 +211,7 @@
     "validator": "13.11.0",
     "web-resource-inliner": "6.0.1",
     "websocket-as-promised": "2.0.1",
-    "wildduck": "1.40.10",
+    "wildduck": "1.41.0",
     "wkhtmltopdf": "0.4.0",
     "ws": "8.14.2",
     "zone-mta": "3.6.13",

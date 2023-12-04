@@ -270,7 +270,7 @@ function pug() {
 async function img() {
   if (!imagemin) await pWaitFor(() => Boolean(imagemin), { timeout: ms('5s') });
   let stream = src('assets/img/**/*', {
-    base: 'assets',
+    base: config.assetsBase,
     since: lastRun(img)
   })
     .pipe(
@@ -291,7 +291,7 @@ async function img() {
 
 function fonts() {
   return src('assets/fonts/**/*', {
-    base: 'assets',
+    base: config.assetsBase,
     since: lastRun(fonts)
   }).pipe(dest(config.buildBase));
 }
@@ -307,7 +307,7 @@ function css() {
   return pump(
     [
       src('assets/css/**/*.scss', {
-        base: 'assets'
+        base: config.assetsBase
       }),
       stylelint({
         reporters: [{ formatter: 'string', console: true }]
@@ -539,7 +539,7 @@ function remark() {
 
 function static() {
   return src(staticAssets, {
-    base: 'assets',
+    base: config.assetsBase,
     allowEmpty: true,
     since: lastRun(static),
     dot: true
