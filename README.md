@@ -76,7 +76,7 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
 
 5. [Fork the repository from GitHub](https://github.com/forwardemail/forwardemail.net/fork)
 
-6. Clone your fork locally (replace `forwardemail` with your username\`):
+6. Clone your fork locally (replace `forwardemail` with your username):
 
    ```sh
    git@github.com:forwardemail/forwardemail.net.git
@@ -114,7 +114,7 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
 
 4. [Fork the repository from GitHub](https://github.com/forwardemail/forwardemail.net/fork)
 
-5. Clone your fork locally (replace `forwardemail` with your username\`):
+5. Clone your fork locally (replace `forwardemail` with your username):
 
    ```sh
    git@github.com:forwardemail/forwardemail.net.git
