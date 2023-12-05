@@ -118,9 +118,9 @@ async function getDatabase(
   )
     return session.db;
 
-  // instance must be either IMAP or SQLite
-  if (!['IMAP', 'SQLite'].includes(instance?.constructor?.name))
-    throw new TypeError('Instance must be either SQLite or IMAP');
+  // instance must be either IMAP, POP3, or SQLite
+  if (!['IMAP', 'POP3', 'SQLite'].includes(instance?.constructor?.name))
+    throw new TypeError('Instance must be either IMAP, POP3, or SQLite');
 
   // safeguard
   if (!mongoose.isObjectIdOrHexString(alias?.id))
@@ -162,8 +162,8 @@ async function getDatabase(
     }
 
     if (!exists) {
-      if (instance?.constructor?.name !== 'IMAP')
-        throw new TypeError('IMAP server instance required');
+      if (instance?.constructor?.name === 'SQLite')
+        throw new TypeError('IMAP or POP3 server instance required');
 
       if (
         instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
@@ -544,8 +544,7 @@ async function getDatabase(
           // await knexDatabase.raw(command);
         } catch (err) {
           err.isCodeBug = true;
-          // eslint-disable-next-line no-await-in-loop
-          await logger.fatal(err, { command, alias, session });
+          logger.fatal(err, { command, alias, session });
         }
       }
     }
@@ -581,7 +580,7 @@ async function getDatabase(
                 path,
                 // NOTE: this is the same uncommented code as `helpers/imap/on-create`
                 // TODO: support custom alias retention (would get stored on session)
-                // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
+                // TODO: if user updates retention then we'd need to update in-memory IMAP connections
                 // retention: typeof alias.retention === 'number' ? alias.retention : 0
                 retention: 0
               });

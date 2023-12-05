@@ -19,10 +19,11 @@ function isISODate(str) {
 // this function takes stringified JSON
 // and iterates recursively to convert
 // { type: 'Buffer', data: [...] } back to a Buffer
-function parseBuffers(json, objectId = false) {
+function parseBuffers(json, objectId = false, checkDate = true) {
   if (typeof json !== 'object' || json === null) {
     // check if it is a date
-    if (typeof json === 'string' && isISODate(json)) return new Date(json);
+    if (checkDate && typeof json === 'string' && isISODate(json))
+      return new Date(json);
 
     if (
       objectId &&
@@ -36,7 +37,7 @@ function parseBuffers(json, objectId = false) {
 
   if (Array.isArray(json)) {
     for (let i = 0; i < json.length; i++) {
-      json[i] = parseBuffers(json[i], objectId);
+      json[i] = parseBuffers(json[i], objectId, checkDate);
     }
   } else if (
     json &&
@@ -48,17 +49,17 @@ function parseBuffers(json, objectId = false) {
   } else {
     for (const key of Object.keys(json)) {
       // iterate recursively
-      json[key] = parseBuffers(json[key], objectId);
+      json[key] = parseBuffers(json[key], objectId, checkDate);
     }
   }
 
   return json;
 }
 
-function recursivelyParse(str, objectId = false) {
+function recursivelyParse(str, objectId = false, checkDate = true) {
   const json =
     typeof str === 'object' && !Buffer.isBuffer(str) ? str : JSON.parse(str);
-  return parseBuffers(json, objectId);
+  return parseBuffers(json, objectId, checkDate);
 }
 
 module.exports = recursivelyParse;

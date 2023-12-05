@@ -42,13 +42,18 @@ const IMAP_COMMANDS = new Set([
 async function refreshSession(session, command) {
   if (!command) throw new Error('Command required');
   command = command.toUpperCase().trim();
-  if (!IMAP_COMMANDS.has(command)) throw new Error('Invalid command');
+  if (command !== 'POP3' && !IMAP_COMMANDS.has(command))
+    throw new Error('Invalid command');
 
   // check if server is in the process of shutting down
   if (this.server._closeTimeout) throw new ServerShutdownError();
 
+  // NOTE: WildDuck POP3 doesn't expose socket on session yet (also see similar comment in onAuth helper)
   // check if socket is still connected
-  if (this?.constructor?.name !== 'SQLite') {
+  if (
+    this?.constructor?.name !== 'SQLite' &&
+    this?.constructor?.name !== 'POP3'
+  ) {
     const socket = (session.socket && session.socket._parent) || session.socket;
     if (!socket || socket?.destroyed || socket?.readyState !== 'open')
       throw new SocketError();

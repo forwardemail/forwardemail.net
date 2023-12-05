@@ -14,8 +14,10 @@
 * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
 * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
 * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
+* [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
 * [Do you support sending email with API](#do-you-support-sending-email-with-api)
 * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
+* [Do you support POP3](#do-you-support-pop3)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
@@ -890,6 +892,26 @@ In order to connect with IMAP, the **IMAP user** must be the email address of an
 Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
 
 
+## What are your POP3 server configuration settings
+
+Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for TLS (STARTTLS).
+
+|                             Protocol                             | Hostname                |     Ports     |        IPv4        |        IPv6        |
+| :--------------------------------------------------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+
+| Login    | Example                    | Description                                                                                                                                                                               |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com`         | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password.                                                                                                                                                        |
+
+In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be either an alias-specific generated password.
+
+Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+
+
 ## Do you support sending email with API
 
 Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
@@ -950,6 +972,65 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
    </div>
 
 6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
+</div>
+
+</div>
+
+
+## Do you support POP3
+
+Yes, as of December 4, 2023 we support [POP3]() as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/encrypted-emaill).
+
+<div id="pop3-instructions">
+
+<div class="alert alert-primary">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
+</div>
+
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
+
+4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+
+5. When prompted for POP3 server port, enter `995` (TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
+
+6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
 
 7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 

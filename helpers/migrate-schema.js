@@ -301,7 +301,7 @@ async function migrateSchema(db, session, tables) {
   if (errors.length > 0) {
     const err = combineErrors(errors);
     err.isCodeBug = true; // will email admins and text them
-    await logger.fatal(err, { session });
+    logger.fatal(err, { session });
   }
 
   //

@@ -385,7 +385,7 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
   return { deletedCount: result.changes };
 }
 
-// eslint-disable-next-line max-params
+// eslint-disable-next-line max-params, complexity
 async function find(
   instance,
   session,
@@ -393,15 +393,11 @@ async function find(
   projections = {},
   options = {}
 ) {
-  if (!_.isEmpty(projections)) {
-    throw new TypeError('Projections not yet supported');
-  }
-
   if (
     !_.isEmpty(options) &&
-    !Object.keys(options).every((key) => key === 'lock')
+    !Object.keys(options).every((key) => key === 'lock' || key === 'sort')
   )
-    throw new TypeError('Only lock option supported');
+    throw new TypeError('Only lock and sort option supported');
 
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
@@ -422,11 +418,28 @@ async function find(
 
   const condition = prepareQuery(mapping, filter);
 
-  const sql = builder.build({
+  const opts = {
     type: 'select',
     table,
     condition
-  });
+  };
+
+  const fields = [];
+  for (const key of Object.keys(projections)) {
+    if (projections[key] === true) fields.push(key);
+  }
+
+  if (!_.isEmpty(projections) && projections._id !== false) fields.push('_id');
+
+  if (!_.isEmpty(fields)) opts.fields = fields;
+
+  // sort support
+  if (options.sort) {
+    if (isSANB(options.sort)) opts.sort = options.sort;
+    else throw new TypeError('Sort must be a string');
+  }
+
+  const sql = builder.build(opts);
 
   let docs;
   if (session.db.wsp) {

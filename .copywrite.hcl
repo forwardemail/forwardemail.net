@@ -15,9 +15,12 @@ project {
     "helpers/imap-notifier.js",
     "helpers/imap/**",
     "helpers/indexer.js",
+    "helpers/pop3/**",
     "helpers/socket-error.js",
     "helpers/store-node-bodies.js",
     "imap-server.js",
-    "test/imap/**"
+    "pop3-server.js",
+    "test/imap/**",
+    "test/pop3/**"
   ]
 }

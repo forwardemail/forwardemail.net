@@ -50,7 +50,7 @@ module.exports = function (config) {
     // in the title bar in the user's browser
     '/': [
       'Free Email Forwarding for Custom Domains',
-      'Setup encrypted email, free email forwarding, custom domains, private business email, and more with support for outbound SMTP and IMAP storage.'
+      'Setup encrypted email, free email forwarding, custom domains, private business email, and more with support for outbound SMTP, IMAP, and POP3.'
     ],
     '/about': [
       'Free Email Forwarder for Custom Domains',
@@ -128,7 +128,7 @@ module.exports = function (config) {
       `How to Setup Email for Custom Domain Name (<span class="notranslate">${dayjs(
         now
       ).format('YYYY')}</span>)`,
-      'Set up free email forwarding and email hosting with your custom domain, DNS, SMTP, and IMAP configuration step by step guide.'
+      'Set up free email forwarding and email hosting with your custom domain, DNS, SMTP, IMAP, and POP3 configuration step by step guide.'
     ],
     '/guides/send-mail-as-gmail-custom-domain': [
       `How to Send Mail As for Gmail Alias (<span class="notranslate">${dayjs(

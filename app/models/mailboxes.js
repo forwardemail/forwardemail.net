@@ -42,7 +42,7 @@ const Mailboxes = new mongoose.Schema(
     uidNext: {
       type: Number,
       required: true,
-      default: 1
+      default: 1 // TODO: should this be zero (?)
     },
     modifyIndex: {
       type: Number,

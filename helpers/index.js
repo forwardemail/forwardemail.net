@@ -52,6 +52,7 @@ const getBounceInfo = require('./get-bounce-info');
 const getLogsCsv = require('./get-logs-csv');
 const smtp = require('./smtp');
 const imap = require('./imap');
+const pop3 = require('./pop3');
 const ServerShutdownError = require('./server-shutdown-error');
 const refineAndLogError = require('./refine-and-log-error');
 const validateAlias = require('./validate-alias');
@@ -131,6 +132,7 @@ module.exports = {
   getLogsCsv,
   smtp,
   imap,
+  pop3,
   ServerShutdownError,
   refineAndLogError,
   validateAlias,

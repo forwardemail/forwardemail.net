@@ -53,6 +53,8 @@ class AttachmentStorage {
 
     if (!attachmentData) {
       const err = new Error('This attachment does not exist');
+      err.isCodeBug = true;
+      // TODO: this is most likely not used and can be removed:
       err.responseCode = 404;
       err.code = 'FileNotFound';
       throw err;

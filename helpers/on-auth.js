@@ -5,6 +5,7 @@
 
 const punycode = require('node:punycode');
 
+const POP3Server = require('wildduck/lib/pop3/server');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pify = require('pify');
@@ -40,17 +41,21 @@ async function onAuth(auth, session, fn) {
 
   try {
     //
-    // NOTE: until onConnect is available for IMAP server
+    // NOTE: until onConnect is available for IMAP and POP3 servers
     //       we leverage the existing SMTP helper in the interim
     //       <https://github.com/nodemailer/wildduck/issues/540>
     //
-    if (this.server instanceof IMAPServer)
+    if (this.server instanceof IMAPServer || this.server instanceof POP3Server)
       await onConnectPromise.call(this, session);
 
     // check if server is in the process of shutting down
     if (this.server._closeTimeout) throw new ServerShutdownError();
 
-    // check if socket is still connected (only applicable for IMAP)
+    // NOTE: WildDuck POP3 server uses naming of `_closingTimeout` instead of `_closeTimeout`
+    if (this.server._closingTimeout) throw new ServerShutdownError();
+
+    // NOTE: socket is not yet exposed in WildDuck POP3 server in session object
+    // check if socket is still connected (only applicable for IMAP and POP3 servers)
     if (this.server instanceof IMAPServer) {
       const socket =
         (session.socket && session.socket._parent) || session.socket;
@@ -165,15 +170,22 @@ async function onAuth(auth, session, fn) {
         .exec();
 
     // validate alias (will throw an error if !alias)
-    if (alias || this.server instanceof IMAPServer)
+    if (
+      alias ||
+      this.server instanceof IMAPServer ||
+      this.server instanceof POP3Server
+    )
       validateAlias(alias, domain, name);
 
     //
     // validate the `auth.password` provided
     //
 
-    // IMAP servers can only validate against aliases
-    if (this.server instanceof IMAPServer) {
+    // IMAP and POP3 servers can only validate against aliases
+    if (
+      this.server instanceof IMAPServer ||
+      this.server instanceof POP3Server
+    ) {
       if (!Array.isArray(alias.tokens) || alias?.tokens?.length === 0)
         throw new SMTPError(
           `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
@@ -245,6 +257,7 @@ async function onAuth(auth, session, fn) {
     //
     if (
       !(this.server instanceof IMAPServer) &&
+      !(this.server instanceof POP3Server) &&
       !isValid &&
       Array.isArray(domain.tokens) &&
       domain.tokens.length > 0
@@ -322,7 +335,10 @@ async function onAuth(auth, session, fn) {
     // sync with tmp db in the background
     // (will cause imap-notifier to send IDLE notifications)
     //
-    if (this.wsp && this.server instanceof IMAPServer) {
+    if (
+      this.wsp &&
+      (this.server instanceof IMAPServer || this.server instanceof POP3Server)
+    ) {
       this.wsp
         .request({
           action: 'sync',

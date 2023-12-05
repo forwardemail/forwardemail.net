@@ -211,8 +211,7 @@ async function getTemporaryDatabase(payload) {
         // await knexDatabase.raw(command);
       } catch (err) {
         err.isCodeBug = true;
-        // eslint-disable-next-line no-await-in-loop
-        await logger.fatal(err, { command });
+        logger.fatal(err, { command });
       }
     }
   }
@@ -1424,6 +1423,15 @@ async function parsePayload(data, ws) {
           throw new TypeError('Payload statement missing');
         if (payload.stmt.length === 0)
           throw new TypeError('Payload statement must have at least one key');
+
+        // in case recursivelyParsed converted this, we should stringify it
+        // (e.g. dates get converted and we need them as strings for SQLite insertion)
+        payload.stmt = JSON.parse(
+          typeof payload.stmt === 'string'
+            ? payload.stmt
+            : safeStringify(payload.stmt)
+        );
+
         let stmt;
         let data;
 

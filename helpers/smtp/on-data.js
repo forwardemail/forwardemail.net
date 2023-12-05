@@ -314,7 +314,7 @@ async function onData(stream, _session, fn) {
           const err = new TypeError(
             `Domain name ${domain.name} (ID ${domain.id}) was using a catch-all alias that no longer has a valid admin/user assigned and SMTP onData attempted`
           );
-          await logger.error(err, { session });
+          logger.error(err, { session });
           // throw an error that password is not valid
           throw new SMTPError('Catch-all password no longer exists', {
             responseCode: 535

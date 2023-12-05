@@ -31,10 +31,13 @@ licensed under the [Mozilla Public License 2.0](mozilla-public-license-20) below
 * [helpers/imap-notifier.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/imap-notifier.js)
 * [helpers/imap/\*\*/\*](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/imap)
 * [helpers/indexer.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/indexer.js)
+* [helpers/pop3/\*\*/\*](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/pop3)
 * [helpers/socket-error.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/socket-error.js)
 * [helpers/store-node-bodies.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/store-node-bodies.js)
 * [imap-server.js](https://github.com/forwardemail/forwardemail.net/blob/master/imap-server.js)
+* [pop3-server.js](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js)
 * [test/imap/\*\*/\*](https://github.com/forwardemail/forwardemail.net/blob/master/test/imap)
+* [test/pop3/\*\*/\*](https://github.com/forwardemail/forwardemail.net/blob/master/test/pop3)
 
 Note that `**/*` indicates all files recursively under a distinct path.
 

@@ -182,6 +182,8 @@ class Indexer extends WildDuckIndexer {
 
         if (node.boundary) {
           // this is a multipart node, so start with initial boundary before continuing
+          // TODO: <https://github.com/nodemailer/wildduck/issues/571>
+          // await emit(`\r\n--${node.boundary}`);
           await emit(`--${node.boundary}`);
         } else if (node.attachmentId && !options.skipExternal) {
           await emit(false, true); // force newline between header and contents

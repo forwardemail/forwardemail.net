@@ -48,4 +48,6 @@ In May 2023, we launched our **outbound SMTP** feature for [sending email with S
 
 In November 2023, we launched our [**encrypted mailbox storage**](/encrypted-email) feature for [IMAP suppport](/faq#do-you-support-receiving-email-with-imap).
 
+In December 2023, [we added support](/faq#do-you-support-pop3) for [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol).
+
 [arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain
