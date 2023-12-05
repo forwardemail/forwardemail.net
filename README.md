@@ -164,7 +164,7 @@ You can start any of the services using our pre-built commands to make it easy. 
 | IMAP         | `npm start imap` |          `2113`          | `telnet localhost 2113` |
 | POP3         | `npm start pop3` |          `2115`          | `telnet localhost 2115` |
 
-You can test the local SMTP, IMAP, and MX servers using [Thunderbird](), `telnet`, or `openssl`.  Note that all local development servers do not require TLS and are running with `{ rejectUnauthorized: true }` option passed to TLS server configurations.
+You can test the local SMTP, IMAP, and POP3 servers using [Thunderbird](), `telnet`, or `openssl`.  Note that all local development servers do not require TLS and are running with `{ rejectUnauthorized: true }` option passed to TLS server configurations.
 
 Try running the local web server:
 
