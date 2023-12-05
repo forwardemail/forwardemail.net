@@ -9,18 +9,19 @@ module.exports = {
   scripts: {
     all: series.nps('build', 'apps-and-watch'),
     appsAndWatch: concurrent.nps('apps', 'watch'),
-    apps: concurrent.nps('bree', 'api', 'web'),
+    apps: series.nps('bree', 'api', 'web', 'smtp', 'imap', 'pop3', 'sqlite'),
 
     webAndWatch: series.nps('build', 'web', 'watch'),
 
-    bree: 'ttab nodemon bree.js',
-    api: 'ttab nodemon api.js',
-    web: 'ttab nodemon web.js',
-    smtp: 'ttab nodemon smtp.js',
-    imap: 'ttab nodemon imap.js',
-    sqlite: 'ttab nodemon sqlite.js',
+    bree: 'ttab -G nodemon bree.js',
+    api: 'ttab -G nodemon api.js',
+    web: 'ttab -G nodemon web.js',
+    smtp: 'ttab -G SMTP_ALLOW_INSECURE_AUTH=true SMTP_PORT=2432 nodemon smtp.js',
+    imap: 'ttab -G IMAP_PORT=2113 nodemon imap.js',
+    pop3: 'ttab -G POP3_PORT=2115 nodemon pop3.js',
+    sqlite: 'ttab -G nodemon sqlite.js',
 
-    watch: 'ttab gulp watch',
+    watch: 'ttab -G gulp watch',
     clean: 'gulp clean',
     build: 'gulp build',
     buildTest: 'NODE_ENV=test gulp build',

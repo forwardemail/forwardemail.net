@@ -8,6 +8,7 @@ const { Buffer } = require('node:buffer');
 const pWaitFor = require('p-wait-for');
 
 const config = require('#config');
+const logger = require('#helpers/logger');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 // dynamically import file-type
@@ -84,8 +85,19 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   if (db.readonly) db.pragma('query_only=true');
 
   // load regex extension for REGEX support
-  if (!sqliteRegex) await pWaitFor(() => Boolean(sqliteRegex));
-  db.loadExtension(sqliteRegex.getLoadablePath());
+  try {
+    if (!sqliteRegex) await pWaitFor(() => Boolean(sqliteRegex));
+    db.loadExtension(sqliteRegex.getLoadablePath());
+  } catch (err) {
+    // <https://github.com/asg017/sqlite-regex/issues/14>
+    logger.fatal(err);
+    if (err.message.includes('sqlite-regex-linux-arm64'))
+      logger.error(
+        new Error(
+          '************ Please see https://github.com/asg017/sqlite-regex/issues/14 -- you can most likely ignore this warning unless you are using REGEXP in IMAP SEARCH command ***********'
+        )
+      );
+  }
 
   //
   // <https://utelle.github.io/SQLite3MultipleCiphers/>
