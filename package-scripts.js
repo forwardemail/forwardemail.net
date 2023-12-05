@@ -13,18 +13,18 @@ module.exports = {
 
     webAndWatch: series.nps('build', 'web', 'watch'),
 
-    bree: 'nodemon bree.js',
-    api: 'nodemon api.js',
-    web: 'nodemon web.js',
-    smtp: 'nodemon smtp.js',
-    imap: 'nodemon imap.js',
-    sqlite: 'nodemon sqlite.js',
+    bree: 'ttab nodemon bree.js',
+    api: 'ttab nodemon api.js',
+    web: 'ttab nodemon web.js',
+    smtp: 'ttab nodemon smtp.js',
+    imap: 'ttab nodemon imap.js',
+    sqlite: 'ttab nodemon sqlite.js',
 
-    watch: 'gulp watch',
-    clean: 'gulp clean',
-    build: 'gulp build',
-    buildTest: 'NODE_ENV=test gulp build',
-    publishAssets: 'gulp publish',
+    watch: 'ttab gulp watch',
+    clean: 'ttab gulp clean',
+    build: 'ttab gulp build',
+    buildTest: 'ttab NODE_ENV=test gulp build',
+    publishAssets: 'ttab gulp publish',
 
     //
     // TODO: once remark-preset-github is upgraded to ESM and all deps upgraded

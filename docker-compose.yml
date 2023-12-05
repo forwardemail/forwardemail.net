@@ -1,0 +1,37 @@
+version: "3.7"
+services:
+    forwardemail:
+        restart: always
+        image: forwardemail/forwardemail
+        ports:
+            # web
+            - "3000:3000"
+            # api
+            - "4000:4000"
+            # smtp
+            - "2432:2432"
+            - "2465:2465"
+            - "2587:2587"
+            # imap
+            - "2993:2993"
+            # pop3
+            - "2995:2995"
+            # mx
+            #- "25:25"
+        depends_on:
+            - redis
+            - mongo
+        environment:
+            CMD_ARGS:
+                --dbs.mongo=mongodb://mongo:27017/forwardemail
+                --dbs.redis=redis://redis:6379/
+    redis:
+        image: redis:alpine
+        restart: always
+        volumes:
+            - /data
+    mongo:
+        image: mongo
+        restart: always
+        volumes:
+            - /data/db

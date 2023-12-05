@@ -299,6 +299,7 @@
     "stylelint-scss": "5.3.1",
     "supertest": "6.3.3",
     "through2": "4.0.2",
+    "ttab": "0.8.0",
     "xo": "0.53.1"
   },
   "engines": {

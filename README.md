@@ -68,10 +68,10 @@ See [Requirements](#requirements) below.
    npm i -g pm2
    ```
 
-5. Install [pnpm][] v7 for faster dependency installation:
+5. Install [pnpm][]:
 
    ```sh
-   npm i -g pnpm@7
+   npm i -g pnpm
    ```
 
 6. Install [npm][] dependencies:
