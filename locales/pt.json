@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "E-mail criptografado do Quantum Safe: obtenha sua conta de e-mail privada",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Caixas de correio seguras quânticas criptografadas para proteger sua privacidade. E-mail seguro e focado na privacidade para sua empresa e domínios personalizados. Software 100% de código aberto.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Aprofundamento: como usamos caixas de correio SQLite criptografadas com segurança quântica para nosso serviço de e-mail seguro e focado na privacidade",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Caixas de correio SQLite criptografadas do Quantum Safe"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Caixas de correio SQLite criptografadas do Quantum Safe",
+  "Enter a strong new password:": "Digite uma nova senha forte:",
+  "New Password": "Nova Senha",
+  "Leave blank to use our strong and random 24-character password generator.": "Deixe em branco para usar nosso gerador de senha forte e aleatório de 24 caracteres."
 }

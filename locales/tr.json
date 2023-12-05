@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe Şifreli E-posta: Özel E-posta Hesabınızı Alın",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Gizliliğinizi korumak için şifrelenmiş kuantum güvenli posta kutuları. İşletmeniz ve özel alan adlarınız için gizlilik odaklı ve güvenli e-posta. %100 açık kaynaklı yazılım.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Ayrıntılı inceleme: Gizlilik odaklı ve güvenli e-posta hizmetimiz için kuantum güvenli şifrelenmiş SQLite posta kutularını nasıl kullanıyoruz?",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Kuantum Güvenli Şifreli SQLite Posta Kutuları"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Kuantum Güvenli Şifreli SQLite Posta Kutuları",
+  "Enter a strong new password:": "Güçlü ve yeni bir şifre girin:",
+  "New Password": "Yeni Şifre",
+  "Leave blank to use our strong and random 24-character password generator.": "Güçlü ve rastgele 24 karakterli şifre oluşturucumuzu kullanmak için boş bırakın."
 }

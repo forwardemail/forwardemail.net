@@ -6011,5 +6011,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe Encrypted Email: Få din private e-mail-konto",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Krypterede kvantesikre postkasser for at beskytte dit privatliv. Privatlivsfokuseret og sikker e-mail til din virksomhed og tilpassede domæner. 100 % open source software.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Dybt dyk: Sådan bruger vi kvantesikre krypterede SQLite-postkasser til vores privatlivsfokuserede og sikre e-mail-tjeneste",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe Krypterede SQLite-postkasser"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe Krypterede SQLite-postkasser",
+  "Enter a strong new password:": "Indtast en stærk ny adgangskode:",
+  "New Password": "nyt kodeord",
+  "Leave blank to use our strong and random 24-character password generator.": "Lad stå tomt for at bruge vores stærke og tilfældige 24-tegns adgangskodegenerator."
 }

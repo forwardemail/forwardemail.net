@@ -6042,5 +6042,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe Encrypted Email: Get Your Private Email Account",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe Encrypted SQLite Mailboxes"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe Encrypted SQLite Mailboxes",
+  "Enter a strong new password:": "Enter a strong new password:",
+  "New Password": "New Password",
+  "Leave blank to use our strong and random 24-character password generator.": "Leave blank to use our strong and random 24-character password generator."
 }

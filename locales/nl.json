@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe gecodeerde e-mail: ontvang uw privé-e-mailaccount",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Gecodeerde kwantumveilige mailboxen om uw privacy te beschermen. Privacygerichte en veilige e-mail voor uw bedrijf en aangepaste domeinen. 100% open source-software.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Diepe duik: hoe we kwantumveilige gecodeerde SQLite-mailboxen gebruiken voor onze op privacy gerichte en veilige e-mailservice",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe gecodeerde SQLite-mailboxen"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe gecodeerde SQLite-mailboxen",
+  "Enter a strong new password:": "Voer een sterk nieuw wachtwoord in:",
+  "New Password": "nieuw paswoord",
+  "Leave blank to use our strong and random 24-character password generator.": "Laat dit veld leeg om onze sterke en willekeurige wachtwoordgenerator van 24 tekens te gebruiken."
 }

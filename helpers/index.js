@@ -80,6 +80,7 @@ const getQueryResponse = require('./get-query-response');
 const parsePayload = require('./parse-payload');
 const wspServer = require('./wsp-server');
 const getFingerprint = require('./get-fingerprint');
+const zxcvbn = require('./zxcvbn');
 
 module.exports = {
   decrypt,
@@ -159,5 +160,6 @@ module.exports = {
   getQueryResponse,
   parsePayload,
   wspServer,
-  getFingerprint
+  getFingerprint,
+  zxcvbn
 };

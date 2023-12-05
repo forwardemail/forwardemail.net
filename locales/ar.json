@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "بريد إلكتروني مشفر وآمن: احصل على حساب بريدك الإلكتروني الخاص",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "صناديق بريد آمنة الكم مشفرة لحماية خصوصيتك. بريد إلكتروني آمن يركز على الخصوصية لشركتك والمجالات المخصصة. برمجيات مفتوحة المصدر 100%.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "الغوص العميق: كيف نستخدم صناديق بريد SQLite المشفرة والآمنة لخدمة البريد الإلكتروني الآمنة التي تركز على الخصوصية",
-  "Quantum Safe Encrypted SQLite Mailboxes": "صناديق بريد SQLite المشفرة الآمنة"
+  "Quantum Safe Encrypted SQLite Mailboxes": "صناديق بريد SQLite المشفرة الآمنة",
+  "Enter a strong new password:": "أدخل كلمة مرور جديدة قوية:",
+  "New Password": "كلمة المرور الجديدة",
+  "Leave blank to use our strong and random 24-character password generator.": "اتركه فارغًا لاستخدام مولد كلمات المرور القوي والعشوائي المكون من 24 حرفًا."
 }

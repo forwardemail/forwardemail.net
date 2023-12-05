@@ -4,6 +4,7 @@
  */
 
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('validator');
 
@@ -99,7 +100,37 @@ async function generateAliasPassword(ctx) {
     // set locale for translation in `createToken`
     alias.locale = ctx.locale;
     alias.tokens = [];
-    const pass = await alias.createToken(ctx.state.user.email);
+
+    // get user inputs
+    const userInputs = [
+      alias.name,
+      alias.description,
+      ...alias.labels,
+      ctx.state.domain.name,
+      `${alias.name}@${ctx.state.domain.name}`
+    ];
+
+    for (const prop of [
+      'email',
+      config.passport.fields.givenName,
+      config.passport.fields.familyName,
+      config.userFields.receiptEmail,
+      config.userFields.companyName,
+      config.userFields.addressLine1,
+      config.userFields.addressLine2,
+      config.userFields.addressCity,
+      config.userFields.addressState,
+      config.userFields.addressZip,
+      config.userFields.companyVAT
+    ]) {
+      if (isSANB(ctx.state.user[prop])) userInputs.push(ctx.state.user[prop]);
+    }
+
+    const pass = await alias.createToken(
+      ctx.state.user.email,
+      ctx.request.body.new_password || undefined,
+      _.uniq(_.compact(userInputs))
+    );
     alias.emailed_instructions = emailedInstructions || undefined;
 
     if (isSANB(ctx.request.body.password)) {

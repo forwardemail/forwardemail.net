@@ -5966,5 +5966,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "量子安全加密电子邮件：获取您的私人电子邮件帐户",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "加密的量子安全邮箱，保护您的隐私。为您的企业和自定义域提供注重隐私的安全电子邮件。 100% 开源软件。",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "深入探讨：我们如何使用量子安全加密 SQLite 邮箱来提供注重隐私的安全电子邮件服务",
-  "Quantum Safe Encrypted SQLite Mailboxes": "量子安全加密 SQLite 邮箱"
+  "Quantum Safe Encrypted SQLite Mailboxes": "量子安全加密 SQLite 邮箱",
+  "Enter a strong new password:": "输入一个强新密码：",
+  "New Password": "新密码",
+  "Leave blank to use our strong and random 24-character password generator.": "留空以使用我们强大的随机 24 字符密码生成器。"
 }

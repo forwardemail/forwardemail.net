@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "Email được mã hóa an toàn lượng tử: Nhận tài khoản email riêng tư của bạn",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Hộp thư an toàn lượng tử được mã hóa để bảo vệ quyền riêng tư của bạn. Email bảo mật và tập trung vào quyền riêng tư dành cho doanh nghiệp của bạn và các miền tùy chỉnh. Phần mềm nguồn mở 100%.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Tìm hiểu sâu: Cách chúng tôi sử dụng hộp thư SQLite được mã hóa an toàn lượng tử cho dịch vụ email bảo mật và tập trung vào quyền riêng tư của chúng tôi",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Hộp thư SQLite được mã hóa an toàn lượng tử"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Hộp thư SQLite được mã hóa an toàn lượng tử",
+  "Enter a strong new password:": "Nhập mật khẩu mới mạnh:",
+  "New Password": "mật khẩu mới",
+  "Leave blank to use our strong and random 24-character password generator.": "Để trống để sử dụng trình tạo mật khẩu mạnh và ngẫu nhiên gồm 24 ký tự của chúng tôi."
 }

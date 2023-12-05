@@ -16,7 +16,6 @@ const isSANB = require('is-string-and-not-blank');
 const manifestRev = require('manifest-rev');
 const ms = require('ms');
 const nodemailer = require('nodemailer');
-const zxcvbn = require('zxcvbn');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 
@@ -30,6 +29,8 @@ const phrases = require('./phrases');
 const utilities = require('./utilities');
 const payments = require('./payments');
 const metaConfig = require('./meta-config');
+
+const zxcvbn = require('#helpers/zxcvbn');
 
 const config = {
   ...metaConfig,
@@ -386,11 +387,8 @@ const config = {
       }
 
       if (env.NODE_ENV === 'development') return fn();
-      // TODO: new fork `zxcvbn3`
-      // <https://github.com/hrueger/zxcvbn>
-      // <https://github.com/dropbox/zxcvbn/issues/290
       const { score, feedback } = zxcvbn(password);
-      if (score >= 2) return fn();
+      if (score >= 3) return fn();
       let message = phrases.INVALID_PASSWORD_STRENGTH;
       if (_.isObject(feedback)) {
         if (isSANB(feedback.warning)) message += ` ${feedback.warning}.`;

@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe 암호화 이메일: 개인 이메일 계정을 확보하세요",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "귀하의 개인 정보를 보호하기 위해 암호화된 양자 안전 사서함. 귀하의 비즈니스 및 사용자 정의 도메인을 위한 개인정보 보호에 중점을 둔 안전한 이메일입니다. 100% 오픈 소스 소프트웨어.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "심층 분석: 개인 정보 보호에 중점을 두고 안전한 이메일 서비스를 위해 양자 안전 암호화 SQLite 사서함을 사용하는 방법",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe 암호화된 SQLite 메일박스"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe 암호화된 SQLite 메일박스",
+  "Enter a strong new password:": "강력한 새 비밀번호를 입력하세요.",
+  "New Password": "새 비밀번호",
+  "Leave blank to use our strong and random 24-character password generator.": "강력하고 임의의 24자 비밀번호 생성기를 사용하려면 공백으로 남겨두세요."
 }

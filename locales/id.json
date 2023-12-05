@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "Email Terenkripsi Quantum Safe: Dapatkan Akun Email Pribadi Anda",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Kotak surat aman kuantum terenkripsi untuk melindungi privasi Anda. Email yang berfokus pada privasi dan aman untuk bisnis dan domain khusus Anda. 100% perangkat lunak sumber terbuka.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Penjelasan lebih mendalam: Cara kami menggunakan kotak surat SQLite terenkripsi kuantum aman untuk layanan email kami yang berfokus pada privasi dan aman",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Kotak Surat SQLite Terenkripsi Quantum Safe"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Kotak Surat SQLite Terenkripsi Quantum Safe",
+  "Enter a strong new password:": "Masukkan kata sandi baru yang kuat:",
+  "New Password": "kata sandi baru",
+  "Leave blank to use our strong and random 24-character password generator.": "Biarkan kosong untuk menggunakan pembuat kata sandi 24 karakter kami yang kuat dan acak."
 }

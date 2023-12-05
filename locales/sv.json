@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe Encrypted Email: Skaffa ditt privata e-postkonto",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Krypterade kvantsäkra brevlådor för att skydda din integritet. Sekretessfokuserad och säker e-post för ditt företag och anpassade domäner. 100 % öppen källkod.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Djupdykning: Hur vi använder kvantsäkra krypterade SQLite-postlådor för vår integritetsfokuserade och säkra e-posttjänst",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe Krypterade SQLite-postlådor"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe Krypterade SQLite-postlådor",
+  "Enter a strong new password:": "Ange ett starkt nytt lösenord:",
+  "New Password": "nytt lösenord",
+  "Leave blank to use our strong and random 24-character password generator.": "Lämna tomt för att använda vår starka och slumpmässiga lösenordsgenerator med 24 tecken."
 }

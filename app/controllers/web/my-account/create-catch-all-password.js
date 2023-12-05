@@ -4,6 +4,7 @@
  */
 
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const striptags = require('striptags');
 
@@ -32,7 +33,29 @@ async function createCatchAllPassword(ctx) {
       ? striptags(ctx.request.body.description)
       : '';
 
-    const { password, salt, hash } = await createPassword();
+    // get user inputs
+    const userInputs = [description, ctx.state.domain.name];
+
+    for (const prop of [
+      'email',
+      config.passport.fields.givenName,
+      config.passport.fields.familyName,
+      config.userFields.receiptEmail,
+      config.userFields.companyName,
+      config.userFields.addressLine1,
+      config.userFields.addressLine2,
+      config.userFields.addressCity,
+      config.userFields.addressState,
+      config.userFields.addressZip,
+      config.userFields.companyVAT
+    ]) {
+      if (isSANB(ctx.state.user[prop])) userInputs.push(ctx.state.user[prop]);
+    }
+
+    const { password, salt, hash } = await createPassword(
+      ctx.request.body.new_password,
+      _.uniq(_.compact(userInputs))
+    );
     domain.tokens.push({
       description,
       salt,

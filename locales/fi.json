@@ -6120,5 +6120,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "Kvanttiturvallinen salattu sähköposti: Hanki yksityinen sähköpostitilisi",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Salatut kvanttiturvalliset postilaatikot suojaavat yksityisyyttäsi. Yksityisyyteen keskittyvä ja suojattu sähköposti yrityksellesi ja mukautetuille verkkotunnuksille. 100 % avoimen lähdekoodin ohjelmisto.",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Deep dive: Kuinka käytämme kvanttiturvallisia salattuja SQLite-postilaatikoita yksityisyyteen keskittyvässä ja suojatussa sähköpostipalvelussamme",
-  "Quantum Safe Encrypted SQLite Mailboxes": "Kvanttiturvalliset salatut SQLite-postilaatikot"
+  "Quantum Safe Encrypted SQLite Mailboxes": "Kvanttiturvalliset salatut SQLite-postilaatikot",
+  "Enter a strong new password:": "Anna vahva uusi salasana:",
+  "New Password": "uusi salasana",
+  "Leave blank to use our strong and random 24-character password generator.": "Jätä tyhjäksi, jos haluat käyttää vahvaa ja satunnaista 24-merkkistä salasanageneraattoriamme."
 }

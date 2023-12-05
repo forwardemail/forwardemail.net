@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "อีเมลเข้ารหัส Quantum Safe: รับบัญชีอีเมลส่วนตัวของคุณ",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "กล่องจดหมายควอนตัมที่ปลอดภัยที่เข้ารหัสเพื่อปกป้องความเป็นส่วนตัวของคุณ อีเมลที่เน้นความเป็นส่วนตัวและปลอดภัยสำหรับธุรกิจและโดเมนที่กำหนดเองของคุณ ซอฟต์แวร์โอเพ่นซอร์ส 100%",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "เจาะลึก: วิธีที่เราใช้กล่องจดหมาย SQLite ที่เข้ารหัสควอนตัมปลอดภัยสำหรับบริการอีเมลที่เน้นความเป็นส่วนตัวและปลอดภัยของเรา",
-  "Quantum Safe Encrypted SQLite Mailboxes": "กล่องจดหมาย SQLite ที่เข้ารหัส Quantum Safe"
+  "Quantum Safe Encrypted SQLite Mailboxes": "กล่องจดหมาย SQLite ที่เข้ารหัส Quantum Safe",
+  "Enter a strong new password:": "ป้อนรหัสผ่านใหม่ที่แข็งแกร่ง:",
+  "New Password": "รหัสผ่านใหม่",
+  "Leave blank to use our strong and random 24-character password generator.": "เว้นว่างไว้เพื่อใช้เครื่องมือสร้างรหัสผ่านที่แข็งแกร่งและสุ่ม 24 ตัวอักษรของเรา"
 }

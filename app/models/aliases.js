@@ -638,7 +638,11 @@ Aliases.statics.isOverQuota = async function (alias, size = 0) {
   return { storageUsed, isOverQuota };
 };
 
-Aliases.methods.createToken = async function (description = '') {
+Aliases.methods.createToken = async function (
+  description = '',
+  existingPassword,
+  userInputs = []
+) {
   if (this.name === '*')
     throw Boom.badRequest(
       i18n.translateError('CANNOT_CREATE_TOKEN_FOR_CATCHALL', this.locale)
@@ -647,7 +651,10 @@ Aliases.methods.createToken = async function (description = '') {
     throw Boom.badRequest(
       i18n.translateError('CANNOT_CREATE_TOKEN_FOR_REGEX', this.locale)
     );
-  const { password, salt, hash } = await createPassword();
+  const { password, salt, hash } = await createPassword(
+    existingPassword,
+    userInputs
+  );
   this.tokens.push({
     description,
     salt,

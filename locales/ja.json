@@ -6274,5 +6274,8 @@
   "Quantum Safe Encrypted Email: Get Your Private Email Account": "量子安全な暗号化電子メール: プライベート電子メール アカウントを取得する",
   "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "暗号化された量子安全メールボックスでプライバシーを保護します。ビジネスおよびカスタム ドメイン向けのプライバシーを重視した安全なメール。 100% オープンソース ソフトウェア。",
   "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "詳細: プライバシーを重視した安全な電子メール サービスに、量子安全に暗号化された SQLite メールボックスをどのように使用するか",
-  "Quantum Safe Encrypted SQLite Mailboxes": "量子安全な暗号化された SQLite メールボックス"
+  "Quantum Safe Encrypted SQLite Mailboxes": "量子安全な暗号化された SQLite メールボックス",
+  "Enter a strong new password:": "強力な新しいパスワードを入力してください:",
+  "New Password": "新しいパスワード",
+  "Leave blank to use our strong and random 24-character password generator.": "強力でランダムな 24 文字のパスワード ジェネレーターを使用するには、空白のままにします。"
 }

@@ -266,6 +266,20 @@ p.text-center.d-lg-none
                             = emoji("point_up")
                             = " "
                             = t("Leave blank to get password instantly.")
+                          p.font-weight-bold.lead= t("Enter a strong new password:")
+                          .form-group.floating-label
+                            input.form-control.form-control-lg(
+                              id=`input-new-password-${alias.id}`,
+                              name="new_password",
+                              type="password",
+                              placeholder=" ",
+                              autocomplete="off"
+                            )
+                            label(for=`input-new-password-${alias.id}`)= t("New Password")
+                          p.alert.alert-primary.small
+                            = emoji("point_up")
+                            = " "
+                            = t("Leave blank to use our strong and random 24-character password generator.")
                           if Array.isArray(alias.tokens) && alias.tokens.length > 0
                             p.font-weight-bold.lead= t("Enter current password to keep existing mailbox and messages:")
                             .form-group.floating-label
