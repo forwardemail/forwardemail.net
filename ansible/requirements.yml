@@ -19,7 +19,7 @@
 #  version: v1.0.50
 - name: unattended-upgrades
   src: hifis.unattended_upgrades
-  version: v2.0.1
+  version: v3.2.0
 - name: sysctl
   src: oefenweb.sysctl
   version: v1.0.43
