@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "Il est également important d’utiliser une solution 100 % open source, car elle renforce la confiance et permet à chacun de contribuer et d’effectuer un audit indépendant.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "Nous sommes des experts <strong>en sécurité</strong> et <strong>délivrabilité</strong> des e-mails.",
   "Free, private, and encrypted email for business and enterprise": "Courriel gratuit, privé et crypté pour les entreprises et les entreprises",
-  "Encrypted email for enterprise": "E-mail crypté pour entreprise"
+  "Encrypted email for enterprise": "E-mail crypté pour entreprise",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "E-mail crypté Quantum Safe : obtenez votre compte de messagerie privé",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Boîtes aux lettres quantiques cryptées pour protéger votre vie privée. E-mail sécurisé et axé sur la confidentialité pour votre entreprise et vos domaines personnalisés. Logiciel 100% open source.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Analyse approfondie : Comment nous utilisons les boîtes aux lettres SQLite cryptées à sécurité quantique pour notre service de messagerie sécurisé et axé sur la confidentialité",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Boîtes aux lettres SQLite chiffrées Quantum Safe"
 }

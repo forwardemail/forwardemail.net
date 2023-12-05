@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "Az is fontos, hogy 100%-ban nyílt forráskódot használjunk, mert ez bizalmat épít, és lehetővé teszi bárki számára a hozzájárulást és a független auditálást.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "<strong>Az e-mailek biztonságának</strong> és <strong>kézbesítésének szakértői</strong> vagyunk.",
   "Free, private, and encrypted email for business and enterprise": "Ingyenes, privát és titkosított e-mailek üzleti és vállalati célokra",
-  "Encrypted email for enterprise": "Titkosított e-mail vállalati célokra"
+  "Encrypted email for enterprise": "Titkosított e-mail vállalati célokra",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe titkosított e-mail: Szerezze be privát e-mail fiókját",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Titkosított kvantumbiztonságos postafiókok az Ön adatainak védelme érdekében. Adatvédelemre összpontosító és biztonságos e-mail az üzleti és egyéni domainekhez. 100%-ban nyílt forráskódú szoftver.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Mély merülés: Hogyan használjuk a kvantumbiztonságos titkosított SQLite postafiókokat az adatvédelemre fókuszáló és biztonságos e-mail szolgáltatásunkhoz",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe titkosított SQLite postafiókok"
 }

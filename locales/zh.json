@@ -5962,5 +5962,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "使用 100% 开源也很重要，因为它可以建立信任并允许任何人做出贡献和独立审核。",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "我们是<strong>电子邮件安全</strong>和<strong>送达率专家</strong>。",
   "Free, private, and encrypted email for business and enterprise": "适合商业和企业的免费、私人和加密电子邮件",
-  "Encrypted email for enterprise": "企业加密电子邮件"
+  "Encrypted email for enterprise": "企业加密电子邮件",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "量子安全加密电子邮件：获取您的私人电子邮件帐户",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "加密的量子安全邮箱，保护您的隐私。为您的企业和自定义域提供注重隐私的安全电子邮件。 100% 开源软件。",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "深入探讨：我们如何使用量子安全加密 SQLite 邮箱来提供注重隐私的安全电子邮件服务",
+  "Quantum Safe Encrypted SQLite Mailboxes": "量子安全加密 SQLite 邮箱"
 }

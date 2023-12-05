@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "Det är också viktigt att använda 100 % öppen källkod eftersom det skapar förtroende och låter vem som helst bidra och självständigt granska.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "Vi är experter <strong>på e-postsäkerhet</strong> och <strong>leveransbarhet</strong> .",
   "Free, private, and encrypted email for business and enterprise": "Gratis, privat och krypterad e-post för företag och företag",
-  "Encrypted email for enterprise": "Krypterad e-post för företag"
+  "Encrypted email for enterprise": "Krypterad e-post för företag",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe Encrypted Email: Skaffa ditt privata e-postkonto",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Krypterade kvantsäkra brevlådor för att skydda din integritet. Sekretessfokuserad och säker e-post för ditt företag och anpassade domäner. 100 % öppen källkod.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Djupdykning: Hur vi använder kvantsäkra krypterade SQLite-postlådor för vår integritetsfokuserade och säkra e-posttjänst",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe Krypterade SQLite-postlådor"
 }

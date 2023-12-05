@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "Het is ook belangrijk om 100% open source te gebruiken, omdat dit vertrouwen schept en iedereen in staat stelt een bijdrage te leveren en onafhankelijk audits uit te voeren.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "Wij zijn experts op <strong>het gebied van e-mailbeveiliging</strong> en <strong>leverbaarheid</strong> .",
   "Free, private, and encrypted email for business and enterprise": "Gratis, privé en gecodeerde e-mail voor bedrijven en ondernemingen",
-  "Encrypted email for enterprise": "Gecodeerde e-mail voor ondernemingen"
+  "Encrypted email for enterprise": "Gecodeerde e-mail voor ondernemingen",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe gecodeerde e-mail: ontvang uw privé-e-mailaccount",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Gecodeerde kwantumveilige mailboxen om uw privacy te beschermen. Privacygerichte en veilige e-mail voor uw bedrijf en aangepaste domeinen. 100% open source-software.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Diepe duik: hoe we kwantumveilige gecodeerde SQLite-mailboxen gebruiken voor onze op privacy gerichte en veilige e-mailservice",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe gecodeerde SQLite-mailboxen"
 }

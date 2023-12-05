@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "สิ่งสำคัญคือต้องใช้โอเพ่นซอร์ส 100% เนื่องจากจะสร้างความไว้วางใจและอนุญาตให้ใครก็ตามมีส่วนร่วมและตรวจสอบได้อย่างอิสระ",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "เราคือ <strong>ผู้เชี่ยวชาญ</strong> <strong>ด้านความปลอดภัยและความสามารถในการส่งอีเมล</strong>",
   "Free, private, and encrypted email for business and enterprise": "อีเมลฟรี เป็นส่วนตัว และเข้ารหัสสำหรับธุรกิจและองค์กร",
-  "Encrypted email for enterprise": "อีเมลที่เข้ารหัสสำหรับองค์กร"
+  "Encrypted email for enterprise": "อีเมลที่เข้ารหัสสำหรับองค์กร",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "อีเมลเข้ารหัส Quantum Safe: รับบัญชีอีเมลส่วนตัวของคุณ",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "กล่องจดหมายควอนตัมที่ปลอดภัยที่เข้ารหัสเพื่อปกป้องความเป็นส่วนตัวของคุณ อีเมลที่เน้นความเป็นส่วนตัวและปลอดภัยสำหรับธุรกิจและโดเมนที่กำหนดเองของคุณ ซอฟต์แวร์โอเพ่นซอร์ส 100%",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "เจาะลึก: วิธีที่เราใช้กล่องจดหมาย SQLite ที่เข้ารหัสควอนตัมปลอดภัยสำหรับบริการอีเมลที่เน้นความเป็นส่วนตัวและปลอดภัยของเรา",
+  "Quantum Safe Encrypted SQLite Mailboxes": "กล่องจดหมาย SQLite ที่เข้ารหัส Quantum Safe"
 }

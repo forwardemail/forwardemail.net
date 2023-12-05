@@ -6116,5 +6116,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "On myös tärkeää käyttää 100-prosenttisesti avointa lähdekoodia, koska se rakentaa luottamusta ja antaa kenen tahansa osallistua ja tehdä riippumattomia tarkastuksia.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "Olemme <strong>sähköpostin turvallisuuden</strong> ja <strong>toimittavuuden asiantuntijoita</strong> .",
   "Free, private, and encrypted email for business and enterprise": "Ilmainen, yksityinen ja salattu sähköposti yrityksille ja yrityksille",
-  "Encrypted email for enterprise": "Salattu sähköposti yrityksille"
+  "Encrypted email for enterprise": "Salattu sähköposti yrityksille",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "Kvanttiturvallinen salattu sähköposti: Hanki yksityinen sähköpostitilisi",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Salatut kvanttiturvalliset postilaatikot suojaavat yksityisyyttäsi. Yksityisyyteen keskittyvä ja suojattu sähköposti yrityksellesi ja mukautetuille verkkotunnuksille. 100 % avoimen lähdekoodin ohjelmisto.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Deep dive: Kuinka käytämme kvanttiturvallisia salattuja SQLite-postilaatikoita yksityisyyteen keskittyvässä ja suojatussa sähköpostipalvelussamme",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Kvanttiturvalliset salatut SQLite-postilaatikot"
 }

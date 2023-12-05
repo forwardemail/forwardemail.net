@@ -3735,5 +3735,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "חשוב גם להשתמש ב-100% קוד פתוח כי זה בונה אמון ומאפשר לכל אחד לתרום ולבקר באופן עצמאי.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "אנחנו <strong>מומחי</strong> <strong>אבטחת דוא&quot;ל</strong> ומסירה.",
   "Free, private, and encrypted email for business and enterprise": "אימייל חינם, פרטי ומוצפן לעסקים ולארגונים",
-  "Encrypted email for enterprise": "דואר אלקטרוני מוצפן לארגונים"
+  "Encrypted email for enterprise": "דואר אלקטרוני מוצפן לארגונים",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "דואר אלקטרוני מוצפן בטוח: קבל את חשבון הדוא\"ל הפרטי שלך",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "תיבות דואר בטוחות קוונטיות מוצפנות כדי להגן על הפרטיות שלך. דוא\"ל ממוקד פרטיות ומאובטח עבור העסק והדומיינים המותאמים אישית שלך. 100% תוכנת קוד פתוח.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "צלילה עמוקה: כיצד אנו משתמשים בתיבות דואר מוצפנות של SQLite בטוחות קוונטיות עבור שירות הדוא\"ל הממוקד בפרטיות והמאובטח שלנו",
+  "Quantum Safe Encrypted SQLite Mailboxes": "תיבות דואר מוצפנות של SQLite Safe Quantum"
 }

@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "また、100% オープンソースを使用することも重要です。これにより、信頼が構築され、誰もが貢献し、独立して監査できるようになるからです。",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "私たちは<strong>電子メールのセキュリティ</strong>と<strong>到達性の専門家</strong>です。",
   "Free, private, and encrypted email for business and enterprise": "ビジネスおよびエンタープライズ向けの無料のプライベート暗号化メール",
-  "Encrypted email for enterprise": "企業向けの暗号化メール"
+  "Encrypted email for enterprise": "企業向けの暗号化メール",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "量子安全な暗号化電子メール: プライベート電子メール アカウントを取得する",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "暗号化された量子安全メールボックスでプライバシーを保護します。ビジネスおよびカスタム ドメイン向けのプライバシーを重視した安全なメール。 100% オープンソース ソフトウェア。",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "詳細: プライバシーを重視した安全な電子メール サービスに、量子安全に暗号化された SQLite メールボックスをどのように使用するか",
+  "Quantum Safe Encrypted SQLite Mailboxes": "量子安全な暗号化された SQLite メールボックス"
 }

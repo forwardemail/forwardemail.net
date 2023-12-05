@@ -386,7 +386,7 @@ async function onMove(mailboxId, update, session, fn) {
 
     // TODO: do we need this
     // write any if needed
-    if (sourceUid.length > 0) {
+    if (sourceUid.length > 0 && session?.selected?.uidList) {
       const payload = {
         tag: '*',
         command: String(session.selected.uidList.length),

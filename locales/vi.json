@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "Điều quan trọng nữa là sử dụng nguồn mở 100% vì nó tạo dựng niềm tin và cho phép mọi người đóng góp và kiểm tra độc lập.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "Chúng tôi là <strong>chuyên gia về khả năng gửi</strong> và <strong>bảo mật email</strong> .",
   "Free, private, and encrypted email for business and enterprise": "Email miễn phí, riêng tư và được mã hóa dành cho doanh nghiệp và doanh nghiệp",
-  "Encrypted email for enterprise": "Email được mã hóa cho doanh nghiệp"
+  "Encrypted email for enterprise": "Email được mã hóa cho doanh nghiệp",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "Email được mã hóa an toàn lượng tử: Nhận tài khoản email riêng tư của bạn",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Hộp thư an toàn lượng tử được mã hóa để bảo vệ quyền riêng tư của bạn. Email bảo mật và tập trung vào quyền riêng tư dành cho doanh nghiệp của bạn và các miền tùy chỉnh. Phần mềm nguồn mở 100%.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Tìm hiểu sâu: Cách chúng tôi sử dụng hộp thư SQLite được mã hóa an toàn lượng tử cho dịch vụ email bảo mật và tập trung vào quyền riêng tư của chúng tôi",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Hộp thư SQLite được mã hóa an toàn lượng tử"
 }

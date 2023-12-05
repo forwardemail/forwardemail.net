@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "%100 açık kaynak kullanmak da önemlidir çünkü güven oluşturur ve herkesin katkıda bulunmasına ve bağımsız olarak denetleme yapmasına olanak tanır.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "Biz <strong>e-posta güvenliği</strong> ve <strong>teslim edilebilirlik uzmanlarıyız</strong> .",
   "Free, private, and encrypted email for business and enterprise": "İş ve kuruluşlar için ücretsiz, özel ve şifreli e-posta",
-  "Encrypted email for enterprise": "Kurumsal için şifrelenmiş e-posta"
+  "Encrypted email for enterprise": "Kurumsal için şifrelenmiş e-posta",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe Şifreli E-posta: Özel E-posta Hesabınızı Alın",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Gizliliğinizi korumak için şifrelenmiş kuantum güvenli posta kutuları. İşletmeniz ve özel alan adlarınız için gizlilik odaklı ve güvenli e-posta. %100 açık kaynaklı yazılım.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Ayrıntılı inceleme: Gizlilik odaklı ve güvenli e-posta hizmetimiz için kuantum güvenli şifrelenmiş SQLite posta kutularını nasıl kullanıyoruz?",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Kuantum Güvenli Şifreli SQLite Posta Kutuları"
 }

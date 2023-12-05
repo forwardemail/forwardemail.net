@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "100% 오픈 소스를 사용하는 것도 중요합니다. 신뢰를 쌓고 누구나 기여하고 독립적으로 감사할 수 있기 때문입니다.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "우리는 <strong>이메일 보안</strong> 및 <strong>전달 가능성 전문가</strong> 입니다.",
   "Free, private, and encrypted email for business and enterprise": "비즈니스 및 기업을 위한 무료, 개인 및 암호화 이메일",
-  "Encrypted email for enterprise": "기업용 암호화된 이메일"
+  "Encrypted email for enterprise": "기업용 암호화된 이메일",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe 암호화 이메일: 개인 이메일 계정을 확보하세요",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "귀하의 개인 정보를 보호하기 위해 암호화된 양자 안전 사서함. 귀하의 비즈니스 및 사용자 정의 도메인을 위한 개인정보 보호에 중점을 둔 안전한 이메일입니다. 100% 오픈 소스 소프트웨어.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "심층 분석: 개인 정보 보호에 중점을 두고 안전한 이메일 서비스를 위해 양자 안전 암호화 SQLite 사서함을 사용하는 방법",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe 암호화된 SQLite 메일박스"
 }

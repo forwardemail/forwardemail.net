@@ -109,8 +109,8 @@ module.exports = function (config) {
       'Get free startup and developer email tools, bundles, resources, guides, tutorials, code samples, and more.'
     ],
     '/encrypted-email': [
-      'Encrypted Email: Get Your Private Email Account',
-      'Encrypted mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.'
+      'Quantum Safe Encrypted Email: Get Your Private Email Account',
+      'Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.'
     ],
     '/docs': [
       `Free Email Developer Tools and Resources (<span class="notranslate">${dayjs(

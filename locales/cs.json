@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "Je také důležité používat 100% open-source, protože buduje důvěru a umožňuje komukoli přispívat a nezávisle provádět audit.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "Jsme odborníci <strong>na zabezpečení e-mailu</strong> a <strong>doručitelnost</strong> .",
   "Free, private, and encrypted email for business and enterprise": "Bezplatné, soukromé a šifrované e-maily pro firmy a podniky",
-  "Encrypted email for enterprise": "Šifrovaný e-mail pro podniky"
+  "Encrypted email for enterprise": "Šifrovaný e-mail pro podniky",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "Quantum Safe Encrypted Email: Získejte svůj soukromý e-mailový účet",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Šifrované kvantové bezpečné poštovní schránky pro ochranu vašeho soukromí. Zabezpečený e-mail zaměřený na ochranu soukromí pro vaši firmu a vlastní domény. 100% open-source software.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Hluboký ponor: Jak používáme kvantově bezpečné šifrované poštovní schránky SQLite pro naši zabezpečenou e-mailovou službu zaměřenou na soukromí",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Kvantově bezpečné šifrované poštovní schránky SQLite"
 }

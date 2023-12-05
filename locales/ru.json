@@ -6270,5 +6270,9 @@
   "It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.": "Также важно использовать 100% открытый исходный код, поскольку он укрепляет доверие и позволяет любому вносить свой вклад и проводить независимый аудит.",
   "We're <strong>email security</strong> and <strong>deliverability experts</strong>.": "Мы являемся экспертами <strong>по безопасности электронной почты</strong> и <strong>доставляемости</strong> .",
   "Free, private, and encrypted email for business and enterprise": "Бесплатная, частная и зашифрованная электронная почта для бизнеса и предприятий",
-  "Encrypted email for enterprise": "Зашифрованная электронная почта для предприятия"
+  "Encrypted email for enterprise": "Зашифрованная электронная почта для предприятия",
+  "Quantum Safe Encrypted Email: Get Your Private Email Account": "Зашифрованная электронная почта Quantum Safe: получите личную учетную запись электронной почты",
+  "Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.": "Зашифрованные квантовобезопасные почтовые ящики для защиты вашей конфиденциальности. Обеспеченная конфиденциальностью и безопасная электронная почта для вашего бизнеса и личных доменов. Программное обеспечение со 100% открытым исходным кодом.",
+  "Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service": "Подробное описание: как мы используем квантовобезопасные зашифрованные почтовые ящики SQLite для нашей безопасной службы электронной почты, ориентированной на конфиденциальность.",
+  "Quantum Safe Encrypted SQLite Mailboxes": "Почтовые ящики SQLite с шифрованием Quantum Safe"
 }
