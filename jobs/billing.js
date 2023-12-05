@@ -117,7 +117,7 @@ async function mapper(id) {
 
   // ensure plan expires < 1 month from now
   if (
-    new Date(user[config.userFields.planExpiresAt]).getTime() <
+    new Date(user[config.userFields.planExpiresAt]).getTime() >
     dayjs().add(1, 'month').toDate().getTime()
   )
     return;
