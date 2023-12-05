@@ -21,10 +21,9 @@ module.exports = {
     sqlite: 'ttab nodemon sqlite.js',
 
     watch: 'ttab gulp watch',
-    clean: 'ttab gulp clean',
-    build: 'ttab gulp build',
-    buildTest: 'ttab NODE_ENV=test gulp build',
-    publishAssets: 'ttab gulp publish',
+    clean: 'gulp clean',
+    build: 'gulp build',
+    buildTest: 'NODE_ENV=test gulp build',
 
     //
     // TODO: once remark-preset-github is upgraded to ESM and all deps upgraded
