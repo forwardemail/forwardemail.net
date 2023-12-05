@@ -46,16 +46,24 @@
     background-size: 99.9%;
     background-repeat: no-repeat;
     background-image: url('b64---../img/art/freddy.gif---');
-    width: 75.6px;
-    height: 106.2px;
-    right: 15%;
+    width: 57.7px;
+    height: 79.65px;
+    right: 5%;
     bottom: 30%;
+  }
+  @include media-breakpoint-up(sm) {
+    #waving {
+      right: 10%;
+      width: 75.6px;
+      height: 106.2px;
+    }
   }
   @include media-breakpoint-up(md) {
     #stars {
       background-size: 45vmin, 25%, 110%;
     }
     #waving {
+      right: 15%;
       width: 94.5px;
       height: 132.75px;
     }

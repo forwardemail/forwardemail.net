@@ -34,7 +34,7 @@
         ul.list-inline.h3
           //- Apple
           li.list-inline-item.mr-1
-            a.badge.badge-dark(
+            a.badge.badge-light(
               href=l("/open-source/apple-email-clients"),
               target="_blank"
             )
@@ -42,7 +42,7 @@
               != "&reg;"
           //- Windows
           li.list-inline-item.mr-1
-            a.badge.badge-dark(
+            a.badge.badge-light(
               href=l("/open-source/windows-email-clients"),
               target="_blank"
             )
@@ -50,7 +50,7 @@
               != "&reg;"
           //- Android
           li.list-inline-item.mr-1
-            a.badge.badge-dark(
+            a.badge.badge-light(
               href=l("/open-source/android-email-clients"),
               target="_blank"
             )
@@ -60,7 +60,7 @@
               != "&trade;"
           //- Linux
           li.list-inline-item.mr-1
-            a.badge.badge-dark(
+            a.badge.badge-light(
               href=l("/open-source/linux-email-clients"),
               target="_blank"
             )
@@ -70,16 +70,16 @@
               != "&reg;"
           //- Desktop
           li.list-inline-item.mr-1
-            a.badge.badge-dark(
+            a.badge.badge-light(
               href=l("/open-source/desktop-email-clients"),
               target="_blank"
             )
               i.fa-fw.fas.fa-desktop
               = " "
-              = "Desktop"
+              = t("Desktop")
           //- Web
           li.list-inline-item.mr-1
-            a.badge.badge-dark(
+            a.badge.badge-light(
               href=l("/open-source/web-email-clients"),
               target="_blank"
             )
@@ -99,7 +99,7 @@
                 != "&reg;"
           //- Terminal
           li.list-inline-item
-            a.badge.badge-dark(
+            a.badge.badge-light(
               href=l("/open-source/terminal-email-clients"),
               target="_blank"
             )
@@ -120,6 +120,8 @@
         h2.h4= t("What are your storage limits?")
         p
           = t("If you exceed the default storage limit of 10 GB, then you can purchase additional storage as needed.")
+          = " "
+          = t("Additional storage costs $3 per month per each additional 10 GB.")
           = " "
           = t("Storage is shared across all of your domains and aliases, but you can impose limits if desired on a per domain and alias basis.")
           = " "

@@ -325,6 +325,7 @@ function css() {
       // replace('#191d21', '#121212'),
       replace('#191d21', '#07191E'), // result of #121212 with 8% overlay with primary $cyan
       replace('#d3d3d3', 'rgba(253,255,255,.95)'),
+      replace('#343a40', '#07191E'),
       purgecss({
         ...purgeCssOptions,
         content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']

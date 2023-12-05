@@ -135,44 +135,41 @@ block body
       .row
         if !isBot(ctx.get("User-Agent"))
           #typed-home-strings.d-none(data-ignore-hash-change)
-            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for enterprise.')
-            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for education.')
-            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for startups.')
-            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for stores.')
-            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for designers.')
-            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for developers.')
-            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for marketing.')
-            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for sales.')
-            div!= t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for you.')
-        .col-12(
-          class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
-        )
+            div!= t("Encrypted email<br /> for enterprise")
+            div!= t("Encrypted email<br /> for education")
+            div!= t("Encrypted email<br /> for startups")
+            div!= t("Encrypted email<br /> for stores")
+            div!= t("Encrypted email<br /> for designers")
+            div!= t("Encrypted email<br /> for developers")
+            div!= t("Encrypted email<br /> for marketing")
+            div!= t("Encrypted email<br /> for sales")
+            div!= t("Encrypted email<br /> for you")
+        //- .col-12(
+        //-   class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
+        //- )
+        .col-12.text-center
           h1#typed-home-header.mb-3(data-ignore-hash-change)
             span#typed-home(data-ignore-hash-change)
               if isBot(ctx.get("User-Agent"))
-                = t("Free, private, and secure email for custom domains.")
+                = t("Encrypted email for custom domains")
               else
-                != t('Privacy-focused encrypted email<br class="d-block d-md-none" /> for everyone.')
-          p(class=isBot(ctx.get("User-Agent")) ? "" : "d-none d-md-block")
-            != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
-            = " "
-            != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with your custom domain or use one of ours!')
+                != t("Encrypted email<br /> for everyone")
+          if isBot(ctx.get("User-Agent"))
+            p
+              != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
+              = " "
+              != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with your custom domain or use one of ours!')
           if !isBot(ctx.get("User-Agent"))
-            a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mb-3(
+            a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3.mb-md-5(
               href=l("/register"),
               data-toggle="modal-anchor",
               data-target="#modal-sign-up"
             )
               = t("Sign up free")
-          if isBot(ctx.get("User-Agent"))
-            include _feature-list
-          else
-            .d-none.d-md-block
-              include _feature-list
           ul.list-inline
             li.list-inline-item.d-block.d-md-inline
               a.btn.mb-3(
-                class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-outline-light",
+                class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-light",
                 href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true"),
                 title=striptags(t(config.meta["/private-business-email"][0]))
               )
@@ -182,7 +179,7 @@ block body
             //- Product Tour
             if !isBot(ctx.get('User-Agent'))
               li.list-inline-item.d-block.d-md-inline
-                a.btn.btn-outline-light.mb-3(
+                a.btn.btn-light.mb-3(
                   role="button",
                   data-toggle="modal",
                   data-target="#modal-watch-video",
@@ -201,7 +198,7 @@ block body
                   = " "
                   = t("Transactional Email API")
               else
-                a.btn.btn-outline-light.mb-3(href=l("/docs"))
+                a.btn.btn-light.mb-3(href=l("/docs"))
                   i.fa.fa-code
                   = " "
                   = t("Developers")
@@ -213,30 +210,59 @@ block body
       = t("Learn more")
       = " "
       i.fa.fa-angle-double-down
-  #learn-more.bg-dark.py-3.d-block.overflow-hidden.min-vh-100(
+  #learn-more.bg-dark.text-white.py-3.d-block.overflow-hidden.min-vh-100(
     data-ignore-hash-change
   )
-    .container
+    .container.text-center
       .row
         .col-12
-          h2.display-3.font-weight-bold.text-white.my-3.my-md-5= "TL;DR"
+          h2.display-5.font-weight-bold.mt-5.mb-3= t("Why use us as your email provider?")
+          .lead
+            include _feature-list
+      hr
       .row
         .col-12
-          p.lead.text-white!= t("We are are a fully-featured email service provider that is focused on <strong>security</strong>, <strong>privacy</strong>, and <strong>transparency</strong>.")
-          ol.text-white.lead
-            li.mb-3
-              = t("Unlike other services, we are the only 100% truly open-source email service provider.")
-              = " "
-              != t('Others claim to be "open-source", but they are actually only releasing the source code to their front-end &ndash; <strong>and not the back-end</strong> (<i class="text-danger">the most sensitive part of an email service</i>).')
-              = " "
-              = t("Open-source builds trust and allows community members to contribute.")
-            li.mb-3
-              = t("You can use us as a drop-in replacement and alternative to any other email service provider.")
-            li.mb-3
-              = t("If you're a software developer, then you can use our transactional email API to programatically send emails.")
-            li.mb-3= t("We have a dedicated FAQ section, dummy-proof guides, and apps to help you navigate the complexity of email.")
-            li= t("Support requests are answered by real humans; they are the actual engineers working on our product.")
-        a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto(
+          h2.display-5.font-weight-bold.my-3= t("What makes us different than others?")
+          .lead
+            ul.list-unstyled.mb-3
+              li.mb-3
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                != t('We\'re <strong class="text-decoration-underline">the only 100% open-source provider</strong>')
+              li.mb-3
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                = t("We don't rely on any third parties (we don't use Amazon SES or an alternative like others)")
+              li.mb-3
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                = t("Our pricing allows you to scale cost effectively (we don't charge per user and you can pay as you go for storage)")
+              li.mb-3
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                = t("Unlike others, your email with us is not stored in a shared relational database alongside everyone else")
+              li
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                != t('We\'re the world\'s first and only email service to use <strong class="text-success">quantum-safe</strong> and <strong class="text-success">individually encrypted SQLite mailboxes</strong>')
+          a.btn.btn-success.font-weight-bold.text-uppercase.text-white(
+            href=l("/encrypted-email#email-service-provider-comparison"),
+            target="_blank"
+          )
+            != t("Read Email Service Comparison")
+            = " "
+            i.fa.fa-angle-right.align-middle
+      hr
+      .row
+        .col-12
+          h2.display-5.font-weight-bold.my-3= t("Did you know?")
+          p.lead
+            != t('Other email services advertise as open-source, but <strong class="text-danger">they do not release the source code to their back-end</strong>.')
+            = " "
+            != t("The back-end is the <strong>most sensitive part</strong> of an email provider.")
+            = " "
+            != t("It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.")
+        a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto(
           href="#testimonials"
         )
           i.fa.fa-angle-double-down
@@ -248,11 +274,11 @@ block body
     data-src=manifest("img/art/postcard.svg"),
     data-ignore-hash-change
   )
-    .text-center.d-block.d-md-none.mt-3
+    .text-center.d-block.d-lg-none.mt-3
       .h2.display-3.mb-1.text-danger
         i.fa.fa-heart
       .h1.text-white!= t("Happy users")
-    .container.py-3.py-md-4.py-lg-5.d-block
+    .container.py-3.py-lg-5.d-block
       .row.row-cols-1.row-cols-md-2
         //- DHH
         .col
@@ -675,7 +701,7 @@ block body
       .row
         .col-12.col-lg-8
           p.lead.text-white
-            != t("We are <strong>email security</strong> and <strong>deliverability experts</strong>.")
+            != t("We're <strong>email security</strong> and <strong>deliverability experts</strong>.")
           ul.list-unstyled.text-white.text-left.d-inline-block.mb-3.mb-md-5
             li
               i.fa.fa-fw.fa-check-circle.text-success

@@ -1235,15 +1235,15 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 <div class="mb-3">
   Our service works with popular email clients such as:
   <ul class="ml-1 h4 d-inline list-inline mb-0" style="padding-left: 0px;">
-    <li class="list-inline-item"><a href="/open-source/apple-email-clients" target="_blank" class="badge badge-dark bg-dark text-white">Apple&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/windows-email-clients" target="_blank" class="badge badge-dark bg-dark text-white">Windows&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/android-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fab fa-android"></i> Android&trade;</a></li>
-    <li class="list-inline-item"><a href="/open-source/linux-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fab fa-linux"></i> Linux&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/desktop-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fas fa-desktop"></i> Desktop</a></li>
-    <li class="list-inline-item"><a href="/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/safari-email-clients" target="_blank" class="badge badge-dark bg-dark text-white">Safari&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/google-chrome-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/terminal-email-clients" target="_blank" class="badge badge-dark bg-dark text-white"><i class="fas fa-terminal"></i> Terminal</a></li>
+    <li class="list-inline-item"><a href="/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
+    <li class="list-inline-item"><a href="/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
+    <li class="list-inline-item"><a href="/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
   </ul>
 </div>
 

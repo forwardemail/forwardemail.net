@@ -1,9 +1,13 @@
-ul.list-unstyled.text-left.mb-3
-  li
+ul.list-unstyled.mb-3
+  li.mb-3
     i.fa.fa-fw.fa-check-circle.text-success
     = " "
-    = t("Unlimited domains and aliases")
-  li
+    != t('Send and receive email as <strong class="notranslate">you@yourdomain.com</strong>')
+  li.mb-3
+    i.fa.fa-fw.fa-check-circle.text-success
+    = " "
+    != t('<strong class="text-decoration-underline">Unlimited</strong> addresses and domains for just $3/mo')
+  li.mb-3
     i.fa.fa-fw.fa-check-circle.text-success
     = " "
     = t("10 GB encrypted email storage")
@@ -19,13 +23,15 @@ ul.list-unstyled.text-left.mb-3
         = t("Encrypted Email")
       else
         = t("Learn more")
+      = " "
+      i.fa.fa-angle-right
   //-.
     li
       i.fa.fa-fw.fa-check-circle.text-success
       = " "
       != t("100% open-source software")
       = " "
-      a.btn.btn-link.badge.badge-dark.text-uppercase.text-white(
+      a.btn.btn-link.badge.badge-light.text-uppercase.text-white(
         href="https://github.com/forwardemail",
         target="_blank",
         rel="noopener noreferrer"
@@ -37,15 +43,16 @@ ul.list-unstyled.text-left.mb-3
       i.fa.fa-fw.fa-check-circle.text-success
       = " "
       = t("Enterprise-grade 99.99% uptime SLA")
-  li
+  li.mb-3
     i.fa.fa-fw.fa-check-circle.text-success
     = " "
-    = t("Supports")
+    = t("Works with")
     = " "
     ul.list-inline.d-inline.lead.mb-0
       //- Apple
       li.list-inline-item.mr-1
-        a.badge.badge-dark(
+        a.badge.badge-light(
+          target="_blank",
           href=l("/open-source/apple-email-clients"),
           title=striptags(t(config.meta["/open-source/apple-email-clients"][0]))
         )
@@ -54,7 +61,8 @@ ul.list-unstyled.text-left.mb-3
           != "&reg;"
       //- Windows
       li.list-inline-item.mr-1
-        a.badge.badge-dark(
+        a.badge.badge-light(
+          target="_blank",
           href=l("/open-source/windows-email-clients"),
           title=striptags(t(config.meta["/open-source/windows-email-clients"][0]))
         )
@@ -62,7 +70,8 @@ ul.list-unstyled.text-left.mb-3
           != "&reg;"
       //- Android
       li.list-inline-item.mr-1
-        a.badge.badge-dark(
+        a.badge.badge-light(
+          target="_blank",
           href=l("/open-source/android-email-clients"),
           title=striptags(t(config.meta["/open-source/android-email-clients"][0]))
         )
@@ -72,7 +81,8 @@ ul.list-unstyled.text-left.mb-3
           != "&trade;"
       //- Linux
       li.list-inline-item.mr-1
-        a.badge.badge-dark(
+        a.badge.badge-light(
+          target="_blank",
           href=l("/open-source/linux-email-clients"),
           title=striptags(t(config.meta["/open-source/linux-email-clients"][0]))
         )
@@ -82,16 +92,18 @@ ul.list-unstyled.text-left.mb-3
           != "&reg;"
       //- Desktop
       li.list-inline-item.mr-1
-        a.badge.badge-dark(
+        a.badge.badge-light(
+          target="_blank",
           href=l("/open-source/desktop-email-clients"),
           title=striptags(t(config.meta["/open-source/desktop-email-clients"][0]))
         )
           i.fa-fw.fas.fa-desktop
           = " "
-          = "Desktop"
+          = t("Desktop")
       //- Web
       li.list-inline-item.mr-1
-        a.badge.badge-dark(
+        a.badge.badge-light(
+          target="_blank",
           href=l("/open-source/web-email-clients"),
           title=striptags(t(config.meta["/open-source/web-email-clients"][0]))
         )
@@ -111,13 +123,116 @@ ul.list-unstyled.text-left.mb-3
             != "&reg;"
       //- Terminal
       li.list-inline-item.mr-1
-        a.badge.badge-dark(
+        a.badge.badge-light(
+          target="_blank",
           href=l("/open-source/terminal-email-clients"),
           title=striptags(t(config.meta["/open-source/terminal-email-clients"][0]))
         )
           i.fa-fw.fas.fa-terminal
           = " "
           = "Terminal"
+  li
+    i.fa.fa-fw.fa-check-circle.text-success
+    = " "
+    = t("Supports")
+    = " "
+    ul.list-inline.d-inline.lead.mb-0
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#do-you-support-sending-email-with-smtp")
+        )
+          = "SMTP"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#do-you-support-receiving-email-with-imap")
+        )
+          = "IMAP"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#do-you-support-pop3")
+        )
+          = "POP3"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#do-you-support-webhooks")
+        )
+          = "HTTP"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#do-you-support-sending-email-with-api")
+        )
+          = "API"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#how-do-i-set-up-spf-for-forward-email")
+        )
+          = "SPF"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#how-do-i-set-up-dkim-for-forward-email")
+        )
+          = "DKIM"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#how-do-i-set-up-dmarc-for-forward-email")
+        )
+          = "DMARC"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#do-you-support-email-best-practices")
+        )
+          = "ARC"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#how-do-i-set-up-srs-for-forward-email")
+        )
+          = "SRS"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#how-do-i-set-up-mta-sts-for-forward-email")
+        )
+          = "MTA-STS"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#how-do-you-perform-dns-lookups-on-domain-names")
+        )
+          = "DNS over HTTPS"
+          = " "
+          i.fa.fa-angle-right
     //-.
       = ": "
       ul.list-inline.d-inline.lead.mb-0(style='max-width:400px')
