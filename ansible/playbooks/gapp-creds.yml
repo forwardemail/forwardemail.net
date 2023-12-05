@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: imap:smtp:http:bree:sqlite
+- hosts: imap:pop3:smtp:http:bree:sqlite
   name: Google Application Credentials
   vars_prompt:
     - name: input_profile
