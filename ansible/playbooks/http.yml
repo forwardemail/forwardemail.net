@@ -3,35 +3,27 @@
 
 ---
 - name: Import security playbook
-  ansible.builtin.import_playbook: security.yml
+  import_playbook: security.yml
 - name: Import Node.js playbook
-  ansible.builtin.import_playbook: node.yml
+  import_playbook: node.yml
 - name: Import SSH keys playbook
-  ansible.builtin.import_playbook: ssh-keys.yml
+  import_playbook: ssh-keys.yml
 - hosts: web
-  name: HTTP
+  name: Web Hostname
   become: true
   become_user: root
   tasks:
     - name: Set hostname
       hostname:
         name: "{{ lookup('env', 'WEB_HOST') }}"
-  roles:
-    # https://github.com/holms/ansible-fqdn
-    - role: fqdn
-      fqdn: "{{ lookup('env', 'WEB_HOST') }}"
 - hosts: api
-  name: HTTP
+  name: API Hostname
   become: true
   become_user: root
   tasks:
     - name: Set hostname
       hostname:
         name: "{{ lookup('env', 'API_HOST') }}"
-  roles:
-    # https://github.com/holms/ansible-fqdn
-    - role: fqdn
-      fqdn: "{{ lookup('env', 'API_HOST') }}"
 
 # 80 -> 8080
 - hosts: 'web:api'

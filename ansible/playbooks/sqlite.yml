@@ -3,24 +3,20 @@
 
 ---
 - name: Import security playbook
-  ansible.builtin.import_playbook: security.yml
+  import_playbook: security.yml
 - name: Import Node.js playbook
-  ansible.builtin.import_playbook: node.yml
+  import_playbook: node.yml
 - name: Import SSH keys playbook
-  ansible.builtin.import_playbook: ssh-keys.yml
+  import_playbook: ssh-keys.yml
 
 - hosts: sqlite
-  name: SQLITE
+  name: Hostname
   become: true
   become_user: root
   tasks:
     - name: Set hostname
       hostname:
         name: "{{ lookup('env', 'SQLITE_HOST') }}"
-  roles:
-    # https://github.com/holms/ansible-fqdn
-    - role: fqdn
-      fqdn: "{{ lookup('env', 'SQLITE_HOST') }}"
 
 - hosts: sqlite
   name: SQLITE

@@ -23,6 +23,3 @@
 - name: sysctl
   src: oefenweb.sysctl
   version: v1.0.43
-- name: fqdn
-  src: holms.fqdn
-  version: "1.1"
