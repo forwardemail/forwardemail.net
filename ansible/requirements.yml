@@ -2,9 +2,6 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- name: swapfile
-  src: oefenweb.swapfile
-  version: v2.0.37
 - name: dns
   src: oefenweb.dns
   version: v1.1.36

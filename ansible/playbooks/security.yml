@@ -527,12 +527,6 @@
     # https://github.com/Oefenweb/ansible-sysctl
     - role: sysctl
 
-    # https://github.com/Oefenweb/ansible-swapfile
-    - role: swapfile
-      swapfile_size: 4GB
-      swapfile_swappiness: "10"
-      swapfile_vfs_cache_pressure: "50"
-
     # https://github.com/Oefenweb/ansible-dns
     - role: dns
       dns_nameservers:
