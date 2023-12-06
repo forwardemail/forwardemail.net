@@ -47,11 +47,6 @@
         rule: limit
         port: 22
         proto: tcp
-    - name: Set UFW default forward policy to DENY
-      lineinfile:
-        dest: /etc/default/ufw
-        line: DEFAULT_FORWARD_POLICY="DENY"
-        regexp: ^DEFAULT_FORWARD_POLICY\=
     - name: Allow ssh
       ufw:
         rule: allow
