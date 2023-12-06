@@ -321,14 +321,25 @@
         value: 2
 
       #
+      # socat has IPv6 issues and is hard to configure
+      # authbind et all also have their own issues and configuration pains
+      # this is an extremely simple and straightforward way to allow port binding
+      #
+      # <https://ar.al/2022/08/30/dear-linux-privileged-ports-must-die/>
+      # <https://stackoverflow.com/a/51439516>
+      #
+      - name: net.ipv4.ip_unprivileged_port_start
+        value: 80
+
+      #
       # handle ufw forwarding
       #
       - name: net.ipv4.ip_forward
-        value: 1
+        value: 0
       - name: net.ipv6.conf.default.forwarding
-        value: 1
+        value: 0
       - name: net.ipv6.conf.all.forwarding
-        value: 1
+        value: 0
 
       # handle swapping idle processes to disk
       # https://medium.com/@sauravomar01/linux-kernel-tuning-and-performance-tweaks-d7848178aaa2
