@@ -11,7 +11,6 @@ module.exports = {
     'no-warning-comments': 'off',
     'unicorn/prefer-top-level-await': 'off',
     'unicorn/no-process-exit': 'off',
-    'unicorn/prefer-node-protocol': 'off',
     'max-depth': 'off'
   },
   overrides: [
@@ -21,6 +20,7 @@ module.exports = {
       plugins: ['compat', 'no-smart-quotes'],
       rules: {
         'compat/compat': 'error',
+        'unicorn/prefer-node-protocol': 'off',
         'no-smart-quotes/no-smart-quotes': 'error',
         'n/prefer-global/process': 'off',
         'import/no-unassigned-import': 'off'

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const process = require('process');
+const process = require('node:process');
 
 const env = require('./env');
 

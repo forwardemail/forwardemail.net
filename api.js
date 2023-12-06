@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const process = require('process');
+const process = require('node:process');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
@@ -33,9 +33,7 @@ monitorServer();
 
 (async () => {
   try {
-    // TODO: hard-coded until we get authbind in ansible setup
-    // TODO: and also until we use `ctx.ip` with reverse lookup for hostname/root match in allowlist env file
-    await api.listen(api.config.port, '0.0.0.0');
+    await api.listen(api.config.port);
     if (process.send) process.send('ready');
     const { port } = api.server.address();
     logger.info(

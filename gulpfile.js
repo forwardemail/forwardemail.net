@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const process = require('process');
-const path = require('path');
-const fs = require('fs');
+const process = require('node:process');
+const path = require('node:path');
+const fs = require('node:fs');
 
 // required to disable watching of I18N files in @ladjs/i18n
 // otherwises tasks will fail to exit due to watchers running
