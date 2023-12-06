@@ -39,7 +39,10 @@ const refreshSession = require('#helpers/refresh-session');
 // TODO: we need to wrap top and add to parse-payload for all handlers
 //
 class POP3 {
-  constructor(options = {}, secure = env.POP3_PORT === 2995) {
+  constructor(
+    options = {},
+    secure = env.POP3_PORT === 995 || env.POP3_PORT === 2995
+  ) {
     this.client = options.client;
     this.subscriber = options.subscriber;
     this.wsp = options.wsp;

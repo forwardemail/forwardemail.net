@@ -9,7 +9,7 @@
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
-        "POP3_PORT": 2995
+        "POP3_PORT": 995
       }
     }
   ],

@@ -9,6 +9,18 @@
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
+        "IMAP_PORT": 993
+      }
+    },
+    {
+      "name": "imap-2993",
+      "script": "imap.js",
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "instances": "2",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production",
         "IMAP_PORT": 2993
       }
     }

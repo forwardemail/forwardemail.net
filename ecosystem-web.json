@@ -8,7 +8,9 @@
       "instances": "max",
       "pmx": false,
       "env_production": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "HTTP_PORT": 443,
+        "HTTP_PROTOCOL": "https"
       }
     },
     {
@@ -19,7 +21,8 @@
       "instances": "1",
       "pmx": false,
       "env_production": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "PROXY_PORT": 80
       }
     }
   ],

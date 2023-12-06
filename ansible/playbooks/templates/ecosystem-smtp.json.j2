@@ -1,15 +1,55 @@
 {
   "apps": [
     {
-      "name": "sqlite",
-      "script": "sqlite.js",
+      "name": "smtp-tls",
+      "script": "smtp.js",
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
       "pmx": false,
       "env_production": {
+        "NODE_ENV": "production",
+        "SMTP_PORT": 587
+      }
+    },
+    {
+      "name": "smtp-ssl",
+      "script": "smtp.js",
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "instances": "max",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production",
+        "SMTP_PORT": 465
+      }
+    },
+    run these in fork mode:
+    25
+    2525
+    2587
+    2465
+    {
+      "name": "smtp-bree",
+      "script": "smtp-bree.js",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "env_production": {
         "NODE_ENV": "production"
       }
     }
-  ]
+  ],
+  "deploy": {
+    "production": {
+      "user": "deploy",
+      "host": [{% for host in groups['web'] %}"{{ hostvars[host].ansible_host }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+      "ref": "origin/master",
+      "repo": "{{ lookup('env', 'GITHUB_REPO') }}",
+      "path": "/var/www/production",
+      "pre-deploy": "git reset --hard",
+      "post-deploy": "pnpm install && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-smtp.json --env production --update-env"
+    }
+  }
 }

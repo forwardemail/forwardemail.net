@@ -9,6 +9,18 @@
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
+        "POP3_PORT": 995
+      }
+    },
+    {
+      "name": "pop3-2995",
+      "script": "pop3.js",
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "instances": "2",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production",
         "POP3_PORT": 2995
       }
     }

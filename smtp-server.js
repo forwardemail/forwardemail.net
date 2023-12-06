@@ -38,14 +38,10 @@ function onClose(session) {
 }
 
 class SMTP {
-  //
-  // NOTE: we port forward 25, 587, and 2525 -> 2587 (and 2587 is itself available)
-  // NOTE: we port forward 465 -> 2465 (and 2465 is itself available)
-  // NOTE: on IPv6 we cannot port forward 25, 587, 2525, and 465 since ufw not support REDIRECT for ipv6
-  //       therefore we use socat in a systemd service that's always running
-  //       (this is still a more lightweight approach than having multiple processes running to cover all the ports)
-  //
-  constructor(options = {}, secure = env.SMTP_PORT === 2465) {
+  constructor(
+    options = {},
+    secure = env.SMTP_PORT === 465 || env.SMTP_PORT === 2465
+  ) {
     this.client = options.client;
     this.resolver = createTangerine(this.client, logger);
 

@@ -78,7 +78,10 @@ const refreshSession = require('#helpers/refresh-session');
 // - [ ] axe should parse out streams
 
 class IMAP {
-  constructor(options = {}, secure = env.IMAP_PORT === 2993) {
+  constructor(
+    options = {},
+    secure = env.IMAP_PORT === 993 || env.IMAP_PORT === 2993
+  ) {
     this.client = options.client;
     this.subscriber = options.subscriber;
     this.wsp = options.wsp;

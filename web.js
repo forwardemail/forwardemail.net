@@ -18,6 +18,7 @@ const mongoose = require('mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 
 const Users = require('#models/users');
+const env = require('#config/env');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const monitorServer = require('#helpers/monitor-server');
@@ -43,7 +44,11 @@ monitorServer();
 
 (async () => {
   try {
-    await web.listen(web.config.port);
+    await web.listen(
+      web.config.port,
+      // Cloudflare Load Balancer will redirect to IPv4
+      env.CLOUDFLARE_LOAD_BALANCER ? '0.0.0.0' : '::'
+    );
     if (process.send) process.send('ready');
     const { port } = web.server.address();
     logger.info(
