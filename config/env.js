@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const path = require('node:path');
+// NOTE: DO NOT CHANGE THIS
+// eslint-disable-next-line unicorn/prefer-node-protocol
+const path = require('path');
 
 // eslint-disable-next-line n/prefer-global/process
 const test = process.env.NODE_ENV === 'test';
