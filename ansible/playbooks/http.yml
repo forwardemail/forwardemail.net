@@ -25,16 +25,6 @@
       hostname:
         name: "{{ lookup('env', 'API_HOST') }}"
 
-# TODO: on all web/api servers
-# sudo systemctl stop socat-80-to-8080
-# sudo systemctl stop socat-443-to-8443
-# sudo systemctl disable socat-80-to-8080
-# sudo systemctl disable socat-443-to-8443
-# sudo rm /etc/systemd/system/socat-80-to-8080.service
-# sudo rm /etc/systemd/system/socat-443-to-8443.service
-# sudo systemctl daemon-reload
-# sudo systemctl reset-failed
-
 - hosts: web:api
   name: HTTP
   become: true
