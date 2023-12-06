@@ -17,7 +17,6 @@ const ip = require('ip');
 
 const apiConfig = require('#config/api');
 const Users = require('#models/users');
-const env = require('#config/env');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
@@ -34,11 +33,7 @@ monitorServer();
 
 (async () => {
   try {
-    await api.listen(
-      api.config.port,
-      // Cloudflare Load Balancer will redirect to IPv4
-      env.CLOUDFLARE_LOAD_BALANCER ? '0.0.0.0' : '::'
-    );
+    await api.listen(api.config.port);
     if (process.send) process.send('ready');
     const { port } = api.server.address();
     logger.info(
