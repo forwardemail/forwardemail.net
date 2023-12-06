@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "imap",
+      "name": "imap-993",
       "script": "imap.js",
       "exec_mode": "cluster",
       "wait_ready": true,
@@ -15,9 +15,9 @@
     {
       "name": "imap-2993",
       "script": "imap.js",
-      "exec_mode": "cluster",
+      "exec_mode": "fork",
       "wait_ready": true,
-      "instances": "2",
+      "instances": "1",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",

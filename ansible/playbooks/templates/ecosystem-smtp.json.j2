@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "smtp-tls",
+      "name": "smtp-tls-587",
       "script": "smtp.js",
       "exec_mode": "cluster",
       "wait_ready": true,
@@ -13,7 +13,43 @@
       }
     },
     {
-      "name": "smtp-ssl",
+      "name": "smtp-tls-2587",
+      "script": "smtp.js",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production",
+        "SMTP_PORT": 2587
+      }
+    },
+    {
+      "name": "smtp-tls-25",
+      "script": "smtp.js",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production",
+        "SMTP_PORT": 25
+      }
+    },
+    {
+      "name": "smtp-tls-2525",
+      "script": "smtp.js",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production",
+        "SMTP_PORT": 2525
+      }
+    },
+    {
+      "name": "smtp-ssl-465",
       "script": "smtp.js",
       "exec_mode": "cluster",
       "wait_ready": true,
@@ -24,11 +60,18 @@
         "SMTP_PORT": 465
       }
     },
-    run these in fork mode:
-    25
-    2525
-    2587
-    2465
+    {
+      "name": "smtp-ssl-2465",
+      "script": "smtp.js",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production",
+        "SMTP_PORT": 465
+      }
+    },
     {
       "name": "smtp-bree",
       "script": "smtp-bree.js",

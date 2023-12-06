@@ -115,18 +115,16 @@
         rule: limit
         port: 22
         proto: tcp
-    - name: Set UFW default forward policy to ACCEPT
+    - name: Set UFW default forward policy to DROP
       lineinfile:
         dest: /etc/default/ufw
-        line: DEFAULT_FORWARD_POLICY="ACCEPT"
+        line: DEFAULT_FORWARD_POLICY="DROP"
         regexp: ^DEFAULT_FORWARD_POLICY\=
     - name: Allow ssh
       ufw:
         rule: allow
         port: 22
         proto: tcp
-    # NOTE: we port forward 25, 587, and 2525 -> 2587 (and 2587 is itself available)
-    # NOTE: we port forward 465 -> 2465 (and 2465 is itself available)
     - name: Allow port 25
       ufw:
         rule: allow
@@ -163,7 +161,7 @@
     #
     - name: "Update ufw before.rules until #21 is resolved"
       template:
-        src: "{{ playbook_dir }}/templates/before.smtp.rules.j2"
+        src: "{{ playbook_dir }}/templates/before.rules.j2"
         dest: /etc/ufw/before.rules
         owner: root
         mode: "0644"
