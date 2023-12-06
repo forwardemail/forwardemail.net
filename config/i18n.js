@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const path = require('node:path');
+const path = require('path');
 
 const locales = require('./locales');
 const phrases = require('./phrases');

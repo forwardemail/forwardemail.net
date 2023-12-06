@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { promisify } = require('node:util');
+const { promisify } = require('util');
 
 const paypal = require('paypal-rest-sdk');
 const superagent = require('superagent');

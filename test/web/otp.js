@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const crypto = require('node:crypto');
+const crypto = require('crypto');
 
 const test = require('ava');
 const { authenticator } = require('otplib');

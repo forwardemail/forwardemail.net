@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const os = require('node:os');
+const os = require('os');
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');

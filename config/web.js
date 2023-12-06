@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const process = require('node:process');
+const process = require('process');
 
 const Boom = require('@hapi/boom');
-const ipaddr = require('ipaddr.js');
-const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
@@ -15,18 +13,14 @@ const sharedConfig = require('@ladjs/shared-config');
 const { Octokit } = require('@octokit/core');
 
 const routes = require('../routes');
-
-const cookieOptions = require('./cookies');
 const env = require('./env');
+const cookieOptions = require('./cookies');
 const koaCashConfig = require('./koa-cash');
-
 const config = require('.');
-
-const createTangerine = require('#helpers/create-tangerine');
 const i18n = require('#helpers/i18n');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
-const parseRootDomain = require('#helpers/parse-root-domain');
+const createTangerine = require('#helpers/create-tangerine');
 
 const octokit = new Octokit({
   auth: env.GITHUB_OCTOKIT_TOKEN
@@ -204,44 +198,10 @@ module.exports = (redis) => ({
       app.context.client,
       app.context.logger
     );
-    app.use(async (ctx, next) => {
+    app.use((ctx, next) => {
       // since we're on an older helmet version due to koa-helmet
       // <https://github.com/helmetjs/helmet/issues/230>
       ctx.set('X-XSS-Protection', '0');
-
-      // convert local IPv6 addresses to IPv4 format
-      // <https://blog.apify.com/ipv4-mapped-ipv6-in-nodejs/>
-      if (ipaddr.isValid(ctx.request.ip)) {
-        const addr = ipaddr.parse(ctx.request.ip);
-        if (addr.kind() === 'ipv6' && addr.isIPv4MappedAddress())
-          ctx.request.ip = addr.toIPv4Address().toString();
-      }
-
-      // if we need to allowlist certain IP which resolve to our hostnames
-      if (ctx.resolver) {
-        try {
-          // maximum of 3s before ac times out
-          const abortController = new AbortController();
-          const timeout = setTimeout(() => abortController.abort(), 3000);
-          const [clientHostname] = await ctx.resolver.reverse(
-            ctx.request.ip,
-            abortController
-          );
-          clearTimeout(timeout);
-          if (isFQDN(clientHostname)) {
-            if (env.RATELIMIT_ALLOWLIST.includes(clientHostname))
-              ctx.allowlistValue = clientHostname;
-            else {
-              const rootClientHostname = parseRootDomain(clientHostname);
-              if (env.RATELIMIT_ALLOWLIST.includes(rootClientHostname))
-                ctx.allowlistValue = rootClientHostname;
-            }
-          }
-        } catch (err) {
-          ctx.logger.warn(err);
-        }
-      }
-
       return next();
     });
   },

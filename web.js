@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const process = require('node:process');
+const process = require('process');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
@@ -43,7 +43,7 @@ monitorServer();
 
 (async () => {
   try {
-    await web.listen(web.config.port);
+    await web.listen(web.config.port, '0.0.0.0');
     if (process.send) process.send('ready');
     const { port } = web.server.address();
     logger.info(

@@ -6,8 +6,8 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
-const process = require('node:process');
-const os = require('node:os');
+const process = require('process');
+const os = require('os');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');

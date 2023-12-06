@@ -6,8 +6,8 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
-const process = require('node:process');
-const { parentPort } = require('node:worker_threads');
+const process = require('process');
+const { parentPort } = require('worker_threads');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');

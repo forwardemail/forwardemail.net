@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const path = require('node:path');
+const path = require('path');
 
 const Meta = require('koa-meta');
 const pug = require('pug');

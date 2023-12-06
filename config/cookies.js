@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const process = require('node:process');
+const process = require('process');
 
 module.exports = {
   // <https://github.com/pillarjs/cookies#cookiesset-name--value---options-->
