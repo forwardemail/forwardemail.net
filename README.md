@@ -322,9 +322,9 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 16. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours.  You can also use the `gh` CLI at <https://cli.github.com/manual/gh_repo_deploy-key_add> as shown below (switch the repo/org/repo paths and deployment key paths below to yours):
 
     ```sh
-    gh repo deploy-key add deployment-keys/api-vu-sj-ca.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/api-do-sf-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/api-do-am-nl.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/web-vu-sj-ca.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/web-do-sf-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/web-do-am-nl.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/bree-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/smtp-vu-sj-ca.pub -R forwardemail/forwardemail.net
