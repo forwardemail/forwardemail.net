@@ -79,7 +79,8 @@ function getBounceInfo(err) {
     // 421-4.7.28 from your SPF domain [fe-bounces.somedomain.com]
     if (
       response.includes('IP address') ||
-      response.includes('from your SPF domain')
+      response.includes('from your SPF domain') ||
+      response.includes('from your IP Netblock')
     ) {
       bounceInfo.category = 'blocklist';
     } else {
