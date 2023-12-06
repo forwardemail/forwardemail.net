@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const process = require('process');
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+const process = require('node:process');
+const fs = require('node:fs');
+const path = require('node:path');
+const { execSync } = require('node:child_process');
 
 const parse = require('parse-git-config');
 

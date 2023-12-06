@@ -114,6 +114,7 @@
     "into-stream": "6.0.0",
     "ioredfour": "1.2.0-ioredis-07",
     "ip": "1.1.8",
+    "ipaddr.js": "2.1.0",
     "is-ci": "3.0.1",
     "is-fqdn": "2.0.1",
     "is-string-and-not-blank": "0.0.2",

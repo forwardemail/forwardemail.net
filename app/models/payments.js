@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const path = require('path');
+const path = require('node:path');
 
 const Boom = require('@hapi/boom');
 const numeral = require('numeral');

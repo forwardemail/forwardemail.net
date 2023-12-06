@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const childProcess = require('child_process');
-const path = require('path');
-const util = require('util');
+const childProcess = require('node:child_process');
+const path = require('node:path');
+const util = require('node:util');
 
 const Meta = require('koa-meta');
 const RE2 = require('re2');

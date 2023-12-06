@@ -6,9 +6,9 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
-const process = require('process');
-const os = require('os');
-const { parentPort } = require('worker_threads');
+const process = require('node:process');
+const os = require('node:os');
+const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');

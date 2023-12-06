@@ -275,7 +275,7 @@ nav.navbar(class=navbarClasses.join(" "))
 
           //- Resources
           if !isBot(ctx.get('User-Agent'))
-            - const resourcePages = ["/encrypted-email", "/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist-removal"];
+            - const resourcePages = ["/encrypted-email", "/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
             - const companyPages = ["/about", "/privacy", "/terms", "/report-abuse"];
             - const isResourcesPage = (ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale)) && !hasPricingLink;
             li.nav-item.dropdown.no-js
@@ -306,6 +306,8 @@ nav.navbar(class=navbarClasses.join(" "))
                       )
                         if resourcePage === '/faq'
                           = t("Frequently Asked Questions")
+                        else if resourcePage === '/denylist'
+                          = t("Denylist Removal")
                         else
                           = t(titleize(humanize(resourcePage.replace("/", ""))))
                   hr.dropdown-divider

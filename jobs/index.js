@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const path = require('path');
-const process = require('process');
+const path = require('node:path');
+const process = require('node:process');
 
 const { boolean } = require('boolean');
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { promisify } = require('util');
+const { promisify } = require('node:util');
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');

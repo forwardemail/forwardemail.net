@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const path = require('path');
-const os = require('os');
+const path = require('node:path');
+const os = require('node:os');
 
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
@@ -97,6 +97,7 @@ const config = {
   // custom rate limiting lookup for allowing whitelisted customers
   rateLimit: {
     id(ctx) {
+      if (ctx.allowlistValue) return false;
       if (typeof ctx.isAuthenticated !== 'function' || !ctx.isAuthenticated())
         return ctx.ip;
       // return `false` if the user is whitelisted

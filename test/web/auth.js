@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const util = require('util');
+const util = require('node:util');
 
 const cryptoRandomString = require('crypto-random-string');
 const test = require('ava');

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const process = require('process');
-const { parentPort } = require('worker_threads');
+const process = require('node:process');
+const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');

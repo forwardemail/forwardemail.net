@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const crypto = require('crypto');
-const { Buffer } = require('buffer');
+const crypto = require('node:crypto');
+const { Buffer } = require('node:buffer');
 
 const env = require('#config/env');
 

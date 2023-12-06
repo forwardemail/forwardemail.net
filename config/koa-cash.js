@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Buffer } = require('buffer');
+const { Buffer } = require('node:buffer');
 
 const ms = require('ms');
 const pTimeout = require('p-timeout');
