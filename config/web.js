@@ -34,6 +34,13 @@ const octokit = new Octokit({
 
 let ACTIVE_GITHUB_ISSUES = {};
 
+const RATELIMIT_ALLOWLIST =
+  typeof env.RATELIMIT_ALLOWLIST === 'string'
+    ? env.RATELIMIT_ALLOWLIST.split(',')
+    : Array.isArray(env.RATELIMIT_ALLOWLIST)
+    ? env.RATELIMIT_ALLOWLIST
+    : [];
+
 async function checkGitHubIssues() {
   try {
     ACTIVE_GITHUB_ISSUES = await octokit.request(
@@ -229,11 +236,11 @@ module.exports = (redis) => ({
           );
           clearTimeout(timeout);
           if (isFQDN(clientHostname)) {
-            if (env.RATELIMIT_ALLOWLIST.includes(clientHostname))
+            if (RATELIMIT_ALLOWLIST.includes(clientHostname))
               ctx.allowlistValue = clientHostname;
             else {
               const rootClientHostname = parseRootDomain(clientHostname);
-              if (env.RATELIMIT_ALLOWLIST.includes(rootClientHostname))
+              if (RATELIMIT_ALLOWLIST.includes(rootClientHostname))
                 ctx.allowlistValue = rootClientHostname;
             }
           }

@@ -106,7 +106,12 @@ const config = {
       // in case user is abusing multiple IP addresses
       return ctx.state.user.id;
     },
-    allowlist: env.RATELIMIT_ALLOWLIST
+    allowlist:
+      typeof env.RATELIMIT_ALLOWLIST === 'string'
+        ? env.RATELIMIT_ALLOWLIST.split(',')
+        : Array.isArray(env.RATELIMIT_ALLOWLIST)
+        ? env.RATELIMIT_ALLOWLIST
+        : []
   },
 
   maxQuotaPerAlias: bytes('10GB'),

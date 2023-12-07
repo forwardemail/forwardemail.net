@@ -20,6 +20,13 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 
 const sharedAPIConfig = sharedConfig('API');
 
+const RATELIMIT_ALLOWLIST =
+  typeof env.RATELIMIT_ALLOWLIST === 'string'
+    ? env.RATELIMIT_ALLOWLIST.split(',')
+    : Array.isArray(env.RATELIMIT_ALLOWLIST)
+    ? env.RATELIMIT_ALLOWLIST
+    : [];
+
 module.exports = {
   ...sharedAPIConfig,
   ...config,
@@ -56,11 +63,11 @@ module.exports = {
           );
           clearTimeout(timeout);
           if (isFQDN(clientHostname)) {
-            if (env.RATELIMIT_ALLOWLIST.includes(clientHostname))
+            if (RATELIMIT_ALLOWLIST.includes(clientHostname))
               ctx.allowlistValue = clientHostname;
             else {
               const rootClientHostname = parseRootDomain(clientHostname);
-              if (env.RATELIMIT_ALLOWLIST.includes(rootClientHostname))
+              if (RATELIMIT_ALLOWLIST.includes(rootClientHostname))
                 ctx.allowlistValue = rootClientHostname;
             }
           }
