@@ -28,6 +28,7 @@
   * [Load Balancing](#load-balancing)
   * [Provisioning](#provisioning)
   * [Deployment](#deployment)
+* [Deployment Advice](#deployment-advice)
 * [License](#license)
 
 
@@ -473,6 +474,17 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 27. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
 28. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
+
+
+## Deployment Advice
+
+If you do not change any assets, then there is no reason to do a full deployment.
+
+For example, if you made changes to a web controller, then you only need to deploy it to the web codebase without a build:
+
+```sh
+pm2 deploy ecosystem-web.json production exec "git reset --hard HEAD && git pull origin master && pm2 reload all"
+```
 
 
 ## License
