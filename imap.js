@@ -40,7 +40,13 @@ const graceful = new Graceful({
   logger,
   customHandlers: [
     // <https://github.com/vitalets/websocket-as-promised#wspclosecode-reason--promiseevent>
-    () => wsp.close()
+    () => {
+      try {
+        wsp.close();
+      } catch (err) {
+        logger.fatal(err);
+      }
+    }
   ]
 });
 graceful.listen();

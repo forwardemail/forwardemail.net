@@ -367,10 +367,11 @@ async function regenerateAliasPassword(ctx) {
     await alias.save();
 
     // close websocket
-    wsp
-      .close()
-      .then()
-      .catch((err) => ctx.logger.error(err));
+    try {
+      wsp.close();
+    } catch (err) {
+      ctx.logger.fatal(err);
+    }
 
     // email admins that user claimed password
     email({

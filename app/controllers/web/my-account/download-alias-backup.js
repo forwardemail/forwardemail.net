@@ -159,18 +159,20 @@ async function downloadAliasBackup(ctx) {
             .catch((err) => ctx.logger.fatal(err));
 
           // close websocket
-          wsp
-            .close()
-            .then()
-            .catch((err) => ctx.logger.fatal(err));
+          try {
+            wsp.close();
+          } catch (err) {
+            ctx.logger.fatal(err);
+          }
         })
         .catch((err) => {
           ctx.logger.fatal(err);
           // close websocket
-          wsp
-            .close()
-            .then()
-            .catch((err) => ctx.logger.fatal(err));
+          try {
+            wsp.close();
+          } catch (err) {
+            ctx.logger.fatal(err);
+          }
         });
 
       // otherwise flash message that email will be sent once download ready

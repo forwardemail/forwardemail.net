@@ -23,10 +23,16 @@ async function generateAliasPassword(ctx) {
   const redirectTo = ctx.state.l(
     `/my-account/domains/${ctx.state.domain.name}/aliases`
   );
+
+  let originalTokens;
+  let newToken = false;
+
   try {
     const alias = await Aliases.findById(ctx.state.alias._id)
       .select('+tokens.hash +tokens.salt')
       .exec();
+
+    originalTokens = alias.tokens;
 
     if (alias.name === '*')
       throw Boom.badRequest(
@@ -131,11 +137,13 @@ async function generateAliasPassword(ctx) {
       ctx.request.body.new_password || undefined,
       _.uniq(_.compact(userInputs))
     );
+    newToken = true;
     alias.emailed_instructions = emailedInstructions || undefined;
 
     if (isSANB(ctx.request.body.password)) {
       // change password on existing sqlite file using supplied password and new password
       const wsp = createWebSocketAsPromised();
+
       await wsp.request({
         action: 'rekey',
         new_password: encrypt(pass),
@@ -157,13 +165,22 @@ async function generateAliasPassword(ctx) {
       await alias.save();
 
       // close websocket
-      wsp
-        .close()
-        .then()
-        .catch((err) => ctx.logger.error(err));
+      try {
+        wsp.close();
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
     } else if (ctx.request.body.is_override === 'true') {
       // reset existing mailbox and create new mailbox
       const wsp = createWebSocketAsPromised();
+
+      // close websocket
+      try {
+        wsp.close();
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
+
       await wsp.request({
         action: 'reset',
         session: {
@@ -184,10 +201,11 @@ async function generateAliasPassword(ctx) {
       await alias.save();
 
       // close websocket
-      wsp
-        .close()
-        .then()
-        .catch((err) => ctx.logger.error(err));
+      try {
+        wsp.close();
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
     } else {
       // save alias
       await alias.save();
@@ -210,10 +228,11 @@ async function generateAliasPassword(ctx) {
       });
 
       // close websocket
-      wsp
-        .close()
-        .then()
-        .catch((err) => ctx.logger.error(err));
+      try {
+        wsp.close();
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
     }
 
     const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
@@ -324,6 +343,24 @@ async function generateAliasPassword(ctx) {
       ctx.body = { redirectTo };
     }
   } catch (err) {
+    //
+    // if an error occurs then remove any tokens created (if any)
+    // and restore the original tokens that were there (if any)
+    // (this edge case happens if `wsp.request` cannot connect or set new key)
+    //
+    if (newToken && Array.isArray(originalTokens)) {
+      // restore original tokens
+      try {
+        await Aliases.findByIdAndUpdate(ctx.state.alias._id, {
+          $set: {
+            tokens: originalTokens
+          }
+        });
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
+    }
+
     if (err && err.isBoom) throw err;
     if (isErrorConstructorName(err, 'ValidationError')) throw err;
     ctx.logger.fatal(err);

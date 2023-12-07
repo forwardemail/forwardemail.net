@@ -122,7 +122,7 @@ function createWebSocketAsPromised(options = {}) {
   // }
 
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
-  wsp.request = async function (data, retries = 3) {
+  wsp.request = async function (data, retries = 2) {
     try {
       // TODO: we could probably remove this validation
       if (typeof data?.action !== 'string')
@@ -141,7 +141,7 @@ function createWebSocketAsPromised(options = {}) {
       // (for initial connection)
       if (!wsp.isOpened)
         await pRetry(() => wsp.open(), {
-          retries: 10, // in case the default in node-retry changes
+          retries: 9, // in case the default in node-retry changes
           onFailedAttempt(err) {
             // <https://github.com/vitalets/websocket-as-promised/issues/47>
             logger.error(err);

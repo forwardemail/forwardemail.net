@@ -12,7 +12,7 @@ const isRetryableError = require('./is-retryable-error');
 async function retryRequest(url, opts = {}, count = 1) {
   try {
     opts.timeout = opts.timeout || ms('30s');
-    opts.retries = opts.retries || 3;
+    opts.retries = opts.retries || 2;
 
     // exponential retry backoff (2, 4, 8)
     opts.calculateDelay = (count) => Math.round(1000 * 2 ** count);

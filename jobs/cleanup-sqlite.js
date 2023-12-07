@@ -355,7 +355,11 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
     });
   }
 
-  wsp.close();
+  try {
+    wsp.close();
+  } catch (err) {
+    logger.fatal(err);
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
