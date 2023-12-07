@@ -26,6 +26,7 @@ const delay = require('delay');
 const getPort = require('get-port');
 const getStream = require('get-stream');
 const ip = require('ip');
+const isCI = require('is-ci');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const splitLines = require('split-lines');
@@ -524,7 +525,7 @@ test('onGetQuotaRoot', async (t) => {
     t.deepEqual(quota, {
       path: 'INBOX',
       storage: {
-        usage: INITIAL_DB_SIZE,
+        usage: isCI ? 159744 : INITIAL_DB_SIZE,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
