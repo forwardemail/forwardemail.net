@@ -609,8 +609,8 @@ Aliases.pre('save', async function (next) {
 //       then the storage quota for the aliases on the domain that the user belongs to under the team plan
 //       won't affect their storage quota for their own domains on their own enhanced plan
 //
-async function getStorageUsed(alias) {
-  return Domains.getStorageUsed(alias.domain, alias.locale);
+async function getStorageUsed(alias, locale = i18n.config.defaultLocale) {
+  return Domains.getStorageUsed(alias.domain, alias.locale || locale);
 }
 
 Aliases.statics.getStorageUsed = getStorageUsed;

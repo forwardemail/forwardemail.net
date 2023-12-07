@@ -613,6 +613,25 @@ async function getDatabase(
       logger.fatal(err, { alias, session });
     }
 
+    // if alias db size was 0 then we should update it
+    /*
+    try {
+      const storageUsed = await Aliases.getStorageUsed({
+        domain: new mongoose.Types.ObjectId(session.user.domain_id)
+      });
+      if (storageUsed === 0) {
+        const size = await instance.wsp.request({
+          action: 'size',
+          timeout: ms('5s'),
+          alias_id: alias.id
+        });
+        logger.debug('updating size', { size, alias, session });
+      }
+    } catch (err) {
+      logger.fatal(err, { alias, session });
+    }
+    */
+
     return db;
   } catch (err) {
     // in case developers are connected to it in SQLiteStudio (this will cause a read/write error)

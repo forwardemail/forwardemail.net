@@ -1740,9 +1740,10 @@ async function ensureUserHasValidPlan(user, locale) {
 
 Domains.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
 
-// eslint-disable-next-line complexity
-async function getStorageUsed(_id, locale, aliasesOnly = false) {
+async function getStorageUsed(_id, _locale, aliasesOnly = false) {
   let storageUsed = 0;
+
+  const locale = _locale || domain.locale || i18n.config.defaultLocale;
 
   //
   // calculate storage used across entire domain and its admin users domains
@@ -1756,10 +1757,7 @@ async function getStorageUsed(_id, locale, aliasesOnly = false) {
 
   if (!domain)
     throw Boom.notFound(
-      i18n.translateError(
-        'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
-        locale || domain.locale
-      )
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
 
   // safeguard to not check storage used for global domains
@@ -1771,12 +1769,10 @@ async function getStorageUsed(_id, locale, aliasesOnly = false) {
     throw Boom.badRequest(
       i18n.translateError(
         'DOMAIN_PLAN_UPGRADE_REQUIRED',
-        locale || domain.locale,
+        locale,
         domain.name,
-        i18n.translate('ENHANCED_PROTECTION', locale || domain.locale),
-        `${config.urls.web}/${locale || domain.locale}/my-account/domains/${
-          domain.name
-        }/billing?plan=enhanced_protection`
+        i18n.translate('ENHANCED_PROTECTION', locale),
+        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
       )
     );
 
@@ -1797,10 +1793,7 @@ async function getStorageUsed(_id, locale, aliasesOnly = false) {
 
   if (adminMembers.length === 0)
     throw Boom.notFound(
-      i18n.translateError(
-        'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
-        locale || domain.locale
-      )
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
 
   // if we're on non-team plan, then there should only be one admin (safeguard)
@@ -1824,10 +1817,7 @@ async function getStorageUsed(_id, locale, aliasesOnly = false) {
   // safeguard
   if (domainIds.length === 0)
     throw Boom.notFound(
-      i18n.translateError(
-        'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
-        locale || domain.locale
-      )
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
 
   if (domainIds.length > 0) {
@@ -1857,10 +1847,7 @@ async function getStorageUsed(_id, locale, aliasesOnly = false) {
       typeof results[0].storage_used !== 'number'
     )
       throw Boom.notFound(
-        i18n.translateError(
-          'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
-          locale || domain.locale
-        )
+        i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
       );
 
     storageUsed += results[0].storage_used;

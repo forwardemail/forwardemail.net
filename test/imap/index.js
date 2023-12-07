@@ -22,6 +22,7 @@ const { createHash, randomUUID } = require('node:crypto');
 const Axe = require('axe');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
+const delay = require('delay');
 const getPort = require('get-port');
 const getStream = require('get-stream');
 const ip = require('ip');
@@ -52,7 +53,7 @@ const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
 
-const INITIAL_DB_SIZE = 151552;
+const INITIAL_DB_SIZE = 151552; // 159744;
 
 subscriber.setMaxListeners(0);
 
@@ -510,6 +511,15 @@ test('onGetQuotaRoot', async (t) => {
   await imapFlow.connect();
 
   {
+    await delay(ms('1s'));
+    await t.context.wsp.request({
+      action: 'size',
+      timeout: ms('5s'),
+      alias_id: alias.id
+    });
+
+    const storageUsed = await Aliases.getStorageUsed(alias);
+    t.is(storageUsed, INITIAL_DB_SIZE);
     const quota = await t.context.imapFlow.getQuota();
     t.deepEqual(quota, {
       path: 'INBOX',
@@ -527,11 +537,19 @@ test('onGetQuotaRoot', async (t) => {
   t.log('mailboxes', mailboxes);
 
   {
+    await delay(ms('1s'));
+    await t.context.wsp.request({
+      action: 'size',
+      timeout: ms('5s'),
+      alias_id: alias.id
+    });
+    const storageUsed = await Aliases.getStorageUsed(alias);
+    t.is(storageUsed, 159744);
     const quota = await imapFlow.getQuota('boopboop');
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
-        usage: INITIAL_DB_SIZE,
+        usage: 159744,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -593,6 +611,12 @@ ZXhhbXBsZQo=
   t.is(mailbox.path, append.destination);
 
   {
+    await delay(ms('1s'));
+    await t.context.wsp.request({
+      action: 'size',
+      timeout: ms('5s'),
+      alias_id: alias.id
+    });
     // const message = await Messages.findOne(t.context.imap, session, {
     //   mailbox: mailbox._id,
     //   uid: append.uid
@@ -613,11 +637,17 @@ ZXhhbXBsZQo=
 });
 
 test('onGetQuota', async (t) => {
+  await delay(ms('1s'));
+  await t.context.wsp.request({
+    action: 'size',
+    timeout: ms('5s'),
+    alias_id: t.context.alias.id
+  });
   const quota = await t.context.imapFlow.getQuota();
   t.deepEqual(quota, {
     path: 'INBOX',
     storage: {
-      usage: INITIAL_DB_SIZE,
+      usage: 159744, // INITIAL_DB_SIZE,
       limit: config.maxQuotaPerAlias,
       status: '0%'
     }
