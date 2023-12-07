@@ -1539,6 +1539,26 @@ async function getToAndMajorityLocaleByDomain(domain) {
 
 Domains.statics.getToAndMajorityLocaleByDomain = getToAndMajorityLocaleByDomain;
 
+function splitString(str) {
+  if (str.indexOf('/') === 0) {
+    // it can either be split by ",/" or ","
+    const index = str.includes(',/')
+      ? str.lastIndexOf('/:', str.indexOf(',/'))
+      : str.indexOf('/:');
+    const lastComma = str.indexOf(',', index);
+    if (lastComma === -1) return [str];
+    if (lastComma === str.length - 1) return [str.slice(0, lastComma)];
+    return [str.slice(0, lastComma), ...splitString(str.slice(lastComma + 1))];
+  }
+
+  return str.includes(',')
+    ? [
+        str.slice(0, str.indexOf(',')),
+        ...splitString(str.slice(str.indexOf(',') + 1))
+      ]
+    : [str];
+}
+
 // eslint-disable-next-line complexity
 async function getTxtAddresses(
   domainName,
@@ -1572,9 +1592,15 @@ async function getTxtAddresses(
   // join multi-line TXT records together and replace double w/single commas
   const record = validRecords.join(',').replace(/,+/g, ',').trim();
 
-  // remove trailing whitespaces from each address listed
   const addresses = isSANB(record)
-    ? record.split(',').map((a) => a.trim())
+    ? record
+        .split({
+          [Symbol.split](str) {
+            return splitString(str);
+          }
+        })
+        // remove trailing whitespaces from each address listed
+        .map((str) => str.trim())
     : [];
 
   if (!allowEmpty && addresses.length === 0)
@@ -1607,7 +1633,10 @@ async function getTxtAddresses(
       // 'foo'
       // > str.slice(str.indexOf(':') + 1)
       // 'https://foo.com'
-      const index = element.lastIndexOf(':'); // last index because of regex usage
+      const isRegex = element.indexOf('/') === 0;
+      const index = isRegex
+        ? element.lastIndexOf('/:') + 1
+        : element.lastIndexOf(':'); // last index because of regex usage
       const addr =
         index === -1
           ? [element]
