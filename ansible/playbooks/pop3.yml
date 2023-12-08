@@ -18,25 +18,6 @@
       hostname:
         name: "{{ lookup('env', 'POP3_HOST') }}"
 
-# 995 -> 2995
-- hosts: pop3
-  name: POP3
-  become: true
-  become_user: root
-  tasks:
-    - name: "create socat-995-to-2995"
-      template:
-        src: "{{ playbook_dir }}/templates/socat-995-to-2995.j2"
-        dest: /etc/systemd/system/socat-995-to-2995.service
-        owner: root
-        mode: "0644"
-    - name: "enable socat-995-to-2995"
-      service:
-        daemon_reload: yes
-        name: socat-995-to-2995
-        enabled: true
-        state: started
-
 - hosts: pop3
   name: POP3
   become: true

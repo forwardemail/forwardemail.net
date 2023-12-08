@@ -17,25 +17,6 @@
       hostname:
         name: "{{ lookup('env', 'IMAP_HOST') }}"
 
-# 993 -> 2993
-- hosts: imap
-  name: IMAP
-  become: true
-  become_user: root
-  tasks:
-    - name: "create socat-993-to-2993"
-      template:
-        src: "{{ playbook_dir }}/templates/socat-993-to-2993.j2"
-        dest: /etc/systemd/system/socat-993-to-2993.service
-        owner: root
-        mode: "0644"
-    - name: "enable socat-993-to-2993"
-      service:
-        daemon_reload: yes
-        name: socat-993-to-2993
-        enabled: true
-        state: started
-
 - hosts: imap
   name: IMAP
   become: true
