@@ -69,7 +69,7 @@
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
-        "SMTP_PORT": 465
+        "SMTP_PORT": 2465
       }
     },
     {

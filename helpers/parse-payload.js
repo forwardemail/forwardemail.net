@@ -1928,7 +1928,6 @@ async function parsePayload(data, ws) {
     if (err?.payload?.session?.user?.password)
       delete err.payload.session.user.password;
 
-    err.data = data.toString();
     // at least early on we should get errors in advance
     err.isCodeBug = true;
     logger.fatal(err, { payload });
