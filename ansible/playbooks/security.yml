@@ -326,9 +326,10 @@
       #
       # <https://ar.al/2022/08/30/dear-linux-privileged-ports-must-die/>
       # <https://stackoverflow.com/a/51439516>
+      # <https://github.com/moby/moby/pull/41030/files#diff-9f91bff23e0bd70d6429b63d9db2d8180d2e89cdb64db4fb3e10a96f74d36271R792>
       #
       - name: net.ipv4.ip_unprivileged_port_start
-        value: 80
+        value: 25
 
       #
       # handle ufw forwarding
