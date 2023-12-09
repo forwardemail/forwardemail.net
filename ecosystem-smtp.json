@@ -5,7 +5,7 @@
       "script": "smtp.js",
       "exec_mode": "cluster",
       "wait_ready": true,
-      "instances": "max",
+      "instances": "2",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
@@ -53,7 +53,7 @@
       "script": "smtp.js",
       "exec_mode": "cluster",
       "wait_ready": true,
-      "instances": "max",
+      "instances": "2",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
