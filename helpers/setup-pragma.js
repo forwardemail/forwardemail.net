@@ -31,6 +31,8 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   db.pragma(`cipher='${cipher}'`);
   if (typeof db.key === 'function')
     db.key(Buffer.from(decrypt(session.user.password)));
+  // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/78>
+  // <https://www.zetetic.net/sqlcipher/sqlcipher-api/#example-2-raw-key-data-without-key-derivation>
   else db.pragma(`key="${decrypt(session.user.password)}"`);
   try {
     db.pragma('journal_mode=WAL');

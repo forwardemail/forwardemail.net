@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "Kvantově bezpečné šifrované poštovní schránky SQLite",
   "Enter a strong new password:": "Zadejte nové silné heslo:",
   "New Password": "nové heslo",
-  "Leave blank to use our strong and random 24-character password generator.": "Chcete-li použít náš generátor silných a náhodných 24znakových hesel, ponechte prázdné."
+  "Leave blank to use our strong and random 24-character password generator.": "Chcete-li použít náš generátor silných a náhodných 24znakových hesel, ponechte prázdné.",
+  "Quotes and apostrophes cannot be used as password characters.": "Uvozovky a apostrofy nelze použít jako znaky hesla."
 }

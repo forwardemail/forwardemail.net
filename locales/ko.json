@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe 암호화된 SQLite 메일박스",
   "Enter a strong new password:": "강력한 새 비밀번호를 입력하세요.",
   "New Password": "새 비밀번호",
-  "Leave blank to use our strong and random 24-character password generator.": "강력하고 임의의 24자 비밀번호 생성기를 사용하려면 공백으로 남겨두세요."
+  "Leave blank to use our strong and random 24-character password generator.": "강력하고 임의의 24자 비밀번호 생성기를 사용하려면 공백으로 남겨두세요.",
+  "Quotes and apostrophes cannot be used as password characters.": "따옴표와 아포스트로피는 암호 문자로 사용할 수 없습니다."
 }

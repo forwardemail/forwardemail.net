@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe titkosított SQLite postafiókok",
   "Enter a strong new password:": "Adjon meg egy erős új jelszót:",
   "New Password": "új jelszó",
-  "Leave blank to use our strong and random 24-character password generator.": "Hagyja üresen az erős és véletlenszerű, 24 karakteres jelszógenerátorunk használatához."
+  "Leave blank to use our strong and random 24-character password generator.": "Hagyja üresen az erős és véletlenszerű, 24 karakteres jelszógenerátorunk használatához.",
+  "Quotes and apostrophes cannot be used as password characters.": "Idézőjel és aposztróf nem használható jelszó karakterként."
 }

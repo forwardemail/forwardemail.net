@@ -3807,5 +3807,13 @@
   "You can optionally include the string \"FROM_EMAIL\" and/or \"TO_EMAIL\" to insert the forwarding \"From\" address and the forwarding \"To\" address to give the user context.": "אתה יכול לכלול את המחרוזת \"FROM_EMAIL\" ו/או \"TO_EMAIL\" כדי להוסיף את כתובת \"מאת\" להעברה ואת כתובת \"אל\" להעברה כדי לתת הקשר למשתמש.",
   "HTML Preview": "תצוגה מקדימה של HTML",
   "Delete Domain": "מחק דומיין",
-  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "מחיקת הדומיין שלך היא בלתי הפיכה. נא לנקוט משנה זהירות בעת מחיקת הדומיין שלך."
+  "Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.": "מחיקת הדומיין שלך היא בלתי הפיכה. נא לנקוט משנה זהירות בעת מחיקת הדומיין שלך.",
+  "Switch domain plan": "החלף תוכנית דומיין",
+  "One or more of your domains are not on the <span class=\"notranslate\">%s</span> plan.": "אחד או יותר מהדומיינים שלך אינם בתוכנית <span class=\"notranslate\">%s</span> .",
+  "Click \"Change Plan\" &rarr; \"<span class=\"notranslate\">%s</span>\" to resolve if needed.": "לחץ על &quot;שנה תוכנית&quot; → &quot; <span class=\"notranslate\">%s</span> &quot; כדי לפתור במידת הצורך.",
+  "Switch domain plan?": "להחליף תוכנית דומיין?",
+  "To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.": "כדי לבטל את הנעילה של מנהל הכינוי עבור הדומיין הזה, עליך לשנות את התוכנית שלו. אל תדאג &ndash; אין עלות נוספת.",
+  "To unlock outbound SMTP email for this domain, you need to switch its plan.": "כדי לבטל את הנעילה של דוא\"ל SMTP יוצא עבור הדומיין הזה, עליך לשנות את התוכנית שלו.",
+  "To unlock logs for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.": "כדי לפתוח יומנים עבור הדומיין הזה, עליך לשנות את התוכנית שלו. אל תדאג &ndash; אין עלות נוספת.",
+  "Quotes and apostrophes cannot be used as password characters.": "לא ניתן להשתמש במרכאות ובאגרות כתווי סיסמה."
 }

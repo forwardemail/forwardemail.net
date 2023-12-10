@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "صناديق بريد SQLite المشفرة الآمنة",
   "Enter a strong new password:": "أدخل كلمة مرور جديدة قوية:",
   "New Password": "كلمة المرور الجديدة",
-  "Leave blank to use our strong and random 24-character password generator.": "اتركه فارغًا لاستخدام مولد كلمات المرور القوي والعشوائي المكون من 24 حرفًا."
+  "Leave blank to use our strong and random 24-character password generator.": "اتركه فارغًا لاستخدام مولد كلمات المرور القوي والعشوائي المكون من 24 حرفًا.",
+  "Quotes and apostrophes cannot be used as password characters.": "لا يمكن استخدام علامات الاقتباس والفواصل العليا كأحرف كلمة المرور."
 }

@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "กล่องจดหมาย SQLite ที่เข้ารหัส Quantum Safe",
   "Enter a strong new password:": "ป้อนรหัสผ่านใหม่ที่แข็งแกร่ง:",
   "New Password": "รหัสผ่านใหม่",
-  "Leave blank to use our strong and random 24-character password generator.": "เว้นว่างไว้เพื่อใช้เครื่องมือสร้างรหัสผ่านที่แข็งแกร่งและสุ่ม 24 ตัวอักษรของเรา"
+  "Leave blank to use our strong and random 24-character password generator.": "เว้นว่างไว้เพื่อใช้เครื่องมือสร้างรหัสผ่านที่แข็งแกร่งและสุ่ม 24 ตัวอักษรของเรา",
+  "Quotes and apostrophes cannot be used as password characters.": "เครื่องหมายคำพูดและเครื่องหมายอะพอสทรอฟีไม่สามารถใช้เป็นอักขระรหัสผ่านได้"
 }

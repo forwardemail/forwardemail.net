@@ -27,6 +27,17 @@ async function createPassword(existingPassword, userInputs = []) {
       throw err;
     }
 
+    //
+    // do not allow sqlite restricted characters (easier than having to escape everywhere)
+    // (e.g. `"` and `'`)
+    // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/78>
+    //
+    if (existingPassword.includes("'") || existingPassword.includes('"')) {
+      const err = Boom.badRequest(phrases.INVALID_PASSWORD_CHARACTERS);
+      err.no_translate = true;
+      throw err;
+    }
+
     const { score, feedback } = zxcvbn(existingPassword, userInputs);
 
     if (score < 3) {

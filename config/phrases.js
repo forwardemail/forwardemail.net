@@ -164,6 +164,8 @@ module.exports = {
     'You cannot have more than <span class="notranslate">%d</span> catch-all passwords generated at once',
   INVALID_PASSWORD_CONFIRM: 'Password confirmation did not match new password.',
   INVALID_PASSWORD_STRENGTH: 'Password strength was not strong enough.',
+  INVALID_PASSWORD_CHARACTERS:
+    'Quotes and apostrophes cannot be used as password characters.',
   INVALID_PORT: 'Invalid port number.',
   INVALID_PROVIDER: 'We do not support this authentication provider.',
   INVALID_RECOVERY_KEY: 'Invalid recovery key.',

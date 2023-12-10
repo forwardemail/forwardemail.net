@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "Quantum Safe gecodeerde SQLite-mailboxen",
   "Enter a strong new password:": "Voer een sterk nieuw wachtwoord in:",
   "New Password": "nieuw paswoord",
-  "Leave blank to use our strong and random 24-character password generator.": "Laat dit veld leeg om onze sterke en willekeurige wachtwoordgenerator van 24 tekens te gebruiken."
+  "Leave blank to use our strong and random 24-character password generator.": "Laat dit veld leeg om onze sterke en willekeurige wachtwoordgenerator van 24 tekens te gebruiken.",
+  "Quotes and apostrophes cannot be used as password characters.": "Aanhalingstekens en apostrofs kunnen niet als wachtwoordtekens worden gebruikt."
 }

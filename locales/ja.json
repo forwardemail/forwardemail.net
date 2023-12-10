@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "量子安全な暗号化された SQLite メールボックス",
   "Enter a strong new password:": "強力な新しいパスワードを入力してください:",
   "New Password": "新しいパスワード",
-  "Leave blank to use our strong and random 24-character password generator.": "強力でランダムな 24 文字のパスワード ジェネレーターを使用するには、空白のままにします。"
+  "Leave blank to use our strong and random 24-character password generator.": "強力でランダムな 24 文字のパスワード ジェネレーターを使用するには、空白のままにします。",
+  "Quotes and apostrophes cannot be used as password characters.": "引用符とアポストロフィはパスワード文字として使用できません。"
 }

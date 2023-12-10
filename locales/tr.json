@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "Kuantum Güvenli Şifreli SQLite Posta Kutuları",
   "Enter a strong new password:": "Güçlü ve yeni bir şifre girin:",
   "New Password": "Yeni Şifre",
-  "Leave blank to use our strong and random 24-character password generator.": "Güçlü ve rastgele 24 karakterli şifre oluşturucumuzu kullanmak için boş bırakın."
+  "Leave blank to use our strong and random 24-character password generator.": "Güçlü ve rastgele 24 karakterli şifre oluşturucumuzu kullanmak için boş bırakın.",
+  "Quotes and apostrophes cannot be used as password characters.": "Tırnak işaretleri ve kesme işaretleri şifre karakteri olarak kullanılamaz."
 }

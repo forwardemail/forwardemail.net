@@ -5969,5 +5969,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "量子安全加密 SQLite 邮箱",
   "Enter a strong new password:": "输入一个强新密码：",
   "New Password": "新密码",
-  "Leave blank to use our strong and random 24-character password generator.": "留空以使用我们强大的随机 24 字符密码生成器。"
+  "Leave blank to use our strong and random 24-character password generator.": "留空以使用我们强大的随机 24 字符密码生成器。",
+  "Quotes and apostrophes cannot be used as password characters.": "引号和撇号不能用作密码字符。"
 }

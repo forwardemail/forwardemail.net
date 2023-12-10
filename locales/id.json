@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "Kotak Surat SQLite Terenkripsi Quantum Safe",
   "Enter a strong new password:": "Masukkan kata sandi baru yang kuat:",
   "New Password": "kata sandi baru",
-  "Leave blank to use our strong and random 24-character password generator.": "Biarkan kosong untuk menggunakan pembuat kata sandi 24 karakter kami yang kuat dan acak."
+  "Leave blank to use our strong and random 24-character password generator.": "Biarkan kosong untuk menggunakan pembuat kata sandi 24 karakter kami yang kuat dan acak.",
+  "Quotes and apostrophes cannot be used as password characters.": "Kutipan dan apostrof tidak dapat digunakan sebagai karakter kata sandi."
 }

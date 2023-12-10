@@ -6123,5 +6123,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "Kvanttiturvalliset salatut SQLite-postilaatikot",
   "Enter a strong new password:": "Anna vahva uusi salasana:",
   "New Password": "uusi salasana",
-  "Leave blank to use our strong and random 24-character password generator.": "Jätä tyhjäksi, jos haluat käyttää vahvaa ja satunnaista 24-merkkistä salasanageneraattoriamme."
+  "Leave blank to use our strong and random 24-character password generator.": "Jätä tyhjäksi, jos haluat käyttää vahvaa ja satunnaista 24-merkkistä salasanageneraattoriamme.",
+  "Quotes and apostrophes cannot be used as password characters.": "Lainausmerkkejä ja heittomerkkejä ei voi käyttää salasanamerkkeinä."
 }

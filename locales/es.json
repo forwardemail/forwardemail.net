@@ -6275,5 +6275,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "Buzones de correo SQLite cifrados Quantum Safe",
   "Enter a strong new password:": "Ingrese una nueva contraseña segura:",
   "New Password": "Nueva contraseña",
-  "Leave blank to use our strong and random 24-character password generator.": "Déjelo en blanco para utilizar nuestro generador de contraseñas seguro y aleatorio de 24 caracteres."
+  "Leave blank to use our strong and random 24-character password generator.": "Déjelo en blanco para utilizar nuestro generador de contraseñas seguro y aleatorio de 24 caracteres.",
+  "Quotes and apostrophes cannot be used as password characters.": "No se pueden utilizar comillas ni apóstrofes como caracteres de contraseña."
 }

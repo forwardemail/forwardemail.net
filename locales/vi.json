@@ -6277,5 +6277,6 @@
   "Quantum Safe Encrypted SQLite Mailboxes": "Hộp thư SQLite được mã hóa an toàn lượng tử",
   "Enter a strong new password:": "Nhập mật khẩu mới mạnh:",
   "New Password": "mật khẩu mới",
-  "Leave blank to use our strong and random 24-character password generator.": "Để trống để sử dụng trình tạo mật khẩu mạnh và ngẫu nhiên gồm 24 ký tự của chúng tôi."
+  "Leave blank to use our strong and random 24-character password generator.": "Để trống để sử dụng trình tạo mật khẩu mạnh và ngẫu nhiên gồm 24 ký tự của chúng tôi.",
+  "Quotes and apostrophes cannot be used as password characters.": "Không thể sử dụng dấu ngoặc kép và dấu nháy đơn làm ký tự mật khẩu."
 }
