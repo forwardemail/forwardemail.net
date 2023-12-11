@@ -38,13 +38,176 @@ class Indexer extends WildDuckIndexer {
     this.storeNodeBodies = storeNodeBodies.bind(this);
   }
 
+  // NOTE: `bodyQuery` is actually unused in the WildDuck source code
+  // eslint-disable-next-line max-params
+  bodyQuery(mimeTree, selector, instance, session, callback) {
+    if (!instance) throw new TypeError('Instance is missing');
+    if (!session) throw new TypeError('Session is missing');
+    if (typeof callback !== 'function')
+      throw new TypeError('Callback is missing');
+
+    const data = this.getContents(mimeTree, selector, {}, instance, session);
+
+    if (data && data.type === 'stream') {
+      let sent = false;
+      const buffers = [];
+      let buflen = 0;
+
+      data.value.on('readable', () => {
+        let buf;
+        while ((buf = data.value.read())) {
+          buffers.push(buf);
+          buflen += buf.length;
+        }
+      });
+
+      data.value.on('error', (err) => {
+        if (sent) {
+          return;
+        }
+
+        sent = true;
+        return callback(err);
+      });
+
+      data.value.on('end', () => {
+        if (sent) {
+          return;
+        }
+
+        sent = true;
+        return callback(null, Buffer.concat(buffers, buflen));
+      });
+    } else {
+      return setImmediate(() =>
+        callback(null, Buffer.from((data || '').toString(), 'binary'))
+      );
+    }
+  }
+
+  // eslint-disable-next-line max-params, complexity
+  getContents(mimeTree, selector, options = {}, instance, session) {
+    if (!instance) throw new TypeError('Instance is missing');
+    if (!session) throw new TypeError('Session is missing');
+
+    options = options || {};
+
+    let node = mimeTree;
+    if (typeof selector === 'string') {
+      selector = {
+        type: selector
+      };
+    }
+
+    selector = selector || {
+      type: ''
+    };
+
+    if (selector.path) {
+      node = this.resolveContentNode(mimeTree, selector.path);
+    }
+
+    if (!node) {
+      return '';
+    }
+
+    switch (selector.type) {
+      case '':
+      case 'content': {
+        if (!selector.path) {
+          // BODY[]
+          node.attachmentMap = mimeTree.attachmentMap;
+          return this.rebuild(node, false, options, instance, session);
+        }
+
+        // BODY[1.2.3]
+        node.attachmentMap = mimeTree.attachmentMap;
+        return this.rebuild(node, true, options, instance, session);
+      }
+
+      case 'header': {
+        if (!selector.path) {
+          // BODY[HEADER] mail header
+          return formatHeaders(node.header).join('\r\n') + '\r\n\r\n';
+        }
+
+        if (node.message) {
+          // BODY[1.2.3.HEADER] embedded message/rfc822 header
+          return (node.message.header || []).join('\r\n') + '\r\n\r\n';
+        }
+
+        return '';
+      }
+
+      case 'header.fields': {
+        // BODY[HEADER.FIELDS.NOT (Key1 Key2 KeyN)] only selected header keys
+        if (!selector.headers || selector.headers.length === 0) {
+          return '\r\n\r\n';
+        }
+
+        const headers =
+          formatHeaders(node.header)
+            .filter((line) => {
+              const key = line.split(':').shift().toLowerCase().trim();
+              return selector.headers.includes(key);
+            })
+            .join('\r\n') + '\r\n\r\n';
+        return headers;
+      }
+
+      case 'header.fields.not': {
+        // BODY[HEADER.FIELDS.NOT (Key1 Key2 KeyN)] all but selected header keys
+        if (!selector.headers || selector.headers.length === 0) {
+          return formatHeaders(node.header).join('\r\n') + '\r\n\r\n';
+        }
+
+        const headers =
+          formatHeaders(node.header)
+            .filter((line) => {
+              const key = line.split(':').shift().toLowerCase().trim();
+              return !selector.headers.includes(key);
+            })
+            .join('\r\n') + '\r\n\r\n';
+        return headers;
+      }
+
+      case 'mime': {
+        // BODY[1.2.3.MIME] mime node header
+        return formatHeaders(node.header).join('\r\n') + '\r\n\r\n';
+      }
+
+      case 'text': {
+        if (!selector.path) {
+          // BODY[TEXT] mail body without headers
+          node.attachmentMap = mimeTree.attachmentMap;
+          return this.rebuild(node, true, options, instance, session);
+        }
+
+        if (node.message) {
+          // BODY[1.2.3.TEXT] embedded message/rfc822 body without headers
+          node.attachmentMap = mimeTree.attachmentMap;
+          return this.rebuild(node.message, true, options, instance, session);
+        }
+
+        return '';
+      }
+
+      default: {
+        return '';
+      }
+    }
+  }
+
+  //
   // TODO: the issue is that rebuild is called with a `node`
   //       and not the original `mimeTree` with the symbols binded
-  //       so we need to modify `getContents` to pass them
-  //       as `instance` and `session` properties and then rebind after
-  //       and also modify `getQueryResponse` to pass them as well
+  //       (so we pass additional args `instance` and `session` unlike WildDuck)
   //
-  rebuild(mimeTree, textOnly, options) {
+  // eslint-disable-next-line max-params
+  rebuild(mimeTree, textOnly = false, options = {}, instance, session) {
+    if (!instance) throw new TypeError('Instance is missing');
+    if (!session) throw new TypeError('Session is missing');
+
     options = options || {};
 
     const output = new PassThrough();
@@ -200,13 +363,15 @@ class Indexer extends WildDuckIndexer {
           try {
             //
             // NOTE: WildDuck source code simply passes attachmentId
-            // since it uses MongoDB for lookups, but we use SQLite)
-            // so we have to pass something else - and instead of rewriting _everything_
-            // we simply just pass it an object with a symbol bound to `mimeTree`
-            // `mimeTree[Symbol.for('instance')]`
-            // `mimeTree[Symbol.for('session')]`
+            // since it uses MongoDB for lookups, but we use SQLite
+            // so we have to pass the instance and session as well
             //
-            attachmentData = await this.getAttachment(mimeTree, attachmentId);
+            attachmentData = await this.getAttachment(
+              mimeTree,
+              attachmentId,
+              instance,
+              session
+            );
           } catch (err) {
             if (err.code === 'FileNotFound') {
               this.loggelf({

@@ -21,20 +21,17 @@ const libmime = require('libmime');
 const Indexer = require('./indexer');
 
 // eslint-disable-next-line complexity, max-params
-function getQueryResponse(query, message, options, instance, session) {
+function getQueryResponse(query, message, options = {}, instance, session) {
   options = options || {};
+
+  if (!instance) throw new TypeError('Instance is missing');
+  if (!session) throw new TypeError('Session is missing');
 
   // for optimization purposes try to use cached mimeTree etc. if available
   // If these values are missing then generate these when first time required
   // So if the query is for (UID FLAGS) then mimeTree is never generated
   let { mimeTree } = message;
   const indexer = new Indexer(options);
-
-  // NOTE: we bind a few symbols so we don't have to rewrite everything
-  if (mimeTree) {
-    mimeTree[Symbol.for('instance')] = instance;
-    mimeTree[Symbol.for('session')] = session;
-  }
 
   // generate response object
   const values = [];
@@ -71,8 +68,6 @@ function getQueryResponse(query, message, options, instance, session) {
         } else {
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
-            mimeTree[Symbol.for('instance')] = instance;
-            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getBodyStructure(mimeTree);
@@ -121,8 +116,6 @@ function getQueryResponse(query, message, options, instance, session) {
         } else {
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
-            mimeTree[Symbol.for('instance')] = instance;
-            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getEnvelope(mimeTree);
@@ -195,11 +188,9 @@ function getQueryResponse(query, message, options, instance, session) {
       case 'rfc822': {
         if (!mimeTree) {
           mimeTree = indexer.parseMimeTree(message.raw);
-          mimeTree[Symbol.for('instance')] = instance;
-          mimeTree[Symbol.for('session')] = session;
         }
 
-        value = indexer.getContents(mimeTree);
+        value = indexer.getContents(mimeTree, false, {}, instance, session);
         break;
       }
 
@@ -209,8 +200,6 @@ function getQueryResponse(query, message, options, instance, session) {
         } else {
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
-            mimeTree[Symbol.for('instance')] = instance;
-            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getSize(mimeTree);
@@ -223,8 +212,6 @@ function getQueryResponse(query, message, options, instance, session) {
         // Equivalent to BODY[HEADER]
         if (!mimeTree) {
           mimeTree = indexer.parseMimeTree(message.raw);
-          mimeTree[Symbol.for('session')] = session;
-          mimeTree[Symbol.for('instance')] = instance;
         }
 
         value = [mimeTree.header || []].flat().join('\r\n') + '\r\n\r\n';
@@ -235,14 +222,18 @@ function getQueryResponse(query, message, options, instance, session) {
         // Equivalent to BODY[TEXT]
         if (!mimeTree) {
           mimeTree = indexer.parseMimeTree(message.raw);
-          mimeTree[Symbol.for('instance')] = instance;
-          mimeTree[Symbol.for('session')] = session;
         }
 
-        value = indexer.getContents(mimeTree, {
-          path: '',
-          type: 'text'
-        });
+        value = indexer.getContents(
+          mimeTree,
+          {
+            path: '',
+            type: 'text'
+          },
+          {},
+          instance,
+          session
+        );
         break;
       }
 
@@ -252,8 +243,6 @@ function getQueryResponse(query, message, options, instance, session) {
           // BODY
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
-            mimeTree[Symbol.for('instance')] = instance;
-            mimeTree[Symbol.for('session')] = session;
           }
 
           value = indexer.getBody(mimeTree);
@@ -261,26 +250,34 @@ function getQueryResponse(query, message, options, instance, session) {
           // BODY[]
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
-            mimeTree[Symbol.for('instance')] = instance;
-            mimeTree[Symbol.for('session')] = session;
           }
 
-          value = indexer.getContents(mimeTree, false, {
-            startFrom: item.partial && item.partial.startFrom,
-            maxLength: item.partial && item.partial.maxLength
-          });
+          value = indexer.getContents(
+            mimeTree,
+            false,
+            {
+              startFrom: item.partial && item.partial.startFrom,
+              maxLength: item.partial && item.partial.maxLength
+            },
+            instance,
+            session
+          );
         } else {
           // BODY[SELECTOR]
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
-            mimeTree[Symbol.for('instance')] = instance;
-            mimeTree[Symbol.for('session')] = session;
           }
 
-          value = indexer.getContents(mimeTree, item, {
-            startFrom: item.partial && item.partial.startFrom,
-            maxLength: item.partial && item.partial.maxLength
-          });
+          value = indexer.getContents(
+            mimeTree,
+            item,
+            {
+              startFrom: item.partial && item.partial.startFrom,
+              maxLength: item.partial && item.partial.maxLength
+            },
+            instance,
+            session
+          );
         }
 
         if (item.partial) {

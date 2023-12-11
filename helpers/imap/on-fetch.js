@@ -172,12 +172,6 @@ async function getMessages(instance, session, server, opts = {}) {
     // eslint-disable-next-line no-await-in-loop
     const message = await convertResult(Messages, result, projection);
 
-    // NOTE: we bind a few symbols so we don't have to rewrite everything
-    if (message.mimeTree) {
-      message.mimeTree[Symbol.for('instance')] = instance;
-      message.mimeTree[Symbol.for('session')] = session;
-    }
-
     server.logger.debug('fetched message', {
       result,
       message,
@@ -247,14 +241,6 @@ async function getMessages(instance, session, server, opts = {}) {
           return getStream(obj.value);
         })
       );
-
-      //
-      // security safeguard
-      //
-      if (message.mimeTree) {
-        delete message.mimeTree[Symbol.for('instance')];
-        delete message.mimeTree[Symbol.for('session')];
-      }
 
       const data = formatResponse.call(session, 'FETCH', message.uid, {
         query: options.query,
@@ -328,14 +314,6 @@ async function getMessages(instance, session, server, opts = {}) {
         return getStream(obj.value);
       })
     );
-
-    //
-    // security safeguard
-    //
-    if (message.mimeTree) {
-      delete message.mimeTree[Symbol.for('instance')];
-      delete message.mimeTree[Symbol.for('session')];
-    }
 
     const data = formatResponse.call(session, 'FETCH', message.uid, {
       query: options.query,

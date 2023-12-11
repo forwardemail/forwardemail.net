@@ -39,10 +39,7 @@ class AttachmentStorage {
     );
   }
 
-  async get(mimeTree, hash) {
-    const instance = mimeTree[Symbol.for('instance')];
-    const session = mimeTree[Symbol.for('session')];
-
+  async get(mimeTree, hash, instance, session) {
     if (!instance) throw new TypeError('Instance is not defined');
     if (!session) throw new TypeError('Session is not defined');
 

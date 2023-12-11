@@ -61,10 +61,13 @@ async function onFetchMessage(message, session, fn) {
     // mirrored to WildDuck error
     if (!msg) throw new Error('Message does not exist or is already deleted');
 
-    msg.mimeTree[Symbol.for('instance')] = this;
-    msg.mimeTree[Symbol.for('session')] = session;
-
-    const obj = await this.indexer.rebuild(msg.mimeTree);
+    const obj = await this.indexer.rebuild(
+      msg.mimeTree,
+      false,
+      {},
+      this,
+      session
+    );
 
     if (
       typeof obj !== 'object' ||
