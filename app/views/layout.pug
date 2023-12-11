@@ -137,7 +137,7 @@ html.h-100.no-js(
       meta(property="og:image:width", content="1200")
       meta(property="og:image:height", content="630")
 
-      if ['/', '/resources', '/about', '/terms', '/about', '/faq', '/private-business-email'].includes(ctx.pathWithoutLocale) || ctx.pathWithoutLocale.startsWith('/docs') || ctx.pathWithoutLocale.startsWith('/guides')
+      if ['/', '/resources', '/about', '/terms', '/about', '/faq', '/private-business-email'].includes(ctx.pathWithoutLocale) || ctx.pathWithoutLocale.startsWith('/blog/docs') || ctx.pathWithoutLocale.startsWith('/guides')
         //- in order for snapshots to be consistent we need the same date to be used
         meta(
           property="og:updated_time",
@@ -162,7 +162,7 @@ html.h-100.no-js(
         else if ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp"
           //- custom domain
           - video = "https://www.youtube.com/watch?v=MEheS8gM4Xs";
-        else if ctx.pathWithoutLocale.startsWith('/docs')
+        else if ctx.pathWithoutLocale.startsWith('/blog/docs')
           //- developers
           - video = "https://www.youtube.com/watch?v=1e9UyIoFu4Y";
         else if !ctx.pathWithoutLocale.startsWith('/guides') && isNotPrivateRoute

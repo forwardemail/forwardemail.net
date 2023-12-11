@@ -225,11 +225,11 @@ block body
                       th.align-middle.text-center(scope="col")= "SMTP"
                       th.align-middle.text-center.text-nowrap(scope="col")
                         a.text-white.text-decoration-underline(
-                          href=l("/encrypted-email"),
+                          href=l("/blog/docs/best-quantum-safe-encrypted-email-service"),
                           role="button",
                           data-toggle="modal",
                           data-target="#modal-storage",
-                          title=striptags(t(config.meta["/encrypted-email"][0]))
+                          title=striptags(t(config.meta["/blog/docs/best-quantum-safe-encrypted-email-service"][0]))
                         )
                           = t("SQLite Encrypted")
                           = " "
@@ -359,7 +359,7 @@ block body
       else
         .row.mt-3
           - const tools = [];
-          - const list = Object.keys(config.meta).filter((key) => key !== "/open-source" && key.startsWith("/open-source"));
+          - const list = Object.keys(config.meta).filter((key) => key !== "/blog/open-source" && key.startsWith("/blog/open-source"));
           each item in list
             - const match = config.meta[item];
             if match

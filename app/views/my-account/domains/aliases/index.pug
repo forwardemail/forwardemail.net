@@ -58,7 +58,7 @@ block body
                     li: span.markdown-body: code= 2465
           hr
           h2.h4= t("Do you have any developer resources?")
-          a.btn.btn-lg.btn-dark(href=l("/docs"), target="_blank")= t("Free Email Developer Tools and Resources")
+          a.btn.btn-lg.btn-dark(href=l("/blog/docs"), target="_blank")= t("Free Email Developer Tools and Resources")
 
   //- Setup Instructions
   #modal-setup-instructions.modal.fade(
@@ -79,7 +79,7 @@ block body
             //- Apple
             li.list-inline-item.mr-1
               a.badge.badge-light(
-                href=l("/open-source/apple-email-clients"),
+                href=l("/blog/open-source/apple-email-clients"),
                 target="_blank"
               )
                 = "Apple"
@@ -87,7 +87,7 @@ block body
             //- Windows
             li.list-inline-item.mr-1
               a.badge.badge-light(
-                href=l("/open-source/windows-email-clients"),
+                href=l("/blog/open-source/windows-email-clients"),
                 target="_blank"
               )
                 = "Windows"
@@ -95,7 +95,7 @@ block body
             //- Android
             li.list-inline-item.mr-1
               a.badge.badge-light(
-                href=l("/open-source/android-email-clients"),
+                href=l("/blog/open-source/android-email-clients"),
                 target="_blank"
               )
                 i.fa-fw.fab.fa-android
@@ -105,7 +105,7 @@ block body
             //- Linux
             li.list-inline-item.mr-1
               a.badge.badge-light(
-                href=l("/open-source/linux-email-clients"),
+                href=l("/blog/open-source/linux-email-clients"),
                 target="_blank"
               )
                 i.fa-fw.fab.fa-linux
@@ -115,7 +115,7 @@ block body
             //- Desktop
             li.list-inline-item.mr-1
               a.badge.badge-light(
-                href=l("/open-source/desktop-email-clients"),
+                href=l("/blog/open-source/desktop-email-clients"),
                 target="_blank"
               )
                 i.fa-fw.fas.fa-desktop
@@ -124,7 +124,7 @@ block body
             //- Web
             li.list-inline-item.mr-1
               a.badge.badge-light(
-                href=l("/open-source/web-email-clients"),
+                href=l("/blog/open-source/web-email-clients"),
                 target="_blank"
               )
                 if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
@@ -144,7 +144,7 @@ block body
             //- Terminal
             li.list-inline-item
               a.badge.badge-light(
-                href=l("/open-source/terminal-email-clients"),
+                href=l("/blog/open-source/terminal-email-clients"),
                 target="_blank"
               )
                 i.fa-fw.fas.fa-terminal

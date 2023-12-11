@@ -401,7 +401,7 @@ for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
 
   try {
     const c = require(path.join(dirPath, 'config.js'));
-    c.slug = `/docs/${dir.name}`;
+    c.slug = `/blog/docs/${dir.name}`;
 
     if (!isSANB(c.title)) {
       console.error('%s missing config.js title', dirPath);

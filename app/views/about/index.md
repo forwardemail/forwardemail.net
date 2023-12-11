@@ -46,7 +46,7 @@ In April 2023, we implemented and automated entirely new infrastructure.  Our en
 
 In May 2023, we launched our **outbound SMTP** feature for [sending email with SMTP](/faq#do-you-support-sending-email-with-smtp) and [sending email with API](/faq#do-you-support-sending-email-with-api) requests.  This feature has built-in safeguards to ensure high deliverability, a modern and robust queue and retry system, and [supports error logs in real-time](/faq#do-you-store-error-logs).
 
-In November 2023, we launched our [**encrypted mailbox storage**](/encrypted-email) feature for [IMAP suppport](/faq#do-you-support-receiving-email-with-imap).
+In November 2023, we launched our [**encrypted mailbox storage**](/blog/docs/best-quantum-safe-encrypted-email-service) feature for [IMAP suppport](/faq#do-you-support-receiving-email-with-imap).
 
 In December 2023, [we added support](/faq#do-you-support-pop3) for [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol).
 

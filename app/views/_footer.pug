@@ -105,23 +105,23 @@ footer.mt-auto.small.text-monospace
 
         .flex-wrap.flex-fill.mr-lg-3
           hr.d-lg-none.w-100
-          h3.h6.text-uppercase.mb-2: a.text-light(href=l("/open-source"))= t("Apps")
+          h3.h6.text-uppercase.mb-2: a.text-light(href=l("/blog/open-source"))= t("Apps")
           ul.list-unstyled.mb-0.mb-lg-3
             //- Apple
             li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/open-source/apple-email-clients")
+              href=l("/blog/open-source/apple-email-clients")
             )
               = "Apple"
               != "&reg;"
             //- Windows
             li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/open-source/windows-email-clients")
+              href=l("/blog/open-source/windows-email-clients")
             )
               = "Windows"
               != "&reg;"
             //- Android
             li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/open-source/android-email-clients")
+              href=l("/blog/open-source/android-email-clients")
             )
               i.fa-fw.fab.fa-android
               = " "
@@ -129,21 +129,21 @@ footer.mt-auto.small.text-monospace
               != "&trade;"
             //- Linux
             li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/open-source/linux-email-clients")
+              href=l("/blog/open-source/linux-email-clients")
             )
               i.fa-fw.fab.fa-linux
               = " "
               = "Linux"
               != "&reg;"
             li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/open-source/desktop-email-clients")
+              href=l("/blog/open-source/desktop-email-clients")
             )
               i.fa-fw.fas.fa-desktop
               = " "
               = t("Desktop")
             //- Web
             li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/open-source/web-email-clients")
+              href=l("/blog/open-source/web-email-clients")
             )
               if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
                 i.fab.fa-fw.fa-firefox-browser
@@ -161,7 +161,7 @@ footer.mt-auto.small.text-monospace
                 != "&reg;"
             //- Terminal
             li: a.d-block.text-light.py-2.py-md-0(
-              href=l("/open-source/terminal-email-clients")
+              href=l("/blog/open-source/terminal-email-clients")
             )
               i.fa-fw.fas.fa-terminal
               = " "
@@ -192,7 +192,6 @@ footer.mt-auto.small.text-monospace
           hr.d-lg-none.w-100
           h3.h6.text-uppercase.mb-2: a.text-light(href=l("/resources"))= t("Resources")
           ul.list-unstyled.mb-0
-            li: a.d-block.text-light.py-2.py-md-0(href=l("/encrypted-email"))= t("Encrypted Email")
             - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
             if !isBot(ctx.get('User-Agent'))
               - pricingPageHref += "?pricing=true";
@@ -221,7 +220,7 @@ footer.mt-auto.small.text-monospace
               li: a.d-block.text-light.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.mr-lg-3
-          h3.h6.text-uppercase.mb-2: a.text-light(href=l("/docs"))= t("Developers")
+          h3.h6.text-uppercase.mb-2: a.text-light(href=l("/blog/docs"))= t("Developers")
           ul.list-unstyled.mb-0.mb-lg-3
             li: a.d-block.text-light.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
             li: a.d-block.text-light.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
@@ -229,10 +228,10 @@ footer.mt-auto.small.text-monospace
               href=l("/email-forwarding-regex-pattern-filter")
             )= t("Regex Email Forwarding")
             if platforms.length > 0
-              li: a.d-block.text-light.py-2.py-md-0(href=l("/open-source"))= t("Open Source")
+              li: a.d-block.text-light.py-2.py-md-0(href=l("/blog/open-source"))= t("Open Source")
           if developerDocs.length > 0
             hr.d-lg-none.w-100
-            h3.h6.text-uppercase.mb-2= t("Code Examples")
+            h3.h6.text-uppercase.mb-2= t("Developer Articles")
             hr.d-none.d-md-none.d-lg-none.w-100
             ul.list-unstyled.mb-0.mb-lg-3
               each doc in developerDocs
@@ -244,10 +243,10 @@ footer.mt-auto.small.text-monospace
                     = t(doc.title)
           if platforms.length > 0 && isBot(ctx.get('User-Agent'))
             hr.d-lg-none.w-100
-            h3.h6.text-uppercase.mb-2: a.text-light(href=l("/open-source"))= t("Open Source Email Clients and Servers")
+            h3.h6.text-uppercase.mb-2: a.text-light(href=l("/blog/open-source"))= t("Open Source Email Clients and Servers")
             ul.list-unstyled.mb-0.mb-lg-3
               - const tools = [];
-              - const list = Object.keys(config.meta).filter((key) => key !== "/open-source" && key.startsWith("/open-source"));
+              - const list = Object.keys(config.meta).filter((key) => key !== "/blog/open-source" && key.startsWith("/blog/open-source"));
               each item in list
                 - const match = config.meta[item];
                 if match

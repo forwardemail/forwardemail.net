@@ -154,10 +154,10 @@ nav.navbar(class=navbarClasses.join(" "))
       //- FAQ
       ul.list-inline.ml-auto.mb-0
         li.list-inline-item: a(
-          class=ctx.pathWithoutLocale === "/encrypted-email" ? "text-decoration-underline" : "",
-          href=l("/encrypted-email"),
-          title=striptags(t(config.meta["/encrypted-email"][0]))
-        )= t("Encryption")
+          class=ctx.pathWithoutLocale === "/blog/docs/best-quantum-safe-encrypted-email-service" ? "text-decoration-underline" : "",
+          href=l("/blog/docs/best-quantum-safe-encrypted-email-service"),
+          title=striptags(t(config.meta["/blog/docs/best-quantum-safe-encrypted-email-service"][0]))
+        )= t("Quantum Safe Email Encryption")
         li.list-inline-item: a(
           class=ctx.pathWithoutLocale === "/private-business-email" ? "text-decoration-underline" : "",
           href=l("/private-business-email"),
@@ -189,12 +189,12 @@ nav.navbar(class=navbarClasses.join(" "))
               )= t("Pricing")
 
           //- Apps
-          - const isApps = ["/open-source/apple-email-clients", "/open-source/windows-email-clients", "/open-source/android-email-clients", "/open-source/linux-email-clients", "/open-source/terminal-email-clients", "/open-source/web-email-clients"].includes(ctx.pathWithoutLocale);
+          - const isApps = ["/blog/open-source/apple-email-clients", "/blog/open-source/windows-email-clients", "/blog/open-source/android-email-clients", "/blog/open-source/linux-email-clients", "/blog/open-source/terminal-email-clients", "/blog/open-source/web-email-clients"].includes(ctx.pathWithoutLocale);
           if !isBot(ctx.get('User-Agent'))
             li.nav-item.dropdown.no-js
               form.mb-0
                 a#navbar-dropdown-apps.btn.dropdown-toggle.d-block.text-left.no-js(
-                  href=l("/open-source"),
+                  href=l("/blog/open-source"),
                   data-toggle="dropdown",
                   data-boundary="window",
                   aria-haspopup="true",
@@ -205,24 +205,24 @@ nav.navbar(class=navbarClasses.join(" "))
                 .dropdown-menu(aria-labelledby="navbar-dropdown-apps")
                   //- Apple
                   a.dropdown-item(
-                    href=l("/open-source/apple-email-clients"),
-                    class=ctx.pathWithoutLocale === "/open-source/apple-email-clients" ? "active" : ""
+                    href=l("/blog/open-source/apple-email-clients"),
+                    class=ctx.pathWithoutLocale === "/blog/open-source/apple-email-clients" ? "active" : ""
                   )
                     //- apple doesn't let you use logo
                     = "Apple"
                     != "&reg;"
                   //- Windows
                   a.dropdown-item(
-                    href=l("/open-source/windows-email-clients"),
-                    class=ctx.pathWithoutLocale === "/open-source/windows-email-clients" ? "active" : ""
+                    href=l("/blog/open-source/windows-email-clients"),
+                    class=ctx.pathWithoutLocale === "/blog/open-source/windows-email-clients" ? "active" : ""
                   )
                     //- msft doesn't let you use logo
                     = "Windows"
                     != "&reg;"
                   //- Android
                   a.dropdown-item(
-                    href=l("/open-source/android-email-clients"),
-                    class=ctx.pathWithoutLocale === "/open-source/android-email-clients" ? "active" : ""
+                    href=l("/blog/open-source/android-email-clients"),
+                    class=ctx.pathWithoutLocale === "/blog/open-source/android-email-clients" ? "active" : ""
                   )
                     i.fa-fw.fab.fa-android
                     = " "
@@ -230,8 +230,8 @@ nav.navbar(class=navbarClasses.join(" "))
                     != "&trade;"
                   //- Linux
                   a.dropdown-item(
-                    href=l("/open-source/linux-email-clients"),
-                    class=ctx.pathWithoutLocale === "/open-source/linux-email-clients" ? "active" : ""
+                    href=l("/blog/open-source/linux-email-clients"),
+                    class=ctx.pathWithoutLocale === "/blog/open-source/linux-email-clients" ? "active" : ""
                   )
                     i.fa-fw.fab.fa-linux
                     = " "
@@ -239,16 +239,16 @@ nav.navbar(class=navbarClasses.join(" "))
                     != "&reg;"
                   //- Desktop
                   a.dropdown-item(
-                    href=l("/open-source/desktop-email-clients"),
-                    class=ctx.pathWithoutLocale === "/open-source/desktop-email-clients" ? "active" : ""
+                    href=l("/blog/open-source/desktop-email-clients"),
+                    class=ctx.pathWithoutLocale === "/blog/open-source/desktop-email-clients" ? "active" : ""
                   )
                     i.fa-fw.fas.fa-desktop
                     = " "
                     = t("Desktop")
                   //- Web
                   a.dropdown-item(
-                    href=l("/open-source/web-email-clients"),
-                    class=ctx.pathWithoutLocale === "/open-source/web-email-clients" ? "active" : ""
+                    href=l("/blog/open-source/web-email-clients"),
+                    class=ctx.pathWithoutLocale === "/blog/open-source/web-email-clients" ? "active" : ""
                   )
                     if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
                       i.fab.fa-fw.fa-firefox-browser
@@ -266,8 +266,8 @@ nav.navbar(class=navbarClasses.join(" "))
                       != "&reg;"
                   //- Terminal
                   a.dropdown-item(
-                    href=l("/open-source/terminal-email-clients"),
-                    class=ctx.pathWithoutLocale === "/open-source/terminal-email-clients" ? "active" : ""
+                    href=l("/blog/open-source/terminal-email-clients"),
+                    class=ctx.pathWithoutLocale === "/blog/open-source/terminal-email-clients" ? "active" : ""
                   )
                     i.fa-fw.fas.fa-terminal
                     = " "
@@ -275,7 +275,7 @@ nav.navbar(class=navbarClasses.join(" "))
 
           //- Resources
           if !isBot(ctx.get('User-Agent'))
-            - const resourcePages = ["/encrypted-email", "/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
+            - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
             - const companyPages = ["/about", "/privacy", "/terms", "/report-abuse"];
             - const isResourcesPage = (ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale)) && !hasPricingLink;
             li.nav-item.dropdown.no-js
@@ -421,12 +421,12 @@ nav.navbar(class=navbarClasses.join(" "))
           li.nav-item.dropdown.no-js
             form.mb-0
               a#navbar-dropdown-docs.btn.dropdown-toggle.d-block.text-left.no-js(
-                href=l("/docs"),
+                href=l("/blog/docs"),
                 data-toggle="dropdown",
                 data-boundary="window",
                 aria-haspopup="true",
                 aria-expanded="false",
-                class=!isApps && (ctx.pathWithoutLocale === "/email-api" || ctx.pathWithoutLocale === "/free-email-webhooks" || ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" || ctx.pathWithoutLocale.startsWith("/docs") || ctx.pathWithoutLocale.startsWith("/open-source")) ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                class=!isApps && (ctx.pathWithoutLocale === "/email-api" || ctx.pathWithoutLocale === "/free-email-webhooks" || ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" || ctx.pathWithoutLocale.startsWith("/blog/docs") || ctx.pathWithoutLocale.startsWith("/blog/open-source")) ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
               )
                 = t("Developers")
               .dropdown-menu.dropdown-menu-right(
@@ -446,7 +446,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 )= t("Regex Email Forwarding")
                 if developerDocs.length > 0
                   hr.dropdown-divider
-                  h6.dropdown-header.text-uppercase= t("Code Examples")
+                  h6.dropdown-header.text-uppercase= t("Developer Articles")
                   .small
                     each doc in developerDocs
                       a.dropdown-item(
@@ -462,7 +462,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   h6.dropdown-header.text-uppercase= t("Open Source")
                   .card-columns.small
                     - const tools = [];
-                    - const list = Object.keys(config.meta).filter((key) => key !== "/open-source" && key.startsWith("/open-source"));
+                    - const list = Object.keys(config.meta).filter((key) => key !== "/blog/open-source" && key.startsWith("/blog/open-source"));
                     each item in list
                       - const match = config.meta[item];
                       if match

@@ -193,12 +193,12 @@ block body
             //- Developers
             li.list-inline-item.d-block.d-md-inline
               if isBot(ctx.get('User-Agent'))
-                a.btn.btn-dark.mb-3(href=l("/docs"))
+                a.btn.btn-dark.mb-3(href=l("/blog/docs"))
                   i.fa.fa-code
                   = " "
                   = t("Transactional Email API")
               else
-                a.btn.btn-light.mb-3(href=l("/docs"))
+                a.btn.btn-light.mb-3(href=l("/blog/docs"))
                   i.fa.fa-code
                   = " "
                   = t("Developers")
@@ -246,7 +246,7 @@ block body
                 = " "
                 != t('We\'re the world\'s first and only email service to use <strong class="text-success">quantum-safe</strong> and <strong class="text-success">individually encrypted SQLite mailboxes</strong>')
           a.btn.btn-success.font-weight-bold.text-uppercase.text-white(
-            href=l("/encrypted-email#email-service-provider-comparison"),
+            href=l("/blog/docs/best-quantum-safe-encrypted-email-service#email-service-provider-comparison"),
             target="_blank"
           )
             != t("Read Email Service Comparison")

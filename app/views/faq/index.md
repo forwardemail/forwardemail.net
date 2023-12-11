@@ -813,7 +813,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
@@ -933,7 +933,7 @@ In order to send outbound email with our API, you must use your API token availa
 
 ## Do you support receiving email with IMAP
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/encrypted-emaill).
+Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-servicel).
 
 <div id="imap-instructions">
 
@@ -957,7 +957,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 4. When prompted for IMAP server name, enter `imap.forwardemail.net`
@@ -992,7 +992,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
 
 ## Do you support POP3
 
-Yes, as of December 4, 2023 we support [POP3]() as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/encrypted-emaill).
+Yes, as of December 4, 2023 we support [POP3]() as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-servicel).
 
 <div id="pop3-instructions">
 
@@ -1016,7 +1016,7 @@ Yes, as of December 4, 2023 we support [POP3]() as an add-on for all paid users.
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://k9mail.app/" target="_blank" rel="noopener noreferrer">K-9 Mail</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
@@ -1235,15 +1235,15 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 <div class="mb-3">
   Our service works with popular email clients such as:
   <ul class="ml-1 h4 d-inline list-inline mb-0" style="padding-left: 0px;">
-    <li class="list-inline-item"><a href="/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
-    <li class="list-inline-item"><a href="/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
-    <li class="list-inline-item"><a href="/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
-    <li class="list-inline-item"><a href="/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
   </ul>
 </div>
 
@@ -1827,7 +1827,7 @@ Senders that are detected to be sending spam or virus content will be added to t
 
 Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/encrypted-email):
+Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
 
 * Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
 * We have general limits that apply to all `Senders` across our service regardless of recipient:

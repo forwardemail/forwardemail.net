@@ -1,6 +1,6 @@
-extends ../layout
+extends ../../layout
 
-include ../_onboard
+include ../../_onboard
 
 block prepend scripts
   //- since mermaid doesn't support CJS anymore
@@ -18,7 +18,7 @@ block body
       .col-12.text-center
         h1= t("Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service")
         p!= t("<strong>Unlike other email services</strong>, we ensure that <strong class='text-decoration-underline'>only you have access to your mailbox</strong> at all times.")
-        include ../_author
+        include ../../_author
   .container.pb-5
     .row
       .col

@@ -159,12 +159,12 @@ localeRouter
     web.onboard,
     render('reserved-email-addresses')
   )
-  .get(
-    '/encrypted-email',
-    web.myAccount.retrieveDomains,
-    web.onboard,
-    render('encrypted-email')
-  )
+  .get('/encrypted-email', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(
+      ctx.state.l('/blog/docs/best-quantum-safe-encrypted-email-service')
+    );
+  })
   .get(
     '/free-email-webhooks',
     web.myAccount.retrieveDomains,
@@ -179,7 +179,7 @@ localeRouter
   )
   .get('/resources', render('resources'))
   .get('/guides', render('guides'))
-  .get('/docs', render('docs'))
+  .get('/blog/docs', render('docs'))
   .get('/guides/send-mail-as-using-gmail', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/guides/send-mail-as-gmail-custom-domain'));
@@ -275,27 +275,53 @@ localeRouter
   );
 
 for (const doc of developerDocs) {
-  localeRouter.get(doc.slug, render(doc.slug.slice(1)));
+  // legacy redirect
+  localeRouter.get(doc.slug.replace('/blog/docs', '/docs'), (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l(doc.slug));
+  });
+  localeRouter.get(doc.slug, render(doc.slug.replace('/blog/', '')));
 }
 
 localeRouter.get('/docs/nodejs-spam-filter-contact-form', (ctx) => {
   ctx.status = 301;
-  ctx.redirect(ctx.state.l('/docs/best-email-spam-protection-filter'));
+  ctx.redirect(ctx.state.l('/blog/docs/best-email-spam-protection-filter'));
 });
 
-if (platforms.length > 0)
-  localeRouter.get('/open-source', render('open-source'));
+if (platforms.length > 0) {
+  // legacy redirect
+  localeRouter.get('/open-source', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/blog/open-source'));
+  });
+  localeRouter.get('/blog/open-source', render('open-source'));
+}
+
 for (const platform of platforms) {
+  // legacy redirect
+  localeRouter.get(`/open-source/${dashify(platform)}-email-server`, (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(
+      ctx.state.l(`/blog/open-source/${dashify(platform)}-email-server`)
+    );
+  });
   localeRouter.get(
-    `/open-source/${dashify(platform)}-email-server`,
+    `/blog/open-source/${dashify(platform)}-email-server`,
     (ctx, next) => {
       ctx.state.platform = platform;
       return next();
     },
     render('open-source')
   );
+  // legacy redirect
+  localeRouter.get(`/open-source/${dashify(platform)}-email-clients`, (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(
+      ctx.state.l(`/blog/open-source/${dashify(platform)}-email-clients`)
+    );
+  });
   localeRouter.get(
-    `/open-source/${dashify(platform)}-email-clients`,
+    `/blog/open-source/${dashify(platform)}-email-clients`,
     (ctx, next) => {
       ctx.state.platform = platform;
       return next();

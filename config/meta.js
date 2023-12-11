@@ -103,37 +103,34 @@ module.exports = function (config) {
       'Get disposable email forwarding addresses using your custom domain name.'
     ],
     '/resources': [
-      `Free Startup and Developer Email Tools List (<span class="notranslate">${dayjs(
+      `Free Startup and Developer Email Tools List in <span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>)`,
+      ).format('YYYY')}</span>`,
       'Get free startup and developer email tools, bundles, resources, guides, tutorials, code samples, and more.'
     ],
-    '/encrypted-email': [
-      'Quantum Safe Encrypted Email: Get Your Private Email Account',
-      'Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.'
-    ],
-    '/docs': [
-      `Free Email Developer Tools and Resources (<span class="notranslate">${dayjs(
+    '/blog/docs': [
+      `Free Email Developer Tools and Resources in <span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>)`,
+      ).format('YYYY')}</span>`,
       'Free email developer tools and resources for startups and businesses. See our complete RESTful email API reference and manage your custom domains and aliases.'
     ],
+    // TODO: put a number in here
     '/guides': [
-      `Top Email Hosting and Email Forwarding Setup Tutorials (<span class="notranslate">${dayjs(
+      `Top Email Hosting and Email Forwarding Setup Tutorials in <span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>)`,
+      ).format('YYYY')}</span>`,
       'Follow our free email forwarding and hosting guides to send and receive mail with your custom domain. We publish an email hosting guide list of the most popular website and DNS providers.'
     ],
     '/guides/send-email-with-custom-domain-smtp': [
-      `How to Setup Email for Custom Domain Name (<span class="notranslate">${dayjs(
+      `How to Setup Email for Custom Domain Name in <span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>)`,
+      ).format('YYYY')}</span>`,
       'Set up free email forwarding and email hosting with your custom domain, DNS, SMTP, IMAP, and POP3 configuration step by step guide.'
     ],
     '/guides/send-mail-as-gmail-custom-domain': [
-      `How to Send Mail As for Gmail Alias (<span class="notranslate">${dayjs(
+      `How to Send Mail As for Gmail Alias <span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>)`,
+      ).format('YYYY')}</span>`,
       'Set up email forwarding for free with custom domain and Gmail to forward, send, and receive email. Send mail as not working? Follow our video and instructions.'
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
@@ -187,18 +184,20 @@ module.exports = function (config) {
     meta[`/guides/${provider.slug}`] = [
       `How to Setup Email with <span class="notranslate">${
         provider.name
-      }</span> (<span class="notranslate">${dayjs(now).format('YYYY')}</span>)`,
+      }</span> in <span class="notranslate">${dayjs(now).format(
+        'YYYY'
+      )}</span>`,
       `How to send and receive emails with <span class="notranslate">${provider.name}</span> DNS and setup free email forwarding for <span class="notranslate">${provider.name}</span> with video and step by step instructions.`
     ];
   }
 
   if (platforms.length > 0) {
-    meta['/open-source'] = [
+    meta['/blog/open-source'] = [
       `Top ${
         platforms.length
-      } Open Source Email Clients and Servers <span class="notranslate">(${dayjs(
+      } Open Source Email Clients and Servers in <span class="notranslate">${dayjs(
         now
-      ).format('YYYY')})</span>`,
+      ).format('YYYY')}</span>`,
       'Open-source email client and server reviews, side by side comparisons, screenshots, and step by step setup tutorial guides.'
       // `Open-source email client and server reviews, side by side comparisons, screenshots, and step by step setup tutorial guides for ${arrayJoinConjunction(
       //   [
@@ -247,31 +246,40 @@ module.exports = function (config) {
 
     // email server
     const serverCount = getServersOrClientsList(platform, false).length;
-    meta[`/open-source/${dashify(platform)}-email-server`] = [
-      `${serverCount} ${sample} Open Source Email Servers for <span class="notranslate">${platform}</span> (<span class="notranslate">${dayjs(
+    meta[`/blog/open-source/${dashify(platform)}-email-server`] = [
+      `${serverCount} ${sample} Open Source Email Servers for <span class="notranslate">${platform}</span> in <span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>)`,
+      ).format('YYYY')}</span>`,
       `The ${serverCount} ${sample.toLowerCase()} free and open-source email servers for <span class="notranslate">${platform}</span> with step guides, tutorials, videos, and instructions.`
     ];
 
     // email client
     const clientCount = getServersOrClientsList(platform, true).length;
-    meta[`/open-source/${dashify(platform)}-email-clients`] = [
-      `${clientCount} ${sample} Open Source Email Clients for <span class="notranslate">${platform}</span> (<span class="notranslate">${dayjs(
+    meta[`/blog/open-source/${dashify(platform)}-email-clients`] = [
+      `${clientCount} ${sample} Open Source Email Clients for <span class="notranslate">${platform}</span> in <span class="notranslate">${dayjs(
         now
-      ).format('YYYY')}</span>)`,
+      ).format('YYYY')}</span>`,
       `Reviews, comparison, screenshots and more for the ${clientCount} ${sample.toLowerCase()} open-source email clients for <span class="notranslate">${platform}</span>.`
     ];
   }
 
   // developer docs
   for (const doc of developerDocs) {
-    meta[doc.slug] = [
-      `${doc.title} Code Example (<span class="notranslate">${dayjs(now).format(
-        'YYYY'
-      )}</span>)`,
-      doc.description
-    ];
+    if (doc.notCodeExample) {
+      meta[doc.slug] = [
+        `${doc.title} in <span class="notranslate">${dayjs(now).format(
+          'YYYY'
+        )}</span>`,
+        doc.description
+      ];
+    } else {
+      meta[doc.slug] = [
+        `${doc.title} Code Example in <span class="notranslate">${dayjs(
+          now
+        ).format('YYYY')}</span>`,
+        doc.description
+      ];
+    }
   }
 
   meta[config.loginRoute] = [
