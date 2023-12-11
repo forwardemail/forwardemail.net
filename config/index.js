@@ -48,7 +48,7 @@ const config = {
     to: env.TWILIO_TO_NUMBER
   },
   defaultModulusLength: 1024,
-  defaultStoragePath: 'storage_do_1',
+  defaultStoragePath: env.SQLITE_STORAGE_PATH,
   // 60 items (50 MB * 60 = 3000 MB = 3 GB)
   smtpMaxQueue: 60,
   smtpQueueTimeout: ms('180s'),

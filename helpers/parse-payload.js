@@ -731,6 +731,7 @@ async function parsePayload(data, ws) {
         // run a checkpoint to copy over wal to db
         tmpDb.pragma('wal_checkpoint(PASSIVE)');
 
+        // TODO: vacuum into instead (same for elsewhere)
         // vacuum temporary database
         tmpDb.prepare('VACUUM').run();
 
@@ -1324,6 +1325,7 @@ async function parsePayload(data, ws) {
           // run a checkpoint to copy over wal to db
           db.pragma('wal_checkpoint(PASSIVE)');
 
+          // TODO: vacuum into instead (same for elsewhere)
           // vacuum database
           db.prepare('VACUUM').run();
         }

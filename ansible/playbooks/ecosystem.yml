@@ -8,28 +8,44 @@
     #
     # https://stackoverflow.com/a/24959173
     #
-    - name: Create ecosystem-web.json
-      template:
-        src: "{{ playbook_dir }}/templates/ecosystem-web.json.j2"
-        dest: "{{ lookup('env', 'PWD') }}/ecosystem-web.json"
-      delegate_to: localhost
     - name: Create ecosystem-api.json
       template:
         src: "{{ playbook_dir }}/templates/ecosystem-api.json.j2"
         dest: "{{ lookup('env', 'PWD') }}/ecosystem-api.json"
       delegate_to: localhost
+
     - name: Create ecosystem-bree.json
       template:
         src: "{{ playbook_dir }}/templates/ecosystem-bree.json.j2"
         dest: "{{ lookup('env', 'PWD') }}/ecosystem-bree.json"
       delegate_to: localhost
+
+    - name: Create ecosystem-imap.json
+      template:
+        src: "{{ playbook_dir }}/templates/ecosystem-imap.json.j2"
+        dest: "{{ lookup('env', 'PWD') }}/ecosystem-imap.json"
+      delegate_to: localhost
+
+    - name: Create ecosystem-pop3.json
+      template:
+        src: "{{ playbook_dir }}/templates/ecosystem-pop3.json.j2"
+        dest: "{{ lookup('env', 'PWD') }}/ecosystem-pop3.json"
+      delegate_to: localhost
+
     - name: Create ecosystem-smtp.json
       template:
         src: "{{ playbook_dir }}/templates/ecosystem-smtp.json.j2"
         dest: "{{ lookup('env', 'PWD') }}/ecosystem-smtp.json"
       delegate_to: localhost
-    - name: Create ecosystem-imap.json
+
+    - name: Create ecosystem-sqlite.json
       template:
-        src: "{{ playbook_dir }}/templates/ecosystem-imap.json.j2"
-        dest: "{{ lookup('env', 'PWD') }}/ecosystem-imap.json"
+        src: "{{ playbook_dir }}/templates/ecosystem-sqlite.json.j2"
+        dest: "{{ lookup('env', 'PWD') }}/ecosystem-sqlite.json"
+      delegate_to: localhost
+
+    - name: Create ecosystem-web.json
+      template:
+        src: "{{ playbook_dir }}/templates/ecosystem-web.json.j2"
+        dest: "{{ lookup('env', 'PWD') }}/ecosystem-web.json"
       delegate_to: localhost

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const process = require('node:process');
+
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
@@ -22,7 +24,12 @@ graceful.listen();
 monitorServer();
 
 (async () => {
-  await bree.start();
+  try {
+    await bree.start();
+  } catch (err) {
+    await logger.error(err);
+    process.exit(1);
+  }
 })();
 
 logger.info('Lad bree started', { hide_meta: true });

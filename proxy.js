@@ -31,7 +31,7 @@ graceful.listen();
       { hide_meta: true }
     );
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
 
     process.exit(1);
   }

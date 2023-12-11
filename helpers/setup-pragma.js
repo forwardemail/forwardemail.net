@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const path = require('node:path');
 const { Buffer } = require('node:buffer');
 
 const pWaitFor = require('p-wait-for');
+const { mkdirp } = require('mkdirp');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -113,6 +115,27 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   // TODO: compression, e.g. https://github.com/phiresky/sqlite-zstd
   // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#loadextensionpath-entrypoint---this>
   // db.loadExtension(...);
+
+  //
+  // NOTE: if we don't set this then we get the following error for VACUUM commands:
+  //
+  // err.code = 'SQLITE_FULL'
+  // err.message = 'database or disk full'
+  //
+  // <https://stackoverflow.com/a/23251896>
+  // <https://www.sqlite.org/tempfiles.html#temporary_file_storage_locations>
+  // SQLITE_TMPDIR=/mnt/storage_location/tmp
+  // pragma temp_store_directory='/mnt/storage_location/tmp'
+  //
+  // NOTE: this method is deprecated so we use SQLITE_TMPDIR instead (but keep here as a safeguard)
+  //
+  try {
+    const tempStoreDirectory = path.join(path.dirname(db.name), '/tmp');
+    await mkdirp(tempStoreDirectory);
+    db.pragma(`temp_store_directory='${tempStoreDirectory}'`);
+  } catch (err) {
+    logger.error(err);
+  }
 }
 
 module.exports = setupPragma;

@@ -187,6 +187,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
       // now iterate through all ids and update their sizes and send (or unset) quota alerts
       for (const id of ids) {
+        // ensure ID is hex string
+        if (!mongoose.isObjectIdOrHexString(id)) continue;
+
         try {
           //
           // attempt to vacuum database

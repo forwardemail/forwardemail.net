@@ -57,7 +57,7 @@ monitorServer();
       );
     await setupMongoose(logger);
   } catch (err) {
-    logger.error(err);
+    await logger.error(err);
 
     process.exit(1);
   }

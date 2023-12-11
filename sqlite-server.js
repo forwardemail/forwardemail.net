@@ -16,6 +16,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pify = require('pify');
 const { WebSocketServer } = require('ws');
+const { mkdirp } = require('mkdirp');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
 const IMAPNotifier = require('#helpers/imap-notifier');
@@ -198,6 +199,12 @@ class SQLite {
   }
 
   async listen(port = env.SQLITE_PORT, host = '::', ...args) {
+    //
+    // ensure that /tmp dir's exist in each /mnt folder
+    // (e.g. `/mnt/storage_do_1/tmp`)
+    //
+    if (isSANB(env.SQLITE_TMPDIR)) await mkdirp(env.SQLITE_TMPDIR);
+
     this.subscriber.subscribe('sqlite_auth_response');
 
     this.wsInterval = setInterval(() => {
