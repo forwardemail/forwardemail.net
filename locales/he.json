@@ -4026,5 +4026,13 @@
   "Learn more on Wikipedia": "למידע נוסף בויקיפדיה",
   "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "לעבור למפתח DKIM <span class=\"notranslate\">%d</span> -bit?",
   "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "אנא אשר אם ברצונך לשנות את אורך מודול מפתח DKIM מ- <strong>%d</strong> ל- <strong>%d</strong> .",
-  "Does your provider support 255+ character TXT records?": "האם הספק שלך תומך ברשומות TXT של יותר מ-255 תווים?"
+  "Does your provider support 255+ character TXT records?": "האם הספק שלך תומך ברשומות TXT של יותר מ-255 תווים?",
+  "Disable OTP": "השבת OTP",
+  "Delete Account": "מחק חשבון",
+  "Deleting your account is irreversible.  Please take extreme caution when deleting your account.": "מחיקת החשבון שלך היא בלתי הפיכה. נא לנקוט משנה זהירות בעת מחיקת חשבונך.",
+  "Developer Access": "גישה למפתחים",
+  "API token": "אסימון API",
+  "Keep your token secure and never share it publicly": "שמור על האסימון שלך מאובטח ולעולם אל תשתף אותו בפומבי",
+  "Reset API Token": "אפס אסימון API",
+  "Need to set a password?": "צריך להגדיר סיסמה?"
 }
