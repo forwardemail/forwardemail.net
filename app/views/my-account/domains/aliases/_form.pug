@@ -90,7 +90,7 @@ if !domain || !domain.is_global
       input#input-has-imap.form-check-input(
         type="checkbox",
         name="has_imap",
-        checked=alias ? alias.has_imap : true,
+        checked=alias ? alias.has_imap : false,
         value="true"
       )
       label.form-check-label(for="input-has-imap")
