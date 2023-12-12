@@ -152,6 +152,9 @@ async function retrieveDomain(ctx, next) {
       // <https://github.com/postalsys/mailauth#dmarc>
       // <https://github.com/postalsys/mailauth/pull/29>
       // <https://github.com/postalsys/mailauth/issues/27>
+      await ctx.resolver.resolveTxt(`_dmarc.${ctx.state.domain.name}`, {
+        purgeCache: true
+      });
       const dmarcRecord = await getDmarcRecord(
         ctx.state.domain.name,
         ctx.resolver.resolve

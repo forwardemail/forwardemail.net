@@ -176,6 +176,9 @@ async function isBadDomain(name) {
     // <https://github.com/postalsys/mailauth/pull/29>
     // <https://github.com/postalsys/mailauth/issues/27>
     try {
+      await resolver.resolveTxt(`_dmarc.${name}`, {
+        purgeCache: true
+      });
       dmarcRecord = await getDmarcRecord(name, resolver.resolve);
       // {
       //   v: 'DMARC1',

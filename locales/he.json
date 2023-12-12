@@ -4021,5 +4021,10 @@
   "Node.js Logging Service Code Example in <span class=\"notranslate\">2023</span>": "דוגמה לקוד שירות רישום Node.js בשנת <span class=\"notranslate\">2023</span>",
   "Reserved Email Addresses Code Example in <span class=\"notranslate\">2023</span>": "דוגמה לקוד כתובות אימייל שמורות בשנת <span class=\"notranslate\">2023</span>",
   "Send React Emails Code Example in <span class=\"notranslate\">2023</span>": "דוגמה לקוד שלח תגובה אימייל ב <span class=\"notranslate\">2023</span>",
-  "URL Regex JavaScript and Node.js Code Example in <span class=\"notranslate\">2023</span>": "כתובת URL Regex JavaScript וקוד Node.js ב <span class=\"notranslate\">2023</span>"
+  "URL Regex JavaScript and Node.js Code Example in <span class=\"notranslate\">2023</span>": "כתובת URL Regex JavaScript וקוד Node.js ב <span class=\"notranslate\">2023</span>",
+  "You must <a href=\"%s\" class=\"alert-link\">complete setup</a> to send emails via SMTP and API.": "עליך <a href=\"%s\" class=\"alert-link\">להשלים את ההגדרה</a> כדי לשלוח אימיילים באמצעות SMTP ו-API.",
+  "Learn more on Wikipedia": "למידע נוסף בויקיפדיה",
+  "Switch to <span class=\"notranslate\">%d</span>-bit DKIM key?": "לעבור למפתח DKIM <span class=\"notranslate\">%d</span> -bit?",
+  "Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.": "אנא אשר אם ברצונך לשנות את אורך מודול מפתח DKIM מ- <strong>%d</strong> ל- <strong>%d</strong> .",
+  "Does your provider support 255+ character TXT records?": "האם הספק שלך תומך ברשומות TXT של יותר מ-255 תווים?"
 }

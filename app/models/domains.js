@@ -1099,6 +1099,9 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
         // <https://github.com/postalsys/mailauth#dmarc>
         // <https://github.com/postalsys/mailauth/pull/29>
         // <https://github.com/postalsys/mailauth/issues/27>
+        await resolver.resolveTxt(`_dmarc.${domain.name}`, {
+          purgeCache: true
+        });
         const dmarcRecord = await getDmarcRecord(domain.name, resolver.resolve);
         // {
         //   v: 'DMARC1',
