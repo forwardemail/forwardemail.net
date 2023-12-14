@@ -42,6 +42,7 @@ async function callbackRedirect(ctx, next) {
   //
   if (
     ctx.params.provider === 'webauthn' &&
+    ctx.isAuthenticated() &&
     ctx.state.user[config.passport.fields.otpEnabled]
   ) {
     ctx.session.otp_remember_me = false;
