@@ -19,7 +19,7 @@ const jwk2pem = require('jwk-to-pem');
 const paginate = require('koa-ctx-paginate');
 const pify = require('pify');
 const render = require('koa-views-render');
-const utils = require('passport-fido2-webauthn/lib/utils');
+// const utils = require('passport-fido2-webauthn/lib/utils');
 const { SessionChallengeStore } = require('passport-fido2-webauthn');
 const { sha256 } = require('crypto-hash');
 
@@ -504,19 +504,28 @@ router
     // NOTE: `originalOrigin` function uses express-style `req.connection.encrypted` check
     //       but since we're on Koa, the `req.connection` is actually `ctx.socket`
     //       (so we bind a virtual helper and cleanup after)
+    //       <https://github.com/jaredhanson/passport-webauthn/issues/5>
     //
-    ctx.connection = ctx.socket;
-    const origin = utils.originalOrigin(ctx);
-    delete ctx.connection;
-    if (origin !== clientData.origin)
+    // ctx.connection = ctx.socket;
+    // const origin = utils.originalOrigin(ctx);
+    // delete ctx.connection;
+    // if (origin !== clientData.origin)
+    //   return ctx.throw(
+    //     Boom.badRequest(ctx.translateError('INVALID_ORIGIN_MISMATCH'))
+    //   );
+    if (ctx.origin !== clientData.origin) {
+      ctx.logger.fatal(
+        new TypeError(`Origin mismatch ${ctx.origin} ${clientData.origin}`)
+      );
       return ctx.throw(
         Boom.badRequest(ctx.translateError('INVALID_ORIGIN_MISMATCH'))
       );
+    }
 
     // TODO: Verify the state of Token Binding for the TLS connection over which
     // the attestation was obtained.
 
-    const rpID = url.parse(origin).hostname;
+    const rpID = url.parse(ctx.origin).hostname;
     const rpIdHash = crypto.createHash('sha256').update(rpID).digest();
 
     // https://www.w3.org/TR/webauthn-2/#sctn-registering-a-new-credential
