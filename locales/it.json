@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Formato di attestazione non supportato <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "Una nuova passkey è stata aggiunta al tuo account",
   "Passkey was removed from your account": "La passkey è stata rimossa dal tuo account",
-  "Invalid WebAuthn key.": "Chiave WebAuthn non valida."
+  "Invalid WebAuthn key.": "Chiave WebAuthn non valida.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifica entro <span class=\"notranslate\">%s</span> per impedire l&#39;eliminazione."
 }

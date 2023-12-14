@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Format pengesahan <span class=\"notranslate\">%s</span> tidak didukung",
   "New passkey was added to your account": "Kunci sandi baru telah ditambahkan ke akun Anda",
   "Passkey was removed from your account": "Kunci sandi telah dihapus dari akun Anda",
-  "Invalid WebAuthn key.": "Kunci WebAuthn tidak valid."
+  "Invalid WebAuthn key.": "Kunci WebAuthn tidak valid.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifikasi oleh <span class=\"notranslate\">%s</span> untuk mencegah penghapusan."
 }

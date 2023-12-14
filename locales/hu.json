@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Nem támogatott tanúsítványformátum <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "Új jelszót adtunk hozzá a fiókjához",
   "Passkey was removed from your account": "A jelszót eltávolítottuk a fiókjából",
-  "Invalid WebAuthn key.": "Érvénytelen WebAuthn kulcs."
+  "Invalid WebAuthn key.": "Érvénytelen WebAuthn kulcs.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "A törlés elkerülése érdekében igazolja ezt: <span class=\"notranslate\">%s</span> ."
 }

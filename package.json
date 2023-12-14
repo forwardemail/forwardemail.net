@@ -38,7 +38,7 @@
     "@ladjs/mongoose-error-messages": "1.0.0",
     "@ladjs/passport": "5.1.0",
     "@ladjs/pick-original": "1.0.0",
-    "@ladjs/policies": "11.1.1",
+    "@ladjs/policies": "12.0.0",
     "@ladjs/proxy": "4.0.1",
     "@ladjs/redis": "1.1.1",
     "@ladjs/shared-config": "9.1.3",

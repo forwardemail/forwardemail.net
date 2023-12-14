@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Niet-ondersteunde attestindeling <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "Er is een nieuwe toegangscode aan uw account toegevoegd",
   "Passkey was removed from your account": "De toegangssleutel is uit uw account verwijderd",
-  "Invalid WebAuthn key.": "Ongeldige WebAuthn-sleutel."
+  "Invalid WebAuthn key.": "Ongeldige WebAuthn-sleutel.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifieer met <span class=\"notranslate\">%s</span> om verwijdering te voorkomen."
 }

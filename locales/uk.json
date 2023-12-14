@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Непідтримуваний формат атестації <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "До вашого облікового запису додано новий ключ доступу",
   "Passkey was removed from your account": "Ключ доступу видалено з вашого облікового запису",
-  "Invalid WebAuthn key.": "Недійсний ключ WebAuthn."
+  "Invalid WebAuthn key.": "Недійсний ключ WebAuthn.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Перевірте <span class=\"notranslate\">%s</span> , щоб запобігти видаленню."
 }

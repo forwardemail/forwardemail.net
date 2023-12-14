@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "تنسيق الشهادة غير معتمد <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "تمت إضافة مفتاح مرور جديد إلى حسابك",
   "Passkey was removed from your account": "تمت إزالة مفتاح المرور من حسابك",
-  "Invalid WebAuthn key.": "مفتاح WebAuthn غير صالح."
+  "Invalid WebAuthn key.": "مفتاح WebAuthn غير صالح.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "قم بالتحقق بواسطة <span class=\"notranslate\">%s</span> لمنع الحذف."
 }

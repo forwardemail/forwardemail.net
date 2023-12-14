@@ -4081,5 +4081,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "פורמט אישור לא נתמך <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "מפתח סיסמה חדש נוסף לחשבון שלך",
   "Passkey was removed from your account": "מפתח הסיסמה הוסר מחשבונך",
-  "Invalid WebAuthn key.": "מפתח WebAuthn לא חוקי."
+  "Invalid WebAuthn key.": "מפתח WebAuthn לא חוקי.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "אמת עד <span class=\"notranslate\">%s</span> כדי למנוע מחיקה."
 }

@@ -25,7 +25,7 @@ block content
               else if new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
                 p.card-text.mb-0!= t("Make payment now to avoid account termination.")
               else
-                p.card-text.mb-0!= t('Your plan expires on <span class="text-danger font-weight-bold notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).format("M/D/YY"))
+                p.card-text.mb-0!= t('Your plan expires on <span class="text-danger font-weight-bold notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).format("LL"))
               ul.list-inline.text-center.mb-0
                 if !isSANB(user[config.userFields.stripeSubscriptionID]) && !isSANB(user[config.userFields.paypalSubscriptionID])
                   li.list-inline-item.mt-3

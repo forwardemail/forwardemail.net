@@ -6223,5 +6223,6 @@
   "Passkey does not exist.": "密钥不存在。",
   "Nickname was missing or blank.": "昵称缺失或为空。",
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "不支持的证明格式<span class=\"notranslate\">%s</span>",
-  "Invalid WebAuthn key.": "WebAuthn 密钥无效。"
+  "Invalid WebAuthn key.": "WebAuthn 密钥无效。",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "由<span class=\"notranslate\">%s</span>验证以防止删除。"
 }

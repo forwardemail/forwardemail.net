@@ -6536,5 +6536,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Ustøttet attestasjonsformat <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "Ny adgangsnøkkel ble lagt til kontoen din",
   "Passkey was removed from your account": "Passnøkkel ble fjernet fra kontoen din",
-  "Invalid WebAuthn key.": "Ugyldig WebAuthn-nøkkel."
+  "Invalid WebAuthn key.": "Ugyldig WebAuthn-nøkkel.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Bekreft innen <span class=\"notranslate\">%s</span> for å forhindre sletting."
 }

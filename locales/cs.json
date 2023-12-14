@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Nepodporovaný formát atestace <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "K vašemu účtu byl přidán nový přístupový klíč",
   "Passkey was removed from your account": "Přístupový klíč byl odebrán z vašeho účtu",
-  "Invalid WebAuthn key.": "Neplatný klíč WebAuthn."
+  "Invalid WebAuthn key.": "Neplatný klíč WebAuthn.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Ověřte do <span class=\"notranslate\">%s</span> , abyste zabránili smazání."
 }

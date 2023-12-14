@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Định dạng chứng thực không được hỗ trợ <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "Mật mã mới đã được thêm vào tài khoản của bạn",
   "Passkey was removed from your account": "Mật mã đã bị xóa khỏi tài khoản của bạn",
-  "Invalid WebAuthn key.": "Khóa WebAuthn không hợp lệ."
+  "Invalid WebAuthn key.": "Khóa WebAuthn không hợp lệ.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Xác minh bằng <span class=\"notranslate\">%s</span> để tránh bị xóa."
 }

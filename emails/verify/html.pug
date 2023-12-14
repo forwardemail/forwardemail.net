@@ -13,4 +13,4 @@ block content
               p= t("This code expires within %s.", dayjs(expiresAt).locale(locale).fromNow(true))
             a.btn.btn-lg.btn-block.btn-primary(href=link)
               = t("Verify now")
-          .card-footer.small.text-muted= t("If you did not submit this request, then please reply to let us know.")
+          .card-footer.small.text-danger.font-weight-bold.text-decoration-underline!= t('Verify by <span class="notranslate">%s</span> to prevent deletion.', dayjs(user.created_at).add(30, "days").locale(locale).format("LL"))

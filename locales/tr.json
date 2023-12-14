@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Desteklenmeyen doğrulama biçimi <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "Hesabınıza yeni şifre anahtarı eklendi",
   "Passkey was removed from your account": "Şifre anahtarı hesabınızdan kaldırıldı",
-  "Invalid WebAuthn key.": "Geçersiz WebAuthn anahtarı."
+  "Invalid WebAuthn key.": "Geçersiz WebAuthn anahtarı.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Silmeyi önlemek için <span class=\"notranslate\">%s</span> ile doğrulayın."
 }

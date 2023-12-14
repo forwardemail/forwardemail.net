@@ -32,6 +32,17 @@ const jobs = [
     timeout: 0,
     path: path.join(__dirname, 'stripe', 'index.js')
   },
+  //
+  // we delete accounts after 30+ days of being unverified
+  // (see "cleanup-database.js" job)
+  // and we will send them a verification email reminder every 14 days
+  // (so roughly 2x over the course of 30 days, + initial = 3)
+  //
+  {
+    name: 'send-verification-reminder',
+    interval: '1h',
+    timeout: 0
+  },
   {
     name: 'billing',
     interval: '1h',

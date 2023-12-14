@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "サポートされていない証明書形式<span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "新しいパスキーがアカウントに追加されました",
   "Passkey was removed from your account": "パスキーがアカウントから削除されました",
-  "Invalid WebAuthn key.": "無効な WebAuthn キーです。"
+  "Invalid WebAuthn key.": "無効な WebAuthn キーです。",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "削除を防ぐには、 <span class=\"notranslate\">%s</span>によって検証してください。"
 }

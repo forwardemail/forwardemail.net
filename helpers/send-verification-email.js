@@ -7,7 +7,9 @@ const Boom = require('@hapi/boom');
 
 const email = require('./email');
 const logger = require('./logger');
+
 const config = require('#config');
+const i18n = require('#helpers/i18n');
 
 async function sendVerificationEmail(ctx) {
   ctx.state.user = await ctx.state.user.updateVerificationPin(ctx);
@@ -41,7 +43,9 @@ async function sendVerificationEmail(ctx) {
       logger.error(err);
     }
 
-    const error = Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));
+    const error = Boom.badRequest(
+      i18n.translateError('EMAIL_FAILED_TO_SEND', ctx.locale)
+    );
     error.has_email_failed = true;
     throw error;
   }

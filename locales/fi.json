@@ -6377,5 +6377,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Todistusmuotoa <span class=\"notranslate\">%s</span> ei tueta",
   "New passkey was added to your account": "Uusi salasana lisättiin tilillesi",
   "Passkey was removed from your account": "Salasana poistettiin tililtäsi",
-  "Invalid WebAuthn key.": "Virheellinen WebAuthn-avain."
+  "Invalid WebAuthn key.": "Virheellinen WebAuthn-avain.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Vahvista <span class=\"notranslate\">%s</span> estääksesi poistamisen."
 }

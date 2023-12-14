@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "รูปแบบการรับรองที่ไม่รองรับ <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "เพิ่มรหัสผ่านใหม่ในบัญชีของคุณแล้ว",
   "Passkey was removed from your account": "รหัสผ่านถูกลบออกจากบัญชีของคุณ",
-  "Invalid WebAuthn key.": "คีย์ WebAuthn ไม่ถูกต้อง"
+  "Invalid WebAuthn key.": "คีย์ WebAuthn ไม่ถูกต้อง",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "ตรวจสอบโดย <span class=\"notranslate\">%s</span> เพื่อป้องกันการลบ"
 }

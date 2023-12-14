@@ -39,7 +39,7 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    // delete unverified and unpaid users from 7+ days ago
+    // delete unverified and unpaid users from 30+ days ago
     {
       const results = await Users.deleteMany({
         plan: 'free',
@@ -52,13 +52,19 @@ graceful.listen();
         [config.passport.fields.googleProfileID]: {
           $exists: false
         },
+        [config.passport.fields.appleProfileID]: {
+          $exists: false
+        },
         [config.userFields.hasVerifiedEmail]: false,
         created_at: {
-          $lte: dayjs().subtract(7, 'days').toDate()
+          $lte: dayjs().subtract(30, 'days').toDate()
+        },
+        [config.userFields.verificationPinSentAt]: {
+          $exists: true
         }
       });
 
-      logger.info('deleted unverified and unpaid users created 7+ days ago', {
+      logger.info('deleted unverified and unpaid users created 30+ days ago', {
         results
       });
     }

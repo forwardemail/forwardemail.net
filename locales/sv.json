@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Intygsformat <span class=\"notranslate\">%s</span> stöds inte",
   "New passkey was added to your account": "Nytt lösenord har lagts till ditt konto",
   "Passkey was removed from your account": "Nyckeln togs bort från ditt konto",
-  "Invalid WebAuthn key.": "Ogiltig WebAuthn-nyckel."
+  "Invalid WebAuthn key.": "Ogiltig WebAuthn-nyckel.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifiera med <span class=\"notranslate\">%s</span> för att förhindra radering."
 }

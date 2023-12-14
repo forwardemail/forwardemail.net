@@ -6531,5 +6531,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "Nieobsługiwany format zaświadczenia <span class=\"notranslate\">%s</span>",
   "New passkey was added to your account": "Do Twojego konta dodano nowy klucz",
   "Passkey was removed from your account": "Klucz dostępu został usunięty z Twojego konta",
-  "Invalid WebAuthn key.": "Nieprawidłowy klucz WebAuthn."
+  "Invalid WebAuthn key.": "Nieprawidłowy klucz WebAuthn.",
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Zweryfikuj przez <span class=\"notranslate\">%s</span> , aby zapobiec usunięciu."
 }
