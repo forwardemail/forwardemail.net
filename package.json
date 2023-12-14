@@ -205,7 +205,7 @@
     "sanitize-html": "2.11.0",
     "scmp": "2.1.0",
     "sender-rewriting-scheme": "1.0.0",
-    "sharp": "0.32.0",
+    "sharp": "0.32.6",
     "signale": "1.4.0",
     "sitemap": "7.1.1",
     "smtp-server": "3.13.0",
