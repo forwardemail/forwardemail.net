@@ -237,11 +237,8 @@ async function generateOpenGraphImage(ctx) {
       noCreditCard = i18n.translate('NO_CREDIT_CARD', 'en');
 
     const svgReplaced = SVG_STR.replace('NO_CREDIT_CARD', noCreditCard)
-      .replaceAll(
-        'MONOSPACE_NAME',
-        'Inconsolata-dz, Menlo, Monaco, Consolas, monospace'
-      )
-      .replaceAll('FONT_NAME', 'Arial')
+      .replaceAll('MONOSPACE_NAME', 'Inconsolata-dz')
+      .replaceAll('FONT_NAME', 'VC Honey')
       .replace('PRIVATE_BUSINESS', str.trim())
       .replace('FREE_EMAIL', freeEmail)
       .replace(

@@ -6532,5 +6532,6 @@
   "New passkey was added to your account": "Er is een nieuwe toegangscode aan uw account toegevoegd",
   "Passkey was removed from your account": "De toegangssleutel is uit uw account verwijderd",
   "Invalid WebAuthn key.": "Ongeldige WebAuthn-sleutel.",
-  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifieer met <span class=\"notranslate\">%s</span> om verwijdering te voorkomen."
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifieer met <span class=\"notranslate\">%s</span> om verwijdering te voorkomen.",
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM VEILIG + VERSLEUTELDE E-MAIL"
 }

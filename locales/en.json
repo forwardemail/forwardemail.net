@@ -6290,5 +6290,6 @@
   "Successfully updated passkey nickname.": "Successfully updated passkey nickname.",
   "New passkey was added to your account": "New passkey was added to your account",
   "Passkey was removed from your account": "Passkey was removed from your account",
-  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verify by <span class=\"notranslate\">%s</span> to prevent deletion."
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.",
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL"
 }

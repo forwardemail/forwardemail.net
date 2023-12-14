@@ -6532,5 +6532,6 @@
   "New passkey was added to your account": "В вашу учетную запись добавлен новый ключ доступа.",
   "Passkey was removed from your account": "Ключ доступа был удален из вашей учетной записи",
   "Invalid WebAuthn key.": "Неверный ключ WebAuthn.",
-  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Подтвердите <span class=\"notranslate\">%s</span> , чтобы предотвратить удаление."
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Подтвердите <span class=\"notranslate\">%s</span> , чтобы предотвратить удаление.",
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% ОТКРЫТЫЙ ИСТОЧНИК + КВАНТОВАЯ БЕЗОПАСНОСТЬ + ЗАШИФРОВАННАЯ ЭЛЕКТРОННАЯ ПОЧТА"
 }

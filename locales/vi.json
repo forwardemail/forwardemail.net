@@ -6532,5 +6532,6 @@
   "New passkey was added to your account": "Mật mã mới đã được thêm vào tài khoản của bạn",
   "Passkey was removed from your account": "Mật mã đã bị xóa khỏi tài khoản của bạn",
   "Invalid WebAuthn key.": "Khóa WebAuthn không hợp lệ.",
-  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Xác minh bằng <span class=\"notranslate\">%s</span> để tránh bị xóa."
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Xác minh bằng <span class=\"notranslate\">%s</span> để tránh bị xóa.",
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% NGUỒN MỞ + AN TOÀN LƯỢNG LƯỢNG + EMAIL MÃ HÓA"
 }

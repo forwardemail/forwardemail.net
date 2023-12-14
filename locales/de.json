@@ -5567,5 +5567,6 @@
   "New passkey was added to your account": "Ihrem Konto wurde ein neuer Passkey hinzugefügt",
   "Passkey was removed from your account": "Der Passkey wurde von Ihrem Konto entfernt",
   "Invalid WebAuthn key.": "Ungültiger WebAuthn-Schlüssel.",
-  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Überprüfen Sie durch <span class=\"notranslate\">%s</span> , um das Löschen zu verhindern."
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Überprüfen Sie durch <span class=\"notranslate\">%s</span> , um das Löschen zu verhindern.",
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % OPEN-SOURCE + QUANTUMSAFE + VERSCHLÜSSELTE E-MAIL"
 }

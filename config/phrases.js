@@ -56,7 +56,7 @@ module.exports = {
   ALIAS_PASSWORD_GENERATED_SUBJECT: `New password generated for <span class="notranslate">%s</span>`,
   NO_RESULTS_FOUND: 'No results were found.',
   EMAIL_SETUP_GUIDE: 'Email Setup Guide',
-  NO_CREDIT_CARD: '100% OPEN-SOURCE AND PRIVACY-FOCUSED EMAIL SERVICE.',
+  NO_CREDIT_CARD: '100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL',
   PRIVATE_BUSINESS: 'Private Business Email Service',
   TUTORIAL: 'TUTORIAL',
   FREE_EMAIL: 'LEARN MORE',

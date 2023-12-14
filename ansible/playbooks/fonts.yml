@@ -1,0 +1,52 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+- hosts: imap:pop3:smtp:http:bree:sqlite
+  name: Fonts
+  vars_prompt:
+    - name: input_font
+      prompt: Enter path to TTF or OTF file
+      private: false
+
+  tasks:
+    # ensure directory exists
+    - name: Ensure directory ~/.fonts exists
+      file:
+        path: "/home/deploy/.fonts"
+        state: directory
+        mode: 0755
+
+    # font file
+    - name: Check if font file exists
+      local_action: stat path={{ input_font }}
+      become: false
+      register: local_font_file
+    - name: Fail when local font file does not exist
+      fail:
+        msg: "font file does not exist: {{ input_font }}"
+      when: not local_font_file.stat.exists
+
+    # remote dir
+    - name: Check if remote dir exists
+      stat:
+        path: /home/deploy/.fonts
+      register: remote_dir
+
+    - name: Fail when remote dir does not exist
+      fail:
+        msg: ~/.fonts dir not yet created
+      when: not remote_dir.stat.exists or not remote_dir.stat.isdir
+
+    # copy local font
+    - name: Copy local font file to server
+      copy:
+        src: "{{ input_font }}"
+        dest: /home/deploy/.fonts/{{ input_font | basename | replace('%20', ' ') | replace(' ', '_') }}
+        owner: deploy
+        # https://chmodcommand.com/chmod-660/
+        mode: "0660"
+
+    # recreate the font cache
+    - name: Recreate the font cache
+      command: fc-cache -fv

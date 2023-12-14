@@ -393,13 +393,19 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     node ansible-playbook ansible/playbooks/gapp-creds.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
     ```
 
-20. Copy the `.env.production` to the servers:
+20. (Optional) Copy over custom TTF or OTF fonts to be installed on the server (e.g. used for PDF rendering, rendering with Sharp, open-graph images, etc):
+
+    ```sh
+    node ansible-playbook ansible/playbooks/fonts.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
+    ```
+
+21. Copy the `.env.production` to the servers:
 
     ```sh
     node ansible-playbook ansible/playbooks/env.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
     ```
 
-21. Run an initial deploy to all the servers:
+22. Run an initial deploy to all the servers:
 
     ```sh
     pm2 deploy ecosystem-web.json production
@@ -429,7 +435,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-sqlite.json production
     ```
 
-22. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
+23. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
 
     ```sh
     pm2 deploy ecosystem-web.json production exec "pm2 save"
@@ -459,21 +465,21 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-sqlite.json production exec "pm2 save"
     ```
 
-23. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
+24. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
 
-24. Configure your DNS records for the web and API server hostnames and respective IP addresses.
+25. Configure your DNS records for the web and API server hostnames and respective IP addresses.
 
-25. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
+26. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
 
-26. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+27. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
     ```sh
     rm .env.production
     ```
 
-27. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+28. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
-28. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
+29. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
 
 
 ## Deployment Advice

@@ -6532,5 +6532,6 @@
   "New passkey was added to your account": "새 비밀번호가 계정에 추가되었습니다",
   "Passkey was removed from your account": "비밀번호가 계정에서 제거되었습니다.",
   "Invalid WebAuthn key.": "WebAuthn 키가 잘못되었습니다.",
-  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "삭제를 방지하려면 <span class=\"notranslate\">%s</span> 에서 확인하세요."
+  "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "삭제를 방지하려면 <span class=\"notranslate\">%s</span> 에서 확인하세요.",
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% 오픈 소스 + 양자 안전 + 암호화된 이메일"
 }
