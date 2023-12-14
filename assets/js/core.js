@@ -706,8 +706,8 @@ if (window.PublicKeyCredential) {
         typeof webauthnResponse.body.redirectTo !== 'string'
       )
         throw new Error(
-          response.statusText ||
-            response.text ||
+          webauthnResponse.statusText ||
+            webauthnResponse.text ||
             'Invalid response, please try again'
         );
 
