@@ -34,6 +34,7 @@ const zxcvbn = require('#helpers/zxcvbn');
 
 const config = {
   ...metaConfig,
+  passkeyLimit: 30,
   IMAP_REDIS_CHANNEL_NAME: 'imap_events',
 
   srs: {

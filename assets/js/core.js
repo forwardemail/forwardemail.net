@@ -8,11 +8,22 @@ const Clipboard = require('clipboard');
 const Lazyload = require('lazyload');
 const Popper = require('popper.js');
 const Swal = require('sweetalert2');
+const Typed = require('typed.js');
 const URLParse = require('url-parse');
+const base64url = require('base64url');
 const debounce = require('lodash/debounce');
 const lazyframe = require('lazyframe');
-const Typed = require('typed.js');
 const { randomstring } = require('@sidoshi/random-string');
+const { spinner: Spinner } = require('@ladjs/assets');
+
+// <https://gist.github.com/miguelmota/5b06ae5698877322d0ca?permalink_comment_id=3611597#gistcomment-3611597>
+// <https://stackoverflow.com/a/31394257>
+function toArrayBuffer(buffer) {
+  return buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength
+  );
+}
 
 // load jQuery and Bootstrap
 // <https://stackoverflow.com/a/34340392>
@@ -39,6 +50,8 @@ if (!window.matchMedia('(any-pointer: coarse)').matches) {
   });
 }
 
+const spinner = new Spinner($);
+
 const $body = $('body');
 
 const {
@@ -56,6 +69,8 @@ const {
   returnTo,
   jumpTo
 } = require('@ladjs/assets');
+
+const sendRequest = require('./send-request');
 
 // Resize navbar padding on load, window resize, and navbar collapse/show
 resizeNavbarPadding($);
@@ -529,3 +544,177 @@ $(window).keydown((ev) => {
     collapsed = true;
   }
 });
+
+//
+// webauthn support
+//
+if (window.PublicKeyCredential) {
+  $('#webauthn-container').removeClass('d-none');
+
+  $body.on('click.webauthnRegister', '.btn-webauthn-register', async (ev) => {
+    ev.preventDefault();
+
+    try {
+      if (!window.USER || !window.USER.id || !window.USER.email)
+        throw new Error('You are not logged in, please refresh and try again');
+
+      spinner.show();
+
+      const response = await sendRequest({}, '/auth/webauthn/challenge');
+
+      // Check if any errors occurred
+      if (response.err) throw response.err;
+
+      // Prepare a message if the body is not accurate
+      if (
+        typeof response.body !== 'object' ||
+        response.body === null ||
+        typeof response.body.challenge !== 'string'
+      )
+        throw new Error(
+          response.statusText ||
+            response.text ||
+            'Invalid response, please try again'
+        );
+
+      // https://chromium.googlesource.com/chromium/src/+/master/content/browser/webauth/uv_preferred.md
+      // https://chromium.googlesource.com/chromium/src/+/main/content/browser/webauth/pub_key_cred_params.md
+      const credential = await navigator.credentials.create({
+        publicKey: {
+          rp: {
+            name: 'Forward Email'
+          },
+          user: {
+            id: toArrayBuffer(base64url.toBuffer(window.USER.id)),
+            // <https://blog.millerti.me/2023/02/14/controlling-the-name-displayed-during-webauthn-registration-and-authentication/>
+            name: window.USER.email,
+            displayName: window.USER.email
+          },
+          // https://chromium.googlesource.com/chromium/src/+/master/content/browser/webauth/client_data_json.md
+          challenge: toArrayBuffer(base64url.toBuffer(response.body.challenge)),
+          pubKeyCredParams: [
+            {
+              type: 'public-key',
+              alg: -7 // ES256
+            },
+            {
+              type: 'public-key',
+              alg: -257 // RS256
+            }
+          ],
+          // attestation: 'none',
+          authenticatorSelection: {
+            // authenticatorAttachment: 'platform', // "platform" | "cross-platform"
+            residentKey: 'preferred',
+            requireResidentKey: false,
+            userVerification: 'preferred' // "required" | "preferred" (default) | "discouraged"
+          },
+          extensions: {
+            credProps: true,
+            minPinLength: true
+          }
+        }
+      });
+
+      const body = {
+        response: {
+          clientDataJSON: base64url.encode(credential.response.clientDataJSON),
+          attestationObject: base64url.encode(
+            credential.response.attestationObject
+          )
+        }
+      };
+
+      if (credential.response.getTransports)
+        body.response.transports = credential.response.getTransports();
+
+      const webauthnResponse = await sendRequest(
+        body,
+        `/${window.LOCALE}/my-account/passkeys`
+      );
+
+      // Check if any errors occurred
+      if (webauthnResponse.err) throw webauthnResponse.err;
+
+      if (
+        typeof webauthnResponse.body !== 'object' ||
+        webauthnResponse.body === null ||
+        typeof webauthnResponse.body.redirectTo !== 'string'
+      )
+        throw new Error(
+          response.statusText ||
+            response.text ||
+            'Invalid response, please try again'
+        );
+
+      window.location.href = webauthnResponse.body.redirectTo;
+    } catch (err) {
+      spinner.hide();
+      Swal.fire(window._types.error, err.message, 'error');
+    }
+  });
+
+  $body.on('click.webauthnLogin', '.btn-webauthn-login', async (ev) => {
+    ev.preventDefault();
+
+    try {
+      spinner.show();
+
+      const response = await sendRequest({}, '/auth/webauthn/challenge');
+
+      // Prepare a message if the body is not accurate
+      if (
+        typeof response.body !== 'object' ||
+        response.body === null ||
+        typeof response.body.challenge !== 'string'
+      )
+        throw new Error(
+          response.statusText ||
+            response.text ||
+            'Invalid response, please try again'
+        );
+
+      const credential = await navigator.credentials.get({
+        publicKey: {
+          challenge: toArrayBuffer(base64url.toBuffer(response.body.challenge))
+        }
+      });
+
+      const body = {
+        id: credential.id,
+        response: {
+          clientDataJSON: base64url.encode(credential.response.clientDataJSON),
+          authenticatorData: base64url.encode(
+            credential.response.authenticatorData
+          ),
+          signature: base64url.encode(credential.response.signature),
+          userHandle: credential.response.userHandle
+            ? base64url.encode(credential.response.userHandle)
+            : null
+        }
+      };
+
+      if (credential.authenticatorAttachment)
+        body.authenticatorAttachment = credential.authenticatorAttachment;
+
+      // send post request to /auth/webauthn
+      const webauthnResponse = await sendRequest(body, '/auth/webauthn/ok');
+
+      if (
+        typeof webauthnResponse.body !== 'object' ||
+        webauthnResponse.body === null ||
+        typeof webauthnResponse.body.redirectTo !== 'string'
+      )
+        throw new Error(
+          response.statusText ||
+            response.text ||
+            'Invalid response, please try again'
+        );
+
+      window.location.href = webauthnResponse.body.redirectTo;
+    } catch (err) {
+      spinner.hide();
+      Swal.fire(window._types.error, err.message, 'error');
+    }
+  });
+}

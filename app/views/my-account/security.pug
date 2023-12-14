@@ -1,6 +1,124 @@
 extends ../layout
 
 block body
+  if !isBot(ctx.get('User-Agent')) && isSANB(ctx.query.passkey)
+    script(async, defer).
+      document.addEventListener(
+        "DOMContentLoaded",
+        function load() {
+          if (!window.jQuery) return setTimeout(load, 50);
+          $(function () {
+            $(`#modal-nickname-#{ctx.query.passkey}`).modal("show");
+          });
+        },
+        false
+      );
+
+  each passkey in user.passkeys
+    .modal.fade(
+      id=`modal-nickname-${passkey.id}`,
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby=`modal-nickname-${passkey.id}-title`,
+      aria-hidden="true"
+    )
+      .modal-dialog(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            h4.d-inline-block.ml-4(id=`modal-nickname-${passkey.id}-title`)= t("Edit Nickname")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
+          .modal-body
+            .text-center
+              form.ajax-form.confirm-prompt(
+                action=l(`/my-account/passkeys/${passkey.id}`),
+                method="POST"
+              )
+                input(type="hidden", name="_method", value="PUT")
+                .form-group.floating-label
+                  input.form-control(
+                    id=`input-${passkey.id}-nickname`,
+                    type="text",
+                    name="nickname",
+                    value=passkey.nickname,
+                    placeholder=t("Passkey Nickname")
+                  )
+                  label(for=`input-${passkey.id}-nickname`)= t("Nickname")
+                  p.form-text.small.text-black.text-themed-50= t("Nickname has a max of 150 characters.")
+                button.btn.btn-lg.btn-block.btn-success(type="submit")
+                  = t("Update Nickname")
+
+  #modal-manage-passkeys.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-manage-passkeys-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-xl(role="document")
+      .modal-content
+        .modal-header.d-block.text-center
+          h4#modal-manage-passkeys-title.d-inline-block.ml-4= t("Manage Passkeys")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body.text-center
+          .d-block.d-lg-none.mb-3.text-muted.small
+            = "("
+            = t("Scroll to the right to see entire table")
+            = ")"
+          .table-responsive
+            table.table.table-hover.table-bordered.table-sm.mb-0
+              thead.thead-dark
+                tr
+                  th(scope="col")= t("Nickname")
+                  th(scope="col")= t("Public Key (SHA256)")
+                  th(scope="col")= t("Created")
+                  th(scope="col")= t("Actions")
+              tbody
+                if !Array.isArray(user.passkeys) || user.passkeys.length === 0
+                  tr
+                    td(colspan=4)
+                      .alert.alert-info.text-center.mb-0= t("No passkeys exist yet.")
+                else
+                  each passkey in user.passkeys
+                    tr
+                      td.align-middle.small.text-monospace= passkey.nickname
+                      td.align-middle.text-center.small.text-monospace
+                        code.small= passkey.sha256
+                      td.align-middle.text-center.dayjs(
+                        data-time=new Date(passkey.created_at).getTime()
+                      )
+                        small= dayjs(passkey.created_at).format("M/D/YY h:mm A z")
+                      td.align-middle
+                        ul.list-inline.mb-0
+                          li.list-inline-item
+                            button.btn.btn-primary.btn-sm.text-nowrap(
+                              data-toggle="modal",
+                              data-dismiss="modal",
+                              data-target=`#modal-nickname-${passkey.id}`,
+                              type="button"
+                            )
+                              i.fa.fa-pencil
+                              = " "
+                              = t("Edit Nickname")
+                          li.list-inline-item
+                            form.ajax-form.confirm-prompt.d-inline-block(
+                              action=l(`/my-account/passkeys/${passkey.id}`),
+                              method="POST"
+                            )
+                              input(
+                                type="hidden",
+                                name="_method",
+                                value="DELETE"
+                              )
+                              button.btn.btn-danger.btn-sm(type="submit")
+                                i.fa.fa-trash
+                                = " "
+                                = t("Remove")
+
   #modal-disable-otp.modal.fade(
     tabindex="-1",
     role="dialog",
@@ -56,6 +174,37 @@ block body
                 )
                   input(type="hidden", name="_method", value="DELETE")
                   button.btn.btn-sm.btn-danger(type="submit")= t("Delete Account")
+
+          if passport && passport.webauthn
+            .card.border-themed.mb-3
+              h2.h6.card-header= t("Passkey Authentication")
+              .card-body
+                h5= t("Configure Passkeys")
+                p
+                  = t("Passkeys allow you to securely log in without requiring a password and two-factor authentication.")
+                  = " "
+                  = t("You can validate your identity with touch, facial recognition, device-based password, or PIN.")
+                  = " "
+                  = t("We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.")
+                a.btn-webauthn-register.btn.btn-primary.btn-md(
+                  href="#",
+                  role="button"
+                )= t("Add New Passkey")
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.btn.btn-primary(
+                      data-toggle="modal",
+                      data-target="#modal-manage-passkeys",
+                      type="button"
+                    )= t("Manage Passkeys")
+                  li.list-inline-item
+                    a.btn.btn-dark(
+                      href=l("/faq#do-you-support-passkeys-and-webauthn"),
+                      rel="noopener noreferrer",
+                      target="_blank"
+                    )= t("Learn more")
+
           if passport && passport.otp
             .card.border-themed.mb-3
               h2.h6.card-header= t("Two-Factor Authentication")

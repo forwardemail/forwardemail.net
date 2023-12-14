@@ -3,15 +3,41 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const Router = require('@koa/router');
-const paginate = require('koa-ctx-paginate');
-const render = require('koa-views-render');
+const url = require('node:url');
+const crypto = require('node:crypto');
 
+const Attestation = require('passport-fido2-webauthn/lib/fido2/attestation');
+const AuthenticatorData = require('passport-fido2-webauthn/lib/fido2/authenticatordata');
+const Boom = require('@hapi/boom');
+const Router = require('@koa/router');
+const _ = require('lodash');
+const attestationFormats = require('passport-fido2-webauthn/lib/fido2/formats');
+const base64url = require('base64url');
+const cose2jwk = require('cose-to-jwk');
+const isSANB = require('is-string-and-not-blank');
+const jwk2pem = require('jwk-to-pem');
+const paginate = require('koa-ctx-paginate');
+const pify = require('pify');
+const render = require('koa-views-render');
+const utils = require('passport-fido2-webauthn/lib/utils');
+const { SessionChallengeStore } = require('passport-fido2-webauthn');
+const { sha256 } = require('crypto-hash');
+
+const Users = require('#models/users');
+const config = require('#config');
+const email = require('#helpers/email');
+const i18n = require('#helpers/i18n');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
 
 const router = new Router({ prefix: '/my-account' });
+
+const store = new SessionChallengeStore();
+const storeVerify = pify(store.verify, { multiArgs: true }).bind(store);
+
+const USER_PRESENT = 0x01;
+const USER_VERIFIED = 0x04;
 
 router
   .use((ctx, next) => {
@@ -418,6 +444,250 @@ router
     },
     render('my-account/security')
   )
-  .post('/recovery-keys', web.myAccount.recoveryKeys);
+  .post('/recovery-keys', web.myAccount.recoveryKeys)
+  .post('/passkeys', async (ctx) => {
+    //
+    // TODO: note that the passport-fido2-webauthn codebase has a LOT of TODO statements
+    //       <https://github.com/search?q=repo%3Ajaredhanson%2Fpassport-webauthn%20TODO&type=code>
+    //
+    // NOTE: this source code was inspired/mirrored from example here
+    //       <https://github.com/passport/todos-express-webauthn>
+    //
+
+    if (!_.isPlainObject(ctx?.request?.body?.response))
+      throw new TypeError('Invalid response');
+
+    if (!isSANB(ctx.request.body.response.clientDataJSON))
+      throw new TypeError('Invalid clientDataJSON');
+
+    if (!isSANB(ctx.request.body.response.attestationObject))
+      throw new TypeError('Invalid attestationObject');
+
+    if (!Array.isArray(ctx.request.body.response.transports))
+      ctx.request.body.response.transports = [];
+
+    // ctx.request.body {
+    //   response: {
+    //     clientDataJSON: '******',
+    //     attestationObject: '******',
+    //     transports: [ 'usb' ]
+    //   }
+    // }
+
+    const { response } = ctx.request.body;
+    const clientDataJSON = base64url.decode(response.clientDataJSON);
+    const clientData = JSON.parse(clientDataJSON);
+
+    // clientData {
+    //   type: 'webauthn.create',
+    //   challenge: '******',
+    //   origin: 'http://localhost:3000',
+    //   crossOrigin: false
+    // }
+
+    if (clientData.type !== 'webauthn.create')
+      throw new TypeError('Client data type must be webauthn.create');
+
+    // <https://github.com/jaredhanson/passport-webauthn/issues/7>
+    const challenge = base64url.toBuffer(clientData.challenge);
+    // const [ok, obj] = await storeVerify(ctx, challenge);
+    const [ok] = await storeVerify(ctx, challenge);
+    // [ false, { message: 'Invalid challenge.' } ]
+    if (!ok)
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('INVALID_CHALLENGE'))
+      );
+
+    // Verify that the origin contained in client data matches the origin of this
+    // app (which is the relying party).
+    //
+    // NOTE: `originalOrigin` function uses express-style `req.connection.encrypted` check
+    //       but since we're on Koa, the `req.connection` is actually `ctx.socket`
+    //       (so we bind a virtual helper and cleanup after)
+    //
+    ctx.connection = ctx.socket;
+    const origin = utils.originalOrigin(ctx);
+    delete ctx.connection;
+    if (origin !== clientData.origin)
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('INVALID_ORIGIN_MISMATCH'))
+      );
+
+    // TODO: Verify the state of Token Binding for the TLS connection over which
+    // the attestation was obtained.
+
+    const rpID = url.parse(origin).hostname;
+    const rpIdHash = crypto.createHash('sha256').update(rpID).digest();
+
+    // https://www.w3.org/TR/webauthn-2/#sctn-registering-a-new-credential
+    const b_attestation = base64url.toBuffer(response.attestationObject);
+    const attestation = Attestation.parse(b_attestation);
+    const authenticatorData = AuthenticatorData.parse(
+      attestation.authData,
+      true,
+      false
+    );
+
+    // Verify that the RP ID hash contained in authenticator data matches the
+    // hash of this app's (which is the relying party) RP ID.
+    if (!rpIdHash.equals(authenticatorData.rpIdHash))
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('INVALID_RP_ID_HASH_MISMATCH'))
+      );
+
+    // Verify that the user present bit is set in authenticator data flags.
+    // eslint-disable-next-line no-bitwise
+    if (!(authenticatorData.flags & USER_PRESENT))
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('INVALID_USER_NOT_PRESENT'))
+      );
+
+    // TODO: Verify alg is allowed
+    // TODO: Verify that extensions are as expected.
+
+    const format = attestationFormats[attestation.fmt];
+    if (!format)
+      return ctx.throw(
+        Boom.badRequest(
+          ctx.translateError('INVALID_ATTESTATION_FORMAT', attestation.fmt)
+        )
+      );
+
+    // Verify that the attestation statement conveys a valid attestation signature.
+    const hash = crypto.createHash('sha256').update(clientDataJSON).digest();
+    let vAttestation;
+    try {
+      vAttestation = format.verify(
+        attestation.attStmt,
+        attestation.authData,
+        hash
+      );
+      ctx.logger.debug('vAttestation', { vAttestation });
+    } catch (err) {
+      ctx.logger.fatal(err);
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('INVALID_ATTESTATION_DATA'))
+      );
+    }
+
+    const credentialId = base64url.encode(
+      authenticatorData.attestedCredentialData.credentialId
+    );
+    const jwk = cose2jwk(
+      authenticatorData.attestedCredentialData.credentialPublicKey
+    );
+    const publicKey = jwk2pem(jwk);
+    const flags = {
+      // eslint-disable-next-line no-bitwise
+      userPresent: Boolean(authenticatorData.flags & USER_PRESENT),
+      // eslint-disable-next-line no-bitwise
+      userVerified: Boolean(authenticatorData.flags & USER_VERIFIED)
+    };
+
+    ctx.logger.debug('flags', { flags });
+
+    // self._register(obj.user, credentialId, pem, flags, authenticatorData.signCount, response.transports, vAttestation, registered);
+
+    // <https://docs.github.com/en/authentication/authenticating-with-a-passkey/about-passkeys#about-passkeys>
+    const nickname =
+      response.transports
+        .map((t) => t.toUpperCase())
+        .join(' ')
+        .trim() || 'Device';
+
+    // save new passkey to user
+    let user = await Users.findById(ctx.state.user._id);
+    if (!user) throw new TypeError('User does not exist');
+    user.passkeys.push({
+      credentialId,
+      publicKey,
+      nickname,
+      sha256: await sha256(
+        base64url.encode(
+          publicKey
+            .replace('-----BEGIN PUBLIC KEY-----', '')
+            .replace('-----END PUBLIC KEY-----', '')
+        )
+      )
+    });
+    user = await user.save();
+
+    email({
+      template: 'alert',
+      message: {
+        to: ctx.state.user[config.userFields.fullEmail],
+        subject: i18n.translate('PASSKEY_ADDED', ctx.locale)
+      },
+      locals: {
+        user: ctx.state.user,
+        locale: ctx.locale,
+        message: i18n.translate('PASSKEY_ADDED', ctx.locale)
+      }
+    })
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    // cleanup challenge
+    delete ctx.session[store._key];
+    await ctx.saveSession();
+
+    const redirectTo = ctx.state.l(
+      `/my-account/security?passkey=${
+        user.passkeys[user.passkeys.length - 1].id
+      }`
+    );
+    ctx.flash('success', ctx.translate('SUCCESSFULLY_ADDED_PASSKEY'));
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+  })
+  .put('/passkeys/:id', async (ctx) => {
+    if (!isSANB(ctx?.request?.body?.nickname))
+      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_NICKNAME')));
+
+    const user = await Users.findById(ctx.state.user._id);
+    if (!user) throw new TypeError('User does not exist');
+    const passkey = user.passkeys.id(ctx.params.id);
+    if (!passkey)
+      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PASSKEY')));
+    passkey.nickname = ctx.request.body.nickname;
+    await user.save();
+    const redirectTo = ctx.state.l('/my-account/security');
+    ctx.flash(
+      'success',
+      ctx.translate('SUCCESSFULLY_UPDATED_PASSKEY_NICKNAME')
+    );
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+  })
+  .del('/passkeys/:id', async (ctx) => {
+    const user = await Users.findById(ctx.state.user._id);
+    if (!user) throw new TypeError('User does not exist');
+    const passkey = user.passkeys.id(ctx.params.id);
+    if (!passkey)
+      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PASSKEY')));
+
+    passkey.remove();
+    await user.save();
+
+    email({
+      template: 'alert',
+      message: {
+        to: ctx.state.user[config.userFields.fullEmail],
+        subject: i18n.translate('PASSKEY_REMOVED', ctx.locale)
+      },
+      locals: {
+        user: ctx.state.user,
+        locale: ctx.locale,
+        message: i18n.translate('PASSKEY_REMOVED', ctx.locale)
+      }
+    })
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    const redirectTo = ctx.state.l('/my-account/security');
+    ctx.flash('success', ctx.translate('SUCCESSFULLY_REMOVED_PASSKEY'));
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+  });
 
 module.exports = router;

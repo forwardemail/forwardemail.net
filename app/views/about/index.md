@@ -48,6 +48,6 @@ In May 2023, we launched our **outbound SMTP** feature for [sending email with S
 
 In November 2023, we launched our [**encrypted mailbox storage**](/blog/docs/best-quantum-safe-encrypted-email-service) feature for [IMAP suppport](/faq#do-you-support-receiving-email-with-imap).
 
-In December 2023, [we added support](/faq#do-you-support-pop3) for [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol).
+In December 2023, [we added support](/faq#do-you-support-pop3) for [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol).  We also added [support for passkeys and WebAuthn](/faq#do-you-support-passkeys-and-webauthn), which allow you to securely log in without requiring a password and two-factor authentication.
 
 [arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain

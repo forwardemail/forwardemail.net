@@ -55,6 +55,8 @@ const refreshSession = require('#helpers/refresh-session');
 // TODO: enforce maxDownload and maxUpload
 // TODO: enforce 10-15 max connections per alias
 // TODO: each R2 bucket seems like it's 18 TB max?
+// TODO: use error.cause instead of `original_error` or some other stuff
+//       <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause>
 
 // TODO: future items
 // - [ ] contacts

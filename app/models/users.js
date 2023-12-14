@@ -43,6 +43,7 @@ const options = { length: 10, type: 'numeric' };
 const { fields } = config.passport;
 const omitExtraFields = [
   ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
+  'passkeys',
   // TODO: change to allowlist
   config.userFields.isRateLimitWhitelisted,
   config.userFields.apiToken,
@@ -78,7 +79,35 @@ const omitExtraFields = [
   config.userFields.smtpLimit
 ];
 
+const Passkey = new mongoose.Schema({
+  nickname: {
+    type: String,
+    maxlength: 150,
+    trim: true
+  },
+  credentialId: {
+    type: String,
+    trim: true
+  },
+  publicKey: {
+    type: String,
+    trim: true
+  },
+  // sha256 is publicKey converted to base64 and then sha256 hashed
+  sha256: String
+});
+
+Passkey.plugin(mongooseCommonPlugin, {
+  object: 'passkey',
+  omitCommonFields: false,
+  omitExtraFields: ['_id', '__v'],
+  uniqueId: false,
+  locale: false
+});
+
 const Users = new mongoose.Schema({
+  // Passkeys
+  passkeys: [Passkey],
   // Plan
   plan: {
     type: String,
@@ -522,6 +551,30 @@ Users.pre('save', function (next) {
 
   if (!isSANB(this[config.userFields.paypalSubscriptionID])) {
     this[config.userFields.paypalTrialSentAt] = undefined;
+  }
+
+  next();
+});
+
+//
+// allow user to have up to X passkeys at once
+//
+Users.pre('save', function (next) {
+  if (
+    Array.isArray(this.passkeys) &&
+    this.passkeys.length > config.passkeyLimit
+  ) {
+    const error = Boom.badRequest(
+      i18n.api.t(
+        {
+          phrase: config.i18n.phrases.PASSKEYS_MAX_LIMIT_EXCEEDED,
+          locale: this[config.lastLocaleField]
+        },
+        config.passkeyLimit
+      )
+    );
+    error.no_translate = true;
+    return next(error);
   }
 
   next();

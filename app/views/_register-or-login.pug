@@ -40,6 +40,22 @@ mixin registerOrLogin(verb, isModal = false)
               = t("Don't have an account?")
             = " "
             = t("Click here")
+        if verb === 'sign in' && passport && passport.webauthn
+          #webauthn-container.d-none
+            noscript
+              .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to sign in with Passkey.")
+            a.btn-webauthn-login.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
+              href="#",
+              role="button"
+            )
+              span.btn-auth-icon.btn-auth-icon-fill.lazyload(
+                data-src=manifest("img/fa-key.svg")
+              )
+              noscript
+                span.btn-auth-icon.btn-auth-icon-fill(
+                  style=`background-image:url("${manifest("img/fa-key.svg")}")`
+                )
+              span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with Passkey`)
         //- <https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple>
         if passport && passport.apple
           a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
@@ -82,7 +98,8 @@ mixin registerOrLogin(verb, isModal = false)
                 style=`background-image:url("${manifest("img/github-logo.svg")}")`
               )
             span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with GitHub`)
-        if passport && (passport.apple || passport.google || passport.github)
+
+        if passport && (passport.apple || passport.google || passport.github || (verb === 'sign in' && passport.webauthn))
           .hr-text.d-flex.text-secondary.align-items-center= t("or")
         - const action = verb === "sign up" ? "/register" : config.loginRoute;
         form.ajax-form(action=l(action), method="POST")

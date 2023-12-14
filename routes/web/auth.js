@@ -3,18 +3,30 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { promisify } = require('node:util');
+
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
+const base64url = require('base64url');
 const isSANB = require('is-string-and-not-blank');
+const { SessionChallengeStore } = require('passport-fido2-webauthn');
 
 const config = require('#config');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
+const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
+
+const store = new SessionChallengeStore();
+
+const storeChallenge = promisify(store.challenge).bind(store);
 
 const router = new Router({ prefix: '/auth' });
 
 function callbackCheck(ctx, next) {
-  return ctx.passport && ctx.passport.authenticate
+  return (ctx.method === 'POST' ||
+    (ctx.method === 'GET' && ctx.params.provider !== 'webauthn')) &&
+    ctx.passport &&
+    ctx.passport.authenticate
     ? ctx.passport.authenticate(ctx.params.provider, {
         ...config.passportCallbackOptions,
         successReturnToOrRedirect: false
@@ -24,6 +36,18 @@ function callbackCheck(ctx, next) {
 
 async function callbackRedirect(ctx, next) {
   if (!ctx.passport) return next();
+
+  //
+  // NOTE: passkeys work with OTP, so if user has OTP enabled then set to true
+  //
+  if (
+    ctx.params.provider === 'webauthn' &&
+    ctx.state.user[config.passport.fields.otpEnabled]
+  ) {
+    ctx.session.otp_remember_me = false;
+    ctx.session.otp = 'passkey';
+    await ctx.saveSession();
+  }
 
   const redirectTo = await parseLoginSuccessRedirect(ctx);
 
@@ -47,7 +71,9 @@ router
     web.auth.catchError,
     web.auth.parseReturnOrRedirectTo,
     (ctx, next) =>
-      ctx.passport && ctx.passport.authenticate
+      ctx.params.provider !== 'webauthn' &&
+      ctx.passport &&
+      ctx.passport.authenticate
         ? ctx.passport.authenticate(
             ctx.params.provider,
             config.passport[ctx.params.provider]
@@ -67,6 +93,19 @@ router
           ]
         })(ctx, next)
       : next()
+  )
+  .post(
+    '/webauthn/challenge',
+    rateLimit(50, 'webauthn challenge'),
+    async (ctx) => {
+      if (!ctx.passport.config.providers.webauthn)
+        return ctx.throw(
+          Boom.badRequest(ctx.translateError('INVALID_PROVIDER'))
+        );
+      const challenge = await storeChallenge(ctx);
+      await ctx.saveSession();
+      ctx.body = { challenge: base64url.encode(challenge) };
+    }
   );
 
 module.exports = router;

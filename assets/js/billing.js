@@ -7,8 +7,9 @@ const $ = require('jquery');
 const Swal = require('sweetalert2');
 const URLParse = require('url-parse');
 const qs = require('qs');
-const superagent = require('superagent');
 const { spinner: Spinner } = require('@ladjs/assets');
+
+const sendRequest = require('./send-request');
 
 const $formBilling = $('#form-billing');
 const $stripeButtonContainer = $('#stripe-button-container');
@@ -46,48 +47,6 @@ const PAYPAL_MAPPING = {
     '1y': process.env.PAYPAL_TEAM_PLAN_1Y
   }
 };
-
-async function sendRequest(body) {
-  const response = await superagent
-    .post(window.location.pathname)
-    .set({
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest'
-    })
-    .ok(() => true) // override so we can parse it ourselves
-    .send(body);
-
-  if (!response.ok) {
-    response.err = new Error(
-      response.statusText || response.text || 'Unsuccessful HTTP response'
-    );
-    if (
-      typeof response.body === 'object' &&
-      response.body !== null &&
-      typeof response.body.message === 'string'
-    ) {
-      response.err = new Error(response.body.message);
-    } else if (
-      !Array.isArray(response.body) &&
-      typeof response.body === 'object' &&
-      response.body !== null &&
-      // attempt to utilize Stripe-inspired error messages
-      typeof response.body.error === 'object'
-    ) {
-      if (response.body.error.message)
-        response.err = new Error(response.body.error.message);
-      if (response.body.error.stack)
-        response.err.stack = response.body.error.stack;
-      if (response.body.error.code)
-        response.err.code = response.body.error.code;
-      if (response.body.error.param)
-        response.err.param = response.body.error.param;
-    }
-  }
-
-  return response;
-}
 
 function createPayPalSubscription(data, actions) {
   const duration = $paymentDuration.find('option:checked').val();

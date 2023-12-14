@@ -62,6 +62,7 @@
 * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
 * [Does it support sub-domains](#does-it-support-sub-domains)
 * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
+* [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
 * [Is this well-tested](#is-this-well-tested)
 * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
 * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
@@ -2779,6 +2780,23 @@ If you want `foo.example.com` to forward emails, then enter `foo` as the name/ho
 ## Does this forward my email's headers
 
 Yes, absolutely.
+
+
+## Do you support passkeys and WebAuthn
+
+Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+
+Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+
+You can validate your identity with touch, facial recognition, device-based password, or PIN.
+
+We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+
+Learn more about passkeys at the following links:
+
+* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 
 
 ## Is this well-tested
