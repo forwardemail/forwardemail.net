@@ -233,6 +233,8 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
             if (!user) throw new Error('User does not exist');
             await user.save();
           } catch (err) {
+            err.transaction = transaction;
+            err.isCodeBug = true;
             logger.error(err);
             hasError = true;
             errorEmails.push({

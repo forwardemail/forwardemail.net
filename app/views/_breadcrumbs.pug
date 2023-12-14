@@ -1,6 +1,6 @@
 if breadcrumbs.length > 1
   nav.d-none.d-md-block(aria-label="breadcrumb")
-    ol.breadcrumb.justify-content-center.justify-content-md-start.mb-3.py-1.small.bg-light.bg-themed
+    ol.breadcrumb.justify-content-center.justify-content-md-start.mb-3.py-1.small
       each breadcrumb, i in breadcrumbs
         if i === breadcrumbs.length - 1
           li.breadcrumb-item.active(aria-current="page")
