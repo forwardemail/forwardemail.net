@@ -14,6 +14,9 @@ block body
         false
       );
 
+  //- legacy support
+  - user.passkeys = Array.isArray(user.passkeys) || [];
+
   each passkey in user.passkeys
     .modal.fade(
       id=`modal-nickname-${passkey.id}`,
