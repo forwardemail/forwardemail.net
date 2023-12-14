@@ -598,8 +598,11 @@ async function catchError(ctx, next) {
     ctx.logger.error(err);
     ctx.flash('error', err.message);
     const redirectTo = ctx.state.l('/login');
-    if (ctx.accepts('json')) ctx.body = { redirectTo };
-    else ctx.redirect(redirectTo);
+    if (ctx.accepts('html')) {
+      ctx.redirect(redirectTo);
+    } else {
+      ctx.body = { redirectTo };
+    }
   }
 }
 
