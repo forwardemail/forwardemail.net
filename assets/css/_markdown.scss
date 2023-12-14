@@ -16,7 +16,7 @@
 
   // margin-left: 20px;
   // margin-right: 20px;
-  font-family: $font-family-sans-serif;
+  font-family: $font-family-sans-serif !important;
 
   @for $index from 1 through 6 {
     h#{$index} {
