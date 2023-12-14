@@ -6,12 +6,12 @@
 const url = require('node:url');
 const crypto = require('node:crypto');
 
-const Attestation = require('passport-fido2-webauthn/lib/fido2/attestation');
-const AuthenticatorData = require('passport-fido2-webauthn/lib/fido2/authenticatordata');
+const Attestation = require('@forwardemail/passport-fido2-webauthn/lib/fido2/attestation');
+const AuthenticatorData = require('@forwardemail/passport-fido2-webauthn/lib/fido2/authenticatordata');
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const _ = require('lodash');
-const attestationFormats = require('passport-fido2-webauthn/lib/fido2/formats');
+const attestationFormats = require('@forwardemail/passport-fido2-webauthn/lib/fido2/formats');
 const base64url = require('base64url');
 const cose2jwk = require('cose-to-jwk');
 const isSANB = require('is-string-and-not-blank');
@@ -19,8 +19,10 @@ const jwk2pem = require('jwk-to-pem');
 const paginate = require('koa-ctx-paginate');
 const pify = require('pify');
 const render = require('koa-views-render');
-// const utils = require('passport-fido2-webauthn/lib/utils');
-const { SessionChallengeStore } = require('passport-fido2-webauthn');
+// const utils = require('@forwardemail/passport-fido2-webauthn/lib/utils');
+const {
+  SessionChallengeStore
+} = require('@forwardemail/passport-fido2-webauthn');
 const { sha256 } = require('crypto-hash');
 
 const Users = require('#models/users');

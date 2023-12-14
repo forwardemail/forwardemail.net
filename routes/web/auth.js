@@ -9,7 +9,9 @@ const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const base64url = require('base64url');
 const isSANB = require('is-string-and-not-blank');
-const { SessionChallengeStore } = require('passport-fido2-webauthn');
+const {
+  SessionChallengeStore
+} = require('@forwardemail/passport-fido2-webauthn');
 
 const config = require('#config');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
