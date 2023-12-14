@@ -29,6 +29,10 @@ function callbackCheck(ctx, next) {
     ctx.passport.authenticate
     ? ctx.passport.authenticate(ctx.params.provider, {
         ...config.passportCallbackOptions,
+        // webauthn shouldn't redirect or flash errors
+        ...(ctx.params.provider === 'webauthn'
+          ? { failureRedirect: false, failureFlash: false }
+          : {}),
         successReturnToOrRedirect: false
       })(ctx, next)
     : next();
