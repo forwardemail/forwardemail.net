@@ -105,7 +105,15 @@ router
         );
       const challenge = await storeChallenge(ctx);
       await ctx.saveSession();
-      ctx.body = { challenge: base64url.encode(challenge) };
+      // this should be XHR/json request (not HTML)
+      if (ctx.accepts('html')) {
+        ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
+        if (ctx.isAuthenticated())
+          ctx.redirect(ctx.state.l('/my-account/security'));
+        else ctx.redirect(ctx.state.l('/login'));
+      } else {
+        ctx.body = { challenge: base64url.encode(challenge) };
+      }
     }
   );
 
