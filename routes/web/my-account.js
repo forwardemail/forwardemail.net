@@ -646,8 +646,8 @@ router
       }`
     );
     ctx.flash('success', ctx.translate('SUCCESSFULLY_ADDED_PASSKEY'));
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
+    if (ctx.accepts('json')) ctx.body = { redirectTo };
+    else ctx.redirect(redirectTo);
   })
   .put('/passkeys/:id', async (ctx) => {
     if (!isSANB(ctx?.request?.body?.nickname))
@@ -665,8 +665,8 @@ router
       'success',
       ctx.translate('SUCCESSFULLY_UPDATED_PASSKEY_NICKNAME')
     );
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
+    if (ctx.accepts('json')) ctx.body = { redirectTo };
+    else ctx.redirect(redirectTo);
   })
   .del('/passkeys/:id', async (ctx) => {
     const user = await Users.findById(ctx.state.user._id);
@@ -695,8 +695,8 @@ router
 
     const redirectTo = ctx.state.l('/my-account/security');
     ctx.flash('success', ctx.translate('SUCCESSFULLY_REMOVED_PASSKEY'));
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
+    if (ctx.accepts('json')) ctx.body = { redirectTo };
+    else ctx.redirect(redirectTo);
   });
 
 module.exports = router;

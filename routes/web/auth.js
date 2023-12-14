@@ -52,8 +52,8 @@ async function callbackRedirect(ctx, next) {
 
   const redirectTo = await parseLoginSuccessRedirect(ctx);
 
-  if (ctx.accepts('html')) ctx.redirect(redirectTo);
-  else ctx.body = { redirectTo };
+  if (ctx.accepts('json')) ctx.body = { redirectTo };
+  else ctx.redirect(redirectTo);
 }
 
 router
