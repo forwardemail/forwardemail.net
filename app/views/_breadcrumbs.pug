@@ -61,7 +61,7 @@ if breadcrumbs.length > 1
                     span.d-none.d-md-inline-block= t("Plan")
                     span.d-md-none= t("Plan")
                   .dropdown-menu.dropdown-menu-right
-                    h6.dropdown-header.text-uppercase= t("Change Plan")
+                    h6.dropdown-header= t("Change Plan")
                     each plan in [ 'free', 'enhanced_protection', 'team' ]
                       a.dropdown-item(
                         href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`),

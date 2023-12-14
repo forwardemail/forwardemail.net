@@ -82,7 +82,7 @@ nav.navbar(class=navbarClasses.join(" "))
     )
       span.sr-only.sr-only-focusable Forward Email
       include ../../assets/img/logo-square-30-30.svg
-      span.h4.m-0.align-middle.no-js.font-weight-bold.ml-2(
+      span.m-0.align-middle.no-js.font-weight-bold.ml-2(
         class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block text-themed"
       )= "Forward Email"
     - const isDomainSpecificUpgrade = domain && domain.name ? ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/billing` : false;
@@ -311,7 +311,7 @@ nav.navbar(class=navbarClasses.join(" "))
                         else
                           = t(titleize(humanize(resourcePage.replace("/", ""))))
                   hr.dropdown-divider
-                  h6.dropdown-header.text-uppercase= t("Community")
+                  h6.dropdown-header= t("Community")
                   a.dropdown-item(
                     href="https://github.com/forwardemail",
                     target="_blank",
@@ -335,7 +335,7 @@ nav.navbar(class=navbarClasses.join(" "))
                     = " "
                     i.fab.fa-fw.fa-youtube.text-danger
                   hr.dropdown-divider
-                  h6.dropdown-header.text-uppercase= t("Company")
+                  h6.dropdown-header= t("Company")
                   each companyPage in companyPages
                     a.dropdown-item(
                       href=l(companyPage),
@@ -383,7 +383,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 class=user ? "dropdown-menu-md-right dropdown-menu-lg-right" : "dropdown-menu-md-left dropdown-menu-lg-left",
                 aria-labelledby="navbar-dropdown-guides"
               )
-                h6.dropdown-header.text-uppercase= t("Outbound SMTP")
+                h6.dropdown-header= t("Outbound SMTP")
                 a.dropdown-item(
                   href=l("/guides/send-email-with-custom-domain-smtp"),
                   class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
@@ -395,7 +395,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 )
                   = t("Send Mail As with Gmail")
                 hr.dropdown-divider
-                h6.dropdown-header.text-uppercase= t("Email Setup Guides")
+                h6.dropdown-header= t("Email Setup Guides")
                 .card-columns.small
                   each provider in nsProviders
                     - const classes = [];
@@ -446,7 +446,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 )= t("Regex Email Forwarding")
                 if developerDocs.length > 0
                   hr.dropdown-divider
-                  h6.dropdown-header.text-uppercase= t("Developer Articles")
+                  h6.dropdown-header= t("Developer Articles")
                   .small
                     each doc in developerDocs
                       a.dropdown-item(
@@ -459,7 +459,7 @@ nav.navbar(class=navbarClasses.join(" "))
                         = t(doc.title)
                 if platforms.length > 0 && isBot(ctx.get('User-Agent'))
                   hr.dropdown-divider
-                  h6.dropdown-header.text-uppercase= t("Open Source")
+                  h6.dropdown-header= t("Open Source")
                   .card-columns.small
                     - const tools = [];
                     - const list = Object.keys(config.meta).filter((key) => key !== "/blog/open-source" && key.startsWith("/blog/open-source"));

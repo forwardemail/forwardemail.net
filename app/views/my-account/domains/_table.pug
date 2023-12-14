@@ -306,7 +306,7 @@ p.text-center.d-lg-none
                         )
                           = t("Change Plan")
                         .dropdown-menu
-                          h6.dropdown-header.text-uppercase= t("Change plan to:")
+                          h6.dropdown-header= t("Change plan to:")
                           each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
                             a.dropdown-item(
                               href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)
