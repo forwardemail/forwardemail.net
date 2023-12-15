@@ -144,6 +144,10 @@ html {
     }
   }
 
+  img.lazyload, span.lazyload {
+    display: none !important;
+  }
+
   &.no-js, &.bot-detected {
     // hide css for js that bots don't use
     // (since we only support lazyload for bots)

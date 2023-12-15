@@ -250,6 +250,7 @@ html.h-100.no-js(
 
   body.d-flex.flex-column.min-h-100.app(
     role="document",
+    onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false,
     data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false
   )
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
@@ -326,7 +327,22 @@ html.h-100.no-js(
               id: "#{ctx.sessionId}",
             };
 
-      if !isBot(ctx.get('User-Agent'))
+      if isBot(ctx.get('User-Agent'))
+        //- lazyload only support for bots
+        if config.env === 'test'
+          script(
+            defer,
+            src=`${config.urls.web}/js/lazyload.js`,
+            crossorigin="anonymous"
+          )
+        else
+          script(
+            defer,
+            src=manifest("js/lazyload.js"),
+            integrity=manifest("js/lazyload.js", "integrity"),
+            crossorigin="anonymous"
+          )
+      else
         //- build
         if config.env === 'test'
           script(
