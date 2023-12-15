@@ -6533,5 +6533,6 @@
   "Passkey was removed from your account": "تمت إزالة مفتاح المرور من حسابك",
   "Invalid WebAuthn key.": "مفتاح WebAuthn غير صالح.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "قم بالتحقق بواسطة <span class=\"notranslate\">%s</span> لمنع الحذف.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% مفتوح المصدر + آمن تمامًا + بريد إلكتروني مشفر"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% مفتوح المصدر + آمن تمامًا + بريد إلكتروني مشفر",
+  "Tutorial": "درس تعليمي"
 }

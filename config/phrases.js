@@ -58,8 +58,8 @@ module.exports = {
   EMAIL_SETUP_GUIDE: 'Email Setup Guide',
   NO_CREDIT_CARD: '100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL',
   PRIVATE_BUSINESS: 'Private Business Email Service',
-  TUTORIAL: 'TUTORIAL',
-  FREE_EMAIL: 'LEARN MORE',
+  TUTORIAL: 'Tutorial',
+  FREE_EMAIL: 'Learn more',
   RECENTLY_BLOCKED:
     'The target <span class="notranslate">%s</span> has recently blocked this IP address, please try again in 1 hour.',
   CANNOT_CREATE_CATCHALL_ON_GLOBAL: 'Cannot create catch-all on global domain.',

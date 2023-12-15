@@ -6533,5 +6533,6 @@
   "Passkey was removed from your account": "Kunci sandi telah dihapus dari akun Anda",
   "Invalid WebAuthn key.": "Kunci WebAuthn tidak valid.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifikasi oleh <span class=\"notranslate\">%s</span> untuk mencegah penghapusan.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% SUMBER TERBUKA + AMAN KUANTUM + EMAIL TERENKRIPSI"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% SUMBER TERBUKA + AMAN KUANTUM + EMAIL TERENKRIPSI",
+  "Tutorial": "tutorial"
 }

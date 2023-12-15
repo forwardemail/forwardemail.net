@@ -6533,5 +6533,6 @@
   "Passkey was removed from your account": "Şifre anahtarı hesabınızdan kaldırıldı",
   "Invalid WebAuthn key.": "Geçersiz WebAuthn anahtarı.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Silmeyi önlemek için <span class=\"notranslate\">%s</span> ile doğrulayın.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "%100 AÇIK KAYNAK + QUANTUM SAFE + ŞİFRELENMİŞ E-POSTA"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "%100 AÇIK KAYNAK + QUANTUM SAFE + ŞİFRELENMİŞ E-POSTA",
+  "Tutorial": "öğretici"
 }

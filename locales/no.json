@@ -6538,5 +6538,6 @@
   "Passkey was removed from your account": "Passnøkkel ble fjernet fra kontoen din",
   "Invalid WebAuthn key.": "Ugyldig WebAuthn-nøkkel.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Bekreft innen <span class=\"notranslate\">%s</span> for å forhindre sletting.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % ÅPEN KILDE + KVANTESIKKER + KRYPTERT E-POST"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % ÅPEN KILDE + KVANTESIKKER + KRYPTERT E-POST",
+  "Tutorial": "Opplæringen"
 }

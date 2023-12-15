@@ -6533,5 +6533,6 @@
   "Passkey was removed from your account": "Přístupový klíč byl odebrán z vašeho účtu",
   "Invalid WebAuthn key.": "Neplatný klíč WebAuthn.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Ověřte do <span class=\"notranslate\">%s</span> , abyste zabránili smazání.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM SAFE + ŠIFROVANÝ EMAIL"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM SAFE + ŠIFROVANÝ EMAIL",
+  "Tutorial": "Tutorial"
 }

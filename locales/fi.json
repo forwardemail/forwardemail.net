@@ -6379,5 +6379,6 @@
   "Passkey was removed from your account": "Salasana poistettiin tililtäsi",
   "Invalid WebAuthn key.": "Virheellinen WebAuthn-avain.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Vahvista <span class=\"notranslate\">%s</span> estääksesi poistamisen.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % AVOIN LÄHDE + QUANTUM SAFE + SALATU SÄHKÖPOSTI"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % AVOIN LÄHDE + QUANTUM SAFE + SALATU SÄHKÖPOSTI",
+  "Tutorial": "Opetusohjelma"
 }

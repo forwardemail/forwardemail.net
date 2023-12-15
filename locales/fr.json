@@ -6533,5 +6533,6 @@
   "Passkey was removed from your account": "Le mot de passe a été supprimé de votre compte",
   "Invalid WebAuthn key.": "Clé WebAuthn non valide.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Vérifiez avant <span class=\"notranslate\">%s</span> pour empêcher la suppression.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM SAFE + EMAIL CHIFFRÉ"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM SAFE + EMAIL CHIFFRÉ",
+  "Tutorial": "Didacticiel"
 }

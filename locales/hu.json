@@ -6533,5 +6533,6 @@
   "Passkey was removed from your account": "A jelszót eltávolítottuk a fiókjából",
   "Invalid WebAuthn key.": "Érvénytelen WebAuthn kulcs.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "A törlés elkerülése érdekében igazolja ezt: <span class=\"notranslate\">%s</span> .",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% NYÍLT FORRÁSÚ + QUANTUM SAFE + TITKOSÍTOTT E-MAIL"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% NYÍLT FORRÁSÚ + QUANTUM SAFE + TITKOSÍTOTT E-MAIL",
+  "Tutorial": "Oktatóanyag"
 }

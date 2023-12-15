@@ -6533,5 +6533,6 @@
   "Passkey was removed from your account": "De toegangssleutel is uit uw account verwijderd",
   "Invalid WebAuthn key.": "Ongeldige WebAuthn-sleutel.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifieer met <span class=\"notranslate\">%s</span> om verwijdering te voorkomen.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM VEILIG + VERSLEUTELDE E-MAIL"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM VEILIG + VERSLEUTELDE E-MAIL",
+  "Tutorial": "Handleiding"
 }

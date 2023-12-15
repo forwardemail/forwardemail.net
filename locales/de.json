@@ -5568,5 +5568,6 @@
   "Passkey was removed from your account": "Der Passkey wurde von Ihrem Konto entfernt",
   "Invalid WebAuthn key.": "Ungültiger WebAuthn-Schlüssel.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Überprüfen Sie durch <span class=\"notranslate\">%s</span> , um das Löschen zu verhindern.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % OPEN-SOURCE + QUANTUMSAFE + VERSCHLÜSSELTE E-MAIL"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % OPEN-SOURCE + QUANTUMSAFE + VERSCHLÜSSELTE E-MAIL",
+  "Tutorial": "Lernprogramm"
 }

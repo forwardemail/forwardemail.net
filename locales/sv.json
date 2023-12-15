@@ -6533,5 +6533,6 @@
   "Passkey was removed from your account": "Nyckeln togs bort från ditt konto",
   "Invalid WebAuthn key.": "Ogiltig WebAuthn-nyckel.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifiera med <span class=\"notranslate\">%s</span> för att förhindra radering.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % ÖPPEN KÄLLA + KVANTSÄKER + KRYPTAD E-POST"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % ÖPPEN KÄLLA + KVANTSÄKER + KRYPTAD E-POST",
+  "Tutorial": "Handledning"
 }

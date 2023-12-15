@@ -6533,5 +6533,6 @@
   "Passkey was removed from your account": "Ключ доступу видалено з вашого облікового запису",
   "Invalid WebAuthn key.": "Недійсний ключ WebAuthn.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Перевірте <span class=\"notranslate\">%s</span> , щоб запобігти видаленню.",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% ВІДКРИТИЙ КОРИСНИК + КВАНТОВИЙ БЕЗПЕКА + ЗАШИФРОВАНА ЕЛЕКТРОННА ПОШТА"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% ВІДКРИТИЙ КОРИСНИК + КВАНТОВИЙ БЕЗПЕКА + ЗАШИФРОВАНА ЕЛЕКТРОННА ПОШТА",
+  "Tutorial": "Підручник"
 }

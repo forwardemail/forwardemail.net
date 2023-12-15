@@ -6225,5 +6225,6 @@
   "Unsupported attestation format <span class=\"notranslate\">%s</span>": "不支持的证明格式<span class=\"notranslate\">%s</span>",
   "Invalid WebAuthn key.": "WebAuthn 密钥无效。",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "由<span class=\"notranslate\">%s</span>验证以防止删除。",
-  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% 开源 + 量子安全 + 加密电子邮件"
+  "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% 开源 + 量子安全 + 加密电子邮件",
+  "Tutorial": "教程"
 }
