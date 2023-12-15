@@ -190,7 +190,9 @@ html.h-100.no-js(
     if !isBot(ctx.get('User-Agent'))
       - fonts.push("nunito-sans-latin-400.woff2");
       - fonts.push("nunito-sans-latin-700.woff2");
-      - fonts.push("inconsolata-dz.otf");
+      //- - fonts.push("inconsolata-dz.otf");
+      - fonts.push("vc-honey-latin-400.woff2");
+      - fonts.push("vc-honey-latin-700.woff2");
     each font in fonts
       //- integrity attribute not currently supported
       //- <https://crbug.com/981419>
@@ -204,12 +206,15 @@ html.h-100.no-js(
     //- css file
     block stylesheets
       if isBot(ctx.get('User-Agent'))
-        link(
-          rel="stylesheet",
-          href=manifest("css/app-bot.css"),
-          integrity=manifest("css/app-bot.css", "integrity"),
-          crossorigin="anonymous"
-        )
+        if botCss
+          style!= botCss
+        else
+          link(
+            rel="stylesheet",
+            href=manifest("css/app-bot.css"),
+            integrity=manifest("css/app-bot.css", "integrity"),
+            crossorigin="anonymous"
+          )
       else
         if isPDF || ctx.path.endsWith(".pdf") || config.env === 'test'
           link(
@@ -218,16 +223,33 @@ html.h-100.no-js(
             crossorigin="anonymous"
           )
         else
-          link(
-            rel="stylesheet",
-            href=manifest("css/app.css"),
-            integrity=manifest("css/app.css", "integrity"),
-            crossorigin="anonymous"
-          )
+          if appCss
+            style!= appCss
+          else
+            link(
+              rel="stylesheet",
+              href=manifest("css/app.css"),
+              integrity=manifest("css/app.css", "integrity"),
+              crossorigin="anonymous"
+            )
+
+    //-.
+      script(crossorigin="anonymous").
+        (function () {
+          var script = document.createElement('script');
+          script.src = 'https://unpkg.com/web-vitals@3/dist/web-vitals.iife.js';
+          script.onload = function () {
+            // When loading `web-vitals` using a classic script, all the public
+            // methods can be found on the `webVitals` global namespace.
+            webVitals.onCLS(console.log);
+            webVitals.onFID(console.log);
+            webVitals.onLCP(console.log);
+          };
+          document.head.appendChild(script);
+        })();
 
   body.d-flex.flex-column.min-h-100.app(
     role="document",
-    onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false,
     data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false
   )
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
@@ -304,22 +326,7 @@ html.h-100.no-js(
               id: "#{ctx.sessionId}",
             };
 
-      if isBot(ctx.get('User-Agent'))
-        //- lazyload only support for bots
-        if config.env === 'test'
-          script(
-            defer,
-            src=`${config.urls.web}/js/lazyload.js`,
-            crossorigin="anonymous"
-          )
-        else
-          script(
-            defer,
-            src=manifest("js/lazyload.js"),
-            integrity=manifest("js/lazyload.js", "integrity"),
-            crossorigin="anonymous"
-          )
-      else
+      if !isBot(ctx.get('User-Agent'))
         //- build
         if config.env === 'test'
           script(

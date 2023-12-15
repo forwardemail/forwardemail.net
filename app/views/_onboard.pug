@@ -24,7 +24,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
   if !isBot(ctx.get('User-Agent')) && isModalOnboard
-    script(async, defer).
+    script(defer).
       document.addEventListener(
         "DOMContentLoaded",
         function load() {

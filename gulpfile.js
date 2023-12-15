@@ -419,7 +419,6 @@ function xo() {
 async function bundle() {
   const since = lastRun(bundle);
   const polyfillPath = path.join(config.buildBase, 'js', 'polyfill.js');
-  const lazyloadPath = path.join(config.buildBase, 'js', 'lazyload.js');
   const mermaidPath = path.join(config.buildBase, 'js', 'mermaid.js');
   const ekkoLightboxPath = path.join(
     config.buildBase,
@@ -467,11 +466,6 @@ async function bundle() {
         'polyfill.js'
       ),
       polyfillPath
-    ),
-    // lazyload
-    fs.promises.copyFile(
-      path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.js'),
-      lazyloadPath
     ),
     // ekko-lightbox
     fs.promises.copyFile(

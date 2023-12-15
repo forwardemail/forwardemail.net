@@ -934,7 +934,7 @@ In order to send outbound email with our API, you must use your API token availa
 
 ## Do you support receiving email with IMAP
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-servicel).
+Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
@@ -993,7 +993,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
 
 ## Do you support POP3
 
-Yes, as of December 4, 2023 we support [POP3]() as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-servicel).
+Yes, as of December 4, 2023 we support [POP3]() as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 

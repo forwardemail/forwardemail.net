@@ -11,7 +11,6 @@ const Swal = require('sweetalert2');
 const Typed = require('typed.js');
 const URLParse = require('url-parse');
 const base64url = require('base64url');
-const debounce = require('lodash/debounce');
 const lazyframe = require('lazyframe');
 const { randomstring } = require('@sidoshi/random-string');
 const { spinner: Spinner } = require('@ladjs/assets');
@@ -70,6 +69,7 @@ const {
   jumpTo
 } = require('@ladjs/assets');
 
+const debounce = require('./debounce');
 const sendRequest = require('./send-request');
 
 // Resize navbar padding on load, window resize, and navbar collapse/show
@@ -356,7 +356,7 @@ $body.on('keyup', '.verification-form', debounce(keyup, 200));
 // any modals with embedded <iframe> we can assume need reset
 // <https://stackoverflow.com/a/52315492>
 //
-$body.on('hide.bs.modal', '.modal', function () {
+$body.on('hidden.bs.modal', '.modal', function () {
   const $modal = $(this);
   if ($modal.find('iframe').length === 0) return;
   const html = $modal.html();
@@ -367,8 +367,19 @@ $body.on('hide.bs.modal', '.modal', function () {
 // lazyload iframes
 // <https://github.com/vb/lazyframe>
 //
-lazyframe('.lazyframe', { autoplay: false, initinview: true });
+window.addEventListener(
+  'load',
+  () => {
+    lazyframe('.lazyframe', { autoplay: true, initinview: false });
+  },
+  false
+);
 
+//
+// TODO: replace this with loading lazy attribute
+// <https://web.dev/articles/efficiently-load-third-party-javascript>
+// <https://web.dev/articles/browser-level-image-lazy-loading>
+// <https://caniuse.com/loading-lazy-attr>
 //
 // lazyload
 // <https://github.com/tuupola/lazyload>

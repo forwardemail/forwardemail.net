@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
+const path = require('node:path');
 const process = require('node:process');
 
 const Boom = require('@hapi/boom');
@@ -40,6 +42,27 @@ const RATELIMIT_ALLOWLIST =
     : Array.isArray(env.RATELIMIT_ALLOWLIST)
     ? env.RATELIMIT_ALLOWLIST
     : [];
+
+let appCss;
+let botCss;
+
+try {
+  appCss = fs.readFileSync(
+    path.join(config.buildDir, 'css', 'app.css'),
+    'utf8'
+  );
+} catch (err) {
+  logger.error(err);
+}
+
+try {
+  botCss = fs.readFileSync(
+    path.join(config.buildDir, 'css', 'app-bot.css'),
+    'utf8'
+  );
+} catch (err) {
+  logger.error(err);
+}
 
 async function checkGitHubIssues() {
   try {
@@ -212,6 +235,10 @@ module.exports = (redis) => ({
       app.context.logger
     );
     app.use(async (ctx, next) => {
+      // to avoid LCP lighthouse issues
+      ctx.state.appCss = appCss;
+      ctx.state.botCss = botCss;
+
       // since we're on an older helmet version due to koa-helmet
       // <https://github.com/helmetjs/helmet/issues/230>
       ctx.set('X-XSS-Protection', '0');

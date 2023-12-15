@@ -5,7 +5,6 @@
 
 const $ = require('jquery');
 const CodeMirror = require('codemirror');
-const debounce = require('lodash/debounce');
 
 // editing addons
 require('codemirror/addon/edit/closebrackets');
@@ -36,6 +35,8 @@ require('codemirror/addon/selection/active-line');
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/css/css');
 require('codemirror/mode/htmlmixed/htmlmixed');
+
+const debounce = require('./debounce');
 
 const $preview = $('#custom-verification-preview');
 const $editor = $('#textarea-custom-verification-html');

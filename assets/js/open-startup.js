@@ -5,7 +5,6 @@
 
 const $ = require('jquery');
 const Apex = require('apexcharts');
-const _ = require('lodash');
 const ms = require('ms');
 const superagent = require('superagent');
 
@@ -13,6 +12,16 @@ const logger = require('./logger');
 
 const charts = {};
 let hash;
+
+// <https://stackoverflow.com/a/58787671>
+function omit(obj, ...keys) {
+  const keysToRemove = new Set(keys.flat()); // flatten the props, and convert to a Set
+  return Object.fromEntries(
+    // convert the entries back to object
+    Object.entries(obj) // convert the object to entries
+      .filter(([k]) => !keysToRemove.has(k)) // remove entries with keys that exist in the Set
+  );
+}
 
 async function getData() {
   const res = await superagent
@@ -43,7 +52,7 @@ async function loadCharts(reset = false) {
 
   for (const chart of body.charts) {
     if (charts[chart.selector]) {
-      charts[chart.selector].updateOptions(_.omit(chart.options, 'series'));
+      charts[chart.selector].updateOptions(omit(chart.options, 'series'));
       charts[chart.selector].updateSeries(chart.options.series);
       continue;
     }

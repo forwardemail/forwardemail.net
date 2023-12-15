@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
+const path = require('node:path');
+
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
@@ -19,6 +22,7 @@ const { errors } = require('passport-local-mongoose');
 const config = require('#config');
 const email = require('#helpers/email');
 const env = require('#config/env');
+const logger = require('#helpers/logger');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const sendVerificationEmail = require('#helpers/send-verification-email');
 const { Users } = require('#models');
@@ -92,6 +96,17 @@ async function registerOrLogin(ctx) {
   return ctx.render('register-or-login');
 }
 
+let freddyCss;
+
+try {
+  freddyCss = fs.readFileSync(
+    path.join(config.buildDir, 'css', 'freddy.css'),
+    'utf8'
+  );
+} catch (err) {
+  logger.error(err);
+}
+
 async function homeOrDomains(ctx, next) {
   if (ctx.pathWithoutLocale !== '/') return next();
 
@@ -100,6 +115,8 @@ async function homeOrDomains(ctx, next) {
     return ctx.redirect(
       ctx.state.l(config.passportCallbackOptions.successReturnToOrRedirect)
     );
+
+  ctx.state.freddyCss = freddyCss;
 
   return ctx.render('home');
 }

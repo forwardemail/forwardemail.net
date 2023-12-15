@@ -1,8 +1,12 @@
 extends layout
 
+block append stylesheets
+  if freddyCss
+    style!= freddyCss
+
 block append scripts
   if !isBot(ctx.get("User-Agent"))
-    script(async, defer).
+    script(defer).
       document.addEventListener(
         "DOMContentLoaded",
         function load() {
@@ -13,7 +17,7 @@ block append scripts
             smartBackspace: true,
             typeSpeed: 70,
             backSpeed: 70,
-            startDelay: 2000,
+            startDelay: 5000,
             backDelay: 2000,
           });
         },
@@ -148,11 +152,11 @@ block body
         //-   class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
         //- )
         .col-12.text-center
-          h1#typed-home-header.mb-3(data-ignore-hash-change)
-            span#typed-home(data-ignore-hash-change)
-              if isBot(ctx.get("User-Agent"))
-                = t("Encrypted email for custom domains")
-              else
+          if isBot(ctx.get("User-Agent"))
+            h1.mb-3.text-monospace(data-ignore-hash-change)= t("Best encrypted email service")
+          else
+            #typed-home-header.h1.mb-3(data-ignore-hash-change)
+              span#typed-home(data-ignore-hash-change)
                 != t("Encrypted email<br /> for everyone")
           if isBot(ctx.get("User-Agent"))
             p

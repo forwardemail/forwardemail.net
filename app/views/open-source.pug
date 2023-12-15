@@ -118,7 +118,7 @@ block body
       +onboard(t('Setup email in minutes'), t('Simply enter your domain below to setup its email.'), l('/faq?redirect_to_domain=true'), '#top', 'border-top', true)
 
   if !isBot(ctx.get('User-Agent'))
-    script(async, defer).
+    script(defer).
       document.addEventListener(
         "DOMContentLoaded",
         function load() {

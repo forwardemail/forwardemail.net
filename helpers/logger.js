@@ -9,6 +9,9 @@ const cuid = require('cuid');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const superagent = require('superagent');
+
+// this package is ignored in `browser` config in `package.json`
+// in order to make the client-side payload less kb
 const _ = require('lodash');
 
 // this package is ignored in `browser` config in `package.json`
@@ -21,32 +24,35 @@ const isCodeBug = require('./is-code-bug');
 const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
 
-// <https://stackoverflow.com/a/41978063>
-_.mixin({
-  deeply(map) {
-    // <https://stackoverflow.com/a/48032359>
-    const deeplyArray = function (obj, fn) {
-      return obj.map(function (x) {
-        return _.isPlainObject(x) ? _.deeply(map)(x, fn) : x;
-      });
-    };
+// wrapper for browser condition
+if (_) {
+  // <https://stackoverflow.com/a/41978063>
+  _.mixin({
+    deeply(map) {
+      // <https://stackoverflow.com/a/48032359>
+      const deeplyArray = function (obj, fn) {
+        return obj.map(function (x) {
+          return _.isPlainObject(x) ? _.deeply(map)(x, fn) : x;
+        });
+      };
 
-    return function (obj, fn) {
-      if (_.isArray(obj)) return deeplyArray(obj, fn);
+      return function (obj, fn) {
+        if (_.isArray(obj)) return deeplyArray(obj, fn);
 
-      return map(
-        _.mapValues(obj, function (v) {
-          return _.isPlainObject(v)
-            ? _.deeply(map)(v, fn)
-            : _.isArray(v)
-            ? deeplyArray(v, fn)
-            : v;
-        }),
-        fn
-      );
-    };
-  }
-});
+        return map(
+          _.mapValues(obj, function (v) {
+            return _.isPlainObject(v)
+              ? _.deeply(map)(v, fn)
+              : _.isArray(v)
+              ? deeplyArray(v, fn)
+              : v;
+          }),
+          fn
+        );
+      };
+    }
+  });
+}
 
 const logger = new Axe(loggerConfig);
 
@@ -121,6 +127,7 @@ async function hook(err, message, meta) {
   //
   if (err && err.is_duplicate_log) return;
 
+  // wrapper for browser condition
   if (mongoose) {
     try {
       const conn = mongoose.connections.find(
@@ -227,6 +234,7 @@ async function hook(err, message, meta) {
 // set the silent symbol in axe to true for successful asset responses
 //
 for (const level of logger.config.levels) {
+  // eslint-disable-next-line complexity
   logger.pre(level, function (err, message, meta) {
     // add `isCodeBug` parsing here to `err` (safeguard)
     if (typeof err === 'object') err.isCodeBug = isCodeBug(err);
@@ -244,13 +252,17 @@ for (const level of logger.config.levels) {
       return val;
     });
     const hash = meta && meta.app && meta.app.hash;
-    meta = _.deeply(_.mapValues)(meta, function (val, key) {
-      if (REDACTED_FIELDS.has(key)) {
-        return 'REDACTED';
-      }
+    // wrapper for browser condition
+    if (_) {
+      meta = _.deeply(_.mapValues)(meta, function (val, key) {
+        if (REDACTED_FIELDS.has(key)) {
+          return 'REDACTED';
+        }
 
-      return val;
-    });
+        return val;
+      });
+    }
+
     if (hash) meta.app.hash = hash;
 
     if (
