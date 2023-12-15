@@ -5,6 +5,7 @@
 
 const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
+const multer = require('@koa/multer');
 const paginate = require('koa-ctx-paginate');
 
 const api = require('#controllers/api');
@@ -14,9 +15,16 @@ const web = require('#controllers/web');
 
 const config = require('#config');
 
+const upload = multer();
+
 const router = new Router({
   prefix: '/v1'
 });
+
+//
+// support form data (multipart/form-data)
+//
+router.use(upload.none());
 
 router
   //
