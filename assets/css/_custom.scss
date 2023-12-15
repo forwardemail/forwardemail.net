@@ -140,13 +140,12 @@ html {
   &.no-js {
     .no-js {
       display: none !important;
-
+    }
+    img.lazyload, span.lazyload {
+      display: none !important;
     }
   }
 
-  img.lazyload, span.lazyload {
-    display: none !important;
-  }
 
   &.no-js, &.bot-detected {
     // hide css for js that bots don't use
