@@ -25,7 +25,8 @@ const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
 
 // wrapper for browser condition
-if (_) {
+const hasMixin = _ && typeof _ === 'object' && typeof _.mixin === 'function';
+if (hasMixin) {
   // <https://stackoverflow.com/a/41978063>
   _.mixin({
     deeply(map) {
@@ -244,16 +245,20 @@ for (const level of logger.config.levels) {
     //
     // safeguard to redact sensitive fields
     //
-    err = _.deeply(_.mapValues)(err, function (val, key) {
-      if (REDACTED_FIELDS.has(key)) {
-        return 'REDACTED';
-      }
+    // wrapper for browser condition
+    if (hasMixin) {
+      err = _.deeply(_.mapValues)(err, function (val, key) {
+        if (REDACTED_FIELDS.has(key)) {
+          return 'REDACTED';
+        }
 
-      return val;
-    });
+        return val;
+      });
+    }
+
     const hash = meta && meta.app && meta.app.hash;
     // wrapper for browser condition
-    if (_) {
+    if (hasMixin) {
       meta = _.deeply(_.mapValues)(meta, function (val, key) {
         if (REDACTED_FIELDS.has(key)) {
           return 'REDACTED';
