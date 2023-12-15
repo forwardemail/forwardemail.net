@@ -5569,5 +5569,9 @@
   "Invalid WebAuthn key.": "Ungültiger WebAuthn-Schlüssel.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Überprüfen Sie durch <span class=\"notranslate\">%s</span> , um das Löschen zu verhindern.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % OPEN-SOURCE + QUANTUMSAFE + VERSCHLÜSSELTE E-MAIL",
-  "Tutorial": "Lernprogramm"
+  "Tutorial": "Lernprogramm",
+  "Tour": "Tour",
+  "Enterprise email": "Unternehmens-E-Mail",
+  "Business Email": "Geschäftliche E-Mail",
+  "Encrypted Business Email": "Verschlüsselte Geschäfts-E-Mail"
 }

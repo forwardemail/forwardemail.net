@@ -6534,5 +6534,9 @@
   "Invalid WebAuthn key.": "Ongeldige WebAuthn-sleutel.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifieer met <span class=\"notranslate\">%s</span> om verwijdering te voorkomen.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM VEILIG + VERSLEUTELDE E-MAIL",
-  "Tutorial": "Handleiding"
+  "Tutorial": "Handleiding",
+  "Tour": "Tour",
+  "Enterprise email": "Zakelijke e-mail",
+  "Business Email": "zakelijke E-mail",
+  "Encrypted Business Email": "Gecodeerde zakelijke e-mail"
 }

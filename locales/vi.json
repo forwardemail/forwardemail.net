@@ -6534,5 +6534,9 @@
   "Invalid WebAuthn key.": "Khóa WebAuthn không hợp lệ.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Xác minh bằng <span class=\"notranslate\">%s</span> để tránh bị xóa.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% NGUỒN MỞ + AN TOÀN LƯỢNG LƯỢNG + EMAIL MÃ HÓA",
-  "Tutorial": "Hướng dẫn"
+  "Tutorial": "Hướng dẫn",
+  "Tour": "Chuyến du lịch",
+  "Enterprise email": "Email doanh nghiệp",
+  "Business Email": "Email doanh nghiệp",
+  "Encrypted Business Email": "Email doanh nghiệp được mã hóa"
 }

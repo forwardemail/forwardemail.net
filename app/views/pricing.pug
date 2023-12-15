@@ -1,5 +1,9 @@
 extends layout
 
+block append stylesheets
+  if freddyCss
+    style!= freddyCss
+
 block body
   include _modal-storage
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
@@ -41,7 +45,7 @@ block body
         .row
           .col-12.text-center
             h1.mb-3
-              = t("Encrypted email for enterprise")
+              = t("Encrypted Business Email")
             if isBot(ctx.get("User-Agent"))
               p
                 = t("Create your free, private, and professional business email.")
@@ -62,7 +66,7 @@ block body
                 )
                   i.fa.fa-fw.fa-layer-group
                   = " "
-                  != t("Features &amp; Pricing")
+                  != t("Features")
               //- Product Tour
               if !isBot(ctx.get('User-Agent'))
                 li.list-inline-item.d-block.d-md-inline
@@ -76,7 +80,7 @@ block body
                   )
                     i.fab.fa-youtube.text-danger
                     = " "
-                    = t("Product Tour")
+                    = t("Tour")
               //- Developers
               li.list-inline-item.d-block.d-md-inline
                 if isBot(ctx.get('User-Agent'))

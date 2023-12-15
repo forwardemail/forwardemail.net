@@ -6534,5 +6534,9 @@
   "Invalid WebAuthn key.": "WebAuthn 키가 잘못되었습니다.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "삭제를 방지하려면 <span class=\"notranslate\">%s</span> 에서 확인하세요.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% 오픈 소스 + 양자 안전 + 암호화된 이메일",
-  "Tutorial": "지도 시간"
+  "Tutorial": "지도 시간",
+  "Tour": "관광",
+  "Enterprise email": "기업 이메일",
+  "Business Email": "비즈니스 이메일",
+  "Encrypted Business Email": "암호화된 비즈니스 이메일"
 }

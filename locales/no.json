@@ -6539,5 +6539,9 @@
   "Invalid WebAuthn key.": "Ugyldig WebAuthn-nøkkel.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Bekreft innen <span class=\"notranslate\">%s</span> for å forhindre sletting.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % ÅPEN KILDE + KVANTESIKKER + KRYPTERT E-POST",
-  "Tutorial": "Opplæringen"
+  "Tutorial": "Opplæringen",
+  "Tour": "Omvisning",
+  "Enterprise email": "Enterprise e-post",
+  "Business Email": "Bedrifts-e-post",
+  "Encrypted Business Email": "Kryptert bedrifts-e-post"
 }

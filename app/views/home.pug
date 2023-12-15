@@ -7,19 +7,21 @@ block append stylesheets
 block append scripts
   if !isBot(ctx.get("User-Agent"))
     script(defer).
-      document.addEventListener(
-        "DOMContentLoaded",
+      window.addEventListener(
+        "load",
         function load() {
           if (!window.Typed) return setTimeout(load, 50);
           if ($("#typed-home").length === 0 || $("#typed-home-strings").length === 0) return;
-          const typed = new window.Typed("#typed-home", {
-            stringsElement: "#typed-home-strings",
-            smartBackspace: true,
-            typeSpeed: 70,
-            backSpeed: 70,
-            startDelay: 5000,
-            backDelay: 2000,
-          });
+          setTimeout(function () {
+            const typed = new window.Typed("#typed-home", {
+              stringsElement: "#typed-home-strings",
+              smartBackspace: true,
+              typeSpeed: 70,
+              backSpeed: 70,
+              startDelay: 2000,
+              backDelay: 2000,
+            });
+          }, 7000);
         },
         false
       );
@@ -153,7 +155,7 @@ block body
         //- )
         .col-12.text-center
           if isBot(ctx.get("User-Agent"))
-            h1.mb-3.text-monospace(data-ignore-hash-change)= t("Best encrypted email service")
+            h1.mb-3.text-monospace(data-ignore-hash-change)= t("Free Email Forwarding Service")
           else
             #typed-home-header.h1.mb-3(data-ignore-hash-change)
               span#typed-home(data-ignore-hash-change)
@@ -179,7 +181,7 @@ block body
               )
                 i.fa.fa-fw.fa-layer-group
                 = " "
-                != t("Features &amp; Pricing")
+                != t("Features")
             //- Product Tour
             if !isBot(ctx.get('User-Agent'))
               li.list-inline-item.d-block.d-md-inline
@@ -193,7 +195,7 @@ block body
                 )
                   i.fab.fa-youtube.text-danger
                   = " "
-                  = t("Product Tour")
+                  = t("Tour")
             //- Developers
             li.list-inline-item.d-block.d-md-inline
               if isBot(ctx.get('User-Agent'))

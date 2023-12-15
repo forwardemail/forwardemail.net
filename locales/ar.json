@@ -6534,5 +6534,9 @@
   "Invalid WebAuthn key.": "مفتاح WebAuthn غير صالح.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "قم بالتحقق بواسطة <span class=\"notranslate\">%s</span> لمنع الحذف.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% مفتوح المصدر + آمن تمامًا + بريد إلكتروني مشفر",
-  "Tutorial": "درس تعليمي"
+  "Tutorial": "درس تعليمي",
+  "Tour": "رحلة",
+  "Enterprise email": "البريد الإلكتروني للمؤسسة",
+  "Business Email": "بريد العمل",
+  "Encrypted Business Email": "بريد إلكتروني مشفر للأعمال"
 }

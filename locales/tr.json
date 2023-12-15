@@ -6534,5 +6534,9 @@
   "Invalid WebAuthn key.": "Geçersiz WebAuthn anahtarı.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Silmeyi önlemek için <span class=\"notranslate\">%s</span> ile doğrulayın.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "%100 AÇIK KAYNAK + QUANTUM SAFE + ŞİFRELENMİŞ E-POSTA",
-  "Tutorial": "öğretici"
+  "Tutorial": "öğretici",
+  "Tour": "Tur",
+  "Enterprise email": "Kurumsal e-posta",
+  "Business Email": "İş E-postası",
+  "Encrypted Business Email": "Şifrelenmiş İşletme E-postası"
 }

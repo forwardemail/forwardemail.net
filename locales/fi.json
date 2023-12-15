@@ -6380,5 +6380,9 @@
   "Invalid WebAuthn key.": "Virheellinen WebAuthn-avain.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Vahvista <span class=\"notranslate\">%s</span> estääksesi poistamisen.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % AVOIN LÄHDE + QUANTUM SAFE + SALATU SÄHKÖPOSTI",
-  "Tutorial": "Opetusohjelma"
+  "Tutorial": "Opetusohjelma",
+  "Tour": "Kiertue",
+  "Enterprise email": "Yrityksen sähköposti",
+  "Business Email": "Yrityksen sähköposti",
+  "Encrypted Business Email": "Salattu yrityssähköposti"
 }

@@ -6534,5 +6534,9 @@
   "Invalid WebAuthn key.": "無効な WebAuthn キーです。",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "削除を防ぐには、 <span class=\"notranslate\">%s</span>によって検証してください。",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% オープンソース + 量子安全 + 暗号化されたメール",
-  "Tutorial": "チュートリアル"
+  "Tutorial": "チュートリアル",
+  "Tour": "旅行",
+  "Enterprise email": "エンタープライズ電子メール",
+  "Business Email": "ビジネスメール",
+  "Encrypted Business Email": "暗号化されたビジネスメール"
 }

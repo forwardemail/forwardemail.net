@@ -6534,5 +6534,9 @@
   "Invalid WebAuthn key.": "Chave WebAuthn inválida.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifique por <span class=\"notranslate\">%s</span> para evitar exclusão.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% CÓDIGO ABERTO + QUÂNTUM SEGURO + E-MAIL CRIPTOGRAFADO",
-  "Tutorial": "Tutorial"
+  "Tutorial": "Tutorial",
+  "Tour": "Percorrer",
+  "Enterprise email": "E-mail corporativo",
+  "Business Email": "Email Comercial",
+  "Encrypted Business Email": "E-mail comercial criptografado"
 }

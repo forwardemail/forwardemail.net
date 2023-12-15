@@ -354,13 +354,24 @@ $body.on('keyup', '.verification-form', debounce(keyup, 200));
 
 //
 // any modals with embedded <iframe> we can assume need reset
+// (this also supports lazyframe lazy loaded videos)
 // <https://stackoverflow.com/a/52315492>
 //
-$body.on('hidden.bs.modal', '.modal', function () {
+$body.on('show.bs.modal', '.modal', function () {
   const $modal = $(this);
-  if ($modal.find('iframe').length === 0) return;
-  const html = $modal.html();
-  $modal.html(html);
+  if (
+    $modal.find('iframe').length === 0 &&
+    $modal.find('.lazyframe').length === 0
+  )
+    return;
+  if ($modal.data('modalHtml')) return;
+  $modal.data('modalHtml', $modal.html());
+  lazyframe($modal.find('.lazyframe'), { autoplay: true, initinview: false });
+});
+$body.on('hide.bs.modal', '.modal', function () {
+  const $modal = $(this);
+  if (!$modal.data('modalHtml')) return;
+  $modal.html($modal.data('modalHtml'));
 });
 
 //

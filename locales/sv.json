@@ -6534,5 +6534,9 @@
   "Invalid WebAuthn key.": "Ogiltig WebAuthn-nyckel.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Verifiera med <span class=\"notranslate\">%s</span> för att förhindra radering.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100 % ÖPPEN KÄLLA + KVANTSÄKER + KRYPTAD E-POST",
-  "Tutorial": "Handledning"
+  "Tutorial": "Handledning",
+  "Tour": "Turné",
+  "Enterprise email": "E-post för företag",
+  "Business Email": "Företags e-post",
+  "Encrypted Business Email": "Krypterad företags-e-post"
 }

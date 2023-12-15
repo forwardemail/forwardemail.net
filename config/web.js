@@ -45,6 +45,7 @@ const RATELIMIT_ALLOWLIST =
 
 let appCss;
 let botCss;
+let freddyCss;
 
 try {
   appCss = fs.readFileSync(
@@ -58,6 +59,15 @@ try {
 try {
   botCss = fs.readFileSync(
     path.join(config.buildDir, 'css', 'app-bot.css'),
+    'utf8'
+  );
+} catch (err) {
+  logger.error(err);
+}
+
+try {
+  freddyCss = fs.readFileSync(
+    path.join(config.buildDir, 'css', 'freddy.css'),
     'utf8'
   );
 } catch (err) {
@@ -238,6 +248,7 @@ module.exports = (redis) => ({
       // to avoid LCP lighthouse issues
       ctx.state.appCss = appCss;
       ctx.state.botCss = botCss;
+      ctx.state.freddyCss = freddyCss;
 
       // since we're on an older helmet version due to koa-helmet
       // <https://github.com/helmetjs/helmet/issues/230>

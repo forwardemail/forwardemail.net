@@ -6534,5 +6534,9 @@
   "Invalid WebAuthn key.": "Neplatný klíč WebAuthn.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Ověřte do <span class=\"notranslate\">%s</span> , abyste zabránili smazání.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM SAFE + ŠIFROVANÝ EMAIL",
-  "Tutorial": "Tutorial"
+  "Tutorial": "Tutorial",
+  "Tour": "Prohlídka",
+  "Enterprise email": "Podnikový e-mail",
+  "Business Email": "Obchodní e-mail",
+  "Encrypted Business Email": "Šifrovaný firemní e-mail"
 }
