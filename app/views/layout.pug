@@ -206,8 +206,14 @@ html.h-100.no-js(
     //- css file
     block stylesheets
       if isBot(ctx.get('User-Agent'))
-        if botCss
+        if ctx.pathWithoutLocale === '/' && botCss
           style!= botCss
+          link(
+            rel="prefetch",
+            href=manifest("css/app-bot.css"),
+            integrity=manifest("css/app-bot.css", "integrity"),
+            crossorigin="anonymous"
+          )
         else
           link(
             rel="stylesheet",
@@ -223,8 +229,14 @@ html.h-100.no-js(
             crossorigin="anonymous"
           )
         else
-          if appCss
+          if ctx.pathWithoutLocale === '/' && appCss
             style!= appCss
+            link(
+              rel="prefetch",
+              href=manifest("css/app.css"),
+              integrity=manifest("css/app.css", "integrity"),
+              crossorigin="anonymous"
+            )
           else
             link(
               rel="stylesheet",
