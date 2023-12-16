@@ -363,6 +363,7 @@ $body.on('shown.bs.modal', '.modal', function () {
 $body.on('hide.bs.modal', '.modal', function () {
   const $modal = $(this);
   const $lazyframe = $modal.find('.lazyframe:first');
+  if ($lazyframe.length === 0) return;
   $lazyframe.empty().removeClass('lazyframe--loaded');
   // need to completely replace element since addEventListener binded
   // (otherwise it will play multiple times)
